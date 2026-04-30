@@ -45,10 +45,14 @@ export interface AvatarSettings {
 
 export interface DeepSeekMetadata {
   topic?: string;
+  normalizedTopic?: string;
   subtopic?: string;
   difficulty?: Difficulty;
+  normalizedDifficulty?: Difficulty;
   confidence?: number;
+  confidenceLabel?: string;
   reconciliationStatus?: string;
+  finalReviewRequired?: boolean;
   reviewFlags?: string[];
   validation?: Record<string, unknown>;
   hasError: boolean;
@@ -68,14 +72,37 @@ export interface NormalizedQuestion {
   displaySubtopic?: string;
   displayDifficulty?: Difficulty;
   marksAvailable?: number;
+  questionImageRawPaths: string[];
+  markSchemeImageRawPaths: string[];
   questionImagePaths: string[];
   markSchemeImagePaths: string[];
   questionImageUrls: string[];
   markSchemeImageUrls: string[];
+  questionImageCandidates: string[][];
+  markSchemeImageCandidates: string[][];
   raw: {
     local: unknown;
     deepseek?: unknown;
   };
+}
+
+export interface QuestionBankDiagnostics {
+  mainUrl?: string;
+  mainSchemaName?: string;
+  mainSchemaVersion?: string | number;
+  mainRecordCount?: number;
+  mainQuestionsLength: number;
+  mainAppearsPlaceholder: boolean;
+  sidecarUrl?: string;
+  sidecarSchemaName?: string;
+  sidecarSchemaVersion?: string | number;
+  sidecarRecordCount?: number;
+  sidecarAppearsPlaceholder: boolean;
+  loadedQuestionCount: number;
+  normalizedQuestionCount: number;
+  sidecarEnrichmentCount: number;
+  sidecarMergeCount: number;
+  sidecarErrorCount: number;
 }
 
 export interface Attempt {
@@ -98,6 +125,9 @@ export interface Attempt {
   timeSpentSeconds: number;
   markSchemeRevealed: boolean;
   attemptedAt: string;
+  worldName?: string;
+  regionName?: string;
+  regionRankAtAttempt?: RegionRank;
 }
 
 export interface IssueReport {
@@ -107,6 +137,8 @@ export interface IssueReport {
   issueType: IssueType;
   note?: string;
   createdAt: string;
+  worldName?: string;
+  regionName?: string;
 }
 
 export interface TopicProfile {
@@ -121,6 +153,42 @@ export interface TopicProfile {
 }
 
 export type MasteryRank = 'none' | 'bronze' | 'silver' | 'gold' | 'mastery';
+
+export type RegionRank = 'Dormant' | 'Discovered' | 'Bronze' | 'Silver' | 'Gold' | 'Mastered';
+
+export interface WorldDefinition {
+  id: string;
+  name: string;
+  paperFamily: PaperFamily;
+  regions: RegionDefinition[];
+}
+
+export interface RegionDefinition {
+  id: string;
+  name: string;
+  description: string;
+  subtopics: string[];
+  activeByDefault: boolean;
+  matchTerms: string[];
+}
+
+export interface RegionProgress {
+  region: RegionDefinition;
+  availableQuestions: number;
+  attempts: number;
+  totalMarksEarned: number;
+  totalMarksAvailable: number;
+  recentScoreRatio?: number;
+  averageScoreRatio?: number;
+  subtopicsTouched: number;
+  rank: RegionRank;
+  isActive: boolean;
+}
+
+export interface AvatarGear {
+  title: string;
+  gear: string[];
+}
 
 export interface AppSettings {
   activePaperFamily: PaperFamily;

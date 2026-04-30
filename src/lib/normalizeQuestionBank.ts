@@ -1,9 +1,9 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily } from '../types';
-import { canonicalPaperFamily, resolveQuestionAssetPaths } from './resolveAssetPath';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics } from '../types';
+import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
 
 type LooseRecord = Record<string, unknown>;
 
-const ERROR_KEYS = ['error', 'parse_error', 'parseError', 'exception'];
+const ERROR_KEYS = ['error', 'parse_error', 'parseError', 'exception', 'error_message', 'errorMessage'];
 
 function asRecord(value: unknown): LooseRecord | undefined {
   return value && typeof value === 'object' && !Array.isArray(value) ? (value as LooseRecord) : undefined;
@@ -18,6 +18,15 @@ function pickString(record: LooseRecord | undefined, keys: string[]): string | u
   return undefined;
 }
 
+function pickBoolean(record: LooseRecord | undefined, keys: string[]): boolean | undefined {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string' && ['true', 'false'].includes(value.toLowerCase())) return value.toLowerCase() === 'true';
+  }
+  return undefined;
+}
+
 function pickNumber(record: LooseRecord | undefined, keys: string[]): number | undefined {
   for (const key of keys) {
     const value = record?.[key];
@@ -25,6 +34,10 @@ function pickNumber(record: LooseRecord | undefined, keys: string[]): number | u
     if (typeof value === 'string' && value.trim() && Number.isFinite(Number(value))) return Number(value);
   }
   return undefined;
+}
+
+function nestedRecord(record: LooseRecord | undefined, key: string): LooseRecord | undefined {
+  return asRecord(record?.[key]);
 }
 
 function pickImages(record: LooseRecord, keys: string[]): unknown {
@@ -35,6 +48,14 @@ function pickImages(record: LooseRecord, keys: string[]): unknown {
   return undefined;
 }
 
+function combineImages(...values: unknown[]): string[] {
+  return values.flatMap((value) => {
+    if (Array.isArray(value)) return value.map(String).filter(Boolean);
+    if (typeof value === 'string' && value.trim()) return [value.trim()];
+    return [];
+  });
+}
+
 function hasError(record: LooseRecord | undefined): boolean {
   if (!record) return true;
   return ERROR_KEYS.some((key) => Boolean(record[key]));
@@ -43,15 +64,21 @@ function hasError(record: LooseRecord | undefined): boolean {
 function normalizeDeepSeek(value: unknown): DeepSeekMetadata {
   const record = asRecord(value);
   const errorMessage = ERROR_KEYS.map((key) => record?.[key]).find((item) => typeof item === 'string') as string | undefined;
-  const reviewFlags = record?.review_flags ?? record?.reviewFlags;
+  const reviewFlags = record?.review_flags ?? record?.reviewFlags ?? record?.final_review_reasons;
   const validation = asRecord(record?.validation) ?? asRecord(record?.validation_fields) ?? undefined;
+  const confidenceNumber = pickNumber(record, ['confidence', 'deepseek_confidence']);
+  const confidenceLabel = pickString(record, ['confidence', 'deepseek_confidence', 'deepseek_confidence_normalized']);
 
   return {
     topic: pickString(record, ['topic', 'deepseek_topic', 'predicted_topic']),
+    normalizedTopic: pickString(record, ['deepseek_topic_normalized', 'topic_normalized', 'normalized_topic']),
     subtopic: pickString(record, ['subtopic', 'deepseek_subtopic', 'predicted_subtopic']),
     difficulty: pickString(record, ['difficulty', 'deepseek_difficulty', 'predicted_difficulty']),
-    confidence: pickNumber(record, ['confidence', 'deepseek_confidence']),
-    reconciliationStatus: pickString(record, ['reconciliation_status', 'reconciliationStatus', 'status']),
+    normalizedDifficulty: pickString(record, ['deepseek_difficulty_normalized', 'difficulty_normalized', 'normalized_difficulty']),
+    confidence: confidenceNumber,
+    confidenceLabel,
+    reconciliationStatus: pickString(record, ['topic_reconciliation_status', 'reconciliation_status', 'reconciliationStatus', 'status']),
+    finalReviewRequired: pickBoolean(record, ['final_review_required', 'deepseek_review_required', 'review_required']),
     reviewFlags: Array.isArray(reviewFlags) ? reviewFlags.map(String) : undefined,
     validation,
     hasError: hasError(record),
@@ -75,12 +102,33 @@ function buildSidecarIndex(sidecar: unknown): Map<string, unknown> {
     if (id) index.set(id, item);
   }
   const root = asRecord(sidecar);
+  const enrichments = asRecord(root?.enrichments);
+  if (enrichments) {
+    for (const [key, value] of Object.entries(enrichments)) index.set(key, value);
+  }
   if (root) {
     for (const [key, value] of Object.entries(root)) {
-      if (!['questions', 'items', 'records'].includes(key)) index.set(key, value);
+      if (!['schema_name', 'schema_version', 'record_count', 'questions', 'items', 'records', 'enrichments'].includes(key)) index.set(key, value);
     }
   }
   return index;
+}
+
+export function getSidecarEnrichmentCount(sidecar: unknown): number {
+  const root = asRecord(sidecar);
+  const enrichments = asRecord(root?.enrichments);
+  if (enrichments) return Object.keys(enrichments).length;
+  const arrayCount = getQuestionArray(sidecar).length;
+  if (arrayCount) return arrayCount;
+  return buildSidecarIndex(sidecar).size;
+}
+
+export function getSidecarErrorCount(sidecar: unknown): number {
+  return Array.from(buildSidecarIndex(sidecar).values()).filter((entry) => normalizeDeepSeek(entry).hasError).length;
+}
+
+export function getQuestionRecordCount(bank: unknown): number {
+  return getQuestionArray(bank).length;
 }
 
 function validDeepSeekLabel(value: string | undefined, deepseek: DeepSeekMetadata): value is string {
@@ -94,14 +142,25 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
 
   return getQuestionArray(localBank).map((record, index) => {
     const id = pickString(record, ['id', 'question_id', 'questionId']) ?? `question_${index + 1}`;
-    const paperFamily = canonicalPaperFamily(pickString(record, ['paper_family', 'paperFamily', 'family']) ?? pickString(record, ['paper']) ?? 'p3');
+    const questionImageRaw = combineImages(
+      pickImages(record, ['question_image_paths', 'question_images', 'questionImagePaths', 'question_image_path', 'question_image', 'image_path', 'image']),
+      pickImages(nestedRecord(record, 'canonical_question_artifact') ?? {}, ['path', 'image_path', 'question_image_path']),
+    );
+    const markSchemeImageRaw = combineImages(
+      pickImages(record, ['mark_scheme_image_paths', 'mark_scheme_images', 'markSchemeImagePaths', 'mark_scheme_image_path', 'mark_scheme_image', 'mark_scheme_path', 'ms_image']),
+    );
+    const paperFamily = inferPaperFamily(record, questionImageRaw);
     const deepseekRaw = sidecarIndex.get(id) ?? record.deepseek ?? record.enrichment;
     const deepseek = normalizeDeepSeek(deepseekRaw);
     const localTopic = pickString(record, ['topic', 'local_topic', 'localTopic']);
+    const notes = nestedRecord(record, 'notes');
+    const localSubtopic = pickString(record, ['subtopic', 'local_subtopic', 'localSubtopic']) ?? pickString(notes, ['subtopic']);
     const localDifficulty = pickString(record, ['difficulty', 'local_difficulty', 'localDifficulty']);
-    const questionImagePaths = resolveQuestionAssetPaths(pickImages(record, ['question_images', 'questionImagePaths', 'question_image', 'image_path', 'image']), paperFamily);
-    const markSchemeImagePaths = resolveQuestionAssetPaths(pickImages(record, ['mark_scheme_images', 'markSchemeImagePaths', 'mark_scheme_image', 'mark_scheme_path', 'ms_image']), paperFamily);
-    const marksAvailable = pickNumber(record, ['marks', 'marks_available', 'marksAvailable', 'total_marks']);
+    const questionImageCandidates = resolveQuestionAssetPathCandidateGroups(questionImageRaw, paperFamily);
+    const markSchemeImageCandidates = resolveQuestionAssetPathCandidateGroups(markSchemeImageRaw, paperFamily);
+    const questionImageUrls = resolveQuestionAssetPaths(questionImageRaw, paperFamily);
+    const markSchemeImageUrls = resolveQuestionAssetPaths(markSchemeImageRaw, paperFamily);
+    const marksAvailable = pickNumber(record, ['question_solution_marks', 'marks', 'marks_available', 'marksAvailable', 'total_marks']);
 
     return {
       id,
@@ -109,18 +168,57 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       paper: pickString(record, ['paper', 'paper_code', 'session']),
       questionNumber: pickString(record, ['question_number', 'questionNumber', 'number', 'question_no']),
       localTopic,
-      localSubtopic: pickString(record, ['subtopic', 'local_subtopic', 'localSubtopic']),
+      localSubtopic,
       localDifficulty,
       deepseek,
       displayTopic: validDeepSeekLabel(deepseek.topic, deepseek) ? deepseek.topic : localTopic ?? 'Unclassified',
-      displaySubtopic: validDeepSeekLabel(deepseek.subtopic, deepseek) ? deepseek.subtopic : pickString(record, ['subtopic', 'local_subtopic', 'localSubtopic']),
-      displayDifficulty: validDeepSeekLabel(deepseek.difficulty, deepseek) ? deepseek.difficulty : localDifficulty,
+      displaySubtopic: validDeepSeekLabel(deepseek.subtopic, deepseek) ? deepseek.subtopic : localSubtopic,
+      displayDifficulty: validDeepSeekLabel(deepseek.normalizedDifficulty ?? deepseek.difficulty, deepseek) ? deepseek.normalizedDifficulty ?? deepseek.difficulty : localDifficulty,
       marksAvailable,
-      questionImagePaths,
-      markSchemeImagePaths,
-      questionImageUrls: questionImagePaths,
-      markSchemeImageUrls: markSchemeImagePaths,
+      questionImageRawPaths: questionImageRaw,
+      markSchemeImageRawPaths: markSchemeImageRaw,
+      questionImagePaths: questionImageRaw,
+      markSchemeImagePaths: markSchemeImageRaw,
+      questionImageUrls,
+      markSchemeImageUrls,
+      questionImageCandidates,
+      markSchemeImageCandidates,
       raw: { local: record, deepseek: deepseekRaw },
     };
   });
+}
+
+function inferPaperFamily(record: LooseRecord, imagePaths: string[]): PaperFamily {
+  const explicit = pickString(record, ['paper_family', 'paperFamily', 'family']);
+  if (explicit) return canonicalPaperFamily(explicit);
+  const paper = pickString(record, ['paper', 'paper_code', 'session']);
+  const hints = [paper, ...imagePaths].filter(Boolean).map((value) => String(value).toLowerCase());
+  if (hints.some((hint) => /(^|[/_\-\s])p3([/_\-\s]|$)/.test(hint) || /paper\s*3/.test(hint))) return 'p3';
+  if (hints.some((hint) => /(^|[/_\-\s])p1([/_\-\s]|$)/.test(hint) || /paper\s*1/.test(hint))) return 'p1';
+  if (hints.some((hint) => /(^|[/_\-\s])p4([/_\-\s]|$)|mechanics|m1/.test(hint))) return 'p4';
+  if (hints.some((hint) => /(^|[/_\-\s])p5([/_\-\s]|$)|statistics|s1/.test(hint))) return 'p5';
+  return 'unknown';
+}
+
+export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepseekSidecar: unknown): {
+  questions: NormalizedQuestion[];
+  diagnostics: QuestionBankDiagnostics;
+} {
+  const questions = normalizeQuestionBank(localBank, deepseekSidecar);
+  const sidecarEnrichmentCount = getSidecarEnrichmentCount(deepseekSidecar);
+  const sidecarMergeCount = questions.filter((question) => Boolean(question.raw.deepseek)).length;
+  const sidecarErrorCount = getSidecarErrorCount(deepseekSidecar);
+  return {
+    questions,
+    diagnostics: {
+      mainQuestionsLength: getQuestionRecordCount(localBank),
+      mainAppearsPlaceholder: getQuestionRecordCount(localBank) === 0,
+      sidecarAppearsPlaceholder: sidecarEnrichmentCount === 0,
+      loadedQuestionCount: getQuestionRecordCount(localBank),
+      normalizedQuestionCount: questions.length,
+      sidecarEnrichmentCount,
+      sidecarMergeCount,
+      sidecarErrorCount,
+    },
+  };
 }
