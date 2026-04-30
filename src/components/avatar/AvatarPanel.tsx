@@ -1,10 +1,11 @@
-import type { AvatarSettings, TopicProfile } from '../../types';
+import type { AvatarGear, AvatarSettings, TopicProfile } from '../../types';
 import { checkmarkForRank } from '../../lib/mastery';
 
 interface AvatarPanelProps {
   avatarName?: string;
   avatar: AvatarSettings;
   topicProfiles: Record<string, TopicProfile>;
+  gear?: AvatarGear;
   editable?: boolean;
   onChange?: (avatar: AvatarSettings) => void;
 }
@@ -12,7 +13,7 @@ interface AvatarPanelProps {
 const palettes: AvatarSettings['palette'][] = ['ember', 'aqua', 'violet', 'leaf'];
 const crests: AvatarSettings['crest'][] = ['star', 'bolt', 'compass', 'orb'];
 
-export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, editable = false, onChange }: AvatarPanelProps) {
+export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, gear, editable = false, onChange }: AvatarPanelProps) {
   const ranks = Object.values(topicProfiles);
   const xp = ranks.reduce((sum, profile) => sum + profile.totalMarksEarned, 0);
   const unlockedGear = ranks.filter((profile) => profile.rank !== 'none').length;
@@ -29,7 +30,8 @@ export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, ed
       </div>
       <div>
         <strong>{avatarName}</strong>
-        <span>{xp} XP · {unlockedGear} gear unlocks</span>
+        <span>{gear?.title ?? 'New Arrival'}</span>
+        <span>{xp} XP · {Math.max(unlockedGear, gear?.gear.length ?? 0)} gear unlocks</span>
       </div>
       {editable ? (
         <div className="avatar-controls">
@@ -42,6 +44,7 @@ export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, ed
         </div>
       ) : null}
       <div className="topic-ranks">
+        {gear?.gear.length ? <span>Gear: {gear.gear.join(', ')}</span> : null}
         {ranks.slice(0, 4).map((profile) => (
           <span key={profile.topic}>{profile.topic}: {checkmarkForRank(profile.rank)}</span>
         ))}

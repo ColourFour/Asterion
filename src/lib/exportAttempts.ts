@@ -1,15 +1,16 @@
-import type { Attempt, IssueReport, StoredProgress, StudentProfile } from '../types';
+import type { Attempt, AvatarGear, IssueReport, StoredProgress, StudentProfile } from '../types';
 
 function csvCell(value: unknown): string {
   const text = value == null ? '' : String(value);
   return `"${text.replace(/"/g, '""')}"`;
 }
 
-export function buildExportJson(progress: StoredProgress) {
+export function buildExportJson(progress: StoredProgress, avatarGear?: AvatarGear) {
   return {
     exportedAt: new Date().toISOString(),
     profile: progress.profile,
     avatar: progress.avatar,
+    avatarGear,
     attempts: progress.attempts,
     topicProfiles: progress.topicProfiles,
     issueReports: progress.issueReports,
@@ -24,7 +25,7 @@ function reportsForQuestion(reports: IssueReport[], questionId: string): string 
     .join('; ');
 }
 
-export function buildAttemptsCsv(progress: StoredProgress): string {
+export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGear): string {
   const headers = [
     'student name',
     'class/group',
@@ -48,6 +49,11 @@ export function buildAttemptsCsv(progress: StoredProgress): string {
     'time spent seconds',
     'mark scheme revealed',
     'attempt timestamp',
+    'world_name',
+    'region_name',
+    'region_rank_at_attempt',
+    'avatar_title',
+    'avatar_gear',
     'issue reports',
   ];
 
@@ -75,6 +81,11 @@ export function buildAttemptsCsv(progress: StoredProgress): string {
     attempt.timeSpentSeconds,
     attempt.markSchemeRevealed,
     attempt.attemptedAt,
+    attempt.worldName,
+    attempt.regionName,
+    attempt.regionRankAtAttempt,
+    avatarGear?.title,
+    avatarGear?.gear.join('; '),
     reportsForQuestion(progress.issueReports, attempt.questionId),
   ]);
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { Attempt, IssueType, MistakeType, NormalizedQuestion, StoredProgress } from '../../types';
+import type { Attempt, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionRank, StoredProgress } from '../../types';
 import { createId } from '../../lib/progressStore';
 import { ImageStack } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
@@ -22,15 +22,22 @@ const mistakeTypes: MistakeType[] = [
 interface PracticeViewProps {
   question?: NormalizedQuestion;
   progress: StoredProgress;
+  worldName?: string;
+  selectedRegion?: RegionDefinition;
+  selectedRegionRank?: RegionRank;
   onAttempt: (attempt: Attempt) => void;
   onIssue: (questionId: string, issueType: IssueType, note?: string) => void;
+  onReturnToMap?: () => void;
+  onReviewWeak?: () => void;
+  onContinuePractice?: () => void;
 }
 
-export function PracticeView({ question, progress, onAttempt, onIssue }: PracticeViewProps) {
+export function PracticeView({ question, progress, worldName, selectedRegion, selectedRegionRank, onAttempt, onIssue, onReturnToMap, onReviewWeak, onContinuePractice }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [marksEarned, setMarksEarned] = useState('');
   const [mistakeType, setMistakeType] = useState<MistakeType | ''>('');
   const [note, setNote] = useState('');
+  const [attemptSaved, setAttemptSaved] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
 
   useEffect(() => {
@@ -38,6 +45,7 @@ export function PracticeView({ question, progress, onAttempt, onIssue }: Practic
     setMarksEarned('');
     setMistakeType('');
     setNote('');
+    setAttemptSaved(false);
     setStartedAt(Date.now());
   }, [question?.id]);
 
@@ -50,21 +58,26 @@ export function PracticeView({ question, progress, onAttempt, onIssue }: Practic
   }, [marksEarned, maxMarks]);
 
   if (!question) {
-    return <section className="practice-card empty-state">No questions are available yet. Add `public/data/question_bank.json` to begin.</section>;
+    return (
+      <section className="practice-card empty-state">
+        <p>No questions are available for this region yet.</p>
+        {onReturnToMap ? <button className="primary-button" type="button" onClick={onReturnToMap}>Return to P3 Astral Academy</button> : null}
+      </section>
+    );
   }
 
   return (
     <section className="practice-card">
       <header className="question-header">
         <div>
-          <span className="mode-pill">{question.paperFamily.toUpperCase()}</span>
-          <h2>{question.displayTopic}</h2>
+          <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
+          <h2>{selectedRegion?.name ?? question.displayTopic}</h2>
           <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {maxMarks ? `${maxMarks} marks` : 'marks unavailable'}</p>
         </div>
         <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
       </header>
 
-      <ImageStack urls={question.questionImageUrls} label="Question" />
+      <ImageStack candidateGroups={question.questionImageCandidates} label="Question" />
 
       {!revealed ? (
         <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
@@ -73,7 +86,7 @@ export function PracticeView({ question, progress, onAttempt, onIssue }: Practic
       ) : (
         <div className="mark-scheme-panel">
           <h3>Mark scheme</h3>
-          <ImageStack urls={question.markSchemeImageUrls} label="Mark scheme" />
+          <ImageStack candidateGroups={question.markSchemeImageCandidates} label="Mark scheme" />
           <form
             className="attempt-form"
             onSubmit={(event) => {
@@ -101,7 +114,11 @@ export function PracticeView({ question, progress, onAttempt, onIssue }: Practic
                 timeSpentSeconds: Math.round((Date.now() - startedAt) / 1000),
                 markSchemeRevealed: revealed,
                 attemptedAt: new Date().toISOString(),
+                worldName,
+                regionName: selectedRegion?.name,
+                regionRankAtAttempt: selectedRegionRank,
               });
+              setAttemptSaved(true);
             }}
           >
             <label>
@@ -119,9 +136,19 @@ export function PracticeView({ question, progress, onAttempt, onIssue }: Practic
               Optional note
               <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
             </label>
-            <button className="primary-button" type="submit" disabled={!canSubmit}>
+            <button className="primary-button" type="submit" disabled={!canSubmit || attemptSaved}>
               Save attempt and continue {scorePreview != null ? `(${scorePreview}%)` : ''}
             </button>
+            {attemptSaved ? (
+              <div className="post-attempt-panel">
+                <strong>Attempt saved.</strong>
+                <div className="practice-actions">
+                  {onContinuePractice ? <button type="button" onClick={onContinuePractice}>{selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
+                  {onReturnToMap ? <button type="button" onClick={onReturnToMap}>Return to P3 Astral Academy</button> : null}
+                  {onReviewWeak ? <button type="button" onClick={onReviewWeak}>Review weak areas</button> : null}
+                </div>
+              </div>
+            ) : null}
           </form>
         </div>
       )}

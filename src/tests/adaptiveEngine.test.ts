@@ -10,10 +10,14 @@ function question(id: string, topic: string, difficulty = 'core', marks = 6): No
     displayDifficulty: difficulty,
     marksAvailable: marks,
     deepseek: { hasError: true },
+    questionImageRawPaths: [],
+    markSchemeImageRawPaths: [],
     questionImagePaths: [],
     markSchemeImagePaths: [],
     questionImageUrls: [],
     markSchemeImageUrls: [],
+    questionImageCandidates: [],
+    markSchemeImageCandidates: [],
     raw: { local: {} },
   };
 }

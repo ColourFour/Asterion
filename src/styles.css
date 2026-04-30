@@ -125,6 +125,234 @@ nav button.active {
   box-shadow: 0 18px 60px rgba(35, 48, 68, 0.08);
 }
 
+.world-screen {
+  max-width: 1280px;
+  margin: 0 auto 96px;
+}
+
+.world-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  min-height: 240px;
+  padding: 28px;
+  border: 1px solid #d8e0eb;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(250, 204, 21, 0.22), transparent 28%),
+    linear-gradient(135deg, #f8fafc 0%, #d9eef0 52%, #f6e7cf 100%);
+  box-shadow: 0 18px 60px rgba(35, 48, 68, 0.08);
+}
+
+.world-hero h2 {
+  margin-bottom: 8px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.world-hero p {
+  max-width: 680px;
+  margin-bottom: 0;
+  color: #3f4d60;
+}
+
+.world-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.world-actions button,
+.region-card button,
+.practice-actions button {
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #233044;
+  background: #ffffff;
+  border: 1px solid #d6dee9;
+  font-weight: 800;
+}
+
+.world-notice,
+.health-warning {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #f6c76d;
+  border-radius: 8px;
+  color: #653a04;
+  background: #fff7e6;
+  font-weight: 700;
+}
+
+.academy-map {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.region-card {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  grid-column: span 4;
+  min-height: 360px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid #d8e0eb;
+  border-radius: 8px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.88));
+  box-shadow: 0 14px 44px rgba(35, 48, 68, 0.08);
+  animation: region-in 280ms ease both;
+  animation-delay: var(--region-delay);
+}
+
+.region-card:nth-child(1),
+.region-card:nth-child(4),
+.region-card:nth-child(6) {
+  grid-column: span 5;
+}
+
+.region-card:nth-child(3),
+.region-card:nth-child(8) {
+  grid-column: span 3;
+}
+
+.region-card::before {
+  content: "";
+  position: absolute;
+  inset: auto -28px -42px auto;
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: rgba(14, 116, 144, 0.12);
+}
+
+.rank-dormant {
+  opacity: 0.72;
+  background: linear-gradient(160deg, rgba(248, 250, 252, 0.85), rgba(226, 232, 240, 0.9));
+}
+
+.rank-bronze::before { background: rgba(180, 83, 9, 0.18); }
+.rank-silver::before { background: rgba(100, 116, 139, 0.2); }
+.rank-gold::before,
+.rank-mastered::before { background: rgba(250, 204, 21, 0.24); }
+
+.region-orbit {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  color: rgba(15, 76, 92, 0.24);
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.region-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.region-card-header strong {
+  color: #0f4c5c;
+}
+
+.region-state {
+  color: #667388;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.region-meter {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.region-meter span {
+  display: block;
+  height: 100%;
+  min-width: 8px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0e7490, #b45309);
+}
+
+.region-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.region-stats div {
+  padding: 8px;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.region-stats dt {
+  color: #667388;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.region-stats dd {
+  margin: 0;
+  color: #172033;
+  font-weight: 900;
+}
+
+.subtopic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.subtopic-list span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #344154;
+  background: #eef2f7;
+  font-size: 0.8rem;
+}
+
+.region-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+.post-attempt-panel {
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+  padding: 12px;
+  border: 1px solid #c6e3d5;
+  border-radius: 8px;
+  background: #effaf3;
+}
+
+@keyframes region-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .profile-form {
   display: grid;
   gap: 12px;
@@ -260,9 +488,13 @@ textarea {
 
 .image-placeholder {
   display: grid;
+  gap: 6px;
   min-height: 260px;
   place-items: center;
   color: #667388;
+  padding: 16px;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .reveal-button {
@@ -332,6 +564,81 @@ textarea {
   margin-bottom: 12px;
 }
 
+.data-health-panel {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #d8e0eb;
+}
+
+.data-health-panel > button {
+  min-height: 38px;
+  padding: 8px 12px;
+  color: #233044;
+  background: #eef2f7;
+  border: 1px solid #d6dee9;
+  font-weight: 800;
+}
+
+.data-health-body {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.health-grid div {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.health-grid dt {
+  color: #667388;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.health-grid dd {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.health-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.health-list span,
+.data-health-body li {
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.health-list span {
+  padding: 6px 8px;
+}
+
+.data-health-body ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.data-health-body li {
+  padding: 8px;
+  overflow-wrap: anywhere;
+}
+
 .danger-button {
   color: #fff !important;
   background: #b91c1c !important;
@@ -357,8 +664,26 @@ textarea {
   }
 
   .topbar,
-  .question-header {
+  .question-header,
+  .world-hero {
     display: grid;
+  }
+
+  .academy-map {
+    grid-template-columns: 1fr;
+  }
+
+  .region-card,
+  .region-card:nth-child(1),
+  .region-card:nth-child(3),
+  .region-card:nth-child(4),
+  .region-card:nth-child(6),
+  .region-card:nth-child(8) {
+    grid-column: auto;
+  }
+
+  .region-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   nav {
