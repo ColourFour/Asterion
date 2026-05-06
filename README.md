@@ -4,6 +4,30 @@ Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709
 
 The question image and mark-scheme image are the source of truth. Extracted text and DeepSeek enrichment are used as metadata for routing, display, review, and teacher export.
 
+## Core Principles
+
+Asterion is an educational mastery system first and a game second.
+
+The system must preserve:
+- image-first academic fidelity
+- curriculum alignment
+- meaningful mastery progression
+- transparent performance reporting
+- low-friction student interaction
+- deterministic educational behavior
+
+The system must avoid:
+- grind-heavy progression
+- deceptive reward systems
+- random progression gating
+- synthetic/generated math replacing canonical questions
+- hidden mastery calculations
+- mechanics that reward guessing over reflection
+
+Question images and mark-scheme images are the canonical academic source of truth.
+
+AI-generated explanations, hints, labels, enrichment, or adaptive routing are advisory systems only and must never silently overwrite canonical academic content.
+
 ## P3 Astral Academy
 
 After onboarding, students enter **P3 Astral Academy**, the first paper-family world map.
@@ -36,6 +60,84 @@ Current P3 regions:
 
 Algebra Forge, Logarithm Grove, Trig Observatory, and Complex Harbor are the first active classroom regions. Other regions are visible as dormant or available when matching questions exist.
 
+## System Boundaries
+
+Gameplay systems may:
+- influence presentation
+- influence progression pacing
+- influence cosmetic rewards
+- influence region unlock flow
+
+Gameplay systems must not:
+- alter question correctness
+- alter canonical marks
+- alter mark schemes
+- replace academic content
+- inflate mastery scores
+- bypass weak-area review requirements
+
+Adaptive systems may recommend question selection but must remain explainable and deterministic by default.
+
+React components must not contain:
+- path normalization logic
+- topic normalization logic
+- region mapping logic
+- mastery calculation logic
+- enrichment merge logic
+
+All normalization and routing behavior belongs in centralized utility modules.
+
+## Mastery Philosophy
+
+Asterion rewards:
+
+- repeated exposure to weak areas
+- consistency over time
+- subtopic coverage
+- accurate self-reporting
+- reflection after reveal
+
+Asterion does not reward:
+
+- rapid guessing
+- brute-force repetition
+- avoiding difficult topics
+- farming easy questions
+- inflated streak behavior
+
+Mastery should represent demonstrated stability, not temporary success.
+
+## World Structure
+
+The hierarchy is fixed:
+
+Paper Family -> World
+Major Topic -> Region
+Subtopic -> Station / Quest Line
+Question -> Encounter
+Attempt -> Trial
+Review Session -> Restoration Pass
+All future worlds should preserve this hierarchy unless a major architecture migration is approved.
+
+## Asset Philosophy
+
+Asterion uses stylized, readable, low-complexity educational RPG visuals.
+
+Priority order:
+1. readability
+2. consistency
+3. fast asset iteration
+4. thematic cohesion
+5. visual polish
+
+Assets should:
+- work at small sizes
+- preserve silhouette clarity
+- avoid visual clutter
+- support rapid region expansion
+- remain reproducible through prompt/version metadata
+
+Generated assets are considered production inputs and should be versioned and attributable.
 ## Local Setup
 
 ```bash

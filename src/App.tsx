@@ -43,7 +43,7 @@ export default function App() {
     if (questions.length === 0) return 'No questions loaded yet. Check public/data/question_bank.json.';
     if (p3.length === 0) return 'Question bank loaded, but no P3 records were found. Check paper_family labels.';
     if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic/DeepSeek labels in Data Health.';
-    if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports both /assets/questions/p3/<paper>/... and /assets/questions/<paper>/...';
+    if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
     return undefined;
   }, [questions, worldProgress]);
 
@@ -107,6 +107,11 @@ export default function App() {
           <span className="mode-pill">CAIE 9709 · Paper 3 MVP</span>
           <h1>Asterion</h1>
           <p>Image-first adaptive practice for algebra, trigonometry, complex numbers, and the wider Pure Mathematics 3 map.</p>
+          <div className="onboarding-briefing">
+            <strong>Mission briefing</strong>
+            <span>Enter the Astral Academy, restore P3 regions with real marks, and leave a teacher-readable evidence trail.</span>
+            <span>No AI marking. No synthetic questions. Your official images and self-marked attempts drive the progress estimate.</span>
+          </div>
         </section>
         <ProfileForm onSave={(profile) => setProgress(saveProfile(profile))} />
       </main>

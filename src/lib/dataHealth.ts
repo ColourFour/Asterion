@@ -24,10 +24,39 @@ export interface DataHealthSummary {
   candidateMarkSchemeUrlExamples: string[];
   resolvedImageExamples: Array<{ id: string; question?: string; markScheme?: string }>;
   missingImagePathExamples: Array<{ id: string; missing: 'question' | 'mark_scheme'; labels: string }>;
-  imageRootMode: 'family-folder layout' | 'paper-only layout' | 'unknown';
+  imageRootMode: 'public/assets root layout' | 'family-folder layout' | 'paper-only layout' | 'unknown';
   sidecarEnrichmentCount: number;
   sidecarMergeCount: number;
   sidecarErrorCount: number;
+}
+
+function imageRootModeForUrl(url: string): DataHealthSummary['imageRootMode'] {
+  if (/^\/assets\/questions\/p[1345]\//i.test(url)) return 'family-folder layout';
+  if (/^\/assets\/questions\//i.test(url)) return 'paper-only layout';
+  if (/^\/assets\//i.test(url)) return 'public/assets root layout';
+  return 'unknown';
+}
+
+function detectImageRootMode(questions: NormalizedQuestion[]): DataHealthSummary['imageRootMode'] {
+  const firstCandidates = questions.flatMap((question) => [
+    ...question.questionImageCandidates.map((group) => group[0]),
+    ...question.markSchemeImageCandidates.map((group) => group[0]),
+  ]).filter(Boolean);
+
+  const counts = firstCandidates.reduce<Record<DataHealthSummary['imageRootMode'], number>>((acc, url) => {
+    const mode = imageRootModeForUrl(url);
+    acc[mode] += 1;
+    return acc;
+  }, {
+    'public/assets root layout': 0,
+    'family-folder layout': 0,
+    'paper-only layout': 0,
+    unknown: 0,
+  });
+
+  const [mode, count] = (Object.entries(counts) as Array<[DataHealthSummary['imageRootMode'], number]>)
+    .sort((a, b) => b[1] - a[1])[0];
+  return count > 0 ? mode : 'unknown';
 }
 
 export function buildDataHealthSummary(
@@ -77,7 +106,7 @@ export function buildDataHealthSummary(
         ].filter((value): value is { id: string; missing: 'question' | 'mark_scheme'; labels: string } => Boolean(value));
       })
       .slice(0, 8),
-    imageRootMode: 'unknown',
+    imageRootMode: detectImageRootMode(p3Questions),
     sidecarEnrichmentCount: diagnostics?.sidecarEnrichmentCount ?? 0,
     sidecarMergeCount: diagnostics?.sidecarMergeCount ?? 0,
     sidecarErrorCount: diagnostics?.sidecarErrorCount ?? 0,

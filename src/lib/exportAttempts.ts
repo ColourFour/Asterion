@@ -1,16 +1,17 @@
-import type { Attempt, AvatarGear, IssueReport, StoredProgress, StudentProfile } from '../types';
+import type { Attempt, AvatarGear, IssueReport, RegionProgress, StoredProgress, StudentProfile } from '../types';
 
 function csvCell(value: unknown): string {
   const text = value == null ? '' : String(value);
   return `"${text.replace(/"/g, '""')}"`;
 }
 
-export function buildExportJson(progress: StoredProgress, avatarGear?: AvatarGear) {
+export function buildExportJson(progress: StoredProgress, avatarGear?: AvatarGear, regionProgress?: RegionProgress[]) {
   return {
     exportedAt: new Date().toISOString(),
     profile: progress.profile,
     avatar: progress.avatar,
     avatarGear,
+    regionProgress,
     attempts: progress.attempts,
     topicProfiles: progress.topicProfiles,
     issueReports: progress.issueReports,

@@ -24,8 +24,12 @@ function question(id: string, topic: string, subtopic?: string): NormalizedQuest
 describe('worldMap region matching', () => {
   it('matches forgiving topic and subtopic labels', () => {
     expect(matchRegionForLabels(['partial_fractions'])?.name).toBe('Algebra Forge');
+    expect(matchRegionForLabels(['polynomials'])?.name).toBe('Algebra Forge');
+    expect(matchRegionForLabels(['functions'])?.name).toBe('Algebra Forge');
     expect(matchRegionForLabels(['logarithmic functions'])?.name).toBe('Logarithm Grove');
     expect(matchRegionForLabels(['trig identities'])?.name).toBe('Trig Observatory');
+    expect(matchRegionForLabels(['parametric_equations'])?.name).toBe('Calculus Cliffs');
+    expect(matchRegionForLabels(['differential_equations'])?.name).toBe('Differential Shrine');
   });
 
   it('prefers specific complex labels over generic modulus matching', () => {

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
 import type { Attempt, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionRank, StoredProgress } from '../../types';
 import { createId } from '../../lib/progressStore';
+import { parseAttemptScore } from '../../lib/attemptScoring';
 import { ImageStack } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
 
@@ -18,6 +20,21 @@ const mistakeTypes: MistakeType[] = [
   'lucky_or_unsure',
   'other',
 ];
+
+const mistakeLabels: Record<MistakeType, string> = {
+  no_issue: 'No issue - I understood it',
+  did_not_know_method: 'I did not know the method',
+  algebra_error: 'Algebra error',
+  misread_question: 'Misread the question',
+  formula_issue: 'Formula or identity issue',
+  diagram_or_modeling_issue: 'Diagram or modelling issue',
+  ran_out_of_time: 'Ran out of time',
+  rounding_accuracy: 'Rounding or accuracy issue',
+  could_not_start: 'Could not start',
+  slow_method: 'Method worked but was slow',
+  lucky_or_unsure: 'Lucky or unsure',
+  other: 'Other',
+};
 
 interface PracticeViewProps {
   question?: NormalizedQuestion;
@@ -50,12 +67,12 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
   }, [question?.id]);
 
   const maxMarks = question?.marksAvailable;
-  const canSubmit = question && revealed && marksEarned !== '' && mistakeType;
+  const scoreValidation = useMemo(() => parseAttemptScore(marksEarned, maxMarks), [marksEarned, maxMarks]);
+  const canSubmit = Boolean(question && revealed && scoreValidation.isValid && mistakeType);
   const scorePreview = useMemo(() => {
-    const earned = Number(marksEarned);
-    if (!Number.isFinite(earned) || !maxMarks) return undefined;
-    return Math.round((earned / maxMarks) * 100);
-  }, [marksEarned, maxMarks]);
+    if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
+    return Math.round(scoreValidation.scoreRatio * 100);
+  }, [scoreValidation.scoreRatio]);
 
   if (!question) {
     return (
@@ -72,10 +89,22 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
         <div>
           <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
           <h2>{selectedRegion?.name ?? question.displayTopic}</h2>
-          <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {maxMarks ? `${maxMarks} marks` : 'marks unavailable'}</p>
+          <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
         </div>
         <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
       </header>
+
+      <div className="encounter-panel">
+        <div>
+          <strong>Encounter sequence</strong>
+          <span>Work from the question image first. Reveal the official mark scheme only when ready to self-mark.</span>
+        </div>
+        <ol className="encounter-steps">
+          <li className="active"><FileSearch size={16} /> Solve</li>
+          <li className={revealed ? 'active' : ''}><BookOpenCheck size={16} /> Reveal</li>
+          <li className={attemptSaved ? 'active' : ''}><CheckCircle2 size={16} /> Record</li>
+        </ol>
+      </div>
 
       <ImageStack candidateGroups={question.questionImageCandidates} label="Question" />
 
@@ -92,8 +121,8 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
             onSubmit={(event) => {
               event.preventDefault();
               if (!progress.profile || !mistakeType) return;
-              const earned = Number(marksEarned);
-              const ratio = maxMarks && maxMarks > 0 ? Math.max(0, Math.min(1, earned / maxMarks)) : undefined;
+              const score = parseAttemptScore(marksEarned, maxMarks);
+              if (!score.isValid || typeof score.earned !== 'number') return;
               onAttempt({
                 id: createId('attempt'),
                 profileId: progress.profile.id,
@@ -106,9 +135,9 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
                 deepseekTopic: question.deepseek.topic,
                 subtopic: question.displaySubtopic,
                 difficulty: question.displayDifficulty,
-                marksEarned: earned,
+                marksEarned: score.earned,
                 marksAvailable: maxMarks,
-                scoreRatio: ratio,
+                scoreRatio: score.scoreRatio,
                 mistakeType,
                 note,
                 timeSpentSeconds: Math.round((Date.now() - startedAt) / 1000),
@@ -122,14 +151,15 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
             }}
           >
             <label>
-              Marks earned {maxMarks ? `out of ${maxMarks}` : ''}
-              <input type="number" min="0" max={maxMarks} step="1" value={marksEarned} onChange={(event) => setMarksEarned(event.target.value)} required />
+              Marks earned {typeof maxMarks === 'number' ? `out of ${maxMarks}` : ''}
+              <input type="number" min="0" max={maxMarks} step="1" value={marksEarned} onChange={(event) => setMarksEarned(event.target.value)} aria-invalid={Boolean(scoreValidation.error)} required />
+              {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
             </label>
             <label>
               Mistake type
               <select value={mistakeType} onChange={(event) => setMistakeType(event.target.value as MistakeType)} required>
                 <option value="">Choose one</option>
-                {mistakeTypes.map((type) => <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>)}
+                {mistakeTypes.map((type) => <option key={type} value={type}>{mistakeLabels[type]}</option>)}
               </select>
             </label>
             <label>
@@ -137,15 +167,16 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
               <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
             </label>
             <button className="primary-button" type="submit" disabled={!canSubmit || attemptSaved}>
-              Save attempt and continue {scorePreview != null ? `(${scorePreview}%)` : ''}
+              Save attempt {scorePreview != null ? `(${scorePreview}%)` : ''}
             </button>
             {attemptSaved ? (
               <div className="post-attempt-panel">
-                <strong>Attempt saved.</strong>
+                <strong>Attempt saved as practice evidence.</strong>
+                <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress is an estimate, not a final mastery judgment.</span>
                 <div className="practice-actions">
-                  {onContinuePractice ? <button type="button" onClick={onContinuePractice}>{selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
-                  {onReturnToMap ? <button type="button" onClick={onReturnToMap}>Return to P3 Astral Academy</button> : null}
-                  {onReviewWeak ? <button type="button" onClick={onReviewWeak}>Review weak areas</button> : null}
+                  {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
+                  {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
+                  {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
                 </div>
               </div>
             ) : null}

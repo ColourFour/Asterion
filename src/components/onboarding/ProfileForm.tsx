@@ -37,7 +37,7 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
         <input value={avatarName} onChange={(event) => setAvatarName(event.target.value)} required />
       </label>
       <button className="primary-button" type="submit">
-        Enter practice
+        {profile ? 'Update profile' : 'Enter Astral Academy'}
       </button>
     </form>
   );
