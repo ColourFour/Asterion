@@ -188,6 +188,12 @@ export interface RegionProgress {
 export interface AvatarGear {
   title: string;
   gear: string[];
+  nextUnlock?: string;
+  nextUnlockRequirement?: string;
+  restoredRegions: number;
+  goldRegions: number;
+  strongestRegionName?: string;
+  strongestRegionRank?: RegionRank;
 }
 
 export interface AppSettings {
