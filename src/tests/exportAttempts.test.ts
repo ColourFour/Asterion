@@ -12,7 +12,7 @@ describe('buildExportJson', () => {
       settings: { activePaperFamily: 'p3' },
     };
     const regionProgress = [{
-      region: { id: 'algebra-forge', name: 'Algebra Forge', description: '', subtopics: [], activeByDefault: true, matchTerms: [] },
+      region: { id: 'algebra-forge', name: 'Algebra Vault', description: '', subtopics: [], activeByDefault: true, matchTerms: [] },
       availableQuestions: 10,
       attempts: 3,
       totalMarksEarned: 18,
@@ -24,7 +24,7 @@ describe('buildExportJson', () => {
 
     const exported = buildExportJson(progress, undefined, regionProgress);
 
-    expect(exported.regionProgress?.[0].region.name).toBe('Algebra Forge');
+    expect(exported.regionProgress?.[0].region.name).toBe('Algebra Vault');
     expect(exported.regionProgress?.[0].rank).toBe('Bronze');
   });
 });

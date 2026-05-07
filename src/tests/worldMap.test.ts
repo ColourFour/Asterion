@@ -23,22 +23,22 @@ function question(id: string, topic: string, subtopic?: string): NormalizedQuest
 
 describe('worldMap region matching', () => {
   it('matches forgiving topic and subtopic labels', () => {
-    expect(matchRegionForLabels(['partial_fractions'])?.name).toBe('Algebra Forge');
-    expect(matchRegionForLabels(['polynomials'])?.name).toBe('Algebra Forge');
-    expect(matchRegionForLabels(['functions'])?.name).toBe('Algebra Forge');
-    expect(matchRegionForLabels(['logarithmic functions'])?.name).toBe('Logarithm Grove');
-    expect(matchRegionForLabels(['trig identities'])?.name).toBe('Trig Observatory');
+    expect(matchRegionForLabels(['partial_fractions'])?.name).toBe('Algebra Vault');
+    expect(matchRegionForLabels(['polynomials'])?.name).toBe('Algebra Vault');
+    expect(matchRegionForLabels(['functions'])?.name).toBe('Algebra Vault');
+    expect(matchRegionForLabels(['logarithmic functions'])?.name).toBe('Logarithm Observatory');
+    expect(matchRegionForLabels(['trig identities'])?.name).toBe('Trigonometry Spire');
     expect(matchRegionForLabels(['parametric_equations'])?.name).toBe('Calculus Cliffs');
     expect(matchRegionForLabels(['differential_equations'])?.name).toBe('Differential Shrine');
   });
 
   it('prefers specific complex labels over generic modulus matching', () => {
-    expect(matchRegionForLabels(['modulus and argument'])?.name).toBe('Complex Harbor');
+    expect(matchRegionForLabels(['modulus and argument'])?.name).toBe('Argand Atrium');
   });
 
   it('filters selected-region practice questions without crashing on empty regions', () => {
-    const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Algebra Forge')!;
-    const vector = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Vector Workshop')!;
+    const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Algebra Vault')!;
+    const vector = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Vectors Gate')!;
     const questions = [question('a', 'Algebra', 'binomial_expansion'), question('b', 'Trigonometry')];
 
     expect(filterQuestionsForRegion(questions, algebra).map((item) => item.id)).toEqual(['a']);
@@ -46,8 +46,8 @@ describe('worldMap region matching', () => {
   });
 
   it('matches from DeepSeek and local labels on normalized questions', () => {
-    expect(matchRegionForQuestion(question('d', 'Unclassified', 'trigonometric identities'))?.name).toBe('Trig Observatory');
-    expect(matchRegionForQuestion({ ...question('e', 'Unclassified'), localTopic: 'logarithmic_functions', deepseek: { hasError: true } })?.name).toBe('Logarithm Grove');
+    expect(matchRegionForQuestion(question('d', 'Unclassified', 'trigonometric identities'))?.name).toBe('Trigonometry Spire');
+    expect(matchRegionForQuestion({ ...question('e', 'Unclassified'), localTopic: 'logarithmic_functions', deepseek: { hasError: true } })?.name).toBe('Logarithm Observatory');
   });
 
   it('filters P3 case-insensitively without including other paper families', () => {

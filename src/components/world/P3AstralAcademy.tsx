@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { BookOpenCheck, FileText, Target, Trophy } from 'lucide-react';
+import { BookOpenCheck, ChevronRight, FileText, Target, Trophy } from 'lucide-react';
 import type { RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
 
@@ -27,8 +27,27 @@ function rankSymbol(rank: string): string {
   }[rank] ?? '○';
 }
 
+function regionGlyph(regionId: string): string {
+  return {
+    'algebra-forge': 'ALG',
+    'logarithm-grove': 'LOG',
+    'trig-observatory': 'TRI',
+    'complex-harbor': 'ARG',
+    'calculus-cliffs': 'D/DX',
+    'integration-gardens': 'INT',
+    'vector-workshop': 'VEC',
+    'numerical-mines': 'ITER',
+    'differential-shrine': 'ODE',
+  }[regionId] ?? 'P3';
+}
+
 export function P3AstralAcademy({ world, progress, notice, onTrain, onReviewWeak, onTeacher }: P3AstralAcademyProps) {
   const summary = calculateAcademySummary(progress);
+  const recommended = summary.recommendedRegionName
+    ? progress.find((item) => item.region.name === summary.recommendedRegionName)
+    : undefined;
+  const recommendedGoal = recommended ? nextRegionGoal(recommended) : undefined;
+  const canStartRecommended = Boolean(recommended?.isActive && recommended.availableQuestions > 0);
 
   return (
     <section className="world-screen">
@@ -36,13 +55,7 @@ export function P3AstralAcademy({ world, progress, notice, onTrain, onReviewWeak
         <div className="world-copy">
           <span className="mode-pill">Paper 3 World Map</span>
           <h2>{world.name}</h2>
-          <p>Choose a region, restore it through real marks and reflection, and keep the academy growing one question at a time. Progress is an estimate from attempts, marks, and mistake patterns.</p>
-          {summary.recommendedRegionName ? (
-            <div className="quest-banner">
-              <Target size={18} />
-              <span>Recommended next quest: {summary.recommendedRegionName}</span>
-            </div>
-          ) : null}
+          <p>Choose a region, restore it through real marks and reflection, and keep the academy growing one official question at a time. Progress is an estimate from attempts, marks, and mistake patterns.</p>
         </div>
         <div className="academy-crest-art" aria-hidden="true">
           <svg viewBox="0 0 260 180" role="img">
@@ -64,6 +77,20 @@ export function P3AstralAcademy({ world, progress, notice, onTrain, onReviewWeak
           <button type="button" onClick={onTeacher}>Teacher/Export</button>
         </div>
       </div>
+
+      {recommended ? (
+        <div className="quest-banner">
+          <div className="quest-icon" aria-hidden="true"><Target size={20} /></div>
+          <div>
+            <span>Recommended quest</span>
+            <strong>{recommended.region.name}</strong>
+            <p>{recommendedGoal?.label ?? 'Restore the next wing with real marks and reflection.'}</p>
+          </div>
+          <button className="primary-button" type="button" disabled={!canStartRecommended} onClick={() => recommended && onTrain(recommended.region)}>
+            Start recommended quest <ChevronRight size={16} />
+          </button>
+        </div>
+      ) : null}
 
       {notice ? <div className="world-notice">{notice}</div> : null}
 
@@ -87,6 +114,7 @@ export function P3AstralAcademy({ world, progress, notice, onTrain, onReviewWeak
               style={{ '--region-delay': `${index * 40}ms` } as CSSProperties}
             >
               <div className="region-orbit" aria-hidden="true">{rankSymbol(regionProgress.rank)}</div>
+              <div className="region-glyph" aria-hidden="true">{regionGlyph(region.id)}</div>
               <div className="region-card-header">
                 <div>
                   <span className="region-state">{isRecommended ? 'Recommended quest' : canTrain ? 'Active region' : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>
@@ -112,7 +140,7 @@ export function P3AstralAcademy({ world, progress, notice, onTrain, onReviewWeak
                 <span>{goal.label}</span>
               </div>
               <button type="button" disabled={!canTrain} onClick={() => onTrain(region)}>
-                {canTrain ? 'Train here' : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}
+                {canTrain ? 'Train in this region' : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}
               </button>
             </article>
           );

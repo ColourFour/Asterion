@@ -76,7 +76,8 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
 
   if (!question) {
     return (
-      <section className="practice-card empty-state">
+      <section className="practice-card empty-state empty-wing">
+        <strong>Closed academy wing</strong>
         <p>No questions are available for this region yet.</p>
         {onReturnToMap ? <button className="primary-button" type="button" onClick={onReturnToMap}>Return to P3 Astral Academy</button> : null}
       </section>
@@ -84,12 +85,13 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
   }
 
   return (
-    <section className="practice-card">
+    <section className="practice-card encounter-chamber">
       <header className="question-header">
         <div>
           <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
           <h2>{selectedRegion?.name ?? question.displayTopic}</h2>
           <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
+          {selectedRegionRank ? <span className="rank-chip">Region rank: {selectedRegionRank}</span> : null}
         </div>
         <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
       </header>
@@ -114,7 +116,11 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
         </button>
       ) : (
         <div className="mark-scheme-panel">
-          <h3>Mark scheme</h3>
+          <div className="archive-heading">
+            <span>Official archive</span>
+            <h3>Mark scheme</h3>
+            <p>Compare your working against the official scheme, then record marks and the main mistake type.</p>
+          </div>
           <ImageStack candidateGroups={question.markSchemeImageCandidates} label="Mark scheme" />
           <form
             className="attempt-form"
@@ -172,7 +178,7 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
             {attemptSaved ? (
               <div className="post-attempt-panel">
                 <strong>Attempt saved as practice evidence.</strong>
-                <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress is an estimate, not a final mastery judgment.</span>
+                <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress is an estimate from evidence, not a final judgment.</span>
                 <div className="practice-actions">
                   {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
                   {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}

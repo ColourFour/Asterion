@@ -103,14 +103,29 @@ export default function App() {
   if (!progress.profile) {
     return (
       <main className="app-shell onboarding-shell">
-        <section className="intro-panel">
-          <span className="mode-pill">CAIE 9709 · Paper 3 MVP</span>
-          <h1>Asterion</h1>
-          <p>Image-first adaptive practice for algebra, trigonometry, complex numbers, and the wider Pure Mathematics 3 map.</p>
+        <section className="intro-panel academy-admission">
+          <div className="intro-copy">
+            <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
+            <h1>Asterion</h1>
+            <p>Step into a local-first maths academy where official question images become encounters, mark schemes become archives, and every restored region is backed by real evidence.</p>
+          </div>
+          <div className="onboarding-crest-art" aria-hidden="true">
+            <svg viewBox="0 0 260 220">
+              <path className="crest-ring" d="M44 132a86 86 0 1 1 172 0 86 86 0 0 1-172 0Z" />
+              <path className="crest-orbit" d="M28 132c42-46 82-70 120-72 34-2 62 12 84 42" />
+              <path className="crest-orbit" d="M36 162c42 18 87 20 134 6 30-9 51-24 64-44" />
+              <path className="crest-tower" d="M106 174V98l24-42 24 42v76Z" />
+              <path className="crest-window" d="M124 112h12v30h-12Z" />
+              <circle cx="68" cy="72" r="4" />
+              <circle cx="190" cy="68" r="4" />
+              <circle cx="212" cy="144" r="4" />
+              <circle cx="54" cy="154" r="4" />
+            </svg>
+          </div>
           <div className="onboarding-briefing">
-            <strong>Mission briefing</strong>
-            <span>Enter the Astral Academy, restore P3 regions with real marks, and leave a teacher-readable evidence trail.</span>
-            <span>No AI marking. No synthetic questions. Your official images and self-marked attempts drive the progress estimate.</span>
+            <strong>Academy charter</strong>
+            <span>Restore P3 regions with official CAIE question images, mark-scheme checking, and honest self-marked attempts.</span>
+            <span>No AI marking. No synthetic questions. No hidden rewards. Your local evidence trail is the source of progress.</span>
           </div>
         </section>
         <ProfileForm onSave={(profile) => setProgress(saveProfile(profile))} />
@@ -119,7 +134,7 @@ export default function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell app-view-${viewMode}`}>
       <header className="topbar">
         <div>
           <span className="mode-pill">Local-first classroom mode</span>
@@ -127,18 +142,13 @@ export default function App() {
         </div>
         <nav>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
-          <button className={viewMode === 'start' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
+          <button className={viewMode === 'start' || viewMode === 'target_topic' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
           <button className={viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => reviewWeakAreas()}>Review Weak Areas</button>
           <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => setViewMode('teacher')}>Teacher/Export</button>
         </nav>
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
-
-      <section className="dashboard-band">
-        <ProfileForm profile={progress.profile} onSave={(profile) => setProgress(saveProfile(profile, progress.profile))} />
-        <AvatarPanel avatarName={progress.profile.avatarName} avatar={progress.avatar} topicProfiles={progress.topicProfiles} gear={avatarGear} editable onChange={(avatar) => setProgress(saveAvatar(avatar))} />
-      </section>
 
       {viewMode === 'map' ? (
         <P3AstralAcademy
@@ -177,7 +187,10 @@ export default function App() {
         />
       ) : null}
 
-      <AvatarPanel avatarName={progress.profile.avatarName} avatar={progress.avatar} topicProfiles={progress.topicProfiles} gear={avatarGear} />
+      <section className="dashboard-band">
+        <ProfileForm profile={progress.profile} onSave={(profile) => setProgress(saveProfile(profile, progress.profile))} />
+        <AvatarPanel avatarName={progress.profile.avatarName} avatar={progress.avatar} topicProfiles={progress.topicProfiles} gear={avatarGear} editable onChange={(avatar) => setProgress(saveAvatar(avatar))} />
+      </section>
     </main>
   );
 }

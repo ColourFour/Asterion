@@ -4,9 +4,9 @@ import { deriveAvatarGear } from '../lib/avatarGear';
 import { calculateRegionProgress, calculateRegionRank } from '../lib/regionProgress';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 
-const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Algebra Forge')!;
-const trig = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Trig Observatory')!;
-const complex = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Complex Harbor')!;
+const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
+const trig = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'trig-observatory')!;
+const complex = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'complex-harbor')!;
 
 function question(id: string, topic: string): NormalizedQuestion {
   return {
@@ -26,7 +26,7 @@ function question(id: string, topic: string): NormalizedQuestion {
   };
 }
 
-function attempt(id: string, questionId: string, scoreRatio: number, regionName = 'Algebra Forge'): Attempt {
+function attempt(id: string, questionId: string, scoreRatio: number, regionName = 'Algebra Vault'): Attempt {
   return {
     id,
     profileId: 'p1',
@@ -68,7 +68,7 @@ describe('region progress and gear', () => {
       { ...base, region: complex, rank: 'Discovered' },
     ]);
 
-    expect(gear.gear).toContain('Forge Gauntlets');
+    expect(gear.gear).toContain('Archive Gauntlets');
     expect(gear.gear).toContain('Star Lens');
     expect(gear.title).toBe('Region Specialist');
   });

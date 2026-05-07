@@ -48,17 +48,17 @@ This is intentionally a polished map dashboard, not a full tile-based game. Ther
 
 Current P3 regions:
 
-- Algebra Forge
-- Logarithm Grove
-- Trig Observatory
-- Complex Harbor
+- Algebra Vault
+- Logarithm Observatory
+- Trigonometry Spire
+- Argand Atrium
 - Calculus Cliffs
-- Integration Gardens
-- Vector Workshop
-- Numerical Mines
+- Integral Terraces
+- Vectors Gate
+- Iteration Forge
 - Differential Shrine
 
-Algebra Forge, Logarithm Grove, Trig Observatory, and Complex Harbor are the first active classroom regions. Other regions are visible as dormant or available when matching questions exist.
+Algebra Vault, Logarithm Observatory, Trigonometry Spire, and Argand Atrium are the first active classroom regions. Other regions are visible as dormant or available when matching questions exist.
 
 ## System Boundaries
 
@@ -218,11 +218,11 @@ All of those canonicalize to one public URL shape and should never duplicate `p3
 Question topics and subtopics are mapped to world regions in `src/lib/worldMap.ts`. Matching is forgiving across title case, snake case, and common wording variants. Examples:
 
 ```text
-partial_fractions       -> Algebra Forge
-binomial expansion      -> Algebra Forge
-logarithmic functions   -> Logarithm Grove
-trig identities         -> Trig Observatory
-modulus and argument    -> Complex Harbor
+partial_fractions       -> Algebra Vault
+binomial expansion      -> Algebra Vault
+logarithmic functions   -> Logarithm Observatory
+trig identities         -> Trigonometry Spire
+modulus and argument    -> Argand Atrium
 ```
 
 Keep path, topic, and region matching centralized in utility modules rather than in React components.

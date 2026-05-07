@@ -19,14 +19,20 @@ export function TeacherExport({ progress, avatarGear, questions, regionProgress,
 
   return (
     <section className="teacher-panel">
-      <h2>Teacher/export view</h2>
+      <div className="teacher-header">
+        <span className="mode-pill">Asterion · Evidence Archive</span>
+        <h2>Teacher/export view</h2>
+        <p>Local classroom evidence from official question images, self-marked attempts, region progress, and data-health checks.</p>
+      </div>
       <div className="export-grid">
-        <button type="button" onClick={() => downloadTextFile('asterion-export.json', JSON.stringify(buildExportJson(progress, avatarGear, regionProgress), null, 2), 'application/json')}>
-          <Download size={16} /> JSON export
-        </button>
-        <button type="button" onClick={() => downloadTextFile('asterion-attempts.csv', buildAttemptsCsv(progress, avatarGear), 'text/csv')}>
-          <Download size={16} /> CSV export
-        </button>
+        <div className="export-actions">
+          <button type="button" onClick={() => downloadTextFile('asterion-export.json', JSON.stringify(buildExportJson(progress, avatarGear, regionProgress), null, 2), 'application/json')}>
+            <Download size={16} /> JSON export
+          </button>
+          <button type="button" onClick={() => downloadTextFile('asterion-attempts.csv', buildAttemptsCsv(progress, avatarGear), 'text/csv')}>
+            <Download size={16} /> CSV export
+          </button>
+        </div>
         <button className="danger-button" type="button" onClick={onClear}>
           <Trash2 size={16} /> Clear local data
         </button>

@@ -14,13 +14,13 @@ function atLeast(progress: RegionProgress | undefined, rank: keyof typeof rankVa
 }
 
 export function deriveAvatarGear(regions: RegionProgress[]): AvatarGear {
-  const byName = new Map(regions.map((progress) => [progress.region.name, progress]));
+  const byId = new Map(regions.map((progress) => [progress.region.id, progress]));
   const gear: string[] = [];
 
   if (regions.some((progress) => atLeast(progress, 'Bronze'))) gear.push('Apprentice Cloak');
-  if (atLeast(byName.get('Algebra Forge'), 'Silver')) gear.push('Forge Gauntlets');
-  if (atLeast(byName.get('Trig Observatory'), 'Silver')) gear.push('Star Lens');
-  if (atLeast(byName.get('Complex Harbor'), 'Silver')) gear.push('Polar Compass');
+  if (atLeast(byId.get('algebra-forge'), 'Silver')) gear.push('Archive Gauntlets');
+  if (atLeast(byId.get('trig-observatory'), 'Silver')) gear.push('Star Lens');
+  if (atLeast(byId.get('complex-harbor'), 'Silver')) gear.push('Argand Compass');
   if (regions.some((progress) => atLeast(progress, 'Gold'))) gear.push('Astral Trim');
   if (regions.filter((progress) => atLeast(progress, 'Gold')).length >= 3) gear.push('Academy Champion Badge');
 
