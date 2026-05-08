@@ -1,13 +1,18 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy } from 'lucide-react';
-import type { RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
+import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
 import { astralAssets, getAstralRegionAsset } from '../../lib/astralAssets';
+import type { AvatarLocation } from '../../lib/avatarLocation';
+import { WorldMapAvatarMarker } from '../avatar/WorldMapAvatarMarker';
 
 interface P3AstralAcademyProps {
   world: WorldDefinition;
   progress: RegionProgress[];
+  avatarName: string;
+  avatar: AvatarSettings;
+  avatarLocation: AvatarLocation;
   notice?: string;
   onTrain: (region: RegionDefinition) => void;
   onRegions: () => void;
@@ -384,12 +389,24 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
   );
 }
 
-export function P3AstralAcademy({ world, progress, notice, onTrain, onRegions, onProfile, onTeacher }: P3AstralAcademyProps) {
+export function P3AstralAcademy({
+  world,
+  progress,
+  avatarName,
+  avatar,
+  avatarLocation,
+  notice,
+  onTrain,
+  onRegions,
+  onProfile,
+  onTeacher,
+}: P3AstralAcademyProps) {
   const summary = calculateAcademySummary(progress);
   const recommended = summary.recommendedRegionName
     ? progress.find((item) => item.region.name === summary.recommendedRegionName)
     : undefined;
-  const mapLayout = buildRegionMapLayout(progress, recommended?.region.id);
+  const focusRegionId = avatarLocation.region?.id ?? recommended?.region.id;
+  const mapLayout = buildRegionMapLayout(progress, focusRegionId);
 
   return (
     <section className="world-screen">
@@ -441,6 +458,16 @@ export function P3AstralAcademy({ world, progress, notice, onTrain, onRegions, o
               />
             );
           })}
+          <WorldMapAvatarMarker
+            avatarName={avatarName}
+            avatar={avatar}
+            regionProgress={progress}
+            location={avatarLocation}
+            slot={avatarLocation.region ? mapLayout[avatarLocation.region.id] : undefined}
+            onContinue={() => {
+              if (avatarLocation.region) onTrain(avatarLocation.region);
+            }}
+          />
         </div>
 
         <div className="bottom-menu" aria-label="Academy menu">

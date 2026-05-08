@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveQuestionAssetPath, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPathCandidates } from '../lib/resolveAssetPath';
+import { resolvePublicAssetPath, resolveQuestionAssetPath, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPathCandidates } from '../lib/resolveAssetPath';
 
 describe('resolveQuestionAssetPath', () => {
   it('maps p3 relative paths into public asset URLs', () => {
@@ -51,5 +51,11 @@ describe('resolveQuestionAssetPath', () => {
       ['/assets/a/questions/q1.png', '/assets/questions/p3/a/questions/q1.png', '/assets/questions/a/questions/q1.png'],
       ['/assets/a/questions/q2.png', '/assets/questions/p3/a/questions/q2.png', '/assets/questions/a/questions/q2.png'],
     ]);
+  });
+
+  it('normalizes public avatar asset paths without component-specific path logic', () => {
+    expect(resolvePublicAssetPath('public/assets/avatar/base/academy-student-base.png')).toBe('/assets/avatar/base/academy-student-base.png');
+    expect(resolvePublicAssetPath('/assets/avatar/hair/practical-crop.png')).toBe('/assets/avatar/hair/practical-crop.png');
+    expect(resolvePublicAssetPath(undefined)).toBe('');
   });
 });

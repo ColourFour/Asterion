@@ -1,6 +1,7 @@
 import type { AvatarSettings, AvatarGear, RegionProgress, StudentProfile } from '../../types';
-import type { AvatarItem } from '../../data/avatarCatalog';
+import { AVATAR_SLOT_LABELS, AVATAR_SLOTS, type AvatarItem } from '../../data/avatarCatalog';
 import { calculateAcademySummary } from '../../lib/academyProgress';
+import { getAvatarLayers } from '../../lib/avatarLayers';
 import { equipAvatarItem, normalizeAvatarSettings } from '../../lib/avatarStore';
 import { selectNextAvatarUnlock } from '../../lib/avatarUnlocks';
 import { ProfileForm } from '../onboarding/ProfileForm';
@@ -19,10 +20,13 @@ interface AvatarBuilderProps {
 
 const palettes: AvatarSettings['palette'][] = ['ember', 'aqua', 'violet', 'leaf'];
 const crests: AvatarSettings['crest'][] = ['star', 'bolt', 'compass', 'orb'];
+const leftStageSlots = AVATAR_SLOTS.slice(0, 5);
+const rightStageSlots = AVATAR_SLOTS.slice(5);
 
 export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onAvatarChange, onProfileSave }: AvatarBuilderProps) {
   const summary = calculateAcademySummary(regionProgress);
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
+  const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
   const nextUnlock = selectNextAvatarUnlock(regionProgress);
 
   function handleEquip(item: AvatarItem) {
@@ -39,7 +43,30 @@ export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onA
 
       <section className="avatar-builder-hero">
         <div className="avatar-showcase">
+          <div className="avatar-showcase-arch" aria-hidden="true" />
+          <div className="equipped-slots-panel equipped-slots-left" aria-label="Equipped core avatar slots">
+            {leftStageSlots.map((slot) => {
+              const layer = equippedLayers.find((candidate) => candidate.slot === slot);
+              return (
+                <span key={slot}>
+                  <small>{AVATAR_SLOT_LABELS[slot]}</small>
+                  {layer?.item.displayName ?? 'Not set'}
+                </span>
+              );
+            })}
+          </div>
           <AvatarPreview avatarName={profile.avatarName} avatar={avatarForProgress} regionProgress={regionProgress} />
+          <div className="equipped-slots-panel equipped-slots-right" aria-label="Equipped reward avatar slots">
+            {rightStageSlots.map((slot) => {
+              const layer = equippedLayers.find((candidate) => candidate.slot === slot);
+              return (
+                <span key={slot}>
+                  <small>{AVATAR_SLOT_LABELS[slot]}</small>
+                  {layer?.item.displayName ?? 'Not set'}
+                </span>
+              );
+            })}
+          </div>
           <div className="avatar-showcase-meta">
             <div>
               <span>Character</span>
@@ -50,23 +77,23 @@ export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onA
         </div>
 
         <aside className="avatar-builder-sidebar" aria-label="Avatar progression summary">
-          <div className="avatar-stat-grid">
-            <div>
+          <div className="avatar-evidence-strip">
+            <span>
               <span>Evidence XP</span>
               <strong>{summary.totalXp}</strong>
-            </div>
-            <div>
+            </span>
+            <span>
               <span>Restored</span>
               <strong>{avatarGear.restoredRegions}</strong>
-            </div>
-            <div>
+            </span>
+            <span>
               <span>Gold</span>
               <strong>{avatarGear.goldRegions}</strong>
-            </div>
-            <div>
+            </span>
+            <span>
               <span>Attempts</span>
               <strong>{summary.attempts}</strong>
-            </div>
+            </span>
           </div>
 
           <NextUnlockCard nextUnlock={nextUnlock} />

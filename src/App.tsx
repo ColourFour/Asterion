@@ -7,6 +7,7 @@ import { TeacherExport } from './components/teacher/TeacherExport';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
+import { determineAvatarLocation } from './lib/avatarLocation';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { addAttempt, addIssueReport, clearProgress, createId, loadProgress, saveAvatar, saveProfile } from './lib/progressStore';
 import { calculateWorldProgress } from './lib/regionProgress';
@@ -37,6 +38,10 @@ export default function App() {
   const worldProgress = useMemo(() => calculateWorldProgress(questions, progress.attempts), [questions, progress.attempts]);
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
+  const avatarLocation = useMemo(
+    () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
+    [worldProgress, selectedRegion, currentQuestion],
+  );
   const worldNotice = useMemo(() => {
     const p3 = questions.filter(isP3Question);
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
@@ -169,6 +174,9 @@ export default function App() {
         <P3AstralAcademy
           world={P3_ASTRAL_ACADEMY}
           progress={worldProgress}
+          avatarName={progress.profile.avatarName}
+          avatar={progress.avatar}
+          avatarLocation={avatarLocation}
           notice={worldNotice}
           onTrain={enterRegion}
           onRegions={openRegions}
@@ -202,6 +210,10 @@ export default function App() {
         <PracticeView
           question={currentQuestion}
           progress={progress}
+          avatarName={progress.profile.avatarName}
+          avatar={progress.avatar}
+          regionProgress={worldProgress}
+          avatarLocation={avatarLocation}
           worldName={selectedRegion ? P3_WORLD_NAME : undefined}
           selectedRegion={selectedRegion}
           selectedRegionRank={selectedRegionProgress?.rank}

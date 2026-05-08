@@ -6,15 +6,15 @@ const palettes: AvatarSettings['palette'][] = ['ember', 'aqua', 'violet', 'leaf'
 const crests: AvatarSettings['crest'][] = ['star', 'bolt', 'compass', 'orb'];
 
 export const DEFAULT_EQUIPPED_AVATAR_ITEMS: Record<AvatarSlot, string> = {
-  base: 'base-academy-student',
-  hair: 'hair-practical-crop',
-  face: 'face-focused',
-  outfit: 'outfit-academy-tunic',
-  cloak: 'cloak-none',
-  accessory: 'accessory-none',
-  aura: 'aura-none',
-  companion: 'companion-none',
-  frame: 'frame-plain',
+  base: 'academy-student-base',
+  hair: 'practical-crop',
+  face: 'focused-face',
+  outfit: 'academy-uniform',
+  cloak: 'no-cloak',
+  accessory: 'no-accessory',
+  aura: 'no-aura',
+  companion: 'no-companion',
+  frame: 'plain-academy-frame',
 };
 
 export const DEFAULT_AVATAR_SETTINGS: AvatarSettings = {
@@ -54,7 +54,8 @@ export function normalizeEquippedItems(
 
   for (const [slot, itemId] of Object.entries(equipped)) {
     if (!isAvatarSlot(slot) || typeof itemId !== 'string') continue;
-    if (itemIsValidForSlot(slot, itemId, progress)) next[slot] = itemId;
+    const item = findAvatarItem(itemId);
+    if (item && itemIsValidForSlot(slot, itemId, progress)) next[slot] = item.id;
   }
 
   return next;

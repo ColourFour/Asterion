@@ -37,6 +37,20 @@ function unique(values: string[]): string[] {
   return Array.from(new Set(values.filter(Boolean)));
 }
 
+export function resolvePublicAssetPath(rawPath: string | undefined): string {
+  if (!rawPath) return '';
+  const trimmed = rawPath.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  const cleaned = trimmed
+    .replace(/^\/+/, '')
+    .replace(/^public\//, '')
+    .replace(/^\/+/, '');
+
+  return `/${cleaned}`.replace(/\/+/g, '/');
+}
+
 export function resolveQuestionAssetPathCandidates(rawPath: string | undefined, fallbackFamily: PaperFamily = 'p3'): string[] {
   if (!rawPath) return [];
   if (/^https?:\/\//i.test(rawPath)) return [rawPath];

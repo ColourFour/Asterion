@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
-import type { Attempt, AttemptMarkBreakdown, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionRank, StoredProgress } from '../../types';
+import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress } from '../../types';
 import { astralAssets } from '../../lib/astralAssets';
+import type { AvatarLocation } from '../../lib/avatarLocation';
 import { createId } from '../../lib/progressStore';
 import { parseAttemptMarkBreakdown } from '../../lib/attemptScoring';
+import { RegionAvatarCameo } from '../avatar/RegionAvatarCameo';
 import { ImageStack } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
 
@@ -50,6 +52,10 @@ const mistakeLabels: Record<MistakeType, string> = {
 interface PracticeViewProps {
   question?: NormalizedQuestion;
   progress: StoredProgress;
+  avatarName: string;
+  avatar: AvatarSettings;
+  regionProgress: RegionProgress[];
+  avatarLocation: AvatarLocation;
   worldName?: string;
   selectedRegion?: RegionDefinition;
   selectedRegionRank?: RegionRank;
@@ -60,7 +66,22 @@ interface PracticeViewProps {
   onContinuePractice?: () => void;
 }
 
-export function PracticeView({ question, progress, worldName, selectedRegion, selectedRegionRank, onAttempt, onIssue, onReturnToMap, onReviewWeak, onContinuePractice }: PracticeViewProps) {
+export function PracticeView({
+  question,
+  progress,
+  avatarName,
+  avatar,
+  regionProgress,
+  avatarLocation,
+  worldName,
+  selectedRegion,
+  selectedRegionRank,
+  onAttempt,
+  onIssue,
+  onReturnToMap,
+  onReviewWeak,
+  onContinuePractice,
+}: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [markInputs, setMarkInputs] = useState<Record<keyof AttemptMarkBreakdown, string>>(emptyMarkInputs);
   const [mistakeType, setMistakeType] = useState<MistakeType | ''>('');
@@ -127,7 +148,10 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
           <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
           {selectedRegionRank ? <span className="rank-chip">Region rank: {selectedRegionRank}</span> : null}
         </div>
-        <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
+        <div className="question-header-actions">
+          <RegionAvatarCameo avatarName={avatarName} avatar={avatar} regionProgress={regionProgress} location={avatarLocation} />
+          <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
+        </div>
       </header>
 
       <div className="encounter-panel">
