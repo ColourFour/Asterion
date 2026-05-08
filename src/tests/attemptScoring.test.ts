@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAttemptScore } from '../lib/attemptScoring';
+import { parseAttemptMarkBreakdown, parseAttemptScore } from '../lib/attemptScoring';
 
 describe('parseAttemptScore', () => {
   it('accepts whole marks within the canonical maximum', () => {
@@ -17,5 +17,29 @@ describe('parseAttemptScore', () => {
 
   it('allows evidence entry when marks available are missing', () => {
     expect(parseAttemptScore('3')).toEqual({ earned: 3, isValid: true, scoreRatio: undefined });
+  });
+
+  it('sums M, B, and A marks into the attempt total', () => {
+    expect(parseAttemptMarkBreakdown({ m: '1', b: '0', a: '3' }, 6)).toEqual({
+      earned: 4,
+      markBreakdown: { m: 1, b: 0, a: 3 },
+      isValid: true,
+      scoreRatio: 4 / 6,
+    });
+  });
+
+  it('treats blank M, B, or A boxes as zero once a mark is entered', () => {
+    expect(parseAttemptMarkBreakdown({ m: '2', b: '', a: '' }, 4)).toMatchObject({
+      earned: 2,
+      markBreakdown: { m: 2, b: 0, a: 0 },
+      isValid: true,
+    });
+  });
+
+  it('rejects M, B, and A sums above the available marks', () => {
+    expect(parseAttemptMarkBreakdown({ m: '2', b: '1', a: '2' }, 4)).toMatchObject({
+      isValid: false,
+      error: 'M + B + A cannot be higher than 4.',
+    });
   });
 });

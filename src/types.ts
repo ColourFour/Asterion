@@ -16,6 +16,12 @@ export type MistakeType =
   | 'lucky_or_unsure'
   | 'other';
 
+export interface AttemptMarkBreakdown {
+  m: number;
+  b: number;
+  a: number;
+}
+
 export type IssueType =
   | 'question_image_missing'
   | 'mark_scheme_image_missing'
@@ -38,9 +44,12 @@ export interface StudentProfile {
   updatedAt: string;
 }
 
+export type AvatarSlot = 'base' | 'hair' | 'face' | 'outfit' | 'cloak' | 'accessory' | 'aura' | 'companion' | 'frame';
+
 export interface AvatarSettings {
   palette: 'ember' | 'aqua' | 'violet' | 'leaf';
   crest: 'star' | 'bolt' | 'compass' | 'orb';
+  equipped?: Partial<Record<AvatarSlot, string>>;
 }
 
 export interface DeepSeekMetadata {
@@ -118,6 +127,7 @@ export interface Attempt {
   subtopic?: string;
   difficulty?: Difficulty;
   marksEarned: number;
+  markBreakdown?: AttemptMarkBreakdown;
   marksAvailable?: number;
   scoreRatio?: number;
   mistakeType: MistakeType;

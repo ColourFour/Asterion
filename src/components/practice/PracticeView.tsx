@@ -1,10 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
-import type { Attempt, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionRank, StoredProgress } from '../../types';
+import type { Attempt, AttemptMarkBreakdown, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionRank, StoredProgress } from '../../types';
+import { astralAssets } from '../../lib/astralAssets';
 import { createId } from '../../lib/progressStore';
-import { parseAttemptScore } from '../../lib/attemptScoring';
+import { parseAttemptMarkBreakdown } from '../../lib/attemptScoring';
 import { ImageStack } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
+
+const markCategories: Array<{ key: keyof AttemptMarkBreakdown; label: string; description: string }> = [
+  { key: 'm', label: 'M', description: 'Method' },
+  { key: 'b', label: 'B', description: 'Independent' },
+  { key: 'a', label: 'A', description: 'Accuracy' },
+];
+
+const emptyMarkInputs: Record<keyof AttemptMarkBreakdown, string> = {
+  m: '',
+  b: '',
+  a: '',
+};
 
 const mistakeTypes: MistakeType[] = [
   'no_issue',
@@ -13,11 +26,9 @@ const mistakeTypes: MistakeType[] = [
   'misread_question',
   'formula_issue',
   'diagram_or_modeling_issue',
-  'ran_out_of_time',
   'rounding_accuracy',
   'could_not_start',
   'slow_method',
-  'lucky_or_unsure',
   'other',
 ];
 
@@ -51,7 +62,7 @@ interface PracticeViewProps {
 
 export function PracticeView({ question, progress, worldName, selectedRegion, selectedRegionRank, onAttempt, onIssue, onReturnToMap, onReviewWeak, onContinuePractice }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
-  const [marksEarned, setMarksEarned] = useState('');
+  const [markInputs, setMarkInputs] = useState<Record<keyof AttemptMarkBreakdown, string>>(emptyMarkInputs);
   const [mistakeType, setMistakeType] = useState<MistakeType | ''>('');
   const [note, setNote] = useState('');
   const [attemptSaved, setAttemptSaved] = useState(false);
@@ -59,7 +70,7 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
 
   useEffect(() => {
     setRevealed(false);
-    setMarksEarned('');
+    setMarkInputs(emptyMarkInputs);
     setMistakeType('');
     setNote('');
     setAttemptSaved(false);
@@ -67,12 +78,35 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
   }, [question?.id]);
 
   const maxMarks = question?.marksAvailable;
-  const scoreValidation = useMemo(() => parseAttemptScore(marksEarned, maxMarks), [marksEarned, maxMarks]);
+  const scoreValidation = useMemo(() => parseAttemptMarkBreakdown(markInputs, maxMarks), [markInputs, maxMarks]);
   const canSubmit = Boolean(question && revealed && scoreValidation.isValid && mistakeType);
   const scorePreview = useMemo(() => {
     if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
     return Math.round(scoreValidation.scoreRatio * 100);
   }, [scoreValidation.scoreRatio]);
+  const maxMarkValue = typeof maxMarks === 'number' ? maxMarks : 10;
+  const enteredMarkTotal = markCategories.reduce((sum, category) => {
+    const value = Number(markInputs[category.key]);
+    return Number.isFinite(value) ? sum + value : sum;
+  }, 0);
+
+  function updateMarkInput(key: keyof AttemptMarkBreakdown, value: string) {
+    setMarkInputs((current) => ({ ...current, [key]: value }));
+  }
+
+  function nudgeMarkInput(key: keyof AttemptMarkBreakdown, delta: number) {
+    setMarkInputs((current) => {
+      const currentValue = Number.parseInt(current[key] || '0', 10);
+      const otherTotal = markCategories.reduce((sum, category) => {
+        if (category.key === key) return sum;
+        const value = Number.parseInt(current[category.key] || '0', 10);
+        return Number.isFinite(value) ? sum + value : sum;
+      }, 0);
+      const upperLimit = typeof maxMarks === 'number' ? Math.max(0, maxMarkValue - otherTotal) : maxMarkValue;
+      const next = Math.min(upperLimit, Math.max(0, (Number.isFinite(currentValue) ? currentValue : 0) + delta));
+      return { ...current, [key]: String(next) };
+    });
+  }
 
   if (!question) {
     return (
@@ -108,26 +142,47 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
         </ol>
       </div>
 
-      <ImageStack candidateGroups={question.questionImageCandidates} label="Question" />
-
-      {!revealed ? (
-        <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
-          Reveal mark scheme
-        </button>
-      ) : (
-        <div className="mark-scheme-panel">
-          <div className="archive-heading">
-            <span>Official archive</span>
-            <h3>Mark scheme</h3>
-            <p>Compare your working against the official scheme, then record marks and the main mistake type.</p>
+      <div className={`practice-workspace${revealed ? ' is-revealed' : ''}`}>
+        <section className="practice-panel question-panel">
+          <div className="panel-title-bar">Practice Session</div>
+          <div className="paper-window">
+            <span className="paper-caption">{selectedRegion?.name ?? question.displayTopic} - Question {question.questionNumber ?? ''}</span>
+            <ImageStack candidateGroups={question.questionImageCandidates} label="Question" />
           </div>
-          <ImageStack candidateGroups={question.markSchemeImageCandidates} label="Mark scheme" />
+          {!revealed ? (
+            <div className="practice-footer-actions">
+              <button className="quiet-button" type="button">Hint</button>
+              <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
+                Reveal Mark Scheme
+              </button>
+              <button type="button" disabled>Save Attempt</button>
+            </div>
+          ) : null}
+        </section>
+
+        {revealed ? (
+          <section className="practice-panel mark-scheme-panel">
+            <div className="panel-title-bar">Mark Scheme</div>
+            <div className="archive-heading">
+              <span>Official archive</span>
+              <h3>Compare your working</h3>
+            </div>
+            <div className="paper-window mark-window">
+              <ImageStack candidateGroups={question.markSchemeImageCandidates} label="Mark scheme" />
+            </div>
+            <div className="practice-footer-actions">
+              <button type="button" onClick={() => setRevealed(false)}>Back to Question</button>
+            </div>
+          </section>
+        ) : null}
+
+        {revealed ? (
           <form
-            className="attempt-form"
+            className="attempt-form self-mark-panel practice-panel"
             onSubmit={(event) => {
               event.preventDefault();
               if (!progress.profile || !mistakeType) return;
-              const score = parseAttemptScore(marksEarned, maxMarks);
+              const score = parseAttemptMarkBreakdown(markInputs, maxMarks);
               if (!score.isValid || typeof score.earned !== 'number') return;
               onAttempt({
                 id: createId('attempt'),
@@ -142,6 +197,7 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
                 subtopic: question.displaySubtopic,
                 difficulty: question.displayDifficulty,
                 marksEarned: score.earned,
+                markBreakdown: score.markBreakdown,
                 marksAvailable: maxMarks,
                 scoreRatio: score.scoreRatio,
                 mistakeType,
@@ -156,39 +212,77 @@ export function PracticeView({ question, progress, worldName, selectedRegion, se
               setAttemptSaved(true);
             }}
           >
-            <label>
-              Marks earned {typeof maxMarks === 'number' ? `out of ${maxMarks}` : ''}
-              <input type="number" min="0" max={maxMarks} step="1" value={marksEarned} onChange={(event) => setMarksEarned(event.target.value)} aria-invalid={Boolean(scoreValidation.error)} required />
+            <div className="panel-title-bar">Self-Mark</div>
+            <fieldset className="mark-breakdown-fieldset">
+              <legend>Your Mark</legend>
+              <div className="mark-breakdown-grid">
+                {markCategories.map((category) => (
+                  <div key={category.key} className="mark-breakdown-box">
+                    <label className="mark-box-label" htmlFor={`${question.id}-${category.key}-marks`}>
+                      <span className="mark-code">{category.label}</span>
+                      <span className="mark-description">{category.description}</span>
+                    </label>
+                    <div className="mark-box-stepper">
+                      <button type="button" onClick={() => nudgeMarkInput(category.key, -1)} aria-label={`Decrease ${category.label} score`}>-</button>
+                      <input
+                        id={`${question.id}-${category.key}-marks`}
+                        type="number"
+                        min="0"
+                        max={maxMarks}
+                        step="1"
+                        value={markInputs[category.key]}
+                        onChange={(event) => updateMarkInput(category.key, event.target.value)}
+                        aria-invalid={Boolean(scoreValidation.error)}
+                        aria-label={`${category.label} marks`}
+                      />
+                      <button type="button" onClick={() => nudgeMarkInput(category.key, 1)} aria-label={`Increase ${category.label} score`}>+</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mark-total-row">
+                <span>Total</span>
+                <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+              </div>
               {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
-            </label>
-            <label>
-              Mistake type
-              <select value={mistakeType} onChange={(event) => setMistakeType(event.target.value as MistakeType)} required>
-                <option value="">Choose one</option>
-                {mistakeTypes.map((type) => <option key={type} value={type}>{mistakeLabels[type]}</option>)}
-              </select>
-            </label>
+            </fieldset>
+
+            <fieldset className="mistake-fieldset">
+              <legend>Mistake Type</legend>
+              <div className="mistake-choice-grid">
+                {mistakeTypes.map((type) => (
+                  <label key={type} className="mistake-choice">
+                    <input type="radio" name="mistakeType" checked={mistakeType === type} onChange={() => setMistakeType(type)} required />
+                    <span>{mistakeLabels[type]}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <label>
               Optional note
               <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
             </label>
             <button className="primary-button" type="submit" disabled={!canSubmit || attemptSaved}>
-              Save attempt {scorePreview != null ? `(${scorePreview}%)` : ''}
+              Save Attempt {scorePreview != null ? `(${scorePreview}%)` : ''}
             </button>
-            {attemptSaved ? (
-              <div className="post-attempt-panel">
-                <strong>Attempt saved as practice evidence.</strong>
-                <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress is an estimate from evidence, not a final judgment.</span>
-                <div className="practice-actions">
-                  {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
-                  {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
-                  {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
-                </div>
-              </div>
-            ) : null}
           </form>
+        ) : null}
+      </div>
+
+      {attemptSaved ? (
+        <div className="post-attempt-panel progress-updated-panel">
+          <div className="panel-title-bar">Progress Updated</div>
+          <div className="progress-scene" aria-hidden="true"><img src={astralAssets.progressGarden} alt="" /></div>
+          <strong>+{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : 0} XP</strong>
+          <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress increased only from saved evidence.</span>
+          <div className="practice-actions">
+            {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
+            {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
+            {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
+          </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

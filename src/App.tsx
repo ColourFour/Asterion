@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AvatarPanel } from './components/avatar/AvatarPanel';
 import { ProfileForm } from './components/onboarding/ProfileForm';
+import { AvatarBuilder } from './components/profile/AvatarBuilder';
 import { PracticeView } from './components/practice/PracticeView';
+import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
 import { TeacherExport } from './components/teacher/TeacherExport';
-import { P3AstralAcademy } from './components/world/P3AstralAcademy';
+import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
@@ -12,7 +13,7 @@ import { calculateWorldProgress } from './lib/regionProgress';
 import { filterQuestionsForRegion, isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'teacher';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'profile' | 'teacher';
 
 export default function App() {
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
@@ -90,6 +91,16 @@ export default function App() {
     setCurrentQuestion(undefined);
   }
 
+  function openRegions() {
+    setViewMode('regions');
+    setCurrentQuestion(undefined);
+  }
+
+  function openProfile() {
+    setViewMode('profile');
+    setCurrentQuestion(undefined);
+  }
+
   function reviewWeakAreas(nextProgress = progress) {
     setSelectedRegion(undefined);
     setViewMode('weak_areas');
@@ -103,6 +114,7 @@ export default function App() {
   if (!progress.profile) {
     return (
       <main className="app-shell onboarding-shell">
+        <TwinklingStarfield />
         <section className="intro-panel academy-admission">
           <div className="intro-copy">
             <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
@@ -135,15 +147,18 @@ export default function App() {
 
   return (
     <main className={`app-shell app-view-${viewMode}`}>
+      <TwinklingStarfield />
       <header className="topbar">
         <div>
           <span className="mode-pill">Local-first classroom mode</span>
-          <h1>{viewMode === 'map' ? P3_WORLD_NAME : 'Asterion'}</h1>
+          <h1>Asterion</h1>
         </div>
         <nav>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
+          <button className={viewMode === 'regions' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
           <button className={viewMode === 'start' || viewMode === 'target_topic' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
           <button className={viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => reviewWeakAreas()}>Review Weak Areas</button>
+          <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
           <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => setViewMode('teacher')}>Teacher/Export</button>
         </nav>
       </header>
@@ -156,8 +171,24 @@ export default function App() {
           progress={worldProgress}
           notice={worldNotice}
           onTrain={enterRegion}
-          onReviewWeak={() => reviewWeakAreas()}
+          onRegions={openRegions}
+          onProfile={openProfile}
           onTeacher={() => setViewMode('teacher')}
+        />
+      ) : null}
+
+      {viewMode === 'regions' ? (
+        <AstralRegionLedger progress={worldProgress} onTrain={enterRegion} />
+      ) : null}
+
+      {viewMode === 'profile' ? (
+        <AvatarBuilder
+          profile={progress.profile}
+          avatar={progress.avatar}
+          avatarGear={avatarGear}
+          regionProgress={worldProgress}
+          onAvatarChange={(avatar) => setProgress(saveAvatar(avatar))}
+          onProfileSave={(profile) => setProgress(saveProfile(profile, progress.profile))}
         />
       ) : null}
 
@@ -167,7 +198,7 @@ export default function App() {
             setProgress(clearProgress());
           }
         }} />
-      ) : viewMode !== 'map' ? (
+      ) : viewMode !== 'map' && viewMode !== 'regions' && viewMode !== 'profile' ? (
         <PracticeView
           question={currentQuestion}
           progress={progress}
@@ -187,10 +218,6 @@ export default function App() {
         />
       ) : null}
 
-      <section className="dashboard-band">
-        <ProfileForm profile={progress.profile} onSave={(profile) => setProgress(saveProfile(profile, progress.profile))} />
-        <AvatarPanel avatarName={progress.profile.avatarName} avatar={progress.avatar} topicProfiles={progress.topicProfiles} gear={avatarGear} editable onChange={(avatar) => setProgress(saveAvatar(avatar))} />
-      </section>
     </main>
   );
 }

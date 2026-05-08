@@ -76,7 +76,12 @@ export function TeacherExport({ progress, avatarGear, questions, regionProgress,
           {recentAttempts.map((attempt) => (
             <article key={attempt.id}>
               <strong>{attempt.regionName ?? attempt.topicDisplayName} · {attempt.paper ?? attempt.paperFamily.toUpperCase()} {attempt.questionNumber ? `Q${attempt.questionNumber}` : ''}</strong>
-              <span>{attempt.marksEarned}/{attempt.marksAvailable ?? 'n/a'} marks · {attempt.mistakeType.replace(/_/g, ' ')} · {new Date(attempt.attemptedAt).toLocaleString()}</span>
+              <span>
+                {attempt.marksEarned}/{attempt.marksAvailable ?? 'n/a'} marks
+                {attempt.markBreakdown ? ` (M ${attempt.markBreakdown.m}, B ${attempt.markBreakdown.b}, A ${attempt.markBreakdown.a})` : ''}
+                {' · '}
+                {attempt.mistakeType.replace(/_/g, ' ')} · {new Date(attempt.attemptedAt).toLocaleString()}
+              </span>
               {attempt.note ? <span>Note: {attempt.note}</span> : null}
             </article>
           ))}
