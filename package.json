@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "assets:ui": "node scripts/optimize-ui-assets.mjs",
+    "data:p3": "node scripts/generate-p3-data.mjs",
     "preview": "vite preview",
     "test": "vitest run"
   },

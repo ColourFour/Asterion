@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { NormalizedQuestion, QuestionBankDiagnostics, RegionProgress } from '../../types';
-import { buildDataHealthSummary } from '../../lib/dataHealth';
+import { auditQuestionAssetAvailabilityWithChecker, buildDataHealthSummary, type AssetAvailabilityAudit } from '../../lib/dataHealth';
+import { isP3Question } from '../../lib/worldMap';
 
 interface DataHealthPanelProps {
   questions: NormalizedQuestion[];
@@ -10,7 +11,36 @@ interface DataHealthPanelProps {
 
 export function DataHealthPanel({ questions, regionProgress, diagnostics }: DataHealthPanelProps) {
   const [open, setOpen] = useState(false);
-  const summary = useMemo(() => buildDataHealthSummary(questions, regionProgress, diagnostics), [questions, regionProgress, diagnostics]);
+  const [assetAudit, setAssetAudit] = useState<AssetAvailabilityAudit>();
+  const [assetAuditStatus, setAssetAuditStatus] = useState<'idle' | 'checking' | 'complete' | 'failed'>('idle');
+  const p3Questions = useMemo(() => questions.filter(isP3Question), [questions]);
+  const summary = useMemo(() => buildDataHealthSummary(questions, regionProgress, diagnostics, assetAudit), [questions, regionProgress, diagnostics, assetAudit]);
+
+  useEffect(() => {
+    setAssetAudit(undefined);
+    setAssetAuditStatus('idle');
+  }, [questions]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!open || assetAudit) return undefined;
+
+    setAssetAuditStatus('checking');
+    auditQuestionAssetAvailabilityWithChecker(p3Questions, browserCandidateExists)
+      .then((audit) => {
+        if (cancelled) return;
+        setAssetAudit(audit);
+        setAssetAuditStatus('complete');
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setAssetAuditStatus('failed');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [assetAudit, open, p3Questions]);
 
   return (
     <section className="data-health-panel">
@@ -26,8 +56,13 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
             <Metric label="Main questions.length" value={summary.mainQuestionsLength} />
             <Metric label="Total questions" value={summary.totalQuestionsLoaded} />
             <Metric label="P3 questions" value={summary.totalP3Questions} />
+            <Metric label="Trainable P3 questions" value={summary.trainableP3Questions} />
+            <Metric label="P3 blocked from practice" value={summary.p3QuestionsBlockedFromPractice} />
             <Metric label="P3 with question image metadata" value={summary.p3QuestionsWithQuestionImageMetadata} />
             <Metric label="P3 with mark scheme metadata" value={summary.p3QuestionsWithMarkSchemeImageMetadata} />
+            <Metric label="Asset availability check" value={assetAuditStatus} />
+            <Metric label="P3 question image groups available" value={formatAvailability(summary.p3QuestionImageGroupsAvailable, summary.p3QuestionImageGroupsChecked)} />
+            <Metric label="P3 mark-scheme groups available" value={formatAvailability(summary.p3MarkSchemeImageGroupsAvailable, summary.p3MarkSchemeImageGroupsChecked)} />
             <Metric label="Sidecar file" value={summary.sidecarUrl ?? 'n/a'} />
             <Metric label="Sidecar schema" value={summary.sidecarSchemaName ?? 'n/a'} />
             <Metric label="Sidecar enrichments" value={summary.sidecarEnrichmentCount} />
@@ -38,13 +73,19 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
           </div>
 
           {summary.mainAppearsPlaceholder ? (
-            <p className="health-warning">question_bank.json appears empty or placeholder. Copy the populated extraction JSON to public/data/question_bank.json.</p>
+            <p className="health-warning">The loaded main question bank appears empty or placeholder. Regenerate public/data/question_bank.p3.json or check the full-bank fallback.</p>
           ) : null}
           {summary.sidecarAppearsPlaceholder ? (
             <p className="health-warning">DeepSeek sidecar appears empty or missing. The app will continue with local labels.</p>
           ) : null}
+          {assetAuditStatus === 'failed' ? (
+            <p className="health-warning">Asset availability check failed in this browser. Metadata checks are still shown, but actual image availability was not verified.</p>
+          ) : null}
+          {assetAudit?.missingMarkSchemeImageGroups ? (
+            <p className="health-warning">{assetAudit.missingMarkSchemeImageGroups} P3 mark-scheme candidate group(s) did not resolve to a public asset. Blocked records must stay out of practice until canonical assets are fixed.</p>
+          ) : null}
 
-          <h3>P3 questions by region</h3>
+          <h3>Trainable P3 questions by region</h3>
           <div className="health-list">
             {Object.entries(summary.p3QuestionsByRegion).map(([region, count]) => <span key={region}>{region}: {count}</span>)}
           </div>
@@ -56,10 +97,30 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
           <HealthExamples title="Sample candidate mark-scheme URLs" items={summary.candidateMarkSchemeUrlExamples} />
           <HealthExamples title="Resolved image examples" items={summary.resolvedImageExamples.map((item) => `${item.id}: ${item.question ?? 'no question'} | ${item.markScheme ?? 'no mark scheme'}`)} />
           <HealthExamples title="Missing image path examples" items={summary.missingImagePathExamples.map((item) => `${item.id}: missing ${item.missing} (${item.labels || 'no labels'})`)} />
+          <HealthExamples title="Missing asset availability examples" items={summary.missingAssetAvailabilityExamples.map((item) => `${item.id} (${item.paper ?? 'paper n/a'} ${item.questionNumber ? `Q${item.questionNumber}` : 'Q n/a'}): missing ${item.missing}; checked ${item.candidates.join(', ') || 'no candidates'}`)} />
+          <HealthExamples title="Practice-blocked examples" items={summary.practiceBlockedExamples.map((item) => `${item.id}: ${item.blockers.join('; ')} (${item.labels || 'no labels'})`)} />
         </div>
       ) : null}
     </section>
   );
+}
+
+async function browserCandidateExists(candidate: string): Promise<boolean> {
+  try {
+    const response = await fetch(candidate, { method: 'HEAD', cache: 'no-store' });
+    if (response.ok) return true;
+    if (response.status !== 405) return false;
+
+    const fallback = await fetch(candidate, { method: 'GET', cache: 'no-store' });
+    return fallback.ok;
+  } catch {
+    return false;
+  }
+}
+
+function formatAvailability(available: number | undefined, checked: number | undefined): string {
+  if (available == null || checked == null) return 'not checked';
+  return `${available}/${checked}`;
 }
 
 function Metric({ label, value }: { label: string; value: number | string }) {

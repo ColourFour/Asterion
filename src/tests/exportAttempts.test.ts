@@ -5,6 +5,7 @@ import { buildAttemptsCsv, buildExportJson } from '../lib/exportAttempts';
 describe('buildExportJson', () => {
   it('includes region progress evidence when provided', () => {
     const progress: StoredProgress = {
+      schemaVersion: 1,
       avatar: { palette: 'ember', crest: 'star' },
       attempts: [],
       topicProfiles: {},
@@ -30,6 +31,7 @@ describe('buildExportJson', () => {
 
   it('exports M, B, and A mark breakdown columns for attempts', () => {
     const progress: StoredProgress = {
+      schemaVersion: 1,
       avatar: { palette: 'ember', crest: 'star' },
       attempts: [{
         id: 'attempt-1',

@@ -1,4 +1,5 @@
 import type { Attempt, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, WorldDefinition } from '../types';
+import { isQuestionTrainable } from './questionTraining';
 import { filterQuestionsForRegion, matchRegionForLabels, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export const REGION_RANK_THRESHOLDS = {
@@ -37,7 +38,7 @@ export function calculateRegionProgress(
   questions: NormalizedQuestion[],
   attempts: Attempt[],
 ): RegionProgress {
-  const regionQuestions = filterQuestionsForRegion(questions, region);
+  const regionQuestions = filterQuestionsForRegion(questions.filter(isQuestionTrainable), region);
   const regionQuestionIds = new Set(regionQuestions.map((question) => question.id));
   const regionAttempts = attempts.filter((attempt) => {
     if (attempt.regionName === region.name) return true;

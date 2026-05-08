@@ -10,14 +10,14 @@ function question(id: string, topic: string, difficulty = 'core', marks = 6): No
     displayDifficulty: difficulty,
     marksAvailable: marks,
     deepseek: { hasError: true },
-    questionImageRawPaths: [],
-    markSchemeImageRawPaths: [],
-    questionImagePaths: [],
-    markSchemeImagePaths: [],
-    questionImageUrls: [],
-    markSchemeImageUrls: [],
-    questionImageCandidates: [],
-    markSchemeImageCandidates: [],
+    questionImageRawPaths: [`p3/test/questions/${id}.png`],
+    markSchemeImageRawPaths: [`p3/test/mark_scheme/${id}.png`],
+    questionImagePaths: [`p3/test/questions/${id}.png`],
+    markSchemeImagePaths: [`p3/test/mark_scheme/${id}.png`],
+    questionImageUrls: [`/assets/test/questions/${id}.png`],
+    markSchemeImageUrls: [`/assets/test/mark_scheme/${id}.png`],
+    questionImageCandidates: [[`/assets/test/questions/${id}.png`]],
+    markSchemeImageCandidates: [[`/assets/test/mark_scheme/${id}.png`]],
     raw: { local: {} },
   };
 }
@@ -40,6 +40,19 @@ describe('selectNextQuestion', () => {
       attempts: [],
       topicProfiles: {},
       currentQuestionId: 'a',
+    });
+
+    expect(selected?.id).toBe('b');
+  });
+
+  it('does not select questions blocked from practice', () => {
+    const selected = selectNextQuestion([
+      { ...question('a', 'Algebra'), trainingBlockers: ['Missing canonical mark scheme.'] },
+      question('b', 'Algebra'),
+    ], {
+      mode: 'start',
+      attempts: [],
+      topicProfiles: {},
     });
 
     expect(selected?.id).toBe('b');

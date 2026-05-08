@@ -56,9 +56,50 @@ function combineImages(...values: unknown[]): string[] {
   });
 }
 
+function unique(values: string[]): string[] {
+  return Array.from(new Set(values.filter(Boolean)));
+}
+
 function hasError(record: LooseRecord | undefined): boolean {
   if (!record) return true;
   return ERROR_KEYS.some((key) => Boolean(record[key]));
+}
+
+function isBlockingTrainingStatus(status: string | undefined): boolean {
+  if (!status) return false;
+  const normalized = status.toLowerCase();
+  return [
+    'blocked',
+    'broken',
+    'exclude',
+    'missing',
+    'quarantine',
+    'unavailable',
+    'untrainable',
+  ].some((token) => normalized.includes(token));
+}
+
+function trainingBlockersForRecord(
+  record: LooseRecord,
+  trainingStatus: string | undefined,
+  questionImageCandidateGroups: string[][],
+  markSchemeImageCandidateGroups: string[][],
+): string[] {
+  const reason = pickString(record, ['training_status_reason', 'practice_status_reason', 'asset_status_reason']);
+  const isExcluded = pickBoolean(record, ['exclude_from_training', 'excluded_from_training', 'practice_excluded']);
+  const blockers: string[] = [];
+
+  if (isExcluded || isBlockingTrainingStatus(trainingStatus)) {
+    blockers.push(reason ?? trainingStatus ?? 'Question is blocked from practice.');
+  }
+  if (questionImageCandidateGroups.length === 0) {
+    blockers.push('Missing question image metadata.');
+  }
+  if (markSchemeImageCandidateGroups.length === 0) {
+    blockers.push('Missing mark-scheme image metadata.');
+  }
+
+  return unique(blockers);
 }
 
 function normalizeDeepSeek(value: unknown): DeepSeekMetadata {
@@ -161,6 +202,8 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
     const questionImageUrls = resolveQuestionAssetPaths(questionImageRaw, paperFamily);
     const markSchemeImageUrls = resolveQuestionAssetPaths(markSchemeImageRaw, paperFamily);
     const marksAvailable = pickNumber(record, ['question_solution_marks', 'marks', 'marks_available', 'marksAvailable', 'total_marks']);
+    const trainingStatus = pickString(record, ['training_status', 'practice_status', 'asset_status']);
+    const trainingBlockers = trainingBlockersForRecord(record, trainingStatus, questionImageCandidates, markSchemeImageCandidates);
 
     return {
       id,
@@ -183,6 +226,8 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       markSchemeImageUrls,
       questionImageCandidates,
       markSchemeImageCandidates,
+      trainingStatus,
+      trainingBlockers,
       raw: { local: record, deepseek: deepseekRaw },
     };
   });

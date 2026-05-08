@@ -89,6 +89,8 @@ export interface NormalizedQuestion {
   markSchemeImageUrls: string[];
   questionImageCandidates: string[][];
   markSchemeImageCandidates: string[][];
+  trainingStatus?: string;
+  trainingBlockers?: string[];
   raw: {
     local: unknown;
     deepseek?: unknown;
@@ -211,6 +213,7 @@ export interface AppSettings {
 }
 
 export interface StoredProgress {
+  schemaVersion: number;
   profile?: StudentProfile;
   avatar: AvatarSettings;
   attempts: Attempt[];

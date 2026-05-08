@@ -1,5 +1,5 @@
 import type { NormalizedQuestion, QuestionBankDiagnostics } from '../types';
-import { getSidecarEnrichmentCount, normalizeQuestionBankWithDiagnostics } from './normalizeQuestionBank';
+import { getQuestionRecordCount, getSidecarEnrichmentCount, normalizeQuestionBankWithDiagnostics } from './normalizeQuestionBank';
 import { isP3Question, matchRegionForQuestion } from './worldMap';
 
 interface LoadedJson {
@@ -7,23 +7,46 @@ interface LoadedJson {
   data: unknown;
 }
 
+export type QuestionBankLoadScope = 'p3' | 'full';
+
+export interface LoadQuestionBankOptions {
+  scope?: QuestionBankLoadScope;
+}
+
+const DATA_PATHS = {
+  p3Main: './data/question_bank.p3.json',
+  fullMain: './data/question_bank.json',
+  p3Sidecar: './data/question_bank.deepseek.p3.json',
+  primarySidecar: './data/question_bank.deepseek.json',
+  fullSidecar: './data/question_bank.deepseek.full.json',
+} as const;
+
+export function staticDataFetchCacheForMode(isProduction: boolean): RequestCache {
+  return isProduction ? 'default' : 'no-store';
+}
+
+export function staticDataFetchCache(): RequestCache {
+  return staticDataFetchCacheForMode(import.meta.env.PROD);
+}
+
 async function fetchJson(path: string): Promise<LoadedJson> {
-  const response = await fetch(path, { cache: 'no-store' });
+  const response = await fetch(path, { cache: staticDataFetchCache() });
   if (!response.ok) throw new Error(`${path} returned ${response.status}`);
   return { url: path, data: await response.json() };
 }
 
-export async function loadQuestionBank(): Promise<NormalizedQuestion[]> {
-  return (await loadQuestionBankWithDiagnostics()).questions;
+export async function loadQuestionBank(options: LoadQuestionBankOptions = {}): Promise<NormalizedQuestion[]> {
+  return (await loadQuestionBankWithDiagnostics(options)).questions;
 }
 
-export async function loadQuestionBankWithDiagnostics(): Promise<{
+export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankOptions = {}): Promise<{
   questions: NormalizedQuestion[];
   diagnostics: QuestionBankDiagnostics;
 }> {
-  const localResult = await Promise.resolve().then(() => fetchJson('./data/question_bank.json'));
+  const scope = options.scope ?? 'p3';
+  const localResult = await loadMainBankWithFallback(scope);
 
-  const sidecarResult = await loadSidecarWithFallback();
+  const sidecarResult = await loadSidecarWithFallback(scope);
   const result = normalizeQuestionBankWithDiagnostics(localResult.data, sidecarResult.data);
   result.diagnostics = {
     ...result.diagnostics,
@@ -35,17 +58,40 @@ export async function loadQuestionBankWithDiagnostics(): Promise<{
   return result;
 }
 
-async function loadSidecarWithFallback(): Promise<LoadedJson> {
-  const primary = await Promise.resolve()
-    .then(() => fetchJson('./data/question_bank.deepseek.json'))
-    .catch(() => undefined);
-  if (primary && getSidecarEnrichmentCount(primary.data) > 0) return primary;
+export async function loadFullQuestionBankWithDiagnostics(): Promise<{
+  questions: NormalizedQuestion[];
+  diagnostics: QuestionBankDiagnostics;
+}> {
+  return loadQuestionBankWithDiagnostics({ scope: 'full' });
+}
 
-  const fallback = await Promise.resolve()
-    .then(() => fetchJson('./data/question_bank.deepseek.full.json'))
+async function loadMainBankWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
+  if (scope === 'full') return fetchJson(DATA_PATHS.fullMain);
+
+  const p3 = await Promise.resolve()
+    .then(() => fetchJson(DATA_PATHS.p3Main))
     .catch(() => undefined);
-  if (fallback && getSidecarEnrichmentCount(fallback.data) > 0) return fallback;
-  return primary ?? fallback ?? { url: 'none', data: {} };
+  if (p3 && getQuestionRecordCount(p3.data) > 0) return p3;
+
+  return fetchJson(DATA_PATHS.fullMain);
+}
+
+async function loadSidecarWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
+  const candidates = scope === 'p3'
+    ? [DATA_PATHS.p3Sidecar, DATA_PATHS.primarySidecar, DATA_PATHS.fullSidecar]
+    : [DATA_PATHS.primarySidecar, DATA_PATHS.fullSidecar];
+  let firstLoaded: LoadedJson | undefined;
+
+  for (const path of candidates) {
+    const loaded = await Promise.resolve()
+      .then(() => fetchJson(path))
+      .catch(() => undefined);
+    if (!loaded) continue;
+    firstLoaded ??= loaded;
+    if (getSidecarEnrichmentCount(loaded.data) > 0) return loaded;
+  }
+
+  return firstLoaded ?? { url: 'none', data: {} };
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {

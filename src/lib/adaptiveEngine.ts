@@ -1,4 +1,5 @@
 import type { Attempt, NormalizedQuestion, TopicProfile } from '../types';
+import { filterTrainableQuestions } from './questionTraining';
 
 export type PracticeMode = 'start' | 'target_topic' | 'weak_areas';
 
@@ -28,7 +29,8 @@ function weakestTopic(topicProfiles: Record<string, TopicProfile>): string | und
 }
 
 export function selectNextQuestion(questions: NormalizedQuestion[], context: SelectionContext): NormalizedQuestion | undefined {
-  if (questions.length === 0) return undefined;
+  const trainableQuestions = filterTrainableQuestions(questions);
+  if (trainableQuestions.length === 0) return undefined;
   const recentIds = recentQuestionIds(context.attempts);
   const lastAttempt = context.attempts[context.attempts.length - 1];
   const lastRatio = lastAttempt?.scoreRatio;
@@ -44,7 +46,7 @@ export function selectNextQuestion(questions: NormalizedQuestion[], context: Sel
   const desiredDifficulty =
     typeof lastRatio !== 'number' ? 2 : lastRatio >= 0.85 ? 3 : lastRatio < 0.45 ? 1 : 2;
 
-  const scored = questions.map((question) => {
+  const scored = trainableQuestions.map((question) => {
     let score = 0;
     if (question.id === context.currentQuestionId) score -= 100;
     if (recentIds.has(question.id)) score -= 35;

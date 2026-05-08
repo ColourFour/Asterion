@@ -1,88 +1,56 @@
-import type { AppSettings, Attempt, AvatarSettings, IssueReport, StoredProgress, StudentProfile, TopicProfile } from '../types';
-import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore';
-import { updateTopicProfile } from './mastery';
+import type { Attempt, AvatarSettings, IssueReport, StoredProgress, StudentProfile, TopicProfile } from '../types';
+import {
+  CURRENT_PROGRESS_SCHEMA_VERSION,
+  LOCAL_PROGRESS_STORAGE_KEY,
+  createId,
+  emptyProgress,
+  localProgressAdapter,
+  loadLocalProgress,
+  normalizeStoredProgress,
+  saveLocalProgress,
+} from './localProgressAdapter';
+import type { ProgressStorageAdapter } from './progressAdapter';
 
-const STORAGE_KEY = 'asterion.progress.v1';
-
-const defaultSettings: AppSettings = { activePaperFamily: 'p3' };
-
-export function createId(prefix: string): string {
-  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
-}
-
-export function emptyProgress(): StoredProgress {
-  return {
-    avatar: normalizeAvatarSettings(DEFAULT_AVATAR_SETTINGS),
-    attempts: [],
-    topicProfiles: {},
-    issueReports: [],
-    settings: defaultSettings,
-  };
+export function getProgressStorageAdapter(): ProgressStorageAdapter {
+  return localProgressAdapter;
 }
 
 export function loadProgress(): StoredProgress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyProgress();
-    const parsed = JSON.parse(raw) as Partial<StoredProgress>;
-    return {
-      avatar: normalizeAvatarSettings(parsed.avatar),
-      attempts: Array.isArray(parsed.attempts) ? parsed.attempts : [],
-      topicProfiles: parsed.topicProfiles ?? {},
-      issueReports: Array.isArray(parsed.issueReports) ? parsed.issueReports : [],
-      settings: parsed.settings ?? defaultSettings,
-      profile: parsed.profile,
-    };
-  } catch {
-    return emptyProgress();
-  }
+  return getProgressStorageAdapter().loadProgressContext();
 }
 
 export function saveProgress(progress: StoredProgress): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  saveLocalProgress(progress);
 }
 
 export function saveProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>, current?: StudentProfile): StoredProgress {
-  const now = new Date().toISOString();
-  const progress = loadProgress();
-  progress.profile = {
-    ...profile,
-    id: current?.id ?? createId('profile'),
-    createdAt: current?.createdAt ?? now,
-    updatedAt: now,
-  };
-  saveProgress(progress);
-  return progress;
+  return getProgressStorageAdapter().saveProfile(profile, current);
 }
 
 export function saveAvatar(avatar: AvatarSettings): StoredProgress {
-  const progress = loadProgress();
-  progress.avatar = avatar;
-  saveProgress(progress);
-  return progress;
+  return getProgressStorageAdapter().saveAvatarSettings(avatar);
 }
 
 export function addAttempt(attempt: Attempt): StoredProgress {
-  const progress = loadProgress();
-  progress.attempts = [...progress.attempts, attempt];
-  progress.topicProfiles = {
-    ...progress.topicProfiles,
-    [attempt.topicDisplayName]: updateTopicProfile(progress.topicProfiles[attempt.topicDisplayName], attempt),
-  };
-  saveProgress(progress);
-  return progress;
+  return getProgressStorageAdapter().addAttempt(attempt);
 }
 
 export function addIssueReport(report: IssueReport): StoredProgress {
-  const progress = loadProgress();
-  progress.issueReports = [...progress.issueReports, report];
-  saveProgress(progress);
-  return progress;
+  return getProgressStorageAdapter().addIssueReport(report);
 }
 
 export function clearProgress(): StoredProgress {
-  localStorage.removeItem(STORAGE_KEY);
-  return emptyProgress();
+  return getProgressStorageAdapter().clearLocalDemoProgress();
 }
 
-export type { TopicProfile };
+export {
+  CURRENT_PROGRESS_SCHEMA_VERSION,
+  LOCAL_PROGRESS_STORAGE_KEY,
+  createId,
+  emptyProgress,
+  loadLocalProgress,
+  localProgressAdapter,
+  normalizeStoredProgress,
+};
+
+export type { ProgressStorageAdapter, TopicProfile };

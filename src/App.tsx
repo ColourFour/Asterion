@@ -8,19 +8,23 @@ import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3Astral
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
+import { resolveRuntimeConfig } from './lib/appConfig';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
-import { addAttempt, addIssueReport, clearProgress, createId, loadProgress, saveAvatar, saveProfile } from './lib/progressStore';
+import { createId, getProgressStorageAdapter } from './lib/progressStore';
+import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { calculateWorldProgress } from './lib/regionProgress';
-import { filterQuestionsForRegion, isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
+import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress } from './types';
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'profile' | 'teacher';
 
 export default function App() {
+  const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
+  const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
-  const [progress, setProgress] = useState<StoredProgress>(() => loadProgress());
+  const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
@@ -35,7 +39,8 @@ export default function App() {
       .catch((error: Error) => setLoadError(error.message));
   }, []);
 
-  const worldProgress = useMemo(() => calculateWorldProgress(questions, progress.attempts), [questions, progress.attempts]);
+  const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
+  const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts), [trainableQuestions, progress.attempts]);
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const avatarLocation = useMemo(
@@ -44,12 +49,14 @@ export default function App() {
   );
   const worldNotice = useMemo(() => {
     const p3 = questions.filter(isP3Question);
+    const blockedP3 = p3.filter((question) => !isQuestionTrainable(question));
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
     const imageMetadata = p3.filter((question) => question.questionImageRawPaths.length > 0).length;
-    if (questions.length === 0) return 'No questions loaded yet. Check public/data/question_bank.json.';
+    if (questions.length === 0) return 'No questions loaded yet. Check public/data/question_bank.p3.json and the full-bank fallback.';
     if (p3.length === 0) return 'Question bank loaded, but no P3 records were found. Check paper_family labels.';
     if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic/DeepSeek labels in Data Health.';
     if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
+    if (blockedP3.length > 0) return `${blockedP3.length} P3 records are blocked from practice until canonical question and mark-scheme assets are fixed. Data Health lists the affected records.`;
     return undefined;
   }, [questions, worldProgress]);
 
@@ -58,7 +65,7 @@ export default function App() {
   }
 
   function chooseNext(nextProgress = progress, mode: PracticeMode = activePracticeMode()) {
-    const candidateQuestions = selectedRegion ? filterQuestionsForRegion(questions, selectedRegion) : p3Questions();
+    const candidateQuestions = selectedRegion ? filterTrainableQuestionsForRegion(trainableQuestions, selectedRegion) : p3Questions();
     setCurrentQuestion(selectNextQuestion(candidateQuestions, {
       mode,
       attempts: nextProgress.attempts,
@@ -68,7 +75,7 @@ export default function App() {
   }
 
   function p3Questions() {
-    return questions.filter(isP3Question);
+    return trainableQuestions.filter(isTrainableP3Question);
   }
 
   function startPractice() {
@@ -84,7 +91,7 @@ export default function App() {
   function enterRegion(region: RegionDefinition) {
     setSelectedRegion(region);
     setViewMode('target_topic');
-    setCurrentQuestion(selectNextQuestion(filterQuestionsForRegion(questions, region), {
+    setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
       mode: 'target_topic',
       attempts: progress.attempts,
       topicProfiles: progress.topicProfiles,
@@ -145,7 +152,8 @@ export default function App() {
             <span>No AI marking. No synthetic questions. No hidden rewards. Your local evidence trail is the source of progress.</span>
           </div>
         </section>
-        <ProfileForm onSave={(profile) => setProgress(saveProfile(profile))} />
+        {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
+        <ProfileForm onSave={(profile) => setProgress(progressAdapter.saveProfile(profile))} />
       </main>
     );
   }
@@ -169,6 +177,7 @@ export default function App() {
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
+      {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
 
       {viewMode === 'map' ? (
         <P3AstralAcademy
@@ -195,15 +204,15 @@ export default function App() {
           avatar={progress.avatar}
           avatarGear={avatarGear}
           regionProgress={worldProgress}
-          onAvatarChange={(avatar) => setProgress(saveAvatar(avatar))}
-          onProfileSave={(profile) => setProgress(saveProfile(profile, progress.profile))}
+          onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
+          onProfileSave={(profile) => setProgress(progressAdapter.saveProfile(profile, progress.profile))}
         />
       ) : null}
 
       {viewMode === 'teacher' ? (
         <TeacherExport progress={progress} avatarGear={avatarGear} questions={questions} regionProgress={worldProgress} diagnostics={diagnostics} onClear={() => {
           if (window.confirm('Clear this browser profile, attempts, avatar, topic progress, and issue reports?')) {
-            setProgress(clearProgress());
+            setProgress(progressAdapter.clearLocalDemoProgress());
           }
         }} />
       ) : viewMode !== 'map' && viewMode !== 'regions' && viewMode !== 'profile' ? (
@@ -218,11 +227,11 @@ export default function App() {
           selectedRegion={selectedRegion}
           selectedRegionRank={selectedRegionProgress?.rank}
           onAttempt={(attempt: Attempt) => {
-            const nextProgress = addAttempt(attempt);
+            const nextProgress = progressAdapter.addAttempt(attempt);
             setProgress(nextProgress);
           }}
           onIssue={(questionId: string, issueType: IssueType, note?: string) => {
-            setProgress(addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
+            setProgress(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
           }}
           onReturnToMap={returnToMap}
           onReviewWeak={() => reviewWeakAreas()}

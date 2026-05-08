@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildDataHealthSummary } from '../lib/dataHealth';
+import { auditQuestionAssetAvailability, buildDataHealthSummary } from '../lib/dataHealth';
 import type { NormalizedQuestion, RegionProgress } from '../types';
 
 function markSchemeCandidate(candidate: string): string {
@@ -22,6 +22,14 @@ function question(id: string, candidate: string): NormalizedQuestion {
     questionImageCandidates: [[candidate]],
     markSchemeImageCandidates: [[markScheme]],
     raw: { local: {} },
+  };
+}
+
+function blockedQuestion(id: string): NormalizedQuestion {
+  return {
+    ...question(id, '/assets/31autumn21/questions/q01.png'),
+    trainingStatus: 'quarantined_missing_canonical_mark_scheme',
+    trainingBlockers: ['Missing canonical mark scheme.'],
   };
 }
 
@@ -50,5 +58,44 @@ describe('buildDataHealthSummary', () => {
     const summary = buildDataHealthSummary([], [] as RegionProgress[]);
 
     expect(summary.imageRootMode).toBe('unknown');
+  });
+
+  it('reports P3 questions blocked from practice without removing them from data health', () => {
+    const summary = buildDataHealthSummary([
+      question('q1', '/assets/31autumn21/questions/q01.png'),
+      blockedQuestion('q2'),
+    ], []);
+
+    expect(summary.totalP3Questions).toBe(2);
+    expect(summary.trainableP3Questions).toBe(1);
+    expect(summary.p3QuestionsBlockedFromPractice).toBe(1);
+    expect(summary.practiceBlockedExamples).toEqual([
+      {
+        id: 'q2',
+        blockers: ['Missing canonical mark scheme.'],
+        labels: 'Algebra | Algebra',
+      },
+    ]);
+  });
+
+  it('reports actual asset availability from resolved candidate groups', () => {
+    const availableAssets = new Set(['/assets/31autumn21/questions/q01.png']);
+    const questions = [
+      question('q1', '/assets/31autumn21/questions/q01.png'),
+    ];
+    const assetAudit = auditQuestionAssetAvailability(questions, availableAssets);
+    const summary = buildDataHealthSummary(questions, [], undefined, assetAudit);
+
+    expect(summary.p3QuestionImageGroupsAvailable).toBe(1);
+    expect(summary.p3QuestionImageGroupsChecked).toBe(1);
+    expect(summary.p3MarkSchemeImageGroupsAvailable).toBe(0);
+    expect(summary.p3MarkSchemeImageGroupsChecked).toBe(1);
+    expect(summary.missingAssetAvailabilityExamples).toEqual([
+      {
+        id: 'q1',
+        missing: 'mark_scheme',
+        candidates: ['/assets/31autumn21/mark_scheme/q01.png'],
+      },
+    ]);
   });
 });

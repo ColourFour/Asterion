@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress } from '../../types';
-import { astralAssets } from '../../lib/astralAssets';
+import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import { createId } from '../../lib/progressStore';
+import { trainingBlockersForQuestion } from '../../lib/questionTraining';
 import { parseAttemptMarkBreakdown } from '../../lib/attemptScoring';
 import { RegionAvatarCameo } from '../avatar/RegionAvatarCameo';
-import { ImageStack } from './ImageStack';
+import { ImageStack, type ImageStackAvailability } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
 
 const markCategories: Array<{ key: keyof AttemptMarkBreakdown; label: string; description: string }> = [
@@ -88,6 +89,7 @@ export function PracticeView({
   const [note, setNote] = useState('');
   const [attemptSaved, setAttemptSaved] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
+  const [markSchemeAvailability, setMarkSchemeAvailability] = useState<ImageStackAvailability>('pending');
 
   useEffect(() => {
     setRevealed(false);
@@ -96,11 +98,17 @@ export function PracticeView({
     setNote('');
     setAttemptSaved(false);
     setStartedAt(Date.now());
+    setMarkSchemeAvailability(question?.markSchemeImageCandidates.length ? 'pending' : 'unavailable');
   }, [question?.id]);
 
   const maxMarks = question?.marksAvailable;
   const scoreValidation = useMemo(() => parseAttemptMarkBreakdown(markInputs, maxMarks), [markInputs, maxMarks]);
-  const canSubmit = Boolean(question && revealed && scoreValidation.isValid && mistakeType);
+  const trainingBlockers = useMemo(() => (question ? trainingBlockersForQuestion(question) : []), [question]);
+  const questionIsTrainable = trainingBlockers.length === 0;
+  const markSchemeIsAvailable = markSchemeAvailability === 'available';
+  const canSaveScoredAttempt = questionIsTrainable && markSchemeIsAvailable;
+  const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && mistakeType);
+  const markSchemeNoticeTitle = questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
   const scorePreview = useMemo(() => {
     if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
     return Math.round(scoreValidation.scoreRatio * 100);
@@ -192,8 +200,20 @@ export function PracticeView({
               <h3>Compare your working</h3>
             </div>
             <div className="paper-window mark-window">
-              <ImageStack candidateGroups={question.markSchemeImageCandidates} label="Mark scheme" />
+              <ImageStack
+                candidateGroups={question.markSchemeImageCandidates}
+                label="Mark scheme"
+                onAvailabilityChange={setMarkSchemeAvailability}
+              />
             </div>
+            {!canSaveScoredAttempt ? (
+              <div className="mark-scheme-unavailable" role="status">
+                <strong>{markSchemeNoticeTitle}</strong>
+                <p>The official mark scheme is unavailable or this record is paused for scoring. Asterion will not save marks, XP, mastery, or avatar progress for this question.</p>
+                {trainingBlockers.length ? <small>Teacher check: {trainingBlockers.join('; ')}</small> : null}
+                {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the canonical mark scheme. Saving unlocks only after it loads.</small> : null}
+              </div>
+            ) : null}
             <div className="practice-footer-actions">
               <button type="button" onClick={() => setRevealed(false)}>Back to Question</button>
             </div>
@@ -206,6 +226,7 @@ export function PracticeView({
             onSubmit={(event) => {
               event.preventDefault();
               if (!progress.profile || !mistakeType) return;
+              if (!canSaveScoredAttempt) return;
               const score = parseAttemptMarkBreakdown(markInputs, maxMarks);
               if (!score.isValid || typeof score.earned !== 'number') return;
               onAttempt({
@@ -297,7 +318,16 @@ export function PracticeView({
       {attemptSaved ? (
         <div className="post-attempt-panel progress-updated-panel">
           <div className="panel-title-bar">Progress Updated</div>
-          <div className="progress-scene" aria-hidden="true"><img src={astralAssets.progressGarden} alt="" /></div>
+          <div className="progress-scene" aria-hidden="true">
+            <img
+              src={astralAssets.progressGarden}
+              alt=""
+              width={astralAssetDimensions.progressGarden.width}
+              height={astralAssetDimensions.progressGarden.height}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <strong>+{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : 0} XP</strong>
           <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress increased only from saved evidence.</span>
           <div className="practice-actions">

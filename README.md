@@ -152,32 +152,40 @@ npm test
 npm run build
 ```
 
+Data and UI asset generation:
+
+```bash
+npm run data:p3
+npm run assets:ui
+```
+
 ## Data Files
 
-Place the extraction outputs here:
+The canonical extraction outputs stay here for compatibility, debugging, and future multi-paper work:
 
 ```text
 public/data/question_bank.json
-public/data/question_bank.deepseek.json
+public/data/question_bank.deepseek.full.json
 ```
 
 The main bank can use the extraction schema with root fields such as `schema_name`, `schema_version`, `record_count`, and a `questions` array. Asterion reads records with fields including `question_id`, `paper`, `paper_family`, `question_number`, `topic`, `notes.subtopic`, `question_solution_marks`, `question_image_path`, `mark_scheme_image_path`, `question_image_paths`, and `mark_scheme_image_paths`.
 
 The DeepSeek sidecar can use an `enrichments` object keyed by `question_id`. Asterion reads `deepseek_topic`, `deepseek_topic_normalized`, `deepseek_subtopic`, `deepseek_difficulty`, `deepseek_difficulty_normalized`, `deepseek_confidence`, `topic_reconciliation_status`, `final_review_required`, and `final_review_reasons`. Missing, malformed, or error entries are tolerated.
 
-Place image crops under:
+The P3 Astral Academy MVP loads generated P3-only bundles first:
 
 ```text
-public/assets/questions/p3/
+public/data/question_bank.p3.json
+public/data/question_bank.deepseek.p3.json
 ```
 
-Future paper families should follow the same shape:
+Generate those files from the canonical full bank with:
 
-```text
-public/assets/questions/p1/
-public/assets/questions/p4/
-public/assets/questions/p5/
+```bash
+npm run data:p3
 ```
+
+The full-bank path remains supported through `loadQuestionBankWithDiagnostics({ scope: 'full' })` and as a fallback if the P3 bundle is missing. Do not hand-edit generated P3 bundles except for emergency inspection; update the canonical full files, then regenerate.
 
 ## Image Path Resolution
 
@@ -191,27 +199,86 @@ p3/15autumn25/mark_scheme/q01.png
 Asterion resolves those to public URLs:
 
 ```text
-/assets/questions/p3/15autumn25/questions/q01.png
-/assets/questions/p3/15autumn25/mark_scheme/q01.png
+/assets/15autumn25/questions/q01.png
+/assets/15autumn25/mark_scheme/q01.png
 ```
 
 This logic lives in `src/lib/resolveAssetPath.ts`. Components should use normalized question objects and must not duplicate path-resolution rules.
+
+Current deployed canonical question and mark-scheme image crops use the public asset root layout:
+
+```text
+public/assets/<paper>/questions/q##.png
+public/assets/<paper>/mark_scheme/q##.png
+```
+
+For example:
+
+```text
+public/assets/32spring21/questions/q01.png
+public/assets/32spring21/mark_scheme/q01.png
+```
 
 Supported source path variants include:
 
 ```text
 p3/15autumn25/questions/q01.png
 /p3/15autumn25/questions/q01.png
+assets/15autumn25/questions/q01.png
 assets/questions/p3/15autumn25/questions/q01.png
 /assets/questions/p3/15autumn25/questions/q01.png
 public/assets/questions/p3/15autumn25/questions/q01.png
 ```
 
-All of those canonicalize to one public URL shape and should never duplicate `p3`:
+The resolver tries the current root layout first, then legacy compatibility layouts:
 
 ```text
+/assets/15autumn25/questions/q01.png
 /assets/questions/p3/15autumn25/questions/q01.png
+/assets/questions/15autumn25/questions/q01.png
 ```
+
+Legacy `public/assets/questions/p3/<paper>/...` and `public/assets/questions/<paper>/...` layouts are compatibility fallbacks only. New local data should use the root layout under `public/assets/<paper>/...`.
+
+## Static Data Caching
+
+`src/lib/loadQuestionBank.ts` uses `cache: 'no-store'` outside production so local data edits are visible during development and tests. Production/static builds use the browser default cache behavior for committed JSON files. If data changes without a filename change, redeploy the static site and clear any CDN cache according to the host's normal invalidation rules.
+
+The P3 flow fetches, in order:
+
+```text
+public/data/question_bank.p3.json
+public/data/question_bank.json               # fallback/debug
+public/data/question_bank.deepseek.p3.json
+public/data/question_bank.deepseek.json      # optional compatibility name
+public/data/question_bank.deepseek.full.json # fallback/debug
+```
+
+This keeps the local demo login-free and GitHub Pages compatible while avoiding an eager P1/P4/P5 fetch for the current P3 MVP.
+
+## UI Asset Optimization
+
+Project-owned UI/world art sources remain under:
+
+```text
+public/assets/ui/astral/
+public/assets/ui/astral/regions/
+```
+
+The app uses generated right-sized variants under:
+
+```text
+public/assets/ui/astral/optimized/
+public/assets/ui/astral/optimized/regions/
+```
+
+Regenerate variants with:
+
+```bash
+npm run assets:ui
+```
+
+The optimizer uses macOS `sips` and intentionally avoids adding heavy image dependencies. It does not touch canonical CAIE question or mark-scheme images. If replacing UI art, commit the source PNG and regenerate the optimized variants before checking first-load size.
 
 ## Region Matching
 
@@ -230,26 +297,32 @@ Keep path, topic, and region matching centralized in utility modules rather than
 ## Real Data Integration Checklist
 
 1. Put the main bank at `public/data/question_bank.json`.
-2. Put the DeepSeek sidecar at `public/data/question_bank.deepseek.json`.
-3. Put P3 image folders under one of the supported layouts.
+2. Put the full DeepSeek sidecar at `public/data/question_bank.deepseek.full.json`, or the compatibility primary name `public/data/question_bank.deepseek.json`.
+3. Run `npm run data:p3` so the P3 MVP has generated first-load bundles.
+4. Put P3 image folders under the current deployed root layout:
 
-Option A, family folder included:
+```text
+public/assets/<paper>/questions/q##.png
+public/assets/<paper>/mark_scheme/q##.png
+```
+
+Legacy option A, family folder included:
 
 ```text
 public/assets/questions/p3/<paper>/questions/q##.png
 public/assets/questions/p3/<paper>/mark_scheme/q##.png
 ```
 
-Option B, paper-only folder:
+Legacy option B, paper-only folder:
 
 ```text
 public/assets/questions/<paper>/questions/q##.png
 public/assets/questions/<paper>/mark_scheme/q##.png
 ```
 
-For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries both `/assets/questions/p3/15autumn25/questions/q01.png` and `/assets/questions/15autumn25/questions/q01.png`.
+For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries `/assets/15autumn25/questions/q01.png` first, then the legacy fallback layouts.
 
-4. If using the full DeepSeek sidecar, either rename:
+5. If using the full DeepSeek sidecar, either rename:
 
 ```text
 public/data/question_bank.deepseek.full.json
@@ -263,16 +336,20 @@ public/data/question_bank.deepseek.json
 
 or rely on the app fallback loader. The primary filename remains `question_bank.deepseek.json`; the app falls back to `question_bank.deepseek.full.json` when the primary sidecar is missing, empty, or has no enrichments.
 
-5. Start the app with `npm run dev`.
-6. Open Teacher/Export, then open **Data health**.
-7. Check:
+6. Run `npm run assets:ui` after changing project-owned UI art.
+7. Start the app with `npm run dev`.
+8. Open Teacher/Export, then open **Data health**.
+9. Check:
    - main JSON file loaded
    - main schema and record count
    - total questions loaded
    - total P3 questions loaded
+   - trainable P3 question count
+   - P3 blocked-from-practice count
    - P3 questions with question image metadata
    - P3 questions with mark-scheme image metadata
-   - P3 questions by region
+   - P3 asset availability check
+   - trainable P3 questions by region
    - unmatched P3 examples
    - raw image path examples
    - candidate image URL examples
@@ -300,7 +377,20 @@ Common path problems:
 - Local topic mastery, ranks, checkmarks, XP, and placeholder avatar gear derived from progress.
 - Quiet per-question issue reporting.
 - Teacher exports as JSON and CSV, including world/region fields where attempts have that context.
-- localStorage persistence for profile, attempts, topic progress, issue reports, avatar, and settings.
+- Versioned localStorage persistence for profile, attempts, issue reports, avatar, and settings behind the progress storage adapter. Topic progress, region progress, XP, ranks, and avatar unlocks are derived from saved attempts rather than stored as source truth.
+
+## Storage Mode
+
+Local demo storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.
+
+Current behavior:
+
+- `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
+- `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays in local demo storage and shows a notice.
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_ASSET_BASE_URL` are documented future hosted-mode inputs only.
+- Supabase service-role keys must never be exposed to the Vite client.
+
+See `docs/hosted-storage-design.md` for the hosted storage design draft and `docs/sql/hosted-storage-draft.sql` for non-wired schema sketches.
 
 ## GitHub Pages Deployment
 
@@ -318,7 +408,7 @@ Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSO
 - No backend or cross-device sync.
 - No Supabase storage yet.
 - No AI marking.
-- No automatic image availability scan.
+- No automated browser smoke test for the full student flow.
 - Adaptive selection is intentionally simple and rule-based.
 - Mastered region rank is reserved for a later mixed review/mastery trial loop.
 
@@ -326,7 +416,7 @@ Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSO
 
 - Add broader P1, P4/Mechanics, and P5/Statistics topic maps.
 - Give each future paper family its own world map.
-- Move academic data from localStorage to Supabase while preserving the existing storage boundary.
+- Implement hosted storage behind the existing progress adapter only after auth, RLS, export/delete, and local-to-hosted migration UX are reviewed.
 - Add teacher dashboards for classes and weak-area planning.
 - Add optional Vercel deployment once the backend layer exists.
 - Add richer avatar assets and progression events tied to topic mastery.

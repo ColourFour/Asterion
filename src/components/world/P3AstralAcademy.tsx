@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy } from 'lucide-react';
 import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
-import { astralAssets, getAstralRegionAsset } from '../../lib/astralAssets';
+import { astralAssets, getAstralRegionAsset, getAstralRegionAssetDimensions } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import { WorldMapAvatarMarker } from '../avatar/WorldMapAvatarMarker';
 
@@ -126,12 +126,23 @@ const distantSlots: MapSlot[] = [
 function RegionIslandArt({ fallbackArt, regionId }: { fallbackArt: string; regionId: string }) {
   const [imageFailed, setImageFailed] = useState(false);
   const assetPath = getAstralRegionAsset(regionId);
+  const assetDimensions = getAstralRegionAssetDimensions(regionId);
   const showProductionArt = Boolean(assetPath && !imageFailed);
 
   return (
     <span className={`island-art island-${fallbackArt}${showProductionArt ? ' has-production-art' : ' uses-fallback-art'}`} aria-hidden="true">
       {showProductionArt ? (
-        <img className="region-island-image" src={assetPath ?? ''} alt="" draggable={false} onError={() => setImageFailed(true)} />
+        <img
+          className="region-island-image"
+          src={assetPath ?? ''}
+          alt=""
+          width={assetDimensions?.width}
+          height={assetDimensions?.height}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          onError={() => setImageFailed(true)}
+        />
       ) : (
         <>
           <span className="island-base" />

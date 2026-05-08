@@ -21,14 +21,14 @@ describe('avatar render modes', () => {
   it('uses mode-specific asset candidates with safe generic fallbacks', () => {
     expect(avatarLayerAssetCandidates(item('academy-student-base'), 'map')).toEqual([
       '/assets/avatar/base/academy-student-base.png',
-      '/assets/ui/astral/avatar-student-map.png',
+      '/assets/ui/astral/optimized/avatar-student-map-512.png',
     ]);
     expect(avatarLayerAssetCandidates(item('practical-crop'), 'map')).toEqual([
       '/assets/avatar/hair/practical-crop.png',
     ]);
     expect(avatarLayerAssetCandidates(item('academy-student-base'), 'region')).toEqual([
       '/assets/avatar/base/academy-student-base.png',
-      '/assets/ui/astral/avatar-student-front.png',
+      '/assets/ui/astral/optimized/avatar-student-front-512.png',
     ]);
   });
 });

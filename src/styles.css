@@ -2137,6 +2137,30 @@ nav button.active,
   border-top: 3px solid var(--pixel-line);
 }
 
+.mark-scheme-unavailable {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 2px solid #9b2f2f;
+  color: #2f1a10;
+  background: #ffe2d4;
+}
+
+.mark-scheme-unavailable strong {
+  color: #7a1f1f;
+}
+
+.mark-scheme-unavailable p {
+  margin: 0;
+  color: #4b241f;
+}
+
+.mark-scheme-unavailable small {
+  color: #6c3328;
+  font-weight: 800;
+}
+
 .archive-heading {
   margin-bottom: 8px;
 }
