@@ -20,8 +20,17 @@ export const TRAINING_SESSION_LABELS: Record<TrainingSessionIntent, string> = {
 
 export interface GuardianEligibility {
   eligible: boolean;
+  requirements: GuardianRequirement[];
   missingRequirements: string[];
   guardianQuestion?: NormalizedQuestion;
+}
+
+export interface GuardianRequirement {
+  id: 'field_guide' | 'attempt_count' | 'recent_high_score' | 'subtopic_spread' | 'guardian_asset';
+  label: string;
+  completed: boolean;
+  detail: string;
+  nextAction?: string;
 }
 
 export interface TrainingSessionRecommendation {
@@ -72,6 +81,14 @@ function hasQuestionAndMarkScheme(question: NormalizedQuestion): boolean {
   return question.questionImageCandidates.length > 0 && question.markSchemeImageCandidates.length > 0;
 }
 
+function attemptCountText(count: number): string {
+  return `${count} saved attempt${count === 1 ? '' : 's'}`;
+}
+
+function attemptsMissingText(count: number): string {
+  return `${count} more saved attempt${count === 1 ? '' : 's'}`;
+}
+
 export function selectGuardianQuestion(questions: NormalizedQuestion[]): NormalizedQuestion | undefined {
   return questions
     .filter(hasQuestionAndMarkScheme)
@@ -92,7 +109,6 @@ export function computeGuardianEligibility(input: {
   regionQuestions: NormalizedQuestion[];
   regionAttempts: Attempt[];
 }): GuardianEligibility {
-  const missingRequirements: string[] = [];
   const fieldGuideCompleted = Boolean(input.learningRecord?.fieldGuideCompletedAt);
   const guardianQuestion = selectGuardianQuestion(input.regionQuestions);
   const recentAttempts = input.regionAttempts.slice(-5);
@@ -100,25 +116,63 @@ export function computeGuardianEligibility(input: {
   const possible = possibleSubtopics(input.regionQuestions);
   const attempted = attemptedSubtopics(input.regionAttempts);
   const requiredSubtopics = possible.size >= 2 ? 2 : Math.min(1, possible.size);
+  const attemptsMissing = Math.max(0, 3 - input.regionProgress.attempts);
+  const subtopicRequirementApplies = requiredSubtopics >= 2;
 
-  if (!fieldGuideCompleted) {
-    missingRequirements.push('Complete the Field Guide.');
-  }
-  if (input.regionProgress.attempts < 3) {
-    missingRequirements.push(`Save at least 3 attempts in this region (${input.regionProgress.attempts}/3).`);
-  }
-  if (!hasRecentHighScore) {
-    missingRequirements.push('Save at least 1 recent attempt at 70% or higher.');
-  }
-  if (requiredSubtopics >= 2 && attempted.size < requiredSubtopics) {
-    missingRequirements.push(`Attempt at least ${requiredSubtopics} subtopics in this region (${attempted.size}/${requiredSubtopics}).`);
-  }
-  if (!guardianQuestion) {
-    missingRequirements.push('Fix guardian question asset data: no trainable guardian question has both question and mark-scheme images.');
-  }
+  const requirements: GuardianRequirement[] = [
+    {
+      id: 'field_guide',
+      label: 'Field Guide reviewed',
+      completed: fieldGuideCompleted,
+      detail: fieldGuideCompleted
+        ? 'You have reviewed the key moves and traps for this region.'
+        : 'Complete the Field Guide.',
+      nextAction: 'Start with the Field Guide. You have not reviewed the key exam traps yet.',
+    },
+    {
+      id: 'attempt_count',
+      label: 'Practice evidence saved',
+      completed: attemptsMissing === 0,
+      detail: attemptsMissing === 0
+        ? `${attemptCountText(input.regionProgress.attempts)} recorded in this region.`
+        : `Save at least 3 attempts in this region (${input.regionProgress.attempts}/3).`,
+      nextAction: `Train in this region and save ${attemptsMissingText(attemptsMissing)} to build guardian evidence.`,
+    },
+    {
+      id: 'recent_high_score',
+      label: 'Recent 70%+ attempt',
+      completed: hasRecentHighScore,
+      detail: hasRecentHighScore
+        ? 'At least one recent saved attempt is 70% or higher.'
+        : 'Save at least 1 recent attempt at 70% or higher.',
+      nextAction: 'You are close to the Guardian. Earn one recent saved attempt at 70% or higher.',
+    },
+    {
+      id: 'subtopic_spread',
+      label: 'Subtopic spread',
+      completed: !subtopicRequirementApplies || attempted.size >= requiredSubtopics,
+      detail: subtopicRequirementApplies
+        ? attempted.size >= requiredSubtopics
+          ? `You have attempted ${attempted.size}/${requiredSubtopics} required subtopics.`
+          : `Attempt at least ${requiredSubtopics} subtopics in this region (${attempted.size}/${requiredSubtopics}).`
+        : 'Subtopic spread is skipped until this region has enough subtopic metadata.',
+      nextAction: `Try a question from another subtopic before challenging the Guardian (${attempted.size}/${requiredSubtopics}).`,
+    },
+    {
+      id: 'guardian_asset',
+      label: 'Guardian question ready',
+      completed: Boolean(guardianQuestion),
+      detail: guardianQuestion
+        ? 'A trainable guardian question with mark-scheme images is available.'
+        : 'Fix guardian question asset data: no trainable guardian question has both question and mark-scheme images.',
+      nextAction: 'This region needs a trainable guardian question with both question and mark-scheme images.',
+    },
+  ];
+  const missingRequirements = requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.detail);
 
   return {
     eligible: missingRequirements.length === 0,
+    requirements,
     missingRequirements,
     guardianQuestion,
   };
@@ -159,8 +213,8 @@ export function recommendTrainingSession(input: {
       intent: 'warm_up',
       label: TRAINING_SESSION_LABELS.warm_up,
       reason: fieldGuideCompleted
-        ? 'You are starting this region with no saved attempts here yet.'
-        : 'You can try a warm-up, but the Field Guide is still the recommended first step.',
+        ? 'Warm-up is selected because you have completed the guide and have no saved attempts in this region yet.'
+        : 'Warm-up is available, but the Field Guide is still the recommended first step.',
     };
   }
 
@@ -168,7 +222,7 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'weak_area_review',
       label: TRAINING_SESSION_LABELS.weak_area_review,
-      reason: 'You are training this region because your recent saved evidence shows a weak area.',
+      reason: 'Weak-area review is selected because your latest local evidence is below 55%. This uses simple saved-score rules for now.',
     };
   }
 
@@ -176,7 +230,7 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'core_practice',
       label: TRAINING_SESSION_LABELS.core_practice,
-      reason: 'You are training this region because you have not yet completed enough saved attempts here.',
+      reason: 'Core practice is selected because the Field Guide is underway and the Guardian needs at least 3 saved attempts.',
     };
   }
 
@@ -184,14 +238,14 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'challenge',
       label: TRAINING_SESSION_LABELS.challenge,
-      reason: 'You are ready for a harder session because your average and recent scores are both at least 70%.',
+      reason: 'Challenge is selected because your average and recent scores are both at least 70%, so you are near Guardian readiness.',
     };
   }
 
   return {
     intent: 'core_practice',
     label: TRAINING_SESSION_LABELS.core_practice,
-    reason: 'You are building stable region evidence before the guardian check unlocks.',
+    reason: 'Core practice is selected because you are building stable region evidence before the Guardian unlocks.',
   };
 }
 
@@ -232,7 +286,7 @@ export function nextRecommendedRegionAction(input: {
     return {
       kind: 'guardian',
       label: 'Challenge the Guardian',
-      explanation: 'Your local evidence meets the guardian requirements for this region.',
+      explanation: 'The Guardian is ready. Challenge it to clear the region.',
     };
   }
 
@@ -254,8 +308,8 @@ export function nextRecommendedRegionAction(input: {
   if (state === 'guardian_cleared' || state === 'mastered') {
     return {
       kind: 'complete',
-      label: 'Region reward unlocked',
-      explanation: 'The guardian is cleared. Keep this region healthy through later mixed review.',
+      label: 'Region restored',
+      explanation: 'The Guardian is cleared. Maintain mastery here or choose another region.',
     };
   }
 
@@ -270,7 +324,7 @@ export function nextRecommendedRegionAction(input: {
   return {
     kind: 'training',
     label: `Start ${trainingSession.label}`,
-    explanation: trainingSession.reason,
+    explanation: guardianEligibility.requirements.find((requirement) => !requirement.completed)?.nextAction ?? trainingSession.reason,
   };
 }
 

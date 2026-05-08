@@ -197,7 +197,7 @@ export function PracticeView({
       {sessionLabel || sessionReason ? (
         <div className={`session-rationale-panel${regionLearningPhase === 'guardian' ? ' guardian-session' : ''}`}>
           <div>
-            <span>{regionLearningPhase === 'guardian' ? 'Mastery check' : 'Training intent'}</span>
+            <span>{regionLearningPhase === 'guardian' ? 'Why this mastery check is showing' : 'Why this practice is showing'}</span>
             <strong>{sessionLabel ?? 'Region practice'}</strong>
           </div>
           <p>{sessionReason ?? 'This question is selected from the current region using the local adaptive practice flow.'}</p>

@@ -3,6 +3,9 @@ import type { RegionDefinition } from '../types';
 export interface WorkedExamplePlaceholder {
   title: string;
   focus: string;
+  setup?: string;
+  keyMove?: string;
+  check?: string;
 }
 
 export interface RegionFieldGuide {
@@ -47,34 +50,56 @@ const guides: Record<string, RegionFieldGuide> = {
   },
   'logarithm-grove': {
     regionId: 'logarithm-grove',
-    topic: 'Logarithms and exponentials, especially solving equations and interpreting growth structure.',
+    topic: 'Logarithms are the inverse language of exponentials. In this region you practise moving between exponential and logarithmic form, using log laws safely, solving logarithmic or exponential equations, and checking that every answer works in the original question.',
     whatToRecognize: [
-      'Terms that can be rewritten using log laws before solving.',
-      'Exponential equations that need a common base, logarithms, or substitution.',
-      'Domain restrictions created by logarithmic arguments.',
+      'An equation such as a^x = b can usually be rewritten with logarithms once the exponential term is isolated.',
+      'Multiple log terms with the same base often need expanding or combining before solving.',
+      'Quadratic-looking exponential equations may need a substitution such as y = 2^x or y = e^x.',
+      'Any expression inside a logarithm creates a domain restriction that must be checked at the end.',
     ],
     commonExamMoves: [
-      'Condense log terms before removing the logarithm.',
-      'Introduce a substitution for repeated exponential terms.',
-      'Check every proposed solution against the original log arguments.',
-      'Use graph or sign information when an exponential equation has limited roots.',
+      'Convert between exponential and logarithmic form: a^x = b means x = log_a b.',
+      'Use log laws deliberately: log ab = log a + log b, log(a/b) = log a - log b, and log a^n = n log a.',
+      'Combine log terms into one logarithm before removing logs from both sides.',
+      'Use logarithms after isolating the exponential term; avoid taking logs of a whole messy equation too early.',
+      'Substitute for repeated exponential terms, solve the simpler equation, then convert back to x.',
     ],
     commonTraps: [
-      'Solving the transformed equation but keeping an invalid log argument.',
-      'Treating log(a + b) as log a + log b.',
-      'Rounding too early in exponential equations.',
-      'Forgetting that bases must be positive and not equal to 1.',
+      'Keeping a solution that makes an original log argument zero or negative.',
+      'Using the false rule log(a + b) = log a + log b.',
+      'Cancelling logs before both sides are a single log with the same base.',
+      'Rounding too early in exponential equations and losing the final accuracy mark.',
+      'Forgetting that a logarithm base must be positive and not equal to 1.',
     ],
     workedExamples: [
-      { title: 'Condense and solve', focus: 'Combine logarithms, solve, then check the domain.' },
-      { title: 'Exponential substitution', focus: 'Turn repeated powers into a quadratic in one variable.' },
-      { title: 'Growth equation', focus: 'Use logarithms after isolating the exponential term.' },
+      {
+        title: 'Condense and solve',
+        focus: 'A question gives log(x - 1) + log(x + 2) = log 18.',
+        setup: 'First combine the left side into log((x - 1)(x + 2)).',
+        keyMove: 'Remove logs only after both sides are one logarithm with the same base.',
+        check: 'Reject any root that makes x - 1 <= 0 or x + 2 <= 0.',
+      },
+      {
+        title: 'Exponential substitution',
+        focus: 'A question contains 4^x and 2^x in the same equation.',
+        setup: 'Rewrite 4^x as (2^x)^2 and let y = 2^x.',
+        keyMove: 'Solve the quadratic in y, then convert back using x = log_2 y.',
+        check: 'Reject any y value that is not positive because 2^x > 0.',
+      },
+      {
+        title: 'Isolate then log',
+        focus: 'A growth model gives 5e^(0.3t) - 2 = 40.',
+        setup: 'Move constants first: e^(0.3t) = 42/5.',
+        keyMove: 'Take natural logs after the exponential term is isolated.',
+        check: 'Round only at the final requested accuracy.',
+      },
     ],
     readinessChecklist: [
-      'State the log laws without inventing false ones.',
-      'Find the allowed domain before finalising answers.',
-      'Use logarithms to solve an exponential equation accurately.',
-      'Reject solutions that break the original question.',
+      'Convert a^x = b into logarithmic form and back again.',
+      'Expand and combine logarithms using only valid log laws.',
+      'Solve a logarithmic equation and check every original log argument.',
+      'Solve an exponential equation by isolating the exponential term first.',
+      'Explain why log(a + b) is not the same as log a + log b.',
     ],
   },
   'trig-observatory': {

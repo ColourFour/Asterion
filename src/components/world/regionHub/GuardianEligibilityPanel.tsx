@@ -1,0 +1,84 @@
+import { CheckCircle2, Circle, Lock, ShieldCheck, Sparkles, Target, Trophy } from 'lucide-react';
+import type { NormalizedQuestion } from '../../../types';
+import type { RegionLearningSummary } from '../../../lib/regionLearning';
+import { questionSummary } from './regionHubPanelUtils';
+
+interface GuardianEligibilityPanelProps {
+  guardianCleared: boolean;
+  guardianQuestion?: NormalizedQuestion;
+  regionName: string;
+  summary: RegionLearningSummary;
+  onChallengeGuardian: (question: NormalizedQuestion) => void;
+}
+
+export function GuardianEligibilityPanel({
+  guardianCleared,
+  guardianQuestion,
+  regionName,
+  summary,
+  onChallengeGuardian,
+}: GuardianEligibilityPanelProps) {
+  const completed = summary.guardianEligibility.requirements.filter((requirement) => requirement.completed);
+  const missing = summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed);
+
+  return (
+    <article className="region-loop-card guardian-card">
+      <div className="region-loop-card-title">
+        <ShieldCheck size={22} />
+        <div>
+          <span>Phase 3</span>
+          <h3>Region Guardian</h3>
+        </div>
+        {summary.guardianEligibility.eligible ? <Sparkles className="card-state-icon" size={22} aria-label="Guardian unlocked" /> : <Lock className="card-state-icon" size={22} aria-label="Guardian locked" />}
+      </div>
+
+      {guardianCleared ? (
+        <div className="guardian-cleared-banner">
+          <Trophy size={22} />
+          <div>
+            <strong>Region restored</strong>
+            <span>Guardian cleared. Reward placeholder unlocked: {regionName} restoration sigil.</span>
+          </div>
+        </div>
+      ) : summary.guardianEligibility.eligible && guardianQuestion ? (
+        <>
+          <p>The Guardian is ready. This challenge uses a trainable question with an available mark scheme.</p>
+          <div className="guardian-question-preview">
+            <span>Selected guardian question</span>
+            <strong>{questionSummary(guardianQuestion)}</strong>
+          </div>
+          <button className="primary-button" type="button" onClick={() => onChallengeGuardian(guardianQuestion)}>
+            Challenge the Guardian
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="guardian-encouragement">Guardian not ready yet. Complete the missing evidence below and it will unlock automatically.</p>
+          <div className="guardian-checklists">
+            <div>
+              <span>Completed</span>
+              <ul className="guardian-requirements completed-requirements">
+                {completed.map((requirement) => (
+                  <li key={requirement.id}><CheckCircle2 size={16} /> {requirement.detail}</li>
+                ))}
+                {completed.length === 0 ? <li><Circle size={16} /> No guardian requirements completed yet.</li> : null}
+              </ul>
+            </div>
+            <div>
+              <span>Still needed</span>
+              <ul className="guardian-requirements missing-requirements">
+                {missing.map((requirement) => (
+                  <li key={requirement.id}><Lock size={16} /> {requirement.detail}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="guardian-next-unlock">
+            <Target size={18} />
+            <span>{summary.nextAction.explanation}</span>
+          </div>
+        </>
+      )}
+    </article>
+  );
+}

@@ -105,7 +105,10 @@ describe('region learning loop logic', () => {
     expect(summary.state).toBe('field_guide_completed');
     expect(summary.guardianEligibility.eligible).toBe(false);
     expect(summary.guardianEligibility.missingRequirements).toContain('Save at least 3 attempts in this region (0/3).');
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'field_guide')?.completed).toBe(true);
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'attempt_count')?.completed).toBe(false);
     expect(summary.nextAction.kind).toBe('training');
+    expect(summary.nextAction.explanation).toBe('Train in this region and save 3 more saved attempts to build guardian evidence.');
   });
 
   it('unlocks the guardian from local evidence and selects a trainable higher-difficulty question', () => {
@@ -140,15 +143,18 @@ describe('region learning loop logic', () => {
     expect(summary.guardianEligibility.guardianQuestion?.id).toBe('stretch');
     expect(summary.state).toBe('guardian_unlocked');
     expect(summary.visualTreatment).toBe('guardian_unlocked');
+    expect(summary.nextAction.explanation).toBe('The Guardian is ready. Challenge it to clear the region.');
   });
 
   it('marks a failed saved guardian as attempted and a passed saved guardian as cleared', () => {
-    const eligibility = {
-      eligible: true,
-      missingRequirements: [],
-      guardianQuestion: question(),
-    };
     const regionProgress = progress({ attempts: 4, recentScoreRatio: 0.76 });
+    const eligibility = computeGuardianEligibility({
+      region: logarithms,
+      regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: [question()],
+      regionAttempts: [attempt('1', 0.72), attempt('2', 0.76), attempt('3', 0.81)],
+    });
 
     expect(computeRegionLearningState({
       regionProgress,
@@ -161,6 +167,40 @@ describe('region learning loop logic', () => {
       guardianEligibility: eligibility,
       learningRecord: learning({ guardianAttemptedAt: '2026-05-08T00:04:00.000Z', guardianClearedAt: '2026-05-08T00:04:00.000Z' }),
     })).toBe('guardian_cleared');
+  });
+
+  it('returns a restored-region next action after guardian clear', () => {
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress({ attempts: 4, recentScoreRatio: 0.8 }),
+      learningRecord: learning({
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        guardianAttemptedAt: '2026-05-08T00:04:00.000Z',
+        guardianClearedAt: '2026-05-08T00:04:00.000Z',
+      }),
+      regionQuestions: [question()],
+      regionAttempts: [attempt('1', 0.72), attempt('2', 0.76), attempt('3', 0.81)],
+    });
+
+    expect(summary.state).toBe('guardian_cleared');
+    expect(summary.nextAction.label).toBe('Region restored');
+    expect(summary.nextAction.explanation).toBe('The Guardian is cleared. Maintain mastery here or choose another region.');
+    expect(summary.visualTreatment).toBe('guardian_cleared');
+  });
+
+  it('reports completed and missing guardian requirements with exact next action', () => {
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress({ attempts: 2, averageScoreRatio: 0.62, recentScoreRatio: 0.66, subtopicsTouched: 1 }),
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: [
+        question({ id: 'q1', displaySubtopic: 'logarithmic equations' }),
+        question({ id: 'q2', displaySubtopic: 'exponential equations' }),
+      ],
+      regionAttempts: [attempt('1', 0.62, 'logarithmic equations'), attempt('2', 0.66, 'logarithmic equations')],
+    });
+
+    expect(summary.guardianEligibility.requirements.filter((requirement) => requirement.completed).map((requirement) => requirement.id)).toContain('field_guide');
+    expect(summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.id)).toEqual(['attempt_count', 'recent_high_score', 'subtopic_spread']);
+    expect(summary.nextAction.explanation).toBe('Train in this region and save 1 more saved attempt to build guardian evidence.');
   });
 
   it('recommends weak-area review after a low recent attempt and challenge after stable 70% evidence', () => {
@@ -180,5 +220,14 @@ describe('region learning loop logic', () => {
       question({ id: 'no-question', questionImageCandidates: [] }),
       question({ id: 'no-ms', markSchemeImageCandidates: [] }),
     ])).toBeUndefined();
+  });
+
+  it('maps all major learning states to distinct visual treatments', () => {
+    expect(computeRegionVisualTreatment('locked')).toBe('not_started');
+    expect(computeRegionVisualTreatment('training_in_progress')).toBe('training');
+    expect(computeRegionVisualTreatment('guardian_unlocked')).toBe('guardian_unlocked');
+    expect(computeRegionVisualTreatment('guardian_cleared')).toBe('guardian_cleared');
+    expect(computeRegionVisualTreatment('mastered')).toBe('mastered');
+    expect(computeRegionVisualTreatment('needs_review')).toBe('needs_review');
   });
 });

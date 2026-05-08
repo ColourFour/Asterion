@@ -2372,7 +2372,9 @@ legend {
 
 @media (max-width: 980px) {
   .region-hub-status,
-  .region-hub-grid {
+  .region-hub-grid,
+  .region-next-action,
+  .region-arc-timeline {
     grid-template-columns: 1fr;
   }
 
@@ -3182,6 +3184,148 @@ legend {
   font-weight: 900;
 }
 
+.region-state-chip {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 5px 9px;
+  color: var(--color-astral-dark);
+  background: #dff4ef;
+  border: 1px solid rgba(15, 118, 110, 0.24);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.region-arc-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.arc-phase {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(125, 81, 41, 0.42);
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(247, 242, 232, 0.9));
+  box-shadow: 0 10px 26px rgba(23, 32, 51, 0.07);
+}
+
+.arc-phase-index {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #fff;
+  background: #7d8794;
+  border-radius: 50%;
+  font-weight: 1000;
+}
+
+.arc-phase strong,
+.arc-phase span {
+  display: block;
+  min-width: 0;
+}
+
+.arc-phase strong {
+  color: var(--color-ink);
+}
+
+.arc-phase span {
+  color: var(--color-text-muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.arc-active {
+  border-color: rgba(15, 118, 110, 0.42);
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, 0.11), transparent 44%),
+    rgba(255, 253, 248, 0.96);
+}
+
+.arc-active .arc-phase-index,
+.arc-ready .arc-phase-index {
+  background: var(--color-astral-dark);
+}
+
+.arc-complete {
+  border-color: rgba(40, 122, 82, 0.42);
+  background:
+    linear-gradient(90deg, rgba(40, 122, 82, 0.12), transparent 42%),
+    rgba(255, 253, 248, 0.96);
+}
+
+.arc-complete .arc-phase-index {
+  background: var(--color-success);
+}
+
+.arc-locked {
+  opacity: 0.76;
+}
+
+.region-next-action {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid rgba(183, 121, 31, 0.46);
+  border-left: 6px solid var(--region-accent, var(--color-gold));
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(90deg, rgba(183, 121, 31, 0.13), transparent 44%),
+    rgba(255, 250, 235, 0.96);
+  box-shadow: var(--shadow-soft);
+}
+
+.next-action-copy span,
+.next-action-evidence span {
+  display: block;
+  color: var(--color-gold-dark);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.next-action-copy h3 {
+  margin: 2px 0 4px;
+  color: var(--color-ink);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+}
+
+.next-action-copy p,
+.next-action-evidence small {
+  display: block;
+  margin: 0;
+  color: #44505f;
+  font-weight: 800;
+}
+
+.next-action-evidence {
+  padding: 12px;
+  border: 1px solid rgba(183, 121, 31, 0.24);
+  border-radius: var(--radius-panel);
+  background: rgba(255, 253, 248, 0.76);
+}
+
+.next-action-evidence strong {
+  display: block;
+  color: var(--color-ink);
+}
+
 .region-hub-status {
   display: grid;
   grid-template-columns: minmax(170px, 0.7fr) minmax(220px, 1.4fr) minmax(220px, 1fr);
@@ -3190,6 +3334,8 @@ legend {
 }
 
 .region-hub-status div,
+.region-next-action,
+.arc-phase,
 .region-loop-card,
 .region-reward-preview,
 .session-rationale-panel {
@@ -3205,9 +3351,12 @@ legend {
 }
 
 .region-hub-status span,
+.next-action-copy span,
+.next-action-evidence span,
 .region-loop-card-title span,
 .recommended-session span,
 .guardian-question-preview span,
+.guardian-checklists span,
 .region-reward-preview span,
 .session-rationale-panel span {
   display: block;
@@ -3314,6 +3463,16 @@ legend {
   font-size: 0.9rem;
 }
 
+.worked-example-card small {
+  color: #344154;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.worked-example-card b {
+  color: #2f1a10;
+}
+
 .recommended-session,
 .guardian-cleared-banner,
 .guardian-question-preview,
@@ -3372,6 +3531,49 @@ legend {
   margin-top: 2px;
 }
 
+.completed-requirements svg {
+  color: var(--color-success);
+}
+
+.missing-requirements svg {
+  color: var(--color-danger);
+}
+
+.guardian-encouragement {
+  margin-bottom: 0 !important;
+  font-weight: 800;
+}
+
+.guardian-checklists {
+  display: grid;
+  gap: 10px;
+}
+
+.guardian-checklists > div {
+  padding: 10px;
+  border: 1px solid rgba(217, 210, 195, 0.7);
+  border-radius: var(--radius-panel);
+  background: rgba(255, 253, 248, 0.72);
+}
+
+.guardian-next-unlock {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px;
+  color: #4c2d0a;
+  background: rgba(255, 244, 216, 0.82);
+  border: 1px solid rgba(229, 182, 79, 0.42);
+  border-radius: var(--radius-panel);
+  font-weight: 900;
+}
+
+.guardian-next-unlock svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--color-gold-dark);
+}
+
 .guardian-cleared-banner {
   color: #214d34;
   background: rgba(219, 245, 230, 0.82);
@@ -3394,6 +3596,13 @@ legend {
   background:
     linear-gradient(90deg, rgba(183, 121, 31, 0.14), transparent 42%),
     rgba(255, 250, 235, 0.96);
+}
+
+.region-reward-preview.reward-unlocked {
+  border-color: rgba(40, 122, 82, 0.36);
+  background:
+    linear-gradient(90deg, rgba(40, 122, 82, 0.14), transparent 42%),
+    rgba(242, 255, 247, 0.96);
 }
 
 .session-rationale-panel {
@@ -3433,24 +3642,26 @@ legend {
 }
 
 .app-view-map .map-region-node.learning-not_started .region-island-image {
-  filter: brightness(0.62) saturate(0.68);
-  opacity: 0.7;
+  filter: brightness(0.5) saturate(0.58) grayscale(0.18);
+  opacity: 0.62;
 }
 
 .app-view-map .map-region-node.learning-available::after {
-  opacity: 0.72;
+  opacity: 0.82;
+  background: radial-gradient(ellipse at 50% 78%, rgba(128, 204, 226, 0.34) 0 18%, transparent 38%);
   box-shadow:
     0 0 0 1px rgba(128, 204, 226, 0.28),
-    0 0 18px rgba(128, 204, 226, 0.48),
+    0 0 24px rgba(128, 204, 226, 0.58),
     inset 0 0 18px rgba(128, 204, 226, 0.12);
 }
 
 .app-view-map .map-region-node.learning-training::after {
-  opacity: 0.78;
+  opacity: 0.88;
   background:
-    radial-gradient(circle at 28% 36%, rgba(255, 231, 157, 0.78) 0 3px, transparent 4px),
-    radial-gradient(circle at 70% 64%, rgba(128, 204, 226, 0.72) 0 3px, transparent 4px);
-  box-shadow: 0 0 22px rgba(255, 205, 101, 0.36);
+    radial-gradient(circle at 27% 32%, rgba(255, 231, 157, 0.86) 0 4px, transparent 5px),
+    radial-gradient(circle at 72% 64%, rgba(128, 204, 226, 0.8) 0 4px, transparent 5px),
+    radial-gradient(circle at 48% 76%, rgba(255, 231, 157, 0.7) 0 3px, transparent 4px);
+  box-shadow: 0 0 28px rgba(255, 205, 101, 0.44);
 }
 
 .app-view-map .map-region-node.learning-guardian_unlocked::after {
@@ -3463,26 +3674,37 @@ legend {
 }
 
 .app-view-map .map-region-node.learning-guardian_cleared .region-island-image {
-  filter: brightness(1.12) saturate(1.14) drop-shadow(0 0 18px rgba(87, 170, 111, 0.48));
+  filter: brightness(1.17) saturate(1.16) drop-shadow(0 0 20px rgba(87, 170, 111, 0.58));
 }
 
 .app-view-map .map-region-node.learning-guardian_cleared::after {
-  opacity: 0.74;
+  opacity: 0.86;
+  border: 1px solid rgba(139, 215, 159, 0.5);
   box-shadow:
     0 0 0 1px rgba(139, 215, 159, 0.42),
-    0 0 24px rgba(139, 215, 159, 0.42);
+    0 0 30px rgba(139, 215, 159, 0.48);
 }
 
 .app-view-map .map-region-node.learning-mastered::after {
-  opacity: 0.88;
+  opacity: 0.96;
   border: 1px dashed rgba(255, 223, 135, 0.82);
+  background:
+    radial-gradient(circle at 22% 38%, rgba(255, 235, 168, 0.78) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 42%, rgba(255, 235, 168, 0.72) 0 3px, transparent 4px),
+    radial-gradient(circle at 49% 78%, rgba(255, 235, 168, 0.66) 0 3px, transparent 4px);
   box-shadow:
     0 0 28px rgba(255, 205, 101, 0.56),
     inset 0 0 22px rgba(255, 205, 101, 0.18);
 }
 
 .app-view-map .map-region-node.learning-needs_review .region-island-image {
-  filter: brightness(0.86) saturate(0.82) drop-shadow(0 0 14px rgba(229, 182, 79, 0.34));
+  filter: brightness(0.78) saturate(0.76) drop-shadow(0 0 14px rgba(229, 182, 79, 0.38));
+}
+
+.app-view-map .map-region-node.learning-needs_review::after {
+  opacity: 0.82;
+  border: 1px solid rgba(229, 182, 79, 0.58);
+  box-shadow: 0 0 24px rgba(229, 182, 79, 0.42);
 }
 
 .app-view-map .map-region-node.learning-needs_review .map-region-label {
