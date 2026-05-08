@@ -17,7 +17,8 @@
     "typescript": "^5.7.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.468.0"
+    "lucide-react": "^0.468.0",
+    "katex": "^0.16.45"
   },
   "devDependencies": {
     "vitest": "^2.1.8",

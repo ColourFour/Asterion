@@ -23,21 +23,24 @@ const emptyMarkInputs: Record<keyof AttemptMarkBreakdown, string> = {
   a: '',
 };
 
-const mistakeTypes: MistakeType[] = [
-  'no_issue',
+const FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH = 8;
+type SelectableMistakeType = Exclude<MistakeType, 'no_issue'>;
+
+const selectableMistakeTypes: SelectableMistakeType[] = [
   'did_not_know_method',
+  'could_not_start',
   'algebra_error',
-  'misread_question',
   'formula_issue',
+  'misread_question',
   'diagram_or_modeling_issue',
   'rounding_accuracy',
-  'could_not_start',
   'slow_method',
+  'ran_out_of_time',
+  'lucky_or_unsure',
   'other',
 ];
 
-const mistakeLabels: Record<MistakeType, string> = {
-  no_issue: 'No issue - I understood it',
+const mistakeLabels: Record<SelectableMistakeType, string> = {
   did_not_know_method: 'I did not know the method',
   algebra_error: 'Algebra error',
   misread_question: 'Misread the question',
@@ -96,7 +99,8 @@ export function PracticeView({
 }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [markInputs, setMarkInputs] = useState<Record<keyof AttemptMarkBreakdown, string>>(emptyMarkInputs);
-  const [mistakeType, setMistakeType] = useState<MistakeType | ''>('');
+  const [selectedMistakeTypes, setSelectedMistakeTypes] = useState<MistakeType[]>([]);
+  const [fullScoreConfirmed, setFullScoreConfirmed] = useState(false);
   const [note, setNote] = useState('');
   const [attemptSaved, setAttemptSaved] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
@@ -105,7 +109,8 @@ export function PracticeView({
   useEffect(() => {
     setRevealed(false);
     setMarkInputs(emptyMarkInputs);
-    setMistakeType('');
+    setSelectedMistakeTypes([]);
+    setFullScoreConfirmed(false);
     setNote('');
     setAttemptSaved(false);
     setStartedAt(Date.now());
@@ -118,7 +123,18 @@ export function PracticeView({
   const questionIsTrainable = trainingBlockers.length === 0;
   const markSchemeIsAvailable = markSchemeAvailability === 'available';
   const canSaveScoredAttempt = questionIsTrainable && markSchemeIsAvailable;
-  const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && mistakeType);
+  const isFullScore = Boolean(
+    scoreValidation.isValid
+    && typeof scoreValidation.earned === 'number'
+    && typeof maxMarks === 'number'
+    && maxMarks > 0
+    && scoreValidation.earned === maxMarks,
+  );
+  const fullScoreEvidenceNoteIsReady = note.trim().length >= FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH;
+  const attemptReflectionIsReady = isFullScore
+    ? fullScoreConfirmed && fullScoreEvidenceNoteIsReady
+    : selectedMistakeTypes.length > 0;
+  const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && attemptReflectionIsReady);
   const markSchemeNoticeTitle = questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
   const scorePreview = useMemo(() => {
     if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
@@ -139,8 +155,20 @@ export function PracticeView({
     return Number.isFinite(value) ? sum + value : sum;
   }, 0);
 
+  useEffect(() => {
+    if (!isFullScore) setFullScoreConfirmed(false);
+  }, [isFullScore]);
+
   function updateMarkInput(key: keyof AttemptMarkBreakdown, value: string) {
     setMarkInputs((current) => ({ ...current, [key]: value }));
+  }
+
+  function toggleMistakeType(type: SelectableMistakeType) {
+    setSelectedMistakeTypes((current) => (
+      current.includes(type)
+        ? current.filter((selected) => selected !== type)
+        : [...current, type]
+    ));
   }
 
   function nudgeMarkInput(key: keyof AttemptMarkBreakdown, delta: number) {
@@ -257,10 +285,14 @@ export function PracticeView({
             className="attempt-form self-mark-panel practice-panel"
             onSubmit={(event) => {
               event.preventDefault();
-              if (!progress.profile || !mistakeType) return;
+              if (!progress.profile) return;
               if (!canSaveScoredAttempt) return;
               const score = parseAttemptMarkBreakdown(markInputs, maxMarks);
               if (!score.isValid || typeof score.earned !== 'number') return;
+              const savedAsFullScore = typeof maxMarks === 'number' && maxMarks > 0 && score.earned === maxMarks;
+              const savedMistakeTypes = savedAsFullScore ? [] : selectedMistakeTypes;
+              if (savedAsFullScore && (!fullScoreConfirmed || note.trim().length < FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH)) return;
+              if (!savedAsFullScore && savedMistakeTypes.length === 0) return;
               onAttempt({
                 id: createId('attempt'),
                 profileId: progress.profile.id,
@@ -277,8 +309,10 @@ export function PracticeView({
                 markBreakdown: score.markBreakdown,
                 marksAvailable: maxMarks,
                 scoreRatio: score.scoreRatio,
-                mistakeType,
-                note,
+                mistakeType: savedMistakeTypes[0],
+                mistakeTypes: savedMistakeTypes,
+                fullScoreConfirmed: savedAsFullScore || undefined,
+                note: note.trim(),
                 timeSpentSeconds: Math.round((Date.now() - startedAt) / 1000),
                 markSchemeRevealed: revealed,
                 attemptedAt: new Date().toISOString(),
@@ -290,7 +324,7 @@ export function PracticeView({
             }}
           >
             <div className="panel-title-bar">Self-Mark</div>
-            <fieldset className="mark-breakdown-fieldset">
+            <fieldset className={`mark-breakdown-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
               <legend>Your Mark</legend>
               <div className="mark-breakdown-grid">
                 {markCategories.map((category) => (
@@ -324,21 +358,60 @@ export function PracticeView({
               {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
             </fieldset>
 
-            <fieldset className="mistake-fieldset">
-              <legend>Mistake Type</legend>
-              <div className="mistake-choice-grid">
-                {mistakeTypes.map((type) => (
-                  <label key={type} className="mistake-choice">
-                    <input type="radio" name="mistakeType" checked={mistakeType === type} onChange={() => setMistakeType(type)} required />
-                    <span>{mistakeLabels[type]}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            {isFullScore ? (
+              <fieldset className={`full-score-check-panel${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
+                <legend>Full-score check</legend>
+                <div className="full-score-check-copy">
+                  <CheckCircle2 size={18} />
+                  <div>
+                    <strong>Full score selected.</strong>
+                    <p>Reflection tags are skipped for perfect scores. To make this count for progress, confirm it against the official mark scheme and leave a short evidence note.</p>
+                  </div>
+                </div>
+                <label className="full-score-check-label">
+                  <input
+                    type="checkbox"
+                    checked={fullScoreConfirmed}
+                    onChange={(event) => setFullScoreConfirmed(event.target.checked)}
+                    required
+                  />
+                  <span>I checked each mark-scheme line and can explain where every mark was earned.</span>
+                </label>
+                {!fullScoreEvidenceNoteIsReady ? (
+                  <small className="form-hint">Add a short evidence note below before saving a full-score attempt.</small>
+                ) : null}
+              </fieldset>
+            ) : (
+              <fieldset className="mistake-fieldset">
+                <legend>Mistake tags</legend>
+                <p className="mistake-helper">Choose all that apply. These tags help future training focus on the right kind of error.</p>
+                <div className="mistake-choice-grid">
+                  {selectableMistakeTypes.map((type) => (
+                    <label key={type} className="mistake-choice">
+                      <input
+                        type="checkbox"
+                        name="mistakeTypes"
+                        value={type}
+                        checked={selectedMistakeTypes.includes(type)}
+                        onChange={() => toggleMistakeType(type)}
+                      />
+                      <span>{mistakeLabels[type]}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )}
 
             <label>
-              Optional note
-              <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
+              {isFullScore ? 'Full-score evidence note' : 'Optional note'}
+              <textarea
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                rows={3}
+                required={isFullScore}
+                minLength={isFullScore ? FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH : undefined}
+                placeholder={isFullScore ? 'Example: Matched M1 to log law, A1 to final value, and checked the domain.' : undefined}
+              />
             </label>
             <button className="primary-button" type="submit" disabled={!canSubmit || attemptSaved}>
               Save Attempt {scorePreview != null ? `(${scorePreview}%)` : ''}

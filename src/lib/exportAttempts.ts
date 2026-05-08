@@ -27,6 +27,12 @@ function reportsForQuestion(reports: IssueReport[], questionId: string): string 
     .join('; ');
 }
 
+function mistakeTagsForAttempt(attempt: Attempt): string[] {
+  if (attempt.mistakeTypes?.length) return attempt.mistakeTypes;
+  if (attempt.mistakeType && attempt.mistakeType !== 'no_issue') return [attempt.mistakeType];
+  return [];
+}
+
 export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGear): string {
   const headers = [
     'student name',
@@ -50,6 +56,8 @@ export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGe
     'marks available',
     'score percentage',
     'mistake type',
+    'mistake tags',
+    'full score checked',
     'note',
     'time spent seconds',
     'mark scheme revealed',
@@ -63,39 +71,44 @@ export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGe
   ];
 
   const profile: Partial<StudentProfile> = progress.profile ?? {};
-  const rows = progress.attempts.map((attempt: Attempt) => [
-    profile.realName,
-    profile.classGroup,
-    profile.teacherName,
-    profile.avatarName,
-    new Date().toISOString(),
-    attempt.questionId,
-    attempt.paperFamily,
-    attempt.paper,
-    attempt.questionNumber,
-    attempt.topicDisplayName,
-    attempt.localTopic,
-    attempt.deepseekTopic,
-    attempt.subtopic,
-    attempt.difficulty,
-    attempt.marksEarned,
-    attempt.markBreakdown?.m,
-    attempt.markBreakdown?.b,
-    attempt.markBreakdown?.a,
-    attempt.marksAvailable,
-    typeof attempt.scoreRatio === 'number' ? Math.round(attempt.scoreRatio * 100) : '',
-    attempt.mistakeType,
-    attempt.note,
-    attempt.timeSpentSeconds,
-    attempt.markSchemeRevealed,
-    attempt.attemptedAt,
-    attempt.worldName,
-    attempt.regionName,
-    attempt.regionRankAtAttempt,
-    avatarGear?.title,
-    avatarGear?.gear.join('; '),
-    reportsForQuestion(progress.issueReports, attempt.questionId),
-  ]);
+  const rows = progress.attempts.map((attempt: Attempt) => {
+    const mistakeTags = mistakeTagsForAttempt(attempt);
+    return [
+      profile.realName,
+      profile.classGroup,
+      profile.teacherName,
+      profile.avatarName,
+      new Date().toISOString(),
+      attempt.questionId,
+      attempt.paperFamily,
+      attempt.paper,
+      attempt.questionNumber,
+      attempt.topicDisplayName,
+      attempt.localTopic,
+      attempt.deepseekTopic,
+      attempt.subtopic,
+      attempt.difficulty,
+      attempt.marksEarned,
+      attempt.markBreakdown?.m,
+      attempt.markBreakdown?.b,
+      attempt.markBreakdown?.a,
+      attempt.marksAvailable,
+      typeof attempt.scoreRatio === 'number' ? Math.round(attempt.scoreRatio * 100) : '',
+      mistakeTags[0] ?? '',
+      mistakeTags.join('; '),
+      attempt.fullScoreConfirmed ? 'yes' : '',
+      attempt.note,
+      attempt.timeSpentSeconds,
+      attempt.markSchemeRevealed,
+      attempt.attemptedAt,
+      attempt.worldName,
+      attempt.regionName,
+      attempt.regionRankAtAttempt,
+      avatarGear?.title,
+      avatarGear?.gear.join('; '),
+      reportsForQuestion(progress.issueReports, attempt.questionId),
+    ];
+  });
 
   return [headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\n');
 }

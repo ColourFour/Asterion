@@ -2276,9 +2276,35 @@ legend {
   color: #2f1a10;
 }
 
+.mark-breakdown-fieldset.full-score-marking .mark-breakdown-box,
+.mark-breakdown-fieldset.full-score-marking .mark-total-row {
+  border-color: rgba(40, 122, 82, 0.78);
+  background: rgba(239, 248, 241, 0.92);
+}
+
+.mark-breakdown-fieldset.full-score-marking .mark-code {
+  border-color: rgba(20, 86, 54, 0.82);
+  color: #eff8f1;
+  background: #287a52;
+}
+
+.mark-breakdown-fieldset.full-score-marking .mark-description,
+.mark-breakdown-fieldset.full-score-marking .mark-total-row,
+.mark-breakdown-fieldset.full-score-marking .mark-total-row strong {
+  color: #184d35;
+}
+
 .mistake-fieldset {
   display: grid;
   gap: 8px;
+}
+
+.mistake-helper,
+.form-hint {
+  margin: 0;
+  color: #5a351c;
+  font-size: 0.74rem;
+  font-weight: 700;
 }
 
 .mistake-choice-grid {
@@ -2302,6 +2328,49 @@ legend {
 }
 
 .mistake-choice input {
+  min-height: auto;
+  accent-color: var(--pixel-green);
+}
+
+.full-score-check-panel {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 2px solid rgba(40, 122, 82, 0.62);
+  background: rgba(239, 248, 241, 0.82);
+}
+
+.full-score-check-panel.is-confirmed {
+  border-color: #287a52;
+  box-shadow: inset 0 0 0 2px rgba(40, 122, 82, 0.12);
+}
+
+.full-score-check-copy {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  align-items: start;
+  color: #184d35;
+}
+
+.full-score-check-copy p {
+  margin: 2px 0 0;
+  color: #276046;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.full-score-check-label {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  align-items: center;
+  color: #184d35;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.full-score-check-label input {
   min-height: auto;
   accent-color: var(--pixel-green);
 }
@@ -3471,6 +3540,24 @@ legend {
 
 .worked-example-card b {
   color: #2f1a10;
+}
+
+.math-text .katex {
+  font-size: 1.02em;
+  line-height: 1.2;
+}
+
+.worked-example-card .math-text .katex,
+.region-loop-card li .math-text .katex {
+  font-size: 0.98em;
+}
+
+.math-display {
+  display: block;
+  max-width: 100%;
+  margin: 8px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .recommended-session,

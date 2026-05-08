@@ -132,7 +132,9 @@ export interface Attempt {
   markBreakdown?: AttemptMarkBreakdown;
   marksAvailable?: number;
   scoreRatio?: number;
-  mistakeType: MistakeType;
+  mistakeType?: MistakeType;
+  mistakeTypes?: MistakeType[];
+  fullScoreConfirmed?: boolean;
   note?: string;
   timeSpentSeconds: number;
   markSchemeRevealed: boolean;

@@ -111,6 +111,30 @@ function saveAttemptButton(container: HTMLElement): HTMLButtonElement {
   return button!;
 }
 
+function markSchemeLoaded(container: HTMLElement) {
+  act(() => {
+    container.querySelector<HTMLImageElement>('.mark-scheme-panel img')?.dispatchEvent(new Event('load', { bubbles: true }));
+  });
+}
+
+function setInputValue(input: HTMLInputElement | HTMLTextAreaElement, value: string) {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    input instanceof HTMLTextAreaElement ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype,
+    'value',
+  );
+  act(() => {
+    descriptor?.set?.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
+
+function clickInput(input: HTMLInputElement | null) {
+  expect(input).toBeTruthy();
+  act(() => {
+    input?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
+}
+
 describe('PracticeView mark-scheme availability', () => {
   it('blocks attempt saving when no mark-scheme image candidates exist', () => {
     const { container } = renderPractice(question({
@@ -143,5 +167,61 @@ describe('PracticeView mark-scheme availability', () => {
 
     expect(container.textContent).toContain('Asterion will not save marks, XP, mastery, or avatar progress for this question.');
     expect(saveAttemptButton(container).disabled).toBe(true);
+  });
+});
+
+describe('PracticeView self-mark reflection', () => {
+  it('saves multiple mistake tags for non-perfect attempts', () => {
+    const { container, onAttempt } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+    clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
+    clickInput(container.querySelector<HTMLInputElement>('input[value="misread_question"]'));
+
+    expect(saveAttemptButton(container).disabled).toBe(false);
+    clickButton(container, 'Save Attempt');
+
+    expect(onAttempt).toHaveBeenCalledTimes(1);
+    expect(onAttempt.mock.calls[0][0]).toMatchObject({
+      marksEarned: 3,
+      mistakeType: 'algebra_error',
+      mistakeTypes: ['algebra_error', 'misread_question'],
+    });
+  });
+
+  it('requires a mark-scheme confirmation and evidence note for full-score attempts', () => {
+    const { container, onAttempt } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+
+    expect(container.textContent).not.toContain('No issue');
+    expect(container.textContent).toContain('Full score selected.');
+    expect(saveAttemptButton(container).disabled).toBe(true);
+
+    clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
+    expect(saveAttemptButton(container).disabled).toBe(true);
+
+    setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
+    expect(saveAttemptButton(container).disabled).toBe(false);
+    clickButton(container, 'Save Attempt');
+
+    expect(onAttempt).toHaveBeenCalledTimes(1);
+    expect(onAttempt.mock.calls[0][0]).toMatchObject({
+      marksEarned: 4,
+      mistakeTypes: [],
+      fullScoreConfirmed: true,
+      note: 'Checked every mark-scheme line.',
+    });
+    expect(onAttempt.mock.calls[0][0].mistakeType).toBeUndefined();
   });
 });

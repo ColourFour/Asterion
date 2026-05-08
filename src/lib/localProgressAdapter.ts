@@ -106,6 +106,16 @@ function normalizeMistakeType(value: unknown): MistakeType | undefined {
     : undefined;
 }
 
+function normalizeMistakeTypes(value: unknown, legacyMistakeType?: MistakeType): MistakeType[] {
+  const normalized = Array.isArray(value)
+    ? value.map(normalizeMistakeType).filter((type): type is MistakeType => Boolean(type) && type !== 'no_issue')
+    : [];
+  if (normalized.length === 0 && legacyMistakeType && legacyMistakeType !== 'no_issue') {
+    normalized.push(legacyMistakeType);
+  }
+  return Array.from(new Set(normalized));
+}
+
 function normalizeRegionRank(value: unknown): RegionRank | undefined {
   return typeof value === 'string' && knownRegionRanks.includes(value as RegionRank)
     ? value as RegionRank
@@ -127,12 +137,18 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
   const paperFamily = optionalString(value.paperFamily);
   const topicDisplayName = optionalString(value.topicDisplayName);
   const marksEarned = optionalNumber(value.marksEarned);
+  const marksAvailable = optionalNumber(value.marksAvailable);
+  const scoreRatio = optionalNumber(value.scoreRatio);
   const mistakeType = normalizeMistakeType(value.mistakeType);
+  const mistakeTypes = normalizeMistakeTypes(value.mistakeTypes, mistakeType);
   const timeSpentSeconds = optionalNumber(value.timeSpentSeconds);
   const markSchemeRevealed = optionalBoolean(value.markSchemeRevealed);
   const attemptedAt = optionalString(value.attemptedAt);
+  const isFullScore = (marksAvailable !== undefined && marksAvailable > 0 && marksEarned === marksAvailable) || scoreRatio === 1;
+  const fullScoreConfirmed = optionalBoolean(value.fullScoreConfirmed) === true && isFullScore;
+  const hasReflectionEvidence = mistakeTypes.length > 0 || mistakeType === 'no_issue' || fullScoreConfirmed;
 
-  if (!id || !profileId || !questionId || !paperFamily || !topicDisplayName || marksEarned === undefined || !mistakeType || timeSpentSeconds === undefined || markSchemeRevealed === undefined || !attemptedAt) {
+  if (!id || !profileId || !questionId || !paperFamily || !topicDisplayName || marksEarned === undefined || !hasReflectionEvidence || timeSpentSeconds === undefined || markSchemeRevealed === undefined || !attemptedAt) {
     return undefined;
   }
 
@@ -151,9 +167,11 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
     difficulty: optionalString(value.difficulty),
     marksEarned,
     markBreakdown,
-    marksAvailable: optionalNumber(value.marksAvailable),
-    scoreRatio: optionalNumber(value.scoreRatio),
+    marksAvailable,
+    scoreRatio,
     mistakeType,
+    mistakeTypes,
+    fullScoreConfirmed: fullScoreConfirmed || undefined,
     note: optionalString(value.note),
     timeSpentSeconds,
     markSchemeRevealed,

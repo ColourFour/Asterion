@@ -44,6 +44,7 @@ describe('buildExportJson', () => {
         marksAvailable: 4,
         scoreRatio: 0.75,
         mistakeType: 'algebra_error',
+        mistakeTypes: ['algebra_error', 'misread_question'],
         timeSpentSeconds: 120,
         markSchemeRevealed: true,
         attemptedAt: '2026-05-08T00:00:00.000Z',
@@ -57,5 +58,7 @@ describe('buildExportJson', () => {
 
     expect(csv.split('\n')[0]).toContain('"M marks","B marks","A marks"');
     expect(csv.split('\n')[1]).toContain('"3","1","1","1","4"');
+    expect(csv.split('\n')[0]).toContain('"mistake type","mistake tags","full score checked"');
+    expect(csv.split('\n')[1]).toContain('"algebra_error","algebra_error; misread_question",""');
   });
 });

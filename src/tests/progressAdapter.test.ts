@@ -21,6 +21,7 @@ const attempt: Attempt = {
   marksAvailable: 4,
   scoreRatio: 0.75,
   mistakeType: 'algebra_error',
+  mistakeTypes: ['algebra_error'],
   timeSpentSeconds: 120,
   markSchemeRevealed: true,
   attemptedAt: '2026-05-08T00:00:00.000Z',
@@ -66,6 +67,7 @@ describe('local progress adapter', () => {
     });
 
     expect(withAttempt.attempts).toHaveLength(1);
+    expect(withAttempt.attempts[0].mistakeTypes).toEqual(['algebra_error']);
     expect(withAttempt.topicProfiles.Algebra.attempts).toBe(1);
     expect(withAttempt.topicProfiles.Algebra.totalMarksEarned).toBe(3);
 
@@ -137,6 +139,37 @@ describe('local progress adapter', () => {
     expect(loaded.attempts).toHaveLength(1);
     expect(loaded.topicProfiles.Algebra.attempts).toBe(1);
     expect(loaded.topicProfiles.Algebra.totalMarksEarned).toBe(3);
+  });
+
+  it('preserves multi-tag reflections and full-score confirmation attempts', () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
+      attempts: [
+        {
+          ...attempt,
+          id: 'attempt-multi',
+          mistakeTypes: ['algebra_error', 'misread_question'],
+        },
+        {
+          ...attempt,
+          id: 'attempt-full',
+          marksEarned: 4,
+          scoreRatio: 1,
+          mistakeType: undefined,
+          mistakeTypes: [],
+          fullScoreConfirmed: true,
+          note: 'Checked all mark-scheme lines.',
+        },
+      ],
+    }));
+
+    const loaded = localProgressAdapter.loadProgressContext();
+
+    expect(loaded.attempts).toHaveLength(2);
+    expect(loaded.attempts[0].mistakeTypes).toEqual(['algebra_error', 'misread_question']);
+    expect(loaded.attempts[1].mistakeType).toBeUndefined();
+    expect(loaded.attempts[1].mistakeTypes).toEqual([]);
+    expect(loaded.attempts[1].fullScoreConfirmed).toBe(true);
   });
 
   it('normalizes malformed region learning records without blocking progress load', () => {

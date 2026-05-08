@@ -13,6 +13,17 @@ interface TeacherExportProps {
   onClear: () => void;
 }
 
+function attemptReflectionLabel(attempt: StoredProgress['attempts'][number]): string {
+  const mistakeTags = attempt.mistakeTypes?.length
+    ? attempt.mistakeTypes
+    : attempt.mistakeType && attempt.mistakeType !== 'no_issue'
+      ? [attempt.mistakeType]
+      : [];
+  if (mistakeTags.length) return mistakeTags.map((type) => type.replace(/_/g, ' ')).join(', ');
+  if (attempt.fullScoreConfirmed) return 'full score checked';
+  return 'reflection not recorded';
+}
+
 export function TeacherExport({ progress, avatarGear, questions, regionProgress, diagnostics, onClear }: TeacherExportProps) {
   const summary = calculateAcademySummary(regionProgress);
   const recentAttempts = progress.attempts.slice(-8).reverse();
@@ -80,7 +91,7 @@ export function TeacherExport({ progress, avatarGear, questions, regionProgress,
                 {attempt.marksEarned}/{attempt.marksAvailable ?? 'n/a'} marks
                 {attempt.markBreakdown ? ` (M ${attempt.markBreakdown.m}, B ${attempt.markBreakdown.b}, A ${attempt.markBreakdown.a})` : ''}
                 {' · '}
-                {attempt.mistakeType.replace(/_/g, ' ')} · {new Date(attempt.attemptedAt).toLocaleString()}
+                {attemptReflectionLabel(attempt)} · {new Date(attempt.attemptedAt).toLocaleString()}
               </span>
               {attempt.note ? <span>Note: {attempt.note}</span> : null}
             </article>
