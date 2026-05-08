@@ -1,6 +1,7 @@
 import type { NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
+import type { TeachingSnippet } from '../../lib/teachingSnippets';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
 import { RegionArcTimeline } from './regionHub/RegionArcTimeline';
@@ -12,6 +13,7 @@ interface RegionHubProps {
   regionProgress: RegionProgress;
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
+  teachingSnippets: TeachingSnippet[];
   summary: RegionLearningSummary;
   onCompleteFieldGuide: () => void;
   onStartTraining: (intent: TrainingSessionIntent) => void;
@@ -36,6 +38,7 @@ export function RegionHub({
   regionProgress,
   fieldGuide,
   fieldGuideCompleted,
+  teachingSnippets,
   summary,
   onCompleteFieldGuide,
   onStartTraining,
@@ -66,6 +69,7 @@ export function RegionHub({
         <FieldGuidePanel
           fieldGuide={fieldGuide}
           fieldGuideCompleted={fieldGuideCompleted}
+          teachingSnippets={teachingSnippets}
           onCompleteFieldGuide={onCompleteFieldGuide}
         />
         <TrainingGroundsPanel

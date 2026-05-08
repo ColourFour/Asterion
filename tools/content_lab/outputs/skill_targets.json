@@ -1,0 +1,56 @@
+{
+  "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
+  "schema_name": "asterion_skill_targets",
+  "schema_version": 1,
+  "skill_targets": [
+    {
+      "confidence": "medium",
+      "micro_skills": [
+        "Identify the power and variable part of a binomial expression.",
+        "Use the correct binomial coefficient for a requested term.",
+        "Track signs and powers when combining two expansions."
+      ],
+      "paper_family": "p1",
+      "review_status": "needs_review",
+      "skill_target_id": "p1_binomial_expansion",
+      "source_question_ids": [
+        "11summer24_q03",
+        "12spring23_q06",
+        "12spring24_q06"
+      ],
+      "student_goal": "Recognize binomial expansion prompts and choose the right term or coefficient strategy.",
+      "title": "Binomial expansion structure",
+      "topic": "binomial_expansion"
+    },
+    {
+      "confidence": "medium",
+      "micro_skills": [
+        "Choose a sign convention before writing momentum equations.",
+        "Use impulse as change in momentum over a stated direction.",
+        "Separate conservation of momentum from energy or restitution assumptions."
+      ],
+      "paper_family": "p4",
+      "review_status": "needs_review",
+      "skill_target_id": "p4_momentum_impulse",
+      "source_question_ids": [
+        "41summer23_q01",
+        "42summer23_q02",
+        "43summer23_q01"
+      ],
+      "student_goal": "Track direction, impulse, and conservation equations in mechanics problems.",
+      "title": "Momentum and impulse",
+      "topic": "momentum_impulse"
+    }
+  ],
+  "supported_topics": [
+    "binomial_expansion",
+    "complex_numbers",
+    "differentiation",
+    "logarithms_and_exponentials",
+    "momentum_impulse",
+    "partial_fractions",
+    "quadratics",
+    "trigonometry",
+    "vectors"
+  ]
+}

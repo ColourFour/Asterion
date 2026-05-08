@@ -16,6 +16,7 @@ import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterAttemptsForRegion } from './lib/regionProgress';
+import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
 
@@ -27,6 +28,7 @@ export default function App() {
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
+  const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
@@ -41,6 +43,20 @@ export default function App() {
         setCurrentQuestion(undefined);
       })
       .catch((error: Error) => setLoadError(error.message));
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadTeachingSnippets()
+      .then((snippets) => {
+        if (!cancelled) setTeachingSnippets(snippets);
+      })
+      .catch((error: Error) => {
+        if (import.meta.env.DEV) console.warn('[Asterion teaching snippets]', error.message);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
@@ -60,6 +76,11 @@ export default function App() {
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
+  const selectedRegionTeachingSnippets = useMemo(() => (
+    selectedRegion
+      ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion, 4)
+      : []
+  ), [selectedRegion, teachingSnippets]);
   const selectedRegionFieldGuideCompleted = Boolean(selectedRegion && progress.regionLearning?.[selectedRegion.id]?.fieldGuideCompletedAt);
   const avatarLocation = useMemo(
     () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
@@ -247,6 +268,7 @@ export default function App() {
           regionProgress={selectedRegionProgress}
           fieldGuide={getRegionFieldGuide(selectedRegion)}
           fieldGuideCompleted={selectedRegionFieldGuideCompleted}
+          teachingSnippets={selectedRegionTeachingSnippets}
           summary={selectedRegionLearningSummary}
           onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
           onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}

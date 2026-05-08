@@ -1,14 +1,16 @@
 import { BookOpenCheck, CheckCircle2 } from 'lucide-react';
 import type { RegionFieldGuide } from '../../../data/regionFieldGuides';
+import type { TeachingSnippet } from '../../../lib/teachingSnippets';
 import { MathText } from '../../shared/MathText';
 
 interface FieldGuidePanelProps {
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
+  teachingSnippets: TeachingSnippet[];
   onCompleteFieldGuide: () => void;
 }
 
-export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, onCompleteFieldGuide }: FieldGuidePanelProps) {
+export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, teachingSnippets, onCompleteFieldGuide }: FieldGuidePanelProps) {
   return (
     <article className="region-loop-card field-guide-card">
       <div className="region-loop-card-title">
@@ -24,6 +26,57 @@ export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, onCompleteFie
         <h4>What this topic is</h4>
         <p><MathText text={fieldGuide.topic} /></p>
       </section>
+
+      {teachingSnippets.length ? (
+        <section>
+          <h4>Teaching snippets</h4>
+          <div className="teaching-snippet-grid">
+            {teachingSnippets.map((snippet) => (
+              <article className="teaching-snippet-card" key={snippet.snippetId}>
+                <div className="teaching-snippet-heading">
+                  <strong>{snippet.title}</strong>
+                  {snippet.snippetType ? <span>{snippet.snippetType.replace(/_/g, ' ')}</span> : null}
+                  {snippet.estimatedTimeMinutes ? <small>{snippet.estimatedTimeMinutes} min</small> : null}
+                </div>
+                <p><MathText text={snippet.studentGoal} /></p>
+                <p><MathText text={snippet.body} /></p>
+                {snippet.prerequisites.length ? (
+                  <div className="snippet-mini-section">
+                    <b>Before this:</b>
+                    <ul>{snippet.prerequisites.slice(0, 2).map((item) => <li key={item}><MathText text={item} /></li>)}</ul>
+                  </div>
+                ) : null}
+                <div className="snippet-mini-section">
+                  <b>Micro steps:</b>
+                  <ul>
+                    {(snippet.microSteps.length ? snippet.microSteps : snippet.steps).slice(0, 4).map((step) => <li key={step}><MathText text={step} /></li>)}
+                  </ul>
+                </div>
+                {snippet.commonMistakes.length ? (
+                  <div className="snippet-mini-section">
+                    <b>Common mistakes:</b>
+                    <ul>{snippet.commonMistakes.slice(0, 3).map((item) => <li key={item}><MathText text={item} /></li>)}</ul>
+                  </div>
+                ) : null}
+                <small><b>Exam move:</b> <MathText text={snippet.examMove} /></small>
+                <small><b>Trap:</b> <MathText text={snippet.commonTrap} /></small>
+                {snippet.guardianReadiness ? <small><b>Guardian:</b> <MathText text={snippet.guardianReadiness.readinessNote} /></small> : null}
+                {snippet.quickCheck ? (
+                  <details className="quick-check-reveal">
+                    <summary>Quick check</summary>
+                    <p><MathText text={snippet.quickCheck.prompt} /></p>
+                    <div>
+                      <strong>Answer</strong>
+                      <p><MathText text={snippet.quickCheck.answer} /></p>
+                      <small><MathText text={snippet.quickCheck.explanation} /></small>
+                    </div>
+                  </details>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section>
         <h4>What to recognize</h4>

@@ -3512,6 +3512,102 @@ legend {
   margin-top: 8px;
 }
 
+.teaching-snippet-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.teaching-snippet-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, 0.08), transparent 48%),
+    rgba(248, 253, 251, 0.86);
+}
+
+.teaching-snippet-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.teaching-snippet-heading strong {
+  margin-right: auto;
+}
+
+.teaching-snippet-heading span,
+.teaching-snippet-heading small {
+  padding: 2px 6px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 999px;
+  color: #1f3f3b;
+  background: rgba(223, 244, 239, 0.76);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.teaching-snippet-card strong,
+.snippet-mini-section b {
+  color: #1f3f3b;
+}
+
+.teaching-snippet-card p {
+  margin: 0;
+}
+
+.teaching-snippet-card ul {
+  margin-top: 0;
+}
+
+.teaching-snippet-card small {
+  color: #344154;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.teaching-snippet-card b {
+  color: #1f3f3b;
+}
+
+.snippet-mini-section {
+  display: grid;
+  gap: 4px;
+}
+
+.snippet-mini-section ul {
+  margin: 0;
+}
+
+.quick-check-reveal {
+  margin-top: 2px;
+  padding: 8px;
+  border: 1px solid rgba(183, 121, 31, 0.26);
+  border-radius: var(--radius-panel);
+  background: rgba(255, 250, 235, 0.78);
+}
+
+.quick-check-reveal summary {
+  cursor: pointer;
+  color: var(--color-gold-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.quick-check-reveal div {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(183, 121, 31, 0.22);
+}
+
 .worked-example-card {
   display: grid;
   gap: 4px;

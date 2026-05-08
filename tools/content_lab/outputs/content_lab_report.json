@@ -1,0 +1,247 @@
+{
+  "auto_eligible": 30,
+  "blocked": 1144,
+  "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
+  "review_only": 127,
+  "review_queue_counts_by_reason": {
+    "mapping_status_fail": 286,
+    "missing_mark_scheme_text": 1,
+    "question_text_trust_low": 1044,
+    "question_text_trust_unusable": 53,
+    "review_risk_flag": 72,
+    "severe_review_flag": 530,
+    "text_only_status_fail": 1133,
+    "topic_confidence_low": 11,
+    "validation_status_fail": 514,
+    "visual_curation_status_fail": 438,
+    "visual_curation_status_review": 65,
+    "visual_required": 94
+  },
+  "schema_name": "asterion_content_lab_report",
+  "schema_version": 1,
+  "skill_targets_created_by_paper_family_topic": {
+    "p1": {
+      "binomial_expansion": 1
+    },
+    "p4": {
+      "momentum_impulse": 1
+    }
+  },
+  "topics_with_skill_targets_but_no_reviewed_snippets": [
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_binomial_expansion"
+      ],
+      "topic": "binomial_expansion"
+    }
+  ],
+  "topics_with_source_records_but_no_skill_targets": [
+    {
+      "paper_family": "p1",
+      "source_record_count": 8,
+      "topic": "algebra"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 40,
+      "topic": "circular_measure"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 39,
+      "topic": "coordinate_geometry"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 71,
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 78,
+      "topic": "functions"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 20,
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 17,
+      "topic": "quadratics"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 45,
+      "topic": "series_and_sequences"
+    },
+    {
+      "paper_family": "p1",
+      "source_record_count": 45,
+      "topic": "trigonometry"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 13,
+      "topic": "algebra"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 9,
+      "topic": "binomial_expansion"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 47,
+      "topic": "complex_numbers"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 15,
+      "topic": "differential_equations"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 2,
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 3,
+      "topic": "functions"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 10,
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 49,
+      "topic": "logarithms_and_exponentials"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 33,
+      "topic": "numerical_methods"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 97,
+      "topic": "parametric_equations"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 27,
+      "topic": "partial_fractions"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 20,
+      "topic": "polynomials"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 33,
+      "topic": "trigonometry"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 38,
+      "topic": "vectors"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 26,
+      "topic": "connected_particles"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 25,
+      "topic": "equilibrium_coplanar_forces"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 5,
+      "topic": "equilibrium_particle"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 4,
+      "topic": "forces_newtons_second_law"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 33,
+      "topic": "friction_rough_plane"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 27,
+      "topic": "kinematics_constant_acceleration"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 16,
+      "topic": "kinematics_graphs"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 5,
+      "topic": "kinematics_variable_functions"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 19,
+      "topic": "power_and_resistance"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 1,
+      "topic": "rough_plane_energy"
+    },
+    {
+      "paper_family": "p4",
+      "source_record_count": 62,
+      "topic": "work_energy_power"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 10,
+      "topic": "binomial_distribution"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 14,
+      "topic": "data_representation"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 2,
+      "topic": "geometric_distribution"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 87,
+      "topic": "measures_of_central_tendency_and_dispersion"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 40,
+      "topic": "permutations_and_combinations"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 58,
+      "topic": "probability"
+    },
+    {
+      "paper_family": "p5",
+      "source_record_count": 35,
+      "topic": "probability_distributions"
+    }
+  ],
+  "total_records_read": 1301
+}

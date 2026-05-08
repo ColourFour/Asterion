@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asterion.local/schemas/skill_target.schema.json",
+  "title": "Asterion Content Lab Skill Targets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_name", "schema_version", "generated_by", "supported_topics", "skill_targets"],
+  "properties": {
+    "schema_name": { "const": "asterion_skill_targets" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "generated_by": { "type": "string", "minLength": 1 },
+    "supported_topics": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "skill_targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "skill_target_id",
+          "paper_family",
+          "topic",
+          "title",
+          "student_goal",
+          "micro_skills",
+          "source_question_ids",
+          "confidence",
+          "review_status"
+        ],
+        "properties": {
+          "skill_target_id": { "type": "string", "pattern": "^[a-z0-9_:-]+$" },
+          "paper_family": { "type": "string", "minLength": 1 },
+          "topic": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "student_goal": { "type": "string", "minLength": 1 },
+          "micro_skills": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "source_question_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "confidence": { "enum": ["low", "medium", "high"] },
+          "review_status": { "enum": ["needs_review", "teacher_reviewed", "published"] }
+        }
+      }
+    }
+  }
+}

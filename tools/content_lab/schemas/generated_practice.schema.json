@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asterion.local/schemas/generated_practice.schema.json",
+  "title": "Asterion Content Lab Generated Practice Placeholder",
+  "description": "Future schema for reviewed non-exam warm-ups. Batch 1 does not generate these records.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_name", "schema_version", "items"],
+  "properties": {
+    "schema_name": { "const": "asterion_generated_practice" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "practice_id",
+          "skill_target_id",
+          "paper_family",
+          "topic",
+          "prompt",
+          "worked_solution",
+          "review_status"
+        ],
+        "properties": {
+          "practice_id": { "type": "string", "pattern": "^[a-z0-9_:-]+$" },
+          "skill_target_id": { "type": "string", "minLength": 1 },
+          "paper_family": { "type": "string", "minLength": 1 },
+          "topic": { "type": "string", "minLength": 1 },
+          "prompt": { "type": "string", "minLength": 1 },
+          "worked_solution": { "type": "string", "minLength": 1 },
+          "review_status": { "enum": ["needs_review", "teacher_reviewed", "published"] }
+        }
+      }
+    }
+  }
+}
