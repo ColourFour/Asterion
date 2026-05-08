@@ -11,6 +11,7 @@ import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
 import { resolveRuntimeConfig } from './lib/appConfig';
+import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
@@ -29,6 +30,7 @@ export default function App() {
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
+  const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
@@ -59,6 +61,20 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    loadGeneratedPractice()
+      .then((items) => {
+        if (!cancelled) setGeneratedPractice(items);
+      })
+      .catch((error: Error) => {
+        if (import.meta.env.DEV) console.warn('[Asterion generated practice]', error.message);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
   const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts), [trainableQuestions, progress.attempts]);
   const regionLearningSummaries = useMemo(() => {
@@ -81,6 +97,11 @@ export default function App() {
       ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion, 4)
       : []
   ), [selectedRegion, teachingSnippets]);
+  const selectedRegionGeneratedPractice = useMemo(() => (
+    selectedRegion
+      ? getGeneratedPracticeForRegion(generatedPractice, selectedRegion.id, P3_ASTRAL_ACADEMY.paperFamily, 3)
+      : []
+  ), [generatedPractice, selectedRegion]);
   const selectedRegionFieldGuideCompleted = Boolean(selectedRegion && progress.regionLearning?.[selectedRegion.id]?.fieldGuideCompletedAt);
   const avatarLocation = useMemo(
     () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
@@ -213,7 +234,7 @@ export default function App() {
           <div className="onboarding-briefing">
             <strong>Academy charter</strong>
             <span>Restore P3 regions with official CAIE question images, mark-scheme checking, and honest self-marked attempts.</span>
-            <span>No AI marking. No synthetic questions. No hidden rewards. Your local evidence trail is the source of progress.</span>
+            <span>No AI marking. No generated exam clones. No hidden rewards. Your local evidence trail is the source of progress.</span>
           </div>
         </section>
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
@@ -269,6 +290,7 @@ export default function App() {
           fieldGuide={getRegionFieldGuide(selectedRegion)}
           fieldGuideCompleted={selectedRegionFieldGuideCompleted}
           teachingSnippets={selectedRegionTeachingSnippets}
+          generatedPractice={selectedRegionGeneratedPractice}
           summary={selectedRegionLearningSummary}
           onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
           onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}

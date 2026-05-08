@@ -2,6 +2,7 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
+import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
@@ -70,6 +71,25 @@ const snippet: TeachingSnippet = {
   sourceSkillTargetIds: [],
 };
 
+const generatedPractice: GeneratedPracticeItem = {
+  practiceId: 'gen_log_equation_basic_0001',
+  generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
+  paperFamily: 'p3',
+  topic: 'logarithms_and_exponentials',
+  snippetIds: ['p3-log-laws-001'],
+  regionIds: ['logarithm-grove'],
+  prompt: 'Solve ln(x) + ln(3) = ln(12).',
+  answer: 'x = 4',
+  workedSolution: [
+    'The domain requires x > 0.',
+    'Use the product law.',
+  ],
+  parameters: { a: 3, b: 12, solution: 4 },
+  verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
+  difficultyBand: 'easy',
+  reviewStatus: 'teacher_reviewed',
+};
+
 describe('FieldGuidePanel teaching snippets', () => {
   it('renders enriched snippet support with a revealable quick check', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
@@ -80,6 +100,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         fieldGuide={getRegionFieldGuide(logRegion!)}
         fieldGuideCompleted={false}
         teachingSnippets={[snippet]}
+        generatedPractice={[]}
         onCompleteFieldGuide={vi.fn()}
       />,
     );
@@ -100,5 +121,36 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(details?.open).toBe(true);
     expect(details?.textContent).toContain('Answer');
     expect(details?.textContent).toContain('Two cubed equals eight.');
+  });
+
+  it('renders revealable generated warm-up practice', () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    expect(logRegion).toBeTruthy();
+
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(logRegion!)}
+        fieldGuideCompleted={false}
+        teachingSnippets={[]}
+        generatedPractice={[generatedPractice]}
+        onCompleteFieldGuide={vi.fn()}
+      />,
+    );
+
+    expect(container.textContent).toContain('Warm-up Practice');
+    expect(container.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
+    expect(container.textContent).not.toContain('x = 4');
+
+    const revealButton = Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent === 'Reveal solution');
+    expect(revealButton).toBeTruthy();
+
+    act(() => {
+      revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(revealButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(container.textContent).toContain('x = 4');
+    expect(container.textContent).toContain('Use the product law.');
   });
 });

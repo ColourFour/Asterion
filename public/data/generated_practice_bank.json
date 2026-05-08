@@ -1,0 +1,539 @@
+{
+  "generated_by": "tools/content_lab/scripts/build_generated_practice.py",
+  "items": [
+    {
+      "answer": "x = 4",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 3,
+        "b": 12,
+        "form": "product",
+        "solution": 4
+      },
+      "practice_id": "gen_log_equation_basic_0001",
+      "prompt": "Solve ln(x) + ln(3) = ln(12).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x > 0.",
+        "Use the product law: ln(x) + ln(3) = ln(3x).",
+        "So ln(3x) = ln(12), which gives 3x = 12.",
+        "Therefore x = 4."
+      ]
+    },
+    {
+      "answer": "x = 9",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 5,
+        "b": 45,
+        "form": "product",
+        "solution": 9
+      },
+      "practice_id": "gen_log_equation_basic_0002",
+      "prompt": "Solve ln(x) + ln(5) = ln(45).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x > 0.",
+        "Use the product law: ln(x) + ln(5) = ln(5x).",
+        "So ln(5x) = ln(45), which gives 5x = 45.",
+        "Therefore x = 9."
+      ]
+    },
+    {
+      "answer": "x = 12",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "c": 3,
+        "d": 8,
+        "form": "quotient",
+        "solution": 12
+      },
+      "practice_id": "gen_log_equation_basic_0003",
+      "prompt": "Solve ln(2x) - ln(3) = ln(8).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires 2x > 0, so x > 0.",
+        "Use the quotient law: ln(2x) - ln(3) = ln((2x)/3).",
+        "So (2x)/3 = 8.",
+        "Therefore x = 12."
+      ]
+    },
+    {
+      "answer": "x = 15",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 4,
+        "c": 6,
+        "d": 10,
+        "form": "quotient",
+        "solution": 15
+      },
+      "practice_id": "gen_log_equation_basic_0004",
+      "prompt": "Solve ln(4x) - ln(6) = ln(10).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires 4x > 0, so x > 0.",
+        "Use the quotient law: ln(4x) - ln(6) = ln((4x)/6).",
+        "So (4x)/6 = 10.",
+        "Therefore x = 15."
+      ]
+    },
+    {
+      "answer": "x = 5",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "b": 25,
+        "form": "power_law",
+        "k": 2,
+        "solution": 5
+      },
+      "practice_id": "gen_log_equation_basic_0005",
+      "prompt": "Solve 2 ln(x) = ln(25).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x > 0.",
+        "Use the power law: 2 ln(x) = ln(x^2).",
+        "So ln(x^2) = ln(25), giving x^2 = 25.",
+        "The positive solution is x = 5."
+      ]
+    },
+    {
+      "answer": "x = 2",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "b": 8,
+        "form": "power_law",
+        "k": 3,
+        "solution": 2
+      },
+      "practice_id": "gen_log_equation_basic_0006",
+      "prompt": "Solve 3 ln(x) = ln(8).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x > 0.",
+        "Use the power law: 3 ln(x) = ln(x^3).",
+        "So ln(x^3) = ln(8), giving x^3 = 8.",
+        "The positive solution is x = 2."
+      ]
+    },
+    {
+      "answer": "x = 4",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "b": 64,
+        "form": "log_power",
+        "n": 3,
+        "solution": 4
+      },
+      "practice_id": "gen_log_equation_basic_0007",
+      "prompt": "Solve ln(x^3) = ln(64).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The original log argument requires x^3 > 0, so x > 0 here.",
+        "Since ln(x^3) = ln(64), the arguments are equal: x^3 = 64.",
+        "Taking the positive root gives x = 4."
+      ]
+    },
+    {
+      "answer": "x = 8",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 3,
+        "b": 11,
+        "form": "shifted_argument",
+        "solution": 8
+      },
+      "practice_id": "gen_log_equation_basic_0008",
+      "prompt": "Solve ln(x + 3) = ln(11).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x + 3 > 0.",
+        "Equal natural logs have equal positive arguments, so x + 3 = 11.",
+        "Therefore x = 8.",
+        "The check x + 3 = 11 is positive, so the domain is valid."
+      ]
+    },
+    {
+      "answer": "x = 9",
+      "difficulty_band": "easy",
+      "generator_family": "logarithms_and_exponentials.log_equation_basic",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 5,
+        "b": 14,
+        "form": "shifted_argument",
+        "solution": 9
+      },
+      "practice_id": "gen_log_equation_basic_0009",
+      "prompt": "Solve ln(x + 5) = ln(14).",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-log-domain-001",
+        "p3-log-exp-convert-001",
+        "p3-log-laws-001"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "The domain requires x + 5 > 0.",
+        "Equal natural logs have equal positive arguments, so x + 5 = 14.",
+        "Therefore x = 9.",
+        "The check x + 5 = 14 is positive, so the domain is valid."
+      ]
+    },
+    {
+      "answer": "1 + 8x + 24x^2",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "item_type": "expand_first_terms",
+        "n": 4,
+        "x2_coefficient": 24,
+        "x_coefficient": 8
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
+      "prompt": "Expand (1 + 2x)^4 up to and including the x^2 term.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "Use (1 + t)^n = 1 + nt + C(n,2)t^2 + ... with t = 2x and n = 4.",
+        "The x term is 4(2x) = 8x.",
+        "The x^2 term is C(4,2)(2x)^2 = 24x^2.",
+        "So the expansion up to x^2 is 1 + 8x + 24x^2."
+      ]
+    },
+    {
+      "answer": "1 - 5x + 10x^2",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": -1,
+        "item_type": "expand_first_terms",
+        "n": 5,
+        "x2_coefficient": 10,
+        "x_coefficient": -5
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0002",
+      "prompt": "Expand (1 - x)^5 up to and including the x^2 term.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "Use (1 + t)^n = 1 + nt + C(n,2)t^2 + ... with t = -1x and n = 5.",
+        "The x term is 5(-1x) = -5x.",
+        "The x^2 term is C(5,2)(-1x)^2 = 10x^2.",
+        "So the expansion up to x^2 is 1 - 5x + 10x^2."
+      ]
+    },
+    {
+      "answer": "1 + 9x + 27x^2",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 3,
+        "item_type": "expand_first_terms",
+        "n": 3,
+        "x2_coefficient": 27,
+        "x_coefficient": 9
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0003",
+      "prompt": "Expand (1 + 3x)^3 up to and including the x^2 term.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "Use (1 + t)^n = 1 + nt + C(n,2)t^2 + ... with t = 3x and n = 3.",
+        "The x term is 3(3x) = 9x.",
+        "The x^2 term is C(3,2)(3x)^2 = 27x^2.",
+        "So the expansion up to x^2 is 1 + 9x + 27x^2."
+      ]
+    },
+    {
+      "answer": "Coefficient of x^2 = 19",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 1,
+        "b": 2,
+        "coefficient_x2": 19,
+        "item_type": "coefficient_product",
+        "m": 3,
+        "n": 2
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0004",
+      "prompt": "Find the coefficient of x^2 in (1 + x)^3(1 + 2x)^2.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "First terms: (1 + x)^3 = 1 + 3x + 3x^2 + ...",
+        "First terms: (1 + 2x)^2 = 1 + 4x + 4x^2 + ...",
+        "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
+        "So the coefficient is 3 + (3)(4) + 4 = 19."
+      ]
+    },
+    {
+      "answer": "Coefficient of x^2 = -6",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "b": -1,
+        "coefficient_x2": -6,
+        "item_type": "coefficient_product",
+        "m": 3,
+        "n": 4
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0005",
+      "prompt": "Find the coefficient of x^2 in (1 + 2x)^3(1 - x)^4.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "First terms: (1 + 2x)^3 = 1 + 6x + 12x^2 + ...",
+        "First terms: (1 - x)^4 = 1 - 4x + 6x^2 + ...",
+        "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
+        "So the coefficient is 12 + (6)(-4) + 6 = -6."
+      ]
+    },
+    {
+      "answer": "Coefficient of x^2 = -9",
+      "difficulty_band": "easy",
+      "generator_family": "binomial_expansion.first_terms_and_coefficient",
+      "paper_family": "p3",
+      "parameters": {
+        "a": -1,
+        "b": 3,
+        "coefficient_x2": -9,
+        "item_type": "coefficient_product",
+        "m": 4,
+        "n": 2
+      },
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0006",
+      "prompt": "Find the coefficient of x^2 in (1 - x)^4(1 + 3x)^2.",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "topic": "binomial_expansion",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_v1"
+      },
+      "worked_solution": [
+        "First terms: (1 - x)^4 = 1 - 4x + 6x^2 + ...",
+        "First terms: (1 + 3x)^2 = 1 + 6x + 9x^2 + ...",
+        "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
+        "So the coefficient is 6 + (-4)(6) + 9 = -9."
+      ]
+    }
+  ],
+  "schema_name": "asterion_generated_practice",
+  "schema_version": 1
+}

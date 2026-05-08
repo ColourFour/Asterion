@@ -1,5 +1,6 @@
 import type { NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
+import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
@@ -14,6 +15,7 @@ interface RegionHubProps {
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
   teachingSnippets: TeachingSnippet[];
+  generatedPractice: GeneratedPracticeItem[];
   summary: RegionLearningSummary;
   onCompleteFieldGuide: () => void;
   onStartTraining: (intent: TrainingSessionIntent) => void;
@@ -39,6 +41,7 @@ export function RegionHub({
   fieldGuide,
   fieldGuideCompleted,
   teachingSnippets,
+  generatedPractice,
   summary,
   onCompleteFieldGuide,
   onStartTraining,
@@ -70,6 +73,7 @@ export function RegionHub({
           fieldGuide={fieldGuide}
           fieldGuideCompleted={fieldGuideCompleted}
           teachingSnippets={teachingSnippets}
+          generatedPractice={generatedPractice}
           onCompleteFieldGuide={onCompleteFieldGuide}
         />
         <TrainingGroundsPanel

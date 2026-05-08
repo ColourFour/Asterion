@@ -1,16 +1,19 @@
 import { BookOpenCheck, CheckCircle2 } from 'lucide-react';
 import type { RegionFieldGuide } from '../../../data/regionFieldGuides';
+import type { GeneratedPracticeItem } from '../../../lib/generatedPractice';
 import type { TeachingSnippet } from '../../../lib/teachingSnippets';
 import { MathText } from '../../shared/MathText';
+import { WarmUpPracticePanel } from './WarmUpPracticePanel';
 
 interface FieldGuidePanelProps {
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
   teachingSnippets: TeachingSnippet[];
+  generatedPractice: GeneratedPracticeItem[];
   onCompleteFieldGuide: () => void;
 }
 
-export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, teachingSnippets, onCompleteFieldGuide }: FieldGuidePanelProps) {
+export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, teachingSnippets, generatedPractice, onCompleteFieldGuide }: FieldGuidePanelProps) {
   return (
     <article className="region-loop-card field-guide-card">
       <div className="region-loop-card-title">
@@ -77,6 +80,8 @@ export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, teachingSnipp
           </div>
         </section>
       ) : null}
+
+      <WarmUpPracticePanel practiceItems={generatedPractice} />
 
       <section>
         <h4>What to recognize</h4>

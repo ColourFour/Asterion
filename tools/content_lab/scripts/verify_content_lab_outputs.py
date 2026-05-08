@@ -11,6 +11,10 @@ from typing import Any
 
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
 TARGET_REVIEW_STATUSES = {"needs_review", "teacher_reviewed", "published"}
+PRACTICE_REVIEW_STATUSES = {"candidate", "needs_review", "teacher_reviewed", "published", "blocked"}
+PRACTICE_RUNTIME_BLOCKED_STATUSES = {"candidate", "needs_review", "blocked"}
+PRACTICE_VERIFICATION_STATUSES = {"pass", "fail"}
+PRACTICE_DIFFICULTY_BANDS = {"easy", "medium", "hard"}
 SNIPPET_TYPES = {"concept", "method", "mistake_repair", "quick_check"}
 
 
@@ -71,6 +75,11 @@ def require_guardian_readiness(value: Any, owner: str, errors: list[str]) -> Non
     require_string_array(value, "supports_topics", f"{owner}.guardian_readiness", errors, required=True)
     require_string_array(value, "recommended_before_question_ids", f"{owner}.guardian_readiness", errors, required=True)
     require_non_empty_string(value, "readiness_note", f"{owner}.guardian_readiness", errors)
+
+
+def require_record(value: Any, owner: str, errors: list[str]) -> dict[str, Any] | None:
+    require(isinstance(value, dict), f"{owner} must be an object", errors)
+    return value if isinstance(value, dict) else None
 
 
 def verify_skill_targets(path: Path, errors: list[str]) -> None:
@@ -169,10 +178,62 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
             require(snippet_type in SNIPPET_TYPES, f"{owner}.snippet_type has invalid value", errors)
 
 
+def verify_generated_practice(path: Path, errors: list[str], *, runtime: bool) -> None:
+    if not path.exists():
+        return
+
+    data = load_json(path)
+    require(isinstance(data, dict), f"{path} must contain an object", errors)
+    if not isinstance(data, dict):
+        return
+    items = data.get("items")
+    require(isinstance(items, list), f"{path} must contain items[]", errors)
+    if not isinstance(items, list):
+        return
+
+    seen = set()
+    for index, item_value in enumerate(items):
+        item = require_record(item_value, f"generated_practice.items[{index}]", errors)
+        if not item:
+            continue
+        practice_id = item.get("practice_id")
+        owner = str(practice_id or f"generated_practice.items[{index}]")
+        require(is_non_empty_string(practice_id), f"{owner} missing practice_id", errors)
+        require(practice_id not in seen, f"Duplicate practice_id: {practice_id}", errors)
+        seen.add(practice_id)
+
+        for key in ("generator_family", "paper_family", "topic", "prompt", "answer", "difficulty_band", "review_status"):
+            require_non_empty_string(item, key, owner, errors)
+        require(item.get("difficulty_band") in PRACTICE_DIFFICULTY_BANDS, f"{owner} has invalid difficulty_band", errors)
+        require(item.get("review_status") in PRACTICE_REVIEW_STATUSES, f"{owner} has invalid review_status", errors)
+        require_string_array(item, "worked_solution", owner, errors, required=True, min_items=1)
+        require_string_array(item, "snippet_ids", owner, errors)
+        require_string_array(item, "region_ids", owner, errors)
+        if item.get("skill_target_id") is not None:
+            require_non_empty_string(item, "skill_target_id", owner, errors)
+
+        parameters = item.get("parameters")
+        require(isinstance(parameters, dict) and bool(parameters), f"{owner}.parameters must be a non-empty object", errors)
+
+        verification = require_record(item.get("verification"), f"{owner}.verification", errors)
+        if verification:
+            require(verification.get("status") in PRACTICE_VERIFICATION_STATUSES, f"{owner}.verification.status has invalid value", errors)
+            require(verification.get("method") == "deterministic", f"{owner}.verification.method must be deterministic", errors)
+            require_non_empty_string(verification, "verifier", f"{owner}.verification", errors)
+
+        if runtime:
+            review_status = item.get("review_status")
+            verification_status = verification.get("status") if verification else None
+            require(review_status in RUNTIME_REVIEW_STATUSES, f"Runtime practice {owner} must be teacher_reviewed or published", errors)
+            require(review_status not in PRACTICE_RUNTIME_BLOCKED_STATUSES, f"Runtime practice {owner} cannot be {review_status}", errors)
+            require(verification_status == "pass", f"Runtime practice {owner} must have verification.status pass", errors)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify Content Lab outputs.")
     parser.add_argument("--outputs-dir", default="tools/content_lab/outputs")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json")
+    parser.add_argument("--runtime-generated-practice", default="public/data/generated_practice_bank.json")
     args = parser.parse_args()
 
     outputs_dir = Path(args.outputs_dir)
@@ -184,6 +245,15 @@ def main() -> int:
     ):
         try:
             verifier(path, errors)
+        except ValueError as error:
+            errors.append(str(error))
+
+    for path, runtime in (
+        (outputs_dir / "generated_practice_bank.json", False),
+        (Path(args.runtime_generated_practice), True),
+    ):
+        try:
+            verify_generated_practice(path, errors, runtime=runtime)
         except ValueError as error:
             errors.append(str(error))
 

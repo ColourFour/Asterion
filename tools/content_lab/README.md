@@ -6,7 +6,7 @@ Content Lab is an internal, local-first pipeline for mining curriculum evidence 
 
 - Input evidence: `public/data/question_bank.json`
 - Generated internal outputs: `tools/content_lab/outputs/`
-- Runtime-reviewed content: `public/data/teaching_snippets.json`
+- Runtime-reviewed content: `public/data/teaching_snippets.json` and `public/data/generated_practice_bank.json`
 - Browser runtime: consumes only reviewed static JSON from `public/data/`
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
 
@@ -25,6 +25,20 @@ python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 ```
 
 Both scripts use only the Python standard library.
+
+## Batch 3 Commands
+
+Build deterministic generated warm-up practice:
+
+```bash
+python3 tools/content_lab/scripts/build_generated_practice.py \
+  --skill-targets tools/content_lab/outputs/skill_targets.json \
+  --snippets public/data/teaching_snippets.json \
+  --output tools/content_lab/outputs/generated_practice_bank.json \
+  --runtime-output public/data/generated_practice_bank.json
+```
+
+The generated practice script writes all generated items to `tools/content_lab/outputs/generated_practice_bank.json`, then writes only reviewed/published and verification-passing items to `public/data/generated_practice_bank.json`.
 
 ## Source Eligibility
 
@@ -59,3 +73,5 @@ Records become `review_only` when they are not blocked but still need human atte
 `content_lab_report.json` summarizes source counts, eligibility counts, skill-target coverage by paper family and topic, review-queue reasons, source topics without skill targets, and skill targets that do not yet have reviewed snippets.
 
 `public/data/teaching_snippets.json` contains only original reviewed teaching content with `review_status` set to `teacher_reviewed` or `published`. It must not contain copied exam questions.
+
+`generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
