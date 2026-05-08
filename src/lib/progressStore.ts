@@ -9,7 +9,7 @@ import {
   normalizeStoredProgress,
   saveLocalProgress,
 } from './localProgressAdapter';
-import type { ProgressStorageAdapter } from './progressAdapter';
+import type { ProgressStorageAdapter, RegionGuardianAttemptRecordInput } from './progressAdapter';
 
 export function getProgressStorageAdapter(): ProgressStorageAdapter {
   return localProgressAdapter;
@@ -39,6 +39,18 @@ export function addIssueReport(report: IssueReport): StoredProgress {
   return getProgressStorageAdapter().addIssueReport(report);
 }
 
+export function startRegionFieldGuide(regionId: string): StoredProgress {
+  return getProgressStorageAdapter().startRegionFieldGuide(regionId);
+}
+
+export function completeRegionFieldGuide(regionId: string): StoredProgress {
+  return getProgressStorageAdapter().completeRegionFieldGuide(regionId);
+}
+
+export function recordRegionGuardianAttempt(input: RegionGuardianAttemptRecordInput): StoredProgress {
+  return getProgressStorageAdapter().recordRegionGuardianAttempt(input);
+}
+
 export function clearProgress(): StoredProgress {
   return getProgressStorageAdapter().clearLocalDemoProgress();
 }
@@ -53,4 +65,4 @@ export {
   normalizeStoredProgress,
 };
 
-export type { ProgressStorageAdapter, TopicProfile };
+export type { ProgressStorageAdapter, RegionGuardianAttemptRecordInput, TopicProfile };

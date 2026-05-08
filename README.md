@@ -60,6 +60,26 @@ Current P3 regions:
 
 Algebra Vault, Logarithm Observatory, Trigonometry Spire, and Argand Atrium are the first active classroom regions. Other regions are visible as dormant or available when matching questions exist.
 
+## Region Learning Loop
+
+**Region Learning Loop v1** turns each P3 region into a small academy journey instead of only a clickable topic island.
+
+The intended loop is:
+
+```text
+Field Guide -> Training Grounds -> Region Guardian
+```
+
+- Field Guide: short hand-authored region guidance with learning objective, key skills, common exam moves, common traps, worked-example placeholders, and readiness checks.
+- Training Grounds: the current image-first practice flow, labeled as warm-up, core practice, weak-area review, or challenge with a short local explanation.
+- Region Guardian: an evidence-gated mastery check selected from trainable canonical questions in the same region.
+
+Field Guide completion and guardian clear state are stored locally through the progress adapter. Field Guide completion does not award mastery, XP, avatar rewards, or restored-region state by itself. Region clearing and reward placeholders require saved attempts, marks, mark-scheme availability, and guardian evidence.
+
+The first implementation exposes the hub for P3 regions, with region-specific guide metadata and modest CSS-driven world-map state treatments.
+
+See `docs/region-learning-loop-roadmap.md` for the batch plan.
+
 ## System Boundaries
 
 Gameplay systems may:
@@ -414,9 +434,10 @@ Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSO
 
 ## Roadmap
 
-- Add broader P1, P4/Mechanics, and P5/Statistics topic maps.
-- Give each future paper family its own world map.
-- Implement hosted storage behind the existing progress adapter only after auth, RLS, export/delete, and local-to-hosted migration UX are reviewed.
-- Add teacher dashboards for classes and weak-area planning.
-- Add optional Vercel deployment once the backend layer exists.
-- Add richer avatar assets and progression events tied to topic mastery.
+- Extend guardian attempts with clearer teacher-facing reporting once the first classroom trial identifies useful export columns.
+- Add fuller worked examples to the Field Guides without replacing canonical question or mark-scheme images.
+- Tighten practice-ladder selection so warm-up, weak-area review, and challenge sessions choose questions differently where the bank has enough metadata.
+- Add avatar unlock history derived from guardian or mixed-review evidence, not from Field Guide completion alone.
+- Run browser/mobile QA and hosted-readiness cleanup before any public classroom pilot.
+- Add broader P1, P4/Mechanics, and P5/Statistics worlds only after the P3 region loop is proven.
+- Implement hosted storage behind the existing progress adapter only after auth, RLS, export/delete, local-to-hosted migration UX, and canonical asset access decisions are reviewed.

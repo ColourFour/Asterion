@@ -12,6 +12,7 @@ export function buildExportJson(progress: StoredProgress, avatarGear?: AvatarGea
     avatar: progress.avatar,
     avatarGear,
     regionProgress,
+    regionLearning: progress.regionLearning ?? {},
     attempts: progress.attempts,
     topicProfiles: progress.topicProfiles,
     issueReports: progress.issueReports,

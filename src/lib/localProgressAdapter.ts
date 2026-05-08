@@ -8,13 +8,14 @@ import type {
   MistakeType,
   PaperFamily,
   RegionRank,
+  RegionLearningRecord,
   StoredProgress,
   StudentProfile,
   TopicProfile,
 } from '../types';
 import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore';
 import { updateTopicProfile } from './mastery';
-import type { ProgressStorageAdapter } from './progressAdapter';
+import type { ProgressStorageAdapter, RegionGuardianAttemptRecordInput } from './progressAdapter';
 
 export const CURRENT_PROGRESS_SCHEMA_VERSION = 1;
 export const LOCAL_PROGRESS_STORAGE_KEY = 'asterion.progress.v1';
@@ -182,6 +183,31 @@ function normalizeIssueReport(value: unknown): IssueReport | undefined {
   };
 }
 
+function normalizeRegionLearningRecord(regionId: string, value: unknown): RegionLearningRecord | undefined {
+  if (!isRecord(value)) return undefined;
+  const recordRegionId = optionalString(value.regionId) ?? regionId;
+  if (!recordRegionId) return undefined;
+  return {
+    regionId: recordRegionId,
+    fieldGuideStartedAt: optionalString(value.fieldGuideStartedAt),
+    fieldGuideCompletedAt: optionalString(value.fieldGuideCompletedAt),
+    guardianQuestionId: optionalString(value.guardianQuestionId),
+    guardianAttemptId: optionalString(value.guardianAttemptId),
+    guardianAttemptedAt: optionalString(value.guardianAttemptedAt),
+    guardianClearedAt: optionalString(value.guardianClearedAt),
+    updatedAt: optionalString(value.updatedAt) ?? optionalString(value.fieldGuideCompletedAt) ?? optionalString(value.guardianAttemptedAt) ?? new Date(0).toISOString(),
+  };
+}
+
+function normalizeRegionLearningMap(value: unknown): Record<string, RegionLearningRecord> {
+  if (!isRecord(value)) return {};
+  return Object.entries(value).reduce<Record<string, RegionLearningRecord>>((records, [regionId, record]) => {
+    const normalized = normalizeRegionLearningRecord(regionId, record);
+    if (normalized) records[normalized.regionId] = normalized;
+    return records;
+  }, {});
+}
+
 function rebuildTopicProfiles(attempts: Attempt[]): Record<string, TopicProfile> {
   return attempts.reduce<Record<string, TopicProfile>>((profiles, attempt) => ({
     ...profiles,
@@ -200,6 +226,7 @@ export function emptyProgress(): StoredProgress {
     attempts: [],
     topicProfiles: {},
     issueReports: [],
+    regionLearning: {},
     settings: defaultSettings,
   };
 }
@@ -230,6 +257,7 @@ export function normalizeStoredProgress(value: unknown): StoredProgress {
     attempts,
     topicProfiles: rebuildTopicProfiles(attempts),
     issueReports,
+    regionLearning: normalizeRegionLearningMap(value.regionLearning),
     settings: normalizeSettings(value.settings),
   };
 }
@@ -248,6 +276,23 @@ export function saveLocalProgress(progress: StoredProgress): StoredProgress {
   const normalized = normalizeStoredProgress(progress);
   browserStorage()?.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify(normalized));
   return normalized;
+}
+
+function updateRegionLearningRecord(
+  regionId: string,
+  update: (current: RegionLearningRecord | undefined, now: string) => RegionLearningRecord,
+): StoredProgress {
+  const progress = loadLocalProgress();
+  const now = new Date().toISOString();
+  const current = progress.regionLearning?.[regionId];
+  const nextRecord = update(current, now);
+  return saveLocalProgress({
+    ...progress,
+    regionLearning: {
+      ...(progress.regionLearning ?? {}),
+      [regionId]: nextRecord,
+    },
+  });
 }
 
 export const localProgressAdapter: ProgressStorageAdapter = {
@@ -292,6 +337,40 @@ export const localProgressAdapter: ProgressStorageAdapter = {
     return saveLocalProgress({
       ...progress,
       issueReports: [...progress.issueReports, issueReport],
+    });
+  },
+
+  startRegionFieldGuide(regionId: string): StoredProgress {
+    return updateRegionLearningRecord(regionId, (current, now) => ({
+      ...current,
+      regionId,
+      fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
+      updatedAt: now,
+    }));
+  },
+
+  completeRegionFieldGuide(regionId: string): StoredProgress {
+    return updateRegionLearningRecord(regionId, (current, now) => ({
+      ...current,
+      regionId,
+      fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
+      fieldGuideCompletedAt: current?.fieldGuideCompletedAt ?? now,
+      updatedAt: now,
+    }));
+  },
+
+  recordRegionGuardianAttempt(input: RegionGuardianAttemptRecordInput): StoredProgress {
+    return updateRegionLearningRecord(input.regionId, (current, now) => {
+      const attemptedAt = input.attemptedAt ?? now;
+      return {
+        ...current,
+        regionId: input.regionId,
+        guardianQuestionId: input.questionId,
+        guardianAttemptId: input.attemptId,
+        guardianAttemptedAt: attemptedAt,
+        guardianClearedAt: input.passed ? (current?.guardianClearedAt ?? attemptedAt) : current?.guardianClearedAt,
+        updatedAt: now,
+      };
     });
   },
 

@@ -5,6 +5,8 @@ import { PracticeView } from './components/practice/PracticeView';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
 import { TeacherExport } from './components/teacher/TeacherExport';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
+import { RegionHub } from './components/world/RegionHub';
+import { getRegionFieldGuide } from './data/regionFieldGuides';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
@@ -12,11 +14,12 @@ import { resolveRuntimeConfig } from './lib/appConfig';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
-import { calculateWorldProgress } from './lib/regionProgress';
+import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
+import { calculateWorldProgress, filterAttemptsForRegion } from './lib/regionProgress';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress } from './types';
+import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'regions' | 'profile' | 'teacher';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'teacher';
 
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
@@ -28,6 +31,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
+  const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
 
   useEffect(() => {
     loadQuestionBankWithDiagnostics()
@@ -41,8 +45,22 @@ export default function App() {
 
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
   const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts), [trainableQuestions, progress.attempts]);
+  const regionLearningSummaries = useMemo(() => {
+    return Object.fromEntries(worldProgress.map((regionProgress) => {
+      const regionQuestions = filterTrainableQuestionsForRegion(trainableQuestions, regionProgress.region);
+      const regionAttempts = filterAttemptsForRegion(regionProgress.region, progress.attempts, regionQuestions);
+      return [regionProgress.region.id, buildRegionLearningSummary({
+        regionProgress,
+        learningRecord: progress.regionLearning?.[regionProgress.region.id],
+        regionQuestions,
+        regionAttempts,
+      })];
+    }));
+  }, [progress.attempts, progress.regionLearning, trainableQuestions, worldProgress]);
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
+  const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
+  const selectedRegionFieldGuideCompleted = Boolean(selectedRegion && progress.regionLearning?.[selectedRegion.id]?.fieldGuideCompletedAt);
   const avatarLocation = useMemo(
     () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
     [worldProgress, selectedRegion, currentQuestion],
@@ -64,6 +82,10 @@ export default function App() {
     return viewMode === 'weak_areas' || viewMode === 'target_topic' || viewMode === 'start' ? viewMode : 'start';
   }
 
+  function practiceModeForTrainingIntent(intent: TrainingSessionIntent | undefined): PracticeMode {
+    return intent === 'weak_area_review' ? 'weak_areas' : 'target_topic';
+  }
+
   function chooseNext(nextProgress = progress, mode: PracticeMode = activePracticeMode()) {
     const candidateQuestions = selectedRegion ? filterTrainableQuestionsForRegion(trainableQuestions, selectedRegion) : p3Questions();
     setCurrentQuestion(selectNextQuestion(candidateQuestions, {
@@ -80,6 +102,7 @@ export default function App() {
 
   function startPractice() {
     setSelectedRegion(undefined);
+    setTrainingIntent(undefined);
     setViewMode('start');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
       mode: 'start',
@@ -90,31 +113,51 @@ export default function App() {
 
   function enterRegion(region: RegionDefinition) {
     setSelectedRegion(region);
+    setTrainingIntent(undefined);
+    setViewMode('region_hub');
+    setCurrentQuestion(undefined);
+  }
+
+  function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
+    setSelectedRegion(region);
+    setTrainingIntent(intent);
     setViewMode('target_topic');
     setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
-      mode: 'target_topic',
+      mode: practiceModeForTrainingIntent(intent),
       attempts: progress.attempts,
       topicProfiles: progress.topicProfiles,
+      currentQuestionId: currentQuestion?.id,
     }));
+  }
+
+  function challengeGuardian(region: RegionDefinition, question: NormalizedQuestion) {
+    setSelectedRegion(region);
+    setTrainingIntent(undefined);
+    setViewMode('guardian');
+    setCurrentQuestion(question);
   }
 
   function returnToMap() {
     setViewMode('map');
     setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
   }
 
   function openRegions() {
     setViewMode('regions');
     setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
   }
 
   function openProfile() {
     setViewMode('profile');
     setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
   }
 
   function reviewWeakAreas(nextProgress = progress) {
     setSelectedRegion(undefined);
+    setTrainingIntent(undefined);
     setViewMode('weak_areas');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
       mode: 'weak_areas',
@@ -168,8 +211,8 @@ export default function App() {
         </div>
         <nav>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
-          <button className={viewMode === 'regions' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
-          <button className={viewMode === 'start' || viewMode === 'target_topic' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
+          <button className={viewMode === 'regions' || viewMode === 'region_hub' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
+          <button className={viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'guardian' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
           <button className={viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => reviewWeakAreas()}>Review Weak Areas</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
           <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => setViewMode('teacher')}>Teacher/Export</button>
@@ -186,6 +229,7 @@ export default function App() {
           avatarName={progress.profile.avatarName}
           avatar={progress.avatar}
           avatarLocation={avatarLocation}
+          regionLearningSummaries={regionLearningSummaries}
           notice={worldNotice}
           onTrain={enterRegion}
           onRegions={openRegions}
@@ -195,7 +239,20 @@ export default function App() {
       ) : null}
 
       {viewMode === 'regions' ? (
-        <AstralRegionLedger progress={worldProgress} onTrain={enterRegion} />
+        <AstralRegionLedger progress={worldProgress} regionLearningSummaries={regionLearningSummaries} onTrain={enterRegion} />
+      ) : null}
+
+      {viewMode === 'region_hub' && selectedRegion && selectedRegionProgress && selectedRegionLearningSummary ? (
+        <RegionHub
+          regionProgress={selectedRegionProgress}
+          fieldGuide={getRegionFieldGuide(selectedRegion)}
+          fieldGuideCompleted={selectedRegionFieldGuideCompleted}
+          summary={selectedRegionLearningSummary}
+          onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
+          onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
+          onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
+          onReturnToMap={returnToMap}
+        />
       ) : null}
 
       {viewMode === 'profile' ? (
@@ -215,7 +272,7 @@ export default function App() {
             setProgress(progressAdapter.clearLocalDemoProgress());
           }
         }} />
-      ) : viewMode !== 'map' && viewMode !== 'regions' && viewMode !== 'profile' ? (
+      ) : viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' || viewMode === 'guardian' ? (
         <PracticeView
           question={currentQuestion}
           progress={progress}
@@ -226,8 +283,29 @@ export default function App() {
           worldName={selectedRegion ? P3_WORLD_NAME : undefined}
           selectedRegion={selectedRegion}
           selectedRegionRank={selectedRegionProgress?.rank}
+          regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
+          sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
+          sessionReason={viewMode === 'guardian'
+            ? 'You are challenging the Region Guardian because your saved local evidence unlocked this check.'
+            : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
+          guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
           onAttempt={(attempt: Attempt) => {
             const nextProgress = progressAdapter.addAttempt(attempt);
+            if (viewMode === 'guardian' && selectedRegion) {
+              const scoreRatio = typeof attempt.scoreRatio === 'number'
+                ? attempt.scoreRatio
+                : typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0
+                  ? attempt.marksEarned / attempt.marksAvailable
+                  : 0;
+              setProgress(progressAdapter.recordRegionGuardianAttempt({
+                regionId: selectedRegion.id,
+                questionId: attempt.questionId,
+                attemptId: attempt.id,
+                passed: scoreRatio >= GUARDIAN_PASS_SCORE_RATIO,
+                attemptedAt: attempt.attemptedAt,
+              }));
+              return;
+            }
             setProgress(nextProgress);
           }}
           onIssue={(questionId: string, issueType: IssueType, note?: string) => {
@@ -235,7 +313,14 @@ export default function App() {
           }}
           onReturnToMap={returnToMap}
           onReviewWeak={() => reviewWeakAreas()}
-          onContinuePractice={() => chooseNext(progress, selectedRegion ? 'target_topic' : activePracticeMode())}
+          onContinuePractice={() => {
+            if (viewMode === 'guardian' && selectedRegion) {
+              enterRegion(selectedRegion);
+              return;
+            }
+            chooseNext(progress, selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
+          }}
+          continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
         />
       ) : null}
 

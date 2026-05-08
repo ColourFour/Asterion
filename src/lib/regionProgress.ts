@@ -33,18 +33,27 @@ export function calculateRegionRank(input: {
   return 'Discovered';
 }
 
+export function filterAttemptsForRegion(
+  region: RegionDefinition,
+  attempts: Attempt[],
+  questions: NormalizedQuestion[] = [],
+): Attempt[] {
+  const regionQuestions = filterQuestionsForRegion(questions.filter(isQuestionTrainable), region);
+  const regionQuestionIds = new Set(regionQuestions.map((question) => question.id));
+  return attempts.filter((attempt) => {
+    if (attempt.regionName === region.name) return true;
+    if (regionQuestionIds.has(attempt.questionId)) return true;
+    return matchRegionForLabels([attempt.topicDisplayName, attempt.subtopic, attempt.localTopic, attempt.deepseekTopic])?.id === region.id;
+  });
+}
+
 export function calculateRegionProgress(
   region: RegionDefinition,
   questions: NormalizedQuestion[],
   attempts: Attempt[],
 ): RegionProgress {
   const regionQuestions = filterQuestionsForRegion(questions.filter(isQuestionTrainable), region);
-  const regionQuestionIds = new Set(regionQuestions.map((question) => question.id));
-  const regionAttempts = attempts.filter((attempt) => {
-    if (attempt.regionName === region.name) return true;
-    if (regionQuestionIds.has(attempt.questionId)) return true;
-    return matchRegionForLabels([attempt.topicDisplayName, attempt.subtopic, attempt.localTopic, attempt.deepseekTopic])?.id === region.id;
-  });
+  const regionAttempts = filterAttemptsForRegion(region, attempts, regionQuestions);
   const totalMarksEarned = regionAttempts.reduce((sum, attempt) => sum + attempt.marksEarned, 0);
   const totalMarksAvailable = regionAttempts.reduce((sum, attempt) => sum + (attempt.marksAvailable ?? 0), 0);
   const ratios = regionAttempts

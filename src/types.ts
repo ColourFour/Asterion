@@ -168,6 +168,40 @@ export type MasteryRank = 'none' | 'bronze' | 'silver' | 'gold' | 'mastery';
 
 export type RegionRank = 'Dormant' | 'Discovered' | 'Bronze' | 'Silver' | 'Gold' | 'Mastered';
 
+export type RegionLearningState =
+  | 'locked'
+  | 'available'
+  | 'field_guide_started'
+  | 'field_guide_completed'
+  | 'training_in_progress'
+  | 'guardian_unlocked'
+  | 'guardian_attempted'
+  | 'guardian_cleared'
+  | 'mastered'
+  | 'needs_review';
+
+export type TrainingSessionIntent = 'warm_up' | 'core_practice' | 'weak_area_review' | 'challenge';
+
+export type RegionVisualTreatment =
+  | 'not_started'
+  | 'available'
+  | 'training'
+  | 'guardian_unlocked'
+  | 'guardian_cleared'
+  | 'mastered'
+  | 'needs_review';
+
+export interface RegionLearningRecord {
+  regionId: string;
+  fieldGuideStartedAt?: string;
+  fieldGuideCompletedAt?: string;
+  guardianQuestionId?: string;
+  guardianAttemptId?: string;
+  guardianAttemptedAt?: string;
+  guardianClearedAt?: string;
+  updatedAt: string;
+}
+
 export interface WorldDefinition {
   id: string;
   name: string;
@@ -219,5 +253,6 @@ export interface StoredProgress {
   attempts: Attempt[];
   topicProfiles: Record<string, TopicProfile>;
   issueReports: IssueReport[];
+  regionLearning?: Record<string, RegionLearningRecord>;
   settings: AppSettings;
 }

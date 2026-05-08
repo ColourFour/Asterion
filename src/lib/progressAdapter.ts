@@ -2,6 +2,14 @@ import type { Attempt, AvatarSettings, IssueReport, StoredProgress, StudentProfi
 
 export type ProgressStorageMode = 'local' | 'hosted';
 
+export interface RegionGuardianAttemptRecordInput {
+  regionId: string;
+  questionId: string;
+  attemptId: string;
+  passed: boolean;
+  attemptedAt?: string;
+}
+
 export interface ProgressStorageAdapter {
   mode: ProgressStorageMode;
   loadProgressContext(): StoredProgress;
@@ -9,5 +17,8 @@ export interface ProgressStorageAdapter {
   saveAvatarSettings(settings: AvatarSettings): StoredProgress;
   addAttempt(attempt: Attempt): StoredProgress;
   addIssueReport(issueReport: IssueReport): StoredProgress;
+  startRegionFieldGuide(regionId: string): StoredProgress;
+  completeRegionFieldGuide(regionId: string): StoredProgress;
+  recordRegionGuardianAttempt(input: RegionGuardianAttemptRecordInput): StoredProgress;
   clearLocalDemoProgress(): StoredProgress;
 }

@@ -76,6 +76,18 @@ describe('local progress adapter', () => {
 
     expect(withIssue.issueReports).toHaveLength(1);
 
+    const withFieldGuide = localProgressAdapter.completeRegionFieldGuide('logarithm-grove');
+    expect(withFieldGuide.regionLearning?.['logarithm-grove'].fieldGuideCompletedAt).toBeTruthy();
+
+    const withGuardian = localProgressAdapter.recordRegionGuardianAttempt({
+      regionId: 'logarithm-grove',
+      questionId: 'p3-q1',
+      attemptId: 'attempt-guardian',
+      passed: true,
+      attemptedAt: '2026-05-08T00:10:00.000Z',
+    });
+    expect(withGuardian.regionLearning?.['logarithm-grove'].guardianClearedAt).toBe('2026-05-08T00:10:00.000Z');
+
     const cleared = localProgressAdapter.clearLocalDemoProgress();
     expect(cleared.attempts).toEqual([]);
     expect(localProgressAdapter.loadProgressContext().profile).toBeUndefined();
@@ -125,6 +137,26 @@ describe('local progress adapter', () => {
     expect(loaded.attempts).toHaveLength(1);
     expect(loaded.topicProfiles.Algebra.attempts).toBe(1);
     expect(loaded.topicProfiles.Algebra.totalMarksEarned).toBe(3);
+  });
+
+  it('normalizes malformed region learning records without blocking progress load', () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
+      regionLearning: {
+        'logarithm-grove': {
+          regionId: 'logarithm-grove',
+          fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+          guardianClearedAt: 42,
+        },
+        broken: 'not-a-record',
+      },
+    }));
+
+    const loaded = localProgressAdapter.loadProgressContext();
+
+    expect(loaded.regionLearning?.['logarithm-grove'].fieldGuideCompletedAt).toBe('2026-05-08T00:00:00.000Z');
+    expect(loaded.regionLearning?.['logarithm-grove'].guardianClearedAt).toBeUndefined();
+    expect(loaded.regionLearning?.broken).toBeUndefined();
   });
 
   it('normalizes unknown avatar settings and item IDs back to safe defaults', () => {

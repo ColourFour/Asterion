@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
-import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress } from '../../types';
+import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
 import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import { createId } from '../../lib/progressStore';
+import { TRAINING_SESSION_LABELS } from '../../lib/regionLearning';
 import { trainingBlockersForQuestion } from '../../lib/questionTraining';
 import { parseAttemptMarkBreakdown } from '../../lib/attemptScoring';
 import { RegionAvatarCameo } from '../avatar/RegionAvatarCameo';
@@ -60,11 +61,16 @@ interface PracticeViewProps {
   worldName?: string;
   selectedRegion?: RegionDefinition;
   selectedRegionRank?: RegionRank;
+  regionLearningPhase?: 'training' | 'guardian';
+  sessionIntent?: TrainingSessionIntent;
+  sessionReason?: string;
+  guardianPassThreshold?: number;
   onAttempt: (attempt: Attempt) => void;
   onIssue: (questionId: string, issueType: IssueType, note?: string) => void;
   onReturnToMap?: () => void;
   onReviewWeak?: () => void;
   onContinuePractice?: () => void;
+  continuePracticeLabel?: string;
 }
 
 export function PracticeView({
@@ -77,11 +83,16 @@ export function PracticeView({
   worldName,
   selectedRegion,
   selectedRegionRank,
+  regionLearningPhase,
+  sessionIntent,
+  sessionReason,
+  guardianPassThreshold,
   onAttempt,
   onIssue,
   onReturnToMap,
   onReviewWeak,
   onContinuePractice,
+  continuePracticeLabel,
 }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [markInputs, setMarkInputs] = useState<Record<keyof AttemptMarkBreakdown, string>>(emptyMarkInputs);
@@ -113,6 +124,15 @@ export function PracticeView({
     if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
     return Math.round(scoreValidation.scoreRatio * 100);
   }, [scoreValidation.scoreRatio]);
+  const guardianPassed = regionLearningPhase === 'guardian'
+    && typeof guardianPassThreshold === 'number'
+    && typeof scoreValidation.scoreRatio === 'number'
+    && scoreValidation.scoreRatio >= guardianPassThreshold;
+  const sessionLabel = regionLearningPhase === 'guardian'
+    ? 'Region Guardian'
+    : sessionIntent
+      ? TRAINING_SESSION_LABELS[sessionIntent]
+      : undefined;
   const maxMarkValue = typeof maxMarks === 'number' ? maxMarks : 10;
   const enteredMarkTotal = markCategories.reduce((sum, category) => {
     const value = Number(markInputs[category.key]);
@@ -174,6 +194,19 @@ export function PracticeView({
         </ol>
       </div>
 
+      {sessionLabel || sessionReason ? (
+        <div className={`session-rationale-panel${regionLearningPhase === 'guardian' ? ' guardian-session' : ''}`}>
+          <div>
+            <span>{regionLearningPhase === 'guardian' ? 'Mastery check' : 'Training intent'}</span>
+            <strong>{sessionLabel ?? 'Region practice'}</strong>
+          </div>
+          <p>{sessionReason ?? 'This question is selected from the current region using the local adaptive practice flow.'}</p>
+          {regionLearningPhase === 'guardian' && typeof guardianPassThreshold === 'number' ? (
+            <small>Clear threshold: {Math.round(guardianPassThreshold * 100)}% or higher on this saved attempt.</small>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className={`practice-workspace${revealed ? ' is-revealed' : ''}`}>
         <section className="practice-panel question-panel">
           <div className="panel-title-bar">Practice Session</div>
@@ -183,7 +216,6 @@ export function PracticeView({
           </div>
           {!revealed ? (
             <div className="practice-footer-actions">
-              <button className="quiet-button" type="button">Hint</button>
               <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
                 Reveal Mark Scheme
               </button>
@@ -328,10 +360,16 @@ export function PracticeView({
               decoding="async"
             />
           </div>
-          <strong>+{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : 0} XP</strong>
-          <span>{scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}. Region progress increased only from saved evidence.</span>
+          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `+${typeof scoreValidation.earned === 'number' ? scoreValidation.earned : 0} XP`}</strong>
+          <span>
+            {scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}.
+            {' '}
+            {regionLearningPhase === 'guardian'
+              ? guardianPassed ? 'The region reward placeholder is now unlocked locally.' : 'The guardian is recorded, but the region is not cleared yet.'
+              : 'Region progress increased only from saved evidence.'}
+          </span>
           <div className="practice-actions">
-            {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {selectedRegion ? 'Continue in this region' : 'Continue practice'}</button> : null}
+            {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {continuePracticeLabel ?? (selectedRegion ? 'Continue in this region' : 'Continue practice')}</button> : null}
             {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
             {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
           </div>
