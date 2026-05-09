@@ -13,13 +13,12 @@ interface TrainingGroundsPanelProps {
 export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: TrainingGroundsPanelProps) {
   return (
     <RegionActionCard
-      eyebrow="Exam evidence"
+      eyebrow="Step 4"
       title="Exam Training"
       description="Use real question images and mark schemes to build Guardian evidence."
       icon={<Dumbbell size={22} />}
       className="training-card"
     >
-      <p>{summary.trainingSession.reason}</p>
       <div className="recommended-session">
         <Target size={18} />
         <div>
@@ -27,6 +26,10 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
           <strong>{summary.trainingSession.label}</strong>
         </div>
       </div>
+      <details className="training-reason-detail">
+        <summary>Why this session?</summary>
+        <p>{summary.trainingSession.reason}</p>
+      </details>
       <div className="training-intent-grid" aria-label="Training session choices">
         {trainingIntents.map((intent) => (
           <button

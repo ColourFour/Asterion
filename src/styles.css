@@ -3269,9 +3269,9 @@ legend {
 
 .region-arc-timeline {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 8px;
   padding: 0;
   list-style: none;
 }
@@ -3282,7 +3282,7 @@ legend {
   gap: 10px;
   align-items: center;
   min-width: 0;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 42%, transparent);
   border-radius: var(--radius-panel);
   background:
@@ -3292,8 +3292,8 @@ legend {
 
 .arc-phase-index {
   display: grid;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   flex: 0 0 auto;
   place-items: center;
   color: var(--region-button-text, #fff);
@@ -3310,11 +3310,13 @@ legend {
 
 .arc-phase strong {
   color: var(--region-heading, var(--color-ink));
+  font-size: 0.94rem;
+  line-height: 1.12;
 }
 
 .arc-phase span {
   color: var(--region-muted, var(--color-text-muted));
-  font-size: 0.86rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -3323,6 +3325,10 @@ legend {
   background:
     linear-gradient(90deg, var(--region-wash), transparent 44%),
     var(--region-panel);
+}
+
+.arc-ready {
+  border-color: color-mix(in srgb, var(--region-accent) 26%, var(--region-panel-border));
 }
 
 .arc-active .arc-phase-index,
@@ -3351,11 +3357,11 @@ legend {
 
 .region-next-action {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
-  gap: 14px;
+  grid-template-columns: 1fr;
+  gap: 10px;
   align-items: center;
   margin-bottom: 12px;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 48%, transparent);
   border-left: 6px solid var(--region-accent, var(--color-gold));
   border-radius: var(--radius-panel);
@@ -3377,7 +3383,7 @@ legend {
 .next-action-copy h3 {
   margin: 2px 0 4px;
   color: var(--region-heading, var(--color-ink));
-  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
 }
 
 .next-action-copy p,
@@ -3520,14 +3526,16 @@ legend {
 
 .teaching-snippet-grid {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
   margin-top: 8px;
 }
 
 .teaching-snippet-card {
   display: grid;
-  gap: 6px;
-  padding: 10px;
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
   border: 1px solid color-mix(in srgb, var(--region-accent) 28%, transparent);
   border-radius: var(--radius-panel);
   background:
@@ -3566,6 +3574,10 @@ legend {
 .teaching-snippet-card p {
   margin: 0;
   color: var(--region-body, #263244);
+}
+
+.snippet-goal {
+  font-weight: 800;
 }
 
 .teaching-snippet-card ul {
@@ -3609,6 +3621,14 @@ legend {
   margin-top: 6px;
 }
 
+.snippet-detail-body {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 20%, transparent);
+}
+
 .quick-check-reveal {
   margin-top: 2px;
   padding: 8px;
@@ -3635,14 +3655,16 @@ legend {
 
 .warm-up-practice-grid {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
   margin-top: 8px;
 }
 
 .warm-up-practice-card {
   display: grid;
+  align-content: start;
   gap: 8px;
-  padding: 10px;
+  padding: 12px;
   color: var(--region-body, #263244);
   border: 1px solid color-mix(in srgb, var(--region-accent) 28%, transparent);
   border-radius: var(--radius-panel);
@@ -3683,6 +3705,10 @@ legend {
   border: 1px solid var(--region-button-border, #30286c);
   background: var(--region-button-bg, #30286c);
   font-weight: 900;
+}
+
+.warm-up-set-note {
+  max-width: 58ch;
 }
 
 .warm-up-reveal-button:hover {
@@ -3780,6 +3806,23 @@ legend {
   border-radius: var(--radius-panel);
 }
 
+.training-reason-detail {
+  padding: 9px 10px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 22%, transparent);
+  border-radius: var(--radius-panel);
+  background: var(--region-panel);
+}
+
+.training-reason-detail summary {
+  cursor: pointer;
+  color: var(--region-accent-dark, var(--color-gold-dark));
+  font-weight: 900;
+}
+
+.training-reason-detail p {
+  margin: 8px 0 0;
+}
+
 .training-intent-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3843,11 +3886,32 @@ legend {
   gap: 10px;
 }
 
-.guardian-checklists > div {
+.guardian-requirement-group {
   padding: 10px;
   border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 24%, transparent);
   border-radius: var(--radius-panel);
   background: var(--region-panel, rgba(255, 253, 248, 0.96));
+}
+
+.guardian-requirement-group summary {
+  cursor: pointer;
+  color: var(--region-accent-dark, var(--color-gold-dark));
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.guardian-card {
+  border-left-width: 8px;
+  border-color: color-mix(in srgb, var(--region-accent) 45%, var(--region-panel-border));
+  background:
+    linear-gradient(100deg, var(--region-wash-strong), transparent 44%),
+    linear-gradient(180deg, var(--region-panel), var(--region-panel-strong));
+}
+
+.guardian-card .region-action-icon {
+  color: var(--region-button-text);
+  background: var(--region-button-bg);
 }
 
 .guardian-next-unlock {
@@ -4164,15 +4228,15 @@ legend {
 
 .region-learning-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 370px);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
+  gap: 16px;
   align-items: start;
 }
 
 .region-learning-main,
 .region-learning-support {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -4187,9 +4251,9 @@ legend {
 
 .region-action-card {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
-  padding: 18px;
+  padding: 16px;
   color: var(--region-body);
   border: 1px solid color-mix(in srgb, var(--region-panel-border) 36%, transparent);
   border-left: 6px solid var(--region-accent, var(--color-astral));
@@ -4247,13 +4311,37 @@ legend {
 
 .region-action-card-body {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .region-action-card h4 {
   margin: 0 0 6px;
   color: var(--region-heading);
   font-size: 0.92rem;
+}
+
+.section-helper {
+  margin: -2px 0 0;
+  color: var(--region-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.field-guide-topic-summary {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 20%, transparent);
+  border-radius: var(--radius-panel);
+  background: var(--region-panel);
+}
+
+.field-guide-topic-summary p {
+  margin: 0;
+}
+
+.region-action-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2px;
 }
 
 .region-action-card ul {
@@ -4314,6 +4402,12 @@ legend {
   gap: 8px;
 }
 
+.quick-check-card .region-card-note,
+.warm-up-card .region-card-note,
+.field-guide-card .region-card-note {
+  color: var(--region-muted);
+}
+
 .warm-up-card {
   border-left-color: var(--region-accent);
   background:
@@ -4331,7 +4425,11 @@ legend {
 
 .region-empty-state {
   margin: 0;
+  padding: 12px;
   color: var(--region-body);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 24%, transparent);
+  border-radius: var(--radius-panel);
+  background: var(--region-panel);
   font-weight: 800;
 }
 
@@ -4342,9 +4440,9 @@ legend {
 
 .region-progress-strip {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 6px;
+  padding: 10px;
   color: var(--region-body);
   border: 1px solid color-mix(in srgb, var(--region-panel-border) 36%, transparent);
   border-radius: var(--radius-panel);
@@ -4355,7 +4453,7 @@ legend {
 
 .region-progress-strip div {
   min-width: 0;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid color-mix(in srgb, var(--region-accent) 18%, transparent);
   border-radius: var(--radius-panel);
   background: var(--region-panel);
@@ -4365,6 +4463,7 @@ legend {
   display: block;
   min-width: 0;
   color: var(--region-heading);
+  font-size: 1.02rem;
   overflow-wrap: anywhere;
 }
 
@@ -6287,6 +6386,12 @@ legend {
 }
 
 @media (max-width: 980px) {
+  .region-arc-timeline {
+    grid-template-columns: repeat(5, minmax(128px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
   .region-hero,
   .region-learning-content {
     grid-template-columns: 1fr;
@@ -6309,6 +6414,11 @@ legend {
 }
 
 @media (max-width: 640px) {
+  .region-arc-timeline {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+  }
+
   .region-hero,
   .region-action-card {
     padding: 14px;
@@ -6342,6 +6452,15 @@ legend {
   .region-progress-strip,
   .training-intent-grid {
     grid-template-columns: 1fr;
+  }
+
+  .teaching-snippet-grid,
+  .warm-up-practice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .region-action-footer .primary-button {
+    width: 100%;
   }
 }
 

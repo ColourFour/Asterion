@@ -51,7 +51,7 @@ function WarmUpPracticeCard({ item }: WarmUpPracticeCardProps) {
   );
 }
 
-export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 3 }: WarmUpPracticePanelProps) {
+export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 2 }: WarmUpPracticePanelProps) {
   const visiblePractice = practiceItems.slice(0, maxInitialItems);
   const hiddenPracticeCount = Math.max(0, practiceItems.length - visiblePractice.length);
 
@@ -59,12 +59,13 @@ export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 3 }: Warm
     <RegionActionCard
       eyebrow="Step 3"
       title="Warm-up Practice"
-      description="Original reviewed practice with revealable worked solutions."
+      description="A small reviewed set with revealable worked solutions."
       icon={<Sparkles size={22} />}
       className="warm-up-card"
     >
       {visiblePractice.length ? (
         <>
+          <p className="section-helper warm-up-set-note">Try one prompt first. Reveal the solution only after you have a route.</p>
           <div className="warm-up-practice-grid">
             {visiblePractice.map((item) => (
               <WarmUpPracticeCard item={item} key={item.practiceId} />

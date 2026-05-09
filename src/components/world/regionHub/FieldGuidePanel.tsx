@@ -11,25 +11,33 @@ interface FieldGuidePanelProps {
   fieldGuideCompleted: boolean;
   theme: RegionTheme;
   teachingSnippets: TeachingSnippet[];
+  maxInitialSnippets?: number;
   onCompleteFieldGuide: () => void;
 }
 
-export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, theme, teachingSnippets, onCompleteFieldGuide }: FieldGuidePanelProps) {
-  const visibleSnippets = teachingSnippets.slice(0, 3);
+export function FieldGuidePanel({
+  fieldGuide,
+  fieldGuideCompleted,
+  theme,
+  teachingSnippets,
+  maxInitialSnippets = 2,
+  onCompleteFieldGuide,
+}: FieldGuidePanelProps) {
+  const visibleSnippets = teachingSnippets.slice(0, maxInitialSnippets);
   const hiddenSnippetCount = Math.max(0, teachingSnippets.length - visibleSnippets.length);
 
   return (
     <RegionActionCard
       eyebrow="Step 1"
       title="Field Guide"
-      description="Learn the core idea and the exam moves that protect marks."
+      description="Start with the key idea, then open the details only when you need them."
       icon={<BookOpenCheck size={22} />}
       stateIcon={fieldGuideCompleted ? <CheckCircle2 size={22} aria-label="Field Guide complete" /> : undefined}
       className="field-guide-card"
     >
       <RegionGuideCallout theme={theme} />
 
-      <section>
+      <section className="field-guide-topic-summary">
         <h4>What this topic is</h4>
         <p><MathText text={fieldGuide.topic} /></p>
       </section>
@@ -37,6 +45,7 @@ export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, theme, teachi
       {visibleSnippets.length ? (
         <section>
           <h4>Teaching snippets</h4>
+          <p className="section-helper">Reviewed classroom notes matched to this region.</p>
           <div className="teaching-snippet-grid">
             {visibleSnippets.map((snippet) => (
               <article className="teaching-snippet-card" key={snippet.snippetId}>
@@ -45,23 +54,28 @@ export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, theme, teachi
                   {snippet.snippetType ? <span>{snippet.snippetType.replace(/_/g, ' ')}</span> : null}
                   {snippet.estimatedTimeMinutes ? <small>{snippet.estimatedTimeMinutes} min</small> : null}
                 </div>
-                <p><MathText text={snippet.studentGoal} /></p>
-                <p><MathText text={snippet.body} /></p>
-                <div className="snippet-mini-section">
-                  <b>Micro steps:</b>
-                  <ul>
-                    {(snippet.microSteps.length ? snippet.microSteps : snippet.steps).slice(0, 3).map((step) => <li key={step}><MathText text={step} /></li>)}
-                  </ul>
-                </div>
-                {snippet.commonMistakes.length ? (
-                  <details className="snippet-detail-reveal">
-                    <summary>Common mistakes</summary>
-                    <ul>{snippet.commonMistakes.slice(0, 3).map((item) => <li key={item}><MathText text={item} /></li>)}</ul>
-                  </details>
-                ) : null}
-                <small><b>Exam move:</b> <MathText text={snippet.examMove} /></small>
-                <small><b>Trap:</b> <MathText text={snippet.commonTrap} /></small>
-                {snippet.guardianReadiness ? <small><b>Guardian:</b> <MathText text={snippet.guardianReadiness.readinessNote} /></small> : null}
+                <p className="snippet-goal"><MathText text={snippet.studentGoal} /></p>
+                <details className="snippet-detail-reveal">
+                  <summary>Study details</summary>
+                  <div className="snippet-detail-body">
+                    <p><MathText text={snippet.body} /></p>
+                    <div className="snippet-mini-section">
+                      <b>Micro steps:</b>
+                      <ul>
+                        {(snippet.microSteps.length ? snippet.microSteps : snippet.steps).slice(0, 3).map((step) => <li key={step}><MathText text={step} /></li>)}
+                      </ul>
+                    </div>
+                    {snippet.commonMistakes.length ? (
+                      <div className="snippet-mini-section">
+                        <b>Common mistakes:</b>
+                        <ul>{snippet.commonMistakes.slice(0, 3).map((item) => <li key={item}><MathText text={item} /></li>)}</ul>
+                      </div>
+                    ) : null}
+                    <small><b>Exam move:</b> <MathText text={snippet.examMove} /></small>
+                    <small><b>Trap:</b> <MathText text={snippet.commonTrap} /></small>
+                    {snippet.guardianReadiness ? <small><b>Guardian:</b> <MathText text={snippet.guardianReadiness.readinessNote} /></small> : null}
+                  </div>
+                </details>
               </article>
             ))}
           </div>
@@ -102,9 +116,11 @@ export function FieldGuidePanel({ fieldGuide, fieldGuideCompleted, theme, teachi
         </details>
       </div>
 
-      <button className="primary-button" type="button" disabled={fieldGuideCompleted} onClick={onCompleteFieldGuide}>
-        {fieldGuideCompleted ? 'Field Guide complete' : 'Mark Field Guide complete'}
-      </button>
+      <div className="region-action-footer">
+        <button className="primary-button" type="button" disabled={fieldGuideCompleted} onClick={onCompleteFieldGuide}>
+          {fieldGuideCompleted ? 'Field Guide complete' : 'Mark Field Guide complete'}
+        </button>
+      </div>
     </RegionActionCard>
   );
 }

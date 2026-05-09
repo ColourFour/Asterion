@@ -2,10 +2,13 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
+import { buildRegionLearningSummary } from '../lib/regionLearning';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import { getRegionTheme } from '../lib/regionThemes';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
+import type { NormalizedQuestion, RegionProgress } from '../types';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
 import { QuickChecksPanel } from '../components/world/regionHub/QuickChecksPanel';
 import { WarmUpPracticePanel } from '../components/world/regionHub/WarmUpPracticePanel';
@@ -93,6 +96,65 @@ const generatedPractice: GeneratedPracticeItem = {
   reviewStatus: 'teacher_reviewed',
 };
 
+function snippetVariant(index: number): TeachingSnippet {
+  return {
+    ...snippet,
+    snippetId: `p3-log-check-${index}`,
+    title: `Log snippet ${index}`,
+    quickCheck: {
+      prompt: `Quick prompt ${index}`,
+      answer: `Quick answer ${index}`,
+      explanation: `Quick explanation ${index}`,
+    },
+  };
+}
+
+function practiceVariant(index: number): GeneratedPracticeItem {
+  return {
+    ...generatedPractice,
+    practiceId: `gen_log_equation_basic_000${index}`,
+    prompt: `Warm-up prompt ${index}`,
+    answer: `Warm-up answer ${index}`,
+  };
+}
+
+function normalizedQuestion(): NormalizedQuestion {
+  return {
+    id: 'q1',
+    paperFamily: 'p3',
+    paper: '31autumn21',
+    questionNumber: '1',
+    displayTopic: 'Logarithms',
+    displaySubtopic: 'logarithmic equations',
+    displayDifficulty: 'core',
+    marksAvailable: 6,
+    deepseek: { hasError: false, topic: 'Logarithms', subtopic: 'logarithmic equations' },
+    questionImageRawPaths: ['p3/31autumn21/questions/q01.png'],
+    markSchemeImageRawPaths: ['p3/31autumn21/mark_scheme/q01.png'],
+    questionImagePaths: ['p3/31autumn21/questions/q01.png'],
+    markSchemeImagePaths: ['p3/31autumn21/mark_scheme/q01.png'],
+    questionImageUrls: ['/assets/31autumn21/questions/q01.png'],
+    markSchemeImageUrls: ['/assets/31autumn21/mark_scheme/q01.png'],
+    questionImageCandidates: [['/assets/31autumn21/questions/q01.png']],
+    markSchemeImageCandidates: [['/assets/31autumn21/mark_scheme/q01.png']],
+    raw: { local: {} },
+  };
+}
+
+function regionProgress(): RegionProgress {
+  const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove')!;
+  return {
+    region: logRegion,
+    availableQuestions: 4,
+    attempts: 0,
+    totalMarksEarned: 0,
+    totalMarksAvailable: 0,
+    subtopicsTouched: 0,
+    rank: 'Discovered',
+    isActive: true,
+  };
+}
+
 describe('FieldGuidePanel teaching snippets', () => {
   it('renders enriched snippet support with a revealable quick check', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
@@ -164,5 +226,68 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Warm-ups for this region are being prepared.');
     expect(container.textContent).toContain('Field Guide');
     expect(container.textContent).toContain('Exam Training');
+  });
+
+  it('limits snippets, quick checks, and warm-ups by default', () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    expect(logRegion).toBeTruthy();
+    const snippets = [snippetVariant(1), snippetVariant(2), snippetVariant(3)];
+    const practiceItems = [practiceVariant(1), practiceVariant(2), practiceVariant(3)];
+
+    const container = render(
+      <>
+        <FieldGuidePanel
+          fieldGuide={getRegionFieldGuide(logRegion!)}
+          fieldGuideCompleted={false}
+          theme={getRegionTheme(logRegion!)}
+          teachingSnippets={snippets}
+          onCompleteFieldGuide={vi.fn()}
+        />
+        <QuickChecksPanel teachingSnippets={snippets} />
+        <WarmUpPracticePanel practiceItems={practiceItems} />
+      </>,
+    );
+
+    expect(container.querySelectorAll('.teaching-snippet-card')).toHaveLength(2);
+    expect(container.querySelectorAll('.quick-check-card details.quick-check-reveal')).toHaveLength(2);
+    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(2);
+    expect(container.textContent).toContain('1 more reviewed snippet available for this region.');
+    expect(container.textContent).toContain('1 more reviewed quick check available.');
+    expect(container.textContent).toContain('Showing 2 of 3 reviewed warm-ups.');
+  });
+
+  it('renders the region learning sections in the expected order', () => {
+    const progress = regionProgress();
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress,
+      regionQuestions: [normalizedQuestion()],
+      regionAttempts: [],
+    });
+
+    const container = render(
+      <RegionHub
+        regionProgress={progress}
+        fieldGuide={getRegionFieldGuide(progress.region)}
+        fieldGuideCompleted={false}
+        teachingSnippets={[snippet]}
+        generatedPractice={[generatedPractice]}
+        summary={summary}
+        onCompleteFieldGuide={vi.fn()}
+        onStartTraining={vi.fn()}
+        onChallengeGuardian={vi.fn()}
+        onReturnToMap={vi.fn()}
+      />,
+    );
+
+    const sectionTitles = Array.from(container.querySelectorAll('.region-learning-main .region-action-card-title h3'))
+      .map((heading) => heading.textContent);
+
+    expect(sectionTitles).toEqual([
+      'Field Guide',
+      'Quick Checks',
+      'Warm-up Practice',
+      'Exam Training',
+      'Guardian Challenge',
+    ]);
   });
 });

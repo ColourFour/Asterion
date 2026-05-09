@@ -5,9 +5,10 @@ import { RegionActionCard } from './RegionActionCard';
 
 interface QuickChecksPanelProps {
   teachingSnippets: TeachingSnippet[];
+  maxInitialItems?: number;
 }
 
-export function QuickChecksPanel({ teachingSnippets }: QuickChecksPanelProps) {
+export function QuickChecksPanel({ teachingSnippets, maxInitialItems = 2 }: QuickChecksPanelProps) {
   const checks = teachingSnippets.flatMap((snippet) => (
     snippet.quickCheck
       ? [{
@@ -17,30 +18,35 @@ export function QuickChecksPanel({ teachingSnippets }: QuickChecksPanelProps) {
       }]
       : []
   ));
+  const visibleChecks = checks.slice(0, maxInitialItems);
+  const hiddenCheckCount = Math.max(0, checks.length - visibleChecks.length);
 
   return (
     <RegionActionCard
-      eyebrow="Confidence stop"
+      eyebrow="Step 2"
       title="Quick Checks"
-      description="Small revealable checks before you move into practice."
+      description="Two short self-checks before you move into practice."
       icon={<Target size={22} />}
       stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} quick checks available`} /> : undefined}
       className="quick-check-card"
     >
-      {checks.length ? (
-        <div className="quick-check-list">
-          {checks.map(({ snippetId, title, check }) => (
-            <details className="quick-check-reveal" key={snippetId}>
-              <summary>Quick check: {title}</summary>
-              <p><MathText text={check.prompt} /></p>
-              <div>
-                <strong>Answer</strong>
-                <p><MathText text={check.answer} /></p>
-                <small><MathText text={check.explanation} /></small>
-              </div>
-            </details>
-          ))}
-        </div>
+      {visibleChecks.length ? (
+        <>
+          <div className="quick-check-list">
+            {visibleChecks.map(({ snippetId, title, check }) => (
+              <details className="quick-check-reveal" key={snippetId}>
+                <summary>Quick check: {title}</summary>
+                <p><MathText text={check.prompt} /></p>
+                <div>
+                  <strong>Answer</strong>
+                  <p><MathText text={check.answer} /></p>
+                  <small><MathText text={check.explanation} /></small>
+                </div>
+              </details>
+            ))}
+          </div>
+          {hiddenCheckCount ? <small className="region-card-note">{hiddenCheckCount} more reviewed quick check{hiddenCheckCount === 1 ? '' : 's'} available.</small> : null}
+        </>
       ) : (
         <p className="region-empty-state">No reviewed quick checks are published for this region yet. Use the Field Guide and exam practice route.</p>
       )}

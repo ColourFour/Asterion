@@ -24,7 +24,7 @@ export function GuardianEligibilityPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 4"
+      eyebrow="Step 5 · Mastery"
       title="Guardian Challenge"
       description="A real exam-style mastery check unlocked by saved local evidence."
       icon={<ShieldCheck size={22} />}
@@ -54,23 +54,23 @@ export function GuardianEligibilityPanel({
         <>
           <p className="guardian-encouragement">Guardian not ready yet. Complete the missing evidence below and it will unlock automatically.</p>
           <div className="guardian-checklists">
-            <div>
-              <span>Completed</span>
+            <details className="guardian-requirement-group" open>
+              <summary>Still needed</summary>
+              <ul className="guardian-requirements missing-requirements">
+                {missing.map((requirement) => (
+                  <li key={requirement.id}><Lock size={16} /> {requirement.detail}</li>
+                ))}
+              </ul>
+            </details>
+            <details className="guardian-requirement-group">
+              <summary>Completed evidence</summary>
               <ul className="guardian-requirements completed-requirements">
                 {completed.map((requirement) => (
                   <li key={requirement.id}><CheckCircle2 size={16} /> {requirement.detail}</li>
                 ))}
                 {completed.length === 0 ? <li><Circle size={16} /> No guardian requirements completed yet.</li> : null}
               </ul>
-            </div>
-            <div>
-              <span>Still needed</span>
-              <ul className="guardian-requirements missing-requirements">
-                {missing.map((requirement) => (
-                  <li key={requirement.id}><Lock size={16} /> {requirement.detail}</li>
-                ))}
-              </ul>
-            </div>
+            </details>
           </div>
           <div className="guardian-next-unlock">
             <Target size={18} />

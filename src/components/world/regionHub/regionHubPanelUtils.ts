@@ -19,13 +19,19 @@ export function questionSummary(question: NormalizedQuestion): string {
 export function phaseStatus(
   summary: RegionLearningSummary,
   fieldGuideCompleted: boolean,
-  phase: 'guide' | 'training' | 'guardian',
-): 'complete' | 'active' | 'locked' {
+  phase: 'guide' | 'quick_checks' | 'warm_up' | 'training' | 'guardian',
+): 'complete' | 'active' | 'ready' | 'locked' {
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   if (phase === 'guide') return fieldGuideCompleted ? 'complete' : 'active';
+  if (phase === 'quick_checks' || phase === 'warm_up') {
+    if (guardianCleared || summary.guardianEligibility.eligible || summary.state === 'training_in_progress' || summary.state === 'guardian_attempted') {
+      return 'complete';
+    }
+    return fieldGuideCompleted ? 'active' : 'ready';
+  }
   if (phase === 'training') {
     if (guardianCleared || summary.guardianEligibility.eligible) return 'complete';
-    return fieldGuideCompleted ? 'active' : 'locked';
+    return fieldGuideCompleted ? 'active' : 'ready';
   }
   if (guardianCleared) return 'complete';
   return summary.guardianEligibility.eligible ? 'active' : 'locked';

@@ -81,7 +81,7 @@ export function RegionHub({
             onCompleteFieldGuide={onCompleteFieldGuide}
           />
           <QuickChecksPanel teachingSnippets={teachingSnippets} />
-          <WarmUpPracticePanel practiceItems={generatedPractice} maxInitialItems={3} />
+          <WarmUpPracticePanel practiceItems={generatedPractice} />
           <TrainingGroundsPanel
             canTrain={canTrain}
             summary={summary}
