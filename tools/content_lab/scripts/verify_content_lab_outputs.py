@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,137 @@ PRACTICE_RUNTIME_BLOCKED_STATUSES = {"candidate", "needs_review", "blocked"}
 PRACTICE_VERIFICATION_STATUSES = {"pass", "fail"}
 PRACTICE_DIFFICULTY_BANDS = {"easy", "medium", "hard"}
 SNIPPET_TYPES = {"concept", "method", "mistake_repair", "quick_check"}
+KNOWN_PAPER_FAMILIES = {"p1", "p3", "p4", "p5"}
+ACTIVE_P3_REGION_SUPPORT = {
+    "algebra-forge": {
+        "primary_topic": "algebra_functions_and_binomial",
+        "topics": {
+            "algebra",
+            "algebraic_manipulation",
+            "functions",
+            "polynomials",
+            "partial_fractions",
+            "binomial_expansion",
+            "quadratics",
+        },
+        "aliases": {
+            "algebraic manipulation",
+            "function",
+            "polynomial",
+            "partial fractions",
+            "binomial",
+            "binomial expansion",
+            "quadratic",
+        },
+    },
+    "logarithm-grove": {
+        "primary_topic": "logarithms_and_exponentials",
+        "topics": {"logarithms_and_exponentials", "logarithms", "exponentials"},
+        "aliases": {
+            "log",
+            "logs",
+            "logarithm",
+            "logarithmic",
+            "logarithmic functions",
+            "exponential",
+            "exponential functions",
+            "logarithms and exponentials",
+        },
+    },
+    "trig-observatory": {
+        "primary_topic": "trigonometry",
+        "topics": {"trigonometry", "trigonometric_identities", "trigonometric_equations"},
+        "aliases": {
+            "trig",
+            "trigonometric",
+            "trigonometric identities",
+            "trig identities",
+            "trigonometric equations",
+            "compound angle",
+            "compound angle formulae",
+        },
+    },
+    "complex-harbor": {
+        "primary_topic": "complex_numbers",
+        "topics": {"complex_numbers", "argand_diagrams", "modulus_and_argument"},
+        "aliases": {
+            "complex",
+            "complex numbers",
+            "argand",
+            "argand diagram",
+            "argand diagrams",
+            "modulus and argument",
+            "polar form",
+        },
+    },
+    "calculus-cliffs": {
+        "primary_topic": "differentiation",
+        "topics": {"differentiation", "parametric_equations"},
+        "aliases": {
+            "calculus",
+            "derivative",
+            "derivatives",
+            "parametric",
+            "parametric equations",
+            "implicit differentiation",
+            "stationary points",
+            "chain rule",
+            "product rule",
+            "quotient rule",
+        },
+    },
+    "integration-gardens": {
+        "primary_topic": "integration",
+        "topics": {"integration", "partial_fractions"},
+        "aliases": {
+            "integral",
+            "integrals",
+            "integration by substitution",
+            "substitution",
+            "integration by parts",
+            "partial fractions integration",
+            "definite integrals",
+        },
+    },
+    "vector-workshop": {
+        "primary_topic": "vectors",
+        "topics": {"vectors"},
+        "aliases": {
+            "vector",
+            "vector lines",
+            "scalar product",
+            "dot product",
+            "3d vectors",
+            "angles between lines",
+        },
+    },
+    "numerical-mines": {
+        "primary_topic": "numerical_methods",
+        "topics": {"numerical_methods", "numerical_solution_of_equations", "iteration"},
+        "aliases": {
+            "numerical",
+            "numerical methods",
+            "numerical solution",
+            "numerical solution of equations",
+            "iterative methods",
+            "newton raphson",
+            "newton-raphson",
+            "sign change",
+        },
+    },
+    "differential-shrine": {
+        "primary_topic": "differential_equations",
+        "topics": {"differential_equations", "separation_of_variables"},
+        "aliases": {
+            "differential equation",
+            "differential equations",
+            "first order differential",
+            "first-order differential",
+            "separation of variables",
+            "forming differential equations",
+        },
+    },
+}
 
 
 def load_json(path: Path) -> Any:
@@ -34,6 +166,31 @@ def require(condition: bool, message: str, errors: list[str]) -> None:
 
 def is_non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
+
+
+def normalize_label(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    normalized = value.lower().replace("_", " ")
+    normalized = re.sub(r"[/_-]+", " ", normalized)
+    normalized = re.sub(r"[^a-z0-9 ]+", "", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
+def normalized_region_topics(region_id: str) -> set[str]:
+    support = ACTIVE_P3_REGION_SUPPORT[region_id]
+    values = {support["primary_topic"], *support["topics"], *support["aliases"]}
+    return {normalize_label(value) for value in values if normalize_label(value)}
+
+
+def matching_p3_regions(topics: list[str], region_ids: list[str]) -> set[str]:
+    matched = {region_id for region_id in region_ids if region_id in ACTIVE_P3_REGION_SUPPORT}
+    normalized_topics = {normalize_label(topic) for topic in topics}
+    for region_id in ACTIVE_P3_REGION_SUPPORT:
+        region_topics = normalized_region_topics(region_id)
+        if normalized_topics & region_topics:
+            matched.add(region_id)
+    return matched
 
 
 def require_non_empty_string(record: dict[str, Any], key: str, owner: str, errors: list[str]) -> None:
@@ -141,6 +298,7 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         return
 
     seen = set()
+    p3_snippets_by_region: dict[str, list[str]] = {region_id: [] for region_id in ACTIVE_P3_REGION_SUPPORT}
     for index, snippet in enumerate(snippets):
         if not isinstance(snippet, dict):
             errors.append(f"snippets[{index}] is not an object")
@@ -161,6 +319,25 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         for key in ("prerequisites", "micro_steps", "common_mistakes", "source_question_ids", "source_skill_target_ids"):
             require_string_array(snippet, key, owner, errors)
 
+        paper_family = snippet.get("paper_family")
+        topics = [topic for topic in snippet.get("topics", []) if isinstance(topic, str)]
+        region_ids = [region_id for region_id in snippet.get("region_ids", []) if isinstance(region_id, str)]
+        if is_non_empty_string(paper_family):
+            require(str(paper_family) in KNOWN_PAPER_FAMILIES, f"{owner}.paper_family has unsupported value {paper_family}", errors)
+        topic = snippet.get("topic")
+        if topic is not None:
+            require_non_empty_string(snippet, "topic", owner, errors)
+            require(not topics or topic in topics, f"{owner}.topic must also appear in topics[]", errors)
+
+        if paper_family == "p3":
+            unknown_regions = [region_id for region_id in region_ids if region_id not in ACTIVE_P3_REGION_SUPPORT]
+            for region_id in unknown_regions:
+                errors.append(f"{owner}.region_ids contains unknown P3 region {region_id}")
+            matched_regions = matching_p3_regions(topics, region_ids)
+            require(bool(matched_regions), f"{owner} does not map to any active P3 region by topic or region_ids", errors)
+            for region_id in matched_regions:
+                p3_snippets_by_region[region_id].append(owner)
+
         quick_check = snippet.get("quick_check")
         if quick_check is not None:
             require_quick_check(quick_check, owner, errors)
@@ -176,6 +353,15 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         snippet_type = snippet.get("snippet_type")
         if snippet_type is not None:
             require(snippet_type in SNIPPET_TYPES, f"{owner}.snippet_type has invalid value", errors)
+
+        lineage = snippet.get("lineage")
+        if lineage is not None:
+            lineage_record = require_record(lineage, f"{owner}.lineage", errors)
+            if lineage_record:
+                require_non_empty_string(lineage_record, "generated_from", f"{owner}.lineage", errors)
+
+    for region_id, owners in p3_snippets_by_region.items():
+        require(bool(owners), f"Active P3 region {region_id} has no reviewed/published teaching snippet", errors)
 
 
 def verify_generated_practice(path: Path, errors: list[str], *, runtime: bool) -> None:

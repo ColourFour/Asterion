@@ -1,6 +1,7 @@
 import { CheckCircle2, Circle, Lock, ShieldCheck, Sparkles, Target, Trophy } from 'lucide-react';
 import type { NormalizedQuestion } from '../../../types';
 import type { RegionLearningSummary } from '../../../lib/regionLearning';
+import { RegionActionCard } from './RegionActionCard';
 import { questionSummary } from './regionHubPanelUtils';
 
 interface GuardianEligibilityPanelProps {
@@ -22,16 +23,14 @@ export function GuardianEligibilityPanel({
   const missing = summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed);
 
   return (
-    <article className="region-loop-card guardian-card">
-      <div className="region-loop-card-title">
-        <ShieldCheck size={22} />
-        <div>
-          <span>Phase 3</span>
-          <h3>Region Guardian</h3>
-        </div>
-        {summary.guardianEligibility.eligible ? <Sparkles className="card-state-icon" size={22} aria-label="Guardian unlocked" /> : <Lock className="card-state-icon" size={22} aria-label="Guardian locked" />}
-      </div>
-
+    <RegionActionCard
+      eyebrow="Step 4"
+      title="Guardian Challenge"
+      description="A real exam-style mastery check unlocked by saved local evidence."
+      icon={<ShieldCheck size={22} />}
+      stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
+      className="guardian-card"
+    >
       {guardianCleared ? (
         <div className="guardian-cleared-banner">
           <Trophy size={22} />
@@ -79,6 +78,6 @@ export function GuardianEligibilityPanel({
           </div>
         </>
       )}
-    </article>
+    </RegionActionCard>
   );
 }

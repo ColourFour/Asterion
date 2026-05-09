@@ -1,14 +1,20 @@
 import type { NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
+import { getRegionTheme } from '../../lib/regionThemes';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
+import { QuickChecksPanel } from './regionHub/QuickChecksPanel';
 import { RegionArcTimeline } from './regionHub/RegionArcTimeline';
+import { RegionHero } from './regionHub/RegionHero';
+import { RegionLearningLayout } from './regionHub/RegionLearningLayout';
 import { RegionNextActionPanel } from './regionHub/RegionNextActionPanel';
+import { RegionProgressStrip } from './regionHub/RegionProgressStrip';
 import { RegionRewardPreview } from './regionHub/RegionRewardPreview';
 import { TrainingGroundsPanel } from './regionHub/TrainingGroundsPanel';
+import { WarmUpPracticePanel } from './regionHub/WarmUpPracticePanel';
 
 interface RegionHubProps {
   regionProgress: RegionProgress;
@@ -49,47 +55,52 @@ export function RegionHub({
   onReturnToMap,
 }: RegionHubProps) {
   const { region } = regionProgress;
+  const theme = getRegionTheme(region);
   const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
   const guardianQuestion = summary.guardianEligibility.guardianQuestion;
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
 
   return (
-    <section className={`region-hub region-${region.id} learning-${summary.visualTreatment}`} aria-labelledby="region-hub-title">
-      <header className="section-page-header region-hub-header">
-        <div>
-          <span className="mode-pill">{region.id === 'logarithm-grove' ? 'Pilot region arc' : 'Region Learning Loop'}</span>
-          <h2 id="region-hub-title">{region.name}</h2>
-          <p>{region.description}</p>
-          <strong className="region-state-chip">{stateLabels[summary.state] ?? summary.state}</strong>
-        </div>
-        <button type="button" onClick={onReturnToMap}>Return to map</button>
-      </header>
+    <RegionLearningLayout theme={theme} summary={summary}>
+      <RegionHero
+        regionProgress={regionProgress}
+        theme={theme}
+        stateLabel={stateLabels[summary.state] ?? summary.state}
+        onReturnToMap={onReturnToMap}
+      />
 
       <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
-      <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
 
-      <div className="region-hub-grid">
-        <FieldGuidePanel
-          fieldGuide={fieldGuide}
-          fieldGuideCompleted={fieldGuideCompleted}
-          teachingSnippets={teachingSnippets}
-          generatedPractice={generatedPractice}
-          onCompleteFieldGuide={onCompleteFieldGuide}
-        />
-        <TrainingGroundsPanel
-          canTrain={canTrain}
-          summary={summary}
-          onStartTraining={onStartTraining}
-        />
-        <GuardianEligibilityPanel
-          guardianCleared={guardianCleared}
-          guardianQuestion={guardianQuestion}
-          regionName={region.name}
-          summary={summary}
-          onChallengeGuardian={onChallengeGuardian}
-        />
-        <RegionRewardPreview guardianCleared={guardianCleared} regionName={region.name} />
+      <div className="region-learning-content">
+        <div className="region-learning-main">
+          <FieldGuidePanel
+            fieldGuide={fieldGuide}
+            fieldGuideCompleted={fieldGuideCompleted}
+            theme={theme}
+            teachingSnippets={teachingSnippets}
+            onCompleteFieldGuide={onCompleteFieldGuide}
+          />
+          <QuickChecksPanel teachingSnippets={teachingSnippets} />
+          <WarmUpPracticePanel practiceItems={generatedPractice} maxInitialItems={3} />
+          <TrainingGroundsPanel
+            canTrain={canTrain}
+            summary={summary}
+            onStartTraining={onStartTraining}
+          />
+          <GuardianEligibilityPanel
+            guardianCleared={guardianCleared}
+            guardianQuestion={guardianQuestion}
+            regionName={theme.title}
+            summary={summary}
+            onChallengeGuardian={onChallengeGuardian}
+          />
+        </div>
+        <aside className="region-learning-support" aria-label="Region mastery and rewards progress">
+          <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
+          <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
+          <RegionRewardPreview guardianCleared={guardianCleared} regionName={theme.title} />
+        </aside>
       </div>
-    </section>
+    </RegionLearningLayout>
   );
 }

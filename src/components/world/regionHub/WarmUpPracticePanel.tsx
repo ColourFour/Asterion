@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import type { GeneratedPracticeItem } from '../../../lib/generatedPractice';
 import { MathText } from '../../shared/MathText';
+import { RegionActionCard } from './RegionActionCard';
 
 interface WarmUpPracticePanelProps {
   practiceItems: GeneratedPracticeItem[];
+  maxInitialItems?: number;
 }
 
 interface WarmUpPracticeCardProps {
@@ -48,17 +51,30 @@ function WarmUpPracticeCard({ item }: WarmUpPracticeCardProps) {
   );
 }
 
-export function WarmUpPracticePanel({ practiceItems }: WarmUpPracticePanelProps) {
-  if (practiceItems.length === 0) return null;
+export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 3 }: WarmUpPracticePanelProps) {
+  const visiblePractice = practiceItems.slice(0, maxInitialItems);
+  const hiddenPracticeCount = Math.max(0, practiceItems.length - visiblePractice.length);
 
   return (
-    <section>
-      <h4>Warm-up Practice</h4>
-      <div className="warm-up-practice-grid">
-        {practiceItems.map((item) => (
-          <WarmUpPracticeCard item={item} key={item.practiceId} />
-        ))}
-      </div>
-    </section>
+    <RegionActionCard
+      eyebrow="Step 3"
+      title="Warm-up Practice"
+      description="Original reviewed practice with revealable worked solutions."
+      icon={<Sparkles size={22} />}
+      className="warm-up-card"
+    >
+      {visiblePractice.length ? (
+        <>
+          <div className="warm-up-practice-grid">
+            {visiblePractice.map((item) => (
+              <WarmUpPracticeCard item={item} key={item.practiceId} />
+            ))}
+          </div>
+          {hiddenPracticeCount ? <small className="region-card-note">Showing {visiblePractice.length} of {practiceItems.length} reviewed warm-ups.</small> : null}
+        </>
+      ) : (
+        <p className="region-empty-state">Warm-ups for this region are being prepared. Start with the Field Guide or jump into Exam Training.</p>
+      )}
+    </RegionActionCard>
   );
 }

@@ -192,6 +192,14 @@ describe('teaching snippets runtime loader', () => {
     expect(snippets.every((snippet) => snippet.reviewStatus === 'teacher_reviewed' || snippet.reviewStatus === 'published')).toBe(true);
   });
 
+  it('covers every current P3 region with at least one reviewed public snippet', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+
+    for (const region of P3_ASTRAL_ACADEMY.regions) {
+      expect(getTeachingSnippetsForRegion(snippets, 'p3', region).length, region.id).toBeGreaterThanOrEqual(1);
+    }
+  });
+
   it('loads revealable quick-check data from the public runtime file', () => {
     const snippets = normalizeTeachingSnippetsData(publicSnippetData);
     const logLawSnippet = snippets.find((snippet) => snippet.snippetId === 'p3-log-laws-001');

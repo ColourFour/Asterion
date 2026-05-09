@@ -134,6 +134,44 @@ function polynomialText(terms: Array<[number, number]>): string {
   return pieces.join(' ');
 }
 
+function regionCoverageSnippets() {
+  const rows = [
+    ['p3-log-check', 'logarithms_and_exponentials', ['logarithm-grove']],
+    ['p3-algebra-check', 'binomial_expansion', ['algebra-forge']],
+    ['p3-trig-check', 'trigonometry', ['trig-observatory']],
+    ['p3-complex-check', 'complex_numbers', ['complex-harbor']],
+    ['p3-diff-check', 'differentiation', ['calculus-cliffs']],
+    ['p3-integration-check', 'integration', ['integration-gardens']],
+    ['p3-vector-check', 'vectors', ['vector-workshop']],
+    ['p3-numerical-check', 'numerical_methods', ['numerical-mines']],
+    ['p3-de-check', 'differential_equations', ['differential-shrine']],
+  ] as const;
+
+  return rows.map(([snippetId, topic, regionIds]) => ({
+    snippet_id: snippetId,
+    paper_family: 'p3',
+    topics: [topic],
+    region_ids: regionIds,
+    title: 'Reviewed region snippet',
+    student_goal: 'Use reviewed content before practice.',
+    body: 'This reviewed snippet gives a short method reminder.',
+    steps: ['Identify the topic signal.', 'Choose the method.'],
+    exam_move: 'Name the method before calculating.',
+    common_trap: 'Starting before choosing a method.',
+    review_status: 'published',
+    source: 'teacher_authored',
+    prerequisites: ['Read the question prompt carefully.'],
+    micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
+    common_mistakes: ['Skipping the setup line.'],
+    quick_check: {
+      prompt: 'What should you do before calculating?',
+      answer: 'Choose the method.',
+      explanation: 'A named method keeps the first line purposeful.',
+    },
+    source_skill_target_ids: [`p3_${topic}`],
+  }));
+}
+
 function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOverrides: Record<string, unknown>) {
   const snippetsPath = path.join(dir, 'snippets.json');
   writeFileSync(path.join(dir, 'skill_targets.json'), JSON.stringify({
@@ -169,22 +207,7 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
   writeFileSync(snippetsPath, JSON.stringify({
     schema_name: 'asterion_teaching_snippets',
     schema_version: 1,
-    snippets: [
-      {
-        snippet_id: 'p3-log-check',
-        paper_family: 'p3',
-        topics: ['logarithms_and_exponentials'],
-        region_ids: ['logarithm-grove'],
-        title: 'Check the log form',
-        student_goal: 'Rewrite before solving.',
-        body: 'A logarithm tells you which exponent is needed.',
-        steps: ['Identify the base.'],
-        exam_move: 'Convert form.',
-        common_trap: 'Changing the base.',
-        review_status: 'published',
-        source: 'teacher_authored',
-      },
-    ],
+    snippets: regionCoverageSnippets(),
   }, null, 2));
   writeFileSync(runtimePracticePath, JSON.stringify({
     schema_name: 'asterion_generated_practice',

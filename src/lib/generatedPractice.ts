@@ -1,5 +1,6 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import { staticDataFetchCache } from './loadQuestionBank';
+import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { matchRegionForLabels, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
 
@@ -67,7 +68,12 @@ function matchesPaperFamily(item: GeneratedPracticeItem, paperFamily?: PaperFami
 }
 
 function matchesTopic(item: GeneratedPracticeItem, topic?: string): boolean {
-  return !topic || normalizeLabel(item.topic) === normalizeLabel(topic);
+  if (!topic) return true;
+  const topicTheme = findThemeForTopic(topic);
+  const acceptedTopics = topicTheme
+    ? topicAliasesForRegion(topicTheme.regionId, 'practice').map(normalizeLabel)
+    : [normalizeLabel(topic)];
+  return acceptedTopics.includes(normalizeLabel(item.topic));
 }
 
 function regionById(regionId: string): RegionDefinition | undefined {
@@ -77,6 +83,9 @@ function regionById(regionId: string): RegionDefinition | undefined {
 function matchesRegion(item: GeneratedPracticeItem, regionId?: string): boolean {
   if (!regionId) return true;
   if (item.regionIds.includes(regionId)) return true;
+  const acceptedTopics = topicAliasesForRegion(regionId, 'practice').map(normalizeLabel);
+  if (acceptedTopics.includes(normalizeLabel(item.topic))) return true;
+
   const mappedRegion = matchRegionForLabels([item.topic]);
   if (mappedRegion?.id === regionId) return true;
 

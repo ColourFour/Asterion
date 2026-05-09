@@ -542,6 +542,159 @@
       "student_goal": "Use the discriminant as a root-counting shortcut.",
       "title": "The discriminant is evidence",
       "topics": ["quadratics"]
+    },
+    {
+      "body": "Before integrating, classify the shape of the expression. A hidden derivative suggests substitution, a product may suggest parts, and a rational expression may need algebra first.",
+      "common_mistakes": [
+        "Trying a method before simplifying the expression.",
+        "Changing variables in a definite integral but keeping the old limits.",
+        "Forgetting the constant in an indefinite integral."
+      ],
+      "common_trap": "Choosing a technique from habit instead of from the structure of the integrand.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
+      "explanation": "This snippet teaches method choice for integration without depending on a specific exam question.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
+        "recommended_before_question_ids": [],
+        "supports_topics": ["integration"]
+      },
+      "lineage": {
+        "generated_from": "manual"
+      },
+      "micro_steps": [
+        "Simplify the integrand if possible.",
+        "Look for a derivative-like factor.",
+        "Choose substitution, parts, partial fractions, or a direct rule.",
+        "Check limits and constants before the final answer."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know standard integration rules.",
+        "Recognize products, composites, and rational expressions."
+      ],
+      "quick_check": {
+        "answer": "Substitution is a natural first choice.",
+        "explanation": "The factor $2x$ is the derivative of $x^2+1$, so the integrand has a composite structure.",
+        "prompt": "For $\\int 2x(x^2+1)^5\\,dx$, which method would you try first?"
+      },
+      "region_ids": ["integration-gardens"],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-integration-method-choice-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": ["p3_integration"],
+      "steps": [
+        "Classify the expression.",
+        "Choose the integration method.",
+        "Transform the setup fully before evaluating."
+      ],
+      "student_goal": "Choose an integration method from structure rather than guesswork.",
+      "title": "Let the integrand choose the method",
+      "topic": "integration",
+      "topics": ["integration"]
+    },
+    {
+      "body": "Numerical methods earn marks through visible process. Show the sign-change or iteration rule, keep enough working accuracy, and round only at the requested final step.",
+      "common_mistakes": [
+        "Rounding every iteration to too few figures.",
+        "Using a different iteration formula from the one stated.",
+        "Claiming a root in an interval without showing the function changes sign."
+      ],
+      "common_trap": "Treating the final decimal as the whole method and leaving out the evidence that justifies it.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the interval check or iteration table clearly enough that each approximation can be audited.",
+      "explanation": "This manual snippet covers the process marks common to iteration and sign-change questions.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving root intervals, iteration, or decimal-place accuracy.",
+        "recommended_before_question_ids": [],
+        "supports_topics": ["numerical_methods"]
+      },
+      "lineage": {
+        "generated_from": "manual"
+      },
+      "micro_steps": [
+        "State the equation or iteration formula being used.",
+        "For intervals, evaluate both endpoints.",
+        "For iteration, keep extra figures in working.",
+        "Round only when the requested accuracy is reached."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Evaluate functions accurately.",
+        "Understand what a sign change means for a root."
+      ],
+      "quick_check": {
+        "answer": "There is evidence for a root between $1$ and $2$.",
+        "explanation": "The values have opposite signs, so the curve crosses the axis somewhere in the interval.",
+        "prompt": "If $f(1)=-0.4$ and $f(2)=1.1$, what does this suggest about a root?"
+      },
+      "region_ids": ["numerical-mines"],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-numerical-method-evidence-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": ["p3_numerical_methods"],
+      "steps": [
+        "Show the method.",
+        "Carry sufficient accuracy.",
+        "State the final rounded value with justification."
+      ],
+      "student_goal": "Make numerical-method working visible enough to earn method marks.",
+      "title": "Approximation needs evidence",
+      "topic": "numerical_methods",
+      "topics": ["numerical_methods"]
+    },
+    {
+      "body": "For first-order differential equations, separate variables before integrating. Apply an initial condition only after you have the general solution with a constant.",
+      "common_mistakes": [
+        "Integrating before the variables are fully separated.",
+        "Dropping the constant of integration.",
+        "Substituting the initial condition into the differential equation instead of the integrated solution."
+      ],
+      "common_trap": "Moving symbols across the equation without checking that each side now contains one variable.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
+      "explanation": "This manual snippet focuses on separation of variables and the order of steps.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that ask for a particular solution from a first-order differential equation.",
+        "recommended_before_question_ids": [],
+        "supports_topics": ["differential_equations"]
+      },
+      "lineage": {
+        "generated_from": "manual"
+      },
+      "micro_steps": [
+        "Move all $y$ terms to one side and all $x$ terms to the other.",
+        "Integrate both sides.",
+        "Include a constant of integration.",
+        "Use the given condition to find the constant."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know basic integration rules.",
+        "Be comfortable rearranging equations with fractions."
+      ],
+      "quick_check": {
+        "answer": "$y\\,dy=3x^2\\,dx$",
+        "explanation": "Multiplying by $y\\,dx$ puts the $y$ terms with $dy$ and the $x$ terms with $dx$.",
+        "prompt": "Separate $\\frac{dy}{dx}=\\frac{3x^2}{y}$."
+      },
+      "region_ids": ["differential-shrine"],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-differential-separation-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": ["p3_differential_equations"],
+      "steps": [
+        "Separate variables.",
+        "Integrate both sides.",
+        "Use the condition after integrating."
+      ],
+      "student_goal": "Solve separable differential equations in the correct order.",
+      "title": "Separate before integrating",
+      "topic": "differential_equations",
+      "topics": ["differential_equations"]
     }
   ]
 }

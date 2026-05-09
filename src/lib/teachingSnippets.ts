@@ -1,5 +1,6 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import { staticDataFetchCache } from './loadQuestionBank';
+import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { matchRegionForLabels, normalizeLabel } from './worldMap';
 
@@ -95,13 +96,19 @@ function matchesPaperFamily(snippet: TeachingSnippet, paperFamily?: PaperFamily)
 function matchesTopic(snippet: TeachingSnippet, topic?: string): boolean {
   if (!topic) return true;
   const normalizedTopic = normalizeLabel(topic);
-  return snippet.topics.some((snippetTopic) => normalizeLabel(snippetTopic) === normalizedTopic);
+  const topicTheme = findThemeForTopic(topic);
+  const acceptedTopics = topicTheme
+    ? topicAliasesForRegion(topicTheme.regionId, 'snippets').map(normalizeLabel)
+    : [normalizedTopic];
+  return snippet.topics.some((snippetTopic) => acceptedTopics.includes(normalizeLabel(snippetTopic)));
 }
 
 function matchesRegion(snippet: TeachingSnippet, region?: RegionDefinition): boolean {
   if (!region) return true;
   if (snippet.regionIds.includes(region.id)) return true;
+  const acceptedTopics = topicAliasesForRegion(region, 'snippets').map(normalizeLabel);
   return snippet.topics.some((topic) => {
+    if (acceptedTopics.includes(normalizeLabel(topic))) return true;
     const mappedRegion = matchRegionForLabels([topic]);
     if (mappedRegion?.id === region.id) return true;
     const normalizedTopic = normalizeLabel(topic);

@@ -40,6 +40,53 @@ function runBuild(inputRecords: unknown[], outputDir: string) {
   };
 }
 
+function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) {
+  const rows = [
+    ['p3-log-check', 'logarithms_and_exponentials', ['logarithm-grove'], 'Check the log form'],
+    ['p3-algebra-check', 'binomial_expansion', ['algebra-forge'], 'Check the algebra form'],
+    ['p3-trig-check', 'trigonometry', ['trig-observatory'], 'Check the trig interval'],
+    ['p3-complex-check', 'complex_numbers', ['complex-harbor'], 'Check the complex form'],
+    ['p3-diff-check', 'differentiation', ['calculus-cliffs'], 'Check the derivative rule'],
+    ['p3-integration-check', 'integration', ['integration-gardens'], 'Check the integral method'],
+    ['p3-vector-check', 'vectors', ['vector-workshop'], 'Check the vector setup'],
+    ['p3-numerical-check', 'numerical_methods', ['numerical-mines'], 'Check the numerical evidence'],
+    ['p3-de-check', 'differential_equations', ['differential-shrine'], 'Check the separated equation'],
+  ] as const;
+
+  return rows.map(([snippetId, topic, regionIds, title], index) => ({
+    snippet_id: snippetId,
+    paper_family: 'p3',
+    topics: [topic],
+    region_ids: regionIds,
+    title,
+    student_goal: 'Use reviewed content before practice.',
+    body: 'This reviewed snippet gives a short method reminder.',
+    steps: ['Identify the topic signal.', 'Choose the method.'],
+    exam_move: 'Name the method before calculating.',
+    common_trap: 'Starting before choosing a method.',
+    review_status: 'published',
+    source: 'teacher_authored',
+    prerequisites: ['Read the question prompt carefully.'],
+    micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
+    common_mistakes: ['Skipping the setup line.'],
+    quick_check: {
+      prompt: 'What should you do before calculating?',
+      answer: 'Choose the method.',
+      explanation: 'A named method keeps the first line purposeful.',
+    },
+    guardian_readiness: {
+      supports_topics: [topic],
+      recommended_before_question_ids: ['source_q'],
+      readiness_note: 'Use before Guardian attempts.',
+    },
+    estimated_time_minutes: 3,
+    snippet_type: 'concept',
+    source_question_ids: ['source_q'],
+    source_skill_target_ids: [`p3_${topic}`],
+    ...(index === 0 ? snippetOverrides : {}),
+  }));
+}
+
 function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOverrides: Record<string, unknown> = {}) {
   writeFileSync(path.join(dir, 'skill_targets.json'), JSON.stringify({
     schema_name: 'asterion_skill_targets',
@@ -74,40 +121,7 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
   writeFileSync(snippetsPath, JSON.stringify({
     schema_name: 'asterion_teaching_snippets',
     schema_version: 1,
-    snippets: [
-      {
-        snippet_id: 'p3-log-check',
-        paper_family: 'p3',
-        topics: ['logarithms_and_exponentials'],
-        region_ids: ['logarithm-grove'],
-        title: 'Check the log form',
-        student_goal: 'Rewrite between forms before solving.',
-        body: 'A logarithm tells you which exponent is needed.',
-        steps: ['Identify the base.', 'Rewrite as an exponent statement.'],
-        exam_move: 'Convert form when the unknown is inside the logarithm.',
-        common_trap: 'Changing the base while converting.',
-        review_status: 'published',
-        source: 'teacher_authored',
-        prerequisites: ['Know index notation.'],
-        micro_steps: ['Circle the base.', 'Name the exponent.'],
-        common_mistakes: ['Calling the argument the exponent.'],
-        quick_check: {
-          prompt: 'Rewrite $\\log_2 8=3$.',
-          answer: '$2^3=8$',
-          explanation: 'The log value is the exponent.',
-        },
-        guardian_readiness: {
-          supports_topics: ['logarithms_and_exponentials'],
-          recommended_before_question_ids: ['source_q'],
-          readiness_note: 'Use before logarithm Guardian attempts.',
-        },
-        estimated_time_minutes: 3,
-        snippet_type: 'concept',
-        source_question_ids: ['source_q'],
-        source_skill_target_ids: ['p3_logarithms_and_exponentials'],
-        ...snippetOverrides,
-      },
-    ],
+    snippets: regionCoverageSnippets(snippetOverrides),
   }, null, 2));
 }
 
@@ -225,6 +239,21 @@ describe('Content Lab skill target pipeline', () => {
           explanation: 'The log value is the exponent.',
         },
       });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects reviewed snippet files that leave an active P3 region uncovered', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-region-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath);
+      const payload = JSON.parse(readFileSync(snippetsPath, 'utf8'));
+      payload.snippets = payload.snippets.filter((snippet: { region_ids?: string[] }) => !snippet.region_ids?.includes('numerical-mines'));
+      writeFileSync(snippetsPath, JSON.stringify(payload, null, 2));
 
       expect(() => runVerifier(dir, snippetsPath)).toThrow();
     } finally {

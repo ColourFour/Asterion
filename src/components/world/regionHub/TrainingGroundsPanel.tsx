@@ -1,6 +1,7 @@
 import { AlertTriangle, Dumbbell, Target } from 'lucide-react';
 import type { TrainingSessionIntent } from '../../../types';
 import { TRAINING_SESSION_LABELS, type RegionLearningSummary } from '../../../lib/regionLearning';
+import { RegionActionCard } from './RegionActionCard';
 import { trainingIntents } from './regionHubPanelUtils';
 
 interface TrainingGroundsPanelProps {
@@ -11,14 +12,13 @@ interface TrainingGroundsPanelProps {
 
 export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: TrainingGroundsPanelProps) {
   return (
-    <article className="region-loop-card training-card">
-      <div className="region-loop-card-title">
-        <Dumbbell size={22} />
-        <div>
-          <span>Phase 2</span>
-          <h3>Training Grounds</h3>
-        </div>
-      </div>
+    <RegionActionCard
+      eyebrow="Exam evidence"
+      title="Exam Training"
+      description="Use real question images and mark schemes to build Guardian evidence."
+      icon={<Dumbbell size={22} />}
+      className="training-card"
+    >
       <p>{summary.trainingSession.reason}</p>
       <div className="recommended-session">
         <Target size={18} />
@@ -46,6 +46,6 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
           <span>No trainable question and mark-scheme image pairs are loaded for this region yet.</span>
         </div>
       ) : null}
-    </article>
+    </RegionActionCard>
   );
 }

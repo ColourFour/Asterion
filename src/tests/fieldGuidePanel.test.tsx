@@ -3,9 +3,12 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
+import { getRegionTheme } from '../lib/regionThemes';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
+import { QuickChecksPanel } from '../components/world/regionHub/QuickChecksPanel';
+import { WarmUpPracticePanel } from '../components/world/regionHub/WarmUpPracticePanel';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -96,20 +99,23 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(logRegion).toBeTruthy();
 
     const container = render(
-      <FieldGuidePanel
-        fieldGuide={getRegionFieldGuide(logRegion!)}
-        fieldGuideCompleted={false}
-        teachingSnippets={[snippet]}
-        generatedPractice={[]}
-        onCompleteFieldGuide={vi.fn()}
-      />,
+      <>
+        <FieldGuidePanel
+          fieldGuide={getRegionFieldGuide(logRegion!)}
+          fieldGuideCompleted={false}
+          theme={getRegionTheme(logRegion!)}
+          teachingSnippets={[snippet]}
+          onCompleteFieldGuide={vi.fn()}
+        />
+        <QuickChecksPanel teachingSnippets={[snippet]} />
+      </>,
     );
 
     expect(container.textContent).toContain('Teaching snippets');
     expect(container.textContent).toContain('Micro steps');
     expect(container.textContent).toContain('Common mistakes');
 
-    const details = container.querySelector<HTMLDetailsElement>('details.quick-check-reveal');
+    const details = container.querySelector<HTMLDetailsElement>('.quick-check-card details.quick-check-reveal');
     expect(details).toBeTruthy();
     expect(details?.querySelector('summary')?.textContent).toContain('Quick check');
 
@@ -128,13 +134,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(logRegion).toBeTruthy();
 
     const container = render(
-      <FieldGuidePanel
-        fieldGuide={getRegionFieldGuide(logRegion!)}
-        fieldGuideCompleted={false}
-        teachingSnippets={[]}
-        generatedPractice={[generatedPractice]}
-        onCompleteFieldGuide={vi.fn()}
-      />,
+      <WarmUpPracticePanel practiceItems={[generatedPractice]} />,
     );
 
     expect(container.textContent).toContain('Warm-up Practice');
@@ -144,6 +144,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     const revealButton = Array.from(container.querySelectorAll('button'))
       .find((button) => button.textContent === 'Reveal solution');
     expect(revealButton).toBeTruthy();
+    expect(revealButton?.getAttribute('aria-controls')).toBe('warm-up-solution-gen_log_equation_basic_0001');
+    expect(revealButton?.getAttribute('aria-expanded')).toBe('false');
 
     act(() => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -152,5 +154,15 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(revealButton?.getAttribute('aria-expanded')).toBe('true');
     expect(container.textContent).toContain('x = 4');
     expect(container.textContent).toContain('Use the product law.');
+  });
+
+  it('renders a friendly warm-up empty state for regions without generated practice', () => {
+    const container = render(<WarmUpPracticePanel practiceItems={[]} />);
+    const emptyState = container.querySelector('.region-empty-state');
+
+    expect(emptyState).toBeTruthy();
+    expect(container.textContent).toContain('Warm-ups for this region are being prepared.');
+    expect(container.textContent).toContain('Field Guide');
+    expect(container.textContent).toContain('Exam Training');
   });
 });
