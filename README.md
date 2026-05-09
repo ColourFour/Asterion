@@ -1,6 +1,6 @@
 # Asterion
 
-Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The first MVP focuses on Paper 3-style practice for Pure Mathematics 3, especially algebra, trigonometry, logarithms, and complex numbers, while keeping the data model ready for P1, Mechanics, and Statistics.
+Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, Quick Checks, deterministic warm-up practice, and evidence-gated Guardian checks.
 
 The question image and mark-scheme image are the source of truth. Extracted text and DeepSeek enrichment are used as metadata for routing, display, review, and teacher export.
 
@@ -58,7 +58,7 @@ Current P3 regions:
 - Iteration Forge
 - Differential Shrine
 
-Algebra Vault, Logarithm Observatory, Trigonometry Spire, and Argand Atrium are the first active classroom regions. Other regions are visible as dormant or available when matching questions exist.
+All nine P3 regions are active when matching trainable questions exist. The map remains a polished academic dashboard, not a tile-walking game.
 
 ## Region Learning Loop
 
@@ -67,18 +67,74 @@ Algebra Vault, Logarithm Observatory, Trigonometry Spire, and Argand Atrium are 
 The intended loop is:
 
 ```text
-Field Guide -> Training Grounds -> Region Guardian
+Understand the idea -> try a small check -> practice safely -> face the Guardian
 ```
 
-- Field Guide: short hand-authored region guidance with learning objective, key skills, common exam moves, common traps, worked-example placeholders, and readiness checks.
+- Field Guide: reviewed compact teaching snippets with student goals, explanations, prerequisites, micro-steps, common mistakes, and Guardian readiness notes.
+- Quick Checks: one-micro-skill checks with clear answer and short explanation.
+- Warm-up Practice: deterministic generated practice from reviewed repo-side generators. These are small original supports, not exam clones.
 - Training Grounds: the current image-first practice flow, labeled as warm-up, core practice, weak-area review, or challenge with a short local explanation.
 - Region Guardian: an evidence-gated mastery check selected from trainable canonical questions in the same region.
 
 Field Guide completion and guardian clear state are stored locally through the progress adapter. Field Guide completion does not award mastery, XP, avatar rewards, or restored-region state by itself. Region clearing and reward placeholders require saved attempts, marks, mark-scheme availability, and guardian evidence.
 
-The first implementation exposes the hub for P3 regions, with region-specific guide metadata and modest CSS-driven world-map state treatments.
+The current implementation exposes the region hub for all active P3 regions. Every active region has reviewed Field Guide content and at least one Quick Check. Generated warm-up practice currently covers logarithms/exponentials and binomial expansion, sequenced from small first step to Guardian-prep step.
 
-See `docs/region-learning-loop-roadmap.md` for the batch plan.
+See `docs/region-learning-loop-roadmap.md` for current state and remaining roadmap.
+
+## Content Lab
+
+Content Lab is a repo-local pipeline under `tools/content_lab`. It turns exam-bank evidence into reviewed teaching support without moving generation logic into React.
+
+Runtime consumes only static reviewed JSON from:
+
+```text
+public/data/teaching_snippets.json
+public/data/generated_practice_bank.json
+```
+
+The browser filters again at load time:
+
+- teaching snippets must be `teacher_reviewed` or `published`
+- generated practice must be `teacher_reviewed` or `published`
+- generated practice must have `verification.status === "pass"`
+
+Internal pipeline outputs live under:
+
+```text
+tools/content_lab/outputs/skill_targets.json
+tools/content_lab/outputs/review_queue.json
+tools/content_lab/outputs/generated_practice_bank.json
+tools/content_lab/outputs/content_lab_report.json
+```
+
+Current Content Lab coverage:
+
+- 22 skill targets across 17 topics
+- 15 reviewed teaching snippets
+- 15 Quick Checks
+- 6 reviewed generated warm-ups
+- 2 generator families: logarithmic equations and binomial expansion
+- all active P3 regions have reviewed snippet and Quick Check coverage
+
+Run the pipeline with:
+
+```bash
+python3 tools/content_lab/scripts/build_skill_targets.py \
+  --input public/data/question_bank.json \
+  --output tools/content_lab/outputs/skill_targets.json \
+  --review-output tools/content_lab/outputs/review_queue.json
+
+python3 tools/content_lab/scripts/build_generated_practice.py \
+  --skill-targets tools/content_lab/outputs/skill_targets.json \
+  --snippets public/data/teaching_snippets.json \
+  --output tools/content_lab/outputs/generated_practice_bank.json \
+  --runtime-output public/data/generated_practice_bank.json
+
+python3 tools/content_lab/scripts/verify_content_lab_outputs.py
+```
+
+`public/data/question_bank.json` must remain unchanged by Content Lab work.
 
 ## System Boundaries
 
@@ -158,6 +214,7 @@ Assets should:
 - remain reproducible through prompt/version metadata
 
 Generated assets are considered production inputs and should be versioned and attributable.
+
 ## Local Setup
 
 ```bash
@@ -206,6 +263,15 @@ npm run data:p3
 ```
 
 The full-bank path remains supported through `loadQuestionBankWithDiagnostics({ scope: 'full' })` and as a fallback if the P3 bundle is missing. Do not hand-edit generated P3 bundles except for emergency inspection; update the canonical full files, then regenerate.
+
+Runtime teaching support files:
+
+```text
+public/data/teaching_snippets.json
+public/data/generated_practice_bank.json
+```
+
+These files are static reviewed artifacts. React does not mine the exam bank, build skill targets, or generate practice in the browser.
 
 ## Image Path Resolution
 
@@ -300,6 +366,8 @@ npm run assets:ui
 
 The optimizer uses macOS `sips` and intentionally avoids adding heavy image dependencies. It does not touch canonical CAIE question or mark-scheme images. If replacing UI art, commit the source PNG and regenerate the optimized variants before checking first-load size.
 
+Current deployment note: optimized UI assets are the ones referenced by the app, but source UI PNGs still live under `public/`, so Vite copies them into `dist`. Moving source-only UI art out of `public` is the next payload cleanup pass.
+
 ## Region Matching
 
 Question topics and subtopics are mapped to world regions in `src/lib/worldMap.ts`. Matching is forgiving across title case, snake case, and common wording variants. Examples:
@@ -388,7 +456,8 @@ Common path problems:
 
 - Local student profile with real name, class/group, teacher name, and avatar name.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
-- P3-focused practice modes: World Map, Start Practice, region training, Review Weak Areas, Teacher/Export.
+- P3-focused modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, Teacher/Export.
+- Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
 - Normalization layer that merges the main bank and DeepSeek sidecar without crashing on malformed enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
 - Required exact marks and mistake type after mark scheme reveal.
@@ -428,16 +497,25 @@ Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSO
 - No backend or cross-device sync.
 - No Supabase storage yet.
 - No AI marking.
+- No browser-side answer input or automatic grading for Quick Checks or generated warm-ups.
 - No automated browser smoke test for the full student flow.
 - Adaptive selection is intentionally simple and rule-based.
+- Generated warm-up coverage is intentionally narrow: logarithms/exponentials and binomial expansion only.
+- P3 `33autumn25` records are quarantined from training until canonical mark-scheme images are available.
+- Source UI art still contributes to static deploy size because it remains under `public/`.
 - Mastered region rank is reserved for a later mixed review/mastery trial loop.
 
 ## Roadmap
 
-- Extend guardian attempts with clearer teacher-facing reporting once the first classroom trial identifies useful export columns.
-- Add fuller worked examples to the Field Guides without replacing canonical question or mark-scheme images.
+- Move source-only UI art out of `public` or exclude it from static deploy output while preserving optimized runtime assets.
+- Split `src/styles.css` into smaller feature-owned style files before more UI work.
+- Extract attempt construction from `PracticeView` into a pure tested utility.
+- Extract root app orchestration from `App.tsx` into a controller hook once region flows stabilize further.
+- Add deterministic warm-up generators for trigonometry, differentiation, integration, vectors, and numerical methods.
+- Extend Guardian attempts with clearer teacher-facing reporting once the first classroom trial identifies useful export columns.
 - Tighten practice-ladder selection so warm-up, weak-area review, and challenge sessions choose questions differently where the bank has enough metadata.
 - Add avatar unlock history derived from guardian or mixed-review evidence, not from Field Guide completion alone.
+- Resolve or continue explicitly quarantining the `33autumn25` mark-scheme gap.
 - Run browser/mobile QA and hosted-readiness cleanup before any public classroom pilot.
 - Add broader P1, P4/Mechanics, and P5/Statistics worlds only after the P3 region loop is proven.
 - Implement hosted storage behind the existing progress adapter only after auth, RLS, export/delete, local-to-hosted migration UX, and canonical asset access decisions are reviewed.

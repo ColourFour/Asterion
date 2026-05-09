@@ -58,7 +58,24 @@ export function FieldGuidePanel({
                 <details className="snippet-detail-reveal">
                   <summary>Study details</summary>
                   <div className="snippet-detail-body">
-                    <p><MathText text={snippet.body} /></p>
+                    <p><MathText text={snippet.explanation ?? snippet.body} /></p>
+                    {snippet.workedExamples.length ? (
+                      <div className="snippet-mini-section">
+                        <b>Worked example:</b>
+                        <div className="worked-example-grid">
+                          {snippet.workedExamples.slice(0, 2).map((example) => (
+                            <div className="worked-example-card" key={example.id ?? example.prompt}>
+                              <strong><MathText text={example.prompt} /></strong>
+                              <ol>
+                                {example.steps.map((step) => <li key={step}><MathText text={step} /></li>)}
+                              </ol>
+                              <small><b>Answer:</b> <MathText text={example.answer} /></small>
+                              {example.teachingNote ? <small><b>Note:</b> <MathText text={example.teachingNote} /></small> : null}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="snippet-mini-section">
                       <b>Micro steps:</b>
                       <ul>

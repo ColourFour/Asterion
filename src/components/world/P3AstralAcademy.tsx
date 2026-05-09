@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy } from 'lucide-react';
+import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy, UsersRound } from 'lucide-react';
 import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
 import { astralAssets, getAstralRegionAsset, getAstralRegionAssetDimensions } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
+import { getRegionTheme, getRegionThemeClass } from '../../lib/regionThemes';
 import { WorldMapAvatarMarker } from '../avatar/WorldMapAvatarMarker';
 
 interface P3AstralAcademyProps {
@@ -19,6 +20,7 @@ interface P3AstralAcademyProps {
   onTrain: (region: RegionDefinition) => void;
   onRegions: () => void;
   onProfile: () => void;
+  onClassHall: () => void;
   onTeacher: () => void;
 }
 
@@ -431,6 +433,7 @@ export function P3AstralAcademy({
   onTrain,
   onRegions,
   onProfile,
+  onClassHall,
   onTeacher,
 }: P3AstralAcademyProps) {
   const summary = calculateAcademySummary(progress);
@@ -453,8 +456,6 @@ export function P3AstralAcademy({
         <div className="academy-map" aria-label={`${world.name} regions`}>
           <div className="map-paths" aria-hidden="true">
             <svg className="journey-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <ellipse className="journey-path-orbit journey-path-orbit-main" cx="58" cy="43" rx="20" ry="11" transform="rotate(-14 58 43)" />
-              <ellipse className="journey-path-orbit journey-path-orbit-wide" cx="55" cy="51" rx="46" ry="28" transform="rotate(-10 55 51)" />
               <path className="journey-path-glow" d="M10 54 C 20 38, 30 70, 42 52 S 47 31, 58 43 S 72 62, 89 53" />
               <path className="journey-path-main" d="M10 54 C 19 41, 30 65, 41 53 S 48 30, 58 43 S 72 60, 89 53" />
               <path className="journey-path-branch" d="M31 24 C 39 19, 44 16, 50 17 S 58 27, 58 43" />
@@ -506,6 +507,7 @@ export function P3AstralAcademy({
 
         <div className="bottom-menu" aria-label="Academy menu">
           <button type="button" onClick={onProfile}><ScrollText size={20} /> Profile</button>
+          <button type="button" onClick={onClassHall}><UsersRound size={20} /> Commons</button>
           <button type="button" disabled={!recommended} onClick={() => recommended && onTrain(recommended.region)}><FileText size={20} /> Region</button>
           <button type="button" onClick={onRegions}><MapIcon size={20} /> Regions</button>
           <button type="button" onClick={onTeacher}><BookOpenCheck size={20} /> Archive</button>
@@ -538,8 +540,9 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
           const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
           const goal = nextRegionGoal(regionProgress);
           const learningSummary = regionLearningSummaries?.[region.id];
+          const theme = getRegionTheme(region);
           return (
-            <article className={`region-card region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}`} key={region.id}>
+            <article className={`region-card ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}`} key={region.id}>
               <div className="region-card-header">
                 <div>
                   <span className="region-state">{canTrain ? learningStateLabel(learningSummary) : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>

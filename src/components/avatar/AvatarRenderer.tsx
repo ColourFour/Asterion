@@ -10,7 +10,7 @@ import type { AvatarSettings, RegionProgress } from '../../types';
 interface AvatarRendererProps {
   avatarName: string;
   avatar: AvatarSettings;
-  regionProgress: RegionProgress[];
+  regionProgress?: RegionProgress[];
   mode: AvatarRenderMode;
   className?: string;
   ariaLabel?: string;

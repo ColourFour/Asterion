@@ -24,6 +24,7 @@
           "answer",
           "worked_solution",
           "parameters",
+          "sequence_role",
           "verification",
           "difficulty_band",
           "review_status"
@@ -33,12 +34,22 @@
           "generator_family": {
             "enum": [
               "logarithms_and_exponentials.log_equation_basic",
-              "binomial_expansion.first_terms_and_coefficient"
+              "binomial_expansion.first_terms_and_coefficient",
+              "algebra.binomial_validity_range",
+              "algebra.modulus_equation_basic",
+              "algebra.partial_fractions_distinct_linear",
+              "algebra.partial_fractions_repeated_linear",
+              "trigonometry.double_angle_basic",
+              "trigonometry.identity_rewrite_basic",
+              "trigonometry.r_form_basic",
+              "trigonometry.solve_equation_interval_basic"
             ]
           },
           "paper_family": { "type": "string", "minLength": 1 },
           "topic": { "type": "string", "minLength": 1 },
           "skill_target_id": { "type": "string", "minLength": 1 },
+          "source_snippet_id": { "type": "string", "minLength": 1 },
+          "example_model_id": { "type": "string", "minLength": 1 },
           "snippet_ids": {
             "type": "array",
             "items": { "type": "string", "minLength": 1 },
@@ -63,6 +74,7 @@
               "type": ["string", "number", "integer", "boolean"]
             }
           },
+          "sequence_role": { "enum": ["first_step", "complete_step", "guardian_prep"] },
           "verification": {
             "type": "object",
             "additionalProperties": false,

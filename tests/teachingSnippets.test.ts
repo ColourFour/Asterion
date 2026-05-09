@@ -74,6 +74,13 @@ describe('teaching snippets runtime loader', () => {
           prerequisites: ['Index laws.'],
           micro_steps: ['Circle the base.', 'Rewrite the statement.'],
           common_mistakes: ['Treating the log value as the base.'],
+          worked_example: {
+            id: 'enriched-example-1',
+            prompt: 'Simplify $\\ln x+\\ln2$.',
+            steps: ['Use the product law.', 'Multiply the log inputs.'],
+            answer: '$\\ln(2x)$',
+            teaching_note: 'Adding logs means multiplying inputs.',
+          },
           quick_check: {
             prompt: 'Rewrite $\\log_3 9=2$.',
             answer: '$3^2=9$',
@@ -88,6 +95,7 @@ describe('teaching snippets runtime loader', () => {
           snippet_type: 'quick_check',
           source_question_ids: ['source_q'],
           source_skill_target_ids: ['p3_logarithms_and_exponentials'],
+          related_skill_targets: ['p3_logarithms_and_exponentials'],
         },
         {
           snippet_id: 'legacy',
@@ -112,10 +120,20 @@ describe('teaching snippets runtime loader', () => {
       prerequisites: ['Index laws.'],
       microSteps: ['Circle the base.', 'Rewrite the statement.'],
       commonMistakes: ['Treating the log value as the base.'],
+      workedExamples: [
+        {
+          id: 'enriched-example-1',
+          prompt: 'Simplify $\\ln x+\\ln2$.',
+          steps: ['Use the product law.', 'Multiply the log inputs.'],
+          answer: '$\\ln(2x)$',
+          teachingNote: 'Adding logs means multiplying inputs.',
+        },
+      ],
       estimatedTimeMinutes: 2,
       snippetType: 'quick_check',
       sourceQuestionIds: ['source_q'],
       sourceSkillTargetIds: ['p3_logarithms_and_exponentials'],
+      relatedSkillTargetIds: ['p3_logarithms_and_exponentials'],
     });
     expect(snippets[0].quickCheck).toEqual({
       prompt: 'Rewrite $\\log_3 9=2$.',
@@ -128,6 +146,7 @@ describe('teaching snippets runtime loader', () => {
       readinessNote: 'Use before a logarithm Guardian question.',
     });
     expect(snippets[1].quickCheck).toBeUndefined();
+    expect(snippets[1].workedExamples).toEqual([]);
     expect(getPrerequisiteSnippets(snippets).map((snippet) => snippet.snippetId)).toEqual(['enriched']);
     expect(getQuickCheckSnippets(snippets).map((snippet) => snippet.snippetId)).toEqual(['enriched']);
   });
@@ -180,9 +199,70 @@ describe('teaching snippets runtime loader', () => {
     expect(logRegion).toBeTruthy();
     expect(getTeachingSnippetsByTopic(snippets, 'p3', 'logarithms_and_exponentials').length).toBeGreaterThanOrEqual(3);
     expect(getTeachingSnippetsByTopic(snippets, 'p4', 'logarithms_and_exponentials')).toEqual([]);
-    expect(getTeachingSnippetsForRegion(snippets, 'p3', logRegion!, 4).map((snippet) => snippet.snippetId)).toContain('p3-log-laws-001');
+    expect(getTeachingSnippetsForRegion(snippets, 'p3', logRegion!, 8).map((snippet) => snippet.snippetId)).toContain('p3-log-laws-001');
     expect(getSnippetsByTopic(snippets, 'p3', 'logarithms_and_exponentials').map((snippet) => snippet.snippetId)).toContain('p3-log-domain-001');
-    expect(getSnippetsByRegion(snippets, 'p3', logRegion!, 4).map((snippet) => snippet.snippetId)).toContain('p3-log-laws-001');
+    expect(getSnippetsByRegion(snippets, 'p3', logRegion!, 8).map((snippet) => snippet.snippetId)).toContain('p3-log-laws-001');
+  });
+
+  it('maps Batch 7 algebra, log, and trig depth snippets to reviewed skill targets and quick checks', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+    const byId = new Map(snippets.map((snippet) => [snippet.snippetId, snippet]));
+
+    for (const snippetId of [
+      'p3-binomial-validity-range-001',
+      'p3-partial-fractions-repeated-linear-001',
+      'p3-modulus-cases-001',
+      'p3-polynomial-theorem-001',
+    ]) {
+      const snippet = byId.get(snippetId);
+      expect(snippet?.regionIds).toContain('algebra-forge');
+      expect(snippet?.relatedSkillTargetIds.length).toBeGreaterThan(0);
+      expect(snippet?.quickCheck?.skillTargetId).toBe(snippet?.relatedSkillTargetIds[0]);
+    }
+
+    for (const snippetId of ['p3-log-linearisation-001', 'p3-log-invalid-operations-001', 'p3-ln-e-inverse-001']) {
+      const snippet = byId.get(snippetId);
+      expect(snippet?.regionIds).toContain('logarithm-grove');
+      expect(snippet?.quickCheck?.topic).toBe('logarithms_and_exponentials');
+      expect(snippet?.quickCheck?.reviewStatus).toBe('teacher_reviewed');
+    }
+
+    for (const snippetId of ['p3-trig-identity-selection-001', 'p3-trig-reciprocal-rform-001', 'p3-trig-lost-solutions-001']) {
+      const snippet = byId.get(snippetId);
+      expect(snippet?.regionIds).toContain('trig-observatory');
+      expect(snippet?.quickCheck?.skillTargetId).toBe('p3_trigonometry');
+      expect(snippet?.guardianReadiness?.supportsTopics).toContain('trigonometry');
+    }
+  });
+
+  it('keeps priority method snippets example-first', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+    const priorityRegions = new Set(['algebra-forge', 'logarithm-grove', 'trig-observatory']);
+    const priorityMethodSnippets = snippets.filter((snippet) => (
+      ['concept', 'method', 'mistake_repair'].includes(String(snippet.snippetType))
+      && snippet.regionIds.some((regionId) => priorityRegions.has(regionId))
+    ));
+
+    expect(priorityMethodSnippets.length).toBeGreaterThan(0);
+    expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.length > 0)).toBe(true);
+    expect(priorityMethodSnippets.every((snippet) => snippet.quickCheck)).toBe(true);
+    expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.every((example) => (
+      example.steps.length >= 1 && example.steps.length <= 6
+    )))).toBe(true);
+  });
+
+  it('keeps Quick Checks smaller than worked examples for priority snippets', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+    const checked = snippets.filter((snippet) => (
+      snippet.regionIds.some((regionId) => ['algebra-forge', 'logarithm-grove', 'trig-observatory'].includes(regionId))
+      && snippet.quickCheck
+      && snippet.workedExamples.length > 0
+    ));
+
+    expect(checked.length).toBeGreaterThan(0);
+    expect(checked.every((snippet) => (
+      snippet.quickCheck!.prompt.length < snippet.workedExamples.map((example) => example.prompt.length + example.steps.join(' ').length).reduce((max, value) => Math.max(max, value), 0)
+    ))).toBe(true);
   });
 
   it('keeps the public runtime file limited to reviewed or published snippets', () => {
@@ -206,9 +286,13 @@ describe('teaching snippets runtime loader', () => {
 
     expect(snippets.every((snippet) => snippet.quickCheck)).toBe(true);
     expect(logLawSnippet?.quickCheck).toMatchObject({
-      prompt: expect.stringContaining('Expand'),
-      answer: expect.stringContaining('\\log'),
-      explanation: expect.stringContaining('power law'),
+      prompt: expect.stringContaining('Simplify'),
+      answer: expect.stringContaining('\\ln'),
+      explanation: expect.stringContaining('product law'),
+    });
+    expect(logLawSnippet?.workedExamples[0]).toMatchObject({
+      prompt: expect.stringContaining('\\ln x+\\ln5'),
+      answer: expect.stringContaining('\\ln(5x)'),
     });
   });
 });

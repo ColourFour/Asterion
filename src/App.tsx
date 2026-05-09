@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { UsersRound } from 'lucide-react';
+import { ClassHall } from './components/classHall/ClassHall';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { AvatarBuilder } from './components/profile/AvatarBuilder';
 import { PracticeView } from './components/practice/PracticeView';
@@ -21,7 +23,7 @@ import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippe
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'teacher';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
@@ -109,14 +111,12 @@ export default function App() {
   );
   const worldNotice = useMemo(() => {
     const p3 = questions.filter(isP3Question);
-    const blockedP3 = p3.filter((question) => !isQuestionTrainable(question));
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
     const imageMetadata = p3.filter((question) => question.questionImageRawPaths.length > 0).length;
     if (questions.length === 0) return 'No questions loaded yet. Check public/data/question_bank.p3.json and the full-bank fallback.';
     if (p3.length === 0) return 'Question bank loaded, but no P3 records were found. Check paper_family labels.';
     if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic/DeepSeek labels in Data Health.';
     if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
-    if (blockedP3.length > 0) return `${blockedP3.length} P3 records are blocked from practice until canonical question and mark-scheme assets are fixed. Data Health lists the affected records.`;
     return undefined;
   }, [questions, worldProgress]);
 
@@ -197,6 +197,13 @@ export default function App() {
     setTrainingIntent(undefined);
   }
 
+  function openClassHall() {
+    setSelectedRegion(undefined);
+    setViewMode('class_hall');
+    setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
+  }
+
   function reviewWeakAreas(nextProgress = progress) {
     setSelectedRegion(undefined);
     setTrainingIntent(undefined);
@@ -256,6 +263,7 @@ export default function App() {
           <button className={viewMode === 'regions' || viewMode === 'region_hub' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
           <button className={viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'guardian' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
           <button className={viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => reviewWeakAreas()}>Review Weak Areas</button>
+          <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
           <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => setViewMode('teacher')}>Teacher/Export</button>
         </nav>
@@ -276,6 +284,7 @@ export default function App() {
           onTrain={enterRegion}
           onRegions={openRegions}
           onProfile={openProfile}
+          onClassHall={openClassHall}
           onTeacher={() => setViewMode('teacher')}
         />
       ) : null}
@@ -309,6 +318,8 @@ export default function App() {
           onProfileSave={(profile) => setProgress(progressAdapter.saveProfile(profile, progress.profile))}
         />
       ) : null}
+
+      {viewMode === 'class_hall' ? <ClassHall /> : null}
 
       {viewMode === 'teacher' ? (
         <TeacherExport progress={progress} avatarGear={avatarGear} questions={questions} regionProgress={worldProgress} diagnostics={diagnostics} onClear={() => {

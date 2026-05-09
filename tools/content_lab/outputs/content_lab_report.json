@@ -1,47 +1,718 @@
 {
+  "active_region_topic_map": {
+    "algebra-forge": {
+      "primary_topic": "algebra_functions_and_binomial",
+      "topics": [
+        "algebra",
+        "algebraic_manipulation",
+        "binomial_expansion",
+        "functions",
+        "partial_fractions",
+        "polynomials",
+        "quadratics"
+      ]
+    },
+    "calculus-cliffs": {
+      "primary_topic": "differentiation",
+      "topics": [
+        "differentiation",
+        "parametric_equations"
+      ]
+    },
+    "complex-harbor": {
+      "primary_topic": "complex_numbers",
+      "topics": [
+        "argand_diagrams",
+        "complex_numbers",
+        "modulus_and_argument"
+      ]
+    },
+    "differential-shrine": {
+      "primary_topic": "differential_equations",
+      "topics": [
+        "differential_equations",
+        "separation_of_variables"
+      ]
+    },
+    "integration-gardens": {
+      "primary_topic": "integration",
+      "topics": [
+        "integration",
+        "partial_fractions"
+      ]
+    },
+    "logarithm-grove": {
+      "primary_topic": "logarithms_and_exponentials",
+      "topics": [
+        "exponentials",
+        "logarithms",
+        "logarithms_and_exponentials"
+      ]
+    },
+    "numerical-mines": {
+      "primary_topic": "numerical_methods",
+      "topics": [
+        "iteration",
+        "numerical_methods",
+        "numerical_solution_of_equations"
+      ]
+    },
+    "trig-observatory": {
+      "primary_topic": "trigonometry",
+      "topics": [
+        "trigonometric_equations",
+        "trigonometric_identities",
+        "trigonometry"
+      ]
+    },
+    "vector-workshop": {
+      "primary_topic": "vectors",
+      "topics": [
+        "vectors"
+      ]
+    }
+  },
+  "active_regions": [
+    {
+      "generated_warmups": 15,
+      "quick_checks": 8,
+      "region_id": "algebra-forge",
+      "region_name": "Algebra Vault",
+      "snippets": 8,
+      "snippets_with_examples": 8
+    },
+    {
+      "generated_warmups": 3,
+      "quick_checks": 7,
+      "region_id": "logarithm-grove",
+      "region_name": "Logarithm Observatory",
+      "snippets": 7,
+      "snippets_with_examples": 7
+    },
+    {
+      "generated_warmups": 12,
+      "quick_checks": 5,
+      "region_id": "trig-observatory",
+      "region_name": "Trigonometry Spire",
+      "snippets": 5,
+      "snippets_with_examples": 5
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 2,
+      "region_id": "complex-harbor",
+      "region_name": "Argand Atrium",
+      "snippets": 2,
+      "snippets_with_examples": 2
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 3,
+      "region_id": "calculus-cliffs",
+      "region_name": "Calculus Cliffs",
+      "snippets": 3,
+      "snippets_with_examples": 3
+    },
+    {
+      "generated_warmups": 6,
+      "quick_checks": 4,
+      "region_id": "integration-gardens",
+      "region_name": "Integral Terraces",
+      "snippets": 4,
+      "snippets_with_examples": 4
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 2,
+      "region_id": "vector-workshop",
+      "region_name": "Vectors Gate",
+      "snippets": 2,
+      "snippets_with_examples": 2
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 2,
+      "region_id": "numerical-mines",
+      "region_name": "Iteration Forge",
+      "snippets": 2,
+      "snippets_with_examples": 2
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 2,
+      "region_id": "differential-shrine",
+      "region_name": "Differential Shrine",
+      "snippets": 2,
+      "snippets_with_examples": 2
+    }
+  ],
   "auto_eligible": 30,
-  "blocked": 1144,
+  "batch_7_depth_summary": {
+    "priority_region_depth": [
+      {
+        "depth_status": "priority_deepened",
+        "generated_warmups": 15,
+        "quick_checks": 8,
+        "region_id": "algebra-forge",
+        "region_name": "Algebra Vault",
+        "snippets": 8,
+        "snippets_with_examples": 8
+      },
+      {
+        "depth_status": "priority_deepened",
+        "generated_warmups": 3,
+        "quick_checks": 7,
+        "region_id": "logarithm-grove",
+        "region_name": "Logarithm Observatory",
+        "snippets": 7,
+        "snippets_with_examples": 7
+      },
+      {
+        "depth_status": "priority_deepened",
+        "generated_warmups": 12,
+        "quick_checks": 5,
+        "region_id": "trig-observatory",
+        "region_name": "Trigonometry Spire",
+        "snippets": 5,
+        "snippets_with_examples": 5
+      }
+    ],
+    "regions_still_thin": [
+      {
+        "generated_warmups": 0,
+        "quick_checks": 2,
+        "reason": "low snippet/check count or no deterministic warm-up",
+        "region_id": "complex-harbor",
+        "region_name": "Argand Atrium",
+        "snippets": 2
+      },
+      {
+        "generated_warmups": 0,
+        "quick_checks": 3,
+        "reason": "low snippet/check count or no deterministic warm-up",
+        "region_id": "calculus-cliffs",
+        "region_name": "Calculus Cliffs",
+        "snippets": 3
+      },
+      {
+        "generated_warmups": 0,
+        "quick_checks": 2,
+        "reason": "low snippet/check count or no deterministic warm-up",
+        "region_id": "vector-workshop",
+        "region_name": "Vectors Gate",
+        "snippets": 2
+      },
+      {
+        "generated_warmups": 0,
+        "quick_checks": 2,
+        "reason": "low snippet/check count or no deterministic warm-up",
+        "region_id": "numerical-mines",
+        "region_name": "Iteration Forge",
+        "snippets": 2
+      },
+      {
+        "generated_warmups": 0,
+        "quick_checks": 2,
+        "reason": "low snippet/check count or no deterministic warm-up",
+        "region_id": "differential-shrine",
+        "region_name": "Differential Shrine",
+        "snippets": 2
+      }
+    ],
+    "source_trail": "tools/content_lab/outputs/content_lab_research_notes.md"
+  },
+  "batch_8_recommendations": [
+    "Add deterministic warm-up families for differentiation, integration, vectors, numerical methods, differential equations, and complex numbers where they can stay small and verified.",
+    "Split embedded Quick Checks into a dedicated runtime bank only if the app needs independent scheduling or spaced review.",
+    "Use teacher review to promote the highest-value secondary-region snippets into deeper Guardian-prep sequences."
+  ],
+  "blocked": 629,
+  "blocked_or_review_only_source_counts": {
+    "blocked": 629,
+    "review_only": 642
+  },
+  "content_review_status_counts": {
+    "generated_practice:teacher_reviewed": 30,
+    "snippet:published": 3,
+    "snippet:teacher_reviewed": 31
+  },
   "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
-  "review_only": 127,
+  "generated_families_by_topic": {
+    "algebra": {
+      "algebra.modulus_equation_basic": 3
+    },
+    "binomial_expansion": {
+      "algebra.binomial_validity_range": 3,
+      "binomial_expansion.first_terms_and_coefficient": 3
+    },
+    "logarithms_and_exponentials": {
+      "logarithms_and_exponentials.log_equation_basic": 3
+    },
+    "partial_fractions": {
+      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.partial_fractions_repeated_linear": 3
+    },
+    "trigonometry": {
+      "trigonometry.double_angle_basic": 3,
+      "trigonometry.identity_rewrite_basic": 3,
+      "trigonometry.r_form_basic": 3,
+      "trigonometry.solve_equation_interval_basic": 3
+    }
+  },
+  "generated_warmups_per_region": {
+    "algebra-forge": 15,
+    "calculus-cliffs": 0,
+    "complex-harbor": 0,
+    "differential-shrine": 0,
+    "integration-gardens": 6,
+    "logarithm-grove": 3,
+    "numerical-mines": 0,
+    "trig-observatory": 12,
+    "vector-workshop": 0
+  },
+  "generator_family_counts": {
+    "algebra.binomial_validity_range": 3,
+    "algebra.modulus_equation_basic": 3,
+    "algebra.partial_fractions_distinct_linear": 3,
+    "algebra.partial_fractions_repeated_linear": 3,
+    "binomial_expansion.first_terms_and_coefficient": 3,
+    "logarithms_and_exponentials.log_equation_basic": 3,
+    "trigonometry.double_angle_basic": 3,
+    "trigonometry.identity_rewrite_basic": 3,
+    "trigonometry.r_form_basic": 3,
+    "trigonometry.solve_equation_interval_basic": 3
+  },
+  "high_evidence_weak_teaching_support": [
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_complex_numbers",
+      "snippet_count": 2,
+      "source_question_count": 38,
+      "topic": "complex_numbers",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_numerical_methods",
+      "snippet_count": 2,
+      "source_question_count": 25,
+      "topic": "numerical_methods",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 1,
+      "skill_target_id": "p3_parametric_equations",
+      "snippet_count": 1,
+      "source_question_count": 83,
+      "topic": "parametric_equations",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_vectors",
+      "snippet_count": 2,
+      "source_question_count": 26,
+      "topic": "vectors",
+      "warmup_count": 0
+    }
+  ],
+  "method_snippets_missing_examples": [],
+  "missing_active_region_snippet_coverage": [],
+  "priority_region_example_coverage": [
+    {
+      "method_snippets_missing_examples": [],
+      "region_id": "algebra-forge",
+      "region_name": "Algebra Vault",
+      "snippets": 8,
+      "snippets_with_examples": 8,
+      "warmups": 15
+    },
+    {
+      "method_snippets_missing_examples": [],
+      "region_id": "logarithm-grove",
+      "region_name": "Logarithm Observatory",
+      "snippets": 7,
+      "snippets_with_examples": 7,
+      "warmups": 3
+    },
+    {
+      "method_snippets_missing_examples": [],
+      "region_id": "trig-observatory",
+      "region_name": "Trigonometry Spire",
+      "snippets": 5,
+      "snippets_with_examples": 5,
+      "warmups": 12
+    }
+  ],
+  "quick_checks_per_region": {
+    "algebra-forge": 8,
+    "calculus-cliffs": 3,
+    "complex-harbor": 2,
+    "differential-shrine": 2,
+    "integration-gardens": 4,
+    "logarithm-grove": 7,
+    "numerical-mines": 2,
+    "trig-observatory": 5,
+    "vector-workshop": 2
+  },
+  "review_only": 642,
   "review_queue_counts_by_reason": {
     "mapping_status_fail": 286,
     "missing_mark_scheme_text": 1,
-    "question_text_trust_low": 1044,
+    "question_text_trust_low": 515,
     "question_text_trust_unusable": 53,
-    "review_risk_flag": 72,
+    "review_risk_flag": 548,
     "severe_review_flag": 530,
-    "text_only_status_fail": 1133,
-    "topic_confidence_low": 11,
+    "text_fidelity_status_degraded": 515,
+    "text_only_status_fail": 515,
+    "topic_confidence_low": 412,
     "validation_status_fail": 514,
-    "visual_curation_status_fail": 438,
-    "visual_curation_status_review": 65,
-    "visual_required": 94
+    "validation_status_review": 157,
+    "visual_curation_status_review": 530,
+    "visual_required": 609
   },
   "schema_name": "asterion_content_lab_report",
   "schema_version": 1,
   "skill_targets_created_by_paper_family_topic": {
     "p1": {
-      "binomial_expansion": 1
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "quadratics": 1,
+      "series_and_sequences": 1,
+      "trigonometry": 1
+    },
+    "p3": {
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "complex_numbers": 1,
+      "differential_equations": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "logarithms_and_exponentials": 1,
+      "numerical_methods": 1,
+      "parametric_equations": 1,
+      "partial_fractions": 1,
+      "trigonometry": 1,
+      "vectors": 1
     },
     "p4": {
-      "momentum_impulse": 1
+      "kinematics_constant_acceleration": 1,
+      "momentum_impulse": 1,
+      "work_energy_power": 1
     }
   },
-  "topics_with_skill_targets_but_no_reviewed_snippets": [
+  "skill_targets_per_topic": {
+    "p1": {
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "quadratics": 1,
+      "series_and_sequences": 1,
+      "trigonometry": 1
+    },
+    "p3": {
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "complex_numbers": 1,
+      "differential_equations": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "logarithms_and_exponentials": 1,
+      "numerical_methods": 1,
+      "parametric_equations": 1,
+      "partial_fractions": 1,
+      "trigonometry": 1,
+      "vectors": 1
+    },
+    "p4": {
+      "kinematics_constant_acceleration": 1,
+      "momentum_impulse": 1,
+      "work_energy_power": 1
+    }
+  },
+  "skill_targets_with_quick_checks_but_no_warmups": [
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_complex_numbers",
+      "topic": "complex_numbers"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_differential_equations",
+      "topic": "differential_equations"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_differentiation",
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_integration",
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_numerical_methods",
+      "topic": "numerical_methods"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 1,
+      "skill_target_id": "p3_parametric_equations",
+      "topic": "parametric_equations"
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 2,
+      "skill_target_id": "p3_vectors",
+      "topic": "vectors"
+    },
+    {
+      "paper_family": "p4",
+      "quick_check_count": 1,
+      "skill_target_id": "p4_momentum_impulse",
+      "topic": "momentum_impulse"
+    }
+  ],
+  "skill_targets_with_snippets_but_no_quick_checks": [],
+  "snippets_per_region": {
+    "algebra-forge": 8,
+    "calculus-cliffs": 3,
+    "complex-harbor": 2,
+    "differential-shrine": 2,
+    "integration-gardens": 4,
+    "logarithm-grove": 7,
+    "numerical-mines": 2,
+    "trig-observatory": 5,
+    "vector-workshop": 2
+  },
+  "snippets_with_examples_by_region": {
+    "algebra-forge": 8,
+    "calculus-cliffs": 3,
+    "complex-harbor": 2,
+    "differential-shrine": 2,
+    "integration-gardens": 4,
+    "logarithm-grove": 7,
+    "numerical-mines": 2,
+    "trig-observatory": 5,
+    "vector-workshop": 2
+  },
+  "topics_needing_deterministic_generators": [
+    {
+      "paper_family": "p3",
+      "topic": "complex_numbers"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "differential_equations"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "numerical_methods"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "parametric_equations"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "quadratics"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "vectors"
+    }
+  ],
+  "topics_with_no_snippets": [
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_algebra"
+      ],
+      "topic": "algebra"
+    },
     {
       "paper_family": "p1",
       "skill_target_ids": [
         "p1_binomial_expansion"
       ],
       "topic": "binomial_expansion"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_differentiation"
+      ],
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_integration"
+      ],
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_quadratics"
+      ],
+      "topic": "quadratics"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_series_and_sequences"
+      ],
+      "topic": "series_and_sequences"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_trigonometry"
+      ],
+      "topic": "trigonometry"
+    },
+    {
+      "paper_family": "p4",
+      "skill_target_ids": [
+        "p4_kinematics_constant_acceleration"
+      ],
+      "topic": "kinematics_constant_acceleration"
+    },
+    {
+      "paper_family": "p4",
+      "skill_target_ids": [
+        "p4_work_energy_power"
+      ],
+      "topic": "work_energy_power"
+    }
+  ],
+  "topics_with_skill_targets_but_no_reviewed_snippets": [
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_algebra"
+      ],
+      "topic": "algebra"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_binomial_expansion"
+      ],
+      "topic": "binomial_expansion"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_differentiation"
+      ],
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_integration"
+      ],
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_quadratics"
+      ],
+      "topic": "quadratics"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_series_and_sequences"
+      ],
+      "topic": "series_and_sequences"
+    },
+    {
+      "paper_family": "p1",
+      "skill_target_ids": [
+        "p1_trigonometry"
+      ],
+      "topic": "trigonometry"
+    },
+    {
+      "paper_family": "p4",
+      "skill_target_ids": [
+        "p4_kinematics_constant_acceleration"
+      ],
+      "topic": "kinematics_constant_acceleration"
+    },
+    {
+      "paper_family": "p4",
+      "skill_target_ids": [
+        "p4_work_energy_power"
+      ],
+      "topic": "work_energy_power"
+    }
+  ],
+  "topics_with_snippets_but_no_warmups": [
+    {
+      "paper_family": "p3",
+      "topic": "complex_numbers"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "differential_equations"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "differentiation"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "integration"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "numerical_methods"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "parametric_equations"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "quadratics"
+    },
+    {
+      "paper_family": "p3",
+      "topic": "vectors"
+    },
+    {
+      "paper_family": "p4",
+      "topic": "momentum_impulse"
     }
   ],
   "topics_with_source_records_but_no_skill_targets": [
-    {
-      "paper_family": "p1",
-      "source_record_count": 8,
-      "topic": "algebra"
-    },
     {
       "paper_family": "p1",
       "source_record_count": 40,
@@ -54,58 +725,8 @@
     },
     {
       "paper_family": "p1",
-      "source_record_count": 71,
-      "topic": "differentiation"
-    },
-    {
-      "paper_family": "p1",
       "source_record_count": 78,
       "topic": "functions"
-    },
-    {
-      "paper_family": "p1",
-      "source_record_count": 20,
-      "topic": "integration"
-    },
-    {
-      "paper_family": "p1",
-      "source_record_count": 17,
-      "topic": "quadratics"
-    },
-    {
-      "paper_family": "p1",
-      "source_record_count": 45,
-      "topic": "series_and_sequences"
-    },
-    {
-      "paper_family": "p1",
-      "source_record_count": 45,
-      "topic": "trigonometry"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 13,
-      "topic": "algebra"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 9,
-      "topic": "binomial_expansion"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 47,
-      "topic": "complex_numbers"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 15,
-      "topic": "differential_equations"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 2,
-      "topic": "differentiation"
     },
     {
       "paper_family": "p3",
@@ -114,43 +735,8 @@
     },
     {
       "paper_family": "p3",
-      "source_record_count": 10,
-      "topic": "integration"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 49,
-      "topic": "logarithms_and_exponentials"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 33,
-      "topic": "numerical_methods"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 97,
-      "topic": "parametric_equations"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 27,
-      "topic": "partial_fractions"
-    },
-    {
-      "paper_family": "p3",
       "source_record_count": 20,
       "topic": "polynomials"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 33,
-      "topic": "trigonometry"
-    },
-    {
-      "paper_family": "p3",
-      "source_record_count": 38,
-      "topic": "vectors"
     },
     {
       "paper_family": "p4",
@@ -179,11 +765,6 @@
     },
     {
       "paper_family": "p4",
-      "source_record_count": 27,
-      "topic": "kinematics_constant_acceleration"
-    },
-    {
-      "paper_family": "p4",
       "source_record_count": 16,
       "topic": "kinematics_graphs"
     },
@@ -201,11 +782,6 @@
       "paper_family": "p4",
       "source_record_count": 1,
       "topic": "rough_plane_energy"
-    },
-    {
-      "paper_family": "p4",
-      "source_record_count": 62,
-      "topic": "work_energy_power"
     },
     {
       "paper_family": "p5",
@@ -243,5 +819,190 @@
       "topic": "probability_distributions"
     }
   ],
-  "total_records_read": 1301
+  "topics_with_warmups_but_no_guardian_readiness_metadata": [],
+  "total_records_read": 1301,
+  "verification_failure_counts": {},
+  "warmups_linked_to_examples": [
+    {
+      "example_model_id": "p3-binomial-term-001-example-1",
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-binomial-term-001"
+    },
+    {
+      "example_model_id": "p3-binomial-term-001-example-1",
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-binomial-term-001"
+    },
+    {
+      "example_model_id": "p3-binomial-term-001-example-1",
+      "practice_id": "gen_binomial_first_terms_and_coefficient_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-binomial-term-001"
+    },
+    {
+      "example_model_id": "p3-binomial-validity-range-001-example-1",
+      "practice_id": "gen_binomial_validity_range_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-binomial-validity-range-001"
+    },
+    {
+      "example_model_id": "p3-binomial-validity-range-001-example-1",
+      "practice_id": "gen_binomial_validity_range_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-binomial-validity-range-001"
+    },
+    {
+      "example_model_id": "p3-binomial-validity-range-001-example-1",
+      "practice_id": "gen_binomial_validity_range_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-binomial-validity-range-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_equation_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_equation_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_equation_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-modulus-cases-001-example-1",
+      "practice_id": "gen_modulus_equation_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-modulus-cases-001"
+    },
+    {
+      "example_model_id": "p3-modulus-cases-001-example-1",
+      "practice_id": "gen_modulus_equation_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-modulus-cases-001"
+    },
+    {
+      "example_model_id": "p3-modulus-cases-001-example-1",
+      "practice_id": "gen_modulus_equation_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-modulus-cases-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-form-001-example-1",
+      "practice_id": "gen_partial_fractions_distinct_linear_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-partial-fractions-form-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-form-001-example-1",
+      "practice_id": "gen_partial_fractions_distinct_linear_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-partial-fractions-form-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-form-001-example-1",
+      "practice_id": "gen_partial_fractions_distinct_linear_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-partial-fractions-form-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
+      "practice_id": "gen_partial_fractions_repeated_linear_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-partial-fractions-repeated-linear-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
+      "practice_id": "gen_partial_fractions_repeated_linear_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-partial-fractions-repeated-linear-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
+      "practice_id": "gen_partial_fractions_repeated_linear_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-partial-fractions-repeated-linear-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_double_angle_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_double_angle_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_double_angle_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_identity_rewrite_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_identity_rewrite_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_identity_rewrite_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-reciprocal-rform-001-example-1",
+      "practice_id": "gen_trig_r_form_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-trig-reciprocal-rform-001"
+    },
+    {
+      "example_model_id": "p3-trig-reciprocal-rform-001-example-1",
+      "practice_id": "gen_trig_r_form_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-trig-reciprocal-rform-001"
+    },
+    {
+      "example_model_id": "p3-trig-reciprocal-rform-001-example-1",
+      "practice_id": "gen_trig_r_form_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-trig-reciprocal-rform-001"
+    },
+    {
+      "example_model_id": "p3-trig-interval-001-example-1",
+      "practice_id": "gen_trig_solve_equation_interval_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-trig-interval-001"
+    },
+    {
+      "example_model_id": "p3-trig-interval-001-example-1",
+      "practice_id": "gen_trig_solve_equation_interval_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-trig-interval-001"
+    },
+    {
+      "example_model_id": "p3-trig-interval-001-example-1",
+      "practice_id": "gen_trig_solve_equation_interval_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-trig-interval-001"
+    }
+  ],
+  "warmups_without_example_model": []
 }

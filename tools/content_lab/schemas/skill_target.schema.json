@@ -41,13 +41,58 @@
             "minItems": 1,
             "items": { "type": "string", "minLength": 1 }
           },
-          "source_question_ids": {
-            "type": "array",
-            "minItems": 1,
-            "items": { "type": "string", "minLength": 1 },
-            "uniqueItems": true
-          },
-          "confidence": { "enum": ["low", "medium", "high"] },
+	          "source_question_ids": {
+	            "type": "array",
+	            "minItems": 1,
+	            "items": { "type": "string", "minLength": 1 },
+	            "uniqueItems": true
+	          },
+	          "assessed_by_source_question_ids": {
+	            "type": "array",
+	            "minItems": 1,
+	            "items": { "type": "string", "minLength": 1 },
+	            "uniqueItems": true
+	          },
+	          "likely_prerequisites": {
+	            "type": "array",
+	            "minItems": 1,
+	            "items": { "type": "string", "minLength": 1 }
+	          },
+	          "common_misconceptions": {
+	            "type": "array",
+	            "minItems": 1,
+	            "items": { "type": "string", "minLength": 1 }
+	          },
+	          "source_mark_scheme_patterns": {
+	            "type": "array",
+	            "items": {
+	              "type": "object",
+	              "additionalProperties": false,
+	              "required": ["pattern_id", "summary", "source_question_ids", "source_count"],
+	              "properties": {
+	                "pattern_id": { "type": "string", "minLength": 1 },
+	                "summary": { "type": "string", "minLength": 1 },
+	                "source_question_ids": {
+	                  "type": "array",
+	                  "minItems": 1,
+	                  "items": { "type": "string", "minLength": 1 },
+	                  "uniqueItems": true
+	                },
+	                "source_count": { "type": "integer", "minimum": 1 }
+	              }
+	            }
+	          },
+	          "source_eligibility_counts": {
+	            "type": "object",
+	            "additionalProperties": false,
+	            "required": ["auto_eligible", "review_only"],
+	            "properties": {
+	              "auto_eligible": { "type": "integer", "minimum": 0 },
+	              "review_only": { "type": "integer", "minimum": 0 },
+	              "blocked_review_evidence": { "type": "integer", "minimum": 0 }
+	            }
+	          },
+	          "confidence": { "enum": ["low", "medium", "high"] },
           "review_status": { "enum": ["needs_review", "teacher_reviewed", "published"] }
         }
       }

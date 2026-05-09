@@ -8,7 +8,7 @@ export interface AvatarLayer {
   order: number;
 }
 
-export function getAvatarLayers(avatar: AvatarSettings, progress: RegionProgress[]): AvatarLayer[] {
+export function getAvatarLayers(avatar: AvatarSettings, progress?: RegionProgress[]): AvatarLayer[] {
   const normalized = normalizeAvatarSettings(avatar, progress);
 
   return AVATAR_LAYER_ORDER.map((slot, order) => ({
@@ -18,6 +18,6 @@ export function getAvatarLayers(avatar: AvatarSettings, progress: RegionProgress
   }));
 }
 
-export function getVisibleAvatarLayers(avatar: AvatarSettings, progress: RegionProgress[]): AvatarLayer[] {
+export function getVisibleAvatarLayers(avatar: AvatarSettings, progress?: RegionProgress[]): AvatarLayer[] {
   return getAvatarLayers(avatar, progress).filter((layer) => !layer.item.isEmpty);
 }

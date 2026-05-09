@@ -55,8 +55,10 @@ function snippet(overrides: Partial<TeachingSnippet> = {}): TeachingSnippet {
     prerequisites: [],
     microSteps: [],
     commonMistakes: [],
+    workedExamples: [],
     sourceQuestionIds: [],
     sourceSkillTargetIds: [],
+    relatedSkillTargetIds: [],
     ...overrides,
   };
 }

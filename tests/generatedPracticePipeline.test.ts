@@ -11,10 +11,14 @@ const verifyScript = path.join(repoRoot, 'tools/content_lab/scripts/verify_conte
 interface GeneratedPracticeItem {
   practice_id: string;
   generator_family: string;
+  skill_target_id?: string;
+  source_snippet_id?: string;
+  example_model_id?: string;
   prompt: string;
   answer: string;
   worked_solution: string[];
   parameters: Record<string, number | string>;
+  sequence_role: string;
   verification: { status: string };
   review_status: string;
 }
@@ -34,7 +38,19 @@ function writeInputs(dir: string) {
         title: 'Logarithms and exponentials',
         student_goal: 'Use log laws safely.',
         micro_skills: ['Check domains.'],
+        likely_prerequisites: ['Index laws.'],
+        common_misconceptions: ['Splitting a sum inside a logarithm.'],
         source_question_ids: ['source_log'],
+        assessed_by_source_question_ids: ['source_log'],
+        source_mark_scheme_patterns: [
+          {
+            pattern_id: 'log_laws_before_solving',
+            summary: 'Use log laws before solving.',
+            source_question_ids: ['source_log'],
+            source_count: 1,
+          },
+        ],
+        source_eligibility_counts: { auto_eligible: 1, review_only: 0 },
         confidence: 'low',
         review_status: 'needs_review',
       },
@@ -45,7 +61,19 @@ function writeInputs(dir: string) {
         title: 'Binomial expansion',
         student_goal: 'Track terms.',
         micro_skills: ['Find low-order terms.'],
+        likely_prerequisites: ['Index laws.'],
+        common_misconceptions: ['Dropping a negative sign.'],
         source_question_ids: ['source_binomial'],
+        assessed_by_source_question_ids: ['source_binomial'],
+        source_mark_scheme_patterns: [
+          {
+            pattern_id: 'binomial_terms_and_coefficients',
+            summary: 'Use low-order terms.',
+            source_question_ids: ['source_binomial'],
+            source_count: 1,
+          },
+        ],
+        source_eligibility_counts: { auto_eligible: 1, review_only: 0 },
         confidence: 'low',
         review_status: 'needs_review',
       },
@@ -69,6 +97,31 @@ function writeInputs(dir: string) {
         common_trap: 'Splitting sums.',
         review_status: 'published',
         source: 'teacher_authored',
+        worked_example: {
+          id: 'log-snippet-example-1',
+          prompt: 'Solve 3e^(2x) = 12.',
+          steps: ['Divide by 3.', 'Take ln of both sides.'],
+          answer: 'x = ln 2',
+        },
+        quick_check: {
+          id: 'log-snippet-qc',
+          region_id: 'logarithm-grove',
+          topic: 'logarithms_and_exponentials',
+          skill_target_id: 'p3_logarithms_and_exponentials',
+          title: 'Log laws',
+          prompt: 'Simplify ln x + ln 2.',
+          answer: 'ln(2x)',
+          explanation: 'Use the product law.',
+          micro_skill: 'Combine logarithms.',
+          difficulty_band: 'easy',
+          estimated_time_minutes: 1,
+          review_status: 'published',
+        },
+        guardian_readiness: {
+          supports_topics: ['logarithms_and_exponentials'],
+          recommended_before_question_ids: [],
+          readiness_note: 'Use before logarithm Guardian attempts.',
+        },
       },
       {
         snippet_id: 'binomial-snippet',
@@ -83,6 +136,91 @@ function writeInputs(dir: string) {
         common_trap: 'Losing signs.',
         review_status: 'teacher_reviewed',
         source: 'teacher_authored',
+        worked_example: {
+          id: 'binomial-snippet-example-1',
+          prompt: 'Write the first three terms of (1+2x)^5.',
+          steps: ['Use the binomial formula.', 'Substitute u = 2x.'],
+          answer: '1 + 10x + 40x^2',
+        },
+        quick_check: {
+          id: 'binomial-snippet-qc',
+          region_id: 'algebra-forge',
+          topic: 'binomial_expansion',
+          skill_target_id: 'p3_binomial_expansion',
+          title: 'Binomial terms',
+          prompt: 'Find the coefficient of x in (1+x)^3.',
+          answer: '3',
+          explanation: 'The linear term is 3x.',
+          micro_skill: 'Find a binomial coefficient.',
+          difficulty_band: 'easy',
+          estimated_time_minutes: 1,
+          review_status: 'teacher_reviewed',
+        },
+        guardian_readiness: {
+          supports_topics: ['binomial_expansion'],
+          recommended_before_question_ids: [],
+          readiness_note: 'Use before binomial Guardian attempts.',
+        },
+      },
+      {
+        snippet_id: 'algebra-snippet',
+        paper_family: 'p3',
+        topics: ['algebra'],
+        region_ids: ['algebra-forge'],
+        title: 'Modulus cases',
+        student_goal: 'Split modulus equations.',
+        body: 'Use distance cases.',
+        steps: ['Split into positive and negative cases.'],
+        exam_move: 'Preserve both cases.',
+        common_trap: 'Dropping the negative case.',
+        review_status: 'teacher_reviewed',
+        source: 'teacher_authored',
+        worked_example: {
+          id: 'algebra-snippet-example-1',
+          prompt: 'Solve |x-2| = 5.',
+          steps: ['Split into x - 2 = 5 or x - 2 = -5.'],
+          answer: 'x = 7 or x = -3',
+        },
+      },
+      {
+        snippet_id: 'partial-fractions-snippet',
+        paper_family: 'p3',
+        topics: ['partial_fractions'],
+        region_ids: ['algebra-forge', 'integration-gardens'],
+        title: 'Partial fractions',
+        student_goal: 'Choose the decomposition form.',
+        body: 'Let denominator factors choose the form.',
+        steps: ['Write one term for each factor.'],
+        exam_move: 'Set up before solving constants.',
+        common_trap: 'Missing a repeated factor term.',
+        review_status: 'teacher_reviewed',
+        source: 'teacher_authored',
+        worked_example: {
+          id: 'partial-fractions-snippet-example-1',
+          prompt: 'Decompose (5x+1)/((x-1)(x+2)).',
+          steps: ['Use A/(x-1) + B/(x+2).', 'Clear denominators.'],
+          answer: '2/(x-1) + 3/(x+2)',
+        },
+      },
+      {
+        snippet_id: 'trig-snippet',
+        paper_family: 'p3',
+        topics: ['trigonometry'],
+        region_ids: ['trig-observatory'],
+        title: 'Trig examples',
+        student_goal: 'Choose an identity or interval route.',
+        body: 'Use the structure of the expression.',
+        steps: ['Choose the matching identity.'],
+        exam_move: 'Use the interval to list answers.',
+        common_trap: 'Losing interval solutions.',
+        review_status: 'teacher_reviewed',
+        source: 'teacher_authored',
+        worked_example: {
+          id: 'trig-snippet-example-1',
+          prompt: 'Write 3 sin x + 4 cos x in R-form.',
+          steps: ['Find R = 5.', 'Match coefficients.'],
+          answer: '5 sin(x + arctan(4/3))',
+        },
       },
     ],
   }, null, 2));
@@ -94,6 +232,7 @@ function runGeneratedBuild(dir: string) {
   const { skillTargetsPath, snippetsPath } = writeInputs(dir);
   const outputPath = path.join(dir, 'generated_practice_bank.json');
   const runtimeOutputPath = path.join(dir, 'runtime_generated_practice_bank.json');
+  const reportOutputPath = path.join(dir, 'content_lab_report.json');
   execFileSync('python3', [
     buildScript,
     '--skill-targets',
@@ -104,12 +243,16 @@ function runGeneratedBuild(dir: string) {
     outputPath,
     '--runtime-output',
     runtimeOutputPath,
+    '--report-output',
+    reportOutputPath,
   ], { cwd: repoRoot });
   return {
     output: readFileSync(outputPath, 'utf8'),
     runtime: readFileSync(runtimeOutputPath, 'utf8'),
+    report: readFileSync(reportOutputPath, 'utf8'),
     outputPath,
     runtimeOutputPath,
+    reportOutputPath,
   };
 }
 
@@ -150,6 +293,7 @@ function regionCoverageSnippets() {
   return rows.map(([snippetId, topic, regionIds]) => ({
     snippet_id: snippetId,
     paper_family: 'p3',
+    topic,
     topics: [topic],
     region_ids: regionIds,
     title: 'Reviewed region snippet',
@@ -164,11 +308,21 @@ function regionCoverageSnippets() {
     micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
     common_mistakes: ['Skipping the setup line.'],
     quick_check: {
+      id: `${snippetId}-qc`,
+      region_id: regionIds[0],
+      topic,
+      skill_target_id: `p3_${topic}`,
+      title: 'Reviewed region snippet',
       prompt: 'What should you do before calculating?',
       answer: 'Choose the method.',
       explanation: 'A named method keeps the first line purposeful.',
+      micro_skill: 'Choose a method before calculating.',
+      difficulty_band: 'easy',
+      estimated_time_minutes: 1,
+      review_status: 'published',
     },
     source_skill_target_ids: [`p3_${topic}`],
+    related_skill_targets: [`p3_${topic}`],
   }));
 }
 
@@ -185,7 +339,19 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
         title: 'Logarithms and exponentials',
         student_goal: 'Use log laws safely.',
         micro_skills: ['Check domains.'],
+        likely_prerequisites: ['Index laws.'],
+        common_misconceptions: ['Splitting a sum inside a logarithm.'],
         source_question_ids: ['source_q'],
+        assessed_by_source_question_ids: ['source_q'],
+        source_mark_scheme_patterns: [
+          {
+            pattern_id: 'log_laws_before_solving',
+            summary: 'Use log laws before solving.',
+            source_question_ids: ['source_q'],
+            source_count: 1,
+          },
+        ],
+        source_eligibility_counts: { auto_eligible: 1, review_only: 0 },
         confidence: 'low',
         review_status: 'needs_review',
       },
@@ -219,10 +385,14 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
         generator_family: 'logarithms_and_exponentials.log_equation_basic',
         paper_family: 'p3',
         topic: 'logarithms_and_exponentials',
+        skill_target_id: 'p3_logarithms_and_exponentials',
+        snippet_ids: ['p3-log-check'],
+        region_ids: ['logarithm-grove'],
         prompt: 'Solve ln(x) = ln(2).',
         answer: 'x = 2',
-        worked_solution: ['The domain requires x > 0.'],
+        worked_solution: ['The domain requires x > 0.', 'Equal logs have equal positive arguments.'],
         parameters: { solution: 2 },
+        sequence_role: 'first_step',
         verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
         difficulty_band: 'easy',
         review_status: 'teacher_reviewed',
@@ -234,36 +404,34 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
 }
 
 describe('generated practice Content Lab pipeline', () => {
-  it('generates valid positive-domain logarithm equations with deterministic answers', () => {
+  it('generates sequenced exponential warm-ups linked to the Field Guide example', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-log-'));
     try {
       const items = generatedItems(runGeneratedBuild(dir).output)
         .filter((item) => item.generator_family === 'logarithms_and_exponentials.log_equation_basic');
 
-      expect(items.length).toBeGreaterThanOrEqual(5);
+      expect(items).toHaveLength(3);
       for (const item of items) {
         const parameters = item.parameters;
-        const solution = numeric(parameters.solution);
-        expect(solution).toBeGreaterThan(0);
         expect(item.verification.status).toBe('pass');
-        expect(item.worked_solution.join(' ').toLowerCase()).toMatch(/domain|law|argument requires/);
+        expect(item.skill_target_id).toBe('p3_logarithms_and_exponentials');
+        expect(['first_step', 'complete_step', 'guardian_prep']).toContain(item.sequence_role);
+        expect(parameters.sequence_stage).toBeTruthy();
+        expect(item.source_snippet_id).toBe('log-snippet');
+        expect(item.example_model_id).toBe('log-snippet-example-1');
+        expect(item.worked_solution.join(' ').toLowerCase()).toMatch(/divide|ln|exponent/);
 
         switch (parameters.form) {
-          case 'product':
-            expect(numeric(parameters.a) * solution).toBe(numeric(parameters.b));
+          case 'isolated_exp':
+            expect(item.prompt).toContain('e^(2x)');
+            expect(item.answer).toContain('ln 7');
             break;
-          case 'quotient':
-            expect((numeric(parameters.a) * solution) / numeric(parameters.c)).toBe(numeric(parameters.d));
+          case 'scaled_exp':
+            expect(numeric(parameters.rhs) / numeric(parameters.scale)).toBe(numeric(parameters.isolated_rhs));
+            expect(item.answer).toContain(`ln ${numeric(parameters.isolated_rhs)}`);
             break;
-          case 'power_law':
-            expect(solution ** numeric(parameters.k)).toBe(numeric(parameters.b));
-            break;
-          case 'log_power':
-            expect(solution ** numeric(parameters.n)).toBe(numeric(parameters.b));
-            break;
-          case 'shifted_argument':
-            expect(solution + numeric(parameters.a)).toBe(numeric(parameters.b));
-            expect(solution + numeric(parameters.a)).toBeGreaterThan(0);
+          case 'shifted_exp':
+            expect(item.answer).toContain(`ln(${numeric(parameters.rhs)}/${numeric(parameters.scale)})`);
             break;
           default:
             throw new Error(`Unexpected log form ${String(parameters.form)}`);
@@ -280,15 +448,21 @@ describe('generated practice Content Lab pipeline', () => {
       const items = generatedItems(runGeneratedBuild(dir).output)
         .filter((item) => item.generator_family === 'binomial_expansion.first_terms_and_coefficient');
 
-      expect(items.length).toBeGreaterThanOrEqual(4);
+      expect(items).toHaveLength(3);
       for (const item of items) {
         const parameters = item.parameters;
+        expect(item.skill_target_id).toBe('p3_binomial_expansion');
+        expect(['first_step', 'complete_step', 'guardian_prep']).toContain(item.sequence_role);
+        expect(parameters.sequence_stage).toBeTruthy();
         if (parameters.item_type === 'expand_first_terms') {
-          const expected = polynomialText([
+          const expectedTerms: Array<[number, number]> = [
             [1, 0],
             [numeric(parameters.x_coefficient), 1],
-            [numeric(parameters.x2_coefficient), 2],
-          ]);
+          ];
+          if (numeric(parameters.max_power) >= 2) {
+            expectedTerms.push([numeric(parameters.x2_coefficient), 2]);
+          }
+          const expected = polynomialText(expectedTerms);
           expect(item.answer).toBe(expected);
           expect(Math.abs(numeric(parameters.x2_coefficient))).toBeLessThanOrEqual(120);
           continue;
@@ -312,6 +486,58 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
+  it('generates sequenced algebra depth families for partial fractions, modulus, and validity ranges', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-algebra-depth-'));
+    try {
+      const items = generatedItems(runGeneratedBuild(dir).output);
+      const families = [
+        'algebra.partial_fractions_distinct_linear',
+        'algebra.partial_fractions_repeated_linear',
+        'algebra.modulus_equation_basic',
+        'algebra.binomial_validity_range',
+      ];
+
+      for (const family of families) {
+        const familyItems = items.filter((item) => item.generator_family === family);
+        expect(familyItems.map((item) => item.sequence_role).sort()).toEqual(['complete_step', 'first_step', 'guardian_prep']);
+        expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
+        expect(familyItems.every((item) => item.worked_solution.length >= 2)).toBe(true);
+        expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
+      }
+
+      expect(items.find((item) => item.generator_family === 'algebra.partial_fractions_repeated_linear' && item.sequence_role === 'first_step')?.answer).toContain('(x - 2)^2');
+      expect(items.find((item) => item.generator_family === 'algebra.modulus_equation_basic' && item.sequence_role === 'complete_step')?.answer).toBe('x = -2 or x = 8');
+      expect(items.find((item) => item.generator_family === 'algebra.binomial_validity_range' && item.sequence_role === 'guardian_prep')?.answer).toContain('valid for -2 < x < 2');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('generates sequenced trigonometry identity, interval, and R-form warm-ups', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-trig-depth-'));
+    try {
+      const items = generatedItems(runGeneratedBuild(dir).output);
+      const families = [
+        'trigonometry.identity_rewrite_basic',
+        'trigonometry.double_angle_basic',
+        'trigonometry.solve_equation_interval_basic',
+        'trigonometry.r_form_basic',
+      ];
+
+      for (const family of families) {
+        const familyItems = items.filter((item) => item.generator_family === family);
+        expect(familyItems.map((item) => item.sequence_role).sort()).toEqual(['complete_step', 'first_step', 'guardian_prep']);
+        expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
+        expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
+      }
+
+      expect(items.find((item) => item.generator_family === 'trigonometry.r_form_basic' && item.sequence_role === 'first_step')?.answer).toBe('R = 5');
+      expect(items.find((item) => item.generator_family === 'trigonometry.solve_equation_interval_basic' && item.sequence_role === 'guardian_prep')?.worked_solution.join(' ')).toContain('instead of dividing by sin x');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('writes deterministic generated and runtime output for the same inputs', () => {
     const firstDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-a-'));
     const secondDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-b-'));
@@ -321,9 +547,62 @@ describe('generated practice Content Lab pipeline', () => {
 
       expect(first.output).toBe(second.output);
       expect(first.runtime).toBe(second.runtime);
+      expect(first.report).toBe(second.report);
     } finally {
       rmSync(firstDir, { recursive: true, force: true });
       rmSync(secondDir, { recursive: true, force: true });
+    }
+  });
+
+  it('writes generator and region coverage into the Content Lab report', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-report-'));
+    try {
+      const report = JSON.parse(runGeneratedBuild(dir).report);
+
+      expect(report.generator_family_counts).toMatchObject({
+        'logarithms_and_exponentials.log_equation_basic': 3,
+        'binomial_expansion.first_terms_and_coefficient': 3,
+        'algebra.binomial_validity_range': 3,
+        'algebra.modulus_equation_basic': 3,
+        'algebra.partial_fractions_distinct_linear': 3,
+        'algebra.partial_fractions_repeated_linear': 3,
+        'trigonometry.identity_rewrite_basic': 3,
+        'trigonometry.double_angle_basic': 3,
+        'trigonometry.solve_equation_interval_basic': 3,
+        'trigonometry.r_form_basic': 3,
+      });
+      expect(report.generated_warmups_per_region).toMatchObject({
+        'logarithm-grove': 3,
+        'algebra-forge': 15,
+        'trig-observatory': 12,
+      });
+      expect(report.generated_families_by_topic).toHaveProperty('trigonometry');
+      expect(report.batch_7_depth_summary.priority_region_depth).toEqual(expect.any(Array));
+      expect(report.snippets_with_examples_by_region).toMatchObject({
+        'logarithm-grove': 1,
+        'algebra-forge': 3,
+        'trig-observatory': 1,
+      });
+      expect(report.method_snippets_missing_examples).toEqual([]);
+      expect(report.warmups_without_example_model).toEqual([]);
+      expect(report.warmups_linked_to_examples).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            practice_id: 'gen_log_equation_basic_0001',
+            source_snippet_id: 'log-snippet',
+            example_model_id: 'log-snippet-example-1',
+            sequence_role: 'first_step',
+          }),
+        ]),
+      );
+      expect(report.priority_region_example_coverage).toEqual(expect.any(Array));
+      expect(report.active_regions.find((region: { region_id: string }) => region.region_id === 'logarithm-grove')).toMatchObject({
+        quick_checks: 1,
+        snippets_with_examples: 1,
+        generated_warmups: 3,
+      });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
   });
 
@@ -333,6 +612,50 @@ describe('generated practice Content Lab pipeline', () => {
     try {
       const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
         review_status: 'candidate',
+      });
+
+      expect(() => execFileSync('python3', [
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+      ], { cwd: repoRoot })).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects runtime generated practice with an empty worked solution', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-empty-solution-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
+        worked_solution: [],
+      });
+
+      expect(() => execFileSync('python3', [
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+      ], { cwd: repoRoot })).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects runtime generated practice without a sequence role', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-missing-sequence-role-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
+        sequence_role: '',
       });
 
       expect(() => execFileSync('python3', [

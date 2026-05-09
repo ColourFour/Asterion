@@ -14,7 +14,7 @@ function sourceRecord(overrides: Record<string, unknown> = {}) {
     paper_family: 'p3',
     topic: 'logarithms_and_exponentials',
     question_text_trust: 'high',
-    mark_scheme_text: 'M1 for method. A1 for answer.',
+    mark_scheme_text: 'Use law of logarithm before solving. M1 for method. A1 for answer.',
     text_only_status: 'ready',
     visual_curation_status: 'ready',
     visual_required: false,
@@ -40,6 +40,33 @@ function runBuild(inputRecords: unknown[], outputDir: string) {
   };
 }
 
+function skillTargetFixture(overrides: Record<string, unknown> = {}) {
+  return {
+    skill_target_id: 'p3_logarithms_and_exponentials',
+    paper_family: 'p3',
+    topic: 'logarithms_and_exponentials',
+    title: 'Logarithms and exponentials',
+    student_goal: 'Use log laws safely.',
+    micro_skills: ['Convert forms.'],
+    likely_prerequisites: ['Index laws.'],
+    common_misconceptions: ['Splitting a sum inside a logarithm.'],
+    source_question_ids: ['source_q'],
+    assessed_by_source_question_ids: ['source_q'],
+    source_mark_scheme_patterns: [
+      {
+        pattern_id: 'log_laws_before_solving',
+        summary: 'Use log laws before solving.',
+        source_question_ids: ['source_q'],
+        source_count: 1,
+      },
+    ],
+    source_eligibility_counts: { auto_eligible: 1, review_only: 0 },
+    confidence: 'low',
+    review_status: 'needs_review',
+    ...overrides,
+  };
+}
+
 function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) {
   const rows = [
     ['p3-log-check', 'logarithms_and_exponentials', ['logarithm-grove'], 'Check the log form'],
@@ -56,6 +83,7 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
   return rows.map(([snippetId, topic, regionIds, title], index) => ({
     snippet_id: snippetId,
     paper_family: 'p3',
+    topic,
     topics: [topic],
     region_ids: regionIds,
     title,
@@ -70,9 +98,18 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
     micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
     common_mistakes: ['Skipping the setup line.'],
     quick_check: {
+      id: `${snippetId}-qc`,
+      region_id: regionIds[0],
+      topic,
+      skill_target_id: `p3_${topic}`,
+      title,
       prompt: 'What should you do before calculating?',
       answer: 'Choose the method.',
       explanation: 'A named method keeps the first line purposeful.',
+      micro_skill: 'Choose a method before calculating.',
+      difficulty_band: 'easy',
+      estimated_time_minutes: 1,
+      review_status: 'published',
     },
     guardian_readiness: {
       supports_topics: [topic],
@@ -83,6 +120,7 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
     snippet_type: 'concept',
     source_question_ids: ['source_q'],
     source_skill_target_ids: [`p3_${topic}`],
+    related_skill_targets: [`p3_${topic}`],
     ...(index === 0 ? snippetOverrides : {}),
   }));
 }
@@ -92,17 +130,7 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
     schema_name: 'asterion_skill_targets',
     schema_version: 1,
     skill_targets: [
-      {
-        skill_target_id: 'p3_logarithms_and_exponentials',
-        paper_family: 'p3',
-        topic: 'logarithms_and_exponentials',
-        title: 'Logarithms and exponentials',
-        student_goal: 'Use log laws safely.',
-        micro_skills: ['Convert forms.'],
-        source_question_ids: ['source_q'],
-        confidence: 'low',
-        review_status: 'needs_review',
-      },
+        skillTargetFixture(),
     ],
   }, null, 2));
   writeFileSync(path.join(dir, 'review_queue.json'), JSON.stringify({
@@ -157,7 +185,14 @@ describe('Content Lab skill target pipeline', () => {
       const report = JSON.parse(output.contentLabReport);
 
       expect(skillTargets.skill_targets).toHaveLength(1);
-      expect(skillTargets.skill_targets[0].source_question_ids).toEqual(['auto_log_q']);
+      expect(skillTargets.skill_targets[0].source_question_ids).toEqual(['auto_log_q', 'visual_review_q']);
+      expect(skillTargets.skill_targets[0].assessed_by_source_question_ids).toEqual(['auto_log_q', 'visual_review_q']);
+      expect(skillTargets.skill_targets[0].likely_prerequisites).toContain('Index laws.');
+      expect(skillTargets.skill_targets[0].common_misconceptions).toContain('Splitting a sum inside a logarithm.');
+      expect(skillTargets.skill_targets[0].source_mark_scheme_patterns[0]).toMatchObject({
+        pattern_id: 'log_laws_before_solving',
+        source_count: 2,
+      });
       expect(skillTargets.skill_targets[0].source_question_ids).not.toContain('blocked_q');
       expect(reviewQueue.records.find((record: { question_id: string }) => record.question_id === 'visual_review_q')?.eligibility).toBe('review_only');
       expect(reviewQueue.records.find((record: { question_id: string }) => record.question_id === 'blocked_q')?.eligibility).toBe('blocked');
@@ -169,6 +204,7 @@ describe('Content Lab skill target pipeline', () => {
       });
       expect(report.skill_targets_created_by_paper_family_topic.p3.logarithms_and_exponentials).toBe(1);
       expect(report.review_queue_counts_by_reason.visual_required).toBe(1);
+      expect(report.active_regions.find((region: { region_id: string }) => region.region_id === 'logarithm-grove')).toBeTruthy();
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -211,6 +247,14 @@ describe('Content Lab skill target pipeline', () => {
         topic: 'unsupported_topic',
         source_record_count: 1,
       });
+      expect(report).toHaveProperty('snippets_per_region');
+      expect(report).toHaveProperty('quick_checks_per_region');
+      expect(report).toHaveProperty('generated_warmups_per_region');
+      expect(report).toHaveProperty('snippets_with_examples_by_region');
+      expect(report).toHaveProperty('method_snippets_missing_examples');
+      expect(report).toHaveProperty('warmups_linked_to_examples');
+      expect(report).toHaveProperty('warmups_without_example_model');
+      expect(report).toHaveProperty('priority_region_example_coverage');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -234,9 +278,63 @@ describe('Content Lab skill target pipeline', () => {
     try {
       writeValidVerifierOutputs(dir, snippetsPath, {
         quick_check: {
+          id: 'p3-log-check-qc',
+          region_id: 'logarithm-grove',
+          topic: 'logarithms_and_exponentials',
+          skill_target_id: 'p3_logarithms_and_exponentials',
+          title: 'Check the log form',
           prompt: 'Rewrite $\\log_2 8=3$.',
           answer: '',
           explanation: 'The log value is the exponent.',
+          micro_skill: 'Convert log form.',
+          difficulty_band: 'easy',
+          estimated_time_minutes: 1,
+          review_status: 'published',
+        },
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects malformed worked examples in reviewed teaching snippets', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-example-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: {
+          id: 'p3-log-check-example-1',
+          prompt: 'Simplify $\\ln x+\\ln2$.',
+          steps: [],
+          answer: '$\\ln(2x)$',
+        },
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects reviewed quick checks that are missing runtime metadata', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-quick-check-metadata-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        quick_check: {
+          id: 'p3-log-check-qc',
+          region_id: 'logarithm-grove',
+          topic: 'logarithms_and_exponentials',
+          title: 'Check the log form',
+          prompt: 'Rewrite $\\log_2 8=3$.',
+          answer: '$2^3=8$',
+          explanation: 'The log value is the exponent.',
+          micro_skill: 'Convert log form.',
+          difficulty_band: 'easy',
+          estimated_time_minutes: 1,
+          review_status: 'published',
         },
       });
 

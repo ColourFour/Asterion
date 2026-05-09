@@ -15,6 +15,24 @@ from typing import Any
 
 
 SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
+    "algebra": {
+        "title": "Algebraic structure and rearrangement",
+        "student_goal": "Spot the algebraic structure before choosing a rearrangement or simplification route.",
+        "micro_skills": [
+            "Identify factors, powers, fractions, and hidden substitutions.",
+            "Choose whether to expand, factorise, or rearrange first.",
+            "Check that each transformation preserves the original equation.",
+        ],
+        "likely_prerequisites": [
+            "Confident expansion and factorisation.",
+            "Solving linear and quadratic equations.",
+        ],
+        "common_misconceptions": [
+            "Expanding too early when factor form is more useful.",
+            "Cancelling terms across addition or subtraction.",
+            "Forgetting restrictions introduced by denominators.",
+        ],
+    },
     "binomial_expansion": {
         "title": "Binomial expansion structure",
         "student_goal": "Recognize binomial expansion prompts and choose the right term or coefficient strategy.",
@@ -22,6 +40,15 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Identify the power and variable part of a binomial expression.",
             "Use the correct binomial coefficient for a requested term.",
             "Track signs and powers when combining two expansions.",
+        ],
+        "likely_prerequisites": [
+            "Index laws.",
+            "Binomial coefficients and simple combinations.",
+        ],
+        "common_misconceptions": [
+            "Treating the requested power of x as the term number.",
+            "Dropping the sign inside a negative binomial term.",
+            "Expanding more of the expression than the question needs.",
         ],
     },
     "quadratics": {
@@ -32,6 +59,15 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Connect discriminant conditions to root information.",
             "Interpret roots or intersections from the algebraic form.",
         ],
+        "likely_prerequisites": [
+            "Factorising simple quadratics.",
+            "Using the discriminant.",
+        ],
+        "common_misconceptions": [
+            "Solving a whole quadratic when a discriminant condition is enough.",
+            "Using the wrong inequality for repeated or real roots.",
+            "Forgetting that tangency usually means one repeated root.",
+        ],
     },
     "logarithms_and_exponentials": {
         "title": "Logarithms and exponentials",
@@ -40,6 +76,16 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Convert between exponential and logarithmic form.",
             "Use log laws to expand or combine expressions.",
             "Reject answers that make a log argument non-positive.",
+        ],
+        "likely_prerequisites": [
+            "Index laws.",
+            "Solving linear and quadratic equations.",
+            "Understanding that logarithm arguments must be positive.",
+        ],
+        "common_misconceptions": [
+            "Splitting a sum inside a logarithm.",
+            "Cancelling logs before combining them correctly.",
+            "Keeping algebraic roots that break the original log domain.",
         ],
     },
     "trigonometry": {
@@ -50,6 +96,15 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Solve transformed trig equations over a specified range.",
             "Check extra solutions created by rearranging or squaring.",
         ],
+        "likely_prerequisites": [
+            "Exact trig values.",
+            "Quadrant signs and interval notation.",
+        ],
+        "common_misconceptions": [
+            "Giving only the calculator angle.",
+            "Mixing degrees and radians.",
+            "Forgetting extra solutions after substituting a double angle.",
+        ],
     },
     "differentiation": {
         "title": "Differentiation decisions",
@@ -58,6 +113,33 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Choose between product, quotient, chain, implicit, and parametric differentiation.",
             "Use derivatives to find gradients, stationary points, or rates of change.",
             "Check whether the question asks for a value, equation, or classification.",
+        ],
+        "likely_prerequisites": [
+            "Basic differentiation rules.",
+            "Algebraic simplification.",
+        ],
+        "common_misconceptions": [
+            "Applying a rule before checking for a simpler rewrite.",
+            "Forgetting the inner derivative in a chain-rule step.",
+            "Stopping at a derivative when the question asks for a tangent, normal, or classification.",
+        ],
+    },
+    "integration": {
+        "title": "Integration method choice",
+        "student_goal": "Choose a direct rule, substitution, parts, or algebraic rewrite from the structure of the integrand.",
+        "micro_skills": [
+            "Look for a hidden derivative before substituting.",
+            "Use integration by parts when a product is not directly integrable.",
+            "Handle constants, limits, and plus C carefully.",
+        ],
+        "likely_prerequisites": [
+            "Standard integration rules.",
+            "Differentiating common functions.",
+        ],
+        "common_misconceptions": [
+            "Changing variables in a definite integral but keeping old limits.",
+            "Forgetting the constant in an indefinite integral.",
+            "Choosing a method from habit instead of the expression structure.",
         ],
     },
     "partial_fractions": {
@@ -68,6 +150,15 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Use substitution or coefficient comparison efficiently.",
             "Check restrictions and repeated-factor terms.",
         ],
+        "likely_prerequisites": [
+            "Factorising denominators.",
+            "Comparing coefficients.",
+        ],
+        "common_misconceptions": [
+            "Using a constant numerator over an irreducible quadratic factor.",
+            "Missing the extra term for a repeated factor.",
+            "Substituting values before multiplying through by the denominator.",
+        ],
     },
     "complex_numbers": {
         "title": "Complex number forms",
@@ -76,6 +167,15 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Find modulus and argument with quadrant awareness.",
             "Use polar form for multiplication, division, powers, or roots.",
             "Interpret loci or roots on an Argand diagram.",
+        ],
+        "likely_prerequisites": [
+            "Pythagoras and trigonometric ratios.",
+            "Algebra with real and imaginary parts.",
+        ],
+        "common_misconceptions": [
+            "Using polar form for addition.",
+            "Taking the calculator argument without checking the quadrant.",
+            "Forgetting all roots in a roots-of-complex-numbers question.",
         ],
     },
     "vectors": {
@@ -86,6 +186,87 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Use scalar product to find angles or perpendicular conditions.",
             "Solve intersections by matching parameters carefully.",
         ],
+        "likely_prerequisites": [
+            "Vector addition and scalar multiples.",
+            "Solving simultaneous equations.",
+        ],
+        "common_misconceptions": [
+            "Using the same parameter for two different lines.",
+            "Checking only two coordinates for a 3D intersection.",
+            "Confusing a point on a line with the direction vector.",
+        ],
+    },
+    "series_and_sequences": {
+        "title": "Series and sequences",
+        "student_goal": "Identify the sequence type and use the correct term or sum formula.",
+        "micro_skills": [
+            "Distinguish arithmetic and geometric structures.",
+            "Use term and sum formulae with the correct first term and common difference or ratio.",
+            "Interpret sigma notation and limiting sums.",
+        ],
+        "likely_prerequisites": [
+            "Substitution into formulae.",
+            "Solving simple equations.",
+        ],
+        "common_misconceptions": [
+            "Using a sum formula when the question asks for a term.",
+            "Confusing common difference with common ratio.",
+            "Forgetting the convergence condition for an infinite geometric series.",
+        ],
+    },
+    "numerical_methods": {
+        "title": "Numerical methods evidence",
+        "student_goal": "Show the calculation evidence that justifies a root interval or iterative approximation.",
+        "micro_skills": [
+            "Use sign changes to justify a root interval.",
+            "Apply the stated iteration formula consistently.",
+            "Keep enough accuracy before rounding the final answer.",
+        ],
+        "likely_prerequisites": [
+            "Function evaluation.",
+            "Calculator accuracy and rounding.",
+        ],
+        "common_misconceptions": [
+            "Rounding every iteration too early.",
+            "Changing the iteration formula halfway through.",
+            "Claiming a root interval without showing opposite signs.",
+        ],
+    },
+    "differential_equations": {
+        "title": "Differential equations by separation",
+        "student_goal": "Separate variables, integrate in order, and use conditions only after the general solution is formed.",
+        "micro_skills": [
+            "Identify separable variables.",
+            "Integrate both sides with a constant.",
+            "Apply an initial condition after integration.",
+        ],
+        "likely_prerequisites": [
+            "Basic integration.",
+            "Rearranging equations with fractions.",
+        ],
+        "common_misconceptions": [
+            "Integrating before variables are separated.",
+            "Dropping the constant of integration.",
+            "Substituting the condition into the differential equation instead of the solution.",
+        ],
+    },
+    "parametric_equations": {
+        "title": "Parametric calculus",
+        "student_goal": "Use parameter derivatives and convert back only when the question needs it.",
+        "micro_skills": [
+            "Differentiate x and y with respect to the parameter.",
+            "Use dy/dx = (dy/dt)/(dx/dt).",
+            "Substitute parameter values at the correct stage.",
+        ],
+        "likely_prerequisites": [
+            "Chain rule.",
+            "Basic parametric notation.",
+        ],
+        "common_misconceptions": [
+            "Differentiating y with respect to x directly when both use a parameter.",
+            "Forgetting to divide by dx/dt.",
+            "Substituting a point before finding the needed derivative.",
+        ],
     },
     "momentum_impulse": {
         "title": "Momentum and impulse",
@@ -95,12 +276,58 @@ SUPPORTED_TOPICS: dict[str, dict[str, Any]] = {
             "Use impulse as change in momentum over a stated direction.",
             "Separate conservation of momentum from energy or restitution assumptions.",
         ],
+        "likely_prerequisites": [
+            "Signed velocity.",
+            "Momentum equals mass times velocity.",
+        ],
+        "common_misconceptions": [
+            "Changing positive direction halfway through.",
+            "Treating a negative velocity as impossible.",
+            "Using speed when velocity is required.",
+        ],
+    },
+    "kinematics_constant_acceleration": {
+        "title": "Constant-acceleration kinematics",
+        "student_goal": "Choose a suvat equation from the known and wanted quantities.",
+        "micro_skills": [
+            "List known and unknown quantities with signs.",
+            "Choose the suvat equation that uses only needed variables.",
+            "Interpret negative displacement or velocity using the sign convention.",
+        ],
+        "likely_prerequisites": [
+            "Solving linear and quadratic equations.",
+            "Using units consistently.",
+        ],
+        "common_misconceptions": [
+            "Mixing speed and velocity.",
+            "Using acceleration with the wrong sign.",
+            "Choosing an equation before listing known values.",
+        ],
+    },
+    "work_energy_power": {
+        "title": "Work, energy, and power",
+        "student_goal": "Connect work done, energy changes, and power with a clear sign convention.",
+        "micro_skills": [
+            "Write the energy balance before substituting.",
+            "Include work done against resistance or gravity.",
+            "Use power as rate of work done where needed.",
+        ],
+        "likely_prerequisites": [
+            "Resolving forces.",
+            "Kinetic and potential energy formulae.",
+        ],
+        "common_misconceptions": [
+            "Ignoring work done against resistance.",
+            "Using distance where vertical height change is needed.",
+            "Mixing energy and force equations without units checks.",
+        ],
     },
 }
 
 HIGH_OR_MEDIUM = {"high", "medium"}
 TEXT_READY_OR_REVIEW = {"ready", "review"}
-TEXT_BLOCKED = {"low", "unusable"}
+TEXT_BLOCKED = {"unusable"}
+TEXT_REVIEW_ONLY = {"low"}
 
 SEVERE_FLAG_PATTERNS = (
     "severe_math_corruption",
@@ -128,6 +355,140 @@ REVIEW_RISK_FLAG_PATTERNS = (
 )
 
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
+
+ACTIVE_P3_REGION_SUPPORT = {
+    "algebra-forge": {
+        "primary_topic": "algebra_functions_and_binomial",
+        "topics": {
+            "algebra",
+            "algebraic_manipulation",
+            "functions",
+            "polynomials",
+            "partial_fractions",
+            "binomial_expansion",
+            "quadratics",
+        },
+    },
+    "logarithm-grove": {
+        "primary_topic": "logarithms_and_exponentials",
+        "topics": {"logarithms_and_exponentials", "logarithms", "exponentials"},
+    },
+    "trig-observatory": {
+        "primary_topic": "trigonometry",
+        "topics": {"trigonometry", "trigonometric_identities", "trigonometric_equations"},
+    },
+    "complex-harbor": {
+        "primary_topic": "complex_numbers",
+        "topics": {"complex_numbers", "argand_diagrams", "modulus_and_argument"},
+    },
+    "calculus-cliffs": {
+        "primary_topic": "differentiation",
+        "topics": {"differentiation", "parametric_equations"},
+    },
+    "integration-gardens": {
+        "primary_topic": "integration",
+        "topics": {"integration", "partial_fractions"},
+    },
+    "vector-workshop": {
+        "primary_topic": "vectors",
+        "topics": {"vectors"},
+    },
+    "numerical-mines": {
+        "primary_topic": "numerical_methods",
+        "topics": {"numerical_methods", "numerical_solution_of_equations", "iteration"},
+    },
+    "differential-shrine": {
+        "primary_topic": "differential_equations",
+        "topics": {"differential_equations", "separation_of_variables"},
+    },
+}
+
+MARK_SCHEME_PATTERN_RULES: tuple[dict[str, Any], ...] = (
+    {
+        "pattern_id": "log_laws_before_solving",
+        "summary": "Use product, quotient, or power laws before removing logarithms.",
+        "topics": {"logarithms_and_exponentials"},
+        "regex": re.compile(r"logarithm|log law|ln|remove logarithms|without logs", re.I),
+    },
+    {
+        "pattern_id": "domain_or_positive_argument",
+        "summary": "Check positive arguments or positive exponential substitutions.",
+        "topics": {"logarithms_and_exponentials"},
+        "regex": re.compile(r"positive|ignore any negative|domain|argument", re.I),
+    },
+    {
+        "pattern_id": "binomial_terms_and_coefficients",
+        "summary": "Use low-order terms or coefficient matching instead of full expansion.",
+        "topics": {"binomial_expansion"},
+        "regex": re.compile(r"coefficient|terms required|binomial|x\^?2|x\^{2}", re.I),
+    },
+    {
+        "pattern_id": "discriminant_or_root_condition",
+        "summary": "Use root conditions such as discriminants, tangency, or intersections.",
+        "topics": {"quadratics"},
+        "regex": re.compile(r"discriminant|repeated root|real roots|tangent|intersect", re.I),
+    },
+    {
+        "pattern_id": "trig_identity_or_interval",
+        "summary": "Use identities or interval checks to keep all valid trigonometric solutions.",
+        "topics": {"trigonometry"},
+        "regex": re.compile(r"double angle|compound angle|identity|interval|range|radian|degree", re.I),
+    },
+    {
+        "pattern_id": "differentiate_then_interpret",
+        "summary": "Differentiate with the appropriate rule, then use the derivative for the requested result.",
+        "topics": {"differentiation", "parametric_equations"},
+        "regex": re.compile(r"derivative|differentiate|dy|dx|stationary|tangent|normal|product rule|chain rule|quotient rule", re.I),
+    },
+    {
+        "pattern_id": "integration_method_and_limits",
+        "summary": "Choose substitution, parts, or algebra first, then handle limits or constants.",
+        "topics": {"integration"},
+        "regex": re.compile(r"integrat|substitut|by parts|limits|constant|partial fraction", re.I),
+    },
+    {
+        "pattern_id": "partial_fraction_form",
+        "summary": "Set up the correct partial-fraction form before solving constants.",
+        "topics": {"partial_fractions"},
+        "regex": re.compile(r"partial fraction|constant|coefficient|denominator|factor", re.I),
+    },
+    {
+        "pattern_id": "complex_form_or_argand",
+        "summary": "Choose Cartesian, modulus-argument, or Argand form to match the operation.",
+        "topics": {"complex_numbers"},
+        "regex": re.compile(r"modulus|argument|argand|complex|conjugate|polar|root", re.I),
+    },
+    {
+        "pattern_id": "vector_equation_or_scalar_product",
+        "summary": "Use vector equations, component comparison, or scalar products.",
+        "topics": {"vectors"},
+        "regex": re.compile(r"vector|scalar product|direction|component|line|parameter|perpendicular", re.I),
+    },
+    {
+        "pattern_id": "sequence_formula_choice",
+        "summary": "Choose the correct term or sum formula for the sequence structure.",
+        "topics": {"series_and_sequences"},
+        "regex": re.compile(r"arithmetic|geometric|sequence|series|sum|term|ratio", re.I),
+    },
+    {
+        "pattern_id": "numerical_evidence",
+        "summary": "Show sign-change, iteration, graph, or rounding evidence.",
+        "topics": {"numerical_methods"},
+        "regex": re.compile(r"iteration|iterative|sign change|root|sketch|graph|round|decimal|approx", re.I),
+    },
+    {
+        "pattern_id": "separate_variables",
+        "summary": "Separate variables before integrating and applying conditions.",
+        "topics": {"differential_equations"},
+        "regex": re.compile(r"separate variables|differential equation|condition|constant|integrat", re.I),
+    },
+    {
+        "pattern_id": "mechanics_sign_convention",
+        "summary": "Choose directions and keep signed quantities consistent.",
+        "topics": {"momentum_impulse", "kinematics_constant_acceleration", "work_energy_power"},
+        "regex": re.compile(r"momentum|impulse|velocity|acceleration|direction|work|energy|power|resistance", re.I),
+    },
+)
 
 
 def normalize_flag(value: Any) -> str:
@@ -193,10 +554,6 @@ def source_eligibility(record: dict[str, Any]) -> dict[str, Any]:
         blocked_reasons.append("mapping_status_fail")
     if question_text_trust in TEXT_BLOCKED:
         blocked_reasons.append(f"question_text_trust_{question_text_trust}")
-    if text_only_status == "fail":
-        blocked_reasons.append("text_only_status_fail")
-    if visual_curation_status == "fail":
-        blocked_reasons.append("visual_curation_status_fail")
     if not mark_scheme_text:
         blocked_reasons.append("missing_mark_scheme_text")
     if has_pattern(flags, SEVERE_FLAG_PATTERNS):
@@ -214,12 +571,16 @@ def source_eligibility(record: dict[str, Any]) -> dict[str, Any]:
         review_reasons.append(f"mapping_status_{mapping_status or 'missing'}")
     if question_text_trust not in HIGH_OR_MEDIUM:
         review_reasons.append(f"question_text_trust_{question_text_trust or 'missing'}")
+    if question_text_trust in TEXT_REVIEW_ONLY:
+        review_reasons.append(f"question_text_trust_{question_text_trust}")
     if not topic:
         review_reasons.append("missing_topic")
     if topic_confidence and topic_confidence not in HIGH_OR_MEDIUM:
         review_reasons.append(f"topic_confidence_{topic_confidence}")
     if text_only_status not in TEXT_READY_OR_REVIEW:
         review_reasons.append(f"text_only_status_{text_only_status or 'missing'}")
+    if text_only_status == "fail":
+        review_reasons.append("text_only_status_fail")
     if visual_required:
         review_reasons.append("visual_required")
     if visual_curation_status and visual_curation_status != "ready":
@@ -260,16 +621,81 @@ def target_id(paper: str, topic: str) -> str:
     return f"{paper}_{topic}".lower().replace("/", "_")
 
 
-def confidence_for_source_count(count: int) -> str:
-    if count >= 5:
+def confidence_for_source_count(count: int, trusted_count: int = 0) -> str:
+    if trusted_count >= 3:
         return "high"
-    if count >= 2:
+    if trusted_count >= 1 or count >= 5:
         return "medium"
     return "low"
 
 
+def skill_target_review_status(eligibility_counts: dict[str, int]) -> str:
+    if eligibility_counts.get("auto_eligible", 0) >= 2:
+        return "teacher_reviewed"
+    return "needs_review"
+
+
+def mark_scheme_patterns(topic: str, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    patterns: list[dict[str, Any]] = []
+    for rule in MARK_SCHEME_PATTERN_RULES:
+        if topic not in rule["topics"]:
+            continue
+        matched_ids = sorted({
+            record_id(record)
+            for record in records
+            if rule["regex"].search(non_empty_string(record.get("mark_scheme_text")) or "")
+        })
+        if matched_ids:
+            patterns.append({
+                "pattern_id": rule["pattern_id"],
+                "summary": rule["summary"],
+                "source_question_ids": matched_ids[:8],
+                "source_count": len(matched_ids),
+            })
+    return sorted(patterns, key=lambda item: (-int(item["source_count"]), str(item["pattern_id"])))
+
+
+def normalize_label(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    normalized = value.lower().replace("_", " ")
+    normalized = re.sub(r"[/_-]+", " ", normalized)
+    normalized = re.sub(r"[^a-z0-9 ]+", "", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
+def topic_key(record: dict[str, Any]) -> tuple[str, str] | None:
+    topic = non_empty_string(record.get("topic"))
+    if topic and topic in SUPPORTED_TOPICS:
+        return (paper_family(record), topic)
+    return None
+
+
+def usable_for_curriculum_map(record: dict[str, Any], eligibility: dict[str, Any]) -> bool:
+    if eligibility["eligibility"] in {"auto_eligible", "review_only"}:
+        return True
+    if not topic_key(record):
+        return False
+    if not non_empty_string(record.get("mark_scheme_text")):
+        return False
+    notes = as_record(record.get("notes"))
+    question_text_trust = non_empty_string(record.get("question_text_trust")) or non_empty_string(notes.get("question_text_trust"))
+    mapping_status = non_empty_string(notes.get("mapping_status")) or non_empty_string(record.get("mapping_status"))
+    return question_text_trust != "unusable" and mapping_status != "fail"
+
+
+def p3_region_topic_map() -> dict[str, dict[str, Any]]:
+    return {
+        region_id: {
+            "primary_topic": support["primary_topic"],
+            "topics": sorted(support["topics"]),
+        }
+        for region_id, support in sorted(ACTIVE_P3_REGION_SUPPORT.items())
+    }
+
+
 def build_skill_targets(records: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
-    eligible_records: list[dict[str, Any]] = []
+    target_records: list[tuple[dict[str, Any], dict[str, Any]]] = []
     review_records: list[dict[str, Any]] = []
 
     for record in records:
@@ -289,23 +715,32 @@ def build_skill_targets(records: list[dict[str, Any]]) -> tuple[dict[str, Any], 
             "visual_required": bool(record.get("visual_required") or as_record(record.get("notes")).get("visual_required")),
         }
 
+        if usable_for_curriculum_map(record, eligibility):
+            target_records.append((record, eligibility))
         if eligibility["eligibility"] == "auto_eligible":
-            eligible_records.append(record)
+            pass
+        elif eligibility["eligibility"] == "review_only" and topic in SUPPORTED_TOPICS:
+            review_records.append(queue_entry)
         else:
             review_records.append(queue_entry)
 
-    groups: dict[tuple[str, str], list[str]] = {}
-    for record in eligible_records:
-        topic = non_empty_string(record.get("topic"))
-        if topic not in SUPPORTED_TOPICS:
+    groups: dict[tuple[str, str], list[tuple[dict[str, Any], dict[str, Any]]]] = {}
+    for record, eligibility in target_records:
+        key = topic_key(record)
+        if not key:
             continue
-        key = (paper_family(record), topic)
-        groups.setdefault(key, []).append(record_id(record))
+        groups.setdefault(key, []).append((record, eligibility))
 
     skill_targets = []
-    for (paper, topic), ids in sorted(groups.items()):
+    for (paper, topic), grouped_records in sorted(groups.items()):
         topic_template = SUPPORTED_TOPICS[topic]
+        ids = [record_id(record) for record, _eligibility in grouped_records]
         unique_ids = sorted(set(ids))
+        eligibility_counts = {
+            "auto_eligible": sum(1 for _record, eligibility in grouped_records if eligibility["eligibility"] == "auto_eligible"),
+            "review_only": sum(1 for _record, eligibility in grouped_records if eligibility["eligibility"] == "review_only"),
+            "blocked_review_evidence": sum(1 for _record, eligibility in grouped_records if eligibility["eligibility"] == "blocked"),
+        }
         skill_targets.append({
             "skill_target_id": target_id(paper, topic),
             "paper_family": paper,
@@ -313,9 +748,14 @@ def build_skill_targets(records: list[dict[str, Any]]) -> tuple[dict[str, Any], 
             "title": topic_template["title"],
             "student_goal": topic_template["student_goal"],
             "micro_skills": topic_template["micro_skills"],
+            "likely_prerequisites": topic_template["likely_prerequisites"],
+            "common_misconceptions": topic_template["common_misconceptions"],
             "source_question_ids": unique_ids,
-            "confidence": confidence_for_source_count(len(unique_ids)),
-            "review_status": "needs_review",
+            "assessed_by_source_question_ids": unique_ids,
+            "source_mark_scheme_patterns": mark_scheme_patterns(topic, [record for record, _eligibility in grouped_records]),
+            "source_eligibility_counts": eligibility_counts,
+            "confidence": confidence_for_source_count(len(unique_ids), eligibility_counts["auto_eligible"]),
+            "review_status": skill_target_review_status(eligibility_counts),
         })
 
     review_queue_records = sorted(
@@ -370,11 +810,166 @@ def reviewed_snippet_topic_keys(snippets_path: Path) -> set[tuple[str, str]]:
     return keys
 
 
+def load_json_optional(path: Path | None) -> dict[str, Any]:
+    if path is None or not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return sorted({item.strip() for item in value if isinstance(item, str) and item.strip()})
+
+
+def runtime_reviewed_snippets(snippets_path: Path) -> list[dict[str, Any]]:
+    data = load_json_optional(snippets_path)
+    snippets = data.get("snippets")
+    if not isinstance(snippets, list):
+        return []
+    return [
+        snippet for snippet in snippets
+        if isinstance(snippet, dict) and snippet.get("review_status") in RUNTIME_REVIEW_STATUSES
+    ]
+
+
+def practice_items(generated_practice_path: Path | None) -> list[dict[str, Any]]:
+    data = load_json_optional(generated_practice_path)
+    items = data.get("items")
+    if not isinstance(items, list):
+        return []
+    return [item for item in items if isinstance(item, dict)]
+
+
+EXAMPLE_REQUIRED_SNIPPET_TYPES = {"concept", "method", "mistake_repair"}
+PRIORITY_REGION_IDS = {"algebra-forge", "logarithm-grove", "trig-observatory"}
+
+
+def valid_worked_example(value: Any) -> bool:
+    record = as_record(value)
+    if not record:
+        return False
+    return (
+        bool(non_empty_string(record.get("prompt")))
+        and bool(non_empty_string(record.get("answer")))
+        and bool(string_list(record.get("steps")))
+    )
+
+
+def worked_example_count(snippet: dict[str, Any]) -> int:
+    count = 1 if valid_worked_example(snippet.get("worked_example")) else 0
+    worked_examples = snippet.get("worked_examples")
+    if isinstance(worked_examples, list):
+        count += sum(1 for example in worked_examples if valid_worked_example(example))
+    return count
+
+
+def snippet_coverage(snippets: list[dict[str, Any]]) -> dict[str, Any]:
+    snippets_per_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_SUPPORT}
+    quick_checks_per_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_SUPPORT}
+    snippets_with_examples_by_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_SUPPORT}
+    method_snippets_missing_examples: list[dict[str, Any]] = []
+    guardian_topic_keys: set[tuple[str, str]] = set()
+    topic_keys: set[tuple[str, str]] = set()
+
+    for snippet in snippets:
+        paper = non_empty_string(snippet.get("paper_family"))
+        topics = string_list(snippet.get("topics"))
+        region_ids = string_list(snippet.get("region_ids"))
+        quick_check = as_record(snippet.get("quick_check"))
+        guardian = as_record(snippet.get("guardian_readiness"))
+        snippet_id = non_empty_string(snippet.get("snippet_id")) or "unknown"
+        snippet_type = non_empty_string(snippet.get("snippet_type"))
+        example_count = worked_example_count(snippet)
+        if paper:
+            for topic in topics:
+                topic_keys.add((paper, topic))
+                if guardian:
+                    guardian_topic_keys.add((paper, topic))
+        for region_id in region_ids:
+            if region_id in snippets_per_region:
+                snippets_per_region[region_id] += 1
+                if quick_check:
+                    quick_checks_per_region[region_id] += 1
+                if example_count > 0:
+                    snippets_with_examples_by_region[region_id] += 1
+        if snippet_type in EXAMPLE_REQUIRED_SNIPPET_TYPES and example_count == 0:
+            method_snippets_missing_examples.append({
+                "paper_family": paper,
+                "region_ids": region_ids,
+                "snippet_id": snippet_id,
+                "snippet_type": snippet_type,
+                "title": non_empty_string(snippet.get("title")) or "",
+                "topic": non_empty_string(snippet.get("topic")) or (topics[0] if topics else "unknown"),
+            })
+
+    return {
+        "snippets_per_region": snippets_per_region,
+        "quick_checks_per_region": quick_checks_per_region,
+        "snippets_with_examples_by_region": snippets_with_examples_by_region,
+        "method_snippets_missing_examples": method_snippets_missing_examples,
+        "snippet_topic_keys": topic_keys,
+        "guardian_topic_keys": guardian_topic_keys,
+    }
+
+
+def generated_practice_coverage(items: list[dict[str, Any]]) -> dict[str, Any]:
+    warmups_per_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_SUPPORT}
+    generator_family_counts: dict[str, int] = {}
+    verification_failure_counts: dict[str, int] = {}
+    warmups_linked_to_examples: list[dict[str, Any]] = []
+    warmups_without_example_model: list[str] = []
+    practice_topic_keys: set[tuple[str, str]] = set()
+
+    for item in items:
+        generator_family = non_empty_string(item.get("generator_family")) or "unknown"
+        generator_family_counts[generator_family] = generator_family_counts.get(generator_family, 0) + 1
+        verification = as_record(item.get("verification"))
+        verification_status = non_empty_string(verification.get("status")) if verification else "missing"
+        if verification_status != "pass":
+            verification_failure_counts[generator_family] = verification_failure_counts.get(generator_family, 0) + 1
+
+        paper = non_empty_string(item.get("paper_family"))
+        topic = non_empty_string(item.get("topic"))
+        if paper and topic:
+            practice_topic_keys.add((paper, topic))
+        practice_id = non_empty_string(item.get("practice_id")) or "unknown"
+        source_snippet_id = non_empty_string(item.get("source_snippet_id"))
+        example_model_id = non_empty_string(item.get("example_model_id"))
+        if source_snippet_id or example_model_id:
+            warmups_linked_to_examples.append({
+                "example_model_id": example_model_id,
+                "practice_id": practice_id,
+                "sequence_role": non_empty_string(item.get("sequence_role")),
+                "source_snippet_id": source_snippet_id,
+            })
+        else:
+            warmups_without_example_model.append(practice_id)
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass":
+            for region_id in string_list(item.get("region_ids")):
+                if region_id in warmups_per_region:
+                    warmups_per_region[region_id] += 1
+
+    return {
+        "generated_warmups_per_region": warmups_per_region,
+        "generator_family_counts": dict(sorted(generator_family_counts.items())),
+        "verification_failure_counts": dict(sorted(verification_failure_counts.items())),
+        "warmups_linked_to_examples": sorted(warmups_linked_to_examples, key=lambda item: item["practice_id"]),
+        "warmups_without_example_model": sorted(warmups_without_example_model),
+        "practice_topic_keys": practice_topic_keys,
+    }
+
+
 def build_content_lab_report(
     records: list[dict[str, Any]],
     skill_targets: dict[str, Any],
     review_queue: dict[str, Any],
     snippets_path: Path,
+    generated_practice_path: Path | None = None,
 ) -> dict[str, Any]:
     eligibility_counts = {
         "auto_eligible": 0,
@@ -431,7 +1026,13 @@ def build_content_lab_report(
         if (paper, topic) not in skill_target_keys
     ]
 
-    reviewed_topic_keys = reviewed_snippet_topic_keys(snippets_path)
+    snippets = runtime_reviewed_snippets(snippets_path)
+    snippet_report = snippet_coverage(snippets)
+    practice_report = generated_practice_coverage(practice_items(generated_practice_path))
+    reviewed_topic_keys = snippet_report["snippet_topic_keys"]
+    practice_topic_keys = practice_report["practice_topic_keys"]
+    guardian_topic_keys = snippet_report["guardian_topic_keys"]
+
     topics_with_skill_targets_but_no_reviewed_snippets = [
         {
             "paper_family": paper,
@@ -442,6 +1043,56 @@ def build_content_lab_report(
         if (paper, topic) not in reviewed_topic_keys
     ]
 
+    topics_with_snippets_but_no_warmups = [
+        {
+            "paper_family": paper,
+            "topic": topic,
+        }
+        for paper, topic in sorted(reviewed_topic_keys)
+        if (paper, topic) not in practice_topic_keys
+    ]
+
+    topics_with_warmups_but_no_guardian_readiness_metadata = [
+        {
+            "paper_family": paper,
+            "topic": topic,
+        }
+        for paper, topic in sorted(practice_topic_keys)
+        if (paper, topic) not in guardian_topic_keys
+    ]
+
+    missing_region_coverage = [
+        region_id
+        for region_id, count in snippet_report["snippets_per_region"].items()
+        if count == 0
+    ]
+
+    active_regions = [
+        {
+            "region_id": region_id,
+            "primary_topic": support["primary_topic"],
+            "snippets": snippet_report["snippets_per_region"][region_id],
+            "snippets_with_examples": snippet_report["snippets_with_examples_by_region"][region_id],
+            "quick_checks": snippet_report["quick_checks_per_region"][region_id],
+            "generated_warmups": practice_report["generated_warmups_per_region"][region_id],
+        }
+        for region_id, support in sorted(ACTIVE_P3_REGION_SUPPORT.items())
+    ]
+    priority_region_example_coverage = [
+        {
+            "region_id": region_id,
+            "snippets": snippet_report["snippets_per_region"][region_id],
+            "snippets_with_examples": snippet_report["snippets_with_examples_by_region"][region_id],
+            "method_snippets_missing_examples": [
+                item["snippet_id"]
+                for item in snippet_report["method_snippets_missing_examples"]
+                if region_id in item["region_ids"]
+            ],
+            "warmups": practice_report["generated_warmups_per_region"][region_id],
+        }
+        for region_id in sorted(PRIORITY_REGION_IDS)
+    ]
+
     return {
         "schema_name": "asterion_content_lab_report",
         "schema_version": 1,
@@ -450,10 +1101,31 @@ def build_content_lab_report(
         "auto_eligible": eligibility_counts.get("auto_eligible", 0),
         "review_only": eligibility_counts.get("review_only", 0),
         "blocked": eligibility_counts.get("blocked", 0),
+        "blocked_or_review_only_source_counts": {
+            "blocked": eligibility_counts.get("blocked", 0),
+            "review_only": eligibility_counts.get("review_only", 0),
+        },
+        "active_regions": active_regions,
+        "active_region_topic_map": p3_region_topic_map(),
+        "snippets_per_region": snippet_report["snippets_per_region"],
+        "quick_checks_per_region": snippet_report["quick_checks_per_region"],
+        "snippets_with_examples_by_region": snippet_report["snippets_with_examples_by_region"],
+        "method_snippets_missing_examples": snippet_report["method_snippets_missing_examples"],
+        "generated_warmups_per_region": practice_report["generated_warmups_per_region"],
+        "warmups_linked_to_examples": practice_report["warmups_linked_to_examples"],
+        "warmups_without_example_model": practice_report["warmups_without_example_model"],
+        "priority_region_example_coverage": priority_region_example_coverage,
+        "generator_family_counts": practice_report["generator_family_counts"],
+        "verification_failure_counts": practice_report["verification_failure_counts"],
         "skill_targets_created_by_paper_family_topic": skill_target_counts,
+        "skill_targets_per_topic": skill_target_counts,
         "review_queue_counts_by_reason": review_reason_counts,
+        "missing_active_region_snippet_coverage": missing_region_coverage,
         "topics_with_source_records_but_no_skill_targets": topics_with_source_records_but_no_skill_targets,
+        "topics_with_no_snippets": topics_with_skill_targets_but_no_reviewed_snippets,
         "topics_with_skill_targets_but_no_reviewed_snippets": topics_with_skill_targets_but_no_reviewed_snippets,
+        "topics_with_snippets_but_no_warmups": topics_with_snippets_but_no_warmups,
+        "topics_with_warmups_but_no_guardian_readiness_metadata": topics_with_warmups_but_no_guardian_readiness_metadata,
     }
 
 
@@ -466,19 +1138,27 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build Content Lab skill-target candidates.")
     parser.add_argument("--input", default="public/data/question_bank.json", help="Path to question_bank.json")
     parser.add_argument("--output-dir", default="tools/content_lab/outputs", help="Directory for generated JSON outputs")
+    parser.add_argument("--output", help="Path for skill_targets.json; overrides --output-dir")
+    parser.add_argument("--review-output", help="Path for review_queue.json; overrides --output-dir")
+    parser.add_argument("--report-output", help="Path for content_lab_report.json; overrides --output-dir")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json", help="Path to reviewed teaching snippets")
+    parser.add_argument("--generated-practice", default="tools/content_lab/outputs/generated_practice_bank.json", help="Path to generated practice output for coverage reporting")
     args = parser.parse_args()
 
     input_path = Path(args.input)
     output_dir = Path(args.output_dir)
     snippets_path = Path(args.snippets)
+    output_path = Path(args.output) if args.output else output_dir / "skill_targets.json"
+    review_output_path = Path(args.review_output) if args.review_output else output_dir / "review_queue.json"
+    report_output_path = Path(args.report_output) if args.report_output else output_dir / "content_lab_report.json"
+    generated_practice_path = Path(args.generated_practice) if args.generated_practice else None
     records = load_question_records(input_path)
     skill_targets, review_queue = build_skill_targets(records)
-    report = build_content_lab_report(records, skill_targets, review_queue, snippets_path)
+    report = build_content_lab_report(records, skill_targets, review_queue, snippets_path, generated_practice_path)
 
-    write_json(output_dir / "skill_targets.json", skill_targets)
-    write_json(output_dir / "review_queue.json", review_queue)
-    write_json(output_dir / "content_lab_report.json", report)
+    write_json(output_path, skill_targets)
+    write_json(review_output_path, review_queue)
+    write_json(report_output_path, report)
 
     print(f"Wrote {len(skill_targets['skill_targets'])} skill targets.")
     print(f"Wrote {len(review_queue['records'])} review queue records.")

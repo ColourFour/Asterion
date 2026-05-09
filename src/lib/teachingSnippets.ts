@@ -6,18 +6,35 @@ import { matchRegionForLabels, normalizeLabel } from './worldMap';
 
 export type TeachingSnippetReviewStatus = 'needs_review' | 'teacher_reviewed' | 'published' | string;
 export type TeachingSnippetSource = 'teacher_authored' | 'template_authored' | string;
-export type TeachingSnippetType = 'concept' | 'method' | 'mistake_repair' | 'quick_check' | string;
+export type TeachingSnippetType = 'concept' | 'method' | 'mistake_repair' | 'quick_check' | 'guardian_prep' | string;
 
 export interface TeachingSnippetQuickCheck {
+  id?: string;
+  regionId?: string;
+  topic?: string;
+  skillTargetId?: string;
+  title?: string;
   prompt: string;
   answer: string;
   explanation: string;
+  microSkill?: string;
+  difficultyBand?: string;
+  estimatedTimeMinutes?: number;
+  reviewStatus?: string;
 }
 
 export interface TeachingSnippetGuardianReadiness {
   supportsTopics: string[];
   recommendedBeforeQuestionIds: string[];
   readinessNote: string;
+}
+
+export interface TeachingSnippetWorkedExample {
+  id?: string;
+  prompt: string;
+  steps: string[];
+  answer: string;
+  teachingNote?: string;
 }
 
 export interface TeachingSnippet {
@@ -28,6 +45,7 @@ export interface TeachingSnippet {
   title: string;
   studentGoal: string;
   body: string;
+  explanation?: string;
   steps: string[];
   examMove: string;
   commonTrap: string;
@@ -36,12 +54,14 @@ export interface TeachingSnippet {
   prerequisites: string[];
   microSteps: string[];
   commonMistakes: string[];
+  workedExamples: TeachingSnippetWorkedExample[];
   quickCheck?: TeachingSnippetQuickCheck;
   guardianReadiness?: TeachingSnippetGuardianReadiness;
   estimatedTimeMinutes?: number;
   snippetType?: TeachingSnippetType;
   sourceQuestionIds: string[];
   sourceSkillTargetIds: string[];
+  relatedSkillTargetIds: string[];
 }
 
 interface TeachingSnippetSelection {
@@ -77,7 +97,29 @@ function quickCheckValue(value: unknown): TeachingSnippetQuickCheck | undefined 
   const prompt = stringValue(record.prompt);
   const answer = stringValue(record.answer);
   const explanation = stringValue(record.explanation);
-  return prompt && answer && explanation ? { prompt, answer, explanation } : undefined;
+  if (!prompt || !answer || !explanation) return undefined;
+  const quickCheck: TeachingSnippetQuickCheck = {
+    prompt,
+    answer,
+    explanation,
+  };
+  const optionalValues: Array<[keyof TeachingSnippetQuickCheck, string | number | undefined]> = [
+    ['id', stringValue(record.id)],
+    ['regionId', stringValue(record.region_id)],
+    ['topic', stringValue(record.topic)],
+    ['skillTargetId', stringValue(record.skill_target_id)],
+    ['title', stringValue(record.title)],
+    ['microSkill', stringValue(record.micro_skill)],
+    ['difficultyBand', stringValue(record.difficulty_band)],
+    ['estimatedTimeMinutes', positiveNumber(record.estimated_time_minutes)],
+    ['reviewStatus', stringValue(record.review_status)],
+  ];
+  for (const [key, value] of optionalValues) {
+    if (value !== undefined) {
+      (quickCheck as Partial<Record<keyof TeachingSnippetQuickCheck, string | number>>)[key] = value;
+    }
+  }
+  return quickCheck;
 }
 
 function guardianReadinessValue(value: unknown): TeachingSnippetGuardianReadiness | undefined {
@@ -87,6 +129,44 @@ function guardianReadinessValue(value: unknown): TeachingSnippetGuardianReadines
   const recommendedBeforeQuestionIds = stringArray(record.recommended_before_question_ids);
   const readinessNote = stringValue(record.readiness_note);
   return readinessNote ? { supportsTopics, recommendedBeforeQuestionIds, readinessNote } : undefined;
+}
+
+function workedExampleValue(value: unknown): TeachingSnippetWorkedExample | undefined {
+  const record = asRecord(value);
+  if (!record) return undefined;
+  const prompt = stringValue(record.prompt);
+  const steps = stringArray(record.steps);
+  const answer = stringValue(record.answer);
+  if (!prompt || steps.length === 0 || !answer) return undefined;
+  const workedExample: TeachingSnippetWorkedExample = {
+    prompt,
+    steps,
+    answer,
+  };
+  const id = stringValue(record.id);
+  const teachingNote = stringValue(record.teaching_note);
+  if (id) workedExample.id = id;
+  if (teachingNote) workedExample.teachingNote = teachingNote;
+  return workedExample;
+}
+
+function workedExamplesValue(snippet: Record<string, unknown>): TeachingSnippetWorkedExample[] {
+  const examples: TeachingSnippetWorkedExample[] = [];
+  const singleExample = workedExampleValue(snippet.worked_example);
+  if (singleExample) examples.push(singleExample);
+  if (Array.isArray(snippet.worked_examples)) {
+    for (const value of snippet.worked_examples) {
+      const example = workedExampleValue(value);
+      if (example) examples.push(example);
+    }
+  }
+  const seen = new Set<string>();
+  return examples.filter((example) => {
+    const key = example.id ?? `${example.prompt}\n${example.answer}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function matchesPaperFamily(snippet: TeachingSnippet, paperFamily?: PaperFamily): boolean {
@@ -130,6 +210,7 @@ export function normalizeTeachingSnippetsData(data: unknown): TeachingSnippet[] 
     const title = stringValue(snippet.title);
     const studentGoal = stringValue(snippet.student_goal);
     const body = stringValue(snippet.body);
+    const explanation = stringValue(snippet.explanation);
     const steps = stringArray(snippet.steps);
     const examMove = stringValue(snippet.exam_move);
     const commonTrap = stringValue(snippet.common_trap);
@@ -148,6 +229,7 @@ export function normalizeTeachingSnippetsData(data: unknown): TeachingSnippet[] 
       title,
       studentGoal,
       body,
+      explanation,
       steps,
       examMove,
       commonTrap,
@@ -156,12 +238,14 @@ export function normalizeTeachingSnippetsData(data: unknown): TeachingSnippet[] 
       prerequisites: stringArray(snippet.prerequisites),
       microSteps: stringArray(snippet.micro_steps),
       commonMistakes: stringArray(snippet.common_mistakes),
+      workedExamples: workedExamplesValue(snippet),
       quickCheck: quickCheckValue(snippet.quick_check),
       guardianReadiness: guardianReadinessValue(snippet.guardian_readiness),
       estimatedTimeMinutes: positiveNumber(snippet.estimated_time_minutes),
       snippetType: stringValue(snippet.snippet_type),
       sourceQuestionIds: stringArray(snippet.source_question_ids),
       sourceSkillTargetIds: stringArray(snippet.source_skill_target_ids),
+      relatedSkillTargetIds: stringArray(snippet.related_skill_targets),
     }];
   });
 }

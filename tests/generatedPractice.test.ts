@@ -17,11 +17,14 @@ function item(overrides: Record<string, unknown> = {}) {
     topic: 'logarithms_and_exponentials',
     skill_target_id: 'p3_logarithms_and_exponentials',
     snippet_ids: ['log-snippet'],
+    source_snippet_id: 'log-snippet',
+    example_model_id: 'log-snippet-example-1',
     region_ids: ['logarithm-grove'],
     prompt: 'Solve ln(x) = ln(4).',
     answer: 'x = 4',
     worked_solution: ['The domain requires x > 0.', 'Equal logs have equal arguments.'],
     parameters: { solution: 4 },
+    sequence_role: 'first_step',
     verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
     difficulty_band: 'easy',
     review_status: 'published',
@@ -79,6 +82,11 @@ describe('generated practice runtime loader', () => {
     expect(getGeneratedPracticeBySkillTarget(normalized, 'p3_binomial_expansion').map((practice) => practice.practiceId)).toEqual(['binomial-a']);
     expect(getGeneratedPracticeForRegion(normalized, 'logarithm-grove').map((practice) => practice.practiceId)).toEqual(['log-a']);
     expect(getGeneratedPracticeForRegion(normalized, 'algebra-forge').map((practice) => practice.practiceId)).toEqual(['binomial-a']);
+    expect(normalized.find((practice) => practice.practiceId === 'log-a')?.sequenceRole).toBe('first_step');
+    expect(normalized.find((practice) => practice.practiceId === 'log-a')).toMatchObject({
+      sourceSnippetId: 'log-snippet',
+      exampleModelId: 'log-snippet-example-1',
+    });
   });
 
   it('filters during async loading from the static runtime file', async () => {

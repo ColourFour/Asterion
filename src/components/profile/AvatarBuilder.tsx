@@ -4,7 +4,6 @@ import { calculateAcademySummary } from '../../lib/academyProgress';
 import { getAvatarLayers } from '../../lib/avatarLayers';
 import { equipAvatarItem, normalizeAvatarSettings } from '../../lib/avatarStore';
 import { selectNextAvatarUnlock } from '../../lib/avatarUnlocks';
-import { ProfileForm } from '../onboarding/ProfileForm';
 import { AvatarPreview } from './AvatarPreview';
 import { GearInventory } from './GearInventory';
 import { NextUnlockCard } from './NextUnlockCard';
@@ -18,16 +17,31 @@ interface AvatarBuilderProps {
   onProfileSave: (profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
 
-const palettes: AvatarSettings['palette'][] = ['ember', 'aqua', 'violet', 'leaf'];
-const crests: AvatarSettings['crest'][] = ['star', 'bolt', 'compass', 'orb'];
 const leftStageSlots = AVATAR_SLOTS.slice(0, 5);
 const rightStageSlots = AVATAR_SLOTS.slice(5);
+const crestLabels: Record<AvatarSettings['crest'], string> = {
+  star: 'Star crest',
+  bolt: 'Bolt crest',
+  compass: 'Compass crest',
+  orb: 'Orb crest',
+};
 
-export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onAvatarChange, onProfileSave }: AvatarBuilderProps) {
+export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onAvatarChange }: AvatarBuilderProps) {
   const summary = calculateAcademySummary(regionProgress);
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
   const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
   const nextUnlock = selectNextAvatarUnlock(regionProgress);
+  const activeRegionCount = regionProgress.filter((progress) => progress.isActive).length;
+  const restoredTotal = Math.max(activeRegionCount, avatarGear.restoredRegions, 1);
+  const restoredPercent = Math.round((avatarGear.restoredRegions / restoredTotal) * 100);
+  const recentReward = avatarGear.gear.length ? avatarGear.gear[avatarGear.gear.length - 1] : 'Starter crest';
+  const earnedRewards = avatarGear.gear.length ? avatarGear.gear : ['Starter crest'];
+  const equippedFrame = equippedLayers.find((layer) => layer.slot === 'frame')?.item.displayName ?? 'Starter frame';
+  const nextRewardName = nextUnlock?.item.displayName ?? avatarGear.nextUnlock ?? 'Reward path complete';
+  const nextRewardRequirement = nextUnlock?.progress.label ?? avatarGear.nextUnlockRequirement ?? 'All current academy rewards earned.';
+  const strongestRegion = avatarGear.strongestRegionName
+    ? `${avatarGear.strongestRegionName} (${avatarGear.strongestRegionRank})`
+    : 'No restored region yet';
 
   function handleEquip(item: AvatarItem) {
     onAvatarChange(equipAvatarItem(avatarForProgress, item, regionProgress));
@@ -98,26 +112,49 @@ export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onA
 
           <NextUnlockCard nextUnlock={nextUnlock} />
 
-          <section className="avatar-finish-panel" aria-labelledby="avatar-finish-title">
-            <h3 id="avatar-finish-title">Character Finish</h3>
-            <label>
-              Palette
-              <select value={avatarForProgress.palette} onChange={(event) => onAvatarChange({ ...avatarForProgress, palette: event.target.value as AvatarSettings['palette'] })}>
-                {palettes.map((palette) => <option key={palette} value={palette}>{palette}</option>)}
-              </select>
-            </label>
-            <label>
-              Crest
-              <select value={avatarForProgress.crest} onChange={(event) => onAvatarChange({ ...avatarForProgress, crest: event.target.value as AvatarSettings['crest'] })}>
-                {crests.map((crest) => <option key={crest} value={crest}>{crest}</option>)}
-              </select>
-            </label>
-          </section>
+          <section className="student-details-panel reward-identity-card" aria-labelledby="student-details-title">
+            <div className="student-identity-heading">
+              <span className={`student-crest student-crest-${avatarForProgress.crest}`} aria-hidden="true" />
+              <div>
+                <span>Student Details</span>
+                <h3 id="student-details-title">{profile.avatarName}</h3>
+                <p>{avatarGear.title}</p>
+              </div>
+            </div>
 
-          <details className="student-details-panel">
-            <summary>Student Details</summary>
-            <ProfileForm profile={profile} onSave={onProfileSave} />
-          </details>
+            <div className="student-reward-focus">
+              <span>Equipped crest</span>
+              <strong>{crestLabels[avatarForProgress.crest]}</strong>
+              <small>{equippedFrame}</small>
+            </div>
+
+            <dl className="student-reward-stats" aria-label="Student reward evidence">
+              <div><dt>Evidence XP</dt><dd>{summary.totalXp}</dd></div>
+              <div><dt>Attempts</dt><dd>{summary.attempts}</dd></div>
+              <div><dt>Restored</dt><dd>{avatarGear.restoredRegions}/{restoredTotal}</dd></div>
+              <div><dt>Gold</dt><dd>{avatarGear.goldRegions}</dd></div>
+            </dl>
+
+            <div className="student-reward-meter" aria-label={`${restoredPercent}% of active regions restored`}>
+              <span style={{ width: `${restoredPercent}%` }} />
+            </div>
+
+            <div className="student-reward-row">
+              <span>Next unlock</span>
+              <strong>{nextRewardName}</strong>
+              <small>{nextRewardRequirement}</small>
+            </div>
+
+            <div className="student-reward-row">
+              <span>Recent reward</span>
+              <strong>{recentReward}</strong>
+              <small>{strongestRegion}</small>
+            </div>
+
+            <div className="earned-reward-list" aria-label="Earned pins, badges, and crests">
+              {earnedRewards.slice(0, 6).map((reward) => <span key={reward}>{reward}</span>)}
+            </div>
+          </section>
         </aside>
       </section>
 

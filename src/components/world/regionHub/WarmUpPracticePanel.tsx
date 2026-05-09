@@ -51,7 +51,7 @@ function WarmUpPracticeCard({ item }: WarmUpPracticeCardProps) {
   );
 }
 
-export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 2 }: WarmUpPracticePanelProps) {
+export function WarmUpPracticePanel({ practiceItems, maxInitialItems = 3 }: WarmUpPracticePanelProps) {
   const visiblePractice = practiceItems.slice(0, maxInitialItems);
   const hiddenPracticeCount = Math.max(0, practiceItems.length - visiblePractice.length);
 

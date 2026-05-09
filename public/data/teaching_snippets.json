@@ -3,184 +3,84 @@
   "schema_version": 1,
   "snippets": [
     {
-      "body": "A logarithm answers the question: what power is needed? If $a^x=b$, then $\\log_a b=x$. Keep the base, power, and result in the same triangle before rearranging.",
+      "body": "P3 algebra often rewards seeing structure before expanding. Shared factors, conjugates, and common brackets can shorten the route and reduce sign errors.",
       "common_mistakes": [
-        "Moving the base to the wrong side when rewriting a log equation.",
-        "Forgetting that the log value is the exponent.",
-        "Changing the base while converting forms."
+        "Cancelling terms across addition.",
+        "Expanding first and creating avoidable long algebra.",
+        "Cancelling a factor without checking it is multiplying the whole numerator and denominator."
       ],
-      "common_trap": "Do not move between forms unless the base stays attached to the log.",
-      "estimated_time_minutes": 3,
-      "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask students to isolate an unknown inside a logarithm.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["logarithms_and_exponentials"]
-      },
-      "micro_steps": [
-        "Circle the log base.",
-        "Name the log value as the exponent.",
-        "Rewrite as base to that exponent equals the argument.",
-        "Check that the base did not change."
-      ],
-      "paper_family": "p3",
-      "prerequisites": [
-        "Know index notation.",
-        "Recognize base, exponent, and result in $a^x=b$."
-      ],
-      "quick_check": {
-        "answer": "$2^5=32$",
-        "explanation": "The base is $2$, the log value is the exponent $5$, and the argument is $32$.",
-        "prompt": "Rewrite $\\log_2 32=5$ in exponential form."
-      },
-      "region_ids": ["logarithm-grove"],
-      "review_status": "published",
-      "snippet_id": "p3-log-exp-convert-001",
-      "snippet_type": "concept",
-      "source": "teacher_authored",
-      "steps": [
-        "Identify the base of the logarithm.",
-        "Write log statement equals exponent.",
-        "Rewrite as base raised to exponent equals argument."
-      ],
-      "student_goal": "Convert fluently between logarithmic and exponential form.",
-      "title": "Switch forms before solving",
-      "topics": ["logarithms_and_exponentials"]
-    },
-    {
-      "body": "Use log laws only on products, quotients, and powers. $\\log(ab)=\\log a+\\log b$ and $\\log(a^n)=n\\log a$, but there is no matching rule for $\\log(a+b)$.",
-      "common_mistakes": [
-        "Splitting a sum inside a logarithm.",
-        "Forgetting brackets when a whole expression is raised to a power.",
-        "Combining logs before checking that the bases match."
-      ],
-      "common_trap": "Treating $\\log(a+b)$ as $\\log a+\\log b$ creates false equations.",
+      "common_trap": "Cancelling part of a sum as if it were a factor.",
       "estimated_time_minutes": 4,
-      "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "explanation": "Expansion is valid, but it is not always the cleanest first move. Look for a common expression or a factor that can be kept intact until the final simplification.",
       "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where combining logs is needed before solving.",
+        "readiness_note": "Use this before Guardian questions that depend on choose algebraic simplification before opening every bracket.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["logarithms_and_exponentials"]
+        "supports_topics": [
+          "algebra"
+        ]
       },
       "micro_steps": [
-        "Mark products, quotients, and powers.",
-        "Apply only one log law at a time.",
-        "Leave sums inside logs untouched.",
-        "Check all logs have the same base before combining."
+        "Look for a repeated bracket or factor.",
+        "Factor the shared structure if it shortens the expression.",
+        "Cancel or simplify only when multiplication factors allow it.",
+        "Expand only if the next step needs expanded form."
       ],
       "paper_family": "p3",
       "prerequisites": [
-        "Know the product, quotient, and power laws of logarithms.",
-        "Be comfortable with brackets in algebraic expressions."
+        "Factorise simple expressions.",
+        "Distinguish terms from factors."
       ],
       "quick_check": {
-        "answer": "$3\\log x+\\log y$",
-        "explanation": "$x^3y$ is a product, so split into $\\log(x^3)+\\log y$, then use the power law on $x^3$.",
-        "prompt": "Expand $\\log(x^3y)$ using log laws."
+        "id": "p3-algebra-rearrangement-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "algebra",
+        "skill_target_id": "p3_algebra",
+        "title": "Shared bracket",
+        "prompt": "What is a clean first move for $(x+1)^2-(x+1)(x-2)$?",
+        "answer": "Factor out $(x+1)$.",
+        "explanation": "Both terms contain $(x+1)$, so factor it before simplifying.",
+        "micro_skill": "Spot a shared algebraic structure before expanding.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["logarithm-grove"],
-      "review_status": "published",
-      "snippet_id": "p3-log-laws-001",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_algebra"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-algebra-rearrangement-001",
       "snippet_type": "method",
       "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_algebra"
+      ],
       "steps": [
-        "Look for multiplication, division, or powers inside logs.",
-        "Apply one law at a time.",
-        "Check that addition inside a log has not been split."
+        "Look for a repeated bracket or factor.",
+        "Factor the shared structure if it shortens the expression.",
+        "Cancel or simplify only when multiplication factors allow it.",
+        "Expand only if the next step needs expanded form."
       ],
-      "student_goal": "Use log laws without inventing invalid addition rules.",
-      "title": "Log laws have boundaries",
-      "topics": ["logarithms_and_exponentials"]
-    },
-    {
-      "body": "Every logarithm needs a positive argument. After solving, substitute each answer into every original log argument and reject any value that makes an argument $0$ or negative.",
-      "common_mistakes": [
-        "Checking the transformed equation instead of the original log arguments.",
-        "Keeping an answer that makes one log argument negative.",
-        "Assuming a squared equation cannot create an invalid answer."
+      "student_goal": "Choose algebraic simplification before opening every bracket.",
+      "title": "Rearrange before expanding",
+      "topic": "algebra",
+      "topics": [
+        "algebra"
       ],
-      "common_trap": "Solving the algebra correctly but keeping a value outside the log domain.",
-      "estimated_time_minutes": 3,
-      "exam_move": "Do the domain check at the end using the original equation, not a rearranged version.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian attempts that involve logarithmic equations with more than one possible solution.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["logarithms_and_exponentials"]
-      },
-      "micro_steps": [
-        "Solve the equation normally.",
-        "Write each original log argument as an inequality greater than zero.",
-        "Test each answer against every inequality.",
-        "Reject values that fail any domain check."
-      ],
-      "paper_family": "p3",
-      "prerequisites": [
-        "Understand that logarithm arguments must be positive.",
-        "Solve simple linear inequalities."
-      ],
-      "quick_check": {
-        "answer": "$x>2$",
-        "explanation": "The argument $x-2$ must be positive, so $x-2>0$ and therefore $x>2$.",
-        "prompt": "What condition must $x$ satisfy for $\\log(x-2)$ to be defined?"
-      },
-      "region_ids": ["logarithm-grove"],
-      "review_status": "teacher_reviewed",
-      "snippet_id": "p3-log-domain-001",
-      "snippet_type": "mistake_repair",
-      "source": "teacher_authored",
-      "steps": [
-        "Solve the transformed equation.",
-        "Return to the original log arguments.",
-        "Reject answers that make any argument non-positive."
-      ],
-      "student_goal": "Reject invalid logarithmic solutions confidently.",
-      "title": "Domain checks save marks",
-      "topics": ["logarithms_and_exponentials"]
-    },
-    {
-      "body": "In exponential equations, try to write both sides with the same base before taking logs. If common bases are not available, take logs on both sides and isolate the exponent carefully.",
-      "common_mistakes": [
-        "Taking logs before noticing a common base.",
-        "Dropping brackets around an exponent such as $2x-1$.",
-        "Dividing by the wrong log term after taking logs."
-      ],
-      "common_trap": "Taking logs too early and losing brackets around the whole exponent.",
-      "estimated_time_minutes": 4,
-      "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that mix exponential expressions and logarithmic rearrangement.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["logarithms_and_exponentials"]
-      },
-      "micro_steps": [
-        "Look for a shared base first.",
-        "If there is no shared base, apply logs to both complete sides.",
-        "Move the exponent down only after logging.",
-        "Keep exponent brackets until the final rearrangement."
-      ],
-      "paper_family": "p3",
-      "prerequisites": [
-        "Know index laws.",
-        "Be able to solve simple linear equations."
-      ],
-      "quick_check": {
-        "answer": "$x=4$",
-        "explanation": "$8=2^3$, so $2^{x-1}=2^3$. Match exponents to get $x-1=3$.",
-        "prompt": "Solve $2^{x-1}=8$."
-      },
-      "region_ids": ["logarithm-grove"],
-      "review_status": "teacher_reviewed",
-      "snippet_id": "p3-exp-equations-001",
-      "snippet_type": "method",
-      "source": "teacher_authored",
-      "steps": [
-        "Check whether both sides can be written with the same base.",
-        "If not, apply logs to both sides.",
-        "Divide by the log coefficient after expanding brackets."
-      ],
-      "student_goal": "Choose an efficient route for exponential equations.",
-      "title": "Same base first",
-      "topics": ["logarithms_and_exponentials"]
+      "worked_example": {
+        "id": "p3-algebra-rearrangement-001-example-1",
+        "prompt": "Simplify $(x+2)^2-(x+2)(x-5)$.",
+        "steps": [
+          "Both terms contain the factor $(x+2)$.",
+          "Factor it out: $(x+2)[(x+2)-(x-5)]$.",
+          "Simplify the bracket to get $(x+2)(7)$."
+        ],
+        "answer": "$7(x+2)$",
+        "teaching_note": "Factoring first keeps the cancellation and signs visible."
+      }
     },
     {
       "body": "For binomial expansion, the term number controls the coefficient and the power of each factor. Write the general term first so that signs and powers are visible.",
@@ -192,10 +92,13 @@
       "common_trap": "Forgetting that a negative term such as $-2x$ carries its sign inside the power.",
       "estimated_time_minutes": 4,
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
+      "explanation": "The coefficient you need comes from a specific power of the binomial term. Write the term structure first, then simplify signs and powers once the target power of $x$ is clear.",
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that ask for one coefficient from a larger expansion.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["binomial_expansion"]
+        "supports_topics": [
+          "binomial_expansion"
+        ]
       },
       "micro_steps": [
         "Write the general term with the binomial coefficient.",
@@ -209,11 +112,25 @@
         "Use index laws with powers of $x$."
       ],
       "quick_check": {
-        "answer": "$-6x$",
-        "explanation": "The linear term is $3(-2x)$, so the coefficient is $-6$.",
-        "prompt": "Find the term in $x$ in the expansion of $(1-2x)^3$."
+        "id": "p3-binomial-term-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "binomial_expansion",
+        "skill_target_id": "p3_binomial_expansion",
+        "title": "Use the general term",
+        "prompt": "Find the coefficient of $x$ in the expansion of $(1-2x)^3$.",
+        "answer": "$-6$",
+        "explanation": "The linear term is $3(-2x)=-6x$, so the coefficient of $x$ is $-6$.",
+        "micro_skill": "Find a requested binomial coefficient.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["algebra-forge"],
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_binomial_expansion"
+      ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-binomial-term-001",
       "snippet_type": "method",
@@ -225,7 +142,208 @@
       ],
       "student_goal": "Find requested binomial terms without expanding everything.",
       "title": "Use the general term",
-      "topics": ["binomial_expansion"]
+      "topics": [
+        "binomial_expansion"
+      ],
+      "topic": "binomial_expansion",
+      "source_skill_target_ids": [
+        "p3_binomial_expansion"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-binomial-term-001-example-1",
+          "prompt": "Write the first three terms of $(1+2x)^5$.",
+          "steps": [
+            "Use $(1+u)^n=1+nu+\\frac{n(n-1)}{2}u^2+\\cdots$.",
+            "Here $u=2x$ and $n=5$.",
+            "First three terms: $1+5(2x)+10(2x)^2$."
+          ],
+          "answer": "$1+10x+40x^2$",
+          "teaching_note": "The binomial coefficient is chosen before simplifying the power of $x$."
+        },
+        {
+          "id": "p3-binomial-term-001-example-2",
+          "prompt": "Find the coefficient of $x^3$ in $(1-2x)^5$.",
+          "steps": [
+            "The $x^3$ term is $\\binom{5}{3}(-2x)^3$.",
+            "$\\binom{5}{3}=10$ and $(-2)^3=-8$.",
+            "So the coefficient is $10(-8)$."
+          ],
+          "answer": "$-80$",
+          "teaching_note": "Keep the negative sign inside the power until the coefficient is simplified."
+        }
+      ]
+    },
+    {
+      "body": "For negative or fractional powers, the expansion only works when the variable part has modulus less than 1. Put the expression into 1 plus something before writing the range.",
+      "common_mistakes": [
+        "Using the whole bracket in the modulus condition.",
+        "Forgetting to factor out a leading constant.",
+        "Writing only one side of the interval."
+      ],
+      "common_trap": "Stating a validity range before the expression is in binomial form.",
+      "estimated_time_minutes": 4,
+      "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
+      "explanation": "The validity condition comes from the small variable part, not from the whole bracket. If a constant has to be factored out first, do that before deciding the interval.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on state the range where a binomial expansion is valid.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "binomial_expansion"
+        ]
+      },
+      "micro_steps": [
+        "Rewrite the bracket as a constant times 1 plus a variable part.",
+        "Identify the variable part.",
+        "Write its modulus as less than 1.",
+        "Solve the resulting inequality for x."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Understand modulus inequalities.",
+        "Recognize binomial expansions with negative or fractional powers."
+      ],
+      "quick_check": {
+        "id": "p3-binomial-validity-range-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "binomial_expansion",
+        "skill_target_id": "p3_binomial_expansion",
+        "title": "Validity range",
+        "prompt": "State the interval of validity for expanding $(1+2x)^{-3}$.",
+        "answer": "$-\\frac12 < x < \\frac12$",
+        "explanation": "The variable part is $2x$, so $|2x|<1$.",
+        "micro_skill": "Turn a binomial variable part into a validity interval.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_binomial_expansion"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-binomial-validity-range-001",
+      "snippet_type": "mistake_repair",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_binomial_expansion"
+      ],
+      "steps": [
+        "Rewrite the bracket as a constant times 1 plus a variable part.",
+        "Identify the variable part.",
+        "Write its modulus as less than 1.",
+        "Solve the resulting inequality for x."
+      ],
+      "student_goal": "State the range where a binomial expansion is valid.",
+      "title": "Validity belongs to the expansion",
+      "topic": "binomial_expansion",
+      "topics": [
+        "binomial_expansion"
+      ],
+      "worked_example": {
+        "id": "p3-binomial-validity-range-001-example-1",
+        "prompt": "State the validity range for expanding $(1-3x)^{-2}$.",
+        "steps": [
+          "The variable part is $-3x$.",
+          "For a negative power expansion, require $|-3x|<1$.",
+          "This is $|3x|<1$, so divide by $3$."
+        ],
+        "answer": "$-\\frac13<x<\\frac13$",
+        "teaching_note": "The condition belongs to the variable part, not to the whole bracket."
+      }
+    },
+    {
+      "body": "A modulus expression measures distance from zero. For an equation, split into positive and negative cases. For $|x-a|<b$, translate the distance statement into the interval $a-b<x<a+b$.",
+      "common_mistakes": [
+        "Dropping the negative case.",
+        "Reversing an inequality without a reason.",
+        "Squaring both sides when a simple distance argument is cleaner."
+      ],
+      "common_trap": "Replacing $|x-a|<b$ with only $x-a<b$ and losing the lower bound.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use distance language first, then convert to cases or an interval.",
+      "explanation": "Do not simply remove modulus bars. The bars hide two possible signs, and inequalities need interval thinking rather than one isolated equation.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on solve modulus equations and inequalities without illegal sign moves.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "algebra"
+        ]
+      },
+      "micro_steps": [
+        "Read the modulus as a distance.",
+        "For equations, set the inside equal to plus and minus the value.",
+        "For less-than inequalities, write the open interval around the centre.",
+        "Check any original restrictions."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Solve linear equations.",
+        "Interpret simple inequalities on a number line."
+      ],
+      "quick_check": {
+        "id": "p3-modulus-cases-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "algebra",
+        "skill_target_id": "p3_algebra",
+        "title": "Modulus interval",
+        "prompt": "Turn $|x-3|<5$ into an interval.",
+        "answer": "$-2<x<8$",
+        "explanation": "The distance from $3$ is less than $5$, so move $5$ left and right from $3$.",
+        "micro_skill": "Convert a basic modulus inequality into an interval.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_algebra"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-modulus-cases-001",
+      "snippet_type": "mistake_repair",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_algebra"
+      ],
+      "steps": [
+        "Read the modulus as a distance.",
+        "For equations, set the inside equal to plus and minus the value.",
+        "For less-than inequalities, write the open interval around the centre.",
+        "Check any original restrictions."
+      ],
+      "student_goal": "Solve modulus equations and inequalities without illegal sign moves.",
+      "title": "Modulus is distance, then cases",
+      "topic": "algebra",
+      "topics": [
+        "algebra"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-modulus-cases-001-example-1",
+          "prompt": "Solve $|x-2|=5$.",
+          "steps": [
+            "Split into $x-2=5$ or $x-2=-5$.",
+            "Solve each linear equation."
+          ],
+          "answer": "$x=7$ or $x=-3$",
+          "teaching_note": "A modulus equation usually has two distance cases."
+        },
+        {
+          "id": "p3-modulus-cases-001-example-2",
+          "prompt": "Solve $|x+1|<4$.",
+          "steps": [
+            "$|x+1|<4$ means $-4<x+1<4$.",
+            "Subtract $1$ throughout."
+          ],
+          "answer": "$-5<x<3$",
+          "teaching_note": "A less-than modulus inequality becomes an interval, not one equation."
+        }
+      ]
     },
     {
       "body": "Partial fractions are a setup problem before they are an algebra problem. The denominator decides the form of the numerators you must use.",
@@ -237,10 +355,13 @@
       "common_trap": "Using a constant numerator where a linear numerator is needed over an irreducible quadratic.",
       "estimated_time_minutes": 5,
       "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
+      "explanation": "The denominator tells you the shape before any arithmetic starts. Once the form is right, substitution and coefficient comparison become routine instead of guesswork.",
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that start with algebraic decomposition or require integration after decomposition.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["partial_fractions"]
+        "supports_topics": [
+          "partial_fractions"
+        ]
       },
       "micro_steps": [
         "Factor the denominator completely.",
@@ -254,11 +375,26 @@
         "Compare coefficients in algebraic identities."
       ],
       "quick_check": {
+        "id": "p3-partial-fractions-form-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "partial_fractions",
+        "skill_target_id": "p3_partial_fractions",
+        "title": "Let the denominator choose the form",
+        "prompt": "What partial-fraction form fits $\\frac{3x+1}{(x-1)(x+2)}$?",
         "answer": "$\\frac{A}{x-1}+\\frac{B}{x+2}$",
         "explanation": "Both factors are distinct linear factors, so each gets a constant numerator.",
-        "prompt": "What partial-fraction form fits $\\frac{3x+1}{(x-1)(x+2)}$?"
+        "micro_skill": "Choose the correct partial-fraction form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["algebra-forge", "integration-gardens"],
+      "region_ids": [
+        "algebra-forge",
+        "integration-gardens"
+      ],
+      "related_skill_targets": [
+        "p3_partial_fractions"
+      ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-partial-fractions-form-001",
       "snippet_type": "method",
@@ -270,233 +406,185 @@
       ],
       "student_goal": "Set up partial fractions with the correct numerator structure.",
       "title": "Let the denominator choose the form",
-      "topics": ["partial_fractions"]
+      "topics": [
+        "partial_fractions"
+      ],
+      "topic": "partial_fractions",
+      "source_skill_target_ids": [
+        "p3_partial_fractions"
+      ],
+      "worked_example": {
+        "id": "p3-partial-fractions-form-001-example-1",
+        "prompt": "Decompose $\\frac{5x+1}{(x-1)(x+2)}$.",
+        "steps": [
+          "Use $\\frac{A}{x-1}+\\frac{B}{x+2}$ for distinct linear factors.",
+          "Multiply through: $5x+1=A(x+2)+B(x-1)$.",
+          "Substitute $x=1$ to get $A=2$, and $x=-2$ to get $B=3$."
+        ],
+        "answer": "$\\frac{2}{x-1}+\\frac{3}{x+2}$",
+        "teaching_note": "The denominator chooses the template before any constants are found."
+      }
     },
     {
-      "body": "When solving trigonometric equations, solve the basic angle first, then use the interval to list every valid angle. The range is part of the answer, not an afterthought.",
+      "body": "A repeated linear factor creates a ladder of terms. If the denominator contains $(x-a)^2$, include both $A/(x-a)$ and $B/(x-a)^2$ before solving constants.",
       "common_mistakes": [
-        "Giving only the calculator angle.",
-        "Working in degrees when the question requires radians.",
-        "Forgetting to check whether transformed angles still lie in the interval."
+        "Writing only the highest repeated power.",
+        "Using the same numerator letter twice.",
+        "Starting substitution before the decomposition form is complete."
       ],
-      "common_trap": "Giving one calculator angle and missing the second or third solution in the interval.",
+      "common_trap": "Treating $(x-a)^2$ as if it only needs one partial-fraction term.",
       "estimated_time_minutes": 4,
-      "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
+      "exam_move": "Use repeated-factor terms before integrating rational functions.",
+      "explanation": "Repeated factors are easy to undercount. The setup must include each power of the repeated factor, otherwise coefficient comparison cannot match every numerator.",
       "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that require all trig solutions in a stated range.",
+        "readiness_note": "Use this before Guardian questions that depend on set up partial fractions when a linear factor is repeated.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["trigonometry"]
+        "supports_topics": [
+          "partial_fractions"
+        ]
       },
       "micro_steps": [
-        "Find the reference angle.",
-        "Decide which quadrants fit the sign.",
-        "List all angles in the interval.",
-        "Substitute any transformed angle back into the original condition."
+        "Factor the denominator fully.",
+        "Spot any repeated linear factor.",
+        "Write one term for each repeated power.",
+        "Only then multiply through and solve constants."
       ],
       "paper_family": "p3",
       "prerequisites": [
-        "Know quadrant signs for sine, cosine, and tangent.",
-        "Read interval notation accurately."
+        "Factor denominators.",
+        "Compare coefficients after clearing fractions."
       ],
       "quick_check": {
-        "answer": "$30^\\circ$ and $150^\\circ$",
-        "explanation": "Sine is positive in quadrants I and II, and the reference angle for $\\frac12$ is $30^\\circ$.",
-        "prompt": "Solve $\\sin x=\\frac12$ for $0^\\circ\\le x\\le180^\\circ$."
+        "id": "p3-partial-fractions-repeated-linear-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "partial_fractions",
+        "skill_target_id": "p3_partial_fractions",
+        "title": "Repeated factor form",
+        "prompt": "What form fits $\\frac{2x+1}{(x-3)^2(x+1)}$?",
+        "answer": "$\\frac{A}{x-3}+\\frac{B}{(x-3)^2}+\\frac{C}{x+1}$",
+        "explanation": "The repeated factor $(x-3)^2$ needs terms over $(x-3)$ and $(x-3)^2$.",
+        "micro_skill": "Choose the repeated-linear partial-fraction form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["trig-observatory"],
-      "review_status": "published",
-      "snippet_id": "p3-trig-interval-001",
-      "snippet_type": "method",
-      "source": "teacher_authored",
-      "steps": [
-        "Solve for the reference angle.",
-        "Use signs or a sketch to find matching quadrants.",
-        "Keep only angles inside the stated interval."
+      "region_ids": [
+        "algebra-forge",
+        "integration-gardens"
       ],
-      "student_goal": "Find all trig equation solutions in a restricted interval.",
-      "title": "The interval controls the answer",
-      "topics": ["trigonometry"]
-    },
-    {
-      "body": "Before differentiating, name the structure. A product, quotient, chain, implicit relation, or parametric pair each has a different route.",
-      "common_mistakes": [
-        "Using a rule before checking whether expansion is simpler.",
-        "Differentiating the outside function but forgetting the inner derivative.",
-        "Stopping at the derivative when the question asks for a tangent or classification."
+      "related_skill_targets": [
+        "p3_partial_fractions"
       ],
-      "common_trap": "Using the product rule where a simple expansion would be shorter.",
-      "estimated_time_minutes": 4,
-      "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where the first decision is which differentiation route to take.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["differentiation"]
-      },
-      "micro_steps": [
-        "Classify the expression structure.",
-        "Choose the shortest valid rule or simplification.",
-        "Differentiate carefully.",
-        "Return to the exact thing the question asked for."
-      ],
-      "paper_family": "p3",
-      "prerequisites": [
-        "Know basic derivative rules.",
-        "Recognize products, quotients, and composite functions."
-      ],
-      "quick_check": {
-        "answer": "$6x(x^2+1)^2$",
-        "explanation": "Use the chain rule: derivative of the outside cube is $3(x^2+1)^2$, then multiply by the inner derivative $2x$.",
-        "prompt": "Differentiate $(x^2+1)^3$."
-      },
-      "region_ids": ["calculus-cliffs"],
       "review_status": "teacher_reviewed",
-      "snippet_id": "p3-differentiation-method-001",
+      "snippet_id": "p3-partial-fractions-repeated-linear-001",
       "snippet_type": "method",
       "source": "teacher_authored",
-      "steps": [
-        "Identify the function structure.",
-        "Choose the differentiation rule.",
-        "Simplify only as far as the next step needs."
+      "source_skill_target_ids": [
+        "p3_partial_fractions"
       ],
-      "student_goal": "Choose an appropriate differentiation method before starting.",
-      "title": "Name the structure first",
-      "topics": ["differentiation"]
+      "steps": [
+        "Factor the denominator fully.",
+        "Spot any repeated linear factor.",
+        "Write one term for each repeated power.",
+        "Only then multiply through and solve constants."
+      ],
+      "student_goal": "Set up partial fractions when a linear factor is repeated.",
+      "title": "Repeated factors need every level",
+      "topic": "partial_fractions",
+      "topics": [
+        "partial_fractions"
+      ],
+      "worked_example": {
+        "id": "p3-partial-fractions-repeated-linear-001-example-1",
+        "prompt": "Decompose $\\frac{2x+5}{(x-1)^2}$.",
+        "steps": [
+          "Use $\\frac{A}{x-1}+\\frac{B}{(x-1)^2}$.",
+          "Multiply through: $2x+5=A(x-1)+B$.",
+          "Compare coefficients: $A=2$ and $-A+B=5$, so $B=7$."
+        ],
+        "answer": "$\\frac{2}{x-1}+\\frac{7}{(x-1)^2}$",
+        "teaching_note": "A repeated factor needs every power in the ladder."
+      }
     },
     {
-      "body": "Complex numbers often become simpler when you change form. Cartesian form is good for adding; modulus-argument form is good for multiplying, dividing, powers, and roots.",
+      "body": "Dividing $f(x)$ by $x-a$ leaves remainder $f(a)$. If that value is zero, then $x-a$ is a factor. This is often faster than starting long division immediately.",
       "common_mistakes": [
-        "Using polar form for addition.",
-        "Forgetting quadrant checks when finding an argument.",
-        "Returning an answer in the wrong form for the question."
+        "Substituting the wrong sign for $a$.",
+        "Calling a non-zero remainder a factor.",
+        "Using division before checking an easy root."
       ],
-      "common_trap": "Using the calculator argument without checking the quadrant.",
+      "common_trap": "For $x+2$, substituting $2$ instead of $-2$.",
       "estimated_time_minutes": 4,
-      "exam_move": "Switch form when the operation changes from addition to powers or roots.",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "explanation": "The theorem turns a division question into a substitution check. It also gives a quick way to test proposed factors before committing to a longer algebra route.",
       "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask for powers, roots, or geometric interpretation of complex numbers.",
+        "readiness_note": "Use this before Guardian questions that depend on use factor and remainder theorem checks before polynomial division.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["complex_numbers"]
+        "supports_topics": [
+          "algebra"
+        ]
       },
       "micro_steps": [
-        "Identify the operation.",
-        "Choose Cartesian or modulus-argument form.",
-        "Check quadrant if finding an argument.",
-        "Convert back only if requested."
+        "Identify the divisor in the form $x-a$.",
+        "Substitute $a$ into the polynomial.",
+        "Use the value as the remainder.",
+        "If the value is zero, record the factor."
       ],
       "paper_family": "p3",
       "prerequisites": [
-        "Know real and imaginary parts.",
-        "Use Pythagoras and angle ratios."
+        "Evaluate polynomial expressions.",
+        "Recognize linear factors."
       ],
       "quick_check": {
+        "id": "p3-polynomial-theorem-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "algebra",
+        "skill_target_id": "p3_algebra",
+        "title": "Remainder theorem",
+        "prompt": "For $f(x)=x^3-2x+1$, find the remainder when divided by $x-2$.",
         "answer": "$5$",
-        "explanation": "The modulus is $\\sqrt{3^2+4^2}=5$.",
-        "prompt": "Find the modulus of $3+4i$."
+        "explanation": "The remainder is $f(2)=8-4+1=5$.",
+        "micro_skill": "Use the remainder theorem on a small polynomial.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["complex-harbor"],
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_algebra"
+      ],
       "review_status": "teacher_reviewed",
-      "snippet_id": "p3-complex-form-001",
-      "snippet_type": "concept",
-      "source": "teacher_authored",
-      "steps": [
-        "Decide whether the operation suits Cartesian or polar form.",
-        "Find modulus and argument with quadrant awareness.",
-        "Convert back only if the answer form requires it."
-      ],
-      "student_goal": "Choose the useful form for a complex-number task.",
-      "title": "Change form for the operation",
-      "topics": ["complex_numbers"]
-    },
-    {
-      "body": "A vector line equation gives a point and a direction. Intersections happen when two different parameter systems describe the same point.",
-      "common_mistakes": [
-        "Using the same parameter for both lines.",
-        "Solving two components but forgetting to check the third.",
-        "Confusing a direction vector with a point on the line."
-      ],
-      "common_trap": "Using the same parameter letter for two different lines.",
-      "estimated_time_minutes": 4,
-      "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving line intersections, skew lines, or vector line equations.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["vectors"]
-      },
-      "micro_steps": [
-        "Give each line its own parameter.",
-        "Equate matching components.",
-        "Solve using two components.",
-        "Check the remaining component."
-      ],
-      "paper_family": "p3",
-      "prerequisites": [
-        "Read vector line equations.",
-        "Solve simultaneous linear equations."
-      ],
-      "quick_check": {
-        "answer": "$\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}$",
-        "explanation": "Set the parameter to $0$; the position vector left behind is the point on the line.",
-        "prompt": "For $\\mathbf r=\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}+t\\begin{pmatrix}2\\\\0\\\\-1\\end{pmatrix}$, give one point on the line."
-      },
-      "region_ids": ["vector-workshop"],
-      "review_status": "teacher_reviewed",
-      "snippet_id": "p3-vectors-lines-001",
+      "snippet_id": "p3-polynomial-theorem-001",
       "snippet_type": "method",
       "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_algebra"
+      ],
       "steps": [
-        "Write each line with its own parameter.",
-        "Equate matching components.",
-        "Check the parameter values in all components."
+        "Identify the divisor in the form $x-a$.",
+        "Substitute $a$ into the polynomial.",
+        "Use the value as the remainder.",
+        "If the value is zero, record the factor."
       ],
-      "student_goal": "Use vector line equations to test intersection or position.",
-      "title": "Keep parameters separate",
-      "topics": ["vectors"]
-    },
-    {
-      "body": "Momentum is directional. Before writing equations, choose a positive direction and keep every velocity consistent with that choice.",
-      "common_mistakes": [
-        "Changing the positive direction halfway through.",
-        "Treating a negative final velocity as impossible.",
-        "Using speed where velocity with direction is required."
+      "student_goal": "Use factor and remainder theorem checks before polynomial division.",
+      "title": "Theorem values are remainders",
+      "topic": "algebra",
+      "topics": [
+        "algebra"
       ],
-      "common_trap": "Changing sign convention halfway through a collision or impulse calculation.",
-      "estimated_time_minutes": 3,
-      "exam_move": "Write a sign convention beside the equation before substituting values.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving impulse, collisions, or conservation of momentum.",
-        "recommended_before_question_ids": [],
-        "supports_topics": ["momentum_impulse"]
-      },
-      "micro_steps": [
-        "Choose the positive direction.",
-        "Write each velocity with a sign.",
-        "Apply the momentum or impulse equation.",
-        "Interpret negative values as direction."
-      ],
-      "paper_family": "p4",
-      "prerequisites": [
-        "Know momentum is mass times velocity.",
-        "Understand signed velocity."
-      ],
-      "quick_check": {
-        "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
-        "explanation": "Momentum is $mv=2\\times(-3)=-6$ in the chosen positive direction.",
-        "prompt": "A $2\\,\\mathrm{kg}$ particle moves at $3\\,\\mathrm{m\\,s^{-1}}$ opposite to the positive direction. What is its momentum?"
-      },
-      "region_ids": [],
-      "review_status": "teacher_reviewed",
-      "snippet_id": "p4-momentum-direction-001",
-      "snippet_type": "concept",
-      "source": "teacher_authored",
-      "source_skill_target_ids": ["p4_momentum_impulse"],
-      "steps": [
-        "Choose a positive direction.",
-        "Write velocities with signs before calculating.",
-        "Interpret negative answers as direction, not failure."
-      ],
-      "student_goal": "Use consistent signs in momentum and impulse questions.",
-      "title": "Direction is part of momentum",
-      "topics": ["momentum_impulse"]
+      "worked_example": {
+        "id": "p3-polynomial-theorem-001-example-1",
+        "prompt": "For $f(x)=x^3-4x+3$, decide whether $x-1$ is a factor.",
+        "steps": [
+          "For divisor $x-1$, substitute $x=1$.",
+          "$f(1)=1-4+3=0$.",
+          "A zero remainder means $x-1$ is a factor."
+        ],
+        "answer": "$x-1$ is a factor.",
+        "teaching_note": "For $x-a$, the value to substitute is $a$, not $-a$."
+      }
     },
     {
       "body": "A quadratic discriminant tells you about roots before you solve them. $b^2-4ac>0$ means two real roots, $=0$ means one repeated root, and $<0$ means no real roots.",
@@ -508,10 +596,13 @@
       "common_trap": "Solving a full quadratic when the question only asks about the number of roots.",
       "estimated_time_minutes": 3,
       "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "explanation": "The discriminant is quick evidence about a quadratic before solving it. Use it when the question asks what kind of roots or intersections are possible.",
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions where a parameter controls intersections or tangency.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["quadratics"]
+        "supports_topics": [
+          "quadratics"
+        ]
       },
       "micro_steps": [
         "Identify $a$, $b$, and $c$.",
@@ -525,11 +616,25 @@
         "Know what real and repeated roots mean."
       ],
       "quick_check": {
+        "id": "p3-quadratics-discriminant-001-qc",
+        "region_id": "algebra-forge",
+        "topic": "quadratics",
+        "skill_target_id": "p3_quadratics",
+        "title": "The discriminant is evidence",
+        "prompt": "Find the discriminant of $x^2+3x-4$.",
         "answer": "$25$",
         "explanation": "Here $a=1$, $b=3$, and $c=-4$, so $b^2-4ac=9-4(1)(-4)=25$.",
-        "prompt": "Find the discriminant of $x^2+3x-4$."
+        "micro_skill": "Calculate a quadratic discriminant.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["algebra-forge"],
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "related_skill_targets": [
+        "p3_quadratics"
+      ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-quadratics-discriminant-001",
       "snippet_type": "concept",
@@ -541,109 +646,583 @@
       ],
       "student_goal": "Use the discriminant as a root-counting shortcut.",
       "title": "The discriminant is evidence",
-      "topics": ["quadratics"]
+      "topics": [
+        "quadratics"
+      ],
+      "topic": "quadratics",
+      "source_skill_target_ids": [
+        "p3_quadratics"
+      ],
+      "worked_example": {
+        "id": "p3-quadratics-discriminant-001-example-1",
+        "prompt": "Use the discriminant for $x^2+4x+4=0$.",
+        "steps": [
+          "Here $a=1$, $b=4$, and $c=4$.",
+          "$b^2-4ac=4^2-4(1)(4)=0$.",
+          "A zero discriminant means one repeated real root."
+        ],
+        "answer": "The equation has a repeated real root.",
+        "teaching_note": "The discriminant gives root information without solving the quadratic."
+      }
     },
     {
-      "body": "Before integrating, classify the shape of the expression. A hidden derivative suggests substitution, a product may suggest parts, and a rational expression may need algebra first.",
+      "body": "After differentiating, read the task again. A tangent needs a gradient and point, a normal needs the negative reciprocal gradient, and a stationary point needs the derivative set to zero.",
       "common_mistakes": [
-        "Trying a method before simplifying the expression.",
-        "Changing variables in a definite integral but keeping the old limits.",
-        "Forgetting the constant in an indefinite integral."
+        "Stopping after finding dy/dx.",
+        "Using tangent gradient for a normal.",
+        "Classifying a point without checking what is asked."
       ],
-      "common_trap": "Choosing a technique from habit instead of from the structure of the integrand.",
+      "common_trap": "Forgetting that a normal gradient is the negative reciprocal when the tangent gradient is non-zero.",
       "estimated_time_minutes": 4,
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "explanation": "This snippet teaches method choice for integration without depending on a specific exam question.",
+      "exam_move": "Write the derivative and then immediately connect it to the requested geometric feature.",
+      "explanation": "Many P3 differentiation marks happen after the derivative. Keep the derivative attached to the question purpose rather than stopping too early.",
       "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
+        "readiness_note": "Use this before Guardian questions that depend on use differentiation results for tangents, normals, and stationary points.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["integration"]
-      },
-      "lineage": {
-        "generated_from": "manual"
+        "supports_topics": [
+          "differentiation"
+        ]
       },
       "micro_steps": [
-        "Simplify the integrand if possible.",
-        "Look for a derivative-like factor.",
-        "Choose substitution, parts, partial fractions, or a direct rule.",
-        "Check limits and constants before the final answer."
+        "Differentiate with the correct rule.",
+        "Substitute the required point or parameter.",
+        "For stationary points, set the derivative to zero.",
+        "For tangents or normals, build the line equation."
       ],
       "paper_family": "p3",
       "prerequisites": [
-        "Know standard integration rules.",
-        "Recognize products, composites, and rational expressions."
+        "Know basic line equations.",
+        "Differentiate composite or product expressions."
       ],
       "quick_check": {
-        "answer": "Substitution is a natural first choice.",
-        "explanation": "The factor $2x$ is the derivative of $x^2+1$, so the integrand has a composite structure.",
-        "prompt": "For $\\int 2x(x^2+1)^5\\,dx$, which method would you try first?"
+        "id": "p3-differentiation-follow-through-001-qc",
+        "region_id": "calculus-cliffs",
+        "topic": "differentiation",
+        "skill_target_id": "p3_differentiation",
+        "title": "Stationary condition",
+        "prompt": "What equation identifies stationary points after finding $\\frac{dy}{dx}$?",
+        "answer": "$\\frac{dy}{dx}=0$",
+        "explanation": "A stationary point has zero gradient.",
+        "micro_skill": "Connect a derivative to stationary points.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["integration-gardens"],
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "related_skill_targets": [
+        "p3_differentiation"
+      ],
       "review_status": "teacher_reviewed",
-      "snippet_id": "p3-integration-method-choice-001",
+      "snippet_id": "p3-differentiation-follow-through-001",
       "snippet_type": "method",
       "source": "teacher_authored",
-      "source_skill_target_ids": ["p3_integration"],
-      "steps": [
-        "Classify the expression.",
-        "Choose the integration method.",
-        "Transform the setup fully before evaluating."
+      "source_skill_target_ids": [
+        "p3_differentiation"
       ],
-      "student_goal": "Choose an integration method from structure rather than guesswork.",
-      "title": "Let the integrand choose the method",
-      "topic": "integration",
-      "topics": ["integration"]
+      "steps": [
+        "Differentiate with the correct rule.",
+        "Substitute the required point or parameter.",
+        "For stationary points, set the derivative to zero.",
+        "For tangents or normals, build the line equation."
+      ],
+      "student_goal": "Use differentiation results for tangents, normals, and stationary points.",
+      "title": "The derivative is often the middle step",
+      "topic": "differentiation",
+      "topics": [
+        "differentiation"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-differentiation-follow-through-001-example-1",
+          "prompt": "Find the stationary-point setup for $y=x^3-3x$.",
+          "steps": [
+            "Differentiate: $\\frac{dy}{dx}=3x^2-3$.",
+            "Stationary points occur when $\\frac{dy}{dx}=0$.",
+            "So solve $3x^2-3=0$."
+          ],
+          "answer": "$x=\\pm1$",
+          "teaching_note": "The derivative is the setup; the stationary condition is the next move."
+        },
+        {
+          "id": "p3-differentiation-follow-through-001-example-2",
+          "prompt": "Find the tangent and normal gradients to $y=x^2$ at $x=2$.",
+          "steps": [
+            "$\\frac{dy}{dx}=2x$, so the tangent gradient is $4$.",
+            "The normal gradient is the negative reciprocal of $4$."
+          ],
+          "answer": "Tangent gradient $4$, normal gradient $-\\frac14$",
+          "teaching_note": "A normal uses the gradient after differentiation, not a new derivative rule."
+        }
+      ]
     },
     {
-      "body": "Numerical methods earn marks through visible process. Show the sign-change or iteration rule, keep enough working accuracy, and round only at the requested final step.",
+      "body": "Before differentiating, name the structure. A product, quotient, chain, implicit relation, or parametric pair each has a different route.",
       "common_mistakes": [
-        "Rounding every iteration to too few figures.",
-        "Using a different iteration formula from the one stated.",
-        "Claiming a root in an interval without showing the function changes sign."
+        "Using a rule before checking whether expansion is simpler.",
+        "Differentiating the outside function but forgetting the inner derivative.",
+        "Stopping at the derivative when the question asks for a tangent or classification."
       ],
-      "common_trap": "Treating the final decimal as the whole method and leaving out the evidence that justifies it.",
+      "common_trap": "Using the product rule where a simple expansion would be shorter.",
       "estimated_time_minutes": 4,
-      "exam_move": "Write the interval check or iteration table clearly enough that each approximation can be audited.",
-      "explanation": "This manual snippet covers the process marks common to iteration and sign-change questions.",
+      "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
+      "explanation": "Most derivative errors start before the differentiating begins. Name the structure first, then choose the rule that matches the expression and the follow-up task.",
       "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving root intervals, iteration, or decimal-place accuracy.",
+        "readiness_note": "Use this before Guardian questions where the first decision is which differentiation route to take.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["numerical_methods"]
-      },
-      "lineage": {
-        "generated_from": "manual"
+        "supports_topics": [
+          "differentiation"
+        ]
       },
       "micro_steps": [
-        "State the equation or iteration formula being used.",
-        "For intervals, evaluate both endpoints.",
-        "For iteration, keep extra figures in working.",
-        "Round only when the requested accuracy is reached."
+        "Classify the expression structure.",
+        "Choose the shortest valid rule or simplification.",
+        "Differentiate carefully.",
+        "Return to the exact thing the question asked for."
       ],
       "paper_family": "p3",
       "prerequisites": [
-        "Evaluate functions accurately.",
-        "Understand what a sign change means for a root."
+        "Know basic derivative rules.",
+        "Recognize products, quotients, and composite functions."
       ],
       "quick_check": {
-        "answer": "There is evidence for a root between $1$ and $2$.",
-        "explanation": "The values have opposite signs, so the curve crosses the axis somewhere in the interval.",
-        "prompt": "If $f(1)=-0.4$ and $f(2)=1.1$, what does this suggest about a root?"
+        "id": "p3-differentiation-method-001-qc",
+        "region_id": "calculus-cliffs",
+        "topic": "differentiation",
+        "skill_target_id": "p3_differentiation",
+        "title": "Name the structure first",
+        "prompt": "Differentiate $(x^2+1)^3$.",
+        "answer": "$6x(x^2+1)^2$",
+        "explanation": "Use the chain rule: derivative of the outside cube is $3(x^2+1)^2$, then multiply by the inner derivative $2x$.",
+        "micro_skill": "Differentiate a compact composite expression.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["numerical-mines"],
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "related_skill_targets": [
+        "p3_differentiation"
+      ],
       "review_status": "teacher_reviewed",
-      "snippet_id": "p3-numerical-method-evidence-001",
+      "snippet_id": "p3-differentiation-method-001",
       "snippet_type": "method",
       "source": "teacher_authored",
-      "source_skill_target_ids": ["p3_numerical_methods"],
       "steps": [
-        "Show the method.",
-        "Carry sufficient accuracy.",
-        "State the final rounded value with justification."
+        "Identify the function structure.",
+        "Choose the differentiation rule.",
+        "Simplify only as far as the next step needs."
       ],
-      "student_goal": "Make numerical-method working visible enough to earn method marks.",
-      "title": "Approximation needs evidence",
-      "topic": "numerical_methods",
-      "topics": ["numerical_methods"]
+      "student_goal": "Choose an appropriate differentiation method before starting.",
+      "title": "Name the structure first",
+      "topics": [
+        "differentiation"
+      ],
+      "topic": "differentiation",
+      "source_skill_target_ids": [
+        "p3_differentiation"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-differentiation-method-001-example-1",
+          "prompt": "Differentiate $y=(2x+1)^4$.",
+          "steps": [
+            "This is a chain-rule expression.",
+            "Differentiate the outside: $4(2x+1)^3$.",
+            "Multiply by the inner derivative, $2$."
+          ],
+          "answer": "$\\frac{dy}{dx}=8(2x+1)^3$",
+          "teaching_note": "The inner derivative is the usual missing mark in chain-rule work."
+        },
+        {
+          "id": "p3-differentiation-method-001-example-2",
+          "prompt": "Differentiate $y=x^2e^x$.",
+          "steps": [
+            "This is a product: $u=x^2$, $v=e^x$.",
+            "$u'=2x$ and $v'=e^x$.",
+            "Use $u'v+uv'$."
+          ],
+          "answer": "$2xe^x+x^2e^x$",
+          "teaching_note": "Product rule keeps both differentiated pieces."
+        },
+        {
+          "id": "p3-differentiation-method-001-example-3",
+          "prompt": "Differentiate $y=\\frac{x+1}{x-2}$.",
+          "steps": [
+            "Use the quotient rule with $u=x+1$ and $v=x-2$.",
+            "$\\frac{dy}{dx}=\\frac{(x-2)(1)-(x+1)(1)}{(x-2)^2}$.",
+            "Simplify the numerator."
+          ],
+          "answer": "$\\frac{dy}{dx}=-\\frac{3}{(x-2)^2}$",
+          "teaching_note": "Keep the numerator bracketed until the subtraction is complete."
+        }
+      ]
+    },
+    {
+      "body": "For parametric equations, differentiate both coordinates with respect to the parameter, then use $dy/dx=(dy/dt)/(dx/dt)$ when $dx/dt$ is non-zero.",
+      "common_mistakes": [
+        "Using $dx/dt$ divided by $dy/dt$.",
+        "Substituting too early.",
+        "Forgetting to check that $dx/dt$ is not zero."
+      ],
+      "common_trap": "Treating parametric equations as if y is directly given as a function of x.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use the ratio of parameter derivatives before finding tangents or normals.",
+      "explanation": "The parameter controls both coordinates. The gradient with respect to x compares how y changes with the parameter against how x changes with the parameter.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on find $dy/dx$ from parametric equations without eliminating the parameter first.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "parametric_equations"
+        ]
+      },
+      "micro_steps": [
+        "Differentiate x with respect to the parameter.",
+        "Differentiate y with respect to the parameter.",
+        "Form $(dy/dt)/(dx/dt)$.",
+        "Substitute the parameter value only when the question asks for a gradient at a point."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Differentiate powers of the parameter.",
+        "Understand gradient as dy/dx."
+      ],
+      "quick_check": {
+        "id": "p3-parametric-derivative-001-qc",
+        "region_id": "calculus-cliffs",
+        "topic": "parametric_equations",
+        "skill_target_id": "p3_parametric_equations",
+        "title": "Parametric ratio",
+        "prompt": "If $dx/dt=2t$ and $dy/dt=3t^2$, what is $dy/dx$?",
+        "answer": "$\\frac{3t}{2}$, for $t\\ne0$",
+        "explanation": "Use $(dy/dt)/(dx/dt)=3t^2/(2t)$.",
+        "micro_skill": "Form dy/dx from parameter derivatives.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "related_skill_targets": [
+        "p3_parametric_equations"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-parametric-derivative-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_parametric_equations"
+      ],
+      "steps": [
+        "Differentiate x with respect to the parameter.",
+        "Differentiate y with respect to the parameter.",
+        "Form $(dy/dt)/(dx/dt)$.",
+        "Substitute the parameter value only when the question asks for a gradient at a point."
+      ],
+      "student_goal": "Find $dy/dx$ from parametric equations without eliminating the parameter first.",
+      "title": "Parametric gradients are a ratio",
+      "topic": "parametric_equations",
+      "topics": [
+        "parametric_equations"
+      ],
+      "worked_example": {
+        "id": "p3-parametric-derivative-001-example-1",
+        "prompt": "For $x=t^2+1$ and $y=t^3$, find $\\frac{dy}{dx}$ at $t=2$.",
+        "steps": [
+          "$\\frac{dx}{dt}=2t$ and $\\frac{dy}{dt}=3t^2$.",
+          "$\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{3t^2}{2t}$.",
+          "At $t=2$, this is $\\frac{12}{4}$."
+        ],
+        "answer": "$\\frac{dy}{dx}=3$",
+        "teaching_note": "Do not eliminate the parameter unless the question asks for a Cartesian equation."
+      }
+    },
+    {
+      "body": "Complex numbers often become simpler when you change form. Cartesian form is good for adding; modulus-argument form is good for multiplying, dividing, powers, and roots.",
+      "common_mistakes": [
+        "Using polar form for addition.",
+        "Forgetting quadrant checks when finding an argument.",
+        "Returning an answer in the wrong form for the question."
+      ],
+      "common_trap": "Using the calculator argument without checking the quadrant.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Switch form when the operation changes from addition to powers or roots.",
+      "explanation": "Complex-number form is a tool choice. Cartesian form keeps real and imaginary parts visible; modulus-argument form makes multiplying, dividing, powers, and roots much cleaner.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that ask for powers, roots, or geometric interpretation of complex numbers.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "complex_numbers"
+        ]
+      },
+      "micro_steps": [
+        "Identify the operation.",
+        "Choose Cartesian or modulus-argument form.",
+        "Check quadrant if finding an argument.",
+        "Convert back only if requested."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know real and imaginary parts.",
+        "Use Pythagoras and angle ratios."
+      ],
+      "quick_check": {
+        "id": "p3-complex-form-001-qc",
+        "region_id": "complex-harbor",
+        "topic": "complex_numbers",
+        "skill_target_id": "p3_complex_numbers",
+        "title": "Change form for the operation",
+        "prompt": "Find the modulus of $3+4i$.",
+        "answer": "$5$",
+        "explanation": "The modulus is $\\sqrt{3^2+4^2}=5$.",
+        "micro_skill": "Find the modulus of a complex number.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "related_skill_targets": [
+        "p3_complex_numbers"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-complex-form-001",
+      "snippet_type": "concept",
+      "source": "teacher_authored",
+      "steps": [
+        "Decide whether the operation suits Cartesian or polar form.",
+        "Find modulus and argument with quadrant awareness.",
+        "Convert back only if the answer form requires it."
+      ],
+      "student_goal": "Choose the useful form for a complex-number task.",
+      "title": "Change form for the operation",
+      "topics": [
+        "complex_numbers"
+      ],
+      "topic": "complex_numbers",
+      "source_skill_target_ids": [
+        "p3_complex_numbers"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-complex-form-001-example-1",
+          "prompt": "Find the modulus and argument of $3+3i$.",
+          "steps": [
+            "The modulus is $\\sqrt{3^2+3^2}=3\\sqrt2$.",
+            "The point is in quadrant I and $\\tan\\theta=1$."
+          ],
+          "answer": "$|z|=3\\sqrt2$, $\\arg z=\\frac{\\pi}{4}$",
+          "teaching_note": "Always use the quadrant before accepting an argument."
+        },
+        {
+          "id": "p3-complex-form-001-example-2",
+          "prompt": "Simplify $\\frac{1}{2-i}$.",
+          "steps": [
+            "Multiply top and bottom by the conjugate $2+i$.",
+            "The denominator becomes $(2-i)(2+i)=5$."
+          ],
+          "answer": "$\\frac{2+i}{5}$",
+          "teaching_note": "Conjugates turn a complex denominator into a real one."
+        },
+        {
+          "id": "p3-complex-form-001-example-3",
+          "prompt": "Find the square roots of $4i$.",
+          "steps": [
+            "Write $4i$ with modulus $4$ and argument $\\frac{\\pi}{2}$.",
+            "Square roots have modulus $2$ and arguments $\\frac{\\pi}{4}$ and $\\frac{5\\pi}{4}$.",
+            "Convert both roots back to Cartesian form."
+          ],
+          "answer": "$\\sqrt2+\\sqrt2 i$ and $-\\sqrt2-\\sqrt2 i$",
+          "teaching_note": "Roots are spaced evenly around the Argand diagram."
+        }
+      ]
+    },
+    {
+      "body": "On an Argand diagram, $|z-a|$ is distance from the point $a$, and $\\arg(z-a)$ is a direction angle from that point. Translate the statement before calculating.",
+      "common_mistakes": [
+        "Measuring distance from the origin when the expression is $z-a$.",
+        "Ignoring argument range restrictions.",
+        "Treating a locus inequality as only a boundary."
+      ],
+      "common_trap": "Drawing the right shape around the wrong centre.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Translate the complex statement into Argand geometry before doing algebra.",
+      "explanation": "Complex loci become clearer when read as geometry first. A fixed distance gives a circle; a fixed argument gives a ray or line direction with restrictions.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on interpret modulus and argument statements geometrically.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "complex_numbers"
+        ]
+      },
+      "micro_steps": [
+        "Identify the reference complex number.",
+        "Translate modulus as distance or argument as direction.",
+        "Sketch the geometric object mentally.",
+        "Apply any inequality or endpoint restriction."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Plot complex numbers.",
+        "Find modulus and argument."
+      ],
+      "quick_check": {
+        "id": "p3-complex-locus-argument-001-qc",
+        "region_id": "complex-harbor",
+        "topic": "complex_numbers",
+        "skill_target_id": "p3_complex_numbers",
+        "title": "Locus centre",
+        "prompt": "What is the centre of the circle $|z-(2+i)|=3$?",
+        "answer": "$2+i$",
+        "explanation": "The expression measures distance from the point $2+i$.",
+        "micro_skill": "Identify the centre of a modulus locus.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "related_skill_targets": [
+        "p3_complex_numbers"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-complex-locus-argument-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_complex_numbers"
+      ],
+      "steps": [
+        "Identify the reference complex number.",
+        "Translate modulus as distance or argument as direction.",
+        "Sketch the geometric object mentally.",
+        "Apply any inequality or endpoint restriction."
+      ],
+      "student_goal": "Interpret modulus and argument statements geometrically.",
+      "title": "Loci describe geometry on Argand diagrams",
+      "topic": "complex_numbers",
+      "topics": [
+        "complex_numbers"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-complex-locus-argument-001-example-1",
+          "prompt": "Describe the locus $|z-(2+i)|=3$.",
+          "steps": [
+            "$z-(2+i)$ measures distance from the point $2+i$.",
+            "A constant distance of $3$ gives a circle."
+          ],
+          "answer": "Circle with centre $(2,1)$ and radius $3$",
+          "teaching_note": "Modulus loci are distance statements on the Argand diagram."
+        },
+        {
+          "id": "p3-complex-locus-argument-001-example-2",
+          "prompt": "Describe $\\arg(z-1)=\\frac{\\pi}{4}$.",
+          "steps": [
+            "$z-1$ measures direction from the point $1+0i$.",
+            "Argument $\\frac{\\pi}{4}$ is a ray at $45^\\circ$ from that point."
+          ],
+          "answer": "A half-line from $(1,0)$ at angle $\\frac{\\pi}{4}$",
+          "teaching_note": "Argument loci describe direction, not distance."
+        }
+      ]
+    },
+    {
+      "body": "Separate and integrate first, including a constant. Then substitute the given point into the integrated relation, not into the original differential equation.",
+      "common_mistakes": [
+        "Dropping the constant.",
+        "Using the initial condition before integrating.",
+        "Forgetting to substitute both coordinates."
+      ],
+      "common_trap": "Finding a general solution but never turning it into the requested particular solution.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Leave the constant visible until the initial condition has been applied.",
+      "explanation": "The constant belongs to the family of solutions after integration. Applying the condition too early removes the thing you need to determine.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on use an initial condition to find the constant in a differential-equation solution.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "differential_equations"
+        ]
+      },
+      "micro_steps": [
+        "Separate variables.",
+        "Integrate both sides and include a constant.",
+        "Substitute the initial x and y values.",
+        "Solve for the constant and write the particular solution."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Separate variables.",
+        "Integrate basic powers."
+      ],
+      "quick_check": {
+        "id": "p3-differential-initial-condition-001-qc",
+        "region_id": "differential-shrine",
+        "topic": "differential_equations",
+        "skill_target_id": "p3_differential_equations",
+        "title": "Use condition",
+        "prompt": "After integrating to get $y^2=x^2+C$ and using $y=3$ when $x=1$, find $C$.",
+        "answer": "$C=8$",
+        "explanation": "$9=1+C$, so $C=8$.",
+        "micro_skill": "Use an initial condition after integration.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "related_skill_targets": [
+        "p3_differential_equations"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-differential-initial-condition-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_differential_equations"
+      ],
+      "steps": [
+        "Separate variables.",
+        "Integrate both sides and include a constant.",
+        "Substitute the initial x and y values.",
+        "Solve for the constant and write the particular solution."
+      ],
+      "student_goal": "Use an initial condition to find the constant in a differential-equation solution.",
+      "title": "Initial conditions come after integration",
+      "topic": "differential_equations",
+      "topics": [
+        "differential_equations"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-differential-initial-condition-001-example-1",
+          "prompt": "Use $y^2=x^2+C$ with $y=3$ when $x=1$.",
+          "steps": [
+            "Substitute the condition into the integrated relation.",
+            "$3^2=1^2+C$.",
+            "So $9=1+C$."
+          ],
+          "answer": "$C=8$",
+          "teaching_note": "The condition belongs in the solution, not in the original differential equation."
+        },
+        {
+          "id": "p3-differential-initial-condition-001-example-2",
+          "prompt": "Solve $\\frac{dy}{dx}=2x$ with $y=5$ when $x=1$.",
+          "steps": [
+            "Integrate: $y=x^2+C$.",
+            "Substitute $x=1$, $y=5$: $5=1+C$."
+          ],
+          "answer": "$y=x^2+4$",
+          "teaching_note": "Find the constant before writing the particular solution."
+        }
+      ]
     },
     {
       "body": "For first-order differential equations, separate variables before integrating. Apply an initial condition only after you have the general solution with a constant.",
@@ -659,7 +1238,9 @@
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that ask for a particular solution from a first-order differential equation.",
         "recommended_before_question_ids": [],
-        "supports_topics": ["differential_equations"]
+        "supports_topics": [
+          "differential_equations"
+        ]
       },
       "lineage": {
         "generated_from": "manual"
@@ -676,16 +1257,32 @@
         "Be comfortable rearranging equations with fractions."
       ],
       "quick_check": {
+        "id": "p3-differential-separation-001-qc",
+        "region_id": "differential-shrine",
+        "topic": "differential_equations",
+        "skill_target_id": "p3_differential_equations",
+        "title": "Separate before integrating",
+        "prompt": "Separate $\\frac{dy}{dx}=\\frac{3x^2}{y}$.",
         "answer": "$y\\,dy=3x^2\\,dx$",
         "explanation": "Multiplying by $y\\,dx$ puts the $y$ terms with $dy$ and the $x$ terms with $dx$.",
-        "prompt": "Separate $\\frac{dy}{dx}=\\frac{3x^2}{y}$."
+        "micro_skill": "Separate variables in a first-order differential equation.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
       },
-      "region_ids": ["differential-shrine"],
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "related_skill_targets": [
+        "p3_differential_equations"
+      ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-differential-separation-001",
       "snippet_type": "method",
       "source": "teacher_authored",
-      "source_skill_target_ids": ["p3_differential_equations"],
+      "source_skill_target_ids": [
+        "p3_differential_equations"
+      ],
       "steps": [
         "Separate variables.",
         "Integrate both sides.",
@@ -694,7 +1291,1626 @@
       "student_goal": "Solve separable differential equations in the correct order.",
       "title": "Separate before integrating",
       "topic": "differential_equations",
-      "topics": ["differential_equations"]
+      "topics": [
+        "differential_equations"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-differential-separation-001-example-1",
+          "prompt": "Separate and integrate $\\frac{dy}{dx}=\\frac{2x}{y}$.",
+          "steps": [
+            "Separate variables: $y\\,dy=2x\\,dx$.",
+            "Integrate both sides: $\\frac12y^2=x^2+C$.",
+            "Multiply by $2$ if you want a cleaner relation."
+          ],
+          "answer": "$y^2=2x^2+C$",
+          "teaching_note": "Variables must be on the correct sides before integration."
+        },
+        {
+          "id": "p3-differential-separation-001-example-2",
+          "prompt": "A rate is proportional to $\\frac{x}{y}$. Write a simple differential equation.",
+          "steps": [
+            "Use $\\frac{dy}{dx}$ for the rate of change of $y$ with respect to $x$.",
+            "Use a constant $k$ for \"proportional to\"."
+          ],
+          "answer": "$\\frac{dy}{dx}=\\frac{kx}{y}$",
+          "teaching_note": "Forming the equation is often the first mark before solving starts."
+        }
+      ]
+    },
+    {
+      "body": "Before integrating, classify the shape of the expression. A hidden derivative suggests substitution, a product may suggest parts, and a rational expression may need algebra first.",
+      "common_mistakes": [
+        "Trying a method before simplifying the expression.",
+        "Changing variables in a definite integral but keeping the old limits.",
+        "Forgetting the constant in an indefinite integral."
+      ],
+      "common_trap": "Choosing a technique from habit instead of from the structure of the integrand.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
+      "explanation": "This snippet teaches method choice for integration without depending on a specific exam question.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "integration"
+        ]
+      },
+      "lineage": {
+        "generated_from": "manual"
+      },
+      "micro_steps": [
+        "Simplify the integrand if possible.",
+        "Look for a derivative-like factor.",
+        "Choose substitution, parts, partial fractions, or a direct rule.",
+        "Check limits and constants before the final answer."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know standard integration rules.",
+        "Recognize products, composites, and rational expressions."
+      ],
+      "quick_check": {
+        "id": "p3-integration-method-choice-001-qc",
+        "region_id": "integration-gardens",
+        "topic": "integration",
+        "skill_target_id": "p3_integration",
+        "title": "Let the integrand choose the method",
+        "prompt": "For $\\int 2x(x^2+1)^5\\,dx$, which method would you try first?",
+        "answer": "Substitution is a natural first choice.",
+        "explanation": "The factor $2x$ is the derivative of $x^2+1$, so the integrand has a composite structure.",
+        "micro_skill": "Choose substitution from a hidden derivative.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "related_skill_targets": [
+        "p3_integration"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-integration-method-choice-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_integration"
+      ],
+      "steps": [
+        "Classify the expression.",
+        "Choose the integration method.",
+        "Transform the setup fully before evaluating."
+      ],
+      "student_goal": "Choose an integration method from structure rather than guesswork.",
+      "title": "Let the integrand choose the method",
+      "topic": "integration",
+      "topics": [
+        "integration"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-integration-method-choice-001-example-1",
+          "prompt": "Integrate $\\int 2x(x^2+3)^4\\,dx$.",
+          "steps": [
+            "The inside derivative of $x^2+3$ is $2x$.",
+            "Let $u=x^2+3$, so $du=2x\\,dx$.",
+            "Integrate $\\int u^4\\,du$."
+          ],
+          "answer": "$\\frac{(x^2+3)^5}{5}+C$",
+          "teaching_note": "A visible inside derivative is the reverse-chain signal."
+        },
+        {
+          "id": "p3-integration-method-choice-001-example-2",
+          "prompt": "Set up $\\int_0^1 2x(x^2+1)^3\\,dx$ using $u=x^2+1$.",
+          "steps": [
+            "$du=2x\\,dx$.",
+            "When $x=0$, $u=1$; when $x=1$, $u=2$.",
+            "The integral becomes $\\int_1^2u^3\\,du$."
+          ],
+          "answer": "$\\int_1^2u^3\\,du$",
+          "teaching_note": "For definite substitution, change the limits or change back to $x$ before evaluating."
+        }
+      ]
+    },
+    {
+      "body": "A derivative-like factor points to substitution. A product where one part simplifies when differentiated points to integration by parts. A rational expression may need partial fractions first.",
+      "common_mistakes": [
+        "Using parts when substitution is direct.",
+        "Changing variables but not limits.",
+        "Integrating rational functions before decomposing."
+      ],
+      "common_trap": "Choosing a favourite method instead of the one the integrand suggests.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the method cue beside the integral before transforming it.",
+      "explanation": "The first mark is often method choice. Name the structure before doing calculations so limits, constants, and algebra changes stay controlled.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on pick an integration method from the integrand structure.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "integration"
+        ]
+      },
+      "micro_steps": [
+        "Look for a hidden derivative.",
+        "If a product remains, decide whether parts reduces it.",
+        "For rational functions, check partial fractions.",
+        "Carry constants and limits through the chosen method."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know substitution and integration by parts formulae.",
+        "Recognize rational expressions."
+      ],
+      "quick_check": {
+        "id": "p3-integration-parts-substitution-001-qc",
+        "region_id": "integration-gardens",
+        "topic": "integration",
+        "skill_target_id": "p3_integration",
+        "title": "Parts cue",
+        "prompt": "For $\\int x e^x\\,dx$, which method is natural?",
+        "answer": "Integration by parts.",
+        "explanation": "It is a product, and differentiating $x$ simplifies it.",
+        "micro_skill": "Choose integration by parts from a product.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "related_skill_targets": [
+        "p3_integration"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-integration-parts-substitution-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_integration"
+      ],
+      "steps": [
+        "Look for a hidden derivative.",
+        "If a product remains, decide whether parts reduces it.",
+        "For rational functions, check partial fractions.",
+        "Carry constants and limits through the chosen method."
+      ],
+      "student_goal": "Pick an integration method from the integrand structure.",
+      "title": "Choose substitution, parts, or algebra first",
+      "topic": "integration",
+      "topics": [
+        "integration"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-integration-parts-substitution-001-example-1",
+          "prompt": "Integrate $\\int x e^x\\,dx$.",
+          "steps": [
+            "Use parts with $u=x$ and $dv=e^x\\,dx$.",
+            "Then $du=dx$ and $v=e^x$.",
+            "$\\int u\\,dv=uv-\\int v\\,du$."
+          ],
+          "answer": "$xe^x-e^x+C$",
+          "teaching_note": "Choose parts when differentiating one factor makes the product simpler."
+        },
+        {
+          "id": "p3-integration-parts-substitution-001-example-2",
+          "prompt": "Integrate $\\int \\frac{3}{(x+1)(x+2)}\\,dx$.",
+          "steps": [
+            "First decompose: $\\frac{3}{(x+1)(x+2)}=\\frac{3}{x+1}-\\frac{3}{x+2}$.",
+            "Integrate each linear-denominator term."
+          ],
+          "answer": "$3\\ln|x+1|-3\\ln|x+2|+C$",
+          "teaching_note": "Partial fractions are algebra before integration."
+        }
+      ]
+    },
+    {
+      "body": "In exponential equations, try to write both sides with the same base before taking logs. If common bases are not available, take logs on both sides and isolate the exponent carefully.",
+      "common_mistakes": [
+        "Taking logs before noticing a common base.",
+        "Dropping brackets around an exponent such as $2x-1$.",
+        "Dividing by the wrong log term after taking logs."
+      ],
+      "common_trap": "Taking logs too early and losing brackets around the whole exponent.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
+      "explanation": "Exponential equations are easiest when the bases match. If they do not, take logs of both complete sides and keep the whole exponent bracketed until the last rearrangement.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that mix exponential expressions and logarithmic rearrangement.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Look for a shared base first.",
+        "If there is no shared base, apply logs to both complete sides.",
+        "Move the exponent down only after logging.",
+        "Keep exponent brackets until the final rearrangement."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know index laws.",
+        "Be able to solve simple linear equations."
+      ],
+      "quick_check": {
+        "id": "p3-exp-equations-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Same base first",
+        "prompt": "Solve $2^{x-1}=8$.",
+        "answer": "$x=4$",
+        "explanation": "$8=2^3$, so $2^{x-1}=2^3$. Match exponents to get $x-1=3$.",
+        "micro_skill": "Solve an exponential equation by matching bases.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-exp-equations-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "steps": [
+        "Check whether both sides can be written with the same base.",
+        "If not, apply logs to both sides.",
+        "Divide by the log coefficient after expanding brackets."
+      ],
+      "student_goal": "Choose an efficient route for exponential equations.",
+      "title": "Same base first",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-exp-equations-001-example-1",
+        "prompt": "Solve $3^{x+1}=27$.",
+        "steps": [
+          "Rewrite $27$ as $3^3$.",
+          "Since the bases match, equate exponents: $x+1=3$.",
+          "Solve the linear equation."
+        ],
+        "answer": "$x=2$",
+        "teaching_note": "Same bases avoid unnecessary logarithms."
+      }
+    },
+    {
+      "body": "When an unknown is in an exponent and the bases cannot be matched cleanly, take natural logs of both complete sides. The exponent then becomes a multiplier.",
+      "common_mistakes": [
+        "Taking ln of only part of a side.",
+        "Losing brackets around $2x-1$.",
+        "Rounding before the final answer."
+      ],
+      "common_trap": "Writing $\\ln(a+b)$ as separate logs while trying to solve an exponential equation.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
+      "explanation": "$\\ln$ and $e$ undo each other, but only when applied to a whole expression. Keep exponent brackets until the final linear rearrangement.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on use $\\ln$ and $e$ as inverse operations when bases do not match.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Check for a common base first.",
+        "If none is useful, take ln of both whole sides.",
+        "Move the exponent down as a bracketed multiplier.",
+        "Solve the resulting equation."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Understand inverse functions.",
+        "Use index laws."
+      ],
+      "quick_check": {
+        "id": "p3-ln-e-inverse-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Natural log inverse",
+        "prompt": "Solve $e^{2x}=7$ exactly.",
+        "answer": "$x=\\frac12\\ln7$",
+        "explanation": "Taking ln of both sides gives $2x=\\ln7$.",
+        "micro_skill": "Use ln to solve a simple exponential equation.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-ln-e-inverse-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "steps": [
+        "Check for a common base first.",
+        "If none is useful, take ln of both whole sides.",
+        "Move the exponent down as a bracketed multiplier.",
+        "Solve the resulting equation."
+      ],
+      "student_goal": "Use $\\ln$ and $e$ as inverse operations when bases do not match.",
+      "title": "Use ln to release an exponent",
+      "topic": "logarithms_and_exponentials",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-ln-e-inverse-001-example-1",
+        "prompt": "Solve $3e^{2x}=12$.",
+        "steps": [
+          "Divide by $3$: $e^{2x}=4$.",
+          "Take $\\ln$ of both sides: $2x=\\ln4$.",
+          "Divide by $2$."
+        ],
+        "answer": "$x=\\frac12\\ln4$, or $\\ln2$",
+        "teaching_note": "$\\ln$ releases the exponent only after the exponential term is isolated."
+      }
+    },
+    {
+      "body": "Every logarithm needs a positive argument. After solving, substitute each answer into every original log argument and reject any value that makes an argument $0$ or negative.",
+      "common_mistakes": [
+        "Checking the transformed equation instead of the original log arguments.",
+        "Keeping an answer that makes one log argument negative.",
+        "Assuming a squared equation cannot create an invalid answer."
+      ],
+      "common_trap": "Solving the algebra correctly but keeping a value outside the log domain.",
+      "estimated_time_minutes": 3,
+      "exam_move": "Do the domain check at the end using the original equation, not a rearranged version.",
+      "explanation": "Solving can create answers that look algebraically neat but break the original logarithms. The original log arguments are the final gate: every one must stay positive.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian attempts that involve logarithmic equations with more than one possible solution.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Solve the equation normally.",
+        "Write each original log argument as an inequality greater than zero.",
+        "Test each answer against every inequality.",
+        "Reject values that fail any domain check."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Understand that logarithm arguments must be positive.",
+        "Solve simple linear inequalities."
+      ],
+      "quick_check": {
+        "id": "p3-log-domain-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Domain checks save marks",
+        "prompt": "What condition must $x$ satisfy for $\\log(x-2)$ to be defined?",
+        "answer": "$x>2$",
+        "explanation": "The argument $x-2$ must be positive, so $x-2>0$ and therefore $x>2$.",
+        "micro_skill": "State the domain restriction for a logarithm.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-log-domain-001",
+      "snippet_type": "mistake_repair",
+      "source": "teacher_authored",
+      "steps": [
+        "Solve the transformed equation.",
+        "Return to the original log arguments.",
+        "Reject answers that make any argument non-positive."
+      ],
+      "student_goal": "Reject invalid logarithmic solutions confidently.",
+      "title": "Domain checks save marks",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-log-domain-001-example-1",
+        "prompt": "Solve $\\ln(x-1)=\\ln(3-x)$, checking the domain.",
+        "steps": [
+          "The domain needs $x>1$ and $x<3$.",
+          "Equal logs give $x-1=3-x$.",
+          "So $2x=4$, giving $x=2$."
+        ],
+        "answer": "$x=2$",
+        "teaching_note": "The algebraic answer is accepted only because it keeps both log arguments positive."
+      }
+    },
+    {
+      "body": "A logarithm answers the question: what power is needed? If $a^x=b$, then $\\log_a b=x$. Keep the base, power, and result in the same triangle before rearranging.",
+      "common_mistakes": [
+        "Moving the base to the wrong side when rewriting a log equation.",
+        "Forgetting that the log value is the exponent.",
+        "Changing the base while converting forms."
+      ],
+      "common_trap": "Do not move between forms unless the base stays attached to the log.",
+      "estimated_time_minutes": 3,
+      "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
+      "explanation": "A logarithm is another way to name an exponent. Keep asking, \"what power of this base gives that argument?\" and the rearrangement becomes a direct rewrite, not a trick.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that ask students to isolate an unknown inside a logarithm.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Circle the log base.",
+        "Name the log value as the exponent.",
+        "Rewrite as base to that exponent equals the argument.",
+        "Check that the base did not change."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know index notation.",
+        "Recognize base, exponent, and result in $a^x=b$."
+      ],
+      "quick_check": {
+        "id": "p3-log-exp-convert-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Switch forms before solving",
+        "prompt": "Rewrite $\\log_2 32=5$ in exponential form.",
+        "answer": "$2^5=32$",
+        "explanation": "The base is $2$, the log value is the exponent $5$, and the argument is $32$.",
+        "micro_skill": "Convert between logarithmic and exponential form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "published"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "published",
+      "snippet_id": "p3-log-exp-convert-001",
+      "snippet_type": "concept",
+      "source": "teacher_authored",
+      "steps": [
+        "Identify the base of the logarithm.",
+        "Write log statement equals exponent.",
+        "Rewrite as base raised to exponent equals argument."
+      ],
+      "student_goal": "Convert fluently between logarithmic and exponential form.",
+      "title": "Switch forms before solving",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-log-exp-convert-001-example-1",
+        "prompt": "Rewrite $\\log_3 81=4$ in exponential form.",
+        "steps": [
+          "The base is $3$.",
+          "The log value $4$ is the exponent.",
+          "The argument is $81$."
+        ],
+        "answer": "$3^4=81$",
+        "teaching_note": "Keep base, exponent, and result in their roles."
+      }
+    },
+    {
+      "body": "Logs turn products into sums and powers into multipliers. They do not turn $\\ln(a+b)$ into $\\ln a+\\ln b$, and taking logs of both sides must apply to the whole side.",
+      "common_mistakes": [
+        "Splitting $\\ln(a+b)$.",
+        "Logging only one term on a side.",
+        "Dropping brackets around a whole exponent."
+      ],
+      "common_trap": "Using a product law on an expression that is actually a sum.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write one legal log law at a time and leave sums inside logs untouched.",
+      "explanation": "Most false log solutions come from applying a real law to the wrong structure. Before using a law, name whether the inside is a product, quotient, power, or sum.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on avoid illegal logarithm moves in equations.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Mark the operation inside the logarithm.",
+        "Use laws only for products, quotients, and powers.",
+        "Keep a whole side bracketed when taking logs.",
+        "Check domains after solving."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know product, quotient, and power laws for logs."
+      ],
+      "quick_check": {
+        "id": "p3-log-invalid-operations-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Illegal split",
+        "prompt": "Is $\\ln(x+3)=\\ln x+\\ln3$ a valid log law?",
+        "answer": "No.",
+        "explanation": "The product law works for $\\ln(3x)$, not for a sum inside the logarithm.",
+        "micro_skill": "Spot an invalid logarithm split.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-log-invalid-operations-001",
+      "snippet_type": "mistake_repair",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "steps": [
+        "Mark the operation inside the logarithm.",
+        "Use laws only for products, quotients, and powers.",
+        "Keep a whole side bracketed when taking logs.",
+        "Check domains after solving."
+      ],
+      "student_goal": "Avoid illegal logarithm moves in equations.",
+      "title": "Log laws do not split sums",
+      "topic": "logarithms_and_exponentials",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-log-invalid-operations-001-example-1",
+        "prompt": "Explain why $\\ln(x+5)$ is not $\\ln x+\\ln5$.",
+        "steps": [
+          "The product law says $\\ln(5x)=\\ln5+\\ln x$.",
+          "$x+5$ is a sum, not a product."
+        ],
+        "answer": "No valid log law splits $\\ln(x+5)$ this way.",
+        "teaching_note": "Logs split products and quotients, not addition inside the argument."
+      }
+    },
+    {
+      "body": "Use log laws only on products, quotients, and powers. $\\log(ab)=\\log a+\\log b$ and $\\log(a^n)=n\\log a$, but there is no matching rule for $\\log(a+b)$.",
+      "common_mistakes": [
+        "Splitting a sum inside a logarithm.",
+        "Forgetting brackets when a whole expression is raised to a power.",
+        "Combining logs before checking that the bases match."
+      ],
+      "common_trap": "Treating $\\log(a+b)$ as $\\log a+\\log b$ creates false equations.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+      "explanation": "Log laws work because multiplication inside a log becomes addition outside it. They do not turn addition inside the log into anything simpler, so check the structure before using a law.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions where combining logs is needed before solving.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Mark products, quotients, and powers.",
+        "Apply only one log law at a time.",
+        "Leave sums inside logs untouched.",
+        "Check all logs have the same base before combining."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know the product, quotient, and power laws of logarithms.",
+        "Be comfortable with brackets in algebraic expressions."
+      ],
+      "quick_check": {
+        "id": "p3-log-laws-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Log laws have boundaries",
+        "prompt": "Simplify $\\ln x+\\ln5$ into a single logarithm.",
+        "answer": "$\\ln(5x)$",
+        "explanation": "The product law says $\\ln a+\\ln b=\\ln(ab)$, so $\\ln x+\\ln5=\\ln(5x)$.",
+        "micro_skill": "Combine logarithms only when the law is valid.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "published"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "published",
+      "snippet_id": "p3-log-laws-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "steps": [
+        "Look for multiplication, division, or powers inside logs.",
+        "Apply one law at a time.",
+        "Check that addition inside a log has not been split."
+      ],
+      "student_goal": "Use log laws without inventing invalid addition rules.",
+      "title": "Log laws have boundaries",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "topic": "logarithms_and_exponentials",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-log-laws-001-example-1",
+        "prompt": "Simplify $\\ln x+\\ln5$ as a single logarithm.",
+        "steps": [
+          "Use the product law: $\\ln a+\\ln b=\\ln(ab)$.",
+          "So $\\ln x+\\ln5=\\ln(5x)$."
+        ],
+        "answer": "$\\ln(5x)$",
+        "teaching_note": "Adding logs means multiplying the inputs, not adding them."
+      }
+    },
+    {
+      "body": "When a relationship has powers, logs can turn it into straight-line form. For $y=Ax^n$, taking logs gives $\\ln y=\\ln A+n\\ln x$, so a graph of $\\ln y$ against $\\ln x$ has gradient $n$.",
+      "common_mistakes": [
+        "Taking logs of separate added terms.",
+        "Plotting the wrong transformed variables.",
+        "Reading the intercept as $A$ instead of $\\ln A$."
+      ],
+      "common_trap": "Forgetting that the intercept may need exponentiating to recover the original constant.",
+      "estimated_time_minutes": 4,
+      "exam_move": "After linearising, state what the gradient and intercept represent in the original model.",
+      "explanation": "The log law for powers is what creates the straight-line structure. The transformed variables decide what the gradient and intercept mean.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on connect log transformations to gradient and intercept.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Identify the original relationship.",
+        "Take logs of the whole equation.",
+        "Move powers down as multipliers.",
+        "Match the result to $Y=mX+c$."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know log power laws.",
+        "Recognize straight-line form."
+      ],
+      "quick_check": {
+        "id": "p3-log-linearisation-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_logarithms_and_exponentials",
+        "title": "Linearising powers",
+        "prompt": "If $y=Ax^n$, what is the gradient of a graph of $\\ln y$ against $\\ln x$?",
+        "answer": "$n$",
+        "explanation": "$\\ln y=\\ln A+n\\ln x$, so the coefficient of $\\ln x$ is the gradient.",
+        "micro_skill": "Identify gradient after log linearisation.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-log-linearisation-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "steps": [
+        "Identify the original relationship.",
+        "Take logs of the whole equation.",
+        "Move powers down as multipliers.",
+        "Match the result to $Y=mX+c$."
+      ],
+      "student_goal": "Connect log transformations to gradient and intercept.",
+      "title": "Linearisation reveals a straight line",
+      "topic": "logarithms_and_exponentials",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-log-linearisation-001-example-1",
+          "prompt": "Linearise $y=2x^3$.",
+          "steps": [
+            "Take logs of both sides: $\\ln y=\\ln(2x^3)$.",
+            "Use log laws: $\\ln y=\\ln2+3\\ln x$.",
+            "Compare with $Y=c+mX$."
+          ],
+          "answer": "Plot $\\ln y$ against $\\ln x$; gradient $3$, intercept $\\ln2$.",
+          "teaching_note": "For $y=kx^n$, the power becomes the straight-line gradient."
+        },
+        {
+          "id": "p3-log-linearisation-001-example-2",
+          "prompt": "Linearise $y=4(1.5)^x$.",
+          "steps": [
+            "Take logs: $\\ln y=\\ln4+\\ln((1.5)^x)$.",
+            "Move the power down: $\\ln y=\\ln4+x\\ln1.5$.",
+            "Compare with $Y=c+mX$ using $X=x$."
+          ],
+          "answer": "Plot $\\ln y$ against $x$; gradient $\\ln1.5$, intercept $\\ln4$.",
+          "teaching_note": "For $y=ka^x$, plot $\\ln y$ against $x$, not against $\\ln x$."
+        }
+      ]
+    },
+    {
+      "body": "In iteration questions, the recurrence is the method. Substitute the current value into the stated formula, keep more figures than the final answer needs, and only round when asked.",
+      "common_mistakes": [
+        "Using $x_n$ and $x_{n+1}$ interchangeably.",
+        "Rounding each line too heavily.",
+        "Changing the rearranged formula without checking convergence."
+      ],
+      "common_trap": "Reporting a decimal without showing the iteration rule that produced it.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Make each iteration line auditable from the previous one.",
+      "explanation": "Iteration marks depend on reproducible steps. A rounded intermediate value can move the final answer, so preserve accuracy until the end.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on apply $x_{n+1}=g(x_n)$ with enough accuracy and clear rounding.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "numerical_methods"
+        ]
+      },
+      "micro_steps": [
+        "Write the iteration formula.",
+        "Substitute the current approximation.",
+        "Record the next approximation with extra figures.",
+        "Round only for the final stated accuracy."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Evaluate functions on a calculator.",
+        "Understand recurrence notation."
+      ],
+      "quick_check": {
+        "id": "p3-iteration-formula-discipline-001-qc",
+        "region_id": "numerical-mines",
+        "topic": "numerical_methods",
+        "skill_target_id": "p3_numerical_methods",
+        "title": "One iteration",
+        "prompt": "For $x_{n+1}=\\sqrt{2+x_n}$ and $x_0=2$, find $x_1$.",
+        "answer": "$2$",
+        "explanation": "$x_1=\\sqrt{2+2}=2$.",
+        "micro_skill": "Apply one iteration step.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "related_skill_targets": [
+        "p3_numerical_methods"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-iteration-formula-discipline-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_numerical_methods"
+      ],
+      "steps": [
+        "Write the iteration formula.",
+        "Substitute the current approximation.",
+        "Record the next approximation with extra figures.",
+        "Round only for the final stated accuracy."
+      ],
+      "student_goal": "Apply $x_{n+1}=g(x_n)$ with enough accuracy and clear rounding.",
+      "title": "Use the stated iteration exactly",
+      "topic": "numerical_methods",
+      "topics": [
+        "numerical_methods"
+      ],
+      "worked_example": {
+        "id": "p3-iteration-formula-discipline-001-example-1",
+        "prompt": "Use $x_{n+1}=\\sqrt{3+x_n}$ with $x_0=1$ to find $x_1$ and $x_2$.",
+        "steps": [
+          "$x_1=\\sqrt{3+1}=2$.",
+          "$x_2=\\sqrt{3+2}=\\sqrt5$.",
+          "Keep extra figures: $x_2\\approx2.2360679$."
+        ],
+        "answer": "$x_1=2$, $x_2=\\sqrt5\\approx2.2360679$",
+        "teaching_note": "Round the final answer only when the requested accuracy is known."
+      }
+    },
+    {
+      "body": "Numerical methods earn marks through visible process. Show the sign-change or iteration rule, keep enough working accuracy, and round only at the requested final step.",
+      "common_mistakes": [
+        "Rounding every iteration to too few figures.",
+        "Using a different iteration formula from the one stated.",
+        "Claiming a root in an interval without showing the function changes sign."
+      ],
+      "common_trap": "Treating the final decimal as the whole method and leaving out the evidence that justifies it.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the interval check or iteration table clearly enough that each approximation can be audited.",
+      "explanation": "This manual snippet covers the process marks common to iteration and sign-change questions.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving root intervals, iteration, or decimal-place accuracy.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "numerical_methods"
+        ]
+      },
+      "lineage": {
+        "generated_from": "manual"
+      },
+      "micro_steps": [
+        "State the equation or iteration formula being used.",
+        "For intervals, evaluate both endpoints.",
+        "For iteration, keep extra figures in working.",
+        "Round only when the requested accuracy is reached."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Evaluate functions accurately.",
+        "Understand what a sign change means for a root."
+      ],
+      "quick_check": {
+        "id": "p3-numerical-method-evidence-001-qc",
+        "region_id": "numerical-mines",
+        "topic": "numerical_methods",
+        "skill_target_id": "p3_numerical_methods",
+        "title": "Approximation needs evidence",
+        "prompt": "If $f(1)=-0.4$ and $f(2)=1.1$, what does this suggest about a root?",
+        "answer": "There is evidence for a root between $1$ and $2$.",
+        "explanation": "The values have opposite signs, so the curve crosses the axis somewhere in the interval.",
+        "micro_skill": "Interpret a sign-change interval.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "related_skill_targets": [
+        "p3_numerical_methods"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-numerical-method-evidence-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_numerical_methods"
+      ],
+      "steps": [
+        "Show the method.",
+        "Carry sufficient accuracy.",
+        "State the final rounded value with justification."
+      ],
+      "student_goal": "Make numerical-method working visible enough to earn method marks.",
+      "title": "Approximation needs evidence",
+      "topic": "numerical_methods",
+      "topics": [
+        "numerical_methods"
+      ],
+      "worked_example": {
+        "id": "p3-numerical-method-evidence-001-example-1",
+        "prompt": "If $f(1)=-2$ and $f(2)=3$, explain the root evidence.",
+        "steps": [
+          "The function values have opposite signs.",
+          "For a continuous function, a sign change means a root lies between the two inputs."
+        ],
+        "answer": "There is a root in $1<x<2$.",
+        "teaching_note": "Show both endpoint values; the interval claim needs evidence."
+      }
+    },
+    {
+      "body": "Do not expand every identity you know. Look at the target: one trig function, doubled angle, squared term, or product. Choose the identity that reduces the number of different pieces.",
+      "common_mistakes": [
+        "Using a double-angle formula when a Pythagorean identity is shorter.",
+        "Expanding before deciding the target.",
+        "Cancelling a trig factor that may be zero."
+      ],
+      "common_trap": "Changing form without making the equation easier to solve.",
+      "estimated_time_minutes": 4,
+      "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+      "explanation": "Identity work is controlled simplification. The best identity is the one that makes the next equation easier, not the one that looks most familiar.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on select a trig identity because it moves the expression toward the needed form.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "trigonometry"
+        ]
+      },
+      "micro_steps": [
+        "Identify the target form or equation structure.",
+        "Count the different trig functions present.",
+        "Choose an identity that reduces that count or changes the angle as needed.",
+        "Check restrictions before cancelling."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know Pythagorean and double-angle identities."
+      ],
+      "quick_check": {
+        "id": "p3-trig-identity-selection-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trigonometry",
+        "title": "Double-angle choice",
+        "prompt": "Which identity rewrites $1-\\cos2x$ using $\\sin x$?",
+        "answer": "$1-\\cos2x=2\\sin^2x$",
+        "explanation": "This double-angle form changes the doubled angle into a square of sine.",
+        "micro_skill": "Choose a double-angle identity for the target form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trigonometry"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-trig-identity-selection-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "steps": [
+        "Identify the target form or equation structure.",
+        "Count the different trig functions present.",
+        "Choose an identity that reduces that count or changes the angle as needed.",
+        "Check restrictions before cancelling."
+      ],
+      "student_goal": "Select a trig identity because it moves the expression toward the needed form.",
+      "title": "Choose the identity that matches the target",
+      "topic": "trigonometry",
+      "topics": [
+        "trigonometry"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-trig-identity-selection-001-example-1",
+          "prompt": "Rewrite $1-\\cos2x$ using $\\sin x$.",
+          "steps": [
+            "Use $\\cos2x=1-2\\sin^2x$.",
+            "Then $1-\\cos2x=1-(1-2\\sin^2x)$."
+          ],
+          "answer": "$2\\sin^2x$",
+          "teaching_note": "Choose the identity that moves directly toward the requested function."
+        },
+        {
+          "id": "p3-trig-identity-selection-001-example-2",
+          "prompt": "Simplify $\\frac{1-\\cos2x}{\\sin x}$, stating the restriction.",
+          "steps": [
+            "Use $1-\\cos2x=2\\sin^2x$.",
+            "Then $\\frac{2\\sin^2x}{\\sin x}=2\\sin x$.",
+            "Cancelling needs $\\sin x\\ne0$."
+          ],
+          "answer": "$2\\sin x$, for $\\sin x\\ne0$",
+          "teaching_note": "Restrictions matter whenever a trig expression is cancelled."
+        }
+      ]
+    },
+    {
+      "body": "When solving trigonometric equations, solve the basic angle first, then use the interval to list every valid angle. The range is part of the answer, not an afterthought.",
+      "common_mistakes": [
+        "Giving only the calculator angle.",
+        "Working in degrees when the question requires radians.",
+        "Forgetting to check whether transformed angles still lie in the interval."
+      ],
+      "common_trap": "Giving one calculator angle and missing the second or third solution in the interval.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
+      "explanation": "A trig equation is not finished when the calculator gives one angle. Use the sign and interval to collect every angle that behaves the same way.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that require all trig solutions in a stated range.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "trigonometry"
+        ]
+      },
+      "micro_steps": [
+        "Find the reference angle.",
+        "Decide which quadrants fit the sign.",
+        "List all angles in the interval.",
+        "Substitute any transformed angle back into the original condition."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know quadrant signs for sine, cosine, and tangent.",
+        "Read interval notation accurately."
+      ],
+      "quick_check": {
+        "id": "p3-trig-interval-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trigonometry",
+        "title": "The interval controls the answer",
+        "prompt": "Solve $\\sin x=\\frac12$ for $0^\\circ\\le x\\le180^\\circ$.",
+        "answer": "$30^\\circ$ and $150^\\circ$",
+        "explanation": "Sine is positive in quadrants I and II, and the reference angle for $\\frac12$ is $30^\\circ$.",
+        "micro_skill": "List all trig solutions in a stated interval.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "published"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trigonometry"
+      ],
+      "review_status": "published",
+      "snippet_id": "p3-trig-interval-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "steps": [
+        "Solve for the reference angle.",
+        "Use signs or a sketch to find matching quadrants.",
+        "Keep only angles inside the stated interval."
+      ],
+      "student_goal": "Find all trig equation solutions in a restricted interval.",
+      "title": "The interval controls the answer",
+      "topics": [
+        "trigonometry"
+      ],
+      "topic": "trigonometry",
+      "source_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "worked_example": {
+        "id": "p3-trig-interval-001-example-1",
+        "prompt": "Solve $\\sin x=\\frac12$ for $0\\le x<2\\pi$.",
+        "steps": [
+          "The reference angle is $\\frac{\\pi}{6}$.",
+          "Sine is positive in quadrants I and II.",
+          "List the angles in the interval."
+        ],
+        "answer": "$x=\\frac{\\pi}{6}$ or $x=\\frac{5\\pi}{6}$",
+        "teaching_note": "The interval decides how many answers belong in the final line."
+      }
+    },
+    {
+      "body": "If a trig factor could be zero, dividing by it can erase valid solutions. Factor equations and use the zero-product rule before deciding whether division is safe.",
+      "common_mistakes": [
+        "Dividing by $\\sin x$ without considering $\\sin x=0$.",
+        "Squaring both sides and keeping extra values.",
+        "Forgetting the interval after finding cases."
+      ],
+      "common_trap": "Cancelling a trig factor that was one of the answers.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use product form to keep zero-factor solutions visible.",
+      "explanation": "Squaring, dividing, or rearranging can change the solution set. Guardian-level trig often tests whether you keep all cases and then check the interval.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on preserve trig solutions when rearranging equations.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "trigonometry"
+        ]
+      },
+      "micro_steps": [
+        "Factor the equation if possible.",
+        "Set each factor equal to zero.",
+        "Solve each trig equation over the interval.",
+        "Substitute back if the rearrangement could add or lose solutions."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know the zero-product rule.",
+        "Solve basic trig equations over an interval."
+      ],
+      "quick_check": {
+        "id": "p3-trig-lost-solutions-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trigonometry",
+        "title": "Lost solution trap",
+        "prompt": "In $\\sin x(2\\cos x-1)=0$, what case is lost if you divide by $\\sin x$?",
+        "answer": "$\\sin x=0$",
+        "explanation": "That factor could be zero, so it must be solved as its own case.",
+        "micro_skill": "Spot a trig division that would lose solutions.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trigonometry"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-trig-lost-solutions-001",
+      "snippet_type": "mistake_repair",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "steps": [
+        "Factor the equation if possible.",
+        "Set each factor equal to zero.",
+        "Solve each trig equation over the interval.",
+        "Substitute back if the rearrangement could add or lose solutions."
+      ],
+      "student_goal": "Preserve trig solutions when rearranging equations.",
+      "title": "Do not divide away possible solutions",
+      "topic": "trigonometry",
+      "topics": [
+        "trigonometry"
+      ],
+      "worked_example": {
+        "id": "p3-trig-lost-solutions-001-example-1",
+        "prompt": "Solve $\\sin x(2\\cos x-1)=0$ for $0\\le x<2\\pi$.",
+        "steps": [
+          "Use the zero-product rule: $\\sin x=0$ or $2\\cos x-1=0$.",
+          "$\\sin x=0$ gives $x=0,\\pi$.",
+          "$\\cos x=\\frac12$ gives $x=\\frac{\\pi}{3},\\frac{5\\pi}{3}$."
+        ],
+        "answer": "$x=0,\\frac{\\pi}{3},\\pi,\\frac{5\\pi}{3}$",
+        "teaching_note": "Dividing by $\\sin x$ would lose the $\\sin x=0$ solutions."
+      }
+    },
+    {
+      "body": "The calculator gives a reference route, not the whole answer. Use the sign of the trig function and the stated interval to list every valid angle.",
+      "common_mistakes": [
+        "Using degrees when radians are required.",
+        "Missing endpoint rules.",
+        "Keeping an angle outside the interval."
+      ],
+      "common_trap": "Treating the principal calculator value as the final answer.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use a sketch or quadrant signs before writing the final solution set.",
+      "explanation": "P3 trig equations usually expect all solutions in the interval. A quick quadrant check prevents missing the second angle or including one outside the range.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on use signs and intervals to list every trig solution.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "trigonometry"
+        ]
+      },
+      "micro_steps": [
+        "Find the reference angle.",
+        "Mark where the trig function has the required sign.",
+        "Generate all interval angles.",
+        "Check endpoints carefully."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know quadrant signs.",
+        "Read interval notation."
+      ],
+      "quick_check": {
+        "id": "p3-trig-quadrant-discipline-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trigonometry",
+        "title": "Quadrant check",
+        "prompt": "For $0\\le x<2\\pi$, where is $\\cos x=-\\frac12$?",
+        "answer": "$x=\\frac{2\\pi}{3},\\frac{4\\pi}{3}$",
+        "explanation": "Cosine is negative in quadrants II and III, with reference angle $\\pi/3$.",
+        "micro_skill": "Use quadrants to list interval solutions.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trigonometry"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-trig-quadrant-discipline-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "steps": [
+        "Find the reference angle.",
+        "Mark where the trig function has the required sign.",
+        "Generate all interval angles.",
+        "Check endpoints carefully."
+      ],
+      "student_goal": "Use signs and intervals to list every trig solution.",
+      "title": "Quadrants turn one angle into all answers",
+      "topic": "trigonometry",
+      "topics": [
+        "trigonometry"
+      ],
+      "worked_example": {
+        "id": "p3-trig-quadrant-discipline-001-example-1",
+        "prompt": "Solve $\\cos x=-\\frac12$ for $0\\le x<2\\pi$.",
+        "steps": [
+          "The reference angle is $\\frac{\\pi}{3}$.",
+          "Cosine is negative in quadrants II and III.",
+          "Write the two interval angles."
+        ],
+        "answer": "$x=\\frac{2\\pi}{3}$ or $x=\\frac{4\\pi}{3}$",
+        "teaching_note": "The calculator angle is only the start; the quadrant gives the full answer set."
+      }
+    },
+    {
+      "body": "The reciprocal functions connect back to sine, cosine, and tangent. R-form combines $a\\sin x+b\\cos x$ into one wave with amplitude $R=\\sqrt{a^2+b^2}$.",
+      "common_mistakes": [
+        "Writing sec as $1/\\sin x$.",
+        "Forgetting that $R$ is always positive.",
+        "Matching sine and cosine coefficients to the wrong expanded form."
+      ],
+      "common_trap": "Finding $R$ but not connecting it to maximum or minimum values.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use R-form when one combined trig wave is easier than two separate terms.",
+      "explanation": "Reciprocal rewrites reduce unfamiliar functions. R-form is useful when a sum of sine and cosine needs a maximum, minimum, or a single equation to solve.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on use sec, cosec, cot, and r-form as deliberate rewrites.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "trigonometry"
+        ]
+      },
+      "micro_steps": [
+        "Rewrite sec, cosec, or cot if it helps.",
+        "For $a\\sin x+b\\cos x$, calculate $R$.",
+        "Match coefficients with $R\\sin(x+\\alpha)$ or $R\\cos(x-\\alpha)$.",
+        "Use the single-wave form for range or solving."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know reciprocal trig definitions.",
+        "Expand compound-angle formulae."
+      ],
+      "quick_check": {
+        "id": "p3-trig-reciprocal-rform-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trigonometry",
+        "title": "Find R",
+        "prompt": "Find $R$ for $3\\sin x+4\\cos x$.",
+        "answer": "$R=5$",
+        "explanation": "$R=\\sqrt{3^2+4^2}=5$.",
+        "micro_skill": "Find the amplitude in R-form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trigonometry"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-trig-reciprocal-rform-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "steps": [
+        "Rewrite sec, cosec, or cot if it helps.",
+        "For $a\\sin x+b\\cos x$, calculate $R$.",
+        "Match coefficients with $R\\sin(x+\\alpha)$ or $R\\cos(x-\\alpha)$.",
+        "Use the single-wave form for range or solving."
+      ],
+      "student_goal": "Use sec, cosec, cot, and R-form as deliberate rewrites.",
+      "title": "Reciprocals and R-form change the shape",
+      "topic": "trigonometry",
+      "topics": [
+        "trigonometry"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-trig-reciprocal-rform-001-example-1",
+          "prompt": "Rewrite $\\cot x$ using sine and cosine.",
+          "steps": [
+            "$\\cot x$ is the reciprocal of $\\tan x$.",
+            "Since $\\tan x=\\frac{\\sin x}{\\cos x}$, invert it."
+          ],
+          "answer": "$\\cot x=\\frac{\\cos x}{\\sin x}$",
+          "teaching_note": "Reciprocal functions usually return to sine and cosine before simplifying."
+        },
+        {
+          "id": "p3-trig-reciprocal-rform-001-example-2",
+          "prompt": "Write $3\\sin x+4\\cos x$ in the form $R\\sin(x+\\alpha)$, where $\\alpha$ is acute.",
+          "steps": [
+            "$R=\\sqrt{3^2+4^2}=5$.",
+            "$R\\sin(x+\\alpha)=R\\sin x\\cos\\alpha+R\\cos x\\sin\\alpha$.",
+            "Match coefficients: $5\\cos\\alpha=3$ and $5\\sin\\alpha=4$.",
+            "So $\\alpha=\\tan^{-1}(4/3)$."
+          ],
+          "answer": "$5\\sin(x+\\tan^{-1}(4/3))$",
+          "teaching_note": "R-form turns two trig terms into one wave."
+        }
+      ]
+    },
+    {
+      "body": "A vector line equation gives a point and a direction. Intersections happen when two different parameter systems describe the same point.",
+      "common_mistakes": [
+        "Using the same parameter for both lines.",
+        "Solving two components but forgetting to check the third.",
+        "Confusing a direction vector with a point on the line."
+      ],
+      "common_trap": "Using the same parameter letter for two different lines.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
+      "explanation": "A vector line is a start point plus a direction. Two lines meet only if one value on each line gives the same three coordinates, so the final component check matters.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving line intersections, skew lines, or vector line equations.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "vectors"
+        ]
+      },
+      "micro_steps": [
+        "Give each line its own parameter.",
+        "Equate matching components.",
+        "Solve using two components.",
+        "Check the remaining component."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Read vector line equations.",
+        "Solve simultaneous linear equations."
+      ],
+      "quick_check": {
+        "id": "p3-vectors-lines-001-qc",
+        "region_id": "vector-workshop",
+        "topic": "vectors",
+        "skill_target_id": "p3_vectors",
+        "title": "Keep parameters separate",
+        "prompt": "For $\\mathbf r=\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}+t\\begin{pmatrix}2\\\\0\\\\-1\\end{pmatrix}$, give one point on the line.",
+        "answer": "$\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}$",
+        "explanation": "Set the parameter to $0$; the position vector left behind is the point on the line.",
+        "micro_skill": "Identify a point from a vector line equation.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "related_skill_targets": [
+        "p3_vectors"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-vectors-lines-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "steps": [
+        "Write each line with its own parameter.",
+        "Equate matching components.",
+        "Check the parameter values in all components."
+      ],
+      "student_goal": "Use vector line equations to test intersection or position.",
+      "title": "Keep parameters separate",
+      "topics": [
+        "vectors"
+      ],
+      "topic": "vectors",
+      "source_skill_target_ids": [
+        "p3_vectors"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-vectors-lines-001-example-1",
+          "prompt": "Write the line through $(1,2,0)$ with direction $(3,-1,2)$ in vector form.",
+          "steps": [
+            "Use $\\mathbf r=\\mathbf a+\\lambda\\mathbf d$.",
+            "The point gives $\\mathbf a$ and the direction gives $\\mathbf d$."
+          ],
+          "answer": "$\\mathbf r=\\begin{pmatrix}1\\\\2\\\\0\\end{pmatrix}+\\lambda\\begin{pmatrix}3\\\\-1\\\\2\\end{pmatrix}$",
+          "teaching_note": "A vector line needs one point and one direction vector."
+        },
+        {
+          "id": "p3-vectors-lines-001-example-2",
+          "prompt": "Check whether $(2,-4,6)$ and $(-1,2,-3)$ are parallel.",
+          "steps": [
+            "Compare components using a common multiplier.",
+            "$(2,-4,6)=-2(-1,2,-3)$."
+          ],
+          "answer": "They are parallel.",
+          "teaching_note": "Direction vectors are parallel when one is a scalar multiple of the other."
+        },
+        {
+          "id": "p3-vectors-lines-001-example-3",
+          "prompt": "Find the intersection of $\\mathbf r=(1,0,2)+\\lambda(1,2,-1)$ and $\\mathbf r=(2,2,1)+\\mu(0,1,1)$.",
+          "steps": [
+            "From the $x$-component: $1+\\lambda=2$, so $\\lambda=1$.",
+            "From the $y$-component: $2\\lambda=2+\\mu$, so $\\mu=0$.",
+            "Check the $z$-component: $2-1=1+0$."
+          ],
+          "answer": "The lines intersect at $(2,2,1)$.",
+          "teaching_note": "A 3D intersection must satisfy all three components."
+        }
+      ]
+    },
+    {
+      "body": "The scalar product connects components to angle: $a\\cdot b=|a||b|\\cos\\theta$. A zero scalar product means perpendicular non-zero vectors.",
+      "common_mistakes": [
+        "Using position vectors instead of direction vectors for line angles.",
+        "Forgetting magnitudes in the angle formula.",
+        "Calling zero scalar product parallel."
+      ],
+      "common_trap": "Finding an angle between points rather than between the relevant direction vectors.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Use direction vectors for line angles and scalar product tests.",
+      "explanation": "Before solving a full vector geometry problem, decide whether the scalar product is being used for an angle, a perpendicular condition, or a projection-like distance step.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that depend on use the scalar product to test perpendicularity or find an angle.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "vectors"
+        ]
+      },
+      "micro_steps": [
+        "Write both direction vectors.",
+        "Calculate the scalar product.",
+        "Calculate magnitudes if an angle is needed.",
+        "Use zero scalar product for perpendicular checks."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Calculate vector magnitudes.",
+        "Use cosine inverse safely."
+      ],
+      "quick_check": {
+        "id": "p3-vectors-scalar-product-001-qc",
+        "region_id": "vector-workshop",
+        "topic": "vectors",
+        "skill_target_id": "p3_vectors",
+        "title": "Perpendicular check",
+        "prompt": "What does $\\mathbf a\\cdot\\mathbf b=0$ tell you for two non-zero vectors?",
+        "answer": "They are perpendicular.",
+        "explanation": "Since $a\\cdot b=|a||b|\\cos\\theta$, zero means $\\cos\\theta=0$.",
+        "micro_skill": "Interpret a zero scalar product.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "related_skill_targets": [
+        "p3_vectors"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-vectors-scalar-product-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_vectors"
+      ],
+      "steps": [
+        "Write both direction vectors.",
+        "Calculate the scalar product.",
+        "Calculate magnitudes if an angle is needed.",
+        "Use zero scalar product for perpendicular checks."
+      ],
+      "student_goal": "Use the scalar product to test perpendicularity or find an angle.",
+      "title": "Scalar product measures angle",
+      "topic": "vectors",
+      "topics": [
+        "vectors"
+      ],
+      "worked_example": {
+        "id": "p3-vectors-scalar-product-001-example-1",
+        "prompt": "Find the angle between $\\mathbf a=(1,2,2)$ and $\\mathbf b=(2,0,1)$.",
+        "steps": [
+          "$\\mathbf a\\cdot\\mathbf b=1(2)+2(0)+2(1)=4$.",
+          "$|\\mathbf a|=3$ and $|\\mathbf b|=\\sqrt5$.",
+          "Use $\\cos\\theta=\\frac{\\mathbf a\\cdot\\mathbf b}{|\\mathbf a||\\mathbf b|}$."
+        ],
+        "answer": "$\\theta=\\cos^{-1}\\left(\\frac{4}{3\\sqrt5}\\right)$",
+        "teaching_note": "The scalar product connects component arithmetic to the angle."
+      }
+    },
+    {
+      "body": "Momentum is directional. Before writing equations, choose a positive direction and keep every velocity consistent with that choice.",
+      "common_mistakes": [
+        "Changing the positive direction halfway through.",
+        "Treating a negative final velocity as impossible.",
+        "Using speed where velocity with direction is required."
+      ],
+      "common_trap": "Changing sign convention halfway through a collision or impulse calculation.",
+      "estimated_time_minutes": 3,
+      "exam_move": "Write a sign convention beside the equation before substituting values.",
+      "explanation": "Momentum keeps direction. Once a positive direction is chosen, negative answers are information about direction, not a sign that the method failed.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving impulse, collisions, or conservation of momentum.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "momentum_impulse"
+        ]
+      },
+      "micro_steps": [
+        "Choose the positive direction.",
+        "Write each velocity with a sign.",
+        "Apply the momentum or impulse equation.",
+        "Interpret negative values as direction."
+      ],
+      "paper_family": "p4",
+      "prerequisites": [
+        "Know momentum is mass times velocity.",
+        "Understand signed velocity."
+      ],
+      "quick_check": {
+        "id": "p4-momentum-direction-001-qc",
+        "region_id": "p4-mechanics",
+        "topic": "momentum_impulse",
+        "skill_target_id": "p4_momentum_impulse",
+        "title": "Direction is part of momentum",
+        "prompt": "A $2\\,\\mathrm{kg}$ particle moves at $3\\,\\mathrm{m\\,s^{-1}}$ opposite to the positive direction. What is its momentum?",
+        "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
+        "explanation": "Momentum is $mv=2\\times(-3)=-6$ in the chosen positive direction.",
+        "micro_skill": "Apply a signed velocity convention.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed"
+      },
+      "region_ids": [],
+      "related_skill_targets": [
+        "p4_momentum_impulse"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p4-momentum-direction-001",
+      "snippet_type": "concept",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p4_momentum_impulse"
+      ],
+      "steps": [
+        "Choose a positive direction.",
+        "Write velocities with signs before calculating.",
+        "Interpret negative answers as direction, not failure."
+      ],
+      "student_goal": "Use consistent signs in momentum and impulse questions.",
+      "title": "Direction is part of momentum",
+      "topics": [
+        "momentum_impulse"
+      ],
+      "topic": "momentum_impulse",
+      "worked_example": {
+        "id": "p4-momentum-direction-001-example-1",
+        "prompt": "A $2\\,\\mathrm{kg}$ particle moves at $3\\,\\mathrm{m\\,s^{-1}}$ opposite to the positive direction. Find its momentum.",
+        "steps": [
+          "Opposite to the positive direction means velocity $-3\\,\\mathrm{m\\,s^{-1}}$.",
+          "Momentum is $mv=2(-3)$."
+        ],
+        "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
+        "teaching_note": "The negative sign is direction information, not an error."
+      }
     }
   ]
 }

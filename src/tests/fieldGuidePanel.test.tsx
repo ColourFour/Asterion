@@ -61,6 +61,15 @@ const snippet: TeachingSnippet = {
   prerequisites: ['Know index notation.'],
   microSteps: ['Circle the base.', 'Name the exponent.'],
   commonMistakes: ['Treating the argument as the exponent.'],
+  workedExamples: [
+    {
+      id: 'p3-log-check-example-1',
+      prompt: 'Rewrite log base two of eight equals three.',
+      steps: ['Keep base two.', 'Use three as the exponent.'],
+      answer: 'Two cubed equals eight.',
+      teachingNote: 'The log value is the exponent.',
+    },
+  ],
   quickCheck: {
     prompt: 'Rewrite log base two of eight equals three.',
     answer: 'Two cubed equals eight.',
@@ -75,6 +84,7 @@ const snippet: TeachingSnippet = {
   snippetType: 'concept',
   sourceQuestionIds: [],
   sourceSkillTargetIds: [],
+  relatedSkillTargetIds: [],
 };
 
 const generatedPractice: GeneratedPracticeItem = {
@@ -91,6 +101,8 @@ const generatedPractice: GeneratedPracticeItem = {
     'Use the product law.',
   ],
   parameters: { a: 3, b: 12, solution: 4 },
+  sourceSnippetId: 'p3-log-laws-001',
+  exampleModelId: 'p3-log-laws-001-example-1',
   verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
   difficultyBand: 'easy',
   reviewStatus: 'teacher_reviewed',
@@ -174,6 +186,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     expect(container.textContent).toContain('Teaching snippets');
+    expect(container.textContent).toContain('Worked example');
+    expect(container.textContent).toContain('Two cubed equals eight.');
     expect(container.textContent).toContain('Micro steps');
     expect(container.textContent).toContain('Common mistakes');
 
@@ -250,10 +264,10 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.querySelectorAll('.teaching-snippet-card')).toHaveLength(2);
     expect(container.querySelectorAll('.quick-check-card details.quick-check-reveal')).toHaveLength(2);
-    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(2);
+    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
     expect(container.textContent).toContain('1 more reviewed snippet available for this region.');
     expect(container.textContent).toContain('1 more reviewed quick check available.');
-    expect(container.textContent).toContain('Showing 2 of 3 reviewed warm-ups.');
+    expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
   });
 
   it('renders the region learning sections in the expected order', () => {

@@ -19,12 +19,15 @@ export interface GeneratedPracticeItem {
   paperFamily: PaperFamily;
   topic: string;
   skillTargetId?: string;
+  sourceSnippetId?: string;
+  exampleModelId?: string;
   snippetIds: string[];
   regionIds: string[];
   prompt: string;
   answer: string;
   workedSolution: string[];
   parameters: Record<string, unknown>;
+  sequenceRole?: string;
   verification: GeneratedPracticeVerification;
   difficultyBand: GeneratedPracticeDifficultyBand;
   reviewStatus: GeneratedPracticeReviewStatus;
@@ -137,12 +140,15 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
       paperFamily,
       topic,
       skillTargetId: stringValue(item.skill_target_id),
+      sourceSnippetId: stringValue(item.source_snippet_id),
+      exampleModelId: stringValue(item.example_model_id),
       snippetIds: stringArray(item.snippet_ids),
       regionIds: stringArray(item.region_ids),
       prompt,
       answer,
       workedSolution,
       parameters: parametersValue(item.parameters),
+      sequenceRole: stringValue(item.sequence_role),
       verification,
       difficultyBand,
       reviewStatus,

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +17,10 @@ PRACTICE_REVIEW_STATUSES = {"candidate", "needs_review", "teacher_reviewed", "pu
 PRACTICE_RUNTIME_BLOCKED_STATUSES = {"candidate", "needs_review", "blocked"}
 PRACTICE_VERIFICATION_STATUSES = {"pass", "fail"}
 PRACTICE_DIFFICULTY_BANDS = {"easy", "medium", "hard"}
-SNIPPET_TYPES = {"concept", "method", "mistake_repair", "quick_check"}
+SEQUENCE_ROLES = {"first_step", "complete_step", "guardian_prep"}
+SNIPPET_TYPES = {"concept", "method", "mistake_repair", "quick_check", "guardian_prep"}
+EXAMPLE_REQUIRED_SNIPPET_TYPES = {"concept", "method", "mistake_repair"}
+PRIORITY_REGION_IDS = {"algebra-forge", "logarithm-grove", "trig-observatory"}
 KNOWN_PAPER_FAMILIES = {"p1", "p3", "p4", "p5"}
 ACTIVE_P3_REGION_SUPPORT = {
     "algebra-forge": {
@@ -168,6 +172,12 @@ def is_non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [item.strip() for item in value if isinstance(item, str) and item.strip()]
+
+
 def normalize_label(value: Any) -> str:
     if not isinstance(value, str):
         return ""
@@ -221,8 +231,12 @@ def require_quick_check(value: Any, owner: str, errors: list[str]) -> None:
     require(isinstance(value, dict), f"{owner}.quick_check must be an object", errors)
     if not isinstance(value, dict):
         return
-    for key in ("prompt", "answer", "explanation"):
+    for key in ("id", "region_id", "topic", "skill_target_id", "title", "prompt", "answer", "explanation", "micro_skill", "difficulty_band", "review_status"):
         require_non_empty_string(value, key, f"{owner}.quick_check", errors)
+    estimated_time = value.get("estimated_time_minutes")
+    require(isinstance(estimated_time, (int, float)) and estimated_time > 0, f"{owner}.quick_check.estimated_time_minutes must be positive", errors)
+    require(value.get("difficulty_band") in PRACTICE_DIFFICULTY_BANDS, f"{owner}.quick_check has invalid difficulty_band", errors)
+    require(value.get("review_status") in RUNTIME_REVIEW_STATUSES, f"{owner}.quick_check must be teacher_reviewed or published", errors)
 
 
 def require_guardian_readiness(value: Any, owner: str, errors: list[str]) -> None:
@@ -234,12 +248,56 @@ def require_guardian_readiness(value: Any, owner: str, errors: list[str]) -> Non
     require_non_empty_string(value, "readiness_note", f"{owner}.guardian_readiness", errors)
 
 
+def require_worked_example(value: Any, owner: str, errors: list[str], warnings: list[str]) -> bool:
+    require(isinstance(value, dict), f"{owner} must be an object", errors)
+    if not isinstance(value, dict):
+        return False
+    if value.get("id") is not None:
+        require_non_empty_string(value, "id", owner, errors)
+    require_non_empty_string(value, "prompt", owner, errors)
+    require_non_empty_string(value, "answer", owner, errors)
+    require_string_array(value, "steps", owner, errors, required=True, min_items=1)
+    if value.get("teaching_note") is not None:
+        require_non_empty_string(value, "teaching_note", owner, errors)
+
+    prompt = value.get("prompt")
+    steps = value.get("steps")
+    if isinstance(prompt, str) and len(prompt) > 180:
+        warnings.append(f"{owner}.prompt is long for a Field Guide mini-example")
+    if isinstance(steps, list) and len(steps) > 6:
+        warnings.append(f"{owner}.steps has more than 6 steps")
+    return (
+        is_non_empty_string(value.get("prompt"))
+        and is_non_empty_string(value.get("answer"))
+        and isinstance(steps, list)
+        and bool(string_list(steps))
+    )
+
+
+def require_worked_examples(snippet: dict[str, Any], owner: str, errors: list[str], warnings: list[str]) -> int:
+    example_count = 0
+    if "worked_example" in snippet:
+        if require_worked_example(snippet.get("worked_example"), f"{owner}.worked_example", errors, warnings):
+            example_count += 1
+
+    if "worked_examples" in snippet:
+        worked_examples = snippet.get("worked_examples")
+        require(isinstance(worked_examples, list), f"{owner}.worked_examples must be an array", errors)
+        if isinstance(worked_examples, list):
+            require(len(worked_examples) > 0, f"{owner}.worked_examples must contain at least one item", errors)
+            for example_index, example in enumerate(worked_examples):
+                if require_worked_example(example, f"{owner}.worked_examples[{example_index}]", errors, warnings):
+                    example_count += 1
+
+    return example_count
+
+
 def require_record(value: Any, owner: str, errors: list[str]) -> dict[str, Any] | None:
     require(isinstance(value, dict), f"{owner} must be an object", errors)
     return value if isinstance(value, dict) else None
 
 
-def verify_skill_targets(path: Path, errors: list[str]) -> None:
+def verify_skill_targets(path: Path, errors: list[str], warnings: list[str] | None = None) -> None:
     data = load_json(path)
     require(isinstance(data, dict), f"{path} must contain an object", errors)
     if not isinstance(data, dict):
@@ -266,11 +324,24 @@ def verify_skill_targets(path: Path, errors: list[str]) -> None:
         seen.add(skill_target_id)
         require(target.get("review_status") in TARGET_REVIEW_STATUSES, f"{skill_target_id} has invalid review_status", errors)
         require(isinstance(target.get("source_question_ids"), list) and len(target["source_question_ids"]) > 0, f"{skill_target_id} has no source_question_ids", errors)
+        require_string_array(target, "assessed_by_source_question_ids", str(skill_target_id), errors, required=True, min_items=1)
+        require_string_array(target, "micro_skills", str(skill_target_id), errors, required=True, min_items=1)
+        require_string_array(target, "likely_prerequisites", str(skill_target_id), errors, required=True, min_items=1)
+        require_string_array(target, "common_misconceptions", str(skill_target_id), errors, required=True, min_items=1)
+        patterns = target.get("source_mark_scheme_patterns")
+        require(isinstance(patterns, list), f"{skill_target_id}.source_mark_scheme_patterns must be an array", errors)
+        if isinstance(patterns, list):
+            for pattern_index, pattern in enumerate(patterns):
+                pattern_record = require_record(pattern, f"{skill_target_id}.source_mark_scheme_patterns[{pattern_index}]", errors)
+                if pattern_record:
+                    require_non_empty_string(pattern_record, "pattern_id", f"{skill_target_id}.source_mark_scheme_patterns[{pattern_index}]", errors)
+                    require_non_empty_string(pattern_record, "summary", f"{skill_target_id}.source_mark_scheme_patterns[{pattern_index}]", errors)
+                    require_string_array(pattern_record, "source_question_ids", f"{skill_target_id}.source_mark_scheme_patterns[{pattern_index}]", errors, required=True, min_items=1)
         require(last_sort_key is None or sort_key >= last_sort_key, f"skill_targets not sorted at {skill_target_id}", errors)
         last_sort_key = sort_key
 
 
-def verify_review_queue(path: Path, errors: list[str]) -> None:
+def verify_review_queue(path: Path, errors: list[str], warnings: list[str] | None = None) -> None:
     data = load_json(path)
     require(isinstance(data, dict), f"{path} must contain an object", errors)
     if not isinstance(data, dict):
@@ -287,7 +358,8 @@ def verify_review_queue(path: Path, errors: list[str]) -> None:
         require(isinstance(record.get("reasons"), list) and len(record["reasons"]) > 0, f"review_queue.records[{index}] has no reasons", errors)
 
 
-def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
+def verify_teaching_snippets(path: Path, errors: list[str], warnings: list[str] | None = None) -> None:
+    warnings = warnings if warnings is not None else []
     data = load_json(path)
     require(isinstance(data, dict), f"{path} must contain an object", errors)
     if not isinstance(data, dict):
@@ -311,13 +383,20 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         seen.add(snippet_id)
         require(snippet.get("review_status") in RUNTIME_REVIEW_STATUSES, f"{owner} must be teacher_reviewed or published", errors)
 
-        for key in ("paper_family", "title", "student_goal", "body", "exam_move", "common_trap", "source"):
+        for key in ("paper_family", "title", "student_goal", "exam_move", "common_trap", "source"):
             require_non_empty_string(snippet, key, owner, errors)
+        require(
+            is_non_empty_string(snippet.get("body")) or is_non_empty_string(snippet.get("explanation")),
+            f"{owner} must have non-empty body or explanation",
+            errors,
+        )
         require_string_array(snippet, "topics", owner, errors, required=True, min_items=1)
         require_string_array(snippet, "region_ids", owner, errors)
         require_string_array(snippet, "steps", owner, errors, required=True, min_items=1)
-        for key in ("prerequisites", "micro_steps", "common_mistakes", "source_question_ids", "source_skill_target_ids"):
+        for key in ("prerequisites", "micro_steps", "common_mistakes", "source_question_ids"):
             require_string_array(snippet, key, owner, errors)
+        require_string_array(snippet, "source_skill_target_ids", owner, errors, required=True, min_items=1)
+        require_string_array(snippet, "related_skill_targets", owner, errors, required=True, min_items=1)
 
         paper_family = snippet.get("paper_family")
         topics = [topic for topic in snippet.get("topics", []) if isinstance(topic, str)]
@@ -325,8 +404,8 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         if is_non_empty_string(paper_family):
             require(str(paper_family) in KNOWN_PAPER_FAMILIES, f"{owner}.paper_family has unsupported value {paper_family}", errors)
         topic = snippet.get("topic")
+        require_non_empty_string(snippet, "topic", owner, errors)
         if topic is not None:
-            require_non_empty_string(snippet, "topic", owner, errors)
             require(not topics or topic in topics, f"{owner}.topic must also appear in topics[]", errors)
 
         if paper_family == "p3":
@@ -341,6 +420,12 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         quick_check = snippet.get("quick_check")
         if quick_check is not None:
             require_quick_check(quick_check, owner, errors)
+            if isinstance(quick_check, dict):
+                require(quick_check.get("topic") in topics, f"{owner}.quick_check.topic must appear in snippet topics[]", errors)
+                if region_ids:
+                    require(quick_check.get("region_id") in region_ids, f"{owner}.quick_check.region_id must appear in snippet region_ids[]", errors)
+                related_skill_ids = set(string for string in string_list(snippet.get("related_skill_targets")) + string_list(snippet.get("source_skill_target_ids")))
+                require(quick_check.get("skill_target_id") in related_skill_ids, f"{owner}.quick_check.skill_target_id must match snippet skill metadata", errors)
 
         guardian_readiness = snippet.get("guardian_readiness")
         if guardian_readiness is not None:
@@ -353,6 +438,14 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         snippet_type = snippet.get("snippet_type")
         if snippet_type is not None:
             require(snippet_type in SNIPPET_TYPES, f"{owner}.snippet_type has invalid value", errors)
+        worked_example_count = require_worked_examples(snippet, owner, errors, warnings)
+        if (
+            paper_family == "p3"
+            and snippet_type in EXAMPLE_REQUIRED_SNIPPET_TYPES
+            and PRIORITY_REGION_IDS.intersection(region_ids)
+            and worked_example_count == 0
+        ):
+            warnings.append(f"priority-region {snippet_type} snippet {owner} has no worked example")
 
         lineage = snippet.get("lineage")
         if lineage is not None:
@@ -364,7 +457,8 @@ def verify_teaching_snippets(path: Path, errors: list[str]) -> None:
         require(bool(owners), f"Active P3 region {region_id} has no reviewed/published teaching snippet", errors)
 
 
-def verify_generated_practice(path: Path, errors: list[str], *, runtime: bool) -> None:
+def verify_generated_practice(path: Path, errors: list[str], warnings: list[str] | None = None, *, runtime: bool) -> None:
+    warnings = warnings if warnings is not None else []
     if not path.exists():
         return
 
@@ -388,15 +482,26 @@ def verify_generated_practice(path: Path, errors: list[str], *, runtime: bool) -
         require(practice_id not in seen, f"Duplicate practice_id: {practice_id}", errors)
         seen.add(practice_id)
 
-        for key in ("generator_family", "paper_family", "topic", "prompt", "answer", "difficulty_band", "review_status"):
+        for key in ("generator_family", "paper_family", "topic", "prompt", "answer", "difficulty_band", "review_status", "sequence_role"):
             require_non_empty_string(item, key, owner, errors)
         require(item.get("difficulty_band") in PRACTICE_DIFFICULTY_BANDS, f"{owner} has invalid difficulty_band", errors)
+        require(item.get("sequence_role") in SEQUENCE_ROLES, f"{owner} has invalid sequence_role", errors)
         require(item.get("review_status") in PRACTICE_REVIEW_STATUSES, f"{owner} has invalid review_status", errors)
-        require_string_array(item, "worked_solution", owner, errors, required=True, min_items=1)
-        require_string_array(item, "snippet_ids", owner, errors)
-        require_string_array(item, "region_ids", owner, errors)
+        require_string_array(item, "worked_solution", owner, errors, required=True, min_items=2)
+        require_string_array(item, "snippet_ids", owner, errors, required=runtime, min_items=1 if runtime else 0)
+        require_string_array(item, "region_ids", owner, errors, required=runtime, min_items=1 if runtime else 0)
+        snippet_ids = string_list(item.get("snippet_ids"))
         if item.get("skill_target_id") is not None:
             require_non_empty_string(item, "skill_target_id", owner, errors)
+        if item.get("source_snippet_id") is not None:
+            require_non_empty_string(item, "source_snippet_id", owner, errors)
+        if item.get("example_model_id") is not None:
+            require_non_empty_string(item, "example_model_id", owner, errors)
+        source_snippet_id = item.get("source_snippet_id")
+        if is_non_empty_string(source_snippet_id) and snippet_ids:
+            require(source_snippet_id in snippet_ids, f"{owner}.source_snippet_id must appear in snippet_ids[]", errors)
+        if not is_non_empty_string(item.get("source_snippet_id")) and not is_non_empty_string(item.get("example_model_id")):
+            warnings.append(f"{owner} has no source_snippet_id or example_model_id")
 
         parameters = item.get("parameters")
         require(isinstance(parameters, dict) and bool(parameters), f"{owner}.parameters must be a non-empty object", errors)
@@ -410,9 +515,80 @@ def verify_generated_practice(path: Path, errors: list[str], *, runtime: bool) -
         if runtime:
             review_status = item.get("review_status")
             verification_status = verification.get("status") if verification else None
+            require_non_empty_string(item, "skill_target_id", f"Runtime practice {owner}", errors)
             require(review_status in RUNTIME_REVIEW_STATUSES, f"Runtime practice {owner} must be teacher_reviewed or published", errors)
             require(review_status not in PRACTICE_RUNTIME_BLOCKED_STATUSES, f"Runtime practice {owner} cannot be {review_status}", errors)
             require(verification_status == "pass", f"Runtime practice {owner} must have verification.status pass", errors)
+
+
+def verify_content_lab_report(path: Path, errors: list[str], warnings: list[str] | None = None) -> None:
+    if not path.exists():
+        return
+    data = load_json(path)
+    require(isinstance(data, dict), f"{path} must contain an object", errors)
+    if not isinstance(data, dict):
+        return
+    require(data.get("schema_name") == "asterion_content_lab_report", f"{path} has invalid schema_name", errors)
+    for key in (
+        "active_regions",
+        "snippets_per_region",
+        "quick_checks_per_region",
+        "generated_warmups_per_region",
+        "skill_targets_per_topic",
+        "batch_7_depth_summary",
+        "content_review_status_counts",
+        "generated_families_by_topic",
+        "high_evidence_weak_teaching_support",
+        "skill_targets_with_quick_checks_but_no_warmups",
+        "skill_targets_with_snippets_but_no_quick_checks",
+        "topics_needing_deterministic_generators",
+        "topics_with_snippets_but_no_warmups",
+        "generator_family_counts",
+        "verification_failure_counts",
+        "snippets_with_examples_by_region",
+        "method_snippets_missing_examples",
+        "warmups_linked_to_examples",
+        "warmups_without_example_model",
+        "priority_region_example_coverage",
+    ):
+        require(key in data, f"{path} missing {key}", errors)
+
+    active_regions = data.get("active_regions")
+    require(isinstance(active_regions, list), f"{path}.active_regions must be an array", errors)
+    seen_regions = set()
+    if isinstance(active_regions, list):
+        for index, region_value in enumerate(active_regions):
+            region = require_record(region_value, f"{path}.active_regions[{index}]", errors)
+            if not region:
+                continue
+            region_id = region.get("region_id")
+            require(region_id in ACTIVE_P3_REGION_SUPPORT, f"{path}.active_regions[{index}] has unknown region_id {region_id}", errors)
+            if isinstance(region_id, str):
+                seen_regions.add(region_id)
+            for key in ("snippets", "quick_checks", "generated_warmups"):
+                value = region.get(key)
+                require(isinstance(value, int) and value >= 0, f"{path}.active_regions[{index}].{key} must be a non-negative integer", errors)
+    for region_id in ACTIVE_P3_REGION_SUPPORT:
+        require(region_id in seen_regions, f"{path}.active_regions missing {region_id}", errors)
+
+
+def verify_question_bank_not_modified(path: Path, errors: list[str]) -> None:
+    repo_root = Path(__file__).resolve().parents[3]
+    try:
+        relative_path = path.resolve().relative_to(repo_root)
+    except ValueError:
+        relative_path = path
+    result = subprocess.run(
+        ["git", "diff", "--quiet", "--", str(relative_path)],
+        cwd=repo_root,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode == 1:
+        errors.append(f"{path} has local git modifications")
+    elif result.returncode not in (0, 1):
+        errors.append(f"Could not verify git diff for {path}")
 
 
 def main() -> int:
@@ -420,34 +596,49 @@ def main() -> int:
     parser.add_argument("--outputs-dir", default="tools/content_lab/outputs")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json")
     parser.add_argument("--runtime-generated-practice", default="public/data/generated_practice_bank.json")
+    parser.add_argument("--question-bank", default="public/data/question_bank.json")
+    parser.add_argument("--skip-question-bank-git-check", action="store_true")
     args = parser.parse_args()
 
     outputs_dir = Path(args.outputs_dir)
     errors: list[str] = []
+    warnings: list[str] = []
     for verifier, path in (
         (verify_skill_targets, outputs_dir / "skill_targets.json"),
         (verify_review_queue, outputs_dir / "review_queue.json"),
         (verify_teaching_snippets, Path(args.snippets)),
     ):
         try:
-            verifier(path, errors)
+            verifier(path, errors, warnings)
         except ValueError as error:
             errors.append(str(error))
+
+    try:
+        verify_content_lab_report(outputs_dir / "content_lab_report.json", errors, warnings)
+    except ValueError as error:
+        errors.append(str(error))
 
     for path, runtime in (
         (outputs_dir / "generated_practice_bank.json", False),
         (Path(args.runtime_generated_practice), True),
     ):
         try:
-            verify_generated_practice(path, errors, runtime=runtime)
+            verify_generated_practice(path, errors, warnings, runtime=runtime)
         except ValueError as error:
             errors.append(str(error))
 
+    if not args.skip_question_bank_git_check:
+        verify_question_bank_not_modified(Path(args.question_bank), errors)
+
     if errors:
+        for warning in warnings:
+            print(f"WARNING: {warning}")
         for error in errors:
             print(f"ERROR: {error}")
         return 1
 
+    for warning in warnings:
+        print(f"WARNING: {warning}")
     print("Content Lab outputs verified.")
     return 0
 

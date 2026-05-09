@@ -2,10 +2,10 @@ import type { PaperFamily, RegionDefinition } from '../types';
 import { normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export type RegionThemeAccent =
-  | 'archive'
+  | 'vault'
   | 'observatory'
-  | 'coast'
-  | 'harbor'
+  | 'spire'
+  | 'atrium'
   | 'cliffs'
   | 'terraces'
   | 'gate'
@@ -76,8 +76,8 @@ function colorsForRegion(accent: string, accentText: string, accentSoft: string)
 const regionThemes: Record<string, RegionTheme> = {
   'algebra-forge': {
     regionId: 'algebra-forge',
-    title: 'Algebra Temple',
-    subtitle: 'A quiet archive for choosing the right algebraic form before the work begins.',
+    title: 'Algebra Vault',
+    subtitle: 'A guarded vault for expansions, factors, remainders, and locked algebraic forms.',
     paperFamily: 'p3',
     topic: 'algebra_functions_and_binomial',
     topicAliases: [
@@ -106,17 +106,17 @@ const regionThemes: Record<string, RegionTheme> = {
       'quadratics',
     ],
     generatedPracticeTopics: ['binomial_expansion'],
-    icon: 'AT',
-    accent: 'archive',
-    colors: colorsForRegion('#7a3f0b', '#4c2d0a', '#fff1d6'),
-    atmosphere: 'Brass shelves, proof tablets, and patient pattern-spotting.',
+    icon: 'AV',
+    accent: 'vault',
+    colors: colorsForRegion('#b8872d', '#283718', '#fff1d6'),
+    atmosphere: 'Brass locks, black marble counters, archive drawers, and valuable structure under guard.',
     guideMessage: 'Pause here to identify structure: factor, divide, decompose, or compose before calculating.',
     masteryQuote: 'Structure first. Expansion only when it earns a mark.',
   },
   'logarithm-grove': {
     regionId: 'logarithm-grove',
     title: 'Logarithm Observatory',
-    subtitle: 'Lantern domes where exponential growth and logarithmic structure become visible.',
+    subtitle: 'A storybook observatory where exponential growth and logarithmic structure become visible.',
     paperFamily: 'p3',
     topic: 'logarithms_and_exponentials',
     topicAliases: [
@@ -135,15 +135,15 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: ['logarithms_and_exponentials'],
     icon: 'LO',
     accent: 'observatory',
-    colors: colorsForRegion('#0f6f68', '#0b4f4b', '#dff4ef'),
-    atmosphere: 'Warm lamps, telescope glass, and equations that turn powers into distances.',
+    colors: colorsForRegion('#2b6f9f', '#173653', '#e7f2ff'),
+    atmosphere: 'Lantern domes, brass telescopes, star charts, moonlit shelves, and curves hidden in constellations.',
     guideMessage: 'Use this stop to slow down: convert forms, combine logs safely, and check every domain restriction.',
     masteryQuote: 'Every log solution must survive the original equation.',
   },
   'trig-observatory': {
     regionId: 'trig-observatory',
-    title: 'Trigonometry Coast',
-    subtitle: 'A bright shoreline for identities, intervals, and exact angle choices.',
+    title: 'Trigonometry Spire',
+    subtitle: 'An impossible spire of arcs, angled supports, intervals, and exact angle choices.',
     paperFamily: 'p3',
     topic: 'trigonometry',
     topicAliases: [
@@ -158,17 +158,17 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['trigonometry', 'trigonometric_identities', 'trigonometric_equations'],
     generatedPracticeTopics: [],
-    icon: 'TC',
-    accent: 'coast',
-    colors: colorsForRegion('#1f5d99', '#173b65', '#e3f2ff'),
-    atmosphere: 'Signal lights, wave paths, and angles returning from every quadrant.',
+    icon: 'TS',
+    accent: 'spire',
+    colors: colorsForRegion('#5d6fa8', '#243656', '#eef2ff'),
+    atmosphere: 'Tension cables, circular platforms, and high-angle paths returning from every quadrant.',
     guideMessage: 'Keep identities visible, preserve every root, and sweep the requested interval deliberately.',
     masteryQuote: 'Do not divide away a solution you have not accounted for.',
   },
   'complex-harbor': {
     regionId: 'complex-harbor',
     title: 'Argand Atrium',
-    subtitle: 'A moonlit harbor for modulus, argument, loci, and roots.',
+    subtitle: 'A mirrored glass atrium for modulus, argument, loci, and roots.',
     paperFamily: 'p3',
     topic: 'complex_numbers',
     topicAliases: [
@@ -185,16 +185,16 @@ const regionThemes: Record<string, RegionTheme> = {
     snippetTopics: ['complex_numbers', 'argand_diagrams', 'modulus_and_argument'],
     generatedPracticeTopics: [],
     icon: 'AA',
-    accent: 'harbor',
-    colors: colorsForRegion('#5b49b3', '#30286c', '#ece9ff'),
-    atmosphere: 'Harbor charts, polar routes, and geometry drawn on the complex plane.',
+    accent: 'atrium',
+    colors: colorsForRegion('#7561d8', '#30286c', '#ece9ff'),
+    atmosphere: 'Mirrored floors, floating axes, polar light, and compass geometry on the complex plane.',
     guideMessage: 'Sketch before manipulating: the picture often tells you which form to use.',
     masteryQuote: 'The quadrant is part of the answer, not a detail after it.',
   },
   'calculus-cliffs': {
     regionId: 'calculus-cliffs',
     title: 'Calculus Cliffs',
-    subtitle: 'High paths for gradients, rates of change, and stationary points.',
+    subtitle: 'White cliff paths for gradients, rates of change, and stationary points.',
     paperFamily: 'p3',
     topic: 'differentiation',
     topicAliases: [
@@ -215,15 +215,15 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: [],
     icon: 'CC',
     accent: 'cliffs',
-    colors: colorsForRegion('#6d4521', '#3f2816', '#f3e4d2'),
-    atmosphere: 'Wind-cut paths, tangent lines, and turning points marked by cairns.',
+    colors: colorsForRegion('#7d735f', '#3f3b33', '#f4efe6'),
+    atmosphere: 'White chalk cliffs, ocean wind, tangent paths, and turning points marked at the edge.',
     guideMessage: 'Choose the derivative rule before simplifying, then interpret the result in context.',
     masteryQuote: 'A derivative is evidence only after you say what it means.',
   },
   'integration-gardens': {
     regionId: 'integration-gardens',
     title: 'Integral Terraces',
-    subtitle: 'Layered gardens where areas, limits, and methods grow together.',
+    subtitle: 'Coastal academic terraces where areas, limits, and methods accumulate.',
     paperFamily: 'p3',
     topic: 'integration',
     topicAliases: [
@@ -242,15 +242,15 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: [],
     icon: 'IT',
     accent: 'terraces',
-    colors: colorsForRegion('#1f6f49', '#1d4f37', '#dbf5e6'),
-    atmosphere: 'Terraced paths, careful limits, and accumulation built one strip at a time.',
+    colors: colorsForRegion('#4f7c5c', '#2f593b', '#edf6e8'),
+    atmosphere: 'Warm stone, vines, sea air, careful limits, and accumulation built one strip at a time.',
     guideMessage: 'Choose the method from the shape of the integrand, then keep limits and constants honest.',
     masteryQuote: 'Changing variables means changing the whole setup.',
   },
   'vector-workshop': {
     regionId: 'vector-workshop',
     title: 'Vectors Gate',
-    subtitle: 'A drafting gate for lines, scalar products, intersections, and angles.',
+    subtitle: 'A navigation gate for lines, scalar products, intersections, and angles.',
     paperFamily: 'p3',
     topic: 'vectors',
     topicAliases: [
@@ -267,15 +267,15 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: [],
     icon: 'VG',
     accent: 'gate',
-    colors: colorsForRegion('#2f536f', '#213b52', '#e5eef5'),
-    atmosphere: 'Drafting tables, direction beams, and component checks at every gate.',
+    colors: colorsForRegion('#386a83', '#213b52', '#e5eef5'),
+    atmosphere: 'Portal arches, compass bearings, wind lines, launch paths, and component checks at every gate.',
     guideMessage: 'Separate position from direction, then let components verify the geometry.',
     masteryQuote: 'One matching component is not an intersection.',
   },
   'numerical-mines': {
     regionId: 'numerical-mines',
     title: 'Iteration Forge',
-    subtitle: 'Lantern-lit machinery for roots, iteration, and numerical accuracy.',
+    subtitle: 'A molten smithing hall for roots, iteration, and numerical accuracy.',
     paperFamily: 'p3',
     topic: 'numerical_methods',
     topicAliases: [
@@ -294,15 +294,15 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: [],
     icon: 'IF',
     accent: 'forge',
-    colors: colorsForRegion('#894415', '#5d321b', '#ffe3d1'),
-    atmosphere: 'Measured sparks, iteration wheels, and rounding checked at the final gate.',
+    colors: colorsForRegion('#b55320', '#5d321b', '#ffe3d1'),
+    atmosphere: 'Iron plates, ember heat, rivets, anvils, iteration wheels, and rounding checked at the final gate.',
     guideMessage: 'Carry enough accuracy through the process and justify the final rounding step.',
     masteryQuote: 'Approximation earns marks when the method is visible.',
   },
   'differential-shrine': {
     regionId: 'differential-shrine',
     title: 'Differential Shrine',
-    subtitle: 'A calm shrine for forming and solving first-order differential equations.',
+    subtitle: 'A mountain shrine for forming and solving first-order differential equations.',
     paperFamily: 'p3',
     topic: 'differential_equations',
     topicAliases: [
@@ -317,8 +317,8 @@ const regionThemes: Record<string, RegionTheme> = {
     generatedPracticeTopics: [],
     icon: 'DS',
     accent: 'shrine',
-    colors: colorsForRegion('#4f613f', '#33402d', '#ecf4e6'),
-    atmosphere: 'Still water, separated variables, and constants placed with care.',
+    colors: colorsForRegion('#64705a', '#33402d', '#ecf4e6'),
+    atmosphere: 'Stone steps, prayer flags, lanterns, pale mist, separated variables, and constants placed with care.',
     guideMessage: 'Translate the rate, separate cleanly, and use conditions only after integrating.',
     masteryQuote: 'The constant belongs to the solution, not the differential equation.',
   },
