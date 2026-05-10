@@ -21,6 +21,9 @@ export interface GeneratedPracticeItem {
   skillTargetId?: string;
   sourceSnippetId?: string;
   exampleModelId?: string;
+  questionType?: string;
+  keyMethod?: string;
+  examMove?: string;
   snippetIds: string[];
   regionIds: string[];
   prompt: string;
@@ -142,6 +145,9 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
       skillTargetId: stringValue(item.skill_target_id),
       sourceSnippetId: stringValue(item.source_snippet_id),
       exampleModelId: stringValue(item.example_model_id),
+      questionType: stringValue(item.question_type),
+      keyMethod: stringValue(item.key_method),
+      examMove: stringValue(item.exam_move),
       snippetIds: stringArray(item.snippet_ids),
       regionIds: stringArray(item.region_ids),
       prompt,

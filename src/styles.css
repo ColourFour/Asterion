@@ -3909,6 +3909,13 @@ legend {
   border-top: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 24%, transparent);
 }
 
+.quick-check-example-link {
+  display: block;
+  color: var(--region-muted, #5c6676);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
 .warm-up-practice-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -3951,6 +3958,26 @@ legend {
   font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.warm-up-method-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 8px;
+  margin: 0;
+  color: var(--region-muted, #5c6676);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.warm-up-method-list dt {
+  color: var(--region-heading, #30286c);
+  font-weight: 900;
+}
+
+.warm-up-method-list dd {
+  margin: 0;
+  min-width: 0;
 }
 
 .warm-up-reveal-button {
@@ -4032,6 +4059,11 @@ legend {
 
 .worked-example-card b {
   color: var(--region-heading, #2f1a10);
+}
+
+.worked-example-section {
+  display: grid;
+  gap: 3px;
 }
 
 .math-text .katex {

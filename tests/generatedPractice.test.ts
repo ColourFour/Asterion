@@ -19,13 +19,16 @@ function item(overrides: Record<string, unknown> = {}) {
     snippet_ids: ['log-snippet'],
     source_snippet_id: 'log-snippet',
     example_model_id: 'log-snippet-example-1',
+    question_type: 'Logarithm equation',
+    key_method: 'Use inverse operations.',
+    exam_move: 'Take natural logs after isolating the exponential.',
     region_ids: ['logarithm-grove'],
     prompt: 'Solve ln(x) = ln(4).',
     answer: 'x = 4',
     worked_solution: ['The domain requires x > 0.', 'Equal logs have equal arguments.'],
     parameters: { solution: 4 },
     sequence_role: 'first_step',
-    verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
+    verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_schema_v2' },
     difficulty_band: 'easy',
     review_status: 'published',
     ...overrides,
@@ -39,7 +42,7 @@ describe('generated practice runtime loader', () => {
         item(),
         item({ practice_id: 'practice-candidate', review_status: 'candidate' }),
         item({ practice_id: 'practice-blocked', review_status: 'blocked' }),
-        item({ practice_id: 'practice-failed', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_v1' } }),
+        item({ practice_id: 'practice-failed', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_schema_v2' } }),
       ],
     });
 
@@ -86,6 +89,9 @@ describe('generated practice runtime loader', () => {
     expect(normalized.find((practice) => practice.practiceId === 'log-a')).toMatchObject({
       sourceSnippetId: 'log-snippet',
       exampleModelId: 'log-snippet-example-1',
+      questionType: 'Logarithm equation',
+      keyMethod: 'Use inverse operations.',
+      examMove: 'Take natural logs after isolating the exponential.',
     });
   });
 
@@ -96,7 +102,7 @@ describe('generated practice runtime loader', () => {
       json: async () => ({
         items: [
           item({ practice_id: 'reviewed-pass' }),
-          item({ practice_id: 'reviewed-fail', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_v1' } }),
+          item({ practice_id: 'reviewed-fail', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_schema_v2' } }),
           item({ practice_id: 'candidate-pass', review_status: 'candidate' }),
         ],
       }),

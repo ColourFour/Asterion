@@ -1,7 +1,7 @@
 import { BookOpenCheck, CheckCircle2 } from 'lucide-react';
 import type { RegionFieldGuide } from '../../../data/regionFieldGuides';
 import type { RegionTheme } from '../../../lib/regionThemes';
-import type { TeachingSnippet } from '../../../lib/teachingSnippets';
+import type { TeachingSnippet, TeachingSnippetWorkedExample } from '../../../lib/teachingSnippets';
 import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
 import { RegionGuideCallout } from './RegionGuideCallout';
@@ -13,6 +13,32 @@ interface FieldGuidePanelProps {
   teachingSnippets: TeachingSnippet[];
   maxInitialSnippets?: number;
   onCompleteFieldGuide: () => void;
+}
+
+function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample }) {
+  return (
+    <div className="worked-example-card">
+      <div className="worked-example-section">
+        <b>What the question is asking</b>
+        <strong><MathText text={example.prompt} /></strong>
+      </div>
+      {example.questionType ? (
+        <small><b>Question type:</b> <MathText text={example.questionType} /></small>
+      ) : null}
+      {example.keyMethod ? (
+        <small><b>Key method:</b> <MathText text={example.keyMethod} /></small>
+      ) : null}
+      <div className="worked-example-section">
+        <b>Step-by-step math</b>
+        <ol>
+          {example.steps.map((step) => <li key={step}><MathText text={step} /></li>)}
+        </ol>
+      </div>
+      <small><b>Answer:</b> <MathText text={example.answer} /></small>
+      {example.examMove ? <small><b>Exam move:</b> <MathText text={example.examMove} /></small> : null}
+      {example.teachingNote ? <small><b>Note:</b> <MathText text={example.teachingNote} /></small> : null}
+    </div>
+  );
 }
 
 export function FieldGuidePanel({
@@ -64,14 +90,7 @@ export function FieldGuidePanel({
                         <b>Worked example:</b>
                         <div className="worked-example-grid">
                           {snippet.workedExamples.slice(0, 2).map((example) => (
-                            <div className="worked-example-card" key={example.id ?? example.prompt}>
-                              <strong><MathText text={example.prompt} /></strong>
-                              <ol>
-                                {example.steps.map((step) => <li key={step}><MathText text={step} /></li>)}
-                              </ol>
-                              <small><b>Answer:</b> <MathText text={example.answer} /></small>
-                              {example.teachingNote ? <small><b>Note:</b> <MathText text={example.teachingNote} /></small> : null}
-                            </div>
+                            <WorkedExampleCard example={example} key={example.id ?? example.prompt} />
                           ))}
                         </div>
                       </div>

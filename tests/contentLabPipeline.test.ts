@@ -68,6 +68,26 @@ function skillTargetFixture(overrides: Record<string, unknown> = {}) {
 }
 
 function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) {
+  const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
+    logarithms_and_exponentials: {
+      questionId: '32spring21_q01',
+      questionAsset: 'p3/32spring21/questions/q01.png',
+      markSchemeAsset: 'p3/32spring21/mark_scheme/q01.png',
+      questionType: 'Logarithm equation',
+    },
+    binomial_expansion: {
+      questionId: '33summer21_q01',
+      questionAsset: 'p3/33summer21/questions/q01.png',
+      markSchemeAsset: 'p3/33summer21/mark_scheme/q01.png',
+      questionType: 'Binomial term or coefficient',
+    },
+    trigonometry: {
+      questionId: '32spring21_q03',
+      questionAsset: 'p3/32spring21/questions/q03.png',
+      markSchemeAsset: 'p3/32spring21/mark_scheme/q03.png',
+      questionType: 'Trigonometric equation',
+    },
+  };
   const rows = [
     ['p3-log-check', 'logarithms_and_exponentials', ['logarithm-grove'], 'Check the log form'],
     ['p3-algebra-check', 'binomial_expansion', ['algebra-forge'], 'Check the algebra form'],
@@ -80,49 +100,69 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
     ['p3-de-check', 'differential_equations', ['differential-shrine'], 'Check the separated equation'],
   ] as const;
 
-  return rows.map(([snippetId, topic, regionIds, title], index) => ({
-    snippet_id: snippetId,
-    paper_family: 'p3',
-    topic,
-    topics: [topic],
-    region_ids: regionIds,
-    title,
-    student_goal: 'Use reviewed content before practice.',
-    body: 'This reviewed snippet gives a short method reminder.',
-    steps: ['Identify the topic signal.', 'Choose the method.'],
-    exam_move: 'Name the method before calculating.',
-    common_trap: 'Starting before choosing a method.',
-    review_status: 'published',
-    source: 'teacher_authored',
-    prerequisites: ['Read the question prompt carefully.'],
-    micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
-    common_mistakes: ['Skipping the setup line.'],
-    quick_check: {
-      id: `${snippetId}-qc`,
-      region_id: regionIds[0],
+  return rows.map(([snippetId, topic, regionIds, title], index) => {
+    const firstBatchSource = firstBatchSources[topic];
+    const workedExampleId = `${snippetId}-example-1`;
+    const snippet = {
+      snippet_id: snippetId,
+      paper_family: 'p3',
       topic,
-      skill_target_id: `p3_${topic}`,
+      topics: [topic],
+      region_ids: regionIds,
       title,
-      prompt: 'What should you do before calculating?',
-      answer: 'Choose the method.',
-      explanation: 'A named method keeps the first line purposeful.',
-      micro_skill: 'Choose a method before calculating.',
-      difficulty_band: 'easy',
-      estimated_time_minutes: 1,
+      student_goal: 'Use reviewed content before practice.',
+      body: 'This reviewed snippet gives a short method reminder.',
+      steps: ['Identify the topic signal.', 'Choose the method.'],
+      exam_move: 'Name the method before calculating.',
+      common_trap: 'Starting before choosing a method.',
       review_status: 'published',
-    },
-    guardian_readiness: {
-      supports_topics: [topic],
-      recommended_before_question_ids: ['source_q'],
-      readiness_note: 'Use before Guardian attempts.',
-    },
-    estimated_time_minutes: 3,
-    snippet_type: 'concept',
-    source_question_ids: ['source_q'],
-    source_skill_target_ids: [`p3_${topic}`],
-    related_skill_targets: [`p3_${topic}`],
-    ...(index === 0 ? snippetOverrides : {}),
-  }));
+      source: 'teacher_authored',
+      prerequisites: ['Read the question prompt carefully.'],
+      micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
+      common_mistakes: ['Skipping the setup line.'],
+      quick_check: {
+        id: `${snippetId}-qc`,
+        region_id: regionIds[0],
+        topic,
+        skill_target_id: `p3_${topic}`,
+        title,
+        prompt: 'What should you do before calculating?',
+        answer: 'Choose the method.',
+        explanation: 'A named method keeps the first line purposeful.',
+        micro_skill: 'Choose a method before calculating.',
+        difficulty_band: 'easy',
+        estimated_time_minutes: 1,
+        review_status: 'published',
+        ...(firstBatchSource ? { example_model_id: workedExampleId } : {}),
+      },
+      guardian_readiness: {
+        supports_topics: [topic],
+        recommended_before_question_ids: ['source_q'],
+        readiness_note: 'Use before Guardian attempts.',
+      },
+      estimated_time_minutes: 3,
+      snippet_type: 'concept',
+      source_question_ids: ['source_q'],
+      source_skill_target_ids: [`p3_${topic}`],
+      related_skill_targets: [`p3_${topic}`],
+      ...(firstBatchSource ? {
+        worked_example: {
+          id: workedExampleId,
+          prompt: 'State the method needed for this example.',
+          steps: ['Identify the structure.', 'Choose the method.'],
+          answer: 'Use the named method.',
+          question_type: firstBatchSource.questionType,
+          key_method: 'Choose the method before calculating.',
+          exam_move: 'Name the method before calculating.',
+          source_question_ids: [firstBatchSource.questionId],
+          source_question_asset_ids: [firstBatchSource.questionAsset],
+          source_mark_scheme_asset_ids: [firstBatchSource.markSchemeAsset],
+        },
+      } : {}),
+      ...(index === 0 ? snippetOverrides : {}),
+    };
+    return snippet;
+  });
 }
 
 function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOverrides: Record<string, unknown> = {}) {
@@ -154,7 +194,15 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
 }
 
 function runVerifier(outputDir: string, snippetsPath: string): string {
-  return execFileSync('python3', [verifyScript, '--outputs-dir', outputDir, '--snippets', snippetsPath], {
+  return execFileSync('python3', [
+    verifyScript,
+    '--outputs-dir',
+    outputDir,
+    '--snippets',
+    snippetsPath,
+    '--runtime-generated-practice',
+    path.join(outputDir, 'runtime_generated_practice_bank.json'),
+  ], {
     cwd: repoRoot,
     encoding: 'utf8',
   });
@@ -309,6 +357,55 @@ describe('Content Lab skill target pipeline', () => {
           prompt: 'Simplify $\\ln x+\\ln2$.',
           steps: [],
           answer: '$\\ln(2x)$',
+        },
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects first-batch worked examples missing publishing metadata', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-example-metadata-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: {
+          id: 'p3-log-check-example-1',
+          prompt: 'Simplify $\\ln x+\\ln2$.',
+          steps: ['Use the product law.'],
+          answer: '$\\ln(2x)$',
+          question_type: 'Logarithm laws',
+          key_method: 'Use the product law.',
+          source_question_ids: ['32spring21_q01'],
+          source_question_asset_ids: ['p3/32spring21/questions/q01.png'],
+          source_mark_scheme_asset_ids: ['p3/32spring21/mark_scheme/q01.png'],
+        },
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects malformed MathText delimiters in reviewed teaching snippets', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-math-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: {
+          id: 'p3-log-check-example-1',
+          prompt: 'Simplify $\\ln x+\\ln2.',
+          steps: ['Use the product law.'],
+          answer: '$\\ln(2x)$',
+          question_type: 'Logarithm laws',
+          key_method: 'Use the product law.',
+          exam_move: 'Combine logs before solving.',
+          source_question_ids: ['32spring21_q01'],
+          source_question_asset_ids: ['p3/32spring21/questions/q01.png'],
+          source_mark_scheme_asset_ids: ['p3/32spring21/mark_scheme/q01.png'],
         },
       });
 

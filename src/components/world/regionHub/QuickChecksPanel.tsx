@@ -9,12 +9,22 @@ interface QuickChecksPanelProps {
 }
 
 export function QuickChecksPanel({ teachingSnippets, maxInitialItems = 2 }: QuickChecksPanelProps) {
+  const examplesById = new Map(
+    teachingSnippets.flatMap((snippet) => (
+      snippet.workedExamples.flatMap((example) => (
+        example.id
+          ? [[example.id, { example }] as const]
+          : []
+      ))
+    )),
+  );
   const checks = teachingSnippets.flatMap((snippet) => (
     snippet.quickCheck
       ? [{
         snippetId: snippet.snippetId,
         title: snippet.title,
         check: snippet.quickCheck,
+        linkedExample: snippet.quickCheck.exampleModelId ? examplesById.get(snippet.quickCheck.exampleModelId) : undefined,
       }]
       : []
   ));
@@ -33,10 +43,15 @@ export function QuickChecksPanel({ teachingSnippets, maxInitialItems = 2 }: Quic
       {visibleChecks.length ? (
         <>
           <div className="quick-check-list">
-            {visibleChecks.map(({ snippetId, title, check }) => (
+            {visibleChecks.map(({ snippetId, title, check, linkedExample }) => (
               <details className="quick-check-reveal" key={snippetId}>
                 <summary>Quick check: {title}</summary>
                 <p><MathText text={check.prompt} /></p>
+                {linkedExample ? (
+                  <small className="quick-check-example-link">
+                    Linked example: <MathText text={linkedExample.example.prompt} />
+                  </small>
+                ) : null}
                 <div>
                   <strong>Answer</strong>
                   <p><MathText text={check.answer} /></p>

@@ -25,6 +25,22 @@ function WarmUpPracticeCard({ item }: WarmUpPracticeCardProps) {
         <strong>{practiceLabel}</strong>
         <span>{item.difficultyBand}</span>
       </div>
+      {(item.questionType || item.keyMethod) ? (
+        <dl className="warm-up-method-list">
+          {item.questionType ? (
+            <>
+              <dt>Question type</dt>
+              <dd><MathText text={item.questionType} /></dd>
+            </>
+          ) : null}
+          {item.keyMethod ? (
+            <>
+              <dt>Key method</dt>
+              <dd><MathText text={item.keyMethod} /></dd>
+            </>
+          ) : null}
+        </dl>
+      ) : null}
       <p><MathText text={item.prompt} /></p>
       <button
         className="warm-up-reveal-button"

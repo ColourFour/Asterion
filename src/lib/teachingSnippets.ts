@@ -13,6 +13,7 @@ export interface TeachingSnippetQuickCheck {
   regionId?: string;
   topic?: string;
   skillTargetId?: string;
+  exampleModelId?: string;
   title?: string;
   prompt: string;
   answer: string;
@@ -35,6 +36,12 @@ export interface TeachingSnippetWorkedExample {
   steps: string[];
   answer: string;
   teachingNote?: string;
+  questionType?: string;
+  keyMethod?: string;
+  examMove?: string;
+  sourceQuestionIds: string[];
+  sourceQuestionAssetIds: string[];
+  sourceMarkSchemeAssetIds: string[];
 }
 
 export interface TeachingSnippet {
@@ -108,6 +115,7 @@ function quickCheckValue(value: unknown): TeachingSnippetQuickCheck | undefined 
     ['regionId', stringValue(record.region_id)],
     ['topic', stringValue(record.topic)],
     ['skillTargetId', stringValue(record.skill_target_id)],
+    ['exampleModelId', stringValue(record.example_model_id)],
     ['title', stringValue(record.title)],
     ['microSkill', stringValue(record.micro_skill)],
     ['difficultyBand', stringValue(record.difficulty_band)],
@@ -142,11 +150,20 @@ function workedExampleValue(value: unknown): TeachingSnippetWorkedExample | unde
     prompt,
     steps,
     answer,
+    sourceQuestionIds: stringArray(record.source_question_ids),
+    sourceQuestionAssetIds: stringArray(record.source_question_asset_ids),
+    sourceMarkSchemeAssetIds: stringArray(record.source_mark_scheme_asset_ids),
   };
   const id = stringValue(record.id);
   const teachingNote = stringValue(record.teaching_note);
   if (id) workedExample.id = id;
   if (teachingNote) workedExample.teachingNote = teachingNote;
+  const questionType = stringValue(record.question_type);
+  const keyMethod = stringValue(record.key_method);
+  const examMove = stringValue(record.exam_move);
+  if (questionType) workedExample.questionType = questionType;
+  if (keyMethod) workedExample.keyMethod = keyMethod;
+  if (examMove) workedExample.examMove = examMove;
   return workedExample;
 }
 

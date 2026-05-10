@@ -14,6 +14,9 @@ interface GeneratedPracticeItem {
   skill_target_id?: string;
   source_snippet_id?: string;
   example_model_id?: string;
+  question_type?: string;
+  key_method?: string;
+  exam_move?: string;
   prompt: string;
   answer: string;
   worked_solution: string[];
@@ -278,6 +281,26 @@ function polynomialText(terms: Array<[number, number]>): string {
 }
 
 function regionCoverageSnippets() {
+  const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
+    logarithms_and_exponentials: {
+      questionId: '32spring21_q01',
+      questionAsset: 'p3/32spring21/questions/q01.png',
+      markSchemeAsset: 'p3/32spring21/mark_scheme/q01.png',
+      questionType: 'Logarithm equation',
+    },
+    binomial_expansion: {
+      questionId: '33summer21_q01',
+      questionAsset: 'p3/33summer21/questions/q01.png',
+      markSchemeAsset: 'p3/33summer21/mark_scheme/q01.png',
+      questionType: 'Binomial term or coefficient',
+    },
+    trigonometry: {
+      questionId: '32spring21_q03',
+      questionAsset: 'p3/32spring21/questions/q03.png',
+      markSchemeAsset: 'p3/32spring21/mark_scheme/q03.png',
+      questionType: 'Trigonometric equation',
+    },
+  };
   const rows = [
     ['p3-log-check', 'logarithms_and_exponentials', ['logarithm-grove']],
     ['p3-algebra-check', 'binomial_expansion', ['algebra-forge']],
@@ -290,40 +313,59 @@ function regionCoverageSnippets() {
     ['p3-de-check', 'differential_equations', ['differential-shrine']],
   ] as const;
 
-  return rows.map(([snippetId, topic, regionIds]) => ({
-    snippet_id: snippetId,
-    paper_family: 'p3',
-    topic,
-    topics: [topic],
-    region_ids: regionIds,
-    title: 'Reviewed region snippet',
-    student_goal: 'Use reviewed content before practice.',
-    body: 'This reviewed snippet gives a short method reminder.',
-    steps: ['Identify the topic signal.', 'Choose the method.'],
-    exam_move: 'Name the method before calculating.',
-    common_trap: 'Starting before choosing a method.',
-    review_status: 'published',
-    source: 'teacher_authored',
-    prerequisites: ['Read the question prompt carefully.'],
-    micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
-    common_mistakes: ['Skipping the setup line.'],
-    quick_check: {
-      id: `${snippetId}-qc`,
-      region_id: regionIds[0],
+  return rows.map(([snippetId, topic, regionIds]) => {
+    const firstBatchSource = firstBatchSources[topic];
+    const workedExampleId = `${snippetId}-example-1`;
+    return {
+      snippet_id: snippetId,
+      paper_family: 'p3',
       topic,
-      skill_target_id: `p3_${topic}`,
+      topics: [topic],
+      region_ids: regionIds,
       title: 'Reviewed region snippet',
-      prompt: 'What should you do before calculating?',
-      answer: 'Choose the method.',
-      explanation: 'A named method keeps the first line purposeful.',
-      micro_skill: 'Choose a method before calculating.',
-      difficulty_band: 'easy',
-      estimated_time_minutes: 1,
+      student_goal: 'Use reviewed content before practice.',
+      body: 'This reviewed snippet gives a short method reminder.',
+      steps: ['Identify the topic signal.', 'Choose the method.'],
+      exam_move: 'Name the method before calculating.',
+      common_trap: 'Starting before choosing a method.',
       review_status: 'published',
-    },
-    source_skill_target_ids: [`p3_${topic}`],
-    related_skill_targets: [`p3_${topic}`],
-  }));
+      source: 'teacher_authored',
+      prerequisites: ['Read the question prompt carefully.'],
+      micro_steps: ['Circle the topic signal.', 'Write the first method line.'],
+      common_mistakes: ['Skipping the setup line.'],
+      quick_check: {
+        id: `${snippetId}-qc`,
+        region_id: regionIds[0],
+        topic,
+        skill_target_id: `p3_${topic}`,
+        title: 'Reviewed region snippet',
+        prompt: 'What should you do before calculating?',
+        answer: 'Choose the method.',
+        explanation: 'A named method keeps the first line purposeful.',
+        micro_skill: 'Choose a method before calculating.',
+        difficulty_band: 'easy',
+        estimated_time_minutes: 1,
+        review_status: 'published',
+        ...(firstBatchSource ? { example_model_id: workedExampleId } : {}),
+      },
+      source_skill_target_ids: [`p3_${topic}`],
+      related_skill_targets: [`p3_${topic}`],
+      ...(firstBatchSource ? {
+        worked_example: {
+          id: workedExampleId,
+          prompt: 'State the method needed for this example.',
+          steps: ['Identify the structure.', 'Choose the method.'],
+          answer: 'Use the named method.',
+          question_type: firstBatchSource.questionType,
+          key_method: 'Choose the method before calculating.',
+          exam_move: 'Name the method before calculating.',
+          source_question_ids: [firstBatchSource.questionId],
+          source_question_asset_ids: [firstBatchSource.questionAsset],
+          source_mark_scheme_asset_ids: [firstBatchSource.markSchemeAsset],
+        },
+      } : {}),
+    };
+  });
 }
 
 function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOverrides: Record<string, unknown>) {
@@ -393,9 +435,14 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
         worked_solution: ['The domain requires x > 0.', 'Equal logs have equal positive arguments.'],
         parameters: { solution: 2 },
         sequence_role: 'first_step',
-        verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
+        verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_schema_v2' },
         difficulty_band: 'easy',
         review_status: 'teacher_reviewed',
+        source_snippet_id: 'p3-log-check',
+        example_model_id: 'p3-log-check-example-1',
+        question_type: 'Logarithm equation',
+        key_method: 'Choose the method before calculating.',
+        exam_move: 'Name the method before calculating.',
         ...practiceOverrides,
       },
     ],
@@ -419,6 +466,9 @@ describe('generated practice Content Lab pipeline', () => {
         expect(parameters.sequence_stage).toBeTruthy();
         expect(item.source_snippet_id).toBe('log-snippet');
         expect(item.example_model_id).toBe('log-snippet-example-1');
+        expect(item.question_type).toBeTruthy();
+        expect(item.key_method).toBeTruthy();
+        expect(item.exam_move).toBeTruthy();
         expect(item.worked_solution.join(' ').toLowerCase()).toMatch(/divide|ln|exponent/);
 
         switch (parameters.form) {
@@ -503,6 +553,7 @@ describe('generated practice Content Lab pipeline', () => {
         expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
         expect(familyItems.every((item) => item.worked_solution.length >= 2)).toBe(true);
         expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
+        expect(familyItems.every((item) => item.question_type && item.key_method && item.exam_move)).toBe(true);
       }
 
       expect(items.find((item) => item.generator_family === 'algebra.partial_fractions_repeated_linear' && item.sequence_role === 'first_step')?.answer).toContain('(x - 2)^2');
@@ -529,6 +580,7 @@ describe('generated practice Content Lab pipeline', () => {
         expect(familyItems.map((item) => item.sequence_role).sort()).toEqual(['complete_step', 'first_step', 'guardian_prep']);
         expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
         expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
+        expect(familyItems.every((item) => item.question_type && item.key_method && item.exam_move)).toBe(true);
       }
 
       expect(items.find((item) => item.generator_family === 'trigonometry.r_form_basic' && item.sequence_role === 'first_step')?.answer).toBe('R = 5');
@@ -656,6 +708,28 @@ describe('generated practice Content Lab pipeline', () => {
     try {
       const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
         sequence_role: '',
+      });
+
+      expect(() => execFileSync('python3', [
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+      ], { cwd: repoRoot })).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects first-batch runtime generated practice without an example link', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-missing-example-link-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
+        example_model_id: '',
       });
 
       expect(() => execFileSync('python3', [

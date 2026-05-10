@@ -80,11 +80,18 @@ describe('teaching snippets runtime loader', () => {
             steps: ['Use the product law.', 'Multiply the log inputs.'],
             answer: '$\\ln(2x)$',
             teaching_note: 'Adding logs means multiplying inputs.',
+            question_type: 'Logarithm laws',
+            key_method: 'Use the product law.',
+            exam_move: 'Combine logs before solving.',
+            source_question_ids: ['32spring21_q01'],
+            source_question_asset_ids: ['p3/32spring21/questions/q01.png'],
+            source_mark_scheme_asset_ids: ['p3/32spring21/mark_scheme/q01.png'],
           },
           quick_check: {
             prompt: 'Rewrite $\\log_3 9=2$.',
             answer: '$3^2=9$',
             explanation: 'The log value is the exponent.',
+            example_model_id: 'enriched-example-1',
           },
           guardian_readiness: {
             supports_topics: ['logarithms_and_exponentials'],
@@ -120,15 +127,21 @@ describe('teaching snippets runtime loader', () => {
       prerequisites: ['Index laws.'],
       microSteps: ['Circle the base.', 'Rewrite the statement.'],
       commonMistakes: ['Treating the log value as the base.'],
-      workedExamples: [
-        {
-          id: 'enriched-example-1',
-          prompt: 'Simplify $\\ln x+\\ln2$.',
-          steps: ['Use the product law.', 'Multiply the log inputs.'],
-          answer: '$\\ln(2x)$',
-          teachingNote: 'Adding logs means multiplying inputs.',
-        },
-      ],
+          workedExamples: [
+            {
+              id: 'enriched-example-1',
+              prompt: 'Simplify $\\ln x+\\ln2$.',
+              steps: ['Use the product law.', 'Multiply the log inputs.'],
+              answer: '$\\ln(2x)$',
+              teachingNote: 'Adding logs means multiplying inputs.',
+              questionType: 'Logarithm laws',
+              keyMethod: 'Use the product law.',
+              examMove: 'Combine logs before solving.',
+              sourceQuestionIds: ['32spring21_q01'],
+              sourceQuestionAssetIds: ['p3/32spring21/questions/q01.png'],
+              sourceMarkSchemeAssetIds: ['p3/32spring21/mark_scheme/q01.png'],
+            },
+          ],
       estimatedTimeMinutes: 2,
       snippetType: 'quick_check',
       sourceQuestionIds: ['source_q'],
@@ -139,6 +152,7 @@ describe('teaching snippets runtime loader', () => {
       prompt: 'Rewrite $\\log_3 9=2$.',
       answer: '$3^2=9$',
       explanation: 'The log value is the exponent.',
+      exampleModelId: 'enriched-example-1',
     });
     expect(snippets[0].guardianReadiness).toEqual({
       supportsTopics: ['logarithms_and_exponentials'],
@@ -246,6 +260,15 @@ describe('teaching snippets runtime loader', () => {
     expect(priorityMethodSnippets.length).toBeGreaterThan(0);
     expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.length > 0)).toBe(true);
     expect(priorityMethodSnippets.every((snippet) => snippet.quickCheck)).toBe(true);
+    expect(priorityMethodSnippets.every((snippet) => snippet.quickCheck?.exampleModelId)).toBe(true);
+    expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.every((example) => (
+      example.questionType
+      && example.keyMethod
+      && example.examMove
+      && example.sourceQuestionIds.length > 0
+      && example.sourceQuestionAssetIds.length > 0
+      && example.sourceMarkSchemeAssetIds.length > 0
+    )))).toBe(true);
     expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.every((example) => (
       example.steps.length >= 1 && example.steps.length <= 6
     )))).toBe(true);

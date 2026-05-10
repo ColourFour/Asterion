@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://asterion.local/schemas/generated_practice.schema.json",
-  "title": "Asterion Content Lab Generated Practice",
-  "description": "Reviewed, deterministic, non-exam warm-up practice generated repo-side for static runtime use.",
+  "title": "Asterion Content Lab Generated Practice Schema Contract v2",
+  "description": "Reviewed, deterministic, non-exam warm-up practice generated repo-side for static runtime use. v2 adds optional Question-to-Lesson metadata while preserving legacy runtime parsing.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_name", "schema_version", "generated_by", "items"],
@@ -50,6 +50,9 @@
           "skill_target_id": { "type": "string", "minLength": 1 },
           "source_snippet_id": { "type": "string", "minLength": 1 },
           "example_model_id": { "type": "string", "minLength": 1 },
+          "question_type": { "type": "string", "minLength": 1 },
+          "key_method": { "type": "string", "minLength": 1 },
+          "exam_move": { "type": "string", "minLength": 1 },
           "snippet_ids": {
             "type": "array",
             "items": { "type": "string", "minLength": 1 },

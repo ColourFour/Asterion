@@ -68,12 +68,19 @@ const snippet: TeachingSnippet = {
       steps: ['Keep base two.', 'Use three as the exponent.'],
       answer: 'Two cubed equals eight.',
       teachingNote: 'The log value is the exponent.',
+      questionType: 'Logarithm conversion',
+      keyMethod: 'Rewrite the logarithm as an exponent statement.',
+      examMove: 'Convert form before solving.',
+      sourceQuestionIds: ['32spring21_q01'],
+      sourceQuestionAssetIds: ['p3/32spring21/questions/q01.png'],
+      sourceMarkSchemeAssetIds: ['p3/32spring21/mark_scheme/q01.png'],
     },
   ],
   quickCheck: {
     prompt: 'Rewrite log base two of eight equals three.',
     answer: 'Two cubed equals eight.',
     explanation: 'The log value is the exponent.',
+    exampleModelId: 'p3-log-check-example-1',
   },
   guardianReadiness: {
     supportsTopics: ['logarithms_and_exponentials'],
@@ -103,7 +110,10 @@ const generatedPractice: GeneratedPracticeItem = {
   parameters: { a: 3, b: 12, solution: 4 },
   sourceSnippetId: 'p3-log-laws-001',
   exampleModelId: 'p3-log-laws-001-example-1',
-  verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
+  questionType: 'Logarithm equation',
+  keyMethod: 'Combine logarithms before solving.',
+  examMove: 'Use one logarithm before comparing arguments.',
+  verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_schema_v2' },
   difficultyBand: 'easy',
   reviewStatus: 'teacher_reviewed',
 };
@@ -187,6 +197,11 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Teaching snippets');
     expect(container.textContent).toContain('Worked example');
+    expect(container.textContent).toContain('What the question is asking');
+    expect(container.textContent).toContain('Question type');
+    expect(container.textContent).toContain('Key method');
+    expect(container.textContent).toContain('Step-by-step math');
+    expect(container.textContent).toContain('Exam move');
     expect(container.textContent).toContain('Two cubed equals eight.');
     expect(container.textContent).toContain('Micro steps');
     expect(container.textContent).toContain('Common mistakes');
@@ -202,6 +217,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(details?.open).toBe(true);
     expect(details?.textContent).toContain('Answer');
+    expect(details?.textContent).toContain('Linked example');
     expect(details?.textContent).toContain('Two cubed equals eight.');
   });
 
@@ -215,6 +231,9 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Warm-up Practice');
     expect(container.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
+    expect(container.textContent).toContain('Question type');
+    expect(container.textContent).toContain('Logarithm equation');
+    expect(container.textContent).toContain('Key method');
     expect(container.textContent).not.toContain('x = 4');
 
     const revealButton = Array.from(container.querySelectorAll('button'))

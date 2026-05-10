@@ -15,7 +15,7 @@ from typing import Any
 
 
 GENERATED_BY = "tools/content_lab/scripts/build_generated_practice.py"
-VERIFIER_NAME = "content_lab_v1"
+VERIFIER_NAME = "content_lab_schema_v2"
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
 
 LOG_TOPIC = "logarithms_and_exponentials"
@@ -103,7 +103,7 @@ def worked_example_count(snippet: dict[str, Any]) -> int:
     return count
 
 
-def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any]) -> dict[str, dict[Any, list[str]]]:
+def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any]) -> dict[str, Any]:
     skill_ids_by_key: dict[tuple[str, str], list[str]] = {}
     for target in skill_targets.get("skill_targets", []):
         if not isinstance(target, dict):
@@ -117,6 +117,8 @@ def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any])
     snippet_ids_by_key: dict[tuple[str, str], list[str]] = {}
     snippet_ids_by_id: dict[str, list[str]] = {}
     example_ids_by_snippet_id: dict[str, list[str]] = {}
+    example_metadata_by_id: dict[str, dict[str, str]] = {}
+    snippet_metadata_by_id: dict[str, dict[str, str]] = {}
     region_ids_by_key: dict[tuple[str, str], list[str]] = {}
     for snippet in snippets.get("snippets", []):
         if not isinstance(snippet, dict):
@@ -130,12 +132,22 @@ def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any])
         if not snippet_id or not paper_family:
             continue
         snippet_ids_by_id[snippet_id] = [snippet_id]
+        snippet_metadata_by_id[snippet_id] = {
+            "exam_move": non_empty_string(snippet.get("exam_move")) or "",
+            "key_method": non_empty_string(snippet.get("title")) or "",
+            "question_type": non_empty_string(snippet.get("topic")) or (topics[0] if topics else ""),
+        }
         example_ids: list[str] = []
         worked_example = snippet.get("worked_example")
         if isinstance(worked_example, dict):
             example_id = non_empty_string(worked_example.get("id"))
             if example_id:
                 example_ids.append(example_id)
+                example_metadata_by_id[example_id] = {
+                    "exam_move": non_empty_string(worked_example.get("exam_move")) or snippet_metadata_by_id[snippet_id]["exam_move"],
+                    "key_method": non_empty_string(worked_example.get("key_method")) or snippet_metadata_by_id[snippet_id]["key_method"],
+                    "question_type": non_empty_string(worked_example.get("question_type")) or snippet_metadata_by_id[snippet_id]["question_type"],
+                }
         worked_examples = snippet.get("worked_examples")
         if isinstance(worked_examples, list):
             for example in worked_examples:
@@ -143,6 +155,11 @@ def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any])
                     example_id = non_empty_string(example.get("id"))
                     if example_id:
                         example_ids.append(example_id)
+                        example_metadata_by_id[example_id] = {
+                            "exam_move": non_empty_string(example.get("exam_move")) or snippet_metadata_by_id[snippet_id]["exam_move"],
+                            "key_method": non_empty_string(example.get("key_method")) or snippet_metadata_by_id[snippet_id]["key_method"],
+                            "question_type": non_empty_string(example.get("question_type")) or snippet_metadata_by_id[snippet_id]["question_type"],
+                        }
         if example_ids:
             example_ids_by_snippet_id[snippet_id] = sorted(set(example_ids))
         for topic in topics:
@@ -155,12 +172,14 @@ def context_from_inputs(skill_targets: dict[str, Any], snippets: dict[str, Any])
         "snippet_ids_by_key": {key: sorted(set(values)) for key, values in snippet_ids_by_key.items()},
         "snippet_ids_by_id": snippet_ids_by_id,
         "example_ids_by_snippet_id": example_ids_by_snippet_id,
+        "example_metadata_by_id": example_metadata_by_id,
+        "snippet_metadata_by_id": snippet_metadata_by_id,
         "region_ids_by_key": {key: sorted(set(values)) for key, values in region_ids_by_key.items()},
     }
 
 
 def preferred_snippet_ids(
-    context: dict[str, dict[Any, list[str]]],
+    context: dict[str, Any],
     topic: str,
     preferred_ids: list[str],
 ) -> list[str]:
@@ -179,7 +198,7 @@ def base_item(
     answer: str,
     worked_solution: list[str],
     parameters: dict[str, Any],
-    context: dict[str, dict[Any, list[str]]],
+    context: dict[str, Any],
     sequence_role: str,
     difficulty_band: str = "easy",
     snippet_ids: list[str] | None = None,
@@ -228,6 +247,17 @@ def base_item(
         resolved_example_id = example_model_id or (example_ids[0] if example_ids else None)
         if resolved_example_id:
             item["example_model_id"] = resolved_example_id
+            metadata = context["example_metadata_by_id"].get(resolved_example_id, {})
+        else:
+            metadata = context["snippet_metadata_by_id"].get(source_snippet_id, {})
+        for output_key, metadata_key in (
+            ("question_type", "question_type"),
+            ("key_method", "key_method"),
+            ("exam_move", "exam_move"),
+        ):
+            value = non_empty_string(metadata.get(metadata_key))
+            if value:
+                item[output_key] = value
     region_ids = context["region_ids_by_key"].get(key, [])
     if region_ids:
         item["region_ids"] = region_ids
@@ -239,7 +269,7 @@ def assert_positive_integer(value: int, practice_id: str) -> None:
         raise ValueError(f"{practice_id} generated a non-positive solution")
 
 
-def build_log_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_log_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases: list[dict[str, Any]] = [
         {"form": "isolated_exp", "coefficient": 2, "rhs": 7, "sequence_stage": "first_step", "difficulty_band": "easy"},
         {"form": "scaled_exp", "scale": 5, "coefficient": 3, "rhs": 20, "sequence_stage": "complete_step", "difficulty_band": "easy"},
@@ -352,7 +382,7 @@ def first_three_coefficients(a: int, n: int) -> tuple[int, int, int]:
     return (1, n * a, comb(n, 2) * a * a)
 
 
-def build_binomial_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     expand_cases = [
         {"a": 3, "n": 4, "max_power": 1, "sequence_stage": "first_step", "difficulty_band": "easy"},
         {"a": -2, "n": 5, "max_power": 2, "sequence_stage": "complete_step", "difficulty_band": "easy"},
@@ -504,7 +534,7 @@ def coefficient_symbol(index: int) -> str:
     return chr(ord("A") + index)
 
 
-def build_partial_fractions_distinct_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_partial_fractions_distinct_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {"item_type": "setup_form", "roots": [1, -2], "sequence_role": "first_step", "difficulty_band": "easy"},
         {"item_type": "decompose", "roots": [1, -2], "constants": [2, 1], "sequence_role": "complete_step", "difficulty_band": "easy"},
@@ -572,7 +602,7 @@ def build_partial_fractions_distinct_items(context: dict[str, dict[Any, list[str
     return items
 
 
-def build_partial_fractions_repeated_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_partial_fractions_repeated_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {"item_type": "setup_repeated", "root": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
         {"item_type": "decompose_repeated", "root": 1, "constants": [3, 5], "sequence_role": "complete_step", "difficulty_band": "easy"},
@@ -663,7 +693,7 @@ def build_partial_fractions_repeated_items(context: dict[str, dict[Any, list[str
     return items
 
 
-def build_modulus_equation_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_modulus_equation_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {"a": 4, "b": 7, "coefficient": 1, "sequence_role": "first_step", "difficulty_band": "easy"},
         {"a": 3, "b": 5, "coefficient": 1, "sequence_role": "complete_step", "difficulty_band": "easy"},
@@ -719,7 +749,7 @@ def build_modulus_equation_items(context: dict[str, dict[Any, list[str]]]) -> li
     return items
 
 
-def build_binomial_validity_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_binomial_validity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {"form": "simple", "k": 3, "n": -2, "sequence_role": "first_step", "difficulty_band": "easy"},
         {"form": "simple_negative", "k": -2, "n": -1, "sequence_role": "complete_step", "difficulty_band": "easy"},
@@ -783,7 +813,7 @@ def build_binomial_validity_items(context: dict[str, dict[Any, list[str]]]) -> l
     return items
 
 
-def build_trig_identity_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_trig_identity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {
             "prompt": "Rewrite sec x using sine or cosine.",
@@ -843,7 +873,7 @@ def build_trig_identity_items(context: dict[str, dict[Any, list[str]]]) -> list[
     return items
 
 
-def build_trig_double_angle_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {
             "prompt": "Choose a double-angle identity for sin 2x.",
@@ -898,7 +928,7 @@ def build_trig_double_angle_items(context: dict[str, dict[Any, list[str]]]) -> l
     return items
 
 
-def build_trig_solve_interval_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_trig_solve_interval_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {
             "prompt": "Solve sin x = 1/2 for 0 <= x <= pi.",
@@ -959,7 +989,7 @@ def build_trig_solve_interval_items(context: dict[str, dict[Any, list[str]]]) ->
     return items
 
 
-def build_trig_r_form_items(context: dict[str, dict[Any, list[str]]]) -> list[dict[str, Any]]:
+def build_trig_r_form_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {"a": 3, "b": 4, "sequence_role": "first_step", "difficulty_band": "easy"},
         {"a": 5, "b": 12, "sequence_role": "complete_step", "difficulty_band": "easy"},
@@ -1037,7 +1067,7 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         "generated_by": GENERATED_BY,
         "items": items,
         "schema_name": "asterion_generated_practice",
-        "schema_version": 1,
+        "schema_version": 2,
     }
 
 
@@ -1053,7 +1083,7 @@ def runtime_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "generated_by": GENERATED_BY,
         "items": runtime_items,
         "schema_name": "asterion_generated_practice",
-        "schema_version": 1,
+        "schema_version": 2,
     }
 
 

@@ -31,7 +31,7 @@ function practice(overrides: Partial<GeneratedPracticeItem> = {}): GeneratedPrac
     answer: 'x = 5',
     workedSolution: ['Use the product law.', 'ln(2x) = ln(10), so x = 5.'],
     parameters: {},
-    verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_v1' },
+    verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_schema_v2' },
     difficultyBand: 'easy',
     reviewStatus: 'teacher_reviewed',
     ...overrides,
@@ -67,7 +67,7 @@ describe('region content selection', () => {
   it('keeps failed, blocked, and unreviewed generated practice out of runtime region selection', () => {
     const selected = getGeneratedPracticeForRegion([
       practice(),
-      practice({ practiceId: 'gen_log_failed', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_v1' } }),
+      practice({ practiceId: 'gen_log_failed', verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_schema_v2' } }),
       practice({ practiceId: 'gen_log_candidate', reviewStatus: 'candidate' }),
       practice({ practiceId: 'gen_log_blocked', reviewStatus: 'blocked' }),
     ], logRegion.id, 'p3');
@@ -127,7 +127,7 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
       }),
-      practice({ practiceId: 'trig-failed', topic: 'trigonometry', regionIds: ['trig-observatory'], verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_v1' } }),
+      practice({ practiceId: 'trig-failed', topic: 'trigonometry', regionIds: ['trig-observatory'], verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_schema_v2' } }),
     ];
 
     expect(getGeneratedPracticeForRegion(practiceItems, 'logarithm-grove', 'p3').length).toBeGreaterThan(0);

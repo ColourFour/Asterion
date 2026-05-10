@@ -1,6 +1,6 @@
 {
   "schema_name": "asterion_teaching_snippets",
-  "schema_version": 1,
+  "schema_version": 2,
   "snippets": [
     {
       "body": "P3 algebra often rewards seeing structure before expanding. Shared factors, conjugates, and common brackets can shorten the route and reduce sign errors.",
@@ -43,7 +43,8 @@
         "micro_skill": "Spot a shared algebraic structure before expanding.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-algebra-rearrangement-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -79,7 +80,19 @@
           "Simplify the bracket to get $(x+2)(7)$."
         ],
         "answer": "$7(x+2)$",
-        "teaching_note": "Factoring first keeps the cancellation and signs visible."
+        "teaching_note": "Factoring first keeps the cancellation and signs visible.",
+        "question_type": "Algebraic simplification",
+        "key_method": "Choose algebraic simplification before opening every bracket.",
+        "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+        "source_question_ids": [
+          "31autumn21_q01"
+        ],
+        "source_question_asset_ids": [
+          "p3/31autumn21/questions/q01.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31autumn21/mark_scheme/q01.png"
+        ]
       }
     },
     {
@@ -123,7 +136,8 @@
         "micro_skill": "Find a requested binomial coefficient.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-binomial-term-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -159,7 +173,19 @@
             "First three terms: $1+5(2x)+10(2x)^2$."
           ],
           "answer": "$1+10x+40x^2$",
-          "teaching_note": "The binomial coefficient is chosen before simplifying the power of $x$."
+          "teaching_note": "The binomial coefficient is chosen before simplifying the power of $x$.",
+          "question_type": "Binomial term or coefficient",
+          "key_method": "Find requested binomial terms without expanding everything.",
+          "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
+          "source_question_ids": [
+            "33summer21_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/33summer21/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/33summer21/mark_scheme/q01.png"
+          ]
         },
         {
           "id": "p3-binomial-term-001-example-2",
@@ -170,7 +196,19 @@
             "So the coefficient is $10(-8)$."
           ],
           "answer": "$-80$",
-          "teaching_note": "Keep the negative sign inside the power until the coefficient is simplified."
+          "teaching_note": "Keep the negative sign inside the power until the coefficient is simplified.",
+          "question_type": "Binomial term or coefficient",
+          "key_method": "Find requested binomial terms without expanding everything.",
+          "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
+          "source_question_ids": [
+            "33summer21_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/33summer21/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/33summer21/mark_scheme/q01.png"
+          ]
         }
       ]
     },
@@ -215,7 +253,8 @@
         "micro_skill": "Turn a binomial variable part into a validity interval.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-binomial-validity-range-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -251,7 +290,19 @@
           "This is $|3x|<1$, so divide by $3$."
         ],
         "answer": "$-\\frac13<x<\\frac13$",
-        "teaching_note": "The condition belongs to the variable part, not to the whole bracket."
+        "teaching_note": "The condition belongs to the variable part, not to the whole bracket.",
+        "question_type": "Binomial validity range",
+        "key_method": "State the range where a binomial expansion is valid.",
+        "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
+        "source_question_ids": [
+          "31autumn21_q06"
+        ],
+        "source_question_asset_ids": [
+          "p3/31autumn21/questions/q06.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31autumn21/mark_scheme/q06.png"
+        ]
       }
     },
     {
@@ -295,7 +346,8 @@
         "micro_skill": "Convert a basic modulus inequality into an interval.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-modulus-cases-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -331,7 +383,19 @@
             "Solve each linear equation."
           ],
           "answer": "$x=7$ or $x=-3$",
-          "teaching_note": "A modulus equation usually has two distance cases."
+          "teaching_note": "A modulus equation usually has two distance cases.",
+          "question_type": "Modulus equation cases",
+          "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
+          "exam_move": "Use distance language first, then convert to cases or an interval.",
+          "source_question_ids": [
+            "33summer22_q08"
+          ],
+          "source_question_asset_ids": [
+            "p3/33summer22/questions/q08.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/33summer22/mark_scheme/q08.png"
+          ]
         },
         {
           "id": "p3-modulus-cases-001-example-2",
@@ -341,7 +405,19 @@
             "Subtract $1$ throughout."
           ],
           "answer": "$-5<x<3$",
-          "teaching_note": "A less-than modulus inequality becomes an interval, not one equation."
+          "teaching_note": "A less-than modulus inequality becomes an interval, not one equation.",
+          "question_type": "Modulus equation cases",
+          "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
+          "exam_move": "Use distance language first, then convert to cases or an interval.",
+          "source_question_ids": [
+            "33summer22_q08"
+          ],
+          "source_question_asset_ids": [
+            "p3/33summer22/questions/q08.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/33summer22/mark_scheme/q08.png"
+          ]
         }
       ]
     },
@@ -386,7 +462,8 @@
         "micro_skill": "Choose the correct partial-fraction form.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-partial-fractions-form-001-example-1"
       },
       "region_ids": [
         "algebra-forge",
@@ -422,7 +499,19 @@
           "Substitute $x=1$ to get $A=2$, and $x=-2$ to get $B=3$."
         ],
         "answer": "$\\frac{2}{x-1}+\\frac{3}{x+2}$",
-        "teaching_note": "The denominator chooses the template before any constants are found."
+        "teaching_note": "The denominator chooses the template before any constants are found.",
+        "question_type": "Partial fractions setup",
+        "key_method": "Set up partial fractions with the correct numerator structure.",
+        "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
+        "source_question_ids": [
+          "32spring21_q06"
+        ],
+        "source_question_asset_ids": [
+          "p3/32spring21/questions/q06.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32spring21/mark_scheme/q06.png"
+        ]
       }
     },
     {
@@ -466,7 +555,8 @@
         "micro_skill": "Choose the repeated-linear partial-fraction form.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1"
       },
       "region_ids": [
         "algebra-forge",
@@ -503,7 +593,19 @@
           "Compare coefficients: $A=2$ and $-A+B=5$, so $B=7$."
         ],
         "answer": "$\\frac{2}{x-1}+\\frac{7}{(x-1)^2}$",
-        "teaching_note": "A repeated factor needs every power in the ladder."
+        "teaching_note": "A repeated factor needs every power in the ladder.",
+        "question_type": "Partial fractions with repeated factors",
+        "key_method": "Set up partial fractions when a linear factor is repeated.",
+        "exam_move": "Use repeated-factor terms before integrating rational functions.",
+        "source_question_ids": [
+          "31summer21_q10"
+        ],
+        "source_question_asset_ids": [
+          "p3/31summer21/questions/q10.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31summer21/mark_scheme/q10.png"
+        ]
       }
     },
     {
@@ -547,7 +649,8 @@
         "micro_skill": "Use the remainder theorem on a small polynomial.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-polynomial-theorem-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -583,7 +686,19 @@
           "A zero remainder means $x-1$ is a factor."
         ],
         "answer": "$x-1$ is a factor.",
-        "teaching_note": "For $x-a$, the value to substitute is $a$, not $-a$."
+        "teaching_note": "For $x-a$, the value to substitute is $a$, not $-a$.",
+        "question_type": "Polynomial factor theorem",
+        "key_method": "Use factor and remainder theorem checks before polynomial division.",
+        "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+        "source_question_ids": [
+          "32spring21_q02"
+        ],
+        "source_question_asset_ids": [
+          "p3/32spring21/questions/q02.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32spring21/mark_scheme/q02.png"
+        ]
       }
     },
     {
@@ -627,7 +742,8 @@
         "micro_skill": "Calculate a quadratic discriminant.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-quadratics-discriminant-001-example-1"
       },
       "region_ids": [
         "algebra-forge"
@@ -662,7 +778,19 @@
           "A zero discriminant means one repeated real root."
         ],
         "answer": "The equation has a repeated real root.",
-        "teaching_note": "The discriminant gives root information without solving the quadratic."
+        "teaching_note": "The discriminant gives root information without solving the quadratic.",
+        "question_type": "Quadratic discriminant decision",
+        "key_method": "Use the discriminant as a root-counting shortcut.",
+        "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+        "source_question_ids": [
+          "31autumn21_q01"
+        ],
+        "source_question_asset_ids": [
+          "p3/31autumn21/questions/q01.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31autumn21/mark_scheme/q01.png"
+        ]
       }
     },
     {
@@ -1546,7 +1674,8 @@
         "micro_skill": "Solve an exponential equation by matching bases.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-exp-equations-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1581,7 +1710,19 @@
           "Solve the linear equation."
         ],
         "answer": "$x=2$",
-        "teaching_note": "Same bases avoid unnecessary logarithms."
+        "teaching_note": "Same bases avoid unnecessary logarithms.",
+        "question_type": "Exponential equation",
+        "key_method": "Choose an efficient route for exponential equations.",
+        "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
+        "source_question_ids": [
+          "31autumn22_q03"
+        ],
+        "source_question_asset_ids": [
+          "p3/31autumn22/questions/q03.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31autumn22/mark_scheme/q03.png"
+        ]
       }
     },
     {
@@ -1625,7 +1766,8 @@
         "micro_skill": "Use ln to solve a simple exponential equation.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-ln-e-inverse-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1661,7 +1803,19 @@
           "Divide by $2$."
         ],
         "answer": "$x=\\frac12\\ln4$, or $\\ln2$",
-        "teaching_note": "$\\ln$ releases the exponent only after the exponential term is isolated."
+        "teaching_note": "$\\ln$ releases the exponent only after the exponential term is isolated.",
+        "question_type": "Natural logarithm inverse step",
+        "key_method": "Use $\\ln$ and $e$ as inverse operations when bases do not match.",
+        "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
+        "source_question_ids": [
+          "31summer23_q01"
+        ],
+        "source_question_asset_ids": [
+          "p3/31summer23/questions/q01.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31summer23/mark_scheme/q01.png"
+        ]
       }
     },
     {
@@ -1705,7 +1859,8 @@
         "micro_skill": "State the domain restriction for a logarithm.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-log-domain-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1740,7 +1895,19 @@
           "So $2x=4$, giving $x=2$."
         ],
         "answer": "$x=2$",
-        "teaching_note": "The algebraic answer is accepted only because it keeps both log arguments positive."
+        "teaching_note": "The algebraic answer is accepted only because it keeps both log arguments positive.",
+        "question_type": "Logarithm domain check",
+        "key_method": "Reject invalid logarithmic solutions confidently.",
+        "exam_move": "Do the domain check at the end using the original equation, not a rearranged version.",
+        "source_question_ids": [
+          "33autumn22_q01"
+        ],
+        "source_question_asset_ids": [
+          "p3/33autumn22/questions/q01.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/33autumn22/mark_scheme/q01.png"
+        ]
       }
     },
     {
@@ -1784,7 +1951,8 @@
         "micro_skill": "Convert between logarithmic and exponential form.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "published"
+        "review_status": "published",
+        "example_model_id": "p3-log-exp-convert-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1819,7 +1987,19 @@
           "The argument is $81$."
         ],
         "answer": "$3^4=81$",
-        "teaching_note": "Keep base, exponent, and result in their roles."
+        "teaching_note": "Keep base, exponent, and result in their roles.",
+        "question_type": "Logarithmic and exponential form conversion",
+        "key_method": "Convert fluently between logarithmic and exponential form.",
+        "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
+        "source_question_ids": [
+          "32spring23_q01"
+        ],
+        "source_question_asset_ids": [
+          "p3/32spring23/questions/q01.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32spring23/mark_scheme/q01.png"
+        ]
       }
     },
     {
@@ -1862,7 +2042,8 @@
         "micro_skill": "Spot an invalid logarithm split.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-log-invalid-operations-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1897,7 +2078,19 @@
           "$x+5$ is a sum, not a product."
         ],
         "answer": "No valid log law splits $\\ln(x+5)$ this way.",
-        "teaching_note": "Logs split products and quotients, not addition inside the argument."
+        "teaching_note": "Logs split products and quotients, not addition inside the argument.",
+        "question_type": "Invalid logarithm operation repair",
+        "key_method": "Avoid illegal logarithm moves in equations.",
+        "exam_move": "Write one legal log law at a time and leave sums inside logs untouched.",
+        "source_question_ids": [
+          "32summer23_q02"
+        ],
+        "source_question_asset_ids": [
+          "p3/32summer23/questions/q02.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32summer23/mark_scheme/q02.png"
+        ]
       }
     },
     {
@@ -1941,7 +2134,8 @@
         "micro_skill": "Combine logarithms only when the law is valid.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "published"
+        "review_status": "published",
+        "example_model_id": "p3-log-laws-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -1975,7 +2169,19 @@
           "So $\\ln x+\\ln5=\\ln(5x)$."
         ],
         "answer": "$\\ln(5x)$",
-        "teaching_note": "Adding logs means multiplying the inputs, not adding them."
+        "teaching_note": "Adding logs means multiplying the inputs, not adding them.",
+        "question_type": "Logarithm laws",
+        "key_method": "Use log laws without inventing invalid addition rules.",
+        "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+        "source_question_ids": [
+          "32spring24_q04"
+        ],
+        "source_question_asset_ids": [
+          "p3/32spring24/questions/q04.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32spring24/mark_scheme/q04.png"
+        ]
       }
     },
     {
@@ -2019,7 +2225,8 @@
         "micro_skill": "Identify gradient after log linearisation.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-log-linearisation-001-example-1"
       },
       "region_ids": [
         "logarithm-grove"
@@ -2056,7 +2263,19 @@
             "Compare with $Y=c+mX$."
           ],
           "answer": "Plot $\\ln y$ against $\\ln x$; gradient $3$, intercept $\\ln2$.",
-          "teaching_note": "For $y=kx^n$, the power becomes the straight-line gradient."
+          "teaching_note": "For $y=kx^n$, the power becomes the straight-line gradient.",
+          "question_type": "Logarithmic linearisation",
+          "key_method": "Connect log transformations to gradient and intercept.",
+          "exam_move": "After linearising, state what the gradient and intercept represent in the original model.",
+          "source_question_ids": [
+            "32spring22_q03"
+          ],
+          "source_question_asset_ids": [
+            "p3/32spring22/questions/q03.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32spring22/mark_scheme/q03.png"
+          ]
         },
         {
           "id": "p3-log-linearisation-001-example-2",
@@ -2067,7 +2286,19 @@
             "Compare with $Y=c+mX$ using $X=x$."
           ],
           "answer": "Plot $\\ln y$ against $x$; gradient $\\ln1.5$, intercept $\\ln4$.",
-          "teaching_note": "For $y=ka^x$, plot $\\ln y$ against $x$, not against $\\ln x$."
+          "teaching_note": "For $y=ka^x$, plot $\\ln y$ against $x$, not against $\\ln x$.",
+          "question_type": "Logarithmic linearisation",
+          "key_method": "Connect log transformations to gradient and intercept.",
+          "exam_move": "After linearising, state what the gradient and intercept represent in the original model.",
+          "source_question_ids": [
+            "32spring22_q03"
+          ],
+          "source_question_asset_ids": [
+            "p3/32spring22/questions/q03.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32spring22/mark_scheme/q03.png"
+          ]
         }
       ]
     },
@@ -2272,7 +2503,8 @@
         "micro_skill": "Choose a double-angle identity for the target form.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-trig-identity-selection-001-example-1"
       },
       "region_ids": [
         "trig-observatory"
@@ -2308,7 +2540,19 @@
             "Then $1-\\cos2x=1-(1-2\\sin^2x)$."
           ],
           "answer": "$2\\sin^2x$",
-          "teaching_note": "Choose the identity that moves directly toward the requested function."
+          "teaching_note": "Choose the identity that moves directly toward the requested function.",
+          "question_type": "Trigonometric identity selection",
+          "key_method": "Select a trig identity because it moves the expression toward the needed form.",
+          "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+          "source_question_ids": [
+            "32autumn21_q08"
+          ],
+          "source_question_asset_ids": [
+            "p3/32autumn21/questions/q08.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32autumn21/mark_scheme/q08.png"
+          ]
         },
         {
           "id": "p3-trig-identity-selection-001-example-2",
@@ -2319,7 +2563,19 @@
             "Cancelling needs $\\sin x\\ne0$."
           ],
           "answer": "$2\\sin x$, for $\\sin x\\ne0$",
-          "teaching_note": "Restrictions matter whenever a trig expression is cancelled."
+          "teaching_note": "Restrictions matter whenever a trig expression is cancelled.",
+          "question_type": "Trigonometric identity selection",
+          "key_method": "Select a trig identity because it moves the expression toward the needed form.",
+          "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+          "source_question_ids": [
+            "32autumn21_q08"
+          ],
+          "source_question_asset_ids": [
+            "p3/32autumn21/questions/q08.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32autumn21/mark_scheme/q08.png"
+          ]
         }
       ]
     },
@@ -2364,7 +2620,8 @@
         "micro_skill": "List all trig solutions in a stated interval.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "published"
+        "review_status": "published",
+        "example_model_id": "p3-trig-interval-001-example-1"
       },
       "region_ids": [
         "trig-observatory"
@@ -2399,7 +2656,19 @@
           "List the angles in the interval."
         ],
         "answer": "$x=\\frac{\\pi}{6}$ or $x=\\frac{5\\pi}{6}$",
-        "teaching_note": "The interval decides how many answers belong in the final line."
+        "teaching_note": "The interval decides how many answers belong in the final line.",
+        "question_type": "Trigonometric equation in an interval",
+        "key_method": "Find all trig equation solutions in a restricted interval.",
+        "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
+        "source_question_ids": [
+          "31summer22_q03"
+        ],
+        "source_question_asset_ids": [
+          "p3/31summer22/questions/q03.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31summer22/mark_scheme/q03.png"
+        ]
       }
     },
     {
@@ -2443,7 +2712,8 @@
         "micro_skill": "Spot a trig division that would lose solutions.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-trig-lost-solutions-001-example-1"
       },
       "region_ids": [
         "trig-observatory"
@@ -2479,7 +2749,19 @@
           "$\\cos x=\\frac12$ gives $x=\\frac{\\pi}{3},\\frac{5\\pi}{3}$."
         ],
         "answer": "$x=0,\\frac{\\pi}{3},\\pi,\\frac{5\\pi}{3}$",
-        "teaching_note": "Dividing by $\\sin x$ would lose the $\\sin x=0$ solutions."
+        "teaching_note": "Dividing by $\\sin x$ would lose the $\\sin x=0$ solutions.",
+        "question_type": "Trigonometric equation without lost solutions",
+        "key_method": "Preserve trig solutions when rearranging equations.",
+        "exam_move": "Use product form to keep zero-factor solutions visible.",
+        "source_question_ids": [
+          "31autumn21_q05"
+        ],
+        "source_question_asset_ids": [
+          "p3/31autumn21/questions/q05.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/31autumn21/mark_scheme/q05.png"
+        ]
       }
     },
     {
@@ -2523,7 +2805,8 @@
         "micro_skill": "Use quadrants to list interval solutions.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-trig-quadrant-discipline-001-example-1"
       },
       "region_ids": [
         "trig-observatory"
@@ -2559,7 +2842,19 @@
           "Write the two interval angles."
         ],
         "answer": "$x=\\frac{2\\pi}{3}$ or $x=\\frac{4\\pi}{3}$",
-        "teaching_note": "The calculator angle is only the start; the quadrant gives the full answer set."
+        "teaching_note": "The calculator angle is only the start; the quadrant gives the full answer set.",
+        "question_type": "Trigonometric quadrant discipline",
+        "key_method": "Use signs and intervals to list every trig solution.",
+        "exam_move": "Use a sketch or quadrant signs before writing the final solution set.",
+        "source_question_ids": [
+          "32summer22_q02"
+        ],
+        "source_question_asset_ids": [
+          "p3/32summer22/questions/q02.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/32summer22/mark_scheme/q02.png"
+        ]
       }
     },
     {
@@ -2603,7 +2898,8 @@
         "micro_skill": "Find the amplitude in R-form.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-trig-reciprocal-rform-001-example-1"
       },
       "region_ids": [
         "trig-observatory"
@@ -2639,7 +2935,19 @@
             "Since $\\tan x=\\frac{\\sin x}{\\cos x}$, invert it."
           ],
           "answer": "$\\cot x=\\frac{\\cos x}{\\sin x}$",
-          "teaching_note": "Reciprocal functions usually return to sine and cosine before simplifying."
+          "teaching_note": "Reciprocal functions usually return to sine and cosine before simplifying.",
+          "question_type": "Reciprocal identity or R-form route",
+          "key_method": "Use sec, cosec, cot, and R-form as deliberate rewrites.",
+          "exam_move": "Use R-form when one combined trig wave is easier than two separate terms.",
+          "source_question_ids": [
+            "32spring23_q06"
+          ],
+          "source_question_asset_ids": [
+            "p3/32spring23/questions/q06.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32spring23/mark_scheme/q06.png"
+          ]
         },
         {
           "id": "p3-trig-reciprocal-rform-001-example-2",
@@ -2651,7 +2959,19 @@
             "So $\\alpha=\\tan^{-1}(4/3)$."
           ],
           "answer": "$5\\sin(x+\\tan^{-1}(4/3))$",
-          "teaching_note": "R-form turns two trig terms into one wave."
+          "teaching_note": "R-form turns two trig terms into one wave.",
+          "question_type": "Reciprocal identity or R-form route",
+          "key_method": "Use sec, cosec, cot, and R-form as deliberate rewrites.",
+          "exam_move": "Use R-form when one combined trig wave is easier than two separate terms.",
+          "source_question_ids": [
+            "32spring23_q06"
+          ],
+          "source_question_asset_ids": [
+            "p3/32spring23/questions/q06.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/32spring23/mark_scheme/q06.png"
+          ]
         }
       ]
     },
