@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from math import comb
+from fractions import Fraction
+from math import comb, gcd
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,7 @@ from typing import Any
 GENERATED_BY = "tools/content_lab/scripts/build_generated_practice.py"
 VERIFIER_NAME = "content_lab_schema_v2"
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
+REVIEW_QUEUE_STATUS = "needs_review"
 
 LOG_TOPIC = "logarithms_and_exponentials"
 LOG_FAMILY = "logarithms_and_exponentials.log_equation_basic"
@@ -27,12 +29,38 @@ PARTIAL_FRACTIONS_TOPIC = "partial_fractions"
 PARTIAL_FRACTIONS_DISTINCT_FAMILY = "algebra.partial_fractions_distinct_linear"
 PARTIAL_FRACTIONS_REPEATED_FAMILY = "algebra.partial_fractions_repeated_linear"
 ALGEBRA_TOPIC = "algebra"
+ALGEBRA_STRUCTURE_FAMILY = "algebra.structure_rearrangement_basic"
+POLYNOMIAL_REMAINDER_FAMILY = "algebra.polynomial_remainder_factor_basic"
 MODULUS_EQUATION_FAMILY = "algebra.modulus_equation_basic"
+QUADRATICS_TOPIC = "quadratics"
+QUADRATICS_DISCRIMINANT_FAMILY = "quadratics.discriminant_root_condition_basic"
 TRIG_TOPIC = "trigonometry"
 TRIG_IDENTITY_FAMILY = "trigonometry.identity_rewrite_basic"
 TRIG_DOUBLE_ANGLE_FAMILY = "trigonometry.double_angle_basic"
 TRIG_SOLVE_INTERVAL_FAMILY = "trigonometry.solve_equation_interval_basic"
 TRIG_R_FORM_FAMILY = "trigonometry.r_form_basic"
+LOG_DOMAIN_FAMILY = "logarithms_and_exponentials.domain_validation_basic"
+LOG_LINEARISATION_FAMILY = "logarithms_and_exponentials.linearisation_basic"
+LOG_CALCULUS_CONTEXT_FAMILY = "logarithms_and_exponentials.calculus_context_basic"
+DIFFERENTIATION_TOPIC = "differentiation"
+DIFFERENTIATION_CHAIN_PRODUCT_FAMILY = "differentiation.chain_product_basic"
+DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY = "differentiation.implicit_log_exp_basic"
+PARAMETRIC_TOPIC = "parametric_equations"
+PARAMETRIC_DERIVATIVE_FAMILY = "parametric_equations.derivative_ratio_basic"
+INTEGRATION_TOPIC = "integration"
+INTEGRATION_METHOD_SETUP_FAMILY = "integration.method_setup_basic"
+INTEGRATION_DEFINITE_AREA_FAMILY = "integration.definite_area_basic"
+COMPLEX_TOPIC = "complex_numbers"
+COMPLEX_MODULUS_ARGUMENT_FAMILY = "complex_numbers.modulus_argument_basic"
+COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY = "complex_numbers.cartesian_locus_roots_basic"
+VECTORS_TOPIC = "vectors"
+VECTORS_LINE_SCALAR_FAMILY = "vectors.line_scalar_product_basic"
+VECTORS_LINE_INTERSECTION_FAMILY = "vectors.line_intersection_basic"
+NUMERICAL_TOPIC = "numerical_methods"
+NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY = "numerical_methods.sign_change_iteration_basic"
+DIFFERENTIAL_EQUATIONS_TOPIC = "differential_equations"
+DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY = "differential_equations.separation_basic"
+DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY = "differential_equations.context_model_basic"
 PAPER_FAMILY = "p3"
 SEQUENCE_ROLES = ("first_step", "complete_step", "guardian_prep")
 ACTIVE_P3_REGION_IDS = [
@@ -204,6 +232,7 @@ def base_item(
     snippet_ids: list[str] | None = None,
     source_snippet_id: str | None = None,
     example_model_id: str | None = None,
+    review_status: str = "teacher_reviewed",
 ) -> dict[str, Any]:
     if sequence_role not in SEQUENCE_ROLES:
         raise ValueError(f"{practice_id} has invalid sequence role {sequence_role}")
@@ -218,7 +247,7 @@ def base_item(
         "parameters": parameters,
         "practice_id": practice_id,
         "prompt": prompt,
-        "review_status": "teacher_reviewed",
+        "review_status": review_status,
         "sequence_role": sequence_role,
         "topic": topic,
         "verification": {
@@ -267,6 +296,160 @@ def base_item(
 def assert_positive_integer(value: int, practice_id: str) -> None:
     if not isinstance(value, int) or value <= 0:
         raise ValueError(f"{practice_id} generated a non-positive solution")
+
+
+def reject_parameters(practice_id: str, message: str) -> None:
+    raise ValueError(f"{practice_id} refused invalid parameters: {message}")
+
+
+def int_parameter(
+    case: dict[str, Any],
+    key: str,
+    practice_id: str,
+    *,
+    min_value: int,
+    max_value: int,
+    allow_zero: bool = True,
+) -> int:
+    value = case.get(key)
+    if isinstance(value, bool) or not isinstance(value, int):
+        reject_parameters(practice_id, f"{key} must be an integer")
+    if value < min_value or value > max_value:
+        reject_parameters(practice_id, f"{key}={value} is outside [{min_value}, {max_value}]")
+    if not allow_zero and value == 0:
+        reject_parameters(practice_id, f"{key} must be non-zero")
+    return value
+
+
+def item_type_parameter(case: dict[str, Any], practice_id: str, allowed: set[str]) -> str:
+    value = non_empty_string(case.get("item_type"))
+    if value not in allowed:
+        reject_parameters(practice_id, f"item_type must be one of {sorted(allowed)}")
+    return value
+
+
+def sequence_role_parameter(case: dict[str, Any], practice_id: str) -> str:
+    value = non_empty_string(case.get("sequence_role"))
+    if value not in SEQUENCE_ROLES:
+        reject_parameters(practice_id, f"sequence_role must be one of {list(SEQUENCE_ROLES)}")
+    return value
+
+
+def require_safe(condition: bool, practice_id: str, message: str) -> None:
+    if not condition:
+        reject_parameters(practice_id, message)
+
+
+def integer_square_root(value: int, practice_id: str, label: str) -> int:
+    require_safe(value > 0, practice_id, f"{label} must be positive")
+    root = int(value ** 0.5)
+    if root * root != value:
+        reject_parameters(practice_id, f"{label} must be a perfect square")
+    return root
+
+
+def fraction_text(numerator: int, denominator: int) -> str:
+    if denominator == 0:
+        raise ValueError("Cannot format a fraction with zero denominator")
+    sign = -1 if numerator * denominator < 0 else 1
+    numerator = abs(numerator)
+    denominator = abs(denominator)
+    factor = gcd(numerator, denominator)
+    numerator //= factor
+    denominator //= factor
+    prefix = "-" if sign < 0 else ""
+    if denominator == 1:
+        return f"{prefix}{numerator}"
+    return f"{prefix}{numerator}/{denominator}"
+
+
+def decimal_text(value: Fraction, places: int = 3) -> str:
+    return f"{float(value):.{places}f}"
+
+
+def coefficient_variable_text(coefficient: int, variable: str, power: int = 1) -> str:
+    variable_part = variable if power == 1 else f"{variable}^{power}"
+    if coefficient == 1:
+        return variable_part
+    if coefficient == -1:
+        return f"-{variable_part}"
+    return f"{coefficient}{variable_part}"
+
+
+def append_constant_text(expression: str, constant: int) -> str:
+    if constant > 0:
+        return f"{expression} + {constant}"
+    if constant < 0:
+        return f"{expression} - {abs(constant)}"
+    return expression
+
+
+def quadratic_parameter_text(coefficient: int, constant: int, variable: str = "t") -> str:
+    return append_constant_text(coefficient_variable_text(coefficient, variable, 2), constant)
+
+
+def linear_parameter_text(coefficient: int, constant: int, variable: str = "t") -> str:
+    return append_constant_text(coefficient_variable_text(coefficient, variable), constant)
+
+
+def complex_text(real: int, imaginary: int) -> str:
+    if imaginary == 0:
+        return str(real)
+    imaginary_body = "i" if abs(imaginary) == 1 else f"{abs(imaginary)}i"
+    if real == 0:
+        return f"-{imaginary_body}" if imaginary < 0 else imaginary_body
+    sign = "-" if imaginary < 0 else "+"
+    return f"{real} {sign} {imaginary_body}"
+
+
+def argument_text(real: int, imaginary: int, practice_id: str) -> str:
+    require_safe(real != 0 and imaginary != 0, practice_id, "argument warm-up avoids axis-only arguments")
+    ratio = f"{abs(imaginary)}/{abs(real)}"
+    if real > 0 and imaginary > 0:
+        return f"arctan({ratio})"
+    if real < 0 and imaginary > 0:
+        return f"pi - arctan({ratio})"
+    if real < 0 and imaginary < 0:
+        return f"-pi + arctan({ratio})"
+    return f"-arctan({ratio})"
+
+
+def pi_fraction_text(numerator: int, denominator: int) -> str:
+    factor = gcd(abs(numerator), abs(denominator))
+    numerator //= factor
+    denominator //= factor
+    if denominator == 1:
+        if numerator == 0:
+            return "0"
+        if numerator == 1:
+            return "pi"
+        if numerator == -1:
+            return "-pi"
+        return f"{numerator}pi"
+    if numerator == 1:
+        return f"pi/{denominator}"
+    if numerator == -1:
+        return f"-pi/{denominator}"
+    return f"{numerator}pi/{denominator}"
+
+
+def vector_text(components: tuple[int, int, int]) -> str:
+    return f"<{components[0]}, {components[1]}, {components[2]}>"
+
+
+def vector_from_case(case: dict[str, Any], prefix: str, practice_id: str, *, allow_zero_vector: bool = False) -> tuple[int, int, int]:
+    vector = (
+        int_parameter(case, f"{prefix}_x", practice_id, min_value=-9, max_value=9),
+        int_parameter(case, f"{prefix}_y", practice_id, min_value=-9, max_value=9),
+        int_parameter(case, f"{prefix}_z", practice_id, min_value=-9, max_value=9),
+    )
+    if not allow_zero_vector:
+        require_safe(any(component != 0 for component in vector), practice_id, f"{prefix} must be non-zero")
+    return vector
+
+
+def dot_product(a: tuple[int, int, int], b: tuple[int, int, int]) -> int:
+    return sum(left * right for left, right in zip(a, b))
 
 
 def build_log_items(context: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1049,11 +1232,1480 @@ def build_trig_r_form_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     return items
 
 
+def review_queue_item(
+    *,
+    practice_id: str,
+    generator_family: str,
+    topic: str,
+    prompt: str,
+    answer: str,
+    worked_solution: list[str],
+    parameters: dict[str, Any],
+    context: dict[str, Any],
+    sequence_role: str,
+    difficulty_band: str,
+    snippet_ids: list[str],
+) -> dict[str, Any]:
+    parameters = dict(parameters)
+    parameters.setdefault("sequence_stage", sequence_role)
+    return base_item(
+        practice_id=practice_id,
+        generator_family=generator_family,
+        topic=topic,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=snippet_ids,
+        review_status=REVIEW_QUEUE_STATUS,
+    )
+
+
+def build_algebra_structure_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_algebra_structure_rearrangement_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"factor_common", "cancel_factor", "zero_product"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "easy"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small integer factors; denominator restrictions retained when cancelling",
+    }
+
+    if item_type == "factor_common":
+        constant = int_parameter(case, "constant", practice_id, min_value=1, max_value=9)
+        prompt = f"Factor x^2 + {constant}x by taking out the shared factor first."
+        answer = f"x(x + {constant})"
+        worked_solution = [
+            "Both terms contain a factor of x.",
+            "Take out the shared factor before doing anything else.",
+            f"x^2 + {constant}x = {answer}.",
+        ]
+        parameters.update({"constant": constant})
+    elif item_type == "cancel_factor":
+        root = int_parameter(case, "root", practice_id, min_value=1, max_value=9)
+        other = int_parameter(case, "other", practice_id, min_value=-9, max_value=9)
+        require_safe(root != other, practice_id, "roots must be distinct")
+        numerator_constant = root * other
+        numerator_middle = -(root + other)
+        numerator = polynomial_text([(1, 2), (numerator_middle, 1), (numerator_constant, 0)])
+        denominator = linear_factor(root)
+        survivor = linear_factor(other)
+        prompt = f"Simplify ({numerator})/({denominator}), stating the restriction."
+        answer = f"{survivor}, with x != {root}"
+        worked_solution = [
+            f"Factor the numerator: {numerator} = ({denominator})({survivor}).",
+            f"Cancel the common factor {denominator}.",
+            f"The original denominator means x != {root}.",
+            f"So the simplified expression is {answer}.",
+        ]
+        parameters.update({"root": root, "other_root": other})
+    else:
+        left_root = int_parameter(case, "left_root", practice_id, min_value=-9, max_value=9)
+        right_root = int_parameter(case, "right_root", practice_id, min_value=-9, max_value=9)
+        require_safe(left_root != right_root, practice_id, "zero-product roots must be distinct")
+        left_factor = linear_factor(left_root)
+        right_factor = linear_factor(right_root)
+        prompt = f"Solve ({left_factor})({right_factor}) = 0 without expanding."
+        solutions = sorted([left_root, right_root])
+        answer = " or ".join(f"x = {solution}" for solution in solutions)
+        worked_solution = [
+            "Use the zero-product rule instead of expanding.",
+            f"Set {left_factor} = 0 or {right_factor} = 0.",
+            f"This gives {answer}.",
+        ]
+        parameters.update({"left_root": left_root, "right_root": right_root, "solutions": ",".join(str(solution) for solution in solutions)})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=ALGEBRA_STRUCTURE_FAMILY,
+        topic=ALGEBRA_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, ALGEBRA_TOPIC, ["p3-algebra-rearrangement-001"]),
+    )
+
+
+def build_algebra_structure_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "factor_common", "constant": 5, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "cancel_factor", "root": 3, "other": -2, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "zero_product", "left_root": -2, "right_root": 5, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_algebra_structure_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_polynomial_remainder_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_polynomial_remainder_factor_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"substitution_value", "remainder", "factor_parameter"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "cubic coefficients and substitution values kept small; parameter cases checked exactly",
+    }
+
+    if item_type == "substitution_value":
+        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
+        require_safe(root != 0, practice_id, "root substitution must be non-zero")
+        prompt = f"For f(x) = x^3 - 4x + 1, what value gives the remainder on division by {linear_factor(root)}?"
+        answer = f"evaluate f({root})"
+        worked_solution = [
+            "The remainder theorem says the remainder after division by x - a is f(a).",
+            f"Here the divisor is {linear_factor(root)}, so a = {root}.",
+            f"The first move is to evaluate f({root}).",
+        ]
+        parameters.update({"root": root})
+    elif item_type == "remainder":
+        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
+        a = int_parameter(case, "a", practice_id, min_value=-4, max_value=4, allow_zero=False)
+        b = int_parameter(case, "b", practice_id, min_value=-8, max_value=8)
+        c = int_parameter(case, "c", practice_id, min_value=-9, max_value=9)
+        remainder = root ** 3 + a * root * root + b * root + c
+        require_safe(abs(remainder) <= 120, practice_id, "remainder magnitude is too large")
+        expression = polynomial_text([(1, 3), (a, 2), (b, 1), (c, 0)])
+        prompt = f"Find the remainder when f(x) = {expression} is divided by {linear_factor(root)}."
+        answer = f"remainder = {remainder}"
+        worked_solution = [
+            f"Use the remainder theorem with x = {root}.",
+            f"Calculate f({root}) = {root}^3 + ({a})({root})^2 + ({b})({root}) + {c}.",
+            f"So the remainder is {remainder}.",
+        ]
+        parameters.update({"root": root, "a": a, "b": b, "c": c, "remainder": remainder})
+    else:
+        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
+        constant = int_parameter(case, "constant", practice_id, min_value=-9, max_value=9)
+        require_safe(root != 0, practice_id, "factor parameter root must be non-zero")
+        parameter = -(root ** 3 + constant) // root
+        require_safe(root ** 3 + parameter * root + constant == 0, practice_id, "parameter must make the divisor a factor")
+        prompt = f"Find k if {linear_factor(root)} is a factor of x^3 + kx + {constant}."
+        answer = f"k = {parameter}"
+        worked_solution = [
+            f"If {linear_factor(root)} is a factor, then f({root}) = 0.",
+            f"So {root}^3 + k({root}) + {constant} = 0.",
+            f"Solving gives k = {parameter}.",
+        ]
+        parameters.update({"root": root, "constant": constant, "k": parameter})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=POLYNOMIAL_REMAINDER_FAMILY,
+        topic=ALGEBRA_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, ALGEBRA_TOPIC, ["p3-polynomial-theorem-001"]),
+    )
+
+
+def build_polynomial_remainder_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "substitution_value", "root": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "remainder", "root": 2, "a": -1, "b": -3, "c": 4, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "factor_parameter", "root": 1, "constant": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_polynomial_remainder_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_quadratics_discriminant_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_quadratics_discriminant_root_condition_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"discriminant_value", "root_type", "repeated_root_parameter"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "integer quadratic coefficients; discriminants checked within small exact bounds",
+    }
+    a = int_parameter(case, "a", practice_id, min_value=1, max_value=6)
+    b = int_parameter(case, "b", practice_id, min_value=-15, max_value=15)
+    c = int_parameter(case, "c", practice_id, min_value=-15, max_value=15)
+    discriminant = b * b - 4 * a * c
+    require_safe(abs(discriminant) <= 300, practice_id, "discriminant magnitude is too large")
+    parameters.update({"a": a, "b": b, "c": c, "discriminant": discriminant})
+
+    if item_type == "discriminant_value":
+        prompt = f"For {polynomial_text([(a, 2), (b, 1), (c, 0)])} = 0, calculate the discriminant."
+        answer = f"D = {discriminant}"
+        worked_solution = [
+            "Use D = b^2 - 4ac.",
+            f"Here a = {a}, b = {b}, and c = {c}.",
+            f"So D = {b}^2 - 4({a})({c}) = {discriminant}.",
+        ]
+    elif item_type == "root_type":
+        root_type = "two distinct real roots" if discriminant > 0 else "one repeated real root" if discriminant == 0 else "no real roots"
+        prompt = f"Use the discriminant to state the root type of {polynomial_text([(a, 2), (b, 1), (c, 0)])} = 0."
+        answer = root_type
+        worked_solution = [
+            f"Compute D = b^2 - 4ac = {discriminant}.",
+            "Positive D gives two distinct real roots; zero gives a repeated root; negative gives no real roots.",
+            f"Therefore the equation has {root_type}.",
+        ]
+    else:
+        constant = c
+        require_safe(a == 1 and constant > 0, practice_id, "repeated-root parameter case uses x^2 + kx + positive constant")
+        root = integer_square_root(constant, practice_id, "constant")
+        prompt = f"Find k if x^2 + kx + {constant} = 0 has a repeated root."
+        answer = f"k = -{2 * root} or k = {2 * root}"
+        worked_solution = [
+            "A repeated root means the discriminant is zero.",
+            f"So k^2 - 4(1)({constant}) = 0.",
+            f"k^2 = {4 * constant}, giving {answer}.",
+        ]
+        parameters.update({"root": root})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=QUADRATICS_DISCRIMINANT_FAMILY,
+        topic=QUADRATICS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, QUADRATICS_TOPIC, ["p3-quadratics-discriminant-001"]),
+    )
+
+
+def build_quadratics_discriminant_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "discriminant_value", "a": 2, "b": 5, "c": -3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "root_type", "a": 1, "b": 2, "c": 5, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "repeated_root_parameter", "a": 1, "b": 0, "c": 9, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_quadratics_discriminant_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_log_domain_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_domain_validation_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"domain_first", "single_log_equation", "combined_log_equation"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "linear log arguments with positive checked final roots",
+    }
+
+    if item_type == "domain_first":
+        shift = int_parameter(case, "shift", practice_id, min_value=-9, max_value=9)
+        prompt = f"State the domain restriction before working with ln(x - {shift})."
+        answer = f"x > {shift}"
+        worked_solution = [
+            "A logarithm argument must be positive.",
+            f"So x - {shift} > 0.",
+            f"Therefore {answer}.",
+        ]
+        parameters.update({"shift": shift})
+    elif item_type == "single_log_equation":
+        shift = int_parameter(case, "shift", practice_id, min_value=-9, max_value=9)
+        rhs = int_parameter(case, "rhs", practice_id, min_value=1, max_value=20)
+        solution = shift + rhs
+        require_safe(solution - shift > 0, practice_id, "solution must satisfy the log domain")
+        prompt = f"Solve ln(x - {shift}) = ln {rhs}, checking the domain."
+        answer = f"x = {solution}"
+        worked_solution = [
+            f"The domain needs x - {shift} > 0.",
+            f"Equal natural logs have equal positive arguments, so x - {shift} = {rhs}.",
+            f"This gives x = {solution}, which satisfies the domain.",
+        ]
+        parameters.update({"shift": shift, "rhs": rhs, "solution": solution})
+    else:
+        left_shift = int_parameter(case, "left_shift", practice_id, min_value=-6, max_value=6)
+        right_shift = int_parameter(case, "right_shift", practice_id, min_value=-6, max_value=6)
+        rhs = int_parameter(case, "rhs", practice_id, min_value=1, max_value=30)
+        require_safe(left_shift != right_shift, practice_id, "log shifts must be distinct")
+        # ln(x - 2) + ln(x + 1) = ln 10 gives valid x = 4 and extraneous x = -3.
+        valid_root = int_parameter(case, "valid_root", practice_id, min_value=-10, max_value=10)
+        invalid_root = int_parameter(case, "invalid_root", practice_id, min_value=-10, max_value=10)
+        require_safe(valid_root != invalid_root, practice_id, "candidate roots must be distinct")
+        require_safe((valid_root - left_shift) * (valid_root - right_shift) == rhs, practice_id, "valid root must solve combined log equation")
+        require_safe((invalid_root - left_shift) * (invalid_root - right_shift) == rhs, practice_id, "invalid root must solve the algebraic equation")
+        require_safe(valid_root - left_shift > 0 and valid_root - right_shift > 0, practice_id, "valid root must pass both domains")
+        require_safe(not (invalid_root - left_shift > 0 and invalid_root - right_shift > 0), practice_id, "invalid root must fail at least one domain")
+        left_arg = linear_expression(1, -left_shift)
+        right_arg = linear_expression(1, -right_shift)
+        prompt = f"Solve ln({left_arg}) + ln({right_arg}) = ln {rhs}, rejecting any invalid root."
+        answer = f"x = {valid_root}"
+        worked_solution = [
+            f"Combine the logs: ln(({left_arg})({right_arg})) = ln {rhs}.",
+            f"So ({left_arg})({right_arg}) = {rhs}.",
+            f"The algebra gives x = {valid_root} or x = {invalid_root}.",
+            "Check both original log arguments; only the valid root keeps both arguments positive.",
+        ]
+        parameters.update({"left_shift": left_shift, "right_shift": right_shift, "rhs": rhs, "valid_root": valid_root, "invalid_root": invalid_root})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_DOMAIN_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-log-domain-001", "p3-log-invalid-operations-001"]),
+    )
+
+
+def build_log_domain_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "domain_first", "shift": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "single_log_equation", "shift": 1, "rhs": 5, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "combined_log_equation", "left_shift": 2, "right_shift": -1, "rhs": 10, "valid_root": 4, "invalid_root": -3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_domain_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_log_linearisation_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_linearisation_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"linearise_form", "read_gradient_intercept", "specific_model"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "positive coefficients and small gradients for log-linear forms",
+    }
+
+    if item_type == "linearise_form":
+        prompt = "For y = Ae^(kx), write a linear form suitable for plotting ln y against x."
+        answer = "ln y = ln A + kx"
+        worked_solution = [
+            "Take natural logs of both sides.",
+            "Use ln(uv) = ln u + ln v and ln(e^(kx)) = kx.",
+            "This gives ln y = ln A + kx.",
+        ]
+    elif item_type == "read_gradient_intercept":
+        intercept = int_parameter(case, "intercept", practice_id, min_value=-5, max_value=5)
+        gradient = int_parameter(case, "gradient", practice_id, min_value=-5, max_value=5, allow_zero=False)
+        prompt = f"If ln y = {intercept} + {gradient}x, state the gradient and intercept on a graph of ln y against x."
+        answer = f"gradient = {gradient}, intercept = {intercept}"
+        worked_solution = [
+            "Compare the equation with Y = c + mx, where Y = ln y.",
+            f"The coefficient of x is the gradient: {gradient}.",
+            f"The constant term is the intercept: {intercept}.",
+        ]
+        parameters.update({"intercept": intercept, "gradient": gradient})
+    else:
+        coefficient = int_parameter(case, "coefficient", practice_id, min_value=1, max_value=9)
+        gradient = int_parameter(case, "gradient", practice_id, min_value=-5, max_value=5, allow_zero=False)
+        prompt = f"Linearise y = {coefficient}e^({gradient}x) by taking natural logs."
+        answer = f"ln y = ln {coefficient} + {gradient}x"
+        worked_solution = [
+            "Take ln of both sides.",
+            f"ln({coefficient}e^({gradient}x)) = ln {coefficient} + ln(e^({gradient}x)).",
+            f"So {answer}.",
+        ]
+        parameters.update({"coefficient": coefficient, "gradient": gradient})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_LINEARISATION_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-log-linearisation-001"]),
+    )
+
+
+def build_log_linearisation_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "linearise_form", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "read_gradient_intercept", "intercept": 2, "gradient": 3, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "specific_model", "coefficient": 4, "gradient": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_linearisation_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_log_calculus_context_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_calculus_context_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"differentiate_exp", "differentiate_log_chain", "stationary_exp_product"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small chain-rule coefficients; stationary-product case has a single positive answer",
+    }
+
+    if item_type == "differentiate_exp":
+        k = int_parameter(case, "k", practice_id, min_value=1, max_value=6)
+        prompt = f"Differentiate e^({k}x)."
+        answer = f"{k}e^({k}x)"
+        worked_solution = [
+            "Use the chain rule for e^(kx).",
+            f"The derivative of {k}x is {k}.",
+            f"So the derivative is {answer}.",
+        ]
+        parameters.update({"k": k})
+    elif item_type == "differentiate_log_chain":
+        a = int_parameter(case, "a", practice_id, min_value=1, max_value=6)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        inner = linear_expression(a, b)
+        prompt = f"Differentiate ln({inner})."
+        answer = f"{a}/({inner})"
+        worked_solution = [
+            "Use d/dx ln u = u'/u.",
+            f"Here u = {inner} and u' = {a}.",
+            f"So the derivative is {answer}.",
+        ]
+        parameters.update({"a": a, "b": b})
+    else:
+        prompt = "Find the stationary x-value for y = x e^(-x)."
+        answer = "x = 1"
+        worked_solution = [
+            "Use the product rule.",
+            "dy/dx = e^(-x) - x e^(-x) = e^(-x)(1 - x).",
+            "Since e^(-x) is never zero, set 1 - x = 0.",
+            "Therefore x = 1.",
+        ]
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_CALCULUS_CONTEXT_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-ln-e-inverse-001", "p3-exp-equations-001"]),
+    )
+
+
+def build_log_calculus_context_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "differentiate_exp", "k": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "differentiate_log_chain", "a": 2, "b": 1, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "stationary_exp_product", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_calculus_context_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_differentiation_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differentiation_chain_product_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"chain_first_line", "product_exp", "tangent_chain"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small integer coefficients; derivative magnitudes capped at 200",
+    }
+
+    if item_type == "chain_first_line":
+        a = int_parameter(case, "a", practice_id, min_value=-6, max_value=6, allow_zero=False)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        n = int_parameter(case, "n", practice_id, min_value=2, max_value=6)
+        inner = linear_expression(a, b)
+        derivative_coefficient = n * a
+        require_safe(abs(derivative_coefficient) <= 36, practice_id, "chain derivative coefficient is too large")
+        answer = f"{derivative_coefficient}({inner})^{n - 1}"
+        prompt = f"Differentiate ({inner})^{n} by writing the chain-rule structure first."
+        worked_solution = [
+            f"Let u = {inner}.",
+            f"Then y = u^{n}, so dy/du = {n}u^{n - 1} and du/dx = {a}.",
+            f"Multiply the derivatives: dy/dx = {answer}.",
+        ]
+        parameters.update({"a": a, "b": b, "n": n, "derivative_coefficient": derivative_coefficient})
+    elif item_type == "product_exp":
+        k = int_parameter(case, "k", practice_id, min_value=1, max_value=5)
+        prompt = f"Differentiate x e^({k}x)."
+        answer = f"e^({k}x)(1 + {k}x)"
+        worked_solution = [
+            "Use the product rule with u = x and v = e^(kx).",
+            f"du/dx = 1 and dv/dx = {k}e^({k}x).",
+            f"dy/dx = e^({k}x) + {k}x e^({k}x).",
+            f"Factor the common exponential to get {answer}.",
+        ]
+        parameters.update({"k": k})
+    else:
+        c = int_parameter(case, "c", practice_id, min_value=1, max_value=5)
+        n = int_parameter(case, "n", practice_id, min_value=2, max_value=4)
+        x0 = int_parameter(case, "x0", practice_id, min_value=1, max_value=3)
+        inner_value = x0 * x0 + c
+        y0 = inner_value ** n
+        gradient = n * (inner_value ** (n - 1)) * 2 * x0
+        require_safe(abs(gradient) <= 200, practice_id, "tangent gradient is too large")
+        prompt = f"For y = (x^2 + {c})^{n}, find the tangent line at x = {x0}."
+        answer = f"y - {y0} = {gradient}(x - {x0})"
+        worked_solution = [
+            f"Differentiate by the chain rule: dy/dx = {n}(x^2 + {c})^{n - 1}(2x).",
+            f"At x = {x0}, the gradient is {gradient}.",
+            f"The point on the curve is ({x0}, {y0}).",
+            f"Use point-gradient form to get {answer}.",
+        ]
+        parameters.update({"c": c, "n": n, "x0": x0, "gradient": gradient, "y0": y0})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIATION_CHAIN_PRODUCT_FAMILY,
+        topic=DIFFERENTIATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIATION_TOPIC, [
+            "p3-differentiation-method-001",
+            "p3-differentiation-follow-through-001",
+        ]),
+    )
+
+
+def build_differentiation_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "chain_first_line", "a": 2, "b": 3, "n": 5, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "product_exp", "k": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "tangent_chain", "c": 1, "n": 3, "x0": 1, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differentiation_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_parametric_derivative_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_parametric_derivative_ratio_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"derivative_components", "dy_dx_at_t", "tangent_line"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small integer coefficients; dx/dt checked non-zero before division",
+    }
+
+    if item_type == "derivative_components":
+        a = int_parameter(case, "a", practice_id, min_value=1, max_value=5)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        c = int_parameter(case, "c", practice_id, min_value=-8, max_value=8, allow_zero=False)
+        d = int_parameter(case, "d", practice_id, min_value=-9, max_value=9)
+        x_expr = quadratic_parameter_text(a, b)
+        y_expr = linear_parameter_text(c, d)
+        dxdt = coefficient_variable_text(2 * a, "t")
+        dydt = str(c)
+        prompt = f"For x = {x_expr} and y = {y_expr}, write dx/dt and dy/dt."
+        answer = f"dx/dt = {dxdt}, dy/dt = {dydt}"
+        worked_solution = [
+            "Differentiate x and y separately with respect to t.",
+            f"From x = {x_expr}, dx/dt = {dxdt}.",
+            f"From y = {y_expr}, dy/dt = {dydt}.",
+        ]
+        parameters.update({"a": a, "b": b, "c": c, "d": d})
+    elif item_type == "dy_dx_at_t":
+        a = int_parameter(case, "a", practice_id, min_value=1, max_value=5)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        c = int_parameter(case, "c", practice_id, min_value=-12, max_value=12, allow_zero=False)
+        d = int_parameter(case, "d", practice_id, min_value=-9, max_value=9)
+        t0 = int_parameter(case, "t0", practice_id, min_value=1, max_value=5)
+        dxdt_value = 2 * a * t0
+        dydt_value = c
+        require_safe(dxdt_value != 0, practice_id, "dx/dt cannot be zero")
+        gradient = fraction_text(dydt_value, dxdt_value)
+        x_expr = quadratic_parameter_text(a, b)
+        y_expr = linear_parameter_text(c, d)
+        prompt = f"For x = {x_expr} and y = {y_expr}, find dy/dx at t = {t0}."
+        answer = f"dy/dx = {gradient}"
+        worked_solution = [
+            f"dx/dt = {coefficient_variable_text(2 * a, 't')} and dy/dt = {c}.",
+            f"At t = {t0}, dx/dt = {dxdt_value} and dy/dt = {dydt_value}.",
+            f"Use dy/dx = (dy/dt)/(dx/dt) = {dydt_value}/{dxdt_value}.",
+            f"So dy/dx = {gradient}.",
+        ]
+        parameters.update({"a": a, "b": b, "c": c, "d": d, "t0": t0, "dxdt": dxdt_value, "dydt": dydt_value})
+    else:
+        a = int_parameter(case, "a", practice_id, min_value=-6, max_value=6, allow_zero=False)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        c = int_parameter(case, "c", practice_id, min_value=-5, max_value=5, allow_zero=False)
+        d = int_parameter(case, "d", practice_id, min_value=-9, max_value=9)
+        t0 = int_parameter(case, "t0", practice_id, min_value=1, max_value=5)
+        dydt_value = 2 * c * t0
+        gradient_text = fraction_text(dydt_value, a)
+        require_safe("/" not in gradient_text, practice_id, "tangent-line warm-up keeps integer gradients")
+        gradient = int(gradient_text)
+        require_safe(abs(gradient) <= 20, practice_id, "tangent gradient is too large")
+        x0 = a * t0 + b
+        y0 = c * t0 * t0 + d
+        x_expr = linear_parameter_text(a, b)
+        y_expr = quadratic_parameter_text(c, d)
+        prompt = f"For x = {x_expr} and y = {y_expr}, find the tangent line at t = {t0}."
+        answer = f"y - {y0} = {gradient}(x - {x0})"
+        worked_solution = [
+            f"dx/dt = {a} and dy/dt = {coefficient_variable_text(2 * c, 't')}.",
+            f"At t = {t0}, dy/dx = {dydt_value}/{a} = {gradient}.",
+            f"The point is ({x0}, {y0}).",
+            f"Use point-gradient form to get {answer}.",
+        ]
+        parameters.update({"a": a, "b": b, "c": c, "d": d, "t0": t0, "gradient": gradient, "x0": x0, "y0": y0})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=PARAMETRIC_DERIVATIVE_FAMILY,
+        topic=PARAMETRIC_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, PARAMETRIC_TOPIC, ["p3-parametric-derivative-001"]),
+    )
+
+
+def build_parametric_derivative_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "derivative_components", "a": 2, "b": 1, "c": 3, "d": -2, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "dy_dx_at_t", "a": 2, "b": -1, "c": 6, "d": 4, "t0": 3, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "tangent_line", "a": 2, "b": 1, "c": 1, "d": -4, "t0": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_parametric_derivative_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_integration_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_integration_method_setup_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"substitution_setup", "substitution_integrate", "parts_exp"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small positive powers and coefficients; hidden derivative checked explicitly",
+    }
+
+    if item_type in {"substitution_setup", "substitution_integrate"}:
+        c = int_parameter(case, "c", practice_id, min_value=1, max_value=9)
+        n = int_parameter(case, "n", practice_id, min_value=1, max_value=5)
+        integrand = f"2x(x^2 + {c})^{n}"
+        if item_type == "substitution_setup":
+            prompt = f"For integral of {integrand} dx, state a suitable substitution and du."
+            answer = f"u = x^2 + {c}, du = 2x dx"
+            worked_solution = [
+                "Look for a bracket whose derivative appears as a factor.",
+                f"The derivative of x^2 + {c} is 2x.",
+                f"So use {answer}.",
+            ]
+        else:
+            result_power = n + 1
+            prompt = f"Integrate {integrand} dx."
+            answer = f"(x^2 + {c})^{result_power}/{result_power} + C"
+            worked_solution = [
+                f"Let u = x^2 + {c}, so du = 2x dx.",
+                f"The integral becomes integral of u^{n} du.",
+                f"Integrating gives u^{result_power}/{result_power} + C.",
+                f"Substitute back to get {answer}.",
+            ]
+            parameters["result_power"] = result_power
+        parameters.update({"c": c, "n": n})
+    else:
+        k = int_parameter(case, "k", practice_id, min_value=1, max_value=5)
+        prompt = f"Integrate x e^({k}x) dx using integration by parts."
+        answer = f"x e^({k}x)/{k} - e^({k}x)/{k * k} + C"
+        worked_solution = [
+            "Use parts with u = x and dv = e^(kx) dx.",
+            f"Then du = dx and v = e^({k}x)/{k}.",
+            "Apply integral u dv = uv - integral v du.",
+            f"This gives {answer}.",
+        ]
+        parameters.update({"k": k})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=INTEGRATION_METHOD_SETUP_FAMILY,
+        topic=INTEGRATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, INTEGRATION_TOPIC, [
+            "p3-integration-method-choice-001",
+            "p3-integration-parts-substitution-001",
+        ]),
+    )
+
+
+def build_integration_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "substitution_setup", "c": 5, "n": 4, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "substitution_integrate", "c": 3, "n": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "parts_exp", "k": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_integration_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_complex_modulus_argument_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_complex_modulus_argument_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"modulus", "modulus_argument", "power_argument"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small integer Cartesian parts; modulus checked as exact square root",
+    }
+
+    if item_type in {"modulus", "modulus_argument"}:
+        real = int_parameter(case, "real", practice_id, min_value=-12, max_value=12)
+        imaginary = int_parameter(case, "imaginary", practice_id, min_value=-12, max_value=12)
+        require_safe(real != 0 or imaginary != 0, practice_id, "complex number cannot be zero")
+        modulus = integer_square_root(real * real + imaginary * imaginary, practice_id, "modulus squared")
+        z_text = complex_text(real, imaginary)
+        if item_type == "modulus":
+            prompt = f"Find the modulus of z = {z_text}."
+            answer = f"|z| = {modulus}"
+            worked_solution = [
+                "Use |a + bi| = sqrt(a^2 + b^2).",
+                f"Here |z| = sqrt({real}^2 + {imaginary}^2).",
+                f"So |z| = {modulus}.",
+            ]
+        else:
+            argument = argument_text(real, imaginary, practice_id)
+            prompt = f"For z = {z_text}, state the modulus and a quadrant-aware argument."
+            answer = f"|z| = {modulus}, arg z = {argument}"
+            worked_solution = [
+                f"The modulus is sqrt({real}^2 + {imaginary}^2) = {modulus}.",
+                "Use the signs of the real and imaginary parts to choose the quadrant.",
+                f"The reference angle has tan alpha = {abs(imaginary)}/{abs(real)}.",
+                f"So arg z = {argument}.",
+            ]
+            parameters["argument"] = argument
+        parameters.update({"real": real, "imaginary": imaginary, "modulus": modulus})
+    else:
+        modulus = int_parameter(case, "modulus", practice_id, min_value=1, max_value=5)
+        argument_numerator = int_parameter(case, "argument_numerator", practice_id, min_value=1, max_value=6)
+        argument_denominator = int_parameter(case, "argument_denominator", practice_id, min_value=2, max_value=12)
+        power = int_parameter(case, "power", practice_id, min_value=2, max_value=5)
+        require_safe(argument_numerator < argument_denominator, practice_id, "argument fraction must be proper")
+        powered_modulus = modulus ** power
+        require_safe(powered_modulus <= 125, practice_id, "powered modulus is too large")
+        powered_argument = pi_fraction_text(argument_numerator * power, argument_denominator)
+        prompt = f"If z has modulus {modulus} and argument {pi_fraction_text(argument_numerator, argument_denominator)}, state the modulus and argument of z^{power}."
+        answer = f"modulus = {powered_modulus}, argument = {powered_argument}"
+        worked_solution = [
+            f"For a power, raise the modulus to the power: {modulus}^{power} = {powered_modulus}.",
+            f"Multiply the argument by {power}.",
+            f"This gives argument {powered_argument}.",
+        ]
+        parameters.update({
+            "modulus": modulus,
+            "argument_numerator": argument_numerator,
+            "argument_denominator": argument_denominator,
+            "power": power,
+            "powered_modulus": powered_modulus,
+        })
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=COMPLEX_MODULUS_ARGUMENT_FAMILY,
+        topic=COMPLEX_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, COMPLEX_TOPIC, [
+            "p3-complex-form-001",
+            "p3-complex-locus-argument-001",
+        ]),
+    )
+
+
+def build_complex_modulus_argument_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "modulus", "real": 3, "imaginary": 4, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "modulus_argument", "real": -3, "imaginary": 4, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "power_argument", "modulus": 2, "argument_numerator": 1, "argument_denominator": 6, "power": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_complex_modulus_argument_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_vectors_line_scalar_product_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"line_identify", "dot_product", "angle_cosine"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
+    }
+
+    if item_type == "line_identify":
+        point = vector_from_case(case, "point", practice_id, allow_zero_vector=True)
+        direction = vector_from_case(case, "direction", practice_id)
+        prompt = f"For the line r = {vector_text(point)} + lambda{vector_text(direction)}, state one point on the line and its direction vector."
+        answer = f"point {vector_text(point)}, direction {vector_text(direction)}"
+        worked_solution = [
+            "In vector line form r = a + lambda d, a is a point on the line.",
+            "The vector multiplying the parameter is the direction vector.",
+            f"So the point is {vector_text(point)} and the direction is {vector_text(direction)}.",
+        ]
+        parameters.update({
+            "point_x": point[0],
+            "point_y": point[1],
+            "point_z": point[2],
+            "direction_x": direction[0],
+            "direction_y": direction[1],
+            "direction_z": direction[2],
+        })
+    elif item_type == "dot_product":
+        left = vector_from_case(case, "left", practice_id)
+        right = vector_from_case(case, "right", practice_id)
+        dot = dot_product(left, right)
+        require_safe(abs(dot) <= 120, practice_id, "dot product is too large")
+        perpendicular_text = "perpendicular" if dot == 0 else "not perpendicular"
+        prompt = f"Find {vector_text(left)} . {vector_text(right)} and decide whether the vectors are perpendicular."
+        answer = f"dot product = {dot}; the vectors are {perpendicular_text}"
+        worked_solution = [
+            "Multiply matching components and add.",
+            f"{vector_text(left)} . {vector_text(right)} = {left[0]}({right[0]}) + {left[1]}({right[1]}) + {left[2]}({right[2]}).",
+            f"The dot product is {dot}.",
+            "A zero dot product means perpendicular; otherwise they are not perpendicular.",
+        ]
+        parameters.update({
+            "left_x": left[0],
+            "left_y": left[1],
+            "left_z": left[2],
+            "right_x": right[0],
+            "right_y": right[1],
+            "right_z": right[2],
+            "dot": dot,
+        })
+    else:
+        left = vector_from_case(case, "left", practice_id)
+        right = vector_from_case(case, "right", practice_id)
+        dot = dot_product(left, right)
+        left_norm = integer_square_root(dot_product(left, left), practice_id, "left norm squared")
+        right_norm = integer_square_root(dot_product(right, right), practice_id, "right norm squared")
+        denominator = left_norm * right_norm
+        cosine = fraction_text(dot, denominator)
+        prompt = f"For direction vectors {vector_text(left)} and {vector_text(right)}, find cos theta for the angle between them."
+        answer = f"cos theta = {cosine}"
+        worked_solution = [
+            "Use a . b = |a||b| cos theta.",
+            f"The dot product is {dot}.",
+            f"The magnitudes are {left_norm} and {right_norm}.",
+            f"So cos theta = {dot}/({left_norm} x {right_norm}) = {cosine}.",
+        ]
+        parameters.update({
+            "left_x": left[0],
+            "left_y": left[1],
+            "left_z": left[2],
+            "right_x": right[0],
+            "right_y": right[1],
+            "right_z": right[2],
+            "dot": dot,
+            "left_norm": left_norm,
+            "right_norm": right_norm,
+        })
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=VECTORS_LINE_SCALAR_FAMILY,
+        topic=VECTORS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, VECTORS_TOPIC, [
+            "p3-vectors-lines-001",
+            "p3-vectors-scalar-product-001",
+        ]),
+    )
+
+
+def build_vectors_line_scalar_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {
+            "item_type": "line_identify",
+            "point_x": 1,
+            "point_y": 2,
+            "point_z": -1,
+            "direction_x": 3,
+            "direction_y": -1,
+            "direction_z": 2,
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "item_type": "dot_product",
+            "left_x": 2,
+            "left_y": -1,
+            "left_z": 2,
+            "right_x": 1,
+            "right_y": 3,
+            "right_z": 4,
+            "sequence_role": "complete_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "item_type": "angle_cosine",
+            "left_x": 1,
+            "left_y": 2,
+            "left_z": 2,
+            "right_x": 2,
+            "right_y": 1,
+            "right_z": 2,
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+        },
+    ]
+    return [build_vectors_line_scalar_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def newton_sqrt_sequence(constant: int, x0: int, iterations: int, practice_id: str) -> list[Fraction]:
+    require_safe(constant > 0, practice_id, "constant must be positive")
+    require_safe(x0 > 0, practice_id, "starting value must be positive")
+    values = [Fraction(x0, 1)]
+    current = values[0]
+    for _ in range(iterations):
+        current = (current + Fraction(constant, 1) / current) / 2
+        require_safe(current > 0 and current < 20, practice_id, "iteration left safe numeric bounds")
+        values.append(current)
+    return values
+
+
+def build_numerical_sign_change_iteration_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_numerical_sign_change_iteration_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"sign_change", "sqrt_iteration", "sqrt_iteration_guardian"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "positive square-root constants below 20; iteration values checked positive and bounded",
+    }
+
+    if item_type == "sign_change":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=30)
+        left = int_parameter(case, "left", practice_id, min_value=-10, max_value=10)
+        right = int_parameter(case, "right", practice_id, min_value=-10, max_value=10)
+        require_safe(left < right, practice_id, "left endpoint must be smaller than right endpoint")
+        left_value = left * left - constant
+        right_value = right * right - constant
+        require_safe(left_value * right_value < 0, practice_id, "endpoints must give a sign change")
+        prompt = f"For f(x) = x^2 - {constant}, check whether the interval ({left}, {right}) contains a root."
+        answer = f"f({left}) = {left_value} and f({right}) = {right_value}, so a root lies in ({left}, {right})"
+        worked_solution = [
+            f"Evaluate the function at both ends: f({left}) = {left_value}.",
+            f"Evaluate the other end: f({right}) = {right_value}.",
+            "The signs are opposite, so the continuous function crosses zero in the interval.",
+        ]
+        parameters.update({"constant": constant, "left": left, "right": right, "left_value": left_value, "right_value": right_value})
+    else:
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=19)
+        x0 = int_parameter(case, "x0", practice_id, min_value=1, max_value=9)
+        iterations = int_parameter(case, "iterations", practice_id, min_value=2, max_value=4)
+        values = newton_sqrt_sequence(constant, x0, iterations, practice_id)
+        rounded_values = [decimal_text(value) for value in values]
+        if item_type == "sqrt_iteration":
+            prompt = f"Use x_(n+1) = (x_n + {constant}/x_n)/2 with x_0 = {x0}. Find x_1 and x_2 to 3 d.p."
+            answer = f"x_1 = {rounded_values[1]}, x_2 = {rounded_values[2]}"
+            worked_solution = [
+                f"Substitute x_0 = {x0} into the iteration formula.",
+                f"x_1 = {rounded_values[1]}.",
+                f"Use x_1 in the same formula to get x_2 = {rounded_values[2]}.",
+            ]
+        else:
+            prompt = f"Use x_(n+1) = (x_n + {constant}/x_n)/2 from x_0 = {x0} for {iterations} iterations, then give the estimate to 3 d.p."
+            answer = f"x = {rounded_values[-1]} to 3 d.p."
+            worked_solution = [
+                "Keep the calculator values through the iteration rather than rounding early.",
+                f"The successive values to 3 d.p. are {', '.join(rounded_values[1:])}.",
+                f"After {iterations} iterations the estimate is {rounded_values[-1]} to 3 d.p.",
+            ]
+        parameters.update({"constant": constant, "x0": x0, "iterations": iterations, "final_value_3dp": rounded_values[-1]})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY,
+        topic=NUMERICAL_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, NUMERICAL_TOPIC, [
+            "p3-numerical-method-evidence-001",
+            "p3-iteration-formula-discipline-001",
+        ]),
+    )
+
+
+def build_numerical_sign_change_iteration_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "sign_change", "constant": 5, "left": 2, "right": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "sqrt_iteration", "constant": 5, "x0": 2, "iterations": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "sqrt_iteration_guardian", "constant": 7, "x0": 3, "iterations": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_numerical_sign_change_iteration_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_differential_equations_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differential_equations_separation_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"separate_first", "solve_exponential", "initial_condition_value"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
+    }
+
+    if item_type == "separate_first":
+        k = int_parameter(case, "k", practice_id, min_value=1, max_value=6)
+        power = int_parameter(case, "power", practice_id, min_value=1, max_value=4)
+        prompt = f"For dy/dx = {k}x^{power}y, write a separated-variable first line."
+        answer = f"(1/y) dy = {k}x^{power} dx"
+        worked_solution = [
+            "Move every y expression to the dy side and every x expression to the dx side.",
+            "Divide by y before integrating.",
+            f"The separated first line is {answer}.",
+        ]
+        parameters.update({"k": k, "power": power})
+    elif item_type == "solve_exponential":
+        k = int_parameter(case, "k", practice_id, min_value=2, max_value=8)
+        y0 = int_parameter(case, "y0", practice_id, min_value=1, max_value=9)
+        require_safe(k % 2 == 0, practice_id, "k must be even for this exact warm-up")
+        exponent_coefficient = k // 2
+        prompt = f"Solve dy/dx = {k}xy given y(0) = {y0}."
+        exponent_text = "x^2" if exponent_coefficient == 1 else f"{exponent_coefficient}x^2"
+        answer = f"y = {y0}e^({exponent_text})"
+        worked_solution = [
+            f"Separate variables: (1/y) dy = {k}x dx.",
+            f"Integrate to get ln y = {exponent_text} + C.",
+            f"Use y(0) = {y0}, so e^C = {y0}.",
+            f"Therefore {answer}.",
+        ]
+        parameters.update({"k": k, "y0": y0, "exponent_coefficient": exponent_coefficient})
+    else:
+        y0 = int_parameter(case, "y0", practice_id, min_value=1, max_value=9)
+        x_value = int_parameter(case, "x_value", practice_id, min_value=1, max_value=12)
+        final_y = integer_square_root(y0 * y0 + x_value * x_value, practice_id, "final y squared")
+        prompt = f"For dy/dx = x/y with y(0) = {y0}, find y when x = {x_value}, taking the positive branch."
+        answer = f"y = {final_y}"
+        worked_solution = [
+            "Separate variables: y dy = x dx.",
+            "Integrate to get y^2/2 = x^2/2 + C.",
+            f"Using y(0) = {y0} gives y^2 = x^2 + {y0 * y0}.",
+            f"At x = {x_value}, y^2 = {final_y * final_y}, so the positive value is y = {final_y}.",
+        ]
+        parameters.update({"y0": y0, "x_value": x_value, "final_y": final_y})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY,
+        topic=DIFFERENTIAL_EQUATIONS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIAL_EQUATIONS_TOPIC, [
+            "p3-differential-separation-001",
+            "p3-differential-initial-condition-001",
+        ]),
+    )
+
+
+def build_differential_equations_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "separate_first", "k": 3, "power": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "solve_exponential", "k": 2, "y0": 5, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "initial_condition_value", "y0": 3, "x_value": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differential_equations_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_differentiation_implicit_log_exp_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differentiation_implicit_log_exp_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"implicit_setup", "implicit_solve", "implicit_log_relation"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "canonical implicit forms with exact symbolic derivative checks",
+    }
+
+    if item_type == "implicit_setup":
+        radius_squared = int_parameter(case, "radius_squared", practice_id, min_value=1, max_value=100)
+        prompt = f"For x^2 + y^2 = {radius_squared}, write the first implicit-differentiation line."
+        answer = "2x + 2y dy/dx = 0"
+        worked_solution = [
+            "Differentiate both sides with respect to x.",
+            "The x^2 term gives 2x.",
+            "The y^2 term gives 2y dy/dx by the chain rule.",
+            "The constant differentiates to 0.",
+        ]
+        parameters.update({"radius_squared": radius_squared})
+    elif item_type == "implicit_solve":
+        prompt = "For x^2 + y^2 = 25, find dy/dx in terms of x and y."
+        answer = "dy/dx = -x/y"
+        worked_solution = [
+            "Differentiate implicitly: 2x + 2y dy/dx = 0.",
+            "Move 2x to the other side.",
+            "Divide by 2y to get dy/dx = -x/y.",
+        ]
+    else:
+        prompt = "For y ln x = x^2, find dy/dx."
+        answer = "dy/dx = (2x - y/x)/ln x"
+        worked_solution = [
+            "Differentiate y ln x using the product rule.",
+            "This gives (dy/dx)ln x + y/x = 2x.",
+            "Move y/x to the right side.",
+            "Divide by ln x to get dy/dx = (2x - y/x)/ln x.",
+        ]
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY,
+        topic=DIFFERENTIATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIATION_TOPIC, ["p3-differentiation-method-001"]),
+    )
+
+
+def build_differentiation_implicit_log_exp_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "implicit_setup", "radius_squared": 25, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "implicit_solve", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "implicit_log_relation", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differentiation_implicit_log_exp_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_integration_definite_area_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_integration_definite_area_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"antiderivative", "definite_integral", "area_under_curve"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "low-degree polynomials with exact integer or simple fractional areas",
+    }
+
+    if item_type == "antiderivative":
+        prompt = "Find an antiderivative of 3x^2 + 2x."
+        answer = "x^3 + x^2 + C"
+        worked_solution = [
+            "Increase each power by 1 and divide by the new power.",
+            "3x^2 integrates to x^3.",
+            "2x integrates to x^2.",
+            "Include + C for an indefinite integral.",
+        ]
+    elif item_type == "definite_integral":
+        upper = int_parameter(case, "upper", practice_id, min_value=1, max_value=5)
+        value = upper ** 3 + upper ** 2
+        require_safe(value <= 150, practice_id, "definite integral value is too large")
+        prompt = f"Evaluate the definite integral of 3x^2 + 2x from 0 to {upper}."
+        answer = str(value)
+        worked_solution = [
+            "An antiderivative is x^3 + x^2.",
+            f"Evaluate at {upper}: {upper}^3 + {upper}^2 = {value}.",
+            "Evaluate at 0 and subtract 0.",
+            f"So the definite integral is {value}.",
+        ]
+        parameters.update({"upper": upper, "value": value})
+    else:
+        width = int_parameter(case, "width", practice_id, min_value=1, max_value=6)
+        numerator = width ** 3
+        denominator = 6
+        area = fraction_text(numerator, denominator)
+        prompt = f"Find the area under y = {width}x - x^2 from x = 0 to x = {width}."
+        answer = area
+        worked_solution = [
+            f"The curve is non-negative between 0 and {width}, so area is the definite integral.",
+            f"Integrate {width}x - x^2 to get {fraction_text(width, 2)}x^2 - x^3/3.",
+            f"Substitute {width} and 0.",
+            f"The area is {area}.",
+        ]
+        parameters.update({"width": width, "area": area})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=INTEGRATION_DEFINITE_AREA_FAMILY,
+        topic=INTEGRATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, INTEGRATION_TOPIC, ["p3-integration-method-choice-001"]),
+    )
+
+
+def build_integration_definite_area_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "antiderivative", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "definite_integral", "upper": 2, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "area_under_curve", "width": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_integration_definite_area_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_complex_cartesian_locus_roots_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_complex_cartesian_locus_roots_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"cartesian_add", "locus_circle", "cube_roots_real"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small Cartesian parts; locus and root prompts use exact standard forms",
+    }
+
+    if item_type == "cartesian_add":
+        a = int_parameter(case, "a", practice_id, min_value=-9, max_value=9)
+        b = int_parameter(case, "b", practice_id, min_value=-9, max_value=9)
+        c = int_parameter(case, "c", practice_id, min_value=-9, max_value=9)
+        d = int_parameter(case, "d", practice_id, min_value=-9, max_value=9)
+        real = a + c
+        imaginary = b + d
+        require_safe(abs(real) <= 18 and abs(imaginary) <= 18, practice_id, "Cartesian sum is too large")
+        prompt = f"Add ({complex_text(a, b)}) and ({complex_text(c, d)}) in Cartesian form."
+        answer = complex_text(real, imaginary)
+        worked_solution = [
+            "Add real parts together and imaginary parts together.",
+            f"Real part: {a} + {c} = {real}.",
+            f"Imaginary part: {b} + {d} = {imaginary}.",
+            f"So the sum is {answer}.",
+        ]
+        parameters.update({"a": a, "b": b, "c": c, "d": d, "real": real, "imaginary": imaginary})
+    elif item_type == "locus_circle":
+        center_real = int_parameter(case, "center_real", practice_id, min_value=-9, max_value=9)
+        center_imaginary = int_parameter(case, "center_imaginary", practice_id, min_value=-9, max_value=9)
+        radius = int_parameter(case, "radius", practice_id, min_value=1, max_value=9)
+        prompt = f"For |z - ({complex_text(center_real, center_imaginary)})| = {radius}, state the centre and radius of the locus."
+        answer = f"centre ({center_real}, {center_imaginary}), radius {radius}"
+        worked_solution = [
+            "|z - w| = r is a circle centered at the complex number w.",
+            f"Here w = {complex_text(center_real, center_imaginary)}.",
+            f"So the centre is ({center_real}, {center_imaginary}) and the radius is {radius}.",
+        ]
+        parameters.update({"center_real": center_real, "center_imaginary": center_imaginary, "radius": radius})
+    else:
+        root_modulus = int_parameter(case, "root_modulus", practice_id, min_value=1, max_value=5)
+        require_safe(root_modulus == 2, practice_id, "cube-root warm-up uses roots of 8 for exact simple roots")
+        prompt = "Find the cube roots of 8 in Cartesian form."
+        answer = "2, -1 + sqrt(3)i, -1 - sqrt(3)i"
+        worked_solution = [
+            "Write 8 as 8e^(i0).",
+            "Cube roots have modulus 2 and arguments 0, 2pi/3, and 4pi/3.",
+            "Converting these to Cartesian form gives 2, -1 + sqrt(3)i, and -1 - sqrt(3)i.",
+        ]
+        parameters.update({"root_modulus": root_modulus})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY,
+        topic=COMPLEX_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, COMPLEX_TOPIC, [
+            "p3-complex-form-001",
+            "p3-complex-locus-argument-001",
+        ]),
+    )
+
+
+def build_complex_cartesian_locus_roots_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "cartesian_add", "a": 3, "b": 2, "c": 1, "d": -5, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "locus_circle", "center_real": 2, "center_imaginary": 1, "radius": 3, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "cube_roots_real", "root_modulus": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_complex_cartesian_locus_roots_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_vectors_line_intersection_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_vectors_line_intersection_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"component_equations", "intersection_point", "point_on_line_parameter"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "3D integer line components chosen to give exact parameter checks",
+    }
+
+    if item_type in {"component_equations", "intersection_point"}:
+        first_point = (1, 2, 0)
+        first_direction = (2, -1, 1)
+        second_point = (3, 1, 1)
+        second_direction = (1, 0, 2)
+        if item_type == "component_equations":
+            prompt = f"Write the component equations for intersecting r = {vector_text(first_point)} + lambda{vector_text(first_direction)} and r = {vector_text(second_point)} + mu{vector_text(second_direction)}."
+            answer = "1 + 2lambda = 3 + mu, 2 - lambda = 1, lambda = 1 + 2mu"
+            worked_solution = [
+                "Equate matching x, y, and z components.",
+                "The x-components give 1 + 2lambda = 3 + mu.",
+                "The y-components give 2 - lambda = 1.",
+                "The z-components give lambda = 1 + 2mu.",
+            ]
+        else:
+            prompt = f"Find the intersection point of r = {vector_text(first_point)} + lambda{vector_text(first_direction)} and r = {vector_text(second_point)} + mu{vector_text(second_direction)}."
+            answer = "(3, 1, 1)"
+            worked_solution = [
+                "From the y-components, 2 - lambda = 1, so lambda = 1.",
+                "Substitute into the x-components to get mu = 0.",
+                "The z-components also agree.",
+                "Substitute lambda = 1 into the first line to get (3, 1, 1).",
+            ]
+        parameters.update({"lambda": 1, "mu": 0})
+    else:
+        lambda_value = int_parameter(case, "lambda_value", practice_id, min_value=-5, max_value=5)
+        point = (1, 2, 0)
+        direction = (2, -1, 1)
+        target = tuple(point[i] + lambda_value * direction[i] for i in range(3))
+        prompt = f"The point (5, k, 2) lies on r = {vector_text(point)} + lambda{vector_text(direction)}. Find k."
+        require_safe(target[0] == 5 and target[2] == 2, practice_id, "lambda must match fixed x and z coordinates")
+        answer = f"k = {target[1]}"
+        worked_solution = [
+            "Use the x-coordinate first: 1 + 2lambda = 5, so lambda = 2.",
+            "Check the z-coordinate: lambda = 2 gives z = 2.",
+            f"Use the y-coordinate: k = 2 - 2 = {target[1]}.",
+        ]
+        parameters.update({"lambda_value": lambda_value, "k": target[1]})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=VECTORS_LINE_INTERSECTION_FAMILY,
+        topic=VECTORS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, VECTORS_TOPIC, ["p3-vectors-lines-001"]),
+    )
+
+
+def build_vectors_line_intersection_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "component_equations", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "intersection_point", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "point_on_line_parameter", "lambda_value": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_vectors_line_intersection_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_differential_equations_context_model_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differential_equations_context_model_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"proportional_model", "find_rate_constant", "write_model_from_rate"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "positive context values with exact rational rate constants",
+    }
+
+    if item_type == "proportional_model":
+        k = int_parameter(case, "k", practice_id, min_value=1, max_value=9)
+        prompt = f"A quantity y grows at a rate proportional to y with constant {k}. Write the differential equation."
+        answer = f"dy/dx = {k}y"
+        worked_solution = [
+            "Rate proportional to y means derivative equals a constant times y.",
+            f"The proportionality constant is {k}.",
+            f"So {answer}.",
+        ]
+        parameters.update({"k": k})
+    elif item_type == "find_rate_constant":
+        value = int_parameter(case, "value", practice_id, min_value=1, max_value=50)
+        rate = int_parameter(case, "rate", practice_id, min_value=1, max_value=50)
+        k = fraction_text(rate, value)
+        prompt = f"If dy/dt = ky, y = {value}, and dy/dt = {rate}, find k."
+        answer = f"k = {k}"
+        worked_solution = [
+            f"Substitute the given values into dy/dt = ky: {rate} = k({value}).",
+            f"Divide by {value}.",
+            f"So k = {k}.",
+        ]
+        parameters.update({"value": value, "rate": rate, "k": k})
+    else:
+        value = int_parameter(case, "value", practice_id, min_value=1, max_value=50)
+        rate = int_parameter(case, "rate", practice_id, min_value=1, max_value=50)
+        k = fraction_text(rate, value)
+        prompt = f"A population P is {value} when its rate of increase is {rate}. If dP/dt = kP, write the model."
+        answer = f"dP/dt = ({k})P"
+        worked_solution = [
+            f"Use dP/dt = kP with P = {value} and dP/dt = {rate}.",
+            f"This gives {rate} = {value}k, so k = {k}.",
+            f"Therefore the model is {answer}.",
+        ]
+        parameters.update({"value": value, "rate": rate, "k": k})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY,
+        topic=DIFFERENTIAL_EQUATIONS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIAL_EQUATIONS_TOPIC, ["p3-differential-separation-001"]),
+    )
+
+
+def build_differential_equations_context_model_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "proportional_model", "k": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "find_rate_constant", "value": 10, "rate": 5, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "write_model_from_rate", "value": 20, "rate": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differential_equations_context_model_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
 def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, Any]) -> dict[str, Any]:
     context = context_from_inputs(skill_targets, snippets)
     items = (
         build_log_items(context)
         + build_binomial_items(context)
+        + build_algebra_structure_items(context)
+        + build_polynomial_remainder_items(context)
+        + build_quadratics_discriminant_items(context)
+        + build_log_domain_items(context)
+        + build_log_linearisation_items(context)
+        + build_log_calculus_context_items(context)
         + build_partial_fractions_distinct_items(context)
         + build_partial_fractions_repeated_items(context)
         + build_modulus_equation_items(context)
@@ -1062,6 +2714,18 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_trig_double_angle_items(context)
         + build_trig_solve_interval_items(context)
         + build_trig_r_form_items(context)
+        + build_differentiation_items(context)
+        + build_parametric_derivative_items(context)
+        + build_integration_items(context)
+        + build_complex_modulus_argument_items(context)
+        + build_vectors_line_scalar_items(context)
+        + build_numerical_sign_change_iteration_items(context)
+        + build_differential_equations_items(context)
+        + build_differentiation_implicit_log_exp_items(context)
+        + build_integration_definite_area_items(context)
+        + build_complex_cartesian_locus_roots_items(context)
+        + build_vectors_line_intersection_items(context)
+        + build_differential_equations_context_model_items(context)
     )
     return {
         "generated_by": GENERATED_BY,
@@ -1333,7 +2997,7 @@ def update_content_lab_report(
             "source_trail": "tools/content_lab/outputs/content_lab_research_notes.md",
         },
         "batch_8_recommendations": [
-            "Add deterministic warm-up families for differentiation, integration, vectors, numerical methods, differential equations, and complex numbers where they can stay small and verified.",
+            "Review the needs_review warm-up candidates for differentiation, parametric equations, integration, complex numbers, vectors, numerical methods, and differential equations before runtime promotion.",
             "Split embedded Quick Checks into a dedicated runtime bank only if the app needs independent scheduling or spaced review.",
             "Use teacher review to promote the highest-value secondary-region snippets into deeper Guardian-prep sequences.",
         ],

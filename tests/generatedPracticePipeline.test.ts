@@ -98,6 +98,21 @@ function writeInputs(dir: string) {
         confidence: 'low',
         review_status: 'needs_review',
       },
+      ...[
+        'algebra',
+        'quadratics',
+        'differentiation',
+        'parametric_equations',
+        'integration',
+        'complex_numbers',
+        'vectors',
+        'numerical_methods',
+        'differential_equations',
+      ].map((topic) => ({
+        skill_target_id: `p3_${topic}`,
+        paper_family: 'p3',
+        topic,
+      })),
     ],
   }, null, 2));
 
@@ -204,6 +219,28 @@ function writeInputs(dir: string) {
         },
       },
       {
+        snippet_id: 'p3-quadratics-discriminant-001',
+        paper_family: 'p3',
+        topics: ['quadratics'],
+        region_ids: ['algebra-forge'],
+        title: 'Discriminant checks',
+        student_goal: 'Use the discriminant before solving.',
+        body: 'Use root conditions directly.',
+        steps: ['Compute the discriminant.', 'Interpret its sign.'],
+        exam_move: 'Use discriminant evidence before solving roots.',
+        common_trap: 'Solving when only root type is needed.',
+        review_status: 'teacher_reviewed',
+        source: 'teacher_authored',
+        source_skill_target_ids: ['p3_quadratics'],
+        related_skill_targets: ['p3_quadratics'],
+        worked_example: {
+          id: 'p3-quadratics-discriminant-001-example-1',
+          prompt: 'Find the discriminant of x^2 + 2x + 5.',
+          steps: ['Use b^2 - 4ac.'],
+          answer: '-16',
+        },
+      },
+      {
         snippet_id: 'partial-fractions-snippet',
         paper_family: 'p3',
         topics: ['partial_fractions'],
@@ -243,6 +280,37 @@ function writeInputs(dir: string) {
           answer: '5 sin(x + arctan(4/3))',
         },
       },
+      ...([
+        ['p3-differentiation-method-001', 'differentiation', ['calculus-cliffs'], 'Differentiate with a named rule'],
+        ['p3-parametric-derivative-001', 'parametric_equations', ['calculus-cliffs'], 'Use parametric derivative ratios'],
+        ['p3-integration-method-choice-001', 'integration', ['integration-gardens'], 'Choose the integration setup'],
+        ['p3-complex-form-001', 'complex_numbers', ['complex-harbor'], 'Move between complex forms'],
+        ['p3-vectors-lines-001', 'vectors', ['vector-workshop'], 'Use vector lines and products'],
+        ['p3-numerical-method-evidence-001', 'numerical_methods', ['numerical-mines'], 'Show numerical evidence'],
+        ['p3-differential-separation-001', 'differential_equations', ['differential-shrine'], 'Separate variables first'],
+      ] as const).map(([snippetId, topic, regionIds, title]) => ({
+        snippet_id: snippetId,
+        paper_family: 'p3',
+        topic,
+        topics: [topic],
+        region_ids: regionIds,
+        title,
+        student_goal: 'Prepare for an underserved P3 method safely.',
+        body: 'Use the method signal before calculating.',
+        steps: ['Name the method.', 'Carry out the first algebraic line.'],
+        exam_move: 'Write the setup line before calculating.',
+        common_trap: 'Starting calculation before choosing the method.',
+        review_status: 'teacher_reviewed',
+        source: 'teacher_authored',
+        source_skill_target_ids: [`p3_${topic}`],
+        related_skill_targets: [`p3_${topic}`],
+        worked_example: {
+          id: `${snippetId}-example-1`,
+          prompt: 'State the first method line for a short warm-up.',
+          steps: ['Identify the method signal.', 'Write the setup before simplifying.'],
+          answer: 'Use the named method setup.',
+        },
+      })),
     ],
   }, null, 2));
 
@@ -284,6 +352,41 @@ function generatedItems(json: string): GeneratedPracticeItem[] {
 function numeric(value: number | string | undefined): number {
   if (typeof value === 'number') return value;
   return Number(value);
+}
+
+function expectGeneratorCaseRejected(builderName: string, invalidCase: Record<string, unknown>) {
+  const code = `
+import importlib.util
+import pathlib
+
+script_path = pathlib.Path(${JSON.stringify(buildScript)})
+spec = importlib.util.spec_from_file_location("build_generated_practice", script_path)
+module = importlib.util.module_from_spec(spec)
+assert spec and spec.loader
+spec.loader.exec_module(module)
+context = {
+    "skill_ids_by_key": {},
+    "snippet_ids_by_key": {},
+    "snippet_ids_by_id": {},
+    "example_ids_by_snippet_id": {},
+    "example_metadata_by_id": {},
+    "snippet_metadata_by_id": {},
+    "region_ids_by_key": {},
+}
+try:
+    getattr(module, ${JSON.stringify(builderName)})(context, 1, ${JSON.stringify(invalidCase)})
+except ValueError as error:
+    print(str(error))
+else:
+    raise SystemExit("expected invalid parameters to be rejected")
+`;
+  const output = execFileSync('python3', ['-c', code], {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    timeout: pythonTimeoutMs,
+    maxBuffer: 1024 * 1024,
+  });
+  expect(output).toContain('refused invalid parameters');
 }
 
 function polynomialText(terms: Array<[number, number]>): string {
@@ -608,6 +711,83 @@ describe.sequential('generated practice Content Lab pipeline', () => {
     }
   });
 
+  pipelineIt('generates needs-review warm-up candidates for underserved P3 families without publishing runtime', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-underserved-'));
+    try {
+      const built = runGeneratedBuild(dir);
+      const items = generatedItems(built.output);
+      const runtimeItems = generatedItems(built.runtime);
+      const families = [
+        'algebra.structure_rearrangement_basic',
+        'algebra.polynomial_remainder_factor_basic',
+        'quadratics.discriminant_root_condition_basic',
+        'logarithms_and_exponentials.domain_validation_basic',
+        'logarithms_and_exponentials.linearisation_basic',
+        'logarithms_and_exponentials.calculus_context_basic',
+        'differentiation.chain_product_basic',
+        'differentiation.implicit_log_exp_basic',
+        'parametric_equations.derivative_ratio_basic',
+        'integration.method_setup_basic',
+        'integration.definite_area_basic',
+        'complex_numbers.modulus_argument_basic',
+        'complex_numbers.cartesian_locus_roots_basic',
+        'vectors.line_scalar_product_basic',
+        'vectors.line_intersection_basic',
+        'numerical_methods.sign_change_iteration_basic',
+        'differential_equations.separation_basic',
+        'differential_equations.context_model_basic',
+      ];
+
+      for (const family of families) {
+        const familyItems = items.filter((item) => item.generator_family === family);
+        expect(familyItems.map((item) => item.sequence_role).sort()).toEqual(['complete_step', 'first_step', 'guardian_prep']);
+        expect(familyItems.every((item) => item.review_status === 'needs_review')).toBe(true);
+        expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
+        expect(familyItems.every((item) => item.worked_solution.length >= 2)).toBe(true);
+        expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
+        expect(familyItems.every((item) => typeof item.parameters.safe_bounds === 'string')).toBe(true);
+      }
+
+      expect(runtimeItems.some((item) => families.includes(item.generator_family))).toBe(false);
+      expect(items.find((item) => item.generator_family === 'quadratics.discriminant_root_condition_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('k = -6 or k = 6');
+      expect(items.find((item) => item.generator_family === 'logarithms_and_exponentials.domain_validation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 4');
+      expect(items.find((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic' && item.sequence_role === 'complete_step')?.answer).toBe('dy/dx = 1/2');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
+      expect(items.find((item) => item.generator_family === 'vectors.line_scalar_product_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('cos theta = 8/9');
+      expect(items.find((item) => item.generator_family === 'differential_equations.separation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y = 5');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('refuses unsafe parameters in underserved P3 generators', () => {
+    const invalidCases: Array<[string, Record<string, unknown>]> = [
+      ['build_algebra_structure_item', { item_type: 'zero_product', left_root: 2, right_root: 2, sequence_role: 'guardian_prep' }],
+      ['build_polynomial_remainder_item', { item_type: 'factor_parameter', root: 0, constant: 2, sequence_role: 'guardian_prep' }],
+      ['build_quadratics_discriminant_item', { item_type: 'repeated_root_parameter', a: 1, b: 0, c: 8, sequence_role: 'guardian_prep' }],
+      ['build_log_domain_item', { item_type: 'combined_log_equation', left_shift: 2, right_shift: -1, rhs: 10, valid_root: 4, invalid_root: 1, sequence_role: 'guardian_prep' }],
+      ['build_log_linearisation_item', { item_type: 'specific_model', coefficient: 0, gradient: 2, sequence_role: 'guardian_prep' }],
+      ['build_log_calculus_context_item', { item_type: 'differentiate_log_chain', a: 0, b: 1, sequence_role: 'complete_step' }],
+      ['build_differentiation_item', { item_type: 'tangent_chain', c: 5, n: 4, x0: 3, sequence_role: 'guardian_prep' }],
+      ['build_differentiation_implicit_log_exp_item', { item_type: 'implicit_setup', radius_squared: 0, sequence_role: 'first_step' }],
+      ['build_parametric_derivative_item', { item_type: 'tangent_line', a: 0, b: 1, c: 1, d: -4, t0: 3, sequence_role: 'guardian_prep' }],
+      ['build_integration_item', { item_type: 'substitution_integrate', c: 3, n: 9, sequence_role: 'complete_step' }],
+      ['build_integration_definite_area_item', { item_type: 'definite_integral', upper: 9, sequence_role: 'complete_step' }],
+      ['build_complex_modulus_argument_item', { item_type: 'modulus', real: 2, imaginary: 3, sequence_role: 'first_step' }],
+      ['build_complex_cartesian_locus_roots_item', { item_type: 'cube_roots_real', root_modulus: 3, sequence_role: 'guardian_prep' }],
+      ['build_vectors_line_scalar_item', { item_type: 'angle_cosine', left_x: 1, left_y: 1, left_z: 0, right_x: 2, right_y: 1, right_z: 0, sequence_role: 'guardian_prep' }],
+      ['build_vectors_line_intersection_item', { item_type: 'point_on_line_parameter', lambda_value: 3, sequence_role: 'guardian_prep' }],
+      ['build_numerical_sign_change_iteration_item', { item_type: 'sign_change', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
+      ['build_differential_equations_item', { item_type: 'initial_condition_value', y0: 2, x_value: 4, sequence_role: 'guardian_prep' }],
+      ['build_differential_equations_context_model_item', { item_type: 'find_rate_constant', value: 0, rate: 5, sequence_role: 'complete_step' }],
+    ];
+
+    for (const [builderName, invalidCase] of invalidCases) {
+      expectGeneratorCaseRejected(builderName, invalidCase);
+    }
+  });
+
   pipelineIt('writes deterministic generated and runtime output for the same inputs', () => {
     const firstDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-a-'));
     const secondDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-b-'));
@@ -634,12 +814,30 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'binomial_expansion.first_terms_and_coefficient': 3,
         'algebra.binomial_validity_range': 3,
         'algebra.modulus_equation_basic': 3,
+        'algebra.polynomial_remainder_factor_basic': 3,
+        'algebra.structure_rearrangement_basic': 3,
         'algebra.partial_fractions_distinct_linear': 3,
         'algebra.partial_fractions_repeated_linear': 3,
+        'quadratics.discriminant_root_condition_basic': 3,
+        'logarithms_and_exponentials.domain_validation_basic': 3,
+        'logarithms_and_exponentials.linearisation_basic': 3,
+        'logarithms_and_exponentials.calculus_context_basic': 3,
         'trigonometry.identity_rewrite_basic': 3,
         'trigonometry.double_angle_basic': 3,
         'trigonometry.solve_equation_interval_basic': 3,
         'trigonometry.r_form_basic': 3,
+        'complex_numbers.modulus_argument_basic': 3,
+        'complex_numbers.cartesian_locus_roots_basic': 3,
+        'differential_equations.context_model_basic': 3,
+        'differential_equations.separation_basic': 3,
+        'differentiation.chain_product_basic': 3,
+        'differentiation.implicit_log_exp_basic': 3,
+        'integration.definite_area_basic': 3,
+        'integration.method_setup_basic': 3,
+        'numerical_methods.sign_change_iteration_basic': 3,
+        'parametric_equations.derivative_ratio_basic': 3,
+        'vectors.line_intersection_basic': 3,
+        'vectors.line_scalar_product_basic': 3,
       });
       expect(report.generated_warmups_per_region).toMatchObject({
         'logarithm-grove': 3,
@@ -647,10 +845,12 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'trig-observatory': 12,
       });
       expect(report.generated_families_by_topic).toHaveProperty('trigonometry');
+      expect(report.generated_families_by_topic).toHaveProperty('parametric_equations');
+      expect(report.generated_families_by_topic).toHaveProperty('complex_numbers');
       expect(report.batch_7_depth_summary.priority_region_depth).toEqual(expect.any(Array));
       expect(report.snippets_with_examples_by_region).toMatchObject({
         'logarithm-grove': 1,
-        'algebra-forge': 3,
+        'algebra-forge': 4,
         'trig-observatory': 1,
       });
       expect(report.method_snippets_missing_examples).toEqual([]);

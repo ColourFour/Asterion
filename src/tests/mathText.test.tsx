@@ -16,6 +16,14 @@ afterEach(() => {
   }
 });
 
+async function waitForKatex(container: HTMLElement) {
+  for (let attempt = 0; attempt < 20 && !container.innerHTML.includes('katex'); attempt += 1) {
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
+    });
+  }
+}
+
 describe('MathText', () => {
   it('renders inline LaTeX delimiters with KaTeX markup', async () => {
     const container = document.createElement('div');
@@ -26,14 +34,42 @@ describe('MathText', () => {
     await act(async () => {
       root.render(<MathText text="Convert $a^x=b$ into $x=\\log_a b$." />);
     });
-    for (let attempt = 0; attempt < 20 && !container.innerHTML.includes('katex'); attempt += 1) {
-      await act(async () => {
-        await new Promise((resolve) => window.setTimeout(resolve, 10));
-      });
-    }
+    await waitForKatex(container);
 
     expect(container.innerHTML).toContain('katex');
     expect(container.innerHTML).toContain('log');
     expect(container.textContent).not.toContain('$a^x=b$');
+  });
+
+  it('renders common raw generated-practice math as KaTeX', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    mounted.push({ root, container });
+
+    await act(async () => {
+      root.render(<MathText text="Solve sin x = 1/2 for 0 <= x <= pi." />);
+    });
+    await waitForKatex(container);
+
+    expect(container.innerHTML).toContain('katex');
+    expect(container.textContent).toContain('≤');
+    expect(container.textContent).toContain('π');
+    expect(container.textContent).not.toContain('<=');
+  });
+
+  it('renders raw LaTeX fragments without requiring delimiters', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    mounted.push({ root, container });
+
+    await act(async () => {
+      root.render(<MathText text={`Decompose \\frac{3x+1}{(x-1)(x+2)}.`} />);
+    });
+    await waitForKatex(container);
+
+    expect(container.innerHTML).toContain('katex');
+    expect(container.innerHTML).toContain('mfrac');
   });
 });

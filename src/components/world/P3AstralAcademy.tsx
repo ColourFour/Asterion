@@ -133,13 +133,13 @@ const relatedSlots: MapSlot[] = [
   { x: 73, y: 67 },
 ];
 const supportSlots: MapSlot[] = [
-  { x: 10, y: 54 },
+  { x: 14, y: 54 },
   { x: 29, y: 70 },
-  { x: 89, y: 53 },
+  { x: 86, y: 53 },
 ];
 const distantSlots: MapSlot[] = [
   { x: 50, y: 17 },
-  { x: 49, y: 80 },
+  { x: 49, y: 73 },
   { x: 23, y: 32 },
 ];
 

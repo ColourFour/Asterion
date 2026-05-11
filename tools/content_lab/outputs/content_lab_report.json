@@ -146,7 +146,7 @@
       "snippets_with_examples": 2
     }
   ],
-  "auto_eligible": 30,
+  "auto_eligible": 52,
   "batch_7_depth_summary": {
     "priority_region_depth": [
       {
@@ -222,16 +222,17 @@
     "source_trail": "tools/content_lab/outputs/content_lab_research_notes.md"
   },
   "batch_8_recommendations": [
-    "Add deterministic warm-up families for differentiation, integration, vectors, numerical methods, differential equations, and complex numbers where they can stay small and verified.",
+    "Review the needs_review warm-up candidates for differentiation, parametric equations, integration, complex numbers, vectors, numerical methods, and differential equations before runtime promotion.",
     "Split embedded Quick Checks into a dedicated runtime bank only if the app needs independent scheduling or spaced review.",
     "Use teacher review to promote the highest-value secondary-region snippets into deeper Guardian-prep sequences."
   ],
-  "blocked": 629,
+  "blocked": 36,
   "blocked_or_review_only_source_counts": {
-    "blocked": 629,
-    "review_only": 642
+    "blocked": 36,
+    "review_only": 1213
   },
   "content_review_status_counts": {
+    "generated_practice:needs_review": 54,
     "generated_practice:teacher_reviewed": 30,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 31
@@ -239,24 +240,58 @@
   "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
   "generated_families_by_topic": {
     "algebra": {
-      "algebra.modulus_equation_basic": 3
+      "algebra.modulus_equation_basic": 3,
+      "algebra.polynomial_remainder_factor_basic": 3,
+      "algebra.structure_rearrangement_basic": 3
     },
     "binomial_expansion": {
       "algebra.binomial_validity_range": 3,
       "binomial_expansion.first_terms_and_coefficient": 3
     },
+    "complex_numbers": {
+      "complex_numbers.cartesian_locus_roots_basic": 3,
+      "complex_numbers.modulus_argument_basic": 3
+    },
+    "differential_equations": {
+      "differential_equations.context_model_basic": 3,
+      "differential_equations.separation_basic": 3
+    },
+    "differentiation": {
+      "differentiation.chain_product_basic": 3,
+      "differentiation.implicit_log_exp_basic": 3
+    },
+    "integration": {
+      "integration.definite_area_basic": 3,
+      "integration.method_setup_basic": 3
+    },
     "logarithms_and_exponentials": {
+      "logarithms_and_exponentials.calculus_context_basic": 3,
+      "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3
+    },
+    "numerical_methods": {
+      "numerical_methods.sign_change_iteration_basic": 3
+    },
+    "parametric_equations": {
+      "parametric_equations.derivative_ratio_basic": 3
     },
     "partial_fractions": {
       "algebra.partial_fractions_distinct_linear": 3,
       "algebra.partial_fractions_repeated_linear": 3
+    },
+    "quadratics": {
+      "quadratics.discriminant_root_condition_basic": 3
     },
     "trigonometry": {
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
       "trigonometry.solve_equation_interval_basic": 3
+    },
+    "vectors": {
+      "vectors.line_intersection_basic": 3,
+      "vectors.line_scalar_product_basic": 3
     }
   },
   "generated_warmups_per_region": {
@@ -275,12 +310,30 @@
     "algebra.modulus_equation_basic": 3,
     "algebra.partial_fractions_distinct_linear": 3,
     "algebra.partial_fractions_repeated_linear": 3,
+    "algebra.polynomial_remainder_factor_basic": 3,
+    "algebra.structure_rearrangement_basic": 3,
     "binomial_expansion.first_terms_and_coefficient": 3,
+    "complex_numbers.cartesian_locus_roots_basic": 3,
+    "complex_numbers.modulus_argument_basic": 3,
+    "differential_equations.context_model_basic": 3,
+    "differential_equations.separation_basic": 3,
+    "differentiation.chain_product_basic": 3,
+    "differentiation.implicit_log_exp_basic": 3,
+    "integration.definite_area_basic": 3,
+    "integration.method_setup_basic": 3,
+    "logarithms_and_exponentials.calculus_context_basic": 3,
+    "logarithms_and_exponentials.domain_validation_basic": 3,
+    "logarithms_and_exponentials.linearisation_basic": 3,
     "logarithms_and_exponentials.log_equation_basic": 3,
+    "numerical_methods.sign_change_iteration_basic": 3,
+    "parametric_equations.derivative_ratio_basic": 3,
+    "quadratics.discriminant_root_condition_basic": 3,
     "trigonometry.double_angle_basic": 3,
     "trigonometry.identity_rewrite_basic": 3,
     "trigonometry.r_form_basic": 3,
-    "trigonometry.solve_equation_interval_basic": 3
+    "trigonometry.solve_equation_interval_basic": 3,
+    "vectors.line_intersection_basic": 3,
+    "vectors.line_scalar_product_basic": 3
   },
   "high_evidence_weak_teaching_support": [
     {
@@ -288,7 +341,7 @@
       "quick_check_count": 2,
       "skill_target_id": "p3_complex_numbers",
       "snippet_count": 2,
-      "source_question_count": 38,
+      "source_question_count": 45,
       "topic": "complex_numbers",
       "warmup_count": 0
     },
@@ -297,7 +350,7 @@
       "quick_check_count": 2,
       "skill_target_id": "p3_numerical_methods",
       "snippet_count": 2,
-      "source_question_count": 25,
+      "source_question_count": 32,
       "topic": "numerical_methods",
       "warmup_count": 0
     },
@@ -306,7 +359,7 @@
       "quick_check_count": 1,
       "skill_target_id": "p3_parametric_equations",
       "snippet_count": 1,
-      "source_question_count": 83,
+      "source_question_count": 88,
       "topic": "parametric_equations",
       "warmup_count": 0
     },
@@ -315,7 +368,7 @@
       "quick_check_count": 2,
       "skill_target_id": "p3_vectors",
       "snippet_count": 2,
-      "source_question_count": 26,
+      "source_question_count": 36,
       "topic": "vectors",
       "warmup_count": 0
     }
@@ -359,21 +412,20 @@
     "trig-observatory": 5,
     "vector-workshop": 2
   },
-  "review_only": 642,
+  "review_only": 1213,
   "review_queue_counts_by_reason": {
-    "mapping_status_fail": 286,
-    "missing_mark_scheme_text": 1,
-    "question_text_trust_low": 515,
-    "question_text_trust_unusable": 53,
-    "review_risk_flag": 548,
-    "severe_review_flag": 530,
-    "text_fidelity_status_degraded": 515,
-    "text_only_status_fail": 515,
-    "topic_confidence_low": 412,
-    "validation_status_fail": 514,
-    "validation_status_review": 157,
-    "visual_curation_status_review": 530,
-    "visual_required": 609
+    "mapping_status_fail": 21,
+    "missing_mark_scheme_text": 11,
+    "question_text_trust_low": 877,
+    "review_risk_flag": 984,
+    "severe_review_flag": 16,
+    "text_fidelity_status_degraded": 877,
+    "text_only_status_fail": 877,
+    "topic_confidence_low": 817,
+    "validation_status_fail": 14,
+    "validation_status_review": 358,
+    "visual_curation_status_review": 1017,
+    "visual_required": 1171
   },
   "schema_name": "asterion_content_lab_report",
   "schema_version": 1,
@@ -510,40 +562,7 @@
     "trig-observatory": 5,
     "vector-workshop": 2
   },
-  "topics_needing_deterministic_generators": [
-    {
-      "paper_family": "p3",
-      "topic": "complex_numbers"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "differential_equations"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "differentiation"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "integration"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "numerical_methods"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "parametric_equations"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "quadratics"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "vectors"
-    }
-  ],
+  "topics_needing_deterministic_generators": [],
   "topics_with_no_snippets": [
     {
       "paper_family": "p1",
@@ -676,38 +695,6 @@
   ],
   "topics_with_snippets_but_no_warmups": [
     {
-      "paper_family": "p3",
-      "topic": "complex_numbers"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "differential_equations"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "differentiation"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "integration"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "numerical_methods"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "parametric_equations"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "quadratics"
-    },
-    {
-      "paper_family": "p3",
-      "topic": "vectors"
-    },
-    {
       "paper_family": "p4",
       "topic": "momentum_impulse"
     }
@@ -715,17 +702,17 @@
   "topics_with_source_records_but_no_skill_targets": [
     {
       "paper_family": "p1",
-      "source_record_count": 40,
+      "source_record_count": 38,
       "topic": "circular_measure"
     },
     {
       "paper_family": "p1",
-      "source_record_count": 39,
+      "source_record_count": 42,
       "topic": "coordinate_geometry"
     },
     {
       "paper_family": "p1",
-      "source_record_count": 78,
+      "source_record_count": 73,
       "topic": "functions"
     },
     {
@@ -735,12 +722,17 @@
     },
     {
       "paper_family": "p3",
-      "source_record_count": 20,
+      "source_record_count": 3,
+      "topic": "modulus"
+    },
+    {
+      "paper_family": "p3",
+      "source_record_count": 22,
       "topic": "polynomials"
     },
     {
       "paper_family": "p4",
-      "source_record_count": 26,
+      "source_record_count": 25,
       "topic": "connected_particles"
     },
     {
@@ -750,7 +742,7 @@
     },
     {
       "paper_family": "p4",
-      "source_record_count": 5,
+      "source_record_count": 6,
       "topic": "equilibrium_particle"
     },
     {
@@ -765,12 +757,12 @@
     },
     {
       "paper_family": "p4",
-      "source_record_count": 16,
+      "source_record_count": 19,
       "topic": "kinematics_graphs"
     },
     {
       "paper_family": "p4",
-      "source_record_count": 5,
+      "source_record_count": 4,
       "topic": "kinematics_variable_functions"
     },
     {
@@ -785,12 +777,12 @@
     },
     {
       "paper_family": "p5",
-      "source_record_count": 10,
+      "source_record_count": 12,
       "topic": "binomial_distribution"
     },
     {
       "paper_family": "p5",
-      "source_record_count": 14,
+      "source_record_count": 17,
       "topic": "data_representation"
     },
     {
@@ -800,22 +792,22 @@
     },
     {
       "paper_family": "p5",
-      "source_record_count": 87,
+      "source_record_count": 78,
       "topic": "measures_of_central_tendency_and_dispersion"
     },
     {
       "paper_family": "p5",
-      "source_record_count": 40,
+      "source_record_count": 44,
       "topic": "permutations_and_combinations"
     },
     {
       "paper_family": "p5",
-      "source_record_count": 58,
+      "source_record_count": 51,
       "topic": "probability"
     },
     {
       "paper_family": "p5",
-      "source_record_count": 35,
+      "source_record_count": 42,
       "topic": "probability_distributions"
     }
   ],
@@ -823,6 +815,24 @@
   "total_records_read": 1301,
   "verification_failure_counts": {},
   "warmups_linked_to_examples": [
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_rearrangement_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_rearrangement_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_rearrangement_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
     {
       "example_model_id": "p3-binomial-term-001-example-1",
       "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
@@ -860,6 +870,186 @@
       "source_snippet_id": "p3-binomial-validity-range-001"
     },
     {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_locus_roots_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_locus_roots_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_locus_roots_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_modulus_argument_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_modulus_argument_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_modulus_argument_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_context_model_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_context_model_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_context_model_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_separation_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_separation_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "practice_id": "gen_differential_equations_separation_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differential-separation-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_chain_product_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_chain_product_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_chain_product_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_implicit_log_exp_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_implicit_log_exp_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "practice_id": "gen_differentiation_implicit_log_exp_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differentiation-method-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_definite_area_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_definite_area_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_definite_area_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_method_setup_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_method_setup_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "practice_id": "gen_integration_method_setup_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-integration-method-choice-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_calculus_context_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_calculus_context_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "practice_id": "gen_log_calculus_context_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-log-domain-001-example-1",
+      "practice_id": "gen_log_domain_validation_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-log-domain-001"
+    },
+    {
+      "example_model_id": "p3-log-domain-001-example-1",
+      "practice_id": "gen_log_domain_validation_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-log-domain-001"
+    },
+    {
+      "example_model_id": "p3-log-domain-001-example-1",
+      "practice_id": "gen_log_domain_validation_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-log-domain-001"
+    },
+    {
       "example_model_id": "p3-ln-e-inverse-001-example-1",
       "practice_id": "gen_log_equation_basic_0001",
       "sequence_role": "first_step",
@@ -878,6 +1068,24 @@
       "source_snippet_id": "p3-ln-e-inverse-001"
     },
     {
+      "example_model_id": "p3-log-linearisation-001-example-1",
+      "practice_id": "gen_log_linearisation_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-log-linearisation-001"
+    },
+    {
+      "example_model_id": "p3-log-linearisation-001-example-1",
+      "practice_id": "gen_log_linearisation_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-log-linearisation-001"
+    },
+    {
+      "example_model_id": "p3-log-linearisation-001-example-1",
+      "practice_id": "gen_log_linearisation_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-log-linearisation-001"
+    },
+    {
       "example_model_id": "p3-modulus-cases-001-example-1",
       "practice_id": "gen_modulus_equation_basic_0001",
       "sequence_role": "first_step",
@@ -894,6 +1102,42 @@
       "practice_id": "gen_modulus_equation_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-modulus-cases-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_iteration_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_iteration_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_iteration_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-parametric-derivative-001-example-1",
+      "practice_id": "gen_parametric_derivative_ratio_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-parametric-derivative-001"
+    },
+    {
+      "example_model_id": "p3-parametric-derivative-001-example-1",
+      "practice_id": "gen_parametric_derivative_ratio_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-parametric-derivative-001"
+    },
+    {
+      "example_model_id": "p3-parametric-derivative-001-example-1",
+      "practice_id": "gen_parametric_derivative_ratio_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-parametric-derivative-001"
     },
     {
       "example_model_id": "p3-partial-fractions-form-001-example-1",
@@ -930,6 +1174,42 @@
       "practice_id": "gen_partial_fractions_repeated_linear_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-partial-fractions-repeated-linear-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
+    },
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
+    },
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
     },
     {
       "example_model_id": "p3-trig-identity-selection-001-example-1",
@@ -1002,6 +1282,42 @@
       "practice_id": "gen_trig_solve_equation_interval_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-trig-interval-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_intersection_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_intersection_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_intersection_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_scalar_product_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_scalar_product_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "practice_id": "gen_vectors_line_scalar_product_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-vectors-lines-001"
     }
   ],
   "warmups_without_example_model": []

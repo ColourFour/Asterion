@@ -129,12 +129,12 @@ const guides: Record<string, RegionFieldGuide> = {
       'Compound-angle expressions hiding standard forms.',
     ],
     commonExamMoves: [
-      'Rewrite sec, cosec, and cot before simplifying.',
+      'Rewrite $\\sec x$, $\\operatorname{cosec} x$, and $\\cot x$ before simplifying.',
       'Use exact values and quadrant checks for final solutions.',
       'Factor trig equations before dividing by a variable expression.',
     ],
     commonTraps: [
-      'Losing solutions by dividing by sin x or cos x.',
+      'Losing solutions by dividing by $\\sin x$ or $\\cos x$.',
       'Giving answers outside the requested interval.',
       'Using degree-mode values when radians are required.',
     ],
@@ -192,7 +192,7 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     readinessChecklist: [
       'Plot a complex number and its conjugate.',
-      'Convert between a + bi and re^(i theta).',
+      'Convert between $a+bi$ and $re^{i\\theta}$.',
       'Explain what a modulus or argument condition means geometrically.',
     ],
   },
@@ -206,22 +206,22 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     commonExamMoves: [
       'Choose the derivative rule before expanding.',
-      'For parametric curves, compute dy/dx through dy/dt divided by dx/dt.',
+      'For parametric curves, compute $\\frac{dy}{dx}$ through $\\frac{dy/dt}{dx/dt}$.',
       'Use the second derivative or sign change to classify stationary points.',
     ],
     commonTraps: [
       'Forgetting implicit differentiation on both sides.',
-      'Dividing by dx/dt when it is zero without checking the point.',
+      'Dividing by $\\frac{dx}{dt}$ when it is zero without checking the point.',
       'Reporting coordinates before substituting back into the original equation.',
     ],
     workedExamples: [
       { title: 'Rule selection', focus: 'Identify product, quotient, chain, or implicit structure.' },
-      { title: 'Parametric gradient', focus: 'Build dy/dx from two derivatives.' },
+      { title: 'Parametric gradient', focus: 'Build $\\frac{dy}{dx}$ from two derivatives.' },
       { title: 'Stationary point test', focus: 'Classify and interpret the result.' },
     ],
     readinessChecklist: [
       'Differentiate a product and a composite expression.',
-      'Find dy/dx for a parametric curve.',
+      'Find $\\frac{dy}{dx}$ for a parametric curve.',
       'Use a derivative to locate a stationary point.',
     ],
   },
@@ -245,7 +245,7 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     workedExamples: [
       { title: 'Substitution setup', focus: 'Choose u and transform limits cleanly.' },
-      { title: 'Integration by parts table', focus: 'Pick u and dv deliberately.' },
+      { title: 'Integration by parts table', focus: 'Pick $u$ and $dv$ deliberately.' },
       { title: 'Area under a curve', focus: 'Use limits and signs correctly.' },
     ],
     readinessChecklist: [
@@ -264,7 +264,7 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     commonExamMoves: [
       'Compare components to solve for parameters.',
-      'Use the scalar product formula for angles.',
+      'Use the scalar product formula $\\mathbf a\\cdot\\mathbf b=|\\mathbf a||\\mathbf b|\\cos\\theta$ for angles.',
       'State when lines are parallel, intersecting, or skew.',
     ],
     commonTraps: [
@@ -288,11 +288,11 @@ const guides: Record<string, RegionFieldGuide> = {
     topic: 'Numerical solution of equations, iteration, roots, and accuracy checks.',
     whatToRecognize: [
       'Questions asking for sign changes, iterations, or decimal-place accuracy.',
-      'Rearrangements of f(x) = 0 into x = g(x).',
+      'Rearrangements of $f(x)=0$ into $x=g(x)$.',
       'Root intervals that need justified convergence or approximation.',
     ],
     commonExamMoves: [
-      'Show sign changes with values of f(x) at interval endpoints.',
+      'Show sign changes with values of $f(x)$ at interval endpoints.',
       'Iterate using the exact formula requested by the question.',
       'Quote answers to the requested accuracy and justify rounding.',
     ],
@@ -316,7 +316,7 @@ const guides: Record<string, RegionFieldGuide> = {
     regionId: 'differential-shrine',
     topic: 'Forming and solving first-order differential equations, including separation of variables.',
     whatToRecognize: [
-      'Rates described in words that translate into dy/dx or dt equations.',
+      'Rates described in words that translate into $\\frac{dy}{dx}$ or $dt$ equations.',
       'Separable forms where variables can be gathered on opposite sides.',
       'Initial conditions that determine the constant.',
     ],
