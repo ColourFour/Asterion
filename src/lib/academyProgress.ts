@@ -87,7 +87,7 @@ export function nextRegionGoal(progress: RegionProgress): RegionGoal {
 
   if (progress.rank === 'Mastered') {
     return {
-      label: 'Mastered through mixed review.',
+      label: 'Mastered through Guardian clear or recent mixed review.',
       attemptsRemaining: 0,
       isComplete: true,
     };
@@ -95,7 +95,7 @@ export function nextRegionGoal(progress: RegionProgress): RegionGoal {
 
   if (progress.rank === 'Gold') {
     return {
-      label: 'Gold restored. Mixed mastery trials are reserved for a later pass.',
+      label: 'Gold restored. Mastered needs Guardian clear or recent successful mixed review.',
       attemptsRemaining: 0,
       isComplete: true,
     };

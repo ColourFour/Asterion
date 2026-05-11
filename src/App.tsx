@@ -21,7 +21,7 @@ import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/reg
 import { calculateWorldProgress, filterAttemptsForRegion } from './lib/regionProgress';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
+import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
@@ -78,19 +78,21 @@ export default function App() {
   }, []);
 
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
-  const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts), [trainableQuestions, progress.attempts]);
+  const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts, P3_ASTRAL_ACADEMY, progress.regionLearning), [progress.attempts, progress.regionLearning, trainableQuestions]);
   const regionLearningSummaries = useMemo(() => {
     return Object.fromEntries(worldProgress.map((regionProgress) => {
       const regionQuestions = filterTrainableQuestionsForRegion(trainableQuestions, regionProgress.region);
       const regionAttempts = filterAttemptsForRegion(regionProgress.region, progress.attempts, regionQuestions);
+      const learningActivityAttempts = progress.learningActivityAttempts.filter((attempt) => attempt.regionId === regionProgress.region.id);
       return [regionProgress.region.id, buildRegionLearningSummary({
         regionProgress,
         learningRecord: progress.regionLearning?.[regionProgress.region.id],
         regionQuestions,
         regionAttempts,
+        learningActivityAttempts,
       })];
     }));
-  }, [progress.attempts, progress.regionLearning, trainableQuestions, worldProgress]);
+  }, [progress.attempts, progress.learningActivityAttempts, progress.regionLearning, trainableQuestions, worldProgress]);
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
@@ -300,8 +302,11 @@ export default function App() {
           fieldGuideCompleted={selectedRegionFieldGuideCompleted}
           teachingSnippets={selectedRegionTeachingSnippets}
           generatedPractice={selectedRegionGeneratedPractice}
+          learningActivityAttempts={progress.learningActivityAttempts.filter((attempt) => attempt.regionId === selectedRegion.id)}
+          profileId={progress.profile.id}
           summary={selectedRegionLearningSummary}
           onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
+          onLearningActivityAttempt={(attempt: LearningActivityAttempt) => setProgress(progressAdapter.addLearningActivityAttempt(attempt))}
           onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
           onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
           onReturnToMap={returnToMap}
@@ -313,6 +318,9 @@ export default function App() {
           profile={progress.profile}
           avatar={progress.avatar}
           avatarGear={avatarGear}
+          attempts={progress.attempts}
+          questions={trainableQuestions}
+          regionLearning={progress.regionLearning}
           regionProgress={worldProgress}
           onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
           onProfileSave={(profile) => setProgress(progressAdapter.saveProfile(profile, progress.profile))}

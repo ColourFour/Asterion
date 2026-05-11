@@ -6,7 +6,7 @@ import {
   emptyProgress,
   localProgressAdapter,
 } from '../lib/progressStore';
-import type { Attempt, IssueReport } from '../types';
+import type { Attempt, IssueReport, LearningActivityAttempt } from '../types';
 
 const attempt: Attempt = {
   id: 'attempt-1',
@@ -36,6 +36,25 @@ const issueReport: IssueReport = {
   questionId: 'p3-q1',
   issueType: 'mark_scheme_image_missing',
   createdAt: '2026-05-08T00:00:00.000Z',
+};
+
+const learningActivityAttempt: LearningActivityAttempt = {
+  id: 'learning-1',
+  profileId: 'profile-1',
+  regionId: 'logarithm-grove',
+  regionName: 'Logarithm Observatory',
+  activityType: 'quick_check',
+  activityId: 'qc-1',
+  sourceId: 'snippet-1',
+  topic: 'Logarithms',
+  skillTargetId: 'skill-1',
+  prompt: 'Rewrite log base two of eight equals three.',
+  learnerResponse: '2^3 = 8',
+  revealedEarly: false,
+  outcome: 'got_it',
+  confidence: 4,
+  createdAt: '2026-05-08T00:00:00.000Z',
+  completedAt: '2026-05-08T00:01:00.000Z',
 };
 
 describe('local progress adapter', () => {
@@ -70,6 +89,15 @@ describe('local progress adapter', () => {
     expect(withAttempt.attempts[0].mistakeTypes).toEqual(['algebra_error']);
     expect(withAttempt.topicProfiles.Algebra.attempts).toBe(1);
     expect(withAttempt.topicProfiles.Algebra.totalMarksEarned).toBe(3);
+
+    const withLearningActivity = localProgressAdapter.addLearningActivityAttempt({
+      ...learningActivityAttempt,
+      profileId: withProfile.profile!.id,
+    });
+    expect(withLearningActivity.learningActivityAttempts).toHaveLength(1);
+    expect(withLearningActivity.learningActivityAttempts[0].outcome).toBe('got_it');
+    expect(withLearningActivity.attempts).toHaveLength(1);
+    expect(withLearningActivity.topicProfiles.Algebra.attempts).toBe(1);
 
     const withIssue = localProgressAdapter.addIssueReport({
       ...issueReport,
@@ -108,6 +136,7 @@ describe('local progress adapter', () => {
         },
       },
       attempts: [attempt],
+      learningActivityAttempts: [learningActivityAttempt],
       issueReports: [issueReport],
     }));
 
@@ -119,6 +148,7 @@ describe('local progress adapter', () => {
     expect(loaded.avatar.equipped?.outfit).toBe('academy-uniform');
     expect(loaded.avatar.equipped?.cloak).toBe('apprentice-cloak');
     expect(loaded.attempts).toHaveLength(1);
+    expect(loaded.learningActivityAttempts).toHaveLength(1);
     expect(loaded.topicProfiles.Algebra.rank).toBe('none');
   });
 
@@ -190,6 +220,23 @@ describe('local progress adapter', () => {
     expect(loaded.regionLearning?.['logarithm-grove'].fieldGuideCompletedAt).toBe('2026-05-08T00:00:00.000Z');
     expect(loaded.regionLearning?.['logarithm-grove'].guardianClearedAt).toBeUndefined();
     expect(loaded.regionLearning?.broken).toBeUndefined();
+  });
+
+  it('drops malformed learning activity attempts without inflating canonical attempts', () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
+      attempts: [],
+      learningActivityAttempts: [
+        learningActivityAttempt,
+        { ...learningActivityAttempt, id: 'broken-learning', outcome: 'perfect' },
+      ],
+    }));
+
+    const loaded = localProgressAdapter.loadProgressContext();
+
+    expect(loaded.learningActivityAttempts).toHaveLength(1);
+    expect(loaded.attempts).toEqual([]);
+    expect(loaded.topicProfiles).toEqual({});
   });
 
   it('normalizes unknown avatar settings and item IDs back to safe defaults', () => {

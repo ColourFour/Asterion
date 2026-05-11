@@ -7,6 +7,24 @@ import { describe, expect, it } from 'vitest';
 const repoRoot = process.cwd();
 const buildScript = path.join(repoRoot, 'tools/content_lab/scripts/build_generated_practice.py');
 const verifyScript = path.join(repoRoot, 'tools/content_lab/scripts/verify_content_lab_outputs.py');
+const pythonTimeoutMs = 10_000;
+const pipelineTestTimeoutMs = 15_000;
+
+function runPython(args: string[]) {
+  execFileSync('python3', args, {
+    cwd: repoRoot,
+    timeout: pythonTimeoutMs,
+    maxBuffer: 10 * 1024 * 1024,
+  });
+}
+
+function expectPythonFailure(args: string[]) {
+  expect(() => runPython(args)).toThrow();
+}
+
+function pipelineIt(name: string, fn: () => void) {
+  return it(name, fn, pipelineTestTimeoutMs);
+}
 
 interface GeneratedPracticeItem {
   practice_id: string;
@@ -236,7 +254,7 @@ function runGeneratedBuild(dir: string) {
   const outputPath = path.join(dir, 'generated_practice_bank.json');
   const runtimeOutputPath = path.join(dir, 'runtime_generated_practice_bank.json');
   const reportOutputPath = path.join(dir, 'content_lab_report.json');
-  execFileSync('python3', [
+  runPython([
     buildScript,
     '--skill-targets',
     skillTargetsPath,
@@ -248,7 +266,7 @@ function runGeneratedBuild(dir: string) {
     runtimeOutputPath,
     '--report-output',
     reportOutputPath,
-  ], { cwd: repoRoot });
+  ]);
   return {
     output: readFileSync(outputPath, 'utf8'),
     runtime: readFileSync(runtimeOutputPath, 'utf8'),
@@ -450,8 +468,8 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
   return snippetsPath;
 }
 
-describe('generated practice Content Lab pipeline', () => {
-  it('generates sequenced exponential warm-ups linked to the Field Guide example', () => {
+describe.sequential('generated practice Content Lab pipeline', () => {
+  pipelineIt('generates sequenced exponential warm-ups linked to the Field Guide example', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-log-'));
     try {
       const items = generatedItems(runGeneratedBuild(dir).output)
@@ -492,7 +510,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('generates correct binomial first terms and product coefficients', () => {
+  pipelineIt('generates correct binomial first terms and product coefficients', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-binomial-'));
     try {
       const items = generatedItems(runGeneratedBuild(dir).output)
@@ -536,7 +554,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('generates sequenced algebra depth families for partial fractions, modulus, and validity ranges', () => {
+  pipelineIt('generates sequenced algebra depth families for partial fractions, modulus, and validity ranges', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-algebra-depth-'));
     try {
       const items = generatedItems(runGeneratedBuild(dir).output);
@@ -564,7 +582,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('generates sequenced trigonometry identity, interval, and R-form warm-ups', () => {
+  pipelineIt('generates sequenced trigonometry identity, interval, and R-form warm-ups', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-trig-depth-'));
     try {
       const items = generatedItems(runGeneratedBuild(dir).output);
@@ -590,7 +608,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('writes deterministic generated and runtime output for the same inputs', () => {
+  pipelineIt('writes deterministic generated and runtime output for the same inputs', () => {
     const firstDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-a-'));
     const secondDir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-b-'));
     try {
@@ -606,7 +624,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('writes generator and region coverage into the Content Lab report', () => {
+  pipelineIt('writes generator and region coverage into the Content Lab report', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-report-'));
     try {
       const report = JSON.parse(runGeneratedBuild(dir).report);
@@ -658,7 +676,7 @@ describe('generated practice Content Lab pipeline', () => {
     }
   });
 
-  it('rejects malformed generated practice in the runtime file', () => {
+  pipelineIt('rejects malformed generated practice in the runtime file', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-verify-'));
     const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
     try {
@@ -666,7 +684,7 @@ describe('generated practice Content Lab pipeline', () => {
         review_status: 'candidate',
       });
 
-      expect(() => execFileSync('python3', [
+      expectPythonFailure([
         verifyScript,
         '--outputs-dir',
         dir,
@@ -674,13 +692,13 @@ describe('generated practice Content Lab pipeline', () => {
         snippetsPath,
         '--runtime-generated-practice',
         runtimePracticePath,
-      ], { cwd: repoRoot })).toThrow();
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
 
-  it('rejects runtime generated practice with an empty worked solution', () => {
+  pipelineIt('rejects runtime generated practice with an empty worked solution', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-empty-solution-'));
     const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
     try {
@@ -688,7 +706,7 @@ describe('generated practice Content Lab pipeline', () => {
         worked_solution: [],
       });
 
-      expect(() => execFileSync('python3', [
+      expectPythonFailure([
         verifyScript,
         '--outputs-dir',
         dir,
@@ -696,13 +714,13 @@ describe('generated practice Content Lab pipeline', () => {
         snippetsPath,
         '--runtime-generated-practice',
         runtimePracticePath,
-      ], { cwd: repoRoot })).toThrow();
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
 
-  it('rejects runtime generated practice without a sequence role', () => {
+  pipelineIt('rejects runtime generated practice without a sequence role', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-missing-sequence-role-'));
     const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
     try {
@@ -710,7 +728,7 @@ describe('generated practice Content Lab pipeline', () => {
         sequence_role: '',
       });
 
-      expect(() => execFileSync('python3', [
+      expectPythonFailure([
         verifyScript,
         '--outputs-dir',
         dir,
@@ -718,13 +736,13 @@ describe('generated practice Content Lab pipeline', () => {
         snippetsPath,
         '--runtime-generated-practice',
         runtimePracticePath,
-      ], { cwd: repoRoot })).toThrow();
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
 
-  it('rejects first-batch runtime generated practice without an example link', () => {
+  pipelineIt('rejects first-batch runtime generated practice without an example link', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-missing-example-link-'));
     const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
     try {
@@ -732,7 +750,7 @@ describe('generated practice Content Lab pipeline', () => {
         example_model_id: '',
       });
 
-      expect(() => execFileSync('python3', [
+      expectPythonFailure([
         verifyScript,
         '--outputs-dir',
         dir,
@@ -740,7 +758,7 @@ describe('generated practice Content Lab pipeline', () => {
         snippetsPath,
         '--runtime-generated-practice',
         runtimePracticePath,
-      ], { cwd: repoRoot })).toThrow();
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -33,6 +33,12 @@ python3 tools/content_lab/scripts/build_generated_practice.py \
   --runtime-output public/data/generated_practice_bank.json
 ```
 
+Build the reviewed P3 skill-map coverage dashboard:
+
+```bash
+python3 tools/content_lab/scripts/build_p3_skill_coverage.py
+```
+
 Verify generated outputs and reviewed runtime artifacts:
 
 ```bash
@@ -79,6 +85,8 @@ Records become `review_only` when they are not blocked but still need human atte
 `public/data/teaching_snippets.json` contains original reviewed teaching content with `review_status` set to `teacher_reviewed` or `published`. It must not contain copied exam questions or claim that generated text is official exam wording.
 
 `generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
+
+`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. `p3_skill_coverage_report.json` summarizes snippet, Quick Check, generated warm-up, canonical-question, and high-evidence weak-support gaps for Content Lab readiness.
 
 Worked Examples v1 fields:
 

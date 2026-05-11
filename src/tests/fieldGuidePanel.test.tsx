@@ -34,6 +34,12 @@ function render(ui: ReactNode): HTMLElement {
   return container;
 }
 
+function setTextareaValue(textarea: HTMLTextAreaElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
+  setter?.call(textarea, value);
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
 afterEach(() => {
   for (const root of mountedRoots.splice(0)) {
     act(() => {
@@ -178,7 +184,7 @@ function regionProgress(): RegionProgress {
 }
 
 describe('FieldGuidePanel teaching snippets', () => {
-  it('renders enriched snippet support with a revealable quick check', () => {
+  it('renders enriched snippet support with an answer-first quick check', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
 
@@ -191,7 +197,7 @@ describe('FieldGuidePanel teaching snippets', () => {
           teachingSnippets={[snippet]}
           onCompleteFieldGuide={vi.fn()}
         />
-        <QuickChecksPanel teachingSnippets={[snippet]} />
+        <QuickChecksPanel teachingSnippets={[snippet]} region={logRegion!} />
       </>,
     );
 
@@ -206,27 +212,35 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Micro steps');
     expect(container.textContent).toContain('Common mistakes');
 
-    const details = container.querySelector<HTMLDetailsElement>('.quick-check-card details.quick-check-reveal');
-    expect(details).toBeTruthy();
-    expect(details?.querySelector('summary')?.textContent).toContain('Quick check');
+    const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
+    expect(quickCheck).toBeTruthy();
+    expect(quickCheck?.textContent).toContain('Quick check');
+
+    const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Reveal answer');
+    expect(revealButton).toBeTruthy();
+    expect(revealButton?.hasAttribute('disabled')).toBe(true);
+
+    const textarea = quickCheck!.querySelector<HTMLTextAreaElement>('textarea');
+    act(() => {
+      setTextareaValue(textarea!, '2^3 = 8');
+    });
+    expect(revealButton?.hasAttribute('disabled')).toBe(false);
 
     act(() => {
-      details!.open = true;
-      details!.dispatchEvent(new Event('toggle', { bubbles: true }));
+      revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(details?.open).toBe(true);
-    expect(details?.textContent).toContain('Answer');
-    expect(details?.textContent).toContain('Linked example');
-    expect(details?.textContent).toContain('Two cubed equals eight.');
+    expect(quickCheck?.textContent).toContain('Answer');
+    expect(quickCheck?.textContent).toContain('Linked example');
+    expect(quickCheck?.textContent).toContain('Two cubed equals eight.');
   });
 
-  it('renders revealable generated warm-up practice', () => {
+  it('renders answer-first generated warm-up practice', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
 
     const container = render(
-      <WarmUpPracticePanel practiceItems={[generatedPractice]} />,
+      <WarmUpPracticePanel practiceItems={[generatedPractice]} region={logRegion!} />,
     );
 
     expect(container.textContent).toContain('Warm-up Practice');
@@ -241,14 +255,67 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(revealButton).toBeTruthy();
     expect(revealButton?.getAttribute('aria-controls')).toBe('warm-up-solution-gen_log_equation_basic_0001');
     expect(revealButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(revealButton?.hasAttribute('disabled')).toBe(true);
+
+    const textarea = container.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea');
+    act(() => {
+      setTextareaValue(textarea!, 'Combine the logs first.');
+    });
+    expect(revealButton?.hasAttribute('disabled')).toBe(false);
 
     act(() => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(revealButton?.getAttribute('aria-expanded')).toBe('true');
     expect(container.textContent).toContain('x = 4');
     expect(container.textContent).toContain('Use the product law.');
+  });
+
+  it('records an early warm-up reveal with outcome, confidence, and error type', () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    const onLearningActivityAttempt = vi.fn();
+    const container = render(
+      <WarmUpPracticePanel
+        practiceItems={[generatedPractice]}
+        region={logRegion!}
+        profileId="profile_1"
+        onLearningActivityAttempt={onLearningActivityAttempt}
+      />,
+    );
+
+    const revealAnyway = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal anyway');
+    act(() => {
+      revealAnyway!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    const missed = container.querySelector<HTMLInputElement>('input[value="missed"]');
+    const confidence = Array.from(container.querySelectorAll('select'))[0];
+    const error = Array.from(container.querySelectorAll('select'))[1];
+    act(() => {
+      missed!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      confidence!.value = '2';
+      confidence!.dispatchEvent(new Event('change', { bubbles: true }));
+      error!.value = 'did_not_know_method';
+      error!.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    const save = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save warm-up');
+    act(() => {
+      save!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
+    expect(onLearningActivityAttempt.mock.calls[0][0]).toMatchObject({
+      activityType: 'warm_up',
+      activityId: 'gen_log_equation_basic_0001',
+      profileId: 'profile_1',
+      regionId: 'logarithm-grove',
+      learnerResponse: '',
+      revealedEarly: true,
+      outcome: 'missed',
+      confidence: 2,
+      errorType: 'did_not_know_method',
+    });
   });
 
   it('renders a friendly warm-up empty state for regions without generated practice', () => {
@@ -282,7 +349,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     expect(container.querySelectorAll('.teaching-snippet-card')).toHaveLength(2);
-    expect(container.querySelectorAll('.quick-check-card details.quick-check-reveal')).toHaveLength(2);
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(2);
     expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
     expect(container.textContent).toContain('1 more reviewed snippet available for this region.');
     expect(container.textContent).toContain('1 more reviewed quick check available.');
@@ -304,8 +371,10 @@ describe('FieldGuidePanel teaching snippets', () => {
         fieldGuideCompleted={false}
         teachingSnippets={[snippet]}
         generatedPractice={[generatedPractice]}
+        learningActivityAttempts={[]}
         summary={summary}
         onCompleteFieldGuide={vi.fn()}
+        onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
         onChallengeGuardian={vi.fn()}
         onReturnToMap={vi.fn()}

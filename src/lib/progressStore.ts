@@ -1,4 +1,4 @@
-import type { Attempt, AvatarSettings, IssueReport, StoredProgress, StudentProfile, TopicProfile } from '../types';
+import type { Attempt, AvatarSettings, IssueReport, LearningActivityAttempt, StoredProgress, StudentProfile, TopicProfile } from '../types';
 import {
   CURRENT_PROGRESS_SCHEMA_VERSION,
   LOCAL_PROGRESS_STORAGE_KEY,
@@ -33,6 +33,10 @@ export function saveAvatar(avatar: AvatarSettings): StoredProgress {
 
 export function addAttempt(attempt: Attempt): StoredProgress {
   return getProgressStorageAdapter().addAttempt(attempt);
+}
+
+export function addLearningActivityAttempt(attempt: LearningActivityAttempt): StoredProgress {
+  return getProgressStorageAdapter().addLearningActivityAttempt(attempt);
 }
 
 export function addIssueReport(report: IssueReport): StoredProgress {

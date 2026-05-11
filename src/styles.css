@@ -3893,20 +3893,69 @@ legend {
   background: var(--region-panel-strong, rgba(255, 250, 235, 0.96));
 }
 
-.quick-check-reveal summary {
-  cursor: pointer;
+.quick-check-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quick-check-heading strong {
   color: var(--region-accent-dark, var(--color-gold-dark));
   font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.quick-check-reveal div {
+.quick-check-heading small {
+  color: var(--region-muted, #5c6676);
+}
+
+.quick-check-answer {
   display: grid;
   gap: 4px;
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 24%, transparent);
+}
+
+.activity-response-field,
+.activity-reflection-panel {
+  display: grid;
+  gap: 6px;
+}
+
+.activity-response-field textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.activity-reveal-actions,
+.activity-outcome-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.activity-reflection-panel {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 18%, transparent);
+}
+
+.activity-reflection-panel fieldset {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.activity-reflection-panel legend {
+  color: var(--region-heading, #30286c);
+  font-weight: 900;
 }
 
 .quick-check-example-link {
@@ -6490,6 +6539,136 @@ legend {
   color: #2f1a10;
   background: rgba(244, 223, 185, 0.88);
   box-shadow: var(--pixel-shadow);
+}
+
+.p3-readiness-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 3px solid var(--pixel-line);
+  border-radius: 2px;
+  color: #12202f;
+  background:
+    linear-gradient(135deg, rgba(232, 247, 242, 0.96), rgba(246, 241, 217, 0.94)),
+    var(--pixel-panel-light);
+  box-shadow: var(--pixel-shadow);
+}
+
+.p3-readiness-heading {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.p3-readiness-heading span,
+.p3-readiness-status span,
+.p3-readiness-metrics dt {
+  color: #0f5b5f;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.p3-readiness-heading h3 {
+  margin: 2px 0 0;
+  color: #12202f;
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.p3-readiness-heading strong {
+  min-width: 72px;
+  padding: 8px 10px;
+  border: 2px solid #163d4b;
+  color: #f7f1db;
+  background: #163d4b;
+  font-size: 1.15rem;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 3px 3px 0 rgba(18, 32, 47, 0.28);
+}
+
+.p3-readiness-status {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 2px solid rgba(15, 91, 95, 0.28);
+  background: rgba(255, 253, 248, 0.56);
+}
+
+.p3-readiness-status span {
+  color: #70401f;
+  font-size: 0.82rem;
+}
+
+.p3-readiness-status p {
+  margin: 0;
+  color: #26364a;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.p3-readiness-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+.p3-readiness-metrics div {
+  min-width: 0;
+  padding: 8px;
+  border: 2px solid rgba(22, 61, 75, 0.2);
+  background: rgba(255, 253, 248, 0.48);
+}
+
+.p3-readiness-metrics dd {
+  margin: 3px 0 0;
+  color: #12202f;
+  font-size: 1rem;
+  font-weight: 1000;
+  line-height: 1.05;
+}
+
+.p3-readiness-metrics small {
+  display: block;
+  margin-top: 3px;
+  color: #5f503b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.p3-readiness-metrics .metric-met {
+  border-color: rgba(15, 118, 110, 0.34);
+}
+
+.p3-readiness-metrics .metric-gap {
+  border-color: rgba(154, 82, 36, 0.34);
+}
+
+.p3-readiness-reasons {
+  display: grid;
+  gap: 6px;
+}
+
+.p3-readiness-reasons span {
+  padding: 7px 8px;
+  border-left: 4px solid #0f766e;
+  color: #26364a;
+  background: rgba(255, 253, 248, 0.58);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.readiness-self-marking-uncertain .p3-readiness-reasons span,
+.readiness-needs-timed-practice .p3-readiness-reasons span,
+.readiness-needs-topic-coverage .p3-readiness-reasons span,
+.readiness-promising-but-narrow .p3-readiness-reasons span {
+  border-left-color: #b7791f;
 }
 
 .next-unlock-card,

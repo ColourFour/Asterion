@@ -1,4 +1,4 @@
-import type { NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
+import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
 import { getRegionTheme } from '../../lib/regionThemes';
@@ -22,8 +22,11 @@ interface RegionHubProps {
   fieldGuideCompleted: boolean;
   teachingSnippets: TeachingSnippet[];
   generatedPractice: GeneratedPracticeItem[];
+  learningActivityAttempts?: LearningActivityAttempt[];
+  profileId?: string;
   summary: RegionLearningSummary;
   onCompleteFieldGuide: () => void;
+  onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
   onStartTraining: (intent: TrainingSessionIntent) => void;
   onChallengeGuardian: (question: NormalizedQuestion) => void;
   onReturnToMap: () => void;
@@ -48,8 +51,11 @@ export function RegionHub({
   fieldGuideCompleted,
   teachingSnippets,
   generatedPractice,
+  learningActivityAttempts = [],
+  profileId,
   summary,
   onCompleteFieldGuide,
+  onLearningActivityAttempt,
   onStartTraining,
   onChallengeGuardian,
   onReturnToMap,
@@ -80,8 +86,20 @@ export function RegionHub({
             teachingSnippets={teachingSnippets}
             onCompleteFieldGuide={onCompleteFieldGuide}
           />
-          <QuickChecksPanel teachingSnippets={teachingSnippets} />
-          <WarmUpPracticePanel practiceItems={generatedPractice} />
+          <QuickChecksPanel
+            teachingSnippets={teachingSnippets}
+            region={region}
+            profileId={profileId}
+            activityAttempts={learningActivityAttempts}
+            onLearningActivityAttempt={onLearningActivityAttempt}
+          />
+          <WarmUpPracticePanel
+            practiceItems={generatedPractice}
+            region={region}
+            profileId={profileId}
+            activityAttempts={learningActivityAttempts}
+            onLearningActivityAttempt={onLearningActivityAttempt}
+          />
           <TrainingGroundsPanel
             canTrain={canTrain}
             summary={summary}

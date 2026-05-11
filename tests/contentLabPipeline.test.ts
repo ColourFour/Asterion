@@ -7,6 +7,29 @@ import { describe, expect, it } from 'vitest';
 const repoRoot = process.cwd();
 const buildScript = path.join(repoRoot, 'tools/content_lab/scripts/build_skill_targets.py');
 const verifyScript = path.join(repoRoot, 'tools/content_lab/scripts/verify_content_lab_outputs.py');
+const pythonTimeoutMs = 10_000;
+const pipelineTestTimeoutMs = 15_000;
+
+function runPython(args: string[]) {
+  execFileSync('python3', args, {
+    cwd: repoRoot,
+    timeout: pythonTimeoutMs,
+    maxBuffer: 10 * 1024 * 1024,
+  });
+}
+
+function readPython(args: string[]): string {
+  return execFileSync('python3', args, {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    timeout: pythonTimeoutMs,
+    maxBuffer: 10 * 1024 * 1024,
+  });
+}
+
+function pipelineIt(name: string, fn: () => void) {
+  return it(name, fn, pipelineTestTimeoutMs);
+}
 
 function sourceRecord(overrides: Record<string, unknown> = {}) {
   return {
@@ -32,7 +55,7 @@ function sourceRecord(overrides: Record<string, unknown> = {}) {
 function runBuild(inputRecords: unknown[], outputDir: string) {
   const inputPath = path.join(outputDir, 'question_bank.json');
   writeFileSync(inputPath, JSON.stringify({ questions: inputRecords }, null, 2));
-  execFileSync('python3', [buildScript, '--input', inputPath, '--output-dir', outputDir], { cwd: repoRoot });
+  runPython([buildScript, '--input', inputPath, '--output-dir', outputDir]);
   return {
     skillTargets: readFileSync(path.join(outputDir, 'skill_targets.json'), 'utf8'),
     reviewQueue: readFileSync(path.join(outputDir, 'review_queue.json'), 'utf8'),
@@ -194,7 +217,7 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
 }
 
 function runVerifier(outputDir: string, snippetsPath: string): string {
-  return execFileSync('python3', [
+  return readPython([
     verifyScript,
     '--outputs-dir',
     outputDir,
@@ -202,14 +225,11 @@ function runVerifier(outputDir: string, snippetsPath: string): string {
     snippetsPath,
     '--runtime-generated-practice',
     path.join(outputDir, 'runtime_generated_practice_bank.json'),
-  ], {
-    cwd: repoRoot,
-    encoding: 'utf8',
-  });
+  ]);
 }
 
-describe('Content Lab skill target pipeline', () => {
-  it('classifies auto, review-only, and blocked records without auto-using blocked sources', () => {
+describe.sequential('Content Lab skill target pipeline', () => {
+  pipelineIt('classifies auto, review-only, and blocked records without auto-using blocked sources', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-'));
     try {
       const output = runBuild([
@@ -258,7 +278,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('writes deterministic output for the same input records', () => {
+  pipelineIt('writes deterministic output for the same input records', () => {
     const firstDir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-a-'));
     const secondDir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-b-'));
     const records = [
@@ -280,7 +300,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('reports source topics that do not create skill targets', () => {
+  pipelineIt('reports source topics that do not create skill targets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-report-'));
     try {
       const output = runBuild([
@@ -308,7 +328,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('accepts valid enriched reviewed teaching snippets', () => {
+  pipelineIt('accepts valid enriched reviewed teaching snippets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -320,7 +340,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects malformed quick-check objects in reviewed teaching snippets', () => {
+  pipelineIt('rejects malformed quick-check objects in reviewed teaching snippets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -347,7 +367,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects malformed worked examples in reviewed teaching snippets', () => {
+  pipelineIt('rejects malformed worked examples in reviewed teaching snippets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-example-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -366,7 +386,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects first-batch worked examples missing publishing metadata', () => {
+  pipelineIt('rejects first-batch worked examples missing publishing metadata', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-example-metadata-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -390,7 +410,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects malformed MathText delimiters in reviewed teaching snippets', () => {
+  pipelineIt('rejects malformed MathText delimiters in reviewed teaching snippets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-math-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -415,7 +435,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects reviewed quick checks that are missing runtime metadata', () => {
+  pipelineIt('rejects reviewed quick checks that are missing runtime metadata', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-quick-check-metadata-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {
@@ -441,7 +461,7 @@ describe('Content Lab skill target pipeline', () => {
     }
   });
 
-  it('rejects reviewed snippet files that leave an active P3 region uncovered', () => {
+  pipelineIt('rejects reviewed snippet files that leave an active P3 region uncovered', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-region-'));
     const snippetsPath = path.join(dir, 'snippets.json');
     try {

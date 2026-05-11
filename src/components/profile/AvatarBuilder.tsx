@@ -1,9 +1,10 @@
-import type { AvatarSettings, AvatarGear, RegionProgress, StudentProfile } from '../../types';
+import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile } from '../../types';
 import { AVATAR_SLOT_LABELS, AVATAR_SLOTS, type AvatarItem } from '../../data/avatarCatalog';
 import { calculateAcademySummary } from '../../lib/academyProgress';
 import { getAvatarLayers } from '../../lib/avatarLayers';
 import { equipAvatarItem, normalizeAvatarSettings } from '../../lib/avatarStore';
 import { selectNextAvatarUnlock } from '../../lib/avatarUnlocks';
+import { calculateP3ReadinessIndex, type P3ReadinessIndex } from '../../lib/p3Readiness';
 import { AvatarPreview } from './AvatarPreview';
 import { GearInventory } from './GearInventory';
 import { NextUnlockCard } from './NextUnlockCard';
@@ -12,6 +13,9 @@ interface AvatarBuilderProps {
   profile: StudentProfile;
   avatar: AvatarSettings;
   avatarGear: AvatarGear;
+  attempts: Attempt[];
+  questions: NormalizedQuestion[];
+  regionLearning?: Record<string, RegionLearningRecord>;
   regionProgress: RegionProgress[];
   onAvatarChange: (avatar: AvatarSettings) => void;
   onProfileSave: (profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -26,8 +30,13 @@ const crestLabels: Record<AvatarSettings['crest'], string> = {
   orb: 'Orb crest',
 };
 
-export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onAvatarChange }: AvatarBuilderProps) {
+function readinessClass(readiness: P3ReadinessIndex): string {
+  return readiness.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions, regionLearning, regionProgress, onAvatarChange }: AvatarBuilderProps) {
   const summary = calculateAcademySummary(regionProgress);
+  const p3Readiness = calculateP3ReadinessIndex({ attempts, questions, regionLearning });
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
   const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
   const nextUnlock = selectNextAvatarUnlock(regionProgress);
@@ -91,6 +100,34 @@ export function AvatarBuilder({ profile, avatar, avatarGear, regionProgress, onA
         </div>
 
         <aside className="avatar-builder-sidebar" aria-label="Avatar progression summary">
+          <section className={`p3-readiness-card readiness-${readinessClass(p3Readiness)}`} aria-labelledby="p3-readiness-title">
+            <div className="p3-readiness-heading">
+              <div>
+                <span>Assessment readiness</span>
+                <h3 id="p3-readiness-title">P3 Readiness Index</h3>
+              </div>
+              <strong>{p3Readiness.score}/100</strong>
+            </div>
+            <div className="p3-readiness-status">
+              <span>{p3Readiness.label}</span>
+              <p>{p3Readiness.explanation}</p>
+            </div>
+            <dl className="p3-readiness-metrics" aria-label="P3 readiness evidence">
+              {p3Readiness.metrics.map((metric) => (
+                <div key={metric.label} className={metric.met ? 'metric-met' : 'metric-gap'}>
+                  <dt>{metric.label}</dt>
+                  <dd>{metric.value}</dd>
+                  {metric.target ? <small>{metric.target}</small> : null}
+                </div>
+              ))}
+            </dl>
+            <div className="p3-readiness-reasons">
+              {(p3Readiness.concerns.length ? p3Readiness.concerns : p3Readiness.strengths).slice(0, 3).map((reason) => (
+                <span key={reason}>{reason}</span>
+              ))}
+            </div>
+          </section>
+
           <div className="avatar-evidence-strip">
             <span>
               <span>Evidence XP</span>

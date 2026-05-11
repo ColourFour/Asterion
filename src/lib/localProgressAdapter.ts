@@ -5,6 +5,9 @@ import type {
   AvatarSettings,
   IssueReport,
   IssueType,
+  LearningActivityAttempt,
+  LearningActivityOutcome,
+  LearningActivityType,
   MistakeType,
   PaperFamily,
   RegionRank,
@@ -51,6 +54,9 @@ const knownIssueTypes: IssueType[] = [
   'app_bug',
   'other',
 ];
+
+const knownLearningActivityTypes: LearningActivityType[] = ['quick_check', 'warm_up'];
+const knownLearningActivityOutcomes: LearningActivityOutcome[] = ['got_it', 'partial', 'missed'];
 
 function browserStorage(): Storage | undefined {
   return typeof localStorage === 'undefined' ? undefined : localStorage;
@@ -128,6 +134,18 @@ function normalizeIssueType(value: unknown): IssueType | undefined {
     : undefined;
 }
 
+function normalizeLearningActivityType(value: unknown): LearningActivityType | undefined {
+  return typeof value === 'string' && knownLearningActivityTypes.includes(value as LearningActivityType)
+    ? value as LearningActivityType
+    : undefined;
+}
+
+function normalizeLearningActivityOutcome(value: unknown): LearningActivityOutcome | undefined {
+  return typeof value === 'string' && knownLearningActivityOutcomes.includes(value as LearningActivityOutcome)
+    ? value as LearningActivityOutcome
+    : undefined;
+}
+
 function normalizeAttempt(value: unknown): Attempt | undefined {
   if (!isRecord(value)) return undefined;
 
@@ -201,6 +219,59 @@ function normalizeIssueReport(value: unknown): IssueReport | undefined {
   };
 }
 
+function normalizeLearningActivityAttempt(value: unknown): LearningActivityAttempt | undefined {
+  if (!isRecord(value)) return undefined;
+  const id = optionalString(value.id);
+  const regionId = optionalString(value.regionId);
+  const activityType = normalizeLearningActivityType(value.activityType);
+  const activityId = optionalString(value.activityId);
+  const prompt = optionalString(value.prompt);
+  const learnerResponse = optionalString(value.learnerResponse);
+  const revealedEarly = optionalBoolean(value.revealedEarly);
+  const outcome = normalizeLearningActivityOutcome(value.outcome);
+  const confidence = optionalNumber(value.confidence);
+  const createdAt = optionalString(value.createdAt);
+  const completedAt = optionalString(value.completedAt);
+
+  if (
+    !id
+    || !regionId
+    || !activityType
+    || !activityId
+    || !prompt
+    || learnerResponse === undefined
+    || revealedEarly === undefined
+    || !outcome
+    || confidence === undefined
+    || confidence < 1
+    || confidence > 5
+    || !createdAt
+    || !completedAt
+  ) {
+    return undefined;
+  }
+
+  return {
+    id,
+    profileId: optionalString(value.profileId),
+    regionId,
+    regionName: optionalString(value.regionName),
+    activityType,
+    activityId,
+    sourceId: optionalString(value.sourceId),
+    topic: optionalString(value.topic),
+    skillTargetId: optionalString(value.skillTargetId),
+    prompt,
+    learnerResponse,
+    revealedEarly,
+    outcome,
+    confidence,
+    errorType: normalizeMistakeType(value.errorType),
+    createdAt,
+    completedAt,
+  };
+}
+
 function normalizeRegionLearningRecord(regionId: string, value: unknown): RegionLearningRecord | undefined {
   if (!isRecord(value)) return undefined;
   const recordRegionId = optionalString(value.regionId) ?? regionId;
@@ -242,6 +313,7 @@ export function emptyProgress(): StoredProgress {
     schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
     avatar: normalizeAvatarSettings(DEFAULT_AVATAR_SETTINGS),
     attempts: [],
+    learningActivityAttempts: [],
     topicProfiles: {},
     issueReports: [],
     regionLearning: {},
@@ -268,11 +340,16 @@ export function normalizeStoredProgress(value: unknown): StoredProgress {
     ? value.issueReports.map(normalizeIssueReport).filter((report): report is IssueReport => Boolean(report))
     : [];
 
+  const learningActivityAttempts = Array.isArray(value.learningActivityAttempts)
+    ? value.learningActivityAttempts.map(normalizeLearningActivityAttempt).filter((attempt): attempt is LearningActivityAttempt => Boolean(attempt))
+    : [];
+
   return {
     schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
     profile: normalizeProfile(value.profile),
     avatar: normalizeAvatarSettings(isRecord(value.avatar) ? value.avatar : undefined),
     attempts,
+    learningActivityAttempts,
     topicProfiles: rebuildTopicProfiles(attempts),
     issueReports,
     regionLearning: normalizeRegionLearningMap(value.regionLearning),
@@ -347,6 +424,14 @@ export const localProgressAdapter: ProgressStorageAdapter = {
     return saveLocalProgress({
       ...progress,
       attempts: [...progress.attempts, attempt],
+    });
+  },
+
+  addLearningActivityAttempt(attempt: LearningActivityAttempt): StoredProgress {
+    const progress = loadLocalProgress();
+    return saveLocalProgress({
+      ...progress,
+      learningActivityAttempts: [...progress.learningActivityAttempts, attempt],
     });
   },
 

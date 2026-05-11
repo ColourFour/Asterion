@@ -1,5 +1,7 @@
 import type {
   Attempt,
+  LearningActivityAttempt,
+  LearningActivityOutcome,
   NormalizedQuestion,
   RegionDefinition,
   RegionLearningRecord,
@@ -39,6 +41,18 @@ export interface TrainingSessionRecommendation {
   reason: string;
 }
 
+export interface LearningActivityReadiness {
+  attempts: number;
+  quickCheckAttempts: number;
+  warmUpAttempts: number;
+  gotIt: number;
+  partial: number;
+  missed: number;
+  earlyReveals: number;
+  latestOutcome?: LearningActivityOutcome;
+  nextActionHint?: string;
+}
+
 export interface NextRegionAction {
   kind: 'field_guide' | 'training' | 'guardian' | 'review' | 'complete' | 'locked';
   label: string;
@@ -51,6 +65,7 @@ export interface RegionLearningSummary {
   nextAction: NextRegionAction;
   trainingSession: TrainingSessionRecommendation;
   guardianEligibility: GuardianEligibility;
+  learningActivityReadiness: LearningActivityReadiness;
 }
 
 function ratio(attempt: Attempt): number | undefined {
@@ -87,6 +102,45 @@ function attemptCountText(count: number): string {
 
 function attemptsMissingText(count: number): string {
   return `${count} more saved attempt${count === 1 ? '' : 's'}`;
+}
+
+function compareLearningActivityAttempts(a: LearningActivityAttempt, b: LearningActivityAttempt): number {
+  const timeA = Date.parse(a.completedAt);
+  const timeB = Date.parse(b.completedAt);
+  const stableTimeA = Number.isFinite(timeA) ? timeA : 0;
+  const stableTimeB = Number.isFinite(timeB) ? timeB : 0;
+  return stableTimeA - stableTimeB || a.id.localeCompare(b.id) || a.activityId.localeCompare(b.activityId);
+}
+
+export function summarizeLearningActivityReadiness(attempts: LearningActivityAttempt[] = []): LearningActivityReadiness {
+  const sorted = attempts.slice().sort(compareLearningActivityAttempts);
+  const latest = sorted[sorted.length - 1];
+  const quickCheckAttempts = sorted.filter((attempt) => attempt.activityType === 'quick_check').length;
+  const warmUpAttempts = sorted.filter((attempt) => attempt.activityType === 'warm_up').length;
+  const gotIt = sorted.filter((attempt) => attempt.outcome === 'got_it').length;
+  const partial = sorted.filter((attempt) => attempt.outcome === 'partial').length;
+  const missed = sorted.filter((attempt) => attempt.outcome === 'missed').length;
+  const earlyReveals = sorted.filter((attempt) => attempt.revealedEarly).length;
+  const latestOutcome = latest?.outcome;
+  const nextActionHint = sorted.length === 0
+    ? 'Try a Quick Check or warm-up before moving into exam questions.'
+    : latest?.outcome === 'got_it' && gotIt >= 2
+      ? 'Quick Check and warm-up records look ready. Move into canonical Exam Training next.'
+      : latest?.outcome === 'missed' || latest?.revealedEarly
+        ? 'A recent support activity was missed or revealed early. Try another warm-up before exam training.'
+        : 'Support activity records show partial readiness. Try one more warm-up or move carefully into training.';
+
+  return {
+    attempts: sorted.length,
+    quickCheckAttempts,
+    warmUpAttempts,
+    gotIt,
+    partial,
+    missed,
+    earlyReveals,
+    latestOutcome,
+    nextActionHint,
+  };
 }
 
 export function selectGuardianQuestion(questions: NormalizedQuestion[]): NormalizedQuestion | undefined {
@@ -202,13 +256,30 @@ export function recommendTrainingSession(input: {
   regionProgress: RegionProgress;
   learningRecord?: RegionLearningRecord;
   regionAttempts: Attempt[];
+  learningActivityReadiness?: LearningActivityReadiness;
 }): TrainingSessionRecommendation {
-  const { regionProgress, learningRecord, regionAttempts } = input;
+  const { regionProgress, learningRecord, regionAttempts, learningActivityReadiness } = input;
   const lastAttempt = regionAttempts[regionAttempts.length - 1];
   const lastRatio = lastAttempt ? ratio(lastAttempt) : undefined;
   const fieldGuideCompleted = Boolean(learningRecord?.fieldGuideCompletedAt);
 
   if (regionProgress.attempts === 0) {
+    if (fieldGuideCompleted && learningActivityReadiness && learningActivityReadiness.gotIt >= 2) {
+      return {
+        intent: 'core_practice',
+        label: TRAINING_SESSION_LABELS.core_practice,
+        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for canonical exam training.',
+      };
+    }
+
+    if (fieldGuideCompleted && learningActivityReadiness && (learningActivityReadiness.missed > 0 || learningActivityReadiness.earlyReveals > 0)) {
+      return {
+        intent: 'warm_up',
+        label: TRAINING_SESSION_LABELS.warm_up,
+        reason: learningActivityReadiness.nextActionHint ?? 'Warm-up is selected because support activity records show a recent miss or early reveal.',
+      };
+    }
+
     return {
       intent: 'warm_up',
       label: TRAINING_SESSION_LABELS.warm_up,
@@ -263,8 +334,9 @@ export function nextRecommendedRegionAction(input: {
   state: RegionLearningState;
   guardianEligibility: GuardianEligibility;
   trainingSession: TrainingSessionRecommendation;
+  learningActivityReadiness?: LearningActivityReadiness;
 }): NextRegionAction {
-  const { state, guardianEligibility, trainingSession } = input;
+  const { state, guardianEligibility, trainingSession, learningActivityReadiness } = input;
 
   if (state === 'locked') {
     return {
@@ -324,7 +396,9 @@ export function nextRecommendedRegionAction(input: {
   return {
     kind: 'training',
     label: `Start ${trainingSession.label}`,
-    explanation: guardianEligibility.requirements.find((requirement) => !requirement.completed)?.nextAction ?? trainingSession.reason,
+    explanation: learningActivityReadiness?.attempts
+      ? trainingSession.reason
+      : guardianEligibility.requirements.find((requirement) => !requirement.completed)?.nextAction ?? trainingSession.reason,
   };
 }
 
@@ -333,7 +407,9 @@ export function buildRegionLearningSummary(input: {
   learningRecord?: RegionLearningRecord;
   regionQuestions: NormalizedQuestion[];
   regionAttempts: Attempt[];
+  learningActivityAttempts?: LearningActivityAttempt[];
 }): RegionLearningSummary {
+  const learningActivityReadiness = summarizeLearningActivityReadiness(input.learningActivityAttempts);
   const guardianEligibility = computeGuardianEligibility({
     region: input.regionProgress.region,
     regionProgress: input.regionProgress,
@@ -345,6 +421,7 @@ export function buildRegionLearningSummary(input: {
     regionProgress: input.regionProgress,
     learningRecord: input.learningRecord,
     regionAttempts: input.regionAttempts,
+    learningActivityReadiness,
   });
   const state = computeRegionLearningState({
     regionProgress: input.regionProgress,
@@ -355,8 +432,9 @@ export function buildRegionLearningSummary(input: {
   return {
     state,
     visualTreatment: computeRegionVisualTreatment(state),
-    nextAction: nextRecommendedRegionAction({ state, guardianEligibility, trainingSession }),
+    nextAction: nextRecommendedRegionAction({ state, guardianEligibility, trainingSession, learningActivityReadiness }),
     trainingSession,
     guardianEligibility,
+    learningActivityReadiness,
   };
 }

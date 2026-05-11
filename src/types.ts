@@ -144,6 +144,29 @@ export interface Attempt {
   regionRankAtAttempt?: RegionRank;
 }
 
+export type LearningActivityType = 'quick_check' | 'warm_up';
+export type LearningActivityOutcome = 'got_it' | 'partial' | 'missed';
+
+export interface LearningActivityAttempt {
+  id: string;
+  profileId?: string;
+  regionId: string;
+  regionName?: string;
+  activityType: LearningActivityType;
+  activityId: string;
+  sourceId?: string;
+  topic?: string;
+  skillTargetId?: string;
+  prompt: string;
+  learnerResponse: string;
+  revealedEarly: boolean;
+  outcome: LearningActivityOutcome;
+  confidence: number;
+  errorType?: MistakeType;
+  createdAt: string;
+  completedAt: string;
+}
+
 export interface IssueReport {
   id: string;
   profileId?: string;
@@ -253,6 +276,7 @@ export interface StoredProgress {
   profile?: StudentProfile;
   avatar: AvatarSettings;
   attempts: Attempt[];
+  learningActivityAttempts: LearningActivityAttempt[];
   topicProfiles: Record<string, TopicProfile>;
   issueReports: IssueReport[];
   regionLearning?: Record<string, RegionLearningRecord>;

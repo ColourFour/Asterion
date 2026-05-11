@@ -44,6 +44,6 @@ describe('academyProgress', () => {
 
   it('does not overclaim mastery for gold regions', () => {
     expect(nextRegionGoal(progress({ rank: 'Gold', attempts: 14, averageScoreRatio: 0.9, recentScoreRatio: 0.9 })).label)
-      .toContain('Mixed mastery trials are reserved for a later pass');
+      .toContain('Mastered needs Guardian clear or recent successful mixed review');
   });
 });

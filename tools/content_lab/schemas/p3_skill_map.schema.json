@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asterion.local/schemas/p3_skill_map.schema.json",
+  "title": "Asterion Content Lab P3 Skill Map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "paper_family",
+    "review_status",
+    "reviewed_at",
+    "source_note",
+    "skills"
+  ],
+  "properties": {
+    "schema_name": { "const": "asterion_p3_skill_map" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "paper_family": { "const": "p3" },
+    "review_status": { "enum": ["reviewed"] },
+    "reviewed_at": { "type": "string", "minLength": 1 },
+    "source_note": { "type": "string", "minLength": 1 },
+    "skills": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "skill_id",
+          "syllabus_topic",
+          "region_id",
+          "micro_skill_name",
+          "recognizer_signals",
+          "common_errors",
+          "prerequisite_skills",
+          "canonical_source_question_ids",
+          "supported_by_snippet_ids",
+          "supported_by_quick_check_ids",
+          "supported_by_generator_families",
+          "supported_by_guardian_candidates"
+        ],
+        "properties": {
+          "skill_id": { "type": "string", "pattern": "^p3_[a-z0-9_]+$" },
+          "syllabus_topic": { "type": "string", "minLength": 1 },
+          "region_id": { "type": "string", "minLength": 1 },
+          "micro_skill_name": { "type": "string", "minLength": 1 },
+          "recognizer_signals": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "common_errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "prerequisite_skills": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^p3_[a-z0-9_]+$" },
+            "uniqueItems": true
+          },
+          "canonical_source_question_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "supported_by_snippet_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[a-z0-9_:-]+$" },
+            "uniqueItems": true
+          },
+          "supported_by_quick_check_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[a-z0-9_:-]+$" },
+            "uniqueItems": true
+          },
+          "supported_by_generator_families": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[a-z0-9_.:-]+$" },
+            "uniqueItems": true
+          },
+          "supported_by_guardian_candidates": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

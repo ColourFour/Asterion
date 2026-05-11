@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Attempt, NormalizedQuestion, RegionLearningRecord, RegionProgress } from '../types';
+import type { Attempt, LearningActivityAttempt, NormalizedQuestion, RegionLearningRecord, RegionProgress } from '../types';
 import {
   buildRegionLearningSummary,
   computeGuardianEligibility,
@@ -75,6 +75,24 @@ function learning(overrides: Partial<RegionLearningRecord> = {}): RegionLearning
     regionId: logarithms.id,
     updatedAt: '2026-05-08T00:00:00.000Z',
     ...overrides,
+  };
+}
+
+function learningActivityAttempt(id: string, outcome: LearningActivityAttempt['outcome']): LearningActivityAttempt {
+  return {
+    id,
+    profileId: 'profile_1',
+    regionId: logarithms.id,
+    regionName: logarithms.name,
+    activityType: id.includes('warm') ? 'warm_up' : 'quick_check',
+    activityId: id,
+    prompt: 'Rewrite log base two of eight equals three.',
+    learnerResponse: '2^3 = 8',
+    revealedEarly: false,
+    outcome,
+    confidence: outcome === 'got_it' ? 4 : 2,
+    createdAt: '2026-05-08T00:00:00.000Z',
+    completedAt: id.includes('2') ? '2026-05-08T00:02:00.000Z' : '2026-05-08T00:01:00.000Z',
   };
 }
 
@@ -187,6 +205,23 @@ describe('region learning loop logic', () => {
     expect(summary.visualTreatment).toBe('guardian_cleared');
   });
 
+  it('keeps a cleared guardian in needs-review when recent evidence drops', () => {
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress({ attempts: 5, recentScoreRatio: 0.4, rank: 'Gold' }),
+      learningRecord: learning({
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        guardianAttemptedAt: '2026-05-08T00:04:00.000Z',
+        guardianClearedAt: '2026-05-08T00:04:00.000Z',
+      }),
+      regionQuestions: [question()],
+      regionAttempts: [attempt('1', 0.72), attempt('2', 0.4), attempt('3', 0.4)],
+    });
+
+    expect(summary.state).toBe('needs_review');
+    expect(summary.visualTreatment).toBe('needs_review');
+    expect(summary.nextAction.kind).toBe('review');
+  });
+
   it('reports completed and missing guardian requirements with exact next action', () => {
     const summary = buildRegionLearningSummary({
       regionProgress: progress({ attempts: 2, averageScoreRatio: 0.62, recentScoreRatio: 0.66, subtopicsTouched: 1 }),
@@ -213,6 +248,23 @@ describe('region learning loop logic', () => {
       regionProgress: progress({ attempts: 4, averageScoreRatio: 0.76, recentScoreRatio: 0.78 }),
       regionAttempts: [attempt('1', 0.72), attempt('2', 0.78), attempt('3', 0.82)],
     }).intent).toBe('challenge');
+  });
+
+  it('uses Quick Check and warm-up records for the next recommended action without changing rank', () => {
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress({ attempts: 0, rank: 'Discovered' }),
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: [question()],
+      regionAttempts: [],
+      learningActivityAttempts: [
+        learningActivityAttempt('quick-1', 'got_it'),
+        learningActivityAttempt('warm-2', 'got_it'),
+      ],
+    });
+
+    expect(summary.trainingSession.intent).toBe('core_practice');
+    expect(summary.nextAction.label).toBe('Start Core practice');
+    expect(summary.nextAction.explanation).toContain('Move into canonical Exam Training');
   });
 
   it('does not select guardian questions missing question or mark-scheme image candidates', () => {

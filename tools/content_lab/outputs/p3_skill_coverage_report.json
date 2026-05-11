@@ -1,0 +1,2308 @@
+{
+  "dashboard": {
+    "coverage_by_region": [
+      {
+        "high_evidence_weak_teaching_support": 2,
+        "region_id": "algebra-forge",
+        "skills_with_generated_warm_up": 4,
+        "skills_with_quick_check": 7,
+        "skills_with_snippet": 7,
+        "skills_with_trainable_canonical_question": 7,
+        "total_skills": 7
+      },
+      {
+        "high_evidence_weak_teaching_support": 4,
+        "region_id": "calculus-cliffs",
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 4,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 5,
+        "total_skills": 5
+      },
+      {
+        "high_evidence_weak_teaching_support": 4,
+        "region_id": "complex-harbor",
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 4,
+        "skills_with_trainable_canonical_question": 4,
+        "total_skills": 4
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "region_id": "differential-shrine",
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 2,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "total_skills": 3
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "region_id": "integration-gardens",
+        "skills_with_generated_warm_up": 1,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 4,
+        "skills_with_trainable_canonical_question": 4,
+        "total_skills": 4
+      },
+      {
+        "high_evidence_weak_teaching_support": 1,
+        "region_id": "logarithm-grove",
+        "skills_with_generated_warm_up": 3,
+        "skills_with_quick_check": 5,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 6,
+        "total_skills": 6
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "region_id": "numerical-mines",
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "total_skills": 3
+      },
+      {
+        "high_evidence_weak_teaching_support": 0,
+        "region_id": "trig-observatory",
+        "skills_with_generated_warm_up": 5,
+        "skills_with_quick_check": 5,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 5,
+        "total_skills": 5
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "region_id": "vector-workshop",
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 2,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "total_skills": 3
+      }
+    ],
+    "coverage_by_syllabus_topic": [
+      {
+        "high_evidence_weak_teaching_support": 2,
+        "skills_with_generated_warm_up": 4,
+        "skills_with_quick_check": 7,
+        "skills_with_snippet": 7,
+        "skills_with_trainable_canonical_question": 7,
+        "syllabus_topic": "Algebra",
+        "total_skills": 7
+      },
+      {
+        "high_evidence_weak_teaching_support": 4,
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 4,
+        "skills_with_trainable_canonical_question": 4,
+        "syllabus_topic": "Complex numbers",
+        "total_skills": 4
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 2,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "syllabus_topic": "Differential equations",
+        "total_skills": 3
+      },
+      {
+        "high_evidence_weak_teaching_support": 4,
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 4,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 5,
+        "syllabus_topic": "Differentiation",
+        "total_skills": 5
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "skills_with_generated_warm_up": 1,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 4,
+        "skills_with_trainable_canonical_question": 4,
+        "syllabus_topic": "Integration",
+        "total_skills": 4
+      },
+      {
+        "high_evidence_weak_teaching_support": 1,
+        "skills_with_generated_warm_up": 3,
+        "skills_with_quick_check": 5,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 6,
+        "syllabus_topic": "Logarithmic and exponential functions",
+        "total_skills": 6
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 3,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "syllabus_topic": "Numerical solution of equations",
+        "total_skills": 3
+      },
+      {
+        "high_evidence_weak_teaching_support": 0,
+        "skills_with_generated_warm_up": 5,
+        "skills_with_quick_check": 5,
+        "skills_with_snippet": 5,
+        "skills_with_trainable_canonical_question": 5,
+        "syllabus_topic": "Trigonometry",
+        "total_skills": 5
+      },
+      {
+        "high_evidence_weak_teaching_support": 3,
+        "skills_with_generated_warm_up": 0,
+        "skills_with_quick_check": 2,
+        "skills_with_snippet": 3,
+        "skills_with_trainable_canonical_question": 3,
+        "syllabus_topic": "Vectors",
+        "total_skills": 3
+      }
+    ],
+    "readiness_label": "not_ready",
+    "ready_for_full_p3_learning": false
+  },
+  "gaps": {
+    "high_evidence_skills_with_weak_teaching_support": [
+      {
+        "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_polynomial_remainder_factor",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_structure_rearrangement",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Interpret loci and regions on an Argand diagram",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_argand_loci_regions",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_cartesian_conjugate",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Move between Cartesian and modulus-argument form",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_modulus_argument_form",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Find complex powers and roots using the suitable form",
+        "reasons": [
+          "no_reviewed_quick_check",
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_roots_powers",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Form differential equations from rate contexts",
+        "reasons": [
+          "no_reviewed_quick_check",
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_forming_context_model",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Apply initial conditions after integration",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_initial_condition",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Separate variables before integrating",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_separation_setup",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Apply chain, product, and quotient rules accurately",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_chain_product_quotient",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Name the differentiation method before differentiating",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_method_selection",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_parametric_gradients",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_stationary_tangent_normal",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Evaluate definite and improper integrals exactly",
+        "reasons": [
+          "no_reviewed_quick_check",
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_definite_improper_area",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_method_choice",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Use integration by parts or substitution with correct setup",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_parts_substitution",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "reasons": [
+          "no_reviewed_snippet",
+          "no_reviewed_quick_check",
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      },
+      {
+        "micro_skill_name": "Control accuracy and rounding in numerical solutions",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_accuracy_rounding",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Apply an iteration formula consistently",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_iteration_formula",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Justify roots using sign changes or graph evidence",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_sign_change_graph_evidence",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+        "reasons": [
+          "no_reviewed_quick_check",
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_3d_geometry_modelling",
+        "syllabus_topic": "Vectors"
+      },
+      {
+        "micro_skill_name": "Form and compare vector equations of lines",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_line_equations_intersections",
+        "syllabus_topic": "Vectors"
+      },
+      {
+        "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_scalar_product_angles",
+        "syllabus_topic": "Vectors"
+      }
+    ],
+    "skills_with_no_generated_warm_up": [
+      {
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_discriminant_root_conditions",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_polynomial_remainder_factor",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_structure_rearrangement",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Interpret loci and regions on an Argand diagram",
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_argand_loci_regions",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_cartesian_conjugate",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Move between Cartesian and modulus-argument form",
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_modulus_argument_form",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Find complex powers and roots using the suitable form",
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_roots_powers",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Form differential equations from rate contexts",
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_forming_context_model",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Apply initial conditions after integration",
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_initial_condition",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Separate variables before integrating",
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_separation_setup",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Apply chain, product, and quotient rules accurately",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_chain_product_quotient",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Differentiate implicit log or exponential relations",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_implicit_log_exp",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Name the differentiation method before differentiating",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_method_selection",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_parametric_gradients",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_stationary_tangent_normal",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Evaluate definite and improper integrals exactly",
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_definite_improper_area",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_method_choice",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Use integration by parts or substitution with correct setup",
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_parts_substitution",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      },
+      {
+        "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_domain_validation",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      },
+      {
+        "micro_skill_name": "Linearise logarithmic or exponential relationships",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_linearisation",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      },
+      {
+        "micro_skill_name": "Control accuracy and rounding in numerical solutions",
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_accuracy_rounding",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Apply an iteration formula consistently",
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_iteration_formula",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Justify roots using sign changes or graph evidence",
+        "region_id": "numerical-mines",
+        "skill_id": "p3_num_sign_change_graph_evidence",
+        "syllabus_topic": "Numerical solution of equations"
+      },
+      {
+        "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_3d_geometry_modelling",
+        "syllabus_topic": "Vectors"
+      },
+      {
+        "micro_skill_name": "Form and compare vector equations of lines",
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_line_equations_intersections",
+        "syllabus_topic": "Vectors"
+      },
+      {
+        "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_scalar_product_angles",
+        "syllabus_topic": "Vectors"
+      }
+    ],
+    "skills_with_no_quick_check": [
+      {
+        "micro_skill_name": "Find complex powers and roots using the suitable form",
+        "region_id": "complex-harbor",
+        "skill_id": "p3_complex_roots_powers",
+        "syllabus_topic": "Complex numbers"
+      },
+      {
+        "micro_skill_name": "Form differential equations from rate contexts",
+        "region_id": "differential-shrine",
+        "skill_id": "p3_de_forming_context_model",
+        "syllabus_topic": "Differential equations"
+      },
+      {
+        "micro_skill_name": "Differentiate implicit log or exponential relations",
+        "region_id": "calculus-cliffs",
+        "skill_id": "p3_diff_implicit_log_exp",
+        "syllabus_topic": "Differentiation"
+      },
+      {
+        "micro_skill_name": "Evaluate definite and improper integrals exactly",
+        "region_id": "integration-gardens",
+        "skill_id": "p3_int_definite_improper_area",
+        "syllabus_topic": "Integration"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      },
+      {
+        "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+        "region_id": "vector-workshop",
+        "skill_id": "p3_vec_3d_geometry_modelling",
+        "syllabus_topic": "Vectors"
+      }
+    ],
+    "skills_with_no_snippet": [
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      }
+    ],
+    "skills_with_no_trainable_canonical_question": []
+  },
+  "generated_by": "tools/content_lab/scripts/build_p3_skill_coverage.py",
+  "inputs": {
+    "generated_practice": "public/data/generated_practice_bank.json",
+    "question_bank": "public/data/question_bank.json",
+    "skill_map": "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json",
+    "snippets": "public/data/teaching_snippets.json"
+  },
+  "schema_name": "asterion_p3_skill_coverage_report",
+  "schema_version": 1,
+  "settings": {
+    "high_evidence_question_count": 5
+  },
+  "skills": [
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Find binomial terms and coefficients efficiently",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [
+        "binomial_expansion.first_terms_and_coefficient"
+      ],
+      "resolved_guardian_candidates": [
+        "33summer21_q01",
+        "31autumn21_q06"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-binomial-term-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
+      "skill_id": "p3_alg_binomial_terms_coefficients",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "State and use binomial expansion validity",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [
+        "algebra.binomial_validity_range"
+      ],
+      "resolved_guardian_candidates": [
+        "31autumn21_q06",
+        "32autumn24_q01"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-binomial-validity-range-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-binomial-validity-range-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
+      "skill_id": "p3_alg_binomial_validity",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Use discriminant or root conditions as evidence",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q01",
+        "33summer22_q08"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-quadratics-discriminant-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01",
+        "33summer22_q08",
+        "31autumn25_q06"
+      ],
+      "skill_id": "p3_alg_discriminant_root_conditions",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Split modulus equations or inequalities into valid cases",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [
+        "algebra.modulus_equation_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32autumn21_q02",
+        "33summer25_q01"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-modulus-cases-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-modulus-cases-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "31autumn25_q06",
+        "32autumn25_q01"
+      ],
+      "skill_id": "p3_alg_modulus_cases",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 6,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Set up partial fractions from denominator structure",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "resolved_guardian_candidates": [
+        "32spring21_q06",
+        "31summer21_q10"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-partial-fractions-repeated-linear-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q06",
+        "31summer21_q10",
+        "32summer21_q09",
+        "33summer21_q04",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
+      "skill_id": "p3_alg_partial_fraction_form",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 6,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 6,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32spring21_q02",
+        "33autumn21_q01"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-polynomial-theorem-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "33summer21_q10",
+        "31summer22_q05",
+        "32spring24_q01"
+      ],
+      "skill_id": "p3_alg_polynomial_remainder_factor",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Choose algebraic structure before expanding",
+      "region_id": "algebra-forge",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q01",
+        "33summer24_q08"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-algebra-rearrangement-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01",
+        "33autumn21_q03",
+        "33summer22_q03",
+        "33summer24_q08"
+      ],
+      "skill_id": "p3_alg_structure_rearrangement",
+      "syllabus_topic": "Algebra",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Interpret loci and regions on an Argand diagram",
+      "region_id": "complex-harbor",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q02",
+        "35autumn25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-complex-locus-argument-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
+      "skill_id": "p3_complex_argand_loci_regions",
+      "syllabus_topic": "Complex numbers",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
+      "region_id": "complex-harbor",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32spring21_q08",
+        "35autumn25_q05"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
+      "skill_id": "p3_complex_cartesian_conjugate",
+      "syllabus_topic": "Complex numbers",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Move between Cartesian and modulus-argument form",
+      "region_id": "complex-harbor",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33autumn21_q11",
+        "35summer25_q03"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
+      "skill_id": "p3_complex_modulus_argument_form",
+      "syllabus_topic": "Complex numbers",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Find complex powers and roots using the suitable form",
+      "region_id": "complex-harbor",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q05",
+        "31summer21_q05"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
+      "skill_id": "p3_complex_roots_powers",
+      "syllabus_topic": "Complex numbers",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Form differential equations from rate contexts",
+      "region_id": "differential-shrine",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33autumn21_q10",
+        "35autumn25_q11"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09",
+        "31summer21_q10"
+      ],
+      "skill_id": "p3_de_forming_context_model",
+      "syllabus_topic": "Differential equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Apply initial conditions after integration",
+      "region_id": "differential-shrine",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-differential-initial-condition-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "skill_id": "p3_de_initial_condition",
+      "syllabus_topic": "Differential equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Separate variables before integrating",
+      "region_id": "differential-shrine",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q07",
+        "35summer25_q11"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-differential-separation-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
+      "skill_id": "p3_de_separation_setup",
+      "syllabus_topic": "Differential equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Apply chain, product, and quotient rules accurately",
+      "region_id": "calculus-cliffs",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q08",
+        "35summer25_q04"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "skill_id": "p3_diff_chain_product_quotient",
+      "syllabus_topic": "Differentiation",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Differentiate implicit log or exponential relations",
+      "region_id": "calculus-cliffs",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "31summer21_q09"
+      ],
+      "skill_id": "p3_diff_implicit_log_exp",
+      "syllabus_topic": "Differentiation",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Name the differentiation method before differentiating",
+      "region_id": "calculus-cliffs",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31summer23_q05",
+        "35summer25_q06"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31summer23_q05",
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
+      "skill_id": "p3_diff_method_selection",
+      "syllabus_topic": "Differentiation",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
+      "region_id": "calculus-cliffs",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33summer21_q03",
+        "31autumn25_q07"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-parametric-derivative-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "32spring21_q10",
+        "35summer25_q06"
+      ],
+      "skill_id": "p3_diff_parametric_gradients",
+      "syllabus_topic": "Differentiation",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
+      "region_id": "calculus-cliffs",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33summer21_q08",
+        "31autumn25_q04"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-differentiation-follow-through-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "32autumn21_q11",
+        "35summer25_q07",
+        "31autumn25_q04"
+      ],
+      "skill_id": "p3_diff_stationary_tangent_normal",
+      "syllabus_topic": "Differentiation",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Evaluate definite and improper integrals exactly",
+      "region_id": "integration-gardens",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q04",
+        "33summer25_q03"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q04",
+        "33summer21_q04",
+        "33summer25_q03",
+        "32spring21_q10",
+        "31summer21_q04"
+      ],
+      "skill_id": "p3_int_definite_improper_area",
+      "syllabus_topic": "Integration",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+      "region_id": "integration-gardens",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q04",
+        "32summer21_q04"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-integration-method-choice-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "skill_id": "p3_int_method_choice",
+      "syllabus_topic": "Integration",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Integrate rational functions using partial fractions",
+      "region_id": "integration-gardens",
+      "resolved_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "resolved_guardian_candidates": [
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-integration-method-choice-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001",
+        "p3-integration-method-choice-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "32summer21_q09",
+        "31summer21_q10",
+        "35summer25_q09"
+      ],
+      "skill_id": "p3_int_partial_fractions",
+      "syllabus_topic": "Integration",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 6,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Use integration by parts or substitution with correct setup",
+      "region_id": "integration-gardens",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q04",
+        "32autumn25_q04"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-integration-parts-substitution-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "skill_id": "p3_int_parts_substitution",
+      "syllabus_topic": "Integration",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": false,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31summer21_q09",
+        "35summer25_q04"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [],
+      "resolved_trainable_canonical_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
+      "skill_id": "p3_log_calculus_contexts",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_snippet",
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Convert between logarithmic and exponential form",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32spring23_q01",
+        "31autumn25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-log-exp-convert-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
+      "skill_id": "p3_log_convert_forms",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33autumn22_q01",
+        "31autumn25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-log-domain-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-log-domain-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "skill_id": "p3_log_domain_validation",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Solve exponential equations using matching bases or natural logs",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "31autumn22_q03",
+        "35summer25_q01"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-exp-equations-001-qc",
+        "p3-ln-e-inverse-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
+      "skill_id": "p3_log_exponential_equations",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Use log laws to solve logarithmic equations",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-log-laws-001-qc",
+        "p3-log-invalid-operations-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-log-laws-001",
+        "p3-log-invalid-operations-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
+      "skill_id": "p3_log_laws_equations",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Linearise logarithmic or exponential relationships",
+      "region_id": "logarithm-grove",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32summer21_q03",
+        "35autumn25_q03"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-log-linearisation-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-log-linearisation-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03",
+        "31summer23_q08"
+      ],
+      "skill_id": "p3_log_linearisation",
+      "syllabus_topic": "Logarithmic and exponential functions",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Control accuracy and rounding in numerical solutions",
+      "region_id": "numerical-mines",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32spring21_q09",
+        "33summer21_q06"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
+      "skill_id": "p3_num_accuracy_rounding",
+      "syllabus_topic": "Numerical solution of equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Apply an iteration formula consistently",
+      "region_id": "numerical-mines",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q08",
+        "35autumn25_q10"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-iteration-formula-discipline-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "33autumn21_q10",
+        "35autumn25_q10"
+      ],
+      "skill_id": "p3_num_iteration_formula",
+      "syllabus_topic": "Numerical solution of equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Justify roots using sign changes or graph evidence",
+      "region_id": "numerical-mines",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn25_q09",
+        "32autumn25_q06"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
+      "skill_id": "p3_num_sign_change_graph_evidence",
+      "syllabus_topic": "Numerical solution of equations",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Solve trig equations over a specified interval",
+      "region_id": "trig-observatory",
+      "resolved_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "31autumn21_q05",
+        "32spring21_q03"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-trig-interval-001-qc",
+        "p3-trig-lost-solutions-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-trig-interval-001",
+        "p3-trig-lost-solutions-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
+      "skill_id": "p3_trig_equation_interval",
+      "syllabus_topic": "Trigonometry",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Choose trig identities for proof or simplification",
+      "region_id": "trig-observatory",
+      "resolved_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32autumn21_q06",
+        "33summer25_q08"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-trig-identity-selection-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-trig-identity-selection-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "skill_id": "p3_trig_identity_selection",
+      "syllabus_topic": "Trigonometry",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 6,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Use quadrant discipline to find every trig solution",
+      "region_id": "trig-observatory",
+      "resolved_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32summer22_q02",
+        "35summer25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-trig-quadrant-discipline-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
+      "skill_id": "p3_trig_quadrant_solutions",
+      "syllabus_topic": "Trigonometry",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 4,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Rewrite a sin and cos combination in R-form",
+      "region_id": "trig-observatory",
+      "resolved_generator_families": [
+        "trigonometry.r_form_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32spring21_q05",
+        "31autumn25_q03"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
+      "skill_id": "p3_trig_r_form_compound_angles",
+      "syllabus_topic": "Trigonometry",
+      "trainable_canonical_question_count": 4,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 3,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": true,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": false,
+      "micro_skill_name": "Transform reciprocal and double-angle equations safely",
+      "region_id": "trig-observatory",
+      "resolved_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "resolved_guardian_candidates": [
+        "32summer21_q06",
+        "35summer25_q02"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32summer21_q06",
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
+      "skill_id": "p3_trig_reciprocal_double_angle",
+      "syllabus_topic": "Trigonometry",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 6,
+      "weak_support_reasons": []
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": false,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+      "region_id": "vector-workshop",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "33autumn21_q08",
+        "32autumn25_q11"
+      ],
+      "resolved_quick_check_ids": [],
+      "resolved_snippet_ids": [
+        "p3-vectors-lines-001",
+        "p3-vectors-scalar-product-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
+      "skill_id": "p3_vec_3d_geometry_modelling",
+      "syllabus_topic": "Vectors",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_quick_check",
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Form and compare vector equations of lines",
+      "region_id": "vector-workshop",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "32spring21_q07",
+        "31autumn25_q11"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-vectors-lines-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-vectors-lines-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
+      "skill_id": "p3_vec_line_equations_intersections",
+      "syllabus_topic": "Vectors",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    },
+    {
+      "canonical_source_question_count": 5,
+      "has_generated_warm_up": false,
+      "has_quick_check": true,
+      "has_snippet": true,
+      "has_trainable_canonical_question": true,
+      "high_evidence": true,
+      "high_evidence_weak_teaching_support": true,
+      "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
+      "region_id": "vector-workshop",
+      "resolved_generator_families": [],
+      "resolved_guardian_candidates": [
+        "31autumn21_q09",
+        "35summer25_q10"
+      ],
+      "resolved_quick_check_ids": [
+        "p3-vectors-scalar-product-001-qc"
+      ],
+      "resolved_snippet_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
+      "resolved_trainable_canonical_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
+      "skill_id": "p3_vec_scalar_product_angles",
+      "syllabus_topic": "Vectors",
+      "trainable_canonical_question_count": 5,
+      "unresolved_generator_families": [],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": [],
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
+    }
+  ],
+  "summary": {
+    "high_evidence_skills": 33,
+    "high_evidence_weak_teaching_support": 23,
+    "ready_for_full_p3_learning": false,
+    "skills_with_generated_warm_up": 13,
+    "skills_with_quick_check": 34,
+    "skills_with_snippet": 39,
+    "skills_with_trainable_canonical_question": 40,
+    "total_skills": 40
+  },
+  "unresolved_reference_warnings": []
+}
