@@ -33,7 +33,7 @@ export interface DataHealthSummary {
   missingImagePathExamples: Array<{ id: string; missing: 'question' | 'mark_scheme'; labels: string }>;
   missingAssetAvailabilityExamples: Array<{ id: string; paper?: string; questionNumber?: string; missing: 'question' | 'mark_scheme'; candidates: string[] }>;
   practiceBlockedExamples: Array<{ id: string; blockers: string[]; labels: string }>;
-  imageRootMode: 'public/assets root layout' | 'family-folder layout' | 'paper-only layout' | 'unknown';
+  imageRootMode: 'exam-bank-data layout' | 'public/assets root layout' | 'family-folder layout' | 'paper-only layout' | 'unknown';
   sidecarEnrichmentCount: number;
   sidecarMergeCount: number;
   sidecarErrorCount: number;
@@ -57,6 +57,7 @@ export interface AssetAvailabilityAudit {
 export type CandidateAvailabilityChecker = (candidateUrl: string) => boolean | Promise<boolean>;
 
 function imageRootModeForUrl(url: string): DataHealthSummary['imageRootMode'] {
+  if (/^\/assets\/exam-bank(?:%20|[ -])data\/p[1345]\//i.test(url)) return 'exam-bank-data layout';
   if (/^\/assets\/questions\/p[1345]\//i.test(url)) return 'family-folder layout';
   if (/^\/assets\/questions\//i.test(url)) return 'paper-only layout';
   if (/^\/assets\//i.test(url)) return 'public/assets root layout';
@@ -74,6 +75,7 @@ function detectImageRootMode(questions: NormalizedQuestion[]): DataHealthSummary
     acc[mode] += 1;
     return acc;
   }, {
+    'exam-bank-data layout': 0,
     'public/assets root layout': 0,
     'family-folder layout': 0,
     'paper-only layout': 0,

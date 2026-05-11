@@ -308,24 +308,24 @@ p3/15autumn25/mark_scheme/q01.png
 Asterion resolves those to public URLs:
 
 ```text
-/assets/15autumn25/questions/q01.png
-/assets/15autumn25/mark_scheme/q01.png
+/assets/exam-bank-data/p3/15autumn25/questions/q01.png
+/assets/exam-bank-data/p3/15autumn25/mark_scheme/q01.png
 ```
 
 This logic lives in `src/lib/resolveAssetPath.ts`. Components should use normalized question objects and must not duplicate path-resolution rules.
 
-Current deployed canonical question and mark-scheme image crops use the public asset root layout:
+Current deployed canonical question and mark-scheme image crops use the grouped exam-bank asset layout:
 
 ```text
-public/assets/<paper>/questions/q##.png
-public/assets/<paper>/mark_scheme/q##.png
+public/assets/exam-bank-data/<paper-family>/<paper>/questions/q##.png
+public/assets/exam-bank-data/<paper-family>/<paper>/mark_scheme/q##.png
 ```
 
 For example:
 
 ```text
-public/assets/32spring21/questions/q01.png
-public/assets/32spring21/mark_scheme/q01.png
+public/assets/exam-bank-data/p3/32spring21/questions/q01.png
+public/assets/exam-bank-data/p3/32spring21/mark_scheme/q01.png
 ```
 
 Supported source path variants include:
@@ -339,15 +339,16 @@ assets/questions/p3/15autumn25/questions/q01.png
 public/assets/questions/p3/15autumn25/questions/q01.png
 ```
 
-The resolver tries the current root layout first, then legacy compatibility layouts:
+The resolver tries the grouped exam-bank layout first, then compatibility layouts:
 
 ```text
+/assets/exam-bank-data/p3/15autumn25/questions/q01.png
 /assets/15autumn25/questions/q01.png
 /assets/questions/p3/15autumn25/questions/q01.png
 /assets/questions/15autumn25/questions/q01.png
 ```
 
-Legacy `public/assets/questions/p3/<paper>/...` and `public/assets/questions/<paper>/...` layouts are compatibility fallbacks only. New local data should use the root layout under `public/assets/<paper>/...`.
+Legacy `public/assets/<paper>/...`, `public/assets/questions/p3/<paper>/...`, and `public/assets/questions/<paper>/...` layouts are compatibility fallbacks only. New local data should use the grouped layout under `public/assets/exam-bank-data/<paper-family>/<paper>/...`.
 
 ## Static Data Caching
 
@@ -410,28 +411,35 @@ Keep path, topic, and region matching centralized in utility modules rather than
 1. Put the main bank at `public/data/question_bank.json`.
 2. Put the full DeepSeek sidecar at `public/data/question_bank.deepseek.full.json`, or the compatibility primary name `public/data/question_bank.deepseek.json`.
 3. Run `npm run data:p3` so the P3 MVP has generated first-load bundles.
-4. Put P3 image folders under the current deployed root layout:
+4. Put P3 image folders under the grouped exam-bank asset layout:
+
+```text
+public/assets/exam-bank-data/p3/<paper>/questions/q##.png
+public/assets/exam-bank-data/p3/<paper>/mark_scheme/q##.png
+```
+
+Legacy option A, old public asset root layout:
 
 ```text
 public/assets/<paper>/questions/q##.png
 public/assets/<paper>/mark_scheme/q##.png
 ```
 
-Legacy option A, family folder included:
+Legacy option B, family folder included:
 
 ```text
 public/assets/questions/p3/<paper>/questions/q##.png
 public/assets/questions/p3/<paper>/mark_scheme/q##.png
 ```
 
-Legacy option B, paper-only folder:
+Legacy option C, paper-only folder:
 
 ```text
 public/assets/questions/<paper>/questions/q##.png
 public/assets/questions/<paper>/mark_scheme/q##.png
 ```
 
-For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries `/assets/15autumn25/questions/q01.png` first, then the legacy fallback layouts.
+For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries `/assets/exam-bank-data/p3/15autumn25/questions/q01.png` first, then the legacy fallback layouts.
 
 5. If using the full DeepSeek sidecar, either rename:
 

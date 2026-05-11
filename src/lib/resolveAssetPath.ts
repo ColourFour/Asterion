@@ -29,6 +29,8 @@ function cleanAssetPath(rawPath: string): string {
     .replace(/^\/+/, '')
     .replace(/^public\//, '')
     .replace(/^\/+/, '')
+    .replace(/^assets\/exam-bank(?:%20|[ -])data\//i, '')
+    .replace(/^exam-bank(?:%20|[ -])data\//i, '')
     .replace(/^assets\/questions\//, '')
     .replace(/^assets\//, '');
 }
@@ -64,10 +66,18 @@ export function resolveQuestionAssetPathCandidates(rawPath: string | undefined, 
   const family = hasFamilyPrefix ? canonicalFirst : fallbackFamily;
   const rest = hasFamilyPrefix ? parts.slice(1) : parts;
 
+  const examBankDataCandidate = `/assets/exam-bank-data/${family}/${rest.join('/')}`.replace(/\/+/g, '/');
+  const spacedExamBankDataCandidate = encodeURI(`/assets/exam-bank data/${family}/${rest.join('/')}`.replace(/\/+/g, '/'));
   const currentLayoutCandidate = `/assets/${rest.join('/')}`.replace(/\/+/g, '/');
   const legacyFamilyCandidate = `/assets/questions/${family}/${rest.join('/')}`.replace(/\/+/g, '/');
   const legacyPaperOnlyCandidate = `/assets/questions/${rest.join('/')}`.replace(/\/+/g, '/');
-  return unique([currentLayoutCandidate, legacyFamilyCandidate, legacyPaperOnlyCandidate]);
+  return unique([
+    examBankDataCandidate,
+    spacedExamBankDataCandidate,
+    currentLayoutCandidate,
+    legacyFamilyCandidate,
+    legacyPaperOnlyCandidate,
+  ]);
 }
 
 export function resolveQuestionAssetPaths(paths: unknown, fallbackFamily: PaperFamily = 'p3'): string[] {

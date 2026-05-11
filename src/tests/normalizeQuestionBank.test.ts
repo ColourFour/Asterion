@@ -68,9 +68,15 @@ describe('normalizeQuestionBank', () => {
     expect(questions[0].deepseek.normalizedTopic).toBe('partial_fractions');
     expect(questions[0].displayDifficulty).toBe('core');
     expect(questions[0].questionImageRawPaths).toEqual(['p3/15autumn25/questions/q01.png']);
-    expect(questions[0].questionImageUrls).toEqual(['/assets/15autumn25/questions/q01.png']);
-    expect(questions[0].questionImageCandidates[0]).toEqual(['/assets/15autumn25/questions/q01.png', '/assets/questions/p3/15autumn25/questions/q01.png', '/assets/questions/15autumn25/questions/q01.png']);
-    expect(questions[0].markSchemeImageUrls).toEqual(['/assets/15autumn25/mark_scheme/q01.png']);
+    expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/15autumn25/questions/q01.png']);
+    expect(questions[0].questionImageCandidates[0]).toEqual([
+      '/assets/exam-bank-data/p3/15autumn25/questions/q01.png',
+      '/assets/exam-bank%20data/p3/15autumn25/questions/q01.png',
+      '/assets/15autumn25/questions/q01.png',
+      '/assets/questions/p3/15autumn25/questions/q01.png',
+      '/assets/questions/15autumn25/questions/q01.png',
+    ]);
+    expect(questions[0].markSchemeImageUrls).toEqual(['/assets/exam-bank-data/p3/15autumn25/mark_scheme/q01.png']);
   });
 
   it('preserves and resolves multi-image arrays in order', () => {
@@ -79,9 +85,21 @@ describe('normalizeQuestionBank', () => {
       {},
     );
 
-    expect(questions[0].questionImageUrls).toEqual(['/assets/a/questions/q03a.png', '/assets/a/questions/q03b.png']);
-    expect(questions[0].markSchemeImageUrls).toEqual(['/assets/a/mark_scheme/q03a.png', '/assets/a/mark_scheme/q03b.png']);
-    expect(questions[0].questionImageCandidates[1]).toEqual(['/assets/a/questions/q03b.png', '/assets/questions/p3/a/questions/q03b.png', '/assets/questions/a/questions/q03b.png']);
-    expect(questions[0].markSchemeImageCandidates[1]).toEqual(['/assets/a/mark_scheme/q03b.png', '/assets/questions/p3/a/mark_scheme/q03b.png', '/assets/questions/a/mark_scheme/q03b.png']);
+    expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/a/questions/q03a.png', '/assets/exam-bank-data/p3/a/questions/q03b.png']);
+    expect(questions[0].markSchemeImageUrls).toEqual(['/assets/exam-bank-data/p3/a/mark_scheme/q03a.png', '/assets/exam-bank-data/p3/a/mark_scheme/q03b.png']);
+    expect(questions[0].questionImageCandidates[1]).toEqual([
+      '/assets/exam-bank-data/p3/a/questions/q03b.png',
+      '/assets/exam-bank%20data/p3/a/questions/q03b.png',
+      '/assets/a/questions/q03b.png',
+      '/assets/questions/p3/a/questions/q03b.png',
+      '/assets/questions/a/questions/q03b.png',
+    ]);
+    expect(questions[0].markSchemeImageCandidates[1]).toEqual([
+      '/assets/exam-bank-data/p3/a/mark_scheme/q03b.png',
+      '/assets/exam-bank%20data/p3/a/mark_scheme/q03b.png',
+      '/assets/a/mark_scheme/q03b.png',
+      '/assets/questions/p3/a/mark_scheme/q03b.png',
+      '/assets/questions/a/mark_scheme/q03b.png',
+    ]);
   });
 });

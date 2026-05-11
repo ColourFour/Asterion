@@ -3,17 +3,21 @@ import { resolvePublicAssetPath, resolveQuestionAssetPath, resolveQuestionAssetP
 
 describe('resolveQuestionAssetPath', () => {
   it('maps p3 relative paths into public asset URLs', () => {
-    expect(resolveQuestionAssetPath('p3/15autumn25/questions/q01.png')).toBe('/assets/15autumn25/questions/q01.png');
-    expect(resolveQuestionAssetPath('p3/15autumn25/mark_scheme/q01.png')).toBe('/assets/15autumn25/mark_scheme/q01.png');
+    expect(resolveQuestionAssetPath('p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('p3/15autumn25/mark_scheme/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/mark_scheme/q01.png');
   });
 
-  it('generates current, family-folder, and old paper-only candidates in order', () => {
+  it('generates exam-bank, current, family-folder, and old paper-only candidates in order', () => {
     expect(resolveQuestionAssetPathCandidates('p3/31autumn21/questions/q01.png')).toEqual([
+      '/assets/exam-bank-data/p3/31autumn21/questions/q01.png',
+      '/assets/exam-bank%20data/p3/31autumn21/questions/q01.png',
       '/assets/31autumn21/questions/q01.png',
       '/assets/questions/p3/31autumn21/questions/q01.png',
       '/assets/questions/31autumn21/questions/q01.png',
     ]);
     expect(resolveQuestionAssetPathCandidates('p3/31autumn21/mark_scheme/q01.png')).toEqual([
+      '/assets/exam-bank-data/p3/31autumn21/mark_scheme/q01.png',
+      '/assets/exam-bank%20data/p3/31autumn21/mark_scheme/q01.png',
       '/assets/31autumn21/mark_scheme/q01.png',
       '/assets/questions/p3/31autumn21/mark_scheme/q01.png',
       '/assets/questions/31autumn21/mark_scheme/q01.png',
@@ -30,12 +34,16 @@ describe('resolveQuestionAssetPath', () => {
   });
 
   it('canonicalizes supported public path variants without duplicated family folders', () => {
-    expect(resolveQuestionAssetPath('/p3/15autumn25/questions/q01.png')).toBe('/assets/15autumn25/questions/q01.png');
-    expect(resolveQuestionAssetPath('assets/questions/p3/x/q.png')).toBe('/assets/x/q.png');
-    expect(resolveQuestionAssetPath('/assets/questions/p3/15autumn25/questions/q01.png')).toBe('/assets/15autumn25/questions/q01.png');
-    expect(resolveQuestionAssetPath('public/assets/questions/p3/15autumn25/questions/q01.png')).toBe('/assets/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('/p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('assets/questions/p3/x/q.png')).toBe('/assets/exam-bank-data/p3/x/q.png');
+    expect(resolveQuestionAssetPath('/assets/questions/p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('public/assets/questions/p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('public/assets/exam-bank-data/p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('public/assets/exam-bank data/p3/15autumn25/questions/q01.png')).toBe('/assets/exam-bank-data/p3/15autumn25/questions/q01.png');
     expect(resolveQuestionAssetPathCandidates('public/assets/questions/p3/15autumn25/questions/q01.png')).not.toContain('/assets/questions/p3/p3/15autumn25/questions/q01.png');
     expect(resolveQuestionAssetPathCandidates('/assets/questions/15autumn25/questions/q01.png')).toEqual([
+      '/assets/exam-bank-data/p3/15autumn25/questions/q01.png',
+      '/assets/exam-bank%20data/p3/15autumn25/questions/q01.png',
       '/assets/15autumn25/questions/q01.png',
       '/assets/questions/p3/15autumn25/questions/q01.png',
       '/assets/questions/15autumn25/questions/q01.png',
@@ -43,13 +51,13 @@ describe('resolveQuestionAssetPath', () => {
   });
 
   it('uses fallback family when the path has no family prefix', () => {
-    expect(resolveQuestionAssetPath('15autumn25/questions/q01.png', 'p5')).toBe('/assets/15autumn25/questions/q01.png');
+    expect(resolveQuestionAssetPath('15autumn25/questions/q01.png', 'p5')).toBe('/assets/exam-bank-data/p5/15autumn25/questions/q01.png');
   });
 
   it('preserves array fallback groups in order', () => {
     expect(resolveQuestionAssetPathCandidateGroups(['p3/a/questions/q1.png', 'p3/a/questions/q2.png'])).toEqual([
-      ['/assets/a/questions/q1.png', '/assets/questions/p3/a/questions/q1.png', '/assets/questions/a/questions/q1.png'],
-      ['/assets/a/questions/q2.png', '/assets/questions/p3/a/questions/q2.png', '/assets/questions/a/questions/q2.png'],
+      ['/assets/exam-bank-data/p3/a/questions/q1.png', '/assets/exam-bank%20data/p3/a/questions/q1.png', '/assets/a/questions/q1.png', '/assets/questions/p3/a/questions/q1.png', '/assets/questions/a/questions/q1.png'],
+      ['/assets/exam-bank-data/p3/a/questions/q2.png', '/assets/exam-bank%20data/p3/a/questions/q2.png', '/assets/a/questions/q2.png', '/assets/questions/p3/a/questions/q2.png', '/assets/questions/a/questions/q2.png'],
     ]);
   });
 
