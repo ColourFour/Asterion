@@ -323,7 +323,6 @@ export default function App() {
           regionLearning={progress.regionLearning}
           regionProgress={worldProgress}
           onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
-          onProfileSave={(profile) => setProgress(progressAdapter.saveProfile(profile, progress.profile))}
         />
       ) : null}
 

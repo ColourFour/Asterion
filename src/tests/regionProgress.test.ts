@@ -264,8 +264,8 @@ describe('region progress and gear', () => {
       { ...base, region: complex, rank: 'Discovered' },
     ]);
 
-    expect(gear.gear).toContain('Archive Gauntlets');
-    expect(gear.gear).toContain('Star Lens');
+    expect(gear.gear).toContain('Algebra Pin');
+    expect(gear.gear).toContain('Bronze Academy Frame');
     expect(gear.title).toBe('Region Specialist');
   });
 });

@@ -26,7 +26,7 @@ describe('deriveAvatarGear', () => {
 
     expect(gear.title).toBe('New Arrival');
     expect(gear.gear).toEqual([]);
-    expect(gear.nextUnlock).toBe('Apprentice Cloak');
+    expect(gear.nextUnlock).toBe('Stargazer Sweep');
     expect(gear.nextUnlockRequirement).toBe('Reach Bronze in any region.');
   });
 
@@ -34,28 +34,39 @@ describe('deriveAvatarGear', () => {
     const gear = deriveAvatarGear([
       progress('algebra-forge', 'Silver', 32),
       progress('trig-observatory', 'Silver', 30),
-      progress('complex-harbor', 'Bronze', 18),
+      progress('integration-gardens', 'Bronze', 18),
     ]);
 
-    expect(gear.gear).toEqual(['Apprentice Cloak', 'Archive Gauntlets', 'Star Lens']);
+    expect(gear.gear).toEqual(['Stargazer Sweep', 'Apprentice Cloak', 'Bronze Academy Frame', 'Algebra Pin']);
     expect(gear.title).toBe('Region Specialist');
     expect(gear.restoredRegions).toBe(3);
     expect(gear.strongestRegionName).toBe('Algebra Vault');
     expect(gear.strongestRegionRank).toBe('Silver');
-    expect(gear.nextUnlock).toBe('Argand Compass');
+    expect(gear.nextUnlock).toBe('Orbit Owl');
   });
 
-  it('sets the champion badge goal from real gold-region count', () => {
+  it('sets the next manifest reward from real gold-region count', () => {
     const gear = deriveAvatarGear([
       progress('algebra-forge', 'Gold', 80),
       progress('trig-observatory', 'Gold', 75),
       progress('complex-harbor', 'Silver', 50),
     ]);
 
-    expect(gear.gear).toContain('Astral Trim');
-    expect(gear.gear).not.toContain('Academy Champion Badge');
+    expect(gear.gear).toContain('Starfield Spark');
+    expect(gear.gear).not.toContain('Orbit Owl');
     expect(gear.goldRegions).toBe(2);
-    expect(gear.nextUnlock).toBe('Academy Champion Badge');
-    expect(gear.nextUnlockRequirement).toBe('Reach Gold in 3 regions.');
+    expect(gear.nextUnlock).toBe('Orbit Owl');
+    expect(gear.nextUnlockRequirement).toBe('Reach Silver in Integral Terraces.');
+  });
+
+  it('derives the champion title from real gold-region count', () => {
+    const gear = deriveAvatarGear([
+      progress('algebra-forge', 'Gold', 80),
+      progress('trig-observatory', 'Gold', 75),
+      progress('complex-harbor', 'Gold', 72),
+    ]);
+
+    expect(gear.title).toBe('Academy Champion');
+    expect(gear.goldRegions).toBe(3);
   });
 });

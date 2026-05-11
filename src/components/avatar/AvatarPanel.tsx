@@ -18,7 +18,7 @@ export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, ge
   const xp = ranks.reduce((sum, profile) => sum + profile.totalMarksEarned, 0);
   const unlockedGear = gear?.gear.length ?? ranks.filter((profile) => profile.rank !== 'none').length;
   const gearProgress = Math.round((unlockedGear / 6) * 100);
-  const hasGear = (name: string) => Boolean(gear?.gear.includes(name));
+  const hasGear = (...names: string[]) => Boolean(gear?.gear.some((item) => names.includes(item)));
 
   return (
     <aside className={`avatar-panel avatar-${avatar.palette}`}>
@@ -26,12 +26,12 @@ export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, ge
         <div className="avatar-figure">
         <svg viewBox="0 0 120 120" role="img" aria-label={`${avatarName} avatar`}>
           <circle className="avatar-back" cx="60" cy="60" r="52" />
-          {hasGear('Astral Trim') ? <circle className="avatar-trim" cx="60" cy="60" r="47" /> : null}
+          {hasGear('Starfield Spark', 'Astral Trim') ? <circle className="avatar-trim" cx="60" cy="60" r="47" /> : null}
           <path className="avatar-cloak" d="M30 102c4-28 16-42 30-42s26 14 30 42H30Z" />
           <circle className="avatar-face" cx="60" cy="42" r="22" />
-          {hasGear('Archive Gauntlets') ? <path className="avatar-gauntlets" d="M26 92h14v16H26zM80 92h14v16H80z" /> : null}
-          {hasGear('Star Lens') ? <path className="avatar-lens" d="M49 40h11m0 0a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm11 0h8" /> : null}
-          {hasGear('Argand Compass') ? <path className="avatar-compass" d="M60 68 70 88 60 82 50 88Z" /> : null}
+          {hasGear('Algebra Pin', 'Archive Gauntlets') ? <path className="avatar-gauntlets" d="M26 92h14v16H26zM80 92h14v16H80z" /> : null}
+          {hasGear('Bronze Academy Frame', 'Star Lens') ? <path className="avatar-lens" d="M49 40h11m0 0a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm11 0h8" /> : null}
+          {hasGear('Orbit Owl', 'Argand Compass') ? <path className="avatar-compass" d="M60 68 70 88 60 82 50 88Z" /> : null}
           <path className="avatar-crest" d={avatar.crest === 'bolt' ? 'M64 10 43 58h17l-6 42 26-55H61Z' : avatar.crest === 'compass' ? 'M60 8 75 60 60 112 45 60Z' : avatar.crest === 'orb' ? 'M60 10a14 14 0 1 1 0 28 14 14 0 0 1 0-28Z' : 'M60 8l9 29 30 .1-24 17 9 29-24-18-24 18 9-29-24-17 30-.1Z'} />
         </svg>
         </div>

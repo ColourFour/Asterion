@@ -119,7 +119,7 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 ## Data Assumptions
 - Main bank: `public/data/question_bank.json`.
 - DeepSeek sidecar: `public/data/question_bank.deepseek.json`.
-- Question and mark-scheme crops live under `public/assets/questions/{paper-family}/...`.
+- Question and mark-scheme crops currently live under `public/assets/{paper}/questions/q##.png` and `public/assets/{paper}/mark_scheme/q##.png`. Legacy `public/assets/questions/{paper-family}/...` layouts are resolver fallbacks only.
 - JSON image paths may be strings or arrays.
 - Marks, difficulty, subtopic, and enrichment fields may be absent.
 - Region matching must tolerate snake case, title case, DeepSeek labels, local labels, and missing fields.

@@ -4,6 +4,22 @@ Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709
 
 The question image and mark-scheme image are the source of truth. Extracted text and DeepSeek enrichment are used as metadata for routing, display, review, and teacher export.
 
+## Current Status
+
+Asterion is in active local-first MVP development. The current direction is stable: keep the P3 Astral Academy loop legible, evidence-gated, and GitHub Pages compatible before adding broader worlds or hosted classroom storage.
+
+The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, teacher export, and data-health checks. The main open gaps are static payload size, large UI/CSS/controller files, uneven warm-up generator coverage, the quarantined `33autumn25` mark-scheme gap, and lack of full browser/mobile smoke automation.
+
+## Documentation Map
+
+- [Architecture](docs/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
+- [Roadmap](docs/ROADMAP.md): near-term, medium-term, and long-term direction.
+- [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
+- [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
+- [Project State Snapshot](docs/project-state-2026-05-09.md): previous current-state snapshot retained for continuity.
+- [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
+- [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
+
 ## Core Principles
 
 Asterion is an educational mastery system first and a game second.

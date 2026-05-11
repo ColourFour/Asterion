@@ -18,7 +18,6 @@ interface AvatarBuilderProps {
   regionLearning?: Record<string, RegionLearningRecord>;
   regionProgress: RegionProgress[];
   onAvatarChange: (avatar: AvatarSettings) => void;
-  onProfileSave: (profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
 
 const leftStageSlots = AVATAR_SLOTS.slice(0, 5);
