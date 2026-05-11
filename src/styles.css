@@ -1766,8 +1766,8 @@ nav button.active,
 .map-region-node {
   position: absolute;
   z-index: 2;
-  left: var(--x);
-  top: var(--y);
+  left: clamp(var(--map-node-edge-x, 8%), var(--x), calc(100% - var(--map-node-edge-x, 8%)));
+  top: clamp(var(--map-node-edge-y, 10%), var(--y), calc(100% - var(--map-node-edge-y, 10%)));
   width: clamp(108px, 12vw, 172px);
   transform: translate(-50%, -50%);
   animation: region-in 260ms ease both;
@@ -5346,6 +5346,8 @@ legend {
 }
 
 .app-view-map .academy-map {
+  --map-node-edge-x: 10%;
+  --map-node-edge-y: 12%;
   inset: clamp(44px, 6vh, 72px) clamp(30px, 3vw, 58px) clamp(92px, 13vh, 136px) clamp(30px, 3vw, 58px);
 }
 
@@ -5545,6 +5547,7 @@ legend {
   }
 
   .app-view-map .academy-map {
+    --map-node-edge-x: 12%;
     inset: 36px 18px 106px;
   }
 
@@ -5580,6 +5583,7 @@ legend {
   }
 
   .app-view-map .academy-map {
+    --map-node-edge-x: 14%;
     inset: 32px 12px 116px;
   }
 
@@ -6037,6 +6041,7 @@ legend {
 
 @media (max-width: 520px) {
   .app-view-map .academy-map {
+    --map-node-edge-x: 18%;
     inset: 18px 8px 128px;
   }
 

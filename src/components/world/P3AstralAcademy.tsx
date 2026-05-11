@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy, UsersRound } from 'lucide-react';
 import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
+import { buildAstralRegionMapLayout, type AstralMapPriority } from '../../lib/astralRegionLayout';
 import { astralAssets, getAstralRegionAsset, getAstralRegionAssetDimensions } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
@@ -77,19 +78,6 @@ interface TooltipPosition {
   placement: TooltipPlacement;
 }
 
-type MapPriority = 'daily' | 'relevant' | 'neutral' | 'quiet';
-
-interface MapSlot {
-  x: number;
-  y: number;
-}
-
-interface RegionMapLayout extends MapSlot {
-  priority: MapPriority;
-  scale: number;
-  zIndex: number;
-}
-
 const regionArt: Record<string, string> = {
   'algebra-forge': 'archive',
   'logarithm-grove': 'dome',
@@ -102,18 +90,6 @@ const regionArt: Record<string, string> = {
   'differential-shrine': 'shrine',
 };
 
-const regionJourneyOrder = [
-  'algebra-forge',
-  'logarithm-grove',
-  'trig-observatory',
-  'complex-harbor',
-  'calculus-cliffs',
-  'integration-gardens',
-  'vector-workshop',
-  'numerical-mines',
-  'differential-shrine',
-];
-
 const restorationLedgerOrder = [
   'algebra-forge',
   'logarithm-grove',
@@ -124,35 +100,6 @@ const restorationLedgerOrder = [
   'numerical-mines',
   'vector-workshop',
   'complex-harbor',
-];
-
-const relatedRegionIds: Record<string, string[]> = {
-  'algebra-forge': ['logarithm-grove', 'trig-observatory', 'numerical-mines'],
-  'logarithm-grove': ['algebra-forge', 'trig-observatory', 'numerical-mines'],
-  'trig-observatory': ['logarithm-grove', 'complex-harbor', 'vector-workshop'],
-  'complex-harbor': ['trig-observatory', 'vector-workshop', 'calculus-cliffs'],
-  'calculus-cliffs': ['integration-gardens', 'differential-shrine', 'numerical-mines'],
-  'integration-gardens': ['calculus-cliffs', 'differential-shrine', 'algebra-forge'],
-  'vector-workshop': ['complex-harbor', 'trig-observatory', 'calculus-cliffs'],
-  'numerical-mines': ['calculus-cliffs', 'algebra-forge', 'differential-shrine'],
-  'differential-shrine': ['integration-gardens', 'calculus-cliffs', 'numerical-mines'],
-};
-
-const focusSlot: MapSlot = { x: 52, y: 42 };
-const relatedSlots: MapSlot[] = [
-  { x: 31, y: 18 },
-  { x: 79, y: 22 },
-  { x: 78, y: 63 },
-];
-const supportSlots: MapSlot[] = [
-  { x: 16, y: 48 },
-  { x: 31, y: 67 },
-  { x: 89, y: 46 },
-];
-const distantSlots: MapSlot[] = [
-  { x: 53, y: 18 },
-  { x: 52, y: 78 },
-  { x: 16, y: 72 },
 ];
 
 function RegionIslandArt({ fallbackArt, regionId }: { fallbackArt: string; regionId: string }) {
@@ -250,94 +197,16 @@ function positionTooltip(triggerRect: DOMRect, tooltipRect: DOMRect, obstacleRec
   return candidates.sort((a, b) => a.score - b.score)[0];
 }
 
-function journeyIndex(regionId: string): number {
-  const index = regionJourneyOrder.indexOf(regionId);
-  return index === -1 ? regionJourneyOrder.length : index;
-}
-
 function restorationLedgerIndex(regionId: string): number {
   const index = restorationLedgerOrder.indexOf(regionId);
   return index === -1 ? restorationLedgerOrder.length : index;
-}
-
-function isQuietRegion(regionProgress: RegionProgress): boolean {
-  return (
-    !regionProgress.isActive
-    || regionProgress.availableQuestions === 0
-    || regionProgress.rank === 'Gold'
-    || regionProgress.rank === 'Mastered'
-  );
-}
-
-function scaleForPriority(priority: MapPriority): number {
-  return {
-    daily: 1.22,
-    relevant: 1.02,
-    neutral: 0.96,
-    quiet: 0.88,
-  }[priority];
-}
-
-function buildRegionMapLayout(progress: RegionProgress[], recommendedRegionId?: string): Record<string, RegionMapLayout> {
-  const layout: Record<string, RegionMapLayout> = {};
-  const byId = new Map(progress.map((regionProgress) => [regionProgress.region.id, regionProgress]));
-  const assignedIds = new Set<string>();
-
-  function assign(regionProgress: RegionProgress, slot: MapSlot, priority: MapPriority, zIndex: number) {
-    layout[regionProgress.region.id] = {
-      ...slot,
-      priority,
-      scale: scaleForPriority(priority),
-      zIndex,
-    };
-    assignedIds.add(regionProgress.region.id);
-  }
-
-  const recommendedProgress = recommendedRegionId ? byId.get(recommendedRegionId) : undefined;
-  if (recommendedProgress) {
-    assign(recommendedProgress, focusSlot, 'daily', 7);
-  }
-
-  const relatedIds = recommendedRegionId ? relatedRegionIds[recommendedRegionId] ?? [] : [];
-  relatedIds
-    .map((regionId) => byId.get(regionId))
-    .filter((item): item is RegionProgress => {
-      if (!item) return false;
-      return !assignedIds.has(item.region.id);
-    })
-    .slice(0, relatedSlots.length)
-    .forEach((regionProgress, index) => assign(regionProgress, relatedSlots[index], isQuietRegion(regionProgress) ? 'quiet' : 'relevant', 5));
-
-  const remaining = progress
-    .filter((regionProgress) => !assignedIds.has(regionProgress.region.id))
-    .sort((a, b) => {
-      const quietDifference = Number(isQuietRegion(a)) - Number(isQuietRegion(b));
-      if (quietDifference !== 0) return quietDifference;
-      return journeyIndex(a.region.id) - journeyIndex(b.region.id);
-    });
-
-  const remainingSlots = [...supportSlots, ...distantSlots];
-  remaining.forEach((regionProgress, index) => {
-    const fallbackSlot: MapSlot = {
-      x: 20 + ((index * 13) % 62),
-      y: 24 + ((index * 17) % 52),
-    };
-    const priority: MapPriority = isQuietRegion(regionProgress)
-      ? 'quiet'
-      : index < supportSlots.length
-        ? 'neutral'
-        : 'quiet';
-    assign(regionProgress, remainingSlots[index] ?? fallbackSlot, priority, priority === 'quiet' ? 2 : 3);
-  });
-
-  return layout;
 }
 
 interface RegionMapNodeProps {
   canTrain: boolean;
   fallbackArt: string;
   isRecommended: boolean;
-  priority: MapPriority;
+  priority: AstralMapPriority;
   regionProgress: RegionProgress;
   regionLearningSummary?: RegionLearningSummary;
   style: CSSProperties;
@@ -458,7 +327,7 @@ export function P3AstralAcademy({
     ? progress.find((item) => item.region.name === summary.recommendedRegionName)
     : undefined;
   const focusRegionId = avatarLocation.region?.id ?? recommended?.region.id;
-  const mapLayout = buildRegionMapLayout(progress, focusRegionId);
+  const mapLayout = buildAstralRegionMapLayout(progress, focusRegionId);
 
   return (
     <section className="world-screen">
@@ -473,13 +342,14 @@ export function P3AstralAcademy({
         <div className="academy-map" aria-label={`${world.name} regions`}>
           <div className="map-paths" aria-hidden="true">
             <svg className="journey-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path className="journey-path-glow" d="M10 54 C 20 38, 30 70, 42 52 S 47 31, 58 43 S 72 62, 89 53" />
-              <path className="journey-path-main" d="M10 54 C 19 41, 30 65, 41 53 S 48 30, 58 43 S 72 60, 89 53" />
-              <path className="journey-path-branch" d="M31 24 C 39 19, 44 16, 50 17 S 58 27, 58 43" />
-              <path className="journey-path-branch" d="M58 43 C 61 30, 68 24, 78 25" />
-              <path className="journey-path-branch" d="M58 43 C 61 56, 66 64, 73 67" />
-              <path className="journey-path-branch journey-path-far" d="M29 70 C 37 82, 43 85, 49 80 S 55 61, 58 43" />
-              <path className="journey-path-sparks" d="M13 54 31 24 50 17 78 25 89 53 73 67 49 80 29 70Z" />
+              <path className="journey-path-glow" d="M20 22 C 31 29, 41 37, 50 43 C 61 34, 70 27, 82 22 M15 48 C 27 47, 39 46, 50 43 C 63 45, 75 48, 86 50 M25 77 C 31 75, 35 70, 37 66 C 50 68, 62 66, 73 63" />
+              <path className="journey-path-main" d="M20 22 C 31 29, 41 37, 50 43 C 61 34, 70 27, 82 22 M15 48 C 27 47, 39 46, 50 43 C 63 45, 75 48, 86 50 M25 77 C 31 75, 35 70, 37 66 C 50 68, 62 66, 73 63" />
+              <path className="journey-path-branch" d="M62 17 C 57 25, 53 34, 50 43" />
+              <path className="journey-path-branch" d="M15 48 C 18 60, 21 70, 25 77" />
+              <path className="journey-path-branch" d="M50 43 C 45 53, 40 61, 37 66" />
+              <path className="journey-path-branch" d="M73 63 C 80 60, 84 56, 86 50" />
+              <path className="journey-path-branch journey-path-far" d="M82 22 C 86 31, 87 40, 86 50" />
+              <path className="journey-path-sparks" d="M20 22 62 17 82 22 86 50 73 63 37 66 25 77 15 48 50 43Z" />
             </svg>
           </div>
 
