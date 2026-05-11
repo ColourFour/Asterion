@@ -30,7 +30,7 @@ describe('buildExportJson', () => {
     expect(exported.regionProgress?.[0].rank).toBe('Bronze');
   });
 
-  it('exports M, B, and A mark breakdown columns for attempts', () => {
+  it('exports M, B, A, and part-score columns for attempts', () => {
     const progress: StoredProgress = {
       schemaVersion: 1,
       avatar: { palette: 'ember', crest: 'star' },
@@ -42,6 +42,10 @@ describe('buildExportJson', () => {
         topicDisplayName: 'Algebra',
         marksEarned: 3,
         markBreakdown: { m: 1, b: 1, a: 1 },
+        partScores: [
+          { label: '(a)', marksEarned: 2, marksAvailable: 3, markBreakdown: { m: 1, b: 0, a: 1 } },
+          { label: '(b)', marksEarned: 1, marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
+        ],
         marksAvailable: 4,
         scoreRatio: 0.75,
         mistakeType: 'algebra_error',
@@ -58,8 +62,8 @@ describe('buildExportJson', () => {
 
     const csv = buildAttemptsCsv(progress);
 
-    expect(csv.split('\n')[0]).toContain('"M marks","B marks","A marks"');
-    expect(csv.split('\n')[1]).toContain('"3","1","1","1","4"');
+    expect(csv.split('\n')[0]).toContain('"M marks","B marks","A marks","part scores"');
+    expect(csv.split('\n')[1]).toContain('"3","1","1","1","(a) 2/3 M1 B0 A1; (b) 1/1 M0 B1 A0","4"');
     expect(csv.split('\n')[0]).toContain('"mistake type","mistake tags","full score checked"');
     expect(csv.split('\n')[1]).toContain('"algebra_error","algebra_error; misread_question",""');
   });

@@ -1,4 +1,4 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark } from '../types';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
 
 type LooseRecord = Record<string, unknown>;
@@ -40,6 +40,10 @@ function nestedRecord(record: LooseRecord | undefined, key: string): LooseRecord
   return asRecord(record?.[key]);
 }
 
+function nestedRecords(record: LooseRecord | undefined, keys: string[]): LooseRecord[] {
+  return keys.map((key) => nestedRecord(record, key)).filter((value): value is LooseRecord => Boolean(value));
+}
+
 function pickImages(record: LooseRecord, keys: string[]): unknown {
   for (const key of keys) {
     const value = record[key];
@@ -58,6 +62,22 @@ function combineImages(...values: unknown[]): string[] {
 
 function unique(values: string[]): string[] {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function stringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return unique(value.map((item) => String(item).trim()).filter(Boolean));
+}
+
+function numberArray(value: unknown): number[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => (
+    typeof item === 'number' && Number.isFinite(item)
+      ? item
+      : typeof item === 'string' && item.trim() && Number.isFinite(Number(item))
+        ? Number(item)
+        : undefined
+  )).filter((item): item is number => typeof item === 'number' && Number.isFinite(item));
 }
 
 function hasError(record: LooseRecord | undefined): boolean {
@@ -178,6 +198,46 @@ function validDeepSeekLabel(value: string | undefined, deepseek: DeepSeekMetadat
   return !['unknown', 'error', 'parse_error', 'malformed', 'n/a'].includes(lower);
 }
 
+function partLabel(label: string): string {
+  const trimmed = label.trim();
+  return /^\(.+\)$/.test(trimmed) ? trimmed : `(${trimmed})`;
+}
+
+function marksBySubpart(record: LooseRecord, labels: string[]): number[] {
+  const markMap = asRecord(record.subparts_solution_marks ?? record.subpart_solution_marks ?? record.part_marks);
+  if (!markMap) return [];
+  return labels.map((label) => pickNumber(markMap, [label, partLabel(label), label.toLowerCase(), label.toUpperCase()]))
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+}
+
+function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPartMark[] | undefined {
+  const notes = nestedRecord(record, 'notes');
+  const structureRecords = [
+    ...nestedRecords(record, ['question_structure_detected', 'mark_scheme_structure_detected']),
+    ...nestedRecords(notes, ['question_structure_detected', 'mark_scheme_structure_detected']),
+  ];
+  const labels = unique([
+    ...stringArray(record.subparts),
+    ...structureRecords.flatMap((structure) => stringArray(structure.subparts)),
+    ...structureRecords.flatMap((structure) => stringArray(structure.question_subparts)),
+  ]);
+  if (labels.length < 2) return undefined;
+
+  const markValues = marksBySubpart(record, labels).length === labels.length
+    ? marksBySubpart(record, labels)
+    : structureRecords.flatMap((structure) => numberArray(structure.mark_values_detected)).slice(0, labels.length);
+  const wholePositiveMarks = markValues.filter((value) => Number.isInteger(value) && value > 0);
+  const totalFromParts = wholePositiveMarks.reduce((sum, value) => sum + value, 0);
+
+  if (wholePositiveMarks.length !== labels.length) return undefined;
+  if (typeof totalMarks === 'number' && totalMarks > 0 && totalFromParts !== totalMarks) return undefined;
+
+  return labels.map((label, index) => ({
+    label: partLabel(label),
+    marksAvailable: wholePositiveMarks[index],
+  }));
+}
+
 export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unknown): NormalizedQuestion[] {
   const sidecarIndex = buildSidecarIndex(deepseekSidecar);
 
@@ -202,6 +262,7 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
     const questionImageUrls = resolveQuestionAssetPaths(questionImageRaw, paperFamily);
     const markSchemeImageUrls = resolveQuestionAssetPaths(markSchemeImageRaw, paperFamily);
     const marksAvailable = pickNumber(record, ['question_solution_marks', 'marks', 'marks_available', 'marksAvailable', 'total_marks']);
+    const parts = questionPartMarks(record, marksAvailable);
     const trainingStatus = pickString(record, ['training_status', 'practice_status', 'asset_status']);
     const trainingBlockers = trainingBlockersForRecord(record, trainingStatus, questionImageCandidates, markSchemeImageCandidates);
 
@@ -218,6 +279,7 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       displaySubtopic: validDeepSeekLabel(deepseek.subtopic, deepseek) ? deepseek.subtopic : localSubtopic,
       displayDifficulty: validDeepSeekLabel(deepseek.normalizedDifficulty ?? deepseek.difficulty, deepseek) ? deepseek.normalizedDifficulty ?? deepseek.difficulty : localDifficulty,
       marksAvailable,
+      parts,
       questionImageRawPaths: questionImageRaw,
       markSchemeImageRawPaths: markSchemeImageRaw,
       questionImagePaths: questionImageRaw,

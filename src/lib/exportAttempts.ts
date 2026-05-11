@@ -34,6 +34,13 @@ function mistakeTagsForAttempt(attempt: Attempt): string[] {
   return [];
 }
 
+function partScoresForAttempt(attempt: Attempt): string {
+  return attempt.partScores?.map((part) => {
+    const breakdown = part.markBreakdown ? ` M${part.markBreakdown.m} B${part.markBreakdown.b} A${part.markBreakdown.a}` : '';
+    return `${part.label} ${part.marksEarned}/${part.marksAvailable}${breakdown}`;
+  }).join('; ') ?? '';
+}
+
 export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGear): string {
   const headers = [
     'student name',
@@ -54,6 +61,7 @@ export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGe
     'M marks',
     'B marks',
     'A marks',
+    'part scores',
     'marks available',
     'score percentage',
     'mistake type',
@@ -93,6 +101,7 @@ export function buildAttemptsCsv(progress: StoredProgress, avatarGear?: AvatarGe
       attempt.markBreakdown?.m,
       attempt.markBreakdown?.b,
       attempt.markBreakdown?.a,
+      partScoresForAttempt(attempt),
       attempt.marksAvailable,
       typeof attempt.scoreRatio === 'number' ? Math.round(attempt.scoreRatio * 100) : '',
       mistakeTags[0] ?? '',

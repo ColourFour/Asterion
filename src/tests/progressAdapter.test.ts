@@ -179,6 +179,10 @@ describe('local progress adapter', () => {
           ...attempt,
           id: 'attempt-multi',
           mistakeTypes: ['algebra_error', 'misread_question'],
+          partScores: [
+            { label: '(a)', marksEarned: 2, marksAvailable: 3, markBreakdown: { m: 1, b: 0, a: 1 } },
+            { label: '(b)', marksEarned: 1, marksAvailable: 1 },
+          ],
         },
         {
           ...attempt,
@@ -197,6 +201,10 @@ describe('local progress adapter', () => {
 
     expect(loaded.attempts).toHaveLength(2);
     expect(loaded.attempts[0].mistakeTypes).toEqual(['algebra_error', 'misread_question']);
+    expect(loaded.attempts[0].partScores).toEqual([
+      { label: '(a)', marksEarned: 2, marksAvailable: 3, markBreakdown: { m: 1, b: 0, a: 1 } },
+      { label: '(b)', marksEarned: 1, marksAvailable: 1 },
+    ]);
     expect(loaded.attempts[1].mistakeType).toBeUndefined();
     expect(loaded.attempts[1].mistakeTypes).toEqual([]);
     expect(loaded.attempts[1].fullScoreConfirmed).toBe(true);
@@ -237,6 +245,27 @@ describe('local progress adapter', () => {
     expect(loaded.learningActivityAttempts).toHaveLength(1);
     expect(loaded.attempts).toEqual([]);
     expect(loaded.topicProfiles).toEqual({});
+  });
+
+  it('does not create mastery evidence from Field Guide, Quick Check, or warm-up activity records', () => {
+    const withFieldGuide = localProgressAdapter.completeRegionFieldGuide('logarithm-grove');
+    expect(withFieldGuide.attempts).toEqual([]);
+    expect(withFieldGuide.topicProfiles).toEqual({});
+
+    const withQuickCheck = localProgressAdapter.addLearningActivityAttempt(learningActivityAttempt);
+    expect(withQuickCheck.learningActivityAttempts).toHaveLength(1);
+    expect(withQuickCheck.attempts).toEqual([]);
+    expect(withQuickCheck.topicProfiles).toEqual({});
+
+    const withWarmUp = localProgressAdapter.addLearningActivityAttempt({
+      ...learningActivityAttempt,
+      id: 'learning-warm-1',
+      activityType: 'warm_up',
+      activityId: 'warm-1',
+    });
+    expect(withWarmUp.learningActivityAttempts).toHaveLength(2);
+    expect(withWarmUp.attempts).toEqual([]);
+    expect(withWarmUp.topicProfiles).toEqual({});
   });
 
   it('normalizes unknown avatar settings and item IDs back to safe defaults', () => {

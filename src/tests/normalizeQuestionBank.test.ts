@@ -102,4 +102,42 @@ describe('normalizeQuestionBank', () => {
       '/assets/questions/a/mark_scheme/q03b.png',
     ]);
   });
+
+  it('normalizes real part-mark metadata only when detected marks are complete', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          {
+            question_id: 'p3-parted',
+            paper_family: 'p3',
+            topic: 'differential equations',
+            question_solution_marks: 7,
+            subparts: ['a', 'b'],
+            notes: {
+              question_structure_detected: {
+                subparts: ['a', 'b'],
+                mark_values_detected: [6, 1],
+                question_total_detected: 7,
+              },
+            },
+          },
+          {
+            question_id: 'p3-labels-only',
+            paper_family: 'p3',
+            topic: 'vectors',
+            question_solution_marks: 8,
+            subparts: ['a', 'b'],
+            subparts_solution_marks: { a: null, b: null },
+          },
+        ],
+      },
+      {},
+    );
+
+    expect(questions[0].parts).toEqual([
+      { label: '(a)', marksAvailable: 6 },
+      { label: '(b)', marksAvailable: 1 },
+    ]);
+    expect(questions[1].parts).toBeUndefined();
+  });
 });

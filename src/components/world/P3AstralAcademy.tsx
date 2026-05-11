@@ -114,6 +114,18 @@ const regionJourneyOrder = [
   'differential-shrine',
 ];
 
+const restorationLedgerOrder = [
+  'algebra-forge',
+  'logarithm-grove',
+  'trig-observatory',
+  'calculus-cliffs',
+  'integration-gardens',
+  'differential-shrine',
+  'numerical-mines',
+  'vector-workshop',
+  'complex-harbor',
+];
+
 const relatedRegionIds: Record<string, string[]> = {
   'algebra-forge': ['logarithm-grove', 'trig-observatory', 'numerical-mines'],
   'logarithm-grove': ['algebra-forge', 'trig-observatory', 'numerical-mines'],
@@ -126,21 +138,21 @@ const relatedRegionIds: Record<string, string[]> = {
   'differential-shrine': ['integration-gardens', 'calculus-cliffs', 'numerical-mines'],
 };
 
-const focusSlot: MapSlot = { x: 58, y: 43 };
+const focusSlot: MapSlot = { x: 52, y: 42 };
 const relatedSlots: MapSlot[] = [
-  { x: 31, y: 24 },
-  { x: 78, y: 25 },
-  { x: 73, y: 67 },
+  { x: 31, y: 18 },
+  { x: 79, y: 22 },
+  { x: 78, y: 63 },
 ];
 const supportSlots: MapSlot[] = [
-  { x: 14, y: 54 },
-  { x: 29, y: 70 },
-  { x: 86, y: 53 },
+  { x: 16, y: 48 },
+  { x: 31, y: 67 },
+  { x: 89, y: 46 },
 ];
 const distantSlots: MapSlot[] = [
-  { x: 50, y: 17 },
-  { x: 49, y: 73 },
-  { x: 23, y: 32 },
+  { x: 53, y: 18 },
+  { x: 52, y: 78 },
+  { x: 16, y: 72 },
 ];
 
 function RegionIslandArt({ fallbackArt, regionId }: { fallbackArt: string; regionId: string }) {
@@ -241,6 +253,11 @@ function positionTooltip(triggerRect: DOMRect, tooltipRect: DOMRect, obstacleRec
 function journeyIndex(regionId: string): number {
   const index = regionJourneyOrder.indexOf(regionId);
   return index === -1 ? regionJourneyOrder.length : index;
+}
+
+function restorationLedgerIndex(regionId: string): number {
+  const index = restorationLedgerOrder.indexOf(regionId);
+  return index === -1 ? restorationLedgerOrder.length : index;
 }
 
 function isQuietRegion(regionProgress: RegionProgress): boolean {
@@ -527,6 +544,11 @@ export function P3AstralAcademy({
 }
 
 export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain }: Pick<P3AstralAcademyProps, 'progress' | 'regionLearningSummaries' | 'onTrain'>) {
+  const ledgerProgress = [...progress].sort((a, b) => (
+    restorationLedgerIndex(a.region.id) - restorationLedgerIndex(b.region.id)
+    || a.region.name.localeCompare(b.region.name)
+  ));
+
   return (
     <section className="region-ledger-screen">
       <header className="section-page-header">
@@ -535,14 +557,32 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
         <p>Detailed region progress stays here so the world map remains playable and uncluttered.</p>
       </header>
       <div className="region-ledger" aria-label="Region evidence ledger">
-        {progress.map((regionProgress) => {
+        {ledgerProgress.map((regionProgress) => {
           const { region } = regionProgress;
           const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
           const goal = nextRegionGoal(regionProgress);
           const learningSummary = regionLearningSummaries?.[region.id];
           const theme = getRegionTheme(region);
           return (
-            <article className={`region-card ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}`} key={region.id}>
+            <article
+              aria-disabled={!canTrain}
+              aria-label={`${region.name}: ${canTrain ? 'open region hub' : regionProgress.isActive ? 'no questions loaded yet' : 'coming soon'}`}
+              className={`region-card ${canTrain ? 'is-clickable' : 'is-disabled'} ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}`}
+              key={region.id}
+              onClick={(event) => {
+                if (!canTrain) return;
+                if (event.target instanceof Element && event.target.closest('button')) return;
+                onTrain(region);
+              }}
+              onKeyDown={(event) => {
+                if (!canTrain) return;
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                onTrain(region);
+              }}
+              role="link"
+              tabIndex={canTrain ? 0 : -1}
+            >
               <div className="region-card-header">
                 <div>
                   <span className="region-state">{canTrain ? learningStateLabel(learningSummary) : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>

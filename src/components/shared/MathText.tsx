@@ -68,6 +68,8 @@ function isStrongMathToken(token: string): boolean {
   if (!token) return false;
   return /\\[A-Za-z]+/.test(token)
     || /(?:[=<>]|!=|<=|>=|\^|_|\*|\/|\|)/.test(token)
+    || /\b(?:d[xyzt])\/(?:d[xyzt])\b/.test(token)
+    || /\b[ijk]\b/.test(token)
     || /\d[A-Za-z]/.test(token)
     || /[([{][^)\]}]*[+\-*/=^][^)\]}]*[)\]}]/.test(token)
     || mathFunctionTokens.has(token)
@@ -114,9 +116,14 @@ function toLatexMath(source: string): string {
     .replace(/<=/g, '\\le ')
     .replace(/>=/g, '\\ge ')
     .replace(/\^\(([^)]+)\)/g, '^{$1}')
+    .replace(/\^(-?\d+)/g, '^{$1}')
+    .replace(/\b(d[xyzt])\s*\/\s*(d[xyzt])\b/g, '\\frac{$1}{$2}')
+    .replace(/\bd\s*\/\s*d([xyzt])\b/g, '\\frac{d}{d$1}')
+    .replace(/\b([A-Za-z0-9]+)\s*\/\s*([A-Za-z0-9]+)\b/g, '\\frac{$1}{$2}')
     .replace(/\((\d+)\s*\/\s*(\d+)\)/g, '\\frac{$1}{$2}')
     .replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}')
     .replace(/sqrt(\d+)/g, '\\sqrt{$1}')
+    .replace(/\*/g, '\\cdot ')
     .replace(mathFunctionPattern, (_match: string, prefix: string, fn: string) => (
       `${prefix}${fn === 'cosec' ? '\\operatorname{cosec}' : `\\${fn}`}`
     ))

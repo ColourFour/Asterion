@@ -22,6 +22,18 @@ export interface AttemptMarkBreakdown {
   a: number;
 }
 
+export interface QuestionPartMark {
+  label: string;
+  marksAvailable: number;
+}
+
+export interface AttemptPartScore {
+  label: string;
+  marksEarned: number;
+  marksAvailable: number;
+  markBreakdown?: AttemptMarkBreakdown;
+}
+
 export type IssueType =
   | 'question_image_missing'
   | 'mark_scheme_image_missing'
@@ -81,6 +93,7 @@ export interface NormalizedQuestion {
   displaySubtopic?: string;
   displayDifficulty?: Difficulty;
   marksAvailable?: number;
+  parts?: QuestionPartMark[];
   questionImageRawPaths: string[];
   markSchemeImageRawPaths: string[];
   questionImagePaths: string[];
@@ -130,6 +143,7 @@ export interface Attempt {
   difficulty?: Difficulty;
   marksEarned: number;
   markBreakdown?: AttemptMarkBreakdown;
+  partScores?: AttemptPartScore[];
   marksAvailable?: number;
   scoreRatio?: number;
   mistakeType?: MistakeType;

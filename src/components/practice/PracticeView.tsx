@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
 import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import { createId } from '../../lib/progressStore';
 import { TRAINING_SESSION_LABELS } from '../../lib/regionLearning';
+import { getRegionTheme } from '../../lib/regionThemes';
 import { trainingBlockersForQuestion } from '../../lib/questionTraining';
-import { parseAttemptMarkBreakdown } from '../../lib/attemptScoring';
+import { parseAttemptMarkBreakdown, parseAttemptPartScores } from '../../lib/attemptScoring';
 import { RegionAvatarCameo } from '../avatar/RegionAvatarCameo';
 import { ImageStack, type ImageStackAvailability } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
@@ -22,6 +23,12 @@ const emptyMarkInputs: Record<keyof AttemptMarkBreakdown, string> = {
   b: '',
   a: '',
 };
+
+type PartMarkInputs = Record<string, Record<keyof AttemptMarkBreakdown, string>>;
+
+function emptyPartMarkInputs(parts: NormalizedQuestion['parts']): PartMarkInputs {
+  return Object.fromEntries((parts ?? []).map((part) => [part.label, { ...emptyMarkInputs }]));
+}
 
 const FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH = 8;
 type SelectableMistakeType = Exclude<MistakeType, 'no_issue'>;
@@ -99,6 +106,7 @@ export function PracticeView({
 }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [markInputs, setMarkInputs] = useState<Record<keyof AttemptMarkBreakdown, string>>(emptyMarkInputs);
+  const [partMarkInputs, setPartMarkInputs] = useState<PartMarkInputs>({});
   const [selectedMistakeTypes, setSelectedMistakeTypes] = useState<MistakeType[]>([]);
   const [fullScoreConfirmed, setFullScoreConfirmed] = useState(false);
   const [note, setNote] = useState('');
@@ -109,16 +117,23 @@ export function PracticeView({
   useEffect(() => {
     setRevealed(false);
     setMarkInputs(emptyMarkInputs);
+    setPartMarkInputs(emptyPartMarkInputs(question?.parts));
     setSelectedMistakeTypes([]);
     setFullScoreConfirmed(false);
     setNote('');
     setAttemptSaved(false);
     setStartedAt(Date.now());
     setMarkSchemeAvailability(question?.markSchemeImageCandidates.length ? 'pending' : 'unavailable');
-  }, [question?.id]);
+  }, [question?.id, question?.markSchemeImageCandidates.length, question?.parts]);
 
   const maxMarks = question?.marksAvailable;
-  const scoreValidation = useMemo(() => parseAttemptMarkBreakdown(markInputs, maxMarks), [markInputs, maxMarks]);
+  const questionParts = question?.parts?.length ? question.parts : undefined;
+  const usesPartMarking = Boolean(questionParts?.length);
+  const scoreValidation = useMemo(() => (
+    questionParts?.length
+      ? parseAttemptPartScores(partMarkInputs, questionParts, maxMarks)
+      : parseAttemptMarkBreakdown(markInputs, maxMarks)
+  ), [markInputs, maxMarks, partMarkInputs, questionParts]);
   const trainingBlockers = useMemo(() => (question ? trainingBlockersForQuestion(question) : []), [question]);
   const questionIsTrainable = trainingBlockers.length === 0;
   const markSchemeIsAvailable = markSchemeAvailability === 'available';
@@ -149,8 +164,23 @@ export function PracticeView({
     : sessionIntent
       ? TRAINING_SESSION_LABELS[sessionIntent]
       : undefined;
+  const postAttemptContinueLabel = continuePracticeLabel ?? (isFullScore
+    ? 'Next question'
+    : selectedRegion ? 'Continue in this region' : 'Continue practice');
+  const practiceRegion = selectedRegion ?? avatarLocation.region;
+  const practiceRegionTheme = practiceRegion ? getRegionTheme(practiceRegion) : undefined;
+  const practiceThemeStyle = practiceRegionTheme ? {
+    '--practice-region-accent': practiceRegionTheme.colors.accent,
+    '--practice-region-accent-text': practiceRegionTheme.colors.accentText,
+    '--practice-region-accent-soft': practiceRegionTheme.colors.accentSoft,
+  } as CSSProperties : undefined;
   const maxMarkValue = typeof maxMarks === 'number' ? maxMarks : 10;
-  const enteredMarkTotal = markCategories.reduce((sum, category) => {
+  const enteredMarkTotal = usesPartMarking ? Object.values(partMarkInputs).reduce((sum, partInput) => {
+    return sum + markCategories.reduce((partSum, category) => {
+      const value = Number(partInput[category.key]);
+      return Number.isFinite(value) ? partSum + value : partSum;
+    }, 0);
+  }, 0) : markCategories.reduce((sum, category) => {
     const value = Number(markInputs[category.key]);
     return Number.isFinite(value) ? sum + value : sum;
   }, 0);
@@ -161,6 +191,16 @@ export function PracticeView({
 
   function updateMarkInput(key: keyof AttemptMarkBreakdown, value: string) {
     setMarkInputs((current) => ({ ...current, [key]: value }));
+  }
+
+  function updatePartMarkInput(label: string, key: keyof AttemptMarkBreakdown, value: string) {
+    setPartMarkInputs((current) => ({
+      ...current,
+      [label]: {
+        ...(current[label] ?? emptyMarkInputs),
+        [key]: value,
+      },
+    }));
   }
 
   function toggleMistakeType(type: SelectableMistakeType) {
@@ -185,6 +225,35 @@ export function PracticeView({
     });
   }
 
+  function nudgePartMarkInput(label: string, key: keyof AttemptMarkBreakdown, maxPartMarks: number, delta: number) {
+    setPartMarkInputs((current) => {
+      const partInput = current[label] ?? emptyMarkInputs;
+      const currentValue = Number.parseInt(partInput[key] || '0', 10);
+      const otherTotal = markCategories.reduce((sum, category) => {
+        if (category.key === key) return sum;
+        const value = Number.parseInt(partInput[category.key] || '0', 10);
+        return Number.isFinite(value) ? sum + value : sum;
+      }, 0);
+      const upperLimit = Math.max(0, maxPartMarks - otherTotal);
+      const next = Math.min(upperLimit, Math.max(0, (Number.isFinite(currentValue) ? currentValue : 0) + delta));
+      return {
+        ...current,
+        [label]: {
+          ...partInput,
+          [key]: String(next),
+        },
+      };
+    });
+  }
+
+  function partMarkTotal(label: string): number {
+    const partInput = partMarkInputs[label] ?? emptyMarkInputs;
+    return markCategories.reduce((sum, category) => {
+      const value = Number(partInput[category.key]);
+      return Number.isFinite(value) ? sum + value : sum;
+    }, 0);
+  }
+
   if (!question) {
     return (
       <section className="practice-card empty-state empty-wing">
@@ -196,7 +265,7 @@ export function PracticeView({
   }
 
   return (
-    <section className="practice-card encounter-chamber">
+    <section className="practice-card encounter-chamber" style={practiceThemeStyle}>
       <header className="question-header">
         <div>
           <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
@@ -259,6 +328,17 @@ export function PracticeView({
               <span>Official archive</span>
               <h3>Compare your working</h3>
             </div>
+            {questionParts?.length ? (
+              <div className="mark-scheme-part-guide" aria-label="Mark scheme part guide">
+                <strong>Part-by-part marks</strong>
+                <p>Use the official mark-scheme image, then enter each part score below.</p>
+                <div>
+                  {questionParts.map((part) => (
+                    <span key={part.label}>Part {part.label}: {part.marksAvailable} mark{part.marksAvailable === 1 ? '' : 's'}</span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <div className="paper-window mark-window">
               <ImageStack
                 candidateGroups={question.markSchemeImageCandidates}
@@ -287,7 +367,9 @@ export function PracticeView({
               event.preventDefault();
               if (!progress.profile) return;
               if (!canSaveScoredAttempt) return;
-              const score = parseAttemptMarkBreakdown(markInputs, maxMarks);
+              const score = questionParts?.length
+                ? parseAttemptPartScores(partMarkInputs, questionParts, maxMarks)
+                : parseAttemptMarkBreakdown(markInputs, maxMarks);
               if (!score.isValid || typeof score.earned !== 'number') return;
               const savedAsFullScore = typeof maxMarks === 'number' && maxMarks > 0 && score.earned === maxMarks;
               const savedMistakeTypes = savedAsFullScore ? [] : selectedMistakeTypes;
@@ -307,6 +389,7 @@ export function PracticeView({
                 difficulty: question.displayDifficulty,
                 marksEarned: score.earned,
                 markBreakdown: score.markBreakdown,
+                partScores: score.partScores,
                 marksAvailable: maxMarks,
                 scoreRatio: score.scoreRatio,
                 mistakeType: savedMistakeTypes[0],
@@ -324,39 +407,93 @@ export function PracticeView({
             }}
           >
             <div className="panel-title-bar">Self-Mark</div>
-            <fieldset className={`mark-breakdown-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
-              <legend>Your Mark</legend>
-              <div className="mark-breakdown-grid">
-                {markCategories.map((category) => (
-                  <div key={category.key} className="mark-breakdown-box">
-                    <label className="mark-box-label" htmlFor={`${question.id}-${category.key}-marks`}>
-                      <span className="mark-code">{category.label}</span>
-                      <span className="mark-description">{category.description}</span>
-                    </label>
-                    <div className="mark-box-stepper">
-                      <button type="button" onClick={() => nudgeMarkInput(category.key, -1)} aria-label={`Decrease ${category.label} score`}>-</button>
-                      <input
-                        id={`${question.id}-${category.key}-marks`}
-                        type="number"
-                        min="0"
-                        max={maxMarks}
-                        step="1"
-                        value={markInputs[category.key]}
-                        onChange={(event) => updateMarkInput(category.key, event.target.value)}
-                        aria-invalid={Boolean(scoreValidation.error)}
-                        aria-label={`${category.label} marks`}
-                      />
-                      <button type="button" onClick={() => nudgeMarkInput(category.key, 1)} aria-label={`Increase ${category.label} score`}>+</button>
+            {questionParts?.length ? (
+              <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
+                <legend>Your Mark by Part</legend>
+                <p className="marking-helper">Enter M, B, and A marks for each question part using the official mark scheme above. Put 0 for any mark type with no credit earned.</p>
+                <div className="part-mark-grid">
+                  {questionParts.map((part, index) => (
+                    <div key={part.label} className="part-mark-box">
+                      <div className="mark-box-label part-mark-box-header">
+                        <span className="mark-code">{part.label}</span>
+                        <span className="mark-description">Part {part.label} · {part.marksAvailable} mark{part.marksAvailable === 1 ? '' : 's'}</span>
+                      </div>
+                      <div className="part-mark-type-grid">
+                        {markCategories.map((category) => (
+                          <div key={`${part.label}-${category.key}`} className="part-mark-type-box">
+                            <label className="mark-box-label" htmlFor={`${question.id}-part-${index}-${category.key}-marks`}>
+                              <span className="mark-code">{category.label}</span>
+                              <span className="mark-description">{category.description}</span>
+                            </label>
+                            <div className="mark-box-stepper">
+                              <button type="button" onClick={() => nudgePartMarkInput(part.label, category.key, part.marksAvailable, -1)} aria-label={`Decrease part ${part.label} ${category.label} score`}>-</button>
+                              <input
+                                id={`${question.id}-part-${index}-${category.key}-marks`}
+                                type="number"
+                                min="0"
+                                max={part.marksAvailable}
+                                step="1"
+                                value={partMarkInputs[part.label]?.[category.key] ?? ''}
+                                placeholder="0"
+                                onChange={(event) => updatePartMarkInput(part.label, category.key, event.target.value)}
+                                aria-invalid={Boolean(scoreValidation.error)}
+                                aria-label={`Part ${part.label} ${category.label} marks`}
+                              />
+                              <button type="button" onClick={() => nudgePartMarkInput(part.label, category.key, part.marksAvailable, 1)} aria-label={`Increase part ${part.label} ${category.label} score`}>+</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="part-mark-subtotal">
+                        <span>Part {part.label} subtotal</span>
+                        <strong>{partMarkTotal(part.label)} / {part.marksAvailable}</strong>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mark-total-row">
-                <span>Total</span>
-                <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
-              </div>
-              {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
-            </fieldset>
+                  ))}
+                </div>
+                <div className="mark-total-row">
+                  <span>Total</span>
+                  <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+                </div>
+                {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
+              </fieldset>
+            ) : (
+              <fieldset className={`mark-breakdown-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
+                <legend>Your Mark</legend>
+                <p className="marking-helper">Enter your mark from the official mark scheme above. Put 0 for any mark type with no credit earned.</p>
+                <div className="mark-breakdown-grid">
+                  {markCategories.map((category) => (
+                    <div key={category.key} className="mark-breakdown-box">
+                      <label className="mark-box-label" htmlFor={`${question.id}-${category.key}-marks`}>
+                        <span className="mark-code">{category.label}</span>
+                        <span className="mark-description">{category.description}</span>
+                      </label>
+                      <div className="mark-box-stepper">
+                        <button type="button" onClick={() => nudgeMarkInput(category.key, -1)} aria-label={`Decrease ${category.label} score`}>-</button>
+                        <input
+                          id={`${question.id}-${category.key}-marks`}
+                          type="number"
+                          min="0"
+                          max={maxMarks}
+                          step="1"
+                          value={markInputs[category.key]}
+                          placeholder="0"
+                          onChange={(event) => updateMarkInput(category.key, event.target.value)}
+                          aria-invalid={Boolean(scoreValidation.error)}
+                          aria-label={`${category.label} marks`}
+                        />
+                        <button type="button" onClick={() => nudgeMarkInput(category.key, 1)} aria-label={`Increase ${category.label} score`}>+</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mark-total-row">
+                  <span>Total</span>
+                  <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+                </div>
+                {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
+              </fieldset>
+            )}
 
             {isFullScore ? (
               <fieldset className={`full-score-check-panel${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
@@ -442,7 +579,7 @@ export function PracticeView({
               : 'Region progress increased only from saved evidence.'}
           </span>
           <div className="practice-actions">
-            {onContinuePractice ? <button type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {continuePracticeLabel ?? (selectedRegion ? 'Continue in this region' : 'Continue practice')}</button> : null}
+            {onContinuePractice ? <button className={isFullScore ? 'primary-button' : undefined} type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {postAttemptContinueLabel}</button> : null}
             {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
             {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
           </div>

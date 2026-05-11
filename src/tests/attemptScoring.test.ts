@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAttemptMarkBreakdown, parseAttemptScore } from '../lib/attemptScoring';
+import { parseAttemptMarkBreakdown, parseAttemptPartScores, parseAttemptScore } from '../lib/attemptScoring';
 
 describe('parseAttemptScore', () => {
   it('accepts whole marks within the canonical maximum', () => {
@@ -40,6 +40,56 @@ describe('parseAttemptScore', () => {
     expect(parseAttemptMarkBreakdown({ m: '2', b: '1', a: '2' }, 4)).toMatchObject({
       isValid: false,
       error: 'M + B + A cannot be higher than 4.',
+    });
+  });
+
+  it('sums part scores into the total attempt score', () => {
+    expect(parseAttemptPartScores({ '(a)': '5', '(b)': '1' }, [
+      { label: '(a)', marksAvailable: 6 },
+      { label: '(b)', marksAvailable: 1 },
+    ], 7)).toEqual({
+      earned: 6,
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6 },
+        { label: '(b)', marksEarned: 1, marksAvailable: 1 },
+      ],
+      isValid: true,
+      scoreRatio: 6 / 7,
+    });
+  });
+
+  it('sums M, B, and A marks within each part', () => {
+    expect(parseAttemptPartScores({
+      '(a)': { m: '3', b: '', a: '2' },
+      '(b)': { m: '0', b: '1', a: '0' },
+    }, [
+      { label: '(a)', marksAvailable: 6 },
+      { label: '(b)', marksAvailable: 1 },
+    ], 7)).toEqual({
+      earned: 6,
+      markBreakdown: { m: 3, b: 1, a: 2 },
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6, markBreakdown: { m: 3, b: 0, a: 2 } },
+        { label: '(b)', marksEarned: 1, marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
+      ],
+      isValid: true,
+      scoreRatio: 6 / 7,
+    });
+  });
+
+  it('rejects missing or over-limit part scores', () => {
+    const parts = [
+      { label: '(a)', marksAvailable: 6 },
+      { label: '(b)', marksAvailable: 1 },
+    ];
+
+    expect(parseAttemptPartScores({ '(a)': '4' }, parts, 7)).toMatchObject({
+      isValid: false,
+      error: 'Enter a mark for part (b).',
+    });
+    expect(parseAttemptPartScores({ '(a)': '7', '(b)': '0' }, parts, 7)).toMatchObject({
+      isValid: false,
+      error: 'Part (a) cannot be higher than 6.',
     });
   });
 });

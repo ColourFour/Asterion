@@ -117,12 +117,13 @@ function QuickCheckCard({
       </label>
       {!answerVisible ? (
         <div className="activity-reveal-actions">
-          <button type="button" disabled={!responseReady} onClick={() => reveal(false)}>Reveal answer</button>
-          <button type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          <button type="button" disabled={!responseReady} onClick={() => reveal(false)}>Check answer</button>
+          <button type="button" onClick={() => reveal(true)}>Show answer anyway</button>
         </div>
       ) : (
         <div className="quick-check-answer">
-          <strong>Answer</strong>
+          <strong>{revealedEarly ? 'Model answer' : 'Feedback'}</strong>
+          {!revealedEarly ? <small>Compare your response with the model answer before choosing an outcome.</small> : null}
           <p><MathText text={check.answer} /></p>
           <small><MathText text={check.explanation} /></small>
           {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this check.</small> : null}

@@ -2,7 +2,7 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ClassHall } from '../components/classHall/ClassHall';
-import { P3AstralAcademy } from '../components/world/P3AstralAcademy';
+import { AstralRegionLedger, P3AstralAcademy } from '../components/world/P3AstralAcademy';
 import type { AvatarLocation } from '../lib/avatarLocation';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import type { ClassHallAvatarSnapshot } from '../lib/classHall';
@@ -148,5 +148,68 @@ describe('ClassHall', () => {
 
     const commonsButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Commons'));
     expect(commonsButton).toBeTruthy();
+  });
+
+  it('opens a region from the whole ledger card without double-firing the nested button', () => {
+    const onTrain = vi.fn();
+    const progress = regionProgress();
+    const container = render(
+      <AstralRegionLedger
+        progress={[progress]}
+        regionLearningSummaries={{}}
+        onTrain={onTrain}
+      />,
+    );
+
+    const card = container.querySelector<HTMLElement>('.region-card');
+    expect(card).toBeTruthy();
+    expect(card?.getAttribute('role')).toBe('link');
+    expect(card?.getAttribute('tabIndex')).toBe('0');
+
+    act(() => {
+      card!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onTrain).toHaveBeenCalledTimes(1);
+    expect(onTrain).toHaveBeenLastCalledWith(progress.region);
+
+    const button = card!.querySelector<HTMLButtonElement>('button');
+    act(() => {
+      button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onTrain).toHaveBeenCalledTimes(2);
+
+    act(() => {
+      card!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    });
+    expect(onTrain).toHaveBeenCalledTimes(3);
+  });
+
+  it('renders the P3 restoration ledger in the requested vertical topic order', () => {
+    const progress = [...P3_ASTRAL_ACADEMY.regions]
+      .reverse()
+      .map((region) => regionProgress({ region }));
+
+    const container = render(
+      <AstralRegionLedger
+        progress={progress}
+        regionLearningSummaries={{}}
+        onTrain={vi.fn()}
+      />,
+    );
+
+    const renderedRegionNames = Array.from(container.querySelectorAll('.region-card h3'))
+      .map((heading) => heading.textContent);
+
+    expect(renderedRegionNames).toEqual([
+      'Algebra Vault',
+      'Logarithm Observatory',
+      'Trigonometry Spire',
+      'Calculus Cliffs',
+      'Integral Terraces',
+      'Differential Shrine',
+      'Iteration Forge',
+      'Vectors Gate',
+      'Argand Atrium',
+    ]);
   });
 });

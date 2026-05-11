@@ -36,10 +36,10 @@ function rankBadge(rank: string): string {
 }
 
 function markerOffset(slot: AvatarMapSlot, source: AvatarLocation['source']) {
-  if (source === 'selected') return { x: -9, y: 11 };
-  if (slot.priority === 'daily') return { x: -10, y: 13 };
-  if (slot.priority === 'quiet') return { x: 9, y: -10 };
-  return { x: 8, y: 12 };
+  if (source === 'selected') return { x: -8, y: 16 };
+  if (slot.priority === 'daily') return { x: -8, y: 17 };
+  if (slot.priority === 'quiet') return { x: 10, y: -12 };
+  return { x: 9, y: 14 };
 }
 
 export function WorldMapAvatarMarker({

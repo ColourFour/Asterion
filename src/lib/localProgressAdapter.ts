@@ -2,6 +2,7 @@ import type {
   AppSettings,
   Attempt,
   AttemptMarkBreakdown,
+  AttemptPartScore,
   AvatarSettings,
   IssueReport,
   IssueType,
@@ -106,6 +107,22 @@ function normalizeMarkBreakdown(value: unknown): AttemptMarkBreakdown | undefine
   return { m: value.m, b: value.b, a: value.a };
 }
 
+function normalizeAttemptPartScores(value: unknown): AttemptPartScore[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const scores = value.map((item) => {
+    if (!isRecord(item)) return undefined;
+    const label = optionalString(item.label);
+    const marksEarned = optionalNumber(item.marksEarned);
+    const marksAvailable = optionalNumber(item.marksAvailable);
+    const markBreakdown = normalizeMarkBreakdown(item.markBreakdown);
+    if (!label || marksEarned === undefined || marksAvailable === undefined) return undefined;
+    const score: AttemptPartScore = { label, marksEarned, marksAvailable };
+    if (markBreakdown) score.markBreakdown = markBreakdown;
+    return score;
+  }).filter((item): item is AttemptPartScore => Boolean(item));
+  return scores.length ? scores : undefined;
+}
+
 function normalizeMistakeType(value: unknown): MistakeType | undefined {
   return typeof value === 'string' && knownMistakeTypes.includes(value as MistakeType)
     ? value as MistakeType
@@ -171,6 +188,7 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
   }
 
   const markBreakdown = normalizeMarkBreakdown(value.markBreakdown);
+  const partScores = normalizeAttemptPartScores(value.partScores);
   return {
     id,
     profileId,
@@ -185,6 +203,7 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
     difficulty: optionalString(value.difficulty),
     marksEarned,
     markBreakdown,
+    partScores,
     marksAvailable,
     scoreRatio,
     mistakeType,

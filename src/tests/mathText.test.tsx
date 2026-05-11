@@ -72,4 +72,21 @@ describe('MathText', () => {
     expect(container.innerHTML).toContain('katex');
     expect(container.innerHTML).toContain('mfrac');
   });
+
+  it('renders raw derivatives, fractions, powers, and trig notation legibly', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    mounted.push({ root, container });
+
+    await act(async () => {
+      root.render(<MathText text="Use dy/dx = 3t/2 and sin^2 x + cos^2 x = 1." />);
+    });
+    await waitForKatex(container);
+
+    expect(container.innerHTML).toContain('katex');
+    expect(container.innerHTML).toContain('mfrac');
+    expect(container.textContent).toContain('sin');
+    expect(container.textContent).not.toContain('dy/dx');
+  });
 });

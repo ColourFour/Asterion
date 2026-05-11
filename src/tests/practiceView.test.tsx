@@ -4,7 +4,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PracticeView } from '../components/practice/PracticeView';
 import { emptyProgress } from '../lib/progressStore';
 import type { AvatarLocation } from '../lib/avatarLocation';
-import type { Attempt, NormalizedQuestion, StoredProgress } from '../types';
+import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import type { Attempt, NormalizedQuestion, RegionDefinition, StoredProgress } from '../types';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -79,7 +80,11 @@ function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuesti
 
 const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' };
 
-function renderPractice(testQuestion: NormalizedQuestion, onAttempt = vi.fn<(attempt: Attempt) => void>()) {
+function renderPractice(
+  testQuestion: NormalizedQuestion,
+  onAttempt = vi.fn<(attempt: Attempt) => void>(),
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; selectedRegion?: RegionDefinition } = {},
+) {
   return {
     onAttempt,
     container: render(
@@ -90,8 +95,11 @@ function renderPractice(testQuestion: NormalizedQuestion, onAttempt = vi.fn<(att
         avatar={emptyProgress().avatar}
         regionProgress={[]}
         avatarLocation={avatarLocation}
+        selectedRegion={options.selectedRegion}
         onAttempt={onAttempt}
         onIssue={vi.fn()}
+        onContinuePractice={options.onContinuePractice}
+        continuePracticeLabel={options.continuePracticeLabel}
       />,
     ),
   };
@@ -171,6 +179,69 @@ describe('PracticeView mark-scheme availability', () => {
 });
 
 describe('PracticeView self-mark reflection', () => {
+  it('sets the practice title accent from the selected region theme', () => {
+    const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge');
+    expect(algebraRegion).toBeTruthy();
+
+    const { container } = renderPractice(question(), vi.fn(), { selectedRegion: algebraRegion });
+    const practiceCard = container.querySelector<HTMLElement>('.encounter-chamber');
+
+    expect(practiceCard?.style.getPropertyValue('--practice-region-accent')).toBe('#b8872d');
+    expect(container.querySelector('.question-header h2')?.textContent).toBe('Algebra Vault');
+  });
+
+  it('prompts students to enter a mark and shows zero placeholders', () => {
+    const { container } = renderPractice(question());
+
+    const initialFooterButtons = Array.from(container.querySelectorAll('.practice-footer-actions button'))
+      .map((button) => button.textContent?.trim());
+    expect(initialFooterButtons).toEqual(['Reveal Mark Scheme', 'Save Attempt']);
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    expect(container.textContent).toContain('Enter your mark from the official mark scheme above.');
+    expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
+  });
+
+  it('saves part-by-part scores when question part metadata exists', () => {
+    const { container, onAttempt } = renderPractice(question({
+      marksAvailable: 7,
+      parts: [
+        { label: '(a)', marksAvailable: 6 },
+        { label: '(b)', marksAvailable: 1 },
+      ],
+    }));
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    expect(container.textContent).toContain('Part-by-part marks');
+    expect(container.textContent).toContain('Part (a): 6 marks');
+    expect(container.textContent).toContain('Your Mark by Part');
+    expect(container.textContent).toContain('Enter M, B, and A marks for each question part');
+    expect(Array.from(container.querySelectorAll<HTMLInputElement>('.part-mark-grid input')).map((input) => input.placeholder)).toEqual(['0', '0', '0', '0', '0', '0']);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="Part (a) M marks"]')!, '3');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="Part (a) A marks"]')!, '2');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="Part (b) B marks"]')!, '1');
+    clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
+
+    expect(saveAttemptButton(container).disabled).toBe(false);
+    clickButton(container, 'Save Attempt');
+
+    expect(onAttempt).toHaveBeenCalledTimes(1);
+    expect(onAttempt.mock.calls[0][0]).toMatchObject({
+      marksEarned: 6,
+      markBreakdown: { m: 3, b: 1, a: 2 },
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6, markBreakdown: { m: 3, b: 0, a: 2 } },
+        { label: '(b)', marksEarned: 1, marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
+      ],
+      mistakeTypes: ['algebra_error'],
+    });
+  });
+
   it('saves multiple mistake tags for non-perfect attempts', () => {
     const { container, onAttempt } = renderPractice(question());
 
@@ -223,5 +294,24 @@ describe('PracticeView self-mark reflection', () => {
       note: 'Checked every mark-scheme line.',
     });
     expect(onAttempt.mock.calls[0][0].mistakeType).toBeUndefined();
+  });
+
+  it('shows an obvious next-question action after a full-score attempt is saved', () => {
+    const onContinuePractice = vi.fn();
+    const { container } = renderPractice(question(), vi.fn(), { onContinuePractice });
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+    clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
+    setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
+    clickButton(container, 'Save Attempt');
+
+    expect(container.textContent).toContain('Next question');
+    clickButton(container, 'Next question');
+    expect(onContinuePractice).toHaveBeenCalledTimes(1);
   });
 });

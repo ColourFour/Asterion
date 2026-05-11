@@ -140,8 +140,15 @@ export function FieldGuidePanel({
                 <strong>{example.title}</strong>
                 <span><MathText text={example.focus} /></span>
                 {example.setup ? <small><MathText text={example.setup} /></small> : null}
+                {example.steps?.length ? (
+                  <ol>
+                    {example.steps.map((step) => <li key={step}><MathText text={step} /></li>)}
+                  </ol>
+                ) : null}
+                {example.answer ? <small><b>Answer:</b> <MathText text={example.answer} /></small> : null}
                 {example.keyMove ? <small><b>Move:</b> <MathText text={example.keyMove} /></small> : null}
                 {example.check ? <small><b>Check:</b> <MathText text={example.check} /></small> : null}
+                {example.why ? <small><b>Why this works:</b> <MathText text={example.why} /></small> : null}
               </div>
             ))}
           </div>

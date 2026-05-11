@@ -14,10 +14,12 @@ export function RegionProgressStrip({ regionProgress, summary }: RegionProgressS
     : summary.guardianEligibility.eligible ? 'Ready' : 'Locked';
 
   const stats = [
+    { label: 'Progress', value: summary.nextAction.kind === 'complete' ? 'Restored' : summary.nextAction.label },
     { label: 'Rank', value: regionProgress.rank },
     { label: 'Attempts', value: String(regionProgress.attempts) },
     { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
     { label: 'Subtopics', value: `${regionProgress.subtopicsTouched}/${regionProgress.region.subtopics.length}` },
+    { label: 'Focus', value: summary.trainingSession.label },
     { label: 'Guardian', value: guardianLabel },
   ];
 

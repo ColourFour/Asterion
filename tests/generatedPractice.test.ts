@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   getGeneratedPracticeByPaperFamily,
@@ -8,6 +9,9 @@ import {
   normalizeGeneratedPracticeData,
   reviewedGeneratedPractice,
 } from '../src/lib/generatedPractice';
+import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
+
+const publicGeneratedPracticeData = JSON.parse(readFileSync('public/data/generated_practice_bank.json', 'utf8'));
 
 function item(overrides: Record<string, unknown> = {}) {
   return {
@@ -109,5 +113,22 @@ describe('generated practice runtime loader', () => {
     } as Response));
 
     expect(loaded.map((practice) => practice.practiceId)).toEqual(['reviewed-pass']);
+  });
+
+  it('covers every current P3 region with reviewed warm-up practice', () => {
+    const normalized = normalizeGeneratedPracticeData(publicGeneratedPracticeData);
+
+    expect(normalized.length).toBeGreaterThan(0);
+    expect(reviewedGeneratedPractice(normalized)).toHaveLength(normalized.length);
+    expect(normalized.every((practice) => (
+      practice.prompt.trim()
+      && practice.answer.trim()
+      && practice.workedSolution.length >= 2
+      && practice.workedSolution.every((step) => step.trim())
+    ))).toBe(true);
+
+    for (const region of P3_ASTRAL_ACADEMY.regions) {
+      expect(getGeneratedPracticeForRegion(normalized, region.id, 'p3').length, region.id).toBeGreaterThanOrEqual(1);
+    }
   });
 });

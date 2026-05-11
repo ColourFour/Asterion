@@ -75,6 +75,11 @@ export function RegionHub({
         onReturnToMap={onReturnToMap}
       />
 
+      <div className="region-summary-band" aria-label="Region summary">
+        <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
+        <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
+      </div>
+
       <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
 
       <div className="region-learning-content">
@@ -114,8 +119,6 @@ export function RegionHub({
           />
         </div>
         <aside className="region-learning-support" aria-label="Region mastery and rewards progress">
-          <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
-          <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
           <RegionRewardPreview guardianCleared={guardianCleared} regionName={theme.title} />
         </aside>
       </div>

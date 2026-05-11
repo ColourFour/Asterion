@@ -216,9 +216,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheck).toBeTruthy();
     expect(quickCheck?.textContent).toContain('Quick check');
 
-    const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Reveal answer');
+    const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
     expect(revealButton).toBeTruthy();
     expect(revealButton?.hasAttribute('disabled')).toBe(true);
+    expect(quickCheck?.textContent).not.toContain('Reveal answer');
 
     const textarea = quickCheck!.querySelector<HTMLTextAreaElement>('textarea');
     act(() => {
@@ -230,7 +231,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(quickCheck?.textContent).toContain('Answer');
+    expect(quickCheck?.textContent).toContain('Feedback');
     expect(quickCheck?.textContent).toContain('Linked example');
     expect(quickCheck?.textContent).toContain('Two cubed equals eight.');
   });
@@ -391,5 +392,57 @@ describe('FieldGuidePanel teaching snippets', () => {
       'Exam Training',
       'Guardian Challenge',
     ]);
+  });
+
+  it('places the region summary directly above the learning content', () => {
+    const progress = regionProgress();
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress,
+      regionQuestions: [normalizedQuestion()],
+      regionAttempts: [],
+    });
+
+    const container = render(
+      <RegionHub
+        regionProgress={progress}
+        fieldGuide={getRegionFieldGuide(progress.region)}
+        fieldGuideCompleted={false}
+        teachingSnippets={[snippet]}
+        generatedPractice={[generatedPractice]}
+        learningActivityAttempts={[]}
+        summary={summary}
+        onCompleteFieldGuide={vi.fn()}
+        onLearningActivityAttempt={vi.fn()}
+        onStartTraining={vi.fn()}
+        onChallengeGuardian={vi.fn()}
+        onReturnToMap={vi.fn()}
+      />,
+    );
+
+    const summaryBand = container.querySelector<HTMLElement>('.region-summary-band');
+    const learningContent = container.querySelector<HTMLElement>('.region-learning-content');
+
+    expect(summaryBand).toBeTruthy();
+    expect(learningContent).toBeTruthy();
+    expect(summaryBand!.compareDocumentPosition(learningContent!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(summaryBand?.textContent).toContain('Recommended next step');
+    expect(summaryBand?.textContent).toContain('Rank');
+    expect(summaryBand?.textContent).toContain('Attempts');
+    expect(summaryBand?.textContent).toContain('Average');
+    expect(summaryBand?.textContent).toContain('Subtopics');
+    expect(summaryBand?.textContent).toContain('Focus');
+    expect(summaryBand?.textContent).toContain('Guardian');
+  });
+
+  it('keeps every P3 field-guide worked-example card complete', () => {
+    for (const region of P3_ASTRAL_ACADEMY.regions) {
+      const guide = getRegionFieldGuide(region);
+      expect(guide.workedExamples.length, region.id).toBeGreaterThan(0);
+      for (const example of guide.workedExamples) {
+        expect(example.focus.trim(), `${region.id} ${example.title} focus`).not.toBe('');
+        expect(example.steps?.length, `${region.id} ${example.title} steps`).toBeGreaterThanOrEqual(2);
+        expect(example.answer?.trim(), `${region.id} ${example.title} answer`).not.toBe('');
+      }
+    }
   });
 });

@@ -24,6 +24,13 @@ function attemptReflectionLabel(attempt: StoredProgress['attempts'][number]): st
   return 'reflection not recorded';
 }
 
+function attemptPartScoreLabel(attempt: StoredProgress['attempts'][number]): string {
+  return attempt.partScores?.map((part) => {
+    const breakdown = part.markBreakdown ? ` M${part.markBreakdown.m} B${part.markBreakdown.b} A${part.markBreakdown.a}` : '';
+    return `${part.label} ${part.marksEarned}/${part.marksAvailable}${breakdown}`;
+  }).join(', ') ?? '';
+}
+
 export function TeacherExport({ progress, avatarGear, questions, regionProgress, diagnostics, onClear }: TeacherExportProps) {
   const summary = calculateAcademySummary(regionProgress);
   const recentAttempts = progress.attempts.slice(-8).reverse();
@@ -90,6 +97,7 @@ export function TeacherExport({ progress, avatarGear, questions, regionProgress,
               <span>
                 {attempt.marksEarned}/{attempt.marksAvailable ?? 'n/a'} marks
                 {attempt.markBreakdown ? ` (M ${attempt.markBreakdown.m}, B ${attempt.markBreakdown.b}, A ${attempt.markBreakdown.a})` : ''}
+                {attempt.partScores?.length ? ` (${attemptPartScoreLabel(attempt)})` : ''}
                 {' · '}
                 {attemptReflectionLabel(attempt)} · {new Date(attempt.attemptedAt).toLocaleString()}
               </span>

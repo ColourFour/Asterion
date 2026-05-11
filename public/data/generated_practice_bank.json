@@ -1220,6 +1220,575 @@
         "A sine or cosine wave with amplitude R has maximum value R.",
         "So the maximum value is 10."
       ]
+    },
+    {
+      "answer": "|z| = 5 and arg z = -0.927 radians",
+      "difficulty_band": "easy",
+      "exam_move": "Sketch the Argand position before choosing the argument.",
+      "example_model_id": "p3-complex-form-001-example-1",
+      "generator_family": "complex_numbers.modulus_argument_basic",
+      "key_method": "Use modulus from coordinates and choose the argument from the quadrant.",
+      "paper_family": "p3",
+      "parameters": {
+        "imaginary": -4,
+        "real": 3,
+        "sequence_role": "first_step"
+      },
+      "practice_id": "gen_complex_modulus_argument_basic_0001",
+      "prompt": "For z = 3 - 4i, find |z| and arg z to 3 d.p. in radians.",
+      "question_type": "Complex modulus and argument",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_complex_modulus_argument_form",
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "source_snippet_id": "p3-complex-form-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "|z| = sqrt(3^2 + (-4)^2) = 5.",
+        "The point is in quadrant IV.",
+        "arg z = -tan^(-1)(4/3) = -0.927 radians to 3 d.p."
+      ]
+    },
+    {
+      "answer": "A circle with centre (1, 2) and radius 4",
+      "difficulty_band": "easy",
+      "exam_move": "Translate modulus notation into distance on the Argand diagram.",
+      "example_model_id": "p3-complex-locus-argument-001-example-1",
+      "generator_family": "complex_numbers.locus_basic",
+      "key_method": "Read |z - a| = r as distance r from the point a.",
+      "paper_family": "p3",
+      "parameters": {
+        "centre_imaginary": 2,
+        "centre_real": 1,
+        "radius": 4,
+        "sequence_role": "complete_step"
+      },
+      "practice_id": "gen_complex_locus_basic_0001",
+      "prompt": "Describe the locus |z - (1 + 2i)| = 4.",
+      "question_type": "Argand locus",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "source_snippet_id": "p3-complex-locus-argument-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The fixed point is 1 + 2i, which is (1, 2) on the Argand diagram.",
+        "The equation says the distance from that fixed point is always 4.",
+        "So the locus is a circle with centre (1, 2) and radius 4."
+      ]
+    },
+    {
+      "answer": "2e^(i*pi/6) and 2e^(i*7pi/6)",
+      "difficulty_band": "medium",
+      "exam_move": "Add 2pi before dividing the argument to get all roots.",
+      "example_model_id": "p3-complex-form-001-example-1",
+      "generator_family": "complex_numbers.roots_basic",
+      "key_method": "Divide the argument and spread roots evenly around the Argand diagram.",
+      "paper_family": "p3",
+      "parameters": {
+        "argument": "pi/3",
+        "modulus": 4,
+        "root": 2,
+        "sequence_role": "guardian_prep"
+      },
+      "practice_id": "gen_complex_roots_basic_0001",
+      "prompt": "Find the square roots of 4e^(i*pi/3) in polar form.",
+      "question_type": "Complex roots in polar form",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_complex_roots_powers",
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "source_snippet_id": "p3-complex-form-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Square-root the modulus: sqrt(4) = 2.",
+        "Use arguments (pi/3 + 2k*pi)/2 for k = 0, 1.",
+        "The arguments are pi/6 and 7pi/6.",
+        "So the roots are 2e^(i*pi/6) and 2e^(i*7pi/6)."
+      ]
+    },
+    {
+      "answer": "dy/dx = 10(2x + 1)^4",
+      "difficulty_band": "easy",
+      "exam_move": "Name the chain rule before differentiating a bracket power.",
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "generator_family": "differentiation.chain_rule_basic",
+      "key_method": "Differentiate the outside power and multiply by the inside derivative.",
+      "paper_family": "p3",
+      "parameters": {
+        "coefficient": 2,
+        "power": 5,
+        "sequence_role": "first_step"
+      },
+      "practice_id": "gen_differentiation_chain_rule_basic_0001",
+      "prompt": "Differentiate y = (2x + 1)^5.",
+      "question_type": "Differentiation method selection",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_method_selection",
+      "snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "source_snippet_id": "p3-differentiation-method-001",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the chain rule with outside function u^5 and inside function u = 2x + 1.",
+        "Differentiate the outside: 5(2x + 1)^4.",
+        "Multiply by the inside derivative 2.",
+        "dy/dx = 10(2x + 1)^4."
+      ]
+    },
+    {
+      "answer": "dy/dx = e^x(x^2 + 2x)",
+      "difficulty_band": "medium",
+      "exam_move": "Use the product rule when both factors depend on x.",
+      "example_model_id": "p3-differentiation-method-001-example-1",
+      "generator_family": "differentiation.product_rule_basic",
+      "key_method": "Apply u'v + uv' and then factor if useful.",
+      "paper_family": "p3",
+      "parameters": {
+        "algebra_power": 2,
+        "sequence_role": "complete_step"
+      },
+      "practice_id": "gen_differentiation_product_rule_basic_0001",
+      "prompt": "Differentiate y = x^2 e^x.",
+      "question_type": "Product rule differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "source_snippet_id": "p3-differentiation-method-001",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x^2 and v = e^x.",
+        "Then u' = 2x and v' = e^x.",
+        "dy/dx = 2x e^x + x^2 e^x.",
+        "Factor to get e^x(x^2 + 2x)."
+      ]
+    },
+    {
+      "answer": "dy/dx = 3t/2",
+      "difficulty_band": "medium",
+      "exam_move": "Find dy/dx from (dy/dt)/(dx/dt), not by differentiating y with respect to x directly.",
+      "example_model_id": "p3-parametric-derivative-001-example-1",
+      "generator_family": "parametric_equations.derivative_ratio_basic",
+      "key_method": "Differentiate both parametric equations with respect to t, then divide.",
+      "paper_family": "p3",
+      "parameters": {
+        "sequence_role": "guardian_prep",
+        "x_power": 2,
+        "y_power": 3
+      },
+      "practice_id": "gen_parametric_derivative_ratio_basic_0001",
+      "prompt": "For x = t^2 + 1 and y = t^3, find dy/dx in terms of t.",
+      "question_type": "Parametric gradient",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "snippet_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "source_snippet_id": "p3-parametric-derivative-001",
+      "topic": "parametric_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dx/dt = 2t and dy/dt = 3t^2.",
+        "Use dy/dx = (dy/dt)/(dx/dt).",
+        "dy/dx = 3t^2/(2t) = 3t/2 for t != 0."
+      ]
+    },
+    {
+      "answer": "The lines intersect at (3, 1, 1)",
+      "difficulty_band": "easy",
+      "exam_move": "Check all three components before declaring an intersection.",
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "generator_family": "vectors.line_intersection_basic",
+      "key_method": "Equate vector components and solve the parameters consistently.",
+      "paper_family": "p3",
+      "parameters": {
+        "sequence_role": "first_step"
+      },
+      "practice_id": "gen_vectors_line_intersection_basic_0001",
+      "prompt": "Test whether r = (1,0,2) + s(2,1,-1) and r = (3,1,1) + t(1,0,2) intersect.",
+      "question_type": "Vector line intersection",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_vec_line_equations_intersections",
+      "snippet_ids": [
+        "p3-vectors-lines-001"
+      ],
+      "source_snippet_id": "p3-vectors-lines-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "From the y-component, s = 1.",
+        "Use the x-component: 1 + 2s = 3 + t, so t = 0.",
+        "Check the z-component: 2 - s = 1 + 2t gives 1 = 1.",
+        "The shared point is (3, 1, 1)."
+      ]
+    },
+    {
+      "answer": "theta = cos^(-1)(4/(3sqrt5))",
+      "difficulty_band": "medium",
+      "exam_move": "Use direction vectors in the scalar product formula.",
+      "example_model_id": "p3-vectors-scalar-product-001-example-1",
+      "generator_family": "vectors.line_scalar_product_basic",
+      "key_method": "Use a dot b = |a||b|cos theta.",
+      "paper_family": "p3",
+      "parameters": {
+        "dot": 4,
+        "sequence_role": "complete_step"
+      },
+      "practice_id": "gen_vectors_scalar_product_basic_0001",
+      "prompt": "Find the angle between direction vectors a = (1,2,2) and b = (2,0,1).",
+      "question_type": "Scalar product angle",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_vec_scalar_product_angles",
+      "snippet_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
+      "source_snippet_id": "p3-vectors-scalar-product-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "a dot b = 1*2 + 2*0 + 2*1 = 4.",
+        "|a| = sqrt(1^2 + 2^2 + 2^2) = 3.",
+        "|b| = sqrt(2^2 + 0^2 + 1^2) = sqrt5.",
+        "cos theta = 4/(3sqrt5), so theta = cos^(-1)(4/(3sqrt5))."
+      ]
+    },
+    {
+      "answer": "The lines are parallel or coincident, not skew",
+      "difficulty_band": "medium",
+      "exam_move": "Compare direction vectors before solving simultaneous component equations.",
+      "example_model_id": "p3-vectors-lines-001-example-1",
+      "generator_family": "vectors.line_relationship_basic",
+      "key_method": "Classify line relationship from direction vectors and component consistency.",
+      "paper_family": "p3",
+      "parameters": {
+        "scale_factor": 2,
+        "sequence_role": "guardian_prep"
+      },
+      "practice_id": "gen_vectors_line_relationship_basic_0001",
+      "prompt": "Lines have direction vectors (2,4,6) and (1,2,3). What relationship is possible before checking positions?",
+      "question_type": "Vector line relationship",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_vec_3d_geometry_modelling",
+      "snippet_ids": [
+        "p3-vectors-lines-001"
+      ],
+      "source_snippet_id": "p3-vectors-lines-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "(2,4,6) = 2(1,2,3), so the direction vectors are scalar multiples.",
+        "Scalar-multiple direction vectors mean the lines are parallel or coincident.",
+        "They cannot be skew because skew lines are not parallel."
+      ]
+    },
+    {
+      "answer": "There is a root between 2 and 3",
+      "difficulty_band": "easy",
+      "exam_move": "Show both endpoint values and their signs.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Use a sign change to justify a root in an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "left": 2,
+        "right": 3,
+        "sequence_role": "first_step"
+      },
+      "practice_id": "gen_numerical_sign_change_basic_0001",
+      "prompt": "Show that f(x) = x^3 - 2x - 5 has a root between 2 and 3.",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "f(2) = 8 - 4 - 5 = -1.",
+        "f(3) = 27 - 6 - 5 = 16.",
+        "The function changes sign between 2 and 3.",
+        "Therefore there is a root between 2 and 3."
+      ]
+    },
+    {
+      "answer": "x3 = sqrt(3 + 2) = sqrt5",
+      "difficulty_band": "easy",
+      "exam_move": "Use the iteration formula exactly as printed.",
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Substitute each iterate into the stated recurrence.",
+      "paper_family": "p3",
+      "parameters": {
+        "initial": 1,
+        "sequence_role": "complete_step"
+      },
+      "practice_id": "gen_numerical_iteration_formula_basic_0001",
+      "prompt": "Use x_(n+1) = sqrt(3 + x_n), with x_1 = 1, to find x_3 exactly.",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "x_2 = sqrt(3 + 1) = 2.",
+        "x_3 = sqrt(3 + x_2).",
+        "So x_3 = sqrt(3 + 2) = sqrt5."
+      ]
+    },
+    {
+      "answer": "x = 1.52 to 2 d.p.",
+      "difficulty_band": "medium",
+      "exam_move": "Use consecutive approximations to justify the requested accuracy.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.accuracy_rounding_basic",
+      "key_method": "Compare stable rounded values before stating the final approximation.",
+      "paper_family": "p3",
+      "parameters": {
+        "accuracy": "2dp",
+        "sequence_role": "guardian_prep"
+      },
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0001",
+      "prompt": "Two successive approximations are 1.524 and 1.523. State the root to 2 d.p. with evidence.",
+      "question_type": "Numerical accuracy statement",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_accuracy_rounding",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "1.524 rounds to 1.52 to 2 d.p.",
+        "1.523 also rounds to 1.52 to 2 d.p.",
+        "Since the rounded value is stable, state x = 1.52 to 2 d.p."
+      ]
+    },
+    {
+      "answer": "y = Ae^(3x^2/2)",
+      "difficulty_band": "easy",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms to one side and x terms to the other.",
+      "paper_family": "p3",
+      "parameters": {
+        "coefficient": 3,
+        "sequence_role": "first_step"
+      },
+      "practice_id": "gen_differential_separation_basic_0001",
+      "prompt": "Solve dy/dx = 3xy for the general solution.",
+      "question_type": "Separable differential equation",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Separate variables: (1/y) dy = 3x dx.",
+        "Integrate both sides: ln|y| = 3x^2/2 + C.",
+        "Exponentiate to get y = Ae^(3x^2/2)."
+      ]
+    },
+    {
+      "answer": "y = 2e^(x^2/2)",
+      "difficulty_band": "medium",
+      "exam_move": "Use the initial condition after the general solution is found.",
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Substitute the known point to find the arbitrary constant.",
+      "paper_family": "p3",
+      "parameters": {
+        "initial_x": 0,
+        "initial_y": 2,
+        "sequence_role": "complete_step"
+      },
+      "practice_id": "gen_differential_initial_condition_basic_0001",
+      "prompt": "Given y = Ae^(x^2/2) and y = 2 when x = 0, find the particular solution.",
+      "question_type": "Initial condition in differential equations",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_initial_condition",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Substitute x = 0 and y = 2.",
+        "2 = Ae^0, so A = 2.",
+        "The particular solution is y = 2e^(x^2/2)."
+      ]
+    },
+    {
+      "answer": "dT/dt = -k(T - 20)",
+      "difficulty_band": "medium",
+      "exam_move": "Translate the rate statement into a differential equation before solving.",
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent proportional rate statements with a constant of proportionality.",
+      "paper_family": "p3",
+      "parameters": {
+        "ambient_temperature": 20,
+        "sequence_role": "guardian_prep"
+      },
+      "practice_id": "gen_differential_context_model_basic_0001",
+      "prompt": "A cup cools in a room at 20 degrees. Its rate of cooling is proportional to its temperature above room temperature. Write a differential equation for its temperature T.",
+      "question_type": "Differential equation model from words",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Temperature above room temperature is T - 20.",
+        "Rate of cooling means dT/dt is negative when T > 20.",
+        "Use a positive constant k: dT/dt = -k(T - 20)."
+      ]
     }
   ],
   "schema_name": "asterion_generated_practice",
