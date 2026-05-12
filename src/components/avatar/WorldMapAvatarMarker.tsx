@@ -9,6 +9,10 @@ interface AvatarMapSlot {
   y: number;
   priority: 'daily' | 'relevant' | 'neutral' | 'quiet';
   zIndex: number;
+  avatarOffset?: {
+    x: number;
+    y: number;
+  };
 }
 
 interface WorldMapAvatarMarkerProps {
@@ -36,6 +40,7 @@ function rankBadge(rank: string): string {
 }
 
 function markerOffset(slot: AvatarMapSlot, source: AvatarLocation['source']) {
+  if (slot.avatarOffset) return slot.avatarOffset;
   if (source === 'selected') return { x: -8, y: 16 };
   if (slot.priority === 'daily') return { x: -8, y: 17 };
   if (slot.priority === 'quiet') return { x: 10, y: -12 };

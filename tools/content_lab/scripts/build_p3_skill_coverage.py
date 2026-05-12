@@ -28,6 +28,46 @@ EXPECTED_SYLLABUS_TOPICS = [
     "Differential equations",
     "Complex numbers",
 ]
+EXPECTED_PRIMARY_CURRICULUM_TARGET = {
+    "syllabus_id": "caie_9709_p3_2026_2027",
+    "syllabus_code": "9709",
+    "component": "Paper 3",
+    "component_title": "Pure Mathematics 3",
+    "paper_family": "p3",
+    "syllabus_version": "Version 4",
+}
+EXPECTED_SUPPORTING_PREREQUISITE_TARGET = {
+    "syllabus_id": "caie_9709_p1_2026_2027",
+    "syllabus_code": "9709",
+    "component": "Paper 1",
+    "component_title": "Pure Mathematics 1",
+    "paper_family": "p1",
+    "role": "prerequisite_support",
+}
+EXPECTED_CURRICULUM_EXAM_YEARS = ["2026", "2027"]
+EXPECTED_CURRICULUM_SOURCE_URLS = {
+    "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/",
+    "https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf",
+}
+ALLOWED_CURRICULUM_ROLES = {
+    "p3_core",
+    "bridge",
+    "p1_prerequisite",
+    "ambiguous",
+    "out_of_scope",
+}
+NON_MASTERY_CURRICULUM_ROLES = {"p1_prerequisite", "out_of_scope"}
+ALLOWED_PREREQUISITE_RELATIONSHIPS = {"supports"}
+ALLOWED_P1_PREREQUISITE_SKILL_REFS = {
+    "algebraic_manipulation",
+    "coordinate_geometry",
+    "differentiation_basics",
+    "functions_and_graphs",
+    "integration_basics",
+    "radians_and_trigonometry",
+    "sequences_and_series",
+    "trigonometric_identities",
+}
 ACTIVE_P3_REGION_IDS = {
     "algebra-forge",
     "logarithm-grove",
@@ -207,12 +247,116 @@ def require(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def validate_target_fields(
+    target: dict[str, Any],
+    expected: dict[str, str],
+    owner: str,
+    errors: list[str],
+) -> None:
+    for field, expected_value in expected.items():
+        require(non_empty_string(target.get(field)) == expected_value, f"{owner}.{field} must be {expected_value}", errors)
+    require(string_list(target.get("exam_years")) == EXPECTED_CURRICULUM_EXAM_YEARS, f"{owner}.exam_years must be {EXPECTED_CURRICULUM_EXAM_YEARS}", errors)
+    source_urls = set(string_list(target.get("source_urls")))
+    require(EXPECTED_CURRICULUM_SOURCE_URLS.issubset(source_urls), f"{owner}.source_urls must include official 9709 syllabus and qualification URLs", errors)
+    require(bool(non_empty_string(target.get("scope_note"))), f"{owner}.scope_note must not be empty", errors)
+
+
+def validate_curriculum_targets(root: dict[str, Any], errors: list[str]) -> set[str]:
+    targets = as_record(root.get("curriculum_targets"))
+    require(bool(targets), "skill map missing curriculum_targets", errors)
+    if not targets:
+        return set()
+
+    primary = as_record(targets.get("primary"))
+    require(bool(primary), "curriculum_targets.primary must be an object", errors)
+    if primary:
+        validate_target_fields(primary, EXPECTED_PRIMARY_CURRICULUM_TARGET, "curriculum_targets.primary", errors)
+        require(bool(non_empty_string(primary.get("published"))), "curriculum_targets.primary.published must not be empty", errors)
+
+    supporting = targets.get("supporting_prerequisites")
+    require(isinstance(supporting, list), "curriculum_targets.supporting_prerequisites must be an array", errors)
+    supporting_targets = [as_record(value) for value in supporting] if isinstance(supporting, list) else []
+    supporting_target_ids = {
+        target_id
+        for target in supporting_targets
+        if (target_id := non_empty_string(target.get("syllabus_id")))
+    }
+    p1_target = next((target for target in supporting_targets if non_empty_string(target.get("syllabus_id")) == "caie_9709_p1_2026_2027"), None)
+    require(bool(p1_target), "curriculum_targets.supporting_prerequisites must include caie_9709_p1_2026_2027", errors)
+    if p1_target:
+        validate_target_fields(p1_target, EXPECTED_SUPPORTING_PREREQUISITE_TARGET, "curriculum_targets.supporting_prerequisites.caie_9709_p1_2026_2027", errors)
+
+    mastery_policy = as_record(targets.get("mastery_policy"))
+    require(bool(mastery_policy), "curriculum_targets.mastery_policy must be an object", errors)
+    if mastery_policy:
+        for field in ("p3_mastery_evidence", "p1_prerequisite_use", "reporting_boundary"):
+            require(bool(non_empty_string(mastery_policy.get(field))), f"curriculum_targets.mastery_policy.{field} must not be empty", errors)
+
+    require(bool(non_empty_string(targets.get("reviewed_at"))), "curriculum_targets.reviewed_at must not be empty", errors)
+    require(bool(non_empty_string(targets.get("review_source_note"))), "curriculum_targets.review_source_note must not be empty", errors)
+    return supporting_target_ids
+
+
+def validate_prerequisite_skill_refs(
+    skill: dict[str, Any],
+    owner: str,
+    supporting_target_ids: set[str],
+    errors: list[str],
+) -> None:
+    refs = skill.get("prerequisite_skill_refs")
+    if not isinstance(refs, list):
+        return
+
+    seen_refs: set[tuple[str, str, str]] = set()
+    allowed_keys = {"syllabus_id", "skill_ref", "relationship"}
+    for index, value in enumerate(refs):
+        ref_owner = f"{owner}.prerequisite_skill_refs[{index}]"
+        ref = as_record(value)
+        if not ref:
+            errors.append(f"{ref_owner} must be an object")
+            continue
+        extra_keys = sorted(set(ref) - allowed_keys)
+        require(not extra_keys, f"{ref_owner} has unexpected fields: {', '.join(extra_keys)}", errors)
+
+        syllabus_id = non_empty_string(ref.get("syllabus_id"))
+        skill_ref = non_empty_string(ref.get("skill_ref"))
+        relationship = non_empty_string(ref.get("relationship"))
+        require(bool(syllabus_id), f"{ref_owner}.syllabus_id must not be empty", errors)
+        require(bool(skill_ref), f"{ref_owner}.skill_ref must not be empty", errors)
+        require(bool(relationship), f"{ref_owner}.relationship must not be empty", errors)
+        if not (syllabus_id and skill_ref and relationship):
+            continue
+
+        require(
+            syllabus_id in supporting_target_ids,
+            f"{ref_owner}.syllabus_id references unknown curriculum target {syllabus_id}",
+            errors,
+        )
+        if syllabus_id == "caie_9709_p1_2026_2027":
+            require(
+                skill_ref in ALLOWED_P1_PREREQUISITE_SKILL_REFS,
+                f"{ref_owner}.skill_ref must be a known P1 prerequisite skill reference",
+                errors,
+            )
+        require(
+            relationship in ALLOWED_PREREQUISITE_RELATIONSHIPS,
+            f"{ref_owner}.relationship must be one of {sorted(ALLOWED_PREREQUISITE_RELATIONSHIPS)}",
+            errors,
+        )
+
+        ref_key = (syllabus_id, skill_ref, relationship)
+        require(ref_key not in seen_refs, f"{ref_owner} duplicates an earlier prerequisite reference", errors)
+        seen_refs.add(ref_key)
+
+
 def validate_skill_map(data: Any) -> list[dict[str, Any]]:
     errors: list[str] = []
     root = as_record(data)
     require(root.get("schema_name") == "asterion_p3_skill_map", "skill map schema_name must be asterion_p3_skill_map", errors)
+    require(isinstance(root.get("schema_version"), int) and root.get("schema_version") >= 2, "skill map schema_version must be at least 2", errors)
     require(root.get("paper_family") == "p3", "skill map paper_family must be p3", errors)
     require(root.get("review_status") == "reviewed", "skill map must be reviewed", errors)
+    supporting_target_ids = validate_curriculum_targets(root, errors)
     skills = root.get("skills")
     require(isinstance(skills, list), "skill map must contain skills[]", errors)
     if not isinstance(skills, list):
@@ -225,6 +369,11 @@ def validate_skill_map(data: Any) -> list[dict[str, Any]]:
         "syllabus_topic",
         "region_id",
         "micro_skill_name",
+        "curriculum_role",
+        "mastery_eligible",
+        "prerequisite_skill_refs",
+        "prerequisite_notes",
+        "needs_teacher_review",
         "recognizer_signals",
         "common_errors",
         "prerequisite_skills",
@@ -254,6 +403,7 @@ def validate_skill_map(data: Any) -> list[dict[str, Any]]:
         for field in (
             "recognizer_signals",
             "common_errors",
+            "prerequisite_skill_refs",
             "prerequisite_skills",
             "canonical_source_question_ids",
             "supported_by_snippet_ids",
@@ -264,6 +414,17 @@ def validate_skill_map(data: Any) -> list[dict[str, Any]]:
             require(isinstance(skill.get(field), list), f"{owner}.{field} must be an array", errors)
         require(bool(string_list(skill.get("recognizer_signals"))), f"{owner}.recognizer_signals must not be empty", errors)
         require(bool(string_list(skill.get("common_errors"))), f"{owner}.common_errors must not be empty", errors)
+        curriculum_role = non_empty_string(skill.get("curriculum_role"))
+        require(bool(curriculum_role), f"{owner} missing curriculum_role", errors)
+        require(curriculum_role in ALLOWED_CURRICULUM_ROLES, f"{owner} has unknown curriculum_role {curriculum_role}", errors)
+        require(isinstance(skill.get("mastery_eligible"), bool), f"{owner} missing mastery_eligible", errors)
+        require(isinstance(skill.get("needs_teacher_review"), bool), f"{owner} missing needs_teacher_review", errors)
+        require(isinstance(skill.get("prerequisite_notes"), str), f"{owner}.prerequisite_notes must be a string", errors)
+        if curriculum_role in NON_MASTERY_CURRICULUM_ROLES:
+            require(skill.get("mastery_eligible") is False, f"{owner} cannot be mastery_eligible when curriculum_role is {curriculum_role}", errors)
+        if curriculum_role == "ambiguous" and skill.get("mastery_eligible") is True:
+            require(skill.get("needs_teacher_review") is True, f"{owner} ambiguous mastery_eligible skills must need teacher review", errors)
+        validate_prerequisite_skill_refs(skill, owner, supporting_target_ids, errors)
         region_id = non_empty_string(skill.get("region_id"))
         require(region_id in ACTIVE_P3_REGION_IDS, f"{owner} has unknown P3 region_id {region_id}", errors)
         topic = non_empty_string(skill.get("syllabus_topic"))
@@ -343,12 +504,17 @@ def skill_coverage(
 
     report = {
         "canonical_source_question_count": len(canonical_ids),
+        "curriculum_role": skill["curriculum_role"],
         "has_generated_warm_up": bool(resolved_generator_families),
         "has_quick_check": bool(resolved_quick_check_ids),
         "has_snippet": bool(resolved_snippet_ids),
         "has_trainable_canonical_question": bool(resolved_trainable_ids),
         "high_evidence": len(resolved_trainable_ids) >= HIGH_EVIDENCE_QUESTION_COUNT,
+        "mastery_eligible": skill["mastery_eligible"],
         "micro_skill_name": skill["micro_skill_name"],
+        "needs_teacher_review": skill["needs_teacher_review"],
+        "prerequisite_notes": skill["prerequisite_notes"],
+        "prerequisite_skill_refs": skill["prerequisite_skill_refs"],
         "region_id": skill["region_id"],
         "resolved_generator_families": resolved_generator_families,
         "resolved_guardian_candidates": resolved_guardian_candidates,
@@ -391,6 +557,18 @@ def grouped_rows(skill_reports: list[dict[str, Any]], key: str) -> list[dict[str
     return rows
 
 
+def curriculum_metadata_summary(skill_reports: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "mastery_eligible_skills": sum(1 for report in skill_reports if report["mastery_eligible"]),
+        "skills_by_curriculum_role": {
+            role: sum(1 for report in skill_reports if report["curriculum_role"] == role)
+            for role in sorted(ALLOWED_CURRICULUM_ROLES)
+        },
+        "skills_needing_teacher_review": sum(1 for report in skill_reports if report["needs_teacher_review"]),
+        "skills_with_prerequisite_refs": sum(1 for report in skill_reports if report["prerequisite_skill_refs"]),
+    }
+
+
 def build_report(
     *,
     skill_map_path: Path,
@@ -398,7 +576,9 @@ def build_report(
     snippets_path: Path,
     generated_practice_path: Path,
 ) -> dict[str, Any]:
-    skills = validate_skill_map(load_json(skill_map_path))
+    skill_map_data = load_json(skill_map_path)
+    skills = validate_skill_map(skill_map_data)
+    curriculum_targets = as_record(as_record(skill_map_data).get("curriculum_targets"))
     question_index = question_index_from_bank(load_json(question_bank_path))
     snippet_index = snippet_support_index(load_json(snippets_path))
     generated_index = generated_practice_index(load_json(generated_practice_path))
@@ -446,6 +626,7 @@ def build_report(
         or high_evidence_weak
         or unresolved_reference_warnings
     )
+    metadata_summary = curriculum_metadata_summary(skill_reports)
 
     def display_path(path: Path) -> str:
         try:
@@ -455,11 +636,13 @@ def build_report(
 
     return {
         "dashboard": {
+            "coverage_by_curriculum_role": grouped_rows(skill_reports, "curriculum_role"),
             "coverage_by_region": grouped_rows(skill_reports, "region_id"),
             "coverage_by_syllabus_topic": grouped_rows(skill_reports, "syllabus_topic"),
             "readiness_label": "ready" if ready else "not_ready",
             "ready_for_full_p3_learning": ready,
         },
+        "curriculum_targets": curriculum_targets,
         "generated_by": GENERATED_BY,
         "gaps": {
             "high_evidence_skills_with_weak_teaching_support": high_evidence_weak,
@@ -483,6 +666,7 @@ def build_report(
         "summary": {
             "high_evidence_skills": sum(1 for report in skill_reports if report["high_evidence"]),
             "high_evidence_weak_teaching_support": len(high_evidence_weak),
+            **metadata_summary,
             "ready_for_full_p3_learning": ready,
             "skills_with_generated_warm_up": sum(1 for report in skill_reports if report["has_generated_warm_up"]),
             "skills_with_quick_check": sum(1 for report in skill_reports if report["has_quick_check"]),
@@ -532,6 +716,17 @@ def main() -> int:
         f"no_generated_warm_up={len(gaps['skills_with_no_generated_warm_up'])}, "
         f"no_trainable_question={len(gaps['skills_with_no_trainable_canonical_question'])}, "
         f"high_evidence_weak_support={len(gaps['high_evidence_skills_with_weak_teaching_support'])}"
+    )
+    role_counts = ", ".join(
+        f"{role}={count}"
+        for role, count in summary["skills_by_curriculum_role"].items()
+    )
+    print(
+        "Curriculum metadata: "
+        f"roles=({role_counts}), "
+        f"mastery_eligible={summary['mastery_eligible_skills']}, "
+        f"with_prerequisite_refs={summary['skills_with_prerequisite_refs']}, "
+        f"needs_teacher_review={summary['skills_needing_teacher_review']}"
     )
     print(f"Wrote {args.output}")
     return 0

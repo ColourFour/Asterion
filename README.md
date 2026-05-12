@@ -18,6 +18,7 @@ The strongest current areas are the image-first practice loop, normalized questi
 - [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
 - [Project State Snapshot](docs/project-state-2026-05-09.md): previous current-state snapshot retained for continuity.
 - [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
+- [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
 
 ## Core Principles

@@ -86,7 +86,17 @@ Records become `review_only` when they are not blocked but still need human atte
 
 `generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
 
-`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. `p3_skill_coverage_report.json` summarizes snippet, Quick Check, generated warm-up, canonical-question, and high-evidence weak-support gaps for Content Lab readiness.
+`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `p3_skill_coverage_report.json` summarizes snippet, Quick Check, generated warm-up, canonical-question, and high-evidence weak-support gaps for Content Lab readiness.
+
+P3 skill contract metadata:
+
+- `curriculum_role` classifies the skill as `p3_core`, `bridge`, `p1_prerequisite`, `ambiguous`, or `out_of_scope`.
+- `mastery_eligible` says whether canonical P3 exam-question evidence may count toward P3 mastery for that skill.
+- `prerequisite_skill_refs` records stable P1 support references such as `algebraic_manipulation` or `differentiation_basics`; these are readiness support, not P3 coverage.
+- `prerequisite_notes` gives room for reviewer context without changing the stable references.
+- `needs_teacher_review` flags ambiguous or unsafe curriculum cases before they can be treated as trusted.
+
+P3 mastery evidence must come from mastery-eligible P3 contract skills backed by canonical question and mark-scheme image pairs. P1 prerequisite support, Quick Checks, warm-ups, Field Guides, snippets, and worked examples may support readiness, but they do not prove P3 mastery by themselves.
 
 Worked Examples v1 fields:
 

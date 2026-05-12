@@ -25,30 +25,54 @@ describe('Astral Academy region map layout', () => {
     const layoutIds = Object.keys(ASTRAL_REGION_LAYOUT).sort();
 
     expect(layoutIds).toEqual(regionIds);
-    Object.values(ASTRAL_REGION_LAYOUT).forEach((slot) => {
+    Object.entries(ASTRAL_REGION_LAYOUT).forEach(([regionId, slot]) => {
+      expect(slot.regionId).toBe(regionId);
       expect(slot.xPct).toBeGreaterThanOrEqual(10);
       expect(slot.xPct).toBeLessThanOrEqual(90);
       expect(slot.yPct).toBeGreaterThanOrEqual(10);
       expect(slot.yPct).toBeLessThanOrEqual(80);
+      expect(slot.label.maxWidthPx).toBeGreaterThanOrEqual(120);
     });
   });
 
-  it('uses a broad fixed constellation instead of clustering regions near the hub', () => {
+  it('uses the sketch order and scale hierarchy without displaying it as map markers', () => {
+    const layout = buildAstralRegionMapLayout(progressForAllRegions());
+
+    expect(layout['algebra-forge'].priorityOrder).toBe(1);
+    expect(layout['logarithm-grove'].priorityOrder).toBe(2);
+    expect(layout['trig-observatory'].priorityOrder).toBe(3);
+    expect(layout['numerical-mines'].priorityOrder).toBe(4);
+    expect(layout['complex-harbor'].priorityOrder).toBe(5);
+    expect(layout['integration-gardens'].priorityOrder).toBe(6);
+    expect(layout['calculus-cliffs'].priorityOrder).toBe(7);
+    expect(layout['vector-workshop'].priorityOrder).toBe(8);
+    expect(layout['differential-shrine'].priorityOrder).toBe(9);
+    expect(layout['algebra-forge'].scale).toBe(ASTRAL_REGION_LAYOUT['algebra-forge'].scale);
+    expect(layout['logarithm-grove'].scale).toBe(ASTRAL_REGION_LAYOUT['logarithm-grove'].scale);
+    expect(layout['algebra-forge'].scale).toBeGreaterThan(layout['logarithm-grove'].scale);
+    expect(layout['logarithm-grove'].scale).toBeGreaterThan(layout['vector-workshop'].scale);
+  });
+
+  it('uses a dense fixed sketch constellation around the central Algebra Vault', () => {
     const layout = buildAstralRegionMapLayout(progressForAllRegions());
     const positions = Object.values(layout);
     const xs = positions.map((position) => position.xPct);
     const ys = positions.map((position) => position.yPct);
 
-    expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThanOrEqual(72);
-    expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThanOrEqual(62);
-    expect(layout['algebra-forge'].xPct).toBeGreaterThanOrEqual(42);
-    expect(layout['algebra-forge'].xPct).toBeLessThanOrEqual(58);
-    expect(layout['algebra-forge'].yPct).toBeGreaterThanOrEqual(42);
-    expect(layout['algebra-forge'].yPct).toBeLessThanOrEqual(52);
-    expect(layout['logarithm-grove'].xPct).toBeLessThan(30);
-    expect(layout['trig-observatory'].xPct).toBeGreaterThan(70);
-    expect(layout['calculus-cliffs'].yPct).toBeGreaterThan(70);
+    expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThanOrEqual(70);
+    expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThanOrEqual(58);
+    expect(layout['algebra-forge'].xPct).toBeGreaterThanOrEqual(48);
+    expect(layout['algebra-forge'].xPct).toBeLessThanOrEqual(56);
+    expect(layout['algebra-forge'].yPct).toBeGreaterThanOrEqual(38);
+    expect(layout['algebra-forge'].yPct).toBeLessThanOrEqual(46);
+    expect(layout['logarithm-grove'].xPct).toBeLessThan(18);
+    expect(layout['logarithm-grove'].yPct).toBeLessThan(24);
+    expect(layout['trig-observatory'].xPct).toBeGreaterThan(82);
+    expect(layout['trig-observatory'].yPct).toBeLessThan(28);
+    expect(layout['calculus-cliffs'].xPct).toBeLessThan(18);
+    expect(layout['calculus-cliffs'].yPct).toBeGreaterThan(68);
     expect(layout['numerical-mines'].yPct).toBeGreaterThan(60);
+    expect(layout['integration-gardens'].xPct).toBeGreaterThan(64);
     expect(layout['differential-shrine'].yPct).toBeGreaterThan(60);
   });
 
@@ -74,6 +98,8 @@ describe('Astral Academy region map layout', () => {
     const layout = buildAstralRegionMapLayout(progressForAllRegions(), 'trig-observatory');
 
     expect(layout['trig-observatory'].priority).toBe('daily');
+    expect(layout['trig-observatory'].scale).toBe(ASTRAL_REGION_LAYOUT['trig-observatory'].scale);
+    expect(layout['algebra-forge'].scale).toBe(ASTRAL_REGION_LAYOUT['algebra-forge'].scale);
     expect(layout['trig-observatory'].xPct).toBe(ASTRAL_REGION_LAYOUT['trig-observatory'].xPct);
     expect(layout['trig-observatory'].yPct).toBe(ASTRAL_REGION_LAYOUT['trig-observatory'].yPct);
     expect(layout['algebra-forge'].xPct).toBe(ASTRAL_REGION_LAYOUT['algebra-forge'].xPct);

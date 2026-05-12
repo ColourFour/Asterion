@@ -8,6 +8,7 @@
     "schema_name",
     "schema_version",
     "paper_family",
+    "curriculum_targets",
     "review_status",
     "reviewed_at",
     "source_note",
@@ -15,8 +16,121 @@
   ],
   "properties": {
     "schema_name": { "const": "asterion_p3_skill_map" },
-    "schema_version": { "type": "integer", "minimum": 1 },
+    "schema_version": { "type": "integer", "minimum": 2 },
     "paper_family": { "const": "p3" },
+    "curriculum_targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary",
+        "supporting_prerequisites",
+        "mastery_policy",
+        "reviewed_at",
+        "review_source_note"
+      ],
+      "properties": {
+        "primary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "syllabus_id",
+            "qualification",
+            "syllabus_code",
+            "component",
+            "component_title",
+            "paper_family",
+            "exam_years",
+            "syllabus_version",
+            "published",
+            "source_urls",
+            "scope_note"
+          ],
+          "properties": {
+            "syllabus_id": { "const": "caie_9709_p3_2026_2027" },
+            "qualification": { "type": "string", "minLength": 1 },
+            "syllabus_code": { "const": "9709" },
+            "component": { "const": "Paper 3" },
+            "component_title": { "const": "Pure Mathematics 3" },
+            "paper_family": { "const": "p3" },
+            "exam_years": {
+              "type": "array",
+              "items": { "enum": ["2026", "2027"] },
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true
+            },
+            "syllabus_version": { "const": "Version 4" },
+            "published": { "type": "string", "minLength": 1 },
+            "source_urls": {
+              "type": "array",
+              "items": { "type": "string", "format": "uri" },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "scope_note": { "type": "string", "minLength": 1 }
+          }
+        },
+        "supporting_prerequisites": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "syllabus_id",
+              "qualification",
+              "syllabus_code",
+              "component",
+              "component_title",
+              "paper_family",
+              "exam_years",
+              "role",
+              "source_urls",
+              "scope_note"
+            ],
+            "properties": {
+              "syllabus_id": { "const": "caie_9709_p1_2026_2027" },
+              "qualification": { "type": "string", "minLength": 1 },
+              "syllabus_code": { "const": "9709" },
+              "component": { "const": "Paper 1" },
+              "component_title": { "const": "Pure Mathematics 1" },
+              "paper_family": { "const": "p1" },
+              "exam_years": {
+                "type": "array",
+                "items": { "enum": ["2026", "2027"] },
+                "minItems": 2,
+                "maxItems": 2,
+                "uniqueItems": true
+              },
+              "role": { "const": "prerequisite_support" },
+              "source_urls": {
+                "type": "array",
+                "items": { "type": "string", "format": "uri" },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "scope_note": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "mastery_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "p3_mastery_evidence",
+            "p1_prerequisite_use",
+            "reporting_boundary"
+          ],
+          "properties": {
+            "p3_mastery_evidence": { "type": "string", "minLength": 1 },
+            "p1_prerequisite_use": { "type": "string", "minLength": 1 },
+            "reporting_boundary": { "type": "string", "minLength": 1 }
+          }
+        },
+        "reviewed_at": { "type": "string", "minLength": 1 },
+        "review_source_note": { "type": "string", "minLength": 1 }
+      }
+    },
     "review_status": { "enum": ["reviewed"] },
     "reviewed_at": { "type": "string", "minLength": 1 },
     "source_note": { "type": "string", "minLength": 1 },
@@ -31,6 +145,11 @@
           "syllabus_topic",
           "region_id",
           "micro_skill_name",
+          "curriculum_role",
+          "mastery_eligible",
+          "prerequisite_skill_refs",
+          "prerequisite_notes",
+          "needs_teacher_review",
           "recognizer_signals",
           "common_errors",
           "prerequisite_skills",
@@ -45,6 +164,37 @@
           "syllabus_topic": { "type": "string", "minLength": 1 },
           "region_id": { "type": "string", "minLength": 1 },
           "micro_skill_name": { "type": "string", "minLength": 1 },
+          "curriculum_role": {
+            "enum": ["p3_core", "bridge", "p1_prerequisite", "ambiguous", "out_of_scope"]
+          },
+          "mastery_eligible": { "type": "boolean" },
+          "prerequisite_skill_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["syllabus_id", "skill_ref", "relationship"],
+              "properties": {
+                "syllabus_id": { "const": "caie_9709_p1_2026_2027" },
+                "skill_ref": {
+                  "enum": [
+                    "algebraic_manipulation",
+                    "coordinate_geometry",
+                    "differentiation_basics",
+                    "functions_and_graphs",
+                    "integration_basics",
+                    "radians_and_trigonometry",
+                    "sequences_and_series",
+                    "trigonometric_identities"
+                  ]
+                },
+                "relationship": { "const": "supports" }
+              }
+            },
+            "uniqueItems": true
+          },
+          "prerequisite_notes": { "type": "string" },
+          "needs_teacher_review": { "type": "boolean" },
           "recognizer_signals": {
             "type": "array",
             "minItems": 1,
@@ -87,7 +237,38 @@
             "items": { "type": "string", "minLength": 1 },
             "uniqueItems": true
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": ["curriculum_role"],
+              "properties": {
+                "curriculum_role": { "enum": ["p1_prerequisite", "out_of_scope"] }
+              }
+            },
+            "then": {
+              "required": ["mastery_eligible"],
+              "properties": {
+                "mastery_eligible": { "const": false }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": ["curriculum_role", "mastery_eligible"],
+              "properties": {
+                "curriculum_role": { "const": "ambiguous" },
+                "mastery_eligible": { "const": true }
+              }
+            },
+            "then": {
+              "required": ["needs_teacher_review"],
+              "properties": {
+                "needs_teacher_review": { "const": true }
+              }
+            }
+          }
+        ]
       }
     }
   }

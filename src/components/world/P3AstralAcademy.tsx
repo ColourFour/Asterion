@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { BookOpenCheck, FileText, Map as MapIcon, ScrollText, Target, Trophy, UsersRound } from 'lucide-react';
+import { BookOpenCheck, FileText, Target, Trophy } from 'lucide-react';
 import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
 import { buildAstralRegionMapLayout, type AstralMapPriority } from '../../lib/astralRegionLayout';
@@ -19,10 +19,6 @@ interface P3AstralAcademyProps {
   regionLearningSummaries?: Record<string, RegionLearningSummary>;
   notice?: string;
   onTrain: (region: RegionDefinition) => void;
-  onRegions: () => void;
-  onProfile: () => void;
-  onClassHall: () => void;
-  onTeacher: () => void;
 }
 
 function percent(value: number | undefined): string {
@@ -230,7 +226,7 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
 
     const triggerRect = node.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
-    const obstacleRects = Array.from(document.querySelectorAll<HTMLElement>('.bottom-menu, .world-hud'))
+    const obstacleRects = Array.from(document.querySelectorAll<HTMLElement>('.world-hud'))
       .filter((element) => element.offsetParent !== null)
       .map((element) => element.getBoundingClientRect());
     setTooltipPosition(positionTooltip(triggerRect, tooltipRect, obstacleRects));
@@ -317,10 +313,6 @@ export function P3AstralAcademy({
   regionLearningSummaries,
   notice,
   onTrain,
-  onRegions,
-  onProfile,
-  onClassHall,
-  onTeacher,
 }: P3AstralAcademyProps) {
   const summary = calculateAcademySummary(progress);
   const recommended = summary.recommendedRegionName
@@ -357,7 +349,17 @@ export function P3AstralAcademy({
             const { region } = regionProgress;
             const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
             const isRecommended = summary.recommendedRegionName === region.name;
-            const layout = mapLayout[region.id] ?? { x: 50, y: 50, priority: 'neutral', scale: 1, zIndex: 3 };
+            const layout = mapLayout[region.id] ?? {
+              x: 50,
+              y: 50,
+              xPct: 50,
+              yPct: 50,
+              priorityOrder: index + 1,
+              priority: 'neutral' as const,
+              scale: 1,
+              zIndex: 3,
+              label: { placement: 'lower' as const, xPct: 50, bottomPx: 8, maxWidthPx: 148 },
+            };
             const regionLearningSummary = regionLearningSummaries?.[region.id];
             return (
               <RegionMapNode
@@ -376,6 +378,9 @@ export function P3AstralAcademy({
                   '--float-delay': `${index * -420}ms`,
                   '--x': `${layout.xPct}%`,
                   '--y': `${layout.yPct}%`,
+                  '--label-x': `${layout.label.xPct}%`,
+                  '--label-bottom': `${layout.label.bottomPx}px`,
+                  '--label-max-width': `${layout.label.maxWidthPx}px`,
                 } as CSSProperties}
               />
             );
@@ -392,13 +397,6 @@ export function P3AstralAcademy({
           />
         </div>
 
-        <div className="bottom-menu" aria-label="Academy menu">
-          <button type="button" onClick={onProfile}><ScrollText size={20} /> Profile</button>
-          <button type="button" onClick={onClassHall}><UsersRound size={20} /> Commons</button>
-          <button type="button" disabled={!recommended} onClick={() => recommended && onTrain(recommended.region)}><FileText size={20} /> Region</button>
-          <button type="button" onClick={onRegions}><MapIcon size={20} /> Regions</button>
-          <button type="button" onClick={onTeacher}><BookOpenCheck size={20} /> Archive</button>
-        </div>
       </div>
 
       {notice ? <div className="world-notice">{notice}</div> : null}

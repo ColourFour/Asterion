@@ -284,10 +284,6 @@ export default function App() {
           regionLearningSummaries={regionLearningSummaries}
           notice={worldNotice}
           onTrain={enterRegion}
-          onRegions={openRegions}
-          onProfile={openProfile}
-          onClassHall={openClassHall}
-          onTeacher={() => setViewMode('teacher')}
         />
       ) : null}
 

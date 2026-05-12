@@ -130,7 +130,7 @@ describe('ClassHall', () => {
     expect(container.querySelectorAll('[data-class-hall-card]')).toHaveLength(0);
   });
 
-  it('exposes a world map entry point for the Commons', () => {
+  it('keeps the world map focused on region entry points without duplicate bottom navigation', () => {
     const container = render(
       <P3AstralAcademy
         world={P3_ASTRAL_ACADEMY}
@@ -139,15 +139,12 @@ describe('ClassHall', () => {
         avatar={emptyProgress().avatar}
         avatarLocation={avatarLocation}
         onTrain={vi.fn()}
-        onRegions={vi.fn()}
-        onProfile={vi.fn()}
-        onClassHall={vi.fn()}
-        onTeacher={vi.fn()}
       />,
     );
 
-    const commonsButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Commons'));
-    expect(commonsButton).toBeTruthy();
+    expect(container.querySelector('.bottom-menu')).toBeNull();
+    const regionButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Algebra Vault'));
+    expect(regionButton).toBeTruthy();
   });
 
   it('opens a region from the whole ledger card without double-firing the nested button', () => {

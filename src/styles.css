@@ -5331,7 +5331,7 @@ legend {
 .app-view-map .map-shell {
   width: 100%;
   max-width: none;
-  min-height: max(680px, calc(100svh - 132px));
+  min-height: max(720px, calc(100svh - 124px));
   margin: 0;
   border: 1px solid rgba(215, 169, 98, 0.74);
   background:
@@ -5390,6 +5390,10 @@ legend {
   opacity: 0.5;
 }
 
+.app-view-map .galaxy::after {
+  display: none;
+}
+
 .app-view-map .constellation-a {
   left: 6%;
   top: auto;
@@ -5403,14 +5407,13 @@ legend {
 }
 
 .app-view-map .academy-map {
-  --map-node-edge-x: 10%;
-  --map-node-edge-y: 12%;
-  inset: clamp(44px, 6vh, 72px) clamp(30px, 3vw, 58px) clamp(92px, 13vh, 136px) clamp(30px, 3vw, 58px);
+  --map-node-edge-x: 4%;
+  --map-node-edge-y: 5%;
+  inset: clamp(22px, 3vh, 38px) clamp(12px, 1.4vw, 24px) clamp(20px, 3vh, 38px) clamp(12px, 1.4vw, 24px);
 }
 
 .app-view-map .map-paths {
-  inset: -2% -2% -3%;
-  overflow: visible;
+  display: none;
 }
 
 .journey-path-glow,
@@ -5444,15 +5447,15 @@ legend {
 }
 
 .app-view-map .map-region-node {
-  width: clamp(158px, 14vw, 268px);
+  width: clamp(160px, 12.5vw, 228px);
 }
 
 .app-view-map .map-region-node button {
-  min-height: clamp(156px, 15vw, 252px);
+  min-height: clamp(154px, 13vw, 210px);
 }
 
 .app-view-map .island-art {
-  height: clamp(124px, 13vw, 208px);
+  height: clamp(128px, 11.8vw, 188px);
 }
 
 .app-view-map .region-island-image {
@@ -5465,8 +5468,8 @@ legend {
 }
 
 .app-view-map .map-priority-quiet .region-island-image {
-  filter: brightness(0.84) saturate(0.84);
-  opacity: 0.9;
+  filter: brightness(0.94) saturate(0.9);
+  opacity: 0.96;
 }
 
 .app-view-map .map-region-node.recommended-region .region-island-image {
@@ -5482,13 +5485,14 @@ legend {
 }
 
 .app-view-map .map-region-label {
-  bottom: -4px;
+  left: var(--label-x, 50%);
+  bottom: var(--label-bottom, -4px);
   display: grid;
-  min-width: 76px;
+  min-width: 92px;
   width: max-content;
-  max-width: min(132px, 118%);
-  padding: 4px 9px;
-  opacity: 0.9;
+  max-width: min(var(--label-max-width, 154px), 126%);
+  padding: 5px 10px;
+  opacity: 0.98;
   border: 1px solid rgba(220, 176, 104, 0.76);
   color: #f8dfad;
   background:
@@ -5529,7 +5533,7 @@ legend {
 .app-view-map .map-region-label strong {
   color: #ffe4ac;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 800;
   line-height: 1.05;
   text-align: center;
@@ -5548,8 +5552,9 @@ legend {
 }
 
 .app-view-map .map-region-node.recommended-region .map-region-label {
-  bottom: -12px;
+  bottom: var(--label-bottom, -4px);
   min-width: 112px;
+  max-width: min(var(--label-max-width, 172px), 128%);
   border-color: rgba(255, 212, 113, 0.92);
   box-shadow:
     0 0 0 1px rgba(5, 4, 10, 0.92),
