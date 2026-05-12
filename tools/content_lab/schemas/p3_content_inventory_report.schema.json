@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asterion.local/schemas/p3_content_inventory_report.schema.json",
+  "title": "Asterion Content Lab P3 Content Inventory Report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "generated_by",
+    "generated_label",
+    "curriculum_target_summary",
+    "region_summary",
+    "reviewed_skill_summary",
+    "per_region_inventory",
+    "per_skill_inventory",
+    "question_routing_summary",
+    "routing_audit_summary",
+    "missing_support_summary",
+    "teacher_review_export_tag_summary",
+    "risk_summary",
+    "actionable_next_step_summary"
+  ],
+  "properties": {
+    "schema_name": { "const": "asterion_p3_content_inventory_report" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "generated_by": { "const": "tools/content_lab/scripts/build_p3_content_inventory.py" },
+    "generated_label": { "const": "deterministic-content-inventory-v1" },
+    "curriculum_target_summary": { "type": "object" },
+    "region_summary": {
+      "type": "object",
+      "required": ["region_count", "regions_with_explicit_field_guides", "status_counts"]
+    },
+    "reviewed_skill_summary": {
+      "type": "object",
+      "required": [
+        "skill_count",
+        "status_counts",
+        "available_support_type_counts",
+        "ready_for_region_learning_loop"
+      ]
+    },
+    "per_region_inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "region_id",
+          "region_title",
+          "reviewed_skill_refs",
+          "skill_count",
+          "field_guide_count",
+          "snippet_count",
+          "worked_example_count",
+          "quick_check_count",
+          "warmup_support_count",
+          "canonical_question_count",
+          "guardian_candidate_count",
+          "missing_support_flags",
+          "instructional_status"
+        ],
+        "properties": {
+          "instructional_status": {
+            "enum": ["ready", "partial", "missing", "needs_review", "blocked"]
+          }
+        }
+      }
+    },
+    "per_skill_inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "skill_ref",
+          "official_curriculum_section",
+          "curriculum_role",
+          "mastery_eligible",
+          "needs_teacher_review",
+          "prerequisite_skill_refs",
+          "region_id",
+          "available_support_types",
+          "missing_support_types",
+          "canonical_question_ids_routed_to_skill",
+          "instructional_status"
+        ],
+        "properties": {
+          "instructional_status": {
+            "enum": ["ready", "partial", "missing", "needs_review", "blocked"]
+          }
+        }
+      }
+    },
+    "question_routing_summary": { "type": "object" },
+    "routing_audit_summary": {
+      "type": "object",
+      "required": [
+        "review_label",
+        "original_reviewed_mismatch_count",
+        "resolved_mismatch_count",
+        "teacher_review_mismatch_count",
+        "unreviewed_mismatch_count",
+        "teacher_review_mismatches",
+        "unreviewed_mismatches",
+        "resolved_mismatches"
+      ],
+      "properties": {
+        "review_label": { "type": "string" },
+        "original_reviewed_mismatch_count": { "type": "integer", "minimum": 0 },
+        "resolved_mismatch_count": { "type": "integer", "minimum": 0 },
+        "teacher_review_mismatch_count": { "type": "integer", "minimum": 0 },
+        "unreviewed_mismatch_count": { "type": "integer", "minimum": 0 },
+        "teacher_review_mismatches": { "type": "array" },
+        "unreviewed_mismatches": { "type": "array" },
+        "resolved_mismatches": { "type": "array" }
+      }
+    },
+    "missing_support_summary": { "type": "object" },
+    "teacher_review_export_tag_summary": { "type": "object" },
+    "risk_summary": { "type": "array" },
+    "actionable_next_step_summary": { "type": "array" }
+  }
+}

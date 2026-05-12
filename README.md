@@ -139,6 +139,15 @@ python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 
 As of 2026-05-09, runtime Content Lab coverage is 34 reviewed teaching snippets, 34 Quick Checks, 30 reviewed generated warm-ups, and 10 generator families. The verifier is the source of truth for current counts.
 
+P3 curriculum contract and inventory reports are generated separately:
+
+```bash
+npm run validate:p3-skill-map
+npm run inventory:p3-content
+```
+
+`validate:p3-skill-map` checks the reviewed CAIE 9709 P3 skill contract and writes the coverage report. `inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`, which inventories Field Guides, snippets, worked examples, Quick Checks, warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export tags, and routing-audit status by region and reviewed skill. Missing instructional support is reported as a gap; unsafe P3 mastery evidence fails the command.
+
 Run the pipeline with:
 
 ```bash

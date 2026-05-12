@@ -40,6 +40,12 @@ Build the reviewed P3 skill-map coverage dashboard:
 npm run validate:p3-skill-map
 ```
 
+Build the deterministic P3 content inventory:
+
+```bash
+npm run inventory:p3-content
+```
+
 Verify generated outputs and reviewed runtime artifacts:
 
 ```bash
@@ -88,6 +94,20 @@ Records become `review_only` when they are not blocked but still need human atte
 `generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
 
 `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `npm run validate:p3-skill-map` writes the deterministic, reviewable report to `tools/content_lab/reports/p3_skill_coverage_report.json`, summarizing snippet, Quick Check, generated warm-up, canonical-question, curriculum-role, prerequisite-reference, and high-evidence weak-support gaps for Content Lab readiness. The report is intentionally kept in version control as a stable review artifact.
+
+`npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
+
+The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; audited ambiguous entries remain visible as teacher-review routing items; active mismatches with no audit entry remain structural warnings. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
+
+Inventory status labels are conservative:
+
+- `ready`: every required support type is present and safely mapped.
+- `partial`: at least one support type exists, but one or more required support types are missing.
+- `missing`: no required instructional support type is available.
+- `needs_review`: the reviewed skill or mapping is explicitly marked for teacher review.
+- `blocked`: the curriculum role or mastery policy prevents the item from being treated as P3 mastery support.
+
+Missing snippets, worked examples, Quick Checks, and warm-ups are ordinary content gaps for later phases. Unknown region IDs, unknown reviewed skill refs, malformed curriculum refs, P1 evidence used as P3 mastery evidence, untrainable canonical mastery evidence, or malformed routing-audit references are structural contract violations and make the inventory command exit nonzero.
 
 P3 skill contract metadata:
 

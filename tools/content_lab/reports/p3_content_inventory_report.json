@@ -1,0 +1,4786 @@
+{
+  "actionable_next_step_summary": [
+    {
+      "action_id": "fill_warm_up_gaps",
+      "affected_region_ids": [
+        "algebra-forge",
+        "calculus-cliffs",
+        "complex-harbor",
+        "differential-shrine",
+        "integration-gardens",
+        "logarithm-grove",
+        "numerical-mines",
+        "vector-workshop"
+      ],
+      "affected_skill_count": 27,
+      "summary": "Add reviewed warm up support for 27 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "fill_quick_check_gaps",
+      "affected_region_ids": [
+        "calculus-cliffs",
+        "complex-harbor",
+        "differential-shrine",
+        "integration-gardens",
+        "logarithm-grove",
+        "vector-workshop"
+      ],
+      "affected_skill_count": 6,
+      "summary": "Add reviewed quick check support for 6 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "fill_snippet_gaps",
+      "affected_region_ids": [
+        "logarithm-grove"
+      ],
+      "affected_skill_count": 1,
+      "summary": "Add reviewed snippet support for 1 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "fill_worked_example_gaps",
+      "affected_region_ids": [
+        "logarithm-grove"
+      ],
+      "affected_skill_count": 1,
+      "summary": "Add reviewed worked example support for 1 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "prioritize_incomplete_regions",
+      "affected_region_ids": [
+        "algebra-forge",
+        "logarithm-grove",
+        "trig-observatory",
+        "complex-harbor",
+        "calculus-cliffs",
+        "integration-gardens",
+        "vector-workshop",
+        "numerical-mines",
+        "differential-shrine"
+      ],
+      "affected_skill_count": 40,
+      "summary": "Use the inventory to choose the next content-generation or page-redesign phase; this pass does not create new content."
+    }
+  ],
+  "curriculum_target_summary": {
+    "mastery_policy": {
+      "p1_prerequisite_use": "P1 prerequisite content may support readiness and recommendations, but is not proof of P3 mastery.",
+      "p3_mastery_evidence": "P3 mastery requires P3-aligned canonical question evidence from trainable question and mark-scheme image pairs.",
+      "reporting_boundary": "P3 syllabus coverage and P1 prerequisite readiness must be reported separately."
+    },
+    "primary": {
+      "component": "Paper 3",
+      "component_title": "Pure Mathematics 3",
+      "exam_years": [
+        "2026",
+        "2027"
+      ],
+      "paper_family": "p3",
+      "published": "December 2025",
+      "qualification": "Cambridge International AS & A Level Mathematics",
+      "scope_note": "Primary Asterion P3 coverage target. Skills mapped here may support P3 coverage and, when mastery eligible in later phases, P3 mastery evidence.",
+      "source_urls": [
+        "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/",
+        "https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf"
+      ],
+      "syllabus_code": "9709",
+      "syllabus_id": "caie_9709_p3_2026_2027",
+      "syllabus_version": "Version 4"
+    },
+    "supporting_prerequisites": [
+      {
+        "component": "Paper 1",
+        "component_title": "Pure Mathematics 1",
+        "exam_years": [
+          "2026",
+          "2027"
+        ],
+        "paper_family": "p1",
+        "qualification": "Cambridge International AS & A Level Mathematics",
+        "role": "prerequisite_support",
+        "scope_note": "Relevant P1 knowledge may appear as repair, recall, hint, or bridge support for P3 learning. P1-only success must not count as P3 syllabus coverage, P3 Guardian eligibility, P3 region rank, or P3 mastery.",
+        "source_urls": [
+          "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/",
+          "https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf"
+        ],
+        "syllabus_code": "9709",
+        "syllabus_id": "caie_9709_p1_2026_2027"
+      }
+    ]
+  },
+  "generated_by": "tools/content_lab/scripts/build_p3_content_inventory.py",
+  "generated_label": "deterministic-content-inventory-v1",
+  "inputs": {
+    "deepseek_sidecar": "public/data/question_bank.deepseek.p3.json",
+    "field_guides": "src/data/regionFieldGuides.ts",
+    "generated_practice": "public/data/generated_practice_bank.json",
+    "question_bank": "public/data/question_bank.json",
+    "routing_audit": "tools/content_lab/reviews/p3_app_region_routing_audit.json",
+    "skill_map": "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json",
+    "snippets": "public/data/teaching_snippets.json",
+    "world_map": "src/lib/worldMap.ts"
+  },
+  "missing_support_summary": {
+    "ordinary_gap_skill_count": 27,
+    "skills_missing_canonical_question": [],
+    "skills_missing_field_guide": [],
+    "skills_missing_guardian_candidate": [],
+    "skills_missing_quick_check": [
+      {
+        "micro_skill_name": "Find complex powers and roots using the suitable form",
+        "official_curriculum_section": "Complex numbers",
+        "region_id": "complex-harbor",
+        "skill_ref": "p3_complex_roots_powers"
+      },
+      {
+        "micro_skill_name": "Form differential equations from rate contexts",
+        "official_curriculum_section": "Differential equations",
+        "region_id": "differential-shrine",
+        "skill_ref": "p3_de_forming_context_model"
+      },
+      {
+        "micro_skill_name": "Differentiate implicit log or exponential relations",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp"
+      },
+      {
+        "micro_skill_name": "Evaluate definite and improper integrals exactly",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
+      },
+      {
+        "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+        "official_curriculum_section": "Vectors",
+        "region_id": "vector-workshop",
+        "skill_ref": "p3_vec_3d_geometry_modelling"
+      }
+    ],
+    "skills_missing_snippet": [
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
+      }
+    ],
+    "skills_missing_warmup_support": [
+      {
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions"
+      },
+      {
+        "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_polynomial_remainder_factor"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement"
+      },
+      {
+        "micro_skill_name": "Interpret loci and regions on an Argand diagram",
+        "official_curriculum_section": "Complex numbers",
+        "region_id": "complex-harbor",
+        "skill_ref": "p3_complex_argand_loci_regions"
+      },
+      {
+        "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
+        "official_curriculum_section": "Complex numbers",
+        "region_id": "complex-harbor",
+        "skill_ref": "p3_complex_cartesian_conjugate"
+      },
+      {
+        "micro_skill_name": "Move between Cartesian and modulus-argument form",
+        "official_curriculum_section": "Complex numbers",
+        "region_id": "complex-harbor",
+        "skill_ref": "p3_complex_modulus_argument_form"
+      },
+      {
+        "micro_skill_name": "Find complex powers and roots using the suitable form",
+        "official_curriculum_section": "Complex numbers",
+        "region_id": "complex-harbor",
+        "skill_ref": "p3_complex_roots_powers"
+      },
+      {
+        "micro_skill_name": "Form differential equations from rate contexts",
+        "official_curriculum_section": "Differential equations",
+        "region_id": "differential-shrine",
+        "skill_ref": "p3_de_forming_context_model"
+      },
+      {
+        "micro_skill_name": "Apply initial conditions after integration",
+        "official_curriculum_section": "Differential equations",
+        "region_id": "differential-shrine",
+        "skill_ref": "p3_de_initial_condition"
+      },
+      {
+        "micro_skill_name": "Separate variables before integrating",
+        "official_curriculum_section": "Differential equations",
+        "region_id": "differential-shrine",
+        "skill_ref": "p3_de_separation_setup"
+      },
+      {
+        "micro_skill_name": "Apply chain, product, and quotient rules accurately",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient"
+      },
+      {
+        "micro_skill_name": "Differentiate implicit log or exponential relations",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp"
+      },
+      {
+        "micro_skill_name": "Name the differentiation method before differentiating",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_method_selection"
+      },
+      {
+        "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_parametric_gradients"
+      },
+      {
+        "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal"
+      },
+      {
+        "micro_skill_name": "Evaluate definite and improper integrals exactly",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area"
+      },
+      {
+        "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_method_choice"
+      },
+      {
+        "micro_skill_name": "Use integration by parts or substitution with correct setup",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_parts_substitution"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
+      },
+      {
+        "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_domain_validation"
+      },
+      {
+        "micro_skill_name": "Linearise logarithmic or exponential relationships",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_linearisation"
+      },
+      {
+        "micro_skill_name": "Control accuracy and rounding in numerical solutions",
+        "official_curriculum_section": "Numerical solution of equations",
+        "region_id": "numerical-mines",
+        "skill_ref": "p3_num_accuracy_rounding"
+      },
+      {
+        "micro_skill_name": "Apply an iteration formula consistently",
+        "official_curriculum_section": "Numerical solution of equations",
+        "region_id": "numerical-mines",
+        "skill_ref": "p3_num_iteration_formula"
+      },
+      {
+        "micro_skill_name": "Justify roots using sign changes or graph evidence",
+        "official_curriculum_section": "Numerical solution of equations",
+        "region_id": "numerical-mines",
+        "skill_ref": "p3_num_sign_change_graph_evidence"
+      },
+      {
+        "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+        "official_curriculum_section": "Vectors",
+        "region_id": "vector-workshop",
+        "skill_ref": "p3_vec_3d_geometry_modelling"
+      },
+      {
+        "micro_skill_name": "Form and compare vector equations of lines",
+        "official_curriculum_section": "Vectors",
+        "region_id": "vector-workshop",
+        "skill_ref": "p3_vec_line_equations_intersections"
+      },
+      {
+        "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
+        "official_curriculum_section": "Vectors",
+        "region_id": "vector-workshop",
+        "skill_ref": "p3_vec_scalar_product_angles"
+      }
+    ],
+    "skills_missing_worked_example": [
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
+      }
+    ]
+  },
+  "per_region_inventory": [
+    {
+      "active_by_default": true,
+      "canonical_question_count": 22,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 10,
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_warm_up"
+      ],
+      "quick_check_count": 8,
+      "region_id": "algebra-forge",
+      "region_title": "Algebra Vault",
+      "reviewed_skill_refs": [
+        "p3_alg_binomial_terms_coefficients",
+        "p3_alg_binomial_validity",
+        "p3_alg_discriminant_root_conditions",
+        "p3_alg_modulus_cases",
+        "p3_alg_partial_fraction_form",
+        "p3_alg_polynomial_remainder_factor",
+        "p3_alg_structure_rearrangement"
+      ],
+      "skill_count": 7,
+      "snippet_count": 8,
+      "warmup_support_count": 15,
+      "worked_example_count": 10
+    },
+    {
+      "active_by_default": true,
+      "canonical_question_count": 21,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 11,
+      "instructional_status": "needs_review",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_snippet",
+        "missing_warm_up",
+        "missing_worked_example"
+      ],
+      "quick_check_count": 7,
+      "region_id": "logarithm-grove",
+      "region_title": "Logarithm Observatory",
+      "reviewed_skill_refs": [
+        "p3_log_calculus_contexts",
+        "p3_log_convert_forms",
+        "p3_log_domain_validation",
+        "p3_log_exponential_equations",
+        "p3_log_laws_equations",
+        "p3_log_linearisation"
+      ],
+      "skill_count": 6,
+      "snippet_count": 7,
+      "warmup_support_count": 3,
+      "worked_example_count": 8
+    },
+    {
+      "active_by_default": true,
+      "canonical_question_count": 16,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 9,
+      "instructional_status": "needs_review",
+      "missing_support_flags": [],
+      "quick_check_count": 5,
+      "region_id": "trig-observatory",
+      "region_title": "Trigonometry Spire",
+      "reviewed_skill_refs": [
+        "p3_trig_equation_interval",
+        "p3_trig_identity_selection",
+        "p3_trig_quadrant_solutions",
+        "p3_trig_r_form_compound_angles",
+        "p3_trig_reciprocal_double_angle"
+      ],
+      "skill_count": 5,
+      "snippet_count": 5,
+      "warmup_support_count": 12,
+      "worked_example_count": 7
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 16,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 8,
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_warm_up"
+      ],
+      "quick_check_count": 2,
+      "region_id": "complex-harbor",
+      "region_title": "Argand Atrium",
+      "reviewed_skill_refs": [
+        "p3_complex_argand_loci_regions",
+        "p3_complex_cartesian_conjugate",
+        "p3_complex_modulus_argument_form",
+        "p3_complex_roots_powers"
+      ],
+      "skill_count": 4,
+      "snippet_count": 2,
+      "warmup_support_count": 0,
+      "worked_example_count": 5
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 17,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 10,
+      "instructional_status": "needs_review",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_warm_up"
+      ],
+      "quick_check_count": 3,
+      "region_id": "calculus-cliffs",
+      "region_title": "Calculus Cliffs",
+      "reviewed_skill_refs": [
+        "p3_diff_chain_product_quotient",
+        "p3_diff_implicit_log_exp",
+        "p3_diff_method_selection",
+        "p3_diff_parametric_gradients",
+        "p3_diff_stationary_tangent_normal"
+      ],
+      "skill_count": 5,
+      "snippet_count": 3,
+      "warmup_support_count": 0,
+      "worked_example_count": 6
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 13,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 6,
+      "instructional_status": "needs_review",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_warm_up"
+      ],
+      "quick_check_count": 3,
+      "region_id": "integration-gardens",
+      "region_title": "Integral Terraces",
+      "reviewed_skill_refs": [
+        "p3_int_definite_improper_area",
+        "p3_int_method_choice",
+        "p3_int_partial_fractions",
+        "p3_int_parts_substitution"
+      ],
+      "skill_count": 4,
+      "snippet_count": 4,
+      "warmup_support_count": 6,
+      "worked_example_count": 6
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 13,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 6,
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_warm_up"
+      ],
+      "quick_check_count": 2,
+      "region_id": "vector-workshop",
+      "region_title": "Vectors Gate",
+      "reviewed_skill_refs": [
+        "p3_vec_3d_geometry_modelling",
+        "p3_vec_line_equations_intersections",
+        "p3_vec_scalar_product_angles"
+      ],
+      "skill_count": 3,
+      "snippet_count": 2,
+      "warmup_support_count": 0,
+      "worked_example_count": 4
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 12,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 6,
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_warm_up"
+      ],
+      "quick_check_count": 2,
+      "region_id": "numerical-mines",
+      "region_title": "Iteration Forge",
+      "reviewed_skill_refs": [
+        "p3_num_accuracy_rounding",
+        "p3_num_iteration_formula",
+        "p3_num_sign_change_graph_evidence"
+      ],
+      "skill_count": 3,
+      "snippet_count": 2,
+      "warmup_support_count": 0,
+      "worked_example_count": 2
+    },
+    {
+      "active_by_default": false,
+      "canonical_question_count": 11,
+      "field_guide_count": 1,
+      "guardian_candidate_count": 5,
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_quick_check",
+        "missing_warm_up"
+      ],
+      "quick_check_count": 2,
+      "region_id": "differential-shrine",
+      "region_title": "Differential Shrine",
+      "reviewed_skill_refs": [
+        "p3_de_forming_context_model",
+        "p3_de_initial_condition",
+        "p3_de_separation_setup"
+      ],
+      "skill_count": 3,
+      "snippet_count": 2,
+      "warmup_support_count": 0,
+      "worked_example_count": 4
+    }
+  ],
+  "per_skill_inventory": [
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Find binomial terms and coefficients efficiently",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "sequences_and_series",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "sequences_and_series",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-binomial-term-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_binomial_terms_coefficients",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-binomial-term-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "binomial_expansion.first_terms_and_coefficient"
+      ],
+      "warmup_practice_ids": [
+        "gen_binomial_first_terms_and_coefficient_0001",
+        "gen_binomial_first_terms_and_coefficient_0002",
+        "gen_binomial_first_terms_and_coefficient_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-binomial-term-001-example-1",
+        "p3-binomial-term-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q06",
+        "32autumn24_q01"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "State and use binomial expansion validity",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "sequences_and_series",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "sequences_and_series",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-binomial-validity-range-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_binomial_validity",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-binomial-validity-range-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "algebra.binomial_validity_range"
+      ],
+      "warmup_practice_ids": [
+        "gen_binomial_validity_range_0001",
+        "gen_binomial_validity_range_0002",
+        "gen_binomial_validity_range_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-binomial-validity-range-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 2,
+      "canonical_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 1,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q01"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use discriminant or root conditions as evidence",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-quadratics-discriminant-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_discriminant_root_conditions",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-quadratics-discriminant-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 3,
+      "canonical_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "32autumn25_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "32autumn25_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Split modulus equations or inequalities into valid cases",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-modulus-cases-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_modulus_cases",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-modulus-cases-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "algebra.modulus_equation_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_modulus_equation_basic_0001",
+        "gen_modulus_equation_basic_0002",
+        "gen_modulus_equation_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-modulus-cases-001-example-1",
+        "p3-modulus-cases-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 6,
+      "canonical_question_ids": [
+        "32spring21_q06",
+        "31summer21_q10",
+        "32summer21_q09",
+        "33summer21_q04",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q06",
+        "31summer21_q10",
+        "32summer21_q09",
+        "33summer21_q04",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q06",
+        "31summer21_q10"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Set up partial fractions from denominator structure",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 2,
+      "quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-partial-fractions-repeated-linear-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_partial_fraction_form",
+      "snippet_count": 2,
+      "snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "warmup_practice_ids": [
+        "gen_partial_fractions_distinct_linear_0001",
+        "gen_partial_fractions_distinct_linear_0002",
+        "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_repeated_linear_0001",
+        "gen_partial_fractions_repeated_linear_0002",
+        "gen_partial_fractions_repeated_linear_0003"
+      ],
+      "warmup_support_count": 6,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-partial-fractions-form-001-example-1",
+        "p3-partial-fractions-repeated-linear-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "33summer21_q10",
+        "31summer22_q05",
+        "32spring24_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "33summer21_q10",
+        "31summer22_q05",
+        "32spring24_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-polynomial-theorem-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_polynomial_remainder_factor",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-polynomial-theorem-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 2,
+      "canonical_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "algebra-forge",
+      "guardian_candidate_count": 1,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q01"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Choose algebraic structure before expanding",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Algebra",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-algebra-rearrangement-001-qc"
+      ],
+      "region_id": "algebra-forge",
+      "risk_flags": [],
+      "skill_ref": "p3_alg_structure_rearrangement",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-algebra-rearrangement-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "complex-harbor",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q02",
+        "35autumn25_q02"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Interpret loci and regions on an Argand diagram",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Complex numbers",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-complex-locus-argument-001-qc"
+      ],
+      "region_id": "complex-harbor",
+      "risk_flags": [],
+      "skill_ref": "p3_complex_argand_loci_regions",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-complex-locus-argument-001-example-1",
+        "p3-complex-locus-argument-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "complex-harbor",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q08",
+        "35autumn25_q05"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Complex numbers",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "region_id": "complex-harbor",
+      "risk_flags": [],
+      "skill_ref": "p3_complex_cartesian_conjugate",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-complex-form-001-example-1",
+        "p3-complex-form-001-example-2",
+        "p3-complex-form-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "complex-harbor",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Move between Cartesian and modulus-argument form",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Complex numbers",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "region_id": "complex-harbor",
+      "risk_flags": [],
+      "skill_ref": "p3_complex_modulus_argument_form",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-complex-form-001-example-1",
+        "p3-complex-form-001-example-2",
+        "p3-complex-form-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "complex-harbor",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Find complex powers and roots using the suitable form",
+      "missing_support_types": [
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Complex numbers",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "complex-harbor",
+      "risk_flags": [],
+      "skill_ref": "p3_complex_roots_powers",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-complex-form-001-example-1",
+        "p3-complex-form-001-example-2",
+        "p3-complex-form-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "differential-shrine",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Form differential equations from rate contexts",
+      "missing_support_types": [
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differential equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "differential-shrine",
+      "risk_flags": [],
+      "skill_ref": "p3_de_forming_context_model",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differential-separation-001-example-1",
+        "p3-differential-separation-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "differential-shrine",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Apply initial conditions after integration",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differential equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-differential-initial-condition-001-qc"
+      ],
+      "region_id": "differential-shrine",
+      "risk_flags": [],
+      "skill_ref": "p3_de_initial_condition",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differential-initial-condition-001-example-1",
+        "p3-differential-initial-condition-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "differential-shrine",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q07",
+        "35summer25_q11"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Separate variables before integrating",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differential equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-differential-separation-001-qc"
+      ],
+      "region_id": "differential-shrine",
+      "risk_flags": [],
+      "skill_ref": "p3_de_separation_setup",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differential-separation-001-example-1",
+        "p3-differential-separation-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "35summer25_q04",
+        "33summer21_q08"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q08",
+        "35summer25_q04"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Apply chain, product, and quotient rules accurately",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differentiation",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "region_id": "calculus-cliffs",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_diff_chain_product_quotient",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-differentiation-method-001-example-1",
+        "p3-differentiation-method-001-example-2",
+        "p3-differentiation-method-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "32autumn21_q09",
+        "35autumn25_q04",
+        "31summer21_q09"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "31summer21_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "31summer21_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Differentiate implicit log or exponential relations",
+      "missing_support_types": [
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differentiation",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "calculus-cliffs",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_diff_implicit_log_exp",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-differentiation-method-001-example-1",
+        "p3-differentiation-method-001-example-2",
+        "p3-differentiation-method-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31summer23_q05",
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31summer23_q05",
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31summer23_q05",
+        "35summer25_q06"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Name the differentiation method before differentiating",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differentiation",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "region_id": "calculus-cliffs",
+      "risk_flags": [],
+      "skill_ref": "p3_diff_method_selection",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-differentiation-method-001-example-1",
+        "p3-differentiation-method-001-example-2",
+        "p3-differentiation-method-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "32spring21_q10",
+        "35summer25_q06"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "32spring21_q10",
+        "35summer25_q06"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33summer21_q03",
+        "31autumn25_q07"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differentiation",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-parametric-derivative-001-qc"
+      ],
+      "region_id": "calculus-cliffs",
+      "risk_flags": [],
+      "skill_ref": "p3_diff_parametric_gradients",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-parametric-derivative-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "32autumn21_q11"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "32autumn21_q11",
+        "35summer25_q07",
+        "31autumn25_q04"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "32autumn21_q11",
+        "35summer25_q07",
+        "31autumn25_q04"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33summer21_q08",
+        "31autumn25_q04"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Differentiation",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-differentiation-follow-through-001-qc"
+      ],
+      "region_id": "calculus-cliffs",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_diff_stationary_tangent_normal",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differentiation-follow-through-001-example-1",
+        "p3-differentiation-follow-through-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "33summer21_q04",
+        "32spring21_q10"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn21_q04",
+        "33summer21_q04",
+        "33summer25_q03",
+        "32spring21_q10",
+        "31summer21_q04"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q04",
+        "33summer21_q04",
+        "33summer25_q03",
+        "32spring21_q10",
+        "31summer21_q04"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "integration-gardens",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q04",
+        "33summer25_q03"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Evaluate definite and improper integrals exactly",
+      "missing_support_types": [
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Integration",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "integration-gardens",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_int_definite_improper_area",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "32spring21_q10",
+        "33summer21_q04"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-integration-method-choice-001-example-1",
+        "p3-integration-method-choice-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "integration-gardens",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Integration",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-integration-method-choice-001-qc"
+      ],
+      "region_id": "integration-gardens",
+      "risk_flags": [],
+      "skill_ref": "p3_int_method_choice",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-integration-method-choice-001-example-1",
+        "p3-integration-method-choice-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "32summer21_q09",
+        "31summer21_q10",
+        "35summer25_q09"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "32summer21_q09",
+        "31summer21_q10",
+        "35summer25_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "32summer21_q09",
+        "31summer21_q10",
+        "35summer25_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "integration-gardens",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Integrate rational functions using partial fractions",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Integration",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 2,
+      "quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-integration-method-choice-001-qc"
+      ],
+      "region_id": "integration-gardens",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_int_partial_fractions",
+      "snippet_count": 3,
+      "snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001",
+        "p3-integration-method-choice-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "warmup_practice_ids": [
+        "gen_partial_fractions_distinct_linear_0001",
+        "gen_partial_fractions_distinct_linear_0002",
+        "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_repeated_linear_0001",
+        "gen_partial_fractions_repeated_linear_0002",
+        "gen_partial_fractions_repeated_linear_0003"
+      ],
+      "warmup_support_count": 6,
+      "worked_example_count": 4,
+      "worked_example_ids": [
+        "p3-integration-method-choice-001-example-1",
+        "p3-integration-method-choice-001-example-2",
+        "p3-partial-fractions-form-001-example-1",
+        "p3-partial-fractions-repeated-linear-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "integration-gardens",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q04",
+        "32autumn25_q04"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use integration by parts or substitution with correct setup",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Integration",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "integration_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-integration-parts-substitution-001-qc"
+      ],
+      "region_id": "integration-gardens",
+      "risk_flags": [],
+      "skill_ref": "p3_int_parts_substitution",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-integration-parts-substitution-001-example-1",
+        "p3-integration-parts-substitution-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "33autumn21_q07"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31summer21_q09",
+        "35summer25_q04"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+      "missing_support_types": [
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "differentiation_basics",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "logarithm-grove",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_log_calculus_contexts",
+      "snippet_count": 0,
+      "snippet_ids": [],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "33autumn21_q07"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 0,
+      "worked_example_ids": []
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Convert between logarithmic and exponential form",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-log-exp-convert-001-qc"
+      ],
+      "region_id": "logarithm-grove",
+      "risk_flags": [],
+      "skill_ref": "p3_log_convert_forms",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-log-exp-convert-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-log-domain-001-qc"
+      ],
+      "region_id": "logarithm-grove",
+      "risk_flags": [],
+      "skill_ref": "p3_log_domain_validation",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-log-domain-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-log-domain-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn22_q03",
+        "35summer25_q01"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Solve exponential equations using matching bases or natural logs",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 2,
+      "quick_check_ids": [
+        "p3-exp-equations-001-qc",
+        "p3-ln-e-inverse-001-qc"
+      ],
+      "region_id": "logarithm-grove",
+      "risk_flags": [],
+      "skill_ref": "p3_log_exponential_equations",
+      "snippet_count": 2,
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-exp-equations-001-example-1",
+        "p3-ln-e-inverse-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use log laws to solve logarithmic equations",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 2,
+      "quick_check_ids": [
+        "p3-log-laws-001-qc",
+        "p3-log-invalid-operations-001-qc"
+      ],
+      "region_id": "logarithm-grove",
+      "risk_flags": [],
+      "skill_ref": "p3_log_laws_equations",
+      "snippet_count": 2,
+      "snippet_ids": [
+        "p3-log-laws-001",
+        "p3-log-invalid-operations-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-log-invalid-operations-001-example-1",
+        "p3-log-laws-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 3,
+      "canonical_question_ids": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "logarithm-grove",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q03",
+        "35autumn25_q03"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Linearise logarithmic or exponential relationships",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Logarithmic and exponential functions",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-log-linearisation-001-qc"
+      ],
+      "region_id": "logarithm-grove",
+      "risk_flags": [],
+      "skill_ref": "p3_log_linearisation",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-log-linearisation-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-log-linearisation-001-example-1",
+        "p3-log-linearisation-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "numerical-mines",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Control accuracy and rounding in numerical solutions",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Numerical solution of equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "region_id": "numerical-mines",
+      "risk_flags": [],
+      "skill_ref": "p3_num_accuracy_rounding",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-numerical-method-evidence-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "numerical-mines",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q08",
+        "35autumn25_q10"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Apply an iteration formula consistently",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Numerical solution of equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "algebraic_manipulation",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-iteration-formula-discipline-001-qc"
+      ],
+      "region_id": "numerical-mines",
+      "risk_flags": [],
+      "skill_ref": "p3_num_iteration_formula",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-iteration-formula-discipline-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "numerical-mines",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Justify roots using sign changes or graph evidence",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Numerical solution of equations",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "functions_and_graphs",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "region_id": "numerical-mines",
+      "risk_flags": [],
+      "skill_ref": "p3_num_sign_change_graph_evidence",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-numerical-method-evidence-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "trig-observatory",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Solve trig equations over a specified interval",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Trigonometry",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 2,
+      "quick_check_ids": [
+        "p3-trig-interval-001-qc",
+        "p3-trig-lost-solutions-001-qc"
+      ],
+      "region_id": "trig-observatory",
+      "risk_flags": [],
+      "skill_ref": "p3_trig_equation_interval",
+      "snippet_count": 2,
+      "snippet_ids": [
+        "p3-trig-interval-001",
+        "p3-trig-lost-solutions-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_trig_solve_equation_interval_basic_0001",
+        "gen_trig_solve_equation_interval_basic_0002",
+        "gen_trig_solve_equation_interval_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-interval-001-example-1",
+        "p3-trig-lost-solutions-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "trig-observatory",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32autumn21_q06",
+        "33summer25_q08"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Choose trig identities for proof or simplification",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Trigonometry",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-trig-identity-selection-001-qc"
+      ],
+      "region_id": "trig-observatory",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_trig_identity_selection",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-trig-identity-selection-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_trig_double_angle_basic_0001",
+        "gen_trig_double_angle_basic_0002",
+        "gen_trig_double_angle_basic_0003",
+        "gen_trig_identity_rewrite_basic_0001",
+        "gen_trig_identity_rewrite_basic_0002",
+        "gen_trig_identity_rewrite_basic_0003"
+      ],
+      "warmup_support_count": 6,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-identity-selection-001-example-1",
+        "p3-trig-identity-selection-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "trig-observatory",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer22_q02",
+        "35summer25_q02"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use quadrant discipline to find every trig solution",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Trigonometry",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-trig-quadrant-discipline-001-qc"
+      ],
+      "region_id": "trig-observatory",
+      "risk_flags": [],
+      "skill_ref": "p3_trig_quadrant_solutions",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_trig_solve_equation_interval_basic_0001",
+        "gen_trig_solve_equation_interval_basic_0002",
+        "gen_trig_solve_equation_interval_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-trig-quadrant-discipline-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 4,
+      "canonical_question_ids": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "trig-observatory",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q05",
+        "31autumn25_q03"
+      ],
+      "instructional_status": "ready",
+      "mastery_eligible": true,
+      "micro_skill_name": "Rewrite a sin and cos combination in R-form",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Trigonometry",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "region_id": "trig-observatory",
+      "risk_flags": [],
+      "skill_ref": "p3_trig_r_form_compound_angles",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "trigonometry.r_form_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_trig_r_form_basic_0001",
+        "gen_trig_r_form_basic_0002",
+        "gen_trig_r_form_basic_0003"
+      ],
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-reciprocal-rform-001-example-1",
+        "p3-trig-reciprocal-rform-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [
+        "32summer21_q06"
+      ],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32summer21_q06",
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32summer21_q06",
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "trig-observatory",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32summer21_q06",
+        "35summer25_q02"
+      ],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "micro_skill_name": "Transform reciprocal and double-angle equations safely",
+      "missing_support_types": [],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Trigonometry",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "radians_and_trigonometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        },
+        {
+          "relationship": "supports",
+          "skill_ref": "trigonometric_identities",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "region_id": "trig-observatory",
+      "risk_flags": [
+        "teacher_review_app_region_mismatch"
+      ],
+      "skill_ref": "p3_trig_reciprocal_double_angle",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [
+        "32summer21_q06"
+      ],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "warmup_practice_ids": [
+        "gen_trig_double_angle_basic_0001",
+        "gen_trig_double_angle_basic_0002",
+        "gen_trig_double_angle_basic_0003",
+        "gen_trig_identity_rewrite_basic_0001",
+        "gen_trig_identity_rewrite_basic_0002",
+        "gen_trig_identity_rewrite_basic_0003"
+      ],
+      "warmup_support_count": 6,
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-reciprocal-rform-001-example-1",
+        "p3-trig-reciprocal-rform-001-example-2"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "vector-workshop",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "33autumn21_q08",
+        "32autumn25_q11"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Translate 3D geometric conditions into vector equations",
+      "missing_support_types": [
+        "quick_check",
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Vectors",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 0,
+      "quick_check_ids": [],
+      "region_id": "vector-workshop",
+      "risk_flags": [],
+      "skill_ref": "p3_vec_3d_geometry_modelling",
+      "snippet_count": 2,
+      "snippet_ids": [
+        "p3-vectors-lines-001",
+        "p3-vectors-scalar-product-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 4,
+      "worked_example_ids": [
+        "p3-vectors-lines-001-example-1",
+        "p3-vectors-lines-001-example-2",
+        "p3-vectors-lines-001-example-3",
+        "p3-vectors-scalar-product-001-example-1"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "vector-workshop",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "32spring21_q07",
+        "31autumn25_q11"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Form and compare vector equations of lines",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Vectors",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-vectors-lines-001-qc"
+      ],
+      "region_id": "vector-workshop",
+      "risk_flags": [],
+      "skill_ref": "p3_vec_line_equations_intersections",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-vectors-lines-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-vectors-lines-001-example-1",
+        "p3-vectors-lines-001-example-2",
+        "p3-vectors-lines-001-example-3"
+      ]
+    },
+    {
+      "app_region_mismatch_question_ids": [],
+      "available_support_types": [
+        "field_guide",
+        "snippet",
+        "worked_example",
+        "quick_check",
+        "canonical_question",
+        "guardian_candidate"
+      ],
+      "canonical_question_count": 5,
+      "canonical_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
+      "canonical_question_ids_routed_to_skill": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
+      "curriculum_role": "p3_core",
+      "field_guide_count": 1,
+      "field_guide_region_id": "vector-workshop",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
+        "31autumn21_q09",
+        "35summer25_q10"
+      ],
+      "instructional_status": "partial",
+      "mastery_eligible": true,
+      "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
+      "missing_support_types": [
+        "warm_up"
+      ],
+      "needs_teacher_review": false,
+      "official_curriculum_section": "Vectors",
+      "p1_prerequisite_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "prerequisite_notes": "",
+      "prerequisite_skill_refs": [
+        {
+          "relationship": "supports",
+          "skill_ref": "coordinate_geometry",
+          "syllabus_id": "caie_9709_p1_2026_2027"
+        }
+      ],
+      "quick_check_count": 1,
+      "quick_check_ids": [
+        "p3-vectors-scalar-product-001-qc"
+      ],
+      "region_id": "vector-workshop",
+      "risk_flags": [],
+      "skill_ref": "p3_vec_scalar_product_angles",
+      "snippet_count": 1,
+      "snippet_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
+      "teacher_review_app_region_mismatch_question_ids": [],
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [],
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-vectors-scalar-product-001-example-1"
+      ]
+    }
+  ],
+  "question_routing_summary": {
+    "app_region_routed_p3_question_count": 396,
+    "app_region_unrouted_p3_question_count": 0,
+    "by_region": [
+      {
+        "app_routed_p3_question_count": 70,
+        "canonical_question_count": 22,
+        "region_id": "algebra-forge",
+        "region_title": "Algebra Vault",
+        "skill_count": 7
+      },
+      {
+        "app_routed_p3_question_count": 41,
+        "canonical_question_count": 21,
+        "region_id": "logarithm-grove",
+        "region_title": "Logarithm Observatory",
+        "skill_count": 6
+      },
+      {
+        "app_routed_p3_question_count": 41,
+        "canonical_question_count": 16,
+        "region_id": "trig-observatory",
+        "region_title": "Trigonometry Spire",
+        "skill_count": 5
+      },
+      {
+        "app_routed_p3_question_count": 59,
+        "canonical_question_count": 16,
+        "region_id": "complex-harbor",
+        "region_title": "Argand Atrium",
+        "skill_count": 4
+      },
+      {
+        "app_routed_p3_question_count": 56,
+        "canonical_question_count": 17,
+        "region_id": "calculus-cliffs",
+        "region_title": "Calculus Cliffs",
+        "skill_count": 5
+      },
+      {
+        "app_routed_p3_question_count": 26,
+        "canonical_question_count": 13,
+        "region_id": "integration-gardens",
+        "region_title": "Integral Terraces",
+        "skill_count": 4
+      },
+      {
+        "app_routed_p3_question_count": 37,
+        "canonical_question_count": 13,
+        "region_id": "vector-workshop",
+        "region_title": "Vectors Gate",
+        "skill_count": 3
+      },
+      {
+        "app_routed_p3_question_count": 32,
+        "canonical_question_count": 12,
+        "region_id": "numerical-mines",
+        "region_title": "Iteration Forge",
+        "skill_count": 3
+      },
+      {
+        "app_routed_p3_question_count": 34,
+        "canonical_question_count": 11,
+        "region_id": "differential-shrine",
+        "region_title": "Differential Shrine",
+        "skill_count": 3
+      }
+    ],
+    "p3_question_count": 396,
+    "referenced_canonical_question_count": 128,
+    "referenced_trainable_p3_question_count": 128,
+    "total_question_count": 1301,
+    "trainable_p3_question_count": 385,
+    "unreferenced_trainable_p3_question_count": 257
+  },
+  "region_summary": {
+    "region_count": 9,
+    "regions_with_explicit_field_guides": 9,
+    "status_counts": {
+      "blocked": 0,
+      "missing": 0,
+      "needs_review": 4,
+      "partial": 5,
+      "ready": 0
+    }
+  },
+  "reviewed_skill_summary": {
+    "available_support_type_counts": {
+      "canonical_question": 40,
+      "field_guide": 40,
+      "guardian_candidate": 40,
+      "quick_check": 34,
+      "snippet": 39,
+      "warm_up": 13,
+      "worked_example": 39
+    },
+    "ready_for_region_learning_loop": false,
+    "skill_count": 40,
+    "status_counts": {
+      "blocked": 0,
+      "missing": 0,
+      "needs_review": 8,
+      "partial": 22,
+      "ready": 10
+    }
+  },
+  "risk_summary": [
+    {
+      "count": 1,
+      "risk_id": "missing_snippet",
+      "risk_type": "ordinary_gap",
+      "status": "open"
+    },
+    {
+      "count": 1,
+      "risk_id": "missing_worked_example",
+      "risk_type": "ordinary_gap",
+      "status": "open"
+    },
+    {
+      "count": 6,
+      "risk_id": "missing_quick_check",
+      "risk_type": "ordinary_gap",
+      "status": "open"
+    },
+    {
+      "count": 27,
+      "risk_id": "missing_warm_up",
+      "risk_type": "ordinary_gap",
+      "status": "open"
+    },
+    {
+      "count": 0,
+      "risk_id": "missing_trainable_canonical_question",
+      "risk_type": "ordinary_gap",
+      "status": "clear"
+    },
+    {
+      "count": 0,
+      "risk_id": "missing_guardian_candidate",
+      "risk_type": "ordinary_gap",
+      "status": "clear"
+    },
+    {
+      "count": 0,
+      "risk_id": "app_region_unrouted_p3_questions",
+      "risk_type": "review_risk",
+      "status": "clear"
+    },
+    {
+      "count": 20,
+      "risk_id": "teacher_review_app_region_mismatches",
+      "risk_type": "review_risk",
+      "status": "open"
+    },
+    {
+      "count": 0,
+      "risk_id": "unreviewed_app_region_mismatches",
+      "risk_type": "structural_warning",
+      "status": "clear"
+    },
+    {
+      "count": 10,
+      "risk_id": "resolved_app_region_mismatches",
+      "risk_type": "audit_result",
+      "status": "resolved"
+    },
+    {
+      "count": 0,
+      "risk_id": "inactive_teacher_review_routing_audit_entries",
+      "risk_type": "review_risk",
+      "status": "clear"
+    },
+    {
+      "count": 0,
+      "risk_id": "needs_teacher_review",
+      "risk_type": "review_risk",
+      "status": "clear"
+    },
+    {
+      "count": 0,
+      "risk_id": "structural_warnings",
+      "risk_type": "structural_warning",
+      "status": "clear"
+    }
+  ],
+  "routing_audit_summary": {
+    "active_mismatch_count": 20,
+    "active_skill_warning_count": 8,
+    "inactive_teacher_review_entries": [],
+    "inactive_teacher_review_entry_count": 0,
+    "original_reviewed_mismatch_count": 30,
+    "resolved_mismatch_count": 10,
+    "resolved_mismatches": [
+      {
+        "original_app_region_id": "differential-shrine",
+        "question_id": "33summer22_q08",
+        "rationale": "The mark scheme rewards separating variables, integrating, using an initial condition, and interpreting the model. It is not discriminant/root-condition evidence.",
+        "recommended_resolution": "Remove this question from algebra discriminant/root-condition evidence and from the algebra Guardian candidates.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions",
+        "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a separable differential-equation population model."
+      },
+      {
+        "original_app_region_id": "complex-harbor",
+        "question_id": "31autumn25_q06",
+        "rationale": "The mark scheme rewards complex arithmetic and conjugate manipulation, not discriminant or real-root conditions.",
+        "recommended_resolution": "Remove this question from algebra discriminant/root-condition evidence.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions",
+        "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a complex-number quadratic."
+      },
+      {
+        "original_app_region_id": "complex-harbor",
+        "question_id": "31autumn25_q06",
+        "rationale": "The question has no modulus equation, modulus inequality, or case split.",
+        "recommended_resolution": "Remove this question from algebra modulus-case evidence.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_modulus_cases",
+        "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a complex-number quadratic."
+      },
+      {
+        "original_app_region_id": "calculus-cliffs",
+        "question_id": "32autumn25_q01",
+        "rationale": "The question asks for an absolute-value graph and inequality; the reviewed algebra modulus skill is the safer route.",
+        "recommended_resolution": "Correct the question-bank topic to algebra and subtopic to modulus inequalities.",
+        "resolution_status": "corrected_question_metadata",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_modulus_cases",
+        "source_of_conflicting_label": "Local topic was parametric_equations, while the question text and DeepSeek label identify an absolute-value inequality."
+      },
+      {
+        "original_app_region_id": "logarithm-grove",
+        "question_id": "33autumn21_q03",
+        "rationale": "The mark scheme rewards laws of indices and solving an exponential equation, not the reviewed algebra rearrangement skill.",
+        "recommended_resolution": "Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement",
+        "source_of_conflicting_label": "Local topic was algebra, while DeepSeek/app routing identify an exponential equation."
+      },
+      {
+        "original_app_region_id": "logarithm-grove",
+        "question_id": "33summer22_q03",
+        "rationale": "The mark scheme rewards log laws and a resulting quadratic, not the reviewed algebra rearrangement skill.",
+        "recommended_resolution": "Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement",
+        "source_of_conflicting_label": "Local topic was algebra, while the question text is a logarithmic equation."
+      },
+      {
+        "original_app_region_id": "trig-observatory",
+        "question_id": "33summer24_q08",
+        "rationale": "The question asks for trigonometric R-form and a related trigonometric integral.",
+        "recommended_resolution": "Remove this question from algebra structure evidence and from the algebra Guardian candidates; correct the question-bank topic to trigonometry.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement",
+        "source_of_conflicting_label": "Local topic was algebra, while DeepSeek/app routing identify trigonometry."
+      },
+      {
+        "original_app_region_id": "algebra-forge",
+        "question_id": "31summer21_q10",
+        "rationale": "The question gives the differential equation and asks students to solve it using partial fractions; it does not ask students to form the model from context.",
+        "recommended_resolution": "Remove this question from forming-context-model evidence.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "differential-shrine",
+        "skill_ref": "p3_de_forming_context_model",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions, while the reviewed skill is forming a context model."
+      },
+      {
+        "original_app_region_id": "integration-gardens",
+        "question_id": "31summer23_q08",
+        "rationale": "The logarithms appear as integrated partial-fraction terms; the question is not linearisation evidence.",
+        "recommended_resolution": "Remove this question from log-linearisation evidence and correct the question-bank topic to integration.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_linearisation",
+        "source_of_conflicting_label": "Local topic was logarithms_and_exponentials, while DeepSeek/app routing and the mark scheme identify partial-fractions integration."
+      },
+      {
+        "original_app_region_id": "differential-shrine",
+        "question_id": "33autumn21_q10",
+        "rationale": "The iteration is one subpart after model formation and differential-equation solving; the full question is not clean iteration-formula evidence.",
+        "recommended_resolution": "Remove this question from iteration-formula evidence and correct the question-bank topic to differential_equations.",
+        "resolution_status": "corrected_skill_map",
+        "reviewed_skill_map_region_id": "numerical-mines",
+        "skill_ref": "p3_num_iteration_formula",
+        "source_of_conflicting_label": "Local topic was numerical_methods, while DeepSeek/app routing identify differential equations."
+      }
+    ],
+    "resolved_skill_warning_count": 6,
+    "review_label": "phase-3-routing-audit-v1",
+    "teacher_review_mismatch_count": 20,
+    "teacher_review_mismatches": [
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "31summer21_q09",
+        "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
+        "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "question_id": "33summer21_q08",
+        "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "35summer25_q04",
+        "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
+        "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "31summer21_q09",
+        "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
+        "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "32autumn21_q09",
+        "rationale": "The question is an implicit differentiation problem containing exponential terms.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "35autumn25_q04",
+        "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "question_id": "31summer21_q09",
+        "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+      },
+      {
+        "app_region_id": "numerical-mines",
+        "question_id": "32autumn21_q11",
+        "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
+        "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "question_id": "33summer21_q08",
+        "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "question_id": "32spring21_q10",
+        "rationale": "The question contains both an area integral and a maximum-point derivative task.",
+        "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines partial-fraction setup and exact integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "31summer21_q10",
+        "rationale": "The question solves a differential equation using partial fractions.",
+        "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "32spring21_q06",
+        "rationale": "The question combines decomposition and integration evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "32summer21_q09",
+        "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
+        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines decomposition and integration evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "question_id": "35summer25_q09",
+        "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
+        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "question_id": "33autumn21_q07",
+        "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
+        "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "question_id": "31summer21_q04",
+        "rationale": "The question combines identity proof and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "question_id": "32summer21_q06",
+        "rationale": "The question combines identity proof and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "question_id": "32summer21_q06",
+        "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
+        "resolution_status": "needs_teacher_review",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_reciprocal_double_angle",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+      }
+    ],
+    "teacher_review_skill_warning_count": 8,
+    "unreviewed_mismatch_count": 0,
+    "unreviewed_mismatches": [],
+    "unreviewed_skill_warning_count": 0
+  },
+  "schema_name": "asterion_p3_content_inventory_report",
+  "schema_version": 1,
+  "settings": {
+    "ordinary_missing_content_is_non_blocking": true,
+    "status_labels": [
+      "ready",
+      "partial",
+      "missing",
+      "needs_review",
+      "blocked"
+    ],
+    "support_types": [
+      "field_guide",
+      "snippet",
+      "worked_example",
+      "quick_check",
+      "warm_up",
+      "canonical_question",
+      "guardian_candidate"
+    ],
+    "unsafe_mastery_evidence_is_blocking": true
+  },
+  "structural_reference_warnings": [],
+  "teacher_review_export_tag_summary": {
+    "available_export_tag_fields": [
+      "skill_ref",
+      "official_curriculum_section",
+      "region_id",
+      "curriculum_role",
+      "mastery_eligible",
+      "needs_teacher_review",
+      "prerequisite_skill_refs",
+      "prerequisite_notes",
+      "available_support_types",
+      "missing_support_types",
+      "canonical_question_ids_routed_to_skill"
+    ],
+    "curriculum_roles": {
+      "ambiguous": 0,
+      "bridge": 0,
+      "out_of_scope": 0,
+      "p1_prerequisite": 0,
+      "p3_core": 40
+    },
+    "mastery_eligible_skill_count": 40,
+    "needs_teacher_review_skill_count": 0,
+    "p1_prerequisite_ref_count": 70,
+    "p1_prerequisite_skill_refs": [
+      "algebraic_manipulation",
+      "coordinate_geometry",
+      "differentiation_basics",
+      "functions_and_graphs",
+      "integration_basics",
+      "radians_and_trigonometry",
+      "sequences_and_series",
+      "trigonometric_identities"
+    ],
+    "skills_with_p1_prerequisite_refs": 40
+  }
+}

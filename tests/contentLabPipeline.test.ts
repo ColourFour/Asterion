@@ -225,6 +225,7 @@ function runVerifier(outputDir: string, snippetsPath: string): string {
     snippetsPath,
     '--runtime-generated-practice',
     path.join(outputDir, 'runtime_generated_practice_bank.json'),
+    '--skip-question-bank-git-check',
   ]);
 }
 

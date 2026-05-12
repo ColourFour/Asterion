@@ -49,7 +49,7 @@
   "source_note": "Internal reviewed Content Lab map for CAIE 9709 Pure Mathematics 3 coverage. It maps syllabus-level skills to existing Asterion regions, canonical question evidence, and reviewed support artifacts without creating new student-facing content.",
   "skills": [
     {
-      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01", "33autumn21_q03", "33summer22_q03", "33summer24_q08"],
+      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01"],
       "common_errors": ["Expanding before checking for shared structure.", "Cancelling across addition or subtraction.", "Losing restrictions introduced by denominators."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
@@ -62,7 +62,7 @@
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_structure_rearrangement",
       "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q01", "33summer24_q08"],
+      "supported_by_guardian_candidates": ["31autumn21_q01"],
       "supported_by_quick_check_ids": ["p3-algebra-rearrangement-001-qc"],
       "supported_by_snippet_ids": ["p3-algebra-rearrangement-001"],
       "syllabus_topic": "Algebra"
@@ -144,7 +144,7 @@
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["32autumn21_q02", "33summer25_q01", "31autumn25_q06", "32autumn25_q01"],
+      "canonical_source_question_ids": ["32autumn21_q02", "33summer25_q01", "32autumn25_q01"],
       "common_errors": ["Squaring without checking cases.", "Dropping the condition that defines a modulus branch.", "Keeping intervals that fail the original inequality."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
@@ -163,7 +163,7 @@
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01", "33summer22_q08", "31autumn25_q06"],
+      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01"],
       "common_errors": ["Solving the whole equation when a discriminant condition is enough.", "Using the wrong inequality for repeated roots.", "Missing that tangency means one repeated root."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
@@ -176,7 +176,7 @@
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_discriminant_root_conditions",
       "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q01", "33summer22_q08"],
+      "supported_by_guardian_candidates": ["31autumn21_q01"],
       "supported_by_quick_check_ids": ["p3-quadratics-discriminant-001-qc"],
       "supported_by_snippet_ids": ["p3-quadratics-discriminant-001"],
       "syllabus_topic": "Algebra"
@@ -258,7 +258,7 @@
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q03", "32spring22_q03", "35autumn25_q03", "31summer23_q08"],
+      "canonical_source_question_ids": ["32summer21_q03", "32spring22_q03", "35autumn25_q03"],
       "common_errors": ["Taking logs of only one side of a product.", "Comparing the wrong straight-line variables.", "Reading gradient and intercept with swapped signs."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
@@ -581,7 +581,7 @@
       "syllabus_topic": "Numerical solution of equations"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q08", "32autumn21_q11", "32spring22_q07", "33autumn21_q10", "35autumn25_q10"],
+      "canonical_source_question_ids": ["31autumn21_q08", "32autumn21_q11", "32spring22_q07", "35autumn25_q10"],
       "common_errors": ["Changing the given iteration formula.", "Rounding every iteration too early.", "Not using the requested starting value."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
@@ -714,7 +714,7 @@
       "syllabus_topic": "Differential equations"
     },
     {
-      "canonical_source_question_ids": ["33autumn21_q10", "35autumn25_q11", "32autumn25_q10", "33summer24_q09", "31summer21_q10"],
+      "canonical_source_question_ids": ["33autumn21_q10", "35autumn25_q11", "32autumn25_q10", "33summer24_q09"],
       "common_errors": ["Writing proportionality without a differential equation.", "Missing the factor that represents the remaining amount.", "Not defining the variables in context."],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,

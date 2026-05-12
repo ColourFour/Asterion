@@ -51,7 +51,7 @@
     "coverage_by_curriculum_role": [
       {
         "curriculum_role": "p3_core",
-        "high_evidence_weak_teaching_support": 23,
+        "high_evidence_weak_teaching_support": 20,
         "skills_with_generated_warm_up": 13,
         "skills_with_quick_check": 34,
         "skills_with_snippet": 39,
@@ -61,7 +61,7 @@
     ],
     "coverage_by_region": [
       {
-        "high_evidence_weak_teaching_support": 2,
+        "high_evidence_weak_teaching_support": 1,
         "region_id": "algebra-forge",
         "skills_with_generated_warm_up": 4,
         "skills_with_quick_check": 7,
@@ -88,7 +88,7 @@
         "total_skills": 4
       },
       {
-        "high_evidence_weak_teaching_support": 3,
+        "high_evidence_weak_teaching_support": 2,
         "region_id": "differential-shrine",
         "skills_with_generated_warm_up": 0,
         "skills_with_quick_check": 2,
@@ -115,7 +115,7 @@
         "total_skills": 6
       },
       {
-        "high_evidence_weak_teaching_support": 3,
+        "high_evidence_weak_teaching_support": 2,
         "region_id": "numerical-mines",
         "skills_with_generated_warm_up": 0,
         "skills_with_quick_check": 3,
@@ -144,7 +144,7 @@
     ],
     "coverage_by_syllabus_topic": [
       {
-        "high_evidence_weak_teaching_support": 2,
+        "high_evidence_weak_teaching_support": 1,
         "skills_with_generated_warm_up": 4,
         "skills_with_quick_check": 7,
         "skills_with_snippet": 7,
@@ -162,7 +162,7 @@
         "total_skills": 4
       },
       {
-        "high_evidence_weak_teaching_support": 3,
+        "high_evidence_weak_teaching_support": 2,
         "skills_with_generated_warm_up": 0,
         "skills_with_quick_check": 2,
         "skills_with_snippet": 3,
@@ -198,7 +198,7 @@
         "total_skills": 6
       },
       {
-        "high_evidence_weak_teaching_support": 3,
+        "high_evidence_weak_teaching_support": 2,
         "skills_with_generated_warm_up": 0,
         "skills_with_quick_check": 3,
         "skills_with_snippet": 3,
@@ -240,15 +240,6 @@
         "syllabus_topic": "Algebra"
       },
       {
-        "micro_skill_name": "Choose algebraic structure before expanding",
-        "reasons": [
-          "no_reviewed_generated_warm_up"
-        ],
-        "region_id": "algebra-forge",
-        "skill_id": "p3_alg_structure_rearrangement",
-        "syllabus_topic": "Algebra"
-      },
-      {
         "micro_skill_name": "Interpret loci and regions on an Argand diagram",
         "reasons": [
           "no_reviewed_generated_warm_up"
@@ -284,16 +275,6 @@
         "region_id": "complex-harbor",
         "skill_id": "p3_complex_roots_powers",
         "syllabus_topic": "Complex numbers"
-      },
-      {
-        "micro_skill_name": "Form differential equations from rate contexts",
-        "reasons": [
-          "no_reviewed_quick_check",
-          "no_reviewed_generated_warm_up"
-        ],
-        "region_id": "differential-shrine",
-        "skill_id": "p3_de_forming_context_model",
-        "syllabus_topic": "Differential equations"
       },
       {
         "micro_skill_name": "Apply initial conditions after integration",
@@ -395,15 +376,6 @@
         ],
         "region_id": "numerical-mines",
         "skill_id": "p3_num_accuracy_rounding",
-        "syllabus_topic": "Numerical solution of equations"
-      },
-      {
-        "micro_skill_name": "Apply an iteration formula consistently",
-        "reasons": [
-          "no_reviewed_generated_warm_up"
-        ],
-        "region_id": "numerical-mines",
-        "skill_id": "p3_num_iteration_formula",
         "syllabus_topic": "Numerical solution of equations"
       },
       {
@@ -785,7 +757,7 @@
       "weak_support_reasons": []
     },
     {
-      "canonical_source_question_count": 4,
+      "canonical_source_question_count": 2,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": false,
       "has_quick_check": true,
@@ -812,8 +784,7 @@
       "region_id": "algebra-forge",
       "resolved_generator_families": [],
       "resolved_guardian_candidates": [
-        "31autumn21_q01",
-        "33summer22_q08"
+        "31autumn21_q01"
       ],
       "resolved_quick_check_ids": [
         "p3-quadratics-discriminant-001-qc"
@@ -823,13 +794,11 @@
       ],
       "resolved_trainable_canonical_question_ids": [
         "31autumn21_q01",
-        "31summer22_q01",
-        "33summer22_q08",
-        "31autumn25_q06"
+        "31summer22_q01"
       ],
       "skill_id": "p3_alg_discriminant_root_conditions",
       "syllabus_topic": "Algebra",
-      "trainable_canonical_question_count": 4,
+      "trainable_canonical_question_count": 2,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -842,7 +811,7 @@
       ]
     },
     {
-      "canonical_source_question_count": 4,
+      "canonical_source_question_count": 3,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": true,
       "has_quick_check": true,
@@ -883,12 +852,11 @@
       "resolved_trainable_canonical_question_ids": [
         "32autumn21_q02",
         "33summer25_q01",
-        "31autumn25_q06",
         "32autumn25_q01"
       ],
       "skill_id": "p3_alg_modulus_cases",
       "syllabus_topic": "Algebra",
-      "trainable_canonical_question_count": 4,
+      "trainable_canonical_question_count": 3,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -1009,14 +977,14 @@
       ]
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 2,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": false,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
-      "high_evidence_weak_teaching_support": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Choose algebraic structure before expanding",
       "needs_teacher_review": false,
@@ -1031,8 +999,7 @@
       "region_id": "algebra-forge",
       "resolved_generator_families": [],
       "resolved_guardian_candidates": [
-        "31autumn21_q01",
-        "33summer24_q08"
+        "31autumn21_q01"
       ],
       "resolved_quick_check_ids": [
         "p3-algebra-rearrangement-001-qc"
@@ -1042,14 +1009,11 @@
       ],
       "resolved_trainable_canonical_question_ids": [
         "31autumn21_q01",
-        "31summer22_q01",
-        "33autumn21_q03",
-        "33summer22_q03",
-        "33summer24_q08"
+        "31summer22_q01"
       ],
       "skill_id": "p3_alg_structure_rearrangement",
       "syllabus_topic": "Algebra",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 2,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -1288,14 +1252,14 @@
       ]
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 4,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": false,
       "has_quick_check": false,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
-      "high_evidence_weak_teaching_support": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Form differential equations from rate contexts",
       "needs_teacher_review": false,
@@ -1326,12 +1290,11 @@
         "33autumn21_q10",
         "35autumn25_q11",
         "32autumn25_q10",
-        "33summer24_q09",
-        "31summer21_q10"
+        "33summer24_q09"
       ],
       "skill_id": "p3_de_forming_context_model",
       "syllabus_topic": "Differential equations",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 4,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -2275,7 +2238,7 @@
       "weak_support_reasons": []
     },
     {
-      "canonical_source_question_count": 4,
+      "canonical_source_question_count": 3,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": false,
       "has_quick_check": true,
@@ -2314,12 +2277,11 @@
       "resolved_trainable_canonical_question_ids": [
         "32summer21_q03",
         "32spring22_q03",
-        "35autumn25_q03",
-        "31summer23_q08"
+        "35autumn25_q03"
       ],
       "skill_id": "p3_log_linearisation",
       "syllabus_topic": "Logarithmic and exponential functions",
-      "trainable_canonical_question_count": 4,
+      "trainable_canonical_question_count": 3,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -2385,14 +2347,14 @@
       ]
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 4,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": false,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
-      "high_evidence_weak_teaching_support": true,
+      "high_evidence": false,
+      "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Apply an iteration formula consistently",
       "needs_teacher_review": false,
@@ -2425,12 +2387,11 @@
         "31autumn21_q08",
         "32autumn21_q11",
         "32spring22_q07",
-        "33autumn21_q10",
         "35autumn25_q10"
       ],
       "skill_id": "p3_num_iteration_formula",
       "syllabus_topic": "Numerical solution of equations",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 4,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -2944,8 +2905,8 @@
     }
   ],
   "summary": {
-    "high_evidence_skills": 33,
-    "high_evidence_weak_teaching_support": 23,
+    "high_evidence_skills": 30,
+    "high_evidence_weak_teaching_support": 20,
     "mastery_eligible_skills": 40,
     "ready_for_full_p3_learning": false,
     "skills_by_curriculum_role": {
