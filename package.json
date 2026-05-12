@@ -13,6 +13,7 @@
     "test:unit": "vitest run --exclude tests/contentLabPipeline.test.ts --exclude tests/generatedPracticePipeline.test.ts",
     "test:pipeline": "vitest run tests/contentLabPipeline.test.ts tests/generatedPracticePipeline.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --no-file-parallelism",
     "test:ci": "vitest run --pool=forks --maxWorkers=2 --minWorkers=1 --no-file-parallelism",
+    "validate:p3-skill-map": "python3 tools/content_lab/scripts/build_p3_skill_coverage.py --output tools/content_lab/reports/p3_skill_coverage_report.json",
     "verify:content-lab": "python3 tools/content_lab/scripts/verify_content_lab_outputs.py"
   },
   "dependencies": {

@@ -6,6 +6,7 @@ Content Lab is an internal, local-first pipeline for turning exam-bank evidence 
 
 - Input evidence: `public/data/question_bank.json`
 - Internal outputs: `tools/content_lab/outputs/`
+- Review reports: `tools/content_lab/reports/`
 - Runtime-reviewed content: `public/data/teaching_snippets.json` and `public/data/generated_practice_bank.json`
 - Browser runtime: consumes only reviewed static JSON from `public/data/`
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
@@ -36,7 +37,7 @@ python3 tools/content_lab/scripts/build_generated_practice.py \
 Build the reviewed P3 skill-map coverage dashboard:
 
 ```bash
-python3 tools/content_lab/scripts/build_p3_skill_coverage.py
+npm run validate:p3-skill-map
 ```
 
 Verify generated outputs and reviewed runtime artifacts:
@@ -86,7 +87,7 @@ Records become `review_only` when they are not blocked but still need human atte
 
 `generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
 
-`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `p3_skill_coverage_report.json` summarizes snippet, Quick Check, generated warm-up, canonical-question, and high-evidence weak-support gaps for Content Lab readiness.
+`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `npm run validate:p3-skill-map` writes the deterministic, reviewable report to `tools/content_lab/reports/p3_skill_coverage_report.json`, summarizing snippet, Quick Check, generated warm-up, canonical-question, curriculum-role, prerequisite-reference, and high-evidence weak-support gaps for Content Lab readiness. The report is intentionally kept in version control as a stable review artifact.
 
 P3 skill contract metadata:
 
