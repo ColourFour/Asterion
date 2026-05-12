@@ -3655,17 +3655,50 @@ legend {
 }
 
 .arc-phase {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 7%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 13%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 18%, var(--region-panel-border, #7d5129));
   position: relative;
   display: flex;
   gap: 10px;
   align-items: center;
   min-width: 0;
   padding: 10px;
-  border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 42%, transparent);
+  border: 1px solid color-mix(in srgb, var(--arc-phase-border) 42%, transparent);
   border-radius: var(--radius-panel);
   background:
-    linear-gradient(180deg, var(--region-panel, rgba(255, 253, 248, 0.98)), var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+    linear-gradient(180deg, var(--arc-phase-tint), var(--arc-phase-tint-strong));
   box-shadow: 0 10px 26px rgba(23, 32, 51, 0.07);
+}
+
+.arc-phase-1 {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 5%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 9%, var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 14%, var(--region-panel-border, #7d5129));
+}
+
+.arc-phase-2 {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 8%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 12%, var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 18%, var(--region-panel-border, #7d5129));
+}
+
+.arc-phase-3 {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 11%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 15%, var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 22%, var(--region-panel-border, #7d5129));
+}
+
+.arc-phase-4 {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 14%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 18%, var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 26%, var(--region-panel-border, #7d5129));
+}
+
+.arc-phase-5 {
+  --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 17%, var(--region-panel, rgba(255, 253, 248, 0.98)));
+  --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 21%, var(--region-panel-strong, rgba(247, 242, 232, 0.94)));
+  --arc-phase-border: color-mix(in srgb, var(--region-accent, #c98b45) 30%, var(--region-panel-border, #7d5129));
 }
 
 .arc-phase-index {
@@ -3702,7 +3735,7 @@ legend {
   border-color: color-mix(in srgb, var(--region-accent) 48%, var(--region-panel-border));
   background:
     linear-gradient(90deg, var(--region-wash), transparent 44%),
-    var(--region-panel);
+    linear-gradient(180deg, var(--arc-phase-tint), var(--arc-phase-tint-strong));
 }
 
 .arc-ready {
@@ -3718,7 +3751,7 @@ legend {
   border-color: rgba(40, 122, 82, 0.52);
   background:
     linear-gradient(90deg, rgba(40, 122, 82, 0.12), transparent 42%),
-    var(--region-panel);
+    linear-gradient(180deg, var(--arc-phase-tint), var(--arc-phase-tint-strong));
 }
 
 .arc-complete .arc-phase-index {
@@ -3793,7 +3826,6 @@ legend {
 
 .region-hub-status div,
 .region-next-action,
-.arc-phase,
 .region-loop-card,
 .region-reward-preview,
 .session-rationale-panel {
@@ -4194,38 +4226,41 @@ legend {
 
 .worked-example-card {
   display: grid;
-  gap: 4px;
+  gap: 10px;
   min-height: 86px;
-  padding: 10px;
+  padding: 14px;
   border: 1px dashed color-mix(in srgb, var(--region-panel-border, #7d5129) 54%, transparent);
   border-radius: var(--radius-panel);
   background: var(--region-panel-strong, rgba(255, 244, 220, 0.96));
 }
 
-.worked-example-card strong,
-.worked-example-card span {
-  display: block;
+.worked-example-title {
+  margin: 0;
+  color: var(--region-heading, #2f1a10);
+  font-size: 1rem;
+  line-height: 1.22;
 }
 
-.worked-example-card span {
-  color: var(--region-muted, #5c6676);
+.worked-example-copy,
+.worked-example-note {
+  min-width: 0;
+  color: var(--region-body, #344154);
   font-size: 0.9rem;
+  line-height: 1.48;
 }
 
 .worked-example-card ol {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   margin: 2px 0;
   padding-left: 18px;
   color: var(--region-body, #344154);
   font-size: 0.88rem;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
-.worked-example-card small {
-  color: var(--region-body, #344154);
-  font-size: 0.86rem;
-  line-height: 1.35;
+.worked-example-card li {
+  min-width: 0;
 }
 
 .worked-example-card b {
@@ -4234,7 +4269,14 @@ legend {
 
 .worked-example-section {
   display: grid;
-  gap: 3px;
+  min-width: 0;
+  gap: 5px;
+}
+
+.worked-example-section-emphasis .worked-example-copy,
+.worked-example-answer .worked-example-copy {
+  color: var(--region-heading, #30286c);
+  font-weight: 760;
 }
 
 .math-text .katex {
@@ -4250,9 +4292,10 @@ legend {
 .math-display {
   display: block;
   max-width: 100%;
-  margin: 8px 0;
+  margin: 10px 0;
   overflow-x: auto;
   overflow-y: hidden;
+  text-align: center;
 }
 
 .recommended-session,
@@ -4699,8 +4742,14 @@ legend {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
   margin-top: 14px;
+}
+
+.region-summary-band > .region-next-action,
+.region-summary-band > .region-progress-strip {
+  height: 100%;
+  margin-bottom: 0;
 }
 
 .region-learning-content {
@@ -5268,14 +5317,22 @@ legend {
   padding: 10px;
 }
 
+.app-view-map .topbar {
+  max-width: none;
+  margin: 0 0 8px;
+}
+
 .app-view-map .world-screen {
+  width: 100%;
   max-width: none;
   margin: 0;
 }
 
 .app-view-map .map-shell {
-  min-height: calc(100vh - 132px);
-  margin-bottom: 0;
+  width: 100%;
+  max-width: none;
+  min-height: max(680px, calc(100svh - 132px));
+  margin: 0;
   border: 1px solid rgba(215, 169, 98, 0.74);
   background:
     radial-gradient(ellipse at 58% 48%, rgba(255, 184, 68, 0.09), transparent 20%),
@@ -5853,7 +5910,7 @@ legend {
 }
 
 .worked-example-grid {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 10px;
 }
 
@@ -5872,7 +5929,7 @@ legend {
 
 .quick-check-reveal > p,
 .warm-up-practice-card > p,
-.worked-example-section > strong {
+.worked-example-section-emphasis .worked-example-copy {
   color: var(--region-heading);
   font-size: 1.02rem;
   font-weight: 850;
@@ -5982,24 +6039,27 @@ legend {
   max-width: 100%;
 }
 
-.region-learning-layout p > .math-text,
-.region-learning-layout li > .math-text,
-.quick-check-example-link .math-text,
-.warm-up-method-list .math-text,
-.worked-example-card .math-text {
-  display: inline-block;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  vertical-align: -0.08em;
+.math-text:not(.math-display) {
+  display: inline;
+  overflow: visible;
+  vertical-align: baseline;
 }
 
-.math-text .katex {
+.math-text:not(.math-display) .katex {
   white-space: nowrap;
 }
 
 .math-display {
+  display: block;
+  width: 100%;
   padding: 4px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.math-display .katex-display {
+  margin: 0;
 }
 
 .guardian-requirements li {

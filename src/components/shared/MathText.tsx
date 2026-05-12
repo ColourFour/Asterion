@@ -5,7 +5,7 @@ interface MathTextProps {
   text: string;
 }
 
-const mathDelimiterPattern = /(\$\$[^$]+\$\$|\$[^$]+\$)/g;
+const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\$(?!\$)[\s\S]+?\$)/g;
 const mathFunctionPattern = /(^|[^A-Za-z\\])(sin|cos|tan|sec|cosec|cot|ln|log|arg)\b/g;
 const greekTokenPattern = /(^|[^A-Za-z\\])(pi|theta|alpha|lambda|mu)\b/g;
 

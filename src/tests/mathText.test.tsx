@@ -41,6 +41,22 @@ describe('MathText', () => {
     expect(container.textContent).not.toContain('$a^x=b$');
   });
 
+  it('renders display LaTeX delimiters as block KaTeX markup', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    mounted.push({ root, container });
+
+    await act(async () => {
+      root.render(<MathText text="Apply the rule: $$\\ln x+\\ln5=\\ln(5x)$$" />);
+    });
+    await waitForKatex(container);
+
+    expect(container.querySelector('.math-display .katex')).toBeTruthy();
+    expect(container.innerHTML).toContain('katex-display');
+    expect(container.textContent).not.toContain('$$');
+  });
+
   it('renders common raw generated-practice math as KaTeX', async () => {
     const container = document.createElement('div');
     document.body.appendChild(container);

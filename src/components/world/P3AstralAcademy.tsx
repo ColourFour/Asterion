@@ -342,14 +342,14 @@ export function P3AstralAcademy({
         <div className="academy-map" aria-label={`${world.name} regions`}>
           <div className="map-paths" aria-hidden="true">
             <svg className="journey-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path className="journey-path-glow" d="M20 22 C 31 29, 41 37, 50 43 C 61 34, 70 27, 82 22 M15 48 C 27 47, 39 46, 50 43 C 63 45, 75 48, 86 50 M25 77 C 31 75, 35 70, 37 66 C 50 68, 62 66, 73 63" />
-              <path className="journey-path-main" d="M20 22 C 31 29, 41 37, 50 43 C 61 34, 70 27, 82 22 M15 48 C 27 47, 39 46, 50 43 C 63 45, 75 48, 86 50 M25 77 C 31 75, 35 70, 37 66 C 50 68, 62 66, 73 63" />
-              <path className="journey-path-branch" d="M62 17 C 57 25, 53 34, 50 43" />
-              <path className="journey-path-branch" d="M15 48 C 18 60, 21 70, 25 77" />
-              <path className="journey-path-branch" d="M50 43 C 45 53, 40 61, 37 66" />
-              <path className="journey-path-branch" d="M73 63 C 80 60, 84 56, 86 50" />
-              <path className="journey-path-branch journey-path-far" d="M82 22 C 86 31, 87 40, 86 50" />
-              <path className="journey-path-sparks" d="M20 22 62 17 82 22 86 50 73 63 37 66 25 77 15 48 50 43Z" />
+              <path className="journey-path-glow" d="M23 20 C 32 30, 42 40, 50 47 C 61 34, 72 27, 84 22 M12 43 C 27 44, 40 45, 50 47 C 65 46, 78 47, 90 48 M27 80 C 32 73, 37 67, 42 64 C 53 68, 62 71, 72 70" />
+              <path className="journey-path-main" d="M23 20 C 32 30, 42 40, 50 47 C 61 34, 72 27, 84 22 M12 43 C 27 44, 40 45, 50 47 C 65 46, 78 47, 90 48 M27 80 C 32 73, 37 67, 42 64 C 53 68, 62 71, 72 70" />
+              <path className="journey-path-branch" d="M62 10 C 57 23, 53 36, 50 47" />
+              <path className="journey-path-branch" d="M12 43 C 16 58, 21 70, 27 80" />
+              <path className="journey-path-branch" d="M50 47 C 47 54, 44 60, 42 64" />
+              <path className="journey-path-branch" d="M72 70 C 81 63, 87 56, 90 48" />
+              <path className="journey-path-branch journey-path-far" d="M84 22 C 89 31, 91 40, 90 48" />
+              <path className="journey-path-sparks" d="M23 20 62 10 84 22 90 48 72 70 42 64 27 80 12 43 50 47Z" />
             </svg>
           </div>
 
@@ -374,8 +374,8 @@ export function P3AstralAcademy({
                   '--node-z': layout.zIndex,
                   '--region-delay': `${index * 40}ms`,
                   '--float-delay': `${index * -420}ms`,
-                  '--x': `${layout.x}%`,
-                  '--y': `${layout.y}%`,
+                  '--x': `${layout.xPct}%`,
+                  '--y': `${layout.yPct}%`,
                 } as CSSProperties}
               />
             );

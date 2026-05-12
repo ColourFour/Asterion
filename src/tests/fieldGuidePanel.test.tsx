@@ -1,5 +1,6 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { buildRegionLearningSummary } from '../lib/regionLearning';
@@ -16,6 +17,8 @@ import { WarmUpPracticePanel } from '../components/world/regionHub/WarmUpPractic
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
 (globalThis as ActGlobal).IS_REACT_ACT_ENVIRONMENT = true;
+
+const stylesCss = readFileSync(`${process.cwd()}/src/styles.css`, 'utf8');
 
 const mountedRoots: Root[] = [];
 const mountedContainers: HTMLElement[] = [];
@@ -34,10 +37,36 @@ function render(ui: ReactNode): HTMLElement {
   return container;
 }
 
+async function waitForKatex(container: HTMLElement, minimumCount = 1): Promise<void> {
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    if (container.querySelectorAll('.katex').length >= minimumCount) return;
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
+    });
+  }
+}
+
 function setTextareaValue(textarea: HTMLTextAreaElement, value: string): void {
   const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
   setter?.call(textarea, value);
   textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function workedExampleTextParts(example: ReturnType<typeof getRegionFieldGuide>['workedExamples'][number]): string[] {
+  return [
+    example.title,
+    example.focus,
+    example.setup ?? '',
+    ...example.steps,
+    example.answer,
+    example.keyMove,
+    example.check,
+    example.why,
+  ].filter((text) => text.trim());
+}
+
+function hasBalancedDollarDelimiters(text: string): boolean {
+  return (text.match(/\$/g) ?? []).length % 2 === 0;
 }
 
 afterEach(() => {
@@ -434,15 +463,129 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(summaryBand?.textContent).toContain('Guardian');
   });
 
-  it('keeps every P3 field-guide worked-example card complete', () => {
+  it('renders numbered phase classes for progressive step tinting', () => {
+    const progress = regionProgress();
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress,
+      regionQuestions: [normalizedQuestion()],
+      regionAttempts: [],
+    });
+
+    const container = render(
+      <RegionHub
+        regionProgress={progress}
+        fieldGuide={getRegionFieldGuide(progress.region)}
+        fieldGuideCompleted={false}
+        teachingSnippets={[snippet]}
+        generatedPractice={[generatedPractice]}
+        learningActivityAttempts={[]}
+        summary={summary}
+        onCompleteFieldGuide={vi.fn()}
+        onLearningActivityAttempt={vi.fn()}
+        onStartTraining={vi.fn()}
+        onChallengeGuardian={vi.fn()}
+        onReturnToMap={vi.fn()}
+      />,
+    );
+
+    const phases = Array.from(container.querySelectorAll('.region-arc-timeline .arc-phase'));
+    expect(phases).toHaveLength(5);
+    phases.forEach((phase, index) => {
+      expect(phase.classList.contains(`arc-phase-${index + 1}`)).toBe(true);
+    });
+  });
+
+  it('keeps region summary cards equal-height and phases progressively tinted in CSS', () => {
+    expect(stylesCss).toMatch(/\.region-summary-band\s*\{[\s\S]*?align-items:\s*stretch;/);
+    expect(stylesCss).toMatch(/\.region-summary-band\s*>\s*\.region-next-action,\s*[\r\n\s]*\.region-summary-band\s*>\s*\.region-progress-strip\s*\{[\s\S]*?height:\s*100%;[\s\S]*?margin-bottom:\s*0;/);
+    expect(stylesCss).toContain('.arc-phase-1');
+    expect(stylesCss).toContain('.arc-phase-5');
+    expect(stylesCss).toMatch(/\.arc-phase-1\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*5%/);
+    expect(stylesCss).toMatch(/\.arc-phase-5\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*17%/);
+  });
+
+  it('keeps every P3 field-guide worked-example card complete and delimiter-safe', () => {
     for (const region of P3_ASTRAL_ACADEMY.regions) {
       const guide = getRegionFieldGuide(region);
       expect(guide.workedExamples.length, region.id).toBeGreaterThan(0);
       for (const example of guide.workedExamples) {
+        expect(example.title.trim(), `${region.id} title`).not.toBe('');
         expect(example.focus.trim(), `${region.id} ${example.title} focus`).not.toBe('');
-        expect(example.steps?.length, `${region.id} ${example.title} steps`).toBeGreaterThanOrEqual(2);
-        expect(example.answer?.trim(), `${region.id} ${example.title} answer`).not.toBe('');
+        expect(example.steps.length, `${region.id} ${example.title} steps`).toBeGreaterThanOrEqual(2);
+        expect(example.answer.trim(), `${region.id} ${example.title} answer`).not.toBe('');
+        expect(example.keyMove.trim(), `${region.id} ${example.title} move`).not.toBe('');
+        expect(example.check.trim(), `${region.id} ${example.title} check`).not.toBe('');
+        expect(example.why.trim(), `${region.id} ${example.title} why`).not.toBe('');
+        for (const text of workedExampleTextParts(example)) {
+          expect(hasBalancedDollarDelimiters(text), `${region.id} ${example.title}: ${text}`).toBe(true);
+        }
       }
     }
+  });
+
+  it('preserves escaped LaTeX source for major worked-example notation', () => {
+    const source = P3_ASTRAL_ACADEMY.regions
+      .flatMap((region) => getRegionFieldGuide(region).workedExamples)
+      .flatMap(workedExampleTextParts)
+      .join('\n');
+
+    expect(source).toContain('\\binom');
+    expect(source).toContain('\\frac');
+    expect(source).toContain('\\ln');
+    expect(source).toContain('\\int');
+    expect(source).toContain('\\mathbf');
+    expect(source).toContain('\\frac{dy}{dx}');
+  });
+
+  it('routes field-guide worked-example inline and block math through KaTeX', async () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    expect(logRegion).toBeTruthy();
+
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(logRegion!)}
+        fieldGuideCompleted={false}
+        theme={getRegionTheme(logRegion!)}
+        teachingSnippets={[]}
+        onCompleteFieldGuide={vi.fn()}
+      />,
+    );
+    await waitForKatex(container, 6);
+
+    const combineLogsCard = Array.from(container.querySelectorAll<HTMLElement>('.worked-example-card'))
+      .find((card) => card.textContent?.includes('Combine logs'));
+    expect(combineLogsCard).toBeTruthy();
+    expect(combineLogsCard?.querySelector('.math-text:not(.math-display) .katex')).toBeTruthy();
+    expect(combineLogsCard?.querySelector('.math-display .katex')).toBeTruthy();
+    expect(combineLogsCard?.textContent).not.toContain('$$');
+  });
+
+  it('renders worked examples with P3 notation as math instead of raw fragments', async () => {
+    const container = render(
+      <>
+        {P3_ASTRAL_ACADEMY.regions.map((region) => (
+          <FieldGuidePanel
+            fieldGuide={getRegionFieldGuide(region)}
+            fieldGuideCompleted={false}
+            theme={getRegionTheme(region)}
+            teachingSnippets={[]}
+            onCompleteFieldGuide={vi.fn()}
+            key={region.id}
+          />
+        ))}
+      </>,
+    );
+    await waitForKatex(container, 40);
+
+    expect(container.querySelectorAll('.worked-example-card .katex').length).toBeGreaterThan(40);
+    expect(container.querySelectorAll('.worked-example-card .math-display .katex').length).toBeGreaterThan(20);
+    expect(container.querySelector('.worked-example-card .mfrac')).toBeTruthy();
+    expect(container.innerHTML).toContain('katex-display');
+    expect(container.textContent).not.toContain('$$');
+  });
+
+  it('does not force every worked-example span to block layout', () => {
+    expect(stylesCss).not.toMatch(/\.worked-example-card\s+span\s*\{/);
+    expect(stylesCss).not.toMatch(/\.worked-example-card\s+strong,\s*[\r\n\s]*\.worked-example-card\s+span/);
   });
 });

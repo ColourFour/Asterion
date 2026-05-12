@@ -7,27 +7,31 @@ export interface AstralMapSlot {
   y: number;
 }
 
-interface AstralBaseRegionSlot extends AstralMapSlot {
+interface AstralBaseRegionSlot {
+  xPct: number;
+  yPct: number;
   baseScale: number;
   zIndex: number;
 }
 
 export interface AstralRegionMapLayout extends AstralMapSlot {
+  xPct: number;
+  yPct: number;
   priority: AstralMapPriority;
   scale: number;
   zIndex: number;
 }
 
 export const ASTRAL_REGION_LAYOUT: Record<string, AstralBaseRegionSlot> = {
-  'algebra-forge': { x: 50, y: 43, baseScale: 1.04, zIndex: 6 },
-  'logarithm-grove': { x: 20, y: 22, baseScale: 0.95, zIndex: 3 },
-  'trig-observatory': { x: 82, y: 22, baseScale: 0.99, zIndex: 4 },
-  'complex-harbor': { x: 15, y: 48, baseScale: 0.92, zIndex: 3 },
-  'calculus-cliffs': { x: 25, y: 77, baseScale: 0.96, zIndex: 3 },
-  'integration-gardens': { x: 86, y: 50, baseScale: 0.96, zIndex: 3 },
-  'vector-workshop': { x: 62, y: 17, baseScale: 0.9, zIndex: 2 },
-  'numerical-mines': { x: 73, y: 63, baseScale: 0.95, zIndex: 3 },
-  'differential-shrine': { x: 37, y: 66, baseScale: 0.94, zIndex: 3 },
+  'algebra-forge': { xPct: 50, yPct: 47, baseScale: 1.04, zIndex: 6 },
+  'logarithm-grove': { xPct: 23, yPct: 20, baseScale: 0.95, zIndex: 3 },
+  'trig-observatory': { xPct: 84, yPct: 22, baseScale: 0.99, zIndex: 4 },
+  'complex-harbor': { xPct: 12, yPct: 43, baseScale: 0.92, zIndex: 3 },
+  'calculus-cliffs': { xPct: 27, yPct: 80, baseScale: 0.96, zIndex: 3 },
+  'integration-gardens': { xPct: 90, yPct: 48, baseScale: 0.96, zIndex: 3 },
+  'vector-workshop': { xPct: 62, yPct: 10, baseScale: 0.9, zIndex: 2 },
+  'numerical-mines': { xPct: 72, yPct: 70, baseScale: 0.95, zIndex: 3 },
+  'differential-shrine': { xPct: 42, yPct: 64, baseScale: 0.94, zIndex: 3 },
 };
 
 const relatedRegionIds: Record<string, string[]> = {
@@ -62,8 +66,8 @@ function scaleForPriority(priority: AstralMapPriority): number {
 
 function fallbackSlot(index: number): AstralBaseRegionSlot {
   return {
-    x: 18 + ((index * 19) % 66),
-    y: 20 + ((index * 23) % 58),
+    xPct: 18 + ((index * 19) % 66),
+    yPct: 20 + ((index * 23) % 58),
     baseScale: 0.92,
     zIndex: 2,
   };
@@ -85,8 +89,10 @@ export function buildAstralRegionMapLayout(progress: RegionProgress[], recommend
     const zIndexBoost = priority === 'daily' ? 4 : priority === 'relevant' ? 1 : 0;
 
     layout[regionProgress.region.id] = {
-      x: baseSlot.x,
-      y: baseSlot.y,
+      x: baseSlot.xPct,
+      y: baseSlot.yPct,
+      xPct: baseSlot.xPct,
+      yPct: baseSlot.yPct,
       priority,
       scale: Number((baseSlot.baseScale * scaleForPriority(priority)).toFixed(3)),
       zIndex: baseSlot.zIndex + zIndexBoost,

@@ -21,7 +21,7 @@ export function RegionArcTimeline({ fieldGuideCompleted, summary }: RegionArcTim
       {phases.map((phase, index) => {
         const status = phaseStatus(summary, fieldGuideCompleted, phase.id);
         return (
-          <li className={`arc-phase arc-${status}`} key={phase.id}>
+          <li className={`arc-phase arc-phase-${index + 1} arc-${status}`} key={phase.id}>
             <span className="arc-phase-index">{status === 'complete' ? <CheckCircle2 size={18} /> : status === 'locked' ? <Lock size={16} /> : index + 1}</span>
             <div>
               <strong>{phase.label}</strong>
