@@ -18,7 +18,7 @@ export function ClassHallCard({ avatar }: ClassHallCardProps) {
           avatarName={avatar.nickname}
           avatar={avatar.avatar}
           mode="portrait"
-          ariaLabel={`${avatar.nickname} academy commons avatar`}
+          ariaLabel={`${avatar.nickname} Class Hall avatar`}
         />
       </div>
 
@@ -33,7 +33,7 @@ export function ClassHallCard({ avatar }: ClassHallCardProps) {
       <div className="class-hall-achievements" aria-label={`${avatar.nickname} showcase badges`}>
         {avatar.achievements.length
           ? avatar.achievements.map((achievement) => <span key={achievement}>{achievement}</span>)
-          : <span>New Commons Visitor</span>}
+          : <span>New Class Hall Visitor</span>}
       </div>
 
       <ul className="class-hall-cosmetics" aria-label={`${avatar.nickname} equipped cosmetics`}>

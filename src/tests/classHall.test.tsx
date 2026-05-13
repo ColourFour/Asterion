@@ -57,7 +57,7 @@ const baseSnapshot: ClassHallAvatarSnapshot = {
       frame: 'bronze-academy-frame',
     },
   },
-  titles: ['Commons Curator'],
+  titles: ['Class Hall Curator'],
   badges: ['Algebra Pin Bearer'],
   motto: 'Check each route.',
   favoriteRegion: 'Algebra Vault',
@@ -97,11 +97,11 @@ describe('ClassHall', () => {
 
     expect(container.textContent).toContain('Nova');
     expect(container.textContent).toContain('Star House');
-    expect(container.textContent).toContain('Commons Curator');
+    expect(container.textContent).toContain('Class Hall Curator');
     expect(container.textContent).toContain('Algebra Pin Bearer');
     expect(container.textContent).toContain('Hair: Stargazer Sweep');
     expect(container.textContent).toContain('Cloak: Apprentice Cloak');
-    expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Nova academy commons avatar');
+    expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Nova Class Hall avatar');
   });
 
   it('does not render sensitive fields accidentally present in snapshots', () => {
@@ -126,7 +126,8 @@ describe('ClassHall', () => {
   it('renders an empty state when no avatars exist', () => {
     const container = render(<ClassHall avatars={[]} />);
 
-    expect(container.textContent).toContain('The Commons is quiet.');
+    expect(container.textContent).toContain('The Class Hall is quiet.');
+    expect(container.textContent).not.toContain('Academy Commons');
     expect(container.querySelectorAll('[data-class-hall-card]')).toHaveLength(0);
   });
 

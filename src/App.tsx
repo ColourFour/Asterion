@@ -19,6 +19,12 @@ import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterAttemptsForRegion } from './lib/regionProgress';
+import {
+  getP3RegionById,
+  parseAsterionHashRoute,
+  regionHashPath,
+  type RegionLearningPageId,
+} from './lib/regionRoutes';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
@@ -36,6 +42,8 @@ export default function App() {
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
+  const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
+  const [regionRouteError, setRegionRouteError] = useState<string>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
   const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
 
@@ -77,6 +85,37 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    function applyHashRoute() {
+      const route = parseAsterionHashRoute(window.location.hash);
+      if (route.kind !== 'region') return;
+
+      const region = getP3RegionById(route.regionId);
+      if (!region) {
+        setSelectedRegion(undefined);
+        setSelectedRegionPage('hub');
+        setCurrentQuestion(undefined);
+        setTrainingIntent(undefined);
+        setRegionRouteError(`Unknown region "${route.regionId}". Choose a listed P3 region.`);
+        setViewMode('regions');
+        return;
+      }
+
+      setSelectedRegion(region);
+      setSelectedRegionPage(route.page);
+      setCurrentQuestion(undefined);
+      setTrainingIntent(undefined);
+      setRegionRouteError(undefined);
+      setViewMode('region_hub');
+    }
+
+    applyHashRoute();
+    window.addEventListener('hashchange', applyHashRoute);
+    return () => {
+      window.removeEventListener('hashchange', applyHashRoute);
+    };
+  }, []);
+
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
   const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts, P3_ASTRAL_ACADEMY, progress.regionLearning), [progress.attempts, progress.regionLearning, trainableQuestions]);
   const regionLearningSummaries = useMemo(() => {
@@ -98,12 +137,12 @@ export default function App() {
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
   const selectedRegionTeachingSnippets = useMemo(() => (
     selectedRegion
-      ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion, 4)
+      ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion)
       : []
   ), [selectedRegion, teachingSnippets]);
   const selectedRegionGeneratedPractice = useMemo(() => (
     selectedRegion
-      ? getGeneratedPracticeForRegion(generatedPractice, selectedRegion.id, P3_ASTRAL_ACADEMY.paperFamily, 3)
+      ? getGeneratedPracticeForRegion(generatedPractice, selectedRegion.id, P3_ASTRAL_ACADEMY.paperFamily)
       : []
   ), [generatedPractice, selectedRegion]);
   const selectedRegionFieldGuideCompleted = Boolean(selectedRegion && progress.regionLearning?.[selectedRegion.id]?.fieldGuideCompletedAt);
@@ -144,8 +183,23 @@ export default function App() {
     return trainableQuestions.filter(isTrainableP3Question);
   }
 
+  function updateRegionHash(regionId: string, page: RegionLearningPageId) {
+    const nextHash = regionHashPath(regionId, page);
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
+    }
+  }
+
+  function clearRegionHash() {
+    if (!window.location.hash.startsWith('#/regions/')) return;
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    setRegionRouteError(undefined);
+  }
+
   function startPractice() {
+    clearRegionHash();
     setSelectedRegion(undefined);
+    setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
     setViewMode('start');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
@@ -156,10 +210,17 @@ export default function App() {
   }
 
   function enterRegion(region: RegionDefinition) {
+    openRegionPage(region, 'hub');
+  }
+
+  function openRegionPage(region: RegionDefinition, page: RegionLearningPageId) {
     setSelectedRegion(region);
+    setSelectedRegionPage(page);
     setTrainingIntent(undefined);
     setViewMode('region_hub');
     setCurrentQuestion(undefined);
+    setRegionRouteError(undefined);
+    updateRegionHash(region.id, page);
   }
 
   function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
@@ -182,32 +243,39 @@ export default function App() {
   }
 
   function returnToMap() {
+    clearRegionHash();
     setViewMode('map');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
   }
 
   function openRegions() {
+    clearRegionHash();
     setViewMode('regions');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
   }
 
   function openProfile() {
+    clearRegionHash();
     setViewMode('profile');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
   }
 
   function openClassHall() {
+    clearRegionHash();
     setSelectedRegion(undefined);
+    setSelectedRegionPage('hub');
     setViewMode('class_hall');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
   }
 
   function reviewWeakAreas(nextProgress = progress) {
+    clearRegionHash();
     setSelectedRegion(undefined);
+    setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
     setViewMode('weak_areas');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
@@ -267,12 +335,16 @@ export default function App() {
           <button className={viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => reviewWeakAreas()}>Review Weak Areas</button>
           <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
-          <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => setViewMode('teacher')}>Teacher/Export</button>
+          <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => {
+            clearRegionHash();
+            setViewMode('teacher');
+          }}>Teacher/Export</button>
         </nav>
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
+      {regionRouteError ? <div className="notice">{regionRouteError}</div> : null}
 
       {viewMode === 'map' ? (
         <P3AstralAcademy
@@ -305,6 +377,8 @@ export default function App() {
           onLearningActivityAttempt={(attempt: LearningActivityAttempt) => setProgress(progressAdapter.addLearningActivityAttempt(attempt))}
           onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
           onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
+          activePage={selectedRegionPage}
+          onNavigatePage={(page) => openRegionPage(selectedRegion, page)}
           onReturnToMap={returnToMap}
         />
       ) : null}

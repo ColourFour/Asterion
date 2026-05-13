@@ -76,7 +76,7 @@ export const CLASS_HALL_DEMO_AVATARS: ClassHallAvatarSnapshot[] = [
         frame: 'plain-academy-frame',
       },
     },
-    achievements: ['Commons Welcomer', 'Mark-Scheme Scribe'],
+    achievements: ['Class Hall Welcomer', 'Mark-Scheme Scribe'],
     motto: 'Small attempts still count.',
     favoriteRegion: 'Argand Atrium',
   },

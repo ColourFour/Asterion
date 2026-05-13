@@ -6,8 +6,14 @@ import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { buildRegionLearningSummary } from '../lib/regionLearning';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import { getRegionTheme } from '../lib/regionThemes';
+import {
+  REGION_LEARNING_PAGE_LABELS,
+  parseAsterionHashRoute,
+  regionHashPath,
+  type RegionLearningPageId,
+} from '../lib/regionRoutes';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
-import type { NormalizedQuestion, RegionProgress } from '../types';
+import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../types';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
@@ -212,6 +218,43 @@ function regionProgress(): RegionProgress {
   };
 }
 
+function renderRegionHubPage(options: {
+  activePage?: RegionLearningPageId;
+  snippets?: TeachingSnippet[];
+  practiceItems?: GeneratedPracticeItem[];
+  onCompleteFieldGuide?: () => void;
+  onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
+  onStartTraining?: (intent: TrainingSessionIntent) => void;
+  onChallengeGuardian?: (question: NormalizedQuestion) => void;
+  onNavigatePage?: (page: RegionLearningPageId) => void;
+} = {}) {
+  const progress = regionProgress();
+  const summary = buildRegionLearningSummary({
+    regionProgress: progress,
+    regionQuestions: [normalizedQuestion()],
+    regionAttempts: [],
+  });
+
+  return render(
+    <RegionHub
+      regionProgress={progress}
+      fieldGuide={getRegionFieldGuide(progress.region)}
+      fieldGuideCompleted={false}
+      teachingSnippets={options.snippets ?? [snippet]}
+      generatedPractice={options.practiceItems ?? [generatedPractice]}
+      learningActivityAttempts={[]}
+      summary={summary}
+      activePage={options.activePage}
+      onCompleteFieldGuide={options.onCompleteFieldGuide ?? vi.fn()}
+      onLearningActivityAttempt={options.onLearningActivityAttempt ?? vi.fn()}
+      onStartTraining={options.onStartTraining ?? vi.fn()}
+      onChallengeGuardian={options.onChallengeGuardian ?? vi.fn()}
+      onNavigatePage={options.onNavigatePage ?? vi.fn()}
+      onReturnToMap={vi.fn()}
+    />,
+  );
+}
+
 describe('FieldGuidePanel teaching snippets', () => {
   it('renders enriched snippet support with an answer-first quick check', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
@@ -386,8 +429,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
   });
 
-  it('renders the region learning sections in the expected order', () => {
+  it('renders the region hub as orientation and page navigation instead of the full learning stack', () => {
     const progress = regionProgress();
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
     const summary = buildRegionLearningSummary({
       regionProgress: progress,
       regionQuestions: [normalizedQuestion()],
@@ -407,20 +451,159 @@ describe('FieldGuidePanel teaching snippets', () => {
         onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
         onChallengeGuardian={vi.fn()}
+        onNavigatePage={onNavigatePage}
         onReturnToMap={vi.fn()}
       />,
     );
 
-    const sectionTitles = Array.from(container.querySelectorAll('.region-learning-main .region-action-card-title h3'))
-      .map((heading) => heading.textContent);
+    expect(container.textContent).toContain('Choose one focused step');
+    expect(container.textContent).toContain('Skill and subtopic overview');
+    expect(container.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(container.querySelector('.field-guide-card')).toBeFalsy();
+    expect(container.querySelector('.quick-check-card')).toBeFalsy();
+    expect(container.querySelector('.warm-up-card')).toBeFalsy();
+    expect(container.querySelector('.training-card')).toBeFalsy();
+    expect(container.querySelector('.guardian-card')).toBeFalsy();
 
-    expect(sectionTitles).toEqual([
-      'Field Guide',
-      'Quick Checks',
-      'Warm-up Practice',
-      'Exam Training',
-      'Guardian Challenge',
+    const fieldGuideCard = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-page-card'))
+      .find((button) => button.textContent?.includes('Field Guide'));
+    expect(fieldGuideCard).toBeTruthy();
+    expect(container.querySelectorAll('.region-page-card')).toHaveLength(5);
+    act(() => {
+      fieldGuideCard!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).toHaveBeenCalledWith('field-guide');
+  });
+
+  it('renders each focused region page with its preserved panel behavior', () => {
+    const fieldGuidePage = renderRegionHubPage({ activePage: 'field-guide' });
+    expect(fieldGuidePage.textContent).toContain('Field Guide');
+    expect(fieldGuidePage.textContent).toContain('What this topic is');
+    expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeTruthy();
+    expect(fieldGuidePage.textContent).not.toContain('Back to region hub');
+    expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.quick-check-card')).toBeFalsy();
+
+    const quickCheckPage = renderRegionHubPage({ activePage: 'quick-check' });
+    expect(quickCheckPage.textContent).toContain('Quick Checks');
+    expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
+    expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
+
+    const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
+    expect(warmUpPage.textContent).toContain('Warm-up Practice');
+    expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
+    expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+
+    const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
+    expect(examTrainingPage.textContent).toContain('Exam Training');
+    expect(examTrainingPage.textContent).toContain('Recommended session');
+    expect(examTrainingPage.querySelector('.training-card')).toBeTruthy();
+
+    const guardianPage = renderRegionHubPage({ activePage: 'guardian' });
+    expect(guardianPage.textContent).toContain('Guardian Challenge');
+    expect(guardianPage.textContent).toContain('Guardian not ready yet');
+    expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
+  });
+
+  it('supports calm missing states and back navigation from focused pages', () => {
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
+    const container = renderRegionHubPage({
+      activePage: 'warm-up',
+      snippets: [],
+      practiceItems: [],
+      onNavigatePage,
+    });
+
+    expect(container.textContent).toContain('Warm-ups for this region are being prepared.');
+    const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Region Hub');
+    expect(back).toBeTruthy();
+    act(() => {
+      back!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).toHaveBeenCalledWith('hub');
+  });
+
+  it('keeps region navigation destinations unique and stage indicators non-interactive', () => {
+    const container = renderRegionHubPage({ activePage: 'quick-check' });
+    const navButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-learning-nav button'));
+    const navLabels = navButtons.map((button) => button.textContent);
+
+    expect(navLabels).toEqual([
+      REGION_LEARNING_PAGE_LABELS.hub,
+      REGION_LEARNING_PAGE_LABELS['field-guide'],
+      REGION_LEARNING_PAGE_LABELS['quick-check'],
+      REGION_LEARNING_PAGE_LABELS['warm-up'],
+      REGION_LEARNING_PAGE_LABELS['exam-training'],
+      REGION_LEARNING_PAGE_LABELS.guardian,
     ]);
+    expect(new Set(navLabels).size).toBe(navLabels.length);
+    expect(container.querySelectorAll('.region-arc-timeline button')).toHaveLength(0);
+    expect(container.querySelectorAll('.arc-phase[role="button"]')).toHaveLength(0);
+  });
+
+  it('humanizes warm-up fallback labels without inventing curriculum mappings', () => {
+    const fallbackPractice = {
+      ...generatedPractice,
+      questionType: undefined,
+      generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
+    };
+
+    const container = renderRegionHubPage({
+      activePage: 'warm-up',
+      practiceItems: [fallbackPractice],
+    });
+
+    expect(container.querySelector('.warm-up-practice-heading strong')?.textContent).toBe('Log Equation Basic');
+    expect(container.textContent).not.toContain('log_equation_basic');
+    expect(container.textContent).not.toContain('logarithms_and_exponentials');
+  });
+
+  it('does not award progress or save activity attempts from passive page viewing', () => {
+    const onCompleteFieldGuide = vi.fn();
+    const onLearningActivityAttempt = vi.fn();
+
+    renderRegionHubPage({
+      activePage: 'field-guide',
+      onCompleteFieldGuide,
+      onLearningActivityAttempt,
+    });
+    renderRegionHubPage({
+      activePage: 'quick-check',
+      onCompleteFieldGuide,
+      onLearningActivityAttempt,
+    });
+    renderRegionHubPage({
+      activePage: 'warm-up',
+      onCompleteFieldGuide,
+      onLearningActivityAttempt,
+    });
+
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+    expect(onLearningActivityAttempt).not.toHaveBeenCalled();
+  });
+
+  it('parses region hash routes and treats unknown region ids as safe route errors', () => {
+    expect(regionHashPath('logarithm-grove')).toBe('#/regions/logarithm-grove');
+    expect(regionHashPath('logarithm-grove', 'exam-training')).toBe('#/regions/logarithm-grove/exam-training');
+    expect(parseAsterionHashRoute('#/regions/logarithm-grove/quick-check')).toMatchObject({
+      kind: 'region',
+      regionId: 'logarithm-grove',
+      page: 'quick-check',
+      isKnownRegion: true,
+    });
+    expect(parseAsterionHashRoute('#/regions/not-a-region/guardian')).toMatchObject({
+      kind: 'region',
+      regionId: 'not-a-region',
+      page: 'guardian',
+      isKnownRegion: false,
+    });
+    expect(parseAsterionHashRoute('#/regions/logarithm-grove/not-real')).toMatchObject({
+      kind: 'region',
+      regionId: 'logarithm-grove',
+      page: 'hub',
+      isKnownRegion: true,
+    });
   });
 
   it('places the region summary directly above the learning content', () => {
@@ -444,12 +627,13 @@ describe('FieldGuidePanel teaching snippets', () => {
         onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
         onChallengeGuardian={vi.fn()}
+        onNavigatePage={vi.fn()}
         onReturnToMap={vi.fn()}
       />,
     );
 
     const summaryBand = container.querySelector<HTMLElement>('.region-summary-band');
-    const learningContent = container.querySelector<HTMLElement>('.region-learning-content');
+    const learningContent = container.querySelector<HTMLElement>('.region-page-shell');
 
     expect(summaryBand).toBeTruthy();
     expect(learningContent).toBeTruthy();
@@ -484,6 +668,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
         onChallengeGuardian={vi.fn()}
+        onNavigatePage={vi.fn()}
         onReturnToMap={vi.fn()}
       />,
     );

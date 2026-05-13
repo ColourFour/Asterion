@@ -55,7 +55,7 @@ function WarmUpPracticeCard({
   const [startedAt] = useState(() => new Date().toISOString());
   const solutionId = `warm-up-solution-${item.practiceId}`;
   const familyParts = item.generatorFamily.split('.');
-  const practiceLabel = familyParts[familyParts.length - 1]?.replace(/_/g, ' ') ?? 'Warm-up';
+  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Warm-up');
   const responseReady = learnerResponse.trim().length > 0;
   const canSave = Boolean(solutionVisible && outcome && !saved && onLearningActivityAttempt && region);
 
@@ -186,6 +186,12 @@ function WarmUpPracticeCard({
       ) : null}
     </article>
   );
+}
+
+function humanReadableLabel(value: string): string {
+  const words = value.replace(/[_-]+/g, ' ').trim();
+  if (!words) return 'Warm-up';
+  return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 export function WarmUpPracticePanel({

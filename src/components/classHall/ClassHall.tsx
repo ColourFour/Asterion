@@ -14,7 +14,7 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps)
     <section className="class-hall-screen" aria-labelledby="class-hall-title">
       <header className="class-hall-header">
         <div>
-          <span className="mode-pill">Academy Commons</span>
+          <span className="mode-pill">Class Hall</span>
           <h2 id="class-hall-title">Class Hall</h2>
           <p>A local trophy-room gathering for academy avatars, house crests, earned cosmetics, and low-pressure badges.</p>
         </div>
@@ -24,12 +24,12 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps)
       </header>
 
       {classHallAvatars.length ? (
-        <div className="class-hall-grid" aria-label="Academy Commons avatar showcase">
+        <div className="class-hall-grid" aria-label="Class Hall avatar showcase">
           {classHallAvatars.map((avatar) => <ClassHallCard avatar={avatar} key={avatar.id} />)}
         </div>
       ) : (
         <div className="class-hall-empty" role="status">
-          <strong>The Commons is quiet.</strong>
+          <strong>The Class Hall is quiet.</strong>
           <span>Avatar snapshots can be imported locally later without changing this view.</span>
         </div>
       )}
