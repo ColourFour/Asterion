@@ -13,7 +13,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from build_p3_skill_coverage import as_record, load_json, non_empty_string, string_list, unique_sorted, validate_skill_map
+from build_p3_skill_coverage import (
+    ALLOWED_CURRICULUM_ROLES,
+    EXPECTED_SYLLABUS_TOPICS,
+    as_record,
+    load_json,
+    non_empty_string,
+    string_list,
+    unique_sorted,
+    validate_skill_map,
+)
 
 
 GENERATED_BY = "tools/content_lab/scripts/build_p3_coverage_matrix.py"
@@ -53,6 +62,57 @@ MASTERY_SAFETY_RISK_FLAGS = {
     "teacher_review_app_region_mismatch",
     "unreviewed_app_region_routing_mismatch",
 }
+REQUIRED_INVENTORY_ROW_FIELDS = {
+    "available_support_types",
+    "canonical_question_ids",
+    "canonical_question_ids_routed_to_skill",
+    "curriculum_role",
+    "export_blocked_deferred_question_ids",
+    "guardian_candidate_count",
+    "guardian_candidate_question_ids",
+    "instructional_status",
+    "mastery_evidence_blocked_question_ids",
+    "mastery_evidence_question_count",
+    "mastery_evidence_question_ids",
+    "missing_support_types",
+    "practice_allowed_deferred_question_ids",
+    "practice_allowed_question_ids",
+    "prerequisite_skill_refs",
+    "region_id",
+    "risk_flags",
+    "skill_ref",
+    "teacher_review_app_region_mismatch_question_ids",
+    "teacher_review_deferred_question_ids",
+    "unreviewed_app_region_mismatch_question_ids",
+}
+NON_NEGATIVE_INVENTORY_COUNTS = {
+    "canonical_question_count",
+    "field_guide_count",
+    "guardian_candidate_count",
+    "mastery_evidence_question_count",
+    "quick_check_count",
+    "snippet_count",
+    "warmup_support_count",
+    "worked_example_count",
+}
+INVENTORY_COUNT_LIST_FIELDS = {
+    "guardian_candidate_count": "guardian_candidate_question_ids",
+    "quick_check_count": "quick_check_ids",
+    "snippet_count": "snippet_ids",
+    "warmup_support_count": "warmup_practice_ids",
+    "worked_example_count": "worked_example_ids",
+}
+REQUIRED_DEFERRED_ITEM_FIELDS = {
+    "app_region_id",
+    "evidence_status",
+    "export_allowed",
+    "mastery_evidence_allowed",
+    "practice_allowed",
+    "question_id",
+    "resolution_status",
+    "reviewed_skill_map_region_id",
+    "skill_ref",
+}
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -87,6 +147,107 @@ def clean_mastery_evidence_ids(row: dict[str, Any]) -> list[str]:
         for question_id in string_list(row.get("mastery_evidence_question_ids"))
         if question_id not in blocked and question_id not in deferred
     ]
+
+
+def row_question_pairs(rows_by_skill: dict[str, dict[str, Any]], field: str) -> set[tuple[str, str]]:
+    pairs: set[tuple[str, str]] = set()
+    for skill_ref, row in rows_by_skill.items():
+        for question_id in string_list(row.get(field)):
+            pairs.add((skill_ref, question_id))
+    return pairs
+
+
+def int_count(row: dict[str, Any], field: str) -> int | None:
+    value = row.get(field)
+    if isinstance(value, bool) or not isinstance(value, int):
+        return None
+    return value
+
+
+def validate_prerequisite_refs(refs: Any, owner: str, errors: list[str]) -> None:
+    if not isinstance(refs, list):
+        errors.append(f"{owner} prerequisite refs must be a list")
+        return
+    for index, raw_ref in enumerate(refs, start=1):
+        ref = as_record(raw_ref)
+        syllabus_id = non_empty_string(ref.get("syllabus_id"))
+        skill_ref = non_empty_string(ref.get("skill_ref"))
+        if syllabus_id != "caie_9709_p1_2026_2027" or not skill_ref:
+            errors.append(f"{owner} prerequisite ref {index} must be a P1 prerequisite reference")
+
+
+def validate_deferred_backlog(
+    inventory: dict[str, Any],
+    skill_by_ref: dict[str, dict[str, Any]],
+    rows_by_skill: dict[str, dict[str, Any]],
+    errors: list[str],
+) -> None:
+    route_backlog = as_record(as_record(inventory.get("routing_audit_summary")).get("deferred_review_backlog"))
+    if not route_backlog:
+        errors.append("inventory routing_audit_summary.deferred_review_backlog must be present")
+        return
+
+    items = route_backlog.get("items")
+    if not isinstance(items, list):
+        errors.append("deferred_review_backlog.items must be a list")
+        items = []
+
+    if route_backlog.get("mastery_evidence_allowed") is not False:
+        errors.append("deferred_review_backlog.mastery_evidence_allowed must be false")
+    if route_backlog.get("practice_allowed") is not True:
+        errors.append("deferred_review_backlog.practice_allowed must be true")
+    if route_backlog.get("export_allowed") is not False:
+        errors.append("deferred_review_backlog.export_allowed must be false")
+
+    expected_count_fields = {
+        "case_count": len(items),
+        "mastery_evidence_blocked_case_count": len(items),
+        "practice_allowed_case_count": len(items),
+        "export_blocked_case_count": len(items),
+    }
+    for field, expected in expected_count_fields.items():
+        if int_count(route_backlog, field) != expected:
+            errors.append(f"deferred_review_backlog.{field} must equal deferred item count {expected}")
+
+    backlog_pairs: set[tuple[str, str]] = set()
+    for index, raw_item in enumerate(items, start=1):
+        item = as_record(raw_item)
+        owner = f"deferred_review_backlog.items[{index}]"
+        missing_fields = sorted(field for field in REQUIRED_DEFERRED_ITEM_FIELDS if field not in item)
+        if missing_fields:
+            errors.append(f"{owner} missing required fields: {', '.join(missing_fields)}")
+        skill_ref = non_empty_string(item.get("skill_ref"))
+        question_id = non_empty_string(item.get("question_id"))
+        if not skill_ref or skill_ref not in skill_by_ref:
+            errors.append(f"{owner} references unknown reviewed P3 skill {skill_ref}")
+        if not question_id:
+            errors.append(f"{owner} missing question_id")
+        if item.get("resolution_status") != "teacher_review_deferred":
+            errors.append(f"{owner} resolution_status must be teacher_review_deferred")
+        if item.get("evidence_status") != "ambiguous_part_level_evidence":
+            errors.append(f"{owner} evidence_status must be ambiguous_part_level_evidence")
+        if item.get("mastery_evidence_allowed") is not False:
+            errors.append(f"{owner} mastery_evidence_allowed must be false")
+        if item.get("practice_allowed") is not True:
+            errors.append(f"{owner} practice_allowed must be true")
+        if item.get("export_allowed") is not False:
+            errors.append(f"{owner} export_allowed must be false")
+        if skill_ref and question_id:
+            pair = (skill_ref, question_id)
+            if pair in backlog_pairs:
+                errors.append(f"{owner} duplicates deferred case {skill_ref}/{question_id}")
+            backlog_pairs.add(pair)
+
+    per_skill_deferred_pairs = row_question_pairs(rows_by_skill, "teacher_review_deferred_question_ids")
+    if backlog_pairs != per_skill_deferred_pairs:
+        missing_from_backlog = sorted(per_skill_deferred_pairs - backlog_pairs)
+        missing_from_rows = sorted(backlog_pairs - per_skill_deferred_pairs)
+        if missing_from_backlog:
+            formatted = ", ".join(f"{skill}/{question}" for skill, question in missing_from_backlog)
+            errors.append(f"deferred cases missing from deferred backlog: {formatted}")
+        if missing_from_rows:
+            formatted = ", ".join(f"{skill}/{question}" for skill, question in missing_from_rows)
+            errors.append(f"deferred backlog cases missing from per-skill rows: {formatted}")
 
 
 def blocking_reasons(row: dict[str, Any], skill: dict[str, Any], clean_count: int) -> list[str]:
@@ -196,6 +357,9 @@ def validate_inputs(skill_map: dict[str, Any], inventory: dict[str, Any]) -> tup
         if not skill_ref:
             errors.append(f"inventory per_skill_inventory row {index} is missing skill_ref")
             continue
+        missing_required_fields = sorted(field for field in REQUIRED_INVENTORY_ROW_FIELDS if field not in row)
+        if missing_required_fields:
+            errors.append(f"inventory row {skill_ref} missing required fields: {', '.join(missing_required_fields)}")
         if skill_ref not in skill_by_ref:
             errors.append(f"inventory row {skill_ref} references unknown reviewed P3 skill")
         if skill_ref in rows_by_skill:
@@ -207,15 +371,56 @@ def validate_inputs(skill_map: dict[str, Any], inventory: dict[str, Any]) -> tup
             errors.append(f"inventory row {skill_ref} references unknown region_id {region_id}")
         if row.get("instructional_status") not in INVENTORY_STATUS_LABELS:
             errors.append(f"inventory row {skill_ref} has invalid instructional_status {row.get('instructional_status')}")
+        if skill_ref in skill_by_ref:
+            skill = skill_by_ref[skill_ref]
+            if row.get("curriculum_role") != skill.get("curriculum_role"):
+                errors.append(f"inventory row {skill_ref} curriculum_role does not match reviewed P3 skill map")
+            if row.get("official_curriculum_section") not in (None, skill.get("syllabus_topic")):
+                errors.append(f"inventory row {skill_ref} official_curriculum_section does not match reviewed P3 skill map")
+
+        for field in NON_NEGATIVE_INVENTORY_COUNTS:
+            count = int_count(row, field)
+            if count is None or count < 0:
+                errors.append(f"inventory row {skill_ref} has invalid non-negative count {field}={row.get(field)}")
+        for count_field, list_field in INVENTORY_COUNT_LIST_FIELDS.items():
+            count = int_count(row, count_field)
+            if count is not None and count != len(string_list(row.get(list_field))):
+                errors.append(f"inventory row {skill_ref} {count_field} does not match {list_field}")
+        validate_prerequisite_refs(row.get("prerequisite_skill_refs"), f"inventory row {skill_ref}", errors)
+        validate_prerequisite_refs(row.get("p1_prerequisite_refs", row.get("prerequisite_skill_refs")), f"inventory row {skill_ref}", errors)
 
         raw_mastery_ids = set(string_list(row.get("mastery_evidence_question_ids")))
         clean_ids = set(clean_mastery_evidence_ids(row))
         deferred_ids = set(string_list(row.get("teacher_review_deferred_question_ids")))
         blocked_ids = set(string_list(row.get("mastery_evidence_blocked_question_ids")))
+        routed_canonical_ids = set(string_list(row.get("canonical_question_ids_routed_to_skill")))
+        canonical_ids = set(string_list(row.get("canonical_question_ids")))
+        practice_allowed_ids = set(string_list(row.get("practice_allowed_question_ids")))
+        practice_allowed_deferred_ids = set(string_list(row.get("practice_allowed_deferred_question_ids")))
+        export_blocked_deferred_ids = set(string_list(row.get("export_blocked_deferred_question_ids")))
+        teacher_review_mismatch_ids = set(string_list(row.get("teacher_review_app_region_mismatch_question_ids")))
+        unreviewed_mismatch_ids = set(string_list(row.get("unreviewed_app_region_mismatch_question_ids")))
+        unsafe_mastery_ids = blocked_ids | deferred_ids | teacher_review_mismatch_ids | unreviewed_mismatch_ids
         if raw_mastery_ids.intersection(deferred_ids):
             errors.append(f"inventory row {skill_ref} counts deferred evidence as clean mastery evidence")
         if raw_mastery_ids.intersection(blocked_ids):
             errors.append(f"inventory row {skill_ref} counts blocked evidence as clean mastery evidence")
+        if raw_mastery_ids.intersection(teacher_review_mismatch_ids):
+            errors.append(f"inventory row {skill_ref} counts teacher-review mismatch evidence as clean mastery evidence")
+        if raw_mastery_ids.intersection(unreviewed_mismatch_ids):
+            errors.append(f"inventory row {skill_ref} counts unreviewed mismatch evidence as clean mastery evidence")
+        if raw_mastery_ids - canonical_ids:
+            errors.append(f"inventory row {skill_ref} counts non-canonical evidence as clean mastery evidence")
+        if raw_mastery_ids - routed_canonical_ids:
+            errors.append(f"inventory row {skill_ref} counts non-routed canonical evidence as clean mastery evidence")
+        if raw_mastery_ids - practice_allowed_ids:
+            errors.append(f"inventory row {skill_ref} counts non-practice-allowed evidence as clean mastery evidence")
+        if clean_ids.intersection(unsafe_mastery_ids):
+            errors.append(f"inventory row {skill_ref} has unsafe clean mastery evidence")
+        if deferred_ids - practice_allowed_deferred_ids:
+            errors.append(f"inventory row {skill_ref} has deferred evidence missing from practice_allowed_deferred_question_ids")
+        if deferred_ids - export_blocked_deferred_ids:
+            errors.append(f"inventory row {skill_ref} has deferred evidence missing from export_blocked_deferred_question_ids")
         if row.get("mastery_evidence_question_count") != len(clean_mastery_evidence_ids(row)):
             errors.append(f"inventory row {skill_ref} mastery_evidence_question_count does not match clean evidence ids")
 
@@ -225,6 +430,8 @@ def validate_inputs(skill_map: dict[str, Any], inventory: dict[str, Any]) -> tup
         errors.append(f"inventory is missing reviewed skill rows: {', '.join(missing_skill_refs)}")
     if extra_skill_refs:
         errors.append(f"inventory has non-reviewed skill rows: {', '.join(extra_skill_refs)}")
+
+    validate_deferred_backlog(inventory, skill_by_ref, rows_by_skill, errors)
 
     if errors:
         raise ValueError("; ".join(errors))
@@ -291,6 +498,103 @@ def summary_entries(counts: dict[str, int]) -> list[dict[str, Any]]:
     return [{"label": label, "count": counts[label]} for label in sorted(counts)]
 
 
+def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]], region_by_id: dict[str, dict[str, Any]]) -> None:
+    errors: list[str] = []
+    rows = report.get("coverage_rows") if isinstance(report.get("coverage_rows"), list) else []
+    skill_refs = [non_empty_string(as_record(row).get("skill_ref")) for row in rows]
+    expected_skill_refs = sorted(str(skill["skill_id"]) for skill in skills)
+    if sorted(ref for ref in skill_refs if ref) != expected_skill_refs:
+        errors.append("coverage_rows must contain each reviewed P3 skill exactly once and no non-P3 skills")
+    if len(set(ref for ref in skill_refs if ref)) != len([ref for ref in skill_refs if ref]):
+        errors.append("coverage_rows contains duplicate skill_ref values")
+
+    row_required_fields = {
+        "blocking_reasons",
+        "canonical_question_count",
+        "clean_mastery_evidence_count",
+        "clean_mastery_evidence_question_ids",
+        "correction_priority",
+        "coverage_status",
+        "curriculum_role",
+        "deferred_evidence_count",
+        "deferred_evidence_question_ids",
+        "export_allowed_evidence_count",
+        "official_syllabus_section",
+        "practice_allowed_deferred_count",
+        "prerequisite_skill_refs",
+        "recommended_next_action",
+        "region_id",
+        "skill_ref",
+        "support_gaps",
+    }
+
+    for raw_row in rows:
+        row = as_record(raw_row)
+        skill_ref = non_empty_string(row.get("skill_ref")) or "<missing>"
+        missing_fields = sorted(field for field in row_required_fields if field not in row)
+        if missing_fields:
+            errors.append(f"coverage row {skill_ref} missing required fields: {', '.join(missing_fields)}")
+        if row.get("region_id") not in region_by_id:
+            errors.append(f"coverage row {skill_ref} has unknown region_id {row.get('region_id')}")
+        if row.get("official_syllabus_section") not in EXPECTED_SYLLABUS_TOPICS:
+            errors.append(f"coverage row {skill_ref} has invalid official_syllabus_section {row.get('official_syllabus_section')}")
+        if row.get("curriculum_role") not in ALLOWED_CURRICULUM_ROLES:
+            errors.append(f"coverage row {skill_ref} has invalid curriculum_role {row.get('curriculum_role')}")
+        if row.get("coverage_status") not in COVERAGE_STATUS_LABELS:
+            errors.append(f"coverage row {skill_ref} has invalid coverage_status {row.get('coverage_status')}")
+        if row.get("correction_priority") not in CORRECTION_PRIORITY_LABELS:
+            errors.append(f"coverage row {skill_ref} has invalid correction_priority {row.get('correction_priority')}")
+        if not non_empty_string(row.get("recommended_next_action")):
+            errors.append(f"coverage row {skill_ref} missing deterministic recommended_next_action")
+        for field in (
+            "canonical_question_count",
+            "clean_mastery_evidence_count",
+            "deferred_evidence_count",
+            "export_allowed_evidence_count",
+            "practice_allowed_deferred_count",
+        ):
+            count = int_count(row, field)
+            if count is None or count < 0:
+                errors.append(f"coverage row {skill_ref} has invalid non-negative count {field}={row.get(field)}")
+        if int_count(row, "clean_mastery_evidence_count") != len(string_list(row.get("clean_mastery_evidence_question_ids"))):
+            errors.append(f"coverage row {skill_ref} clean_mastery_evidence_count does not match clean ids")
+        if int_count(row, "deferred_evidence_count") != len(string_list(row.get("deferred_evidence_question_ids"))):
+            errors.append(f"coverage row {skill_ref} deferred_evidence_count does not match deferred ids")
+        if int_count(row, "export_allowed_evidence_count") != int_count(row, "clean_mastery_evidence_count"):
+            errors.append(f"coverage row {skill_ref} export_allowed_evidence_count must equal clean mastery evidence count")
+        if set(string_list(row.get("clean_mastery_evidence_question_ids"))).intersection(string_list(row.get("deferred_evidence_question_ids"))):
+            errors.append(f"coverage row {skill_ref} counts deferred evidence as clean mastery evidence")
+
+    status_counts = count_by(rows, "coverage_status", sorted(COVERAGE_STATUS_LABELS))
+    priority_counts = count_by(rows, "correction_priority", sorted(CORRECTION_PRIORITY_LABELS))
+    section_counts = count_by(rows, "official_syllabus_section")
+    region_counts = count_by(rows, "region_id")
+    if report.get("skill_summary", {}).get("reviewed_skill_count") != len(rows):
+        errors.append("skill_summary.reviewed_skill_count must equal coverage row count")
+    if report.get("skill_summary", {}).get("coverage_status_counts") != status_counts:
+        errors.append("skill_summary.coverage_status_counts must equal detailed row counts")
+    if report.get("skill_summary", {}).get("correction_priority_counts") != priority_counts:
+        errors.append("skill_summary.correction_priority_counts must equal detailed row counts")
+    if report.get("official_syllabus_section_summary", {}).get("skill_counts") != section_counts:
+        errors.append("official_syllabus_section_summary.skill_counts must equal detailed row counts")
+    if report.get("region_summary", {}).get("skill_counts") != region_counts:
+        errors.append("region_summary.skill_counts must equal detailed row counts")
+
+    deferred_summary = as_record(report.get("deferred_evidence_summary"))
+    deferred_items = deferred_summary.get("items") if isinstance(deferred_summary.get("items"), list) else []
+    if deferred_summary.get("case_count") != len(deferred_items):
+        errors.append("deferred_evidence_summary.case_count must equal item count")
+    if deferred_summary.get("mastery_evidence_allowed") is not False:
+        errors.append("deferred_evidence_summary.mastery_evidence_allowed must be false")
+    if deferred_summary.get("practice_allowed") is not True:
+        errors.append("deferred_evidence_summary.practice_allowed must be true")
+    if deferred_summary.get("export_allowed") is not False:
+        errors.append("deferred_evidence_summary.export_allowed must be false")
+
+    if errors:
+        raise ValueError("; ".join(errors))
+
+
 def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[str, Any]:
     skills, inventory_rows_by_skill, region_by_id = validate_inputs(skill_map, inventory)
     rows = build_matrix_rows(skills, inventory_rows_by_skill, region_by_id)
@@ -309,7 +613,7 @@ def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[s
     deferred_items = route_backlog.get("items") if isinstance(route_backlog.get("items"), list) else []
     curriculum_targets = as_record(skill_map.get("curriculum_targets"))
 
-    return {
+    report = {
         "schema_name": REPORT_SCHEMA_NAME,
         "schema_version": REPORT_SCHEMA_VERSION,
         "generated_by": GENERATED_BY,
@@ -383,6 +687,8 @@ def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[s
             "note": "Do not create learner content or resolve deferred cases in the matrix pass; use this report to choose the next correction sequence.",
         },
     }
+    validate_report_contract(report, skills, region_by_id)
+    return report
 
 
 def priority_weight(priority: str) -> int:

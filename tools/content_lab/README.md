@@ -52,6 +52,12 @@ Build the teacher-facing P3 coverage matrix:
 npm run coverage:p3-matrix
 ```
 
+Run the focused matrix validation:
+
+```bash
+npx vitest run tests/p3CoverageMatrix.test.ts
+```
+
 Verify generated outputs and reviewed runtime artifacts:
 
 ```bash
@@ -133,6 +139,13 @@ Correction priority labels guide the next region-by-region correction pass:
 - `P4_polish_or_complete`: mostly complete and safe for teacher review.
 
 Deferred ambiguous evidence remains visible in the matrix and Markdown report. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims.
+
+Matrix validation is intentionally strict about curriculum-contract failures and intentionally tolerant of ordinary support gaps:
+
+- Unknown reviewed skill refs, duplicate or missing skill rows, unknown region IDs, invalid curriculum roles, invalid official syllabus sections, invalid status/priority labels, negative counts, malformed deferred-policy fields, unsafe mastery evidence, P1 prerequisite evidence counted as P3 mastery evidence, and mismatched summaries fail loudly.
+- Missing snippets, worked examples, Quick Checks, and warm-ups are reported as support gaps and affect `coverage_status` / `correction_priority` deterministically. They do not make `npm run coverage:p3-matrix` fail unless they also violate the curriculum contract.
+- Deferred ambiguous cases must stay represented both in per-skill rows and in the deferred backlog. They can appear as `practice_allowed_deferred_count`, but cannot become clean mastery evidence or export-allowed evidence.
+- P1 prerequisite refs are allowed only as prerequisite metadata. They cannot create P3 matrix rows or count as canonical P3 question evidence.
 
 Inventory status labels are conservative:
 
