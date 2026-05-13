@@ -71,7 +71,13 @@ interface InventoryReport {
     p1_prerequisite_refs: Array<{ syllabus_id: string; skill_ref: string; relationship: string }>;
     canonical_question_ids_routed_to_skill: string[];
     teacher_review_app_region_mismatch_question_ids: string[];
+    teacher_review_deferred_question_ids: string[];
     unreviewed_app_region_mismatch_question_ids: string[];
+    mastery_evidence_blocked_question_ids: string[];
+    mastery_evidence_question_ids: string[];
+    practice_allowed_question_ids: string[];
+    practice_allowed_deferred_question_ids: string[];
+    export_blocked_deferred_question_ids: string[];
     risk_flags: string[];
     mastery_eligible: boolean;
     instructional_status: string;
@@ -87,6 +93,28 @@ interface InventoryReport {
     original_reviewed_mismatch_count: number;
     resolved_mismatch_count: number;
     resolved_skill_warning_count: number;
+    deferred_teacher_review_count: number;
+    deferred_teacher_review_skill_warning_count: number;
+    deferred_review_backlog: {
+      case_count: number;
+      affected_skill_refs: string[];
+      affected_region_ids: string[];
+      mastery_evidence_allowed: boolean | null;
+      practice_allowed: boolean | null;
+      export_allowed: boolean | null;
+      mastery_evidence_blocked_case_count: number;
+      practice_allowed_case_count: number;
+      export_blocked_case_count: number;
+      items: Array<{
+        question_id: string;
+        skill_ref: string;
+        resolution_status: string;
+        evidence_status: string;
+        mastery_evidence_allowed: boolean;
+        practice_allowed: boolean;
+        export_allowed: boolean;
+      }>;
+    };
     teacher_review_mismatch_count: number;
     teacher_review_skill_warning_count: number;
     unreviewed_mismatch_count: number;
@@ -392,14 +420,35 @@ describe('P3 content inventory report', () => {
       expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(6);
       expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(20);
       expect(report.routing_audit_summary.teacher_review_skill_warning_count).toBe(8);
+      expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(20);
+      expect(report.routing_audit_summary.deferred_teacher_review_skill_warning_count).toBe(8);
+      expect(report.routing_audit_summary.deferred_review_backlog).toMatchObject({
+        case_count: 20,
+        mastery_evidence_allowed: false,
+        practice_allowed: true,
+        export_allowed: false,
+        mastery_evidence_blocked_case_count: 20,
+        practice_allowed_case_count: 20,
+        export_blocked_case_count: 20,
+      });
+      expect(report.routing_audit_summary.deferred_review_backlog.items.every((item) => (
+        item.resolution_status === 'teacher_review_deferred'
+        && item.evidence_status === 'ambiguous_part_level_evidence'
+        && item.mastery_evidence_allowed === false
+        && item.practice_allowed === true
+        && item.export_allowed === false
+      ))).toBe(true);
       expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(0);
       expect(report.routing_audit_summary.unreviewed_skill_warning_count).toBe(0);
-      expect(report.routing_audit_summary.teacher_review_mismatches.every((item) => item.resolution_status === 'needs_teacher_review')).toBe(true);
+      expect(report.routing_audit_summary.teacher_review_mismatches.every((item) => item.resolution_status === 'teacher_review_deferred')).toBe(true);
 
       for (const row of report.per_skill_inventory) {
         expect(skillRefs.has(row.skill_ref), row.skill_ref).toBe(true);
         expect(knownRegionIds.has(row.region_id), row.region_id).toBe(true);
-        expect(row.canonical_question_ids_routed_to_skill.length, row.skill_ref).toBeGreaterThan(0);
+        expect(row.practice_allowed_question_ids.length, row.skill_ref).toBeGreaterThan(0);
+        if (row.canonical_question_ids_routed_to_skill.length === 0) {
+          expect(row.mastery_evidence_blocked_question_ids.length, row.skill_ref).toBeGreaterThan(0);
+        }
         for (const prerequisite of row.p1_prerequisite_refs) {
           expect(prerequisite.syllabus_id).toBe('caie_9709_p1_2026_2027');
           expect(row.available_support_types).not.toContain('p1_prerequisite');
@@ -408,6 +457,18 @@ describe('P3 content inventory report', () => {
       }
       expect(report.per_skill_inventory.filter((row) => row.teacher_review_app_region_mismatch_question_ids.length > 0))
         .toHaveLength(8);
+      expect(report.per_skill_inventory.filter((row) => row.teacher_review_deferred_question_ids.length > 0))
+        .toHaveLength(8);
+      for (const row of report.per_skill_inventory.filter((item) => item.teacher_review_deferred_question_ids.length > 0)) {
+        expect(row.mastery_evidence_blocked_question_ids).toEqual(expect.arrayContaining(row.teacher_review_deferred_question_ids));
+        expect(row.practice_allowed_deferred_question_ids).toEqual(row.teacher_review_deferred_question_ids);
+        expect(row.export_blocked_deferred_question_ids).toEqual(row.teacher_review_deferred_question_ids);
+        for (const questionId of row.teacher_review_deferred_question_ids) {
+          expect(row.mastery_evidence_question_ids).not.toContain(questionId);
+          expect(row.canonical_question_ids_routed_to_skill).not.toContain(questionId);
+          expect(row.practice_allowed_question_ids).toContain(questionId);
+        }
+      }
       expect(report.per_skill_inventory.filter((row) => row.unreviewed_app_region_mismatch_question_ids.length > 0))
         .toHaveLength(0);
       expect(report.teacher_review_export_tag_summary.p1_prerequisite_ref_count).toBeGreaterThan(0);
@@ -485,7 +546,11 @@ describe('P3 content inventory report', () => {
           original_app_region_id: 'algebra-forge',
           reviewed_skill_map_region_id: skill.region_id,
           source_of_conflicting_label: 'Fixture q1 routes to algebra while this reviewed skill belongs to a different region.',
-          resolution_status: 'needs_teacher_review',
+          resolution_status: 'teacher_review_deferred',
+          evidence_status: 'ambiguous_part_level_evidence',
+          mastery_evidence_allowed: false,
+          practice_allowed: true,
+          export_allowed: false,
           recommended_resolution: 'Keep visible for fixture review.',
           rationale: 'Fixture verifies audited mismatches are not treated as unreviewed structural warnings.',
         }));
@@ -498,11 +563,28 @@ describe('P3 content inventory report', () => {
 
       expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(8);
       expect(report.routing_audit_summary.teacher_review_skill_warning_count).toBe(8);
+      expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(8);
+      expect(report.routing_audit_summary.deferred_review_backlog).toMatchObject({
+        case_count: 8,
+        mastery_evidence_allowed: false,
+        practice_allowed: true,
+        export_allowed: false,
+        mastery_evidence_blocked_case_count: 8,
+      });
       expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(0);
       expect(teacherReviewRisk).toMatchObject({ count: 8, status: 'open' });
       expect(structuralRisk).toMatchObject({ count: 0, status: 'clear' });
       expect(report.per_skill_inventory.filter((row) => row.teacher_review_app_region_mismatch_question_ids.length > 0))
         .toHaveLength(8);
+      for (const row of report.per_skill_inventory.filter((item) => item.teacher_review_deferred_question_ids.length > 0)) {
+        expect(row.teacher_review_deferred_question_ids).toEqual(['q1']);
+        expect(row.mastery_evidence_blocked_question_ids).toEqual(['q1']);
+        expect(row.mastery_evidence_question_ids).toEqual([]);
+        expect(row.canonical_question_ids_routed_to_skill).toEqual([]);
+        expect(row.practice_allowed_question_ids).toEqual(['q1']);
+        expect(row.practice_allowed_deferred_question_ids).toEqual(['q1']);
+        expect(row.export_blocked_deferred_question_ids).toEqual(['q1']);
+      }
       expect(report.per_skill_inventory.filter((row) => row.instructional_status === 'needs_review'))
         .toHaveLength(8);
       expectStatusCountsMatchDetails(report);
@@ -538,6 +620,52 @@ describe('P3 content inventory report', () => {
       ]);
 
       expect(failure).toContain('unknown prerequisite skill p3_missing_fixture_skill');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('fails when a deferred routing-audit item does not declare mastery/practice/export safety flags', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-p3-content-bad-deferred-routing-'));
+    try {
+      const paths = writeFixtureFiles(dir);
+      const skillMap = readJson<{ skills: Array<{ skill_id: string; region_id: string }> }>(paths.skillMap);
+      const skill = skillMap.skills.find((item) => item.region_id !== 'algebra-forge');
+      if (!skill) throw new Error('Fixture expected a non-algebra skill');
+      writeFileSync(paths.routingAudit, JSON.stringify(routingAuditFixture([{
+        skill_ref: skill.skill_id,
+        question_id: 'q1',
+        original_app_region_id: 'algebra-forge',
+        reviewed_skill_map_region_id: skill.region_id,
+        source_of_conflicting_label: 'Fixture q1 routes to algebra while this reviewed skill belongs to a different region.',
+        resolution_status: 'teacher_review_deferred',
+        recommended_resolution: 'Keep visible for fixture review.',
+        rationale: 'Fixture verifies deferred routing entries must state mastery safety explicitly.',
+      }]), null, 2));
+
+      const failure = runPythonFailure([
+        scriptPath,
+        '--skill-map',
+        paths.skillMap,
+        '--question-bank',
+        paths.questionBank,
+        '--snippets',
+        paths.snippets,
+        '--generated-practice',
+        paths.generatedPractice,
+        '--world-map',
+        worldMapPath,
+        '--field-guides',
+        fieldGuidesPath,
+        '--routing-audit',
+        paths.routingAudit,
+        '--output',
+        paths.output,
+      ]);
+
+      expect(failure).toContain('teacher_review_deferred entries must set mastery_evidence_allowed to false');
+      expect(failure).toContain('teacher_review_deferred entries must set practice_allowed to true');
+      expect(failure).toContain('teacher_review_deferred entries must set export_allowed to false');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

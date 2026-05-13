@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Asterion P3 Coverage Matrix",
+  "type": "object",
+  "required": [
+    "schema_name",
+    "schema_version",
+    "generated_label",
+    "curriculum_target_summary",
+    "official_syllabus_section_summary",
+    "region_summary",
+    "skill_summary",
+    "coverage_rows",
+    "clean_mastery_evidence_summary",
+    "deferred_evidence_summary",
+    "teaching_support_summary",
+    "correction_priority_summary",
+    "risk_summary",
+    "next_step_summary"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "asterion_p3_coverage_matrix"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "generated_label": {
+      "type": "string"
+    },
+    "coverage_rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "skill_ref",
+          "skill_title",
+          "official_syllabus_section",
+          "curriculum_role",
+          "mastery_eligible",
+          "needs_teacher_review",
+          "region_id",
+          "region_title",
+          "prerequisite_skill_refs",
+          "prerequisite_notes",
+          "field_guide_status",
+          "snippet_status",
+          "worked_example_status",
+          "quick_check_status",
+          "warmup_status",
+          "canonical_question_count",
+          "clean_mastery_evidence_count",
+          "deferred_evidence_count",
+          "practice_allowed_deferred_count",
+          "export_allowed_evidence_count",
+          "guardian_candidate_count",
+          "coverage_status",
+          "correction_priority",
+          "blocking_reasons",
+          "recommended_next_action"
+        ],
+        "properties": {
+          "skill_ref": {
+            "type": "string",
+            "pattern": "^p3_[a-z0-9_]+$"
+          },
+          "coverage_status": {
+            "enum": [
+              "ready_for_review",
+              "partial",
+              "missing_support",
+              "needs_teacher_review",
+              "blocked_for_mastery"
+            ]
+          },
+          "correction_priority": {
+            "enum": [
+              "P0_blocked_mastery",
+              "P1_missing_core_support",
+              "P2_missing_practice_support",
+              "P3_teacher_review_backlog",
+              "P4_polish_or_complete"
+            ]
+          },
+          "field_guide_status": {
+            "enum": ["available", "missing"]
+          },
+          "snippet_status": {
+            "enum": ["available", "missing"]
+          },
+          "worked_example_status": {
+            "enum": ["available", "missing"]
+          },
+          "quick_check_status": {
+            "enum": ["available", "missing"]
+          },
+          "warmup_status": {
+            "enum": ["available", "missing"]
+          },
+          "clean_mastery_evidence_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "deferred_evidence_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

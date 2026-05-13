@@ -46,6 +46,12 @@ Build the deterministic P3 content inventory:
 npm run inventory:p3-content
 ```
 
+Build the teacher-facing P3 coverage matrix:
+
+```bash
+npm run coverage:p3-matrix
+```
+
 Verify generated outputs and reviewed runtime artifacts:
 
 ```bash
@@ -97,7 +103,36 @@ Records become `review_only` when they are not blocked but still need human atte
 
 `npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
 
-The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; audited ambiguous entries remain visible as teacher-review routing items; active mismatches with no audit entry remain structural warnings. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
+The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; audited ambiguous entries remain visible as a deferred teacher-review backlog; active mismatches with no audit entry remain structural warnings. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
+
+`npm run coverage:p3-matrix` writes:
+
+- `tools/content_lab/reports/p3_coverage_matrix.json`
+- `tools/content_lab/reports/p3_coverage_matrix.md`
+
+The P3 coverage matrix is the teacher-facing synthesis report for curriculum-alignment planning. It reads the reviewed P3 skill map and the deterministic content inventory, then produces one row per reviewed P3 skill. It differs from the skill coverage report and content inventory in purpose:
+
+- Skill coverage report: contract-level support dashboard for reviewed skills.
+- Content inventory report: detailed evidence/support inventory by skill and region.
+- Coverage matrix: teacher-readable coverage, risk, and correction-priority view by official syllabus section, app region, and reviewed skill.
+
+Coverage matrix status labels are conservative:
+
+- `ready_for_review`: reviewed P3 core skill with expected teaching support, at least one clean mastery evidence item, and no unresolved blocking issue.
+- `missing_support`: clean mastery evidence exists, but expected teaching support is missing, such as snippets, worked examples, Quick Checks, or warm-ups.
+- `needs_teacher_review`: clean evidence exists, but deferred ambiguous evidence, inventory review flags, or routing ambiguity still need teacher attention.
+- `blocked_for_mastery`: no clean mastery evidence, all available evidence is deferred, the skill is teacher-review gated, or the mastery-safety policy blocks the evidence.
+- `partial`: some support and clean evidence exist, but the row is not complete enough for `ready_for_review` and is not better classified by the labels above.
+
+Correction priority labels guide the next region-by-region correction pass:
+
+- `P0_blocked_mastery`: no clean mastery evidence, unsafe evidence, or all evidence deferred.
+- `P1_missing_core_support`: missing snippet, worked example, or Quick Check support.
+- `P2_missing_practice_support`: missing warm-up support.
+- `P3_teacher_review_backlog`: deferred ambiguity remains, but clean evidence and support also exist.
+- `P4_polish_or_complete`: mostly complete and safe for teacher review.
+
+Deferred ambiguous evidence remains visible in the matrix and Markdown report. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims.
 
 Inventory status labels are conservative:
 

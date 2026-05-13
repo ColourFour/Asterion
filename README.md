@@ -144,9 +144,10 @@ P3 curriculum contract and inventory reports are generated separately:
 ```bash
 npm run validate:p3-skill-map
 npm run inventory:p3-content
+npm run coverage:p3-matrix
 ```
 
-`validate:p3-skill-map` checks the reviewed CAIE 9709 P3 skill contract and writes the coverage report. `inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`, which inventories Field Guides, snippets, worked examples, Quick Checks, warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export tags, and routing-audit status by region and reviewed skill. Missing instructional support is reported as a gap; unsafe P3 mastery evidence fails the command.
+`validate:p3-skill-map` checks the reviewed CAIE 9709 P3 skill contract and writes the coverage report. `inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`, which inventories Field Guides, snippets, worked examples, Quick Checks, warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export tags, and routing-audit status by region and reviewed skill. `coverage:p3-matrix` writes the teacher-facing JSON and Markdown coverage matrix, including clean mastery evidence, deferred ambiguous evidence, support gaps, and correction priorities. Missing instructional support is reported as a gap; unsafe P3 mastery evidence fails the command. Mixed-topic or part-level ambiguous P3 routing cases are explicitly deferred in the report: they remain visible and practice-allowed where image evidence is structurally valid, but are blocked from mastery evidence and export.
 
 Run the pipeline with:
 

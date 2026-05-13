@@ -29,6 +29,23 @@
       "summary": "Add reviewed quick check support for 6 reviewed P3 skill(s)."
     },
     {
+      "action_id": "fill_guardian_candidate_gaps",
+      "affected_region_ids": [
+        "calculus-cliffs",
+        "integration-gardens"
+      ],
+      "affected_skill_count": 2,
+      "summary": "Add reviewed guardian candidate support for 2 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "fill_canonical_question_gaps",
+      "affected_region_ids": [
+        "integration-gardens"
+      ],
+      "affected_skill_count": 1,
+      "summary": "Add reviewed canonical question support for 1 reviewed P3 skill(s)."
+    },
+    {
       "action_id": "fill_snippet_gaps",
       "affected_region_ids": [
         "logarithm-grove"
@@ -120,10 +137,30 @@
     "world_map": "src/lib/worldMap.ts"
   },
   "missing_support_summary": {
-    "ordinary_gap_skill_count": 27,
-    "skills_missing_canonical_question": [],
+    "ordinary_gap_skill_count": 28,
+    "skills_missing_canonical_question": [
+      {
+        "micro_skill_name": "Integrate rational functions using partial fractions",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions"
+      }
+    ],
     "skills_missing_field_guide": [],
-    "skills_missing_guardian_candidate": [],
+    "skills_missing_guardian_candidate": [
+      {
+        "micro_skill_name": "Differentiate implicit log or exponential relations",
+        "official_curriculum_section": "Differentiation",
+        "region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp"
+      },
+      {
+        "micro_skill_name": "Integrate rational functions using partial fractions",
+        "official_curriculum_section": "Integration",
+        "region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions"
+      }
+    ],
     "skills_missing_quick_check": [
       {
         "micro_skill_name": "Find complex powers and roots using the suitable form",
@@ -372,7 +409,7 @@
     },
     {
       "active_by_default": true,
-      "canonical_question_count": 21,
+      "canonical_question_count": 20,
       "field_guide_count": 1,
       "guardian_candidate_count": 11,
       "instructional_status": "needs_review",
@@ -400,9 +437,9 @@
     },
     {
       "active_by_default": true,
-      "canonical_question_count": 16,
+      "canonical_question_count": 14,
       "field_guide_count": 1,
-      "guardian_candidate_count": 9,
+      "guardian_candidate_count": 8,
       "instructional_status": "needs_review",
       "missing_support_flags": [],
       "quick_check_count": 5,
@@ -446,11 +483,12 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 17,
+      "canonical_question_count": 11,
       "field_guide_count": 1,
-      "guardian_candidate_count": 10,
+      "guardian_candidate_count": 6,
       "instructional_status": "needs_review",
       "missing_support_flags": [
+        "missing_guardian_candidate",
         "missing_quick_check",
         "missing_warm_up"
       ],
@@ -471,11 +509,13 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 13,
+      "canonical_question_count": 7,
       "field_guide_count": 1,
-      "guardian_candidate_count": 6,
+      "guardian_candidate_count": 4,
       "instructional_status": "needs_review",
       "missing_support_flags": [
+        "missing_canonical_question",
+        "missing_guardian_candidate",
         "missing_quick_check",
         "missing_warm_up"
       ],
@@ -590,6 +630,7 @@
         "32autumn24_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 2,
@@ -599,6 +640,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
       "micro_skill_name": "Find binomial terms and coefficients efficiently",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -614,6 +664,14 @@
           "skill_ref": "sequences_and_series",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01",
+        "33summer21_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -640,6 +698,7 @@
         "p3-binomial-term-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -684,6 +743,7 @@
         "33summer21_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 2,
@@ -693,6 +753,14 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
       "micro_skill_name": "State and use binomial expansion validity",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -708,6 +776,13 @@
           "skill_ref": "sequences_and_series",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -734,6 +809,7 @@
         "p3-binomial-validity-range-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -772,6 +848,7 @@
         "31summer22_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 1,
@@ -780,6 +857,12 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 2,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "micro_skill_name": "Use discriminant or root conditions as evidence",
       "missing_support_types": [
         "warm_up"
@@ -797,6 +880,11 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -823,6 +911,7 @@
         "p3-quadratics-discriminant-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -858,6 +947,7 @@
         "32autumn25_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 2,
@@ -867,6 +957,13 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 3,
+      "mastery_evidence_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "32autumn25_q01"
+      ],
       "micro_skill_name": "Split modulus equations or inequalities into valid cases",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -882,6 +979,12 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "32autumn21_q02",
+        "32autumn25_q01",
+        "33summer25_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -908,6 +1011,7 @@
         "p3-modulus-cases-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -956,6 +1060,7 @@
         "35summer25_q09"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 2,
@@ -965,6 +1070,16 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 6,
+      "mastery_evidence_question_ids": [
+        "32spring21_q06",
+        "31summer21_q10",
+        "32summer21_q09",
+        "33summer21_q04",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
       "micro_skill_name": "Set up partial fractions from denominator structure",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -975,6 +1090,15 @@
           "skill_ref": "algebraic_manipulation",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31summer21_q10",
+        "32autumn21_q04",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -998,6 +1122,7 @@
         "p3-partial-fractions-repeated-linear-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1047,6 +1172,7 @@
         "32spring24_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 2,
@@ -1056,6 +1182,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "33summer21_q10",
+        "31summer22_q05",
+        "32spring24_q01"
+      ],
       "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
       "missing_support_types": [
         "warm_up"
@@ -1068,6 +1203,14 @@
           "skill_ref": "algebraic_manipulation",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31summer22_q05",
+        "32spring21_q02",
+        "32spring24_q01",
+        "33autumn21_q01",
+        "33summer21_q10"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1089,6 +1232,7 @@
         "p3-polynomial-theorem-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1121,6 +1265,7 @@
         "31summer22_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
       "guardian_candidate_count": 1,
@@ -1129,6 +1274,12 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 2,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "micro_skill_name": "Choose algebraic structure before expanding",
       "missing_support_types": [
         "warm_up"
@@ -1141,6 +1292,11 @@
           "skill_ref": "algebraic_manipulation",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1162,6 +1318,7 @@
         "p3-algebra-rearrangement-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1200,6 +1357,7 @@
         "31autumn25_q05"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "complex-harbor",
       "guardian_candidate_count": 2,
@@ -1209,6 +1367,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
       "micro_skill_name": "Interpret loci and regions on an Argand diagram",
       "missing_support_types": [
         "warm_up"
@@ -1226,6 +1393,14 @@
           "skill_ref": "radians_and_trigonometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q05",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "32summer21_q02",
+        "35autumn25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1252,6 +1427,7 @@
         "p3-complex-locus-argument-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1291,6 +1467,7 @@
         "31autumn21_q10"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "complex-harbor",
       "guardian_candidate_count": 2,
@@ -1300,6 +1477,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
       "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
       "missing_support_types": [
         "warm_up"
@@ -1312,6 +1498,14 @@
           "skill_ref": "algebraic_manipulation",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q10",
+        "32autumn21_q03",
+        "32spring21_q08",
+        "33summer25_q06",
+        "35autumn25_q05"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1333,6 +1527,7 @@
         "p3-complex-form-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1373,6 +1568,7 @@
         "31autumn25_q05"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "complex-harbor",
       "guardian_candidate_count": 2,
@@ -1382,6 +1578,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
       "micro_skill_name": "Move between Cartesian and modulus-argument form",
       "missing_support_types": [
         "warm_up"
@@ -1399,6 +1604,14 @@
           "skill_ref": "radians_and_trigonometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "33summer25_q04",
+        "35summer25_q03"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1425,6 +1638,7 @@
         "p3-complex-form-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1464,6 +1678,7 @@
         "31summer25_q06"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "complex-harbor",
       "guardian_candidate_count": 2,
@@ -1473,6 +1688,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
       "micro_skill_name": "Find complex powers and roots using the suitable form",
       "missing_support_types": [
         "quick_check",
@@ -1491,6 +1715,14 @@
           "skill_ref": "radians_and_trigonometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31summer21_q05",
+        "31summer25_q06",
+        "32summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1515,6 +1747,7 @@
         "p3-complex-form-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1552,6 +1785,7 @@
         "33summer24_q09"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "differential-shrine",
       "guardian_candidate_count": 2,
@@ -1561,6 +1795,14 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09"
+      ],
       "micro_skill_name": "Form differential equations from rate contexts",
       "missing_support_types": [
         "quick_check",
@@ -1579,6 +1821,13 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "32autumn25_q10",
+        "33autumn21_q10",
+        "33summer24_q09",
+        "35autumn25_q11"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1603,6 +1852,7 @@
         "p3-differential-separation-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1642,6 +1892,7 @@
         "35summer25_q11"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "differential-shrine",
       "guardian_candidate_count": 2,
@@ -1651,6 +1902,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
       "micro_skill_name": "Apply initial conditions after integration",
       "missing_support_types": [
         "warm_up"
@@ -1668,6 +1928,14 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q08",
+        "32autumn21_q07",
+        "32summer21_q07",
+        "32summer25_q08",
+        "35summer25_q11"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1694,6 +1962,7 @@
         "p3-differential-initial-condition-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1733,6 +2002,7 @@
         "33summer25_q10"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "differential-shrine",
       "guardian_candidate_count": 2,
@@ -1742,6 +2012,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
       "micro_skill_name": "Separate variables before integrating",
       "missing_support_types": [
         "warm_up"
@@ -1759,6 +2038,14 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "32autumn21_q07",
+        "32spring21_q04",
+        "32summer21_q07",
+        "33summer25_q10",
+        "35summer25_q11"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1785,6 +2072,7 @@
         "p3-differential-separation-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -1812,7 +2100,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 2,
       "canonical_question_ids": [
         "31summer21_q09",
         "32summer21_q08",
@@ -1821,22 +2109,33 @@
         "35summer25_q07"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "31summer21_q09",
         "32summer21_q08",
-        "35summer25_q04",
-        "33summer21_q08",
         "35summer25_q07"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04"
+      ],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "32summer21_q08",
-        "35summer25_q04"
+        "32summer21_q08"
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04"
+      ],
+      "mastery_evidence_question_count": 2,
+      "mastery_evidence_question_ids": [
+        "32summer21_q08",
+        "35summer25_q07"
+      ],
       "micro_skill_name": "Apply chain, product, and quotient rules accurately",
       "missing_support_types": [
         "warm_up"
@@ -1854,6 +2153,18 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04"
+      ],
+      "practice_allowed_question_ids": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "33summer21_q08",
+        "35summer25_q04",
+        "35summer25_q07"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1874,7 +2185,9 @@
       ],
       "region_id": "calculus-cliffs",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_diff_chain_product_quotient",
       "snippet_count": 1,
@@ -1882,6 +2195,11 @@
         "p3-differentiation-method-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04"
+      ],
+      "teacher_review_deferred_question_ids": [
         "31summer21_q09",
         "33summer21_q08",
         "35summer25_q04"
@@ -1910,10 +2228,9 @@
         "field_guide",
         "snippet",
         "worked_example",
-        "canonical_question",
-        "guardian_candidate"
+        "canonical_question"
       ],
-      "canonical_question_count": 4,
+      "canonical_question_count": 1,
       "canonical_question_ids": [
         "32autumn21_q09",
         "33autumn21_q07",
@@ -1921,25 +2238,34 @@
         "31summer21_q09"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "32autumn21_q09",
-        "33autumn21_q07",
-        "35autumn25_q04",
-        "31summer21_q09"
+        "33autumn21_q07"
       ],
       "curriculum_role": "p3_core",
-      "field_guide_count": 1,
-      "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 2,
-      "guardian_candidate_question_ids": [
+      "export_blocked_deferred_question_ids": [
+        "31summer21_q09",
         "32autumn21_q09",
         "35autumn25_q04"
       ],
+      "field_guide_count": 1,
+      "field_guide_region_id": "calculus-cliffs",
+      "guardian_candidate_count": 0,
+      "guardian_candidate_question_ids": [],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "mastery_evidence_question_count": 1,
+      "mastery_evidence_question_ids": [
+        "33autumn21_q07"
+      ],
       "micro_skill_name": "Differentiate implicit log or exponential relations",
       "missing_support_types": [
         "quick_check",
-        "warm_up"
+        "warm_up",
+        "guardian_candidate"
       ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Differentiation",
@@ -1954,6 +2280,17 @@
           "skill_ref": "differentiation_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "practice_allowed_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -1972,7 +2309,9 @@
       "quick_check_ids": [],
       "region_id": "calculus-cliffs",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_diff_implicit_log_exp",
       "snippet_count": 1,
@@ -1980,6 +2319,11 @@
         "p3-differentiation-method-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "teacher_review_deferred_question_ids": [
         "31summer21_q09",
         "32autumn21_q09",
         "35autumn25_q04"
@@ -2024,6 +2368,7 @@
         "35summer25_q06"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
       "guardian_candidate_count": 2,
@@ -2033,6 +2378,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31summer23_q05",
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
       "micro_skill_name": "Name the differentiation method before differentiating",
       "missing_support_types": [
         "warm_up"
@@ -2050,6 +2404,14 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31summer21_q06",
+        "31summer23_q05",
+        "32summer23_q07",
+        "33summer21_q03",
+        "35summer25_q06"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2076,6 +2438,7 @@
         "p3-differentiation-method-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2116,6 +2479,7 @@
         "35summer25_q06"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
       "guardian_candidate_count": 2,
@@ -2125,6 +2489,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "32spring21_q10",
+        "35summer25_q06"
+      ],
       "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
       "missing_support_types": [
         "warm_up"
@@ -2142,6 +2515,14 @@
           "skill_ref": "differentiation_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q07",
+        "31summer21_q06",
+        "32spring21_q10",
+        "33summer21_q03",
+        "35summer25_q06"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2168,6 +2549,7 @@
         "p3-parametric-derivative-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2194,7 +2576,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 2,
       "canonical_question_ids": [
         "33summer21_q08",
         "31summer21_q09",
@@ -2203,22 +2585,33 @@
         "31autumn25_q04"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "33summer21_q08",
-        "31summer21_q09",
-        "32autumn21_q11",
         "35summer25_q07",
         "31autumn25_q04"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08"
+      ],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "33summer21_q08",
         "31autumn25_q04"
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08"
+      ],
+      "mastery_evidence_question_count": 2,
+      "mastery_evidence_question_ids": [
+        "35summer25_q07",
+        "31autumn25_q04"
+      ],
       "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
       "missing_support_types": [
         "warm_up"
@@ -2236,6 +2629,18 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08"
+      ],
+      "practice_allowed_question_ids": [
+        "31autumn25_q04",
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08",
+        "35summer25_q07"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2256,7 +2661,9 @@
       ],
       "region_id": "calculus-cliffs",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_diff_stationary_tangent_normal",
       "snippet_count": 1,
@@ -2264,6 +2671,11 @@
         "p3-differentiation-follow-through-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08"
+      ],
+      "teacher_review_deferred_question_ids": [
         "31summer21_q09",
         "32autumn21_q11",
         "33summer21_q08"
@@ -2293,7 +2705,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "31autumn21_q04",
         "33summer21_q04",
@@ -2303,12 +2715,14 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "31autumn21_q04",
-        "33summer21_q04",
         "33summer25_q03",
-        "32spring21_q10",
         "31summer21_q04"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
+        "32spring21_q10",
+        "33summer21_q04"
+      ],
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
       "guardian_candidate_count": 2,
@@ -2318,6 +2732,16 @@
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "32spring21_q10",
+        "33summer21_q04"
+      ],
+      "mastery_evidence_question_count": 3,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q04",
+        "33summer25_q03",
+        "31summer21_q04"
+      ],
       "micro_skill_name": "Evaluate definite and improper integrals exactly",
       "missing_support_types": [
         "quick_check",
@@ -2337,6 +2761,17 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
+      "practice_allowed_deferred_question_ids": [
+        "32spring21_q10",
+        "33summer21_q04"
+      ],
+      "practice_allowed_question_ids": [
+        "31autumn21_q04",
+        "31summer21_q04",
+        "32spring21_q10",
+        "33summer21_q04",
+        "33summer25_q03"
+      ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -2354,7 +2789,9 @@
       "quick_check_ids": [],
       "region_id": "integration-gardens",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_int_definite_improper_area",
       "snippet_count": 1,
@@ -2362,6 +2799,10 @@
         "p3-integration-method-choice-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "32spring21_q10",
+        "33summer21_q04"
+      ],
+      "teacher_review_deferred_question_ids": [
         "32spring21_q10",
         "33summer21_q04"
       ],
@@ -2404,6 +2845,7 @@
         "31autumn25_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
       "guardian_candidate_count": 2,
@@ -2413,6 +2855,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
       "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
       "missing_support_types": [
         "warm_up"
@@ -2430,6 +2881,14 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q04",
+        "31autumn25_q01",
+        "32autumn25_q04",
+        "32summer21_q04",
+        "33autumn21_q04"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2456,6 +2915,7 @@
         "p3-integration-method-choice-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2482,11 +2942,9 @@
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up",
-        "canonical_question",
-        "guardian_candidate"
+        "warm_up"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 0,
       "canonical_question_ids": [
         "32spring21_q06",
         "33summer21_q04",
@@ -2494,25 +2952,35 @@
         "31summer21_q10",
         "35summer25_q09"
       ],
-      "canonical_question_ids_routed_to_skill": [
-        "32spring21_q06",
-        "33summer21_q04",
-        "32summer21_q09",
+      "canonical_question_ids_routed_to_skill": [],
+      "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
         "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
         "35summer25_q09"
       ],
-      "curriculum_role": "p3_core",
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
-      "guardian_candidate_count": 2,
-      "guardian_candidate_question_ids": [
+      "guardian_candidate_count": 0,
+      "guardian_candidate_question_ids": [],
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
         "33summer21_q04",
         "35summer25_q09"
       ],
-      "instructional_status": "needs_review",
-      "mastery_eligible": true,
+      "mastery_evidence_question_count": 0,
+      "mastery_evidence_question_ids": [],
       "micro_skill_name": "Integrate rational functions using partial fractions",
-      "missing_support_types": [],
+      "missing_support_types": [
+        "canonical_question",
+        "guardian_candidate"
+      ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Integration",
       "p1_prerequisite_refs": [
@@ -2526,6 +2994,20 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "practice_allowed_question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2547,7 +3029,9 @@
       ],
       "region_id": "integration-gardens",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_int_partial_fractions",
       "snippet_count": 3,
@@ -2557,6 +3041,13 @@
         "p3-integration-method-choice-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "teacher_review_deferred_question_ids": [
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
@@ -2614,6 +3105,7 @@
         "31autumn25_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
       "guardian_candidate_count": 2,
@@ -2623,6 +3115,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
       "micro_skill_name": "Use integration by parts or substitution with correct setup",
       "missing_support_types": [
         "warm_up"
@@ -2640,6 +3141,14 @@
           "skill_ref": "integration_basics",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q04",
+        "31autumn25_q01",
+        "32autumn25_q04",
+        "32summer21_q04",
+        "33autumn21_q04"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2666,6 +3175,7 @@
         "p3-integration-parts-substitution-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2688,7 +3198,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "31summer21_q09",
         "32autumn21_q09",
@@ -2699,11 +3209,13 @@
       "canonical_question_ids_routed_to_skill": [
         "31summer21_q09",
         "32autumn21_q09",
-        "33autumn21_q07",
         "35summer25_q04",
         "35autumn25_q04"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
+        "33autumn21_q07"
+      ],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -2713,6 +3225,16 @@
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "33autumn21_q07"
+      ],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
       "missing_support_types": [
         "snippet",
@@ -2734,6 +3256,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
+      "practice_allowed_deferred_question_ids": [
+        "33autumn21_q07"
+      ],
+      "practice_allowed_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "35summer25_q04"
+      ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -2751,12 +3283,17 @@
       "quick_check_ids": [],
       "region_id": "logarithm-grove",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_log_calculus_contexts",
       "snippet_count": 0,
       "snippet_ids": [],
       "teacher_review_app_region_mismatch_question_ids": [
+        "33autumn21_q07"
+      ],
+      "teacher_review_deferred_question_ids": [
         "33autumn21_q07"
       ],
       "unresolved_generator_families": [],
@@ -2796,6 +3333,7 @@
         "33summer25_q02"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -2805,6 +3343,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
       "micro_skill_name": "Convert between logarithmic and exponential form",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -2820,6 +3367,14 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q02",
+        "32autumn21_q01",
+        "32spring22_q03",
+        "32spring23_q01",
+        "33summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2846,6 +3401,7 @@
         "p3-log-exp-convert-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2888,6 +3444,7 @@
         "33summer25_q02"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -2897,6 +3454,14 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
       "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
       "missing_support_types": [
         "warm_up"
@@ -2914,6 +3479,13 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33autumn22_q01",
+        "33summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -2940,6 +3512,7 @@
         "p3-log-domain-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -2979,6 +3552,7 @@
         "33summer23_q01"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -2988,6 +3562,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
       "micro_skill_name": "Solve exponential equations using matching bases or natural logs",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3003,6 +3586,14 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "32autumn25_q02",
+        "33summer23_q01",
+        "35summer25_q01"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3031,6 +3622,7 @@
         "p3-ln-e-inverse-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3077,6 +3669,7 @@
         "32spring24_q04"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -3086,6 +3679,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
       "micro_skill_name": "Use log laws to solve logarithmic equations",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3101,6 +3703,14 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q02",
+        "32spring21_q01",
+        "32spring24_q04",
+        "32summer23_q02",
+        "33summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3129,6 +3739,7 @@
         "p3-log-invalid-operations-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3170,6 +3781,7 @@
         "35autumn25_q03"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
       "guardian_candidate_count": 2,
@@ -3179,6 +3791,13 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 3,
+      "mastery_evidence_question_ids": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03"
+      ],
       "micro_skill_name": "Linearise logarithmic or exponential relationships",
       "missing_support_types": [
         "warm_up"
@@ -3196,6 +3815,12 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "32spring22_q03",
+        "32summer21_q03",
+        "35autumn25_q03"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3222,6 +3847,7 @@
         "p3-log-linearisation-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3261,6 +3887,7 @@
         "35autumn25_q10"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "numerical-mines",
       "guardian_candidate_count": 2,
@@ -3270,6 +3897,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
       "micro_skill_name": "Control accuracy and rounding in numerical solutions",
       "missing_support_types": [
         "warm_up"
@@ -3282,6 +3918,14 @@
           "skill_ref": "algebraic_manipulation",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "32autumn24_q02",
+        "32spring21_q09",
+        "32summer24_q05",
+        "33summer21_q06",
+        "35autumn25_q10"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3303,6 +3947,7 @@
         "p3-numerical-method-evidence-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3339,6 +3984,7 @@
         "35autumn25_q10"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "numerical-mines",
       "guardian_candidate_count": 2,
@@ -3348,6 +3994,14 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
+      ],
       "micro_skill_name": "Apply an iteration formula consistently",
       "missing_support_types": [
         "warm_up"
@@ -3365,6 +4019,13 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3391,6 +4052,7 @@
         "p3-iteration-formula-discipline-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3429,6 +4091,7 @@
         "33summer25_q11"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "numerical-mines",
       "guardian_candidate_count": 2,
@@ -3438,6 +4101,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
       "micro_skill_name": "Justify roots using sign changes or graph evidence",
       "missing_support_types": [
         "warm_up"
@@ -3450,6 +4122,14 @@
           "skill_ref": "functions_and_graphs",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q09",
+        "31summer21_q07",
+        "32autumn25_q06",
+        "32spring21_q09",
+        "33summer25_q11"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3471,6 +4151,7 @@
         "p3-numerical-method-evidence-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3510,6 +4191,7 @@
         "31autumn25_q03"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
       "guardian_candidate_count": 2,
@@ -3519,6 +4201,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
       "micro_skill_name": "Solve trig equations over a specified interval",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3534,6 +4225,14 @@
           "skill_ref": "trigonometric_identities",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q05",
+        "31autumn25_q03",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3562,6 +4261,7 @@
         "p3-trig-lost-solutions-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3595,7 +4295,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "32autumn21_q06",
         "32autumn25_q08",
@@ -3606,11 +4306,13 @@
       "canonical_question_ids_routed_to_skill": [
         "32autumn21_q06",
         "32autumn25_q08",
-        "33summer25_q08",
+        "33summer25_q08"
+      ],
+      "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
         "31summer21_q04",
         "32summer21_q06"
       ],
-      "curriculum_role": "p3_core",
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
       "guardian_candidate_count": 2,
@@ -3620,6 +4322,16 @@
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "mastery_evidence_question_count": 3,
+      "mastery_evidence_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08"
+      ],
       "micro_skill_name": "Choose trig identities for proof or simplification",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3635,6 +4347,17 @@
           "skill_ref": "trigonometric_identities",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "practice_allowed_question_ids": [
+        "31summer21_q04",
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "32summer21_q06",
+        "33summer25_q08"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3655,7 +4378,9 @@
       ],
       "region_id": "trig-observatory",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_trig_identity_selection",
       "snippet_count": 1,
@@ -3663,6 +4388,10 @@
         "p3-trig-identity-selection-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "teacher_review_deferred_question_ids": [
         "31summer21_q04",
         "32summer21_q06"
       ],
@@ -3716,6 +4445,7 @@
         "31autumn25_q03"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
       "guardian_candidate_count": 2,
@@ -3725,6 +4455,15 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
       "micro_skill_name": "Use quadrant discipline to find every trig solution",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3735,6 +4474,14 @@
           "skill_ref": "radians_and_trigonometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q05",
+        "31autumn25_q03",
+        "32summer22_q02",
+        "33autumn21_q05",
+        "35summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3756,6 +4503,7 @@
         "p3-trig-quadrant-discipline-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3799,6 +4547,7 @@
         "31autumn25_q03"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
       "guardian_candidate_count": 2,
@@ -3808,6 +4557,14 @@
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
       "micro_skill_name": "Rewrite a sin and cos combination in R-form",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3823,6 +4580,13 @@
           "skill_ref": "trigonometric_identities",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q02",
+        "31autumn25_q03",
+        "32spring21_q05",
+        "33autumn21_q06"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3849,6 +4613,7 @@
         "p3-trig-reciprocal-rform-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -3881,7 +4646,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "32summer21_q06",
         "32autumn21_q08",
@@ -3890,22 +4655,33 @@
         "35summer25_q02"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "32summer21_q06",
         "32autumn21_q08",
         "33summer21_q05",
         "32autumn25_q08",
         "35summer25_q02"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [
+        "32summer21_q06"
+      ],
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "32summer21_q06",
         "35summer25_q02"
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "32summer21_q06"
+      ],
+      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_ids": [
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
       "micro_skill_name": "Transform reciprocal and double-angle equations safely",
       "missing_support_types": [],
       "needs_teacher_review": false,
@@ -3921,6 +4697,16 @@
           "skill_ref": "trigonometric_identities",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [
+        "32summer21_q06"
+      ],
+      "practice_allowed_question_ids": [
+        "32autumn21_q08",
+        "32autumn25_q08",
+        "32summer21_q06",
+        "33summer21_q05",
+        "35summer25_q02"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -3941,7 +4727,9 @@
       ],
       "region_id": "trig-observatory",
       "risk_flags": [
-        "teacher_review_app_region_mismatch"
+        "mastery_evidence_deferred",
+        "teacher_review_app_region_mismatch",
+        "teacher_review_deferred"
       ],
       "skill_ref": "p3_trig_reciprocal_double_angle",
       "snippet_count": 1,
@@ -3949,6 +4737,9 @@
         "p3-trig-reciprocal-rform-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
+        "32summer21_q06"
+      ],
+      "teacher_review_deferred_question_ids": [
         "32summer21_q06"
       ],
       "unresolved_generator_families": [],
@@ -3999,6 +4790,7 @@
         "33autumn23_q11"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "vector-workshop",
       "guardian_candidate_count": 2,
@@ -4008,6 +4800,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
       "micro_skill_name": "Translate 3D geometric conditions into vector equations",
       "missing_support_types": [
         "quick_check",
@@ -4021,6 +4822,14 @@
           "skill_ref": "coordinate_geometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33autumn21_q08",
+        "33autumn23_q11",
+        "33summer23_q09"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -4041,6 +4850,7 @@
         "p3-vectors-scalar-product-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -4082,6 +4892,7 @@
         "35autumn25_q09"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "vector-workshop",
       "guardian_candidate_count": 2,
@@ -4091,6 +4902,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
       "micro_skill_name": "Form and compare vector equations of lines",
       "missing_support_types": [
         "warm_up"
@@ -4103,6 +4923,14 @@
           "skill_ref": "coordinate_geometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn25_q11",
+        "32autumn21_q10",
+        "32spring21_q07",
+        "33summer25_q09",
+        "35autumn25_q09"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -4124,6 +4952,7 @@
         "p3-vectors-lines-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -4164,6 +4993,7 @@
         "35autumn25_q09"
       ],
       "curriculum_role": "p3_core",
+      "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "vector-workshop",
       "guardian_candidate_count": 2,
@@ -4173,6 +5003,15 @@
       ],
       "instructional_status": "partial",
       "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [],
+      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
       "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
       "missing_support_types": [
         "warm_up"
@@ -4185,6 +5024,14 @@
           "skill_ref": "coordinate_geometry",
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
+      ],
+      "practice_allowed_deferred_question_ids": [],
+      "practice_allowed_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35autumn25_q09",
+        "35summer25_q10"
       ],
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
@@ -4206,6 +5053,7 @@
         "p3-vectors-scalar-product-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
+      "teacher_review_deferred_question_ids": [],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
@@ -4232,14 +5080,14 @@
       },
       {
         "app_routed_p3_question_count": 41,
-        "canonical_question_count": 21,
+        "canonical_question_count": 20,
         "region_id": "logarithm-grove",
         "region_title": "Logarithm Observatory",
         "skill_count": 6
       },
       {
         "app_routed_p3_question_count": 41,
-        "canonical_question_count": 16,
+        "canonical_question_count": 14,
         "region_id": "trig-observatory",
         "region_title": "Trigonometry Spire",
         "skill_count": 5
@@ -4253,14 +5101,14 @@
       },
       {
         "app_routed_p3_question_count": 56,
-        "canonical_question_count": 17,
+        "canonical_question_count": 11,
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5
       },
       {
         "app_routed_p3_question_count": 26,
-        "canonical_question_count": 13,
+        "canonical_question_count": 7,
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
         "skill_count": 4
@@ -4289,10 +5137,10 @@
     ],
     "p3_question_count": 396,
     "referenced_canonical_question_count": 128,
-    "referenced_trainable_p3_question_count": 128,
+    "referenced_trainable_p3_question_count": 126,
     "total_question_count": 1301,
     "trainable_p3_question_count": 385,
-    "unreferenced_trainable_p3_question_count": 257
+    "unreferenced_trainable_p3_question_count": 259
   },
   "region_summary": {
     "region_count": 9,
@@ -4307,9 +5155,9 @@
   },
   "reviewed_skill_summary": {
     "available_support_type_counts": {
-      "canonical_question": 40,
+      "canonical_question": 39,
       "field_guide": 40,
-      "guardian_candidate": 40,
+      "guardian_candidate": 38,
       "quick_check": 34,
       "snippet": 39,
       "warm_up": 13,
@@ -4351,22 +5199,34 @@
       "status": "open"
     },
     {
-      "count": 0,
+      "count": 1,
       "risk_id": "missing_trainable_canonical_question",
       "risk_type": "ordinary_gap",
-      "status": "clear"
+      "status": "open"
     },
     {
-      "count": 0,
+      "count": 2,
       "risk_id": "missing_guardian_candidate",
       "risk_type": "ordinary_gap",
-      "status": "clear"
+      "status": "open"
     },
     {
       "count": 0,
       "risk_id": "app_region_unrouted_p3_questions",
       "risk_type": "review_risk",
       "status": "clear"
+    },
+    {
+      "count": 20,
+      "risk_id": "teacher_review_deferred_ambiguous_cases",
+      "risk_type": "review_risk",
+      "status": "open"
+    },
+    {
+      "count": 20,
+      "risk_id": "mastery_blocked_deferred_ambiguous_cases",
+      "risk_type": "mastery_safety",
+      "status": "open"
     },
     {
       "count": 20,
@@ -4408,13 +5268,626 @@
   "routing_audit_summary": {
     "active_mismatch_count": 20,
     "active_skill_warning_count": 8,
+    "deferred_ambiguous_case_count": 20,
+    "deferred_review_backlog": {
+      "affected_app_region_ids": [
+        "algebra-forge",
+        "calculus-cliffs",
+        "integration-gardens",
+        "logarithm-grove",
+        "numerical-mines"
+      ],
+      "affected_region_ids": [
+        "algebra-forge",
+        "calculus-cliffs",
+        "integration-gardens",
+        "logarithm-grove",
+        "numerical-mines",
+        "trig-observatory"
+      ],
+      "affected_reviewed_region_ids": [
+        "calculus-cliffs",
+        "integration-gardens",
+        "logarithm-grove",
+        "trig-observatory"
+      ],
+      "affected_skill_refs": [
+        "p3_diff_chain_product_quotient",
+        "p3_diff_implicit_log_exp",
+        "p3_diff_stationary_tangent_normal",
+        "p3_int_definite_improper_area",
+        "p3_int_partial_fractions",
+        "p3_log_calculus_contexts",
+        "p3_trig_identity_selection",
+        "p3_trig_reciprocal_double_angle"
+      ],
+      "case_count": 20,
+      "evidence_status": "ambiguous_part_level_evidence",
+      "export_allowed": false,
+      "export_blocked_case_count": 20,
+      "items": [
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "31summer21_q09",
+          "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
+          "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts."
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "33summer21_q08",
+          "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "35summer25_q04",
+          "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
+          "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "31summer21_q09",
+          "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
+          "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32autumn21_q09",
+          "rationale": "The question is an implicit differentiation problem containing exponential terms.",
+          "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "35autumn25_q04",
+          "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
+          "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "31summer21_q09",
+          "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
+          "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+        },
+        {
+          "app_region_id": "numerical-mines",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32autumn21_q11",
+          "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
+          "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "33summer21_q08",
+          "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
+        },
+        {
+          "app_region_id": "calculus-cliffs",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32spring21_q10",
+          "rationale": "The question contains both an area integral and a maximum-point derivative task.",
+          "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_definite_improper_area",
+          "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "33summer21_q04",
+          "rationale": "The question combines partial-fraction setup and exact integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_definite_improper_area",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "31summer21_q10",
+          "rationale": "The question solves a differential equation using partial fractions.",
+          "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_partial_fractions",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32spring21_q06",
+          "rationale": "The question combines decomposition and integration evidence.",
+          "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_partial_fractions",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32summer21_q09",
+          "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
+          "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_partial_fractions",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "33summer21_q04",
+          "rationale": "The question combines decomposition and integration evidence.",
+          "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_partial_fractions",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "35summer25_q09",
+          "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
+          "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "skill_ref": "p3_int_partial_fractions",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion."
+        },
+        {
+          "app_region_id": "calculus-cliffs",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "33autumn21_q07",
+          "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
+          "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "skill_ref": "p3_log_calculus_contexts",
+          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation."
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "31summer21_q04",
+          "rationale": "The question combines identity proof and integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "skill_ref": "p3_trig_identity_selection",
+          "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof."
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32summer21_q06",
+          "rationale": "The question combines identity proof and integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "skill_ref": "p3_trig_identity_selection",
+          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "evidence_status": "ambiguous_part_level_evidence",
+          "export_allowed": false,
+          "mastery_evidence_allowed": false,
+          "practice_allowed": true,
+          "question_id": "32summer21_q06",
+          "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
+          "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
+          "resolution_status": "teacher_review_deferred",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "skill_ref": "p3_trig_reciprocal_double_angle",
+          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+        }
+      ],
+      "mastery_evidence_allowed": false,
+      "mastery_evidence_blocked_case_count": 20,
+      "practice_allowed": true,
+      "practice_allowed_case_count": 20,
+      "resolution_status": "teacher_review_deferred"
+    },
+    "deferred_teacher_review_count": 20,
+    "deferred_teacher_review_mismatches": [
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "31summer21_q09",
+        "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
+        "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "33summer21_q08",
+        "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "35summer25_q04",
+        "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
+        "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "31summer21_q09",
+        "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
+        "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32autumn21_q09",
+        "rationale": "The question is an implicit differentiation problem containing exponential terms.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "35autumn25_q04",
+        "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "31summer21_q09",
+        "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
+      },
+      {
+        "app_region_id": "numerical-mines",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32autumn21_q11",
+        "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
+        "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "33summer21_q08",
+        "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32spring21_q10",
+        "rationale": "The question contains both an area integral and a maximum-point derivative task.",
+        "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines partial-fraction setup and exact integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "31summer21_q10",
+        "rationale": "The question solves a differential equation using partial fractions.",
+        "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32spring21_q06",
+        "rationale": "The question combines decomposition and integration evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32summer21_q09",
+        "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
+        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines decomposition and integration evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
+      },
+      {
+        "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "35summer25_q09",
+        "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
+        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "33autumn21_q07",
+        "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
+        "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "31summer21_q04",
+        "rationale": "The question combines identity proof and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32summer21_q06",
+        "rationale": "The question combines identity proof and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
+        "question_id": "32summer21_q06",
+        "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_reciprocal_double_angle",
+        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
+      }
+    ],
+    "deferred_teacher_review_skill_warning_count": 8,
     "inactive_teacher_review_entries": [],
     "inactive_teacher_review_entry_count": 0,
     "original_reviewed_mismatch_count": 30,
     "resolved_mismatch_count": 10,
     "resolved_mismatches": [
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "differential-shrine",
+        "practice_allowed": null,
         "question_id": "33summer22_q08",
         "rationale": "The mark scheme rewards separating variables, integrating, using an initial condition, and interpreting the model. It is not discriminant/root-condition evidence.",
         "recommended_resolution": "Remove this question from algebra discriminant/root-condition evidence and from the algebra Guardian candidates.",
@@ -4424,7 +5897,11 @@
         "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a separable differential-equation population model."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "complex-harbor",
+        "practice_allowed": null,
         "question_id": "31autumn25_q06",
         "rationale": "The mark scheme rewards complex arithmetic and conjugate manipulation, not discriminant or real-root conditions.",
         "recommended_resolution": "Remove this question from algebra discriminant/root-condition evidence.",
@@ -4434,7 +5911,11 @@
         "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a complex-number quadratic."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "complex-harbor",
+        "practice_allowed": null,
         "question_id": "31autumn25_q06",
         "rationale": "The question has no modulus equation, modulus inequality, or case split.",
         "recommended_resolution": "Remove this question from algebra modulus-case evidence.",
@@ -4444,7 +5925,11 @@
         "source_of_conflicting_label": "Local topic was algebra, but DeepSeek and the question text identify a complex-number quadratic."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "calculus-cliffs",
+        "practice_allowed": null,
         "question_id": "32autumn25_q01",
         "rationale": "The question asks for an absolute-value graph and inequality; the reviewed algebra modulus skill is the safer route.",
         "recommended_resolution": "Correct the question-bank topic to algebra and subtopic to modulus inequalities.",
@@ -4454,7 +5939,11 @@
         "source_of_conflicting_label": "Local topic was parametric_equations, while the question text and DeepSeek label identify an absolute-value inequality."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "logarithm-grove",
+        "practice_allowed": null,
         "question_id": "33autumn21_q03",
         "rationale": "The mark scheme rewards laws of indices and solving an exponential equation, not the reviewed algebra rearrangement skill.",
         "recommended_resolution": "Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials.",
@@ -4464,7 +5953,11 @@
         "source_of_conflicting_label": "Local topic was algebra, while DeepSeek/app routing identify an exponential equation."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "logarithm-grove",
+        "practice_allowed": null,
         "question_id": "33summer22_q03",
         "rationale": "The mark scheme rewards log laws and a resulting quadratic, not the reviewed algebra rearrangement skill.",
         "recommended_resolution": "Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials.",
@@ -4474,7 +5967,11 @@
         "source_of_conflicting_label": "Local topic was algebra, while the question text is a logarithmic equation."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "trig-observatory",
+        "practice_allowed": null,
         "question_id": "33summer24_q08",
         "rationale": "The question asks for trigonometric R-form and a related trigonometric integral.",
         "recommended_resolution": "Remove this question from algebra structure evidence and from the algebra Guardian candidates; correct the question-bank topic to trigonometry.",
@@ -4484,7 +5981,11 @@
         "source_of_conflicting_label": "Local topic was algebra, while DeepSeek/app routing identify trigonometry."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "algebra-forge",
+        "practice_allowed": null,
         "question_id": "31summer21_q10",
         "rationale": "The question gives the differential equation and asks students to solve it using partial fractions; it does not ask students to form the model from context.",
         "recommended_resolution": "Remove this question from forming-context-model evidence.",
@@ -4494,7 +5995,11 @@
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions, while the reviewed skill is forming a context model."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "integration-gardens",
+        "practice_allowed": null,
         "question_id": "31summer23_q08",
         "rationale": "The logarithms appear as integrated partial-fraction terms; the question is not linearisation evidence.",
         "recommended_resolution": "Remove this question from log-linearisation evidence and correct the question-bank topic to integration.",
@@ -4504,7 +6009,11 @@
         "source_of_conflicting_label": "Local topic was logarithms_and_exponentials, while DeepSeek/app routing and the mark scheme identify partial-fractions integration."
       },
       {
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
         "original_app_region_id": "differential-shrine",
+        "practice_allowed": null,
         "question_id": "33autumn21_q10",
         "rationale": "The iteration is one subpart after model formation and differential-equation solving; the full question is not clean iteration-formula evidence.",
         "recommended_resolution": "Remove this question from iteration-formula evidence and correct the question-bank topic to differential_equations.",
@@ -4520,200 +6029,280 @@
     "teacher_review_mismatches": [
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "31summer21_q09",
         "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
         "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_chain_product_quotient",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts."
       },
       {
         "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "33summer21_q08",
         "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_chain_product_quotient",
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
       },
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "35summer25_q04",
         "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
         "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_chain_product_quotient",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
       },
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "31summer21_q09",
         "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
         "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_implicit_log_exp",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
       },
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32autumn21_q09",
         "rationale": "The question is an implicit differentiation problem containing exponential terms.",
         "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_implicit_log_exp",
         "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
       },
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "35autumn25_q04",
         "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
         "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_implicit_log_exp",
         "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
       },
       {
         "app_region_id": "logarithm-grove",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "31summer21_q09",
         "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
         "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
       },
       {
         "app_region_id": "numerical-mines",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32autumn21_q11",
         "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
         "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
       },
       {
         "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "33summer21_q08",
         "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
       },
       {
         "app_region_id": "calculus-cliffs",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32spring21_q10",
         "rationale": "The question contains both an area integral and a maximum-point derivative task.",
         "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_definite_improper_area",
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "33summer21_q04",
         "rationale": "The question combines partial-fraction setup and exact integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_definite_improper_area",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "31summer21_q10",
         "rationale": "The question solves a differential equation using partial fractions.",
         "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32spring21_q06",
         "rationale": "The question combines decomposition and integration evidence.",
         "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32summer21_q09",
         "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
         "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "33summer21_q04",
         "rationale": "The question combines decomposition and integration evidence.",
         "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
       },
       {
         "app_region_id": "algebra-forge",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "35summer25_q09",
         "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
         "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion."
       },
       {
         "app_region_id": "calculus-cliffs",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "33autumn21_q07",
         "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
         "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "logarithm-grove",
         "skill_ref": "p3_log_calculus_contexts",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation."
       },
       {
         "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "31summer21_q04",
         "rationale": "The question combines identity proof and integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "trig-observatory",
         "skill_ref": "p3_trig_identity_selection",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof."
       },
       {
         "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32summer21_q06",
         "rationale": "The question combines identity proof and integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "trig-observatory",
         "skill_ref": "p3_trig_identity_selection",
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
       },
       {
         "app_region_id": "integration-gardens",
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "practice_allowed": true,
         "question_id": "32summer21_q06",
         "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
         "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
-        "resolution_status": "needs_teacher_review",
+        "resolution_status": "teacher_review_deferred",
         "reviewed_skill_map_region_id": "trig-observatory",
         "skill_ref": "p3_trig_reciprocal_double_angle",
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
@@ -4759,7 +6348,11 @@
       "prerequisite_notes",
       "available_support_types",
       "missing_support_types",
-      "canonical_question_ids_routed_to_skill"
+      "canonical_question_ids_routed_to_skill",
+      "mastery_evidence_question_ids",
+      "mastery_evidence_blocked_question_ids",
+      "practice_allowed_question_ids",
+      "teacher_review_deferred_question_ids"
     ],
     "curriculum_roles": {
       "ambiguous": 0,

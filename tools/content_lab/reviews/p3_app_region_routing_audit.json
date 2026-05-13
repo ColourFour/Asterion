@@ -110,9 +110,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
-      "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together."
+      "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_chain_product_quotient",
@@ -120,9 +124,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
-      "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible."
+      "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_chain_product_quotient",
@@ -130,9 +138,13 @@
       "original_app_region_id": "integration-gardens",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
-      "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration."
+      "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_implicit_log_exp",
@@ -140,9 +152,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-      "rationale": "The question is an implicit differentiation problem containing exponential terms."
+      "rationale": "The question is an implicit differentiation problem containing exponential terms.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_implicit_log_exp",
@@ -150,9 +166,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-      "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions."
+      "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_implicit_log_exp",
@@ -160,9 +180,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
-      "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation."
+      "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_stationary_tangent_normal",
@@ -170,9 +194,13 @@
       "original_app_region_id": "integration-gardens",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-      "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration."
+      "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_stationary_tangent_normal",
@@ -180,9 +208,13 @@
       "original_app_region_id": "logarithm-grove",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-      "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence."
+      "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_diff_stationary_tangent_normal",
@@ -190,9 +222,13 @@
       "original_app_region_id": "numerical-mines",
       "reviewed_skill_map_region_id": "calculus-cliffs",
       "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
-      "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart."
+      "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_definite_improper_area",
@@ -200,9 +236,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
-      "rationale": "The question combines partial-fraction setup and exact integration."
+      "rationale": "The question combines partial-fraction setup and exact integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_definite_improper_area",
@@ -210,9 +250,13 @@
       "original_app_region_id": "calculus-cliffs",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
-      "rationale": "The question contains both an area integral and a maximum-point derivative task."
+      "rationale": "The question contains both an area integral and a maximum-point derivative task.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_partial_fractions",
@@ -220,9 +264,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-      "rationale": "The question combines decomposition and integration evidence."
+      "rationale": "The question combines decomposition and integration evidence.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_partial_fractions",
@@ -230,9 +278,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-      "rationale": "The question combines decomposition and integration evidence."
+      "rationale": "The question combines decomposition and integration evidence.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_partial_fractions",
@@ -240,9 +292,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-      "rationale": "The question may not be valid integration evidence even though partial fractions are present."
+      "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_partial_fractions",
@@ -250,9 +306,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
-      "rationale": "The question solves a differential equation using partial fractions."
+      "rationale": "The question solves a differential equation using partial fractions.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_int_partial_fractions",
@@ -260,9 +320,13 @@
       "original_app_region_id": "algebra-forge",
       "reviewed_skill_map_region_id": "integration-gardens",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-      "rationale": "The current reviewed skill-map route may be too broad without part-level metadata."
+      "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_log_calculus_contexts",
@@ -270,9 +334,13 @@
       "original_app_region_id": "calculus-cliffs",
       "reviewed_skill_map_region_id": "logarithm-grove",
       "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
-      "rationale": "The question is an implicit differentiation problem built from a logarithmic relation."
+      "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_trig_identity_selection",
@@ -280,9 +348,13 @@
       "original_app_region_id": "integration-gardens",
       "reviewed_skill_map_region_id": "trig-observatory",
       "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-      "rationale": "The question combines identity proof and integration."
+      "rationale": "The question combines identity proof and integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_trig_identity_selection",
@@ -290,9 +362,13 @@
       "original_app_region_id": "integration-gardens",
       "reviewed_skill_map_region_id": "trig-observatory",
       "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-      "rationale": "The question combines identity proof and integration."
+      "rationale": "The question combines identity proof and integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     },
     {
       "skill_ref": "p3_trig_reciprocal_double_angle",
@@ -300,9 +376,13 @@
       "original_app_region_id": "integration-gardens",
       "reviewed_skill_map_region_id": "trig-observatory",
       "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
-      "resolution_status": "needs_teacher_review",
+      "resolution_status": "teacher_review_deferred",
       "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
-      "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration."
+      "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
+      "evidence_status": "ambiguous_part_level_evidence",
+      "mastery_evidence_allowed": false,
+      "practice_allowed": true,
+      "export_allowed": false
     }
   ]
 }

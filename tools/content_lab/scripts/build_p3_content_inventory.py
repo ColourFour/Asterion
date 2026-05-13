@@ -41,7 +41,11 @@ ROUTING_AUDIT_STATUSES = {
     "corrected_question_metadata",
     "corrected_skill_map",
     "needs_teacher_review",
+    "teacher_review_deferred",
 }
+TEACHER_REVIEW_ROUTING_STATUSES = {"needs_teacher_review", "teacher_review_deferred"}
+DEFERRED_ROUTING_STATUS = "teacher_review_deferred"
+DEFERRED_EVIDENCE_STATUS = "ambiguous_part_level_evidence"
 SUPPORT_TYPES = [
     "field_guide",
     "snippet",
@@ -430,10 +434,28 @@ def load_routing_audit(
             if not non_empty_string(entry.get(field)):
                 errors.append(f"{owner} is missing {field}")
 
+        evidence_status = non_empty_string(entry.get("evidence_status"))
+        mastery_evidence_allowed = entry.get("mastery_evidence_allowed")
+        practice_allowed = entry.get("practice_allowed")
+        export_allowed = entry.get("export_allowed")
+        if status == DEFERRED_ROUTING_STATUS:
+            if evidence_status != DEFERRED_EVIDENCE_STATUS:
+                errors.append(f"{owner} teacher_review_deferred entries must set evidence_status to {DEFERRED_EVIDENCE_STATUS}")
+            if mastery_evidence_allowed is not False:
+                errors.append(f"{owner} teacher_review_deferred entries must set mastery_evidence_allowed to false")
+            if practice_allowed is not True:
+                errors.append(f"{owner} teacher_review_deferred entries must set practice_allowed to true")
+            if export_allowed is not False:
+                errors.append(f"{owner} teacher_review_deferred entries must set export_allowed to false")
+
         key = (skill_ref, question_ref)
         if key in audit_index:
             errors.append(f"{owner} duplicates routing audit pair {skill_ref}/{question_ref}")
         normalized = {
+            "evidence_status": evidence_status or "",
+            "export_allowed": export_allowed if isinstance(export_allowed, bool) else None,
+            "mastery_evidence_allowed": mastery_evidence_allowed if isinstance(mastery_evidence_allowed, bool) else None,
+            "practice_allowed": practice_allowed if isinstance(practice_allowed, bool) else None,
             "question_id": question_ref,
             "rationale": non_empty_string(entry.get("rationale")) or "",
             "recommended_resolution": non_empty_string(entry.get("recommended_resolution")) or "",
@@ -488,6 +510,36 @@ def support_status(skill: dict[str, Any], missing_support_types: list[str], avai
     if not available_support_types:
         return "missing"
     return "partial"
+
+
+def support_status_for_row(row: dict[str, Any]) -> str:
+    if row["curriculum_role"] in NON_MASTERY_CURRICULUM_ROLES or row["mastery_eligible"] is False:
+        return "blocked"
+    if (
+        row["needs_teacher_review"]
+        or row["curriculum_role"] == "ambiguous"
+        or row.get("teacher_review_app_region_mismatch_question_ids")
+        or row.get("unreviewed_app_region_mismatch_question_ids")
+    ):
+        return "needs_review"
+    if not row["missing_support_types"]:
+        return "ready"
+    if not row["available_support_types"]:
+        return "missing"
+    return "partial"
+
+
+def set_support_type(row: dict[str, Any], support_type: str, present: bool) -> None:
+    available = set(row["available_support_types"])
+    missing = set(row["missing_support_types"])
+    if present:
+        available.add(support_type)
+        missing.discard(support_type)
+    else:
+        available.discard(support_type)
+        missing.add(support_type)
+    row["available_support_types"] = [item for item in SUPPORT_TYPES if item in available]
+    row["missing_support_types"] = [item for item in SUPPORT_TYPES if item in missing]
 
 
 def skill_inventory_row(
@@ -561,6 +613,9 @@ def skill_inventory_row(
         "guardian_candidate_count": len(resolved_guardian_candidates),
         "guardian_candidate_question_ids": resolved_guardian_candidates,
         "instructional_status": status,
+        "mastery_evidence_blocked_question_ids": [],
+        "mastery_evidence_question_count": len(trainable_p3_question_ids),
+        "mastery_evidence_question_ids": trainable_p3_question_ids,
         "mastery_eligible": skill["mastery_eligible"],
         "micro_skill_name": skill["micro_skill_name"],
         "missing_support_types": missing_support_types,
@@ -584,6 +639,10 @@ def skill_inventory_row(
         "unresolved_quick_check_ids": [item_id for item_id in quick_check_ids if item_id not in snippet_index["quick_check_ids"]],
         "unresolved_snippet_ids": [item_id for item_id in snippet_ids if item_id not in snippet_index["snippet_ids"]],
         "app_region_mismatch_question_ids": app_region_mismatch_question_ids,
+        "practice_allowed_question_ids": trainable_p3_question_ids,
+        "practice_allowed_deferred_question_ids": [],
+        "export_blocked_deferred_question_ids": [],
+        "teacher_review_deferred_question_ids": [],
         "warmup_support_count": len(warm_up_practice_ids),
         "warmup_generator_families": resolved_generator_families,
         "warmup_practice_ids": warm_up_practice_ids,
@@ -707,8 +766,12 @@ def routing_mismatch_detail(
             f"subtopic={label_sources.get('local_subtopic') or label_sources.get('notes_subtopic') or 'unknown'}, "
             f"deepseek={deepseek or 'none'}."
         )
-    return {
+    detail = {
         "app_region_id": question.get("app_region_id"),
+        "evidence_status": audit_entry.get("evidence_status") if audit_entry else "",
+        "export_allowed": audit_entry.get("export_allowed") if audit_entry else None,
+        "mastery_evidence_allowed": audit_entry.get("mastery_evidence_allowed") if audit_entry else None,
+        "practice_allowed": audit_entry.get("practice_allowed") if audit_entry else None,
         "question_id": question["question_id"],
         "rationale": audit_entry.get("rationale") if audit_entry else "Active app-region mismatch has not been reviewed in the routing audit.",
         "recommended_resolution": audit_entry.get("recommended_resolution") if audit_entry else "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
@@ -716,6 +779,44 @@ def routing_mismatch_detail(
         "reviewed_skill_map_region_id": row["region_id"],
         "skill_ref": row["skill_ref"],
         "source_of_conflicting_label": source_summary,
+    }
+    if resolution_status == DEFERRED_ROUTING_STATUS and not detail["evidence_status"]:
+        detail["evidence_status"] = DEFERRED_EVIDENCE_STATUS
+    return detail
+
+
+def deferred_backlog_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
+    affected_region_ids = unique_sorted({
+        str(value)
+        for item in items
+        for value in (item.get("app_region_id"), item.get("reviewed_skill_map_region_id"))
+        if value
+    })
+    affected_reviewed_region_ids = unique_sorted([
+        str(item["reviewed_skill_map_region_id"])
+        for item in items
+        if item.get("reviewed_skill_map_region_id")
+    ])
+    affected_app_region_ids = unique_sorted([
+        str(item["app_region_id"])
+        for item in items
+        if item.get("app_region_id")
+    ])
+    return {
+        "affected_app_region_ids": affected_app_region_ids,
+        "affected_region_ids": affected_region_ids,
+        "affected_reviewed_region_ids": affected_reviewed_region_ids,
+        "affected_skill_refs": unique_sorted([str(item["skill_ref"]) for item in items]),
+        "case_count": len(items),
+        "evidence_status": DEFERRED_EVIDENCE_STATUS,
+        "export_allowed": False if items else None,
+        "export_blocked_case_count": sum(1 for item in items if item.get("export_allowed") is False),
+        "items": items,
+        "mastery_evidence_allowed": False if items else None,
+        "mastery_evidence_blocked_case_count": sum(1 for item in items if item.get("mastery_evidence_allowed") is False),
+        "practice_allowed": True if items else None,
+        "practice_allowed_case_count": sum(1 for item in items if item.get("practice_allowed") is True),
+        "resolution_status": DEFERRED_ROUTING_STATUS,
     }
 
 
@@ -740,12 +841,12 @@ def routing_audit_summary(
         row = active_pairs[key]
         question = question_index[key[1]]
         audit_entry = audit_index.get(key)
-        if audit_entry and audit_entry["resolution_status"] == "needs_teacher_review":
+        if audit_entry and audit_entry["resolution_status"] in TEACHER_REVIEW_ROUTING_STATUSES:
             teacher_review_mismatches.append(routing_mismatch_detail(
                 row=row,
                 question=question,
                 audit_entry=audit_entry,
-                resolution_status="needs_teacher_review",
+                resolution_status=audit_entry["resolution_status"],
             ))
         else:
             status = (
@@ -762,15 +863,23 @@ def routing_audit_summary(
 
     for entry in routing_audit["entries"]:
         key = (entry["skill_ref"], entry["question_id"])
-        if entry["resolution_status"] == "needs_teacher_review":
+        if entry["resolution_status"] in TEACHER_REVIEW_ROUTING_STATUSES:
             if key not in active_pairs:
                 inactive_teacher_review_entries.append(entry)
         elif key not in active_pairs:
             resolved_mismatches.append(entry)
 
+    deferred_teacher_review_mismatches = [
+        item for item in teacher_review_mismatches if item["resolution_status"] == DEFERRED_ROUTING_STATUS
+    ]
     return {
         "active_mismatch_count": len(teacher_review_mismatches) + len(unreviewed_mismatches),
         "active_skill_warning_count": len({item["skill_ref"] for item in teacher_review_mismatches + unreviewed_mismatches}),
+        "deferred_ambiguous_case_count": len(deferred_teacher_review_mismatches),
+        "deferred_review_backlog": deferred_backlog_summary(deferred_teacher_review_mismatches),
+        "deferred_teacher_review_count": len(deferred_teacher_review_mismatches),
+        "deferred_teacher_review_mismatches": deferred_teacher_review_mismatches,
+        "deferred_teacher_review_skill_warning_count": len({item["skill_ref"] for item in deferred_teacher_review_mismatches}),
         "inactive_teacher_review_entry_count": len(inactive_teacher_review_entries),
         "inactive_teacher_review_entries": inactive_teacher_review_entries,
         "original_reviewed_mismatch_count": len(routing_audit["entries"]),
@@ -792,27 +901,59 @@ def apply_routing_audit_to_skill_rows(
     routing_audit: dict[str, Any],
 ) -> None:
     teacher_by_skill: dict[str, list[str]] = {}
+    deferred_by_skill: dict[str, list[str]] = {}
     unreviewed_by_skill: dict[str, list[str]] = {}
     for item in routing_audit["teacher_review_mismatches"]:
         teacher_by_skill.setdefault(item["skill_ref"], []).append(item["question_id"])
+    for item in routing_audit["deferred_teacher_review_mismatches"]:
+        deferred_by_skill.setdefault(item["skill_ref"], []).append(item["question_id"])
     for item in routing_audit["unreviewed_mismatches"]:
         unreviewed_by_skill.setdefault(item["skill_ref"], []).append(item["question_id"])
 
     for row in skill_rows:
         teacher_ids = unique_sorted(teacher_by_skill.get(row["skill_ref"], []))
+        deferred_ids = unique_sorted(deferred_by_skill.get(row["skill_ref"], []))
         unreviewed_ids = unique_sorted(unreviewed_by_skill.get(row["skill_ref"], []))
+        mastery_blocked_ids = unique_sorted(set(teacher_ids) | set(unreviewed_ids))
+        practice_allowed_ids = unique_sorted(row["practice_allowed_question_ids"])
+        mastery_evidence_ids = [
+            item_id
+            for item_id in row["practice_allowed_question_ids"]
+            if item_id not in mastery_blocked_ids
+        ]
+        guardian_candidate_ids = [
+            item_id
+            for item_id in row["guardian_candidate_question_ids"]
+            if item_id not in mastery_blocked_ids
+        ]
+
         row["teacher_review_app_region_mismatch_question_ids"] = teacher_ids
+        row["teacher_review_deferred_question_ids"] = deferred_ids
         row["unreviewed_app_region_mismatch_question_ids"] = unreviewed_ids
+        row["mastery_evidence_blocked_question_ids"] = mastery_blocked_ids
+        row["mastery_evidence_question_ids"] = mastery_evidence_ids
+        row["mastery_evidence_question_count"] = len(mastery_evidence_ids)
+        row["canonical_question_ids_routed_to_skill"] = mastery_evidence_ids
+        row["canonical_question_count"] = len(mastery_evidence_ids)
+        row["guardian_candidate_question_ids"] = guardian_candidate_ids
+        row["guardian_candidate_count"] = len(guardian_candidate_ids)
+        row["practice_allowed_question_ids"] = practice_allowed_ids
+        row["practice_allowed_deferred_question_ids"] = deferred_ids
+        row["export_blocked_deferred_question_ids"] = deferred_ids
+        set_support_type(row, "canonical_question", bool(mastery_evidence_ids))
+        set_support_type(row, "guardian_candidate", bool(guardian_candidate_ids))
 
         risk_flags = set(row["risk_flags"])
         risk_flags.discard("app_region_routing_mismatch")
         if teacher_ids:
             risk_flags.add("teacher_review_app_region_mismatch")
+        if deferred_ids:
+            risk_flags.add("teacher_review_deferred")
+            risk_flags.add("mastery_evidence_deferred")
         if unreviewed_ids:
             risk_flags.add("unreviewed_app_region_routing_mismatch")
         row["risk_flags"] = unique_sorted(risk_flags)
-        if (teacher_ids or unreviewed_ids) and row["instructional_status"] != "blocked":
-            row["instructional_status"] = "needs_review"
+        row["instructional_status"] = support_status_for_row(row)
 
 
 def teacher_review_export_tag_summary(skill_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -835,6 +976,10 @@ def teacher_review_export_tag_summary(skill_rows: list[dict[str, Any]]) -> dict[
             "available_support_types",
             "missing_support_types",
             "canonical_question_ids_routed_to_skill",
+            "mastery_evidence_question_ids",
+            "mastery_evidence_blocked_question_ids",
+            "practice_allowed_question_ids",
+            "teacher_review_deferred_question_ids",
         ],
         "curriculum_roles": {
             role: sum(1 for row in skill_rows if row["curriculum_role"] == role)
@@ -869,6 +1014,8 @@ def risk_summary(
         ("missing_trainable_canonical_question", len(gap_entries(skill_rows, "canonical_question")), "ordinary_gap", None),
         ("missing_guardian_candidate", len(gap_entries(skill_rows, "guardian_candidate")), "ordinary_gap", None),
         ("app_region_unrouted_p3_questions", routing_summary["app_region_unrouted_p3_question_count"], "review_risk", None),
+        ("teacher_review_deferred_ambiguous_cases", routing_audit["deferred_teacher_review_count"], "review_risk", None),
+        ("mastery_blocked_deferred_ambiguous_cases", routing_audit["deferred_review_backlog"]["mastery_evidence_blocked_case_count"], "mastery_safety", None),
         ("teacher_review_app_region_mismatches", routing_audit["teacher_review_mismatch_count"], "review_risk", None),
         ("unreviewed_app_region_mismatches", routing_audit["unreviewed_mismatch_count"], "structural_warning", None),
         ("resolved_app_region_mismatches", routing_audit["resolved_mismatch_count"], "audit_result", "resolved" if routing_audit["resolved_mismatch_count"] else "clear"),
@@ -970,9 +1117,9 @@ def build_report(
         skill_inventory_row(skill, field_guide_region_ids, question_index, snippet_index, generated_index)
         for skill in sorted(skills, key=lambda item: str(item["skill_id"]))
     ]
-    routing = question_routing_summary(regions, question_index, skill_rows)
     route_audit_summary = routing_audit_summary(routing_audit, skill_rows, question_index)
     apply_routing_audit_to_skill_rows(skill_rows, route_audit_summary)
+    routing = question_routing_summary(regions, question_index, skill_rows)
     region_rows = region_inventory_rows(regions, skill_rows)
     missing_support = {
         "skills_missing_canonical_question": gap_entries(skill_rows, "canonical_question"),
@@ -1114,6 +1261,7 @@ def main() -> int:
     print(
         "Routing audit: "
         f"resolved_pairs={routing_audit['resolved_mismatch_count']}, "
+        f"deferred_pairs={routing_audit['deferred_teacher_review_count']}, "
         f"teacher_review_pairs={routing_audit['teacher_review_mismatch_count']}, "
         f"unreviewed_pairs={routing_audit['unreviewed_mismatch_count']}"
     )
