@@ -101,6 +101,10 @@ function attempts(count: number, overrides: Partial<Attempt> & AttemptMetadata =
   return Array.from({ length: count }, (_, index) => attempt(index + 1, overrides));
 }
 
+function questions(count: number, subtopicForIndex: (index: number) => string = () => 'polynomials'): NormalizedQuestion[] {
+  return Array.from({ length: count }, (_, index) => question(`q${index + 1}`, 'Algebra', subtopicForIndex(index + 1)));
+}
+
 function guardianCleared(): RegionLearningRecord {
   return {
     regionId: algebra.id,
@@ -191,7 +195,12 @@ describe('region progress and gear', () => {
   });
 
   it('allows narrow repeated evidence to reach Gold but not Mastered', () => {
-    const progress = calculateRegionProgress(algebra, [question('q1')], attempts(14, { scoreRatio: 0.9, subtopic: 'polynomials', methodFamily: 'factor theorem' }));
+    const progress = calculateRegionProgress(algebra, [question('q1')], attempts(14, {
+      questionId: 'q1',
+      scoreRatio: 0.9,
+      subtopic: 'polynomials',
+      methodFamily: 'factor theorem',
+    }));
     const evidence = getRecentMixedReviewEvidence(attempts(14, { scoreRatio: 0.9, subtopic: 'polynomials', methodFamily: 'factor theorem' }));
 
     expect(progress.rank).toBe('Gold');
@@ -235,7 +244,7 @@ describe('region progress and gear', () => {
       ...item,
       subtopic: index >= 12 ? 'partial fractions' : item.subtopic,
     }));
-    const progress = calculateRegionProgress(algebra, [question('q1')], mixed);
+    const progress = calculateRegionProgress(algebra, questions(14, (index) => index >= 13 ? 'partial fractions' : 'polynomials'), mixed);
 
     expect(progress.rank).toBe('Mastered');
     expect(getRecentMixedReviewEvidence(mixed).reason).toBe('mixed_subtopics');
@@ -246,10 +255,35 @@ describe('region progress and gear', () => {
       ...item,
       methodFamily: index >= 12 ? 'long division' : 'factor theorem',
     }));
-    const progress = calculateRegionProgress(algebra, [question('q1')], mixed);
+    const progress = calculateRegionProgress(algebra, questions(14), mixed);
 
     expect(progress.rank).toBe('Mastered');
     expect(getRecentMixedReviewEvidence(mixed).reason).toBe('mixed_method_families');
+  });
+
+  it('does not award Mastered from high recent scores without current coverage breadth', () => {
+    const repeated = attempts(14, {
+      questionId: 'q1',
+      scoreRatio: 1,
+      subtopic: 'polynomials',
+      methodFamily: 'factor theorem',
+    });
+    const progress = calculateRegionProgress(algebra, [question('q1')], repeated);
+
+    expect(progress.recentScoreRatio).toBe(1);
+    expect(progress.averageScoreRatio).toBe(1);
+    expect(progress.rank).toBe('Gold');
+  });
+
+  it('does not award Mastered from legacy-compatible attempts without current question evidence', () => {
+    const historical = attempts(14, { scoreRatio: 0.95, subtopic: 'polynomials', methodFamily: 'factor theorem' }).map((item, index) => ({
+      ...item,
+      subtopic: index >= 12 ? 'partial fractions' : item.subtopic,
+    }));
+    const progress = calculateRegionProgress(algebra, [question('current-bank-question')], historical);
+
+    expect(progress.attempts).toBe(14);
+    expect(progress.rank).toBe('Gold');
   });
 
   it('does not infer mixed review from attempt count when metadata is missing', () => {
@@ -326,7 +360,7 @@ describe('region progress and gear', () => {
   });
 
   it('keeps region mastery rank unchanged when only attempt and question difficulty metadata changes', () => {
-    const baseQuestions = [question('q1', 'Algebra', 'polynomials')];
+    const baseQuestions = questions(14);
     const changedDifficultyQuestions = baseQuestions.map((item) => ({
       ...item,
       displayDifficulty: 'challenge',

@@ -305,6 +305,10 @@ export interface TopicProfile {
   masteryScore: number;
   rank: MasteryRank;
   updatedAt: string;
+  cleanCurrentEvidenceItems?: number;
+  distinctQuestionIds?: string[];
+  distinctEvidenceTargets?: string[];
+  masteryReasonCodes?: string[];
 }
 
 export type MasteryRank = 'none' | 'bronze' | 'silver' | 'gold' | 'mastery';

@@ -1,5 +1,7 @@
 import type { Attempt, NormalizedQuestion, RegionDefinition, RegionLearningRecord, RegionProgress, RegionRank, WorldDefinition } from '../types';
 import type { MasteryEvidence } from './masteryEvidence';
+import type { MasteryCoverageResult } from './masteryAntiFarming';
+import { evaluateMasteryCoverage } from './masteryAntiFarming';
 import { filterMasteryEvidence } from './masteryEvidence';
 import { isQuestionTrainable } from './questionTraining';
 import { filterMasteryEvidenceQuestionsForRegion, filterPracticeDisplayQuestionsForRegion } from './questionEligibility';
@@ -156,6 +158,7 @@ export function calculateRegionRank(input: {
   recentScoreRatio?: number;
   guardianCleared?: boolean;
   hasMixedReview?: boolean;
+  masteryCoverage?: Pick<MasteryCoverageResult, 'meetsCoverage'>;
 }): RegionRank {
   if (!input.activeByDefault && input.availableQuestions === 0) return 'Dormant';
   if (input.availableQuestions === 0) return 'Dormant';
@@ -164,7 +167,7 @@ export function calculateRegionRank(input: {
 
   const average = input.averageScoreRatio ?? 0;
   const recent = input.recentScoreRatio ?? average;
-  if (input.hasMixedReview && input.attempts >= REGION_MASTERED_REQUIREMENTS.attempts && average >= REGION_MASTERED_REQUIREMENTS.ratio && recent >= REGION_MASTERED_REQUIREMENTS.ratio) return 'Mastered';
+  if (input.hasMixedReview && input.masteryCoverage?.meetsCoverage && input.attempts >= REGION_MASTERED_REQUIREMENTS.attempts && average >= REGION_MASTERED_REQUIREMENTS.ratio && recent >= REGION_MASTERED_REQUIREMENTS.ratio) return 'Mastered';
   if (input.attempts >= REGION_RANK_THRESHOLDS.gold.attempts && average >= REGION_RANK_THRESHOLDS.gold.ratio && recent >= 0.75) return 'Gold';
   if (input.attempts >= REGION_RANK_THRESHOLDS.silver.attempts && average >= REGION_RANK_THRESHOLDS.silver.ratio && recent >= 0.6) return 'Silver';
   if (input.attempts >= REGION_RANK_THRESHOLDS.bronze.attempts && average >= REGION_RANK_THRESHOLDS.bronze.ratio) return 'Bronze';
@@ -211,6 +214,11 @@ export function calculateRegionProgress(
   const recentScoreRatio = recentRatios.length ? recentRatios.reduce((sum, value) => sum + value, 0) / recentRatios.length : undefined;
   const touched = new Set(regionEvidence.map((evidence) => evidence.subtopic).filter(Boolean));
   const guardianCleared = Boolean(learningRecord?.guardianClearedAt && (recentScoreRatio ?? 1) >= 0.55);
+  const mixedReview = getRecentMixedReviewEvidence(regionEvidence);
+  const masteryCoverage = evaluateMasteryCoverage(regionEvidence, {
+    requireMixedReview: true,
+    hasMixedReview: mixedReview.hasMixedReview,
+  });
 
   return {
     region,
@@ -229,7 +237,8 @@ export function calculateRegionProgress(
       averageScoreRatio,
       recentScoreRatio,
       guardianCleared,
-      hasMixedReview: hasRecentMixedReviewEvidence(regionEvidence),
+      hasMixedReview: mixedReview.hasMixedReview,
+      masteryCoverage,
     }),
   };
 }
