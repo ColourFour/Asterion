@@ -1,3 +1,5 @@
+import type { QuestionRouteEvidenceStatus } from './lib/questionRouteEvidence';
+
 export type PaperFamily = 'p1' | 'p3' | 'p4' | 'p5' | string;
 
 export type Difficulty = 'foundation' | 'core' | 'stretch' | 'challenge' | string;
@@ -101,7 +103,29 @@ export interface QuestionTopicRouting {
   reviewReasons?: string[];
   evidenceUsed?: string[];
   routingSource?: string;
+  paperFamily?: PaperFamily;
+  evidenceStatus?: QuestionRouteEvidenceStatus;
   mappedRegionId?: string;
+  topicDistribution?: QuestionTopicDistribution[];
+}
+
+export interface QuestionTopicDistribution {
+  topicId: string;
+  fitPercent?: number;
+  mappedRegionId?: string;
+}
+
+export interface QuestionRouteEvidence {
+  status: QuestionRouteEvidenceStatus;
+  source: 'topic-routing' | 'fallback-label' | 'preserved-status' | 'paper-family' | 'none';
+  regionId?: string;
+  regionName?: string;
+  primaryTopicId?: string;
+  reasonCodes: string[];
+  evidenceUsed?: string[];
+  reviewReasons?: string[];
+  matchedLabels?: string[];
+  candidateRegionIds?: string[];
 }
 
 export interface NormalizedQuestion {
@@ -114,6 +138,7 @@ export interface NormalizedQuestion {
   localDifficulty?: Difficulty;
   deepseek: DeepSeekMetadata;
   topicRouting?: QuestionTopicRouting;
+  routeEvidence?: QuestionRouteEvidence;
   textQuality?: QuestionTextQuality;
   displayTopic: string;
   displaySubtopic?: string;

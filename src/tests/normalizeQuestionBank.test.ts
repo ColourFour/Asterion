@@ -1,7 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeQuestionBank } from '../lib/normalizeQuestionBank';
+import { QUESTION_ROUTE_EVIDENCE_STATUSES } from '../lib/questionRouteEvidence';
 
 describe('normalizeQuestionBank', () => {
+  it('defines the shared route-evidence status vocabulary', () => {
+    expect(QUESTION_ROUTE_EVIDENCE_STATUSES).toEqual([
+      'clean',
+      'missing-route',
+      'ambiguous-route',
+      'review-only',
+      'fallback-display-only',
+      'prerequisite-only',
+      'not-P3',
+      'hard-failure',
+    ]);
+  });
+
   it('prefers reviewed topic-routing labels while preserving local and DeepSeek labels', () => {
     const questions = normalizeQuestionBank(
       { questions: [{ id: 'q1', topic: 'Algebra', difficulty: 'core', image_path: 'p3/a/questions/q1.png', marks: 6 }] },
@@ -10,10 +24,77 @@ describe('normalizeQuestionBank', () => {
     );
 
     expect(questions[0].displayTopic).toBe('Algebra Vault');
+    expect(questions[0].routeEvidence).toMatchObject({
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: 'algebra-forge',
+      reasonCodes: ['validated-topic-routing'],
+    });
     expect(questions[0].localTopic).toBe('Algebra');
     expect(questions[0].deepseek.topic).toBe('Complex numbers');
     expect(questions[0].localDifficulty).toBe('core');
     expect(questions[0].displayDifficulty).toBe('core');
+  });
+
+  it('distinguishes missing, ambiguous, and fallback-only route evidence during normalization', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          { id: 'missing', paper_family: 'p3' },
+          { id: 'ambiguous', paper_family: 'p3', topic: 'Algebra' },
+          { id: 'fallback', paper_family: 'p3', topic: 'Trigonometry' },
+        ],
+      },
+      {},
+      {
+        records: {
+          ambiguous: {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'medium',
+            review_required: false,
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 50 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 50 },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions.find((question) => question.id === 'missing')?.routeEvidence).toMatchObject({
+      status: 'missing-route',
+      source: 'none',
+      reasonCodes: ['no-topic-routing-record'],
+    });
+    expect(questions.find((question) => question.id === 'ambiguous')?.routeEvidence).toMatchObject({
+      status: 'ambiguous-route',
+      source: 'topic-routing',
+      reasonCodes: ['multiple-p3-candidate-regions'],
+      candidateRegionIds: ['algebra-forge', 'trig-observatory'],
+    });
+    expect(questions.find((question) => question.id === 'fallback')?.routeEvidence).toMatchObject({
+      status: 'fallback-display-only',
+      source: 'fallback-label',
+      regionId: 'trig-observatory',
+      reasonCodes: ['fallback-label-match'],
+    });
+  });
+
+  it('preserves explicit route-evidence statuses from source records', () => {
+    const questions = normalizeQuestionBank({
+      questions: [{
+        id: 'review-only-source',
+        paper_family: 'p3',
+        topic: 'Vectors',
+        route_evidence_status: 'review-only',
+      }],
+    });
+
+    expect(questions[0].routeEvidence).toMatchObject({
+      status: 'review-only',
+      source: 'preserved-status',
+      reasonCodes: ['preserved-route-evidence-status'],
+    });
   });
 
   it('falls back to local labels when sidecar contains an error', () => {

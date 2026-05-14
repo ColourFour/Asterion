@@ -1,4 +1,5 @@
 import type { RegionDefinition } from '../types';
+import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 
 export interface TopicRoutingMetadata {
   primaryTopicId?: string;
@@ -7,7 +8,14 @@ export interface TopicRoutingMetadata {
   reviewReasons?: string[];
   evidenceUsed?: string[];
   routingSource?: string;
+  paperFamily?: string;
+  evidenceStatus?: QuestionRouteEvidenceStatus;
   mappedRegionId?: string;
+  topicDistribution?: Array<{
+    topicId: string;
+    fitPercent?: number;
+    mappedRegionId?: string;
+  }>;
 }
 
 export const P3_TOPIC_ID_TO_REGION_ID: Record<string, string> = {

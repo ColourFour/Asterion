@@ -1,6 +1,8 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark, QuestionTextQuality, QuestionTopicRouting } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
 import { P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './topicRouting';
+import { inferQuestionRouteEvidence } from './worldMap';
 
 type LooseRecord = Record<string, unknown>;
 
@@ -76,6 +78,27 @@ function unique(values: string[]): string[] {
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return unique(value.map((item) => String(item).trim()).filter(Boolean));
+}
+
+function pickRouteEvidenceStatus(...records: Array<LooseRecord | undefined>) {
+  const keys = [
+    'route_evidence_status',
+    'routeEvidenceStatus',
+    'routing_evidence_status',
+    'routingEvidenceStatus',
+    'curriculum_route_status',
+    'curriculumRouteStatus',
+    'evidence_status',
+    'evidenceStatus',
+    'status',
+  ];
+  for (const record of records) {
+    for (const key of keys) {
+      const status = normalizeQuestionRouteEvidenceStatus(record?.[key]);
+      if (status) return status;
+    }
+  }
+  return undefined;
 }
 
 function numberArray(value: unknown): number[] {
@@ -254,6 +277,8 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
     const record = asRecord(value);
     if (!record) continue;
     const primaryTopicId = pickString(record, ['primary_topic_id']);
+    const topicDistribution = normalizeTopicDistribution(record.topic_distribution);
+    const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
     index.set(id, {
       primaryTopicId,
       confidence: pickString(record, ['confidence']),
@@ -261,11 +286,32 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
       reviewReasons: stringArray(record.review_reasons),
       evidenceUsed: stringArray(record.evidence_used),
       routingSource: pickString(record, ['routing_source']),
+      paperFamily: pickString(record, ['paper_family', 'paperFamily']),
+      evidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, record),
       mappedRegionId: primaryTopicId ? P3_TOPIC_ID_TO_REGION_ID[primaryTopicId] : undefined,
+      topicDistribution: topicDistribution.length ? topicDistribution : undefined,
     });
   }
 
   return index;
+}
+
+function normalizeTopicDistribution(value: unknown): QuestionTopicDistribution[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      const record = asRecord(item);
+      if (!record) return undefined;
+      const topicId = pickString(record, ['topic_id', 'topicId', 'primary_topic_id']);
+      if (!topicId) return undefined;
+      const topic: QuestionTopicDistribution = { topicId };
+      const fitPercent = pickNumber(record, ['fit_percent', 'fitPercent', 'percent', 'weight']);
+      const mappedRegionId = P3_TOPIC_ID_TO_REGION_ID[topicId];
+      if (fitPercent !== undefined) topic.fitPercent = fitPercent;
+      if (mappedRegionId) topic.mappedRegionId = mappedRegionId;
+      return topic;
+    })
+    .filter((item): item is QuestionTopicDistribution => Boolean(item));
 }
 
 export function getTopicRoutingRecordCount(topicRouting: unknown): number {
@@ -369,7 +415,12 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
     const paperFamily = inferPaperFamily(record, questionImageRaw);
     const deepseekRaw = sidecarIndex.get(id) ?? record.deepseek ?? record.enrichment;
     const deepseek = normalizeDeepSeek(deepseekRaw);
-    const topicRouting = routingIndex.get(id);
+    const indexedTopicRouting = routingIndex.get(id);
+    const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
+    const preservedEvidenceStatus = pickRouteEvidenceStatus(routeEvidenceRecord, record);
+    const topicRouting = indexedTopicRouting || preservedEvidenceStatus
+      ? { ...(indexedTopicRouting ?? {}), evidenceStatus: preservedEvidenceStatus ?? indexedTopicRouting?.evidenceStatus }
+      : undefined;
     const textQuality = normalizeTextQuality(record);
     const localTopic = pickString(record, ['topic', 'local_topic', 'localTopic']);
     const notes = nestedRecord(record, 'notes');
@@ -384,7 +435,7 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
     const trainingStatus = pickString(record, ['training_status', 'practice_status', 'asset_status']);
     const trainingBlockers = trainingBlockersForRecord(record, trainingStatus, questionImageCandidates, markSchemeImageCandidates);
 
-    return {
+    const normalizedQuestion: NormalizedQuestion = {
       id,
       paperFamily: paperFamily as PaperFamily,
       paper: pickString(record, ['paper', 'paper_code', 'session']),
@@ -413,6 +464,10 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       trainingStatus,
       trainingBlockers,
       raw: { local: record, deepseek: deepseekRaw },
+    };
+    return {
+      ...normalizedQuestion,
+      routeEvidence: inferQuestionRouteEvidence(normalizedQuestion),
     };
   });
 }
