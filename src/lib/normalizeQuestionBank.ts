@@ -1,4 +1,5 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionPartMark, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionPartMark, QuestionPartRouteMapping, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import { deriveQuestionMasteryReadiness } from './masteryEvidenceReadiness';
 import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
@@ -113,6 +114,11 @@ function normalizedToken(value: string | undefined): string {
   return (value ?? '').trim().toLowerCase().replace(/[\s-]+/g, '_');
 }
 
+function normalizedPartKey(value: string | undefined): string | undefined {
+  const normalized = value?.trim().replace(/^\((.*)\)$/, '$1').toLowerCase();
+  return normalized || undefined;
+}
+
 function routeExplicitlyApproved(record: LooseRecord): boolean {
   return truthyBoolean(record, [
     'route_approved',
@@ -137,6 +143,19 @@ function routeExplicitlyApproved(record: LooseRecord): boolean {
     'approval_status',
     'approvalStatus',
   ])));
+}
+
+function reviewStatusApprovesMapping(status: string | undefined): boolean {
+  return [
+    'approved',
+    'clean_approved',
+    'mapping_reviewed',
+    'published',
+    'reviewed',
+    'route_approved',
+    'teacher_reviewed',
+    'validated_route_approved',
+  ].includes(normalizedToken(status));
 }
 
 function reviewBlockerReasonCodes(record: LooseRecord): string[] {
@@ -362,6 +381,8 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   const routeEvidence = question.routeEvidence;
   const routeIsClean = routeEvidence?.status === 'clean';
   const routeBlocks = routeBlockReasonCodes(routeEvidence);
+  const masteryReadiness = question.masteryReadiness ?? deriveQuestionMasteryReadiness(question);
+  const preciseMasteryReady = masteryReadiness.status === 'precise_skill_evidence';
   const textQuality = question.textQuality;
   const hasTextOnlySource = Boolean(textQuality?.questionText && textQuality?.markSchemeText);
   const textOnlyAllowed = textQuality?.textOnlyDisplayAllowed === true;
@@ -385,8 +406,9 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (trainingBlockers.length) practiceReasons.push('blocked-training-status');
 
   const masteryReasons: string[] = [];
-  if (routeIsClean) masteryReasons.push('validated-topic-routing');
+  if (preciseMasteryReady) masteryReasons.push('validated-topic-routing');
   else masteryReasons.push(...routeBlocks);
+  if (!preciseMasteryReady && routeIsClean) masteryReasons.push(...masteryReadiness.reasonCodes);
   if (!hasImagePracticeAssets) masteryReasons.push('missing-image-practice-assets');
   if (trainingBlockers.length) masteryReasons.push('blocked-training-status');
   if (contentSource.unsafeForMastery) masteryReasons.push(...contentSource.reasonCodes);
@@ -406,7 +428,7 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (contentSource.unsafeForGeneration) generationReasons.push(...contentSource.reasonCodes);
 
   const imagePracticeEligible = hasImagePracticeAssets && trainingBlockers.length === 0;
-  const masteryEligible = routeIsClean && imagePracticeEligible && !contentSource.unsafeForMastery;
+  const masteryEligible = preciseMasteryReady && imagePracticeEligible && !contentSource.unsafeForMastery;
   const guardianEligible = masteryEligible && !contentSource.unsafeForGuardian;
   const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed && !contentSource.unsafeForGeneration;
   const textOnlyEligible = routeIsClean && hasTextOnlySource && textOnlyAllowed && !textHardFailed;
@@ -486,6 +508,7 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
     const primaryTopicId = pickString(record, ['primary_topic_id']);
     const topicDistribution = normalizeTopicDistribution(record.topic_distribution);
     const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
+    const partMappings = normalizePartRouteMappings(record.part_mappings, record.partMappings, record.subpart_mappings, record.subpartMappings, record.parts, record.subparts);
     index.set(id, {
       primaryTopicId,
       confidence: pickString(record, ['confidence']),
@@ -500,6 +523,7 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
       evidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, record),
       mappedRegionId: p3RegionIdForTopicId(primaryTopicId),
       topicDistribution: topicDistribution.length ? topicDistribution : undefined,
+      partMappings: partMappings.length ? partMappings : undefined,
     });
   }
 
@@ -522,6 +546,118 @@ function normalizeTopicDistribution(value: unknown): QuestionTopicDistribution[]
       return topic;
     })
     .filter((item): item is QuestionTopicDistribution => Boolean(item));
+}
+
+function partRouteMappingReviewed(record: LooseRecord, nestedRouting?: LooseRecord): boolean | undefined {
+  const explicit = pickBoolean(record, [
+    'mapping_reviewed',
+    'mappingReviewed',
+    'subpart_mapping_reviewed',
+    'subpartMappingReviewed',
+    'mastery_evidence_allowed',
+    'masteryEvidenceAllowed',
+    'reviewed',
+  ]) ?? pickBoolean(nestedRouting, [
+    'mapping_reviewed',
+    'mappingReviewed',
+    'subpart_mapping_reviewed',
+    'subpartMappingReviewed',
+    'mastery_evidence_allowed',
+    'masteryEvidenceAllowed',
+    'reviewed',
+  ]);
+  if (explicit !== undefined) return explicit;
+
+  const reviewStatus = pickString(record, [
+    'mapping_review_status',
+    'mappingReviewStatus',
+    'route_review_status',
+    'routeReviewStatus',
+    'review_status',
+    'reviewStatus',
+  ]) ?? pickString(nestedRouting, [
+    'mapping_review_status',
+    'mappingReviewStatus',
+    'route_review_status',
+    'routeReviewStatus',
+    'review_status',
+    'reviewStatus',
+  ]);
+  return reviewStatus ? reviewStatusApprovesMapping(reviewStatus) : undefined;
+}
+
+function normalizePartRouteMapping(value: unknown): QuestionPartRouteMapping | undefined {
+  const record = asRecord(value);
+  if (!record) return undefined;
+  const nestedRouting = nestedRecord(record, 'topic_routing') ?? nestedRecord(record, 'topicRouting');
+  const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
+  const primaryTopicId = pickString(record, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId'])
+    ?? pickString(nestedRouting, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId']);
+  const mappedRegionId = pickString(record, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId'])
+    ?? pickString(nestedRouting, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId'])
+    ?? p3RegionIdForTopicId(primaryTopicId);
+  const reviewStatus = pickString(record, [
+    'mapping_review_status',
+    'mappingReviewStatus',
+    'route_review_status',
+    'routeReviewStatus',
+    'review_status',
+    'reviewStatus',
+  ]) ?? pickString(nestedRouting, [
+    'mapping_review_status',
+    'mappingReviewStatus',
+    'route_review_status',
+    'routeReviewStatus',
+    'review_status',
+    'reviewStatus',
+  ]);
+  const mapping: QuestionPartRouteMapping = {
+    partId: pickString(record, ['part_id', 'partId', 'id']),
+    subpartId: pickString(record, ['subpart_id', 'subpartId']),
+    label: pickString(record, ['label', 'subpart_label', 'subpartLabel', 'part_label', 'partLabel']),
+    primaryTopicId,
+    skillRef: pickString(record, ['skill_ref', 'skillRef', 'skill_id', 'skillId', 'reviewed_skill_ref', 'reviewedSkillRef', 'reviewed_p3_skill_id']),
+    mappedRegionId,
+    routeEvidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, nestedRouting, record),
+    mappingReviewed: partRouteMappingReviewed(record, nestedRouting),
+    reviewStatus,
+    evidenceUsed: stringArray(record.evidence_used).length
+      ? stringArray(record.evidence_used)
+      : stringArray(nestedRouting?.evidence_used),
+    reasonCodes: unique([
+      ...stringArray(record.reason_codes),
+      ...stringArray(record.reasonCodes),
+      ...stringArray(nestedRouting?.reason_codes),
+      ...stringArray(nestedRouting?.reasonCodes),
+    ]),
+  };
+
+  const hasMetadata = Boolean(
+    mapping.partId
+    || mapping.subpartId
+    || mapping.primaryTopicId
+    || mapping.skillRef
+    || mapping.mappedRegionId
+    || mapping.routeEvidenceStatus
+    || mapping.mappingReviewed !== undefined
+    || mapping.reviewStatus
+    || mapping.evidenceUsed?.length
+    || mapping.reasonCodes?.length
+  );
+  if (!hasMetadata) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(mapping).filter(([_key, item]) => (
+      Array.isArray(item) ? item.length > 0 : item !== undefined
+    )),
+  ) as QuestionPartRouteMapping;
+}
+
+function normalizePartRouteMappings(...values: unknown[]): QuestionPartRouteMapping[] {
+  return values.flatMap((value) => {
+    if (!Array.isArray(value)) return [];
+    return value.map(normalizePartRouteMapping).filter((item): item is QuestionPartRouteMapping => Boolean(item));
+  });
 }
 
 export function getTopicRoutingRecordCount(topicRouting: unknown): number {
@@ -562,6 +698,68 @@ function partLabel(label: string): string {
   return /^\(.+\)$/.test(trimmed) ? trimmed : `(${trimmed})`;
 }
 
+function partMappingKeys(mapping: QuestionPartRouteMapping): string[] {
+  return unique([
+    normalizedPartKey(mapping.label),
+    normalizedPartKey(mapping.subpartId),
+    normalizedPartKey(mapping.partId),
+  ].filter((value): value is string => Boolean(value)));
+}
+
+function subpartRecordKeys(record: LooseRecord): string[] {
+  return unique([
+    normalizedPartKey(pickString(record, ['label', 'subpart_label', 'subpartLabel', 'part_label', 'partLabel'])),
+    normalizedPartKey(pickString(record, ['subpart_id', 'subpartId'])),
+    normalizedPartKey(pickString(record, ['part_id', 'partId', 'id'])),
+  ].filter((value): value is string => Boolean(value)));
+}
+
+function findPartRouteMapping(label: string, mappings: QuestionPartRouteMapping[]): QuestionPartRouteMapping | undefined {
+  const lookup = normalizedPartKey(label);
+  if (!lookup) return undefined;
+  return mappings.find((mapping) => partMappingKeys(mapping).includes(lookup));
+}
+
+function findSubpartRecord(label: string, records: LooseRecord[]): LooseRecord | undefined {
+  const lookup = normalizedPartKey(label);
+  if (!lookup) return undefined;
+  return records.find((record) => subpartRecordKeys(record).includes(lookup));
+}
+
+function metadataForPart(label: string, sourceRecord: LooseRecord | undefined, routingMapping: QuestionPartRouteMapping | undefined): Partial<QuestionPartMark> {
+  const sourceMapping = normalizePartRouteMapping(sourceRecord);
+  const merged: QuestionPartRouteMapping = {
+    ...sourceMapping,
+    ...routingMapping,
+  };
+  const normalized: Partial<QuestionPartMark> = {
+    partId: merged.partId,
+    subpartId: merged.subpartId,
+    primaryTopicId: merged.primaryTopicId,
+    skillRef: merged.skillRef,
+    mappedRegionId: merged.mappedRegionId,
+    routeEvidenceStatus: merged.routeEvidenceStatus,
+    mappingReviewed: merged.mappingReviewed,
+    reviewStatus: merged.reviewStatus,
+    evidenceUsed: merged.evidenceUsed,
+    reasonCodes: merged.reasonCodes,
+  };
+
+  if (!normalized.partId && sourceRecord) normalized.partId = pickString(sourceRecord, ['part_id', 'partId', 'id']);
+  if (!normalized.subpartId && sourceRecord) normalized.subpartId = pickString(sourceRecord, ['subpart_id', 'subpartId']);
+  if (!normalized.subpartId && routingMapping?.subpartId) normalized.subpartId = routingMapping.subpartId;
+  if (!normalized.partId && routingMapping?.partId) normalized.partId = routingMapping.partId;
+  if (!normalized.partId && !normalized.subpartId && merged.label && normalizedPartKey(merged.label) !== normalizedPartKey(label)) {
+    normalized.partId = merged.label;
+  }
+
+  return Object.fromEntries(
+    Object.entries(normalized).filter(([_key, item]) => (
+      Array.isArray(item) ? item.length > 0 : item !== undefined
+    )),
+  ) as Partial<QuestionPartMark>;
+}
+
 function marksBySubpart(record: LooseRecord, labels: string[]): number[] {
   const markMap = asRecord(record.subparts_solution_marks ?? record.subpart_solution_marks ?? record.part_marks);
   const fromMap = markMap
@@ -579,14 +777,17 @@ function marksBySubpart(record: LooseRecord, labels: string[]): number[] {
     .filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
 }
 
-function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPartMark[] | undefined {
+function questionPartMarks(record: LooseRecord, totalMarks?: number, routing?: QuestionTopicRouting): QuestionPartMark[] | undefined {
   const notes = nestedRecord(record, 'notes');
   const structureRecords = [
     ...nestedRecords(record, ['question_structure_detected', 'mark_scheme_structure_detected']),
     ...nestedRecords(notes, ['question_structure_detected', 'mark_scheme_structure_detected']),
   ];
+  const sourceSubpartRecords = subpartRecords(record);
+  const partMappings = routing?.partMappings ?? [];
   const labels = unique([
     ...subpartLabels(record),
+    ...partMappings.map((mapping) => mapping.label ?? mapping.subpartId ?? mapping.partId).filter((label): label is string => Boolean(label)),
     ...structureRecords.flatMap((structure) => stringArray(structure.subparts)),
     ...structureRecords.flatMap((structure) => stringArray(structure.question_subparts)),
   ]);
@@ -602,6 +803,7 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPa
   if (typeof totalMarks === 'number' && totalMarks > 0 && totalFromParts !== totalMarks) return undefined;
 
   return labels.map((label, index) => ({
+    ...metadataForPart(label, findSubpartRecord(label, sourceSubpartRecords), findPartRouteMapping(label, partMappings)),
     label: partLabel(label),
     marksAvailable: wholePositiveMarks[index],
   }));
@@ -650,7 +852,7 @@ export function normalizeQuestionBank(
     const questionImageUrls = resolveQuestionAssetPaths(questionImageRaw, paperFamily);
     const markSchemeImageUrls = resolveQuestionAssetPaths(markSchemeImageRaw, paperFamily);
     const marksAvailable = pickNumber(record, ['question_solution_marks', 'marks', 'marks_available', 'marksAvailable', 'total_marks']);
-    const parts = questionPartMarks(record, marksAvailable);
+    const parts = questionPartMarks(record, marksAvailable, topicRouting);
     const trainingStatus = pickString(record, ['training_status', 'practice_status', 'asset_status']);
     const trainingBlockers = trainingBlockersForRecord(record, trainingStatus, questionImageCandidates, markSchemeImageCandidates);
 
@@ -690,9 +892,14 @@ export function normalizeQuestionBank(
       ...normalizedQuestion,
       routeEvidence,
     };
-    return {
+    const masteryReadiness = deriveQuestionMasteryReadiness(questionWithRouteEvidence);
+    const questionWithMasteryReadiness = {
       ...questionWithRouteEvidence,
-      eligibility: deriveQuestionEligibility(questionWithRouteEvidence),
+      masteryReadiness,
+    };
+    return {
+      ...questionWithMasteryReadiness,
+      eligibility: deriveQuestionEligibility(questionWithMasteryReadiness),
     };
   });
 }

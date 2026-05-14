@@ -437,6 +437,8 @@ export default function App() {
               ...attempt,
               masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,
               guardianEligible: currentQuestion?.eligibility?.guardianEligible.eligible,
+              masteryEvidenceReadiness: currentQuestion?.masteryReadiness?.status,
+              masteryEvidenceReasonCodes: currentQuestion?.masteryReadiness?.reasonCodes,
               validatedRegionId: currentQuestion?.routeEvidence?.validatedRegionId,
               displayRegionId: currentQuestion?.routeEvidence?.displayRegionId,
             };

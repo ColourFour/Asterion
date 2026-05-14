@@ -590,6 +590,113 @@ describe('normalizeQuestionBank', () => {
     expect(questions[1].parts).toBeUndefined();
   });
 
+  it('keeps image-first practice available while blocking multi-part mastery without reviewed mappings', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-multipart-unreviewed',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [6, 1],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      { records: { 'p3-multipart-unreviewed': { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high' } } },
+    );
+
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'practice_only_insufficient_part_mapping',
+      requiresPartMapping: true,
+      rejectedPartLabels: ['(a)', '(b)'],
+    });
+    expect(questions[0].eligibility?.practiceEligible.eligible).toBe(true);
+    expect(questions[0].eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: expect.arrayContaining(['practice-only-insufficient-part-mapping', 'missing-reviewed-part-mapping']),
+    });
+  });
+
+  it('preserves reviewed sidecar part mappings on normalized part metadata', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-multipart-reviewed',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [6, 1],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'p3-multipart-reviewed': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            part_mappings: [
+              {
+                label: 'a',
+                subpart_id: 'p3-multipart-reviewed_a',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapping_reviewed: true,
+              },
+              {
+                label: 'b',
+                subpart_id: 'p3-multipart-reviewed_b',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapping_reviewed: true,
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].parts).toMatchObject([
+      {
+        label: '(a)',
+        subpartId: 'p3-multipart-reviewed_a',
+        primaryTopicId: '9709_p3_topic_algebra',
+        skillRef: 'p3_alg_structure_rearrangement',
+        mappedRegionId: 'algebra-forge',
+        mappingReviewed: true,
+      },
+      {
+        label: '(b)',
+        subpartId: 'p3-multipart-reviewed_b',
+        primaryTopicId: '9709_p3_topic_algebra',
+        skillRef: 'p3_alg_structure_rearrangement',
+        mappedRegionId: 'algebra-forge',
+        mappingReviewed: true,
+      },
+    ]);
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'precise_skill_evidence',
+      requiresPartMapping: true,
+      acceptedPartLabels: ['(a)', '(b)'],
+    });
+    expect(questions[0].eligibility?.masteryEligible.eligible).toBe(true);
+  });
+
   it('normalizes projected bank artifacts and keeps review-usable text separate from canonical images', () => {
     const questions = normalizeQuestionBank(
       {

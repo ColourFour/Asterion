@@ -233,8 +233,8 @@ describe('buildP3RouteEvidenceDistribution', () => {
     });
     expect(healthSummary.eligibilityBucketCounts).toMatchObject({
       generationEligible: { eligible: 293, blocked: 103, missing: 0 },
-      masteryEligible: { eligible: 307, blocked: 89, missing: 0 },
-      guardianEligible: { eligible: 307, blocked: 89, missing: 0 },
+      masteryEligible: { eligible: 126, blocked: 270, missing: 0 },
+      guardianEligible: { eligible: 126, blocked: 270, missing: 0 },
     });
     expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 396 });
     expect(healthSummary.fallbackDisplayOnlyCountsByRegion).toEqual({});

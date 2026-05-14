@@ -30,11 +30,23 @@ export interface AttemptMarkBreakdown {
 }
 
 export interface QuestionPartMark {
+  partId?: string;
+  subpartId?: string;
   label: string;
   marksAvailable: number;
+  primaryTopicId?: string;
+  skillRef?: string;
+  mappedRegionId?: string;
+  routeEvidenceStatus?: QuestionRouteEvidenceStatus;
+  mappingReviewed?: boolean;
+  reviewStatus?: string;
+  evidenceUsed?: string[];
+  reasonCodes?: string[];
 }
 
 export interface AttemptPartScore {
+  partId?: string;
+  subpartId?: string;
   label: string;
   marksEarned: number;
   marksAvailable: number;
@@ -115,12 +127,27 @@ export interface QuestionTopicRouting {
   evidenceStatus?: QuestionRouteEvidenceStatus;
   mappedRegionId?: string;
   topicDistribution?: QuestionTopicDistribution[];
+  partMappings?: QuestionPartRouteMapping[];
 }
 
 export interface QuestionTopicDistribution {
   topicId: string;
   fitPercent?: number;
   mappedRegionId?: string;
+}
+
+export interface QuestionPartRouteMapping {
+  partId?: string;
+  subpartId?: string;
+  label?: string;
+  primaryTopicId?: string;
+  skillRef?: string;
+  mappedRegionId?: string;
+  routeEvidenceStatus?: QuestionRouteEvidenceStatus;
+  mappingReviewed?: boolean;
+  reviewStatus?: string;
+  evidenceUsed?: string[];
+  reasonCodes?: string[];
 }
 
 export interface QuestionRouteEvidence {
@@ -154,6 +181,21 @@ export interface QuestionEligibility {
   textOnlyEligible: QuestionUseCaseEligibility;
 }
 
+export type MasteryEvidenceReadinessStatus =
+  | 'precise_skill_evidence'
+  | 'broad_region_evidence_only'
+  | 'practice_only_insufficient_part_mapping'
+  | 'rejected_unsafe_route'
+  | 'rejected_ambiguous_without_part_mapping';
+
+export interface QuestionMasteryReadiness {
+  status: MasteryEvidenceReadinessStatus;
+  reasonCodes: string[];
+  requiresPartMapping: boolean;
+  acceptedPartLabels?: string[];
+  rejectedPartLabels?: string[];
+}
+
 export type QuestionContentSourceKind =
   | 'projected-bank'
   | 'raw-bank-fallback'
@@ -179,6 +221,7 @@ export interface NormalizedQuestion {
   deepseek: DeepSeekMetadata;
   topicRouting?: QuestionTopicRouting;
   routeEvidence?: QuestionRouteEvidence;
+  masteryReadiness?: QuestionMasteryReadiness;
   eligibility?: QuestionEligibility;
   contentSource?: QuestionContentSource;
   textQuality?: QuestionTextQuality;
@@ -254,6 +297,8 @@ export interface Attempt {
   markSchemeRevealed: boolean;
   attemptedAt: string;
   masteryEligible?: boolean;
+  masteryEvidenceReadiness?: MasteryEvidenceReadinessStatus;
+  masteryEvidenceReasonCodes?: string[];
   guardianEligible?: boolean;
   validatedRegionId?: string;
   displayRegionId?: string;

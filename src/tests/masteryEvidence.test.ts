@@ -82,6 +82,134 @@ describe('mastery evidence adapter', () => {
     });
   });
 
+  it('rejects ambiguous multi-topic routes for precise mastery', () => {
+    const ambiguousQuestion = question({
+      routeEvidence: routeEvidence({
+        status: 'ambiguous-route',
+        validatedRegionId: undefined,
+        candidateRegionIds: ['algebra-forge', 'trig-observatory'],
+        reasonCodes: ['multiple-p3-candidate-regions'],
+      }),
+      topicRouting: {
+        primaryTopicId: '9709_p3_topic_algebra',
+        topicDistribution: [
+          { topicId: '9709_p3_topic_algebra', mappedRegionId: 'algebra-forge', fitPercent: 50 },
+          { topicId: '9709_p3_topic_trigonometry', mappedRegionId: 'trig-observatory', fitPercent: 50 },
+        ],
+      },
+      eligibility: {
+        ...question().eligibility!,
+        masteryEligible: { eligible: false, reasonCodes: ['blocked-ambiguous-route'] },
+      },
+    });
+
+    expect(toMasteryEvidence({ attempt: attempt(), question: ambiguousQuestion })).toBeUndefined();
+    expect(explainNonMasteryEvidence({ attempt: attempt(), question: ambiguousQuestion })).toEqual(
+      expect.arrayContaining(['ambiguous-route', 'ambiguous-without-part-mapping', 'mastery-ineligible']),
+    );
+  });
+
+  it('keeps multi-part questions without reviewed part mapping out of precise mastery', () => {
+    const multiPartQuestion = question({
+      parts: [
+        { label: '(a)', marksAvailable: 6 },
+        { label: '(b)', marksAvailable: 4 },
+      ],
+    });
+
+    expect(toMasteryEvidence({ attempt: attempt(), question: multiPartQuestion })).toBeUndefined();
+    expect(explainNonMasteryEvidence({ attempt: attempt(), question: multiPartQuestion })).toContain('insufficient-part-mapping');
+  });
+
+  it('rejects known multi-topic whole-question attempts without reviewed part mapping', () => {
+    const multiTopicQuestion = question({
+      topicRouting: {
+        primaryTopicId: '9709_p3_topic_algebra',
+        topicDistribution: [
+          { topicId: '9709_p3_topic_algebra', mappedRegionId: 'algebra-forge', fitPercent: 60 },
+          { topicId: '9709_p3_topic_integration', mappedRegionId: 'integration-gardens', fitPercent: 40 },
+        ],
+      },
+    });
+
+    expect(toMasteryEvidence({ attempt: attempt(), question: multiTopicQuestion })).toBeUndefined();
+    expect(explainNonMasteryEvidence({ attempt: attempt(), question: multiTopicQuestion })).toContain('broad-region-evidence-only');
+  });
+
+  it('preserves reviewed part and subpart metadata in precise evidence', () => {
+    const reviewedPartQuestion = question({
+      topicRouting: {
+        primaryTopicId: '9709_p3_topic_algebra',
+        topicDistribution: [
+          { topicId: '9709_p3_topic_algebra', mappedRegionId: 'algebra-forge', fitPercent: 60 },
+          { topicId: '9709_p3_topic_integration', mappedRegionId: 'integration-gardens', fitPercent: 40 },
+        ],
+      },
+      parts: [
+        {
+          partId: 'part-a',
+          subpartId: 'q1_a',
+          label: '(a)',
+          marksAvailable: 6,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          routeEvidenceStatus: 'clean',
+          mappingReviewed: true,
+          reviewStatus: 'teacher_reviewed',
+        },
+        {
+          partId: 'part-b',
+          subpartId: 'q1_b',
+          label: '(b)',
+          marksAvailable: 4,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          routeEvidenceStatus: 'clean',
+          mappingReviewed: true,
+          reviewStatus: 'teacher_reviewed',
+        },
+      ],
+    });
+    const reviewedAttempt = attempt({
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6 },
+        { label: '(b)', marksEarned: 4, marksAvailable: 4 },
+      ],
+      marksEarned: 9,
+      marksAvailable: 10,
+      scoreRatio: 0.9,
+    });
+
+    expect(toMasteryEvidence({ attempt: reviewedAttempt, question: reviewedPartQuestion })).toMatchObject({
+      partEvidence: [
+        {
+          partId: 'part-a',
+          subpartId: 'q1_a',
+          label: '(a)',
+          marksEarned: 5,
+          marksAvailable: 6,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          mappingReviewed: true,
+        },
+        {
+          partId: 'part-b',
+          subpartId: 'q1_b',
+          label: '(b)',
+          marksEarned: 4,
+          marksAvailable: 4,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          mappingReviewed: true,
+        },
+      ],
+    });
+  });
+
   it.each([
     ['fallback-display-only'],
     ['missing-route'],

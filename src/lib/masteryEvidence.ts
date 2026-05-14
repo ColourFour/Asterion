@@ -1,4 +1,5 @@
-import type { Attempt, NormalizedQuestion, RegionDefinition } from '../types';
+import type { Attempt, MasteryEvidenceReadinessStatus, NormalizedQuestion, QuestionPartMark, RegionDefinition } from '../types';
+import { deriveQuestionMasteryReadiness } from './masteryEvidenceReadiness';
 import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { normalizeLabel } from './worldMap';
 
@@ -14,7 +15,26 @@ export type MasteryEvidenceRejectionReason =
   | 'region-mismatch'
   | 'unsafe-content-source'
   | 'invalid-score-evidence'
-  | 'missing-mark-scheme-review';
+  | 'missing-mark-scheme-review'
+  | 'broad-region-evidence-only'
+  | 'insufficient-part-mapping'
+  | 'ambiguous-without-part-mapping'
+  | 'rejected-unsafe-route';
+
+export interface MasteryPartEvidence {
+  partId?: string;
+  subpartId?: string;
+  label: string;
+  marksEarned: number;
+  marksAvailable: number;
+  scoreRatio?: number;
+  primaryTopicId?: string;
+  skillRef?: string;
+  mappedRegionId?: string;
+  routeEvidenceStatus?: QuestionRouteEvidenceStatus;
+  mappingReviewed?: boolean;
+  reviewStatus?: string;
+}
 
 export interface MasteryEvidence {
   attempt: Attempt;
@@ -26,6 +46,7 @@ export interface MasteryEvidence {
   marksAvailable: number;
   attemptedAt: string;
   subtopic?: string;
+  partEvidence?: MasteryPartEvidence[];
 }
 
 export interface NonMasteryEvidenceReport {
@@ -50,6 +71,22 @@ function routeStatusReason(status: QuestionRouteEvidenceStatus): MasteryEvidence
   return UNSAFE_ROUTE_STATUSES.has(status) ? status : undefined;
 }
 
+function readinessStatusReason(status: MasteryEvidenceReadinessStatus | undefined): MasteryEvidenceRejectionReason | undefined {
+  switch (status) {
+    case undefined:
+    case 'precise_skill_evidence':
+      return undefined;
+    case 'broad_region_evidence_only':
+      return 'broad-region-evidence-only';
+    case 'practice_only_insufficient_part_mapping':
+      return 'insufficient-part-mapping';
+    case 'rejected_ambiguous_without_part_mapping':
+      return 'ambiguous-without-part-mapping';
+    case 'rejected_unsafe_route':
+      return 'rejected-unsafe-route';
+  }
+}
+
 function scoreRatio(attempt: Attempt): number | undefined {
   if (typeof attempt.scoreRatio === 'number' && Number.isFinite(attempt.scoreRatio)) return attempt.scoreRatio;
   if (typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0) return attempt.marksEarned / attempt.marksAvailable;
@@ -62,6 +99,40 @@ function validatedRegionId(attempt: Attempt, question?: NormalizedQuestion): str
 
 function isP3Evidence(attempt: Attempt, question?: NormalizedQuestion): boolean {
   return normalizeLabel(String(question?.paperFamily ?? attempt.paperFamily)) === 'p3';
+}
+
+function normalizedPartLabel(value: string): string {
+  return value.trim().replace(/^\((.*)\)$/, '$1').toLowerCase();
+}
+
+function partForScore(scoreLabel: string, parts: QuestionPartMark[]): QuestionPartMark | undefined {
+  const normalized = normalizedPartLabel(scoreLabel);
+  return parts.find((part) => normalizedPartLabel(part.label) === normalized);
+}
+
+function buildPartEvidence(attempt: Attempt, question?: NormalizedQuestion): MasteryPartEvidence[] | undefined {
+  if (!attempt.partScores?.length || !question?.parts?.length) return undefined;
+  const evidence = attempt.partScores.map((score) => {
+    const part = partForScore(score.label, question.parts ?? []);
+    const partId = score.partId ?? part?.partId;
+    const subpartId = score.subpartId ?? part?.subpartId;
+    const scoreRatio = score.marksAvailable > 0 ? score.marksEarned / score.marksAvailable : undefined;
+    return {
+      ...(partId ? { partId } : {}),
+      ...(subpartId ? { subpartId } : {}),
+      label: score.label,
+      marksEarned: score.marksEarned,
+      marksAvailable: score.marksAvailable,
+      ...(typeof scoreRatio === 'number' && Number.isFinite(scoreRatio) ? { scoreRatio } : {}),
+      ...(part?.primaryTopicId ? { primaryTopicId: part.primaryTopicId } : {}),
+      ...(part?.skillRef ? { skillRef: part.skillRef } : {}),
+      ...(part?.mappedRegionId ? { mappedRegionId: part.mappedRegionId } : {}),
+      ...(part?.routeEvidenceStatus ? { routeEvidenceStatus: part.routeEvidenceStatus } : {}),
+      ...(part?.mappingReviewed !== undefined ? { mappingReviewed: part.mappingReviewed } : {}),
+      ...(part?.reviewStatus ? { reviewStatus: part.reviewStatus } : {}),
+    };
+  });
+  return evidence.length ? evidence : undefined;
 }
 
 export function explainNonMasteryEvidence(input: {
@@ -84,11 +155,19 @@ export function explainNonMasteryEvidence(input: {
       const reason = routeStatusReason(status);
       if (reason) reasons.add(reason);
     }
+    const readiness = question.masteryReadiness ?? deriveQuestionMasteryReadiness(question);
+    const readinessReason = readinessStatusReason(readiness.status);
+    if (readinessReason) reasons.add(readinessReason);
     if (question.eligibility?.masteryEligible.eligible !== true) reasons.add('mastery-ineligible');
     if (question.contentSource?.unsafeForMastery) reasons.add('unsafe-content-source');
     if (question.textQuality?.hardFailed) reasons.add('hard-failure');
   } else if (attempt.masteryEligible !== true) {
     reasons.add(attempt.masteryEligible === false ? 'mastery-ineligible' : 'missing-route');
+  }
+
+  if (!question) {
+    const readinessReason = readinessStatusReason(attempt.masteryEvidenceReadiness);
+    if (readinessReason) reasons.add(readinessReason);
   }
 
   if (!routeRegionId) reasons.add('missing-route');
@@ -131,6 +210,7 @@ export function toMasteryEvidence(input: {
     marksAvailable: attempt.marksAvailable!,
     attemptedAt: attempt.attemptedAt,
     subtopic: attempt.subtopic ?? question?.displaySubtopic ?? question?.localSubtopic ?? question?.deepseek.subtopic,
+    partEvidence: buildPartEvidence(attempt, question),
   };
 }
 

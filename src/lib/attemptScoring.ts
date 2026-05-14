@@ -120,6 +120,8 @@ export function parseAttemptPartScores(input: Record<string, PartScoreInput>, pa
     const partInput = input[part.label];
     if (typeof partInput === 'string') {
       partScores.push({
+        ...(part.partId ? { partId: part.partId } : {}),
+        ...(part.subpartId ? { subpartId: part.subpartId } : {}),
         label: part.label,
         marksAvailable: part.marksAvailable,
         marksEarned: Number(partInput),
@@ -135,6 +137,8 @@ export function parseAttemptPartScores(input: Record<string, PartScoreInput>, pa
       markBreakdown[key] += partBreakdown[key];
     });
     partScores.push({
+      ...(part.partId ? { partId: part.partId } : {}),
+      ...(part.subpartId ? { subpartId: part.subpartId } : {}),
       label: part.label,
       marksAvailable: part.marksAvailable,
       marksEarned: partResult.earned,

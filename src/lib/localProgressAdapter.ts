@@ -17,6 +17,7 @@ import type {
   StudentProfile,
   TopicProfile,
 } from '../types';
+import type { MasteryEvidenceReadinessStatus } from '../types';
 import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore';
 import { updateTopicProfile } from './mastery';
 import { filterMasteryEvidence } from './masteryEvidence';
@@ -43,6 +44,13 @@ const knownMistakeTypes: MistakeType[] = [
 ];
 
 const knownRegionRanks: RegionRank[] = ['Dormant', 'Discovered', 'Bronze', 'Silver', 'Gold', 'Mastered'];
+const knownMasteryEvidenceReadinessStatuses: MasteryEvidenceReadinessStatus[] = [
+  'precise_skill_evidence',
+  'broad_region_evidence_only',
+  'practice_only_insufficient_part_mapping',
+  'rejected_unsafe_route',
+  'rejected_ambiguous_without_part_mapping',
+];
 
 const knownIssueTypes: IssueType[] = [
   'question_image_missing',
@@ -83,6 +91,13 @@ function optionalBoolean(value: unknown): boolean | undefined {
   return typeof value === 'boolean' ? value : undefined;
 }
 
+function stringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const strings = value.map((item) => typeof item === 'string' ? item : undefined)
+    .filter((item): item is string => Boolean(item));
+  return strings.length ? Array.from(new Set(strings)) : undefined;
+}
+
 function normalizeSettings(value: unknown): AppSettings {
   if (!isRecord(value) || typeof value.activePaperFamily !== 'string') return defaultSettings;
   return { activePaperFamily: value.activePaperFamily as PaperFamily };
@@ -116,7 +131,13 @@ function normalizeAttemptPartScores(value: unknown): AttemptPartScore[] | undefi
     const marksAvailable = optionalNumber(item.marksAvailable);
     const markBreakdown = normalizeMarkBreakdown(item.markBreakdown);
     if (!label || marksEarned === undefined || marksAvailable === undefined) return undefined;
-    const score: AttemptPartScore = { label, marksEarned, marksAvailable };
+    const score: AttemptPartScore = {
+      label,
+      marksEarned,
+      marksAvailable,
+      ...(optionalString(item.partId) ? { partId: optionalString(item.partId) } : {}),
+      ...(optionalString(item.subpartId) ? { subpartId: optionalString(item.subpartId) } : {}),
+    };
     if (markBreakdown) score.markBreakdown = markBreakdown;
     return score;
   }).filter((item): item is AttemptPartScore => Boolean(item));
@@ -142,6 +163,12 @@ function normalizeMistakeTypes(value: unknown, legacyMistakeType?: MistakeType):
 function normalizeRegionRank(value: unknown): RegionRank | undefined {
   return typeof value === 'string' && knownRegionRanks.includes(value as RegionRank)
     ? value as RegionRank
+    : undefined;
+}
+
+function normalizeMasteryEvidenceReadinessStatus(value: unknown): MasteryEvidenceReadinessStatus | undefined {
+  return typeof value === 'string' && knownMasteryEvidenceReadinessStatuses.includes(value as MasteryEvidenceReadinessStatus)
+    ? value as MasteryEvidenceReadinessStatus
     : undefined;
 }
 
@@ -214,6 +241,8 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
     markSchemeRevealed,
     attemptedAt,
     masteryEligible: optionalBoolean(value.masteryEligible),
+    masteryEvidenceReadiness: normalizeMasteryEvidenceReadinessStatus(value.masteryEvidenceReadiness),
+    masteryEvidenceReasonCodes: stringArray(value.masteryEvidenceReasonCodes),
     guardianEligible: optionalBoolean(value.guardianEligible),
     validatedRegionId: optionalString(value.validatedRegionId),
     displayRegionId: optionalString(value.displayRegionId),

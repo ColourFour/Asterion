@@ -1,4 +1,5 @@
 import type { NormalizedQuestion, RegionDefinition } from '../types';
+import { isPreciseSkillEvidenceReady } from './masteryEvidenceReadiness';
 import { filterQuestionsForRegion } from './worldMap';
 
 function validatedForRegion(question: NormalizedQuestion, region?: RegionDefinition): boolean {
@@ -8,11 +9,11 @@ function validatedForRegion(question: NormalizedQuestion, region?: RegionDefinit
 }
 
 export function isMasteryEvidenceQuestion(question: NormalizedQuestion, region?: RegionDefinition): boolean {
-  return question.eligibility?.masteryEligible.eligible === true && validatedForRegion(question, region);
+  return question.eligibility?.masteryEligible.eligible === true && validatedForRegion(question, region) && isPreciseSkillEvidenceReady(question);
 }
 
 export function isGuardianCandidateQuestion(question: NormalizedQuestion, region?: RegionDefinition): boolean {
-  return question.eligibility?.guardianEligible.eligible === true && validatedForRegion(question, region);
+  return question.eligibility?.guardianEligible.eligible === true && validatedForRegion(question, region) && isPreciseSkillEvidenceReady(question);
 }
 
 export function filterMasteryEvidenceQuestionsForRegion(
