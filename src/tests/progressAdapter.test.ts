@@ -123,6 +123,22 @@ describe('local progress adapter', () => {
     expect(localProgressAdapter.loadProgressContext().profile).toBeUndefined();
   });
 
+  it('stores explicitly mastery-ineligible attempts without advancing topic profiles', () => {
+    const stored = localProgressAdapter.addAttempt({
+      ...attempt,
+      id: 'attempt-unsafe',
+      masteryEligible: false,
+      guardianEligible: false,
+      displayRegionId: 'algebra-forge',
+    });
+
+    expect(stored.attempts).toHaveLength(1);
+    expect(stored.attempts[0].masteryEligible).toBe(false);
+    expect(stored.attempts[0].guardianEligible).toBe(false);
+    expect(stored.attempts[0].displayRegionId).toBe('algebra-forge');
+    expect(stored.topicProfiles).toEqual({});
+  });
+
   it('loads legacy no-version progress with default settings and canonical avatar IDs', () => {
     localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
       avatar: {

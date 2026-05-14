@@ -1,4 +1,5 @@
 import type { Attempt, NormalizedQuestion, RegionLearningRecord } from '../types';
+import { isAttemptMasteryEligible } from './mastery';
 import { matchRegionForLabels, matchRegionForQuestion, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export type P3ReadinessLabel =
@@ -288,6 +289,7 @@ export function calculateP3ReadinessIndex(input: {
   const questionsById = questionIndex(input.questions ?? []);
   const canonicalAttempts = input.attempts
     .filter(isP3CanonicalAttempt)
+    .filter(isAttemptMasteryEligible)
     .slice()
     .sort(compareAttempts);
   const recentAttempts = canonicalAttempts.slice(-P3_READINESS_THRESHOLDS.recentAttempts);

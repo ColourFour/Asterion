@@ -209,7 +209,8 @@ function snippetWithMathWorkedExample(): TeachingSnippet {
   };
 }
 
-function normalizedQuestion(): NormalizedQuestion {
+function normalizedQuestion(regionId = 'logarithm-grove'): NormalizedQuestion {
+  const region = P3_ASTRAL_ACADEMY.regions.find((item) => item.id === regionId)!;
   return {
     id: 'q1',
     paperFamily: 'p3',
@@ -220,6 +221,25 @@ function normalizedQuestion(): NormalizedQuestion {
     displayDifficulty: 'core',
     marksAvailable: 6,
     deepseek: { hasError: false, topic: 'Logarithms', subtopic: 'logarithmic equations' },
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: region.id,
+      regionName: region.name,
+      validatedRegionId: region.id,
+      validatedRegionName: region.name,
+      displayRegionId: region.id,
+      displayRegionName: region.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+    eligibility: {
+      regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+      practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+      masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      generationEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      textOnlyEligible: { eligible: false, reasonCodes: ['missing-question-or-mark-scheme-text'] },
+    },
     questionImageRawPaths: ['p3/31autumn21/questions/q01.png'],
     markSchemeImageRawPaths: ['p3/31autumn21/mark_scheme/q01.png'],
     questionImagePaths: ['p3/31autumn21/questions/q01.png'],
@@ -288,7 +308,7 @@ function renderRegionHubPage(options: {
   const summary = buildRegionLearningSummary({
     regionProgress: progress,
     learningRecord: options.learningRecord,
-    regionQuestions: options.regionQuestions ?? [normalizedQuestion()],
+    regionQuestions: options.regionQuestions ?? [normalizedQuestion(progress.region.id)],
     regionAttempts: options.regionAttempts ?? [],
   });
 

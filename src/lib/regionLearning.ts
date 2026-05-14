@@ -10,6 +10,7 @@ import type {
   RegionVisualTreatment,
   TrainingSessionIntent,
 } from '../types';
+import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion } from './questionEligibility';
 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
@@ -138,7 +139,7 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
 
 export function selectGuardianQuestion(questions: NormalizedQuestion[]): NormalizedQuestion | undefined {
   return questions
-    .filter(hasQuestionAndMarkScheme)
+    .filter((question) => isGuardianCandidateQuestion(question) && hasQuestionAndMarkScheme(question))
     .map((question) => ({
       question,
       score:
@@ -156,10 +157,11 @@ export function computeGuardianEligibility(input: {
   regionAttempts: Attempt[];
 }): GuardianEligibility {
   const fieldGuideCompleted = Boolean(input.learningRecord?.fieldGuideCompletedAt);
-  const guardianQuestion = selectGuardianQuestion(input.regionQuestions);
+  const guardianQuestions = filterGuardianCandidateQuestionsForRegion(input.regionQuestions, input.region);
+  const guardianQuestion = selectGuardianQuestion(guardianQuestions);
   const recentAttempts = input.regionAttempts.slice(-5);
   const hasRecentHighScore = recentAttempts.some((attempt) => (ratio(attempt) ?? 0) >= 0.7);
-  const possible = possibleSubtopics(input.regionQuestions);
+  const possible = possibleSubtopics(guardianQuestions);
   const attempted = attemptedSubtopics(input.regionAttempts);
   const requiredSubtopics = possible.size >= 2 ? 2 : Math.min(1, possible.size);
   const attemptsMissing = Math.max(0, 3 - input.regionProgress.attempts);

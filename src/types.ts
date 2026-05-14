@@ -253,6 +253,10 @@ export interface Attempt {
   timeSpentSeconds: number;
   markSchemeRevealed: boolean;
   attemptedAt: string;
+  masteryEligible?: boolean;
+  guardianEligible?: boolean;
+  validatedRegionId?: string;
+  displayRegionId?: string;
   worldName?: string;
   regionName?: string;
   regionRankAtAttempt?: RegionRank;

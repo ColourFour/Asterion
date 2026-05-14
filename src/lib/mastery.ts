@@ -19,6 +19,10 @@ export function checkmarkForRank(rank: MasteryRank): string {
   }[rank];
 }
 
+export function isAttemptMasteryEligible(attempt: Attempt): boolean {
+  return attempt.masteryEligible !== false;
+}
+
 export function updateTopicProfile(previous: TopicProfile | undefined, attempt: Attempt): TopicProfile {
   const ratio = typeof attempt.scoreRatio === 'number' ? attempt.scoreRatio : 0;
   const totalMarksAvailable = (previous?.totalMarksAvailable ?? 0) + (attempt.marksAvailable ?? 0);

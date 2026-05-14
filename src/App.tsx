@@ -18,7 +18,7 @@ import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
-import { calculateWorldProgress, filterAttemptsForRegion } from './lib/regionProgress';
+import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import {
   getP3RegionById,
   parseAsterionHashRoute,
@@ -117,11 +117,11 @@ export default function App() {
   }, []);
 
   const trainableQuestions = useMemo(() => questions.filter(isQuestionTrainable), [questions]);
-  const worldProgress = useMemo(() => calculateWorldProgress(trainableQuestions, progress.attempts, P3_ASTRAL_ACADEMY, progress.regionLearning), [progress.attempts, progress.regionLearning, trainableQuestions]);
+  const worldProgress = useMemo(() => calculateWorldProgress(questions, progress.attempts, P3_ASTRAL_ACADEMY, progress.regionLearning), [progress.attempts, progress.regionLearning, questions]);
   const regionLearningSummaries = useMemo(() => {
     return Object.fromEntries(worldProgress.map((regionProgress) => {
       const regionQuestions = filterTrainableQuestionsForRegion(trainableQuestions, regionProgress.region);
-      const regionAttempts = filterAttemptsForRegion(regionProgress.region, progress.attempts, regionQuestions);
+      const regionAttempts = filterMasteryAttemptsForRegion(regionProgress.region, progress.attempts, questions);
       const learningActivityAttempts = progress.learningActivityAttempts.filter((attempt) => attempt.regionId === regionProgress.region.id);
       return [regionProgress.region.id, buildRegionLearningSummary({
         regionProgress,
@@ -131,7 +131,7 @@ export default function App() {
         learningActivityAttempts,
       })];
     }));
-  }, [progress.attempts, progress.learningActivityAttempts, progress.regionLearning, trainableQuestions, worldProgress]);
+  }, [progress.attempts, progress.learningActivityAttempts, progress.regionLearning, questions, trainableQuestions, worldProgress]);
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
@@ -433,19 +433,26 @@ export default function App() {
             : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
           guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
           onAttempt={(attempt: Attempt) => {
-            const nextProgress = progressAdapter.addAttempt(attempt);
+            const evidenceAttempt: Attempt = {
+              ...attempt,
+              masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,
+              guardianEligible: currentQuestion?.eligibility?.guardianEligible.eligible,
+              validatedRegionId: currentQuestion?.routeEvidence?.validatedRegionId,
+              displayRegionId: currentQuestion?.routeEvidence?.displayRegionId,
+            };
+            const nextProgress = progressAdapter.addAttempt(evidenceAttempt);
             if (viewMode === 'guardian' && selectedRegion) {
-              const scoreRatio = typeof attempt.scoreRatio === 'number'
-                ? attempt.scoreRatio
-                : typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0
-                  ? attempt.marksEarned / attempt.marksAvailable
+              const scoreRatio = typeof evidenceAttempt.scoreRatio === 'number'
+                ? evidenceAttempt.scoreRatio
+                : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
+                  ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
                   : 0;
               setProgress(progressAdapter.recordRegionGuardianAttempt({
                 regionId: selectedRegion.id,
-                questionId: attempt.questionId,
-                attemptId: attempt.id,
+                questionId: evidenceAttempt.questionId,
+                attemptId: evidenceAttempt.id,
                 passed: scoreRatio >= GUARDIAN_PASS_SCORE_RATIO,
-                attemptedAt: attempt.attemptedAt,
+                attemptedAt: evidenceAttempt.attemptedAt,
               }));
               return;
             }

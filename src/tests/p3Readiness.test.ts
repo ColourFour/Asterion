@@ -130,7 +130,7 @@ describe('P3 readiness index', () => {
     expect(readiness.concerns.join(' ')).toContain('Self-marking evidence is uncertain');
   });
 
-  it('ignores reveal-only and non-P3 records when calculating readiness', () => {
+  it('ignores reveal-only, non-P3, and explicitly mastery-ineligible records when calculating readiness', () => {
     const readiness = calculateP3ReadinessIndex({
       attempts: [
         attempt({
@@ -150,6 +150,16 @@ describe('P3 readiness index', () => {
           marksEarned: 10,
           marksAvailable: 10,
           scoreRatio: 1,
+        }),
+        attempt({
+          id: 'unsafe-p3-attempt',
+          questionId: 'q-unsafe',
+          attemptedAt: isoDay(3),
+          marksEarned: 10,
+          marksAvailable: 10,
+          scoreRatio: 1,
+          masteryEligible: false,
+          displayRegionId: 'algebra-forge',
         }),
       ],
     });

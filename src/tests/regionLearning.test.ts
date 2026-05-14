@@ -22,6 +22,25 @@ function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuesti
     displaySubtopic: 'logarithmic equations',
     marksAvailable: 6,
     deepseek: { hasError: false, topic: 'Logarithms', subtopic: 'logarithmic equations' },
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: logarithms.id,
+      regionName: logarithms.name,
+      validatedRegionId: logarithms.id,
+      validatedRegionName: logarithms.name,
+      displayRegionId: logarithms.id,
+      displayRegionName: logarithms.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+    eligibility: {
+      regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+      practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+      masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      generationEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      textOnlyEligible: { eligible: false, reasonCodes: ['missing-question-or-mark-scheme-text'] },
+    },
     questionImageRawPaths: ['p3/31autumn21/questions/q01.png'],
     markSchemeImageRawPaths: ['p3/31autumn21/mark_scheme/q01.png'],
     questionImagePaths: ['p3/31autumn21/questions/q01.png'],
@@ -214,6 +233,79 @@ describe('region learning loop logic', () => {
     expect(changedDifficulty.requirements.map((requirement) => requirement.completed)).toEqual(
       base.requirements.map((requirement) => requirement.completed),
     );
+  });
+
+  it('does not unlock or select a guardian from trainable records without guardian eligibility', () => {
+    const attempts = [
+      attempt('1', 0.72, 'logarithmic equations'),
+      attempt('2', 0.76, 'exponential equations'),
+      attempt('3', 0.81, 'logarithmic equations'),
+    ];
+    const unsafeQuestion = question({
+      id: 'fallback-display-only',
+      routeEvidence: {
+        status: 'fallback-display-only',
+        source: 'fallback-label',
+        regionId: logarithms.id,
+        regionName: logarithms.name,
+        displayRegionId: logarithms.id,
+        displayRegionName: logarithms.name,
+        reasonCodes: ['fallback-label-match'],
+      },
+      eligibility: {
+        regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+        practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+        masteryEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+        guardianEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+        generationEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+        textOnlyEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      },
+    });
+    const regionProgress = progress({
+      attempts: attempts.length,
+      averageScoreRatio: 0.76,
+      recentScoreRatio: 0.76,
+      subtopicsTouched: 2,
+      rank: 'Bronze',
+    });
+
+    const summary = buildRegionLearningSummary({
+      regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: [unsafeQuestion],
+      regionAttempts: attempts,
+    });
+
+    expect(selectGuardianQuestion([unsafeQuestion])).toBeUndefined();
+    expect(summary.guardianEligibility.eligible).toBe(false);
+    expect(summary.guardianEligibility.guardianQuestion).toBeUndefined();
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'guardian_asset')?.completed).toBe(false);
+    expect(summary.state).toBe('training_in_progress');
+  });
+
+  it('rejects guardian candidates without a validated region even when guardianEligible is true', () => {
+    const displayOnly = question({
+      id: 'display-only',
+      routeEvidence: {
+        status: 'fallback-display-only',
+        source: 'fallback-label',
+        regionId: logarithms.id,
+        regionName: logarithms.name,
+        displayRegionId: logarithms.id,
+        displayRegionName: logarithms.name,
+        reasonCodes: ['fallback-label-match'],
+      },
+      eligibility: {
+        regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+        practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+        masteryEligible: { eligible: true, reasonCodes: ['legacy-bad-fixture'] },
+        guardianEligible: { eligible: true, reasonCodes: ['legacy-bad-fixture'] },
+        generationEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+        textOnlyEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      },
+    });
+
+    expect(selectGuardianQuestion([displayOnly])).toBeUndefined();
   });
 
   it('marks a failed saved guardian as attempted and a passed saved guardian as cleared', () => {

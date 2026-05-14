@@ -29,6 +29,25 @@ function question(id: string, topic = 'Algebra', subtopic = 'polynomials'): Norm
     displaySubtopic: subtopic,
     localSubtopic: subtopic,
     deepseek: { hasError: false, topic, subtopic },
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: algebra.id,
+      regionName: algebra.name,
+      validatedRegionId: algebra.id,
+      validatedRegionName: algebra.name,
+      displayRegionId: algebra.id,
+      displayRegionName: algebra.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+    eligibility: {
+      regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+      practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+      masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      generationEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      textOnlyEligible: { eligible: false, reasonCodes: ['missing-question-or-mark-scheme-text'] },
+    },
     questionImageRawPaths: [`p3/test/questions/${id}.png`],
     markSchemeImageRawPaths: [`p3/test/mark_scheme/${id}.png`],
     questionImagePaths: [`p3/test/questions/${id}.png`],
@@ -112,6 +131,53 @@ describe('region progress and gear', () => {
     expect(progress.rank).toBe('Bronze');
     expect(progress.averageScoreRatio).toBeCloseTo(0.6);
     expect(hasRecentMixedReviewEvidence(attempts(3, { scoreRatio: 0.9, subtopic: 'polynomials', methodFamily: 'factor theorem' }))).toBe(false);
+  });
+
+  it('does not advance progress from trainable records that are not mastery eligible', () => {
+    const unsafeQuestion = question('q1');
+    unsafeQuestion.routeEvidence = {
+      status: 'fallback-display-only',
+      source: 'fallback-label',
+      regionId: algebra.id,
+      regionName: algebra.name,
+      displayRegionId: algebra.id,
+      displayRegionName: algebra.name,
+      reasonCodes: ['fallback-label-match'],
+    };
+    unsafeQuestion.eligibility = {
+      regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+      practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+      masteryEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      guardianEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      generationEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      textOnlyEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+    };
+    const progress = calculateRegionProgress(algebra, [unsafeQuestion], [
+      attempt(1, { questionId: 'q1', scoreRatio: 1, subtopic: 'polynomials', methodFamily: 'factor theorem' }),
+    ]);
+
+    expect(progress.availableQuestions).toBe(1);
+    expect(progress.attempts).toBe(0);
+    expect(progress.totalMarksEarned).toBe(0);
+    expect(progress.averageScoreRatio).toBeUndefined();
+    expect(progress.rank).toBe('Discovered');
+  });
+
+  it('blocks known unsafe attempts while preserving unknown historical region attempts', () => {
+    const unsafeQuestion = question('q1');
+    unsafeQuestion.eligibility = {
+      ...unsafeQuestion.eligibility!,
+      masteryEligible: { eligible: false, reasonCodes: ['blocked-review-only'] },
+      guardianEligible: { eligible: false, reasonCodes: ['blocked-review-only'] },
+    };
+    const progress = calculateRegionProgress(algebra, [unsafeQuestion], [
+      attempt(1, { questionId: 'q1', scoreRatio: 1, subtopic: 'polynomials' }),
+      attempt(2, { questionId: 'legacy-missing-from-bank', scoreRatio: 0.8, subtopic: 'partial fractions' }),
+    ]);
+
+    expect(progress.attempts).toBe(1);
+    expect(progress.totalMarksEarned).toBe(8);
+    expect(progress.averageScoreRatio).toBeCloseTo(0.8);
   });
 
   it('keeps Silver independent of mixed-review evidence', () => {

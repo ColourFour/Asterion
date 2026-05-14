@@ -18,7 +18,7 @@ import type {
   TopicProfile,
 } from '../types';
 import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore';
-import { updateTopicProfile } from './mastery';
+import { isAttemptMasteryEligible, updateTopicProfile } from './mastery';
 import type { ProgressStorageAdapter, RegionGuardianAttemptRecordInput } from './progressAdapter';
 
 export const CURRENT_PROGRESS_SCHEMA_VERSION = 1;
@@ -212,6 +212,10 @@ function normalizeAttempt(value: unknown): Attempt | undefined {
     timeSpentSeconds,
     markSchemeRevealed,
     attemptedAt,
+    masteryEligible: optionalBoolean(value.masteryEligible),
+    guardianEligible: optionalBoolean(value.guardianEligible),
+    validatedRegionId: optionalString(value.validatedRegionId),
+    displayRegionId: optionalString(value.displayRegionId),
     worldName: optionalString(value.worldName),
     regionName: optionalString(value.regionName),
     regionRankAtAttempt: normalizeRegionRank(value.regionRankAtAttempt),
@@ -316,7 +320,7 @@ function normalizeRegionLearningMap(value: unknown): Record<string, RegionLearni
 }
 
 function rebuildTopicProfiles(attempts: Attempt[]): Record<string, TopicProfile> {
-  return attempts.reduce<Record<string, TopicProfile>>((profiles, attempt) => ({
+  return attempts.filter(isAttemptMasteryEligible).reduce<Record<string, TopicProfile>>((profiles, attempt) => ({
     ...profiles,
     [attempt.topicDisplayName]: updateTopicProfile(profiles[attempt.topicDisplayName], attempt),
   }), {});

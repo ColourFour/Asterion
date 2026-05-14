@@ -1,5 +1,6 @@
 import type { Attempt, NormalizedQuestion, RegionDefinition, RegionLearningRecord, RegionProgress, RegionRank, WorldDefinition } from '../types';
 import { isQuestionTrainable } from './questionTraining';
+import { filterMasteryEvidenceQuestionsForRegion, filterPracticeDisplayQuestionsForRegion } from './questionEligibility';
 import { filterQuestionsForRegion, matchRegionForLabels, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export const REGION_RANK_THRESHOLDS = {
@@ -176,14 +177,32 @@ export function filterAttemptsForRegion(
   });
 }
 
+export function filterMasteryAttemptsForRegion(
+  region: RegionDefinition,
+  attempts: Attempt[],
+  questions: NormalizedQuestion[] = [],
+): Attempt[] {
+  const questionsById = new Map(questions.map((question) => [question.id, question]));
+  const masteryQuestionIds = new Set(filterMasteryEvidenceQuestionsForRegion(questions, region).map((question) => question.id));
+
+  return attempts.filter((attempt) => {
+    if (attempt.masteryEligible === false) return false;
+    const question = questionsById.get(attempt.questionId);
+    if (question) return masteryQuestionIds.has(question.id);
+
+    if (attempt.regionName === region.name) return true;
+    return matchRegionForLabels([attempt.topicDisplayName, attempt.subtopic, attempt.localTopic, attempt.deepseekTopic])?.id === region.id;
+  });
+}
+
 export function calculateRegionProgress(
   region: RegionDefinition,
   questions: NormalizedQuestion[],
   attempts: Attempt[],
   learningRecord?: RegionLearningRecord,
 ): RegionProgress {
-  const regionQuestions = filterQuestionsForRegion(questions.filter(isQuestionTrainable), region);
-  const regionAttempts = filterAttemptsForRegion(region, attempts, regionQuestions);
+  const regionQuestions = filterPracticeDisplayQuestionsForRegion(questions.filter(isQuestionTrainable), region);
+  const regionAttempts = filterMasteryAttemptsForRegion(region, attempts, questions);
   const totalMarksEarned = regionAttempts.reduce((sum, attempt) => sum + attempt.marksEarned, 0);
   const totalMarksAvailable = regionAttempts.reduce((sum, attempt) => sum + (attempt.marksAvailable ?? 0), 0);
   const ratios = regionAttempts
