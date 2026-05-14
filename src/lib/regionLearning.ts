@@ -10,6 +10,7 @@ import type {
   RegionVisualTreatment,
   TrainingSessionIntent,
 } from '../types';
+import { filterMasteryEvidence } from './masteryEvidence';
 import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion } from './questionEligibility';
 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
@@ -159,12 +160,17 @@ export function computeGuardianEligibility(input: {
   const fieldGuideCompleted = Boolean(input.learningRecord?.fieldGuideCompletedAt);
   const guardianQuestions = filterGuardianCandidateQuestionsForRegion(input.regionQuestions, input.region);
   const guardianQuestion = selectGuardianQuestion(guardianQuestions);
-  const recentAttempts = input.regionAttempts.slice(-5);
+  const evidenceAttempts = filterMasteryEvidence({
+    attempts: input.regionAttempts,
+    questions: input.regionQuestions,
+    region: input.region,
+  }).map((evidence) => evidence.attempt);
+  const recentAttempts = evidenceAttempts.slice(-5);
   const hasRecentHighScore = recentAttempts.some((attempt) => (ratio(attempt) ?? 0) >= 0.7);
   const possible = possibleSubtopics(guardianQuestions);
-  const attempted = attemptedSubtopics(input.regionAttempts);
+  const attempted = attemptedSubtopics(evidenceAttempts);
   const requiredSubtopics = possible.size >= 2 ? 2 : Math.min(1, possible.size);
-  const attemptsMissing = Math.max(0, 3 - input.regionProgress.attempts);
+  const attemptsMissing = Math.max(0, 3 - evidenceAttempts.length);
   const subtopicRequirementApplies = requiredSubtopics >= 2;
 
   const requirements: GuardianRequirement[] = [
@@ -182,8 +188,8 @@ export function computeGuardianEligibility(input: {
       label: 'Practice evidence saved',
       completed: attemptsMissing === 0,
       detail: attemptsMissing === 0
-        ? `${attemptCountText(input.regionProgress.attempts)} recorded in this region.`
-        : `Save at least 3 attempts in this region (${input.regionProgress.attempts}/3).`,
+        ? `${attemptCountText(evidenceAttempts.length)} recorded in this region.`
+        : `Save at least 3 attempts in this region (${evidenceAttempts.length}/3).`,
       nextAction: `Train in this region and save ${attemptsMissingText(attemptsMissing)} to build guardian evidence.`,
     },
     {

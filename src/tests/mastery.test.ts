@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { rankFromMastery, updateTopicProfile } from '../lib/mastery';
+import { toMasteryEvidence } from '../lib/masteryEvidence';
 import type { Attempt } from '../types';
 
 function attempt(scoreRatio: number, difficulty = 'foundation'): Attempt {
@@ -17,12 +18,18 @@ function attempt(scoreRatio: number, difficulty = 'foundation'): Attempt {
     timeSpentSeconds: 120,
     markSchemeRevealed: true,
     attemptedAt: new Date().toISOString(),
+    masteryEligible: true,
+    validatedRegionId: 'algebra-forge',
   };
+}
+
+function evidence(scoreRatio: number, difficulty = 'foundation') {
+  return toMasteryEvidence({ attempt: attempt(scoreRatio, difficulty) })!;
 }
 
 describe('mastery', () => {
   it('updates topic profile from attempts', () => {
-    const profile = updateTopicProfile(undefined, attempt(0.8));
+    const profile = updateTopicProfile(undefined, evidence(0.8));
     expect(profile.attempts).toBe(1);
     expect(profile.masteryScore).toBeGreaterThan(0.7);
   });
@@ -33,8 +40,8 @@ describe('mastery', () => {
   });
 
   it('keeps topic mastery unchanged when only difficulty metadata changes', () => {
-    const base = updateTopicProfile(undefined, attempt(0.8, 'foundation'));
-    const changedDifficulty = updateTopicProfile(undefined, attempt(0.8, 'challenge'));
+    const base = updateTopicProfile(undefined, evidence(0.8, 'foundation'));
+    const changedDifficulty = updateTopicProfile(undefined, evidence(0.8, 'challenge'));
 
     expect(changedDifficulty).toMatchObject({
       attempts: base.attempts,

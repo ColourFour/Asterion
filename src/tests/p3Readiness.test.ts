@@ -34,6 +34,9 @@ function attempt(overrides: Partial<Attempt> & { id: string; questionId: string;
     mistakeTypes: ['algebra_error'],
     timeSpentSeconds: 600,
     markSchemeRevealed: true,
+    masteryEligible: true,
+    validatedRegionId: 'algebra-forge',
+    displayRegionId: 'algebra-forge',
     ...overrides,
   };
 }
@@ -49,6 +52,8 @@ function broadAssessmentAttempts(): Attempt[] {
       subtopic,
       attemptedAt: isoDay(index + 1),
       worldName: 'P3 Astral Academy',
+      validatedRegionId: regionId,
+      displayRegionId: regionId,
       marksEarned: 8,
       marksAvailable: 10,
       scoreRatio: 0.8,

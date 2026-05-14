@@ -89,6 +89,9 @@ function attempt(index: number, overrides: Partial<Attempt> & AttemptMetadata = 
     timeSpentSeconds: overrides.timeSpentSeconds ?? 90,
     markSchemeRevealed: overrides.markSchemeRevealed ?? true,
     attemptedAt: overrides.attemptedAt ?? timestamp(index),
+    masteryEligible: overrides.masteryEligible ?? true,
+    validatedRegionId: overrides.validatedRegionId ?? algebra.id,
+    displayRegionId: overrides.displayRegionId ?? algebra.id,
     worldName: overrides.worldName ?? 'P3 Astral Academy',
     regionName: overrides.regionName ?? algebra.name,
   };
@@ -163,7 +166,7 @@ describe('region progress and gear', () => {
     expect(progress.rank).toBe('Discovered');
   });
 
-  it('blocks known unsafe attempts while preserving unknown historical region attempts', () => {
+  it('blocks known unsafe attempts and missing-route historical attempts', () => {
     const unsafeQuestion = question('q1');
     unsafeQuestion.eligibility = {
       ...unsafeQuestion.eligibility!,
@@ -172,12 +175,12 @@ describe('region progress and gear', () => {
     };
     const progress = calculateRegionProgress(algebra, [unsafeQuestion], [
       attempt(1, { questionId: 'q1', scoreRatio: 1, subtopic: 'polynomials' }),
-      attempt(2, { questionId: 'legacy-missing-from-bank', scoreRatio: 0.8, subtopic: 'partial fractions' }),
+      attempt(2, { questionId: 'legacy-missing-from-bank', scoreRatio: 0.8, subtopic: 'partial fractions', validatedRegionId: '' }),
     ]);
 
-    expect(progress.attempts).toBe(1);
-    expect(progress.totalMarksEarned).toBe(8);
-    expect(progress.averageScoreRatio).toBeCloseTo(0.8);
+    expect(progress.attempts).toBe(0);
+    expect(progress.totalMarksEarned).toBe(0);
+    expect(progress.averageScoreRatio).toBeUndefined();
   });
 
   it('keeps Silver independent of mixed-review evidence', () => {
@@ -280,7 +283,7 @@ describe('region progress and gear', () => {
     const passiveProgress = calculateRegionProgress(algebra, [question('q1')], passiveRevealSignals);
 
     expect(fieldGuideOnly.rank).toBe('Discovered');
-    expect(passiveProgress.rank).toBe('Gold');
+    expect(passiveProgress.rank).toBe('Discovered');
     expect(getRecentMixedReviewEvidence(passiveRevealSignals).hasMixedReview).toBe(false);
   });
 

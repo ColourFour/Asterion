@@ -1,0 +1,135 @@
+import { describe, expect, it } from 'vitest';
+import { explainNonMasteryEvidence, getNonMasteryEvidenceReports, toMasteryEvidence } from '../lib/masteryEvidence';
+import type { Attempt, NormalizedQuestion, QuestionRouteEvidence } from '../types';
+
+function attempt(overrides: Partial<Attempt> = {}): Attempt {
+  return {
+    id: 'attempt-1',
+    profileId: 'profile-1',
+    questionId: 'q1',
+    paperFamily: 'p3',
+    topicDisplayName: 'Algebra',
+    subtopic: 'polynomials',
+    marksEarned: 8,
+    marksAvailable: 10,
+    scoreRatio: 0.8,
+    mistakeType: 'algebra_error',
+    mistakeTypes: ['algebra_error'],
+    timeSpentSeconds: 180,
+    markSchemeRevealed: true,
+    attemptedAt: '2026-05-08T00:00:00.000Z',
+    masteryEligible: true,
+    validatedRegionId: 'algebra-forge',
+    displayRegionId: 'algebra-forge',
+    ...overrides,
+  };
+}
+
+function routeEvidence(overrides: Partial<QuestionRouteEvidence> = {}): QuestionRouteEvidence {
+  return {
+    status: 'clean',
+    source: 'topic-routing',
+    regionId: 'algebra-forge',
+    regionName: 'Algebra Forge',
+    validatedRegionId: 'algebra-forge',
+    validatedRegionName: 'Algebra Forge',
+    displayRegionId: 'algebra-forge',
+    displayRegionName: 'Algebra Forge',
+    reasonCodes: ['validated-topic-routing'],
+    ...overrides,
+  };
+}
+
+function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuestion {
+  return {
+    id: 'q1',
+    paperFamily: 'p3',
+    displayTopic: 'Algebra',
+    displaySubtopic: 'polynomials',
+    deepseek: { hasError: false, topic: 'Algebra', subtopic: 'polynomials' },
+    routeEvidence: routeEvidence(),
+    eligibility: {
+      regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+      practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+      masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      generationEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+      textOnlyEligible: { eligible: false, reasonCodes: ['missing-question-or-mark-scheme-text'] },
+    },
+    questionImageRawPaths: ['p3/test/questions/q01.png'],
+    markSchemeImageRawPaths: ['p3/test/mark_scheme/q01.png'],
+    questionImagePaths: ['p3/test/questions/q01.png'],
+    markSchemeImagePaths: ['p3/test/mark_scheme/q01.png'],
+    questionImageUrls: ['/assets/test/questions/q01.png'],
+    markSchemeImageUrls: ['/assets/test/mark_scheme/q01.png'],
+    questionImageCandidates: [['/assets/test/questions/q01.png']],
+    markSchemeImageCandidates: [['/assets/test/mark_scheme/q01.png']],
+    raw: { local: {} },
+    ...overrides,
+  };
+}
+
+describe('mastery evidence adapter', () => {
+  it('accepts clean P3 core evidence with a validated route', () => {
+    const evidence = toMasteryEvidence({ attempt: attempt(), question: question() });
+
+    expect(evidence).toMatchObject({
+      topic: 'Algebra',
+      validatedRegionId: 'algebra-forge',
+      scoreRatio: 0.8,
+      marksEarned: 8,
+      marksAvailable: 10,
+    });
+  });
+
+  it.each([
+    ['fallback-display-only'],
+    ['missing-route'],
+    ['ambiguous-route'],
+    ['review-only'],
+    ['prerequisite-only'],
+    ['not-P3'],
+    ['hard-failure'],
+  ] as const)('rejects %s routes', (status) => {
+    const unsafeQuestion = question({
+      routeEvidence: routeEvidence({
+        status,
+        validatedRegionId: undefined,
+      }),
+      eligibility: {
+        ...question().eligibility!,
+        masteryEligible: { eligible: false, reasonCodes: [`blocked-${status}`] },
+      },
+    });
+
+    expect(toMasteryEvidence({ attempt: attempt(), question: unsafeQuestion })).toBeUndefined();
+    expect(explainNonMasteryEvidence({ attempt: attempt(), question: unsafeQuestion })).toContain(
+      status === 'not-P3' ? 'not-p3' : status,
+    );
+  });
+
+  it('rejects saved attempts that only have display-region labels', () => {
+    const displayOnlyAttempt = attempt({
+      masteryEligible: undefined,
+      validatedRegionId: undefined,
+      displayRegionId: 'algebra-forge',
+      regionName: 'Algebra Forge',
+    });
+
+    expect(toMasteryEvidence({ attempt: displayOnlyAttempt })).toBeUndefined();
+    expect(explainNonMasteryEvidence({ attempt: displayOnlyAttempt })).toContain('missing-route');
+  });
+
+  it('reports unsafe attempts as non-mastery evidence', () => {
+    const reports = getNonMasteryEvidenceReports({
+      attempts: [
+        attempt({ id: 'safe' }),
+        attempt({ id: 'unsafe', masteryEligible: false }),
+      ],
+    });
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0].attempt.id).toBe('unsafe');
+    expect(reports[0].reasons).toContain('mastery-ineligible');
+  });
+});

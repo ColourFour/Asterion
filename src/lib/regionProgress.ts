@@ -1,4 +1,6 @@
 import type { Attempt, NormalizedQuestion, RegionDefinition, RegionLearningRecord, RegionProgress, RegionRank, WorldDefinition } from '../types';
+import type { MasteryEvidence } from './masteryEvidence';
+import { filterMasteryEvidence } from './masteryEvidence';
 import { isQuestionTrainable } from './questionTraining';
 import { filterMasteryEvidenceQuestionsForRegion, filterPracticeDisplayQuestionsForRegion } from './questionEligibility';
 import { filterQuestionsForRegion, matchRegionForLabels, P3_ASTRAL_ACADEMY } from './worldMap';
@@ -38,8 +40,9 @@ function ratio(earned: number, available: number): number | undefined {
   return available > 0 ? earned / available : undefined;
 }
 
-function attemptRatio(attempt: Attempt): number | undefined {
-  return attempt.scoreRatio ?? ratio(attempt.marksEarned, attempt.marksAvailable ?? 0);
+function attemptRatio(attempt: Attempt | MasteryEvidence): number | undefined {
+  if ('scoreRatio' in attempt && typeof attempt.scoreRatio === 'number') return attempt.scoreRatio;
+  return ratio(attempt.marksEarned, attempt.marksAvailable ?? 0);
 }
 
 function normalizeEvidenceMetadata(value: unknown): string | undefined {
@@ -48,38 +51,43 @@ function normalizeEvidenceMetadata(value: unknown): string | undefined {
   return normalized || undefined;
 }
 
-function metadataValue(attempt: Attempt, keys: string[]): string | undefined {
+function metadataValue(attempt: Attempt | MasteryEvidence, keys: string[]): string | undefined {
+  const source = 'attempt' in attempt ? attempt.attempt : attempt;
   const record = attempt as unknown as Record<string, unknown>;
+  const sourceRecord = source as unknown as Record<string, unknown>;
   for (const key of keys) {
-    const value = normalizeEvidenceMetadata(record[key]);
+    const value = normalizeEvidenceMetadata(record[key] ?? sourceRecord[key]);
     if (value) return value;
   }
   return undefined;
 }
 
-function compareAttemptsByTimeAndId(a: Attempt, b: Attempt): number {
+function compareAttemptsByTimeAndId(a: Attempt | MasteryEvidence, b: Attempt | MasteryEvidence): number {
+  const attemptA = 'attempt' in a ? a.attempt : a;
+  const attemptB = 'attempt' in b ? b.attempt : b;
   const timeA = Date.parse(a.attemptedAt);
   const timeB = Date.parse(b.attemptedAt);
   const stableTimeA = Number.isFinite(timeA) ? timeA : 0;
   const stableTimeB = Number.isFinite(timeB) ? timeB : 0;
-  return stableTimeA - stableTimeB || a.id.localeCompare(b.id) || a.questionId.localeCompare(b.questionId);
+  return stableTimeA - stableTimeB || attemptA.id.localeCompare(attemptB.id) || attemptA.questionId.localeCompare(attemptB.questionId);
 }
 
-function isSuccessfulAttemptEvidence(attempt: Attempt): boolean {
+function isSuccessfulAttemptEvidence(attempt: Attempt | MasteryEvidence): boolean {
+  const source = 'attempt' in attempt ? attempt.attempt : attempt;
   const score = attemptRatio(attempt);
   return Boolean(
     typeof score === 'number'
     && Number.isFinite(score)
     && score >= REGION_MASTERED_REQUIREMENTS.ratio
-    && attempt.markSchemeRevealed
-    && typeof attempt.timeSpentSeconds === 'number'
-    && attempt.timeSpentSeconds > 0
+    && source.markSchemeRevealed
+    && typeof source.timeSpentSeconds === 'number'
+    && source.timeSpentSeconds > 0
     && typeof attempt.marksAvailable === 'number'
     && attempt.marksAvailable > 0,
   );
 }
 
-export function getRecentMixedReviewEvidence(attempts: Attempt[]): RecentMixedReviewEvidence {
+export function getRecentMixedReviewEvidence(attempts: Array<Attempt | MasteryEvidence>): RecentMixedReviewEvidence {
   const recentSuccessfulAttempts = attempts
     .slice()
     .sort(compareAttemptsByTimeAndId)
@@ -136,7 +144,7 @@ export function getRecentMixedReviewEvidence(attempts: Attempt[]): RecentMixedRe
   };
 }
 
-export function hasRecentMixedReviewEvidence(attempts: Attempt[]): boolean {
+export function hasRecentMixedReviewEvidence(attempts: Array<Attempt | MasteryEvidence>): boolean {
   return getRecentMixedReviewEvidence(attempts).hasMixedReview;
 }
 
@@ -182,17 +190,7 @@ export function filterMasteryAttemptsForRegion(
   attempts: Attempt[],
   questions: NormalizedQuestion[] = [],
 ): Attempt[] {
-  const questionsById = new Map(questions.map((question) => [question.id, question]));
-  const masteryQuestionIds = new Set(filterMasteryEvidenceQuestionsForRegion(questions, region).map((question) => question.id));
-
-  return attempts.filter((attempt) => {
-    if (attempt.masteryEligible === false) return false;
-    const question = questionsById.get(attempt.questionId);
-    if (question) return masteryQuestionIds.has(question.id);
-
-    if (attempt.regionName === region.name) return true;
-    return matchRegionForLabels([attempt.topicDisplayName, attempt.subtopic, attempt.localTopic, attempt.deepseekTopic])?.id === region.id;
-  });
+  return filterMasteryEvidence({ attempts, questions, region }).map((evidence) => evidence.attempt);
 }
 
 export function calculateRegionProgress(
@@ -202,22 +200,22 @@ export function calculateRegionProgress(
   learningRecord?: RegionLearningRecord,
 ): RegionProgress {
   const regionQuestions = filterPracticeDisplayQuestionsForRegion(questions.filter(isQuestionTrainable), region);
-  const regionAttempts = filterMasteryAttemptsForRegion(region, attempts, questions);
-  const totalMarksEarned = regionAttempts.reduce((sum, attempt) => sum + attempt.marksEarned, 0);
-  const totalMarksAvailable = regionAttempts.reduce((sum, attempt) => sum + (attempt.marksAvailable ?? 0), 0);
-  const ratios = regionAttempts
+  const regionEvidence = filterMasteryEvidence({ attempts, questions, region });
+  const totalMarksEarned = regionEvidence.reduce((sum, evidence) => sum + evidence.marksEarned, 0);
+  const totalMarksAvailable = regionEvidence.reduce((sum, evidence) => sum + evidence.marksAvailable, 0);
+  const ratios = regionEvidence
     .map(attemptRatio)
     .filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
   const recentRatios = ratios.slice(-5);
   const averageScoreRatio = ratio(totalMarksEarned, totalMarksAvailable) ?? (ratios.length ? ratios.reduce((sum, value) => sum + value, 0) / ratios.length : undefined);
   const recentScoreRatio = recentRatios.length ? recentRatios.reduce((sum, value) => sum + value, 0) / recentRatios.length : undefined;
-  const touched = new Set(regionAttempts.map((attempt) => attempt.subtopic).filter(Boolean));
+  const touched = new Set(regionEvidence.map((evidence) => evidence.subtopic).filter(Boolean));
   const guardianCleared = Boolean(learningRecord?.guardianClearedAt && (recentScoreRatio ?? 1) >= 0.55);
 
   return {
     region,
     availableQuestions: regionQuestions.length,
-    attempts: regionAttempts.length,
+    attempts: regionEvidence.length,
     totalMarksEarned,
     totalMarksAvailable,
     averageScoreRatio,
@@ -227,11 +225,11 @@ export function calculateRegionProgress(
     rank: calculateRegionRank({
       activeByDefault: region.activeByDefault,
       availableQuestions: regionQuestions.length,
-      attempts: regionAttempts.length,
+      attempts: regionEvidence.length,
       averageScoreRatio,
       recentScoreRatio,
       guardianCleared,
-      hasMixedReview: hasRecentMixedReviewEvidence(regionAttempts),
+      hasMixedReview: hasRecentMixedReviewEvidence(regionEvidence),
     }),
   };
 }

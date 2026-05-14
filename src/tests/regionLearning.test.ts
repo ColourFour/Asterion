@@ -69,6 +69,9 @@ function attempt(id: string, scoreRatio: number, subtopic = 'logarithmic equatio
     timeSpentSeconds: 120,
     markSchemeRevealed: true,
     attemptedAt: `2026-05-08T00:0${id}:00.000Z`,
+    masteryEligible: true,
+    validatedRegionId: logarithms.id,
+    displayRegionId: logarithms.id,
     worldName: 'P3 Astral Academy',
     regionName: logarithms.name,
   };
