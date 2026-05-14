@@ -1,15 +1,20 @@
 # Asterion Content Lab
 
-Content Lab is an internal, local-first pipeline for turning exam-bank evidence into reviewed teaching support. It is not part of the browser runtime and must not mutate `public/data/question_bank.json`.
+Content Lab is an internal, local-first pipeline for turning exam-bank evidence into reviewed teaching support. It is not part of the browser runtime and must not mutate `public/assets/exam-bank-data/question_bank.json`.
 
 ## Boundary
 
-- Input evidence: `public/data/question_bank.json`
+- Input evidence: `public/assets/exam-bank-data/question_bank.json`
+- Projected app bank: `public/assets/exam-bank-data/asterion_question_bank_v1.json`
+- Topic-routing sidecar: `public/assets/exam-bank-data/question_bank.topic_routing.v1.json`
+- Candidate inventory: `public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json`
 - Internal outputs: `tools/content_lab/outputs/`
 - Review reports: `tools/content_lab/reports/`
 - Runtime-reviewed content: `public/data/teaching_snippets.json` and `public/data/generated_practice_bank.json`
 - Browser runtime: consumes only reviewed static JSON from `public/data/`
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
+
+The reviewed P3 skill map at `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` is the curriculum authority. OCR/raw text, AI labels, legacy DeepSeek labels, local labels, and fallback labels are review/display metadata only. Topic-routing records can validate placement only when clean/reviewed. Content Lab candidates remain blocked until reviewed source-skill evidence exists.
 
 The active release is **Content Lab Worked Examples v1 / Question-to-Lesson Pass**. The teaching/generated-practice schema contract is v2. The worked-example content model is v1. The new fields remain optional in the schema/runtime contract so legacy content loads, but the verifier requires them for the first publishing batch.
 
@@ -19,7 +24,7 @@ Build deterministic skill targets, review queue, and coverage report:
 
 ```bash
 python3 tools/content_lab/scripts/build_skill_targets.py \
-  --input public/data/question_bank.json \
+  --input public/assets/exam-bank-data/question_bank.json \
   --output tools/content_lab/outputs/skill_targets.json \
   --review-output tools/content_lab/outputs/review_queue.json
 ```
@@ -86,6 +91,8 @@ Records are `blocked` when validation or mapping fails, text trust is low or unu
 
 Records become `review_only` when they are not blocked but still need human attention, including visual-required records, flattened or degraded math, uncertain topics, or other review-risk flags.
 
+Fallback-display-only placements, ambiguous routes, review-required routes, hard-failure records, raw fallback/debug records, and candidates without reviewed source-skill evidence must not become generation-ready. Difficulty and difficulty-band fields are deprecated metadata and must not drive readiness, routing, mastery, or generation behavior.
+
 ## Outputs
 
 `skill_targets.json` contains generated internal curriculum targets:
@@ -116,6 +123,8 @@ Records become `review_only` when they are not blocked but still need human atte
 `npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
 
 The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; audited ambiguous entries remain visible as a deferred teacher-review backlog; active mismatches with no audit entry remain structural warnings. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
+
+`asterion_content_lab_candidates_v1.json` is a candidate inventory, not a publishing source. Candidate records can move toward generation only after reviewed `source_skill_ids`/source-skill evidence ties them to the reviewed P3 skill map and canonical question/mark-scheme image evidence. Label confidence, OCR text, raw text, or difficulty metadata is not enough.
 
 `npm run coverage:p3-matrix` writes:
 
@@ -240,6 +249,8 @@ Runtime-visible generated practice must:
 - use valid MathText delimiter syntax with `$...$` and `$$...$$`
 
 Candidate, blocked, review-only, or failed-verification generated practice must not appear in `public/data/generated_practice_bank.json`.
+
+Clean P3 mastery evidence is the only evidence that can support mastery-facing claims. Fallback labels, AI/OCR/raw text, Content Lab candidates, generated warm-ups, Quick Checks, snippets, and worked examples may support learning/review, but they must not prove mastery by themselves.
 
 Reviewed means:
 

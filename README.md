@@ -2,7 +2,7 @@
 
 Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, Quick Checks, deterministic warm-up practice, and evidence-gated Guardian checks.
 
-The question image and mark-scheme image are the source of truth. Extracted text and DeepSeek enrichment are used as metadata for routing, display, review, and teacher export.
+The question image and mark-scheme image are the student-facing source of truth. For P3 curriculum behavior, the reviewed P3 skill map is the authority. OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are advisory metadata only; they must not be treated as curriculum truth.
 
 ## Current Status
 
@@ -91,7 +91,7 @@ Understand the idea -> try a small check -> practice safely -> face the Guardian
 - Quick Checks: one-micro-skill checks with clear answer and short explanation.
 - Warm-up Practice: deterministic generated practice from reviewed repo-side generators. These are small original supports, not exam clones.
 - Training Grounds: the current image-first practice flow, labeled as warm-up, core practice, weak-area review, or challenge with a short local explanation.
-- Region Guardian: an evidence-gated mastery check selected from trainable canonical questions in the same region.
+- Region Guardian: an evidence-gated mastery check selected from clean, mastery-eligible P3 canonical questions in the same region.
 
 Field Guide completion and guardian clear state are stored locally through the progress adapter. Field Guide completion does not award mastery, XP, avatar rewards, or restored-region state by itself. Region clearing and reward placeholders require saved attempts, marks, mark-scheme availability, and guardian evidence.
 
@@ -107,7 +107,18 @@ Content Lab is a repo-local pipeline under `tools/content_lab`. It turns exam-ba
 
 The current release track is **Content Lab Worked Examples v1 / Question-to-Lesson Pass**. The teaching/generated-practice schema contract is v2, while the worked-example content model is v1. The v2 fields are optional in the schema/runtime contract so legacy content still loads, but they are required by the Phase 1 publishing verifier for Logarithm Observatory, Algebra Vault, and Trigonometry Spire.
 
-Canonical exam question images and mark-scheme images remain the source of truth. Generated lessons, generated practice, and extracted question text are support material only and must not be treated as official exam wording.
+Canonical exam question images and mark-scheme images remain the source of truth. Generated lessons, generated practice, OCR/raw text, AI labels, and extracted question text are support material only and must not be treated as official exam wording or curriculum authority.
+
+The current exam-bank data files live under `public/assets/exam-bank-data`:
+
+```text
+public/assets/exam-bank-data/asterion_question_bank_v1.json
+public/assets/exam-bank-data/question_bank.json
+public/assets/exam-bank-data/question_bank.topic_routing.v1.json
+public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json
+```
+
+Content Lab candidates remain blocked from generation or runtime publishing until they have reviewed source-skill evidence tied to the reviewed P3 skill map and canonical question/mark-scheme image evidence.
 
 Runtime consumes only static reviewed JSON from:
 
@@ -153,7 +164,7 @@ Run the pipeline with:
 
 ```bash
 python3 tools/content_lab/scripts/build_skill_targets.py \
-  --input public/data/question_bank.json \
+  --input public/assets/exam-bank-data/question_bank.json \
   --output tools/content_lab/outputs/skill_targets.json \
   --review-output tools/content_lab/outputs/review_queue.json
 
@@ -166,7 +177,7 @@ python3 tools/content_lab/scripts/build_generated_practice.py \
 python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 ```
 
-`public/data/question_bank.json` must remain unchanged by Content Lab work.
+`public/assets/exam-bank-data/question_bank.json` must remain unchanged by Content Lab work. Legacy `public/data/question_bank*.json` files are not the active exam-bank runtime truth and must not be treated as curriculum authority.
 
 Phase 1 enforcement is intentionally narrow: every method, concept, and mistake-repair snippet in Logarithm Observatory, Algebra Vault, and Trigonometry Spire must have at least one reviewed, traceable worked example, and first-batch Quick Checks and warm-ups must resolve their `example_model_id` links. Phase 2 expands the same rule to all P3 regions only after the first batch passes.
 
@@ -263,40 +274,42 @@ npm test
 npm run build
 ```
 
-Data and UI asset generation:
+Legacy P3 bundle generation and UI asset generation:
 
 ```bash
 npm run data:p3
 npm run assets:ui
 ```
 
+`npm run data:p3` maintains legacy `public/data/question_bank*.json` bundles only. Current exam-bank runtime data lives under `public/assets/exam-bank-data`.
+
 ## Data Files
 
-The canonical extraction outputs stay here for compatibility, debugging, and future multi-paper work:
+The current exam-bank files live under `public/assets/exam-bank-data`:
 
 ```text
-public/data/question_bank.json
-public/data/question_bank.deepseek.full.json
+public/assets/exam-bank-data/asterion_question_bank_v1.json
+public/assets/exam-bank-data/question_bank.json
+public/assets/exam-bank-data/question_bank.topic_routing.v1.json
+public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json
 ```
 
-The main bank can use the extraction schema with root fields such as `schema_name`, `schema_version`, `record_count`, and a `questions` array. Asterion reads records with fields including `question_id`, `paper`, `paper_family`, `question_number`, `topic`, `notes.subtopic`, `question_solution_marks`, `question_image_path`, `mark_scheme_image_path`, `question_image_paths`, and `mark_scheme_image_paths`.
+`asterion_question_bank_v1.json` is the default projected bank for the app. `question_bank.json` is the extraction-style raw bank used for debug/fallback and Content Lab evidence. `question_bank.topic_routing.v1.json` is the topic-routing sidecar. `asterion_content_lab_candidates_v1.json` is a blocked review inventory until candidate records have reviewed source-skill evidence.
 
-The DeepSeek sidecar can use an `enrichments` object keyed by `question_id`. Asterion reads `deepseek_topic`, `deepseek_topic_normalized`, `deepseek_subtopic`, `deepseek_difficulty`, `deepseek_difficulty_normalized`, `deepseek_confidence`, `topic_reconciliation_status`, `final_review_required`, and `final_review_reasons`. Missing, malformed, or error entries are tolerated.
+The raw bank can use the extraction schema with root fields such as `schema_name`, `schema_version`, `record_count`, and a `questions` array. Asterion reads records with fields including `question_id`, `paper`, `paper_family`, `question_number`, `topic`, `notes.subtopic`, `question_solution_marks`, `question_image_path`, `mark_scheme_image_path`, `question_image_paths`, and `mark_scheme_image_paths`.
 
-The P3 Astral Academy MVP loads generated P3-only bundles first:
+The projected bank may carry OCR/raw text, legacy DeepSeek fields, local labels, difficulty labels, and fallback labels. These fields are preserved for display, review, diagnostics, and teacher context only. Missing, malformed, or error enrichment is expected data, not an exception path.
+
+Legacy public-data question-bank bundles may still exist for migration/reference:
 
 ```text
 public/data/question_bank.p3.json
 public/data/question_bank.deepseek.p3.json
+public/data/question_bank.json
+public/data/question_bank.deepseek.full.json
 ```
 
-Generate those files from the canonical full bank with:
-
-```bash
-npm run data:p3
-```
-
-The full-bank path remains supported through `loadQuestionBankWithDiagnostics({ scope: 'full' })` and as a fallback if the P3 bundle is missing. Do not hand-edit generated P3 bundles except for emergency inspection; update the canonical full files, then regenerate.
+These are no longer active runtime truth. Do not point new code, docs, or Content Lab workflows at them unless the task is explicitly about legacy migration.
 
 Runtime teaching support files:
 
@@ -306,6 +319,8 @@ public/data/generated_practice_bank.json
 ```
 
 These files are static reviewed artifacts. React does not mine the exam bank, build skill targets, or generate practice in the browser.
+
+Difficulty fields are deprecated metadata. They may remain on legacy question, attempt, snippet, or generated-practice records, but must not drive routing, adaptive selection, mastery, Guardian eligibility, generation eligibility, or warm-up readiness.
 
 ## Image Path Resolution
 
@@ -365,17 +380,15 @@ Legacy `public/assets/<paper>/...`, `public/assets/questions/p3/<paper>/...`, an
 
 `src/lib/loadQuestionBank.ts` uses `cache: 'no-store'` outside production so local data edits are visible during development and tests. Production/static builds use the browser default cache behavior for committed JSON files. If data changes without a filename change, redeploy the static site and clear any CDN cache according to the host's normal invalidation rules.
 
-The P3 flow fetches, in order:
+The P3 flow fetches current exam-bank data from:
 
 ```text
-public/data/question_bank.p3.json
-public/data/question_bank.json               # fallback/debug
-public/data/question_bank.deepseek.p3.json
-public/data/question_bank.deepseek.json      # optional compatibility name
-public/data/question_bank.deepseek.full.json # fallback/debug
+public/assets/exam-bank-data/asterion_question_bank_v1.json
+public/assets/exam-bank-data/question_bank.json                    # raw fallback/debug
+public/assets/exam-bank-data/question_bank.topic_routing.v1.json
 ```
 
-This keeps the local demo login-free and GitHub Pages compatible while avoiding an eager P1/P4/P5 fetch for the current P3 MVP.
+The projected bank is the normal app source. Raw-bank fallback/debug records are marked unsafe for mastery, Guardian checks, and Content Lab generation even if they have clean route metadata. This keeps the local demo login-free and GitHub Pages compatible without treating old `public/data/question_bank*.json` files as active runtime truth.
 
 ## UI Asset Optimization
 
@@ -405,7 +418,9 @@ Current deployment note: optimized UI assets are the ones referenced by the app,
 
 ## Region Matching
 
-Question topics and subtopics are mapped to world regions in `src/lib/worldMap.ts`. Matching is forgiving across title case, snake case, and common wording variants. Examples:
+Question topics and subtopics are routed in `src/lib/worldMap.ts` and related helpers. Clean topic-routing records from `public/assets/exam-bank-data/question_bank.topic_routing.v1.json` can validate P3 placement only when they are reviewed/clean and map to a reviewed P3 region. Missing-route, review-only, ambiguous, prerequisite-only, hard-failure, and fallback-label cases are not clean mastery evidence.
+
+Fallback matching is forgiving across title case, snake case, legacy local labels, and legacy AI labels. It is display-only. It can help a student see a plausible region, but it must not authorize mastery, Guardian evidence, teacher export claims, or Content Lab generation. Examples:
 
 ```text
 partial_fractions       -> Algebra Vault
@@ -415,14 +430,20 @@ trig identities         -> Trigonometry Spire
 modulus and argument    -> Argand Atrium
 ```
 
-Keep path, topic, and region matching centralized in utility modules rather than in React components.
+Keep path, topic, and region matching centralized in utility modules rather than in React components. Future agents must not treat OCR text, raw extracted text, AI labels, or fallback labels as curriculum authority.
 
 ## Real Data Integration Checklist
 
-1. Put the main bank at `public/data/question_bank.json`.
-2. Put the full DeepSeek sidecar at `public/data/question_bank.deepseek.full.json`, or the compatibility primary name `public/data/question_bank.deepseek.json`.
-3. Run `npm run data:p3` so the P3 MVP has generated first-load bundles.
-4. Put P3 image folders under the grouped exam-bank asset layout:
+1. Put the current exam-bank JSON files under `public/assets/exam-bank-data/`:
+
+```text
+public/assets/exam-bank-data/asterion_question_bank_v1.json
+public/assets/exam-bank-data/question_bank.json
+public/assets/exam-bank-data/question_bank.topic_routing.v1.json
+public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json
+```
+
+2. Put P3 image folders under the grouped exam-bank asset layout:
 
 ```text
 public/assets/exam-bank-data/p3/<paper>/questions/q##.png
@@ -452,25 +473,21 @@ public/assets/questions/<paper>/mark_scheme/q##.png
 
 For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries `/assets/exam-bank-data/p3/15autumn25/questions/q01.png` first, then the legacy fallback layouts.
 
-5. If using the full DeepSeek sidecar, either rename:
+3. Validate that `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` is the reviewed P3 curriculum authority:
 
-```text
-public/data/question_bank.deepseek.full.json
+```bash
+npm run validate:p3-skill-map
+npm run inventory:p3-content
+npm run coverage:p3-matrix
 ```
 
-to:
-
-```text
-public/data/question_bank.deepseek.json
-```
-
-or rely on the app fallback loader. The primary filename remains `question_bank.deepseek.json`; the app falls back to `question_bank.deepseek.full.json` when the primary sidecar is missing, empty, or has no enrichments.
-
-6. Run `npm run assets:ui` after changing project-owned UI art.
-7. Start the app with `npm run dev`.
-8. Open Teacher/Export, then open **Data health**.
-9. Check:
+4. Keep topic-routing records clean/reviewed before treating placement as validated. Fallback label placements are display-only.
+5. Run `npm run assets:ui` after changing project-owned UI art.
+6. Start the app with `npm run dev`.
+7. Open Teacher/Export, then open **Data health**.
+8. Check:
    - main JSON file loaded
+   - main content source
    - main schema and record count
    - total questions loaded
    - total P3 questions loaded
@@ -484,15 +501,15 @@ or rely on the app fallback loader. The primary filename remains `question_bank.
    - raw image path examples
    - candidate image URL examples
    - missing image metadata examples
-   - sidecar file loaded
-   - sidecar enrichment, merge, and error counts
+   - topic-routing file loaded
+   - topic-routing record and mapped counts
 
 Common path problems:
 
 - Duplicated paper family folder, such as `/assets/questions/p3/p3/...`.
 - Image paths pointing to `questions/` but files placed under `question/`.
 - Mark schemes using `mark_scheme/` in JSON but a different folder name on disk.
-- An empty placeholder `question_bank.json`; Data Health will show a warning and ask you to copy the populated extraction JSON to `public/data/question_bank.json`.
+- An empty projected bank; Data Health will show the fallback source. Raw fallback is display/practice limited and blocked from mastery, Guardian, and Content Lab generation.
 
 ## MVP Features
 
@@ -500,11 +517,11 @@ Common path problems:
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
 - P3-focused modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, Teacher/Export.
 - Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
-- Normalization layer that merges the main bank and DeepSeek sidecar without crashing on malformed enrichment.
+- Normalization layer that merges the projected/raw bank and topic-routing sidecar without crashing on malformed legacy enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
 - Required exact marks and mistake type after mark scheme reveal.
 - Rule-based adaptive next-question selection.
-- Region restoration derived from attempts, marks, recent accuracy, and subtopics touched.
+- Region restoration derived from attempts, marks, recent accuracy, subtopics touched, and clean P3 evidence.
 - Local topic mastery, ranks, checkmarks, XP, and placeholder avatar gear derived from progress.
 - Quiet per-question issue reporting.
 - Teacher exports as JSON and CSV, including world/region fields where attempts have that context.

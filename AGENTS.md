@@ -7,11 +7,13 @@ Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709
 - Keep the app GitHub Pages compatible. Do not add a backend, authentication, Supabase, or AI marking in the MVP.
 - Each paper family will eventually become its own world map. P3 Astral Academy is the first world.
 - Do not build a full game engine yet. Avoid tile walking, collision, sprite movement, inventory complexity, or engine dependencies unless explicitly requested.
-- The question image and mark-scheme image are the student-facing source of truth. Text extraction is metadata support only.
+- The question image and mark-scheme image are the student-facing source of truth. Text extraction, OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are metadata/display support only.
+- The reviewed P3 skill map is the curriculum authority. Topic-routing records can validate placement only when clean/reviewed; fallback labels are display-only.
+- Difficulty is deprecated metadata and must not drive routing, selection, mastery, Guardian access, generation eligibility, or warm-up readiness.
 - Do not hard-code image path logic in components. Use `src/lib/resolveAssetPath.ts`.
 - Do not hard-code topic or region matching in components. Use `src/lib/worldMap.ts` and related progress helpers.
-- Preserve local question-bank labels and DeepSeek labels internally. Student-facing routing/display may prefer valid DeepSeek labels, but local labels must remain available.
-- Treat malformed or missing DeepSeek enrichment as expected data, not an exception path.
+- Preserve local question-bank labels and legacy DeepSeek labels internally as metadata only. Local/AI labels must remain available for diagnostics and display, but clean topic routing and the reviewed P3 skill map are the only safe curriculum route authority.
+- Treat malformed or missing legacy enrichment as expected data, not an exception path.
 - Keep localStorage access isolated in `src/lib/progressStore.ts` so academic data can migrate to Supabase later.
 - Keep RPG/avatar progression separate from academic attempts, and derive RPG state from real academic progress rather than fake progress.
 - Keep academic attempt records clean for future Supabase migration. Optional world/region context is allowed, but do not bury academic fields inside RPG state.
@@ -32,7 +34,7 @@ Asterion uses a parallel-specialist agent workflow, optimized first for mastery 
 
 ### Agent Roles
 - **Creative Director Agent** owns feature scope, educational goals, progression philosophy, retention goals, style constraints, anti-scope-creep rules, and acceptance criteria.
-- **Gameplay Systems Agent** owns XP, levels, ranks, cosmetic rewards, unlock pacing, difficulty pacing, mastery loops, stamina/energy proposals, and challenge structures. This agent must not alter canonical marks, question correctness, mark schemes, or academic attempt semantics.
+- **Gameplay Systems Agent** owns XP, levels, ranks, cosmetic rewards, unlock pacing, learning-step pacing, mastery loops, stamina/energy proposals, and challenge structures. This agent must not alter canonical marks, question correctness, mark schemes, academic attempt semantics, or use deprecated difficulty metadata as a behavior gate.
 - **Content Agent** owns quests, dialogue, lore, hints, tutorials, NPC text, item descriptions, metadata-support proposals, and generated-content drafts. Generated content must remain advisory and must not replace canonical CAIE question images or mark-scheme images.
 - **UX/UI Agent** owns layout consistency, student readability, friction reduction, onboarding, accessibility, responsive behavior, and manual UX verification scenarios.
 - **Frontend Implementation Agent** owns React/Vite implementation after the implementation packet is locked. This agent follows existing component and utility boundaries rather than inventing new architecture by default.
@@ -117,12 +119,18 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 - Recommended change:
 
 ## Data Assumptions
-- Main bank: `public/data/question_bank.json`.
-- DeepSeek sidecar: `public/data/question_bank.deepseek.json`.
+- Current exam-bank files live under `public/assets/exam-bank-data/`:
+  - `asterion_question_bank_v1.json`
+  - `question_bank.json`
+  - `question_bank.topic_routing.v1.json`
+  - `asterion_content_lab_candidates_v1.json`
+- Legacy `public/data/question_bank*.json` files may exist for migration/reference, but they are not active runtime truth.
 - Question and mark-scheme crops currently live under `public/assets/exam-bank-data/{paper-family}/{paper}/questions/q##.png` and `public/assets/exam-bank-data/{paper-family}/{paper}/mark_scheme/q##.png`. Legacy `public/assets/{paper}/...` and `public/assets/questions/{paper-family}/...` layouts are resolver fallbacks only.
 - JSON image paths may be strings or arrays.
-- Marks, difficulty, subtopic, and enrichment fields may be absent.
-- Region matching must tolerate snake case, title case, DeepSeek labels, local labels, and missing fields.
+- Marks, deprecated difficulty metadata, subtopic, and enrichment fields may be absent.
+- Region display matching must tolerate snake case, title case, legacy DeepSeek labels, local labels, and missing fields, but fallback labels are display-only.
+- Content Lab candidates are blocked until reviewed source-skill evidence exists.
+- Mastery must consume only clean P3 evidence from mastery-eligible reviewed P3 skills backed by canonical question and mark-scheme image pairs.
 
 ## Before Finalizing Changes
 - Run `npm test`.
@@ -130,5 +138,5 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 - Check that components still use normalized question objects and resolved public URLs.
 - Check that region practice still uses the existing image-first practice loop.
 - For progression changes, add focused Vitest coverage for rank thresholds, weak-area routing, recent-question avoidance, mastery inflation risks, and localStorage migration tolerance.
-- For data or content changes, check malformed/missing DeepSeek enrichment, local label preservation, P3 region matching, and centralized question/mark-scheme image path resolution.
+- For data or content changes, check malformed/missing legacy enrichment, local label preservation, P3 route evidence, reviewed skill-map alignment, and centralized question/mark-scheme image path resolution.
 - For UX changes, manually verify onboarding, world map, region practice, mark-scheme reveal, attempt save, teacher export, and mobile layout.
