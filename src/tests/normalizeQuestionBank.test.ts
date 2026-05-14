@@ -82,6 +82,132 @@ describe('normalizeQuestionBank', () => {
     });
   });
 
+  it('derives use-case eligibility separately from region display placement', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          {
+            id: 'clean-image-practice',
+            paper_family: 'p3',
+            question_image_path: 'p3/a/questions/q01.png',
+            mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          },
+          {
+            id: 'fallback-display-only',
+            paper_family: 'p3',
+            topic: 'Trigonometry',
+            question_image_path: 'p3/a/questions/q02.png',
+            mark_scheme_image_path: 'p3/a/mark_scheme/q02.png',
+          },
+          {
+            id: 'review-only',
+            paper_family: 'p3',
+            question_image_path: 'p3/a/questions/q03.png',
+            mark_scheme_image_path: 'p3/a/mark_scheme/q03.png',
+          },
+        ],
+      },
+      {},
+      {
+        records: {
+          'clean-image-practice': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+          },
+          'review-only': {
+            primary_topic_id: '9709_p3_topic_vectors',
+            confidence: 'high',
+            review_required: true,
+            review_reasons: ['needs teacher review'],
+          },
+        },
+      },
+    );
+
+    const clean = questions.find((question) => question.id === 'clean-image-practice');
+    const fallback = questions.find((question) => question.id === 'fallback-display-only');
+    const reviewOnly = questions.find((question) => question.id === 'review-only');
+
+    expect(clean?.eligibility?.practiceEligible).toMatchObject({
+      eligible: true,
+      reasonCodes: ['has-image-practice-assets'],
+    });
+    expect(clean?.eligibility?.masteryEligible).toMatchObject({
+      eligible: true,
+      reasonCodes: ['validated-topic-routing'],
+    });
+    expect(clean?.eligibility?.guardianEligible.eligible).toBe(true);
+    expect(clean?.eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'missing-content-lab-usable-text'],
+    });
+
+    expect(fallback?.eligibility?.regionDisplayEligible).toMatchObject({
+      eligible: true,
+      reasonCodes: ['has-display-region'],
+    });
+    expect(fallback?.eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['blocked-fallback-display-only'],
+    });
+    expect(fallback?.eligibility?.guardianEligible.eligible).toBe(false);
+    expect(fallback?.eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['blocked-fallback-display-only', 'missing-content-lab-usable-text'],
+    });
+
+    expect(reviewOnly?.eligibility?.practiceEligible.eligible).toBe(true);
+    expect(reviewOnly?.eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['blocked-review-only'],
+    });
+    expect(reviewOnly?.eligibility?.generationEligible.eligible).toBe(false);
+  });
+
+  it('blocks unsafe route statuses from mastery and generation even when images exist', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          { id: 'missing', paper_family: 'p3', question_image_path: 'p3/a/questions/q01.png', mark_scheme_image_path: 'p3/a/mark_scheme/q01.png' },
+          { id: 'ambiguous', paper_family: 'p3', question_image_path: 'p3/a/questions/q02.png', mark_scheme_image_path: 'p3/a/mark_scheme/q02.png' },
+          { id: 'prereq', paper_family: 'p3', question_image_path: 'p3/a/questions/q03.png', mark_scheme_image_path: 'p3/a/mark_scheme/q03.png' },
+          { id: 'not-p3', paper_family: 'p1', question_image_path: 'p1/a/questions/q04.png', mark_scheme_image_path: 'p1/a/mark_scheme/q04.png' },
+          { id: 'hard-failure', paper_family: 'p3', question_image_path: 'p3/a/questions/q05.png', mark_scheme_image_path: 'p3/a/mark_scheme/q05.png' },
+        ],
+      },
+      {},
+      {
+        records: {
+          ambiguous: {
+            primary_topic_id: '9709_p3_topic_algebra',
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 50 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 50 },
+            ],
+          },
+          prereq: { primary_topic_id: '9709_p1_topic_quadratics' },
+          'hard-failure': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            route_evidence_status: 'hard-failure',
+          },
+        },
+      },
+    );
+
+    expect(questions.find((question) => question.id === 'missing')?.eligibility?.masteryEligible.reasonCodes)
+      .toContain('blocked-missing-route');
+    expect(questions.find((question) => question.id === 'ambiguous')?.eligibility?.masteryEligible.reasonCodes)
+      .toContain('blocked-ambiguous-route');
+    expect(questions.find((question) => question.id === 'prereq')?.eligibility?.masteryEligible.reasonCodes)
+      .toContain('blocked-prerequisite-only');
+    expect(questions.find((question) => question.id === 'not-p3')?.eligibility?.generationEligible.reasonCodes)
+      .toContain('blocked-not-p3');
+    expect(questions.find((question) => question.id === 'hard-failure')?.eligibility?.generationEligible.reasonCodes)
+      .toContain('blocked-hard-failure');
+    expect(questions.every((question) => question.eligibility?.masteryEligible.eligible === false)).toBe(true);
+    expect(questions.every((question) => question.eligibility?.generationEligible.eligible === false)).toBe(true);
+  });
+
   it('uses the topic-routing sidecar as the route authority over source or fallback hints', () => {
     const questions = normalizeQuestionBank(
       {
@@ -368,6 +494,12 @@ describe('normalizeQuestionBank', () => {
     expect(questions[0].textQuality?.hardFailed).toBe(false);
     expect(questions[0].textQuality?.reviewUsable).toBe(true);
     expect(questions[0].textQuality?.textOnlyDisplayAllowed).toBe(false);
+    expect(questions[0].eligibility?.practiceEligible.eligible).toBe(true);
+    expect(questions[0].eligibility?.textOnlyEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'text-only-display-not-allowed'],
+    });
+    expect(questions[0].eligibility?.generationEligible.eligible).toBe(true);
   });
 
   it('blocks hard-failed text from reliable text-only use without blocking image-first practice', () => {
@@ -377,15 +509,67 @@ describe('normalizeQuestionBank', () => {
           question_id: '33autumn25_q01',
           paper_family: 'p3',
           canonical_question_artifact: 'p3/33autumn25/questions/q01.png',
+          canonical_mark_scheme_artifact: 'p3/33autumn25/mark_scheme/q01.png',
           quality_gate: { reason_codes: ['text_only_blocked_status_fail', 'text_only_blocked_untrusted_math_text'] },
           subparts: [{ question_text: { text: 'Bad OCR', role: 'untrusted_math_text', trust_level: 'low' } }],
         }],
       },
       {},
+      { records: { '33autumn25_q01': { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high' } } },
     );
 
     expect(questions[0].textQuality?.hardFailed).toBe(true);
     expect(questions[0].textQuality?.reviewUsable).toBe(false);
     expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/33autumn25/questions/q01.png']);
+    expect(questions[0].eligibility?.practiceEligible.eligible).toBe(true);
+    expect(questions[0].eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'missing-content-lab-usable-text', 'blocked-hard-failed-text'],
+    });
+    expect(questions[0].eligibility?.textOnlyEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'missing-question-or-mark-scheme-text', 'text-only-display-not-allowed', 'blocked-hard-failed-text'],
+    });
+  });
+
+  it('requires trusted text-only source before marking text-only use eligible', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'text-ready',
+          paper_family: 'p3',
+          canonical_question_artifact: 'p3/32spring21/questions/q01.png',
+          canonical_mark_scheme_artifact: 'p3/32spring21/mark_scheme/q01.png',
+          quality_gate: {
+            text_only_display_allowed: true,
+            reason_codes: [],
+          },
+          subparts: [{
+            question_text: {
+              text: 'Solve the equation.',
+              trust_level: 'high',
+              role: 'canonical_text',
+              text_only_display_allowed: true,
+            },
+            mark_scheme_text: {
+              text: 'Use the standard method.',
+              trust_level: 'high',
+            },
+          }],
+        }],
+      },
+      {},
+      { records: { 'text-ready': { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high' } } },
+    );
+
+    expect(questions[0].eligibility?.practiceEligible.eligible).toBe(true);
+    expect(questions[0].eligibility?.textOnlyEligible).toMatchObject({
+      eligible: true,
+      reasonCodes: ['validated-topic-routing'],
+    });
+    expect(questions[0].eligibility?.generationEligible).toMatchObject({
+      eligible: true,
+      reasonCodes: ['validated-topic-routing'],
+    });
   });
 });

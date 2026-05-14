@@ -133,6 +133,20 @@ export interface QuestionRouteEvidence {
   candidateRegionIds?: string[];
 }
 
+export interface QuestionUseCaseEligibility {
+  eligible: boolean;
+  reasonCodes: string[];
+}
+
+export interface QuestionEligibility {
+  regionDisplayEligible: QuestionUseCaseEligibility;
+  practiceEligible: QuestionUseCaseEligibility;
+  masteryEligible: QuestionUseCaseEligibility;
+  guardianEligible: QuestionUseCaseEligibility;
+  generationEligible: QuestionUseCaseEligibility;
+  textOnlyEligible: QuestionUseCaseEligibility;
+}
+
 export interface NormalizedQuestion {
   id: string;
   paperFamily: PaperFamily;
@@ -144,6 +158,7 @@ export interface NormalizedQuestion {
   deepseek: DeepSeekMetadata;
   topicRouting?: QuestionTopicRouting;
   routeEvidence?: QuestionRouteEvidence;
+  eligibility?: QuestionEligibility;
   textQuality?: QuestionTextQuality;
   displayTopic: string;
   displaySubtopic?: string;

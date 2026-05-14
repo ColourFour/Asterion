@@ -1,4 +1,4 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionEligibility, QuestionPartMark, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
 import { P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './topicRouting';
@@ -212,6 +212,101 @@ function trainingBlockersForRecord(
   }
 
   return unique(blockers);
+}
+
+function eligibility(
+  eligible: boolean,
+  reasonCodes: string[],
+) {
+  return {
+    eligible,
+    reasonCodes: unique(reasonCodes),
+  };
+}
+
+function routeBlockReasonCodes(routeEvidence: QuestionRouteEvidence | undefined): string[] {
+  switch (routeEvidence?.status) {
+    case 'clean':
+      return [];
+    case 'missing-route':
+      return ['blocked-missing-route'];
+    case 'ambiguous-route':
+      return ['blocked-ambiguous-route'];
+    case 'review-only':
+      return ['blocked-review-only'];
+    case 'fallback-display-only':
+      return ['blocked-fallback-display-only'];
+    case 'prerequisite-only':
+      return ['blocked-prerequisite-only'];
+    case 'not-P3':
+      return ['blocked-not-p3'];
+    case 'hard-failure':
+      return ['blocked-hard-failure'];
+    default:
+      return ['blocked-missing-route-evidence'];
+  }
+}
+
+function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligibility {
+  const hasQuestionImage = question.questionImageCandidates.length > 0;
+  const hasMarkSchemeImage = question.markSchemeImageCandidates.length > 0;
+  const hasImagePracticeAssets = hasQuestionImage && hasMarkSchemeImage;
+  const routeEvidence = question.routeEvidence;
+  const routeIsClean = routeEvidence?.status === 'clean';
+  const routeBlocks = routeBlockReasonCodes(routeEvidence);
+  const textQuality = question.textQuality;
+  const hasTextOnlySource = Boolean(textQuality?.questionText && textQuality?.markSchemeText);
+  const textOnlyAllowed = textQuality?.textOnlyDisplayAllowed === true;
+  const textHardFailed = textQuality?.hardFailed === true;
+  const trainingBlockers = question.trainingBlockers ?? [];
+
+  const regionDisplayReasons: string[] = [];
+  if (routeEvidence?.displayRegionId) regionDisplayReasons.push('has-display-region');
+  else regionDisplayReasons.push(...routeBlocks);
+  if (routeEvidence?.status === 'hard-failure') regionDisplayReasons.push('blocked-hard-failure');
+  if (routeEvidence?.status === 'not-P3') regionDisplayReasons.push('blocked-not-p3');
+  const regionDisplayEligible = Boolean(routeEvidence?.displayRegionId)
+    && routeEvidence?.status !== 'hard-failure'
+    && routeEvidence?.status !== 'not-P3';
+
+  const practiceReasons: string[] = [];
+  if (hasImagePracticeAssets && trainingBlockers.length === 0) practiceReasons.push('has-image-practice-assets');
+  if (!hasQuestionImage) practiceReasons.push('missing-question-image');
+  if (!hasMarkSchemeImage) practiceReasons.push('missing-mark-scheme-image');
+  if (trainingBlockers.length) practiceReasons.push('blocked-training-status');
+
+  const masteryReasons: string[] = [];
+  if (routeIsClean) masteryReasons.push('validated-topic-routing');
+  else masteryReasons.push(...routeBlocks);
+  if (!hasImagePracticeAssets) masteryReasons.push('missing-image-practice-assets');
+  if (trainingBlockers.length) masteryReasons.push('blocked-training-status');
+
+  const textOnlyReasons: string[] = [];
+  if (routeIsClean) textOnlyReasons.push('validated-topic-routing');
+  else textOnlyReasons.push(...routeBlocks);
+  if (!hasTextOnlySource) textOnlyReasons.push('missing-question-or-mark-scheme-text');
+  if (!textOnlyAllowed) textOnlyReasons.push('text-only-display-not-allowed');
+  if (textHardFailed) textOnlyReasons.push('blocked-hard-failed-text');
+
+  const generationReasons: string[] = [];
+  if (routeIsClean) generationReasons.push('validated-topic-routing');
+  else generationReasons.push(...routeBlocks);
+  if (!textQuality?.contentLabSupportUsable) generationReasons.push('missing-content-lab-usable-text');
+  if (textHardFailed) generationReasons.push('blocked-hard-failed-text');
+
+  const imagePracticeEligible = hasImagePracticeAssets && trainingBlockers.length === 0;
+  const masteryEligible = routeIsClean && imagePracticeEligible;
+  const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed;
+  const textOnlyEligible = routeIsClean && hasTextOnlySource && textOnlyAllowed && !textHardFailed;
+
+  return {
+    regionDisplayEligible: eligibility(regionDisplayEligible, regionDisplayReasons),
+    practiceEligible: eligibility(imagePracticeEligible, practiceReasons),
+    masteryEligible: eligibility(masteryEligible, masteryReasons),
+    guardianEligible: eligibility(masteryEligible, masteryReasons),
+    generationEligible: eligibility(generationEligible, generationReasons),
+    textOnlyEligible: eligibility(textOnlyEligible, textOnlyReasons),
+  };
 }
 
 function normalizeDeepSeek(value: unknown): DeepSeekMetadata {
@@ -469,9 +564,14 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       trainingBlockers,
       raw: { local: record, deepseek: deepseekRaw },
     };
-    return {
+    const routeEvidence = inferQuestionRouteEvidence(normalizedQuestion);
+    const questionWithRouteEvidence = {
       ...normalizedQuestion,
-      routeEvidence: inferQuestionRouteEvidence(normalizedQuestion),
+      routeEvidence,
+    };
+    return {
+      ...questionWithRouteEvidence,
+      eligibility: deriveQuestionEligibility(questionWithRouteEvidence),
     };
   });
 }
