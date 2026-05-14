@@ -29,21 +29,22 @@
       "summary": "Add reviewed quick check support for 6 reviewed P3 skill(s)."
     },
     {
-      "action_id": "fill_guardian_candidate_gaps",
-      "affected_region_ids": [
-        "calculus-cliffs",
-        "integration-gardens"
-      ],
-      "affected_skill_count": 2,
-      "summary": "Add reviewed guardian candidate support for 2 reviewed P3 skill(s)."
-    },
-    {
       "action_id": "fill_canonical_question_gaps",
       "affected_region_ids": [
-        "integration-gardens"
+        "algebra-forge",
+        "logarithm-grove"
       ],
-      "affected_skill_count": 1,
-      "summary": "Add reviewed canonical question support for 1 reviewed P3 skill(s)."
+      "affected_skill_count": 3,
+      "summary": "Add reviewed canonical question support for 3 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "fill_guardian_candidate_gaps",
+      "affected_region_ids": [
+        "algebra-forge",
+        "logarithm-grove"
+      ],
+      "affected_skill_count": 3,
+      "summary": "Add reviewed guardian candidate support for 3 reviewed P3 skill(s)."
     },
     {
       "action_id": "fill_snippet_gaps",
@@ -127,38 +128,56 @@
   "generated_by": "tools/content_lab/scripts/build_p3_content_inventory.py",
   "generated_label": "deterministic-content-inventory-v1",
   "inputs": {
-    "deepseek_sidecar": "public/data/question_bank.deepseek.p3.json",
+    "deepseek_sidecar": "public/assets/exam-bank-data/question_bank.topic_routing.v1.json",
     "field_guides": "src/data/regionFieldGuides.ts",
     "generated_practice": "public/data/generated_practice_bank.json",
-    "question_bank": "public/data/question_bank.json",
+    "question_bank": "public/assets/exam-bank-data/question_bank.json",
     "routing_audit": "tools/content_lab/reviews/p3_app_region_routing_audit.json",
     "skill_map": "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json",
     "snippets": "public/data/teaching_snippets.json",
     "world_map": "src/lib/worldMap.ts"
   },
   "missing_support_summary": {
-    "ordinary_gap_skill_count": 28,
+    "ordinary_gap_skill_count": 27,
     "skills_missing_canonical_question": [
       {
-        "micro_skill_name": "Integrate rational functions using partial fractions",
-        "official_curriculum_section": "Integration",
-        "region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions"
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
       }
     ],
     "skills_missing_field_guide": [],
     "skills_missing_guardian_candidate": [
       {
-        "micro_skill_name": "Differentiate implicit log or exponential relations",
-        "official_curriculum_section": "Differentiation",
-        "region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp"
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions"
       },
       {
-        "micro_skill_name": "Integrate rational functions using partial fractions",
-        "official_curriculum_section": "Integration",
-        "region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions"
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
       }
     ],
     "skills_missing_quick_check": [
@@ -383,11 +402,13 @@
   "per_region_inventory": [
     {
       "active_by_default": true,
-      "canonical_question_count": 22,
+      "canonical_question_count": 17,
       "field_guide_count": 1,
-      "guardian_candidate_count": 10,
-      "instructional_status": "partial",
+      "guardian_candidate_count": 8,
+      "instructional_status": "needs_review",
       "missing_support_flags": [
+        "missing_canonical_question",
+        "missing_guardian_candidate",
         "missing_warm_up"
       ],
       "quick_check_count": 8,
@@ -409,11 +430,13 @@
     },
     {
       "active_by_default": true,
-      "canonical_question_count": 20,
+      "canonical_question_count": 16,
       "field_guide_count": 1,
-      "guardian_candidate_count": 11,
+      "guardian_candidate_count": 9,
       "instructional_status": "needs_review",
       "missing_support_flags": [
+        "missing_canonical_question",
+        "missing_guardian_candidate",
         "missing_quick_check",
         "missing_snippet",
         "missing_warm_up",
@@ -437,9 +460,9 @@
     },
     {
       "active_by_default": true,
-      "canonical_question_count": 14,
+      "canonical_question_count": 12,
       "field_guide_count": 1,
-      "guardian_candidate_count": 8,
+      "guardian_candidate_count": 7,
       "instructional_status": "needs_review",
       "missing_support_flags": [],
       "quick_check_count": 5,
@@ -483,12 +506,11 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 11,
+      "canonical_question_count": 14,
       "field_guide_count": 1,
-      "guardian_candidate_count": 6,
+      "guardian_candidate_count": 9,
       "instructional_status": "needs_review",
       "missing_support_flags": [
-        "missing_guardian_candidate",
         "missing_quick_check",
         "missing_warm_up"
       ],
@@ -509,13 +531,11 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 7,
+      "canonical_question_count": 8,
       "field_guide_count": 1,
-      "guardian_candidate_count": 4,
+      "guardian_candidate_count": 5,
       "instructional_status": "needs_review",
       "missing_support_flags": [
-        "missing_canonical_question",
-        "missing_guardian_candidate",
         "missing_quick_check",
         "missing_warm_up"
       ],
@@ -558,10 +578,10 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 12,
+      "canonical_question_count": 10,
       "field_guide_count": 1,
       "guardian_candidate_count": 6,
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "missing_support_flags": [
         "missing_warm_up"
       ],
@@ -580,10 +600,10 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 11,
+      "canonical_question_count": 10,
       "field_guide_count": 1,
       "guardian_candidate_count": 5,
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "missing_support_flags": [
         "missing_quick_check",
         "missing_warm_up"
@@ -829,43 +849,41 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
         "worked_example",
-        "quick_check",
-        "canonical_question",
-        "guardian_candidate"
+        "quick_check"
       ],
-      "canonical_question_count": 2,
+      "canonical_question_count": 0,
       "canonical_question_ids": [
         "31autumn21_q01",
         "31summer22_q01"
       ],
-      "canonical_question_ids_routed_to_skill": [
-        "31autumn21_q01",
-        "31summer22_q01"
-      ],
+      "canonical_question_ids_routed_to_skill": [],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
-      "guardian_candidate_count": 1,
-      "guardian_candidate_question_ids": [
-        "31autumn21_q01"
-      ],
-      "instructional_status": "partial",
+      "guardian_candidate_count": 0,
+      "guardian_candidate_question_ids": [],
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 2,
-      "mastery_evidence_question_ids": [
+      "mastery_evidence_blocked_question_ids": [
         "31autumn21_q01",
         "31summer22_q01"
       ],
+      "mastery_evidence_question_count": 0,
+      "mastery_evidence_question_ids": [],
       "micro_skill_name": "Use discriminant or root conditions as evidence",
       "missing_support_types": [
-        "warm_up"
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
       ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Algebra",
@@ -904,7 +922,9 @@
         "p3-quadratics-discriminant-001-qc"
       ],
       "region_id": "algebra-forge",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_alg_discriminant_root_conditions",
       "snippet_count": 1,
       "snippet_ids": [
@@ -915,7 +935,10 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -1032,7 +1055,10 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "31summer21_q10",
+        "33summer21_q04"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -1042,7 +1068,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 6,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "32spring21_q06",
         "31summer21_q10",
@@ -1053,9 +1079,7 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "32spring21_q06",
-        "31summer21_q10",
         "32summer21_q09",
-        "33summer21_q04",
         "32autumn21_q04",
         "35summer25_q09"
       ],
@@ -1063,20 +1087,20 @@
       "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "32spring21_q06",
-        "31summer21_q10"
+        "32spring21_q06"
       ],
-      "instructional_status": "ready",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 6,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q10",
+        "33summer21_q04"
+      ],
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "32spring21_q06",
-        "31summer21_q10",
         "32summer21_q09",
-        "33summer21_q04",
         "32autumn21_q04",
         "35summer25_q09"
       ],
@@ -1114,7 +1138,9 @@
         "p3-partial-fractions-repeated-linear-001-qc"
       ],
       "region_id": "algebra-forge",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_alg_partial_fraction_form",
       "snippet_count": 2,
       "snippet_ids": [
@@ -1126,7 +1152,10 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q10",
+        "33summer21_q04"
+      ],
       "warmup_generator_families": [
         "algebra.partial_fractions_distinct_linear",
         "algebra.partial_fractions_repeated_linear"
@@ -1147,7 +1176,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "33summer21_q10"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -1156,7 +1187,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "32spring21_q02",
         "33autumn21_q01",
@@ -1167,7 +1198,6 @@
       "canonical_question_ids_routed_to_skill": [
         "32spring21_q02",
         "33autumn21_q01",
-        "33summer21_q10",
         "31summer22_q05",
         "32spring24_q01"
       ],
@@ -1180,14 +1210,15 @@
         "32spring21_q02",
         "33autumn21_q01"
       ],
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_blocked_question_ids": [
+        "33summer21_q10"
+      ],
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "32spring21_q02",
         "33autumn21_q01",
-        "33summer21_q10",
         "31summer22_q05",
         "32spring24_q01"
       ],
@@ -1225,7 +1256,9 @@
         "p3-polynomial-theorem-001-qc"
       ],
       "region_id": "algebra-forge",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_alg_polynomial_remainder_factor",
       "snippet_count": 1,
       "snippet_ids": [
@@ -1236,7 +1269,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "33summer21_q10"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -1246,43 +1281,41 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
         "worked_example",
-        "quick_check",
-        "canonical_question",
-        "guardian_candidate"
+        "quick_check"
       ],
-      "canonical_question_count": 2,
+      "canonical_question_count": 0,
       "canonical_question_ids": [
         "31autumn21_q01",
         "31summer22_q01"
       ],
-      "canonical_question_ids_routed_to_skill": [
-        "31autumn21_q01",
-        "31summer22_q01"
-      ],
+      "canonical_question_ids_routed_to_skill": [],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
-      "guardian_candidate_count": 1,
-      "guardian_candidate_question_ids": [
-        "31autumn21_q01"
-      ],
-      "instructional_status": "partial",
+      "guardian_candidate_count": 0,
+      "guardian_candidate_question_ids": [],
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 2,
-      "mastery_evidence_question_ids": [
+      "mastery_evidence_blocked_question_ids": [
         "31autumn21_q01",
         "31summer22_q01"
       ],
+      "mastery_evidence_question_count": 0,
+      "mastery_evidence_question_ids": [],
       "micro_skill_name": "Choose algebraic structure before expanding",
       "missing_support_types": [
-        "warm_up"
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
       ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Algebra",
@@ -1311,7 +1344,9 @@
         "p3-algebra-rearrangement-001-qc"
       ],
       "region_id": "algebra-forge",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_alg_structure_rearrangement",
       "snippet_count": 1,
       "snippet_ids": [
@@ -1322,7 +1357,10 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -1977,7 +2015,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "32spring21_q04"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -1986,7 +2026,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "32summer21_q07",
         "32spring21_q04",
@@ -1996,7 +2036,6 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -2010,13 +2049,14 @@
         "32summer21_q07",
         "35summer25_q11"
       ],
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_blocked_question_ids": [
+        "32spring21_q04"
+      ],
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -2065,7 +2105,9 @@
         "p3-differential-separation-001-qc"
       ],
       "region_id": "differential-shrine",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_de_separation_setup",
       "snippet_count": 1,
       "snippet_ids": [
@@ -2076,7 +2118,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32spring21_q04"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -2089,8 +2133,8 @@
     {
       "app_region_mismatch_question_ids": [
         "31summer21_q09",
-        "35summer25_q04",
-        "33summer21_q08"
+        "33summer21_q08",
+        "35summer25_q07"
       ],
       "available_support_types": [
         "field_guide",
@@ -2110,31 +2154,31 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "32summer21_q08",
-        "35summer25_q07"
+        "35summer25_q04"
       ],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
         "31summer21_q09",
-        "33summer21_q08",
-        "35summer25_q04"
+        "33summer21_q08"
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "guardian_candidate_question_ids": [
-        "32summer21_q08"
+        "32summer21_q08",
+        "35summer25_q04"
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
         "31summer21_q09",
         "33summer21_q08",
-        "35summer25_q04"
+        "35summer25_q07"
       ],
       "mastery_evidence_question_count": 2,
       "mastery_evidence_question_ids": [
         "32summer21_q08",
-        "35summer25_q07"
+        "35summer25_q04"
       ],
       "micro_skill_name": "Apply chain, product, and quotient rules accurately",
       "missing_support_types": [
@@ -2156,8 +2200,7 @@
       ],
       "practice_allowed_deferred_question_ids": [
         "31summer21_q09",
-        "33summer21_q08",
-        "35summer25_q04"
+        "33summer21_q08"
       ],
       "practice_allowed_question_ids": [
         "31summer21_q09",
@@ -2187,7 +2230,8 @@
       "risk_flags": [
         "mastery_evidence_deferred",
         "teacher_review_app_region_mismatch",
-        "teacher_review_deferred"
+        "teacher_review_deferred",
+        "unreviewed_app_region_routing_mismatch"
       ],
       "skill_ref": "p3_diff_chain_product_quotient",
       "snippet_count": 1,
@@ -2196,18 +2240,18 @@
       ],
       "teacher_review_app_region_mismatch_question_ids": [
         "31summer21_q09",
-        "33summer21_q08",
-        "35summer25_q04"
+        "33summer21_q08"
       ],
       "teacher_review_deferred_question_ids": [
         "31summer21_q09",
-        "33summer21_q08",
-        "35summer25_q04"
+        "33summer21_q08"
       ],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "35summer25_q07"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -2220,17 +2264,16 @@
     },
     {
       "app_region_mismatch_question_ids": [
-        "32autumn21_q09",
-        "35autumn25_q04",
         "31summer21_q09"
       ],
       "available_support_types": [
         "field_guide",
         "snippet",
         "worked_example",
-        "canonical_question"
+        "canonical_question",
+        "guardian_candidate"
       ],
-      "canonical_question_count": 1,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "32autumn21_q09",
         "33autumn21_q07",
@@ -2238,34 +2281,36 @@
         "31summer21_q09"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "33autumn21_q07"
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04"
       ],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "35autumn25_q04"
+        "31summer21_q09"
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 0,
-      "guardian_candidate_question_ids": [],
-      "instructional_status": "needs_review",
-      "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [
-        "31summer21_q09",
+      "guardian_candidate_count": 2,
+      "guardian_candidate_question_ids": [
         "32autumn21_q09",
         "35autumn25_q04"
       ],
-      "mastery_evidence_question_count": 1,
+      "instructional_status": "needs_review",
+      "mastery_eligible": true,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q09"
+      ],
+      "mastery_evidence_question_count": 3,
       "mastery_evidence_question_ids": [
-        "33autumn21_q07"
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04"
       ],
       "micro_skill_name": "Differentiate implicit log or exponential relations",
       "missing_support_types": [
         "quick_check",
-        "warm_up",
-        "guardian_candidate"
+        "warm_up"
       ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Differentiation",
@@ -2282,9 +2327,7 @@
         }
       ],
       "practice_allowed_deferred_question_ids": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "35autumn25_q04"
+        "31summer21_q09"
       ],
       "practice_allowed_question_ids": [
         "31summer21_q09",
@@ -2319,14 +2362,10 @@
         "p3-differentiation-method-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "35autumn25_q04"
+        "31summer21_q09"
       ],
       "teacher_review_deferred_question_ids": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "35autumn25_q04"
+        "31summer21_q09"
       ],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
@@ -2566,7 +2605,7 @@
       "app_region_mismatch_question_ids": [
         "33summer21_q08",
         "31summer21_q09",
-        "32autumn21_q11"
+        "35summer25_q07"
       ],
       "available_support_types": [
         "field_guide",
@@ -2585,13 +2624,12 @@
         "31autumn25_q04"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "35summer25_q07",
+        "32autumn21_q11",
         "31autumn25_q04"
       ],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
         "31summer21_q09",
-        "32autumn21_q11",
         "33summer21_q08"
       ],
       "field_guide_count": 1,
@@ -2604,12 +2642,12 @@
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
         "31summer21_q09",
-        "32autumn21_q11",
-        "33summer21_q08"
+        "33summer21_q08",
+        "35summer25_q07"
       ],
       "mastery_evidence_question_count": 2,
       "mastery_evidence_question_ids": [
-        "35summer25_q07",
+        "32autumn21_q11",
         "31autumn25_q04"
       ],
       "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
@@ -2632,7 +2670,6 @@
       ],
       "practice_allowed_deferred_question_ids": [
         "31summer21_q09",
-        "32autumn21_q11",
         "33summer21_q08"
       ],
       "practice_allowed_question_ids": [
@@ -2663,7 +2700,8 @@
       "risk_flags": [
         "mastery_evidence_deferred",
         "teacher_review_app_region_mismatch",
-        "teacher_review_deferred"
+        "teacher_review_deferred",
+        "unreviewed_app_region_routing_mismatch"
       ],
       "skill_ref": "p3_diff_stationary_tangent_normal",
       "snippet_count": 1,
@@ -2672,18 +2710,18 @@
       ],
       "teacher_review_app_region_mismatch_question_ids": [
         "31summer21_q09",
-        "32autumn21_q11",
         "33summer21_q08"
       ],
       "teacher_review_deferred_question_ids": [
         "31summer21_q09",
-        "32autumn21_q11",
         "33summer21_q08"
       ],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "35summer25_q07"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -2695,7 +2733,6 @@
     },
     {
       "app_region_mismatch_question_ids": [
-        "33summer21_q04",
         "32spring21_q10"
       ],
       "available_support_types": [
@@ -2705,7 +2742,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 3,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "31autumn21_q04",
         "33summer21_q04",
@@ -2715,13 +2752,13 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "31autumn21_q04",
+        "33summer21_q04",
         "33summer25_q03",
         "31summer21_q04"
       ],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
-        "32spring21_q10",
-        "33summer21_q04"
+        "32spring21_q10"
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
@@ -2733,12 +2770,12 @@
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
-        "32spring21_q10",
-        "33summer21_q04"
+        "32spring21_q10"
       ],
-      "mastery_evidence_question_count": 3,
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "31autumn21_q04",
+        "33summer21_q04",
         "33summer25_q03",
         "31summer21_q04"
       ],
@@ -2762,8 +2799,7 @@
         }
       ],
       "practice_allowed_deferred_question_ids": [
-        "32spring21_q10",
-        "33summer21_q04"
+        "32spring21_q10"
       ],
       "practice_allowed_question_ids": [
         "31autumn21_q04",
@@ -2799,12 +2835,10 @@
         "p3-integration-method-choice-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [
-        "32spring21_q10",
-        "33summer21_q04"
+        "32spring21_q10"
       ],
       "teacher_review_deferred_question_ids": [
-        "32spring21_q10",
-        "33summer21_q04"
+        "32spring21_q10"
       ],
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
@@ -2932,7 +2966,6 @@
     {
       "app_region_mismatch_question_ids": [
         "32spring21_q06",
-        "33summer21_q04",
         "32summer21_q09",
         "31summer21_q10",
         "35summer25_q09"
@@ -2942,9 +2975,11 @@
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up"
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
       ],
-      "canonical_question_count": 0,
+      "canonical_question_count": 1,
       "canonical_question_ids": [
         "32spring21_q06",
         "33summer21_q04",
@@ -2952,35 +2987,36 @@
         "31summer21_q10",
         "35summer25_q09"
       ],
-      "canonical_question_ids_routed_to_skill": [],
+      "canonical_question_ids_routed_to_skill": [
+        "33summer21_q04"
+      ],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
-        "33summer21_q04",
         "35summer25_q09"
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "integration-gardens",
-      "guardian_candidate_count": 0,
-      "guardian_candidate_question_ids": [],
+      "guardian_candidate_count": 1,
+      "guardian_candidate_question_ids": [
+        "33summer21_q04"
+      ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
-        "33summer21_q04",
         "35summer25_q09"
       ],
-      "mastery_evidence_question_count": 0,
-      "mastery_evidence_question_ids": [],
-      "micro_skill_name": "Integrate rational functions using partial fractions",
-      "missing_support_types": [
-        "canonical_question",
-        "guardian_candidate"
+      "mastery_evidence_question_count": 1,
+      "mastery_evidence_question_ids": [
+        "33summer21_q04"
       ],
+      "micro_skill_name": "Integrate rational functions using partial fractions",
+      "missing_support_types": [],
       "needs_teacher_review": false,
       "official_curriculum_section": "Integration",
       "p1_prerequisite_refs": [
@@ -2999,7 +3035,6 @@
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
-        "33summer21_q04",
         "35summer25_q09"
       ],
       "practice_allowed_question_ids": [
@@ -3044,14 +3079,12 @@
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
-        "33summer21_q04",
         "35summer25_q09"
       ],
       "teacher_review_deferred_question_ids": [
         "31summer21_q10",
         "32spring21_q06",
         "32summer21_q09",
-        "33summer21_q04",
         "35summer25_q09"
       ],
       "unresolved_generator_families": [],
@@ -3191,14 +3224,16 @@
     },
     {
       "app_region_mismatch_question_ids": [
-        "33autumn21_q07"
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
       ],
       "available_support_types": [
-        "field_guide",
-        "canonical_question",
-        "guardian_candidate"
+        "field_guide"
       ],
-      "canonical_question_count": 4,
+      "canonical_question_count": 0,
       "canonical_question_ids": [
         "31summer21_q09",
         "32autumn21_q09",
@@ -3206,41 +3241,34 @@
         "35summer25_q04",
         "35autumn25_q04"
       ],
-      "canonical_question_ids_routed_to_skill": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "35summer25_q04",
-        "35autumn25_q04"
-      ],
+      "canonical_question_ids_routed_to_skill": [],
       "curriculum_role": "p3_core",
       "export_blocked_deferred_question_ids": [
         "33autumn21_q07"
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "logarithm-grove",
-      "guardian_candidate_count": 2,
-      "guardian_candidate_question_ids": [
-        "31summer21_q09",
-        "35summer25_q04"
-      ],
+      "guardian_candidate_count": 0,
+      "guardian_candidate_question_ids": [],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
-        "33autumn21_q07"
-      ],
-      "mastery_evidence_question_count": 4,
-      "mastery_evidence_question_ids": [
         "31summer21_q09",
         "32autumn21_q09",
-        "35summer25_q04",
-        "35autumn25_q04"
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "35summer25_q04"
       ],
+      "mastery_evidence_question_count": 0,
+      "mastery_evidence_question_ids": [],
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
       "missing_support_types": [
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up"
+        "warm_up",
+        "canonical_question",
+        "guardian_candidate"
       ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Logarithmic and exponential functions",
@@ -3285,7 +3313,8 @@
       "risk_flags": [
         "mastery_evidence_deferred",
         "teacher_review_app_region_mismatch",
-        "teacher_review_deferred"
+        "teacher_review_deferred",
+        "unreviewed_app_region_routing_mismatch"
       ],
       "skill_ref": "p3_log_calculus_contexts",
       "snippet_count": 0,
@@ -3299,7 +3328,12 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04",
+        "35summer25_q04"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -3961,7 +3995,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "32autumn21_q11"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -3970,7 +4006,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 4,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "31autumn21_q08",
         "32autumn21_q11",
@@ -3979,7 +4015,6 @@
       ],
       "canonical_question_ids_routed_to_skill": [
         "31autumn21_q08",
-        "32autumn21_q11",
         "32spring22_q07",
         "35autumn25_q10"
       ],
@@ -3992,13 +4027,14 @@
         "31autumn21_q08",
         "35autumn25_q10"
       ],
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 4,
+      "mastery_evidence_blocked_question_ids": [
+        "32autumn21_q11"
+      ],
+      "mastery_evidence_question_count": 3,
       "mastery_evidence_question_ids": [
         "31autumn21_q08",
-        "32autumn21_q11",
         "32spring22_q07",
         "35autumn25_q10"
       ],
@@ -4045,7 +4081,9 @@
         "p3-iteration-formula-discipline-001-qc"
       ],
       "region_id": "numerical-mines",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_num_iteration_formula",
       "snippet_count": 1,
       "snippet_ids": [
@@ -4056,7 +4094,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn21_q11"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -4066,7 +4106,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "31summer21_q07"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -4075,7 +4117,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "31autumn25_q09",
         "32autumn25_q06",
@@ -4086,7 +4128,6 @@
       "canonical_question_ids_routed_to_skill": [
         "31autumn25_q09",
         "32autumn25_q06",
-        "31summer21_q07",
         "32spring21_q09",
         "33summer25_q11"
       ],
@@ -4099,14 +4140,15 @@
         "31autumn25_q09",
         "32autumn25_q06"
       ],
-      "instructional_status": "partial",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_blocked_question_ids": [
+        "31summer21_q07"
+      ],
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "31autumn25_q09",
         "32autumn25_q06",
-        "31summer21_q07",
         "32spring21_q09",
         "33summer25_q11"
       ],
@@ -4144,7 +4186,9 @@
         "p3-numerical-method-evidence-001-qc"
       ],
       "region_id": "numerical-mines",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_num_sign_change_graph_evidence",
       "snippet_count": 1,
       "snippet_ids": [
@@ -4155,7 +4199,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q07"
+      ],
       "warmup_generator_families": [],
       "warmup_practice_ids": [],
       "warmup_support_count": 0,
@@ -4283,6 +4329,8 @@
     },
     {
       "app_region_mismatch_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
         "31summer21_q04",
         "32summer21_q06"
       ],
@@ -4295,7 +4343,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 3,
+      "canonical_question_count": 1,
       "canonical_question_ids": [
         "32autumn21_q06",
         "32autumn25_q08",
@@ -4304,8 +4352,6 @@
         "32summer21_q06"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "32autumn21_q06",
-        "32autumn25_q08",
         "33summer25_q08"
       ],
       "curriculum_role": "p3_core",
@@ -4315,21 +4361,20 @@
       ],
       "field_guide_count": 1,
       "field_guide_region_id": "trig-observatory",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "32autumn21_q06",
         "33summer25_q08"
       ],
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
         "31summer21_q04",
-        "32summer21_q06"
-      ],
-      "mastery_evidence_question_count": 3,
-      "mastery_evidence_question_ids": [
         "32autumn21_q06",
         "32autumn25_q08",
+        "32summer21_q06"
+      ],
+      "mastery_evidence_question_count": 1,
+      "mastery_evidence_question_ids": [
         "33summer25_q08"
       ],
       "micro_skill_name": "Choose trig identities for proof or simplification",
@@ -4380,7 +4425,8 @@
       "risk_flags": [
         "mastery_evidence_deferred",
         "teacher_review_app_region_mismatch",
-        "teacher_review_deferred"
+        "teacher_review_deferred",
+        "unreviewed_app_region_routing_mismatch"
       ],
       "skill_ref": "p3_trig_identity_selection",
       "snippet_count": 1,
@@ -4398,7 +4444,10 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08"
+      ],
       "warmup_generator_families": [
         "trigonometry.double_angle_basic",
         "trigonometry.identity_rewrite_basic"
@@ -4635,7 +4684,8 @@
     },
     {
       "app_region_mismatch_question_ids": [
-        "32summer21_q06"
+        "32summer21_q06",
+        "32autumn25_q08"
       ],
       "available_support_types": [
         "field_guide",
@@ -4646,7 +4696,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 4,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "32summer21_q06",
         "32autumn21_q08",
@@ -4657,7 +4707,6 @@
       "canonical_question_ids_routed_to_skill": [
         "32autumn21_q08",
         "33summer21_q05",
-        "32autumn25_q08",
         "35summer25_q02"
       ],
       "curriculum_role": "p3_core",
@@ -4673,13 +4722,13 @@
       "instructional_status": "needs_review",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [
+        "32autumn25_q08",
         "32summer21_q06"
       ],
-      "mastery_evidence_question_count": 4,
+      "mastery_evidence_question_count": 3,
       "mastery_evidence_question_ids": [
         "32autumn21_q08",
         "33summer21_q05",
-        "32autumn25_q08",
         "35summer25_q02"
       ],
       "micro_skill_name": "Transform reciprocal and double-angle equations safely",
@@ -4729,7 +4778,8 @@
       "risk_flags": [
         "mastery_evidence_deferred",
         "teacher_review_app_region_mismatch",
-        "teacher_review_deferred"
+        "teacher_review_deferred",
+        "unreviewed_app_region_routing_mismatch"
       ],
       "skill_ref": "p3_trig_reciprocal_double_angle",
       "snippet_count": 1,
@@ -4745,7 +4795,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn25_q08"
+      ],
       "warmup_generator_families": [
         "trigonometry.double_angle_basic",
         "trigonometry.identity_rewrite_basic"
@@ -5072,43 +5124,43 @@
     "app_region_unrouted_p3_question_count": 0,
     "by_region": [
       {
-        "app_routed_p3_question_count": 70,
-        "canonical_question_count": 22,
+        "app_routed_p3_question_count": 59,
+        "canonical_question_count": 17,
         "region_id": "algebra-forge",
         "region_title": "Algebra Vault",
         "skill_count": 7
       },
       {
-        "app_routed_p3_question_count": 41,
-        "canonical_question_count": 20,
+        "app_routed_p3_question_count": 39,
+        "canonical_question_count": 16,
         "region_id": "logarithm-grove",
         "region_title": "Logarithm Observatory",
         "skill_count": 6
       },
       {
-        "app_routed_p3_question_count": 41,
-        "canonical_question_count": 14,
+        "app_routed_p3_question_count": 39,
+        "canonical_question_count": 12,
         "region_id": "trig-observatory",
         "region_title": "Trigonometry Spire",
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 59,
+        "app_routed_p3_question_count": 60,
         "canonical_question_count": 16,
         "region_id": "complex-harbor",
         "region_title": "Argand Atrium",
         "skill_count": 4
       },
       {
-        "app_routed_p3_question_count": 56,
-        "canonical_question_count": 11,
+        "app_routed_p3_question_count": 52,
+        "canonical_question_count": 14,
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 26,
-        "canonical_question_count": 7,
+        "app_routed_p3_question_count": 49,
+        "canonical_question_count": 8,
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
         "skill_count": 4
@@ -5121,15 +5173,15 @@
         "skill_count": 3
       },
       {
-        "app_routed_p3_question_count": 32,
-        "canonical_question_count": 12,
+        "app_routed_p3_question_count": 29,
+        "canonical_question_count": 10,
         "region_id": "numerical-mines",
         "region_title": "Iteration Forge",
         "skill_count": 3
       },
       {
-        "app_routed_p3_question_count": 34,
-        "canonical_question_count": 11,
+        "app_routed_p3_question_count": 32,
+        "canonical_question_count": 10,
         "region_id": "differential-shrine",
         "region_title": "Differential Shrine",
         "skill_count": 3
@@ -5137,10 +5189,10 @@
     ],
     "p3_question_count": 396,
     "referenced_canonical_question_count": 128,
-    "referenced_trainable_p3_question_count": 126,
+    "referenced_trainable_p3_question_count": 116,
     "total_question_count": 1301,
     "trainable_p3_question_count": 385,
-    "unreferenced_trainable_p3_question_count": 259
+    "unreferenced_trainable_p3_question_count": 269
   },
   "region_summary": {
     "region_count": 9,
@@ -5148,16 +5200,16 @@
     "status_counts": {
       "blocked": 0,
       "missing": 0,
-      "needs_review": 4,
-      "partial": 5,
+      "needs_review": 7,
+      "partial": 2,
       "ready": 0
     }
   },
   "reviewed_skill_summary": {
     "available_support_type_counts": {
-      "canonical_question": 39,
+      "canonical_question": 37,
       "field_guide": 40,
-      "guardian_candidate": 38,
+      "guardian_candidate": 37,
       "quick_check": 34,
       "snippet": 39,
       "warm_up": 13,
@@ -5168,9 +5220,9 @@
     "status_counts": {
       "blocked": 0,
       "missing": 0,
-      "needs_review": 8,
-      "partial": 22,
-      "ready": 10
+      "needs_review": 15,
+      "partial": 16,
+      "ready": 9
     }
   },
   "risk_summary": [
@@ -5199,13 +5251,13 @@
       "status": "open"
     },
     {
-      "count": 1,
+      "count": 3,
       "risk_id": "missing_trainable_canonical_question",
       "risk_type": "ordinary_gap",
       "status": "open"
     },
     {
-      "count": 2,
+      "count": 3,
       "risk_id": "missing_guardian_candidate",
       "risk_type": "ordinary_gap",
       "status": "open"
@@ -5217,28 +5269,28 @@
       "status": "clear"
     },
     {
-      "count": 20,
+      "count": 14,
       "risk_id": "teacher_review_deferred_ambiguous_cases",
       "risk_type": "review_risk",
       "status": "open"
     },
     {
-      "count": 20,
+      "count": 14,
       "risk_id": "mastery_blocked_deferred_ambiguous_cases",
       "risk_type": "mastery_safety",
       "status": "open"
     },
     {
-      "count": 20,
+      "count": 14,
       "risk_id": "teacher_review_app_region_mismatches",
       "risk_type": "review_risk",
       "status": "open"
     },
     {
-      "count": 0,
+      "count": 19,
       "risk_id": "unreviewed_app_region_mismatches",
       "risk_type": "structural_warning",
-      "status": "clear"
+      "status": "open"
     },
     {
       "count": 10,
@@ -5247,10 +5299,10 @@
       "status": "resolved"
     },
     {
-      "count": 0,
+      "count": 6,
       "risk_id": "inactive_teacher_review_routing_audit_entries",
       "risk_type": "review_risk",
-      "status": "clear"
+      "status": "open"
     },
     {
       "count": 0,
@@ -5259,30 +5311,29 @@
       "status": "clear"
     },
     {
-      "count": 0,
+      "count": 12,
       "risk_id": "structural_warnings",
       "risk_type": "structural_warning",
-      "status": "clear"
+      "status": "open"
     }
   ],
   "routing_audit_summary": {
-    "active_mismatch_count": 20,
-    "active_skill_warning_count": 8,
-    "deferred_ambiguous_case_count": 20,
+    "active_mismatch_count": 33,
+    "active_skill_warning_count": 15,
+    "deferred_ambiguous_case_count": 14,
     "deferred_review_backlog": {
       "affected_app_region_ids": [
         "algebra-forge",
         "calculus-cliffs",
-        "integration-gardens",
-        "logarithm-grove",
-        "numerical-mines"
+        "differential-shrine",
+        "integration-gardens"
       ],
       "affected_region_ids": [
         "algebra-forge",
         "calculus-cliffs",
+        "differential-shrine",
         "integration-gardens",
         "logarithm-grove",
-        "numerical-mines",
         "trig-observatory"
       ],
       "affected_reviewed_region_ids": [
@@ -5301,13 +5352,13 @@
         "p3_trig_identity_selection",
         "p3_trig_reciprocal_double_angle"
       ],
-      "case_count": 20,
+      "case_count": 14,
       "evidence_status": "ambiguous_part_level_evidence",
       "export_allowed": false,
-      "export_blocked_case_count": 20,
+      "export_blocked_case_count": 14,
       "items": [
         {
-          "app_region_id": "logarithm-grove",
+          "app_region_id": "integration-gardens",
           "evidence_status": "ambiguous_part_level_evidence",
           "export_allowed": false,
           "mastery_evidence_allowed": false,
@@ -5335,21 +5386,7 @@
           "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
         },
         {
-          "app_region_id": "logarithm-grove",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "35summer25_q04",
-          "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
-          "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "skill_ref": "p3_diff_chain_product_quotient",
-          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
-        },
-        {
-          "app_region_id": "logarithm-grove",
+          "app_region_id": "integration-gardens",
           "evidence_status": "ambiguous_part_level_evidence",
           "export_allowed": false,
           "mastery_evidence_allowed": false,
@@ -5363,35 +5400,7 @@
           "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
         },
         {
-          "app_region_id": "logarithm-grove",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32autumn21_q09",
-          "rationale": "The question is an implicit differentiation problem containing exponential terms.",
-          "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "skill_ref": "p3_diff_implicit_log_exp",
-          "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
-        },
-        {
-          "app_region_id": "logarithm-grove",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "35autumn25_q04",
-          "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
-          "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "skill_ref": "p3_diff_implicit_log_exp",
-          "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
-        },
-        {
-          "app_region_id": "logarithm-grove",
+          "app_region_id": "integration-gardens",
           "evidence_status": "ambiguous_part_level_evidence",
           "export_allowed": false,
           "mastery_evidence_allowed": false,
@@ -5403,20 +5412,6 @@
           "reviewed_skill_map_region_id": "calculus-cliffs",
           "skill_ref": "p3_diff_stationary_tangent_normal",
           "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
-        },
-        {
-          "app_region_id": "numerical-mines",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32autumn21_q11",
-          "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
-          "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "skill_ref": "p3_diff_stationary_tangent_normal",
-          "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
         },
         {
           "app_region_id": "integration-gardens",
@@ -5447,21 +5442,7 @@
           "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
         },
         {
-          "app_region_id": "algebra-forge",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "33summer21_q04",
-          "rationale": "The question combines partial-fraction setup and exact integration.",
-          "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "skill_ref": "p3_int_definite_improper_area",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
-        },
-        {
-          "app_region_id": "algebra-forge",
+          "app_region_id": "differential-shrine",
           "evidence_status": "ambiguous_part_level_evidence",
           "export_allowed": false,
           "mastery_evidence_allowed": false,
@@ -5501,20 +5482,6 @@
           "reviewed_skill_map_region_id": "integration-gardens",
           "skill_ref": "p3_int_partial_fractions",
           "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
-        },
-        {
-          "app_region_id": "algebra-forge",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "33summer21_q04",
-          "rationale": "The question combines decomposition and integration evidence.",
-          "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "skill_ref": "p3_int_partial_fractions",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
         },
         {
           "app_region_id": "algebra-forge",
@@ -5588,15 +5555,15 @@
         }
       ],
       "mastery_evidence_allowed": false,
-      "mastery_evidence_blocked_case_count": 20,
+      "mastery_evidence_blocked_case_count": 14,
       "practice_allowed": true,
-      "practice_allowed_case_count": 20,
+      "practice_allowed_case_count": 14,
       "resolution_status": "teacher_review_deferred"
     },
-    "deferred_teacher_review_count": 20,
+    "deferred_teacher_review_count": 14,
     "deferred_teacher_review_mismatches": [
       {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -5624,21 +5591,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
       },
       {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "35summer25_q04",
-        "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
-        "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_chain_product_quotient",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
-      },
-      {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -5652,35 +5605,7 @@
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
       },
       {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32autumn21_q09",
-        "rationale": "The question is an implicit differentiation problem containing exponential terms.",
-        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp",
-        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
-      },
-      {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "35autumn25_q04",
-        "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
-        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp",
-        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
-      },
-      {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -5692,20 +5617,6 @@
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
-      },
-      {
-        "app_region_id": "numerical-mines",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32autumn21_q11",
-        "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
-        "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_stationary_tangent_normal",
-        "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
       },
       {
         "app_region_id": "integration-gardens",
@@ -5736,21 +5647,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
       },
       {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q04",
-        "rationale": "The question combines partial-fraction setup and exact integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_definite_improper_area",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
-      },
-      {
-        "app_region_id": "algebra-forge",
+        "app_region_id": "differential-shrine",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -5790,20 +5687,6 @@
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q04",
-        "rationale": "The question combines decomposition and integration evidence.",
-        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
       },
       {
         "app_region_id": "algebra-forge",
@@ -5877,8 +5760,93 @@
       }
     ],
     "deferred_teacher_review_skill_warning_count": 8,
-    "inactive_teacher_review_entries": [],
-    "inactive_teacher_review_entry_count": 0,
+    "inactive_teacher_review_entries": [
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "logarithm-grove",
+        "practice_allowed": true,
+        "question_id": "35summer25_q04",
+        "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
+        "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
+      },
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "logarithm-grove",
+        "practice_allowed": true,
+        "question_id": "32autumn21_q09",
+        "rationale": "The question is an implicit differentiation problem containing exponential terms.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
+      },
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "logarithm-grove",
+        "practice_allowed": true,
+        "question_id": "35autumn25_q04",
+        "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
+        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_implicit_log_exp",
+        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
+      },
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "numerical-mines",
+        "practice_allowed": true,
+        "question_id": "32autumn21_q11",
+        "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
+        "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
+      },
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "algebra-forge",
+        "practice_allowed": true,
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines partial-fraction setup and exact integration.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
+      },
+      {
+        "evidence_status": "ambiguous_part_level_evidence",
+        "export_allowed": false,
+        "mastery_evidence_allowed": false,
+        "original_app_region_id": "algebra-forge",
+        "practice_allowed": true,
+        "question_id": "33summer21_q04",
+        "rationale": "The question combines decomposition and integration evidence.",
+        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
+        "resolution_status": "teacher_review_deferred",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_partial_fractions",
+        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
+      }
+    ],
+    "inactive_teacher_review_entry_count": 6,
     "original_reviewed_mismatch_count": 30,
     "resolved_mismatch_count": 10,
     "resolved_mismatches": [
@@ -6025,10 +5993,10 @@
     ],
     "resolved_skill_warning_count": 6,
     "review_label": "phase-3-routing-audit-v1",
-    "teacher_review_mismatch_count": 20,
+    "teacher_review_mismatch_count": 14,
     "teacher_review_mismatches": [
       {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -6056,21 +6024,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
       },
       {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "35summer25_q04",
-        "rationale": "The question is a stationary-point task involving logarithms, so both the app route and reviewed skill route are defensible.",
-        "recommended_resolution": "Keep visible until reviewed as either differentiation evidence, log-calculus bridge evidence, or both with part-level metadata.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_chain_product_quotient",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic."
-      },
-      {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -6084,35 +6038,7 @@
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
       },
       {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32autumn21_q09",
-        "rationale": "The question is an implicit differentiation problem containing exponential terms.",
-        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp",
-        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation."
-      },
-      {
-        "app_region_id": "logarithm-grove",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "35autumn25_q04",
-        "rationale": "The question explicitly requires implicit differentiation of logarithmic expressions.",
-        "recommended_resolution": "Keep visible until reviewed as part-level implicit-differentiation evidence or log-calculus bridge evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp",
-        "source_of_conflicting_label": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation."
-      },
-      {
-        "app_region_id": "logarithm-grove",
+        "app_region_id": "integration-gardens",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -6124,20 +6050,6 @@
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
-      },
-      {
-        "app_region_id": "numerical-mines",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32autumn21_q11",
-        "rationale": "The whole question is routed to numerical methods, but it contains a derivative subpart.",
-        "recommended_resolution": "Keep visible until reviewed for part-level tangent/gradient evidence inside a numerical-methods question.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_stationary_tangent_normal",
-        "source_of_conflicting_label": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence."
       },
       {
         "app_region_id": "integration-gardens",
@@ -6168,21 +6080,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
       },
       {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q04",
-        "rationale": "The question combines partial-fraction setup and exact integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level integration evidence from the definite-integral subpart.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_definite_improper_area",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
-      },
-      {
-        "app_region_id": "algebra-forge",
+        "app_region_id": "differential-shrine",
         "evidence_status": "ambiguous_part_level_evidence",
         "export_allowed": false,
         "mastery_evidence_allowed": false,
@@ -6222,20 +6120,6 @@
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q04",
-        "rationale": "The question combines decomposition and integration evidence.",
-        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions."
       },
       {
         "app_region_id": "algebra-forge",
@@ -6309,9 +6193,276 @@
       }
     ],
     "teacher_review_skill_warning_count": 8,
-    "unreviewed_mismatch_count": 0,
-    "unreviewed_mismatches": [],
-    "unreviewed_skill_warning_count": 0
+    "unreviewed_mismatch_count": 19,
+    "unreviewed_mismatches": [
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31autumn21_q01",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=modulus, subtopic=general, deepseek=9709_p3_topic_logarithmic_and_exponential_functions."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31summer22_q01",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_logarithmic_and_exponential_functions."
+      },
+      {
+        "app_region_id": "differential-shrine",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31summer21_q10",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_partial_fraction_form",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=partial_fractions, subtopic=general, deepseek=9709_p3_topic_differential_equations."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "33summer21_q04",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_partial_fraction_form",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=partial_fractions, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "complex-harbor",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "33summer21_q10",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_polynomial_remainder_factor",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=polynomials, subtopic=general, deepseek=9709_p3_topic_complex_numbers."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31autumn21_q01",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=modulus, subtopic=general, deepseek=9709_p3_topic_logarithmic_and_exponential_functions."
+      },
+      {
+        "app_region_id": "logarithm-grove",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31summer22_q01",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_logarithmic_and_exponential_functions."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32spring21_q04",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "differential-shrine",
+        "skill_ref": "p3_de_separation_setup",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=parametric_equations, subtopic=general, deepseek=none."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "35summer25_q07",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_chain_product_quotient",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=parametric_equations, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "35summer25_q07",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "calculus-cliffs",
+        "skill_ref": "p3_diff_stationary_tangent_normal",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=parametric_equations, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31summer21_q09",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32autumn21_q09",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_differentiation."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "35autumn25_q04",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_differentiation."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "35summer25_q04",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=logarithms_and_exponentials, subtopic=general, deepseek=9709_p3_topic_differentiation."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32autumn21_q11",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "numerical-mines",
+        "skill_ref": "p3_num_iteration_formula",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=numerical_methods, subtopic=general, deepseek=9709_p3_topic_differentiation."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "31summer21_q07",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "numerical-mines",
+        "skill_ref": "p3_num_sign_change_graph_evidence",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=numerical_methods, subtopic=general, deepseek=9709_p3_topic_differentiation."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32autumn21_q06",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=trigonometry, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32autumn25_q08",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_identity_selection",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=trigonometry, subtopic=general, deepseek=9709_p3_topic_integration."
+      },
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32autumn25_q08",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "trig-observatory",
+        "skill_ref": "p3_trig_reciprocal_double_angle",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=trigonometry, subtopic=general, deepseek=9709_p3_topic_integration."
+      }
+    ],
+    "unreviewed_skill_warning_count": 12
   },
   "schema_name": "asterion_p3_content_inventory_report",
   "schema_version": 1,
@@ -6335,7 +6486,123 @@
     ],
     "unsafe_mastery_evidence_is_blocking": true
   },
-  "structural_reference_warnings": [],
+  "structural_reference_warnings": [
+    {
+      "skill_ref": "p3_alg_discriminant_root_conditions",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ]
+    },
+    {
+      "skill_ref": "p3_alg_partial_fraction_form",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q10",
+        "33summer21_q04"
+      ]
+    },
+    {
+      "skill_ref": "p3_alg_polynomial_remainder_factor",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "33summer21_q10"
+      ]
+    },
+    {
+      "skill_ref": "p3_alg_structure_rearrangement",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31autumn21_q01",
+        "31summer22_q01"
+      ]
+    },
+    {
+      "skill_ref": "p3_de_separation_setup",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32spring21_q04"
+      ]
+    },
+    {
+      "skill_ref": "p3_diff_chain_product_quotient",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "35summer25_q07"
+      ]
+    },
+    {
+      "skill_ref": "p3_diff_stationary_tangent_normal",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "35summer25_q07"
+      ]
+    },
+    {
+      "skill_ref": "p3_log_calculus_contexts",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04",
+        "35summer25_q04"
+      ]
+    },
+    {
+      "skill_ref": "p3_num_iteration_formula",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn21_q11"
+      ]
+    },
+    {
+      "skill_ref": "p3_num_sign_change_graph_evidence",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "31summer21_q07"
+      ]
+    },
+    {
+      "skill_ref": "p3_trig_identity_selection",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08"
+      ]
+    },
+    {
+      "skill_ref": "p3_trig_reciprocal_double_angle",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32autumn25_q08"
+      ]
+    }
+  ],
   "teacher_review_export_tag_summary": {
     "available_export_tag_fields": [
       "skill_ref",

@@ -434,39 +434,39 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('surfaces p3_int_partial_fractions as blocked and high priority', () => {
+  it('surfaces p3_log_calculus_contexts as blocked and high priority', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
-    const partialFractionsRows = matrix.coverage_rows.filter((row) => row.skill_ref === 'p3_int_partial_fractions');
-    const partialFractions = partialFractionsRows[0];
+    const logCalculusRows = matrix.coverage_rows.filter((row) => row.skill_ref === 'p3_log_calculus_contexts');
+    const logCalculus = logCalculusRows[0];
 
-    expect(partialFractionsRows).toHaveLength(1);
-    expect(partialFractions.coverage_status).toBe('blocked_for_mastery');
-    expect(partialFractions.correction_priority).toBe('P0_blocked_mastery');
-    expect(partialFractions.clean_mastery_evidence_count).toBe(0);
-    expect(partialFractions.deferred_evidence_count).toBeGreaterThan(0);
-    expect(partialFractions.blocking_reasons).toEqual(expect.arrayContaining([
+    expect(logCalculusRows).toHaveLength(1);
+    expect(logCalculus.coverage_status).toBe('blocked_for_mastery');
+    expect(logCalculus.correction_priority).toBe('P0_blocked_mastery');
+    expect(logCalculus.clean_mastery_evidence_count).toBe(0);
+    expect(logCalculus.deferred_evidence_count).toBeGreaterThan(0);
+    expect(logCalculus.blocking_reasons).toEqual(expect.arrayContaining([
       'no_clean_mastery_evidence',
       'all_available_evidence_deferred',
     ]));
-    expect(partialFractions.recommended_next_action).toContain('Find or review clean P3 canonical mastery evidence');
-    expect(partialFractions.recommended_next_action).not.toContain('random content');
-    expect(matrix.risk_summary.blocked_mastery_skill_refs).toContain('p3_int_partial_fractions');
+    expect(logCalculus.recommended_next_action).toContain('Find or review clean P3 canonical mastery evidence');
+    expect(logCalculus.recommended_next_action).not.toContain('random content');
+    expect(matrix.risk_summary.blocked_mastery_skill_refs).toContain('p3_log_calculus_contexts');
   });
 
   it('keeps deferred ambiguous evidence visible and mastery-ineligible', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
     const deferredSummary = matrix.deferred_evidence_summary;
 
-    expect(deferredSummary.case_count).toBe(20);
+    expect(deferredSummary.case_count).toBe(14);
     expect(deferredSummary.affected_skill_count).toBe(8);
     expect(deferredSummary.mastery_evidence_allowed).toBe(false);
     expect(deferredSummary.practice_allowed).toBe(true);
     expect(deferredSummary.export_allowed).toBe(false);
-    expect(deferredSummary.items).toHaveLength(20);
+    expect(deferredSummary.items).toHaveLength(14);
     const rowDeferredPairs = new Set(
       matrix.coverage_rows.flatMap((row) => row.deferred_evidence_question_ids.map((questionId) => `${row.skill_ref}/${questionId}`)),
     );
-    expect(rowDeferredPairs.size).toBe(20);
+    expect(rowDeferredPairs.size).toBe(14);
     for (const item of deferredSummary.items) {
       expect(item.mastery_evidence_allowed).toBe(false);
       expect(item.practice_allowed).toBe(true);
@@ -513,11 +513,21 @@ describe('P3 coverage matrix', () => {
 
     for (const row of matrix.coverage_rows) {
       if (row.support_gaps.some((gap) => ['snippet', 'worked_example', 'quick_check'].includes(gap))) {
-        expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
-        expect(row.correction_priority).toBe('P1_missing_core_support');
+        if (row.blocking_reasons.length > 0) {
+          expect(row.coverage_status).toBe('blocked_for_mastery');
+          expect(row.correction_priority).toBe('P0_blocked_mastery');
+        } else {
+          expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
+          expect(row.correction_priority).toBe('P1_missing_core_support');
+        }
       } else if (row.support_gaps.includes('warm_up')) {
-        expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
-        expect(row.correction_priority).toBe('P2_missing_practice_support');
+        if (row.blocking_reasons.length > 0) {
+          expect(row.coverage_status).toBe('blocked_for_mastery');
+          expect(row.correction_priority).toBe('P0_blocked_mastery');
+        } else {
+          expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
+          expect(row.correction_priority).toBe('P2_missing_practice_support');
+        }
       }
     }
   });
@@ -565,7 +575,7 @@ describe('P3 coverage matrix', () => {
     expect(markdown).toContain('## Deferred Ambiguous Evidence');
     expect(markdown).toContain('## Support Gaps');
     expect(markdown).toContain('## Suggested Region-By-Region Correction Order');
-    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('p3_int_partial_fractions');
+    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('p3_log_calculus_contexts');
     expect(markdown).toContain('mastery-ineligible');
     expect(markdown).not.toMatch(/deferred evidence is clean mastery evidence/i);
 

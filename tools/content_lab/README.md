@@ -52,6 +52,12 @@ Build the teacher-facing P3 coverage matrix:
 npm run coverage:p3-matrix
 ```
 
+Build the deterministic future region-correction queue:
+
+```bash
+npm run queue:p3-region-correction
+```
+
 Run the focused matrix validation:
 
 ```bash
@@ -139,6 +145,13 @@ Correction priority labels guide the next region-by-region correction pass:
 - `P4_polish_or_complete`: mostly complete and safe for teacher review.
 
 Deferred ambiguous evidence remains visible in the matrix and Markdown report. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims.
+
+`npm run queue:p3-region-correction` writes:
+
+- `tools/content_lab/reports/p3_region_correction_queue.json`
+- `tools/content_lab/reports/p3_region_correction_queue.md`
+
+The region-correction queue is the planning artifact for future content correction. It reads the topic-routing sidecar, reviewed routing audit, content inventory, and coverage matrix, then separates route correction, text review, mark-scheme/subpart review, and support-content gaps. The queue intentionally does not edit source data. It keeps missing P3 routes, review-needed routes, ambiguous multi-topic routes, fallback-display-only placements, deferred evidence cases, audited route decisions, and weak or missing skill support visible as separate workstreams.
 
 Matrix validation is intentionally strict about curriculum-contract failures and intentionally tolerant of ordinary support gaps:
 

@@ -1,0 +1,281 @@
+import { execFileSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { describe, expect, it } from 'vitest';
+
+const repoRoot = process.cwd();
+const scriptPath = path.join(repoRoot, 'tools/content_lab/scripts/build_p3_region_correction_queue.py');
+const reportJsonPath = path.join(repoRoot, 'tools/content_lab/reports/p3_region_correction_queue.json');
+const reportMarkdownPath = path.join(repoRoot, 'tools/content_lab/reports/p3_region_correction_queue.md');
+const pythonTimeoutMs = 10_000;
+
+interface QueueItem {
+  queue_id: string;
+  workstream: string;
+  category: string;
+  question_id?: string;
+  skill_ref?: string;
+  region_id?: string;
+  primary_region_id?: string;
+  fallback_region_id?: string;
+  blocked_or_risky_reason: string;
+  recommended_action: string;
+  mastery_evidence_allowed?: boolean | null;
+  practice_allowed?: boolean | null;
+  export_allowed?: boolean | null;
+  support_gaps?: string[];
+  clean_mastery_evidence_count?: number;
+  coverage_status?: string;
+}
+
+interface RegionCorrectionQueue {
+  schema_name: string;
+  schema_version: number;
+  generated_label: string;
+  source_route_summary: {
+    counts: {
+      safe_p3_route: number;
+      review_needed_route: number;
+      ambiguous_multi_topic_route: number;
+      missing_p3_route: number;
+      total_p3_route_records: number;
+    };
+  };
+  queue_summary: {
+    total_queue_item_count: number;
+    unique_question_count: number;
+    unique_skill_count: number;
+    queue_counts: Record<string, Record<string, number>>;
+  };
+  region_summary: Array<{
+    region_id: string;
+    region_title: string;
+    issue_count: number;
+    workstreams: Record<string, number>;
+    categories: Record<string, number>;
+  }>;
+  skill_summary: Array<{
+    skill_ref: string;
+    region_id: string;
+    issue_count: number;
+    categories: Record<string, number>;
+  }>;
+  queue: {
+    route_correction: {
+      missing_p3_routes: QueueItem[];
+      ambiguous_multi_topic_routes: QueueItem[];
+      review_needed_routes: QueueItem[];
+      fallback_display_only_region_placements: QueueItem[];
+      audited_route_decisions: QueueItem[];
+    };
+    text_review: {
+      routing_text_or_visual_blockers: QueueItem[];
+    };
+    mark_scheme_subpart_review: {
+      deferred_evidence_cases: QueueItem[];
+    };
+    support_content_gaps: {
+      weak_or_missing_skill_support: QueueItem[];
+    };
+  };
+  next_step_policy: {
+    content_mutation_allowed_in_this_pass: boolean;
+  };
+  inventory_bridge_summary: {
+    deferred_case_count: number;
+    support_gap_counts: Record<string, number>;
+  };
+}
+
+function runPython(args: string[]) {
+  execFileSync('python3', args, {
+    cwd: repoRoot,
+    timeout: pythonTimeoutMs,
+    maxBuffer: 10 * 1024 * 1024,
+    stdio: 'pipe',
+  });
+}
+
+function readJson<T>(filePath: string): T {
+  return JSON.parse(readFileSync(filePath, 'utf8')) as T;
+}
+
+function withTempDir<T>(callback: (dir: string) => T) {
+  const dir = mkdtempSync(path.join(tmpdir(), 'asterion-p3-region-queue-'));
+  try {
+    return callback(dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function buildQueueToTemp(dir: string) {
+  const jsonOutput = path.join(dir, 'p3_region_correction_queue.json');
+  const markdownOutput = path.join(dir, 'p3_region_correction_queue.md');
+  runPython([
+    scriptPath,
+    '--json-output',
+    jsonOutput,
+    '--markdown-output',
+    markdownOutput,
+  ]);
+  return {
+    jsonOutput,
+    markdownOutput,
+    queue: readJson<RegionCorrectionQueue>(jsonOutput),
+    markdown: readFileSync(markdownOutput, 'utf8'),
+  };
+}
+
+function flatItems(queue: RegionCorrectionQueue) {
+  return Object.values(queue.queue).flatMap((workstream) => (
+    Object.values(workstream).flat()
+  ));
+}
+
+function countItemsByCategory(queue: RegionCorrectionQueue, workstream: keyof RegionCorrectionQueue['queue'], category: string) {
+  const workstreamQueues = queue.queue[workstream] as unknown as Record<string, QueueItem[]>;
+  return workstreamQueues[category].length;
+}
+
+function expectSummaryCountsMatchDetails(queue: RegionCorrectionQueue) {
+  let total = 0;
+  for (const [workstream, categoryCounts] of Object.entries(queue.queue_summary.queue_counts)) {
+    const workstreamQueues = queue.queue[workstream as keyof RegionCorrectionQueue['queue']] as unknown as Record<string, QueueItem[]>;
+    for (const [category, count] of Object.entries(categoryCounts)) {
+      expect(workstreamQueues[category].length, `${workstream}.${category}`).toBe(count);
+      total += count;
+      const ids = workstreamQueues[category].map((item) => item.queue_id);
+      expect(new Set(ids).size, `${workstream}.${category} duplicate queue_id`).toBe(ids.length);
+      for (const item of workstreamQueues[category]) {
+        expect(item.workstream).toBe(workstream);
+        expect(item.category).toBe(category);
+        expect(item.blocked_or_risky_reason.trim()).not.toBe('');
+        expect(item.recommended_action.trim()).not.toBe('');
+      }
+    }
+  }
+  expect(queue.queue_summary.total_queue_item_count).toBe(total);
+}
+
+describe('P3 region-correction queue', () => {
+  it('builds deterministic JSON and Markdown reports', () => {
+    withTempDir((dir) => {
+      const { jsonOutput, markdownOutput, queue, markdown } = buildQueueToTemp(dir);
+
+      expect(existsSync(jsonOutput)).toBe(true);
+      expect(existsSync(markdownOutput)).toBe(true);
+      expect(queue.schema_name).toBe('asterion_p3_region_correction_queue');
+      expect(queue.schema_version).toBe(1);
+      expect(queue.generated_label).toBe('deterministic-p3-region-correction-queue-v1');
+      expect(queue.next_step_policy.content_mutation_allowed_in_this_pass).toBe(false);
+      expect(markdown).toContain('# P3 Region-Correction Queue');
+      expect(markdown).toContain('## Route Correction');
+      expect(markdown).toContain('## Text Review');
+      expect(markdown).toContain('## Mark-Scheme And Subpart Review');
+      expect(markdown).toContain('## Support-Content Gaps');
+    });
+  });
+
+  it('matches the audit-aligned P3 route classification counts', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+
+    expect(queue.source_route_summary.counts).toMatchObject({
+      total_p3_route_records: 396,
+      safe_p3_route: 317,
+      missing_p3_route: 53,
+      ambiguous_multi_topic_route: 14,
+      review_needed_route: 12,
+    });
+    expect(countItemsByCategory(queue, 'route_correction', 'missing_p3_routes')).toBe(53);
+    expect(countItemsByCategory(queue, 'route_correction', 'ambiguous_multi_topic_routes')).toBe(14);
+    expect(countItemsByCategory(queue, 'route_correction', 'review_needed_routes')).toBe(12);
+    expect(countItemsByCategory(queue, 'route_correction', 'fallback_display_only_region_placements')).toBe(53);
+    expect(countItemsByCategory(queue, 'text_review', 'routing_text_or_visual_blockers')).toBeGreaterThan(53);
+  });
+
+  it('keeps missing routes and fallback display placements explicit', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+    const missing = queue.queue.route_correction.missing_p3_routes;
+    const fallback = queue.queue.route_correction.fallback_display_only_region_placements;
+    const missingIds = new Set(missing.map((item) => item.question_id));
+
+    expect(missing).toHaveLength(53);
+    expect(fallback).toHaveLength(53);
+    for (const item of missing) {
+      expect(item.primary_region_id).toBe('');
+      expect(item.blocked_or_risky_reason).toContain('No mapped P3 primary topic');
+    }
+    for (const item of fallback) {
+      expect(missingIds.has(item.question_id)).toBe(true);
+      expect(item.fallback_region_id).toBeTruthy();
+      expect(item.category).toBe('fallback_display_only_region_placements');
+    }
+  });
+
+  it('separates deferred mark-scheme evidence from clean mastery evidence', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+    const deferred = queue.queue.mark_scheme_subpart_review.deferred_evidence_cases;
+
+    expect(deferred).toHaveLength(14);
+    expect(queue.inventory_bridge_summary.deferred_case_count).toBe(14);
+    expect(deferred.some((item) => item.skill_ref === 'p3_int_partial_fractions')).toBe(true);
+    for (const item of deferred) {
+      expect(item.mastery_evidence_allowed).toBe(false);
+      expect(item.practice_allowed).toBe(true);
+      expect(item.export_allowed).toBe(false);
+      expect(item.blocked_or_risky_reason.trim()).not.toBe('');
+    }
+  });
+
+  it('reports weak and missing support by skill without correcting content', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+    const support = queue.queue.support_content_gaps.weak_or_missing_skill_support;
+    const logCalculus = support.find((item) => item.skill_ref === 'p3_log_calculus_contexts');
+
+    expect(queue.inventory_bridge_summary.support_gap_counts).toMatchObject({
+      quick_check: 6,
+      snippet: 1,
+      warm_up: 27,
+      worked_example: 1,
+    });
+    expect(support).toHaveLength(30);
+    expect(logCalculus?.support_gaps).toEqual(expect.arrayContaining(['snippet', 'worked_example', 'quick_check', 'warm_up']));
+    expect(logCalculus?.clean_mastery_evidence_count).toBe(0);
+    expect(logCalculus?.coverage_status).toBe('blocked_for_mastery');
+  });
+
+  it('keeps summary totals aligned with detailed queue rows', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+    const allItems = flatItems(queue);
+    const questionIds = new Set(allItems.map((item) => item.question_id).filter(Boolean));
+    const skillRefs = new Set(allItems.map((item) => item.skill_ref).filter(Boolean));
+
+    expectSummaryCountsMatchDetails(queue);
+    expect(queue.queue_summary.unique_question_count).toBe(questionIds.size);
+    expect(queue.queue_summary.unique_skill_count).toBe(skillRefs.size);
+    expect(queue.region_summary.length).toBeGreaterThan(0);
+    expect(queue.skill_summary.length).toBeGreaterThan(0);
+    expect(queue.region_summary.some((row) => row.region_id === 'calculus-cliffs' && row.issue_count > 0)).toBe(true);
+    expect(queue.skill_summary.some((row) => row.skill_ref === 'p3_int_partial_fractions')).toBe(true);
+  });
+
+  it('writes Markdown with all required planning sections', () => {
+    execFileSync('npm', ['run', 'queue:p3-region-correction'], {
+      cwd: repoRoot,
+      timeout: pythonTimeoutMs,
+      maxBuffer: 10 * 1024 * 1024,
+      stdio: 'pipe',
+    });
+
+    const markdown = readFileSync(reportMarkdownPath, 'utf8');
+    expect(markdown).toContain('### Missing P3 Routes');
+    expect(markdown).toContain('### Ambiguous Multi-Topic Routes');
+    expect(markdown).toContain('### Review-Needed Routes');
+    expect(markdown).toContain('### Fallback Display-Only Region Placements');
+    expect(markdown).toContain('p3_int_partial_fractions');
+    expect(markdown).toContain('Fallback display routes are browsing hints only');
+    expect(markdown).not.toMatch(/Content mutation allowed in this pass: `true`/);
+  });
+});
