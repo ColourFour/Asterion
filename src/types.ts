@@ -103,6 +103,7 @@ export interface QuestionTopicRouting {
   reviewReasons?: string[];
   evidenceUsed?: string[];
   routingSource?: string;
+  recordSource?: 'topic-routing-sidecar' | 'source-record';
   paperFamily?: PaperFamily;
   evidenceStatus?: QuestionRouteEvidenceStatus;
   mappedRegionId?: string;
@@ -120,6 +121,10 @@ export interface QuestionRouteEvidence {
   source: 'topic-routing' | 'fallback-label' | 'preserved-status' | 'paper-family' | 'none';
   regionId?: string;
   regionName?: string;
+  validatedRegionId?: string;
+  validatedRegionName?: string;
+  displayRegionId?: string;
+  displayRegionName?: string;
   primaryTopicId?: string;
   reasonCodes: string[];
   evidenceUsed?: string[];

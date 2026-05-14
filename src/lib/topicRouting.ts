@@ -8,6 +8,7 @@ export interface TopicRoutingMetadata {
   reviewReasons?: string[];
   evidenceUsed?: string[];
   routingSource?: string;
+  recordSource?: 'topic-routing-sidecar' | 'source-record';
   paperFamily?: string;
   evidenceStatus?: QuestionRouteEvidenceStatus;
   mappedRegionId?: string;

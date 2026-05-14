@@ -182,6 +182,31 @@ function topicIdLooksPrerequisite(topicId: string | undefined): boolean {
   return Boolean(topicId && /^9709_p[12]_topic_/i.test(topicId) && !topicIdLooksP3(topicId));
 }
 
+function hasTopicRoutingAuthority(routing: QuestionTopicRouting | undefined): boolean {
+  return Boolean(
+    routing
+    && routing.recordSource !== 'source-record'
+    && (
+      routing.recordSource === 'topic-routing-sidecar'
+      || routing.primaryTopicId
+      || routing.mappedRegionId
+      || routing.topicDistribution?.length
+      || routing.routingSource
+      || routing.paperFamily
+      || routing.evidenceUsed?.length
+      || routing.reviewRequired !== undefined
+    ),
+  );
+}
+
+function fallbackDisplayRegion(question: NormalizedQuestion, world: WorldDefinition): RegionDefinition | undefined {
+  return matchRegionForLabels(fallbackLabelsForQuestion(question), world);
+}
+
+function nonCleanStatus(status: QuestionRouteEvidenceStatus | undefined): QuestionRouteEvidenceStatus | undefined {
+  return status && status !== 'clean' ? status : undefined;
+}
+
 function routeEvidence(
   status: QuestionRouteEvidenceStatus,
   source: QuestionRouteEvidence['source'],
@@ -189,13 +214,20 @@ function routeEvidence(
   world: WorldDefinition,
   reasonCodes: string[],
   region?: RegionDefinition,
+  displayRegion?: RegionDefinition,
 ): QuestionRouteEvidence {
   const routing = question.topicRouting;
+  const validatedRegion = status === 'clean' && source === 'topic-routing' ? region : undefined;
+  const visibleRegion = displayRegion ?? region;
   return {
     status,
     source,
-    regionId: region?.id,
-    regionName: region?.name,
+    regionId: visibleRegion?.id,
+    regionName: visibleRegion?.name,
+    validatedRegionId: validatedRegion?.id,
+    validatedRegionName: validatedRegion?.name,
+    displayRegionId: visibleRegion?.id,
+    displayRegionName: visibleRegion?.name,
     primaryTopicId: routing?.primaryTopicId,
     reasonCodes,
     evidenceUsed: routing?.evidenceUsed,
@@ -211,41 +243,55 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
   }
 
   const routedRegion = regionForTopicRouting(question.topicRouting, world.regions);
-  const preservedStatus = question.topicRouting?.evidenceStatus;
-  if (preservedStatus) {
-    return routeEvidence(preservedStatus, 'preserved-status', question, world, ['preserved-route-evidence-status'], routedRegion);
-  }
-
   const candidateRegionIds = p3RegionIdsForRouting(question.topicRouting)
     .filter((regionId) => world.regions.some((region) => region.id === regionId));
-  if (candidateRegionIds.length > 1) {
-    return routeEvidence('ambiguous-route', 'topic-routing', question, world, ['multiple-p3-candidate-regions'], routedRegion);
+  const hasRoutingAuthority = hasTopicRoutingAuthority(question.topicRouting);
+  const fallbackRegion = fallbackDisplayRegion(question, world);
+
+  if (hasRoutingAuthority) {
+    const explicitUnsafeStatus = nonCleanStatus(question.topicRouting?.evidenceStatus);
+    if (explicitUnsafeStatus === 'hard-failure') {
+      return routeEvidence('hard-failure', 'topic-routing', question, world, ['topic-routing-evidence-status'], routedRegion, routedRegion ?? fallbackRegion);
+    }
+
+    if (candidateRegionIds.length > 1) {
+      return routeEvidence('ambiguous-route', 'topic-routing', question, world, ['multiple-p3-candidate-regions'], routedRegion, routedRegion ?? fallbackRegion);
+    }
+
+    if (question.topicRouting?.reviewRequired) {
+      const status: QuestionRouteEvidenceStatus = question.topicRouting.reviewReasons?.some(reviewReasonLooksAmbiguous)
+        ? 'ambiguous-route'
+        : 'review-only';
+      return routeEvidence(status, 'topic-routing', question, world, ['topic-routing-review-required'], routedRegion, routedRegion ?? fallbackRegion);
+    }
+
+    if (explicitUnsafeStatus) {
+      return routeEvidence(explicitUnsafeStatus, 'topic-routing', question, world, ['topic-routing-evidence-status'], routedRegion, routedRegion ?? fallbackRegion);
+    }
+
+    if (routedRegion) {
+      return routeEvidence('clean', 'topic-routing', question, world, ['validated-topic-routing'], routedRegion);
+    }
+
+    if (question.topicRouting?.primaryTopicId) {
+      const status: QuestionRouteEvidenceStatus = topicIdLooksPrerequisite(question.topicRouting.primaryTopicId)
+        ? 'prerequisite-only'
+        : topicIdLooksP3(question.topicRouting.primaryTopicId)
+          ? 'missing-route'
+          : 'not-P3';
+      return routeEvidence(status, 'topic-routing', question, world, ['unmapped-topic-routing-id'], undefined, fallbackRegion);
+    }
+
+    return routeEvidence('missing-route', 'topic-routing', question, world, ['topic-routing-missing-primary-topic'], undefined, fallbackRegion);
   }
 
-  if (question.topicRouting?.reviewRequired) {
-    const status: QuestionRouteEvidenceStatus = question.topicRouting.reviewReasons?.some(reviewReasonLooksAmbiguous)
-      ? 'ambiguous-route'
-      : 'review-only';
-    return routeEvidence(status, 'topic-routing', question, world, ['topic-routing-review-required'], routedRegion);
+  const preservedStatus = nonCleanStatus(question.topicRouting?.evidenceStatus);
+  if (preservedStatus) {
+    return routeEvidence(preservedStatus, 'preserved-status', question, world, ['preserved-route-evidence-status'], undefined, fallbackRegion);
   }
 
-  if (routedRegion) {
-    return routeEvidence('clean', 'topic-routing', question, world, ['validated-topic-routing'], routedRegion);
-  }
-
-  if (question.topicRouting?.primaryTopicId) {
-    const status: QuestionRouteEvidenceStatus = topicIdLooksPrerequisite(question.topicRouting.primaryTopicId)
-      ? 'prerequisite-only'
-      : topicIdLooksP3(question.topicRouting.primaryTopicId)
-        ? 'missing-route'
-        : 'not-P3';
-    return routeEvidence(status, 'topic-routing', question, world, ['unmapped-topic-routing-id']);
-  }
-
-  const fallbackLabels = fallbackLabelsForQuestion(question);
-  const fallbackRegion = matchRegionForLabels(fallbackLabels, world);
   if (fallbackRegion) {
-    return routeEvidence('fallback-display-only', 'fallback-label', question, world, ['fallback-label-match'], fallbackRegion);
+    return routeEvidence('fallback-display-only', 'fallback-label', question, world, ['fallback-label-match'], undefined, fallbackRegion);
   }
 
   return routeEvidence('missing-route', 'none', question, world, ['no-topic-routing-record']);

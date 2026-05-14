@@ -28,6 +28,8 @@ describe('normalizeQuestionBank', () => {
       status: 'clean',
       source: 'topic-routing',
       regionId: 'algebra-forge',
+      validatedRegionId: 'algebra-forge',
+      displayRegionId: 'algebra-forge',
       reasonCodes: ['validated-topic-routing'],
     });
     expect(questions[0].localTopic).toBe('Algebra');
@@ -78,6 +80,108 @@ describe('normalizeQuestionBank', () => {
       regionId: 'trig-observatory',
       reasonCodes: ['fallback-label-match'],
     });
+  });
+
+  it('uses the topic-routing sidecar as the route authority over source or fallback hints', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          {
+            id: 'sidecar-review',
+            paper_family: 'p3',
+            topic: 'Algebra',
+            route_evidence_status: 'clean',
+          },
+          {
+            id: 'sidecar-ambiguous',
+            paper_family: 'p3',
+            topic: 'Algebra',
+          },
+          {
+            id: 'source-clean-only',
+            paper_family: 'p3',
+            topic: 'Algebra',
+            route_evidence_status: 'clean',
+          },
+        ],
+      },
+      {},
+      {
+        records: {
+          'sidecar-review': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            review_required: true,
+            review_reasons: ['teacher review needed'],
+          },
+          'sidecar-ambiguous': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            route_evidence_status: 'clean',
+            confidence: 'high',
+            review_required: false,
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 55 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 45 },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions.find((question) => question.id === 'sidecar-review')?.routeEvidence).toMatchObject({
+      status: 'review-only',
+      source: 'topic-routing',
+      reasonCodes: ['topic-routing-review-required'],
+      displayRegionId: 'algebra-forge',
+    });
+    expect(questions.find((question) => question.id === 'sidecar-review')?.routeEvidence?.validatedRegionId).toBeUndefined();
+
+    expect(questions.find((question) => question.id === 'sidecar-ambiguous')?.routeEvidence).toMatchObject({
+      status: 'ambiguous-route',
+      source: 'topic-routing',
+      reasonCodes: ['multiple-p3-candidate-regions'],
+      candidateRegionIds: ['algebra-forge', 'trig-observatory'],
+      displayRegionId: 'algebra-forge',
+    });
+    expect(questions.find((question) => question.id === 'sidecar-ambiguous')?.routeEvidence?.validatedRegionId).toBeUndefined();
+
+    expect(questions.find((question) => question.id === 'source-clean-only')?.routeEvidence).toMatchObject({
+      status: 'fallback-display-only',
+      source: 'fallback-label',
+      reasonCodes: ['fallback-label-match'],
+      displayRegionId: 'algebra-forge',
+    });
+    expect(questions.find((question) => question.id === 'source-clean-only')?.routeEvidence?.validatedRegionId).toBeUndefined();
+  });
+
+  it('keeps fallback display regions visible when sidecar routing is missing but does not validate them', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          id: 'missing-primary',
+          paper_family: 'p3',
+          topic: 'Trigonometry',
+        }],
+      },
+      {},
+      {
+        records: {
+          'missing-primary': {
+            confidence: 'low',
+            review_required: false,
+            evidence_used: ['ocr_text'],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].routeEvidence).toMatchObject({
+      status: 'missing-route',
+      source: 'topic-routing',
+      reasonCodes: ['topic-routing-missing-primary-topic'],
+      displayRegionId: 'trig-observatory',
+    });
+    expect(questions[0].routeEvidence?.validatedRegionId).toBeUndefined();
   });
 
   it('preserves explicit route-evidence statuses from source records', () => {

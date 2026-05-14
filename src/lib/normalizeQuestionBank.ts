@@ -286,6 +286,7 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
       reviewReasons: stringArray(record.review_reasons),
       evidenceUsed: stringArray(record.evidence_used),
       routingSource: pickString(record, ['routing_source']),
+      recordSource: 'topic-routing-sidecar',
       paperFamily: pickString(record, ['paper_family', 'paperFamily']),
       evidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, record),
       mappedRegionId: primaryTopicId ? P3_TOPIC_ID_TO_REGION_ID[primaryTopicId] : undefined,
@@ -418,8 +419,11 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
     const indexedTopicRouting = routingIndex.get(id);
     const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
     const preservedEvidenceStatus = pickRouteEvidenceStatus(routeEvidenceRecord, record);
-    const topicRouting = indexedTopicRouting || preservedEvidenceStatus
-      ? { ...(indexedTopicRouting ?? {}), evidenceStatus: preservedEvidenceStatus ?? indexedTopicRouting?.evidenceStatus }
+    const sourceRecordEvidenceStatus = preservedEvidenceStatus && preservedEvidenceStatus !== 'clean'
+      ? preservedEvidenceStatus
+      : undefined;
+    const topicRouting = indexedTopicRouting || sourceRecordEvidenceStatus
+      ? indexedTopicRouting ?? { evidenceStatus: sourceRecordEvidenceStatus, recordSource: 'source-record' as const }
       : undefined;
     const textQuality = normalizeTextQuality(record);
     const localTopic = pickString(record, ['topic', 'local_topic', 'localTopic']);
