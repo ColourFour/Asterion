@@ -154,9 +154,9 @@ export default function App() {
     const p3 = questions.filter(isP3Question);
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
     const imageMetadata = p3.filter((question) => question.questionImageRawPaths.length > 0).length;
-    if (questions.length === 0) return 'No questions loaded yet. Check public/data/question_bank.p3.json and the full-bank fallback.';
+    if (questions.length === 0) return 'No questions loaded yet. Check public/assets/exam-bank-data/asterion_question_bank_v1.json and the raw-bank fallback.';
     if (p3.length === 0) return 'Question bank loaded, but no P3 records were found. Check paper_family labels.';
-    if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic/DeepSeek labels in Data Health.';
+    if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic-routing data in Data Health.';
     if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
     return undefined;
   }, [questions, worldProgress]);
@@ -293,25 +293,36 @@ export default function App() {
           <div className="intro-copy">
             <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
             <h1>Asterion</h1>
-            <p>Step into a local-first maths academy where official question images become encounters, mark schemes become archives, and every restored region is backed by real evidence.</p>
           </div>
-          <div className="onboarding-crest-art" aria-hidden="true">
-            <svg viewBox="0 0 260 220">
-              <path className="crest-ring" d="M44 132a86 86 0 1 1 172 0 86 86 0 0 1-172 0Z" />
-              <path className="crest-orbit" d="M28 132c42-46 82-70 120-72 34-2 62 12 84 42" />
-              <path className="crest-orbit" d="M36 162c42 18 87 20 134 6 30-9 51-24 64-44" />
-              <path className="crest-tower" d="M106 174V98l24-42 24 42v76Z" />
-              <path className="crest-window" d="M124 112h12v30h-12Z" />
-              <circle cx="68" cy="72" r="4" />
-              <circle cx="190" cy="68" r="4" />
-              <circle cx="212" cy="144" r="4" />
-              <circle cx="54" cy="154" r="4" />
+          <div className="asterion-emblem" role="img" aria-label="Golden Asterion A emblem" data-testid="asterion-emblem">
+            <span className="emblem-orbit" aria-hidden="true">
+              <span className="emblem-orbit-star" />
+            </span>
+            <svg className="asterion-emblem-mark" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="emblemGlow" cx="50%" cy="42%" r="62%">
+                  <stop offset="0%" stopColor="#fff7be" />
+                  <stop offset="48%" stopColor="#efb536" />
+                  <stop offset="100%" stopColor="#7c4510" />
+                </radialGradient>
+                <linearGradient id="emblemGold" x1="64" x2="174" y1="54" y2="184" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#fff2a8" />
+                  <stop offset="54%" stopColor="#f0b638" />
+                  <stop offset="100%" stopColor="#a76018" />
+                </linearGradient>
+              </defs>
+              <circle className="emblem-aura" cx="120" cy="120" r="94" />
+              <circle className="emblem-ring" cx="120" cy="120" r="78" />
+              <path className="emblem-cross-orbit" d="M44 132c35-43 72-65 111-66 26-1 49 8 69 28" />
+              <path className="emblem-cross-orbit" d="M38 152c38 21 78 27 121 17 25-6 46-19 63-39" />
+              <text className="emblem-letter" x="120" y="158" textAnchor="middle">A</text>
             </svg>
           </div>
           <div className="onboarding-briefing">
             <strong>Academy charter</strong>
-            <span>Restore P3 regions with official CAIE question images, mark-scheme checking, and honest self-marked attempts.</span>
-            <span>No AI marking. No generated exam clones. No hidden rewards. Your local evidence trail is the source of progress.</span>
+            <span>Your quest begins here.</span>
+            <span>Restore the P3 regions, collect evidence from real practice, and travel toward the A*.</span>
+            <span>One region at a time. One skill at a time.</span>
           </div>
         </section>
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}

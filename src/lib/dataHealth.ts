@@ -12,6 +12,11 @@ export interface DataHealthSummary {
   sidecarSchemaName?: string;
   sidecarRecordCount?: number;
   sidecarAppearsPlaceholder: boolean;
+  routingUrl?: string;
+  routingSchemaName?: string;
+  routingRecordCount?: number;
+  routingMappedCount?: number;
+  routingAppearsPlaceholder: boolean;
   totalQuestionsLoaded: number;
   totalP3Questions: number;
   trainableP3Questions: number;
@@ -37,6 +42,8 @@ export interface DataHealthSummary {
   sidecarEnrichmentCount: number;
   sidecarMergeCount: number;
   sidecarErrorCount: number;
+  hardFailedTextCount: number;
+  reviewUsableTextCount: number;
 }
 
 export interface AssetAvailabilityAudit {
@@ -236,6 +243,11 @@ export function buildDataHealthSummary(
     sidecarSchemaName: diagnostics?.sidecarSchemaName,
     sidecarRecordCount: diagnostics?.sidecarRecordCount,
     sidecarAppearsPlaceholder: diagnostics?.sidecarAppearsPlaceholder ?? true,
+    routingUrl: diagnostics?.routingUrl,
+    routingSchemaName: diagnostics?.routingSchemaName,
+    routingRecordCount: diagnostics?.routingRecordCount,
+    routingMappedCount: diagnostics?.routingMappedCount,
+    routingAppearsPlaceholder: diagnostics?.routingAppearsPlaceholder ?? true,
     totalQuestionsLoaded: diagnostics?.normalizedQuestionCount ?? questions.length,
     totalP3Questions: p3Questions.length,
     trainableP3Questions: trainableP3Questions.length,
@@ -278,5 +290,7 @@ export function buildDataHealthSummary(
     sidecarEnrichmentCount: diagnostics?.sidecarEnrichmentCount ?? 0,
     sidecarMergeCount: diagnostics?.sidecarMergeCount ?? 0,
     sidecarErrorCount: diagnostics?.sidecarErrorCount ?? 0,
+    hardFailedTextCount: questions.filter((question) => question.textQuality?.hardFailed).length,
+    reviewUsableTextCount: questions.filter((question) => question.textQuality?.reviewUsable).length,
   };
 }

@@ -1,5 +1,6 @@
 import type { NormalizedQuestion, PaperFamily, RegionDefinition, WorldDefinition } from '../types';
 import { canonicalPaperFamily } from './resolveAssetPath';
+import { regionForTopicRouting } from './topicRouting';
 
 export const P3_WORLD_NAME = 'P3 Astral Academy';
 
@@ -105,6 +106,8 @@ function rawString(record: unknown, path: string[]): string | undefined {
 
 export function labelsForQuestion(question: NormalizedQuestion): string[] {
   return [
+    question.topicRouting?.primaryTopicId,
+    question.topicRouting?.mappedRegionId,
     question.displayTopic,
     question.displaySubtopic,
     question.localTopic,
@@ -140,6 +143,8 @@ export function matchRegionForLabels(labels: Array<string | undefined>, world: W
 
 export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
+  const routedRegion = regionForTopicRouting(question.topicRouting, world.regions);
+  if (routedRegion) return routedRegion;
   return matchRegionForLabels(labelsForQuestion(question), world);
 }
 

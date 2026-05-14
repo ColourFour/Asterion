@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 const repoRoot = process.cwd();
 const scriptPath = path.join(repoRoot, 'tools/content_lab/scripts/build_p3_skill_coverage.py');
 const skillMapPath = path.join(repoRoot, 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json');
-const questionBankPath = path.join(repoRoot, 'public/data/question_bank.json');
+const questionBankPath = path.join(repoRoot, 'public/assets/exam-bank-data/question_bank.json');
 const snippetsPath = path.join(repoRoot, 'public/data/teaching_snippets.json');
 const generatedPracticePath = path.join(repoRoot, 'public/data/generated_practice_bank.json');
 const pythonTimeoutMs = 10_000;

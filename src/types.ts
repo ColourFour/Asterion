@@ -39,7 +39,6 @@ export type IssueType =
   | 'mark_scheme_image_missing'
   | 'image_crop_wrong'
   | 'wrong_topic'
-  | 'wrong_difficulty'
   | 'mark_scheme_mismatch'
   | 'unreadable_image'
   | 'duplicate_question'
@@ -80,6 +79,31 @@ export interface DeepSeekMetadata {
   errorMessage?: string;
 }
 
+export interface QuestionTextQuality {
+  questionText?: string;
+  markSchemeText?: string;
+  questionTextTrust?: string;
+  questionTextRole?: string;
+  textOnlyDisplayAllowed?: boolean;
+  visualRequired?: boolean;
+  hardFailed: boolean;
+  reviewUsable: boolean;
+  routingUsable: boolean;
+  contentLabSupportUsable: boolean;
+  statusLabel: string;
+  reasonCodes: string[];
+}
+
+export interface QuestionTopicRouting {
+  primaryTopicId?: string;
+  confidence?: string;
+  reviewRequired?: boolean;
+  reviewReasons?: string[];
+  evidenceUsed?: string[];
+  routingSource?: string;
+  mappedRegionId?: string;
+}
+
 export interface NormalizedQuestion {
   id: string;
   paperFamily: PaperFamily;
@@ -89,6 +113,8 @@ export interface NormalizedQuestion {
   localSubtopic?: string;
   localDifficulty?: Difficulty;
   deepseek: DeepSeekMetadata;
+  topicRouting?: QuestionTopicRouting;
+  textQuality?: QuestionTextQuality;
   displayTopic: string;
   displaySubtopic?: string;
   displayDifficulty?: Difficulty;
@@ -127,6 +153,12 @@ export interface QuestionBankDiagnostics {
   sidecarEnrichmentCount: number;
   sidecarMergeCount: number;
   sidecarErrorCount: number;
+  routingUrl?: string;
+  routingSchemaName?: string;
+  routingSchemaVersion?: string | number;
+  routingRecordCount?: number;
+  routingMappedCount?: number;
+  routingAppearsPlaceholder?: boolean;
 }
 
 export interface Attempt {

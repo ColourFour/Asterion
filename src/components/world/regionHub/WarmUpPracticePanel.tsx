@@ -93,7 +93,7 @@ function WarmUpPracticeCard({
     <article className="warm-up-practice-card" data-activity-id={item.practiceId}>
       <div className="warm-up-practice-heading">
         <strong>{practiceLabel}</strong>
-        <span>{item.difficultyBand}</span>
+        {item.sequenceRole ? <span>{item.sequenceRole.replace(/_/g, ' ')}</span> : null}
       </div>
       {previousAttempt ? <small className="region-card-note">Last: {activityOutcomes.find((entry) => entry.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}</small> : null}
       {(item.questionType || item.keyMethod) ? (

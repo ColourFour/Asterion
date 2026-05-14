@@ -6,7 +6,6 @@ const issueTypes: IssueType[] = [
   'mark_scheme_image_missing',
   'image_crop_wrong',
   'wrong_topic',
-  'wrong_difficulty',
   'mark_scheme_mismatch',
   'unreadable_image',
   'duplicate_question',

@@ -29,9 +29,9 @@ function collectAssetUrls(directory: string): Set<string> {
 }
 
 function loadNormalizedQuestions() {
-  const bank = readJson(join(process.cwd(), 'public/data/question_bank.json'));
-  const sidecar = readJson(join(process.cwd(), 'public/data/question_bank.deepseek.full.json'));
-  return normalizeQuestionBank(bank, sidecar);
+  const bank = readJson(join(process.cwd(), 'public/assets/exam-bank-data/asterion_question_bank_v1.json'));
+  const routing = readJson(join(process.cwd(), 'public/assets/exam-bank-data/question_bank.topic_routing.v1.json'));
+  return normalizeQuestionBank(bank, {}, routing);
 }
 
 function formatMissingAssets(missing: ReturnType<typeof auditQuestionAssetAvailability>['missingExamples']): string {
@@ -75,7 +75,7 @@ describe('real P3 asset integrity', () => {
       '33autumn25_q10',
       '33autumn25_q11',
     ]);
-    expect(trainingBlockersForQuestion(blocked[0]).join(' ')).toContain('P3 33autumn25 mark-scheme image assets are absent');
+    expect(trainingBlockersForQuestion(blocked[0]).join(' ')).toContain('Missing mark-scheme image metadata.');
   });
 
   it('reports the quarantined 33autumn25 records in the full P3 asset audit', () => {

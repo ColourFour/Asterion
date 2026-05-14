@@ -5,7 +5,6 @@ import { canonicalPaperFamily } from './resolveAssetPath';
 import { matchRegionForLabels, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export type GeneratedPracticeReviewStatus = 'candidate' | 'needs_review' | 'teacher_reviewed' | 'published' | 'blocked' | string;
-export type GeneratedPracticeDifficultyBand = 'easy' | 'medium' | 'hard' | string;
 
 export interface GeneratedPracticeVerification {
   status: 'pass' | 'fail' | string;
@@ -32,7 +31,7 @@ export interface GeneratedPracticeItem {
   parameters: Record<string, unknown>;
   sequenceRole?: string;
   verification: GeneratedPracticeVerification;
-  difficultyBand: GeneratedPracticeDifficultyBand;
+  difficultyBand?: string;
   reviewStatus: GeneratedPracticeReviewStatus;
 }
 
@@ -133,7 +132,7 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
     const difficultyBand = stringValue(item.difficulty_band);
     const reviewStatus = stringValue(item.review_status);
 
-    if (!practiceId || !generatorFamily || !paperFamily || !topic || !prompt || !answer || workedSolution.length === 0 || !verification || !difficultyBand || !reviewStatus) {
+    if (!practiceId || !generatorFamily || !paperFamily || !topic || !prompt || !answer || workedSolution.length === 0 || !verification || !reviewStatus) {
       return [];
     }
 

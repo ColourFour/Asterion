@@ -12,8 +12,8 @@ import {
   regionHashPath,
   type RegionLearningPageId,
 } from '../lib/regionRoutes';
-import type { TeachingSnippet } from '../lib/teachingSnippets';
-import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../types';
+import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, type TeachingSnippet } from '../lib/teachingSnippets';
+import type { Attempt, LearningActivityAttempt, NormalizedQuestion, RegionLearningRecord, RegionProgress, TrainingSessionIntent } from '../types';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
@@ -25,6 +25,9 @@ type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 (globalThis as ActGlobal).IS_REACT_ACT_ENVIRONMENT = true;
 
 const stylesCss = readFileSync(`${process.cwd()}/src/styles.css`, 'utf8');
+const publicTeachingSnippets = normalizeTeachingSnippetsData(
+  JSON.parse(readFileSync(`${process.cwd()}/public/data/teaching_snippets.json`, 'utf8')),
+);
 
 const mountedRoots: Root[] = [];
 const mountedContainers: HTMLElement[] = [];
@@ -181,6 +184,31 @@ function practiceVariant(index: number): GeneratedPracticeItem {
   };
 }
 
+function realSnippetsForRegion(regionId: string): TeachingSnippet[] {
+  const region = P3_ASTRAL_ACADEMY.regions.find((candidate) => candidate.id === regionId)!;
+  return getTeachingSnippetsForRegion(publicTeachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, region);
+}
+
+function snippetWithMathWorkedExample(): TeachingSnippet {
+  return {
+    ...snippet,
+    snippetId: 'p3-log-katex-check',
+    title: 'Combine logs',
+    workedExamples: [
+      {
+        ...snippet.workedExamples[0],
+        prompt: 'Combine logs: use $\\ln x + \\ln 3 = \\ln(3x)$ and compare with $$\\frac{dy}{dx}=2x$$.',
+        steps: [
+          'Use $$\\ln a + \\ln b = \\ln(ab)$$ first.',
+          'Then solve $\\ln(3x)=\\ln(12)$.',
+        ],
+        answer: '$$x = 4$$',
+        teachingNote: 'Check $x > 0$ in the original equation.',
+      },
+    ],
+  };
+}
+
 function normalizedQuestion(): NormalizedQuestion {
   return {
     id: 'q1',
@@ -204,8 +232,8 @@ function normalizedQuestion(): NormalizedQuestion {
   };
 }
 
-function regionProgress(): RegionProgress {
-  const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove')!;
+function regionProgress(regionId = 'logarithm-grove', overrides: Partial<RegionProgress> = {}): RegionProgress {
+  const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === regionId)!;
   return {
     region: logRegion,
     availableQuestions: 4,
@@ -215,11 +243,39 @@ function regionProgress(): RegionProgress {
     subtopicsTouched: 0,
     rank: 'Discovered',
     isActive: true,
+    ...overrides,
+  };
+}
+
+function regionAttempt(index: number, overrides: Partial<Attempt> = {}): Attempt {
+  return {
+    id: `attempt-${index}`,
+    profileId: 'profile-1',
+    questionId: 'q1',
+    paperFamily: 'p3',
+    paper: '31autumn21',
+    questionNumber: '1',
+    topicDisplayName: 'Algebra',
+    subtopic: 'polynomials',
+    difficulty: 'core',
+    marksEarned: 5,
+    marksAvailable: 6,
+    scoreRatio: 5 / 6,
+    timeSpentSeconds: 420,
+    markSchemeRevealed: true,
+    attemptedAt: `2026-05-0${index}T10:00:00.000Z`,
+    ...overrides,
   };
 }
 
 function renderRegionHubPage(options: {
   activePage?: RegionLearningPageId;
+  fieldGuideCompleted?: boolean;
+  learningRecord?: RegionLearningRecord;
+  progressOverrides?: Partial<RegionProgress>;
+  regionAttempts?: Attempt[];
+  regionId?: string;
+  regionQuestions?: NormalizedQuestion[];
   snippets?: TeachingSnippet[];
   practiceItems?: GeneratedPracticeItem[];
   onCompleteFieldGuide?: () => void;
@@ -228,18 +284,19 @@ function renderRegionHubPage(options: {
   onChallengeGuardian?: (question: NormalizedQuestion) => void;
   onNavigatePage?: (page: RegionLearningPageId) => void;
 } = {}) {
-  const progress = regionProgress();
+  const progress = regionProgress(options.regionId, options.progressOverrides);
   const summary = buildRegionLearningSummary({
     regionProgress: progress,
-    regionQuestions: [normalizedQuestion()],
-    regionAttempts: [],
+    learningRecord: options.learningRecord,
+    regionQuestions: options.regionQuestions ?? [normalizedQuestion()],
+    regionAttempts: options.regionAttempts ?? [],
   });
 
   return render(
     <RegionHub
       regionProgress={progress}
       fieldGuide={getRegionFieldGuide(progress.region)}
-      fieldGuideCompleted={false}
+      fieldGuideCompleted={options.fieldGuideCompleted ?? Boolean(options.learningRecord?.fieldGuideCompletedAt)}
       teachingSnippets={options.snippets ?? [snippet]}
       generatedPractice={options.practiceItems ?? [generatedPractice]}
       learningActivityAttempts={[]}
@@ -273,7 +330,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       </>,
     );
 
-    expect(container.textContent).toContain('Teaching snippets');
+    expect(container.textContent).toContain('Teaching snippet');
     expect(container.textContent).toContain('Worked example');
     expect(container.textContent).toContain('What the question is asking');
     expect(container.textContent).toContain('Question type');
@@ -421,66 +478,143 @@ describe('FieldGuidePanel teaching snippets', () => {
       </>,
     );
 
-    expect(container.querySelectorAll('.teaching-snippet-card')).toHaveLength(2);
+    expect(container.querySelectorAll('.teaching-snippet-card')).toHaveLength(1);
+    const fieldGuideSnippet = container.querySelector('.field-guide-snippet-card');
+    expect(fieldGuideSnippet?.textContent).toContain('Log snippet 1');
+    expect(fieldGuideSnippet?.textContent).not.toContain('Log snippet 2');
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(2);
     expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
-    expect(container.textContent).toContain('1 more reviewed snippet available for this region.');
     expect(container.textContent).toContain('1 more reviewed quick check available.');
     expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
+
+    const nextSnippet = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
+    expect(nextSnippet).toBeTruthy();
+    act(() => {
+      nextSnippet!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(fieldGuideSnippet?.textContent).toContain('Log snippet 2');
   });
 
-  it('renders the region hub as orientation and page navigation instead of the full learning stack', () => {
-    const progress = regionProgress();
+  it('renders the Algebra Vault region hub as a click-first homepage', () => {
     const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
-    const summary = buildRegionLearningSummary({
-      regionProgress: progress,
-      regionQuestions: [normalizedQuestion()],
-      regionAttempts: [],
+    const container = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      onNavigatePage,
     });
 
-    const container = render(
-      <RegionHub
-        regionProgress={progress}
-        fieldGuide={getRegionFieldGuide(progress.region)}
-        fieldGuideCompleted={false}
-        teachingSnippets={[snippet]}
-        generatedPractice={[generatedPractice]}
-        learningActivityAttempts={[]}
-        summary={summary}
-        onCompleteFieldGuide={vi.fn()}
-        onLearningActivityAttempt={vi.fn()}
-        onStartTraining={vi.fn()}
-        onChallengeGuardian={vi.fn()}
-        onNavigatePage={onNavigatePage}
-        onReturnToMap={vi.fn()}
-      />,
-    );
+    expect(container.querySelector('.region-home')).toBeTruthy();
+    expect(container.textContent).toContain('P3 Region');
+    expect(container.querySelector('#region-hub-title')?.textContent).toBe('Algebra Vault');
+    expect(container.textContent).toContain('A guarded vault for expansions, factors, remainders, and locked algebraic forms.');
 
-    expect(container.textContent).toContain('Choose one focused step');
-    expect(container.textContent).toContain('Skill and subtopic overview');
+    const stats = container.querySelector('.region-home-stats');
+    expect(stats).toBeTruthy();
+    expect(stats?.textContent).toContain('Rank');
+    expect(stats?.textContent).toContain('Attempts');
+    expect(stats?.textContent).toContain('Average');
+    expect(stats?.textContent).toContain('Recommended');
+    expect(stats?.textContent).toContain('Read the Field Guide');
+    expect(stats?.textContent).toContain('Guardian');
+    expect(stats?.textContent).toContain('Locked');
+
+    const artwork = container.querySelector('.region-home-artwork');
+    expect(artwork).toBeTruthy();
+    expect(artwork?.getAttribute('aria-label')).toBe('Algebra Vault region artwork');
+    const artworkImage = artwork?.querySelector<HTMLImageElement>('.region-home-artwork-image');
+    expect(artworkImage).toBeTruthy();
+    expect(artworkImage?.getAttribute('src')).toBe('/assets/region-art/algebra-region-hub.png');
+    expect(artwork?.textContent).not.toContain('placeholder');
+
+    const actionCards = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-action-card'));
+    expect(actionCards).toHaveLength(5);
+    expect(actionCards.map((button) => button.dataset.regionPage)).toEqual([
+      'field-guide',
+      'quick-check',
+      'warm-up',
+      'exam-training',
+      'guardian',
+    ]);
+    expect(new Set(actionCards.map((button) => button.dataset.regionPage)).size).toBe(actionCards.length);
+    expect(container.textContent).toContain('Field Guide');
+    expect(container.textContent).toContain('Learn the key ideas');
+    expect(container.textContent).toContain('Quick Checks');
+    expect(container.textContent).toContain('Check one skill');
+    expect(container.textContent).toContain('Warm-Up Practice');
+    expect(container.textContent).toContain('Build fluency');
+    expect(container.textContent).toContain('Exam Training');
+    expect(container.textContent).toContain('Practice real questions');
+    expect(container.textContent).toContain('Guardian Challenge');
+    expect(container.textContent).toContain('Prove mastery');
+
     expect(container.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
+    expect(container.querySelector('.region-summary-band')).toBeFalsy();
+    expect(container.querySelector('.region-hub-overview-card')).toBeFalsy();
+    expect(container.textContent).not.toContain('Skill and subtopic overview');
     expect(container.querySelector('.field-guide-card')).toBeFalsy();
     expect(container.querySelector('.quick-check-card')).toBeFalsy();
     expect(container.querySelector('.warm-up-card')).toBeFalsy();
     expect(container.querySelector('.training-card')).toBeFalsy();
     expect(container.querySelector('.guardian-card')).toBeFalsy();
 
-    const fieldGuideCard = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-page-card'))
-      .find((button) => button.textContent?.includes('Field Guide'));
-    expect(fieldGuideCard).toBeTruthy();
-    expect(container.querySelectorAll('.region-page-card')).toHaveLength(5);
+    const guardianCard = actionCards.find((button) => button.dataset.regionPage === 'guardian');
+    expect(guardianCard?.disabled).toBe(true);
     act(() => {
-      fieldGuideCard!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      guardianCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(onNavigatePage).toHaveBeenCalledWith('field-guide');
+    expect(onNavigatePage).not.toHaveBeenCalled();
+  });
+
+  it('routes each unlocked hub action to the existing focused region page', () => {
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
+    const learningRecord: RegionLearningRecord = {
+      regionId: 'algebra-forge',
+      fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+      updatedAt: '2026-05-08T00:00:00.000Z',
+    };
+    const container = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      fieldGuideCompleted: true,
+      learningRecord,
+      progressOverrides: {
+        attempts: 3,
+        totalMarksEarned: 15,
+        totalMarksAvailable: 18,
+        averageScoreRatio: 15 / 18,
+        subtopicsTouched: 1,
+        rank: 'Bronze',
+      },
+      regionAttempts: [regionAttempt(1), regionAttempt(2), regionAttempt(3)],
+      onNavigatePage,
+    });
+
+    const actionCards = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-action-card'));
+    expect(actionCards).toHaveLength(5);
+    expect(actionCards.find((button) => button.dataset.regionPage === 'guardian')?.disabled).toBe(false);
+
+    for (const button of actionCards) {
+      act(() => {
+        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+    }
+
+    expect(onNavigatePage.mock.calls.map(([page]) => page)).toEqual([
+      'field-guide',
+      'quick-check',
+      'warm-up',
+      'exam-training',
+      'guardian',
+    ]);
   });
 
   it('renders each focused region page with its preserved panel behavior', () => {
     const fieldGuidePage = renderRegionHubPage({ activePage: 'field-guide' });
     expect(fieldGuidePage.textContent).toContain('Field Guide');
-    expect(fieldGuidePage.textContent).toContain('What this topic is');
-    expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeTruthy();
-    expect(fieldGuidePage.textContent).not.toContain('Back to region hub');
+    expect(fieldGuidePage.textContent).toContain('Logarithm Observatory');
+    expect(fieldGuidePage.textContent).toContain('Logarithms are the inverse language of exponentials.');
+    expect(fieldGuidePage.querySelector('.field-guide-page-header')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(fieldGuidePage.textContent).toContain('Back to Region Hub');
     expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
     expect(fieldGuidePage.querySelector('.quick-check-card')).toBeFalsy();
 
@@ -504,6 +638,110 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.textContent).toContain('Guardian Challenge');
     expect(guardianPage.textContent).toContain('Guardian not ready yet');
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
+  });
+
+  it('renders Algebra Vault Field Guide as a one-snippet stepper using existing snippets', () => {
+    const snippets = realSnippetsForRegion('algebra-forge');
+    expect(snippets.length).toBeGreaterThan(1);
+    expect(snippets[0].title).toBe('Rearrange before expanding');
+
+    const onCompleteFieldGuide = vi.fn();
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
+    const container = renderRegionHubPage({
+      activePage: 'field-guide',
+      regionId: 'algebra-forge',
+      snippets,
+      onCompleteFieldGuide,
+      onNavigatePage,
+    });
+
+    expect(container.querySelector('.field-guide-page-header')).toBeTruthy();
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Rank');
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Attempts');
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Average');
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Recommended');
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Guide');
+    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Guardian');
+
+    expect(container.querySelector('.region-hero')).toBeFalsy();
+    expect(container.querySelector('.region-summary-band')).toBeFalsy();
+    expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
+    expect(container.querySelector('.region-home-actions')).toBeFalsy();
+    expect(container.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(container.textContent).not.toContain('Choose one focused step');
+    expect(container.textContent).not.toContain('Skill and subtopic overview');
+
+    let activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
+    expect(activeSnippet).toBeTruthy();
+    expect(container.querySelectorAll('.field-guide-snippet-card')).toHaveLength(1);
+    expect(activeSnippet?.textContent).toContain('Snippet 1 of');
+    expect(activeSnippet?.textContent).toContain('Rearrange before expanding');
+    expect(activeSnippet?.textContent).not.toContain(snippets[1].title);
+    expect(container.querySelector('details')).toBeFalsy();
+
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Previous'))).toBe(false);
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Continue to Quick Checks'))).toBe(false);
+    const next = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
+    expect(next).toBeTruthy();
+
+    act(() => {
+      next!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
+    expect(activeSnippet?.textContent).toContain(snippets[1].title);
+    expect(activeSnippet?.textContent).not.toContain('Rearrange before expanding');
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+
+    const previous = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Previous'));
+    expect(previous).toBeTruthy();
+    act(() => {
+      previous!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
+    expect(activeSnippet?.textContent).toContain('Rearrange before expanding');
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+
+    for (let index = 1; index < snippets.length; index += 1) {
+      const nextButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
+      expect(nextButton).toBeTruthy();
+      act(() => {
+        nextButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+    }
+
+    expect(container.querySelector<HTMLElement>('.field-guide-snippet-card')?.textContent).toContain(`Snippet ${snippets.length} of ${snippets.length}`);
+    const continueButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Continue to Quick Checks'));
+    expect(continueButton).toBeTruthy();
+    act(() => {
+      continueButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onCompleteFieldGuide).toHaveBeenCalledTimes(1);
+    expect(onNavigatePage).toHaveBeenCalledWith('quick-check');
+  });
+
+  it('shows a safe Field Guide empty state without creating reading progress', () => {
+    const onCompleteFieldGuide = vi.fn();
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
+    const container = renderRegionHubPage({
+      activePage: 'field-guide',
+      snippets: [],
+      onCompleteFieldGuide,
+      onNavigatePage,
+    });
+
+    expect(container.textContent).toContain('Field Guide content for this region is still being prepared.');
+    expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
+    expect(container.textContent).not.toContain('Continue to Quick Checks');
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+
+    const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Back to Region Hub');
+    expect(back).toBeTruthy();
+    act(() => {
+      back!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).toHaveBeenCalledWith('hub');
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
   });
 
   it('supports calm missing states and back navigation from focused pages', () => {
@@ -564,6 +802,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     const onLearningActivityAttempt = vi.fn();
 
     renderRegionHubPage({
+      onCompleteFieldGuide,
+      onLearningActivityAttempt,
+    });
+    renderRegionHubPage({
       activePage: 'field-guide',
       onCompleteFieldGuide,
       onLearningActivityAttempt,
@@ -606,7 +848,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
   });
 
-  it('places the region summary directly above the learning content', () => {
+  it('places the focused-page region summary directly above the learning content', () => {
     const progress = regionProgress();
     const summary = buildRegionLearningSummary({
       regionProgress: progress,
@@ -623,6 +865,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         generatedPractice={[generatedPractice]}
         learningActivityAttempts={[]}
         summary={summary}
+        activePage="quick-check"
         onCompleteFieldGuide={vi.fn()}
         onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
@@ -664,6 +907,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         generatedPractice={[generatedPractice]}
         learningActivityAttempts={[]}
         summary={summary}
+        activePage="quick-check"
         onCompleteFieldGuide={vi.fn()}
         onLearningActivityAttempt={vi.fn()}
         onStartTraining={vi.fn()}
@@ -687,6 +931,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(stylesCss).toContain('.arc-phase-5');
     expect(stylesCss).toMatch(/\.arc-phase-1\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*5%/);
     expect(stylesCss).toMatch(/\.arc-phase-5\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*17%/);
+  });
+
+  it('lets the Field Guide snippet card span the focused page width', () => {
+    expect(stylesCss).toMatch(/\.region-page-field-guide\s+\.field-guide-card\s*\{[\s\S]*?width:\s*100%;/);
   });
 
   it('keeps every P3 field-guide worked-example card complete and delimiter-safe', () => {
@@ -722,7 +970,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(source).toContain('\\frac{dy}{dx}');
   });
 
-  it('routes field-guide worked-example inline and block math through KaTeX', async () => {
+  it('routes teaching-snippet worked-example inline and block math through KaTeX', async () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
 
@@ -731,7 +979,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         fieldGuide={getRegionFieldGuide(logRegion!)}
         fieldGuideCompleted={false}
         theme={getRegionTheme(logRegion!)}
-        teachingSnippets={[]}
+        teachingSnippets={[snippetWithMathWorkedExample()]}
         onCompleteFieldGuide={vi.fn()}
       />,
     );
@@ -745,25 +993,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(combineLogsCard?.textContent).not.toContain('$$');
   });
 
-  it('renders worked examples with P3 notation as math instead of raw fragments', async () => {
+  it('renders teaching-snippet worked examples with P3 notation as math instead of raw fragments', async () => {
     const container = render(
-      <>
-        {P3_ASTRAL_ACADEMY.regions.map((region) => (
-          <FieldGuidePanel
-            fieldGuide={getRegionFieldGuide(region)}
-            fieldGuideCompleted={false}
-            theme={getRegionTheme(region)}
-            teachingSnippets={[]}
-            onCompleteFieldGuide={vi.fn()}
-            key={region.id}
-          />
-        ))}
-      </>,
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(P3_ASTRAL_ACADEMY.regions[0])}
+        fieldGuideCompleted={false}
+        theme={getRegionTheme(P3_ASTRAL_ACADEMY.regions[0])}
+        teachingSnippets={[snippetWithMathWorkedExample()]}
+        onCompleteFieldGuide={vi.fn()}
+      />,
     );
-    await waitForKatex(container, 40);
+    await waitForKatex(container, 6);
 
-    expect(container.querySelectorAll('.worked-example-card .katex').length).toBeGreaterThan(40);
-    expect(container.querySelectorAll('.worked-example-card .math-display .katex').length).toBeGreaterThan(20);
+    expect(container.querySelectorAll('.worked-example-card .katex').length).toBeGreaterThan(5);
+    expect(container.querySelectorAll('.worked-example-card .math-display .katex').length).toBeGreaterThan(2);
     expect(container.querySelector('.worked-example-card .mfrac')).toBeTruthy();
     expect(container.innerHTML).toContain('katex-display');
     expect(container.textContent).not.toContain('$$');

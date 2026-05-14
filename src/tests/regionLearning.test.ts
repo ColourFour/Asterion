@@ -20,7 +20,6 @@ function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuesti
     questionNumber: '1',
     displayTopic: 'Logarithms',
     displaySubtopic: 'logarithmic equations',
-    displayDifficulty: 'core',
     marksAvailable: 6,
     deepseek: { hasError: false, topic: 'Logarithms', subtopic: 'logarithmic equations' },
     questionImageRawPaths: ['p3/31autumn21/questions/q01.png'],
@@ -129,16 +128,16 @@ describe('region learning loop logic', () => {
     expect(summary.nextAction.explanation).toBe('Train in this region and save 3 more saved attempts to build guardian evidence.');
   });
 
-  it('unlocks the guardian from local evidence and selects a trainable higher-difficulty question', () => {
+  it('unlocks the guardian from local evidence and selects a trainable higher-mark question', () => {
     const attempts = [
       attempt('1', 0.62, 'logarithmic equations'),
       attempt('2', 0.72, 'exponential equations'),
       attempt('3', 0.81, 'logarithmic equations'),
     ];
     const questions = [
-      question({ id: 'missing-ms', displayDifficulty: 'challenge', markSchemeImageCandidates: [] }),
-      question({ id: 'core', displayDifficulty: 'core', displaySubtopic: 'exponential equations', marksAvailable: 6 }),
-      question({ id: 'stretch', displayDifficulty: 'stretch', marksAvailable: 8 }),
+      question({ id: 'missing-ms', markSchemeImageCandidates: [], marksAvailable: 12 }),
+      question({ id: 'core', displaySubtopic: 'exponential equations', marksAvailable: 6 }),
+      question({ id: 'stretch', marksAvailable: 8 }),
     ];
     const regionProgress = progress({
       attempts: attempts.length,

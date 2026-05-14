@@ -63,20 +63,21 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
             <Metric label="Asset availability check" value={assetAuditStatus} />
             <Metric label="P3 question image groups available" value={formatAvailability(summary.p3QuestionImageGroupsAvailable, summary.p3QuestionImageGroupsChecked)} />
             <Metric label="P3 mark-scheme groups available" value={formatAvailability(summary.p3MarkSchemeImageGroupsAvailable, summary.p3MarkSchemeImageGroupsChecked)} />
-            <Metric label="Sidecar file" value={summary.sidecarUrl ?? 'n/a'} />
-            <Metric label="Sidecar schema" value={summary.sidecarSchemaName ?? 'n/a'} />
-            <Metric label="Sidecar enrichments" value={summary.sidecarEnrichmentCount} />
-            <Metric label="Sidecar merged" value={summary.sidecarMergeCount} />
-            <Metric label="Sidecar errors" value={summary.sidecarErrorCount} />
+            <Metric label="Routing file" value={summary.routingUrl ?? 'n/a'} />
+            <Metric label="Routing schema" value={summary.routingSchemaName ?? 'n/a'} />
+            <Metric label="Routing records" value={summary.routingRecordCount ?? 'n/a'} />
+            <Metric label="Routing mapped" value={summary.routingMappedCount ?? 'n/a'} />
+            <Metric label="Review-usable text" value={summary.reviewUsableTextCount} />
+            <Metric label="Hard-failed text" value={summary.hardFailedTextCount} />
             <Metric label="Unmatched P3" value={summary.unmatchedP3Questions} />
             <Metric label="Image root mode" value={summary.imageRootMode} />
           </div>
 
           {summary.mainAppearsPlaceholder ? (
-            <p className="health-warning">The loaded main question bank appears empty or placeholder. Regenerate public/data/question_bank.p3.json or check the full-bank fallback.</p>
+            <p className="health-warning">The loaded main question bank appears empty or placeholder. Check public/assets/exam-bank-data/asterion_question_bank_v1.json and the raw-bank fallback.</p>
           ) : null}
-          {summary.sidecarAppearsPlaceholder ? (
-            <p className="health-warning">DeepSeek sidecar appears empty or missing. The app will continue with local labels.</p>
+          {summary.routingAppearsPlaceholder ? (
+            <p className="health-warning">Topic routing appears empty or missing. The app will continue with compatibility label matching.</p>
           ) : null}
           {assetAuditStatus === 'failed' ? (
             <p className="health-warning">Asset availability check failed in this browser. Metadata checks are still shown, but actual image availability was not verified.</p>

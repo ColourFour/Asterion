@@ -1,5 +1,10 @@
 import type { NormalizedQuestion, QuestionBankDiagnostics } from '../types';
-import { getQuestionRecordCount, getSidecarEnrichmentCount, normalizeQuestionBankWithDiagnostics } from './normalizeQuestionBank';
+import {
+  getQuestionRecordCount,
+  getTopicRoutingMappedCount,
+  getTopicRoutingRecordCount,
+  normalizeQuestionBankWithDiagnostics,
+} from './normalizeQuestionBank';
 import { isP3Question, matchRegionForQuestion } from './worldMap';
 
 interface LoadedJson {
@@ -14,11 +19,9 @@ export interface LoadQuestionBankOptions {
 }
 
 const DATA_PATHS = {
-  p3Main: './data/question_bank.p3.json',
-  fullMain: './data/question_bank.json',
-  p3Sidecar: './data/question_bank.deepseek.p3.json',
-  primarySidecar: './data/question_bank.deepseek.json',
-  fullSidecar: './data/question_bank.deepseek.full.json',
+  asterionQuestionBank: './assets/exam-bank-data/asterion_question_bank_v1.json',
+  rawQuestionBank: './assets/exam-bank-data/question_bank.json',
+  topicRouting: './assets/exam-bank-data/question_bank.topic_routing.v1.json',
 } as const;
 
 export function staticDataFetchCacheForMode(isProduction: boolean): RequestCache {
@@ -45,14 +48,19 @@ export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankO
 }> {
   const scope = options.scope ?? 'p3';
   const localResult = await loadMainBankWithFallback(scope);
-
-  const sidecarResult = await loadSidecarWithFallback(scope);
-  const result = normalizeQuestionBankWithDiagnostics(localResult.data, sidecarResult.data);
+  const routingResult = await loadTopicRoutingWithFallback();
+  const result = normalizeQuestionBankWithDiagnostics(localResult.data, {}, routingResult.data);
   result.diagnostics = {
     ...result.diagnostics,
     ...jsonMetadata('main', localResult.url, localResult.data),
-    ...jsonMetadata('sidecar', sidecarResult.url, sidecarResult.data),
-    sidecarEnrichmentCount: getSidecarEnrichmentCount(sidecarResult.data),
+    ...jsonMetadata('routing', routingResult.url, routingResult.data),
+    sidecarUrl: undefined,
+    sidecarSchemaName: undefined,
+    sidecarRecordCount: undefined,
+    sidecarAppearsPlaceholder: true,
+    sidecarEnrichmentCount: 0,
+    sidecarMergeCount: 0,
+    sidecarErrorCount: 0,
   };
   logDevelopmentDiagnostics(result.questions, result.diagnostics);
   return result;
@@ -66,42 +74,29 @@ export async function loadFullQuestionBankWithDiagnostics(): Promise<{
 }
 
 async function loadMainBankWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
-  if (scope === 'full') return fetchJson(DATA_PATHS.fullMain);
+  if (scope === 'full') return fetchJson(DATA_PATHS.rawQuestionBank);
 
-  const p3 = await Promise.resolve()
-    .then(() => fetchJson(DATA_PATHS.p3Main))
+  const projected = await Promise.resolve()
+    .then(() => fetchJson(DATA_PATHS.asterionQuestionBank))
     .catch(() => undefined);
-  if (p3 && getQuestionRecordCount(p3.data) > 0) return p3;
+  if (projected && getQuestionRecordCount(projected.data) > 0) return projected;
 
-  return fetchJson(DATA_PATHS.fullMain);
+  return fetchJson(DATA_PATHS.rawQuestionBank);
 }
 
-async function loadSidecarWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
-  const candidates = scope === 'p3'
-    ? [DATA_PATHS.p3Sidecar, DATA_PATHS.primarySidecar, DATA_PATHS.fullSidecar]
-    : [DATA_PATHS.primarySidecar, DATA_PATHS.fullSidecar];
-  let firstLoaded: LoadedJson | undefined;
-
-  for (const path of candidates) {
-    const loaded = await Promise.resolve()
-      .then(() => fetchJson(path))
-      .catch(() => undefined);
-    if (!loaded) continue;
-    firstLoaded ??= loaded;
-    if (getSidecarEnrichmentCount(loaded.data) > 0) return loaded;
-  }
-
-  return firstLoaded ?? { url: 'none', data: {} };
+async function loadTopicRoutingWithFallback(): Promise<LoadedJson> {
+  return Promise.resolve()
+    .then(() => fetchJson(DATA_PATHS.topicRouting))
+    .catch(() => ({ url: 'none', data: {} }));
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
 }
 
-function jsonMetadata(kind: 'main' | 'sidecar', url: string, data: unknown): Partial<QuestionBankDiagnostics> {
+function jsonMetadata(kind: 'main' | 'routing', url: string, data: unknown): Partial<QuestionBankDiagnostics> {
   const record = asRecord(data);
   const questions = Array.isArray(record?.questions) ? record.questions.length : 0;
-  const enrichments = asRecord(record?.enrichments);
   if (kind === 'main') {
     return {
       mainUrl: url,
@@ -113,11 +108,12 @@ function jsonMetadata(kind: 'main' | 'sidecar', url: string, data: unknown): Par
     };
   }
   return {
-    sidecarUrl: url,
-    sidecarSchemaName: typeof record?.schema_name === 'string' ? record.schema_name : undefined,
-    sidecarSchemaVersion: typeof record?.schema_version === 'string' || typeof record?.schema_version === 'number' ? record.schema_version : undefined,
-    sidecarRecordCount: typeof record?.record_count === 'number' ? record.record_count : undefined,
-    sidecarAppearsPlaceholder: !enrichments || Object.keys(enrichments).length === 0,
+    routingUrl: url,
+    routingSchemaName: typeof record?.schema_name === 'string' ? record.schema_name : undefined,
+    routingSchemaVersion: typeof record?.schema_version === 'string' || typeof record?.schema_version === 'number' ? record.schema_version : undefined,
+    routingRecordCount: typeof record?.record_count === 'number' ? record.record_count : getTopicRoutingRecordCount(data),
+    routingMappedCount: getTopicRoutingMappedCount(data),
+    routingAppearsPlaceholder: getTopicRoutingRecordCount(data) === 0,
   };
 }
 
@@ -144,13 +140,11 @@ function logDevelopmentDiagnostics(questions: NormalizedQuestion[], diagnostics:
     normalizedQuestionCount: diagnostics.normalizedQuestionCount,
     p3Count: p3.length,
     regionCounts,
-    sidecarEnrichmentCount: diagnostics.sidecarEnrichmentCount,
-    sidecarUrl: diagnostics.sidecarUrl,
-    sidecarSchemaName: diagnostics.sidecarSchemaName,
-    sidecarRecordCount: diagnostics.sidecarRecordCount,
-    sidecarAppearsPlaceholder: diagnostics.sidecarAppearsPlaceholder,
-    sidecarMergeCount: diagnostics.sidecarMergeCount,
-    sidecarErrorCount: diagnostics.sidecarErrorCount,
+    routingUrl: diagnostics.routingUrl,
+    routingSchemaName: diagnostics.routingSchemaName,
+    routingRecordCount: diagnostics.routingRecordCount,
+    routingMappedCount: diagnostics.routingMappedCount,
+    routingAppearsPlaceholder: diagnostics.routingAppearsPlaceholder,
     imageExamples,
   });
 }

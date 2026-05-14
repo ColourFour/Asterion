@@ -1136,7 +1136,7 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build Content Lab skill-target candidates.")
-    parser.add_argument("--input", default="public/data/question_bank.json", help="Path to question_bank.json")
+    parser.add_argument("--input", default="public/assets/exam-bank-data/question_bank.json", help="Path to question_bank.json")
     parser.add_argument("--output-dir", default="tools/content_lab/outputs", help="Directory for generated JSON outputs")
     parser.add_argument("--output", help="Path for skill_targets.json; overrides --output-dir")
     parser.add_argument("--review-output", help="Path for review_queue.json; overrides --output-dir")

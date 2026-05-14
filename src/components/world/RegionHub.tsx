@@ -1,15 +1,17 @@
+import type { ReactNode } from 'react';
+import { ArrowLeft, BookOpenCheck, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
 import {
-  REGION_LEARNING_PAGE_DESCRIPTIONS,
   REGION_LEARNING_PAGE_LABELS,
   REGION_LEARNING_PAGE_ORDER,
   type RegionLearningPageId,
 } from '../../lib/regionRoutes';
-import { getRegionTheme } from '../../lib/regionThemes';
+import { getRegionTheme, type RegionTheme } from '../../lib/regionThemes';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
+import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
 import { QuickChecksPanel } from './regionHub/QuickChecksPanel';
@@ -18,9 +20,9 @@ import { RegionHero } from './regionHub/RegionHero';
 import { RegionLearningLayout } from './regionHub/RegionLearningLayout';
 import { RegionNextActionPanel } from './regionHub/RegionNextActionPanel';
 import { RegionProgressStrip } from './regionHub/RegionProgressStrip';
-import { RegionRewardPreview } from './regionHub/RegionRewardPreview';
 import { TrainingGroundsPanel } from './regionHub/TrainingGroundsPanel';
 import { WarmUpPracticePanel } from './regionHub/WarmUpPracticePanel';
+import { percent } from './regionHub/regionHubPanelUtils';
 
 interface RegionHubProps {
   regionProgress: RegionProgress;
@@ -53,6 +55,37 @@ const stateLabels: Record<string, string> = {
   needs_review: 'Needs review',
 };
 
+type HubActionPageId = Exclude<RegionLearningPageId, 'hub'>;
+
+const hubActionPages: HubActionPageId[] = [
+  'field-guide',
+  'quick-check',
+  'warm-up',
+  'exam-training',
+  'guardian',
+];
+
+const hubActionLabels: Record<HubActionPageId, string> = {
+  'field-guide': 'Field Guide',
+  'quick-check': 'Quick Checks',
+  'warm-up': 'Warm-Up Practice',
+  'exam-training': 'Exam Training',
+  guardian: 'Guardian Challenge',
+};
+
+const hubActionDescriptions: Record<HubActionPageId, string> = {
+  'field-guide': 'Learn the key ideas',
+  'quick-check': 'Check one skill',
+  'warm-up': 'Build fluency',
+  'exam-training': 'Practice real questions',
+  guardian: 'Prove mastery',
+};
+
+const regionHubArtAssets: Partial<Record<string, string>> = {
+  'algebra-forge': '/assets/region-art/algebra-region-hub.png',
+  'logarithm-grove': '/assets/region-art/log-region-hub.png',
+};
+
 export function RegionHub({
   regionProgress,
   fieldGuide,
@@ -77,53 +110,19 @@ export function RegionHub({
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
 
-  return (
-    <RegionLearningLayout theme={theme} summary={summary}>
-      <RegionHero
-        regionProgress={regionProgress}
-        theme={theme}
-        stateLabel={stateLabels[summary.state] ?? summary.state}
-        onReturnToMap={onReturnToMap}
-      />
-
-      <div className="region-summary-band" aria-label="Region summary">
-        <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
-        <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
-      </div>
-
-      <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
-
-      {activePage !== 'hub' ? (
-        <RegionLearningNav
-          activePage={activePage}
-          onNavigatePage={onNavigatePage}
+  if (activePage === 'field-guide') {
+    return (
+      <RegionLearningLayout theme={theme} summary={summary}>
+        <FieldGuidePageHeader
+          fieldGuide={fieldGuide}
+          fieldGuideCompleted={fieldGuideCompleted}
+          guardianCleared={guardianCleared}
+          regionProgress={regionProgress}
+          summary={summary}
+          theme={theme}
         />
-      ) : null}
 
-      <div className={`region-page-shell region-page-${activePage}`}>
-        {activePage !== 'hub' ? (
-          <div className="region-page-toolbar">
-            <div>
-              <span className="mode-pill">Focused region page</span>
-              <h2>{REGION_LEARNING_PAGE_LABELS[activePage]}</h2>
-            </div>
-          </div>
-        ) : null}
-
-        {activePage === 'hub' ? (
-          <RegionHubPage
-            canTrain={canTrain}
-            fieldGuideCompleted={fieldGuideCompleted}
-            generatedPracticeCount={generatedPractice.length}
-            guardianCleared={guardianCleared}
-            quickCheckCount={quickCheckCount}
-            regionProgress={regionProgress}
-            summary={summary}
-            onNavigatePage={onNavigatePage}
-          />
-        ) : null}
-
-        {activePage === 'field-guide' ? (
+        <div className="region-page-shell region-page-field-guide">
           <FieldGuidePanel
             fieldGuide={fieldGuide}
             fieldGuideCompleted={fieldGuideCompleted}
@@ -131,50 +130,150 @@ export function RegionHub({
             teachingSnippets={teachingSnippets}
             maxInitialSnippets={Math.max(2, teachingSnippets.length)}
             onCompleteFieldGuide={onCompleteFieldGuide}
+            onBackToRegionHub={() => onNavigatePage?.('hub')}
+            onContinueToQuickChecks={() => onNavigatePage?.('quick-check')}
           />
-        ) : null}
+        </div>
+      </RegionLearningLayout>
+    );
+  }
 
-        {activePage === 'quick-check' ? (
-          <QuickChecksPanel
-            teachingSnippets={teachingSnippets}
-            region={region}
-            profileId={profileId}
-            activityAttempts={learningActivityAttempts}
-            maxInitialItems={Math.max(2, quickCheckCount)}
-            onLearningActivityAttempt={onLearningActivityAttempt}
+  return (
+    <RegionLearningLayout theme={theme} summary={summary}>
+      {activePage === 'hub' ? (
+        <RegionHubHome
+          canTrain={canTrain}
+          fieldGuideCompleted={fieldGuideCompleted}
+          generatedPracticeCount={generatedPractice.length}
+          guardianCleared={guardianCleared}
+          quickCheckCount={quickCheckCount}
+          regionProgress={regionProgress}
+          stateLabel={stateLabels[summary.state] ?? summary.state}
+          summary={summary}
+          theme={theme}
+          onNavigatePage={onNavigatePage}
+          onReturnToMap={onReturnToMap}
+        />
+      ) : (
+        <>
+          <RegionHero
+            regionProgress={regionProgress}
+            theme={theme}
+            stateLabel={stateLabels[summary.state] ?? summary.state}
+            onReturnToMap={onReturnToMap}
           />
-        ) : null}
 
-        {activePage === 'warm-up' ? (
-          <WarmUpPracticePanel
-            practiceItems={generatedPractice}
-            region={region}
-            profileId={profileId}
-            activityAttempts={learningActivityAttempts}
-            maxInitialItems={Math.max(3, generatedPractice.length)}
-            onLearningActivityAttempt={onLearningActivityAttempt}
-          />
-        ) : null}
+          <div className="region-summary-band" aria-label="Region summary">
+            <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
+            <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
+          </div>
 
-        {activePage === 'exam-training' ? (
-          <TrainingGroundsPanel
-            canTrain={canTrain}
-            summary={summary}
-            onStartTraining={onStartTraining}
-          />
-        ) : null}
+          <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
 
-        {activePage === 'guardian' ? (
-          <GuardianEligibilityPanel
-            guardianCleared={guardianCleared}
-            guardianQuestion={guardianQuestion}
-            regionName={theme.title}
-            summary={summary}
-            onChallengeGuardian={onChallengeGuardian}
+          <RegionLearningNav
+            activePage={activePage}
+            onNavigatePage={onNavigatePage}
           />
-        ) : null}
-      </div>
+
+          <div className={`region-page-shell region-page-${activePage}`}>
+            <div className="region-page-toolbar">
+              <div>
+                <span className="mode-pill">Focused region page</span>
+                <h2>{REGION_LEARNING_PAGE_LABELS[activePage]}</h2>
+              </div>
+            </div>
+
+            {activePage === 'quick-check' ? (
+              <QuickChecksPanel
+                teachingSnippets={teachingSnippets}
+                region={region}
+                profileId={profileId}
+                activityAttempts={learningActivityAttempts}
+                maxInitialItems={Math.max(2, quickCheckCount)}
+                onLearningActivityAttempt={onLearningActivityAttempt}
+              />
+            ) : null}
+
+            {activePage === 'warm-up' ? (
+              <WarmUpPracticePanel
+                practiceItems={generatedPractice}
+                region={region}
+                profileId={profileId}
+                activityAttempts={learningActivityAttempts}
+                maxInitialItems={Math.max(3, generatedPractice.length)}
+                onLearningActivityAttempt={onLearningActivityAttempt}
+              />
+            ) : null}
+
+            {activePage === 'exam-training' ? (
+              <TrainingGroundsPanel
+                canTrain={canTrain}
+                summary={summary}
+                onStartTraining={onStartTraining}
+              />
+            ) : null}
+
+            {activePage === 'guardian' ? (
+              <GuardianEligibilityPanel
+                guardianCleared={guardianCleared}
+                guardianQuestion={guardianQuestion}
+                regionName={theme.title}
+                summary={summary}
+                onChallengeGuardian={onChallengeGuardian}
+              />
+            ) : null}
+          </div>
+        </>
+      )}
     </RegionLearningLayout>
+  );
+}
+
+interface FieldGuidePageHeaderProps {
+  fieldGuide: RegionFieldGuide;
+  fieldGuideCompleted: boolean;
+  guardianCleared: boolean;
+  regionProgress: RegionProgress;
+  summary: RegionLearningSummary;
+  theme: RegionTheme;
+}
+
+function FieldGuidePageHeader({
+  fieldGuide,
+  fieldGuideCompleted,
+  guardianCleared,
+  regionProgress,
+  summary,
+  theme,
+}: FieldGuidePageHeaderProps) {
+  const stats = [
+    { label: 'Region', value: theme.title },
+    { label: 'Rank', value: regionProgress.rank },
+    { label: 'Attempts', value: String(regionProgress.attempts) },
+    { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
+    { label: 'Recommended', value: summary.nextAction.label },
+    { label: 'Guide', value: fieldGuideCompleted ? 'Complete' : 'Ready' },
+    { label: 'Guardian', value: guardianStatus(summary, guardianCleared) },
+  ];
+
+  return (
+    <header className="field-guide-page-header">
+      <div className="field-guide-page-title">
+        <span className="mode-pill">Focused lesson</span>
+        <h2 id="region-hub-title">Field Guide</h2>
+        <p className="field-guide-page-region">{theme.title}</p>
+        <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
+      </div>
+
+      <dl className="field-guide-compact-stats" aria-label="Field Guide progress summary">
+        {stats.map((stat) => (
+          <div key={stat.label}>
+            <dt>{stat.label}</dt>
+            <dd>{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </header>
   );
 }
 
@@ -201,104 +300,169 @@ function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProp
   );
 }
 
-interface RegionHubPageProps {
+interface RegionHubHomeProps {
   canTrain: boolean;
   fieldGuideCompleted: boolean;
   generatedPracticeCount: number;
   guardianCleared: boolean;
   quickCheckCount: number;
   regionProgress: RegionProgress;
+  stateLabel: string;
   summary: RegionLearningSummary;
+  theme: RegionTheme;
   onNavigatePage?: (page: RegionLearningPageId) => void;
+  onReturnToMap: () => void;
 }
 
-function pageStatus(input: {
+function hubActionIcon(page: HubActionPageId): ReactNode {
+  if (page === 'field-guide') return <BookOpenCheck size={22} />;
+  if (page === 'quick-check') return <CircleHelp size={22} />;
+  if (page === 'warm-up') return <Dumbbell size={22} />;
+  if (page === 'exam-training') return <Swords size={22} />;
+  return <ShieldCheck size={22} />;
+}
+
+function guardianStatus(summary: RegionLearningSummary, guardianCleared: boolean): string {
+  if (guardianCleared) return 'Cleared';
+  return summary.guardianEligibility.eligible ? 'Unlocked' : 'Locked';
+}
+
+function hubActionState(input: {
   canTrain: boolean;
   fieldGuideCompleted: boolean;
   generatedPracticeCount: number;
   guardianCleared: boolean;
-  page: RegionLearningPageId;
+  page: HubActionPageId;
   quickCheckCount: number;
   summary: RegionLearningSummary;
-}) {
-  if (input.page === 'field-guide') return input.fieldGuideCompleted ? 'Complete' : 'Ready';
-  if (input.page === 'quick-check') return input.quickCheckCount ? `${input.quickCheckCount} available` : 'Unavailable';
-  if (input.page === 'warm-up') return input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'Unavailable';
-  if (input.page === 'exam-training') return input.canTrain ? 'Ready' : 'No trainable images';
-  if (input.page === 'guardian') {
-    if (input.guardianCleared) return 'Cleared';
-    return input.summary.guardianEligibility.eligible ? 'Unlocked' : 'Locked';
-  }
-  return 'Overview';
+}): { disabled: boolean; status: string } {
+  if (input.page === 'field-guide') return { disabled: false, status: input.fieldGuideCompleted ? 'Complete' : 'Ready' };
+  if (input.page === 'quick-check') return { disabled: false, status: input.quickCheckCount ? `${input.quickCheckCount} available` : 'No checks yet' };
+  if (input.page === 'warm-up') return { disabled: false, status: input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'No warm-ups yet' };
+  if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
+  const locked = !input.guardianCleared && !input.summary.guardianEligibility.eligible;
+  return { disabled: locked, status: guardianStatus(input.summary, input.guardianCleared) };
 }
 
-function RegionHubPage({
+function RegionHubHome({
   canTrain,
   fieldGuideCompleted,
   generatedPracticeCount,
   guardianCleared,
   quickCheckCount,
   regionProgress,
+  stateLabel,
   summary,
+  theme,
   onNavigatePage,
-}: RegionHubPageProps) {
-  const actionPages = REGION_LEARNING_PAGE_ORDER.filter((page) => page !== 'hub');
+  onReturnToMap,
+}: RegionHubHomeProps) {
+  const stats = [
+    { label: 'Status', value: stateLabel },
+    { label: 'Rank', value: regionProgress.rank },
+    { label: 'Attempts', value: String(regionProgress.attempts) },
+    { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
+    { label: 'Recommended', value: summary.nextAction.label },
+    { label: 'Guardian', value: guardianStatus(summary, guardianCleared) },
+  ];
 
   return (
-    <div className="region-hub-orientation">
-      <section className="region-action-card region-hub-overview-card">
-        <div className="region-action-card-title">
-          <div>
-            <span>Region overview</span>
-            <h3>{regionProgress.region.name}</h3>
-            <p>{regionProgress.region.description}</p>
-          </div>
+    <div className="region-home">
+      <header className="region-home-header">
+        <div className="region-home-heading">
+          <span className="mode-pill">P3 Region</span>
+          <h2 id="region-hub-title">{theme.title}</h2>
+          <p>{theme.subtitle}</p>
         </div>
-        <div className="region-action-card-body">
-          <h4>Skill and subtopic overview</h4>
-          <div className="subtopic-list region-hub-subtopics">
-            {regionProgress.region.subtopics.map((subtopic) => <span key={subtopic}>{subtopic}</span>)}
-          </div>
-        </div>
-      </section>
 
-      <section className="region-action-card region-hub-options-card">
-        <div className="region-action-card-title">
-          <div>
-            <span>Learning options</span>
-            <h3>Choose one focused step</h3>
-            <p>{summary.nextAction.explanation}</p>
-          </div>
-        </div>
-        <div className="region-action-card-body">
-          <div className="region-page-card-grid">
-            {actionPages.map((page) => (
-              <button
-                type="button"
-                className="region-page-card"
-                key={page}
-                onClick={() => onNavigatePage?.(page)}
-              >
-                <span>{pageStatus({
-                  canTrain,
-                  fieldGuideCompleted,
-                  generatedPracticeCount,
-                  guardianCleared,
-                  page,
-                  quickCheckCount,
-                  summary,
-                })}</span>
-                <strong>{REGION_LEARNING_PAGE_LABELS[page]}</strong>
-                <small>{REGION_LEARNING_PAGE_DESCRIPTIONS[page]}</small>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+        <dl className="region-home-stats" aria-label="Compact learning stats">
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
 
-      <aside className="region-learning-support" aria-label="Region mastery and rewards progress">
-        <RegionRewardPreview guardianCleared={guardianCleared} regionName={regionProgress.region.name} />
-      </aside>
+        <button className="region-home-return" type="button" onClick={onReturnToMap}>
+          <ArrowLeft size={18} />
+          Return to map
+        </button>
+      </header>
+
+      <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
+
+      <nav className="region-home-actions" aria-label="Region learning actions">
+        {hubActionPages.map((page) => {
+          const actionState = hubActionState({
+            canTrain,
+            fieldGuideCompleted,
+            generatedPracticeCount,
+            guardianCleared,
+            page,
+            quickCheckCount,
+            summary,
+          });
+          return (
+            <button
+              type="button"
+              className={`region-home-action-card${actionState.disabled ? ' is-locked' : ''}`}
+              data-region-page={page}
+              disabled={actionState.disabled}
+              key={page}
+              onClick={() => onNavigatePage?.(page)}
+            >
+              <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(page)}</span>
+              <span className="region-home-action-copy">
+                <strong>{hubActionLabels[page]}</strong>
+                <small>{hubActionDescriptions[page]}</small>
+              </span>
+              <span className="region-home-action-status">
+                {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
+                {actionState.status}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
+  );
+}
+
+function RegionArtwork({ regionId, theme }: { regionId: string; theme: RegionTheme }) {
+  const regionArt = regionHubArtAssets[regionId];
+
+  if (regionArt) {
+    return (
+      <section className="region-home-artwork" aria-label={`${theme.title} region artwork`}>
+        <img className="region-home-artwork-image" src={regionArt} alt="" aria-hidden="true" />
+      </section>
+    );
+  }
+
+  return (
+    <section className="region-home-artwork" aria-label={`${theme.title} region artwork`}>
+      <div className="region-home-artwork-scene" aria-hidden="true">
+        <svg className="region-home-artwork-svg" viewBox="0 0 640 300" focusable="false">
+          <rect className="artwork-vault-shadow" x="118" y="218" width="404" height="34" rx="17" />
+          <path className="artwork-vault-arch" d="M168 232V126c0-66 54-120 120-120h64c66 0 120 54 120 120v106H168Z" />
+          <circle className="artwork-vault-door" cx="320" cy="150" r="82" />
+          <circle className="artwork-vault-inner" cx="320" cy="150" r="50" />
+          <path className="artwork-vault-spokes" d="M320 68v164M238 150h164M262 92l116 116M378 92 262 208" />
+          <path className="artwork-gold-glow" d="M154 238c36-45 95-68 176-68 78 0 134 23 168 68H154Z" />
+          <g className="artwork-gold-pile">
+            <ellipse cx="236" cy="232" rx="50" ry="14" />
+            <ellipse cx="304" cy="222" rx="64" ry="17" />
+            <ellipse cx="384" cy="234" rx="58" ry="15" />
+            <circle cx="266" cy="202" r="13" />
+            <circle cx="350" cy="198" r="12" />
+            <circle cx="418" cy="210" r="10" />
+          </g>
+          <path className="artwork-dragon-outline" d="M216 182c26-28 62-38 102-28 15 4 28 2 42-7 20-13 46-13 70 0-17 5-27 15-31 31 22 2 38 14 48 35-30-14-58-13-83 4-30 19-64 19-102-2-16-9-31-8-46 4 5-15 13-27 26-36-9-2-18-2-26-1Z" />
+          <path className="artwork-dragon-wing" d="M326 147c-10-35 5-66 45-92 0 37-15 68-45 92Z" />
+        </svg>
+        <div className="region-home-artwork-glow" />
+      </div>
+    </section>
   );
 }

@@ -270,7 +270,7 @@ export function PracticeView({
         <div>
           <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
           <h2>{selectedRegion?.name ?? question.displayTopic}</h2>
-          <p>{question.displaySubtopic ?? 'Mixed practice'} · {question.displayDifficulty ?? 'difficulty pending'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
+          <p>{question.displaySubtopic ?? 'Mixed practice'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
           {selectedRegionRank ? <span className="rank-chip">Region rank: {selectedRegionRank}</span> : null}
         </div>
         <div className="question-header-actions">
@@ -386,7 +386,6 @@ export function PracticeView({
                 localTopic: question.localTopic,
                 deepseekTopic: question.deepseek.topic,
                 subtopic: question.displaySubtopic,
-                difficulty: question.displayDifficulty,
                 marksEarned: score.earned,
                 markBreakdown: score.markBreakdown,
                 partScores: score.partScores,

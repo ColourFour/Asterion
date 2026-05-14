@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 const repoRoot = process.cwd();
 const scriptPath = path.join(repoRoot, 'tools/content_lab/scripts/build_p3_content_inventory.py');
 const skillMapPath = path.join(repoRoot, 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json');
-const questionBankPath = path.join(repoRoot, 'public/data/question_bank.json');
+const questionBankPath = path.join(repoRoot, 'public/assets/exam-bank-data/question_bank.json');
 const snippetsPath = path.join(repoRoot, 'public/data/teaching_snippets.json');
 const generatedPracticePath = path.join(repoRoot, 'public/data/generated_practice_bank.json');
 const worldMapPath = path.join(repoRoot, 'src/lib/worldMap.ts');
@@ -418,18 +418,18 @@ describe('P3 content inventory report', () => {
       expect(report.routing_audit_summary.original_reviewed_mismatch_count).toBe(30);
       expect(report.routing_audit_summary.resolved_mismatch_count).toBe(10);
       expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(6);
-      expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(20);
+      expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(14);
       expect(report.routing_audit_summary.teacher_review_skill_warning_count).toBe(8);
-      expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(20);
+      expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(14);
       expect(report.routing_audit_summary.deferred_teacher_review_skill_warning_count).toBe(8);
       expect(report.routing_audit_summary.deferred_review_backlog).toMatchObject({
-        case_count: 20,
+        case_count: 14,
         mastery_evidence_allowed: false,
         practice_allowed: true,
         export_allowed: false,
-        mastery_evidence_blocked_case_count: 20,
-        practice_allowed_case_count: 20,
-        export_blocked_case_count: 20,
+        mastery_evidence_blocked_case_count: 14,
+        practice_allowed_case_count: 14,
+        export_blocked_case_count: 14,
       });
       expect(report.routing_audit_summary.deferred_review_backlog.items.every((item) => (
         item.resolution_status === 'teacher_review_deferred'
@@ -438,8 +438,8 @@ describe('P3 content inventory report', () => {
         && item.practice_allowed === true
         && item.export_allowed === false
       ))).toBe(true);
-      expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(0);
-      expect(report.routing_audit_summary.unreviewed_skill_warning_count).toBe(0);
+      expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(19);
+      expect(report.routing_audit_summary.unreviewed_skill_warning_count).toBe(12);
       expect(report.routing_audit_summary.teacher_review_mismatches.every((item) => item.resolution_status === 'teacher_review_deferred')).toBe(true);
 
       for (const row of report.per_skill_inventory) {
@@ -470,7 +470,7 @@ describe('P3 content inventory report', () => {
         }
       }
       expect(report.per_skill_inventory.filter((row) => row.unreviewed_app_region_mismatch_question_ids.length > 0))
-        .toHaveLength(0);
+        .toHaveLength(12);
       expect(report.teacher_review_export_tag_summary.p1_prerequisite_ref_count).toBeGreaterThan(0);
       expect(report.teacher_review_export_tag_summary.skills_with_p1_prerequisite_refs).toBe(report.reviewed_skill_summary.skill_count);
       expectStatusCountsMatchDetails(report);

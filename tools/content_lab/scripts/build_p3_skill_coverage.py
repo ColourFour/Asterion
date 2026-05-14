@@ -92,7 +92,7 @@ BLOCKING_TRAINING_STATUS_TOKENS = (
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SKILL_MAP = REPO_ROOT / "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json"
-DEFAULT_QUESTION_BANK = REPO_ROOT / "public/data/question_bank.json"
+DEFAULT_QUESTION_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
 DEFAULT_SNIPPETS = REPO_ROOT / "public/data/teaching_snippets.json"
 DEFAULT_GENERATED_PRACTICE = REPO_ROOT / "public/data/generated_practice_bank.json"
 DEFAULT_OUTPUT = REPO_ROOT / "tools/content_lab/outputs/p3_skill_coverage_report.json"

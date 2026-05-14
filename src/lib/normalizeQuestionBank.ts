@@ -1,5 +1,6 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionPartMark, QuestionTextQuality, QuestionTopicRouting } from '../types';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
+import { P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './topicRouting';
 
 type LooseRecord = Record<string, unknown>;
 
@@ -52,6 +53,14 @@ function pickImages(record: LooseRecord, keys: string[]): unknown {
   return undefined;
 }
 
+function artifactPaths(record: LooseRecord | undefined, key: 'question_images' | 'mark_scheme_images'): string[] {
+  const integrity = asRecord(record?.artifact_integrity);
+  const artifacts = Array.isArray(integrity?.[key]) ? integrity[key] : [];
+  return artifacts
+    .map((item) => pickString(asRecord(item), ['path', 'image_path']))
+    .filter((value): value is string => Boolean(value));
+}
+
 function combineImages(...values: unknown[]): string[] {
   return values.flatMap((value) => {
     if (Array.isArray(value)) return value.map(String).filter(Boolean);
@@ -80,9 +89,69 @@ function numberArray(value: unknown): number[] {
   )).filter((item): item is number => typeof item === 'number' && Number.isFinite(item));
 }
 
+function subpartRecords(record: LooseRecord): LooseRecord[] {
+  return (Array.isArray(record.subparts) ? record.subparts : [])
+    .map((item) => asRecord(item))
+    .filter((item): item is LooseRecord => Boolean(item));
+}
+
+function subpartLabels(record: LooseRecord): string[] {
+  const fromStrings = stringArray(record.subparts).filter((label) => label !== '[object Object]');
+  const fromObjects = subpartRecords(record)
+    .map((item) => pickString(item, ['label', 'subpart_label', 'subpart_id']))
+    .filter((label): label is string => Boolean(label));
+  return unique([...fromStrings, ...fromObjects]);
+}
+
 function hasError(record: LooseRecord | undefined): boolean {
   if (!record) return true;
   return ERROR_KEYS.some((key) => Boolean(record[key]));
+}
+
+function firstSubpartRecord(record: LooseRecord): LooseRecord | undefined {
+  return subpartRecords(record)[0];
+}
+
+function textObject(record: LooseRecord | undefined, key: string): LooseRecord | undefined {
+  const value = record?.[key];
+  if (typeof value === 'string') return { text: value };
+  return asRecord(value);
+}
+
+function normalizeTextQuality(record: LooseRecord): QuestionTextQuality {
+  const gate = asRecord(record.quality_gate);
+  const firstSubpart = firstSubpartRecord(record);
+  const questionTextRecord = textObject(firstSubpart, 'question_text') ?? textObject(record, 'question_text');
+  const markSchemeTextRecord = textObject(firstSubpart, 'mark_scheme_text') ?? textObject(record, 'mark_scheme_text');
+  const reasonCodes = stringArray(gate?.reason_codes);
+  const questionText = pickString(questionTextRecord, ['text']) ?? pickString(record, ['question_text', 'ocr_text']);
+  const markSchemeText = pickString(markSchemeTextRecord, ['text']) ?? pickString(record, ['mark_scheme_text']);
+  const questionTextTrust = pickString(questionTextRecord, ['trust_level', 'trust']) ?? pickString(record, ['question_text_trust', 'ocr_text_trust']);
+  const questionTextRole = pickString(questionTextRecord, ['role']) ?? pickString(record, ['question_text_role']);
+  const textOnlyStatus = pickString(record, ['text_only_status']) ?? (pickBoolean(gate, ['text_only_display_allowed']) ? 'ready' : undefined);
+  const hardFailed = reasonCodes.some((code) => (
+    code.includes('text_only_blocked_status_fail')
+    || code.includes('validation_status_fail')
+    || code.includes('ocr_hard_fail')
+  ))
+    || ['fail', 'failed', 'hard_fail', 'hard_failed'].includes((textOnlyStatus ?? '').toLowerCase())
+    || questionTextRole === 'untrusted_math_text';
+  const hasUsableText = Boolean(questionText || markSchemeText) && !hardFailed;
+
+  return {
+    questionText,
+    markSchemeText,
+    questionTextTrust,
+    questionTextRole,
+    textOnlyDisplayAllowed: pickBoolean(questionTextRecord, ['text_only_display_allowed']) ?? pickBoolean(gate, ['text_only_display_allowed']),
+    visualRequired: pickBoolean(gate, ['visual_required']) ?? pickBoolean(record, ['visual_required']),
+    hardFailed,
+    reviewUsable: hasUsableText,
+    routingUsable: hasUsableText,
+    contentLabSupportUsable: hasUsableText,
+    statusLabel: hardFailed ? 'hard_failed' : textOnlyStatus ?? (hasUsableText ? 'review_usable' : 'missing_text'),
+    reasonCodes,
+  };
 }
 
 function isBlockingTrainingStatus(status: string | undefined): boolean {
@@ -175,6 +244,40 @@ function buildSidecarIndex(sidecar: unknown): Map<string, unknown> {
   return index;
 }
 
+function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopicRouting> {
+  const index = new Map<string, QuestionTopicRouting>();
+  const root = asRecord(topicRouting);
+  const records = asRecord(root?.records);
+  if (!records) return index;
+
+  for (const [id, value] of Object.entries(records)) {
+    const record = asRecord(value);
+    if (!record) continue;
+    const primaryTopicId = pickString(record, ['primary_topic_id']);
+    index.set(id, {
+      primaryTopicId,
+      confidence: pickString(record, ['confidence']),
+      reviewRequired: pickBoolean(record, ['review_required']),
+      reviewReasons: stringArray(record.review_reasons),
+      evidenceUsed: stringArray(record.evidence_used),
+      routingSource: pickString(record, ['routing_source']),
+      mappedRegionId: primaryTopicId ? P3_TOPIC_ID_TO_REGION_ID[primaryTopicId] : undefined,
+    });
+  }
+
+  return index;
+}
+
+export function getTopicRoutingRecordCount(topicRouting: unknown): number {
+  const root = asRecord(topicRouting);
+  const records = asRecord(root?.records);
+  return records ? Object.keys(records).length : 0;
+}
+
+export function getTopicRoutingMappedCount(topicRouting: unknown): number {
+  return Array.from(buildTopicRoutingIndex(topicRouting).values()).filter((routing) => Boolean(routing.mappedRegionId)).length;
+}
+
 export function getSidecarEnrichmentCount(sidecar: unknown): number {
   const root = asRecord(sidecar);
   const enrichments = asRecord(root?.enrichments);
@@ -205,8 +308,18 @@ function partLabel(label: string): string {
 
 function marksBySubpart(record: LooseRecord, labels: string[]): number[] {
   const markMap = asRecord(record.subparts_solution_marks ?? record.subpart_solution_marks ?? record.part_marks);
-  if (!markMap) return [];
-  return labels.map((label) => pickNumber(markMap, [label, partLabel(label), label.toLowerCase(), label.toUpperCase()]))
+  const fromMap = markMap
+    ? labels.map((label) => pickNumber(markMap, [label, partLabel(label), label.toLowerCase(), label.toUpperCase()]))
+    : [];
+  if (fromMap.filter((value): value is number => typeof value === 'number' && Number.isFinite(value)).length === labels.length) {
+    return fromMap.filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+  }
+
+  const byLabel = new Map(subpartRecords(record).map((item) => [
+    pickString(item, ['label', 'subpart_label', 'subpart_id']),
+    pickNumber(item, ['marks', 'marks_available', 'total_marks']),
+  ]));
+  return labels.map((label) => byLabel.get(label) ?? byLabel.get(label.replace(/[()]/g, '')))
     .filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
 }
 
@@ -217,7 +330,7 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPa
     ...nestedRecords(notes, ['question_structure_detected', 'mark_scheme_structure_detected']),
   ];
   const labels = unique([
-    ...stringArray(record.subparts),
+    ...subpartLabels(record),
     ...structureRecords.flatMap((structure) => stringArray(structure.subparts)),
     ...structureRecords.flatMap((structure) => stringArray(structure.question_subparts)),
   ]);
@@ -238,21 +351,26 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPa
   }));
 }
 
-export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unknown): NormalizedQuestion[] {
+export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unknown = {}, topicRouting: unknown = {}): NormalizedQuestion[] {
   const sidecarIndex = buildSidecarIndex(deepseekSidecar);
+  const routingIndex = buildTopicRoutingIndex(topicRouting);
 
   return getQuestionArray(localBank).map((record, index) => {
     const id = pickString(record, ['id', 'question_id', 'questionId']) ?? `question_${index + 1}`;
     const questionImageRaw = combineImages(
-      pickImages(record, ['question_image_paths', 'question_images', 'questionImagePaths', 'question_image_path', 'question_image', 'image_path', 'image']),
+      pickImages(record, ['question_image_paths', 'question_images', 'questionImagePaths', 'question_image_path', 'question_image', 'image_path', 'image', 'canonical_question_artifact']),
       pickImages(nestedRecord(record, 'canonical_question_artifact') ?? {}, ['path', 'image_path', 'question_image_path']),
+      artifactPaths(record, 'question_images'),
     );
     const markSchemeImageRaw = combineImages(
-      pickImages(record, ['mark_scheme_image_paths', 'mark_scheme_images', 'markSchemeImagePaths', 'mark_scheme_image_path', 'mark_scheme_image', 'mark_scheme_path', 'ms_image']),
+      pickImages(record, ['mark_scheme_image_paths', 'mark_scheme_images', 'markSchemeImagePaths', 'mark_scheme_image_path', 'mark_scheme_image', 'mark_scheme_path', 'ms_image', 'canonical_mark_scheme_artifact']),
+      artifactPaths(record, 'mark_scheme_images'),
     );
     const paperFamily = inferPaperFamily(record, questionImageRaw);
     const deepseekRaw = sidecarIndex.get(id) ?? record.deepseek ?? record.enrichment;
     const deepseek = normalizeDeepSeek(deepseekRaw);
+    const topicRouting = routingIndex.get(id);
+    const textQuality = normalizeTextQuality(record);
     const localTopic = pickString(record, ['topic', 'local_topic', 'localTopic']);
     const notes = nestedRecord(record, 'notes');
     const localSubtopic = pickString(record, ['subtopic', 'local_subtopic', 'localSubtopic']) ?? pickString(notes, ['subtopic']);
@@ -275,9 +393,13 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       localSubtopic,
       localDifficulty,
       deepseek,
-      displayTopic: validDeepSeekLabel(deepseek.topic, deepseek) ? deepseek.topic : localTopic ?? 'Unclassified',
+      topicRouting,
+      textQuality,
+      displayTopic: topicRouting?.mappedRegionId
+        ? P3_TOPIC_ID_TO_REGION_NAME[topicRouting.primaryTopicId ?? ''] ?? localTopic ?? 'Reviewed P3 topic'
+        : validDeepSeekLabel(deepseek.topic, deepseek) ? deepseek.topic : localTopic ?? 'Unclassified',
       displaySubtopic: validDeepSeekLabel(deepseek.subtopic, deepseek) ? deepseek.subtopic : localSubtopic,
-      displayDifficulty: validDeepSeekLabel(deepseek.normalizedDifficulty ?? deepseek.difficulty, deepseek) ? deepseek.normalizedDifficulty ?? deepseek.difficulty : localDifficulty,
+      displayDifficulty: localDifficulty,
       marksAvailable,
       parts,
       questionImageRawPaths: questionImageRaw,
@@ -307,11 +429,11 @@ function inferPaperFamily(record: LooseRecord, imagePaths: string[]): PaperFamil
   return 'unknown';
 }
 
-export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepseekSidecar: unknown): {
+export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepseekSidecar: unknown = {}, topicRouting: unknown = {}): {
   questions: NormalizedQuestion[];
   diagnostics: QuestionBankDiagnostics;
 } {
-  const questions = normalizeQuestionBank(localBank, deepseekSidecar);
+  const questions = normalizeQuestionBank(localBank, deepseekSidecar, topicRouting);
   const sidecarEnrichmentCount = getSidecarEnrichmentCount(deepseekSidecar);
   const sidecarMergeCount = questions.filter((question) => Boolean(question.raw.deepseek)).length;
   const sidecarErrorCount = getSidecarErrorCount(deepseekSidecar);
@@ -326,6 +448,9 @@ export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepsee
       sidecarEnrichmentCount,
       sidecarMergeCount,
       sidecarErrorCount,
+      routingRecordCount: getTopicRoutingRecordCount(topicRouting),
+      routingMappedCount: getTopicRoutingMappedCount(topicRouting),
+      routingAppearsPlaceholder: getTopicRoutingRecordCount(topicRouting) === 0,
     },
   };
 }

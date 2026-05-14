@@ -14,63 +14,51 @@ describe('loadQuestionBankWithDiagnostics', () => {
     vi.restoreAllMocks();
   });
 
-  it('loads the P3 bundle before the full bank for the default P3 flow', async () => {
-    const p3Main = {
-      schema_name: 'exam_bank.question_bank',
+  it('loads the Asterion-safe projected bank and topic-routing file for the default P3 flow', async () => {
+    const projectedMain = {
+      schema_name: 'asterion_question_bank_projection',
       schema_version: 2,
       record_count: 1,
-      paper_family: 'p3',
-      questions: [{ question_id: 'q1', paper_family: 'p3', topic: 'algebra' }],
+      questions: [{ question_id: 'q1', paper_family: 'p3', canonical_question_artifact: 'p3/a/questions/q1.png', canonical_mark_scheme_artifact: 'p3/a/mark_scheme/q1.png' }],
     };
-    const p3Sidecar = {
-      schema_name: 'exam_bank.deepseek_sidecar',
+    const routing = {
+      schema_name: 'exam_bank.topic_routing',
       schema_version: 1,
       record_count: 1,
-      paper_family: 'p3',
-      enrichments: { q1: { deepseek_topic: 'binomial expansion' } },
+      records: { q1: { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high', paper_family: 'p3' } },
     };
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       const value = String(url);
-      if (value.includes('question_bank.deepseek.p3.json')) return Promise.resolve(response(p3Sidecar));
-      if (value.includes('question_bank.p3.json')) return Promise.resolve(response(p3Main));
+      if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response(routing));
+      if (value.includes('asterion_question_bank_v1.json')) return Promise.resolve(response(projectedMain));
       return Promise.resolve(response({}, false));
     });
 
     const loaded = await loadQuestionBankWithDiagnostics();
     const fetchedUrls = fetchMock.mock.calls.map(([url]) => String(url));
 
-    expect(loaded.diagnostics.mainUrl).toBe('./data/question_bank.p3.json');
-    expect(loaded.diagnostics.sidecarUrl).toBe('./data/question_bank.deepseek.p3.json');
+    expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/asterion_question_bank_v1.json');
+    expect(loaded.diagnostics.routingUrl).toBe('./assets/exam-bank-data/question_bank.topic_routing.v1.json');
     expect(loaded.questions).toHaveLength(1);
-    expect(loaded.questions[0].deepseek.topic).toBe('binomial expansion');
-    expect(fetchedUrls).not.toContain('./data/question_bank.json');
+    expect(loaded.questions[0].topicRouting?.mappedRegionId).toBe('algebra-forge');
+    expect(fetchedUrls).not.toContain('./assets/exam-bank-data/question_bank.json');
   });
 
-  it('falls back to question_bank.deepseek.full.json when P3 and primary sidecars are missing or empty', async () => {
-    const main = {
-      schema_name: 'exam_bank.question_bank',
-      schema_version: 2,
-      record_count: 1,
-      questions: [{ question_id: 'q1', paper_family: 'p3', topic: 'algebra' }],
-    };
-    const full = {
-      schema_name: 'exam_bank.deepseek_sidecar',
-      schema_version: 1,
-      record_count: 1,
-      enrichments: { q1: { deepseek_topic: 'binomial expansion' } },
-    };
+  it('continues without routing metadata when the topic-routing file is missing', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       const value = String(url);
-      if (value.includes('question_bank.deepseek.full.json')) return Promise.resolve(response(full));
-      if (value.includes('question_bank.deepseek.p3.json')) return Promise.resolve(response({}, false));
-      if (value.includes('question_bank.deepseek.json')) return Promise.resolve(response({}));
-      return Promise.resolve(response(main));
+      if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response({}, false));
+      return Promise.resolve(response({
+        schema_name: 'asterion_question_bank_projection',
+        record_count: 1,
+        questions: [{ question_id: 'q1', paper_family: 'p3', topic: 'algebra' }],
+      }));
     });
 
     const loaded = await loadQuestionBankWithDiagnostics();
-    expect(loaded.diagnostics.sidecarUrl).toBe('./data/question_bank.deepseek.full.json');
-    expect(loaded.diagnostics.sidecarEnrichmentCount).toBe(1);
-    expect(loaded.questions[0].deepseek.topic).toBe('binomial expansion');
+    expect(loaded.diagnostics.routingUrl).toBe('none');
+    expect(loaded.diagnostics.routingAppearsPlaceholder).toBe(true);
+    expect(loaded.questions[0].displayTopic).toBe('algebra');
   });
 
   it('keeps full-bank compatibility available for debug and future paper families', async () => {
@@ -85,21 +73,20 @@ describe('loadQuestionBankWithDiagnostics', () => {
     };
     vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       const value = String(url);
-      if (value.includes('question_bank.deepseek.full.json')) return Promise.resolve(response({}));
-      if (value.includes('question_bank.deepseek.json')) return Promise.resolve(response({}));
+      if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response({}));
       if (value.includes('question_bank.json')) return Promise.resolve(response(fullMain));
       return Promise.resolve(response({}, false));
     });
 
     const loaded = await loadQuestionBankWithDiagnostics({ scope: 'full' });
 
-    expect(loaded.diagnostics.mainUrl).toBe('./data/question_bank.json');
+    expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/question_bank.json');
     expect(loaded.questions.map((question) => question.paperFamily)).toEqual(['p3', 'p1']);
   });
 
   it('reports placeholder main bank diagnostics', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
-      if (String(url).includes('deepseek')) return Promise.resolve(response({}));
+      if (String(url).includes('topic_routing')) return Promise.resolve(response({}));
       return Promise.resolve(response({ questions: [] }));
     });
 

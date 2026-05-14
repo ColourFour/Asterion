@@ -11,7 +11,6 @@ export function questionSummary(question: NormalizedQuestion): string {
   return [
     question.paper,
     question.questionNumber ? `Q${question.questionNumber}` : undefined,
-    question.displayDifficulty,
     typeof question.marksAvailable === 'number' ? `${question.marksAvailable} marks` : undefined,
   ].filter(Boolean).join(' · ');
 }

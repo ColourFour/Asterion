@@ -2,12 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { selectNextQuestion } from '../lib/adaptiveEngine';
 import type { NormalizedQuestion } from '../types';
 
-function question(id: string, topic: string, difficulty = 'core', marks = 6): NormalizedQuestion {
+function question(id: string, topic: string, marks = 6): NormalizedQuestion {
   return {
     id,
     paperFamily: 'p3',
     displayTopic: topic,
-    displayDifficulty: difficulty,
     marksAvailable: marks,
     deepseek: { hasError: true },
     questionImageRawPaths: [`p3/test/questions/${id}.png`],

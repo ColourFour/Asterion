@@ -2,16 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { normalizeQuestionBank } from '../lib/normalizeQuestionBank';
 
 describe('normalizeQuestionBank', () => {
-  it('prefers valid DeepSeek labels while preserving local labels', () => {
+  it('prefers reviewed topic-routing labels while preserving local and DeepSeek labels', () => {
     const questions = normalizeQuestionBank(
       { questions: [{ id: 'q1', topic: 'Algebra', difficulty: 'core', image_path: 'p3/a/questions/q1.png', marks: 6 }] },
       { q1: { topic: 'Complex numbers', difficulty: 'stretch', confidence: 0.91 } },
+      { records: { q1: { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high' } } },
     );
 
-    expect(questions[0].displayTopic).toBe('Complex numbers');
+    expect(questions[0].displayTopic).toBe('Algebra Vault');
     expect(questions[0].localTopic).toBe('Algebra');
     expect(questions[0].deepseek.topic).toBe('Complex numbers');
-    expect(questions[0].displayDifficulty).toBe('stretch');
+    expect(questions[0].localDifficulty).toBe('core');
+    expect(questions[0].displayDifficulty).toBe('core');
   });
 
   it('falls back to local labels when sidecar contains an error', () => {
@@ -66,7 +68,7 @@ describe('normalizeQuestionBank', () => {
     expect(questions[0].localSubtopic).toBe('partial_fractions');
     expect(questions[0].marksAvailable).toBe(7);
     expect(questions[0].deepseek.normalizedTopic).toBe('partial_fractions');
-    expect(questions[0].displayDifficulty).toBe('core');
+    expect(questions[0].displayDifficulty).toBeUndefined();
     expect(questions[0].questionImageRawPaths).toEqual(['p3/15autumn25/questions/q01.png']);
     expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/15autumn25/questions/q01.png']);
     expect(questions[0].questionImageCandidates[0]).toEqual([
@@ -139,5 +141,66 @@ describe('normalizeQuestionBank', () => {
       { label: '(b)', marksAvailable: 1 },
     ]);
     expect(questions[1].parts).toBeUndefined();
+  });
+
+  it('normalizes projected bank artifacts and keeps review-usable text separate from canonical images', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: '32spring21_q01',
+          paper: '32spring21',
+          paper_family: 'p3',
+          question_number: '1',
+          total_marks: 3,
+          canonical_question_artifact: 'p3/32spring21/questions/q01.png',
+          canonical_mark_scheme_artifact: 'p3/32spring21/mark_scheme/q01.png',
+          quality_gate: {
+            text_only_display_allowed: false,
+            visual_required: true,
+            reason_codes: ['text_only_blocked_status_review', 'text_only_blocked_trust_medium', 'text_only_blocked_visual_required'],
+          },
+          subparts: [{
+            label: 'whole',
+            marks: 3,
+            question_text: {
+              text: 'Solve the logarithmic equation.',
+              trust_level: 'medium',
+              role: 'search_hint',
+              text_only_display_allowed: false,
+            },
+            mark_scheme_text: { text: 'Use laws of logarithms.', trust_level: 'high' },
+          }],
+        }],
+      },
+      {},
+      { records: { '32spring21_q01': { primary_topic_id: '9709_p3_topic_logarithmic_and_exponential_functions', confidence: 'high' } } },
+    );
+
+    expect(questions[0].displayTopic).toBe('Logarithm Observatory');
+    expect(questions[0].topicRouting?.mappedRegionId).toBe('logarithm-grove');
+    expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/32spring21/questions/q01.png']);
+    expect(questions[0].markSchemeImageUrls).toEqual(['/assets/exam-bank-data/p3/32spring21/mark_scheme/q01.png']);
+    expect(questions[0].textQuality?.hardFailed).toBe(false);
+    expect(questions[0].textQuality?.reviewUsable).toBe(true);
+    expect(questions[0].textQuality?.textOnlyDisplayAllowed).toBe(false);
+  });
+
+  it('blocks hard-failed text from reliable text-only use without blocking image-first practice', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: '33autumn25_q01',
+          paper_family: 'p3',
+          canonical_question_artifact: 'p3/33autumn25/questions/q01.png',
+          quality_gate: { reason_codes: ['text_only_blocked_status_fail', 'text_only_blocked_untrusted_math_text'] },
+          subparts: [{ question_text: { text: 'Bad OCR', role: 'untrusted_math_text', trust_level: 'low' } }],
+        }],
+      },
+      {},
+    );
+
+    expect(questions[0].textQuality?.hardFailed).toBe(true);
+    expect(questions[0].textQuality?.reviewUsable).toBe(false);
+    expect(questions[0].questionImageUrls).toEqual(['/assets/exam-bank-data/p3/33autumn25/questions/q01.png']);
   });
 });

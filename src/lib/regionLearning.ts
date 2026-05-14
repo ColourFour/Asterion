@@ -85,13 +85,6 @@ function possibleSubtopics(questions: NormalizedQuestion[]): Set<string> {
   return new Set(fromQuestions);
 }
 
-function difficultyWeight(difficulty?: string): number {
-  const lower = difficulty?.toLowerCase() ?? '';
-  if (lower.includes('challenge') || lower.includes('stretch') || lower.includes('hard')) return 3;
-  if (lower.includes('foundation') || lower.includes('easy')) return 1;
-  return 2;
-}
-
 function hasQuestionAndMarkScheme(question: NormalizedQuestion): boolean {
   return question.questionImageCandidates.length > 0 && question.markSchemeImageCandidates.length > 0;
 }
@@ -149,8 +142,7 @@ export function selectGuardianQuestion(questions: NormalizedQuestion[]): Normali
     .map((question) => ({
       question,
       score:
-        difficultyWeight(question.displayDifficulty) * 100
-        + (question.marksAvailable ?? 0) * 6
+        (question.marksAvailable ?? 0) * 6
         + (question.displaySubtopic ? 4 : 0),
     }))
     .sort((a, b) => b.score - a.score || a.question.id.localeCompare(b.question.id))[0]?.question;

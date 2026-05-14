@@ -1,68 +1,50 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dataDir = join(root, 'public', 'data');
-const bankPath = join(dataDir, 'question_bank.json');
-const sidecarPath = join(dataDir, 'question_bank.deepseek.full.json');
-const p3BankPath = join(dataDir, 'question_bank.p3.json');
-const p3SidecarPath = join(dataDir, 'question_bank.deepseek.p3.json');
+const dataDir = join(process.cwd(), 'public/assets/exam-bank-data');
+
+const paths = {
+  projectedBank: join(dataDir, 'asterion_question_bank_v1.json'),
+  contentLabCandidates: join(dataDir, 'asterion_content_lab_candidates_v1.json'),
+  rawBank: join(dataDir, 'question_bank.json'),
+  topicRouting: join(dataDir, 'question_bank.topic_routing.v1.json'),
+};
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
-function writeJson(path, data) {
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
+const projectedBank = readJson(paths.projectedBank);
+const contentLabCandidates = readJson(paths.contentLabCandidates);
+const rawBank = readJson(paths.rawBank);
+const topicRouting = readJson(paths.topicRouting);
+
+const projectedQuestions = Array.isArray(projectedBank.questions) ? projectedBank.questions : [];
+const rawQuestions = Array.isArray(rawBank.questions) ? rawBank.questions : [];
+const routingRecords = topicRouting.records && typeof topicRouting.records === 'object' ? topicRouting.records : {};
+const candidates = Array.isArray(contentLabCandidates.candidates) ? contentLabCandidates.candidates : [];
+const p3Questions = projectedQuestions.filter((question) => question.paper_family === 'p3');
+
+if (projectedQuestions.length === 0) {
+  throw new Error('asterion_question_bank_v1.json has no questions[] records.');
 }
 
-function canonicalPaperFamily(value) {
-  const normalized = String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  if (normalized === 'pure3' || normalized === 'p3') return 'p3';
-  if (normalized === 'pure1' || normalized === 'p1') return 'p1';
-  if (normalized === 'mechanics' || normalized === 'm1' || normalized === 'p4') return 'p4';
-  if (normalized === 'statistics' || normalized === 's1' || normalized === 'p5') return 'p5';
-  return normalized || 'unknown';
+if (projectedQuestions.length !== rawQuestions.length) {
+  throw new Error(`Projected/raw bank count mismatch: ${projectedQuestions.length} projected vs ${rawQuestions.length} raw.`);
 }
 
-function questionId(record, index) {
-  return String(record.question_id ?? record.questionId ?? record.id ?? `question_${index + 1}`);
+if (Object.keys(routingRecords).length !== projectedQuestions.length) {
+  throw new Error(`Topic-routing count mismatch: ${Object.keys(routingRecords).length} routing records vs ${projectedQuestions.length} projected questions.`);
 }
 
-const fullBank = readJson(bankPath);
-const fullQuestions = Array.isArray(fullBank.questions) ? fullBank.questions : [];
-const p3Questions = fullQuestions.filter((record) => canonicalPaperFamily(record.paper_family ?? record.paperFamily ?? record.family) === 'p3');
-const p3QuestionIds = new Set(p3Questions.map(questionId));
+if (candidates.length === 0) {
+  throw new Error('asterion_content_lab_candidates_v1.json has no candidates[] records.');
+}
 
-writeJson(p3BankPath, {
-  schema_name: fullBank.schema_name,
-  schema_version: fullBank.schema_version,
-  record_count: p3Questions.length,
-  paper_family: 'p3',
-  source_file: 'question_bank.json',
-  source_record_count: fullBank.record_count ?? fullQuestions.length,
-  questions: p3Questions,
+console.info('[Asterion exam-bank-data]', {
+  projectedQuestions: projectedQuestions.length,
+  rawQuestions: rawQuestions.length,
+  contentLabCandidates: candidates.length,
+  topicRoutingRecords: Object.keys(routingRecords).length,
+  p3Questions: p3Questions.length,
 });
-
-const fullSidecar = readJson(sidecarPath);
-const fullEnrichments = fullSidecar.enrichments && typeof fullSidecar.enrichments === 'object' && !Array.isArray(fullSidecar.enrichments)
-  ? fullSidecar.enrichments
-  : {};
-const p3Enrichments = Object.fromEntries(
-  Object.entries(fullEnrichments).filter(([id]) => p3QuestionIds.has(id)),
-);
-
-writeJson(p3SidecarPath, {
-  schema_name: fullSidecar.schema_name,
-  schema_version: fullSidecar.schema_version,
-  record_count: Object.keys(p3Enrichments).length,
-  paper_family: 'p3',
-  source_file: 'question_bank.deepseek.full.json',
-  source_record_count: fullSidecar.record_count ?? Object.keys(fullEnrichments).length,
-  enrichments: p3Enrichments,
-});
-
-console.log(`Wrote ${p3Questions.length} P3 questions to ${p3BankPath}`);
-console.log(`Wrote ${Object.keys(p3Enrichments).length} P3 enrichments to ${p3SidecarPath}`);

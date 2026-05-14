@@ -57,10 +57,21 @@ SUPPORT_TYPES = [
 ]
 STATUS_LABELS = ["ready", "partial", "missing", "needs_review", "blocked"]
 NON_MASTERY_CURRICULUM_ROLES = {"p1_prerequisite", "out_of_scope"}
+P3_TOPIC_ID_TO_REGION_ID = {
+    "9709_p3_topic_algebra": "algebra-forge",
+    "9709_p3_topic_logarithmic_and_exponential_functions": "logarithm-grove",
+    "9709_p3_topic_trigonometry": "trig-observatory",
+    "9709_p3_topic_complex_numbers": "complex-harbor",
+    "9709_p3_topic_differentiation": "calculus-cliffs",
+    "9709_p3_topic_integration": "integration-gardens",
+    "9709_p3_topic_vectors": "vector-workshop",
+    "9709_p3_topic_numerical_solution_of_equations": "numerical-mines",
+    "9709_p3_topic_differential_equations": "differential-shrine",
+}
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SKILL_MAP = REPO_ROOT / "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json"
-DEFAULT_QUESTION_BANK = REPO_ROOT / "public/data/question_bank.json"
+DEFAULT_QUESTION_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
 DEFAULT_SNIPPETS = REPO_ROOT / "public/data/teaching_snippets.json"
 DEFAULT_GENERATED_PRACTICE = REPO_ROOT / "public/data/generated_practice_bank.json"
 DEFAULT_WORLD_MAP = REPO_ROOT / "src/lib/worldMap.ts"
@@ -68,9 +79,7 @@ DEFAULT_FIELD_GUIDES = REPO_ROOT / "src/data/regionFieldGuides.ts"
 DEFAULT_OUTPUT = REPO_ROOT / "tools/content_lab/reports/p3_content_inventory_report.json"
 DEFAULT_ROUTING_AUDIT = REPO_ROOT / "tools/content_lab/reviews/p3_app_region_routing_audit.json"
 DEFAULT_DEEPSEEK_CANDIDATES = [
-    REPO_ROOT / "public/data/question_bank.deepseek.json",
-    REPO_ROOT / "public/data/question_bank.deepseek.p3.json",
-    REPO_ROOT / "public/data/question_bank.deepseek.full.json",
+    REPO_ROOT / "public/assets/exam-bank-data/question_bank.topic_routing.v1.json",
 ]
 
 
@@ -96,6 +105,10 @@ def build_sidecar_index(data: Any) -> dict[str, Any]:
     enrichments = as_record(root.get("enrichments"))
     if enrichments:
         for key, value in enrichments.items():
+            index[key] = value
+    routing_records = as_record(root.get("records"))
+    if routing_records:
+        for key, value in routing_records.items():
             index[key] = value
     for key, value in root.items():
         if key not in {"schema_name", "schema_version", "record_count", "questions", "items", "records", "enrichments"}:
@@ -238,8 +251,18 @@ def deepseek_labels(record: dict[str, Any], sidecar_index: dict[str, Any]) -> li
             non_empty_string(source.get("topic") or source.get("deepseek_topic") or source.get("predicted_topic")) or "",
             non_empty_string(source.get("deepseek_topic_normalized") or source.get("topic_normalized") or source.get("normalized_topic")) or "",
             non_empty_string(source.get("subtopic") or source.get("deepseek_subtopic") or source.get("predicted_subtopic")) or "",
+            non_empty_string(source.get("primary_topic_id")) or "",
         ])
     return [label for label in labels if label]
+
+
+def routed_region_id(record: dict[str, Any], sidecar_index: dict[str, Any]) -> str | None:
+    item_id = question_id(record)
+    routing = as_record(sidecar_index.get(item_id or ""))
+    primary_topic_id = non_empty_string(routing.get("primary_topic_id"))
+    if primary_topic_id:
+        return P3_TOPIC_ID_TO_REGION_ID.get(primary_topic_id)
+    return None
 
 
 def question_id(record: dict[str, Any]) -> str | None:
@@ -260,9 +283,10 @@ def question_details_index(data: Any, sidecar_data: Any, regions: list[dict[str,
             non_empty_string(notes.get("subtopic")),
             *deepseek_labels(record, sidecar_index),
         ]
+        app_region_id = routed_region_id(record, sidecar_index) or match_region_for_labels(labels, regions)
         blockers = training_blockers_for_record(record)
         index[item_id] = {
-            "app_region_id": match_region_for_labels(labels, regions),
+            "app_region_id": app_region_id,
             "paper": non_empty_string(record.get("paper") or record.get("paper_code") or record.get("session")) or "",
             "paper_family": infer_paper_family(record),
             "question_id": item_id,
@@ -272,6 +296,7 @@ def question_details_index(data: Any, sidecar_data: Any, regions: list[dict[str,
                 "local_subtopic": non_empty_string(record.get("subtopic") or record.get("local_subtopic") or record.get("localSubtopic")) or "",
                 "notes_subtopic": non_empty_string(notes.get("subtopic")) or "",
                 "deepseek_labels": deepseek_labels(record, sidecar_index),
+                "topic_routing_region_id": routed_region_id(record, sidecar_index) or "",
             },
             "topic": non_empty_string(record.get("topic") or record.get("local_topic") or record.get("localTopic")) or "",
             "subtopic": non_empty_string(record.get("subtopic") or record.get("local_subtopic") or record.get("localSubtopic") or notes.get("subtopic")) or "",

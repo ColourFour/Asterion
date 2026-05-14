@@ -859,7 +859,7 @@ def main() -> int:
     parser.add_argument("--outputs-dir", default="tools/content_lab/outputs")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json")
     parser.add_argument("--runtime-generated-practice", default="public/data/generated_practice_bank.json")
-    parser.add_argument("--question-bank", default="public/data/question_bank.json")
+    parser.add_argument("--question-bank", default="public/assets/exam-bank-data/question_bank.json")
     parser.add_argument("--skip-question-bank-git-check", action="store_true")
     args = parser.parse_args()
 
