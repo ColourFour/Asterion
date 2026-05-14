@@ -101,8 +101,8 @@ describe('teaching snippets runtime loader', () => {
           estimated_time_minutes: 2,
           snippet_type: 'quick_check',
           source_question_ids: ['source_q'],
-          source_skill_target_ids: ['p3_logarithms_and_exponentials'],
-          related_skill_targets: ['p3_logarithms_and_exponentials'],
+          source_skill_target_ids: ['p3_log_laws_equations'],
+          related_skill_targets: ['p3_log_laws_equations'],
         },
         {
           snippet_id: 'legacy',
@@ -145,8 +145,8 @@ describe('teaching snippets runtime loader', () => {
       estimatedTimeMinutes: 2,
       snippetType: 'quick_check',
       sourceQuestionIds: ['source_q'],
-      sourceSkillTargetIds: ['p3_logarithms_and_exponentials'],
-      relatedSkillTargetIds: ['p3_logarithms_and_exponentials'],
+      sourceSkillTargetIds: ['p3_log_laws_equations'],
+      relatedSkillTargetIds: ['p3_log_laws_equations'],
     });
     expect(snippets[0].quickCheck).toEqual({
       prompt: 'Rewrite $\\log_3 9=2$.',
@@ -244,7 +244,7 @@ describe('teaching snippets runtime loader', () => {
     for (const snippetId of ['p3-trig-identity-selection-001', 'p3-trig-reciprocal-rform-001', 'p3-trig-lost-solutions-001']) {
       const snippet = byId.get(snippetId);
       expect(snippet?.regionIds).toContain('trig-observatory');
-      expect(snippet?.quickCheck?.skillTargetId).toBe('p3_trigonometry');
+      expect(snippet?.relatedSkillTargetIds).toContain(snippet?.quickCheck?.skillTargetId);
       expect(snippet?.guardianReadiness?.supportsTopics).toContain('trigonometry');
     }
   });

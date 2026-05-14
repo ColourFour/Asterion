@@ -15,7 +15,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from p3_skill_contract import PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map
+from p3_skill_contract import PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map, p3_skill_ids_from_skill_map
 
 
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
@@ -30,6 +30,9 @@ EXAMPLE_REQUIRED_SNIPPET_TYPES = {"concept", "method", "mistake_repair"}
 PRIORITY_REGION_IDS = PRIORITY_P3_REGION_IDS
 KNOWN_PAPER_FAMILIES = {"p1", "p3", "p4", "p5"}
 V2_BATCH_REQUIRED_FIELDS = ("question_type", "key_method", "exam_move")
+REVIEWED_SKILL_TARGET_STATUS = "reviewed_p3_skill_map_id"
+UNRESOLVED_SKILL_TARGET_STATUS = "legacy_unresolved"
+REVIEWED_P3_SKILL_IDS = p3_skill_ids_from_skill_map(load_p3_skill_map())
 ACTIVE_P3_REGION_SUPPORT = {
     "algebra-forge": {
         "primary_topic": "algebra_functions_and_binomial",
@@ -398,6 +401,38 @@ def require_guardian_readiness(value: Any, owner: str, errors: list[str]) -> Non
     require_non_empty_string(value, "readiness_note", f"{owner}.guardian_readiness", errors)
 
 
+def has_reviewed_p3_skill_target_status(record: dict[str, Any]) -> bool:
+    return record.get("skill_target_resolution_status") in {REVIEWED_SKILL_TARGET_STATUS, None}
+
+
+def has_unresolved_legacy_skill_target_status(record: dict[str, Any]) -> bool:
+    return record.get("skill_target_resolution_status") == UNRESOLVED_SKILL_TARGET_STATUS
+
+
+def require_reviewed_p3_skill_id_or_legacy_marker(
+    skill_id: Any,
+    owner: str,
+    errors: list[str],
+    marker_record: dict[str, Any],
+) -> bool:
+    if not is_non_empty_string(skill_id):
+        errors.append(f"{owner} missing skill_target_id")
+        return False
+    if str(skill_id) in REVIEWED_P3_SKILL_IDS:
+        require(
+            has_reviewed_p3_skill_target_status(marker_record),
+            f"{owner} uses reviewed P3 skill-map ID but has invalid skill_target_resolution_status",
+            errors,
+        )
+        return True
+    require(
+        has_unresolved_legacy_skill_target_status(marker_record),
+        f"{owner} uses legacy skill_target_id {skill_id}; mark it as {UNRESOLVED_SKILL_TARGET_STATUS}",
+        errors,
+    )
+    return False
+
+
 def require_worked_example(
     value: Any,
     owner: str,
@@ -631,12 +666,22 @@ def verify_teaching_snippets(
             require(bool(matched_regions), f"{owner} does not map to any active P3 region by topic or region_ids", errors)
             for region_id in matched_regions:
                 p3_snippets_by_region[region_id].append(owner)
+            for key in ("source_skill_target_ids", "related_skill_targets"):
+                for skill_id in string_list(snippet.get(key)):
+                    require_reviewed_p3_skill_id_or_legacy_marker(skill_id, f"{owner}.{key}", errors, snippet)
 
         quick_check = snippet.get("quick_check")
         if quick_check is not None:
             require_quick_check(quick_check, owner, errors)
             if isinstance(quick_check, dict):
                 quick_check_count += 1
+                if paper_family == "p3":
+                    require_reviewed_p3_skill_id_or_legacy_marker(
+                        quick_check.get("skill_target_id"),
+                        f"{owner}.quick_check",
+                        errors,
+                        quick_check,
+                    )
                 require(quick_check.get("topic") in topics, f"{owner}.quick_check.topic must appear in snippet topics[]", errors)
                 if region_ids:
                     require(quick_check.get("region_id") in region_ids, f"{owner}.quick_check.region_id must appear in snippet region_ids[]", errors)
@@ -778,11 +823,18 @@ def verify_generated_practice(
         if runtime:
             review_status = item.get("review_status")
             verification_status = verification.get("status") if verification else None
-            require_non_empty_string(item, "skill_target_id", f"Runtime practice {owner}", errors)
+            skill_target_ready = require_reviewed_p3_skill_id_or_legacy_marker(
+                item.get("skill_target_id"),
+                f"Runtime practice {owner}",
+                errors,
+                item,
+            ) if item.get("paper_family") == "p3" else is_non_empty_string(item.get("skill_target_id"))
+            if item.get("paper_family") != "p3":
+                require_non_empty_string(item, "skill_target_id", f"Runtime practice {owner}", errors)
             require(review_status in RUNTIME_REVIEW_STATUSES, f"Runtime practice {owner} must be teacher_reviewed or published", errors)
             require(review_status not in PRACTICE_RUNTIME_BLOCKED_STATUSES, f"Runtime practice {owner} cannot be {review_status}", errors)
             require(verification_status == "pass", f"Runtime practice {owner} must have verification.status pass", errors)
-            if review_status in RUNTIME_REVIEW_STATUSES and verification_status == "pass":
+            if review_status in RUNTIME_REVIEW_STATUSES and verification_status == "pass" and skill_target_ready:
                 reviewed_generated_practice_count += 1
                 family = item.get("generator_family")
                 if is_non_empty_string(family):

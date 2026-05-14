@@ -19,7 +19,7 @@ function item(overrides: Record<string, unknown> = {}) {
     generator_family: 'logarithms_and_exponentials.log_equation_basic',
     paper_family: 'p3',
     topic: 'logarithms_and_exponentials',
-    skill_target_id: 'p3_logarithms_and_exponentials',
+    skill_target_id: 'p3_log_exponential_equations',
     snippet_ids: ['log-snippet'],
     source_snippet_id: 'log-snippet',
     example_model_id: 'log-snippet-example-1',
@@ -75,6 +75,21 @@ describe('generated practice runtime loader', () => {
     ]);
   });
 
+  it('blocks P3 generated practice with unresolved legacy skill targets from runtime readiness', () => {
+    const normalized = normalizeGeneratedPracticeData({
+      items: [
+        item({ practice_id: 'reviewed-p3-skill', skill_target_id: 'p3_log_exponential_equations' }),
+        item({ practice_id: 'legacy-p3-skill', skill_target_id: 'p3_logarithms_and_exponentials' }),
+        item({ practice_id: 'non-p3-skill', paper_family: 'p4', skill_target_id: 'p4_momentum_impulse' }),
+      ],
+    });
+
+    expect(reviewedGeneratedPractice(normalized).map((practice) => practice.practiceId)).toEqual([
+      'reviewed-p3-skill',
+      'non-p3-skill',
+    ]);
+  });
+
   it('rejects generated practice records with invalid P3 region IDs', () => {
     const normalized = normalizeGeneratedPracticeData({
       items: [
@@ -94,7 +109,7 @@ describe('generated practice runtime loader', () => {
           practice_id: 'binomial-a',
           generator_family: 'binomial_expansion.first_terms_and_coefficient',
           topic: 'binomial_expansion',
-          skill_target_id: 'p3_binomial_expansion',
+          skill_target_id: 'p3_alg_binomial_terms_coefficients',
           region_ids: ['algebra-forge'],
           prompt: 'Expand (1 + 2x)^4 up to x^2.',
           answer: '1 + 8x + 24x^2',
@@ -113,7 +128,7 @@ describe('generated practice runtime loader', () => {
 
     expect(getGeneratedPracticeByTopic(normalized, 'logarithms_and_exponentials', 'p3').map((practice) => practice.practiceId)).toEqual(['log-a']);
     expect(getGeneratedPracticeByPaperFamily(normalized, 'p3').map((practice) => practice.practiceId)).toEqual(['binomial-a', 'log-a']);
-    expect(getGeneratedPracticeBySkillTarget(normalized, 'p3_binomial_expansion').map((practice) => practice.practiceId)).toEqual(['binomial-a']);
+    expect(getGeneratedPracticeBySkillTarget(normalized, 'p3_alg_binomial_terms_coefficients').map((practice) => practice.practiceId)).toEqual(['binomial-a']);
     expect(getGeneratedPracticeForRegion(normalized, 'logarithm-grove').map((practice) => practice.practiceId)).toEqual(['log-a']);
     expect(getGeneratedPracticeForRegion(normalized, 'algebra-forge').map((practice) => practice.practiceId)).toEqual(['binomial-a']);
     expect(normalized.find((practice) => practice.practiceId === 'log-a')?.sequenceRole).toBe('first_step');

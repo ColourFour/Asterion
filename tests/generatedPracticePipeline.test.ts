@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 
 const repoRoot = process.cwd();
 const buildScript = path.join(repoRoot, 'tools/content_lab/scripts/build_generated_practice.py');
+const auditLegacySkillTargetsScript = path.join(repoRoot, 'tools/content_lab/scripts/audit_legacy_skill_targets.py');
 const verifyScript = path.join(repoRoot, 'tools/content_lab/scripts/verify_content_lab_outputs.py');
 const pythonTimeoutMs = 10_000;
 const pipelineTestTimeoutMs = 15_000;
@@ -53,7 +54,7 @@ function writeInputs(dir: string) {
     schema_version: 1,
     skill_targets: [
       {
-        skill_target_id: 'p3_logarithms_and_exponentials',
+        skill_target_id: 'p3_log_exponential_equations',
         paper_family: 'p3',
         topic: 'logarithms_and_exponentials',
         title: 'Logarithms and exponentials',
@@ -76,7 +77,7 @@ function writeInputs(dir: string) {
         review_status: 'needs_review',
       },
       {
-        skill_target_id: 'p3_binomial_expansion',
+        skill_target_id: 'p3_alg_binomial_terms_coefficients',
         paper_family: 'p3',
         topic: 'binomial_expansion',
         title: 'Binomial expansion',
@@ -402,6 +403,17 @@ function polynomialText(terms: Array<[number, number]>): string {
 }
 
 function regionCoverageSnippets() {
+  const reviewedSkillByTopic: Record<string, string> = {
+    logarithms_and_exponentials: 'p3_log_laws_equations',
+    binomial_expansion: 'p3_alg_binomial_terms_coefficients',
+    trigonometry: 'p3_trig_equation_interval',
+    complex_numbers: 'p3_complex_modulus_argument_form',
+    differentiation: 'p3_diff_method_selection',
+    integration: 'p3_int_method_choice',
+    vectors: 'p3_vec_line_equations_intersections',
+    numerical_methods: 'p3_num_sign_change_graph_evidence',
+    differential_equations: 'p3_de_separation_setup',
+  };
   const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
     logarithms_and_exponentials: {
       questionId: '32spring21_q01',
@@ -437,6 +449,7 @@ function regionCoverageSnippets() {
   return rows.map(([snippetId, topic, regionIds]) => {
     const firstBatchSource = firstBatchSources[topic];
     const workedExampleId = `${snippetId}-example-1`;
+    const skillTargetId = reviewedSkillByTopic[topic];
     return {
       snippet_id: snippetId,
       paper_family: 'p3',
@@ -458,7 +471,7 @@ function regionCoverageSnippets() {
         id: `${snippetId}-qc`,
         region_id: regionIds[0],
         topic,
-        skill_target_id: `p3_${topic}`,
+        skill_target_id: skillTargetId,
         title: 'Reviewed region snippet',
         prompt: 'What should you do before calculating?',
         answer: 'Choose the method.',
@@ -469,8 +482,8 @@ function regionCoverageSnippets() {
         review_status: 'published',
         ...(firstBatchSource ? { example_model_id: workedExampleId } : {}),
       },
-      source_skill_target_ids: [`p3_${topic}`],
-      related_skill_targets: [`p3_${topic}`],
+      source_skill_target_ids: [skillTargetId],
+      related_skill_targets: [skillTargetId],
       ...(firstBatchSource ? {
         worked_example: {
           id: workedExampleId,
@@ -572,6 +585,100 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
 }
 
 describe.sequential('generated practice Content Lab pipeline', () => {
+  pipelineIt('audits and contains legacy skill target IDs without promoting unresolved IDs', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-legacy-skill-targets-'));
+    try {
+      const generatedPath = path.join(dir, 'generated_practice_bank.json');
+      const snippetsPath = path.join(dir, 'teaching_snippets.json');
+      const reportPath = path.join(dir, 'legacy_skill_target_audit.json');
+      const markdownPath = path.join(dir, 'legacy_skill_target_audit.md');
+      writeFileSync(generatedPath, JSON.stringify({
+        items: [
+          {
+            practice_id: 'gen_log_equation_basic_0001',
+            skill_target_id: 'p3_logarithms_and_exponentials',
+            region_ids: ['logarithm-grove'],
+          },
+        ],
+      }, null, 2));
+      writeFileSync(snippetsPath, JSON.stringify({
+        snippets: [
+          {
+            snippet_id: 'p3-log-laws-001',
+            region_ids: ['logarithm-grove'],
+            source_skill_target_ids: ['p3_logarithms_and_exponentials'],
+            related_skill_targets: ['p3_logarithms_and_exponentials'],
+            quick_check: {
+              id: 'p3-log-laws-001-qc',
+              skill_target_id: 'p3_logarithms_and_exponentials',
+            },
+          },
+          {
+            snippet_id: 'p4-momentum-direction-001',
+            source_skill_target_ids: ['p4_momentum_impulse'],
+            related_skill_targets: ['p4_momentum_impulse'],
+            quick_check: {
+              id: 'p4-momentum-direction-001-qc',
+              skill_target_id: 'p4_momentum_impulse',
+            },
+          },
+        ],
+      }, null, 2));
+
+      runPython([
+        auditLegacySkillTargetsScript,
+        '--generated-practice',
+        generatedPath,
+        '--snippets',
+        snippetsPath,
+        '--json-output',
+        reportPath,
+        '--markdown-output',
+        markdownPath,
+        '--apply',
+      ]);
+
+      const generated = JSON.parse(readFileSync(generatedPath, 'utf8'));
+      const snippets = JSON.parse(readFileSync(snippetsPath, 'utf8'));
+      const report = JSON.parse(readFileSync(reportPath, 'utf8'));
+
+      expect(generated.items[0]).toMatchObject({
+        skill_target_id: 'p3_log_exponential_equations',
+        legacy_skill_target_id: 'p3_logarithms_and_exponentials',
+        skill_target_resolution_status: 'reviewed_p3_skill_map_id',
+      });
+      expect(snippets.snippets[0]).toMatchObject({
+        source_skill_target_ids: ['p3_log_laws_equations'],
+        related_skill_targets: ['p3_log_laws_equations'],
+        legacy_skill_target_ids: ['p3_logarithms_and_exponentials'],
+        skill_target_resolution_status: 'reviewed_p3_skill_map_id',
+      });
+      expect(snippets.snippets[0].quick_check).toMatchObject({
+        skill_target_id: 'p3_log_laws_equations',
+        legacy_skill_target_id: 'p3_logarithms_and_exponentials',
+        skill_target_resolution_status: 'reviewed_p3_skill_map_id',
+      });
+      expect(snippets.snippets[1]).toMatchObject({
+        source_skill_target_ids: ['p4_momentum_impulse'],
+        related_skill_targets: ['p4_momentum_impulse'],
+        legacy_skill_target_ids: ['p4_momentum_impulse'],
+        skill_target_resolution_status: 'legacy_unresolved',
+      });
+      expect(snippets.snippets[1].quick_check).toMatchObject({
+        skill_target_id: 'p4_momentum_impulse',
+        legacy_skill_target_id: 'p4_momentum_impulse',
+        skill_target_resolution_status: 'legacy_unresolved',
+      });
+      expect(report.summary).toMatchObject({
+        legacy_reference_count: 7,
+        resolved_reference_count: 4,
+        unresolved_reference_count: 3,
+      });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   pipelineIt('generates sequenced exponential warm-ups linked to the Field Guide example', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-log-'));
     try {
@@ -582,7 +689,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       for (const item of items) {
         const parameters = item.parameters;
         expect(item.verification.status).toBe('pass');
-        expect(item.skill_target_id).toBe('p3_logarithms_and_exponentials');
+        expect(item.skill_target_id).toBe('p3_log_exponential_equations');
         expect(['first_step', 'complete_step', 'guardian_prep']).toContain(item.sequence_role);
         expect(parameters.sequence_stage).toBeTruthy();
         expect(item.source_snippet_id).toBe('log-snippet');
@@ -622,7 +729,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(items).toHaveLength(3);
       for (const item of items) {
         const parameters = item.parameters;
-        expect(item.skill_target_id).toBe('p3_binomial_expansion');
+        expect(item.skill_target_id).toBe('p3_alg_binomial_terms_coefficients');
         expect(['first_step', 'complete_step', 'guardian_prep']).toContain(item.sequence_role);
         expect(parameters.sequence_stage).toBeTruthy();
         if (parameters.item_type === 'expand_first_terms') {
@@ -926,6 +1033,28 @@ describe.sequential('generated practice Content Lab pipeline', () => {
     try {
       const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
         sequence_role: '',
+      });
+
+      expectPythonFailure([
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects runtime generated practice with unmarked legacy P3 skill targets', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-legacy-skill-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
+        skill_target_id: 'p3_logarithms_and_exponentials',
       });
 
       expectPythonFailure([

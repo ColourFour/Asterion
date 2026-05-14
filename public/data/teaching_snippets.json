@@ -35,7 +35,7 @@
         "id": "p3-algebra-rearrangement-001-qc",
         "region_id": "algebra-forge",
         "topic": "algebra",
-        "skill_target_id": "p3_algebra",
+        "skill_target_id": "p3_alg_structure_rearrangement",
         "title": "Shared bracket",
         "prompt": "What is a clean first move for $(x+1)^2-(x+1)(x-2)$?",
         "answer": "Factor out $(x+1)$.",
@@ -44,20 +44,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-algebra-rearrangement-001-example-1"
+        "example_model_id": "p3-algebra-rearrangement-001-example-1",
+        "legacy_skill_target_id": "p3_algebra",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_algebra"
+        "p3_alg_structure_rearrangement"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-algebra-rearrangement-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_algebra"
+        "p3_alg_structure_rearrangement"
       ],
       "steps": [
         "Look for a repeated bracket or factor.",
@@ -93,7 +95,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31autumn21/mark_scheme/q01.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_algebra"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "For binomial expansion, the term number controls the coefficient and the power of each factor. Write the general term first so that signs and powers are visible.",
@@ -128,7 +134,7 @@
         "id": "p3-binomial-term-001-qc",
         "region_id": "algebra-forge",
         "topic": "binomial_expansion",
-        "skill_target_id": "p3_binomial_expansion",
+        "skill_target_id": "p3_alg_binomial_terms_coefficients",
         "title": "Use the general term",
         "prompt": "Find the coefficient of $x$ in the expansion of $(1-2x)^3$.",
         "answer": "$-6$",
@@ -137,13 +143,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-binomial-term-001-example-1"
+        "example_model_id": "p3-binomial-term-001-example-1",
+        "legacy_skill_target_id": "p3_binomial_expansion",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_binomial_expansion"
+        "p3_alg_binomial_terms_coefficients"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-binomial-term-001",
@@ -161,7 +169,7 @@
       ],
       "topic": "binomial_expansion",
       "source_skill_target_ids": [
-        "p3_binomial_expansion"
+        "p3_alg_binomial_terms_coefficients"
       ],
       "worked_examples": [
         {
@@ -210,7 +218,11 @@
             "p3/33summer21/mark_scheme/q01.png"
           ]
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_binomial_expansion"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "For negative or fractional powers, the expansion only works when the variable part has modulus less than 1. Put the expression into 1 plus something before writing the range.",
@@ -245,7 +257,7 @@
         "id": "p3-binomial-validity-range-001-qc",
         "region_id": "algebra-forge",
         "topic": "binomial_expansion",
-        "skill_target_id": "p3_binomial_expansion",
+        "skill_target_id": "p3_alg_binomial_validity",
         "title": "Validity range",
         "prompt": "State the interval of validity for expanding $(1+2x)^{-3}$.",
         "answer": "$-\\frac12 < x < \\frac12$",
@@ -254,20 +266,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-binomial-validity-range-001-example-1"
+        "example_model_id": "p3-binomial-validity-range-001-example-1",
+        "legacy_skill_target_id": "p3_binomial_expansion",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_binomial_expansion"
+        "p3_alg_binomial_validity"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-binomial-validity-range-001",
       "snippet_type": "mistake_repair",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_binomial_expansion"
+        "p3_alg_binomial_validity"
       ],
       "steps": [
         "Rewrite the bracket as a constant times 1 plus a variable part.",
@@ -303,7 +317,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31autumn21/mark_scheme/q06.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_binomial_expansion"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A modulus expression measures distance from zero. For an equation, split into positive and negative cases. For $|x-a|<b$, translate the distance statement into the interval $a-b<x<a+b$.",
@@ -338,7 +356,7 @@
         "id": "p3-modulus-cases-001-qc",
         "region_id": "algebra-forge",
         "topic": "algebra",
-        "skill_target_id": "p3_algebra",
+        "skill_target_id": "p3_alg_modulus_cases",
         "title": "Modulus interval",
         "prompt": "Turn $|x-3|<5$ into an interval.",
         "answer": "$-2<x<8$",
@@ -347,20 +365,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-modulus-cases-001-example-1"
+        "example_model_id": "p3-modulus-cases-001-example-1",
+        "legacy_skill_target_id": "p3_algebra",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_algebra"
+        "p3_alg_modulus_cases"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-modulus-cases-001",
       "snippet_type": "mistake_repair",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_algebra"
+        "p3_alg_modulus_cases"
       ],
       "steps": [
         "Read the modulus as a distance.",
@@ -419,7 +439,11 @@
             "p3/33summer22/mark_scheme/q08.png"
           ]
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_algebra"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Partial fractions are a setup problem before they are an algebra problem. The denominator decides the form of the numerators you must use.",
@@ -454,7 +478,7 @@
         "id": "p3-partial-fractions-form-001-qc",
         "region_id": "algebra-forge",
         "topic": "partial_fractions",
-        "skill_target_id": "p3_partial_fractions",
+        "skill_target_id": "p3_alg_partial_fraction_form",
         "title": "Let the denominator choose the form",
         "prompt": "What partial-fraction form fits $\\frac{3x+1}{(x-1)(x+2)}$?",
         "answer": "$\\frac{A}{x-1}+\\frac{B}{x+2}$",
@@ -463,14 +487,16 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-partial-fractions-form-001-example-1"
+        "example_model_id": "p3-partial-fractions-form-001-example-1",
+        "legacy_skill_target_id": "p3_partial_fractions",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge",
         "integration-gardens"
       ],
       "related_skill_targets": [
-        "p3_partial_fractions"
+        "p3_alg_partial_fraction_form"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-partial-fractions-form-001",
@@ -488,7 +514,7 @@
       ],
       "topic": "partial_fractions",
       "source_skill_target_ids": [
-        "p3_partial_fractions"
+        "p3_alg_partial_fraction_form"
       ],
       "worked_example": {
         "id": "p3-partial-fractions-form-001-example-1",
@@ -512,7 +538,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32spring21/mark_scheme/q06.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_partial_fractions"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A repeated linear factor creates a ladder of terms. If the denominator contains $(x-a)^2$, include both $A/(x-a)$ and $B/(x-a)^2$ before solving constants.",
@@ -547,7 +577,7 @@
         "id": "p3-partial-fractions-repeated-linear-001-qc",
         "region_id": "algebra-forge",
         "topic": "partial_fractions",
-        "skill_target_id": "p3_partial_fractions",
+        "skill_target_id": "p3_alg_partial_fraction_form",
         "title": "Repeated factor form",
         "prompt": "What form fits $\\frac{2x+1}{(x-3)^2(x+1)}$?",
         "answer": "$\\frac{A}{x-3}+\\frac{B}{(x-3)^2}+\\frac{C}{x+1}$",
@@ -556,21 +586,23 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1"
+        "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
+        "legacy_skill_target_id": "p3_partial_fractions",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge",
         "integration-gardens"
       ],
       "related_skill_targets": [
-        "p3_partial_fractions"
+        "p3_alg_partial_fraction_form"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-partial-fractions-repeated-linear-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_partial_fractions"
+        "p3_alg_partial_fraction_form"
       ],
       "steps": [
         "Factor the denominator fully.",
@@ -606,7 +638,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31summer21/mark_scheme/q10.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_partial_fractions"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Dividing $f(x)$ by $x-a$ leaves remainder $f(a)$. If that value is zero, then $x-a$ is a factor. This is often faster than starting long division immediately.",
@@ -641,7 +677,7 @@
         "id": "p3-polynomial-theorem-001-qc",
         "region_id": "algebra-forge",
         "topic": "algebra",
-        "skill_target_id": "p3_algebra",
+        "skill_target_id": "p3_alg_polynomial_remainder_factor",
         "title": "Remainder theorem",
         "prompt": "For $f(x)=x^3-2x+1$, find the remainder when divided by $x-2$.",
         "answer": "$5$",
@@ -650,20 +686,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-polynomial-theorem-001-example-1"
+        "example_model_id": "p3-polynomial-theorem-001-example-1",
+        "legacy_skill_target_id": "p3_algebra",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_algebra"
+        "p3_alg_polynomial_remainder_factor"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-polynomial-theorem-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_algebra"
+        "p3_alg_polynomial_remainder_factor"
       ],
       "steps": [
         "Identify the divisor in the form $x-a$.",
@@ -699,7 +737,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32spring21/mark_scheme/q02.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_algebra"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A quadratic discriminant tells you about roots before you solve them. $b^2-4ac>0$ means two real roots, $=0$ means one repeated root, and $<0$ means no real roots.",
@@ -734,7 +776,7 @@
         "id": "p3-quadratics-discriminant-001-qc",
         "region_id": "algebra-forge",
         "topic": "quadratics",
-        "skill_target_id": "p3_quadratics",
+        "skill_target_id": "p3_alg_discriminant_root_conditions",
         "title": "The discriminant is evidence",
         "prompt": "Find the discriminant of $x^2+3x-4$.",
         "answer": "$25$",
@@ -743,13 +785,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-quadratics-discriminant-001-example-1"
+        "example_model_id": "p3-quadratics-discriminant-001-example-1",
+        "legacy_skill_target_id": "p3_quadratics",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "algebra-forge"
       ],
       "related_skill_targets": [
-        "p3_quadratics"
+        "p3_alg_discriminant_root_conditions"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-quadratics-discriminant-001",
@@ -767,7 +811,7 @@
       ],
       "topic": "quadratics",
       "source_skill_target_ids": [
-        "p3_quadratics"
+        "p3_alg_discriminant_root_conditions"
       ],
       "worked_example": {
         "id": "p3-quadratics-discriminant-001-example-1",
@@ -791,7 +835,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31autumn21/mark_scheme/q01.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_quadratics"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "After differentiating, read the task again. A tangent needs a gradient and point, a normal needs the negative reciprocal gradient, and a stationary point needs the derivative set to zero.",
@@ -826,7 +874,7 @@
         "id": "p3-differentiation-follow-through-001-qc",
         "region_id": "calculus-cliffs",
         "topic": "differentiation",
-        "skill_target_id": "p3_differentiation",
+        "skill_target_id": "p3_diff_stationary_tangent_normal",
         "title": "Stationary condition",
         "prompt": "What equation identifies stationary points after finding $\\frac{dy}{dx}$?",
         "answer": "$\\frac{dy}{dx}=0$",
@@ -834,20 +882,22 @@
         "micro_skill": "Connect a derivative to stationary points.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_differentiation",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "calculus-cliffs"
       ],
       "related_skill_targets": [
-        "p3_differentiation"
+        "p3_diff_stationary_tangent_normal"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-differentiation-follow-through-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_differentiation"
+        "p3_diff_stationary_tangent_normal"
       ],
       "steps": [
         "Differentiate with the correct rule.",
@@ -883,7 +933,11 @@
           "answer": "Tangent gradient $4$, normal gradient $-\\frac14$",
           "teaching_note": "A normal uses the gradient after differentiation, not a new derivative rule."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_differentiation"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Before differentiating, name the structure. A product, quotient, chain, implicit relation, or parametric pair each has a different route.",
@@ -918,7 +972,7 @@
         "id": "p3-differentiation-method-001-qc",
         "region_id": "calculus-cliffs",
         "topic": "differentiation",
-        "skill_target_id": "p3_differentiation",
+        "skill_target_id": "p3_diff_method_selection",
         "title": "Name the structure first",
         "prompt": "Differentiate $(x^2+1)^3$.",
         "answer": "$6x(x^2+1)^2$",
@@ -926,13 +980,15 @@
         "micro_skill": "Differentiate a compact composite expression.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_differentiation",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "calculus-cliffs"
       ],
       "related_skill_targets": [
-        "p3_differentiation"
+        "p3_diff_method_selection"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-differentiation-method-001",
@@ -950,7 +1006,7 @@
       ],
       "topic": "differentiation",
       "source_skill_target_ids": [
-        "p3_differentiation"
+        "p3_diff_method_selection"
       ],
       "worked_examples": [
         {
@@ -986,7 +1042,11 @@
           "answer": "$\\frac{dy}{dx}=-\\frac{3}{(x-2)^2}$",
           "teaching_note": "Keep the numerator bracketed until the subtraction is complete."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_differentiation"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "For parametric equations, differentiate both coordinates with respect to the parameter, then use $dy/dx=(dy/dt)/(dx/dt)$ when $dx/dt$ is non-zero.",
@@ -1021,7 +1081,7 @@
         "id": "p3-parametric-derivative-001-qc",
         "region_id": "calculus-cliffs",
         "topic": "parametric_equations",
-        "skill_target_id": "p3_parametric_equations",
+        "skill_target_id": "p3_diff_parametric_gradients",
         "title": "Parametric ratio",
         "prompt": "If $dx/dt=2t$ and $dy/dt=3t^2$, what is $dy/dx$?",
         "answer": "$\\frac{3t}{2}$, for $t\\ne0$",
@@ -1029,20 +1089,22 @@
         "micro_skill": "Form dy/dx from parameter derivatives.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_parametric_equations",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "calculus-cliffs"
       ],
       "related_skill_targets": [
-        "p3_parametric_equations"
+        "p3_diff_parametric_gradients"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-parametric-derivative-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_parametric_equations"
+        "p3_diff_parametric_gradients"
       ],
       "steps": [
         "Differentiate x with respect to the parameter.",
@@ -1066,7 +1128,11 @@
         ],
         "answer": "$\\frac{dy}{dx}=3$",
         "teaching_note": "Do not eliminate the parameter unless the question asks for a Cartesian equation."
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_parametric_equations"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Complex numbers often become simpler when you change form. Cartesian form is good for adding; modulus-argument form is good for multiplying, dividing, powers, and roots.",
@@ -1101,7 +1167,7 @@
         "id": "p3-complex-form-001-qc",
         "region_id": "complex-harbor",
         "topic": "complex_numbers",
-        "skill_target_id": "p3_complex_numbers",
+        "skill_target_id": "p3_complex_modulus_argument_form",
         "title": "Change form for the operation",
         "prompt": "Find the modulus of $3+4i$.",
         "answer": "$5$",
@@ -1109,13 +1175,15 @@
         "micro_skill": "Find the modulus of a complex number.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_complex_numbers",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "complex-harbor"
       ],
       "related_skill_targets": [
-        "p3_complex_numbers"
+        "p3_complex_modulus_argument_form"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-complex-form-001",
@@ -1133,7 +1201,7 @@
       ],
       "topic": "complex_numbers",
       "source_skill_target_ids": [
-        "p3_complex_numbers"
+        "p3_complex_modulus_argument_form"
       ],
       "worked_examples": [
         {
@@ -1167,7 +1235,11 @@
           "answer": "$\\sqrt2+\\sqrt2 i$ and $-\\sqrt2-\\sqrt2 i$",
           "teaching_note": "Roots are spaced evenly around the Argand diagram."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_complex_numbers"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "On an Argand diagram, $|z-a|$ is distance from the point $a$, and $\\arg(z-a)$ is a direction angle from that point. Translate the statement before calculating.",
@@ -1202,7 +1274,7 @@
         "id": "p3-complex-locus-argument-001-qc",
         "region_id": "complex-harbor",
         "topic": "complex_numbers",
-        "skill_target_id": "p3_complex_numbers",
+        "skill_target_id": "p3_complex_argand_loci_regions",
         "title": "Locus centre",
         "prompt": "What is the centre of the circle $|z-(2+i)|=3$?",
         "answer": "$2+i$",
@@ -1210,20 +1282,22 @@
         "micro_skill": "Identify the centre of a modulus locus.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_complex_numbers",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "complex-harbor"
       ],
       "related_skill_targets": [
-        "p3_complex_numbers"
+        "p3_complex_argand_loci_regions"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-complex-locus-argument-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_complex_numbers"
+        "p3_complex_argand_loci_regions"
       ],
       "steps": [
         "Identify the reference complex number.",
@@ -1258,7 +1332,11 @@
           "answer": "A half-line from $(1,0)$ at angle $\\frac{\\pi}{4}$",
           "teaching_note": "Argument loci describe direction, not distance."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_complex_numbers"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Separate and integrate first, including a constant. Then substitute the given point into the integrated relation, not into the original differential equation.",
@@ -1293,7 +1371,7 @@
         "id": "p3-differential-initial-condition-001-qc",
         "region_id": "differential-shrine",
         "topic": "differential_equations",
-        "skill_target_id": "p3_differential_equations",
+        "skill_target_id": "p3_de_initial_condition",
         "title": "Use condition",
         "prompt": "After integrating to get $y^2=x^2+C$ and using $y=3$ when $x=1$, find $C$.",
         "answer": "$C=8$",
@@ -1301,20 +1379,22 @@
         "micro_skill": "Use an initial condition after integration.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_differential_equations",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "differential-shrine"
       ],
       "related_skill_targets": [
-        "p3_differential_equations"
+        "p3_de_initial_condition"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-differential-initial-condition-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_differential_equations"
+        "p3_de_initial_condition"
       ],
       "steps": [
         "Separate variables.",
@@ -1350,7 +1430,11 @@
           "answer": "$y=x^2+4$",
           "teaching_note": "Find the constant before writing the particular solution."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_differential_equations"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "For first-order differential equations, separate variables before integrating. Apply an initial condition only after you have the general solution with a constant.",
@@ -1388,7 +1472,7 @@
         "id": "p3-differential-separation-001-qc",
         "region_id": "differential-shrine",
         "topic": "differential_equations",
-        "skill_target_id": "p3_differential_equations",
+        "skill_target_id": "p3_de_separation_setup",
         "title": "Separate before integrating",
         "prompt": "Separate $\\frac{dy}{dx}=\\frac{3x^2}{y}$.",
         "answer": "$y\\,dy=3x^2\\,dx$",
@@ -1396,20 +1480,22 @@
         "micro_skill": "Separate variables in a first-order differential equation.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_differential_equations",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "differential-shrine"
       ],
       "related_skill_targets": [
-        "p3_differential_equations"
+        "p3_de_separation_setup"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-differential-separation-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_differential_equations"
+        "p3_de_separation_setup"
       ],
       "steps": [
         "Separate variables.",
@@ -1444,7 +1530,11 @@
           "answer": "$\\frac{dy}{dx}=\\frac{kx}{y}$",
           "teaching_note": "Forming the equation is often the first mark before solving starts."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_differential_equations"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Before integrating, classify the shape of the expression. A hidden derivative suggests substitution, a product may suggest parts, and a rational expression may need algebra first.",
@@ -1482,7 +1572,7 @@
         "id": "p3-integration-method-choice-001-qc",
         "region_id": "integration-gardens",
         "topic": "integration",
-        "skill_target_id": "p3_integration",
+        "skill_target_id": "p3_int_method_choice",
         "title": "Let the integrand choose the method",
         "prompt": "For $\\int 2x(x^2+1)^5\\,dx$, which method would you try first?",
         "answer": "Substitution is a natural first choice.",
@@ -1490,20 +1580,22 @@
         "micro_skill": "Choose substitution from a hidden derivative.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_integration",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "integration-gardens"
       ],
       "related_skill_targets": [
-        "p3_integration"
+        "p3_int_method_choice"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-integration-method-choice-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_integration"
+        "p3_int_method_choice"
       ],
       "steps": [
         "Classify the expression.",
@@ -1539,7 +1631,11 @@
           "answer": "$\\int_1^2u^3\\,du$",
           "teaching_note": "For definite substitution, change the limits or change back to $x$ before evaluating."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_integration"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A derivative-like factor points to substitution. A product where one part simplifies when differentiated points to integration by parts. A rational expression may need partial fractions first.",
@@ -1574,7 +1670,7 @@
         "id": "p3-integration-parts-substitution-001-qc",
         "region_id": "integration-gardens",
         "topic": "integration",
-        "skill_target_id": "p3_integration",
+        "skill_target_id": "p3_int_parts_substitution",
         "title": "Parts cue",
         "prompt": "For $\\int x e^x\\,dx$, which method is natural?",
         "answer": "Integration by parts.",
@@ -1582,20 +1678,22 @@
         "micro_skill": "Choose integration by parts from a product.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_integration",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "integration-gardens"
       ],
       "related_skill_targets": [
-        "p3_integration"
+        "p3_int_parts_substitution"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-integration-parts-substitution-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_integration"
+        "p3_int_parts_substitution"
       ],
       "steps": [
         "Look for a hidden derivative.",
@@ -1631,7 +1729,11 @@
           "answer": "$3\\ln|x+1|-3\\ln|x+2|+C$",
           "teaching_note": "Partial fractions are algebra before integration."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_integration"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "In exponential equations, try to write both sides with the same base before taking logs. If common bases are not available, take logs on both sides and isolate the exponent carefully.",
@@ -1666,7 +1768,7 @@
         "id": "p3-exp-equations-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_exponential_equations",
         "title": "Same base first",
         "prompt": "Solve $2^{x-1}=8$.",
         "answer": "$x=4$",
@@ -1675,13 +1777,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-exp-equations-001-example-1"
+        "example_model_id": "p3-exp-equations-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_exponential_equations"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-exp-equations-001",
@@ -1699,7 +1803,7 @@
       ],
       "topic": "logarithms_and_exponentials",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_exponential_equations"
       ],
       "worked_example": {
         "id": "p3-exp-equations-001-example-1",
@@ -1723,7 +1827,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31autumn22/mark_scheme/q03.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "When an unknown is in an exponent and the bases cannot be matched cleanly, take natural logs of both complete sides. The exponent then becomes a multiplier.",
@@ -1758,7 +1866,7 @@
         "id": "p3-ln-e-inverse-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_exponential_equations",
         "title": "Natural log inverse",
         "prompt": "Solve $e^{2x}=7$ exactly.",
         "answer": "$x=\\frac12\\ln7$",
@@ -1767,20 +1875,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-ln-e-inverse-001-example-1"
+        "example_model_id": "p3-ln-e-inverse-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_exponential_equations"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-ln-e-inverse-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_exponential_equations"
       ],
       "steps": [
         "Check for a common base first.",
@@ -1816,7 +1926,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31summer23/mark_scheme/q01.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Every logarithm needs a positive argument. After solving, substitute each answer into every original log argument and reject any value that makes an argument $0$ or negative.",
@@ -1851,7 +1965,7 @@
         "id": "p3-log-domain-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_domain_validation",
         "title": "Domain checks save marks",
         "prompt": "What condition must $x$ satisfy for $\\log(x-2)$ to be defined?",
         "answer": "$x>2$",
@@ -1860,13 +1974,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-log-domain-001-example-1"
+        "example_model_id": "p3-log-domain-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_domain_validation"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-log-domain-001",
@@ -1884,7 +2000,7 @@
       ],
       "topic": "logarithms_and_exponentials",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_domain_validation"
       ],
       "worked_example": {
         "id": "p3-log-domain-001-example-1",
@@ -1908,7 +2024,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/33autumn22/mark_scheme/q01.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A logarithm answers the question: what power is needed? If $a^x=b$, then $\\log_a b=x$. Keep the base, power, and result in the same triangle before rearranging.",
@@ -1943,7 +2063,7 @@
         "id": "p3-log-exp-convert-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_convert_forms",
         "title": "Switch forms before solving",
         "prompt": "Rewrite $\\log_2 32=5$ in exponential form.",
         "answer": "$2^5=32$",
@@ -1952,13 +2072,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "published",
-        "example_model_id": "p3-log-exp-convert-001-example-1"
+        "example_model_id": "p3-log-exp-convert-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_convert_forms"
       ],
       "review_status": "published",
       "snippet_id": "p3-log-exp-convert-001",
@@ -1976,7 +2098,7 @@
       ],
       "topic": "logarithms_and_exponentials",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_convert_forms"
       ],
       "worked_example": {
         "id": "p3-log-exp-convert-001-example-1",
@@ -2000,7 +2122,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32spring23/mark_scheme/q01.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Logs turn products into sums and powers into multipliers. They do not turn $\\ln(a+b)$ into $\\ln a+\\ln b$, and taking logs of both sides must apply to the whole side.",
@@ -2034,7 +2160,7 @@
         "id": "p3-log-invalid-operations-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_laws_equations",
         "title": "Illegal split",
         "prompt": "Is $\\ln(x+3)=\\ln x+\\ln3$ a valid log law?",
         "answer": "No.",
@@ -2043,20 +2169,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-log-invalid-operations-001-example-1"
+        "example_model_id": "p3-log-invalid-operations-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_laws_equations"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-log-invalid-operations-001",
       "snippet_type": "mistake_repair",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_laws_equations"
       ],
       "steps": [
         "Mark the operation inside the logarithm.",
@@ -2091,7 +2219,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32summer23/mark_scheme/q02.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Use log laws only on products, quotients, and powers. $\\log(ab)=\\log a+\\log b$ and $\\log(a^n)=n\\log a$, but there is no matching rule for $\\log(a+b)$.",
@@ -2126,7 +2258,7 @@
         "id": "p3-log-laws-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_laws_equations",
         "title": "Log laws have boundaries",
         "prompt": "Simplify $\\ln x+\\ln5$ into a single logarithm.",
         "answer": "$\\ln(5x)$",
@@ -2135,13 +2267,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "published",
-        "example_model_id": "p3-log-laws-001-example-1"
+        "example_model_id": "p3-log-laws-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_laws_equations"
       ],
       "review_status": "published",
       "snippet_id": "p3-log-laws-001",
@@ -2159,7 +2293,7 @@
       ],
       "topic": "logarithms_and_exponentials",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_laws_equations"
       ],
       "worked_example": {
         "id": "p3-log-laws-001-example-1",
@@ -2182,7 +2316,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32spring24/mark_scheme/q04.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "When a relationship has powers, logs can turn it into straight-line form. For $y=Ax^n$, taking logs gives $\\ln y=\\ln A+n\\ln x$, so a graph of $\\ln y$ against $\\ln x$ has gradient $n$.",
@@ -2217,7 +2355,7 @@
         "id": "p3-log-linearisation-001-qc",
         "region_id": "logarithm-grove",
         "topic": "logarithms_and_exponentials",
-        "skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_id": "p3_log_linearisation",
         "title": "Linearising powers",
         "prompt": "If $y=Ax^n$, what is the gradient of a graph of $\\ln y$ against $\\ln x$?",
         "answer": "$n$",
@@ -2226,20 +2364,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-log-linearisation-001-example-1"
+        "example_model_id": "p3-log-linearisation-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "logarithm-grove"
       ],
       "related_skill_targets": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_linearisation"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-log-linearisation-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_logarithms_and_exponentials"
+        "p3_log_linearisation"
       ],
       "steps": [
         "Identify the original relationship.",
@@ -2300,7 +2440,11 @@
             "p3/32spring22/mark_scheme/q03.png"
           ]
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "In iteration questions, the recurrence is the method. Substitute the current value into the stated formula, keep more figures than the final answer needs, and only round when asked.",
@@ -2335,7 +2479,7 @@
         "id": "p3-iteration-formula-discipline-001-qc",
         "region_id": "numerical-mines",
         "topic": "numerical_methods",
-        "skill_target_id": "p3_numerical_methods",
+        "skill_target_id": "p3_num_iteration_formula",
         "title": "One iteration",
         "prompt": "For $x_{n+1}=\\sqrt{2+x_n}$ and $x_0=2$, find $x_1$.",
         "answer": "$2$",
@@ -2343,20 +2487,22 @@
         "micro_skill": "Apply one iteration step.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_numerical_methods",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "numerical-mines"
       ],
       "related_skill_targets": [
-        "p3_numerical_methods"
+        "p3_num_iteration_formula"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-iteration-formula-discipline-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_numerical_methods"
+        "p3_num_iteration_formula"
       ],
       "steps": [
         "Write the iteration formula.",
@@ -2380,7 +2526,11 @@
         ],
         "answer": "$x_1=2$, $x_2=\\sqrt5\\approx2.2360679$",
         "teaching_note": "Round the final answer only when the requested accuracy is known."
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_numerical_methods"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Numerical methods earn marks through visible process. Show the sign-change or iteration rule, keep enough working accuracy, and round only at the requested final step.",
@@ -2418,7 +2568,7 @@
         "id": "p3-numerical-method-evidence-001-qc",
         "region_id": "numerical-mines",
         "topic": "numerical_methods",
-        "skill_target_id": "p3_numerical_methods",
+        "skill_target_id": "p3_num_sign_change_graph_evidence",
         "title": "Approximation needs evidence",
         "prompt": "If $f(1)=-0.4$ and $f(2)=1.1$, what does this suggest about a root?",
         "answer": "There is evidence for a root between $1$ and $2$.",
@@ -2426,20 +2576,22 @@
         "micro_skill": "Interpret a sign-change interval.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_numerical_methods",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "numerical-mines"
       ],
       "related_skill_targets": [
-        "p3_numerical_methods"
+        "p3_num_sign_change_graph_evidence"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-numerical-method-evidence-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_numerical_methods"
+        "p3_num_sign_change_graph_evidence"
       ],
       "steps": [
         "Show the method.",
@@ -2461,7 +2613,11 @@
         ],
         "answer": "There is a root in $1<x<2$.",
         "teaching_note": "Show both endpoint values; the interval claim needs evidence."
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_numerical_methods"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Do not expand every identity you know. Look at the target: one trig function, doubled angle, squared term, or product. Choose the identity that reduces the number of different pieces.",
@@ -2495,7 +2651,7 @@
         "id": "p3-trig-identity-selection-001-qc",
         "region_id": "trig-observatory",
         "topic": "trigonometry",
-        "skill_target_id": "p3_trigonometry",
+        "skill_target_id": "p3_trig_identity_selection",
         "title": "Double-angle choice",
         "prompt": "Which identity rewrites $1-\\cos2x$ using $\\sin x$?",
         "answer": "$1-\\cos2x=2\\sin^2x$",
@@ -2504,20 +2660,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-trig-identity-selection-001-example-1"
+        "example_model_id": "p3-trig-identity-selection-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "trig-observatory"
       ],
       "related_skill_targets": [
-        "p3_trigonometry"
+        "p3_trig_identity_selection"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-trig-identity-selection-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_trigonometry"
+        "p3_trig_identity_selection"
       ],
       "steps": [
         "Identify the target form or equation structure.",
@@ -2577,7 +2735,11 @@
             "p3/32autumn21/mark_scheme/q08.png"
           ]
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "When solving trigonometric equations, solve the basic angle first, then use the interval to list every valid angle. The range is part of the answer, not an afterthought.",
@@ -2612,7 +2774,7 @@
         "id": "p3-trig-interval-001-qc",
         "region_id": "trig-observatory",
         "topic": "trigonometry",
-        "skill_target_id": "p3_trigonometry",
+        "skill_target_id": "p3_trig_equation_interval",
         "title": "The interval controls the answer",
         "prompt": "Solve $\\sin x=\\frac12$ for $0^\\circ\\le x\\le180^\\circ$.",
         "answer": "$30^\\circ$ and $150^\\circ$",
@@ -2621,13 +2783,15 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "published",
-        "example_model_id": "p3-trig-interval-001-example-1"
+        "example_model_id": "p3-trig-interval-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "trig-observatory"
       ],
       "related_skill_targets": [
-        "p3_trigonometry"
+        "p3_trig_equation_interval"
       ],
       "review_status": "published",
       "snippet_id": "p3-trig-interval-001",
@@ -2645,7 +2809,7 @@
       ],
       "topic": "trigonometry",
       "source_skill_target_ids": [
-        "p3_trigonometry"
+        "p3_trig_equation_interval"
       ],
       "worked_example": {
         "id": "p3-trig-interval-001-example-1",
@@ -2669,7 +2833,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31summer22/mark_scheme/q03.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "If a trig factor could be zero, dividing by it can erase valid solutions. Factor equations and use the zero-product rule before deciding whether division is safe.",
@@ -2704,7 +2872,7 @@
         "id": "p3-trig-lost-solutions-001-qc",
         "region_id": "trig-observatory",
         "topic": "trigonometry",
-        "skill_target_id": "p3_trigonometry",
+        "skill_target_id": "p3_trig_equation_interval",
         "title": "Lost solution trap",
         "prompt": "In $\\sin x(2\\cos x-1)=0$, what case is lost if you divide by $\\sin x$?",
         "answer": "$\\sin x=0$",
@@ -2713,20 +2881,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-trig-lost-solutions-001-example-1"
+        "example_model_id": "p3-trig-lost-solutions-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "trig-observatory"
       ],
       "related_skill_targets": [
-        "p3_trigonometry"
+        "p3_trig_equation_interval"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-trig-lost-solutions-001",
       "snippet_type": "mistake_repair",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_trigonometry"
+        "p3_trig_equation_interval"
       ],
       "steps": [
         "Factor the equation if possible.",
@@ -2762,7 +2932,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/31autumn21/mark_scheme/q05.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "The calculator gives a reference route, not the whole answer. Use the sign of the trig function and the stated interval to list every valid angle.",
@@ -2797,7 +2971,7 @@
         "id": "p3-trig-quadrant-discipline-001-qc",
         "region_id": "trig-observatory",
         "topic": "trigonometry",
-        "skill_target_id": "p3_trigonometry",
+        "skill_target_id": "p3_trig_quadrant_solutions",
         "title": "Quadrant check",
         "prompt": "For $0\\le x<2\\pi$, where is $\\cos x=-\\frac12$?",
         "answer": "$x=\\frac{2\\pi}{3},\\frac{4\\pi}{3}$",
@@ -2806,20 +2980,22 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-trig-quadrant-discipline-001-example-1"
+        "example_model_id": "p3-trig-quadrant-discipline-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "trig-observatory"
       ],
       "related_skill_targets": [
-        "p3_trigonometry"
+        "p3_trig_quadrant_solutions"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-trig-quadrant-discipline-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_trigonometry"
+        "p3_trig_quadrant_solutions"
       ],
       "steps": [
         "Find the reference angle.",
@@ -2855,7 +3031,11 @@
         "source_mark_scheme_asset_ids": [
           "p3/32summer22/mark_scheme/q02.png"
         ]
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "The reciprocal functions connect back to sine, cosine, and tangent. R-form combines $a\\sin x+b\\cos x$ into one wave with amplitude $R=\\sqrt{a^2+b^2}$.",
@@ -2890,7 +3070,7 @@
         "id": "p3-trig-reciprocal-rform-001-qc",
         "region_id": "trig-observatory",
         "topic": "trigonometry",
-        "skill_target_id": "p3_trigonometry",
+        "skill_target_id": "p3_trig_r_form_compound_angles",
         "title": "Find R",
         "prompt": "Find $R$ for $3\\sin x+4\\cos x$.",
         "answer": "$R=5$",
@@ -2899,20 +3079,24 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
-        "example_model_id": "p3-trig-reciprocal-rform-001-example-1"
+        "example_model_id": "p3-trig-reciprocal-rform-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "trig-observatory"
       ],
       "related_skill_targets": [
-        "p3_trigonometry"
+        "p3_trig_r_form_compound_angles",
+        "p3_trig_reciprocal_double_angle"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-trig-reciprocal-rform-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_trigonometry"
+        "p3_trig_r_form_compound_angles",
+        "p3_trig_reciprocal_double_angle"
       ],
       "steps": [
         "Rewrite sec, cosec, or cot if it helps.",
@@ -2973,7 +3157,11 @@
             "p3/32spring23/mark_scheme/q06.png"
           ]
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "A vector line equation gives a point and a direction. Intersections happen when two different parameter systems describe the same point.",
@@ -3008,7 +3196,7 @@
         "id": "p3-vectors-lines-001-qc",
         "region_id": "vector-workshop",
         "topic": "vectors",
-        "skill_target_id": "p3_vectors",
+        "skill_target_id": "p3_vec_line_equations_intersections",
         "title": "Keep parameters separate",
         "prompt": "For $\\mathbf r=\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}+t\\begin{pmatrix}2\\\\0\\\\-1\\end{pmatrix}$, give one point on the line.",
         "answer": "$\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}$",
@@ -3016,13 +3204,15 @@
         "micro_skill": "Identify a point from a vector line equation.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_vectors",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "vector-workshop"
       ],
       "related_skill_targets": [
-        "p3_vectors"
+        "p3_vec_line_equations_intersections"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-vectors-lines-001",
@@ -3040,7 +3230,7 @@
       ],
       "topic": "vectors",
       "source_skill_target_ids": [
-        "p3_vectors"
+        "p3_vec_line_equations_intersections"
       ],
       "worked_examples": [
         {
@@ -3074,7 +3264,11 @@
           "answer": "The lines intersect at $(2,2,1)$.",
           "teaching_note": "A 3D intersection must satisfy all three components."
         }
-      ]
+      ],
+      "legacy_skill_target_ids": [
+        "p3_vectors"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "The scalar product connects components to angle: $a\\cdot b=|a||b|\\cos\\theta$. A zero scalar product means perpendicular non-zero vectors.",
@@ -3109,7 +3303,7 @@
         "id": "p3-vectors-scalar-product-001-qc",
         "region_id": "vector-workshop",
         "topic": "vectors",
-        "skill_target_id": "p3_vectors",
+        "skill_target_id": "p3_vec_scalar_product_angles",
         "title": "Perpendicular check",
         "prompt": "What does $\\mathbf a\\cdot\\mathbf b=0$ tell you for two non-zero vectors?",
         "answer": "They are perpendicular.",
@@ -3117,20 +3311,22 @@
         "micro_skill": "Interpret a zero scalar product.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_vectors",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
         "vector-workshop"
       ],
       "related_skill_targets": [
-        "p3_vectors"
+        "p3_vec_scalar_product_angles"
       ],
       "review_status": "teacher_reviewed",
       "snippet_id": "p3-vectors-scalar-product-001",
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
-        "p3_vectors"
+        "p3_vec_scalar_product_angles"
       ],
       "steps": [
         "Write both direction vectors.",
@@ -3154,7 +3350,11 @@
         ],
         "answer": "$\\theta=\\cos^{-1}\\left(\\frac{4}{3\\sqrt5}\\right)$",
         "teaching_note": "The scalar product connects component arithmetic to the angle."
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p3_vectors"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
       "body": "Momentum is directional. Before writing equations, choose a positive direction and keep every velocity consistent with that choice.",
@@ -3197,7 +3397,9 @@
         "micro_skill": "Apply a signed velocity convention.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed"
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p4_momentum_impulse",
+        "skill_target_resolution_status": "legacy_unresolved"
       },
       "region_ids": [],
       "related_skill_targets": [
@@ -3230,7 +3432,11 @@
         ],
         "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
         "teaching_note": "The negative sign is direction information, not an error."
-      }
+      },
+      "legacy_skill_target_ids": [
+        "p4_momentum_impulse"
+      ],
+      "skill_target_resolution_status": "legacy_unresolved"
     }
   ]
 }

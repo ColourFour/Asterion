@@ -91,6 +91,17 @@ function skillTargetFixture(overrides: Record<string, unknown> = {}) {
 }
 
 function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) {
+  const reviewedSkillByTopic: Record<string, string> = {
+    logarithms_and_exponentials: 'p3_log_laws_equations',
+    binomial_expansion: 'p3_alg_binomial_terms_coefficients',
+    trigonometry: 'p3_trig_equation_interval',
+    complex_numbers: 'p3_complex_modulus_argument_form',
+    differentiation: 'p3_diff_method_selection',
+    integration: 'p3_int_method_choice',
+    vectors: 'p3_vec_line_equations_intersections',
+    numerical_methods: 'p3_num_sign_change_graph_evidence',
+    differential_equations: 'p3_de_separation_setup',
+  };
   const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
     logarithms_and_exponentials: {
       questionId: '32spring21_q01',
@@ -126,6 +137,7 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
   return rows.map(([snippetId, topic, regionIds, title], index) => {
     const firstBatchSource = firstBatchSources[topic];
     const workedExampleId = `${snippetId}-example-1`;
+    const skillTargetId = reviewedSkillByTopic[topic];
     const snippet = {
       snippet_id: snippetId,
       paper_family: 'p3',
@@ -147,7 +159,7 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
         id: `${snippetId}-qc`,
         region_id: regionIds[0],
         topic,
-        skill_target_id: `p3_${topic}`,
+        skill_target_id: skillTargetId,
         title,
         prompt: 'What should you do before calculating?',
         answer: 'Choose the method.',
@@ -166,8 +178,8 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
       estimated_time_minutes: 3,
       snippet_type: 'concept',
       source_question_ids: ['source_q'],
-      source_skill_target_ids: [`p3_${topic}`],
-      related_skill_targets: [`p3_${topic}`],
+      source_skill_target_ids: [skillTargetId],
+      related_skill_targets: [skillTargetId],
       ...(firstBatchSource ? {
         worked_example: {
           id: workedExampleId,
@@ -350,7 +362,7 @@ describe.sequential('Content Lab skill target pipeline', () => {
           id: 'p3-log-check-qc',
           region_id: 'logarithm-grove',
           topic: 'logarithms_and_exponentials',
-          skill_target_id: 'p3_logarithms_and_exponentials',
+          skill_target_id: 'p3_log_laws_equations',
           title: 'Check the log form',
           prompt: 'Rewrite $\\log_2 8=3$.',
           answer: '',

@@ -1,6 +1,6 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import { staticDataFetchCache } from './loadQuestionBank';
-import { isValidP3RegionId } from './p3SkillContract';
+import { isValidP3RegionId, isValidP3SkillId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { matchRegionForLabels, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
@@ -78,7 +78,11 @@ function verificationValue(value: unknown): GeneratedPracticeVerification | unde
 function isRuntimeEligible(item: GeneratedPracticeItem): boolean {
   return RUNTIME_REVIEW_STATUSES.has(item.reviewStatus)
     && item.verification.status === 'pass'
-    && RUNTIME_SEQUENCE_ROLES.has(item.sequenceRole ?? '');
+    && RUNTIME_SEQUENCE_ROLES.has(item.sequenceRole ?? '')
+    && (
+      canonicalPaperFamily(String(item.paperFamily)) !== 'p3'
+      || isValidP3SkillId(item.skillTargetId)
+    );
 }
 
 function matchesPaperFamily(item: GeneratedPracticeItem, paperFamily?: PaperFamily): boolean {
