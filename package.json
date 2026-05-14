@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "assets:ui": "node scripts/optimize-ui-assets.mjs",
-    "data:p3": "node scripts/generate-p3-data.mjs",
+    "data:p3": "vite-node scripts/generate-p3-data.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:unit": "vitest run --exclude tests/contentLabPipeline.test.ts --exclude tests/generatedPracticePipeline.test.ts",

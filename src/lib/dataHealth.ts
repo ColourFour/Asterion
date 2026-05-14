@@ -3,6 +3,8 @@ import { isQuestionTrainable, trainingBlockersForQuestion } from './questionTrai
 import { isP3Question, labelsForQuestion, matchRegionForQuestion } from './worldMap';
 import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 
+export type CountMap = Record<string, number>;
+
 export interface P3RouteEvidenceDistribution {
   totalP3Questions: number;
   statusCounts: Record<QuestionRouteEvidenceStatus | 'missing-route-evidence', number>;
@@ -54,6 +56,16 @@ export interface DataHealthSummary {
   sidecarErrorCount: number;
   hardFailedTextCount: number;
   reviewUsableTextCount: number;
+  routeEvidenceStatusCounts: CountMap;
+  eligibilityBucketCounts: Record<string, { eligible: number; blocked: number; missing: number }>;
+  blockerReasonCodeCounts: CountMap;
+  contentSourceCounts: CountMap;
+  fallbackDisplayOnlyCountsByRegion: CountMap;
+  rawBankFallbackCount: number;
+  rawBankDebugCount: number;
+  rawBankWarningExamples: string[];
+  generationEligibleCounts: { true: number; false: number; missing: number };
+  generationBlockerReasonCounts: CountMap;
 }
 
 export interface AssetAvailabilityAudit {
@@ -134,6 +146,69 @@ function detectImageRootMode(questions: NormalizedQuestion[]): DataHealthSummary
 function normalizedAssetUrl(value: string): string {
   if (/^https?:\/\//i.test(value)) return value;
   return `/${value.replace(/^\/+/, '')}`.replace(/\/+/g, '/');
+}
+
+function incrementCount(counts: CountMap, key: string | undefined, amount = 1): void {
+  const normalizedKey = key?.trim() || 'unknown';
+  counts[normalizedKey] = (counts[normalizedKey] ?? 0) + amount;
+}
+
+function sortedCounts(counts: CountMap): CountMap {
+  return Object.fromEntries(
+    Object.entries(counts).sort(([leftKey, leftValue], [rightKey, rightValue]) => (
+      rightValue - leftValue || leftKey.localeCompare(rightKey)
+    )),
+  );
+}
+
+function buildEligibilityBucketCounts(questions: NormalizedQuestion[]): DataHealthSummary['eligibilityBucketCounts'] {
+  const buckets: DataHealthSummary['eligibilityBucketCounts'] = {};
+  for (const question of questions) {
+    const eligibility = question.eligibility;
+    for (const bucket of ['regionDisplayEligible', 'practiceEligible', 'masteryEligible', 'guardianEligible', 'generationEligible', 'textOnlyEligible'] as const) {
+      buckets[bucket] ??= { eligible: 0, blocked: 0, missing: 0 };
+      const result = eligibility?.[bucket];
+      if (!result) buckets[bucket].missing += 1;
+      else if (result.eligible) buckets[bucket].eligible += 1;
+      else buckets[bucket].blocked += 1;
+    }
+  }
+  return buckets;
+}
+
+function buildBlockerReasonCodeCounts(questions: NormalizedQuestion[]): CountMap {
+  const counts: CountMap = {};
+  for (const question of questions) {
+    for (const result of Object.values(question.eligibility ?? {})) {
+      if (result.eligible) continue;
+      for (const reasonCode of result.reasonCodes.filter(isBlockerReasonCode)) incrementCount(counts, reasonCode);
+    }
+  }
+  return sortedCounts(counts);
+}
+
+function isBlockerReasonCode(reasonCode: string): boolean {
+  return /^(blocked|missing|unsafe|text-only-display-not-allowed)/.test(reasonCode);
+}
+
+function buildGenerationBlockerReasonCounts(questions: NormalizedQuestion[]): CountMap {
+  const counts: CountMap = {};
+  for (const question of questions) {
+    const generationEligible = question.eligibility?.generationEligible;
+    if (!generationEligible || generationEligible.eligible) continue;
+    for (const reasonCode of generationEligible.reasonCodes.filter(isBlockerReasonCode)) incrementCount(counts, reasonCode);
+  }
+  return sortedCounts(counts);
+}
+
+function buildGenerationEligibleCounts(questions: NormalizedQuestion[]): DataHealthSummary['generationEligibleCounts'] {
+  return questions.reduce<DataHealthSummary['generationEligibleCounts']>((counts, question) => {
+    const generationEligible = question.eligibility?.generationEligible;
+    if (!generationEligible) counts.missing += 1;
+    else if (generationEligible.eligible) counts.true += 1;
+    else counts.false += 1;
+    return counts;
+  }, { true: 0, false: 0, missing: 0 });
 }
 
 function groupHasAvailableCandidate(candidates: string[], availableAssetUrls: ReadonlySet<string>): boolean {
@@ -269,6 +344,23 @@ export function buildDataHealthSummary(
   const rawMarkSchemePathExamples = p3Questions.flatMap((question) => question.markSchemeImageRawPaths).slice(0, 6);
   const candidateQuestionUrlExamples = p3Questions.flatMap((question) => question.questionImageCandidates.flat()).slice(0, 8);
   const candidateMarkSchemeUrlExamples = p3Questions.flatMap((question) => question.markSchemeImageCandidates.flat()).slice(0, 8);
+  const routeEvidenceDistribution = buildP3RouteEvidenceDistribution(questions);
+  const contentSourceCounts: CountMap = {};
+  const fallbackDisplayOnlyCountsByRegion: CountMap = {};
+  const rawBankWarningExamples: string[] = [];
+
+  for (const question of p3Questions) {
+    incrementCount(contentSourceCounts, question.contentSource?.kind);
+    if (question.routeEvidence?.status === 'fallback-display-only') {
+      incrementCount(
+        fallbackDisplayOnlyCountsByRegion,
+        question.routeEvidence.displayRegionId ?? question.routeEvidence.displayRegionName ?? 'unknown-region',
+      );
+    }
+    if (question.contentSource?.kind === 'raw-bank-fallback' || question.contentSource?.kind === 'raw-bank-debug') {
+      rawBankWarningExamples.push(`${question.id}: ${question.contentSource.kind}`);
+    }
+  }
 
   return {
     mainUrl: diagnostics?.mainUrl,
@@ -329,5 +421,15 @@ export function buildDataHealthSummary(
     sidecarErrorCount: diagnostics?.sidecarErrorCount ?? 0,
     hardFailedTextCount: questions.filter((question) => question.textQuality?.hardFailed).length,
     reviewUsableTextCount: questions.filter((question) => question.textQuality?.reviewUsable).length,
+    routeEvidenceStatusCounts: sortedCounts(routeEvidenceDistribution.statusCounts),
+    eligibilityBucketCounts: buildEligibilityBucketCounts(p3Questions),
+    blockerReasonCodeCounts: buildBlockerReasonCodeCounts(p3Questions),
+    contentSourceCounts: sortedCounts(contentSourceCounts),
+    fallbackDisplayOnlyCountsByRegion: sortedCounts(fallbackDisplayOnlyCountsByRegion),
+    rawBankFallbackCount: contentSourceCounts['raw-bank-fallback'] ?? 0,
+    rawBankDebugCount: contentSourceCounts['raw-bank-debug'] ?? 0,
+    rawBankWarningExamples: rawBankWarningExamples.slice(0, 12),
+    generationEligibleCounts: buildGenerationEligibleCounts(p3Questions),
+    generationBlockerReasonCounts: buildGenerationBlockerReasonCounts(p3Questions),
   };
 }

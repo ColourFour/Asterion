@@ -71,6 +71,10 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
             <Metric label="Hard-failed text" value={summary.hardFailedTextCount} />
             <Metric label="Unmatched P3" value={summary.unmatchedP3Questions} />
             <Metric label="Image root mode" value={summary.imageRootMode} />
+            <Metric label="Raw-bank fallback records" value={summary.rawBankFallbackCount} />
+            <Metric label="Raw-bank debug records" value={summary.rawBankDebugCount} />
+            <Metric label="Generation eligible" value={`${summary.generationEligibleCounts.true}/${summary.totalP3Questions}`} />
+            <Metric label="Generation blocked" value={summary.generationEligibleCounts.false} />
           </div>
 
           {summary.mainAppearsPlaceholder ? (
@@ -85,6 +89,16 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
           {assetAudit?.missingMarkSchemeImageGroups ? (
             <p className="health-warning">{assetAudit.missingMarkSchemeImageGroups} P3 mark-scheme candidate group(s) did not resolve to a public asset. Blocked records must stay out of practice until canonical assets are fixed.</p>
           ) : null}
+          {summary.rawBankFallbackCount || summary.rawBankDebugCount ? (
+            <p className="health-warning">Raw-bank fallback/debug records are loaded. They must remain visible for diagnostics and blocked from mastery, Guardian access, and Content Lab generation.</p>
+          ) : null}
+
+          <HealthCountMap title="Route evidence status counts" counts={summary.routeEvidenceStatusCounts} />
+          <HealthEligibilityBuckets counts={summary.eligibilityBucketCounts} />
+          <HealthCountMap title="Blocker reason-code counts" counts={summary.blockerReasonCodeCounts} />
+          <HealthCountMap title="Content source counts" counts={summary.contentSourceCounts} />
+          <HealthCountMap title="Fallback-display-only counts by region" counts={summary.fallbackDisplayOnlyCountsByRegion} />
+          <HealthCountMap title="Generation blocker reason counts" counts={summary.generationBlockerReasonCounts} />
 
           <h3>Trainable P3 questions by region</h3>
           <div className="health-list">
@@ -100,6 +114,7 @@ export function DataHealthPanel({ questions, regionProgress, diagnostics }: Data
           <HealthExamples title="Missing image path examples" items={summary.missingImagePathExamples.map((item) => `${item.id}: missing ${item.missing} (${item.labels || 'no labels'})`)} />
           <HealthExamples title="Missing asset availability examples" items={summary.missingAssetAvailabilityExamples.map((item) => `${item.id} (${item.paper ?? 'paper n/a'} ${item.questionNumber ? `Q${item.questionNumber}` : 'Q n/a'}): missing ${item.missing}; checked ${item.candidates.join(', ') || 'no candidates'}`)} />
           <HealthExamples title="Practice-blocked examples" items={summary.practiceBlockedExamples.map((item) => `${item.id}: ${item.blockers.join('; ')} (${item.labels || 'no labels'})`)} />
+          <HealthExamples title="Raw-bank fallback/debug warnings" items={summary.rawBankWarningExamples} />
         </div>
       ) : null}
     </section>
@@ -142,6 +157,33 @@ function HealthExamples({ title, items }: { title: string; items: string[] }) {
           {items.map((item) => <li key={item}>{item}</li>)}
         </ul>
       ) : <p>None.</p>}
+    </div>
+  );
+}
+
+function HealthCountMap({ title, counts }: { title: string; counts: Record<string, number> }) {
+  const entries = Object.entries(counts);
+  return (
+    <div>
+      <h3>{title}</h3>
+      {entries.length ? (
+        <div className="health-list">
+          {entries.map(([key, count]) => <span key={key}>{key}: {count}</span>)}
+        </div>
+      ) : <p>None.</p>}
+    </div>
+  );
+}
+
+function HealthEligibilityBuckets({ counts }: { counts: Record<string, { eligible: number; blocked: number; missing: number }> }) {
+  return (
+    <div>
+      <h3>Eligibility bucket counts</h3>
+      <div className="health-list">
+        {Object.entries(counts).map(([key, bucket]) => (
+          <span key={key}>{key}: eligible {bucket.eligible}, blocked {bucket.blocked}, missing {bucket.missing}</span>
+        ))}
+      </div>
     </div>
   );
 }

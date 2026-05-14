@@ -274,14 +274,14 @@ npm test
 npm run build
 ```
 
-Legacy P3 bundle generation and UI asset generation:
+P3 data validation and UI asset generation:
 
 ```bash
 npm run data:p3
 npm run assets:ui
 ```
 
-`npm run data:p3` maintains legacy `public/data/question_bank*.json` bundles only. Current exam-bank runtime data lives under `public/assets/exam-bank-data`.
+`npm run data:p3` validates the current projected bank, raw evidence bank, routing sidecar, and Content Lab candidate file, then prints normalized P3 data-health diagnostics. Current exam-bank runtime data lives under `public/assets/exam-bank-data`.
 
 ## Data Files
 

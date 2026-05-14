@@ -104,6 +104,78 @@ describe('buildDataHealthSummary', () => {
       },
     ]);
   });
+
+  it('surfaces route, eligibility, source, fallback-only, and generation gate diagnostics', () => {
+    const cleanQuestion: NormalizedQuestion = {
+      ...question('clean', '/assets/31autumn21/questions/q01.png'),
+      routeEvidence: {
+        status: 'clean',
+        source: 'topic-routing',
+        validatedRegionId: 'algebra',
+        displayRegionId: 'algebra',
+        reasonCodes: ['validated-topic-routing'],
+      },
+      contentSource: {
+        kind: 'projected-bank',
+        unsafeForMastery: false,
+        unsafeForGuardian: false,
+        unsafeForGeneration: false,
+        reasonCodes: [],
+      },
+      eligibility: {
+        regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+        practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+        masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+        guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+        generationEligible: { eligible: true, reasonCodes: ['validated-topic-routing'] },
+        textOnlyEligible: { eligible: false, reasonCodes: ['text-only-display-not-allowed'] },
+      },
+    };
+    const rawFallbackQuestion: NormalizedQuestion = {
+      ...question('fallback', '/assets/31autumn21/questions/q01.png'),
+      routeEvidence: {
+        status: 'fallback-display-only',
+        source: 'fallback-label',
+        displayRegionId: 'calculus',
+        reasonCodes: ['fallback-label-match'],
+      },
+      contentSource: {
+        kind: 'raw-bank-fallback',
+        unsafeForMastery: true,
+        unsafeForGuardian: true,
+        unsafeForGeneration: true,
+        reasonCodes: ['unsafe-raw-bank-fallback'],
+      },
+      eligibility: {
+        regionDisplayEligible: { eligible: true, reasonCodes: ['has-display-region'] },
+        practiceEligible: { eligible: true, reasonCodes: ['has-image-practice-assets'] },
+        masteryEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only', 'unsafe-raw-bank-fallback'] },
+        guardianEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only', 'unsafe-raw-bank-fallback'] },
+        generationEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only', 'unsafe-raw-bank-fallback'] },
+        textOnlyEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
+      },
+    };
+
+    const summary = buildDataHealthSummary([cleanQuestion, rawFallbackQuestion], []);
+
+    expect(summary.routeEvidenceStatusCounts).toEqual({ clean: 1, 'fallback-display-only': 1 });
+    expect(summary.eligibilityBucketCounts.generationEligible).toEqual({ eligible: 1, blocked: 1, missing: 0 });
+    expect(summary.blockerReasonCodeCounts).toMatchObject({
+      'blocked-fallback-display-only': 4,
+      'unsafe-raw-bank-fallback': 3,
+      'text-only-display-not-allowed': 1,
+    });
+    expect(summary.contentSourceCounts).toEqual({ 'projected-bank': 1, 'raw-bank-fallback': 1 });
+    expect(summary.fallbackDisplayOnlyCountsByRegion).toEqual({ calculus: 1 });
+    expect(summary.rawBankFallbackCount).toBe(1);
+    expect(summary.rawBankDebugCount).toBe(0);
+    expect(summary.rawBankWarningExamples).toEqual(['fallback: raw-bank-fallback']);
+    expect(summary.generationEligibleCounts).toEqual({ true: 1, false: 1, missing: 0 });
+    expect(summary.generationBlockerReasonCounts).toEqual({
+      'blocked-fallback-display-only': 1,
+      'unsafe-raw-bank-fallback': 1,
+    });
+  });
 });
 
 describe('buildP3RouteEvidenceDistribution', () => {
@@ -151,6 +223,29 @@ describe('buildP3RouteEvidenceDistribution', () => {
       missing_p3_route: { 'review-only': 53 },
       ambiguous_multi_topic_route: { 'ambiguous-route': 14 },
       review_needed_route: { 'ambiguous-route': 5, 'review-only': 7 },
+    });
+
+    const healthSummary = buildDataHealthSummary(questions, []);
+    expect(healthSummary.routeEvidenceStatusCounts).toEqual({
+      clean: 317,
+      'review-only': 60,
+      'ambiguous-route': 19,
+    });
+    expect(healthSummary.eligibilityBucketCounts).toMatchObject({
+      generationEligible: { eligible: 293, blocked: 103, missing: 0 },
+      masteryEligible: { eligible: 307, blocked: 89, missing: 0 },
+      guardianEligible: { eligible: 307, blocked: 89, missing: 0 },
+    });
+    expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 396 });
+    expect(healthSummary.fallbackDisplayOnlyCountsByRegion).toEqual({});
+    expect(healthSummary.rawBankFallbackCount).toBe(0);
+    expect(healthSummary.rawBankDebugCount).toBe(0);
+    expect(healthSummary.generationEligibleCounts).toEqual({ true: 293, false: 103, missing: 0 });
+    expect(healthSummary.generationBlockerReasonCounts).toEqual({
+      'blocked-review-only': 60,
+      'blocked-hard-failed-text': 31,
+      'missing-content-lab-usable-text': 31,
+      'blocked-ambiguous-route': 19,
     });
   });
 });
