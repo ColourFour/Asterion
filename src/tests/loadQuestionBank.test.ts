@@ -38,10 +38,69 @@ describe('loadQuestionBankWithDiagnostics', () => {
     const fetchedUrls = fetchMock.mock.calls.map(([url]) => String(url));
 
     expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/asterion_question_bank_v1.json');
+    expect(loaded.diagnostics.mainContentSource).toBe('projected-bank');
     expect(loaded.diagnostics.routingUrl).toBe('./assets/exam-bank-data/question_bank.topic_routing.v1.json');
     expect(loaded.questions).toHaveLength(1);
+    expect(loaded.questions[0].contentSource?.kind).toBe('projected-bank');
     expect(loaded.questions[0].topicRouting?.mappedRegionId).toBe('algebra-forge');
     expect(fetchedUrls).not.toContain('./assets/exam-bank-data/question_bank.json');
+  });
+
+  it('marks raw fallback records as display/practice limited when the projected bank fails', async () => {
+    const rawFallback = {
+      schema_name: 'exam_bank.question_bank',
+      schema_version: 2,
+      record_count: 1,
+      questions: [{
+        question_id: 'raw_q1',
+        paper_family: 'p3',
+        topic: 'algebra',
+        question_image_path: 'p3/a/questions/q01.png',
+        mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+        question_text: 'Solve the equation.',
+        mark_scheme_text: 'Correct algebraic solution.',
+        text_only_status: 'ready',
+        quality_gate: { text_only_display_allowed: true },
+      }],
+    };
+    const routing = {
+      schema_name: 'exam_bank.topic_routing',
+      schema_version: 1,
+      record_count: 1,
+      records: { raw_q1: { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high', paper_family: 'p3' } },
+    };
+    vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
+      const value = String(url);
+      if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response(routing));
+      if (value.includes('asterion_question_bank_v1.json')) return Promise.resolve(response({}, false));
+      if (value.includes('question_bank.json')) return Promise.resolve(response(rawFallback));
+      return Promise.resolve(response({}, false));
+    });
+
+    const loaded = await loadQuestionBankWithDiagnostics();
+    const fallbackQuestion = loaded.questions[0];
+
+    expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/question_bank.json');
+    expect(loaded.diagnostics.mainContentSource).toBe('raw-bank-fallback');
+    expect(fallbackQuestion.contentSource).toMatchObject({
+      kind: 'raw-bank-fallback',
+      unsafeForMastery: true,
+      unsafeForGuardian: true,
+      unsafeForGeneration: true,
+      reasonCodes: ['unsafe-raw-bank-fallback'],
+    });
+    expect(fallbackQuestion.routeEvidence?.status).toBe('clean');
+    expect(fallbackQuestion.eligibility?.regionDisplayEligible.eligible).toBe(true);
+    expect(fallbackQuestion.eligibility?.practiceEligible.eligible).toBe(true);
+    expect(fallbackQuestion.eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'unsafe-raw-bank-fallback'],
+    });
+    expect(fallbackQuestion.eligibility?.guardianEligible.eligible).toBe(false);
+    expect(fallbackQuestion.eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: ['validated-topic-routing', 'unsafe-raw-bank-fallback'],
+    });
   });
 
   it('continues without routing metadata when the topic-routing file is missing', async () => {
@@ -81,6 +140,8 @@ describe('loadQuestionBankWithDiagnostics', () => {
     const loaded = await loadQuestionBankWithDiagnostics({ scope: 'full' });
 
     expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/question_bank.json');
+    expect(loaded.diagnostics.mainContentSource).toBe('raw-bank-debug');
+    expect(loaded.questions.every((question) => question.contentSource?.kind === 'raw-bank-debug')).toBe(true);
     expect(loaded.questions.map((question) => question.paperFamily)).toEqual(['p3', 'p1']);
   });
 

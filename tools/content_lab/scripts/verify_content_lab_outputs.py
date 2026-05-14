@@ -7,8 +7,15 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from p3_skill_contract import PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map
 
 
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
@@ -20,7 +27,7 @@ PRACTICE_DIFFICULTY_BANDS = {"easy", "medium", "hard"}
 SEQUENCE_ROLES = {"first_step", "complete_step", "guardian_prep"}
 SNIPPET_TYPES = {"concept", "method", "mistake_repair", "quick_check", "guardian_prep"}
 EXAMPLE_REQUIRED_SNIPPET_TYPES = {"concept", "method", "mistake_repair"}
-PRIORITY_REGION_IDS = {"algebra-forge", "logarithm-grove", "trig-observatory"}
+PRIORITY_REGION_IDS = PRIORITY_P3_REGION_IDS
 KNOWN_PAPER_FAMILIES = {"p1", "p3", "p4", "p5"}
 V2_BATCH_REQUIRED_FIELDS = ("question_type", "key_method", "exam_move")
 ACTIVE_P3_REGION_SUPPORT = {
@@ -167,6 +174,15 @@ def load_json(path: Path) -> Any:
 def require(condition: bool, message: str, errors: list[str]) -> None:
     if not condition:
         errors.append(message)
+
+
+def verify_region_support_matches_skill_map(errors: list[str]) -> None:
+    skill_map_region_ids = p3_region_ids_from_skill_map(load_p3_skill_map())
+    support_region_ids = set(ACTIVE_P3_REGION_SUPPORT)
+    for region_id in sorted(skill_map_region_ids - support_region_ids):
+        errors.append(f"ACTIVE_P3_REGION_SUPPORT missing reviewed skill-map region {region_id}")
+    for region_id in sorted(support_region_ids - skill_map_region_ids):
+        errors.append(f"ACTIVE_P3_REGION_SUPPORT contains non-skill-map region {region_id}")
 
 
 def is_non_empty_string(value: Any) -> bool:
@@ -867,6 +883,7 @@ def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
     source_index: dict[str, dict[str, set[str]]] = {}
+    verify_region_support_matches_skill_map(errors)
     try:
         source_index = source_index_from_question_bank(Path(args.question_bank), errors)
     except ValueError as error:

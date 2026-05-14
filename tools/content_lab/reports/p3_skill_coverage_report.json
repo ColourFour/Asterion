@@ -631,7 +631,7 @@
   "generated_by": "tools/content_lab/scripts/build_p3_skill_coverage.py",
   "inputs": {
     "generated_practice": "public/data/generated_practice_bank.json",
-    "question_bank": "public/data/question_bank.json",
+    "question_bank": "public/assets/exam-bank-data/question_bank.json",
     "skill_map": "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json",
     "snippets": "public/data/teaching_snippets.json"
   },

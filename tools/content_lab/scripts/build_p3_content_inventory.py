@@ -15,6 +15,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
 from build_p3_skill_coverage import (
     ALLOWED_CURRICULUM_ROLES,
     RUNTIME_REVIEW_STATUSES,
@@ -28,6 +32,7 @@ from build_p3_skill_coverage import (
     validate_skill_map,
     write_json,
 )
+from p3_skill_contract import P3_TOPIC_ID_TO_REGION_ID
 
 
 GENERATED_BY = "tools/content_lab/scripts/build_p3_content_inventory.py"
@@ -57,18 +62,6 @@ SUPPORT_TYPES = [
 ]
 STATUS_LABELS = ["ready", "partial", "missing", "needs_review", "blocked"]
 NON_MASTERY_CURRICULUM_ROLES = {"p1_prerequisite", "out_of_scope"}
-P3_TOPIC_ID_TO_REGION_ID = {
-    "9709_p3_topic_algebra": "algebra-forge",
-    "9709_p3_topic_logarithmic_and_exponential_functions": "logarithm-grove",
-    "9709_p3_topic_trigonometry": "trig-observatory",
-    "9709_p3_topic_complex_numbers": "complex-harbor",
-    "9709_p3_topic_differentiation": "calculus-cliffs",
-    "9709_p3_topic_integration": "integration-gardens",
-    "9709_p3_topic_vectors": "vector-workshop",
-    "9709_p3_topic_numerical_solution_of_equations": "numerical-mines",
-    "9709_p3_topic_differential_equations": "differential-shrine",
-}
-
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SKILL_MAP = REPO_ROOT / "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json"
 DEFAULT_QUESTION_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
@@ -179,13 +172,12 @@ def matching_bracket_index(text: str, start_index: int, opener: str = "[", close
     raise ValueError("Could not find matching bracket while parsing world regions")
 
 
-def parse_world_regions(world_map_path: Path) -> list[dict[str, Any]]:
-    text = world_map_path.read_text(encoding="utf-8")
-    academy_index = text.find("P3_ASTRAL_ACADEMY")
-    regions_index = text.find("regions:", academy_index)
-    array_start = text.find("[", regions_index)
-    if academy_index == -1 or regions_index == -1 or array_start == -1:
-        raise ValueError(f"No P3 regions array could be parsed from {world_map_path}")
+def parse_region_source(path: Path, marker: str) -> list[dict[str, Any]]:
+    text = path.read_text(encoding="utf-8")
+    marker_index = text.find(marker)
+    array_start = text.find("[", marker_index)
+    if marker_index == -1 or array_start == -1:
+        return []
     array_end = matching_bracket_index(text, array_start)
     region_source = text[array_start + 1:array_end]
     regions: list[dict[str, Any]] = []
@@ -205,9 +197,21 @@ def parse_world_regions(world_map_path: Path) -> list[dict[str, Any]]:
             "subtopics": string_literals(subtopics_match.group(1)) if subtopics_match else [],
             "match_terms": string_literals(match.group("terms")),
         })
-    if not regions:
-        raise ValueError(f"No P3 regions could be parsed from {world_map_path}")
     return regions
+
+
+def parse_world_regions(world_map_path: Path) -> list[dict[str, Any]]:
+    regions = parse_region_source(world_map_path, "regions:")
+    if regions:
+        return regions
+
+    contract_path = world_map_path.with_name("p3SkillContract.ts")
+    if contract_path.exists():
+        regions = parse_region_source(contract_path, "P3_REGION_DEFINITIONS")
+        if regions:
+            return regions
+
+    raise ValueError(f"No P3 regions could be parsed from {world_map_path}")
 
 
 def parse_field_guide_region_ids(field_guides_path: Path) -> set[str]:

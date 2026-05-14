@@ -256,6 +256,34 @@ describe('region progress and gear', () => {
     expect(progress.rank).toBe('Discovered');
   });
 
+  it('keeps region mastery rank unchanged when only attempt and question difficulty metadata changes', () => {
+    const baseQuestions = [question('q1', 'Algebra', 'polynomials')];
+    const changedDifficultyQuestions = baseQuestions.map((item) => ({
+      ...item,
+      displayDifficulty: 'challenge',
+      localDifficulty: 'challenge',
+      deepseek: { ...item.deepseek, difficulty: 'challenge', normalizedDifficulty: 'challenge' },
+    }));
+    const baseAttempts = attempts(14, { scoreRatio: 0.92, subtopic: 'polynomials', methodFamily: 'factor theorem', difficulty: 'foundation' })
+      .map((item, index) => ({
+        ...item,
+        methodFamily: index >= 12 ? 'long division' : 'factor theorem',
+      }));
+    const changedDifficultyAttempts = baseAttempts.map((item) => ({
+      ...item,
+      difficulty: item.difficulty === 'foundation' ? 'challenge' : 'foundation',
+    }));
+
+    const base = calculateRegionProgress(algebra, baseQuestions, baseAttempts);
+    const changedDifficulty = calculateRegionProgress(algebra, changedDifficultyQuestions, changedDifficultyAttempts);
+
+    expect(base.rank).toBe('Mastered');
+    expect(changedDifficulty.rank).toBe(base.rank);
+    expect(changedDifficulty.averageScoreRatio).toBe(base.averageScoreRatio);
+    expect(changedDifficulty.recentScoreRatio).toBe(base.recentScoreRatio);
+    expect(getRecentMixedReviewEvidence(changedDifficultyAttempts)).toMatchObject(getRecentMixedReviewEvidence(baseAttempts));
+  });
+
   it('derives avatar gear from region progress', () => {
     const base = { availableQuestions: 1, attempts: 7, totalMarksEarned: 49, totalMarksAvailable: 70, recentScoreRatio: 0.7, averageScoreRatio: 0.7, subtopicsTouched: 2, isActive: true } as const;
     const gear = deriveAvatarGear([

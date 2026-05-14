@@ -31,6 +31,7 @@ function practice(overrides: Partial<GeneratedPracticeItem> = {}): GeneratedPrac
     answer: 'x = 5',
     workedSolution: ['Use the product law.', 'ln(2x) = ln(10), so x = 5.'],
     parameters: {},
+    sequenceRole: 'first_step',
     verification: { status: 'pass', method: 'deterministic', verifier: 'content_lab_schema_v2' },
     difficultyBand: 'easy',
     reviewStatus: 'teacher_reviewed',
@@ -73,6 +74,16 @@ describe('region content selection', () => {
     ], logRegion.id, 'p3');
 
     expect(selected.map((item) => item.practiceId)).toEqual(['gen_log_pass']);
+  });
+
+  it('does not use generated practice difficulty bands for runtime region grouping', () => {
+    const selected = getGeneratedPracticeForRegion([
+      practice({ practiceId: 'log-easy', difficultyBand: 'easy' }),
+      practice({ practiceId: 'log-hard', difficultyBand: 'hard' }),
+      practice({ practiceId: 'log-no-sequence', difficultyBand: 'easy', sequenceRole: undefined }),
+    ], logRegion.id, 'p3');
+
+    expect(selected.map((item) => item.practiceId)).toEqual(['log-easy', 'log-hard']);
   });
 
   it('selects only reviewed teaching snippets for the requested region', () => {

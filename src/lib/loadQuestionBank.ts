@@ -1,4 +1,4 @@
-import type { NormalizedQuestion, QuestionBankDiagnostics } from '../types';
+import type { NormalizedQuestion, QuestionBankDiagnostics, QuestionContentSourceKind } from '../types';
 import {
   getQuestionRecordCount,
   getTopicRoutingMappedCount,
@@ -10,6 +10,7 @@ import { isP3Question, matchRegionForQuestion } from './worldMap';
 interface LoadedJson {
   url: string;
   data: unknown;
+  contentSourceKind: QuestionContentSourceKind;
 }
 
 export type QuestionBankLoadScope = 'p3' | 'full';
@@ -35,7 +36,7 @@ export function staticDataFetchCache(): RequestCache {
 async function fetchJson(path: string): Promise<LoadedJson> {
   const response = await fetch(path, { cache: staticDataFetchCache() });
   if (!response.ok) throw new Error(`${path} returned ${response.status}`);
-  return { url: path, data: await response.json() };
+  return { url: path, data: await response.json(), contentSourceKind: 'unknown' };
 }
 
 export async function loadQuestionBank(options: LoadQuestionBankOptions = {}): Promise<NormalizedQuestion[]> {
@@ -49,9 +50,12 @@ export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankO
   const scope = options.scope ?? 'p3';
   const localResult = await loadMainBankWithFallback(scope);
   const routingResult = await loadTopicRoutingWithFallback();
-  const result = normalizeQuestionBankWithDiagnostics(localResult.data, {}, routingResult.data);
+  const result = normalizeQuestionBankWithDiagnostics(localResult.data, {}, routingResult.data, {
+    contentSourceKind: localResult.contentSourceKind,
+  });
   result.diagnostics = {
     ...result.diagnostics,
+    mainContentSource: localResult.contentSourceKind,
     ...jsonMetadata('main', localResult.url, localResult.data),
     ...jsonMetadata('routing', routingResult.url, routingResult.data),
     sidecarUrl: undefined,
@@ -74,20 +78,22 @@ export async function loadFullQuestionBankWithDiagnostics(): Promise<{
 }
 
 async function loadMainBankWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
-  if (scope === 'full') return fetchJson(DATA_PATHS.rawQuestionBank);
+  if (scope === 'full') return { ...(await fetchJson(DATA_PATHS.rawQuestionBank)), contentSourceKind: 'raw-bank-debug' };
 
   const projected = await Promise.resolve()
     .then(() => fetchJson(DATA_PATHS.asterionQuestionBank))
     .catch(() => undefined);
-  if (projected && getQuestionRecordCount(projected.data) > 0) return projected;
+  if (projected && getQuestionRecordCount(projected.data) > 0) {
+    return { ...projected, contentSourceKind: 'projected-bank' };
+  }
 
-  return fetchJson(DATA_PATHS.rawQuestionBank);
+  return { ...(await fetchJson(DATA_PATHS.rawQuestionBank)), contentSourceKind: 'raw-bank-fallback' };
 }
 
 async function loadTopicRoutingWithFallback(): Promise<LoadedJson> {
   return Promise.resolve()
     .then(() => fetchJson(DATA_PATHS.topicRouting))
-    .catch(() => ({ url: 'none', data: {} }));
+    .catch(() => ({ url: 'none', data: {}, contentSourceKind: 'unknown' }));
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -133,6 +139,7 @@ function logDevelopmentDiagnostics(questions: NormalizedQuestion[], diagnostics:
   console.info('[Asterion data]', {
     loadedQuestionCount: diagnostics.loadedQuestionCount,
     mainUrl: diagnostics.mainUrl,
+    mainContentSource: diagnostics.mainContentSource,
     mainSchemaName: diagnostics.mainSchemaName,
     mainRecordCount: diagnostics.mainRecordCount,
     mainQuestionsLength: diagnostics.mainQuestionsLength,

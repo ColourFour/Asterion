@@ -355,6 +355,7 @@ REVIEW_RISK_FLAG_PATTERNS = (
 )
 
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
+SEQUENCE_ROLES = {"first_step", "complete_step", "guardian_prep"}
 
 ACTIVE_P3_REGION_SUPPORT = {
     "algebra-forge": {
@@ -949,7 +950,8 @@ def generated_practice_coverage(items: list[dict[str, Any]]) -> dict[str, Any]:
             })
         else:
             warmups_without_example_model.append(practice_id)
-        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass":
+        sequence_role = non_empty_string(item.get("sequence_role"))
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass" and sequence_role in SEQUENCE_ROLES:
             for region_id in string_list(item.get("region_ids")):
                 if region_id in warmups_per_region:
                     warmups_per_region[region_id] += 1

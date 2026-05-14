@@ -1,5 +1,6 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import { staticDataFetchCache } from './loadQuestionBank';
+import { isValidP3RegionId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { matchRegionForLabels, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
@@ -31,12 +32,14 @@ export interface GeneratedPracticeItem {
   parameters: Record<string, unknown>;
   sequenceRole?: string;
   verification: GeneratedPracticeVerification;
+  // Deprecated legacy metadata. Runtime readiness is review + verification + sequence role.
   difficultyBand?: string;
   reviewStatus: GeneratedPracticeReviewStatus;
 }
 
 const GENERATED_PRACTICE_PATH = './data/generated_practice_bank.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
+const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'guardian_prep']);
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
@@ -49,6 +52,14 @@ function stringValue(value: unknown): string | undefined {
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return Array.from(new Set(value.map(stringValue).filter((item): item is string => Boolean(item))));
+}
+
+function p3RegionArray(value: unknown): string[] {
+  return stringArray(value).filter(isValidP3RegionId);
+}
+
+function hasInvalidP3RegionId(value: unknown): boolean {
+  return stringArray(value).some((regionId) => !isValidP3RegionId(regionId));
 }
 
 function parametersValue(value: unknown): Record<string, unknown> {
@@ -65,7 +76,9 @@ function verificationValue(value: unknown): GeneratedPracticeVerification | unde
 }
 
 function isRuntimeEligible(item: GeneratedPracticeItem): boolean {
-  return RUNTIME_REVIEW_STATUSES.has(item.reviewStatus) && item.verification.status === 'pass';
+  return RUNTIME_REVIEW_STATUSES.has(item.reviewStatus)
+    && item.verification.status === 'pass'
+    && RUNTIME_SEQUENCE_ROLES.has(item.sequenceRole ?? '');
 }
 
 function matchesPaperFamily(item: GeneratedPracticeItem, paperFamily?: PaperFamily): boolean {
@@ -132,7 +145,7 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
     const difficultyBand = stringValue(item.difficulty_band);
     const reviewStatus = stringValue(item.review_status);
 
-    if (!practiceId || !generatorFamily || !paperFamily || !topic || !prompt || !answer || workedSolution.length === 0 || !verification || !reviewStatus) {
+    if (!practiceId || !generatorFamily || !paperFamily || !topic || !prompt || !answer || workedSolution.length === 0 || !verification || !reviewStatus || hasInvalidP3RegionId(item.region_ids)) {
       return [];
     }
 
@@ -148,7 +161,7 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
       keyMethod: stringValue(item.key_method),
       examMove: stringValue(item.exam_move),
       snippetIds: stringArray(item.snippet_ids),
-      regionIds: stringArray(item.region_ids),
+      regionIds: p3RegionArray(item.region_ids),
       prompt,
       answer,
       workedSolution,

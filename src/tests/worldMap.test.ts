@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { NormalizedQuestion } from '../types';
-import { filterQuestionsForRegion, isP3Question, matchRegionForLabels, matchRegionForQuestion, P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import { filterQuestionsForRegion, inferQuestionRouteEvidence, isP3Question, matchRegionForLabels, matchRegionForQuestion, P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 
 function question(id: string, topic: string, subtopic?: string): NormalizedQuestion {
   return {
@@ -8,7 +8,9 @@ function question(id: string, topic: string, subtopic?: string): NormalizedQuest
     paperFamily: 'p3',
     displayTopic: topic,
     displaySubtopic: subtopic,
-    deepseek: { hasError: false, topic, subtopic },
+    displayDifficulty: 'foundation',
+    localDifficulty: 'foundation',
+    deepseek: { hasError: false, topic, subtopic, difficulty: 'foundation', normalizedDifficulty: 'foundation' },
     questionImageRawPaths: [],
     markSchemeImageRawPaths: [],
     questionImagePaths: [],
@@ -53,5 +55,41 @@ describe('worldMap region matching', () => {
   it('filters P3 case-insensitively without including other paper families', () => {
     expect(isP3Question({ ...question('p3', 'Algebra'), paperFamily: 'P3' })).toBe(true);
     expect(isP3Question({ ...question('p1', 'Algebra'), paperFamily: 'p1' })).toBe(false);
+  });
+
+  it('keeps region routing stable when only difficulty metadata changes', () => {
+    const base = question('d', 'Unclassified', 'trigonometric identities');
+    const changedDifficulty = {
+      ...base,
+      displayDifficulty: 'challenge',
+      localDifficulty: 'challenge',
+      deepseek: { ...base.deepseek, difficulty: 'challenge', normalizedDifficulty: 'challenge' },
+      raw: { ...base.raw, local: { difficulty: 'challenge' } },
+    };
+    const trig = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'trig-observatory')!;
+
+    expect(matchRegionForQuestion(base)?.id).toBe('trig-observatory');
+    expect(matchRegionForQuestion(changedDifficulty)?.id).toBe('trig-observatory');
+    expect(filterQuestionsForRegion([base, changedDifficulty], trig).map((item) => item.id)).toEqual(['d', 'd']);
+  });
+
+  it('does not accept invalid routed region IDs as clean runtime routes', () => {
+    const invalid = {
+      ...question('invalid-route', 'Algebra'),
+      topicRouting: {
+        primaryTopicId: '9709_p3_topic_algebra',
+        mappedRegionId: 'algebra-vault',
+        recordSource: 'topic-routing-sidecar' as const,
+      },
+    };
+
+    expect(inferQuestionRouteEvidence(invalid)).toMatchObject({
+      status: 'missing-route',
+      source: 'topic-routing',
+      reasonCodes: ['unmapped-topic-routing-id'],
+      displayRegionId: 'algebra-forge',
+    });
+    expect(matchRegionForQuestion(invalid)?.id).toBe('algebra-forge');
+    expect(filterQuestionsForRegion([invalid], P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!)).toEqual([invalid]);
   });
 });

@@ -1,7 +1,7 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionEligibility, QuestionPartMark, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionPartMark, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
-import { P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './topicRouting';
 import { inferQuestionRouteEvidence } from './worldMap';
 
 type LooseRecord = Record<string, unknown>;
@@ -224,6 +224,24 @@ function eligibility(
   };
 }
 
+export interface NormalizeQuestionBankOptions {
+  contentSourceKind?: QuestionContentSourceKind;
+}
+
+function normalizeContentSource(kind: QuestionContentSourceKind | undefined): QuestionContentSource {
+  const sourceKind = kind ?? 'unknown';
+  const unsafeRawBank = sourceKind === 'raw-bank-fallback' || sourceKind === 'raw-bank-debug';
+  const reasonCodes = unsafeRawBank ? [`unsafe-${sourceKind}`] : [];
+
+  return {
+    kind: sourceKind,
+    unsafeForMastery: unsafeRawBank,
+    unsafeForGuardian: unsafeRawBank,
+    unsafeForGeneration: unsafeRawBank,
+    reasonCodes,
+  };
+}
+
 function routeBlockReasonCodes(routeEvidence: QuestionRouteEvidence | undefined): string[] {
   switch (routeEvidence?.status) {
     case 'clean':
@@ -259,6 +277,7 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   const textOnlyAllowed = textQuality?.textOnlyDisplayAllowed === true;
   const textHardFailed = textQuality?.hardFailed === true;
   const trainingBlockers = question.trainingBlockers ?? [];
+  const contentSource = question.contentSource ?? normalizeContentSource(undefined);
 
   const regionDisplayReasons: string[] = [];
   if (routeEvidence?.displayRegionId) regionDisplayReasons.push('has-display-region');
@@ -280,6 +299,7 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   else masteryReasons.push(...routeBlocks);
   if (!hasImagePracticeAssets) masteryReasons.push('missing-image-practice-assets');
   if (trainingBlockers.length) masteryReasons.push('blocked-training-status');
+  if (contentSource.unsafeForMastery) masteryReasons.push(...contentSource.reasonCodes);
 
   const textOnlyReasons: string[] = [];
   if (routeIsClean) textOnlyReasons.push('validated-topic-routing');
@@ -293,17 +313,19 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   else generationReasons.push(...routeBlocks);
   if (!textQuality?.contentLabSupportUsable) generationReasons.push('missing-content-lab-usable-text');
   if (textHardFailed) generationReasons.push('blocked-hard-failed-text');
+  if (contentSource.unsafeForGeneration) generationReasons.push(...contentSource.reasonCodes);
 
   const imagePracticeEligible = hasImagePracticeAssets && trainingBlockers.length === 0;
-  const masteryEligible = routeIsClean && imagePracticeEligible;
-  const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed;
+  const masteryEligible = routeIsClean && imagePracticeEligible && !contentSource.unsafeForMastery;
+  const guardianEligible = masteryEligible && !contentSource.unsafeForGuardian;
+  const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed && !contentSource.unsafeForGeneration;
   const textOnlyEligible = routeIsClean && hasTextOnlySource && textOnlyAllowed && !textHardFailed;
 
   return {
     regionDisplayEligible: eligibility(regionDisplayEligible, regionDisplayReasons),
     practiceEligible: eligibility(imagePracticeEligible, practiceReasons),
     masteryEligible: eligibility(masteryEligible, masteryReasons),
-    guardianEligible: eligibility(masteryEligible, masteryReasons),
+    guardianEligible: eligibility(guardianEligible, masteryReasons),
     generationEligible: eligibility(generationEligible, generationReasons),
     textOnlyEligible: eligibility(textOnlyEligible, textOnlyReasons),
   };
@@ -384,7 +406,7 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
       recordSource: 'topic-routing-sidecar',
       paperFamily: pickString(record, ['paper_family', 'paperFamily']),
       evidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, record),
-      mappedRegionId: primaryTopicId ? P3_TOPIC_ID_TO_REGION_ID[primaryTopicId] : undefined,
+      mappedRegionId: p3RegionIdForTopicId(primaryTopicId),
       topicDistribution: topicDistribution.length ? topicDistribution : undefined,
     });
   }
@@ -402,7 +424,7 @@ function normalizeTopicDistribution(value: unknown): QuestionTopicDistribution[]
       if (!topicId) return undefined;
       const topic: QuestionTopicDistribution = { topicId };
       const fitPercent = pickNumber(record, ['fit_percent', 'fitPercent', 'percent', 'weight']);
-      const mappedRegionId = P3_TOPIC_ID_TO_REGION_ID[topicId];
+      const mappedRegionId = p3RegionIdForTopicId(topicId);
       if (fitPercent !== undefined) topic.fitPercent = fitPercent;
       if (mappedRegionId) topic.mappedRegionId = mappedRegionId;
       return topic;
@@ -493,9 +515,15 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number): QuestionPa
   }));
 }
 
-export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unknown = {}, topicRouting: unknown = {}): NormalizedQuestion[] {
+export function normalizeQuestionBank(
+  localBank: unknown,
+  deepseekSidecar: unknown = {},
+  topicRouting: unknown = {},
+  options: NormalizeQuestionBankOptions = {},
+): NormalizedQuestion[] {
   const sidecarIndex = buildSidecarIndex(deepseekSidecar);
   const routingIndex = buildTopicRoutingIndex(topicRouting);
+  const contentSource = normalizeContentSource(options.contentSourceKind);
 
   return getQuestionArray(localBank).map((record, index) => {
     const id = pickString(record, ['id', 'question_id', 'questionId']) ?? `question_${index + 1}`;
@@ -545,8 +573,9 @@ export function normalizeQuestionBank(localBank: unknown, deepseekSidecar: unkno
       deepseek,
       topicRouting,
       textQuality,
+      contentSource,
       displayTopic: topicRouting?.mappedRegionId
-        ? P3_TOPIC_ID_TO_REGION_NAME[topicRouting.primaryTopicId ?? ''] ?? localTopic ?? 'Reviewed P3 topic'
+        ? p3RegionNameForTopicId(topicRouting.primaryTopicId) ?? localTopic ?? 'Reviewed P3 topic'
         : validDeepSeekLabel(deepseek.topic, deepseek) ? deepseek.topic : localTopic ?? 'Unclassified',
       displaySubtopic: validDeepSeekLabel(deepseek.subtopic, deepseek) ? deepseek.subtopic : localSubtopic,
       displayDifficulty: localDifficulty,
@@ -588,11 +617,16 @@ function inferPaperFamily(record: LooseRecord, imagePaths: string[]): PaperFamil
   return 'unknown';
 }
 
-export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepseekSidecar: unknown = {}, topicRouting: unknown = {}): {
+export function normalizeQuestionBankWithDiagnostics(
+  localBank: unknown,
+  deepseekSidecar: unknown = {},
+  topicRouting: unknown = {},
+  options: NormalizeQuestionBankOptions = {},
+): {
   questions: NormalizedQuestion[];
   diagnostics: QuestionBankDiagnostics;
 } {
-  const questions = normalizeQuestionBank(localBank, deepseekSidecar, topicRouting);
+  const questions = normalizeQuestionBank(localBank, deepseekSidecar, topicRouting, options);
   const sidecarEnrichmentCount = getSidecarEnrichmentCount(deepseekSidecar);
   const sidecarMergeCount = questions.filter((question) => Boolean(question.raw.deepseek)).length;
   const sidecarErrorCount = getSidecarErrorCount(deepseekSidecar);
@@ -600,6 +634,7 @@ export function normalizeQuestionBankWithDiagnostics(localBank: unknown, deepsee
     questions,
     diagnostics: {
       mainQuestionsLength: getQuestionRecordCount(localBank),
+      mainContentSource: options.contentSourceKind ?? 'unknown',
       mainAppearsPlaceholder: getQuestionRecordCount(localBank) === 0,
       sidecarAppearsPlaceholder: sidecarEnrichmentCount === 0,
       loadedQuestionCount: getQuestionRecordCount(localBank),

@@ -14,6 +14,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from p3_skill_contract import load_p3_skill_map, p3_region_ids_from_skill_map
+
 
 GENERATED_BY = "tools/content_lab/scripts/build_p3_skill_coverage.py"
 HIGH_EVIDENCE_QUESTION_COUNT = 5
@@ -68,17 +74,7 @@ ALLOWED_P1_PREREQUISITE_SKILL_REFS = {
     "sequences_and_series",
     "trigonometric_identities",
 }
-ACTIVE_P3_REGION_IDS = {
-    "algebra-forge",
-    "logarithm-grove",
-    "trig-observatory",
-    "complex-harbor",
-    "calculus-cliffs",
-    "integration-gardens",
-    "vector-workshop",
-    "numerical-mines",
-    "differential-shrine",
-}
+ACTIVE_P3_REGION_IDS = p3_region_ids_from_skill_map(load_p3_skill_map())
 RUNTIME_REVIEW_STATUSES = {"teacher_reviewed", "published"}
 BLOCKING_TRAINING_STATUS_TOKENS = (
     "blocked",

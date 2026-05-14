@@ -59,6 +59,33 @@ describe('generated practice runtime loader', () => {
     expect(reviewedGeneratedPractice(normalized).map((practice) => practice.practiceId)).toEqual(['practice-pass']);
   });
 
+  it('uses review status, verification, and sequence role for readiness instead of difficulty band', () => {
+    const normalized = normalizeGeneratedPracticeData({
+      items: [
+        item({ practice_id: 'practice-easy', difficulty_band: 'easy', sequence_role: 'first_step' }),
+        item({ practice_id: 'practice-hard', difficulty_band: 'hard', sequence_role: 'first_step' }),
+        item({ practice_id: 'practice-no-sequence', difficulty_band: 'easy', sequence_role: '' }),
+        item({ practice_id: 'practice-candidate-hard', difficulty_band: 'hard', sequence_role: 'guardian_prep', review_status: 'candidate' }),
+      ],
+    });
+
+    expect(reviewedGeneratedPractice(normalized).map((practice) => practice.practiceId)).toEqual([
+      'practice-easy',
+      'practice-hard',
+    ]);
+  });
+
+  it('rejects generated practice records with invalid P3 region IDs', () => {
+    const normalized = normalizeGeneratedPracticeData({
+      items: [
+        item({ practice_id: 'valid-region', region_ids: ['logarithm-grove'] }),
+        item({ practice_id: 'invalid-region', region_ids: ['log-observatory'] }),
+      ],
+    });
+
+    expect(normalized.map((practice) => practice.practiceId)).toEqual(['valid-region']);
+  });
+
   it('selects reviewed practice by topic, paper family, skill target, and region mapping', () => {
     const normalized = normalizeGeneratedPracticeData({
       items: [

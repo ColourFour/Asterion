@@ -164,6 +164,50 @@ describe('normalizeQuestionBank', () => {
     expect(reviewOnly?.eligibility?.generationEligible.eligible).toBe(false);
   });
 
+  it('keeps routing, mastery, Guardian, and generation eligibility stable when only difficulty metadata changes', () => {
+    const bank = (difficulty: string) => ({
+      questions: [{
+        id: 'clean-generated',
+        paper_family: 'p3',
+        topic: 'Vectors',
+        difficulty,
+        question_image_path: 'p3/a/questions/q01.png',
+        mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+        question_text: 'Find the angle between two vectors.',
+        mark_scheme_text: 'Use the scalar product.',
+        text_only_status: 'ready',
+        quality_gate: { text_only_display_allowed: true },
+      }],
+    });
+    const sidecar = (difficulty: string) => ({
+      'clean-generated': {
+        topic: 'Algebra',
+        difficulty,
+        deepseek_difficulty_normalized: difficulty,
+        confidence: 0.95,
+      },
+    });
+    const routing = {
+      records: {
+        'clean-generated': {
+          primary_topic_id: '9709_p3_topic_vectors',
+          confidence: 'high',
+        },
+      },
+    };
+
+    const foundation = normalizeQuestionBank(bank('foundation'), sidecar('foundation'), routing)[0];
+    const challenge = normalizeQuestionBank(bank('challenge'), sidecar('challenge'), routing)[0];
+
+    expect(foundation.displayTopic).toBe('Vectors Gate');
+    expect(challenge.displayTopic).toBe(foundation.displayTopic);
+    expect(challenge.routeEvidence).toMatchObject(foundation.routeEvidence ?? {});
+    expect(challenge.eligibility).toEqual(foundation.eligibility);
+    expect(challenge.eligibility?.masteryEligible.eligible).toBe(true);
+    expect(challenge.eligibility?.guardianEligible.eligible).toBe(true);
+    expect(challenge.eligibility?.generationEligible.eligible).toBe(true);
+  });
+
   it('blocks unsafe route statuses from mastery and generation even when images exist', () => {
     const questions = normalizeQuestionBank(
       {

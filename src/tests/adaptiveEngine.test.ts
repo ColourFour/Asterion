@@ -7,8 +7,10 @@ function question(id: string, topic: string, marks = 6): NormalizedQuestion {
     id,
     paperFamily: 'p3',
     displayTopic: topic,
+    displayDifficulty: 'foundation',
+    localDifficulty: 'foundation',
     marksAvailable: marks,
-    deepseek: { hasError: true },
+    deepseek: { hasError: true, difficulty: 'foundation', normalizedDifficulty: 'foundation' },
     questionImageRawPaths: [`p3/test/questions/${id}.png`],
     markSchemeImageRawPaths: [`p3/test/mark_scheme/${id}.png`],
     questionImagePaths: [`p3/test/questions/${id}.png`],
@@ -55,5 +57,31 @@ describe('selectNextQuestion', () => {
     });
 
     expect(selected?.id).toBe('b');
+  });
+
+  it('keeps selection stable when only difficulty metadata changes', () => {
+    const baseQuestions = [question('a', 'Algebra'), question('b', 'Algebra')];
+    const changedDifficultyQuestions = baseQuestions.map((item) => ({
+      ...item,
+      displayDifficulty: item.id === 'a' ? 'challenge' : 'foundation',
+      localDifficulty: item.id === 'a' ? 'challenge' : 'foundation',
+      deepseek: {
+        ...item.deepseek,
+        difficulty: item.id === 'a' ? 'challenge' : 'foundation',
+        normalizedDifficulty: item.id === 'a' ? 'challenge' : 'foundation',
+      },
+      raw: {
+        ...item.raw,
+        local: { difficulty: item.id === 'a' ? 'challenge' : 'foundation' },
+      },
+    }));
+    const context = {
+      mode: 'start' as const,
+      attempts: [],
+      topicProfiles: {},
+    };
+
+    expect(selectNextQuestion(baseQuestions, context)?.id).toBe('a');
+    expect(selectNextQuestion(changedDifficultyQuestions, context)?.id).toBe('a');
   });
 });

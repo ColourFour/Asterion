@@ -9,10 +9,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from fractions import Fraction
 from math import comb, gcd
 from pathlib import Path
 from typing import Any
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from p3_skill_contract import P3_REGION_DISPLAY_NAMES, PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map
 
 
 GENERATED_BY = "tools/content_lab/scripts/build_generated_practice.py"
@@ -63,29 +70,9 @@ DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY = "differential_equations.separation_ba
 DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY = "differential_equations.context_model_basic"
 PAPER_FAMILY = "p3"
 SEQUENCE_ROLES = ("first_step", "complete_step", "guardian_prep")
-ACTIVE_P3_REGION_IDS = [
-    "algebra-forge",
-    "logarithm-grove",
-    "trig-observatory",
-    "complex-harbor",
-    "calculus-cliffs",
-    "integration-gardens",
-    "vector-workshop",
-    "numerical-mines",
-    "differential-shrine",
-]
-PRIORITY_REGION_IDS = ["algebra-forge", "logarithm-grove", "trig-observatory"]
-REGION_DISPLAY_NAMES = {
-    "algebra-forge": "Algebra Vault",
-    "logarithm-grove": "Logarithm Observatory",
-    "trig-observatory": "Trigonometry Spire",
-    "complex-harbor": "Argand Atrium",
-    "calculus-cliffs": "Calculus Cliffs",
-    "integration-gardens": "Integral Terraces",
-    "vector-workshop": "Vectors Gate",
-    "numerical-mines": "Iteration Forge",
-    "differential-shrine": "Differential Shrine",
-}
+ACTIVE_P3_REGION_IDS = sorted(p3_region_ids_from_skill_map(load_p3_skill_map()))
+PRIORITY_REGION_IDS = sorted(PRIORITY_P3_REGION_IDS)
+REGION_DISPLAY_NAMES = P3_REGION_DISPLAY_NAMES
 
 
 def load_json_optional(path: Path | None) -> dict[str, Any]:
@@ -2852,7 +2839,8 @@ def update_content_lab_report(
             })
         else:
             warmups_without_example_model.append(practice_id)
-        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass":
+        sequence_role = non_empty_string(item.get("sequence_role"))
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass" and sequence_role in SEQUENCE_ROLES:
             skill_target_id = non_empty_string(item.get("skill_target_id"))
             if skill_target_id:
                 warmups_by_skill.setdefault(skill_target_id, set()).add(str(item.get("practice_id")))

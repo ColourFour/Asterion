@@ -163,6 +163,59 @@ describe('region learning loop logic', () => {
     expect(summary.nextAction.explanation).toBe('The Guardian is ready. Challenge it to clear the region.');
   });
 
+  it('keeps guardian eligibility and selection stable when only difficulty metadata changes', () => {
+    const attempts = [
+      attempt('1', 0.72, 'logarithmic equations'),
+      attempt('2', 0.76, 'exponential equations'),
+      attempt('3', 0.81, 'logarithmic equations'),
+    ];
+    const regionProgress = progress({
+      attempts: attempts.length,
+      averageScoreRatio: 0.76,
+      recentScoreRatio: 0.76,
+      subtopicsTouched: 2,
+      totalMarksEarned: 22.9,
+      totalMarksAvailable: 30,
+      rank: 'Bronze',
+    });
+    const baseQuestions = [
+      question({ id: 'q-easy', displaySubtopic: 'logarithmic equations', marksAvailable: 8, displayDifficulty: 'foundation', localDifficulty: 'foundation' }),
+      question({ id: 'q-hard', displaySubtopic: 'exponential equations', marksAvailable: 6, displayDifficulty: 'challenge', localDifficulty: 'challenge' }),
+    ];
+    const changedDifficultyQuestions = baseQuestions.map((item) => ({
+      ...item,
+      displayDifficulty: item.displayDifficulty === 'foundation' ? 'challenge' : 'foundation',
+      localDifficulty: item.localDifficulty === 'foundation' ? 'challenge' : 'foundation',
+      deepseek: {
+        ...item.deepseek,
+        difficulty: item.displayDifficulty === 'foundation' ? 'challenge' : 'foundation',
+        normalizedDifficulty: item.displayDifficulty === 'foundation' ? 'challenge' : 'foundation',
+      },
+    }));
+    const base = computeGuardianEligibility({
+      region: logarithms,
+      regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: baseQuestions,
+      regionAttempts: attempts,
+    });
+    const changedDifficulty = computeGuardianEligibility({
+      region: logarithms,
+      regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: changedDifficultyQuestions,
+      regionAttempts: attempts,
+    });
+
+    expect(base.eligible).toBe(true);
+    expect(changedDifficulty.eligible).toBe(true);
+    expect(base.guardianQuestion?.id).toBe('q-easy');
+    expect(changedDifficulty.guardianQuestion?.id).toBe('q-easy');
+    expect(changedDifficulty.requirements.map((requirement) => requirement.completed)).toEqual(
+      base.requirements.map((requirement) => requirement.completed),
+    );
+  });
+
   it('marks a failed saved guardian as attempted and a passed saved guardian as cleared', () => {
     const regionProgress = progress({ attempts: 4, recentScoreRatio: 0.76 });
     const eligibility = computeGuardianEligibility({

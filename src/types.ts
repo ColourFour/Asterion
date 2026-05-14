@@ -2,6 +2,11 @@ import type { QuestionRouteEvidenceStatus } from './lib/questionRouteEvidence';
 
 export type PaperFamily = 'p1' | 'p3' | 'p4' | 'p5' | string;
 
+/**
+ * Deprecated metadata only.
+ * Difficulty labels are preserved for legacy exports/review context, but must not
+ * drive routing, selection, mastery, Guardian access, or generation eligibility.
+ */
 export type Difficulty = 'foundation' | 'core' | 'stretch' | 'challenge' | string;
 
 export type MistakeType =
@@ -147,6 +152,20 @@ export interface QuestionEligibility {
   textOnlyEligible: QuestionUseCaseEligibility;
 }
 
+export type QuestionContentSourceKind =
+  | 'projected-bank'
+  | 'raw-bank-fallback'
+  | 'raw-bank-debug'
+  | 'unknown';
+
+export interface QuestionContentSource {
+  kind: QuestionContentSourceKind;
+  unsafeForMastery: boolean;
+  unsafeForGuardian: boolean;
+  unsafeForGeneration: boolean;
+  reasonCodes: string[];
+}
+
 export interface NormalizedQuestion {
   id: string;
   paperFamily: PaperFamily;
@@ -159,6 +178,7 @@ export interface NormalizedQuestion {
   topicRouting?: QuestionTopicRouting;
   routeEvidence?: QuestionRouteEvidence;
   eligibility?: QuestionEligibility;
+  contentSource?: QuestionContentSource;
   textQuality?: QuestionTextQuality;
   displayTopic: string;
   displaySubtopic?: string;
@@ -182,6 +202,7 @@ export interface NormalizedQuestion {
 }
 
 export interface QuestionBankDiagnostics {
+  mainContentSource?: QuestionContentSourceKind;
   mainUrl?: string;
   mainSchemaName?: string;
   mainSchemaVersion?: string | number;
