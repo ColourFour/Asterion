@@ -106,6 +106,8 @@ export interface QuestionTopicRouting {
   confidence?: string;
   reviewRequired?: boolean;
   reviewReasons?: string[];
+  reviewBlockerReasonCodes?: string[];
+  routeApproved?: boolean;
   evidenceUsed?: string[];
   routingSource?: string;
   recordSource?: 'topic-routing-sidecar' | 'source-record';

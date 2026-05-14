@@ -106,6 +106,14 @@ function reviewReasonLooksAmbiguous(reason: string): boolean {
   return /ambiguous|multiple|conflict|uncertain|mixed|split/i.test(reason);
 }
 
+function unresolvedReviewReasonCodes(routing: QuestionTopicRouting | undefined): string[] {
+  if (!routing || routing.routeApproved) return [];
+  return unique([
+    ...(routing.reviewBlockerReasonCodes ?? []),
+    ...(routing.reviewReasons?.length ? ['topic-routing-review-reasons-unresolved'] : []),
+  ]);
+}
+
 function topicIdLooksP3(topicId: string | undefined): boolean {
   return Boolean(topicId && /^9709_p3_topic_/i.test(topicId));
 }
@@ -195,6 +203,14 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
         ? 'ambiguous-route'
         : 'review-only';
       return routeEvidence(status, 'topic-routing', question, world, ['topic-routing-review-required'], routedRegion, routedRegion ?? fallbackRegion);
+    }
+
+    const reviewBlockers = unresolvedReviewReasonCodes(question.topicRouting);
+    if (reviewBlockers.length) {
+      const status: QuestionRouteEvidenceStatus = question.topicRouting?.reviewReasons?.some(reviewReasonLooksAmbiguous)
+        ? 'ambiguous-route'
+        : 'review-only';
+      return routeEvidence(status, 'topic-routing', question, world, reviewBlockers, routedRegion, routedRegion ?? fallbackRegion);
     }
 
     if (explicitUnsafeStatus) {

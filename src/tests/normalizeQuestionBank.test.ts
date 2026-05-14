@@ -324,6 +324,98 @@ describe('normalizeQuestionBank', () => {
     expect(questions.find((question) => question.id === 'source-clean-only')?.routeEvidence?.validatedRegionId).toBeUndefined();
   });
 
+  it('blocks unresolved review and audit markers from normalizing to clean routes', () => {
+    const baseQuestion = (id: string) => ({
+      id,
+      paper_family: 'p3',
+      question_image_path: `p3/a/questions/${id}.png`,
+      mark_scheme_image_path: `p3/a/mark_scheme/${id}.png`,
+      question_text: 'Solve the problem.',
+      mark_scheme_text: 'Use the reviewed method.',
+      text_only_status: 'ready',
+      quality_gate: { text_only_display_allowed: true },
+    });
+    const questions = normalizeQuestionBank(
+      {
+        questions: [
+          baseQuestion('review-reason-only'),
+          baseQuestion('audited-not-approved'),
+          baseQuestion('deferred-evidence'),
+          baseQuestion('blocked-mastery-row'),
+          baseQuestion('approved-review-reason'),
+          baseQuestion('safe-clean'),
+        ],
+      },
+      {},
+      {
+        records: {
+          'review-reason-only': {
+            primary_topic_id: '9709_p3_topic_integration',
+            review_required: false,
+            review_reasons: ['Question includes both differentiation and integration; needs final reviewer decision.'],
+          },
+          'audited-not-approved': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            resolution_status: 'corrected_skill_map',
+            route_decision: 'audited',
+          },
+          'deferred-evidence': {
+            primary_topic_id: '9709_p3_topic_differentiation',
+            resolution_status: 'teacher_review_deferred',
+            evidence_status: 'ambiguous_part_level_evidence',
+          },
+          'blocked-mastery-row': {
+            primary_topic_id: '9709_p3_topic_vectors',
+            mapping_reviewed: false,
+            subpart_mapping_reviewed: false,
+            mastery_evidence_allowed: false,
+          },
+          'approved-review-reason': {
+            primary_topic_id: '9709_p3_topic_complex_numbers',
+            review_required: false,
+            review_reasons: ['Reviewed mixed wording; route approved from source evidence.'],
+            route_approved: true,
+          },
+          'safe-clean': {
+            primary_topic_id: '9709_p3_topic_algebra',
+          },
+        },
+      },
+    );
+
+    for (const id of ['review-reason-only', 'audited-not-approved', 'deferred-evidence', 'blocked-mastery-row']) {
+      const question = questions.find((item) => item.id === id);
+      expect(question?.routeEvidence?.status, id).not.toBe('clean');
+      expect(question?.routeEvidence?.validatedRegionId, id).toBeUndefined();
+      expect(question?.eligibility?.masteryEligible.eligible, id).toBe(false);
+      expect(question?.eligibility?.guardianEligible.eligible, id).toBe(false);
+      expect(question?.eligibility?.generationEligible.eligible, id).toBe(false);
+    }
+
+    expect(questions.find((question) => question.id === 'review-reason-only')?.routeEvidence).toMatchObject({
+      status: 'review-only',
+      reasonCodes: ['topic-routing-review-reasons-unresolved'],
+      displayRegionId: 'integration-gardens',
+    });
+    expect(questions.find((question) => question.id === 'audited-not-approved')?.routeEvidence).toMatchObject({
+      status: 'review-only',
+      reasonCodes: ['topic-routing-audit-not-approved'],
+      displayRegionId: 'algebra-forge',
+    });
+    expect(questions.find((question) => question.id === 'deferred-evidence')?.routeEvidence?.reasonCodes)
+      .toEqual(['topic-routing-deferred-evidence', 'topic-routing-evidence-blocker']);
+    expect(questions.find((question) => question.id === 'blocked-mastery-row')?.routeEvidence?.reasonCodes)
+      .toEqual(['topic-routing-mastery-evidence-blocked']);
+
+    for (const id of ['approved-review-reason', 'safe-clean']) {
+      const question = questions.find((item) => item.id === id);
+      expect(question?.routeEvidence?.status, id).toBe('clean');
+      expect(question?.eligibility?.masteryEligible.eligible, id).toBe(true);
+      expect(question?.eligibility?.guardianEligible.eligible, id).toBe(true);
+      expect(question?.eligibility?.generationEligible.eligible, id).toBe(true);
+    }
+  });
+
   it('keeps fallback display regions visible when sidecar routing is missing but does not validate them', () => {
     const questions = normalizeQuestionBank(
       {

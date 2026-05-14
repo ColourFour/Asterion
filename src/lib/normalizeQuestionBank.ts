@@ -101,6 +101,96 @@ function pickRouteEvidenceStatus(...records: Array<LooseRecord | undefined>) {
   return undefined;
 }
 
+function truthyBoolean(record: LooseRecord | undefined, keys: string[]): boolean {
+  return keys.some((key) => pickBoolean(record, [key]) === true);
+}
+
+function falseyBoolean(record: LooseRecord | undefined, keys: string[]): boolean {
+  return keys.some((key) => pickBoolean(record, [key]) === false);
+}
+
+function normalizedToken(value: string | undefined): string {
+  return (value ?? '').trim().toLowerCase().replace(/[\s-]+/g, '_');
+}
+
+function routeExplicitlyApproved(record: LooseRecord): boolean {
+  return truthyBoolean(record, [
+    'route_approved',
+    'routeApproved',
+    'review_approved',
+    'reviewApproved',
+    'validated_route_approved',
+    'validatedRouteApproved',
+    'approved_for_validated_evidence',
+    'approvedForValidatedEvidence',
+  ]) || [
+    'approved',
+    'route_approved',
+    'validated_route_approved',
+    'clean_approved',
+    'resolved_approved',
+  ].includes(normalizedToken(pickString(record, [
+    'route_review_status',
+    'routeReviewStatus',
+    'route_resolution_status',
+    'routeResolutionStatus',
+    'approval_status',
+    'approvalStatus',
+  ])));
+}
+
+function reviewBlockerReasonCodes(record: LooseRecord): string[] {
+  if (routeExplicitlyApproved(record)) return [];
+
+  const blockers: string[] = [];
+  const reviewReasons = stringArray(record.review_reasons);
+  const resolutionStatus = normalizedToken(pickString(record, ['resolution_status', 'resolutionStatus']));
+  const routeDecision = normalizedToken(pickString(record, ['route_decision', 'routeDecision', 'decision']));
+  const evidenceStatus = normalizedToken(pickString(record, ['evidence_status', 'evidenceStatus']));
+
+  if (reviewReasons.length > 0) blockers.push('topic-routing-review-reasons-unresolved');
+  if (truthyBoolean(record, ['review_required', 'reviewRequired'])) blockers.push('topic-routing-review-required');
+  if (truthyBoolean(record, ['deferred', 'is_deferred', 'isDeferred', 'teacher_review_deferred', 'teacherReviewDeferred'])) {
+    blockers.push('topic-routing-deferred-evidence');
+  }
+  if (resolutionStatus) {
+    if (resolutionStatus.includes('deferred') || resolutionStatus.includes('review_required') || resolutionStatus.includes('unresolved')) {
+      blockers.push('topic-routing-deferred-evidence');
+    } else if (![
+      'approved',
+      'route_approved',
+      'validated_route_approved',
+      'clean_approved',
+      'resolved_approved',
+    ].includes(resolutionStatus)) {
+      blockers.push('topic-routing-audit-not-approved');
+    }
+  }
+  if (evidenceStatus.includes('ambiguous') || evidenceStatus.includes('deferred') || evidenceStatus.includes('blocked')) {
+    blockers.push('topic-routing-evidence-blocker');
+  }
+  if (routeDecision && ![
+    'approved',
+    'route_approved',
+    'validated_route_approved',
+    'clean_approved',
+  ].includes(routeDecision)) {
+    blockers.push(routeDecision.includes('defer') ? 'topic-routing-deferred-evidence' : 'topic-routing-audit-not-approved');
+  }
+  if (falseyBoolean(record, [
+    'mastery_evidence_allowed',
+    'masteryEvidenceAllowed',
+    'mapping_reviewed',
+    'mappingReviewed',
+    'subpart_mapping_reviewed',
+    'subpartMappingReviewed',
+  ])) {
+    blockers.push('topic-routing-mastery-evidence-blocked');
+  }
+
+  return unique(blockers);
+}
+
 function numberArray(value: unknown): number[] {
   if (!Array.isArray(value)) return [];
   return value.map((item) => (
@@ -401,6 +491,8 @@ function buildTopicRoutingIndex(topicRouting: unknown): Map<string, QuestionTopi
       confidence: pickString(record, ['confidence']),
       reviewRequired: pickBoolean(record, ['review_required']),
       reviewReasons: stringArray(record.review_reasons),
+      reviewBlockerReasonCodes: reviewBlockerReasonCodes(record),
+      routeApproved: routeExplicitlyApproved(record),
       evidenceUsed: stringArray(record.evidence_used),
       routingSource: pickString(record, ['routing_source']),
       recordSource: 'topic-routing-sidecar',
