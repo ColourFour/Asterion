@@ -17,6 +17,7 @@
     "inventory:p3-content": "python3 tools/content_lab/scripts/build_p3_content_inventory.py --output tools/content_lab/reports/p3_content_inventory_report.json",
     "coverage:p3-matrix": "python3 tools/content_lab/scripts/build_p3_coverage_matrix.py --json-output tools/content_lab/reports/p3_coverage_matrix.json --markdown-output tools/content_lab/reports/p3_coverage_matrix.md",
     "queue:p3-region-correction": "python3 tools/content_lab/scripts/build_p3_region_correction_queue.py --json-output tools/content_lab/reports/p3_region_correction_queue.json --markdown-output tools/content_lab/reports/p3_region_correction_queue.md",
+    "report:p3-route-evidence": "python3 tools/content_lab/scripts/build_p3_route_evidence_report.py --json-output tools/content_lab/reports/p3_route_evidence_status_report.json --markdown-output tools/content_lab/reports/p3_route_evidence_status_report.md",
     "verify:content-lab": "python3 tools/content_lab/scripts/verify_content_lab_outputs.py"
   },
   "dependencies": {

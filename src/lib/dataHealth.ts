@@ -1,6 +1,16 @@
 import type { NormalizedQuestion, QuestionBankDiagnostics, RegionProgress } from '../types';
 import { isQuestionTrainable, trainingBlockersForQuestion } from './questionTraining';
 import { isP3Question, labelsForQuestion, matchRegionForQuestion } from './worldMap';
+import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
+
+export interface P3RouteEvidenceDistribution {
+  totalP3Questions: number;
+  statusCounts: Record<QuestionRouteEvidenceStatus | 'missing-route-evidence', number>;
+  validatedRegionIdCount: number;
+  displayRegionIdOnlyCount: number;
+  fallbackDisplayOnlyCount: number;
+  noDisplayRegionIdCount: number;
+}
 
 export interface DataHealthSummary {
   mainUrl?: string;
@@ -59,6 +69,33 @@ export interface AssetAvailabilityAudit {
     missing: 'question' | 'mark_scheme';
     candidates: string[];
   }>;
+}
+
+export function buildP3RouteEvidenceDistribution(questions: NormalizedQuestion[]): P3RouteEvidenceDistribution {
+  const p3Questions = questions.filter(isP3Question);
+  const statusCounts = p3Questions.reduce<P3RouteEvidenceDistribution['statusCounts']>((counts, question) => {
+    const status = question.routeEvidence?.status ?? 'missing-route-evidence';
+    counts[status] = (counts[status] ?? 0) + 1;
+    return counts;
+  }, {} as P3RouteEvidenceDistribution['statusCounts']);
+
+  const validatedRegionIdCount = p3Questions.filter((question) => Boolean(question.routeEvidence?.validatedRegionId)).length;
+  const displayRegionIdOnlyCount = p3Questions.filter((question) => (
+    Boolean(question.routeEvidence?.displayRegionId)
+    && !question.routeEvidence?.validatedRegionId
+    && question.routeEvidence?.status !== 'fallback-display-only'
+  )).length;
+  const fallbackDisplayOnlyCount = p3Questions.filter((question) => question.routeEvidence?.status === 'fallback-display-only').length;
+  const noDisplayRegionIdCount = p3Questions.filter((question) => !question.routeEvidence?.displayRegionId).length;
+
+  return {
+    totalP3Questions: p3Questions.length,
+    statusCounts,
+    validatedRegionIdCount,
+    displayRegionIdOnlyCount,
+    fallbackDisplayOnlyCount,
+    noDisplayRegionIdCount,
+  };
 }
 
 export type CandidateAvailabilityChecker = (candidateUrl: string) => boolean | Promise<boolean>;

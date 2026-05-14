@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { auditQuestionAssetAvailability, buildDataHealthSummary } from '../lib/dataHealth';
+import { readFileSync } from 'node:fs';
+import { auditQuestionAssetAvailability, buildDataHealthSummary, buildP3RouteEvidenceDistribution } from '../lib/dataHealth';
+import { normalizeQuestionBankWithDiagnostics } from '../lib/normalizeQuestionBank';
 import type { NormalizedQuestion, RegionProgress } from '../types';
+
+function readJson(path: string): unknown {
+  return JSON.parse(readFileSync(`${process.cwd()}/${path}`, 'utf8'));
+}
 
 function markSchemeCandidate(candidate: string): string {
   return candidate.replace(/\/questions\/q01\.png$/, '/mark_scheme/q01.png');
@@ -97,5 +103,54 @@ describe('buildDataHealthSummary', () => {
         candidates: ['/assets/31autumn21/mark_scheme/q01.png'],
       },
     ]);
+  });
+});
+
+describe('buildP3RouteEvidenceDistribution', () => {
+  it('keeps the normalized P3 route-evidence distribution aligned with the deterministic report', () => {
+    const projectedBank = readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
+    const topicRouting = readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
+    const report = readJson('tools/content_lab/reports/p3_route_evidence_status_report.json') as {
+      normalized_distribution: {
+        total_p3_questions: number;
+        status_counts: Record<string, number>;
+        validated_region_id_count: number;
+        display_region_id_only_count: number;
+        fallback_display_only_count: number;
+        no_display_region_id_count: number;
+      };
+      route_report_distribution: {
+        normalized_status_by_route_report_category: Record<string, Record<string, number>>;
+      };
+    };
+    const { questions } = normalizeQuestionBankWithDiagnostics(projectedBank, {}, topicRouting, {
+      contentSourceKind: 'projected-bank',
+    });
+    const distribution = buildP3RouteEvidenceDistribution(questions);
+
+    expect(distribution).toMatchObject({
+      totalP3Questions: 396,
+      statusCounts: {
+        clean: 317,
+        'review-only': 60,
+        'ambiguous-route': 19,
+      },
+      validatedRegionIdCount: 317,
+      displayRegionIdOnlyCount: 26,
+      fallbackDisplayOnlyCount: 0,
+      noDisplayRegionIdCount: 53,
+    });
+    expect(distribution.totalP3Questions).toBe(report.normalized_distribution.total_p3_questions);
+    expect(distribution.statusCounts).toEqual(report.normalized_distribution.status_counts);
+    expect(distribution.validatedRegionIdCount).toBe(report.normalized_distribution.validated_region_id_count);
+    expect(distribution.displayRegionIdOnlyCount).toBe(report.normalized_distribution.display_region_id_only_count);
+    expect(distribution.fallbackDisplayOnlyCount).toBe(report.normalized_distribution.fallback_display_only_count);
+    expect(distribution.noDisplayRegionIdCount).toBe(report.normalized_distribution.no_display_region_id_count);
+    expect(report.route_report_distribution.normalized_status_by_route_report_category).toEqual({
+      safe_p3_route: { clean: 317 },
+      missing_p3_route: { 'review-only': 53 },
+      ambiguous_multi_topic_route: { 'ambiguous-route': 14 },
+      review_needed_route: { 'ambiguous-route': 5, 'review-only': 7 },
+    });
   });
 });
