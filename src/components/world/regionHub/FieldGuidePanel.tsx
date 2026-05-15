@@ -17,7 +17,19 @@ interface FieldGuidePanelProps {
   onContinueToQuickChecks?: () => void;
 }
 
+type WorkedExampleStage = 'setup' | 'method' | 'answer';
+
 function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample }) {
+  const [stage, setStage] = useState<WorkedExampleStage>('setup');
+  const methodRevealed = stage === 'method' || stage === 'answer';
+  const answerRevealed = stage === 'answer';
+  const methodId = `worked-example-method-${example.id ?? 'active'}`;
+  const answerId = `worked-example-answer-${example.id ?? 'active'}`;
+
+  useEffect(() => {
+    setStage('setup');
+  }, [example.id, example.prompt]);
+
   return (
     <article className="worked-example-card">
       <div className="worked-example-section worked-example-section-emphasis">
@@ -27,18 +39,57 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
       {example.questionType ? (
         <div className="worked-example-note"><b>Question type:</b> <MathText text={example.questionType} /></div>
       ) : null}
-      {example.keyMethod ? (
-        <div className="worked-example-note"><b>Key method:</b> <MathText text={example.keyMethod} /></div>
+
+      {methodRevealed ? (
+        <div className="worked-example-method" id={methodId}>
+          {example.keyMethod ? (
+            <div className="worked-example-note"><b>Key method:</b> <MathText text={example.keyMethod} /></div>
+          ) : null}
+          <div className="worked-example-section worked-example-method-steps">
+            <b>Method steps</b>
+            <ol>
+              {example.steps.map((step, index) => <li key={`${index}-${step}`}><MathText text={step} /></li>)}
+            </ol>
+          </div>
+          {example.examMove ? <div className="worked-example-note"><b>Exam move:</b> <MathText text={example.examMove} /></div> : null}
+          {example.teachingNote ? <div className="worked-example-note"><b>Method note:</b> <MathText text={example.teachingNote} /></div> : null}
+        </div>
       ) : null}
-      <div className="worked-example-section">
-        <b>Step-by-step math</b>
-        <ol>
-          {example.steps.map((step) => <li key={step}><MathText text={step} /></li>)}
-        </ol>
+
+      {answerRevealed ? (
+        <div className="worked-example-section worked-example-answer" id={answerId}>
+          <b>Final answer</b>
+          <div className="worked-example-copy"><MathText text={example.answer} /></div>
+        </div>
+      ) : null}
+
+      <div className="worked-example-disclosure">
+        {!methodRevealed ? (
+          <button
+            type="button"
+            className="secondary-button"
+            aria-controls={methodId}
+            aria-expanded="false"
+            onClick={() => setStage('method')}
+          >
+            Reveal method
+          </button>
+        ) : null}
+        {methodRevealed && !answerRevealed ? (
+          <button
+            type="button"
+            className="primary-button"
+            aria-controls={answerId}
+            aria-expanded="false"
+            onClick={() => setStage('answer')}
+          >
+            Show final answer
+          </button>
+        ) : null}
+        {answerRevealed ? (
+          <p className="worked-example-next-action">Next action: try the linked Quick Check without looking back at the final answer.</p>
+        ) : null}
       </div>
-      <div className="worked-example-note"><b>Answer:</b> <MathText text={example.answer} /></div>
-      {example.examMove ? <div className="worked-example-note"><b>Exam move:</b> <MathText text={example.examMove} /></div> : null}
-      {example.teachingNote ? <div className="worked-example-note"><b>Note:</b> <MathText text={example.teachingNote} /></div> : null}
     </article>
   );
 }
@@ -124,7 +175,7 @@ export function FieldGuidePanel({
           {workedExample ? (
             <section className="snippet-lesson-section">
               <h4>Worked move</h4>
-              <WorkedExampleCard example={workedExample} />
+              <WorkedExampleCard key={`${activeSnippet.snippetId}-${workedExample.id ?? workedExample.prompt}`} example={workedExample} />
             </section>
           ) : supportingStep ? (
             <section className="snippet-lesson-section">

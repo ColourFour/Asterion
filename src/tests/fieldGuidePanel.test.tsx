@@ -356,15 +356,45 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Worked move');
     expect(container.textContent).toContain('What the question is asking');
     expect(container.textContent).toContain('Question type');
-    expect(container.textContent).toContain('Key method');
-    expect(container.textContent).toContain('Step-by-step math');
-    expect(container.textContent).toContain('Exam move');
-    expect(container.textContent).toContain('Two cubed equals eight.');
+    expect(container.textContent).toContain('Reveal method');
+    expect(container.textContent).not.toContain('Key method');
+    expect(container.textContent).not.toContain('Method steps');
+    expect(container.textContent).not.toContain('Exam move');
+    expect(container.textContent).not.toContain('Two cubed equals eight.');
     expect(container.textContent).toContain('Watch for');
     expect(container.textContent).toContain('Next action');
     expect(container.textContent).not.toContain('Before this');
     expect(container.textContent).not.toContain('Micro steps');
     expect(container.textContent).not.toContain('Common mistakes');
+
+    const methodButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal method');
+    expect(methodButton).toBeTruthy();
+    expect(methodButton?.getAttribute('aria-controls')).toBe('worked-example-method-p3-log-check-example-1');
+    expect(methodButton?.getAttribute('aria-expanded')).toBe('false');
+
+    act(() => {
+      methodButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Key method');
+    expect(container.textContent).toContain('Method steps');
+    expect(container.textContent).toContain('Keep base two.');
+    expect(container.textContent).toContain('Use three as the exponent.');
+    expect(container.textContent).toContain('Exam move');
+    expect(container.textContent).not.toContain('Two cubed equals eight.');
+
+    const answerButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Show final answer');
+    expect(answerButton).toBeTruthy();
+    expect(answerButton?.getAttribute('aria-controls')).toBe('worked-example-answer-p3-log-check-example-1');
+    expect(answerButton?.getAttribute('aria-expanded')).toBe('false');
+
+    act(() => {
+      answerButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Final answer');
+    expect(container.textContent).toContain('Two cubed equals eight.');
+    expect(container.textContent).toContain('Next action: try the linked Quick Check without looking back at the final answer.');
 
     const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
     expect(quickCheck).toBeTruthy();
@@ -556,13 +586,37 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(activeSnippet).toBeTruthy();
     expect(container.querySelectorAll('.field-guide-snippet-card')).toHaveLength(1);
     expect(container.querySelectorAll('.worked-example-card')).toHaveLength(1);
-    expect(activeSnippet?.textContent).toContain('Two cubed equals eight.');
+    expect(activeSnippet?.textContent).toContain('Rewrite \\log base two of eight equals three.');
+    expect(activeSnippet?.textContent).toContain('Reveal method');
+    expect(activeSnippet?.textContent).not.toContain('Two cubed equals eight.');
     expect(activeSnippet?.textContent).not.toContain('Three cubed equals twenty seven.');
     expect(activeSnippet?.textContent).toContain('Treating the argument as the exponent.');
     expect(activeSnippet?.textContent).not.toContain('Dropping the base during conversion.');
     expect(activeSnippet?.textContent).not.toContain('Know inverse operations.');
     expect(activeSnippet?.textContent).toContain('Use Next when this idea is clear.');
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Next'))).toBe(true);
+
+    const revealMethod = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal method');
+    act(() => {
+      revealMethod!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(activeSnippet?.textContent).toContain('Keep base two.');
+    expect(activeSnippet?.textContent).not.toContain('Two cubed equals eight.');
+
+    const showAnswer = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Show final answer');
+    act(() => {
+      showAnswer!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(activeSnippet?.textContent).toContain('Two cubed equals eight.');
+
+    const nextSnippet = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
+    act(() => {
+      nextSnippet!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(activeSnippet?.textContent).toContain('Log snippet 2');
+    expect(activeSnippet?.textContent).toContain('Reveal method');
+    expect(activeSnippet?.textContent).not.toContain('Show final answer');
+    expect(activeSnippet?.textContent).not.toContain('Two cubed equals eight.');
   });
 
   it('renders the Algebra Vault region hub as a click-first homepage', () => {
@@ -1075,6 +1129,14 @@ describe('FieldGuidePanel teaching snippets', () => {
         onCompleteFieldGuide={vi.fn()}
       />,
     );
+    const revealMethod = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal method');
+    act(() => {
+      revealMethod!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const showAnswer = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Show final answer');
+    act(() => {
+      showAnswer!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
     await waitForKatex(container, 6);
 
     const combineLogsCard = Array.from(container.querySelectorAll<HTMLElement>('.worked-example-card'))
@@ -1095,6 +1157,14 @@ describe('FieldGuidePanel teaching snippets', () => {
         onCompleteFieldGuide={vi.fn()}
       />,
     );
+    const revealMethod = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal method');
+    act(() => {
+      revealMethod!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const showAnswer = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Show final answer');
+    act(() => {
+      showAnswer!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
     await waitForKatex(container, 6);
 
     expect(container.querySelectorAll('.worked-example-card .katex').length).toBeGreaterThan(5);
