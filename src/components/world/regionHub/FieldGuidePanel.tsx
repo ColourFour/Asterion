@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpenCheck, CheckCircle2 } from 'lucide-react';
 import type { RegionFieldGuide } from '../../../data/regionFieldGuides';
+import { findVisualSupportSource } from '../../../data/visualSupportSources';
 import type { RegionTheme } from '../../../lib/regionThemes';
 import type { TeachingSnippet, TeachingSnippetWorkedExample } from '../../../lib/teachingSnippets';
+import type { RegionDefinition } from '../../../types';
 import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
+import { VisualSupportCard } from './VisualSupportCard';
 
 interface FieldGuidePanelProps {
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
+  region?: RegionDefinition;
   theme: RegionTheme;
   teachingSnippets: TeachingSnippet[];
   maxInitialSnippets?: number;
@@ -47,8 +51,13 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
           ) : null}
           <div className="worked-example-section worked-example-method-steps">
             <b>Method steps</b>
-            <ol>
-              {example.steps.map((step, index) => <li key={`${index}-${step}`}><MathText text={step} /></li>)}
+            <ol className="worked-example-stage-list" aria-label="Segmented method steps">
+              {example.steps.map((step, index) => (
+                <li className="worked-example-stage" key={`${index}-${step}`}>
+                  <span className="worked-example-stage-index">Stage {index + 1}</span>
+                  <div><MathText text={step} /></div>
+                </li>
+              ))}
             </ol>
           </div>
           {example.examMove ? <div className="worked-example-note"><b>Exam move:</b> <MathText text={example.examMove} /></div> : null}
@@ -101,6 +110,7 @@ function firstAvailable(items: string[]): string | undefined {
 export function FieldGuidePanel({
   fieldGuide: _fieldGuide,
   fieldGuideCompleted,
+  region,
   theme: _theme,
   teachingSnippets,
   maxInitialSnippets: _maxInitialSnippets = 2,
@@ -123,6 +133,12 @@ export function FieldGuidePanel({
       ? 'Continue to Quick Checks when this idea is clear.'
       : 'Use Next when this idea is clear.'
     : undefined;
+  const visualSupport = activeSnippet ? findVisualSupportSource({
+    pageType: 'field-guide',
+    regionId: region?.id ?? activeSnippet.regionIds[0],
+    topicIds: activeSnippet.topics,
+    skillIds: activeSnippet.relatedSkillTargetIds,
+  }) : undefined;
 
   useEffect(() => {
     setActiveSnippetIndex(0);
@@ -170,6 +186,7 @@ export function FieldGuidePanel({
           <section className="snippet-lesson-section">
             <h4>Small explanation</h4>
             <p><MathText text={activeSnippet.explanation ?? activeSnippet.body} /></p>
+            {visualSupport ? <VisualSupportCard source={visualSupport} /> : null}
           </section>
 
           {workedExample ? (

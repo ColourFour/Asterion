@@ -142,6 +142,7 @@ export function RegionHub({
           <FieldGuidePanel
             fieldGuide={fieldGuide}
             fieldGuideCompleted={fieldGuideCompleted}
+            region={region}
             theme={theme}
             teachingSnippets={teachingSnippets}
             maxInitialSnippets={Math.max(2, teachingSnippets.length)}

@@ -3,6 +3,12 @@ import { createRoot, type Root } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
+import {
+  findVisualSupportSource,
+  isDisplayableVisualSupportSource,
+  visualSupportSources,
+  type VisualSupportSource,
+} from '../data/visualSupportSources';
 import { buildRegionLearningSummary } from '../lib/regionLearning';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import { getRegionTheme } from '../lib/regionThemes';
@@ -18,7 +24,9 @@ import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
 import { QuickChecksPanel } from '../components/world/regionHub/QuickChecksPanel';
+import { RegionProgressStrip } from '../components/world/regionHub/RegionProgressStrip';
 import { TrainingGroundsPanel } from '../components/world/regionHub/TrainingGroundsPanel';
+import { VisualSupportCard } from '../components/world/regionHub/VisualSupportCard';
 import { WarmUpPracticePanel } from '../components/world/regionHub/WarmUpPracticePanel';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
@@ -334,6 +342,69 @@ function renderRegionHubPage(options: {
 }
 
 describe('FieldGuidePanel teaching snippets', () => {
+  it('keeps approved visual-support registry records complete and inspectable', () => {
+    expect(visualSupportSources.length).toBeGreaterThan(0);
+    for (const source of visualSupportSources) {
+      expect(source.id.trim(), source.id).not.toBe('');
+      expect(source.title.trim(), source.id).not.toBe('');
+      expect(source.purpose.trim(), source.id).not.toBe('');
+      expect(source.status.trim(), source.id).not.toBe('');
+      expect(source.replacementNotes.trim(), source.id).not.toBe('');
+      expect(Boolean(source.regionId || source.topicIds?.length || source.skillIds?.length), source.id).toBe(true);
+
+      if (source.status === 'temporary-online-source') {
+        expect(isDisplayableVisualSupportSource(source), source.id).toBe(true);
+        expect(source.imageUrl.trim(), source.id).not.toBe('');
+        expect(source.sourceUrl.trim(), source.id).not.toBe('');
+        expect(source.license.trim(), source.id).not.toBe('');
+        expect(source.attribution.trim(), source.id).not.toBe('');
+        expect(source.altText.trim(), source.id).not.toBe('');
+      }
+    }
+  });
+
+  it('does not treat review-required or incomplete visual-support records as displayable', () => {
+    const reviewRequired: VisualSupportSource = {
+      id: 'review-required-example',
+      regionId: 'logarithm-grove',
+      pageType: 'field-guide',
+      title: 'Review required',
+      purpose: 'Placeholder visual pending source review',
+      imageUrl: '',
+      sourceUrl: '',
+      license: '',
+      attribution: '',
+      altText: '',
+      status: 'review-required',
+      replacementNotes: 'Select or create a reviewed source before display.',
+    };
+
+    expect(isDisplayableVisualSupportSource(reviewRequired)).toBe(false);
+    expect(findVisualSupportSource({
+      pageType: 'field-guide',
+      regionId: 'logarithm-grove',
+      topicIds: ['logarithms_and_exponentials'],
+    })?.status).toBe('temporary-online-source');
+  });
+
+  it('renders VisualSupportCard attribution and falls back safely when an image is unavailable', () => {
+    const source = visualSupportSources[0];
+    const container = render(<VisualSupportCard source={source} />);
+
+    const image = container.querySelector<HTMLImageElement>('.visual-support-card img');
+    expect(image?.getAttribute('alt')).toBe(source.altText);
+    expect(container.textContent).toContain(source.attribution);
+    expect(container.textContent).toContain(source.license);
+    expect(container.querySelector<HTMLAnchorElement>('.visual-support-attribution a')?.href).toBe(source.sourceUrl);
+
+    act(() => {
+      image!.dispatchEvent(new Event('error', { bubbles: false }));
+    });
+
+    expect(container.querySelector('.visual-support-card img')).toBeFalsy();
+    expect(container.textContent).toContain('Visual preview unavailable.');
+  });
+
   it('renders enriched snippet support with an answer-first quick check', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
@@ -359,6 +430,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Teaching snippet');
     expect(container.textContent).toContain('Key idea');
     expect(container.textContent).toContain('Small explanation');
+    expect(container.textContent).toContain('Log and exponential shape reminder');
+    const visual = container.querySelector<HTMLImageElement>('.visual-support-card img');
+    expect(visual?.getAttribute('alt')).toBe('Graphs of logarithm functions with different bases, showing logarithmic growth shape.');
+    expect(container.textContent).toContain('Richard F. Lyon');
     expect(container.textContent).toContain('Worked move');
     expect(container.textContent).toContain('What the question is asking');
     expect(container.textContent).toContain('Question type');
@@ -386,6 +461,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Method steps');
     expect(container.textContent).toContain('Keep base two.');
     expect(container.textContent).toContain('Use three as the exponent.');
+    expect(container.querySelectorAll('.worked-example-stage')).toHaveLength(2);
+    expect(container.textContent).toContain('Stage 1');
+    expect(container.textContent).toContain('Stage 2');
     expect(container.textContent).toContain('Exam move');
     expect(container.textContent).not.toContain('Two cubed equals eight.');
 
@@ -460,6 +538,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Logarithm equation');
     expect(container.textContent).toContain('Key method');
     expect(container.textContent).not.toContain('x = 4');
+    expect(container.textContent).not.toContain('Log and exponential shape reminder');
 
     const checkButton = Array.from(container.querySelectorAll('button'))
       .find((button) => button.textContent === 'Check answer');
@@ -493,6 +572,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(revealButton?.getAttribute('aria-expanded')).toBe('false');
     expect(revealButton?.hasAttribute('disabled')).toBe(false);
     expect(container.textContent).not.toContain('Use the product law.');
+    expect(container.textContent).not.toContain('Log and exponential shape reminder');
 
     act(() => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -500,6 +580,29 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('x = 4');
     expect(container.textContent).toContain('Use the product law.');
+    expect(container.textContent).toContain('Log and exponential shape reminder');
+    expect(container.querySelector<HTMLImageElement>('.warm-up-solution .visual-support-card img')?.getAttribute('alt'))
+      .toBe('Graphs of logarithm functions with different bases, shown as a post-solution reminder.');
+  });
+
+  it('renders no visual support when no approved source matches the Field Guide context', () => {
+    const region = P3_ASTRAL_ACADEMY.regions.find((candidate) => candidate.id === 'numerical-mines')!;
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(region)}
+        fieldGuideCompleted={false}
+        theme={getRegionTheme(region)}
+        teachingSnippets={[{
+          ...snippet,
+          snippetId: 'p3-num-check',
+          regionIds: ['numerical-mines'],
+          topics: ['numerical_solution'],
+        }]}
+        onCompleteFieldGuide={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector('.visual-support-card')).toBeFalsy();
   });
 
   it('records an early warm-up reveal with outcome, confidence, and error type', () => {
@@ -1380,6 +1483,31 @@ describe('FieldGuidePanel teaching snippets', () => {
 
   it('lets the Field Guide snippet card span the focused page width', () => {
     expect(stylesCss).toMatch(/\.region-page-field-guide\s+\.field-guide-card\s*\{[\s\S]*?width:\s*100%;/);
+  });
+
+  it('renders RegionProgressStrip as compact current, evidence, and Guardian indicators', () => {
+    const progress = regionProgress('logarithm-grove', {
+      attempts: 2,
+      totalMarksEarned: 8,
+      totalMarksAvailable: 10,
+      averageScoreRatio: 0.8,
+      subtopicsTouched: 1,
+    });
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress,
+      learningRecord: undefined,
+      regionQuestions: [normalizedQuestion(progress.region.id)],
+      regionAttempts: [regionAttempt(1), regionAttempt(2)],
+    });
+    const container = render(<RegionProgressStrip regionProgress={progress} summary={summary} />);
+
+    expect(container.textContent).toContain('Current step');
+    expect(container.textContent).toContain('Evidence now');
+    expect(container.textContent).toContain('Guardian');
+    expect(container.textContent).toContain('2 attempts');
+    expect(container.textContent).not.toContain('Rank');
+    expect(container.textContent).not.toContain('Subtopics');
+    expect(container.querySelectorAll('.region-progress-step')).toHaveLength(3);
   });
 
   it('keeps every P3 field-guide worked-example card complete and delimiter-safe', () => {

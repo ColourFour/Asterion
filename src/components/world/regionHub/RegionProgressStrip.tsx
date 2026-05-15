@@ -12,25 +12,25 @@ export function RegionProgressStrip({ regionProgress, summary }: RegionProgressS
   const guardianLabel = guardianCleared
     ? 'Cleared'
     : summary.guardianEligibility.eligible ? 'Ready' : 'Locked';
-
-  const stats = [
-    { label: 'Progress', value: summary.nextAction.kind === 'complete' ? 'Restored' : summary.nextAction.label },
-    { label: 'Rank', value: regionProgress.rank },
-    { label: 'Attempts', value: String(regionProgress.attempts) },
-    { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
-    { label: 'Subtopics', value: `${regionProgress.subtopicsTouched}/${regionProgress.region.subtopics.length}` },
-    { label: 'Focus', value: summary.trainingSession.label },
-    { label: 'Guardian', value: guardianLabel },
-  ];
+  const currentStep = summary.nextAction.kind === 'complete' ? 'Region restored' : summary.nextAction.label;
+  const evidenceLabel = regionProgress.attempts
+    ? `${regionProgress.attempts} attempt${regionProgress.attempts === 1 ? '' : 's'} · ${percent(regionProgress.averageScoreRatio)} avg`
+    : `${regionProgress.subtopicsTouched}/${regionProgress.region.subtopics.length} subtopics touched`;
 
   return (
     <section className="region-progress-strip" aria-label="Mastery progress summary">
-      {stats.map((stat) => (
-        <div key={stat.label}>
-          <span>{stat.label}</span>
-          <strong>{stat.value}</strong>
-        </div>
-      ))}
+      <div className="region-progress-step">
+        <span>Current step</span>
+        <strong>{currentStep}</strong>
+      </div>
+      <div className="region-progress-step">
+        <span>Evidence now</span>
+        <strong>{evidenceLabel}</strong>
+      </div>
+      <div className="region-progress-step">
+        <span>Guardian</span>
+        <strong>{guardianLabel}</strong>
+      </div>
     </section>
   );
 }

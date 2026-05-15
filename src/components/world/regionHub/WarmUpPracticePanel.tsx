@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
+import { findVisualSupportSource } from '../../../data/visualSupportSources';
 import type { LearningActivityAttempt, LearningActivityOutcome, MistakeType, RegionDefinition } from '../../../types';
 import { createId } from '../../../lib/progressStore';
 import type { GeneratedPracticeItem } from '../../../lib/generatedPractice';
 import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
+import { VisualSupportCard } from './VisualSupportCard';
 
 const activityOutcomes: Array<{ value: LearningActivityOutcome; label: string }> = [
   { value: 'got_it', label: 'Got it' },
@@ -92,6 +94,12 @@ function WarmUpPracticeCard({
   const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Warm-up');
   const responseReady = learnerResponse.trim().length > 0;
   const canComplete = Boolean(solutionVisible && outcome && !completed);
+  const visualSupport = solutionVisible ? findVisualSupportSource({
+    pageType: 'warm-up',
+    regionId: region?.id ?? item.regionIds[0],
+    topicIds: [item.topic, item.generatorFamily, ...(item.snippetIds ?? [])],
+    skillIds: [item.skillTargetId],
+  }) : undefined;
 
   function checkAnswer() {
     if (!responseReady) return;
@@ -218,6 +226,7 @@ function WarmUpPracticeCard({
               <li key={step}><MathText text={step} /></li>
             ))}
           </ol>
+          {visualSupport ? <VisualSupportCard source={visualSupport} /> : null}
           {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this warm-up.</small> : null}
         </div>
       )}
