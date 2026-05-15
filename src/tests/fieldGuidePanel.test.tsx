@@ -352,7 +352,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       expect(source.replacementNotes.trim(), source.id).not.toBe('');
       expect(Boolean(source.regionId || source.topicIds?.length || source.skillIds?.length), source.id).toBe(true);
 
-      if (source.status === 'temporary-online-source') {
+      if (source.status === 'approved' || source.status === 'temporary-online-source') {
         expect(isDisplayableVisualSupportSource(source), source.id).toBe(true);
         expect(source.imageUrl.trim(), source.id).not.toBe('');
         expect(source.sourceUrl.trim(), source.id).not.toBe('');
@@ -384,7 +384,54 @@ describe('FieldGuidePanel teaching snippets', () => {
       pageType: 'field-guide',
       regionId: 'logarithm-grove',
       topicIds: ['logarithms_and_exponentials'],
-    })?.status).toBe('temporary-online-source');
+    })?.status).toBe('approved');
+  });
+
+  it('keeps every P3 region covered by at least one approved displayable visual support', () => {
+    for (const region of P3_ASTRAL_ACADEMY.regions) {
+      const displayableRegionSources = visualSupportSources.filter((source) => (
+        source.regionId === region.id
+        && source.status === 'approved'
+        && isDisplayableVisualSupportSource(source)
+      ));
+
+      expect(displayableRegionSources.length, region.name).toBeGreaterThanOrEqual(1);
+      expect(displayableRegionSources.length, region.name).toBeLessThanOrEqual(4);
+    }
+  });
+
+  it('keeps review-required visual supports out of Field Guide and Warm-Up lookup results', () => {
+    const reviewRequiredIds = visualSupportSources
+      .filter((source) => source.status === 'review-required')
+      .map((source) => source.id);
+
+    expect(reviewRequiredIds).toContain('numerical-mines-cobweb-iteration');
+
+    for (const source of visualSupportSources) {
+      if (source.status === 'review-required') {
+        expect(isDisplayableVisualSupportSource(source), source.id).toBe(false);
+      }
+    }
+
+    expect(findVisualSupportSource({
+      pageType: 'field-guide',
+      regionId: 'numerical-mines',
+      topicIds: ['9709_p3_topic_numerical_solution_of_equations'],
+    })?.id).toBe('numerical-mines-newton-iteration');
+  });
+
+  it('keeps approved visual supports sourced and non-empty for student display', () => {
+    const approvedSources = visualSupportSources.filter((source) => source.status === 'approved');
+
+    expect(approvedSources.length).toBeGreaterThan(0);
+    for (const source of approvedSources) {
+      expect(source.imageUrl.trim(), source.id).not.toBe('');
+      expect(source.sourceUrl.trim(), source.id).not.toBe('');
+      expect(source.license.trim(), source.id).not.toBe('');
+      expect(source.attribution.trim(), source.id).not.toBe('');
+      expect(source.altText.trim(), source.id).not.toBe('');
+      expect(source.replacementNotes.trim(), source.id).not.toBe('');
+    }
   });
 
   it('renders VisualSupportCard attribution and falls back safely when an image is unavailable', () => {
@@ -595,8 +642,8 @@ describe('FieldGuidePanel teaching snippets', () => {
         teachingSnippets={[{
           ...snippet,
           snippetId: 'p3-num-check',
-          regionIds: ['numerical-mines'],
-          topics: ['numerical_solution'],
+          regionIds: ['uncovered-region'],
+          topics: ['uncovered_topic'],
         }]}
         onCompleteFieldGuide={vi.fn()}
       />,
@@ -1233,7 +1280,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(activeSnippet?.textContent).toContain('Snippet 1 of');
     expect(activeSnippet?.textContent).toContain('Rearrange before expanding');
     expect(activeSnippet?.textContent).not.toContain(snippets[1].title);
-    expect(container.querySelector('details')).toBeFalsy();
+    expect(container.querySelector('.worked-example-method')).toBeFalsy();
 
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Previous'))).toBe(false);
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Continue to Quick Checks'))).toBe(false);
