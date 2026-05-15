@@ -275,7 +275,6 @@ export function PracticeView({
         </div>
         <div className="question-header-actions">
           <RegionAvatarCameo avatarName={avatarName} avatar={avatar} regionProgress={regionProgress} location={avatarLocation} />
-          <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
         </div>
       </header>
 
@@ -319,6 +318,10 @@ export function PracticeView({
               <button type="button" disabled>Save Attempt</button>
             </div>
           ) : null}
+          <details className="practice-support-details">
+            <summary>Question support</summary>
+            <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
+          </details>
         </section>
 
         {revealed ? (
@@ -406,6 +409,12 @@ export function PracticeView({
             }}
           >
             <div className="panel-title-bar">Self-Mark</div>
+            <div className="self-mark-task-flow" aria-label="Self-marking task flow">
+              <span>Compare mark scheme</span>
+              <span>Enter marks</span>
+              <span>Reflect</span>
+              <span>Save attempt</span>
+            </div>
             {questionParts?.length ? (
               <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
                 <legend>Your Mark by Part</legend>

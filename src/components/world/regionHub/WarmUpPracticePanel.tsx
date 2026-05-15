@@ -192,17 +192,21 @@ function WarmUpPracticeCard({
           >
             Check answer
           </button>
-          <button
-            className="activity-secondary-action"
-            type="button"
-            disabled={!answerChecked}
-            aria-expanded={solutionVisible}
-            aria-controls={solutionId}
-            onClick={() => reveal(false)}
-          >
-            Reveal solution
-          </button>
-          <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          {answerChecked ? (
+            <button
+              className="activity-secondary-action"
+              type="button"
+              aria-expanded={solutionVisible}
+              aria-controls={solutionId}
+              onClick={() => reveal(false)}
+            >
+              Reveal solution
+            </button>
+          ) : null}
+          <details className="activity-escape-detail warm-up-help-detail">
+            <summary>Need help?</summary>
+            <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          </details>
         </div>
       ) : (
         <div className="warm-up-solution" id={solutionId}>
@@ -342,7 +346,6 @@ export function WarmUpPracticePanel({
                 key={item.practiceId}
               >
                 <span>{index + 1}</span>
-                <strong>{humanReadableLabel(item.questionType ?? item.generatorFamily.split('.').slice(-1)[0] ?? 'Warm-up')}</strong>
                 <small>{completedPracticeIds.has(item.practiceId) ? 'Complete' : index === activeIndex ? 'Active' : 'Queued'}</small>
               </li>
             ))}

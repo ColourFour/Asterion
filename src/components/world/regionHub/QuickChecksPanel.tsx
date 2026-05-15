@@ -157,7 +157,10 @@ function QuickCheckCard({
       {!answerVisible ? (
         <div className="activity-reveal-actions">
           <button className="activity-primary-action" type="button" disabled={!responseReady} onClick={() => reveal(false)}>Check answer</button>
-          <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          <details className="activity-escape-detail">
+            <summary>Need help?</summary>
+            <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          </details>
         </div>
       ) : (
         <div className="quick-check-answer">
@@ -200,10 +203,10 @@ function QuickCheckCard({
               {errorTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}
             </select>
           </label>
-          <button type="button" disabled={!canSave} onClick={saveAttempt}>{saved ? 'Saved' : 'Save check'}</button>
+          <button className="activity-primary-action" type="button" disabled={!canSave} onClick={saveAttempt}>{saved ? 'Saved' : 'Save check'}</button>
         </div>
       ) : null}
-      {answerVisible ? (
+      {answerVisible && saved ? (
         <div className="quick-check-next-actions" aria-label="Quick check next action">
           <strong>Next action</strong>
           <div>

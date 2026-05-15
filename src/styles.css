@@ -331,6 +331,8 @@ nav {
 }
 
 nav button,
+.teacher-access-menu summary,
+.teacher-access-menu button,
 .export-grid button,
 .quiet-button,
 .issue-box button,
@@ -353,6 +355,8 @@ nav button,
 }
 
 nav button:hover,
+.teacher-access-menu summary:hover,
+.teacher-access-menu button:hover,
 .export-grid button:hover,
 .quiet-button:hover,
 .issue-box button:hover,
@@ -368,6 +372,35 @@ nav button.active {
   color: #fff !important;
   background: var(--color-astral-dark);
   border-color: var(--color-astral-dark);
+}
+
+.teacher-access-menu {
+  position: relative;
+  margin-left: auto;
+}
+
+.teacher-access-menu summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.teacher-access-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.teacher-access-menu[open] summary {
+  color: #fff;
+  background: var(--color-astral-dark);
+  border-color: var(--color-astral-dark);
+}
+
+.teacher-access-menu button {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 144px;
+  box-shadow: 0 12px 26px rgba(23, 32, 51, 0.16);
 }
 
 .mode-pill {
@@ -2284,6 +2317,33 @@ nav button.active,
   min-height: 46px;
 }
 
+.practice-support-details {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 96, 46, 0.24);
+}
+
+.practice-support-details summary {
+  width: fit-content;
+  min-height: 34px;
+  padding: 6px 0;
+  color: #70401f;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.practice-support-details .quiet-button {
+  margin-top: 6px;
+  min-height: 34px;
+  padding: 6px 10px;
+  color: #70401f;
+  background: transparent;
+  border-color: rgba(148, 96, 46, 0.34);
+  box-shadow: none;
+  font-size: 0.84rem;
+}
+
 .mark-scheme-panel {
   margin: 0;
   padding-top: 34px;
@@ -2330,6 +2390,26 @@ nav button.active,
   grid-column: 1 / -1;
   margin: 0;
   padding-top: 34px;
+}
+
+.self-mark-task-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px;
+  border: 2px solid #7d5129;
+  background: #fff4dc;
+}
+
+.self-mark-task-flow span {
+  min-width: 0;
+  padding: 6px 8px;
+  color: #2f1a10;
+  background: #fffdf8;
+  border: 1px solid rgba(125, 81, 41, 0.28);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
 }
 
 .attempt-form label:nth-child(3),
@@ -4252,6 +4332,24 @@ legend {
   align-items: center;
 }
 
+.activity-escape-detail {
+  min-width: 0;
+}
+
+.activity-escape-detail summary {
+  min-height: 40px;
+  padding: 8px 12px;
+  color: var(--region-accent-dark);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 32%, transparent);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.activity-escape-detail[open] summary {
+  margin-bottom: 6px;
+}
+
 .activity-reflection-panel {
   margin-top: 4px;
   padding-top: 8px;
@@ -4306,22 +4404,23 @@ legend {
 }
 
 .warm-up-sequence-list {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .warm-up-sequence-list li {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) auto;
-  gap: 8px;
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  padding: 8px 10px;
+  min-height: 32px;
+  padding: 4px 8px 4px 4px;
   color: var(--region-muted, #5c6676);
   border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
-  border-radius: var(--radius-control);
+  border-radius: 999px;
   background: var(--region-panel);
 }
 
@@ -4347,6 +4446,7 @@ legend {
 
 .warm-up-sequence-list small {
   color: inherit;
+  font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -4357,6 +4457,29 @@ legend {
   background:
     linear-gradient(90deg, var(--region-wash), transparent 44%),
     var(--region-panel-strong);
+}
+
+.warm-up-help-detail {
+  align-self: stretch;
+}
+
+.warm-up-help-detail summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: var(--region-accent-dark);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--region-panel-border) 28%, transparent);
+  font-size: 0.86rem;
+}
+
+.warm-up-help-detail[open] {
+  flex-basis: 100%;
+}
+
+.warm-up-help-detail[open] summary {
+  margin-bottom: 6px;
 }
 
 .warm-up-practice-card {
@@ -4645,6 +4768,34 @@ legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+.training-primary-start {
+  width: 100%;
+  min-height: 50px;
+  padding: 10px 14px;
+  color: var(--region-button-text, #fff);
+  background: var(--region-button-bg, var(--color-astral-dark));
+  border: 1px solid var(--region-button-border, var(--color-astral-dark));
+  border-radius: var(--radius-control);
+  font-weight: 1000;
+}
+
+.training-alternatives-detail {
+  padding: 9px 10px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 22%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 92%, transparent);
+}
+
+.training-alternatives-detail summary {
+  cursor: pointer;
+  color: var(--region-accent-dark, var(--color-gold-dark));
+  font-weight: 900;
+}
+
+.training-alternatives-detail[open] summary {
+  margin-bottom: 8px;
 }
 
 .training-intent-grid button {
@@ -5102,6 +5253,51 @@ legend {
   align-items: start;
 }
 
+.focused-region-page-header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 14px 16px;
+  color: var(--region-body);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 26%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 96%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.focused-region-page-title {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.focused-region-page-title h2 {
+  margin: 0;
+  color: var(--region-heading);
+  font-size: clamp(1.45rem, 2.8vw, 2.25rem);
+  line-height: 1;
+}
+
+.focused-region-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.focused-region-next-step {
+  max-width: 32ch;
+  padding: 6px 9px;
+  color: var(--region-badge-text);
+  background: var(--region-badge-bg);
+  border: 1px solid color-mix(in srgb, var(--region-accent) 24%, transparent);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .region-page-toolbar {
   display: grid;
   gap: 6px;
@@ -5439,6 +5635,46 @@ legend {
   min-width: 0;
 }
 
+.region-home-secondary-routes {
+  align-self: start;
+  min-width: 0;
+  padding: 12px;
+  color: var(--region-body);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 30%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 88%, #fff 12%);
+}
+
+.region-home-secondary-routes summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.region-home-secondary-routes summary::-webkit-details-marker {
+  display: none;
+}
+
+.region-home-secondary-routes summary span {
+  color: var(--region-heading);
+  font-weight: 1000;
+}
+
+.region-home-secondary-routes summary small {
+  color: var(--region-muted);
+  font-weight: 850;
+}
+
+.region-home-secondary-routes[open] summary {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--region-panel-border) 24%, transparent);
+}
+
 .region-home-action-card {
   display: grid;
   grid-template-areas:
@@ -5649,6 +5885,23 @@ legend {
   border: 1px solid color-mix(in srgb, var(--region-accent) 24%, transparent);
   border-radius: 999px;
   font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.focused-region-progress-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 34px;
+  padding: 5px 10px;
+  color: var(--region-badge-text);
+  background: var(--region-badge-bg);
+  border: 1px solid color-mix(in srgb, var(--region-accent) 24%, transparent);
+  border-radius: 999px;
+  font-size: 0.76rem;
   font-weight: 950;
   line-height: 1.2;
   text-transform: uppercase;
@@ -7259,8 +7512,22 @@ legend {
     gap: 10px;
   }
 
+  .focused-region-page-header {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .focused-region-header-actions {
+    justify-content: flex-start;
+  }
+
   .region-page-toolbar {
     padding: 12px;
+  }
+
+  .self-mark-task-flow {
+    grid-template-columns: 1fr 1fr;
   }
 
   .field-guide-compact-stats {

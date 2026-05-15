@@ -18,6 +18,7 @@ import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
 import { QuickChecksPanel } from '../components/world/regionHub/QuickChecksPanel';
+import { TrainingGroundsPanel } from '../components/world/regionHub/TrainingGroundsPanel';
 import { WarmUpPracticePanel } from '../components/world/regionHub/WarmUpPracticePanel';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
@@ -337,6 +338,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
 
+    const onLearningActivityAttempt = vi.fn();
     const container = render(
       <>
         <FieldGuidePanel
@@ -346,7 +348,11 @@ describe('FieldGuidePanel teaching snippets', () => {
           teachingSnippets={[snippet]}
           onCompleteFieldGuide={vi.fn()}
         />
-        <QuickChecksPanel teachingSnippets={[snippet]} region={logRegion!} />
+        <QuickChecksPanel
+          teachingSnippets={[snippet]}
+          region={logRegion!}
+          onLearningActivityAttempt={onLearningActivityAttempt}
+        />
       </>,
     );
 
@@ -420,6 +426,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheck?.textContent).toContain('Feedback');
     expect(quickCheck?.textContent).toContain('Linked example');
     expect(quickCheck?.textContent).toContain('Two cubed equals eight.');
+    expect(quickCheck?.textContent).toContain('Save check');
+    expect(quickCheck?.textContent).not.toContain('Next action');
+    expect(quickCheck?.textContent).not.toContain('Try again');
+
+    const gotIt = quickCheck!.querySelector<HTMLInputElement>('input[value="got_it"]');
+    act(() => {
+      gotIt!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const saveCheck = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Save check');
+    act(() => {
+      saveCheck!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
     expect(quickCheck?.textContent).toContain('Next action');
     expect(quickCheck?.textContent).toContain('Try again');
   });
@@ -446,19 +466,19 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(checkButton).toBeTruthy();
     expect(checkButton?.hasAttribute('disabled')).toBe(true);
 
-    const revealButton = Array.from(container.querySelectorAll('button'))
-      .find((button) => button.textContent === 'Reveal solution');
-    expect(revealButton).toBeTruthy();
-    expect(revealButton?.getAttribute('aria-controls')).toBe('warm-up-solution-gen_log_equation_basic_0001');
-    expect(revealButton?.getAttribute('aria-expanded')).toBe('false');
-    expect(revealButton?.hasAttribute('disabled')).toBe(true);
+    expect(Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent === 'Reveal solution')).toBeFalsy();
+    const helpDetail = container.querySelector<HTMLDetailsElement>('.warm-up-help-detail');
+    expect(helpDetail).toBeTruthy();
+    expect(helpDetail?.open).toBe(false);
 
     const textarea = container.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea');
     act(() => {
       setTextareaValue(textarea!, 'Combine the logs first.');
     });
     expect(checkButton?.hasAttribute('disabled')).toBe(false);
-    expect(revealButton?.hasAttribute('disabled')).toBe(true);
+    expect(Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent === 'Reveal solution')).toBeFalsy();
     expect(container.textContent).not.toContain('Feedback');
 
     act(() => {
@@ -466,6 +486,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
     expect(container.textContent).toContain('Feedback');
     expect(container.textContent).toContain('Reveal the solution');
+    const revealButton = Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent === 'Reveal solution');
+    expect(revealButton).toBeTruthy();
+    expect(revealButton?.getAttribute('aria-controls')).toBe('warm-up-solution-gen_log_equation_basic_0001');
+    expect(revealButton?.getAttribute('aria-expanded')).toBe('false');
     expect(revealButton?.hasAttribute('disabled')).toBe(false);
     expect(container.textContent).not.toContain('Use the product law.');
 
@@ -491,7 +516,11 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const revealAnyway = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal anyway');
     expect(Array.from(container.querySelectorAll('button'))[0].textContent).toBe('Check answer');
+    expect(container.querySelector<HTMLDetailsElement>('.warm-up-help-detail')?.open).toBe(false);
     act(() => {
+      const helpDetail = container.querySelector<HTMLDetailsElement>('.warm-up-help-detail')!;
+      helpDetail.open = true;
+      helpDetail.dispatchEvent(new Event('toggle', { bubbles: true }));
       revealAnyway!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
@@ -662,9 +691,17 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(onLearningActivityAttempt).toHaveBeenCalledTimes(2);
   });
 
-  it('advances Quick Checks one at a time after answer feedback', () => {
+  it('advances Quick Checks one at a time after saving answer feedback', () => {
     const snippets = [snippetVariant(1), snippetVariant(2), snippetVariant(3)];
-    const container = render(<QuickChecksPanel teachingSnippets={snippets} />);
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    const onLearningActivityAttempt = vi.fn();
+    const container = render(
+      <QuickChecksPanel
+        teachingSnippets={snippets}
+        region={logRegion!}
+        onLearningActivityAttempt={onLearningActivityAttempt}
+      />,
+    );
 
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
     expect(container.textContent).toContain('Quick prompt 1');
@@ -688,9 +725,22 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Feedback');
     expect(container.textContent).toContain('Quick answer 1');
+    expect(container.textContent).toContain('Save check');
+    expect(container.textContent).not.toContain('Next action');
+    expect(container.textContent).not.toContain('Next check');
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+
+    const gotIt = container.querySelector<HTMLInputElement>('input[value="got_it"]');
+    act(() => {
+      gotIt!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const saveCheck = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save check');
+    act(() => {
+      saveCheck!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
     expect(container.textContent).toContain('Next action');
     expect(container.textContent).toContain('Next check');
-    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
 
     const nextCheckButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Next check');
     act(() => {
@@ -824,6 +874,12 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(primaryAction?.textContent).toContain('Start with the region guide');
     expect(primaryAction?.textContent).toContain('Ready');
 
+    const secondaryRoutes = container.querySelector<HTMLDetailsElement>('.region-home-secondary-routes');
+    expect(secondaryRoutes).toBeTruthy();
+    expect(secondaryRoutes?.open).toBe(false);
+    expect(secondaryRoutes?.querySelector('summary')?.textContent).toContain('Other routes');
+    expect(secondaryRoutes?.querySelector('summary')?.textContent).toContain('Choose another path');
+
     const secondaryActions = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-secondary-step'));
     expect(secondaryActions).toHaveLength(4);
     expect(secondaryActions.map((button) => button.dataset.regionPage)).toEqual([
@@ -832,6 +888,11 @@ describe('FieldGuidePanel teaching snippets', () => {
       'exam-training',
       'guardian',
     ]);
+    act(() => {
+      secondaryRoutes!.open = true;
+      secondaryRoutes!.dispatchEvent(new Event('toggle', { bubbles: true }));
+    });
+    expect(secondaryRoutes?.open).toBe(true);
     const allActionPages = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'))
       .map((button) => button.dataset.regionPage);
     expect(allActionPages).toEqual([
@@ -921,6 +982,12 @@ describe('FieldGuidePanel teaching snippets', () => {
     const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'));
     expect(actionButtons).toHaveLength(5);
     expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
+    const secondaryRoutes = container.querySelector<HTMLDetailsElement>('.region-home-secondary-routes');
+    expect(secondaryRoutes?.open).toBe(false);
+    act(() => {
+      secondaryRoutes!.open = true;
+      secondaryRoutes!.dispatchEvent(new Event('toggle', { bubbles: true }));
+    });
     expect(actionButtons.find((button) => button.dataset.regionPage === 'guardian')?.disabled).toBe(false);
 
     for (const page of ['field-guide', 'quick-check', 'warm-up', 'exam-training', 'guardian']) {
@@ -945,8 +1012,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.textContent).toContain('Field Guide');
     expect(fieldGuidePage.textContent).toContain('Logarithm Observatory');
     expect(fieldGuidePage.textContent).toContain('Logarithms are the inverse language of exponentials.');
-    expect(fieldGuidePage.querySelector('.field-guide-page-header')).toBeTruthy();
-    expect(fieldGuidePage.querySelector('.region-learning-navigation-block')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.focused-region-page-header')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.region-learning-navigation-block')).toBeFalsy();
+    expect(fieldGuidePage.querySelector('.region-arc-timeline')).toBeFalsy();
     expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeTruthy();
     expect(fieldGuidePage.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
     expect(fieldGuidePage.textContent).toContain('Back to Region Hub');
@@ -970,11 +1038,62 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(examTrainingPage.textContent).toContain('Exam Training');
     expect(examTrainingPage.textContent).toContain('Recommended session');
     expect(examTrainingPage.querySelector('.training-card')).toBeTruthy();
+    expect(examTrainingPage.querySelector('.region-hero')).toBeFalsy();
+    expect(examTrainingPage.querySelector('.region-summary-band')).toBeFalsy();
+    expect(examTrainingPage.querySelector('.region-arc-timeline')).toBeFalsy();
 
     const guardianPage = renderRegionHubPage({ activePage: 'guardian' });
     expect(guardianPage.textContent).toContain('Guardian Challenge');
     expect(guardianPage.textContent).toContain('Guardian not ready yet');
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
+  });
+
+  it('shows one primary recommended Training Grounds action and hides alternatives until expanded', () => {
+    const onStartTraining = vi.fn<(intent: TrainingSessionIntent) => void>();
+    const progress = regionProgress('algebra-forge', {
+      attempts: 2,
+      totalMarksEarned: 7,
+      totalMarksAvailable: 12,
+      averageScoreRatio: 7 / 12,
+    });
+    const summary = buildRegionLearningSummary({
+      regionProgress: progress,
+      learningRecord: {
+        regionId: progress.region.id,
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        updatedAt: '2026-05-08T00:00:00.000Z',
+      },
+      regionQuestions: [normalizedQuestion(progress.region.id)],
+      regionAttempts: [regionAttempt(1), regionAttempt(2)],
+    });
+    const container = render(
+      <TrainingGroundsPanel canTrain summary={summary} onStartTraining={onStartTraining} />,
+    );
+
+    const primaryStart = container.querySelector<HTMLButtonElement>('.training-primary-start');
+    expect(primaryStart).toBeTruthy();
+    expect(container.querySelectorAll('.training-primary-start')).toHaveLength(1);
+    expect(container.querySelector('.training-alternatives-detail:not([open]) .training-intent-grid')).toBeTruthy();
+
+    act(() => {
+      primaryStart!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onStartTraining).toHaveBeenCalledWith(summary.trainingSession.intent);
+
+    const alternatives = container.querySelector<HTMLDetailsElement>('.training-alternatives-detail');
+    act(() => {
+      alternatives!.open = true;
+      alternatives!.dispatchEvent(new Event('toggle', { bubbles: true }));
+    });
+
+    const alternateButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.training-alternatives-detail button'));
+    expect(alternateButtons).toHaveLength(3);
+    act(() => {
+      alternateButtons[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const lastIntent = onStartTraining.mock.calls[onStartTraining.mock.calls.length - 1]?.[0];
+    expect(lastIntent).toBeTruthy();
+    expect(lastIntent).not.toBe(summary.trainingSession.intent);
   });
 
   it('renders Algebra Vault Field Guide as a one-snippet stepper using existing snippets', () => {
@@ -992,18 +1111,13 @@ describe('FieldGuidePanel teaching snippets', () => {
       onNavigatePage,
     });
 
-    expect(container.querySelector('.field-guide-page-header')).toBeTruthy();
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Rank');
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Attempts');
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Average');
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Recommended');
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Guide');
-    expect(container.querySelector('.field-guide-compact-stats')?.textContent).toContain('Guardian');
+    expect(container.querySelector('.focused-region-page-header')).toBeTruthy();
+    expect(container.querySelector('.field-guide-compact-stats')).toBeFalsy();
 
     expect(container.querySelector('.region-hero')).toBeFalsy();
     expect(container.querySelector('.region-summary-band')).toBeFalsy();
-    expect(container.querySelector('.region-learning-navigation-block')).toBeTruthy();
-    expect(container.querySelector('.region-arc-timeline')).toBeTruthy();
+    expect(container.querySelector('.region-learning-navigation-block')).toBeFalsy();
+    expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
     expect(container.querySelector('.region-home-actions')).toBeFalsy();
     expect(container.querySelector('.region-learning-nav')).toBeTruthy();
     expect(container.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
@@ -1187,7 +1301,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
   });
 
-  it('places the focused-page region summary directly above the learning content', () => {
+  it('keeps heavy region summary scaffolding off focused learning pages', () => {
     const progress = regionProgress();
     const summary = buildRegionLearningSummary({
       regionProgress: progress,
@@ -1217,19 +1331,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     const summaryBand = container.querySelector<HTMLElement>('.region-summary-band');
     const learningContent = container.querySelector<HTMLElement>('.region-page-shell');
 
-    expect(summaryBand).toBeTruthy();
+    expect(summaryBand).toBeFalsy();
     expect(learningContent).toBeTruthy();
-    expect(summaryBand!.compareDocumentPosition(learningContent!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(summaryBand?.textContent).toContain('Recommended next step');
-    expect(summaryBand?.textContent).toContain('Rank');
-    expect(summaryBand?.textContent).toContain('Attempts');
-    expect(summaryBand?.textContent).toContain('Average');
-    expect(summaryBand?.textContent).toContain('Subtopics');
-    expect(summaryBand?.textContent).toContain('Focus');
-    expect(summaryBand?.textContent).toContain('Guardian');
+    expect(container.querySelector('.focused-region-page-header')).toBeTruthy();
+    expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
   });
 
-  it('renders numbered phase classes for progressive step tinting', () => {
+  it('does not render full phase timeline on focused pages', () => {
     const progress = regionProgress();
     const summary = buildRegionLearningSummary({
       regionProgress: progress,
@@ -1256,18 +1364,14 @@ describe('FieldGuidePanel teaching snippets', () => {
       />,
     );
 
-    const phases = Array.from(container.querySelectorAll('.region-arc-timeline .arc-phase'));
-    expect(phases).toHaveLength(5);
-    phases.forEach((phase, index) => {
-      expect(phase.classList.contains(`arc-phase-${index + 1}`)).toBe(true);
-    });
+    expect(container.querySelectorAll('.region-arc-timeline .arc-phase')).toHaveLength(0);
   });
 
-  it('keeps region summary cards equal-height and phases progressively tinted in CSS', () => {
+  it('keeps region summary cards equal-height and focused navigation compact in CSS', () => {
     expect(stylesCss).toMatch(/\.region-summary-band\s*\{[\s\S]*?align-items:\s*stretch;/);
     expect(stylesCss).toMatch(/\.region-summary-band\s*>\s*\.region-next-action,\s*[\r\n\s]*\.region-summary-band\s*>\s*\.region-progress-strip\s*\{[\s\S]*?height:\s*100%;[\s\S]*?margin-bottom:\s*0;/);
-    expect(stylesCss).toMatch(/\.region-learning-navigation-block\s*\{[\s\S]*?gap:\s*0;/);
-    expect(stylesCss).toMatch(/\.region-learning-navigation-block\s+\.region-learning-nav\s*\{[\s\S]*?border-top:\s*0;/);
+    expect(stylesCss).toMatch(/\.focused-region-page-header\s*\{[\s\S]*?display:\s*flex;/);
+    expect(stylesCss).toMatch(/\.focused-region-next-step\s*\{[\s\S]*?border-radius:\s*999px;/);
     expect(stylesCss).toContain('.arc-phase-1');
     expect(stylesCss).toContain('.arc-phase-5');
     expect(stylesCss).toMatch(/\.arc-phase-1\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*5%/);

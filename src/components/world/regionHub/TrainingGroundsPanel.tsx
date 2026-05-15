@@ -36,19 +36,32 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
           </small>
         ) : null}
       </details>
-      <div className="training-intent-grid" aria-label="Training session choices">
-        {trainingIntents.map((intent) => (
-          <button
-            key={intent}
-            className={intent === summary.trainingSession.intent ? 'recommended-intent' : ''}
-            type="button"
-            disabled={!canTrain}
-            onClick={() => onStartTraining(intent)}
-          >
-            {TRAINING_SESSION_LABELS[intent]}
-          </button>
-        ))}
-      </div>
+
+      <button
+        className="training-primary-start"
+        type="button"
+        disabled={!canTrain}
+        onClick={() => onStartTraining(summary.trainingSession.intent)}
+      >
+        Start recommended session: {summary.trainingSession.label}
+      </button>
+
+      <details className="training-alternatives-detail">
+        <summary>Choose a different session</summary>
+        <div className="training-intent-grid" aria-label="Alternate training session choices">
+          {trainingIntents.filter((intent) => intent !== summary.trainingSession.intent).map((intent) => (
+            <button
+              key={intent}
+              type="button"
+              disabled={!canTrain}
+              onClick={() => onStartTraining(intent)}
+            >
+              {TRAINING_SESSION_LABELS[intent]}
+            </button>
+          ))}
+        </div>
+      </details>
+
       {!canTrain ? (
         <div className="guardian-missing-list" role="status">
           <AlertTriangle size={18} />

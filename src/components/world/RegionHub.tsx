@@ -15,11 +15,7 @@ import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
 import { QuickChecksPanel } from './regionHub/QuickChecksPanel';
-import { RegionArcTimeline } from './regionHub/RegionArcTimeline';
-import { RegionHero } from './regionHub/RegionHero';
 import { RegionLearningLayout } from './regionHub/RegionLearningLayout';
-import { RegionNextActionPanel } from './regionHub/RegionNextActionPanel';
-import { RegionProgressStrip } from './regionHub/RegionProgressStrip';
 import { TrainingGroundsPanel } from './regionHub/TrainingGroundsPanel';
 import { WarmUpPracticePanel } from './regionHub/WarmUpPracticePanel';
 import { percent } from './regionHub/regionHubPanelUtils';
@@ -128,19 +124,17 @@ export function RegionHub({
   if (activePage === 'field-guide') {
     return (
       <RegionLearningLayout theme={theme} summary={summary}>
-        <FieldGuidePageHeader
+        <FocusedRegionPageHeader
+          activePage={activePage}
           fieldGuide={fieldGuide}
-          fieldGuideCompleted={fieldGuideCompleted}
-          guardianCleared={guardianCleared}
-          regionProgress={regionProgress}
+          fieldGuideSnippetCount={teachingSnippets.length}
           summary={summary}
           theme={theme}
+          onReturnToMap={onReturnToMap}
         />
 
-        <RegionLearningNavigationBlock
+        <RegionLearningNav
           activePage={activePage}
-          fieldGuideCompleted={fieldGuideCompleted}
-          summary={summary}
           onNavigatePage={onNavigatePage}
         />
 
@@ -178,34 +172,19 @@ export function RegionHub({
         />
       ) : (
         <>
-          <RegionHero
-            regionProgress={regionProgress}
+          <FocusedRegionPageHeader
+            activePage={activePage}
             theme={theme}
-            stateLabel={stateLabels[summary.state] ?? summary.state}
+            summary={summary}
             onReturnToMap={onReturnToMap}
           />
 
-          <div className="region-summary-band" aria-label="Region summary">
-            <RegionNextActionPanel regionProgress={regionProgress} summary={summary} />
-            <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
-          </div>
-
-          <RegionLearningNavigationBlock
+          <RegionLearningNav
             activePage={activePage}
-            fieldGuideCompleted={fieldGuideCompleted}
-            summary={summary}
             onNavigatePage={onNavigatePage}
           />
 
           <div className={`region-page-shell region-page-${activePage}`}>
-            <div className="region-page-toolbar">
-              <div>
-                <span className="mode-pill">Focused region page</span>
-                <h2>{REGION_LEARNING_PAGE_LABELS[activePage]}</h2>
-                <p className="region-page-kicker">{theme.title}</p>
-              </div>
-            </div>
-
             {activePage === 'quick-check' ? (
               <QuickChecksPanel
                 teachingSnippets={teachingSnippets}
@@ -256,50 +235,48 @@ export function RegionHub({
   );
 }
 
-interface FieldGuidePageHeaderProps {
-  fieldGuide: RegionFieldGuide;
-  fieldGuideCompleted: boolean;
-  guardianCleared: boolean;
-  regionProgress: RegionProgress;
+interface FocusedRegionPageHeaderProps {
+  activePage: Exclude<RegionLearningPageId, 'hub'>;
+  fieldGuide?: RegionFieldGuide;
+  fieldGuideSnippetCount?: number;
+  onReturnToMap: () => void;
   summary: RegionLearningSummary;
   theme: RegionTheme;
 }
 
-function FieldGuidePageHeader({
+function FocusedRegionPageHeader({
+  activePage,
   fieldGuide,
-  fieldGuideCompleted,
-  guardianCleared,
-  regionProgress,
+  fieldGuideSnippetCount,
+  onReturnToMap,
   summary,
   theme,
-}: FieldGuidePageHeaderProps) {
-  const stats = [
-    { label: 'Region', value: theme.title },
-    { label: 'Rank', value: regionProgress.rank },
-    { label: 'Attempts', value: String(regionProgress.attempts) },
-    { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
-    { label: 'Recommended', value: summary.nextAction.label },
-    { label: 'Guide', value: fieldGuideCompleted ? 'Complete' : 'Ready' },
-    { label: 'Guardian', value: guardianStatus(summary, guardianCleared) },
-  ];
-
+}: FocusedRegionPageHeaderProps) {
   return (
-    <header className="field-guide-page-header">
-      <div className="field-guide-page-title">
-        <span className="mode-pill">Focused lesson</span>
-        <h2 id="region-hub-title">Field Guide</h2>
+    <header className="focused-region-page-header">
+      <div className="focused-region-page-title">
+        <span className="mode-pill">Focused step</span>
+        <h2 id="region-hub-title">{REGION_LEARNING_PAGE_LABELS[activePage]}</h2>
         <p className="field-guide-page-region">{theme.title}</p>
-        <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
+        {fieldGuide ? (
+          <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
+        ) : (
+          <p className="field-guide-page-purpose">{summary.nextAction.label}</p>
+        )}
       </div>
 
-      <dl className="field-guide-compact-stats" aria-label="Field Guide progress summary">
-        {stats.map((stat) => (
-          <div key={stat.label}>
-            <dt>{stat.label}</dt>
-            <dd>{stat.value}</dd>
-          </div>
-        ))}
-      </dl>
+      <div className="focused-region-header-actions">
+        {fieldGuide ? (
+          <span className="focused-region-progress-chip">
+            {fieldGuideSnippetCount ? `Snippet 1 of ${fieldGuideSnippetCount}` : 'Field Guide'}
+          </span>
+        ) : null}
+        <span className="focused-region-next-step">{summary.nextAction.label}</span>
+        <button className="region-home-return" type="button" onClick={onReturnToMap}>
+          <ArrowLeft size={18} />
+          Return to map
+        </button>
+      </div>
     </header>
   );
 }
@@ -307,23 +284,6 @@ function FieldGuidePageHeader({
 interface RegionLearningNavProps {
   activePage: RegionLearningPageId;
   onNavigatePage?: (page: RegionLearningPageId) => void;
-}
-
-function RegionLearningNavigationBlock({
-  activePage,
-  fieldGuideCompleted,
-  onNavigatePage,
-  summary,
-}: RegionLearningNavProps & {
-  fieldGuideCompleted: boolean;
-  summary: RegionLearningSummary;
-}) {
-  return (
-    <div className="region-learning-navigation-block">
-      <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
-      <RegionLearningNav activePage={activePage} onNavigatePage={onNavigatePage} />
-    </div>
-  );
 }
 
 function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProps) {
@@ -514,39 +474,45 @@ function RegionHubHome({
           </span>
         </button>
 
-        <div className="region-home-secondary-steps" aria-label="Other region steps">
-          {secondaryPages.map((page) => {
-            const actionState = hubActionState({
-              canTrain,
-              fieldGuideCompleted,
-              generatedPracticeCount,
-              guardianCleared,
-              page,
-              quickCheckCount,
-              summary,
-            });
-            return (
-              <button
-                type="button"
-                className={`region-home-action-card region-home-secondary-step${actionState.disabled ? ' is-locked' : ''}`}
-                data-region-page={page}
-                disabled={actionState.disabled}
-                key={page}
-                onClick={() => onNavigatePage?.(page)}
-              >
-                <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(page)}</span>
-                <span className="region-home-action-copy">
-                  <strong>{hubActionLabels[page]}</strong>
-                  <small>{hubActionDescriptions[page]}</small>
-                </span>
-                <span className="region-home-action-status">
-                  {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
-                  {actionState.status}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        <details className="region-home-secondary-routes">
+          <summary>
+            <span>Other routes</span>
+            <small>Choose another path</small>
+          </summary>
+          <div className="region-home-secondary-steps" aria-label="Other region steps">
+            {secondaryPages.map((page) => {
+              const actionState = hubActionState({
+                canTrain,
+                fieldGuideCompleted,
+                generatedPracticeCount,
+                guardianCleared,
+                page,
+                quickCheckCount,
+                summary,
+              });
+              return (
+                <button
+                  type="button"
+                  className={`region-home-action-card region-home-secondary-step${actionState.disabled ? ' is-locked' : ''}`}
+                  data-region-page={page}
+                  disabled={actionState.disabled}
+                  key={page}
+                  onClick={() => onNavigatePage?.(page)}
+                >
+                  <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(page)}</span>
+                  <span className="region-home-action-copy">
+                    <strong>{hubActionLabels[page]}</strong>
+                    <small>{hubActionDescriptions[page]}</small>
+                  </span>
+                  <span className="region-home-action-status">
+                    {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
+                    {actionState.status}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </details>
       </nav>
     </div>
   );

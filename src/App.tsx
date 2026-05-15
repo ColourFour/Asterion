@@ -345,11 +345,14 @@ export default function App() {
           <button className={viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'guardian' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
           <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
+        </nav>
+        <details className="teacher-access-menu">
+          <summary>Teacher tools</summary>
           <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => {
             clearRegionHash();
             setViewMode('teacher');
-          }}>Teacher/Export</button>
-        </nav>
+          }}>Open export</button>
+        </details>
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}

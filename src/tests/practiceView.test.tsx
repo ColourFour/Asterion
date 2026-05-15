@@ -5,7 +5,7 @@ import { PracticeView } from '../components/practice/PracticeView';
 import { emptyProgress } from '../lib/progressStore';
 import type { AvatarLocation } from '../lib/avatarLocation';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
-import type { Attempt, NormalizedQuestion, RegionDefinition, StoredProgress } from '../types';
+import type { Attempt, IssueType, NormalizedQuestion, RegionDefinition, StoredProgress } from '../types';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -83,10 +83,12 @@ const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' }
 function renderPractice(
   testQuestion: NormalizedQuestion,
   onAttempt = vi.fn<(attempt: Attempt) => void>(),
-  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; selectedRegion?: RegionDefinition } = {},
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition } = {},
 ) {
+  const onIssue = options.onIssue ?? vi.fn<(questionId: string, issueType: IssueType, note?: string) => void>();
   return {
     onAttempt,
+    onIssue,
     container: render(
       <PracticeView
         question={testQuestion}
@@ -97,7 +99,7 @@ function renderPractice(
         avatarLocation={avatarLocation}
         selectedRegion={options.selectedRegion}
         onAttempt={onAttempt}
-        onIssue={vi.fn()}
+        onIssue={onIssue}
         onContinuePractice={options.onContinuePractice}
         continuePracticeLabel={options.continuePracticeLabel}
       />,
@@ -196,10 +198,22 @@ describe('PracticeView self-mark reflection', () => {
     const initialFooterButtons = Array.from(container.querySelectorAll('.practice-footer-actions button'))
       .map((button) => button.textContent?.trim());
     expect(initialFooterButtons).toEqual(['Reveal Mark Scheme', 'Save Attempt']);
+    expect(container.querySelector('.question-header-actions')?.textContent).not.toContain('Report issue');
+    const revealButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
+      .find((button) => button.textContent === 'Reveal Mark Scheme');
+    const reportButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
+      .find((button) => button.textContent === 'Report issue');
+    expect(revealButton).toBeTruthy();
+    expect(reportButton).toBeTruthy();
+    expect(Boolean(revealButton!.compareDocumentPosition(reportButton!) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
+    expect(container.querySelector<HTMLDetailsElement>('.practice-support-details')?.open).toBe(false);
 
     clickButton(container, 'Reveal Mark Scheme');
     markSchemeLoaded(container);
 
+    expect(container.querySelector('.mark-scheme-panel img')).toBeTruthy();
+    expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Compare mark scheme');
+    expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Save attempt');
     expect(container.textContent).toContain('Enter your mark from the official mark scheme above.');
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
   });
