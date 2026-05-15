@@ -399,6 +399,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
     expect(quickCheck).toBeTruthy();
     expect(quickCheck?.textContent).toContain('Quick check');
+    expect(quickCheck?.textContent).toContain('Check 1 of 1');
+    expect(quickCheck?.textContent).not.toContain('Next action');
 
     const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
     expect(revealButton).toBeTruthy();
@@ -418,6 +420,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheck?.textContent).toContain('Feedback');
     expect(quickCheck?.textContent).toContain('Linked example');
     expect(quickCheck?.textContent).toContain('Two cubed equals eight.');
+    expect(quickCheck?.textContent).toContain('Next action');
+    expect(quickCheck?.textContent).toContain('Try again');
   });
 
   it('renders answer-first generated warm-up practice', () => {
@@ -538,9 +542,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuideSnippet?.textContent).toContain('Log snippet 1');
     expect(fieldGuideSnippet?.textContent).not.toContain('Log snippet 2');
     expect(fieldGuideSnippet?.textContent).toContain('Use Next when this idea is clear.');
-    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(2);
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).toContain('Quick prompt 1');
+    expect(container.textContent).not.toContain('Quick prompt 2');
+    expect(container.textContent).not.toContain('Quick prompt 3');
     expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
-    expect(container.textContent).toContain('1 more reviewed quick check available.');
+    expect(container.textContent).toContain('2 more reviewed quick checks queued after this one.');
     expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
 
     const nextSnippet = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
@@ -549,6 +557,63 @@ describe('FieldGuidePanel teaching snippets', () => {
       nextSnippet!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(fieldGuideSnippet?.textContent).toContain('Log snippet 2');
+  });
+
+  it('advances Quick Checks one at a time after answer feedback', () => {
+    const snippets = [snippetVariant(1), snippetVariant(2), snippetVariant(3)];
+    const container = render(<QuickChecksPanel teachingSnippets={snippets} />);
+
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    expect(container.textContent).toContain('Quick prompt 1');
+    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).not.toContain('Quick prompt 2');
+    expect(container.textContent).not.toContain('Quick prompt 3');
+
+    const check = container.querySelector<HTMLElement>('.quick-check-reveal');
+    const checkAnswerButton = Array.from(check!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
+    expect(checkAnswerButton?.hasAttribute('disabled')).toBe(true);
+
+    const textarea = check!.querySelector<HTMLTextAreaElement>('textarea');
+    act(() => {
+      setTextareaValue(textarea!, 'answer attempt');
+    });
+    expect(checkAnswerButton?.hasAttribute('disabled')).toBe(false);
+
+    act(() => {
+      checkAnswerButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Feedback');
+    expect(container.textContent).toContain('Quick answer 1');
+    expect(container.textContent).toContain('Next action');
+    expect(container.textContent).toContain('Next check');
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+
+    const nextCheckButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Next check');
+    act(() => {
+      nextCheckButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    expect(container.textContent).toContain('Quick prompt 2');
+    expect(container.textContent).toContain('Check 2 of 3');
+    expect(container.textContent).not.toContain('Quick prompt 1');
+    expect(container.textContent).not.toContain('Quick prompt 3');
+    expect(container.textContent).not.toContain('Feedback');
+  });
+
+  it('keeps the focused region Quick Checks page from dumping multiple checks open', () => {
+    const container = renderRegionHubPage({
+      activePage: 'quick-check',
+      snippets: [snippetVariant(1), snippetVariant(2), snippetVariant(3)],
+    });
+
+    expect(container.textContent).toContain('Quick Checks');
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    expect(container.textContent).toContain('Quick prompt 1');
+    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).not.toContain('Quick prompt 2');
+    expect(container.textContent).not.toContain('Quick prompt 3');
   });
 
   it('keeps dense reviewed snippets collapsed into one primary teaching chunk', () => {

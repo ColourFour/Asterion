@@ -28,6 +28,8 @@ interface QuickChecksPanelProps {
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
+  onContinueToWarmUp?: () => void;
+  onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
@@ -39,6 +41,12 @@ interface QuickCheckCardProps {
   region?: RegionDefinition;
   profileId?: string;
   previousAttempt?: LearningActivityAttempt;
+  checkPosition: number;
+  checkCount: number;
+  hasNextCheck: boolean;
+  onNextCheck?: () => void;
+  onContinueToWarmUp?: () => void;
+  onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
@@ -50,6 +58,12 @@ function QuickCheckCard({
   region,
   profileId,
   previousAttempt,
+  checkPosition,
+  checkCount,
+  hasNextCheck,
+  onNextCheck,
+  onContinueToWarmUp,
+  onContinueToExamPractice,
   onLearningActivityAttempt,
 }: QuickCheckCardProps) {
   const activityId = check.id ?? snippetId;
@@ -60,7 +74,7 @@ function QuickCheckCard({
   const [confidence, setConfidence] = useState(3);
   const [errorType, setErrorType] = useState('');
   const [saved, setSaved] = useState(false);
-  const [startedAt] = useState(() => new Date().toISOString());
+  const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
   const responseReady = learnerResponse.trim().length > 0;
   const canSave = Boolean(answerVisible && outcome && !saved && onLearningActivityAttempt && region);
 
@@ -94,11 +108,25 @@ function QuickCheckCard({
     setSaved(true);
   }
 
+  function tryAgain() {
+    setLearnerResponse('');
+    setAnswerVisible(false);
+    setRevealedEarly(false);
+    setOutcome(undefined);
+    setConfidence(3);
+    setErrorType('');
+    setSaved(false);
+    setStartedAt(new Date().toISOString());
+  }
+
   return (
     <article className="quick-check-reveal" data-activity-id={activityId}>
       <header className="quick-check-heading">
         <strong>Quick check: {title}</strong>
-        {previousAttempt ? <small>Last: {activityOutcomes.find((item) => item.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}</small> : null}
+        <small>
+          Check {checkPosition} of {checkCount}
+          {previousAttempt ? ` · Last: ${activityOutcomes.find((item) => item.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}` : ''}
+        </small>
       </header>
       <p><MathText text={check.prompt} /></p>
       {linkedExample ? (
@@ -164,6 +192,21 @@ function QuickCheckCard({
           <button type="button" disabled={!canSave} onClick={saveAttempt}>{saved ? 'Saved' : 'Save check'}</button>
         </div>
       ) : null}
+      {answerVisible ? (
+        <div className="quick-check-next-actions" aria-label="Quick check next action">
+          <strong>Next action</strong>
+          <div>
+            <button type="button" onClick={tryAgain}>Try again</button>
+            {hasNextCheck ? (
+              <button type="button" onClick={onNextCheck}>Next check</button>
+            ) : onContinueToWarmUp ? (
+              <button type="button" onClick={onContinueToWarmUp}>Continue to Warm-up</button>
+            ) : onContinueToExamPractice ? (
+              <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Practice</button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -173,7 +216,9 @@ export function QuickChecksPanel({
   region,
   profileId,
   activityAttempts = [],
-  maxInitialItems = 2,
+  maxInitialItems = 1,
+  onContinueToWarmUp,
+  onContinueToExamPractice,
   onLearningActivityAttempt,
 }: QuickChecksPanelProps) {
   const examplesById = new Map(
@@ -195,8 +240,11 @@ export function QuickChecksPanel({
       }]
       : []
   ));
-  const visibleChecks = checks.slice(0, maxInitialItems);
-  const hiddenCheckCount = Math.max(0, checks.length - visibleChecks.length);
+  const [activeCheckIndex, setActiveCheckIndex] = useState(0);
+  const activeCheckLimit = Math.max(1, Math.min(maxInitialItems, 1));
+  const activeCheckIndexWithinRange = Math.min(activeCheckIndex, Math.max(0, checks.length - 1));
+  const activeCheck = checks[activeCheckIndexWithinRange];
+  const queuedCheckCount = Math.max(0, checks.length - activeCheckIndexWithinRange - activeCheckLimit);
   const previousAttempts = new Map(
     activityAttempts
       .filter((attempt) => attempt.activityType === 'quick_check')
@@ -208,29 +256,33 @@ export function QuickChecksPanel({
     <RegionActionCard
       eyebrow="Step 2"
       title="Quick Checks"
-      description="Two short answer-first checks before you move into practice."
+      description="One short answer-first check at a time before you move into practice."
       icon={<Target size={22} />}
       stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} quick checks available`} /> : undefined}
       className="quick-check-card"
     >
-      {visibleChecks.length ? (
+      {activeCheck ? (
         <>
           <div className="quick-check-list">
-            {visibleChecks.map(({ snippetId, title, check, linkedExample }) => (
-              <QuickCheckCard
-                check={check}
-                key={snippetId}
-                linkedExample={linkedExample}
-                onLearningActivityAttempt={onLearningActivityAttempt}
-                previousAttempt={previousAttempts.get(check.id ?? snippetId)}
-                profileId={profileId}
-                region={region}
-                snippetId={snippetId}
-                title={title}
-              />
-            ))}
+            <QuickCheckCard
+              check={activeCheck.check}
+              checkCount={checks.length}
+              checkPosition={activeCheckIndexWithinRange + 1}
+              hasNextCheck={activeCheckIndexWithinRange < checks.length - 1}
+              key={activeCheck.check.id ?? activeCheck.snippetId}
+              linkedExample={activeCheck.linkedExample}
+              onContinueToExamPractice={onContinueToExamPractice}
+              onContinueToWarmUp={onContinueToWarmUp}
+              onLearningActivityAttempt={onLearningActivityAttempt}
+              onNextCheck={() => setActiveCheckIndex((index) => Math.min(index + 1, checks.length - 1))}
+              previousAttempt={previousAttempts.get(activeCheck.check.id ?? activeCheck.snippetId)}
+              profileId={profileId}
+              region={region}
+              snippetId={activeCheck.snippetId}
+              title={activeCheck.title}
+            />
           </div>
-          {hiddenCheckCount ? <small className="region-card-note">{hiddenCheckCount} more reviewed quick check{hiddenCheckCount === 1 ? '' : 's'} available.</small> : null}
+          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed quick check{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
         </>
       ) : (
         <p className="region-empty-state">No reviewed quick checks are published for this region yet. Use the Field Guide and exam practice route.</p>

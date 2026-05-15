@@ -198,6 +198,8 @@ export function RegionHub({
                 profileId={profileId}
                 activityAttempts={learningActivityAttempts}
                 maxInitialItems={Math.max(2, quickCheckCount)}
+                onContinueToWarmUp={() => onNavigatePage?.('warm-up')}
+                onContinueToExamPractice={() => onNavigatePage?.('exam-training')}
                 onLearningActivityAttempt={onLearningActivityAttempt}
               />
             ) : null}

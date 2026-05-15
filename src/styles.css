@@ -4223,7 +4223,8 @@ legend {
 }
 
 .activity-reveal-actions,
-.activity-outcome-options {
+.activity-outcome-options,
+.quick-check-next-actions div {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -4234,6 +4235,22 @@ legend {
   margin-top: 4px;
   padding-top: 8px;
   border-top: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 18%, transparent);
+}
+
+.quick-check-next-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 22%, transparent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--region-wash, #f6eddb) 46%, transparent);
+}
+
+.quick-check-next-actions strong {
+  color: var(--region-heading, #30286c);
+  font-size: 0.84rem;
+  font-weight: 1000;
 }
 
 .activity-reflection-panel fieldset {
@@ -6884,7 +6901,8 @@ legend {
 }
 
 .activity-reveal-actions button,
-.activity-reflection-panel button {
+.activity-reflection-panel button,
+.quick-check-next-actions button {
   min-height: 40px;
   padding: 8px 12px;
   border: 1px solid var(--region-button-border);
@@ -6893,7 +6911,8 @@ legend {
 }
 
 .activity-reveal-actions button:first-child,
-.activity-reflection-panel button {
+.activity-reflection-panel button,
+.quick-check-next-actions button {
   color: var(--region-button-text);
   background: var(--region-button-bg);
 }
@@ -6905,7 +6924,8 @@ legend {
 }
 
 .activity-reveal-actions button:not(:disabled):hover,
-.activity-reflection-panel button:not(:disabled):hover {
+.activity-reflection-panel button:not(:disabled):hover,
+.quick-check-next-actions button:not(:disabled):hover {
   filter: brightness(1.05);
 }
 
