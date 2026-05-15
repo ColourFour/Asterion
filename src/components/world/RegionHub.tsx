@@ -81,6 +81,14 @@ const hubActionDescriptions: Record<HubActionPageId, string> = {
   guardian: 'Prove mastery',
 };
 
+const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
+  'field-guide': 'Start with one guide step and worked example before practice.',
+  'quick-check': 'Try one answer-first check before moving into longer practice.',
+  'warm-up': 'Build fluency with one short support activity.',
+  'exam-training': 'Use canonical question images and save evidence for the Guardian.',
+  guardian: 'Challenge the gated check when the existing evidence unlocks it.',
+};
+
 const regionHubArtAssets: Partial<Record<string, string>> = {
   'algebra-forge': '/assets/region-art/algebra-region-hub.png',
   'logarithm-grove': '/assets/region-art/log-region-hub.png',
@@ -344,6 +352,45 @@ function hubActionState(input: {
   return { disabled: locked, status: guardianStatus(input.summary, input.guardianCleared) };
 }
 
+function recommendedHubPage(input: {
+  canTrain: boolean;
+  fieldGuideCompleted: boolean;
+  generatedPracticeCount: number;
+  guardianCleared: boolean;
+  quickCheckCount: number;
+  summary: RegionLearningSummary;
+}): HubActionPageId {
+  const { summary } = input;
+
+  if (summary.nextAction.kind === 'field_guide') return 'field-guide';
+  if (summary.nextAction.kind === 'guardian') return 'guardian';
+
+  if (summary.nextAction.kind === 'complete') {
+    return input.guardianCleared ? 'exam-training' : 'guardian';
+  }
+
+  if (summary.nextAction.kind === 'review') return 'exam-training';
+
+  if (summary.nextAction.kind === 'training') {
+    if (input.fieldGuideCompleted && input.quickCheckCount > 0 && summary.learningActivityReadiness.quickCheckAttempts === 0) {
+      return 'quick-check';
+    }
+
+    if (input.generatedPracticeCount > 0 && summary.learningActivityReadiness.warmUpAttempts === 0) {
+      return 'warm-up';
+    }
+
+    if (summary.trainingSession.intent === 'warm_up' && input.generatedPracticeCount > 0) {
+      return 'warm-up';
+    }
+
+    return 'exam-training';
+  }
+
+  if (input.fieldGuideCompleted && input.canTrain) return 'exam-training';
+  return 'field-guide';
+}
+
 function RegionHubHome({
   canTrain,
   fieldGuideCompleted,
@@ -357,12 +404,29 @@ function RegionHubHome({
   onNavigatePage,
   onReturnToMap,
 }: RegionHubHomeProps) {
+  const primaryPage = recommendedHubPage({
+    canTrain,
+    fieldGuideCompleted,
+    generatedPracticeCount,
+    guardianCleared,
+    quickCheckCount,
+    summary,
+  });
+  const primaryActionState = hubActionState({
+    canTrain,
+    fieldGuideCompleted,
+    generatedPracticeCount,
+    guardianCleared,
+    page: primaryPage,
+    quickCheckCount,
+    summary,
+  });
+  const secondaryPages = hubActionPages.filter((page) => page !== primaryPage);
   const stats = [
     { label: 'Status', value: stateLabel },
     { label: 'Rank', value: regionProgress.rank },
     { label: 'Attempts', value: String(regionProgress.attempts) },
     { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
-    { label: 'Recommended', value: summary.nextAction.label },
     { label: 'Guardian', value: guardianStatus(summary, guardianCleared) },
   ];
 
@@ -393,37 +457,60 @@ function RegionHubHome({
       <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
 
       <nav className="region-home-actions" aria-label="Region learning actions">
-        {hubActionPages.map((page) => {
-          const actionState = hubActionState({
-            canTrain,
-            fieldGuideCompleted,
-            generatedPracticeCount,
-            guardianCleared,
-            page,
-            quickCheckCount,
-            summary,
-          });
-          return (
-            <button
-              type="button"
-              className={`region-home-action-card${actionState.disabled ? ' is-locked' : ''}`}
-              data-region-page={page}
-              disabled={actionState.disabled}
-              key={page}
-              onClick={() => onNavigatePage?.(page)}
-            >
-              <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(page)}</span>
-              <span className="region-home-action-copy">
-                <strong>{hubActionLabels[page]}</strong>
-                <small>{hubActionDescriptions[page]}</small>
-              </span>
-              <span className="region-home-action-status">
-                {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
-                {actionState.status}
-              </span>
-            </button>
-          );
-        })}
+        <button
+          type="button"
+          className={`region-home-primary-action${primaryActionState.disabled ? ' is-locked' : ''}`}
+          data-region-page={primaryPage}
+          disabled={primaryActionState.disabled}
+          onClick={() => onNavigatePage?.(primaryPage)}
+        >
+          <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(primaryPage)}</span>
+          <span className="region-home-primary-copy">
+            <small>Current step</small>
+            <strong>{hubActionLabels[primaryPage]}</strong>
+            <span>{summary.nextAction.label}</span>
+            <p>{summary.nextAction.explanation}</p>
+          </span>
+          <span className="region-home-primary-detail">{hubActionPrimaryCopy[primaryPage]}</span>
+          <span className="region-home-action-status">
+            {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
+            {primaryActionState.status}
+          </span>
+        </button>
+
+        <div className="region-home-secondary-steps" aria-label="Other region steps">
+          {secondaryPages.map((page) => {
+            const actionState = hubActionState({
+              canTrain,
+              fieldGuideCompleted,
+              generatedPracticeCount,
+              guardianCleared,
+              page,
+              quickCheckCount,
+              summary,
+            });
+            return (
+              <button
+                type="button"
+                className={`region-home-action-card region-home-secondary-step${actionState.disabled ? ' is-locked' : ''}`}
+                data-region-page={page}
+                disabled={actionState.disabled}
+                key={page}
+                onClick={() => onNavigatePage?.(page)}
+              >
+                <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(page)}</span>
+                <span className="region-home-action-copy">
+                  <strong>{hubActionLabels[page]}</strong>
+                  <small>{hubActionDescriptions[page]}</small>
+                </span>
+                <span className="region-home-action-status">
+                  {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
+                  {actionState.status}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );

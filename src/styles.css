@@ -5157,8 +5157,8 @@ legend {
 
 .region-home-actions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+  gap: 14px;
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
@@ -5167,6 +5167,96 @@ legend {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+
+.region-home-primary-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px 14px;
+  align-content: start;
+  min-height: 230px;
+  padding: 20px;
+  color: var(--region-body);
+  background:
+    linear-gradient(120deg, var(--region-wash-strong), transparent 48%),
+    linear-gradient(180deg, var(--region-panel), var(--region-panel-strong));
+  border: 2px solid color-mix(in srgb, var(--region-accent) 52%, var(--region-panel-border) 18%);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-lift);
+  font-family: inherit;
+  text-align: left;
+  text-shadow: none;
+}
+
+.region-home-primary-action:not(:disabled):hover {
+  transform: translateY(-2px);
+  border-color: var(--region-accent);
+}
+
+.region-home-primary-action .region-home-action-icon {
+  width: 54px;
+  height: 54px;
+}
+
+.region-home-primary-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.region-home-primary-copy small {
+  color: var(--region-accent-dark);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.region-home-primary-copy strong {
+  color: var(--region-heading);
+  font-size: clamp(1.55rem, 3.1vw, 2.5rem);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+
+.region-home-primary-copy span {
+  color: var(--region-accent-dark);
+  font-size: 0.98rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.region-home-primary-copy p {
+  max-width: 62ch;
+  margin: 2px 0 0;
+  color: var(--region-body);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.region-home-primary-detail {
+  grid-column: 1 / -1;
+  align-self: end;
+  padding: 12px;
+  color: var(--region-body);
+  background: color-mix(in srgb, var(--region-panel) 88%, #fff 12%);
+  border: 1px solid color-mix(in srgb, var(--region-accent) 22%, transparent);
+  border-radius: var(--radius-panel);
+  font-size: 0.93rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.region-home-primary-action .region-home-action-status {
+  grid-column: 1 / -1;
+}
+
+.region-home-secondary-steps {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
 }
 
 .region-home-action-card {
@@ -5188,6 +5278,25 @@ legend {
   font-family: inherit;
   text-align: left;
   text-shadow: none;
+}
+
+.region-home-secondary-step {
+  min-height: 84px;
+  padding: 11px 12px;
+  box-shadow: none;
+}
+
+.region-home-secondary-step .region-home-action-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.region-home-secondary-step .region-home-action-copy strong {
+  font-size: 0.96rem;
+}
+
+.region-home-secondary-step .region-home-action-copy small {
+  font-size: 0.8rem;
 }
 
 .region-home-action-card:not(:disabled):hover {
@@ -8783,10 +8892,6 @@ legend {
     grid-template-columns: 1fr;
   }
 
-  .region-home-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .region-home-return {
     justify-self: start;
   }
@@ -8868,6 +8973,11 @@ legend {
   .region-home-stats,
   .region-home-actions {
     grid-template-columns: 1fr;
+  }
+
+  .region-home-primary-action {
+    min-height: 0;
+    padding: 16px;
   }
 
   .region-home-artwork,

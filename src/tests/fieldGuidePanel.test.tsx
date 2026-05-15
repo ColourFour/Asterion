@@ -532,8 +532,6 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(stats?.textContent).toContain('Rank');
     expect(stats?.textContent).toContain('Attempts');
     expect(stats?.textContent).toContain('Average');
-    expect(stats?.textContent).toContain('Recommended');
-    expect(stats?.textContent).toContain('Read the Field Guide');
     expect(stats?.textContent).toContain('Guardian');
     expect(stats?.textContent).toContain('Locked');
 
@@ -545,18 +543,36 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(artworkImage?.getAttribute('src')).toBe('/assets/region-art/algebra-region-hub.png');
     expect(artwork?.textContent).not.toContain('placeholder');
 
-    const actionCards = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-action-card'));
-    expect(actionCards).toHaveLength(5);
-    expect(actionCards.map((button) => button.dataset.regionPage)).toEqual([
+    const primaryAction = container.querySelector<HTMLButtonElement>('.region-home-primary-action');
+    expect(primaryAction).toBeTruthy();
+    expect(primaryAction?.dataset.regionPage).toBe('field-guide');
+    expect(primaryAction?.textContent).toContain('Current step');
+    expect(primaryAction?.textContent).toContain('Field Guide');
+    expect(primaryAction?.textContent).toContain('Read the Field Guide');
+    expect(primaryAction?.textContent).toContain('Start with the region guide');
+    expect(primaryAction?.textContent).toContain('Ready');
+
+    const secondaryActions = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-secondary-step'));
+    expect(secondaryActions).toHaveLength(4);
+    expect(secondaryActions.map((button) => button.dataset.regionPage)).toEqual([
+      'quick-check',
+      'warm-up',
+      'exam-training',
+      'guardian',
+    ]);
+    const allActionPages = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'))
+      .map((button) => button.dataset.regionPage);
+    expect(allActionPages).toEqual([
       'field-guide',
       'quick-check',
       'warm-up',
       'exam-training',
       'guardian',
     ]);
-    expect(new Set(actionCards.map((button) => button.dataset.regionPage)).size).toBe(actionCards.length);
+    expect(new Set(allActionPages).size).toBe(allActionPages.length);
     expect(container.textContent).toContain('Field Guide');
-    expect(container.textContent).toContain('Learn the key ideas');
+    expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
+    expect(container.querySelector('.region-home-primary-action')?.textContent).not.toContain('Quick Checks');
     expect(container.textContent).toContain('Quick Checks');
     expect(container.textContent).toContain('Check one skill');
     expect(container.textContent).toContain('Warm-Up Practice');
@@ -576,8 +592,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.warm-up-card')).toBeFalsy();
     expect(container.querySelector('.training-card')).toBeFalsy();
     expect(container.querySelector('.guardian-card')).toBeFalsy();
+    expect(container.querySelector('.quick-check-reveal')).toBeFalsy();
+    expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
 
-    const guardianCard = actionCards.find((button) => button.dataset.regionPage === 'guardian');
+    const guardianCard = secondaryActions.find((button) => button.dataset.regionPage === 'guardian');
     expect(guardianCard?.disabled).toBe(true);
     act(() => {
       guardianCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -608,13 +627,16 @@ describe('FieldGuidePanel teaching snippets', () => {
       onNavigatePage,
     });
 
-    const actionCards = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-action-card'));
-    expect(actionCards).toHaveLength(5);
-    expect(actionCards.find((button) => button.dataset.regionPage === 'guardian')?.disabled).toBe(false);
+    const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'));
+    expect(actionButtons).toHaveLength(5);
+    expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
+    expect(actionButtons.find((button) => button.dataset.regionPage === 'guardian')?.disabled).toBe(false);
 
-    for (const button of actionCards) {
+    for (const page of ['field-guide', 'quick-check', 'warm-up', 'exam-training', 'guardian']) {
+      const button = actionButtons.find((candidate) => candidate.dataset.regionPage === page);
+      expect(button).toBeTruthy();
       act(() => {
-        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
     }
 
