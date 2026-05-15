@@ -74,6 +74,115 @@ export interface StudentProfile {
   updatedAt: string;
 }
 
+export type AsterionRole = 'admin' | 'teacher' | 'student';
+
+export interface TeacherClass {
+  id: string;
+  name: string;
+  teacherId: string;
+  joinCode: string;
+  archivedAt?: string;
+  createdAt: string;
+}
+
+export type RecommendedNextStep =
+  | 'needs_field_guide'
+  | 'needs_quick_check'
+  | 'needs_warm_up'
+  | 'ready_for_exam_training'
+  | 'needs_teacher_review'
+  | 'ready_for_guardian';
+
+export type RegionReadinessState =
+  | 'needs_field_guide'
+  | 'needs_quick_check'
+  | 'needs_warm_up'
+  | 'ready_for_exam_training'
+  | 'needs_teacher_review'
+  | 'ready_for_guardian'
+  | 'mixed';
+
+export interface StudentSummary {
+  id: string;
+  displayName: string;
+  classId: string;
+  currentRegionId: string;
+  lastActivityAt: string;
+  evidenceCount: number;
+  recommendedNextStep: RecommendedNextStep;
+}
+
+export interface RegionLearningSignal {
+  regionId: string;
+  regionName: string;
+  readinessState: RegionReadinessState;
+  studentsNeedingFieldGuide: string[];
+  studentsNeedingQuickCheck: string[];
+  studentsNeedingWarmUp: string[];
+  studentsReadyForExamTraining: string[];
+  studentsNeedingTeacherReview: string[];
+  evidenceCount: number;
+}
+
+export type TeacherActionCardType =
+  | 'reteach'
+  | 'small_group'
+  | 'ready_for_exam_practice'
+  | 'needs_evidence'
+  | 'teacher_review';
+
+export type EvidenceActivityType = 'field_guide' | 'quick_check' | 'warm_up' | 'exam_training' | 'guardian';
+export type EvidenceAction = 'started' | 'submitted' | 'revealed' | 'completed' | 'skipped';
+export type EvidenceOutcome = 'correct' | 'incorrect' | 'partial' | 'self_review' | 'unknown';
+
+export interface EvidenceReference {
+  questionId: string;
+  regionId: string;
+  skillId?: string;
+  activityType: EvidenceActivityType;
+  action: EvidenceAction;
+  outcome: EvidenceOutcome;
+  createdAt: string;
+}
+
+export interface TeacherActionCard {
+  id: string;
+  type: TeacherActionCardType;
+  title: string;
+  summary: string;
+  regionId?: string;
+  skillId?: string;
+  studentIds: string[];
+  evidenceRefs: EvidenceReference[];
+  recommendedAction: string;
+}
+
+export interface TeacherClassDashboard {
+  class: TeacherClass;
+  lastUpdatedAt: string;
+  actionCards: TeacherActionCard[];
+  regionSignals: RegionLearningSignal[];
+  studentSummaries: StudentSummary[];
+}
+
+export interface AdminTeacherSummary {
+  id: string;
+  displayName: string;
+  email: string;
+  classCount: number;
+  lastActivityAt: string;
+}
+
+export interface AdminAuditEvent {
+  id: string;
+  actorRole: Extract<AsterionRole, 'admin'>;
+  actorName: string;
+  action: string;
+  targetType: 'teacher' | 'class' | 'student_progress_snapshot' | 'system';
+  targetLabel: string;
+  createdAt: string;
+}
+
 export type AvatarSlot = 'base' | 'hair' | 'face' | 'outfit' | 'cloak' | 'accessory' | 'aura' | 'companion' | 'frame';
 
 export interface AvatarSettings {

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UsersRound } from 'lucide-react';
 import { ClassHall } from './components/classHall/ClassHall';
+import { AdminDashboard } from './components/dashboard/AdminDashboard';
+import { TeacherDashboard } from './components/dashboard/TeacherDashboard';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { AvatarBuilder } from './components/profile/AvatarBuilder';
 import { PracticeView } from './components/practice/PracticeView';
@@ -31,9 +33,18 @@ import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, Q
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
+function parseDashboardRoute(pathname: string): { kind: 'teacher'; classId?: string; detailMode: boolean } | { kind: 'admin' } | { kind: 'student' } {
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) return { kind: 'admin' };
+  if (pathname === '/teacher') return { kind: 'teacher', detailMode: false };
+  const teacherClassMatch = pathname.match(/^\/teacher\/classes\/([^/]+)$/);
+  if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], detailMode: true };
+  return { kind: 'student' };
+}
+
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
+  const [dashboardPath, setDashboardPath] = useState(() => window.location.pathname);
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
@@ -46,6 +57,16 @@ export default function App() {
   const [regionRouteError, setRegionRouteError] = useState<string>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
   const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
+
+  useEffect(() => {
+    function syncPath() {
+      setDashboardPath(window.location.pathname);
+    }
+    window.addEventListener('popstate', syncPath);
+    return () => {
+      window.removeEventListener('popstate', syncPath);
+    };
+  }, []);
 
   useEffect(() => {
     loadQuestionBankWithDiagnostics()
@@ -160,6 +181,13 @@ export default function App() {
     if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
     return undefined;
   }, [questions, worldProgress]);
+
+  const dashboardRoute = parseDashboardRoute(dashboardPath);
+
+  function navigatePath(path: string) {
+    window.history.pushState(null, '', path);
+    setDashboardPath(window.location.pathname);
+  }
 
   function activePracticeMode(): PracticeMode {
     return viewMode === 'weak_areas' || viewMode === 'target_topic' || viewMode === 'start' ? viewMode : 'start';
@@ -283,6 +311,14 @@ export default function App() {
       attempts: nextProgress.attempts,
       topicProfiles: nextProgress.topicProfiles,
     }));
+  }
+
+  if (dashboardRoute.kind === 'teacher') {
+    return <TeacherDashboard classId={dashboardRoute.classId} detailMode={dashboardRoute.detailMode} onNavigatePath={navigatePath} />;
+  }
+
+  if (dashboardRoute.kind === 'admin') {
+    return <AdminDashboard onNavigatePath={navigatePath} />;
   }
 
   if (!progress.profile) {
