@@ -204,6 +204,30 @@ describe('PracticeView self-mark reflection', () => {
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
   });
 
+  it('renders duplicate question and mark-scheme image candidates only once', () => {
+    const duplicateQuestion = question({
+      questionImageCandidates: [
+        ['/assets/31autumn21/questions/q01.png'],
+        ['/assets/31autumn21/questions/q01.png'],
+      ],
+      markSchemeImageCandidates: [
+        ['/assets/31autumn21/mark_scheme/q01.png'],
+        ['/assets/31autumn21/mark_scheme/q01.png'],
+      ],
+    });
+    const { container } = renderPractice(duplicateQuestion);
+
+    expect(Array.from(container.querySelectorAll<HTMLImageElement>('.question-panel img')).map((img) => img.getAttribute('src'))).toEqual([
+      '/assets/31autumn21/questions/q01.png',
+    ]);
+
+    clickButton(container, 'Reveal Mark Scheme');
+
+    expect(Array.from(container.querySelectorAll<HTMLImageElement>('.mark-scheme-panel img')).map((img) => img.getAttribute('src'))).toEqual([
+      '/assets/31autumn21/mark_scheme/q01.png',
+    ]);
+  });
+
   it('saves part-by-part scores when question part metadata exists', () => {
     const { container, onAttempt } = renderPractice(question({
       marksAvailable: 7,

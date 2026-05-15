@@ -22,6 +22,16 @@ const errorTypes: Array<{ value: Exclude<MistakeType, 'no_issue'>; label: string
   { value: 'other', label: 'Other' },
 ];
 
+function answerPlaceholderForText(...parts: Array<string | undefined>): string {
+  const text = parts.filter(Boolean).join(' ').toLowerCase();
+  if (/\bcoordinate|point|intersection\b/.test(text)) return 'For coordinates, use (2, -1)';
+  if (/\bvector|column vector\b/.test(text)) return 'For vectors, use column/vector notation if shown in the question';
+  if (/\binterval|inequal|range|domain\b/.test(text)) return 'For intervals, use notation like x < 2 or 1 < x < 4';
+  if (/\bequation|line|tangent|normal|solve|root\b/.test(text)) return 'For equations, include the variable, e.g. y = 2x + 1';
+  if (/\bexact|sqrt|surd|fraction|log|ln\b/.test(text)) return 'Use exact form if needed, e.g. 3/2 or sqrt(5)';
+  return 'Type your answer, e.g. x = 2';
+}
+
 interface QuickChecksPanelProps {
   teachingSnippets: TeachingSnippet[];
   region?: RegionDefinition;
@@ -141,6 +151,7 @@ function QuickCheckCard({
           onChange={(event) => setLearnerResponse(event.target.value)}
           rows={3}
           disabled={answerVisible}
+          placeholder={answerPlaceholderForText(check.topic, check.prompt, linkedExample?.example.prompt)}
         />
       </label>
       {!answerVisible ? (

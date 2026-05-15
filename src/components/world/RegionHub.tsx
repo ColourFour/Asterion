@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ArrowLeft, BookOpenCheck, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
@@ -91,7 +91,14 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
 
 const regionHubArtAssets: Partial<Record<string, string>> = {
   'algebra-forge': '/assets/region-art/algebra-region-hub.png',
+  'calculus-cliffs': '/assets/region-art/calc-region-hub.png',
+  'complex-harbor': '/assets/region-art/argand-region-hub.png',
+  'differential-shrine': '/assets/region-art/differential-region-hub.png',
+  'integration-gardens': '/assets/region-art/integral-region-hub.png',
+  'numerical-mines': '/assets/region-art/iteration-region-hub.png',
   'logarithm-grove': '/assets/region-art/log-region-hub.png',
+  'trig-observatory': '/assets/region-art/trig-region-hub.png',
+  'vector-workshop': '/assets/region-art/vectors-region-hub.png',
 };
 
 export function RegionHub({
@@ -128,6 +135,13 @@ export function RegionHub({
           regionProgress={regionProgress}
           summary={summary}
           theme={theme}
+        />
+
+        <RegionLearningNavigationBlock
+          activePage={activePage}
+          fieldGuideCompleted={fieldGuideCompleted}
+          summary={summary}
+          onNavigatePage={onNavigatePage}
         />
 
         <div className="region-page-shell region-page-field-guide">
@@ -176,10 +190,10 @@ export function RegionHub({
             <RegionProgressStrip regionProgress={regionProgress} summary={summary} />
           </div>
 
-          <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
-
-          <RegionLearningNav
+          <RegionLearningNavigationBlock
             activePage={activePage}
+            fieldGuideCompleted={fieldGuideCompleted}
+            summary={summary}
             onNavigatePage={onNavigatePage}
           />
 
@@ -292,6 +306,23 @@ function FieldGuidePageHeader({
 interface RegionLearningNavProps {
   activePage: RegionLearningPageId;
   onNavigatePage?: (page: RegionLearningPageId) => void;
+}
+
+function RegionLearningNavigationBlock({
+  activePage,
+  fieldGuideCompleted,
+  onNavigatePage,
+  summary,
+}: RegionLearningNavProps & {
+  fieldGuideCompleted: boolean;
+  summary: RegionLearningSummary;
+}) {
+  return (
+    <div className="region-learning-navigation-block">
+      <RegionArcTimeline fieldGuideCompleted={fieldGuideCompleted} summary={summary} />
+      <RegionLearningNav activePage={activePage} onNavigatePage={onNavigatePage} />
+    </div>
+  );
 }
 
 function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProps) {
@@ -522,11 +553,18 @@ function RegionHubHome({
 
 function RegionArtwork({ regionId, theme }: { regionId: string; theme: RegionTheme }) {
   const regionArt = regionHubArtAssets[regionId];
+  const [imageFailed, setImageFailed] = useState(false);
 
-  if (regionArt) {
+  if (regionArt && !imageFailed) {
     return (
       <section className="region-home-artwork" aria-label={`${theme.title} region artwork`}>
-        <img className="region-home-artwork-image" src={regionArt} alt="" aria-hidden="true" />
+        <img
+          className="region-home-artwork-image"
+          src={regionArt}
+          alt=""
+          aria-hidden="true"
+          onError={() => setImageFailed(true)}
+        />
       </section>
     );
   }

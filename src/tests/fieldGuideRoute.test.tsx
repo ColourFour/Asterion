@@ -126,6 +126,7 @@ describe('Field Guide app route', () => {
     expect(topbar?.textContent).toContain('World Map');
     expect(topbar?.textContent).toContain('Regions');
     expect(topbar?.textContent).toContain('Start Practice');
+    expect(topbar?.textContent).not.toContain('Review Weak Areas');
     expect(topbar?.textContent).toContain('Teacher/Export');
     expect(fieldGuideHeader).toBeTruthy();
     expect(fieldGuideHeader?.textContent).toContain('Field Guide');

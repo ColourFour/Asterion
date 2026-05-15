@@ -36,20 +36,6 @@ function rankSymbol(rank: string): string {
   }[rank] ?? '○';
 }
 
-function regionGlyph(regionId: string): string {
-  return {
-    'algebra-forge': 'ALG',
-    'logarithm-grove': 'LOG',
-    'trig-observatory': 'TRI',
-    'complex-harbor': 'ARG',
-    'calculus-cliffs': 'D/DX',
-    'integration-gardens': 'INT',
-    'vector-workshop': 'VEC',
-    'numerical-mines': 'ITER',
-    'differential-shrine': 'ODE',
-  }[regionId] ?? 'P3';
-}
-
 function learningStateLabel(summary?: RegionLearningSummary): string {
   const labels: Record<string, string> = {
     locked: 'Locked',
@@ -292,7 +278,6 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
             '--tooltip-top': `${tooltipPosition.top}px`,
           } as CSSProperties}
         >
-          <div className="region-glyph" aria-hidden="true">{regionGlyph(region.id)}</div>
           <strong className="node-popover-title">{region.name}</strong>
           <span className="node-popover-status">{canTrain ? learningStatus : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>
           <p className="node-popover-description">{region.description}</p>

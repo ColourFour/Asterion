@@ -57,10 +57,23 @@ interface ImageStackProps {
   onAvailabilityChange?: (status: ImageStackAvailability) => void;
 }
 
+function dedupeCandidateGroups(candidateGroups: string[][]): string[][] {
+  const seen = new Set<string>();
+  return candidateGroups.reduce<string[][]>((groups, candidates) => {
+    const uniqueCandidates = Array.from(new Set(candidates));
+    const key = uniqueCandidates.join('|');
+    if (seen.has(key)) return groups;
+    seen.add(key);
+    groups.push(uniqueCandidates);
+    return groups;
+  }, []);
+}
+
 export function ImageStack({ candidateGroups, label, onAvailabilityChange }: ImageStackProps) {
-  const groupKey = candidateGroups.map((group) => group.join('|')).join('||');
+  const visibleCandidateGroups = useMemo(() => dedupeCandidateGroups(candidateGroups), [candidateGroups]);
+  const groupKey = visibleCandidateGroups.map((group) => group.join('|')).join('||');
   const [groupStatuses, setGroupStatuses] = useState<ImageStackAvailability[]>(() => (
-    candidateGroups.map((group) => (group.length ? 'pending' : 'unavailable'))
+    visibleCandidateGroups.map((group) => (group.length ? 'pending' : 'unavailable'))
   ));
 
   const updateGroupStatus = useCallback((index: number, status: ImageStackAvailability) => {
@@ -71,27 +84,27 @@ export function ImageStack({ candidateGroups, label, onAvailabilityChange }: Ima
   }, []);
 
   useEffect(() => {
-    setGroupStatuses(candidateGroups.map((group) => (group.length ? 'pending' : 'unavailable')));
-  }, [groupKey, candidateGroups]);
+    setGroupStatuses(visibleCandidateGroups.map((group) => (group.length ? 'pending' : 'unavailable')));
+  }, [groupKey, visibleCandidateGroups]);
 
   const stackStatus = useMemo<ImageStackAvailability>(() => {
-    if (candidateGroups.length === 0) return 'unavailable';
+    if (visibleCandidateGroups.length === 0) return 'unavailable';
     if (groupStatuses.some((status) => status === 'unavailable')) return 'unavailable';
-    if (groupStatuses.length === candidateGroups.length && groupStatuses.every((status) => status === 'available')) return 'available';
+    if (groupStatuses.length === visibleCandidateGroups.length && groupStatuses.every((status) => status === 'available')) return 'available';
     return 'pending';
-  }, [candidateGroups.length, groupStatuses]);
+  }, [visibleCandidateGroups.length, groupStatuses]);
 
   useEffect(() => {
     onAvailabilityChange?.(stackStatus);
   }, [onAvailabilityChange, stackStatus]);
 
-  if (candidateGroups.length === 0) {
+  if (visibleCandidateGroups.length === 0) {
     return <div className="image-placeholder">{label} image unavailable</div>;
   }
 
   return (
     <div className="image-stack">
-      {candidateGroups.map((candidates, index) => (
+      {visibleCandidateGroups.map((candidates, index) => (
         <AssetImage
           key={`${candidates.join('|')}-${index}`}
           candidates={candidates}

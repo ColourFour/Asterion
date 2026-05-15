@@ -876,6 +876,25 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(onNavigatePage).not.toHaveBeenCalled();
   });
 
+  it('wires available region hub art files with the established naming convention', () => {
+    const expectedArt: Record<string, string> = {
+      'algebra-forge': '/assets/region-art/algebra-region-hub.png',
+      'calculus-cliffs': '/assets/region-art/calc-region-hub.png',
+      'complex-harbor': '/assets/region-art/argand-region-hub.png',
+      'differential-shrine': '/assets/region-art/differential-region-hub.png',
+      'integration-gardens': '/assets/region-art/integral-region-hub.png',
+      'logarithm-grove': '/assets/region-art/log-region-hub.png',
+      'numerical-mines': '/assets/region-art/iteration-region-hub.png',
+      'trig-observatory': '/assets/region-art/trig-region-hub.png',
+      'vector-workshop': '/assets/region-art/vectors-region-hub.png',
+    };
+
+    for (const [regionId, src] of Object.entries(expectedArt)) {
+      const container = renderRegionHubPage({ regionId });
+      expect(container.querySelector<HTMLImageElement>('.region-home-artwork-image')?.getAttribute('src')).toBe(src);
+    }
+  });
+
   it('routes each unlocked hub action to the existing focused region page', () => {
     const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
     const learningRecord: RegionLearningRecord = {
@@ -927,7 +946,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.textContent).toContain('Logarithm Observatory');
     expect(fieldGuidePage.textContent).toContain('Logarithms are the inverse language of exponentials.');
     expect(fieldGuidePage.querySelector('.field-guide-page-header')).toBeTruthy();
-    expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(fieldGuidePage.querySelector('.region-learning-navigation-block')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
     expect(fieldGuidePage.textContent).toContain('Back to Region Hub');
     expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
     expect(fieldGuidePage.querySelector('.quick-check-card')).toBeFalsy();
@@ -937,11 +958,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
+    expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder).toBe('Use exact form if needed, e.g. 3/2 or sqrt(5)');
 
     const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
     expect(warmUpPage.textContent).toContain('Warm-up Practice');
     expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('For equations, include the variable, e.g. y = 2x + 1');
 
     const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
     expect(examTrainingPage.textContent).toContain('Exam Training');
@@ -979,9 +1002,11 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.querySelector('.region-hero')).toBeFalsy();
     expect(container.querySelector('.region-summary-band')).toBeFalsy();
-    expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
+    expect(container.querySelector('.region-learning-navigation-block')).toBeTruthy();
+    expect(container.querySelector('.region-arc-timeline')).toBeTruthy();
     expect(container.querySelector('.region-home-actions')).toBeFalsy();
-    expect(container.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(container.querySelector('.region-learning-nav')).toBeTruthy();
+    expect(container.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
     expect(container.textContent).not.toContain('Choose one focused step');
     expect(container.textContent).not.toContain('Skill and subtopic overview');
 
@@ -1241,6 +1266,8 @@ describe('FieldGuidePanel teaching snippets', () => {
   it('keeps region summary cards equal-height and phases progressively tinted in CSS', () => {
     expect(stylesCss).toMatch(/\.region-summary-band\s*\{[\s\S]*?align-items:\s*stretch;/);
     expect(stylesCss).toMatch(/\.region-summary-band\s*>\s*\.region-next-action,\s*[\r\n\s]*\.region-summary-band\s*>\s*\.region-progress-strip\s*\{[\s\S]*?height:\s*100%;[\s\S]*?margin-bottom:\s*0;/);
+    expect(stylesCss).toMatch(/\.region-learning-navigation-block\s*\{[\s\S]*?gap:\s*0;/);
+    expect(stylesCss).toMatch(/\.region-learning-navigation-block\s+\.region-learning-nav\s*\{[\s\S]*?border-top:\s*0;/);
     expect(stylesCss).toContain('.arc-phase-1');
     expect(stylesCss).toContain('.arc-phase-5');
     expect(stylesCss).toMatch(/\.arc-phase-1\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*5%/);

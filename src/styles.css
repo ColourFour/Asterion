@@ -966,21 +966,6 @@ button:disabled {
   pointer-events: none;
 }
 
-.region-glyph {
-  display: grid;
-  width: 56px;
-  height: 56px;
-  place-items: center;
-  color: #fff;
-  background: var(--region-accent);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: var(--radius-control);
-  box-shadow: 0 12px 24px rgba(23, 32, 51, 0.14);
-  font-size: 0.9rem;
-  font-weight: 1000;
-  letter-spacing: 0;
-}
-
 .region-card-header {
   display: flex;
   flex-wrap: wrap;
@@ -3790,6 +3775,21 @@ legend {
   list-style: none;
 }
 
+.region-learning-navigation-block {
+  display: grid;
+  gap: 0;
+  margin: 0 0 12px;
+}
+
+.region-learning-navigation-block .region-arc-timeline {
+  margin: 0;
+  padding: 8px 8px 0;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 22%, transparent);
+  border-bottom: 0;
+  border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+  background: color-mix(in srgb, var(--region-panel) 92%, transparent);
+}
+
 .arc-phase {
   --arc-phase-tint: color-mix(in srgb, var(--region-accent, #c98b45) 7%, var(--region-panel, rgba(255, 253, 248, 0.98)));
   --arc-phase-tint-strong: color-mix(in srgb, var(--region-accent, #c98b45) 13%, var(--region-panel, rgba(255, 253, 248, 0.98)));
@@ -5047,6 +5047,11 @@ legend {
   border-radius: var(--radius-panel);
   background: color-mix(in srgb, var(--region-panel) 92%, transparent);
   box-shadow: var(--shadow-soft);
+}
+
+.region-learning-navigation-block .region-learning-nav {
+  border-top: 0;
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
 }
 
 .region-learning-nav button {

@@ -146,6 +146,8 @@ describe('ClassHall', () => {
     expect(container.querySelector('.bottom-menu')).toBeNull();
     const regionButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Algebra Vault'));
     expect(regionButton).toBeTruthy();
+    expect(document.body.querySelector('.region-glyph')).toBeNull();
+    expect(document.body.textContent).not.toContain('ALG');
   });
 
   it('opens a region from the whole ledger card without double-firing the nested button', () => {
