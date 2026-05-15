@@ -210,7 +210,9 @@ export function RegionHub({
                 region={region}
                 profileId={profileId}
                 activityAttempts={learningActivityAttempts}
-                maxInitialItems={Math.max(3, generatedPractice.length)}
+                maxInitialItems={3}
+                onContinueToFieldGuide={() => onNavigatePage?.('field-guide')}
+                onContinueToExamPractice={() => onNavigatePage?.('exam-training')}
                 onLearningActivityAttempt={onLearningActivityAttempt}
               />
             ) : null}

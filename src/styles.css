@@ -4280,6 +4280,64 @@ legend {
   margin-top: 8px;
 }
 
+.warm-up-practice-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.warm-up-sequence-list {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.warm-up-sequence-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  color: var(--region-muted, #5c6676);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
+  border-radius: var(--radius-control);
+  background: var(--region-panel);
+}
+
+.warm-up-sequence-list li > span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--region-heading, #30286c);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--region-badge-bg, #ece9ff) 78%, #fff 22%);
+  font-size: 0.78rem;
+  font-weight: 1000;
+}
+
+.warm-up-sequence-list strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--region-heading, #30286c);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.warm-up-sequence-list small {
+  color: inherit;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.warm-up-sequence-list li.is-active {
+  color: var(--region-heading, #30286c);
+  border-color: color-mix(in srgb, var(--region-accent) 45%, transparent);
+  background:
+    linear-gradient(90deg, var(--region-wash), transparent 44%),
+    var(--region-panel-strong);
+}
+
 .warm-up-practice-card {
   display: grid;
   align-content: start;
@@ -4376,6 +4434,39 @@ legend {
   gap: 6px;
   margin: 0;
   padding-left: 20px;
+}
+
+.warm-up-feedback,
+.warm-up-complete-panel {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  color: var(--region-heading, #30286c);
+  border: 1px solid color-mix(in srgb, var(--region-accent) 32%, transparent);
+  border-left: 5px solid var(--region-accent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--region-wash) 72%, #fff 28%);
+}
+
+.warm-up-feedback strong,
+.warm-up-complete-panel strong {
+  color: var(--region-heading, #30286c);
+}
+
+.warm-up-feedback p,
+.warm-up-complete-panel p {
+  margin: 0;
+}
+
+.warm-up-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.warm-up-next-actions p {
+  margin: 0;
 }
 
 .worked-example-card {
@@ -6902,7 +6993,8 @@ legend {
 
 .activity-reveal-actions button,
 .activity-reflection-panel button,
-.quick-check-next-actions button {
+.quick-check-next-actions button,
+.warm-up-next-actions button {
   min-height: 40px;
   padding: 8px 12px;
   border: 1px solid var(--region-button-border);
@@ -6912,7 +7004,8 @@ legend {
 
 .activity-reveal-actions button:first-child,
 .activity-reflection-panel button,
-.quick-check-next-actions button {
+.quick-check-next-actions button,
+.warm-up-next-actions button {
   color: var(--region-button-text);
   background: var(--region-button-bg);
 }
@@ -6925,7 +7018,8 @@ legend {
 
 .activity-reveal-actions button:not(:disabled):hover,
 .activity-reflection-panel button:not(:disabled):hover,
-.quick-check-next-actions button:not(:disabled):hover {
+.quick-check-next-actions button:not(:disabled):hover,
+.warm-up-next-actions button:not(:disabled):hover {
   filter: brightness(1.05);
 }
 

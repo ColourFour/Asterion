@@ -424,7 +424,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheck?.textContent).toContain('Try again');
   });
 
-  it('renders answer-first generated warm-up practice', () => {
+  it('renders generated warm-up practice as a check-first active item', () => {
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     expect(logRegion).toBeTruthy();
 
@@ -433,11 +433,18 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     expect(container.textContent).toContain('Warm-up Practice');
+    expect(container.textContent).toContain('Work through one prompt at a time.');
+    expect(container.textContent).toContain('Item 1 of 1');
     expect(container.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(container.textContent).toContain('Question type');
     expect(container.textContent).toContain('Logarithm equation');
     expect(container.textContent).toContain('Key method');
     expect(container.textContent).not.toContain('x = 4');
+
+    const checkButton = Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent === 'Check answer');
+    expect(checkButton).toBeTruthy();
+    expect(checkButton?.hasAttribute('disabled')).toBe(true);
 
     const revealButton = Array.from(container.querySelectorAll('button'))
       .find((button) => button.textContent === 'Reveal solution');
@@ -450,7 +457,17 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       setTextareaValue(textarea!, 'Combine the logs first.');
     });
+    expect(checkButton?.hasAttribute('disabled')).toBe(false);
+    expect(revealButton?.hasAttribute('disabled')).toBe(true);
+    expect(container.textContent).not.toContain('Feedback');
+
+    act(() => {
+      checkButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(container.textContent).toContain('Feedback');
+    expect(container.textContent).toContain('Reveal the solution');
     expect(revealButton?.hasAttribute('disabled')).toBe(false);
+    expect(container.textContent).not.toContain('Use the product law.');
 
     act(() => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -473,6 +490,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     const revealAnyway = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal anyway');
+    expect(Array.from(container.querySelectorAll('button'))[0].textContent).toBe('Check answer');
     act(() => {
       revealAnyway!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -547,7 +565,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Quick prompt 1');
     expect(container.textContent).not.toContain('Quick prompt 2');
     expect(container.textContent).not.toContain('Quick prompt 3');
-    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
+    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(1);
+    expect(container.querySelector('.warm-up-practice-card')?.textContent).toContain('Warm-up prompt 1');
+    expect(container.querySelector('.warm-up-practice-card')?.textContent).not.toContain('Warm-up prompt 2');
+    expect(container.querySelectorAll('.warm-up-sequence-list li')).toHaveLength(3);
     expect(container.textContent).toContain('2 more reviewed quick checks queued after this one.');
     expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
 
@@ -557,6 +578,88 @@ describe('FieldGuidePanel teaching snippets', () => {
       nextSnippet!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(fieldGuideSnippet?.textContent).toContain('Log snippet 2');
+  });
+
+  it('advances Warm-Ups one at a time and shows a completion next action', () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    const practiceItems = [practiceVariant(1), practiceVariant(2)];
+    const onLearningActivityAttempt = vi.fn();
+    const onContinueToExamPractice = vi.fn();
+    const container = render(
+      <WarmUpPracticePanel
+        practiceItems={practiceItems}
+        region={logRegion!}
+        onLearningActivityAttempt={onLearningActivityAttempt}
+        onContinueToExamPractice={onContinueToExamPractice}
+      />,
+    );
+
+    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(1);
+    expect(container.textContent).toContain('Warm-up prompt 1');
+    expect(container.textContent).not.toContain('Warm-up prompt 2');
+
+    const firstTextarea = container.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea');
+    act(() => {
+      setTextareaValue(firstTextarea!, 'Warm-up answer 1');
+    });
+    const checkFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
+    act(() => {
+      checkFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(container.textContent).toContain('Your answer looks close.');
+    expect(container.textContent).not.toContain('Use the product law.');
+
+    const revealFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal solution');
+    act(() => {
+      revealFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const gotItFirst = container.querySelector<HTMLInputElement>('input[value="got_it"]');
+    act(() => {
+      gotItFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const saveFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save warm-up');
+    act(() => {
+      saveFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(container.textContent).toContain('Next warm-up');
+    act(() => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Next warm-up')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(1);
+    expect(container.textContent).toContain('Warm-up prompt 2');
+    expect(container.textContent).not.toContain('Warm-up prompt 1');
+
+    const secondTextarea = container.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea');
+    act(() => {
+      setTextareaValue(secondTextarea!, 'Warm-up answer 2');
+    });
+    act(() => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check answer')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal solution')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    const gotItSecond = container.querySelector<HTMLInputElement>('input[value="got_it"]');
+    act(() => {
+      gotItSecond!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save warm-up')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Warm-up sequence complete');
+    const continueExam = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Continue to Exam Training');
+    expect(continueExam).toBeTruthy();
+    act(() => {
+      continueExam!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onContinueToExamPractice).toHaveBeenCalledTimes(1);
+    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(2);
   });
 
   it('advances Quick Checks one at a time after answer feedback', () => {

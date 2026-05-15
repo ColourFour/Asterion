@@ -27,72 +27,106 @@ interface WarmUpPracticePanelProps {
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
+  onContinueToFieldGuide?: () => void;
+  onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
 interface WarmUpPracticeCardProps {
   item: GeneratedPracticeItem;
+  position: number;
+  total: number;
+  isLastItem: boolean;
   region?: RegionDefinition;
   profileId?: string;
   previousAttempt?: LearningActivityAttempt;
+  onComplete: (practiceId: string) => void;
+  onNextItem: () => void;
+  onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
 function WarmUpPracticeCard({
   item,
+  position,
+  total,
+  isLastItem,
   region,
   profileId,
   previousAttempt,
+  onComplete,
+  onNextItem,
+  onContinueToExamPractice,
   onLearningActivityAttempt,
 }: WarmUpPracticeCardProps) {
   const [solutionVisible, setSolutionVisible] = useState(false);
   const [learnerResponse, setLearnerResponse] = useState('');
+  const [answerChecked, setAnswerChecked] = useState(false);
+  const [answerFeedback, setAnswerFeedback] = useState('');
   const [revealedEarly, setRevealedEarly] = useState(false);
   const [outcome, setOutcome] = useState<LearningActivityOutcome>();
   const [confidence, setConfidence] = useState(3);
   const [errorType, setErrorType] = useState('');
-  const [saved, setSaved] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [startedAt] = useState(() => new Date().toISOString());
   const solutionId = `warm-up-solution-${item.practiceId}`;
+  const feedbackId = `warm-up-feedback-${item.practiceId}`;
   const familyParts = item.generatorFamily.split('.');
   const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Warm-up');
   const responseReady = learnerResponse.trim().length > 0;
-  const canSave = Boolean(solutionVisible && outcome && !saved && onLearningActivityAttempt && region);
+  const canComplete = Boolean(solutionVisible && outcome && !completed);
+
+  function checkAnswer() {
+    if (!responseReady) return;
+    const likelyMatch = answerLooksClose(learnerResponse, item.answer);
+    setAnswerChecked(true);
+    setAnswerFeedback(
+      likelyMatch
+        ? 'Your answer looks close. Reveal the worked solution and check the route.'
+        : 'Compare your answer with the expected result next. Reveal the solution to find the first gap.',
+    );
+  }
 
   function reveal(early: boolean) {
     setSolutionVisible(true);
     setRevealedEarly(early);
+    setAnswerChecked(true);
+    if (early) setAnswerFeedback('Solution revealed before an answer check. Use the worked route, then record what blocked you.');
     if (early) setOutcome('missed');
   }
 
-  function saveAttempt() {
-    if (!canSave || !outcome || !region || !onLearningActivityAttempt) return;
-    onLearningActivityAttempt({
-      id: createId('learning_activity'),
-      profileId,
-      regionId: region.id,
-      regionName: region.name,
-      activityType: 'warm_up',
-      activityId: item.practiceId,
-      sourceId: item.sourceSnippetId,
-      topic: item.topic,
-      skillTargetId: item.skillTargetId,
-      prompt: item.prompt,
-      learnerResponse: learnerResponse.trim(),
-      revealedEarly,
-      outcome,
-      confidence,
-      errorType: errorType ? errorType as MistakeType : undefined,
-      createdAt: startedAt,
-      completedAt: new Date().toISOString(),
-    });
-    setSaved(true);
+  function completeAttempt() {
+    if (!canComplete || !outcome) return;
+    if (region && onLearningActivityAttempt) {
+      onLearningActivityAttempt({
+        id: createId('learning_activity'),
+        profileId,
+        regionId: region.id,
+        regionName: region.name,
+        activityType: 'warm_up',
+        activityId: item.practiceId,
+        sourceId: item.sourceSnippetId,
+        topic: item.topic,
+        skillTargetId: item.skillTargetId,
+        prompt: item.prompt,
+        learnerResponse: learnerResponse.trim(),
+        revealedEarly,
+        outcome,
+        confidence,
+        errorType: errorType ? errorType as MistakeType : undefined,
+        createdAt: startedAt,
+        completedAt: new Date().toISOString(),
+      });
+    }
+    setCompleted(true);
+    onComplete(item.practiceId);
   }
 
   return (
     <article className="warm-up-practice-card" data-activity-id={item.practiceId}>
       <div className="warm-up-practice-heading">
         <strong>{practiceLabel}</strong>
+        <span>Item {position} of {total}</span>
         {item.sequenceRole ? <span>{item.sequenceRole.replace(/_/g, ' ')}</span> : null}
       </div>
       {previousAttempt ? <small className="region-card-note">Last: {activityOutcomes.find((entry) => entry.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}</small> : null}
@@ -117,17 +151,35 @@ function WarmUpPracticeCard({
         Answer or method note
         <textarea
           value={learnerResponse}
-          onChange={(event) => setLearnerResponse(event.target.value)}
+          onChange={(event) => {
+            setLearnerResponse(event.target.value);
+            setAnswerChecked(false);
+            setAnswerFeedback('');
+          }}
           rows={3}
           disabled={solutionVisible}
+          aria-describedby={answerFeedback ? feedbackId : undefined}
         />
       </label>
+      {answerFeedback ? (
+        <div className="warm-up-feedback" id={feedbackId} role="status">
+          <strong>Feedback</strong>
+          <p>{answerFeedback}</p>
+        </div>
+      ) : null}
       {!solutionVisible ? (
         <div className="activity-reveal-actions">
           <button
             className="warm-up-reveal-button"
             type="button"
             disabled={!responseReady}
+            onClick={checkAnswer}
+          >
+            Check answer
+          </button>
+          <button
+            type="button"
+            disabled={!answerChecked}
             aria-expanded={solutionVisible}
             aria-controls={solutionId}
             onClick={() => reveal(false)}
@@ -181,7 +233,20 @@ function WarmUpPracticeCard({
               {errorTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}
             </select>
           </label>
-          <button type="button" disabled={!canSave} onClick={saveAttempt}>{saved ? 'Saved' : 'Save warm-up'}</button>
+          <button type="button" disabled={!canComplete} onClick={completeAttempt}>
+            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save warm-up' : 'Mark complete'}
+          </button>
+          {completed ? (
+            <div className="warm-up-next-actions" aria-label="Warm-up next action">
+              {!isLastItem ? (
+                <button type="button" onClick={onNextItem}>Next warm-up</button>
+              ) : onContinueToExamPractice ? (
+                <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button>
+              ) : (
+                <p>Sequence complete. Move to exam practice, or review the Field Guide if any method still felt uncertain.</p>
+              )}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </article>
@@ -194,19 +259,45 @@ function humanReadableLabel(value: string): string {
   return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function normalizeAnswer(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[{}()[\],.;:]/g, '')
+    .replace(/\\(?:left|right)/g, '')
+    .replace(/×/g, '*');
+}
+
+function answerLooksClose(response: string, answer: string): boolean {
+  const normalizedResponse = normalizeAnswer(response);
+  const normalizedAnswer = normalizeAnswer(answer);
+  if (!normalizedResponse || !normalizedAnswer) return false;
+  return normalizedResponse === normalizedAnswer || normalizedResponse.includes(normalizedAnswer);
+}
+
 export function WarmUpPracticePanel({
   practiceItems,
   region,
   profileId,
   activityAttempts = [],
   maxInitialItems = 3,
+  onContinueToFieldGuide,
+  onContinueToExamPractice,
   onLearningActivityAttempt,
 }: WarmUpPracticePanelProps) {
   const visiblePractice = practiceItems.slice(0, maxInitialItems);
   const hiddenPracticeCount = Math.max(0, practiceItems.length - visiblePractice.length);
+  const previousWarmUpAttempts = activityAttempts.filter((attempt) => attempt.activityType === 'warm_up');
+  const completedFromAttempts = new Set(previousWarmUpAttempts.map((attempt) => attempt.activityId));
+  const firstIncompleteIndex = visiblePractice.findIndex((item) => !completedFromAttempts.has(item.practiceId));
+  const [activeIndex, setActiveIndex] = useState(firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0);
+  const [completedPracticeIds, setCompletedPracticeIds] = useState<Set<string>>(() => new Set(
+    previousWarmUpAttempts.map((attempt) => attempt.activityId),
+  ));
+  const activePractice = visiblePractice[Math.min(activeIndex, Math.max(0, visiblePractice.length - 1))];
+  const visibleCompletedCount = visiblePractice.filter((item) => completedPracticeIds.has(item.practiceId)).length;
   const previousAttempts = new Map(
-    activityAttempts
-      .filter((attempt) => attempt.activityType === 'warm_up')
+    previousWarmUpAttempts
       .sort((a, b) => a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id))
       .map((attempt) => [attempt.activityId, attempt]),
   );
@@ -221,20 +312,50 @@ export function WarmUpPracticePanel({
     >
       {visiblePractice.length ? (
         <>
-          <p className="section-helper warm-up-set-note">Try one prompt first. Reveal the solution only after you have a route.</p>
-          <div className="warm-up-practice-grid">
-            {visiblePractice.map((item) => (
-              <WarmUpPracticeCard
-                item={item}
+          <p className="section-helper warm-up-set-note">Work through one prompt at a time. Check your answer first, then reveal the worked route.</p>
+          <ol className="warm-up-sequence-list" aria-label="Warm-up sequence">
+            {visiblePractice.map((item, index) => (
+              <li
+                className={index === activeIndex ? 'is-active' : undefined}
                 key={item.practiceId}
+              >
+                <span>{index + 1}</span>
+                <strong>{humanReadableLabel(item.questionType ?? item.generatorFamily.split('.').slice(-1)[0] ?? 'Warm-up')}</strong>
+                <small>{completedPracticeIds.has(item.practiceId) ? 'Complete' : index === activeIndex ? 'Active' : 'Queued'}</small>
+              </li>
+            ))}
+          </ol>
+          <div className="warm-up-practice-grid warm-up-practice-grid--single">
+            {activePractice ? (
+              <WarmUpPracticeCard
+                item={activePractice}
+                key={activePractice.practiceId}
+                position={activeIndex + 1}
+                total={visiblePractice.length}
+                isLastItem={activeIndex >= visiblePractice.length - 1}
                 onLearningActivityAttempt={onLearningActivityAttempt}
-                previousAttempt={previousAttempts.get(item.practiceId)}
+                onComplete={(practiceId) => {
+                  setCompletedPracticeIds((current) => new Set([...current, practiceId]));
+                }}
+                onNextItem={() => setActiveIndex((current) => Math.min(current + 1, visiblePractice.length - 1))}
+                onContinueToExamPractice={onContinueToExamPractice}
+                previousAttempt={previousAttempts.get(activePractice.practiceId)}
                 profileId={profileId}
                 region={region}
               />
-            ))}
+            ) : null}
           </div>
-          {hiddenPracticeCount ? <small className="region-card-note">Showing {visiblePractice.length} of {practiceItems.length} reviewed warm-ups.</small> : null}
+          {visibleCompletedCount >= visiblePractice.length ? (
+            <div className="warm-up-complete-panel">
+              <strong>Warm-up sequence complete</strong>
+              <p>Use exam practice next, or return to the Field Guide for a quick method review.</p>
+              <div className="warm-up-next-actions">
+                {onContinueToExamPractice ? <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button> : null}
+                {onContinueToFieldGuide ? <button type="button" onClick={onContinueToFieldGuide}>Review Field Guide</button> : null}
+              </div>
+            </div>
+          ) : null}
+          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed warm-up{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
         </>
       ) : (
         <p className="region-empty-state">Warm-ups for this region are being prepared. Start with the Field Guide or jump into Exam Training.</p>
