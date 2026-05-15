@@ -4217,6 +4217,27 @@ legend {
   gap: 6px;
 }
 
+.activity-more-detail {
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 26%, transparent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--region-panel) 84%, #fff 16%);
+}
+
+.activity-more-detail summary {
+  cursor: pointer;
+  color: var(--region-accent-dark);
+  font-size: 0.82rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.activity-more-detail[open] summary {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--region-panel-border) 22%, transparent);
+}
+
 .activity-response-field textarea {
   min-height: 76px;
   resize: vertical;
@@ -5095,6 +5116,12 @@ legend {
   margin: 6px 0 4px;
   color: var(--region-heading);
   font-size: clamp(1.45rem, 3vw, 2.2rem);
+}
+
+.region-page-kicker {
+  margin: 0;
+  color: var(--region-accent-dark);
+  font-weight: 900;
 }
 
 .region-home {
@@ -7007,6 +7034,7 @@ legend {
   line-height: 1.2;
 }
 
+.activity-reveal-actions .activity-primary-action,
 .activity-reveal-actions button:first-child,
 .activity-reflection-panel button,
 .quick-check-next-actions button,
@@ -7015,10 +7043,20 @@ legend {
   background: var(--region-button-bg);
 }
 
+.activity-reveal-actions .activity-secondary-action {
+  color: var(--region-accent-dark);
+  background: color-mix(in srgb, var(--region-panel) 88%, #fff 12%);
+  border-color: color-mix(in srgb, var(--region-accent) 30%, transparent);
+}
+
+.activity-reveal-actions .activity-tertiary-action,
 .activity-reveal-actions button:last-child {
   color: var(--region-accent-dark);
-  background: var(--region-panel);
-  border-color: color-mix(in srgb, var(--region-panel-border) 38%, transparent);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--region-panel-border) 32%, transparent);
+  box-shadow: none;
+  font-size: 0.86rem;
+  font-weight: 850;
 }
 
 .activity-reveal-actions button:not(:disabled):hover,
@@ -7191,6 +7229,44 @@ legend {
     padding: 14px;
   }
 
+  .region-learning-layout {
+    gap: 10px;
+  }
+
+  .region-learning-layout > .region-hero,
+  .region-learning-layout > .region-summary-band {
+    display: none;
+  }
+
+  .region-learning-navigation-block .region-arc-timeline {
+    display: none;
+  }
+
+  .region-learning-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 6px;
+  }
+
+  .region-learning-nav button {
+    width: auto;
+    min-height: 34px;
+    padding: 6px 4px;
+    font-size: 0.72rem;
+  }
+
+  .region-page-shell {
+    gap: 10px;
+  }
+
+  .region-page-toolbar {
+    padding: 12px;
+  }
+
+  .field-guide-compact-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .region-action-card-title {
     align-items: flex-start;
   }
@@ -7205,6 +7281,11 @@ legend {
   .activity-reflection-panel button,
   .activity-outcome-options label {
     width: 100%;
+  }
+
+  .activity-reveal-actions .activity-tertiary-action {
+    min-height: 36px;
+    justify-self: stretch;
   }
 
   .warm-up-method-list {

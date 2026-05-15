@@ -202,6 +202,7 @@ export function RegionHub({
               <div>
                 <span className="mode-pill">Focused region page</span>
                 <h2>{REGION_LEARNING_PAGE_LABELS[activePage]}</h2>
+                <p className="region-page-kicker">{theme.title}</p>
               </div>
             </div>
 

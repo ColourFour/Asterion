@@ -156,8 +156,8 @@ function QuickCheckCard({
       </label>
       {!answerVisible ? (
         <div className="activity-reveal-actions">
-          <button type="button" disabled={!responseReady} onClick={() => reveal(false)}>Check answer</button>
-          <button type="button" onClick={() => reveal(true)}>Show answer anyway</button>
+          <button className="activity-primary-action" type="button" disabled={!responseReady} onClick={() => reveal(false)}>Check answer</button>
+          <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
         </div>
       ) : (
         <div className="quick-check-answer">

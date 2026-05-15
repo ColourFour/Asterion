@@ -148,20 +148,23 @@ function WarmUpPracticeCard({
       </div>
       {previousAttempt ? <small className="region-card-note">Last: {activityOutcomes.find((entry) => entry.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}</small> : null}
       {(item.questionType || item.keyMethod) ? (
-        <dl className="warm-up-method-list">
-          {item.questionType ? (
-            <>
-              <dt>Question type</dt>
-              <dd><MathText text={item.questionType} /></dd>
-            </>
-          ) : null}
-          {item.keyMethod ? (
-            <>
-              <dt>Key method</dt>
-              <dd><MathText text={item.keyMethod} /></dd>
-            </>
-          ) : null}
-        </dl>
+        <details className="activity-more-detail">
+          <summary>More detail</summary>
+          <dl className="warm-up-method-list">
+            {item.questionType ? (
+              <>
+                <dt>Question type</dt>
+                <dd><MathText text={item.questionType} /></dd>
+              </>
+            ) : null}
+            {item.keyMethod ? (
+              <>
+                <dt>Key method</dt>
+                <dd><MathText text={item.keyMethod} /></dd>
+              </>
+            ) : null}
+          </dl>
+        </details>
       ) : null}
       <p><MathText text={item.prompt} /></p>
       <label className="activity-response-field">
@@ -179,16 +182,10 @@ function WarmUpPracticeCard({
           placeholder={answerPlaceholderForItem(item)}
         />
       </label>
-      {answerFeedback ? (
-        <div className="warm-up-feedback" id={feedbackId} role="status">
-          <strong>Feedback</strong>
-          <p>{answerFeedback}</p>
-        </div>
-      ) : null}
       {!solutionVisible ? (
-        <div className="activity-reveal-actions">
+        <div className="activity-reveal-actions warm-up-action-stack">
           <button
-            className="warm-up-reveal-button"
+            className="activity-primary-action warm-up-reveal-button"
             type="button"
             disabled={!responseReady}
             onClick={checkAnswer}
@@ -196,6 +193,7 @@ function WarmUpPracticeCard({
             Check answer
           </button>
           <button
+            className="activity-secondary-action"
             type="button"
             disabled={!answerChecked}
             aria-expanded={solutionVisible}
@@ -204,7 +202,7 @@ function WarmUpPracticeCard({
           >
             Reveal solution
           </button>
-          <button type="button" onClick={() => reveal(true)}>Reveal anyway</button>
+          <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
         </div>
       ) : (
         <div className="warm-up-solution" id={solutionId}>
@@ -219,6 +217,12 @@ function WarmUpPracticeCard({
           {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this warm-up.</small> : null}
         </div>
       )}
+      {answerFeedback && !solutionVisible ? (
+        <div className="warm-up-feedback" id={feedbackId} role="status">
+          <strong>Feedback</strong>
+          <p>{answerFeedback}</p>
+        </div>
+      ) : null}
       {solutionVisible ? (
         <div className="activity-reflection-panel">
           <fieldset>
