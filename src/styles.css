@@ -5523,6 +5523,18 @@ legend {
   padding-left: 20px;
 }
 
+.snippet-lesson-section-key,
+.snippet-next-action {
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--region-accent) 24%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-wash) 68%, var(--region-panel) 32%);
+}
+
+.snippet-next-action {
+  background: color-mix(in srgb, var(--region-badge-bg) 52%, var(--region-panel) 48%);
+}
+
 .snippet-insight-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));

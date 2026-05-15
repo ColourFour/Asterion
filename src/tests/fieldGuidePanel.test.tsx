@@ -351,15 +351,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     expect(container.textContent).toContain('Teaching snippet');
-    expect(container.textContent).toContain('Worked example');
+    expect(container.textContent).toContain('Key idea');
+    expect(container.textContent).toContain('Small explanation');
+    expect(container.textContent).toContain('Worked move');
     expect(container.textContent).toContain('What the question is asking');
     expect(container.textContent).toContain('Question type');
     expect(container.textContent).toContain('Key method');
     expect(container.textContent).toContain('Step-by-step math');
     expect(container.textContent).toContain('Exam move');
     expect(container.textContent).toContain('Two cubed equals eight.');
-    expect(container.textContent).toContain('Micro steps');
-    expect(container.textContent).toContain('Common mistakes');
+    expect(container.textContent).toContain('Watch for');
+    expect(container.textContent).toContain('Next action');
+    expect(container.textContent).not.toContain('Before this');
+    expect(container.textContent).not.toContain('Micro steps');
+    expect(container.textContent).not.toContain('Common mistakes');
 
     const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
     expect(quickCheck).toBeTruthy();
@@ -502,6 +507,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     const fieldGuideSnippet = container.querySelector('.field-guide-snippet-card');
     expect(fieldGuideSnippet?.textContent).toContain('Log snippet 1');
     expect(fieldGuideSnippet?.textContent).not.toContain('Log snippet 2');
+    expect(fieldGuideSnippet?.textContent).toContain('Use Next when this idea is clear.');
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(2);
     expect(container.querySelectorAll('.warm-up-practice-card')).toHaveLength(3);
     expect(container.textContent).toContain('1 more reviewed quick check available.');
@@ -513,6 +519,50 @@ describe('FieldGuidePanel teaching snippets', () => {
       nextSnippet!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(fieldGuideSnippet?.textContent).toContain('Log snippet 2');
+  });
+
+  it('keeps dense reviewed snippets collapsed into one primary teaching chunk', () => {
+    const denseSnippet: TeachingSnippet = {
+      ...snippet,
+      snippetId: 'p3-log-dense',
+      prerequisites: ['Know index notation.', 'Know inverse operations.'],
+      microSteps: ['Circle the base.', 'Name the exponent.', 'Rewrite the statement.'],
+      commonMistakes: [
+        'Treating the argument as the exponent.',
+        'Dropping the base during conversion.',
+      ],
+      workedExamples: [
+        snippet.workedExamples[0],
+        {
+          ...snippet.workedExamples[0],
+          id: 'p3-log-check-example-2',
+          prompt: 'Rewrite log base three of twenty seven equals three.',
+          answer: 'Three cubed equals twenty seven.',
+        },
+      ],
+    };
+
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(P3_ASTRAL_ACADEMY.regions[0])}
+        fieldGuideCompleted={false}
+        theme={getRegionTheme(P3_ASTRAL_ACADEMY.regions[0])}
+        teachingSnippets={[denseSnippet, snippetVariant(2)]}
+        onCompleteFieldGuide={vi.fn()}
+      />,
+    );
+
+    const activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
+    expect(activeSnippet).toBeTruthy();
+    expect(container.querySelectorAll('.field-guide-snippet-card')).toHaveLength(1);
+    expect(container.querySelectorAll('.worked-example-card')).toHaveLength(1);
+    expect(activeSnippet?.textContent).toContain('Two cubed equals eight.');
+    expect(activeSnippet?.textContent).not.toContain('Three cubed equals twenty seven.');
+    expect(activeSnippet?.textContent).toContain('Treating the argument as the exponent.');
+    expect(activeSnippet?.textContent).not.toContain('Dropping the base during conversion.');
+    expect(activeSnippet?.textContent).not.toContain('Know inverse operations.');
+    expect(activeSnippet?.textContent).toContain('Use Next when this idea is clear.');
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Next'))).toBe(true);
   });
 
   it('renders the Algebra Vault region hub as a click-first homepage', () => {

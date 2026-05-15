@@ -43,6 +43,10 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
   );
 }
 
+function firstAvailable(items: string[]): string | undefined {
+  return items.find((item) => item.trim());
+}
+
 export function FieldGuidePanel({
   fieldGuide: _fieldGuide,
   fieldGuideCompleted,
@@ -60,6 +64,14 @@ export function FieldGuidePanel({
   const activeSnippet = snippetCount ? teachingSnippets[safeActiveSnippetIndex] : undefined;
   const isFirstSnippet = safeActiveSnippetIndex === 0;
   const isLastSnippet = safeActiveSnippetIndex === snippetCount - 1;
+  const workedExample = activeSnippet?.workedExamples[0];
+  const supportingStep = activeSnippet ? firstAvailable(activeSnippet.microSteps.length ? activeSnippet.microSteps : activeSnippet.steps) : undefined;
+  const warning = activeSnippet ? firstAvailable(activeSnippet.commonMistakes) ?? activeSnippet.commonTrap : undefined;
+  const nextAction = activeSnippet
+    ? isLastSnippet
+      ? 'Continue to Quick Checks when this idea is clear.'
+      : 'Use Next when this idea is clear.'
+    : undefined;
 
   useEffect(() => {
     setActiveSnippetIndex(0);
@@ -97,68 +109,41 @@ export function FieldGuidePanel({
 
           <header className="field-guide-snippet-header">
             <h3 id={`field-guide-snippet-${activeSnippet.snippetId}`}>{activeSnippet.title}</h3>
-            <p className="snippet-goal"><MathText text={activeSnippet.studentGoal} /></p>
           </header>
 
-          {activeSnippet.prerequisites.length ? (
-            <section className="snippet-lesson-section">
-              <h4>Before this</h4>
-              <ul>
-                {activeSnippet.prerequisites.map((item) => <li key={item}><MathText text={item} /></li>)}
-              </ul>
-            </section>
-          ) : null}
+          <section className="snippet-lesson-section snippet-lesson-section-key">
+            <h4>Key idea</h4>
+            <p className="snippet-goal"><MathText text={activeSnippet.studentGoal} /></p>
+          </section>
 
           <section className="snippet-lesson-section">
-            <h4>Explanation</h4>
+            <h4>Small explanation</h4>
             <p><MathText text={activeSnippet.explanation ?? activeSnippet.body} /></p>
           </section>
 
-          <section className="snippet-lesson-section">
-            <h4>Micro steps</h4>
-            <ol>
-              {(activeSnippet.microSteps.length ? activeSnippet.microSteps : activeSnippet.steps).map((step) => (
-                <li key={step}><MathText text={step} /></li>
-              ))}
-            </ol>
+          {workedExample ? (
+            <section className="snippet-lesson-section">
+              <h4>Worked move</h4>
+              <WorkedExampleCard example={workedExample} />
+            </section>
+          ) : supportingStep ? (
+            <section className="snippet-lesson-section">
+              <h4>Worked move</h4>
+              <p><MathText text={supportingStep} /></p>
+            </section>
+          ) : null}
+
+          {warning ? (
+            <section className="snippet-lesson-section">
+              <h4>Watch for</h4>
+              <p><MathText text={warning} /></p>
+            </section>
+          ) : null}
+
+          <section className="snippet-lesson-section snippet-next-action">
+            <h4>Next action</h4>
+            <p><MathText text={nextAction ?? 'Move to the next learning step.'} /></p>
           </section>
-
-          {activeSnippet.workedExamples.length ? (
-            <section className="snippet-lesson-section">
-              <h4>Worked example</h4>
-              <div className="worked-example-grid">
-                {activeSnippet.workedExamples.map((example) => (
-                  <WorkedExampleCard example={example} key={example.id ?? example.prompt} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {activeSnippet.commonMistakes.length ? (
-            <section className="snippet-lesson-section">
-              <h4>Common mistakes</h4>
-              <ul>
-                {activeSnippet.commonMistakes.map((item) => <li key={item}><MathText text={item} /></li>)}
-              </ul>
-            </section>
-          ) : null}
-
-          <div className="snippet-insight-grid">
-            <section className="snippet-insight">
-              <h4>Exam move</h4>
-              <p><MathText text={activeSnippet.examMove} /></p>
-            </section>
-            <section className="snippet-insight">
-              <h4>Common trap</h4>
-              <p><MathText text={activeSnippet.commonTrap} /></p>
-            </section>
-            {activeSnippet.guardianReadiness ? (
-              <section className="snippet-insight">
-                <h4>Guardian note</h4>
-                <p><MathText text={activeSnippet.guardianReadiness.readinessNote} /></p>
-              </section>
-            ) : null}
-          </div>
         </article>
       ) : (
         <p className="region-empty-state">Field Guide content for this region is still being prepared.</p>
