@@ -13,15 +13,15 @@ export const regionHubAssets = {
 export type RegionHubAssetId = keyof typeof regionHubAssets;
 
 export const regionHubAssetDimensions = {
-  'algebra-forge': { width: 960, height: 640 },
-  'calculus-cliffs': { width: 720, height: 960 },
-  'complex-harbor': { width: 768, height: 960 },
-  'differential-shrine': { width: 640, height: 960 },
-  'integration-gardens': { width: 640, height: 960 },
-  'logarithm-grove': { width: 960, height: 640 },
-  'numerical-mines': { width: 768, height: 960 },
-  'trig-observatory': { width: 768, height: 960 },
-  'vector-workshop': { width: 960, height: 640 },
+  'algebra-forge': { width: 960, height: 960 },
+  'calculus-cliffs': { width: 960, height: 960 },
+  'complex-harbor': { width: 960, height: 960 },
+  'differential-shrine': { width: 960, height: 960 },
+  'integration-gardens': { width: 960, height: 960 },
+  'logarithm-grove': { width: 960, height: 960 },
+  'numerical-mines': { width: 960, height: 960 },
+  'trig-observatory': { width: 960, height: 960 },
+  'vector-workshop': { width: 960, height: 960 },
 } as const;
 
 export function getRegionHubAsset(regionId: string): string | undefined {

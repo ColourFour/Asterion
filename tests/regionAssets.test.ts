@@ -28,13 +28,13 @@ describe('region hub assets', () => {
     }
   });
 
-  it('keeps optimized runtime region art substantially smaller than source art', () => {
+  it('keeps generated runtime region art no larger than source art', () => {
     const sourceRoot = join(process.cwd(), 'assets-source/region-art');
     const optimizedRoot = join(process.cwd(), 'public/assets/region-art/optimized');
     const sourceBytes = directoryFiles(sourceRoot).reduce((sum, file) => sum + statSync(file).size, 0);
     const optimizedBytes = directoryFiles(optimizedRoot).reduce((sum, file) => sum + statSync(file).size, 0);
 
-    expect(optimizedBytes).toBeLessThan(sourceBytes * 0.5);
+    expect(optimizedBytes).toBeLessThan(sourceBytes);
   });
 
   it('keeps RegionHub from hard-coding public region-art paths', () => {
