@@ -76,17 +76,20 @@ afterEach(() => {
 
 describe('dashboard routes', () => {
   it('renders the teacher dashboard before student onboarding', async () => {
-    window.history.replaceState(null, '', '/teacher');
+    window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
 
+    expect(container.querySelector('h1')?.textContent).toBe('Teacher Planning');
     expect(container.textContent).toContain('What should I do with this class next?');
+    expect(container.textContent).toContain('Mock classroom signals for planning');
+    expect(container.textContent).toContain('Planning evidence snapshot');
     expect(container.textContent).toContain('Reteach now');
     expect(container.textContent).toContain('Ready for exam practice');
     expect(container.textContent).not.toContain('Enter Astral Academy');
   });
 
   it('renders teacher class detail groups by recommended next step', async () => {
-    window.history.replaceState(null, '', '/teacher/classes/class-p3-alpha');
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Class detail');
@@ -97,12 +100,46 @@ describe('dashboard routes', () => {
   });
 
   it('renders the admin console with disabled support actions', async () => {
-    window.history.replaceState(null, '', '/admin');
+    window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Support, repair, oversight');
+    expect(container.querySelector('h1')?.textContent).toBe('Admin Console');
     expect(container.textContent).toContain('Teacher list');
     expect(container.textContent).toContain('Recent admin audit events');
     expect(Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Archive class'))?.disabled).toBe(true);
+  });
+
+  it('keeps Teacher/Admin/Student app navigation reachable from dashboard routes', async () => {
+    window.history.replaceState(null, '', '/#/teacher');
+    const container = await render(<App />);
+
+    const adminButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Admin');
+    await act(async () => {
+      adminButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.hash).toBe('#/admin');
+    expect(container.querySelector('h1')?.textContent).toBe('Admin Console');
+
+    const studentButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Student app');
+    await act(async () => {
+      studentButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.pathname).toBe('/');
+    expect(window.location.hash).toBe('');
+    expect(container.querySelector('.dashboard-shell')).toBeNull();
+    expect(container.textContent).toContain('Enter Astral Academy');
+  });
+
+  it('still accepts path dashboard routes when the host provides an SPA fallback', async () => {
+    window.history.replaceState(null, '', '/teacher');
+    const container = await render(<App />);
+
+    expect(container.querySelector('h1')?.textContent).toBe('Teacher Planning');
   });
 });

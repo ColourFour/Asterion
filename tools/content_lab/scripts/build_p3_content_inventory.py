@@ -47,10 +47,13 @@ ROUTING_AUDIT_STATUSES = {
     "corrected_skill_map",
     "needs_teacher_review",
     "teacher_review_deferred",
+    "validated_skill_map_route",
 }
 TEACHER_REVIEW_ROUTING_STATUSES = {"needs_teacher_review", "teacher_review_deferred"}
+VALIDATED_ROUTING_STATUSES = {"validated_skill_map_route"}
 DEFERRED_ROUTING_STATUS = "teacher_review_deferred"
 DEFERRED_EVIDENCE_STATUS = "ambiguous_part_level_evidence"
+VALIDATED_EVIDENCE_STATUS = "clean_mastery_evidence"
 SUPPORT_TYPES = [
     "field_guide",
     "snippet",
@@ -476,6 +479,15 @@ def load_routing_audit(
                 errors.append(f"{owner} teacher_review_deferred entries must set practice_allowed to true")
             if export_allowed is not False:
                 errors.append(f"{owner} teacher_review_deferred entries must set export_allowed to false")
+        if status in VALIDATED_ROUTING_STATUSES:
+            if evidence_status != VALIDATED_EVIDENCE_STATUS:
+                errors.append(f"{owner} validated route entries must set evidence_status to {VALIDATED_EVIDENCE_STATUS}")
+            if mastery_evidence_allowed is not True:
+                errors.append(f"{owner} validated route entries must set mastery_evidence_allowed to true")
+            if practice_allowed is not True:
+                errors.append(f"{owner} validated route entries must set practice_allowed to true")
+            if export_allowed is not True:
+                errors.append(f"{owner} validated route entries must set export_allowed to true")
 
         key = (skill_ref, question_ref)
         if key in audit_index:
@@ -877,6 +889,13 @@ def routing_audit_summary(
                 audit_entry=audit_entry,
                 resolution_status=audit_entry["resolution_status"],
             ))
+        elif audit_entry and audit_entry["resolution_status"] in VALIDATED_ROUTING_STATUSES:
+            resolved_mismatches.append(routing_mismatch_detail(
+                row=row,
+                question=question,
+                audit_entry=audit_entry,
+                resolution_status=audit_entry["resolution_status"],
+            ))
         else:
             status = (
                 "corrected_status_still_active"
@@ -892,6 +911,8 @@ def routing_audit_summary(
 
     for entry in routing_audit["entries"]:
         key = (entry["skill_ref"], entry["question_id"])
+        if entry["resolution_status"] in VALIDATED_ROUTING_STATUSES:
+            continue
         if entry["resolution_status"] in TEACHER_REVIEW_ROUTING_STATUSES:
             if key not in active_pairs:
                 inactive_teacher_review_entries.append(entry)

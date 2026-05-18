@@ -214,36 +214,26 @@ describe('P3 region-correction queue', () => {
     }
   });
 
-  it('separates deferred mark-scheme evidence from clean mastery evidence', () => {
+  it('reports no deferred mark-scheme evidence after audited cases are resolved', () => {
     const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
     const deferred = queue.queue.mark_scheme_subpart_review.deferred_evidence_cases;
 
-    expect(deferred).toHaveLength(14);
-    expect(queue.inventory_bridge_summary.deferred_case_count).toBe(14);
-    expect(deferred.some((item) => item.skill_ref === 'p3_int_partial_fractions')).toBe(true);
-    for (const item of deferred) {
-      expect(item.mastery_evidence_allowed).toBe(false);
-      expect(item.practice_allowed).toBe(true);
-      expect(item.export_allowed).toBe(false);
-      expect(item.blocked_or_risky_reason.trim()).not.toBe('');
-    }
+    expect(deferred).toEqual([]);
+    expect(queue.inventory_bridge_summary.deferred_case_count).toBe(0);
   });
 
-  it('reports weak and missing support by skill without correcting content', () => {
+  it('keeps support-gap queue empty after audited blockers are resolved', () => {
     const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
     const support = queue.queue.support_content_gaps.weak_or_missing_skill_support;
-    const logCalculus = support.find((item) => item.skill_ref === 'p3_log_calculus_contexts');
 
     expect(queue.inventory_bridge_summary.support_gap_counts).toMatchObject({
-      quick_check: 6,
-      snippet: 1,
-      warm_up: 27,
-      worked_example: 1,
+      field_guide: 0,
+      quick_check: 0,
+      snippet: 0,
+      warm_up: 0,
+      worked_example: 0,
     });
-    expect(support).toHaveLength(30);
-    expect(logCalculus?.support_gaps).toEqual(expect.arrayContaining(['snippet', 'worked_example', 'quick_check', 'warm_up']));
-    expect(logCalculus?.clean_mastery_evidence_count).toBe(0);
-    expect(logCalculus?.coverage_status).toBe('blocked_for_mastery');
+    expect(support).toEqual([]);
   });
 
   it('keeps summary totals aligned with detailed queue rows', () => {

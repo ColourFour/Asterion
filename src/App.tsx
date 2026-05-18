@@ -33,10 +33,12 @@ import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, Q
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
-function parseDashboardRoute(pathname: string): { kind: 'teacher'; classId?: string; detailMode: boolean } | { kind: 'admin' } | { kind: 'student' } {
-  if (pathname === '/admin' || pathname.startsWith('/admin/')) return { kind: 'admin' };
-  if (pathname === '/teacher') return { kind: 'teacher', detailMode: false };
-  const teacherClassMatch = pathname.match(/^\/teacher\/classes\/([^/]+)$/);
+function parseDashboardRoute(pathname: string, hash: string): { kind: 'teacher'; classId?: string; detailMode: boolean } | { kind: 'admin' } | { kind: 'student' } {
+  const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
+  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') ? hashPath : pathname;
+  if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
+  if (routePath === '/teacher') return { kind: 'teacher', detailMode: false };
+  const teacherClassMatch = routePath.match(/^\/teacher\/classes\/([^/]+)$/);
   if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], detailMode: true };
   return { kind: 'student' };
 }
@@ -44,7 +46,7 @@ function parseDashboardRoute(pathname: string): { kind: 'teacher'; classId?: str
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
-  const [dashboardPath, setDashboardPath] = useState(() => window.location.pathname);
+  const [dashboardLocation, setDashboardLocation] = useState(() => `${window.location.pathname}${window.location.hash}`);
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
@@ -60,11 +62,13 @@ export default function App() {
 
   useEffect(() => {
     function syncPath() {
-      setDashboardPath(window.location.pathname);
+      setDashboardLocation(`${window.location.pathname}${window.location.hash}`);
     }
     window.addEventListener('popstate', syncPath);
+    window.addEventListener('hashchange', syncPath);
     return () => {
       window.removeEventListener('popstate', syncPath);
+      window.removeEventListener('hashchange', syncPath);
     };
   }, []);
 
@@ -182,11 +186,21 @@ export default function App() {
     return undefined;
   }, [questions, worldProgress]);
 
-  const dashboardRoute = parseDashboardRoute(dashboardPath);
+  const dashboardRoute = useMemo(
+    () => parseDashboardRoute(window.location.pathname, window.location.hash),
+    [dashboardLocation],
+  );
 
   function navigatePath(path: string) {
-    window.history.pushState(null, '', path);
-    setDashboardPath(window.location.pathname);
+    const basePath = window.location.pathname.startsWith('/teacher') || window.location.pathname.startsWith('/admin')
+      ? '/'
+      : `${window.location.pathname}${window.location.search}`;
+    if (path === '/') {
+      window.history.pushState(null, '', basePath);
+    } else {
+      window.history.pushState(null, '', `${basePath}#${path}`);
+    }
+    setDashboardLocation(`${window.location.pathname}${window.location.hash}`);
   }
 
   function activePracticeMode(): PracticeMode {

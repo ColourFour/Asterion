@@ -122,7 +122,7 @@ Fallback-display-only placements, ambiguous routes, review-required routes, hard
 
 `npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
 
-The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; audited ambiguous entries remain visible as a deferred teacher-review backlog; active mismatches with no audit entry remain structural warnings. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
+The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; image-reviewed route placements can be accepted with `validated_skill_map_route`, `clean_mastery_evidence`, `mastery_evidence_allowed: true`, `practice_allowed: true`, and `export_allowed: true`; active mismatches with no audit entry remain structural warnings. If audited ambiguous entries exist, they must remain visible as a deferred teacher-review backlog. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. When the deferred backlog is empty, the aggregate deferred policy fields remain `null` and all deferred counts remain `0`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
 
 `asterion_content_lab_candidates_v1.json` is a candidate inventory, not a publishing source. Candidate records can move toward generation only after reviewed `source_skill_ids`/source-skill evidence ties them to the reviewed P3 skill map and canonical question/mark-scheme image evidence. Label confidence, OCR text, raw text, or difficulty metadata is not enough.
 
@@ -142,7 +142,7 @@ Coverage matrix status labels are conservative:
 - `ready_for_review`: reviewed P3 core skill with expected teaching support, at least one clean mastery evidence item, and no unresolved blocking issue.
 - `missing_support`: clean mastery evidence exists, but expected teaching support is missing, such as snippets, worked examples, Quick Checks, or warm-ups.
 - `needs_teacher_review`: clean evidence exists, but deferred ambiguous evidence, inventory review flags, or routing ambiguity still need teacher attention.
-- `blocked_for_mastery`: no clean mastery evidence, all available evidence is deferred, the skill is teacher-review gated, or the mastery-safety policy blocks the evidence.
+- `blocked_for_mastery`: no clean mastery evidence, all available evidence is deferred, or the mastery-safety policy blocks the evidence.
 - `partial`: some support and clean evidence exist, but the row is not complete enough for `ready_for_review` and is not better classified by the labels above.
 
 Correction priority labels guide the next region-by-region correction pass:
@@ -153,20 +153,20 @@ Correction priority labels guide the next region-by-region correction pass:
 - `P3_teacher_review_backlog`: deferred ambiguity remains, but clean evidence and support also exist.
 - `P4_polish_or_complete`: mostly complete and safe for teacher review.
 
-Deferred ambiguous evidence remains visible in the matrix and Markdown report. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims.
+Deferred ambiguous evidence remains visible in the matrix and Markdown report when it exists. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims. The current reviewed matrix has no active deferred evidence cases.
 
 `npm run queue:p3-region-correction` writes:
 
 - `tools/content_lab/reports/p3_region_correction_queue.json`
 - `tools/content_lab/reports/p3_region_correction_queue.md`
 
-The region-correction queue is the planning artifact for future content correction. It reads the topic-routing sidecar, reviewed routing audit, content inventory, and coverage matrix, then separates route correction, text review, mark-scheme/subpart review, and support-content gaps. The queue intentionally does not edit source data. It keeps missing P3 routes, review-needed routes, ambiguous multi-topic routes, fallback-display-only placements, deferred evidence cases, audited route decisions, and weak or missing skill support visible as separate workstreams.
+The region-correction queue is the planning artifact for future content correction. It reads the topic-routing sidecar, reviewed routing audit, content inventory, and coverage matrix, then separates route correction, text review, mark-scheme/subpart review, and support-content gaps. The queue intentionally does not edit source data. It keeps missing P3 routes, review-needed routes, ambiguous multi-topic routes, fallback-display-only placements, deferred evidence cases when present, audited route decisions, and weak or missing skill support visible as separate workstreams.
 
 Matrix validation is intentionally strict about curriculum-contract failures and intentionally tolerant of ordinary support gaps:
 
 - Unknown reviewed skill refs, duplicate or missing skill rows, unknown region IDs, invalid curriculum roles, invalid official syllabus sections, invalid status/priority labels, negative counts, malformed deferred-policy fields, unsafe mastery evidence, P1 prerequisite evidence counted as P3 mastery evidence, and mismatched summaries fail loudly.
 - Missing snippets, worked examples, Quick Checks, and warm-ups are reported as support gaps and affect `coverage_status` / `correction_priority` deterministically. They do not make `npm run coverage:p3-matrix` fail unless they also violate the curriculum contract.
-- Deferred ambiguous cases must stay represented both in per-skill rows and in the deferred backlog. They can appear as `practice_allowed_deferred_count`, but cannot become clean mastery evidence or export-allowed evidence.
+- Deferred ambiguous cases must stay represented both in per-skill rows and in the deferred backlog when they exist. They can appear as `practice_allowed_deferred_count`, but cannot become clean mastery evidence or export-allowed evidence. With no deferred cases, the deferred summary policy fields must be `null`.
 - P1 prerequisite refs are allowed only as prerequisite metadata. They cannot create P3 matrix rows or count as canonical P3 question evidence.
 
 Inventory status labels are conservative:
@@ -205,28 +205,59 @@ Coverage counts are generated by the verifier output, not maintained by hand:
 python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 ```
 
-As of 2026-05-09:
+As of 2026-05-16:
 
-- 34 reviewed teaching snippets
-- 34 Quick Checks
-- 30 reviewed generated warm-ups
-- all active P3 regions have reviewed snippet and Quick Check coverage
-- generated warm-ups currently cover Algebra Vault, Logarithm Observatory, Trigonometry Spire, and partial-fractions support that also appears in Integral Terraces
+- 40 reviewed teaching snippets
+- 40 Quick Checks
+- 84 reviewed generated warm-ups
+- 38 generator families
+- all 40 reviewed P3 skills have Field Guide, snippet, worked-example, Quick Check, and warm-up support
+- all active P3 regions have reviewed snippet, Quick Check, and generated warm-up coverage
 
 Current generator families:
 
-- `logarithms_and_exponentials.log_equation_basic`
-- `binomial_expansion.first_terms_and_coefficient`
 - `algebra.binomial_validity_range`
 - `algebra.modulus_equation_basic`
 - `algebra.partial_fractions_distinct_linear`
 - `algebra.partial_fractions_repeated_linear`
+- `algebra.polynomial_remainder_factor_basic`
+- `algebra.structure_rearrangement_basic`
+- `binomial_expansion.first_terms_and_coefficient`
+- `complex_numbers.cartesian_conjugate_basic`
+- `complex_numbers.locus_basic`
+- `complex_numbers.modulus_argument_basic`
+- `complex_numbers.roots_basic`
+- `differential_equations.context_model_basic`
+- `differential_equations.initial_condition_basic`
+- `differential_equations.separation_basic`
+- `differentiation.chain_product_basic`
+- `differentiation.chain_rule_basic`
+- `differentiation.implicit_log_exp_basic`
+- `differentiation.product_rule_basic`
+- `differentiation.stationary_tangent_normal_basic`
+- `integration.definite_area_basic`
+- `integration.method_setup_basic`
+- `integration.parts_substitution_basic`
+- `logarithms_and_exponentials.calculus_context_basic`
+- `logarithms_and_exponentials.domain_validation_basic`
+- `logarithms_and_exponentials.linearisation_basic`
+- `logarithms_and_exponentials.log_equation_basic`
+- `numerical_methods.accuracy_rounding_basic`
+- `numerical_methods.iteration_formula_basic`
+- `numerical_methods.sign_change_iteration_basic`
+- `parametric_equations.derivative_ratio_basic`
+- `quadratics.discriminant_root_condition_basic`
 - `trigonometry.identity_rewrite_basic`
 - `trigonometry.double_angle_basic`
 - `trigonometry.solve_equation_interval_basic`
 - `trigonometry.r_form_basic`
+- `vectors.line_intersection_basic`
+- `vectors.line_relationship_basic`
+- `vectors.line_scalar_product_basic`
 
-Next useful generator families should target differentiation, integration, vectors, numerical methods, differential equations, and complex numbers, but only when the deterministic generator structure can stay small and verification-gated.
+The generator script preserves existing reviewed, verification-passing runtime warm-ups that it does not rebuild yet. This prevents default runs from dropping reviewed public-runtime coverage while newer generator families are still being promoted in batches.
+
+Next useful generator work should deepen the one-item preserved runtime families for vectors, numerical methods, differential equations, parametric equations, and complex-number loci/roots only when the deterministic structure can stay small and verification-gated.
 
 ## Review Rules
 

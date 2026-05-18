@@ -203,11 +203,11 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
       <section className="dashboard-shell teacher-dashboard">
         <header className="dashboard-topbar">
           <div>
-            <span className="mode-pill">Asterion · Teacher planning</span>
-            <h1>What should I do with this class next?</h1>
-            <p>Mock classroom signals for planning. Canonical question and mark-scheme images remain public/static.</p>
+            <span className="mode-pill">Asterion dashboard</span>
+            <h1>Teacher Planning</h1>
+            <p>Mock classroom signals for planning. Canonical question and mark-scheme images remain the student source of truth.</p>
           </div>
-          <nav aria-label="Dashboard navigation">
+          <nav className="dashboard-nav" aria-label="Dashboard navigation">
             <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
             <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button>
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
@@ -236,15 +236,29 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
           )}
         </section>
 
-        <section className="dashboard-section attention-section">
-          <div>
-            <span className="dashboard-kicker">What needs attention?</span>
-            <h2>{groupedActions.reteach[0]?.title ?? 'Start with the next clean evidence point'}</h2>
-            <p>{groupedActions.reteach[0]?.recommendedAction ?? 'Evidence is thin; assign one more Warm-Up before making a stronger recommendation.'}</p>
-          </div>
-          <div className="attention-summary">
+        <section className="dashboard-priority-row">
+          <article className="dashboard-section attention-section">
+            <div>
+              <span className="dashboard-kicker">Recommended next move</span>
+              <h2>What should I do with this class next?</h2>
+              <h3>{groupedActions.reteach[0]?.title ?? 'Start with the next clean evidence point'}</h3>
+              <p>{groupedActions.reteach[0]?.recommendedAction ?? 'Evidence is thin; assign one more Warm-Up before making a stronger recommendation.'}</p>
+            </div>
+          </article>
+
+          <article className="dashboard-section class-summary-card">
+            <span className="dashboard-kicker">Class summary</span>
             <strong>{dashboard.studentSummaries.length}</strong>
             <span>students in {dashboard.class.name}</span>
+            <small>Join code {dashboard.class.joinCode}</small>
+          </article>
+        </section>
+
+        <section className="dashboard-section dashboard-class-overview">
+          <div>
+            <span className="dashboard-kicker">Selected class</span>
+            <h2>Planning evidence snapshot</h2>
+            <p>{dashboard.class.name} has {dashboard.studentSummaries.length} students and {dashboard.regionSignals.length} region signal groups in the current mock dashboard.</p>
           </div>
         </section>
 

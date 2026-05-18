@@ -541,7 +541,7 @@
         "clean": 317
       }
     },
-    "queue_items": 245,
+    "queue_items": 233,
     "route_queue_fallback_display_only_items": 53,
     "source_route_counts": {
       "ambiguous_multi_topic_route": 14,

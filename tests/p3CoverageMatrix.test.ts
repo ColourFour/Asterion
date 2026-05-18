@@ -74,15 +74,15 @@ interface CoverageMatrix {
   deferred_evidence_summary: {
     case_count: number;
     affected_skill_count: number;
-    mastery_evidence_allowed: false;
-    practice_allowed: true;
-    export_allowed: false;
+    mastery_evidence_allowed: boolean | null;
+    practice_allowed: boolean | null;
+    export_allowed: boolean | null;
     items: Array<{
       skill_ref: string;
       question_id: string;
-      mastery_evidence_allowed: false;
-      practice_allowed: true;
-      export_allowed: false;
+      mastery_evidence_allowed: boolean;
+      practice_allowed: boolean;
+      export_allowed: boolean;
     }>;
   };
   teaching_support_summary: {
@@ -349,6 +349,21 @@ function validateMatrixContract(matrix: CoverageMatrix, skillMap: SkillMap) {
       errors.push(`malformed deferred policy fields for ${item.skill_ref}/${item.question_id}`);
     }
   }
+  if (matrix.deferred_evidence_summary.items.length > 0) {
+    if (
+      matrix.deferred_evidence_summary.mastery_evidence_allowed !== false
+      || matrix.deferred_evidence_summary.practice_allowed !== true
+      || matrix.deferred_evidence_summary.export_allowed !== false
+    ) {
+      errors.push('malformed deferred summary policy fields');
+    }
+  } else if (
+    matrix.deferred_evidence_summary.mastery_evidence_allowed !== null
+    || matrix.deferred_evidence_summary.practice_allowed !== null
+    || matrix.deferred_evidence_summary.export_allowed !== null
+  ) {
+    errors.push('empty deferred summary policy fields must be null');
+  }
 
   if (errors.length > 0) {
     throw new Error(errors.join('; '));
@@ -388,6 +403,72 @@ function buildMatrixToTemp(dir: string) {
     matrix: readJson<CoverageMatrix>(jsonOutput),
     markdown: readFileSync(markdownOutput, 'utf8'),
   };
+}
+
+function addSyntheticMatrixDeferredCase(matrix: CoverageMatrix, skillRef = 'p3_int_partial_fractions', questionId = 'fixture_deferred_q') {
+  const row = matrix.coverage_rows.find((item) => item.skill_ref === skillRef);
+  if (!row) {
+    throw new Error(`Expected matrix row ${skillRef}`);
+  }
+  row.deferred_evidence_question_ids = Array.from(new Set([...row.deferred_evidence_question_ids, questionId]));
+  row.deferred_evidence_count = row.deferred_evidence_question_ids.length;
+  row.practice_allowed_deferred_count = row.deferred_evidence_count;
+  matrix.deferred_evidence_summary.items = [{
+    skill_ref: skillRef,
+    question_id: questionId,
+    mastery_evidence_allowed: false,
+    practice_allowed: true,
+    export_allowed: false,
+  }];
+  matrix.deferred_evidence_summary.case_count = 1;
+  matrix.deferred_evidence_summary.affected_skill_count = 1;
+  matrix.deferred_evidence_summary.mastery_evidence_allowed = false;
+  matrix.deferred_evidence_summary.practice_allowed = true;
+  matrix.deferred_evidence_summary.export_allowed = false;
+  return row;
+}
+
+function addSyntheticInventoryDeferredCase(inventory: {
+  per_skill_inventory: Array<Record<string, unknown> & { skill_ref: string }>;
+  routing_audit_summary: {
+    deferred_review_backlog: Record<string, unknown> & { items: Array<Record<string, unknown>> };
+  };
+}, skillRef = 'p3_int_partial_fractions', questionId = 'fixture_deferred_q') {
+  const row = inventory.per_skill_inventory.find((item) => item.skill_ref === skillRef);
+  if (!row) {
+    throw new Error(`Expected inventory row ${skillRef}`);
+  }
+  const addId = (field: string) => {
+    const current = Array.isArray(row[field]) ? row[field] as string[] : [];
+    row[field] = Array.from(new Set([...current, questionId]));
+  };
+  addId('canonical_question_ids');
+  addId('practice_allowed_question_ids');
+  addId('teacher_review_deferred_question_ids');
+  addId('mastery_evidence_blocked_question_ids');
+  addId('practice_allowed_deferred_question_ids');
+  addId('export_blocked_deferred_question_ids');
+
+  const backlog = inventory.routing_audit_summary.deferred_review_backlog;
+  backlog.items = [{
+    app_region_id: row.region_id,
+    evidence_status: 'ambiguous_part_level_evidence',
+    export_allowed: false,
+    mastery_evidence_allowed: false,
+    practice_allowed: true,
+    question_id: questionId,
+    resolution_status: 'teacher_review_deferred',
+    reviewed_skill_map_region_id: row.region_id,
+    skill_ref: skillRef,
+  }];
+  backlog.case_count = 1;
+  backlog.mastery_evidence_allowed = false;
+  backlog.practice_allowed = true;
+  backlog.export_allowed = false;
+  backlog.mastery_evidence_blocked_case_count = 1;
+  backlog.practice_allowed_case_count = 1;
+  backlog.export_blocked_case_count = 1;
+  return row;
 }
 
 describe('P3 coverage matrix', () => {
@@ -434,45 +515,36 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('surfaces p3_log_calculus_contexts as blocked and high priority', () => {
+  it('keeps p3_log_calculus_contexts clean and ready after image-backed audit', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
     const logCalculusRows = matrix.coverage_rows.filter((row) => row.skill_ref === 'p3_log_calculus_contexts');
     const logCalculus = logCalculusRows[0];
 
     expect(logCalculusRows).toHaveLength(1);
-    expect(logCalculus.coverage_status).toBe('blocked_for_mastery');
-    expect(logCalculus.correction_priority).toBe('P0_blocked_mastery');
-    expect(logCalculus.clean_mastery_evidence_count).toBe(0);
-    expect(logCalculus.deferred_evidence_count).toBeGreaterThan(0);
-    expect(logCalculus.blocking_reasons).toEqual(expect.arrayContaining([
-      'no_clean_mastery_evidence',
-      'all_available_evidence_deferred',
-    ]));
-    expect(logCalculus.recommended_next_action).toContain('Find or review clean P3 canonical mastery evidence');
+    expect(logCalculus.coverage_status).toBe('ready_for_review');
+    expect(logCalculus.correction_priority).toBe('P4_polish_or_complete');
+    expect(logCalculus.clean_mastery_evidence_count).toBe(5);
+    expect(logCalculus.deferred_evidence_count).toBe(0);
+    expect(logCalculus.blocking_reasons).toEqual([]);
+    expect(logCalculus.recommended_next_action).toContain('Teacher review can confirm');
     expect(logCalculus.recommended_next_action).not.toContain('random content');
-    expect(matrix.risk_summary.blocked_mastery_skill_refs).toContain('p3_log_calculus_contexts');
+    expect(matrix.risk_summary.blocked_mastery_skill_refs).not.toContain('p3_log_calculus_contexts');
   });
 
-  it('keeps deferred ambiguous evidence visible and mastery-ineligible', () => {
+  it('reports a closed deferred-evidence backlog without manufacturing mastery blockers', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
     const deferredSummary = matrix.deferred_evidence_summary;
 
-    expect(deferredSummary.case_count).toBe(14);
-    expect(deferredSummary.affected_skill_count).toBe(8);
-    expect(deferredSummary.mastery_evidence_allowed).toBe(false);
-    expect(deferredSummary.practice_allowed).toBe(true);
-    expect(deferredSummary.export_allowed).toBe(false);
-    expect(deferredSummary.items).toHaveLength(14);
+    expect(deferredSummary.case_count).toBe(0);
+    expect(deferredSummary.affected_skill_count).toBe(0);
+    expect(deferredSummary.mastery_evidence_allowed).toBe(null);
+    expect(deferredSummary.practice_allowed).toBe(null);
+    expect(deferredSummary.export_allowed).toBe(null);
+    expect(deferredSummary.items).toEqual([]);
     const rowDeferredPairs = new Set(
       matrix.coverage_rows.flatMap((row) => row.deferred_evidence_question_ids.map((questionId) => `${row.skill_ref}/${questionId}`)),
     );
-    expect(rowDeferredPairs.size).toBe(14);
-    for (const item of deferredSummary.items) {
-      expect(item.mastery_evidence_allowed).toBe(false);
-      expect(item.practice_allowed).toBe(true);
-      expect(item.export_allowed).toBe(false);
-      expect(rowDeferredPairs.has(`${item.skill_ref}/${item.question_id}`)).toBe(true);
-    }
+    expect(rowDeferredPairs.size).toBe(0);
 
     for (const row of matrix.coverage_rows) {
       const cleanIds = new Set(row.clean_mastery_evidence_question_ids);
@@ -498,37 +570,24 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('reports support gaps without hiding ordinary missing content', () => {
+  it('keeps teaching support complete without manufacturing mastery blockers', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
 
-    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBeGreaterThan(0);
-    expect(matrix.teaching_support_summary.support_gap_counts.warm_up).toBe(27);
-    expect(matrix.teaching_support_summary.support_gap_counts.quick_check).toBe(6);
-    expect(matrix.teaching_support_summary.support_gap_counts.snippet).toBe(1);
-    expect(matrix.teaching_support_summary.support_gap_counts.worked_example).toBe(1);
+    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBe(0);
+    expect(matrix.teaching_support_summary.support_gap_counts).toMatchObject({
+      field_guide: 0,
+      quick_check: 0,
+      snippet: 0,
+      warm_up: 0,
+      worked_example: 0,
+    });
     expect(matrix.teaching_support_summary.expected_support_types).toEqual(supportTypes);
-    expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual(
-      expect.arrayContaining(['snippet', 'worked_example', 'quick_check', 'warm_up']),
-    );
+    expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual([]);
+    expect(matrix.risk_summary.blocked_mastery_skill_refs).toEqual([]);
 
     for (const row of matrix.coverage_rows) {
-      if (row.support_gaps.some((gap) => ['snippet', 'worked_example', 'quick_check'].includes(gap))) {
-        if (row.blocking_reasons.length > 0) {
-          expect(row.coverage_status).toBe('blocked_for_mastery');
-          expect(row.correction_priority).toBe('P0_blocked_mastery');
-        } else {
-          expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
-          expect(row.correction_priority).toBe('P1_missing_core_support');
-        }
-      } else if (row.support_gaps.includes('warm_up')) {
-        if (row.blocking_reasons.length > 0) {
-          expect(row.coverage_status).toBe('blocked_for_mastery');
-          expect(row.correction_priority).toBe('P0_blocked_mastery');
-        } else {
-          expect(['missing_support', 'needs_teacher_review']).toContain(row.coverage_status);
-          expect(row.correction_priority).toBe('P2_missing_practice_support');
-        }
-      }
+      expect(row.support_gaps, row.skill_ref).toEqual([]);
+      expect(row.blocking_reasons, row.skill_ref).toEqual([]);
     }
   });
 
@@ -575,7 +634,10 @@ describe('P3 coverage matrix', () => {
     expect(markdown).toContain('## Deferred Ambiguous Evidence');
     expect(markdown).toContain('## Support Gaps');
     expect(markdown).toContain('## Suggested Region-By-Region Correction Order');
-    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('p3_log_calculus_contexts');
+    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('No skills are currently blocked for mastery.');
+    expect(markdownSection(markdown, '## Blocked Mastery Skills')).not.toContain('p3_log_calculus_contexts');
+    expect(markdownSection(markdown, '## Deferred Ambiguous Evidence')).toContain('Deferred case count: 0');
+    expect(markdownSection(markdown, '## Deferred Ambiguous Evidence')).not.toContain('p3_log_calculus_contexts');
     expect(markdown).toContain('mastery-ineligible');
     expect(markdown).not.toMatch(/deferred evidence is clean mastery evidence/i);
 
@@ -783,19 +845,19 @@ describe('P3 coverage matrix', () => {
   it('fails validation if deferred evidence is counted as clean mastery evidence', () => {
     withTempDir((dir) => {
       const inventory = readJson<{
-        per_skill_inventory: Array<{
-          skill_ref: string;
-          mastery_evidence_question_count: number;
-          mastery_evidence_question_ids: string[];
-          teacher_review_deferred_question_ids: string[];
-        }>;
+        per_skill_inventory: Array<Record<string, unknown> & { skill_ref: string }>;
+        routing_audit_summary: {
+          deferred_review_backlog: Record<string, unknown> & { items: Array<Record<string, unknown>> };
+        };
       }>(inventoryPath);
-      const rowIndex = inventory.per_skill_inventory.findIndex((row) => row.skill_ref === 'p3_int_partial_fractions');
-      const deferredQuestionId = inventory.per_skill_inventory[rowIndex].teacher_review_deferred_question_ids[0];
+      const row = addSyntheticInventoryDeferredCase(inventory);
+      row.mastery_evidence_question_ids = ['fixture_deferred_q'];
+      row.mastery_evidence_question_count = 1;
+      const rowIndex = inventory.per_skill_inventory.findIndex((item) => item.skill_ref === row.skill_ref);
       inventory.per_skill_inventory[rowIndex] = {
-        ...inventory.per_skill_inventory[rowIndex],
+        ...row,
         mastery_evidence_question_count: 1,
-        mastery_evidence_question_ids: [deferredQuestionId],
+        mastery_evidence_question_ids: ['fixture_deferred_q'],
       };
       const badInventoryPath = path.join(dir, 'inventory_deferred_as_clean.json');
       writeFileSync(badInventoryPath, JSON.stringify(inventory), 'utf8');
@@ -818,11 +880,12 @@ describe('P3 coverage matrix', () => {
   it('fails validation if deferred evidence is not export-blocked', () => {
     withTempDir((dir) => {
       const inventory = readJson<{
-        per_skill_inventory: Array<{
-          skill_ref: string;
-          export_blocked_deferred_question_ids: string[];
-        }>;
+        per_skill_inventory: Array<Record<string, unknown> & { skill_ref: string }>;
+        routing_audit_summary: {
+          deferred_review_backlog: Record<string, unknown> & { items: Array<Record<string, unknown>> };
+        };
       }>(inventoryPath);
+      addSyntheticInventoryDeferredCase(inventory);
       const rowIndex = inventory.per_skill_inventory.findIndex((row) => row.skill_ref === 'p3_int_partial_fractions');
       inventory.per_skill_inventory[rowIndex] = {
         ...inventory.per_skill_inventory[rowIndex],
@@ -849,22 +912,21 @@ describe('P3 coverage matrix', () => {
   it('fails validation if a deferred case disappears from the deferred backlog', () => {
     withTempDir((dir) => {
       const inventory = readJson<{
+        per_skill_inventory: Array<Record<string, unknown> & { skill_ref: string }>;
         routing_audit_summary: {
-          deferred_review_backlog: {
-            case_count: number;
-            mastery_evidence_blocked_case_count: number;
-            practice_allowed_case_count: number;
-            export_blocked_case_count: number;
-            items: unknown[];
-          };
+          deferred_review_backlog: Record<string, unknown> & { items: Array<Record<string, unknown>> };
         };
       }>(inventoryPath);
+      addSyntheticInventoryDeferredCase(inventory);
       const backlog = inventory.routing_audit_summary.deferred_review_backlog;
-      backlog.items = backlog.items.slice(1);
-      backlog.case_count = backlog.items.length;
-      backlog.mastery_evidence_blocked_case_count = backlog.items.length;
-      backlog.practice_allowed_case_count = backlog.items.length;
-      backlog.export_blocked_case_count = backlog.items.length;
+      backlog.items = [];
+      backlog.case_count = 0;
+      backlog.mastery_evidence_allowed = null;
+      backlog.practice_allowed = null;
+      backlog.export_allowed = null;
+      backlog.mastery_evidence_blocked_case_count = 0;
+      backlog.practice_allowed_case_count = 0;
+      backlog.export_blocked_case_count = 0;
       const badInventoryPath = path.join(dir, 'inventory_missing_deferred_backlog_case.json');
       writeFileSync(badInventoryPath, JSON.stringify(inventory), 'utf8');
 
@@ -886,13 +948,12 @@ describe('P3 coverage matrix', () => {
   it('fails validation for malformed deferred policy fields', () => {
     withTempDir((dir) => {
       const inventory = readJson<{
+        per_skill_inventory: Array<Record<string, unknown> & { skill_ref: string }>;
         routing_audit_summary: {
-          deferred_review_backlog: {
-            mastery_evidence_allowed: boolean;
-            items: Array<{ mastery_evidence_allowed: boolean }>;
-          };
+          deferred_review_backlog: Record<string, unknown> & { items: Array<Record<string, unknown>> };
         };
       }>(inventoryPath);
+      addSyntheticInventoryDeferredCase(inventory);
       inventory.routing_audit_summary.deferred_review_backlog.mastery_evidence_allowed = true;
       inventory.routing_audit_summary.deferred_review_backlog.items[0].mastery_evidence_allowed = true;
       const badInventoryPath = path.join(dir, 'inventory_malformed_deferred_policy.json');
@@ -1029,11 +1090,10 @@ describe('P3 coverage matrix', () => {
     expectMatrixValidationFailure(negativeCount, skillMap, 'invalid count clean_mastery_evidence_count');
 
     const deferredAsClean = clone(matrix);
-    const deferredRow = deferredAsClean.coverage_rows.find((row) => row.deferred_evidence_question_ids.length > 0);
-    expect(deferredRow).toBeTruthy();
-    deferredRow!.clean_mastery_evidence_question_ids.push(deferredRow!.deferred_evidence_question_ids[0]);
-    deferredRow!.clean_mastery_evidence_count = deferredRow!.clean_mastery_evidence_question_ids.length;
-    deferredRow!.export_allowed_evidence_count = deferredRow!.clean_mastery_evidence_count;
+    const deferredRow = addSyntheticMatrixDeferredCase(deferredAsClean);
+    deferredRow.clean_mastery_evidence_question_ids.push(deferredRow.deferred_evidence_question_ids[0]);
+    deferredRow.clean_mastery_evidence_count = deferredRow.clean_mastery_evidence_question_ids.length;
+    deferredRow.export_allowed_evidence_count = deferredRow.clean_mastery_evidence_count;
     expectMatrixValidationFailure(deferredAsClean, skillMap, 'counts deferred evidence as clean mastery');
 
     const deferredExportAllowed = clone(matrix);
@@ -1041,6 +1101,7 @@ describe('P3 coverage matrix', () => {
     expectMatrixValidationFailure(deferredExportAllowed, skillMap, 'export count is not clean mastery count');
 
     const malformedDeferredPolicy = clone(matrix);
+    addSyntheticMatrixDeferredCase(malformedDeferredPolicy);
     malformedDeferredPolicy.deferred_evidence_summary.items[0].export_allowed = true;
     expectMatrixValidationFailure(malformedDeferredPolicy, skillMap, 'malformed deferred policy fields');
   });

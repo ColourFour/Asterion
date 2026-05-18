@@ -8,7 +8,10 @@
       "component": "Paper 3",
       "component_title": "Pure Mathematics 3",
       "paper_family": "p3",
-      "exam_years": ["2026", "2027"],
+      "exam_years": [
+        "2026",
+        "2027"
+      ],
       "syllabus_version": "Version 4",
       "published": "December 2025",
       "source_urls": [
@@ -25,7 +28,10 @@
         "component": "Paper 1",
         "component_title": "Pure Mathematics 1",
         "paper_family": "p1",
-        "exam_years": ["2026", "2027"],
+        "exam_years": [
+          "2026",
+          "2027"
+        ],
         "role": "prerequisite_support",
         "source_urls": [
           "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/",
@@ -49,763 +55,2210 @@
   "source_note": "Internal reviewed Content Lab map for CAIE 9709 Pure Mathematics 3 coverage. It maps syllabus-level skills to existing Asterion regions, canonical question evidence, and reviewed support artifacts without creating new student-facing content.",
   "skills": [
     {
-      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01"],
-      "common_errors": ["Expanding before checking for shared structure.", "Cancelling across addition or subtraction.", "Losing restrictions introduced by denominators."],
+      "canonical_source_question_ids": [
+        "32summer22_q03",
+        "31autumn24_q01",
+        "31summer25_q05"
+      ],
+      "common_errors": [
+        "Expanding before checking for shared structure.",
+        "Cancelling across addition or subtraction.",
+        "Losing restrictions introduced by denominators."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Choose algebraic structure before expanding",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["shared bracket", "factor before expand", "simplify expression", "algebraic manipulation"],
+      "recognizer_signals": [
+        "shared bracket",
+        "factor before expand",
+        "simplify expression",
+        "algebraic manipulation"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_structure_rearrangement",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q01"],
-      "supported_by_quick_check_ids": ["p3-algebra-rearrangement-001-qc"],
-      "supported_by_snippet_ids": ["p3-algebra-rearrangement-001"],
+      "supported_by_generator_families": [
+        "algebra.structure_rearrangement_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer22_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-algebra-rearrangement-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q02", "33autumn21_q01", "33summer21_q10", "31summer22_q05", "32spring24_q01"],
-      "common_errors": ["Confusing quotient and remainder.", "Substituting the wrong theorem value.", "Leaving the remainder in the quotient."],
+      "canonical_source_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "31summer22_q05",
+        "32spring24_q01",
+        "33summer23_q02"
+      ],
+      "common_errors": [
+        "Confusing quotient and remainder.",
+        "Substituting the wrong theorem value.",
+        "Leaving the remainder in the quotient."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use polynomial division and remainder or factor theorem evidence",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_structure_rearrangement"],
-      "recognizer_signals": ["quotient", "remainder", "divided by", "factor theorem", "polynomial"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_structure_rearrangement"
+      ],
+      "recognizer_signals": [
+        "quotient",
+        "remainder",
+        "divided by",
+        "factor theorem",
+        "polynomial"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_polynomial_remainder_factor",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32spring21_q02", "33autumn21_q01"],
-      "supported_by_quick_check_ids": ["p3-polynomial-theorem-001-qc"],
-      "supported_by_snippet_ids": ["p3-polynomial-theorem-001"],
+      "supported_by_generator_families": [
+        "algebra.polynomial_remainder_factor_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q02",
+        "33autumn21_q01"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-polynomial-theorem-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["33summer21_q01", "31autumn21_q06", "31summer22_q02", "31summer23_q03", "32autumn24_q01"],
-      "common_errors": ["Treating the requested power of x as the term number.", "Dropping signs inside powers.", "Expanding more terms than the question needs."],
+      "canonical_source_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
+      "common_errors": [
+        "Treating the requested power of x as the term number.",
+        "Dropping signs inside powers.",
+        "Expanding more terms than the question needs."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Find binomial terms and coefficients efficiently",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "sequences_and_series", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_structure_rearrangement"],
-      "recognizer_signals": ["binomial", "ascending powers", "coefficient of", "term in x"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "sequences_and_series",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_structure_rearrangement"
+      ],
+      "recognizer_signals": [
+        "binomial",
+        "ascending powers",
+        "coefficient of",
+        "term in x"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_binomial_terms_coefficients",
-      "supported_by_generator_families": ["binomial_expansion.first_terms_and_coefficient"],
-      "supported_by_guardian_candidates": ["33summer21_q01", "31autumn21_q06"],
-      "supported_by_quick_check_ids": ["p3-binomial-term-001-qc"],
-      "supported_by_snippet_ids": ["p3-binomial-term-001"],
+      "supported_by_generator_families": [
+        "binomial_expansion.first_terms_and_coefficient"
+      ],
+      "supported_by_guardian_candidates": [
+        "33summer21_q01",
+        "31autumn21_q06"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-binomial-term-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-binomial-term-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q06", "31summer24_q01", "32autumn24_q01", "33summer21_q01"],
-      "common_errors": ["Forgetting the range of validity.", "Using the expansion outside the allowed interval.", "Solving the interval with the wrong inequality sign."],
+      "canonical_source_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
+      "common_errors": [
+        "Forgetting the range of validity.",
+        "Using the expansion outside the allowed interval.",
+        "Solving the interval with the wrong inequality sign."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "State and use binomial expansion validity",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "sequences_and_series", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_binomial_terms_coefficients"],
-      "recognizer_signals": ["valid for", "range of validity", "binomial expansion", "|x|"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "sequences_and_series",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_binomial_terms_coefficients"
+      ],
+      "recognizer_signals": [
+        "valid for",
+        "range of validity",
+        "binomial expansion",
+        "|x|"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_binomial_validity",
-      "supported_by_generator_families": ["algebra.binomial_validity_range"],
-      "supported_by_guardian_candidates": ["31autumn21_q06", "32autumn24_q01"],
-      "supported_by_quick_check_ids": ["p3-binomial-validity-range-001-qc"],
-      "supported_by_snippet_ids": ["p3-binomial-validity-range-001"],
+      "supported_by_generator_families": [
+        "algebra.binomial_validity_range"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q06",
+        "32autumn24_q01"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-binomial-validity-range-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-binomial-validity-range-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q06", "31summer21_q10", "32summer21_q09", "33summer21_q04", "32autumn21_q04", "35summer25_q09"],
-      "common_errors": ["Using the wrong numerator form.", "Omitting a repeated-factor term.", "Solving constants before multiplying through correctly."],
+      "canonical_source_question_ids": [
+        "32spring21_q06",
+        "32summer21_q09",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
+      "common_errors": [
+        "Using the wrong numerator form.",
+        "Omitting a repeated-factor term.",
+        "Solving constants before multiplying through correctly."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Set up partial fractions from denominator structure",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_structure_rearrangement"],
-      "recognizer_signals": ["partial fractions", "denominator factors", "repeated factor", "proper rational expression"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_structure_rearrangement"
+      ],
+      "recognizer_signals": [
+        "partial fractions",
+        "denominator factors",
+        "repeated factor",
+        "proper rational expression"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_partial_fraction_form",
-      "supported_by_generator_families": ["algebra.partial_fractions_distinct_linear", "algebra.partial_fractions_repeated_linear"],
-      "supported_by_guardian_candidates": ["32spring21_q06", "31summer21_q10"],
-      "supported_by_quick_check_ids": ["p3-partial-fractions-form-001-qc", "p3-partial-fractions-repeated-linear-001-qc"],
-      "supported_by_snippet_ids": ["p3-partial-fractions-form-001", "p3-partial-fractions-repeated-linear-001"],
+      "supported_by_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q06",
+        "32summer21_q09"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-partial-fractions-repeated-linear-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["32autumn21_q02", "33summer25_q01", "32autumn25_q01"],
-      "common_errors": ["Squaring without checking cases.", "Dropping the condition that defines a modulus branch.", "Keeping intervals that fail the original inequality."],
+      "canonical_source_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "32autumn25_q01"
+      ],
+      "common_errors": [
+        "Squaring without checking cases.",
+        "Dropping the condition that defines a modulus branch.",
+        "Keeping intervals that fail the original inequality."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Split modulus equations or inequalities into valid cases",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_structure_rearrangement"],
-      "recognizer_signals": ["modulus", "absolute value", "case split", "|x|", "inequality"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_structure_rearrangement"
+      ],
+      "recognizer_signals": [
+        "modulus",
+        "absolute value",
+        "case split",
+        "|x|",
+        "inequality"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_modulus_cases",
-      "supported_by_generator_families": ["algebra.modulus_equation_basic"],
-      "supported_by_guardian_candidates": ["32autumn21_q02", "33summer25_q01"],
-      "supported_by_quick_check_ids": ["p3-modulus-cases-001-qc"],
-      "supported_by_snippet_ids": ["p3-modulus-cases-001"],
+      "supported_by_generator_families": [
+        "algebra.modulus_equation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32autumn21_q02",
+        "33summer25_q01"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-modulus-cases-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-modulus-cases-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q01", "31summer22_q01"],
-      "common_errors": ["Solving the whole equation when a discriminant condition is enough.", "Using the wrong inequality for repeated roots.", "Missing that tangency means one repeated root."],
+      "canonical_source_question_ids": [
+        "32autumn25_q05"
+      ],
+      "common_errors": [
+        "Solving the whole equation when a discriminant condition is enough.",
+        "Using the wrong inequality for repeated roots.",
+        "Missing that tangency means one repeated root."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use discriminant or root conditions as evidence",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_structure_rearrangement"],
-      "recognizer_signals": ["discriminant", "repeated root", "real roots", "tangent", "intersection condition"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_structure_rearrangement"
+      ],
+      "recognizer_signals": [
+        "discriminant",
+        "repeated root",
+        "real roots",
+        "tangent",
+        "intersection condition"
+      ],
       "region_id": "algebra-forge",
       "skill_id": "p3_alg_discriminant_root_conditions",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q01"],
-      "supported_by_quick_check_ids": ["p3-quadratics-discriminant-001-qc"],
-      "supported_by_snippet_ids": ["p3-quadratics-discriminant-001"],
+      "supported_by_generator_families": [
+        "quadratics.discriminant_root_condition_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32autumn25_q05"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-quadratics-discriminant-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
       "syllabus_topic": "Algebra"
     },
     {
-      "canonical_source_question_ids": ["32spring23_q01", "31autumn25_q02", "32spring22_q03", "32autumn21_q01", "33summer25_q02"],
-      "common_errors": ["Changing base in the wrong direction.", "Treating log_a x as ax.", "Ignoring that the log argument must be positive."],
+      "canonical_source_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
+      "common_errors": [
+        "Changing base in the wrong direction.",
+        "Treating log_a x as ax.",
+        "Ignoring that the log argument must be positive."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Convert between logarithmic and exponential form",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["log base", "exponential form", "convert", "logarithmic form"],
+      "recognizer_signals": [
+        "log base",
+        "exponential form",
+        "convert",
+        "logarithmic form"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_convert_forms",
-      "supported_by_generator_families": ["logarithms_and_exponentials.log_equation_basic"],
-      "supported_by_guardian_candidates": ["32spring23_q01", "31autumn25_q02"],
-      "supported_by_quick_check_ids": ["p3-log-exp-convert-001-qc"],
-      "supported_by_snippet_ids": ["p3-log-exp-convert-001"],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring23_q01",
+        "31autumn25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-log-exp-convert-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q01", "31autumn25_q02", "33summer25_q02", "32summer23_q02", "32spring24_q04"],
-      "common_errors": ["Splitting a sum inside a logarithm.", "Forgetting to combine logs before removing them.", "Keeping roots that break the original domain."],
+      "canonical_source_question_ids": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
+      "common_errors": [
+        "Splitting a sum inside a logarithm.",
+        "Forgetting to combine logs before removing them.",
+        "Keeping roots that break the original domain."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use log laws to solve logarithmic equations",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_log_convert_forms"],
-      "recognizer_signals": ["ln", "log law", "product law", "quotient law", "power law", "remove logarithms"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_log_convert_forms"
+      ],
+      "recognizer_signals": [
+        "ln",
+        "log law",
+        "product law",
+        "quotient law",
+        "power law",
+        "remove logarithms"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_laws_equations",
-      "supported_by_generator_families": ["logarithms_and_exponentials.log_equation_basic"],
-      "supported_by_guardian_candidates": ["32spring21_q01", "33summer25_q02"],
-      "supported_by_quick_check_ids": ["p3-log-laws-001-qc", "p3-log-invalid-operations-001-qc"],
-      "supported_by_snippet_ids": ["p3-log-laws-001", "p3-log-invalid-operations-001"],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-log-laws-001-qc",
+        "p3-log-invalid-operations-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-log-laws-001",
+        "p3-log-invalid-operations-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["31autumn22_q03", "31summer23_q01", "35summer25_q01", "32autumn25_q02", "33summer23_q01"],
-      "common_errors": ["Taking logs before isolating the exponential term.", "Rounding before the final answer.", "Dropping exact log form when exact form is requested."],
+      "canonical_source_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
+      "common_errors": [
+        "Taking logs before isolating the exponential term.",
+        "Rounding before the final answer.",
+        "Dropping exact log form when exact form is requested."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Solve exponential equations using matching bases or natural logs",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_log_convert_forms"],
-      "recognizer_signals": ["e^x", "exponential equation", "same base", "natural logs", "exact form"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_log_convert_forms"
+      ],
+      "recognizer_signals": [
+        "e^x",
+        "exponential equation",
+        "same base",
+        "natural logs",
+        "exact form"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_exponential_equations",
-      "supported_by_generator_families": ["logarithms_and_exponentials.log_equation_basic"],
-      "supported_by_guardian_candidates": ["31autumn22_q03", "35summer25_q01"],
-      "supported_by_quick_check_ids": ["p3-exp-equations-001-qc", "p3-ln-e-inverse-001-qc"],
-      "supported_by_snippet_ids": ["p3-exp-equations-001", "p3-ln-e-inverse-001"],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.log_equation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn22_q03",
+        "35summer25_q01"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-exp-equations-001-qc",
+        "p3-ln-e-inverse-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["33autumn22_q01", "31autumn25_q02", "32spring21_q01", "33summer25_q02"],
-      "common_errors": ["Checking the domain only after selecting an invalid root.", "Allowing zero or negative log arguments.", "Using transformed equations without checking the original."],
+      "canonical_source_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "common_errors": [
+        "Checking the domain only after selecting an invalid root.",
+        "Allowing zero or negative log arguments.",
+        "Using transformed equations without checking the original."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_log_laws_equations"],
-      "recognizer_signals": ["log argument", "positive argument", "domain", "reject root", "invalid operation"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_log_laws_equations"
+      ],
+      "recognizer_signals": [
+        "log argument",
+        "positive argument",
+        "domain",
+        "reject root",
+        "invalid operation"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_domain_validation",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33autumn22_q01", "31autumn25_q02"],
-      "supported_by_quick_check_ids": ["p3-log-domain-001-qc"],
-      "supported_by_snippet_ids": ["p3-log-domain-001"],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.domain_validation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33autumn22_q01",
+        "31autumn25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-log-domain-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-log-domain-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q03", "32spring22_q03", "35autumn25_q03"],
-      "common_errors": ["Taking logs of only one side of a product.", "Comparing the wrong straight-line variables.", "Reading gradient and intercept with swapped signs."],
+      "canonical_source_question_ids": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03"
+      ],
+      "common_errors": [
+        "Taking logs of only one side of a product.",
+        "Comparing the wrong straight-line variables.",
+        "Reading gradient and intercept with swapped signs."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Linearise logarithmic or exponential relationships",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_log_convert_forms"],
-      "recognizer_signals": ["straight line", "ln x", "ln y", "linear form", "gradient and intercept"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_log_convert_forms"
+      ],
+      "recognizer_signals": [
+        "straight line",
+        "ln x",
+        "ln y",
+        "linear form",
+        "gradient and intercept"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_linearisation",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q03", "35autumn25_q03"],
-      "supported_by_quick_check_ids": ["p3-log-linearisation-001-qc"],
-      "supported_by_snippet_ids": ["p3-log-linearisation-001"],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.linearisation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q03",
+        "35autumn25_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-log-linearisation-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-log-linearisation-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["31summer21_q09", "32autumn21_q09", "33autumn21_q07", "35summer25_q04", "35autumn25_q04"],
-      "common_errors": ["Differentiating logs without the chain rule.", "Forgetting product-rule terms.", "Stopping at the derivative when the question asks for a point or gradient."],
+      "canonical_source_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
+      "common_errors": [
+        "Differentiating logs without the chain rule.",
+        "Forgetting product-rule terms.",
+        "Stopping at the derivative when the question asks for a point or gradient."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_log_laws_equations", "p3_diff_chain_product_quotient"],
-      "recognizer_signals": ["ln x in derivative", "e^x in derivative", "implicit log equation", "stationary point with log"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_log_laws_equations",
+        "p3_diff_chain_product_quotient"
+      ],
+      "recognizer_signals": [
+        "ln x in derivative",
+        "e^x in derivative",
+        "implicit log equation",
+        "stationary point with log"
+      ],
       "region_id": "logarithm-grove",
       "skill_id": "p3_log_calculus_contexts",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31summer21_q09", "35summer25_q04"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": [],
+      "supported_by_generator_families": [
+        "logarithms_and_exponentials.calculus_context_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31summer21_q09",
+        "35summer25_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-log-calculus-context-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-log-calculus-context-001"
+      ],
       "syllabus_topic": "Logarithmic and exponential functions"
     },
     {
-      "canonical_source_question_ids": ["32autumn21_q06", "32autumn25_q08", "33summer25_q08", "31summer21_q04", "32summer21_q06"],
-      "common_errors": ["Choosing a familiar identity instead of the one matching the target.", "Mixing degrees and radians in the same solution.", "Dropping required proof steps."],
+      "canonical_source_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "common_errors": [
+        "Choosing a familiar identity instead of the one matching the target.",
+        "Mixing degrees and radians in the same solution.",
+        "Dropping required proof steps."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Choose trig identities for proof or simplification",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "trigonometric_identities", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "trigonometric_identities",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["prove the identity", "double angle", "compound angle", "reciprocal identity", "hence"],
+      "recognizer_signals": [
+        "prove the identity",
+        "double angle",
+        "compound angle",
+        "reciprocal identity",
+        "hence"
+      ],
       "region_id": "trig-observatory",
       "skill_id": "p3_trig_identity_selection",
-      "supported_by_generator_families": ["trigonometry.double_angle_basic", "trigonometry.identity_rewrite_basic"],
-      "supported_by_guardian_candidates": ["32autumn21_q06", "33summer25_q08"],
-      "supported_by_quick_check_ids": ["p3-trig-identity-selection-001-qc"],
-      "supported_by_snippet_ids": ["p3-trig-identity-selection-001"],
+      "supported_by_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32autumn21_q06",
+        "33summer25_q08"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-trig-identity-selection-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-trig-identity-selection-001"
+      ],
       "syllabus_topic": "Trigonometry"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q05", "32spring21_q03", "33autumn21_q05", "35summer25_q02", "31autumn25_q03"],
-      "common_errors": ["Giving only the calculator angle.", "Forgetting interval endpoints.", "Dividing by a trig expression and losing valid solutions."],
+      "canonical_source_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
+      "common_errors": [
+        "Giving only the calculator angle.",
+        "Forgetting interval endpoints.",
+        "Dividing by a trig expression and losing valid solutions."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Solve trig equations over a specified interval",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "trigonometric_identities", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_trig_identity_selection"],
-      "recognizer_signals": ["solve for", "interval", "0 <= x <= 360", "radian interval", "quadratic in trig"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "trigonometric_identities",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_trig_identity_selection"
+      ],
+      "recognizer_signals": [
+        "solve for",
+        "interval",
+        "0 <= x <= 360",
+        "radian interval",
+        "quadratic in trig"
+      ],
       "region_id": "trig-observatory",
       "skill_id": "p3_trig_equation_interval",
-      "supported_by_generator_families": ["trigonometry.solve_equation_interval_basic"],
-      "supported_by_guardian_candidates": ["31autumn21_q05", "32spring21_q03"],
-      "supported_by_quick_check_ids": ["p3-trig-interval-001-qc", "p3-trig-lost-solutions-001-qc"],
-      "supported_by_snippet_ids": ["p3-trig-interval-001", "p3-trig-lost-solutions-001"],
+      "supported_by_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q05",
+        "32spring21_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-trig-interval-001-qc",
+        "p3-trig-lost-solutions-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-trig-interval-001",
+        "p3-trig-lost-solutions-001"
+      ],
       "syllabus_topic": "Trigonometry"
     },
     {
-      "canonical_source_question_ids": ["32summer22_q02", "31autumn21_q05", "35summer25_q02", "33autumn21_q05", "31autumn25_q03"],
-      "common_errors": ["Keeping only a principal value.", "Using degree quadrant logic in radian mode.", "Missing a symmetrical solution."],
+      "canonical_source_question_ids": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
+      "common_errors": [
+        "Keeping only a principal value.",
+        "Using degree quadrant logic in radian mode.",
+        "Missing a symmetrical solution."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use quadrant discipline to find every trig solution",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_trig_equation_interval"],
-      "recognizer_signals": ["all solutions", "principal value", "quadrant", "ASTC", "radian interval"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_trig_equation_interval"
+      ],
+      "recognizer_signals": [
+        "all solutions",
+        "principal value",
+        "quadrant",
+        "ASTC",
+        "radian interval"
+      ],
       "region_id": "trig-observatory",
       "skill_id": "p3_trig_quadrant_solutions",
-      "supported_by_generator_families": ["trigonometry.solve_equation_interval_basic"],
-      "supported_by_guardian_candidates": ["32summer22_q02", "35summer25_q02"],
-      "supported_by_quick_check_ids": ["p3-trig-quadrant-discipline-001-qc"],
-      "supported_by_snippet_ids": ["p3-trig-quadrant-discipline-001"],
+      "supported_by_generator_families": [
+        "trigonometry.solve_equation_interval_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer22_q02",
+        "35summer25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-trig-quadrant-discipline-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
       "syllabus_topic": "Trigonometry"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q05", "31autumn21_q02", "33autumn21_q06", "31autumn25_q03"],
-      "common_errors": ["Matching the phase angle to the wrong trig form.", "Rounding R before solving.", "Using the wrong sign for the angle shift."],
+      "canonical_source_question_ids": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
+      "common_errors": [
+        "Matching the phase angle to the wrong trig form.",
+        "Rounding R before solving.",
+        "Using the wrong sign for the angle shift."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Rewrite a sin and cos combination in R-form",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "trigonometric_identities", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_trig_quadrant_solutions"],
-      "recognizer_signals": ["R sin", "R cos", "phase angle", "a sin x + b cos x"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "trigonometric_identities",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_trig_quadrant_solutions"
+      ],
+      "recognizer_signals": [
+        "R sin",
+        "R cos",
+        "phase angle",
+        "a sin x + b cos x"
+      ],
       "region_id": "trig-observatory",
       "skill_id": "p3_trig_r_form_compound_angles",
-      "supported_by_generator_families": ["trigonometry.r_form_basic"],
-      "supported_by_guardian_candidates": ["32spring21_q05", "31autumn25_q03"],
-      "supported_by_quick_check_ids": ["p3-trig-reciprocal-rform-001-qc"],
-      "supported_by_snippet_ids": ["p3-trig-reciprocal-rform-001"],
+      "supported_by_generator_families": [
+        "trigonometry.r_form_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q05",
+        "31autumn25_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
       "syllabus_topic": "Trigonometry"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q06", "32autumn21_q08", "33summer21_q05", "32autumn25_q08", "35summer25_q02"],
-      "common_errors": ["Replacing reciprocal functions incorrectly.", "Squaring and adding extra roots without checking.", "Using a double-angle identity in the wrong direction."],
+      "canonical_source_question_ids": [
+        "32summer21_q06",
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
+      "common_errors": [
+        "Replacing reciprocal functions incorrectly.",
+        "Squaring and adding extra roots without checking.",
+        "Using a double-angle identity in the wrong direction."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Transform reciprocal and double-angle equations safely",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "trigonometric_identities", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_trig_identity_selection"],
-      "recognizer_signals": ["sec", "cosec", "cot", "double angle", "reciprocal identity"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "trigonometric_identities",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_trig_identity_selection"
+      ],
+      "recognizer_signals": [
+        "sec",
+        "cosec",
+        "cot",
+        "double angle",
+        "reciprocal identity"
+      ],
       "region_id": "trig-observatory",
       "skill_id": "p3_trig_reciprocal_double_angle",
-      "supported_by_generator_families": ["trigonometry.double_angle_basic", "trigonometry.identity_rewrite_basic"],
-      "supported_by_guardian_candidates": ["32summer21_q06", "35summer25_q02"],
-      "supported_by_quick_check_ids": ["p3-trig-reciprocal-rform-001-qc"],
-      "supported_by_snippet_ids": ["p3-trig-reciprocal-rform-001"],
+      "supported_by_generator_families": [
+        "trigonometry.double_angle_basic",
+        "trigonometry.identity_rewrite_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q06",
+        "35summer25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
       "syllabus_topic": "Trigonometry"
     },
     {
-      "canonical_source_question_ids": ["31summer23_q05", "32summer23_q07", "31summer21_q06", "33summer21_q03", "35summer25_q06"],
-      "common_errors": ["Using a rule before checking for a simpler rewrite.", "Applying quotient rule to a product or product rule to a composite.", "Leaving an unsimplified derivative that blocks the next step."],
+      "canonical_source_question_ids": [
+        "31summer23_q05",
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
+      "common_errors": [
+        "Using a rule before checking for a simpler rewrite.",
+        "Applying quotient rule to a product or product rule to a composite.",
+        "Leaving an unsimplified derivative that blocks the next step."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Name the differentiation method before differentiating",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["differentiate", "product rule", "quotient rule", "chain rule", "implicit", "parametric"],
+      "recognizer_signals": [
+        "differentiate",
+        "product rule",
+        "quotient rule",
+        "chain rule",
+        "implicit",
+        "parametric"
+      ],
       "region_id": "calculus-cliffs",
       "skill_id": "p3_diff_method_selection",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31summer23_q05", "35summer25_q06"],
-      "supported_by_quick_check_ids": ["p3-differentiation-method-001-qc"],
-      "supported_by_snippet_ids": ["p3-differentiation-method-001"],
+      "supported_by_generator_families": [
+        "differentiation.chain_rule_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31summer23_q05",
+        "35summer25_q06"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
       "syllabus_topic": "Differentiation"
     },
     {
-      "canonical_source_question_ids": ["31summer21_q09", "32summer21_q08", "35summer25_q04", "33summer21_q08", "35summer25_q07"],
-      "common_errors": ["Dropping the inner derivative.", "Forgetting one product-rule term.", "Differentiating inverse trig or log forms as if they were powers."],
+      "canonical_source_question_ids": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "common_errors": [
+        "Dropping the inner derivative.",
+        "Forgetting one product-rule term.",
+        "Differentiating inverse trig or log forms as if they were powers."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Apply chain, product, and quotient rules accurately",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_diff_method_selection"],
-      "recognizer_signals": ["composite function", "product", "quotient", "ln", "tan inverse", "e^x"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_diff_method_selection"
+      ],
+      "recognizer_signals": [
+        "composite function",
+        "product",
+        "quotient",
+        "ln",
+        "tan inverse",
+        "e^x"
+      ],
       "region_id": "calculus-cliffs",
       "skill_id": "p3_diff_chain_product_quotient",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q08", "35summer25_q04"],
-      "supported_by_quick_check_ids": ["p3-differentiation-method-001-qc"],
-      "supported_by_snippet_ids": ["p3-differentiation-method-001"],
+      "supported_by_generator_families": [
+        "differentiation.product_rule_basic",
+        "differentiation.chain_product_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q08",
+        "35summer25_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differentiation-method-001"
+      ],
       "syllabus_topic": "Differentiation"
     },
     {
-      "canonical_source_question_ids": ["33summer21_q08", "31summer21_q09", "32autumn21_q11", "35summer25_q07", "31autumn25_q04"],
-      "common_errors": ["Stopping at dy/dx instead of answering the tangent or stationary-point request.", "Solving derivative equals zero before simplifying.", "Not substituting the point after differentiation."],
+      "canonical_source_question_ids": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "31autumn25_q04"
+      ],
+      "common_errors": [
+        "Stopping at dy/dx instead of answering the tangent or stationary-point request.",
+        "Solving derivative equals zero before simplifying.",
+        "Not substituting the point after differentiation."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_diff_chain_product_quotient"],
-      "recognizer_signals": ["stationary point", "gradient", "tangent", "normal", "maximum", "minimum"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_diff_chain_product_quotient"
+      ],
+      "recognizer_signals": [
+        "stationary point",
+        "gradient",
+        "tangent",
+        "normal",
+        "maximum",
+        "minimum"
+      ],
       "region_id": "calculus-cliffs",
       "skill_id": "p3_diff_stationary_tangent_normal",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33summer21_q08", "31autumn25_q04"],
-      "supported_by_quick_check_ids": ["p3-differentiation-follow-through-001-qc"],
-      "supported_by_snippet_ids": ["p3-differentiation-follow-through-001"],
+      "supported_by_generator_families": [
+        "differentiation.stationary_tangent_normal_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33summer21_q08",
+        "31autumn25_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differentiation-follow-through-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
       "syllabus_topic": "Differentiation"
     },
     {
-      "canonical_source_question_ids": ["33summer21_q03", "31summer21_q06", "31autumn25_q07", "32spring21_q10", "35summer25_q06"],
-      "common_errors": ["Forgetting dy/dx = (dy/dt)/(dx/dt).", "Substituting the parameter before finding the required derivative.", "Converting to Cartesian form when it is not needed."],
+      "canonical_source_question_ids": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "32spring21_q10",
+        "35summer25_q06"
+      ],
+      "common_errors": [
+        "Forgetting dy/dx = (dy/dt)/(dx/dt).",
+        "Substituting the parameter before finding the required derivative.",
+        "Converting to Cartesian form when it is not needed."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_diff_method_selection"],
-      "recognizer_signals": ["parametric", "dx/dt", "dy/dt", "dy/dx", "parameter value"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_diff_method_selection"
+      ],
+      "recognizer_signals": [
+        "parametric",
+        "dx/dt",
+        "dy/dt",
+        "dy/dx",
+        "parameter value"
+      ],
       "region_id": "calculus-cliffs",
       "skill_id": "p3_diff_parametric_gradients",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33summer21_q03", "31autumn25_q07"],
-      "supported_by_quick_check_ids": ["p3-parametric-derivative-001-qc"],
-      "supported_by_snippet_ids": ["p3-parametric-derivative-001"],
+      "supported_by_generator_families": [
+        "parametric_equations.derivative_ratio_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33summer21_q03",
+        "31autumn25_q07"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-parametric-derivative-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-parametric-derivative-001"
+      ],
       "syllabus_topic": "Differentiation"
     },
     {
-      "canonical_source_question_ids": ["32autumn21_q09", "33autumn21_q07", "35autumn25_q04", "31summer21_q09"],
-      "common_errors": ["Differentiating only one side of an implicit equation.", "Not collecting dy/dx terms before solving.", "Treating y as a constant."],
+      "canonical_source_question_ids": [
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04"
+      ],
+      "common_errors": [
+        "Differentiating only one side of an implicit equation.",
+        "Not collecting dy/dx terms before solving.",
+        "Treating y as a constant."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Differentiate implicit log or exponential relations",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_diff_chain_product_quotient", "p3_log_laws_equations"],
-      "recognizer_signals": ["implicit differentiation", "dy/dx in both sides", "ln(x+y)", "x and y relation"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_diff_chain_product_quotient",
+        "p3_log_laws_equations"
+      ],
+      "recognizer_signals": [
+        "implicit differentiation",
+        "dy/dx in both sides",
+        "ln(x+y)",
+        "x and y relation"
+      ],
       "region_id": "calculus-cliffs",
       "skill_id": "p3_diff_implicit_log_exp",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32autumn21_q09", "35autumn25_q04"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": ["p3-differentiation-method-001"],
+      "supported_by_generator_families": [
+        "differentiation.implicit_log_exp_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differentiation-implicit-log-exp-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differentiation-implicit-log-exp-001"
+      ],
       "syllabus_topic": "Differentiation"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q04", "32summer21_q04", "33autumn21_q04", "32autumn25_q04", "31autumn25_q01"],
-      "common_errors": ["Choosing a method from habit instead of integrand structure.", "Forgetting the constant in indefinite integration.", "Not changing limits after substitution."],
+      "canonical_source_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "common_errors": [
+        "Choosing a method from habit instead of integrand structure.",
+        "Forgetting the constant in indefinite integration.",
+        "Not changing limits after substitution."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_diff_method_selection"],
-      "recognizer_signals": ["integrate", "substitution", "by parts", "rewrite first", "exact value"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_diff_method_selection"
+      ],
+      "recognizer_signals": [
+        "integrate",
+        "substitution",
+        "by parts",
+        "rewrite first",
+        "exact value"
+      ],
       "region_id": "integration-gardens",
       "skill_id": "p3_int_method_choice",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q04", "32summer21_q04"],
-      "supported_by_quick_check_ids": ["p3-integration-method-choice-001-qc"],
-      "supported_by_snippet_ids": ["p3-integration-method-choice-001"],
+      "supported_by_generator_families": [
+        "integration.method_setup_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q04",
+        "32summer21_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-integration-method-choice-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-integration-method-choice-001"
+      ],
       "syllabus_topic": "Integration"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q04", "31autumn21_q04", "33autumn21_q04", "32autumn25_q04", "31autumn25_q01"],
-      "common_errors": ["Choosing parts when substitution would collapse the integral.", "Choosing substitution without transforming dx.", "Forgetting the boundary term in integration by parts."],
+      "canonical_source_question_ids": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "common_errors": [
+        "Choosing parts when substitution would collapse the integral.",
+        "Choosing substitution without transforming dx.",
+        "Forgetting the boundary term in integration by parts."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use integration by parts or substitution with correct setup",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_int_method_choice"],
-      "recognizer_signals": ["integration by parts", "substitution u =", "inverse trig integral", "x ln x"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_int_method_choice"
+      ],
+      "recognizer_signals": [
+        "integration by parts",
+        "substitution u =",
+        "inverse trig integral",
+        "x ln x"
+      ],
       "region_id": "integration-gardens",
       "skill_id": "p3_int_parts_substitution",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q04", "32autumn25_q04"],
-      "supported_by_quick_check_ids": ["p3-integration-parts-substitution-001-qc"],
-      "supported_by_snippet_ids": ["p3-integration-parts-substitution-001"],
+      "supported_by_generator_families": [
+        "integration.parts_substitution_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q04",
+        "32autumn25_q04"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-integration-parts-substitution-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
       "syllabus_topic": "Integration"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q06", "33summer21_q04", "32summer21_q09", "31summer21_q10", "35summer25_q09"],
-      "common_errors": ["Integrating before decomposing.", "Using a decomposition form that does not match repeated factors.", "Dropping the log coefficient after integration."],
+      "canonical_source_question_ids": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "31summer21_q10"
+      ],
+      "common_errors": [
+        "Integrating before decomposing.",
+        "Using a decomposition form that does not match repeated factors.",
+        "Dropping the log coefficient after integration."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Integrate rational functions using partial fractions",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_alg_partial_fraction_form", "p3_int_method_choice"],
-      "recognizer_signals": ["hence integrate", "partial fractions", "rational function", "ln denominator"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_alg_partial_fraction_form",
+        "p3_int_method_choice"
+      ],
+      "recognizer_signals": [
+        "hence integrate",
+        "partial fractions",
+        "rational function",
+        "ln denominator"
+      ],
       "region_id": "integration-gardens",
       "skill_id": "p3_int_partial_fractions",
-      "supported_by_generator_families": ["algebra.partial_fractions_distinct_linear", "algebra.partial_fractions_repeated_linear"],
-      "supported_by_guardian_candidates": ["33summer21_q04", "35summer25_q09"],
-      "supported_by_quick_check_ids": ["p3-partial-fractions-form-001-qc", "p3-integration-method-choice-001-qc"],
-      "supported_by_snippet_ids": ["p3-partial-fractions-form-001", "p3-partial-fractions-repeated-linear-001", "p3-integration-method-choice-001"],
+      "supported_by_generator_families": [
+        "algebra.partial_fractions_distinct_linear",
+        "algebra.partial_fractions_repeated_linear"
+      ],
+      "supported_by_guardian_candidates": [
+        "33summer21_q04",
+        "32spring21_q06"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-integration-method-choice-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001",
+        "p3-integration-method-choice-001"
+      ],
       "syllabus_topic": "Integration"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q04", "33summer21_q04", "33summer25_q03", "32spring21_q10", "31summer21_q04"],
-      "common_errors": ["Using old limits after a substitution.", "Ignoring an improper-limit step.", "Rounding exact values that should stay symbolic."],
+      "canonical_source_question_ids": [
+        "31autumn21_q04",
+        "33summer21_q04",
+        "33summer25_q03",
+        "32spring21_q10",
+        "31summer21_q04"
+      ],
+      "common_errors": [
+        "Using old limits after a substitution.",
+        "Ignoring an improper-limit step.",
+        "Rounding exact values that should stay symbolic."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Evaluate definite and improper integrals exactly",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_int_parts_substitution"],
-      "recognizer_signals": ["exact value", "definite integral", "improper integral", "limits", "area under curve"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_int_parts_substitution"
+      ],
+      "recognizer_signals": [
+        "exact value",
+        "definite integral",
+        "improper integral",
+        "limits",
+        "area under curve"
+      ],
       "region_id": "integration-gardens",
       "skill_id": "p3_int_definite_improper_area",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q04", "33summer25_q03"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": ["p3-integration-method-choice-001"],
+      "supported_by_generator_families": [
+        "integration.definite_area_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q04",
+        "33summer25_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-integration-definite-area-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-integration-definite-area-001"
+      ],
       "syllabus_topic": "Integration"
     },
     {
-      "canonical_source_question_ids": ["31autumn25_q09", "32autumn25_q06", "31summer21_q07", "32spring21_q09", "33summer25_q11"],
-      "common_errors": ["Claiming a root interval without showing a sign change.", "Sketching graphs that do not prove the requested count.", "Using a rounded graph value as final evidence."],
+      "canonical_source_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
+      "common_errors": [
+        "Claiming a root interval without showing a sign change.",
+        "Sketching graphs that do not prove the requested count.",
+        "Using a rounded graph value as final evidence."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Justify roots using sign changes or graph evidence",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["show that there is a root", "sign change", "sketch graphs", "verify interval", "one root"],
+      "recognizer_signals": [
+        "show that there is a root",
+        "sign change",
+        "sketch graphs",
+        "verify interval",
+        "one root"
+      ],
       "region_id": "numerical-mines",
       "skill_id": "p3_num_sign_change_graph_evidence",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn25_q09", "32autumn25_q06"],
-      "supported_by_quick_check_ids": ["p3-numerical-method-evidence-001-qc"],
-      "supported_by_snippet_ids": ["p3-numerical-method-evidence-001"],
+      "supported_by_generator_families": [
+        "numerical_methods.sign_change_iteration_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn25_q09",
+        "32autumn25_q06"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
       "syllabus_topic": "Numerical solution of equations"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q08", "32autumn21_q11", "32spring22_q07", "35autumn25_q10"],
-      "common_errors": ["Changing the given iteration formula.", "Rounding every iteration too early.", "Not using the requested starting value."],
+      "canonical_source_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
+      ],
+      "common_errors": [
+        "Changing the given iteration formula.",
+        "Rounding every iteration too early.",
+        "Not using the requested starting value."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Apply an iteration formula consistently",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "functions_and_graphs", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_num_sign_change_graph_evidence"],
-      "recognizer_signals": ["iteration formula", "x_n+1", "starting value", "verify", "approximation"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "functions_and_graphs",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_num_sign_change_graph_evidence"
+      ],
+      "recognizer_signals": [
+        "iteration formula",
+        "x_n+1",
+        "starting value",
+        "verify",
+        "approximation"
+      ],
       "region_id": "numerical-mines",
       "skill_id": "p3_num_iteration_formula",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q08", "35autumn25_q10"],
-      "supported_by_quick_check_ids": ["p3-iteration-formula-discipline-001-qc"],
-      "supported_by_snippet_ids": ["p3-iteration-formula-discipline-001"],
+      "supported_by_generator_families": [
+        "numerical_methods.iteration_formula_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q08",
+        "35autumn25_q10"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-iteration-formula-discipline-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
       "syllabus_topic": "Numerical solution of equations"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q09", "33summer21_q06", "32summer24_q05", "32autumn24_q02", "35autumn25_q10"],
-      "common_errors": ["Rounding before the final iteration.", "Giving too few significant figures.", "Not showing enough evidence for the approximation."],
+      "canonical_source_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
+      "common_errors": [
+        "Rounding before the final iteration.",
+        "Giving too few significant figures.",
+        "Not showing enough evidence for the approximation."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Control accuracy and rounding in numerical solutions",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_num_iteration_formula"],
-      "recognizer_signals": ["3 significant figures", "decimal places", "iteration table", "approximate root"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_num_iteration_formula"
+      ],
+      "recognizer_signals": [
+        "3 significant figures",
+        "decimal places",
+        "iteration table",
+        "approximate root"
+      ],
       "region_id": "numerical-mines",
       "skill_id": "p3_num_accuracy_rounding",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32spring21_q09", "33summer21_q06"],
-      "supported_by_quick_check_ids": ["p3-numerical-method-evidence-001-qc"],
-      "supported_by_snippet_ids": ["p3-numerical-method-evidence-001"],
+      "supported_by_generator_families": [
+        "numerical_methods.accuracy_rounding_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q09",
+        "33summer21_q06"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
       "syllabus_topic": "Numerical solution of equations"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q07", "32autumn21_q10", "33summer25_q09", "31autumn25_q11", "35autumn25_q09"],
-      "common_errors": ["Using the same parameter for two different lines.", "Checking only two coordinates for a 3D intersection.", "Confusing a point on a line with a direction vector."],
+      "canonical_source_question_ids": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
+      "common_errors": [
+        "Using the same parameter for two different lines.",
+        "Checking only two coordinates for a 3D intersection.",
+        "Confusing a point on a line with a direction vector."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Form and compare vector equations of lines",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["line equation", "r =", "parameter", "intersection", "skew lines"],
+      "recognizer_signals": [
+        "line equation",
+        "r =",
+        "parameter",
+        "intersection",
+        "skew lines"
+      ],
       "region_id": "vector-workshop",
       "skill_id": "p3_vec_line_equations_intersections",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32spring21_q07", "31autumn25_q11"],
-      "supported_by_quick_check_ids": ["p3-vectors-lines-001-qc"],
-      "supported_by_snippet_ids": ["p3-vectors-lines-001"],
+      "supported_by_generator_families": [
+        "vectors.line_intersection_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q07",
+        "31autumn25_q11"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-vectors-lines-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-vectors-lines-001"
+      ],
       "syllabus_topic": "Vectors"
     },
     {
-      "canonical_source_question_ids": ["31autumn21_q09", "31summer21_q08", "32summer21_q11", "35summer25_q10", "35autumn25_q09"],
-      "common_errors": ["Using component products without summing.", "Forgetting to divide by both magnitudes.", "Reporting the obtuse angle when the question asks for acute."],
+      "canonical_source_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
+      "common_errors": [
+        "Using component products without summing.",
+        "Forgetting to divide by both magnitudes.",
+        "Reporting the obtuse angle when the question asks for acute."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_vec_line_equations_intersections"],
-      "recognizer_signals": ["scalar product", "dot product", "angle between", "perpendicular", "acute angle"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_vec_line_equations_intersections"
+      ],
+      "recognizer_signals": [
+        "scalar product",
+        "dot product",
+        "angle between",
+        "perpendicular",
+        "acute angle"
+      ],
       "region_id": "vector-workshop",
       "skill_id": "p3_vec_scalar_product_angles",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn21_q09", "35summer25_q10"],
-      "supported_by_quick_check_ids": ["p3-vectors-scalar-product-001-qc"],
-      "supported_by_snippet_ids": ["p3-vectors-scalar-product-001"],
+      "supported_by_generator_families": [
+        "vectors.line_scalar_product_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn21_q09",
+        "35summer25_q10"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-vectors-scalar-product-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
       "syllabus_topic": "Vectors"
     },
     {
-      "canonical_source_question_ids": ["33autumn21_q08", "31autumn25_q11", "32autumn25_q11", "33summer23_q09", "33autumn23_q11"],
-      "common_errors": ["Not translating geometric information into vectors first.", "Using a direction vector where a position vector is required.", "Mixing up midpoint and line parameters."],
+      "canonical_source_question_ids": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
+      "common_errors": [
+        "Not translating geometric information into vectors first.",
+        "Using a direction vector where a position vector is required.",
+        "Mixing up midpoint and line parameters."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Translate 3D geometric conditions into vector equations",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_vec_line_equations_intersections", "p3_vec_scalar_product_angles"],
-      "recognizer_signals": ["pyramid", "quadrilateral", "point on line", "midpoint", "3D geometry"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_vec_line_equations_intersections",
+        "p3_vec_scalar_product_angles"
+      ],
+      "recognizer_signals": [
+        "pyramid",
+        "quadrilateral",
+        "point on line",
+        "midpoint",
+        "3D geometry"
+      ],
       "region_id": "vector-workshop",
       "skill_id": "p3_vec_3d_geometry_modelling",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33autumn21_q08", "32autumn25_q11"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": ["p3-vectors-lines-001", "p3-vectors-scalar-product-001"],
+      "supported_by_generator_families": [
+        "vectors.line_relationship_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33autumn21_q08",
+        "32autumn25_q11"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-vectors-3d-geometry-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-vectors-3d-geometry-001"
+      ],
       "syllabus_topic": "Vectors"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q07", "32spring21_q04", "32autumn21_q07", "35summer25_q11", "33summer25_q10"],
-      "common_errors": ["Integrating before variables are separated.", "Missing dx or dy on one side.", "Leaving a y term on the x side."],
+      "canonical_source_question_ids": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
+      "common_errors": [
+        "Integrating before variables are separated.",
+        "Missing dx or dy on one side.",
+        "Leaving a y term on the x side."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Separate variables before integrating",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_int_method_choice"],
-      "recognizer_signals": ["differential equation", "separate variables", "dy/dx", "dx/dt", "first order"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_int_method_choice"
+      ],
+      "recognizer_signals": [
+        "differential equation",
+        "separate variables",
+        "dy/dx",
+        "dx/dt",
+        "first order"
+      ],
       "region_id": "differential-shrine",
       "skill_id": "p3_de_separation_setup",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q07", "35summer25_q11"],
-      "supported_by_quick_check_ids": ["p3-differential-separation-001-qc"],
-      "supported_by_snippet_ids": ["p3-differential-separation-001"],
+      "supported_by_generator_families": [
+        "differential_equations.separation_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q07",
+        "35summer25_q11"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differential-separation-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differential-separation-001"
+      ],
       "syllabus_topic": "Differential equations"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q07", "32autumn21_q07", "32summer25_q08", "31autumn25_q08", "35summer25_q11"],
-      "common_errors": ["Dropping the constant of integration.", "Applying the condition to the differential equation instead of the solution.", "Solving for the constant before integrating fully."],
+      "canonical_source_question_ids": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "common_errors": [
+        "Dropping the constant of integration.",
+        "Applying the condition to the differential equation instead of the solution.",
+        "Solving for the constant before integrating fully."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Apply initial conditions after integration",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_de_separation_setup"],
-      "recognizer_signals": ["given that", "when x =", "initial condition", "constant of integration", "particular solution"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_de_separation_setup"
+      ],
+      "recognizer_signals": [
+        "given that",
+        "when x =",
+        "initial condition",
+        "constant of integration",
+        "particular solution"
+      ],
       "region_id": "differential-shrine",
       "skill_id": "p3_de_initial_condition",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["31autumn25_q08", "35summer25_q11"],
-      "supported_by_quick_check_ids": ["p3-differential-initial-condition-001-qc"],
-      "supported_by_snippet_ids": ["p3-differential-initial-condition-001"],
+      "supported_by_generator_families": [
+        "differential_equations.initial_condition_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differential-initial-condition-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
       "syllabus_topic": "Differential equations"
     },
     {
-      "canonical_source_question_ids": ["33autumn21_q10", "35autumn25_q11", "32autumn25_q10", "33summer24_q09"],
-      "common_errors": ["Writing proportionality without a differential equation.", "Missing the factor that represents the remaining amount.", "Not defining the variables in context."],
+      "canonical_source_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09"
+      ],
+      "common_errors": [
+        "Writing proportionality without a differential equation.",
+        "Missing the factor that represents the remaining amount.",
+        "Not defining the variables in context."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Form differential equations from rate contexts",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "differentiation_basics", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "integration_basics", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_de_initial_condition"],
-      "recognizer_signals": ["rate of change", "proportional to", "model", "population", "volume", "disease"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "differentiation_basics",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "integration_basics",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_de_initial_condition"
+      ],
+      "recognizer_signals": [
+        "rate of change",
+        "proportional to",
+        "model",
+        "population",
+        "volume",
+        "disease"
+      ],
       "region_id": "differential-shrine",
       "skill_id": "p3_de_forming_context_model",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33autumn21_q10", "35autumn25_q11"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": ["p3-differential-separation-001"],
+      "supported_by_generator_families": [
+        "differential_equations.context_model_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33autumn21_q10",
+        "35autumn25_q11"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-differential-context-model-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
       "syllabus_topic": "Differential equations"
     },
     {
-      "canonical_source_question_ids": ["32spring21_q08", "32autumn21_q03", "35autumn25_q05", "33summer25_q06", "31autumn21_q10"],
-      "common_errors": ["Using polar form for addition.", "Forgetting to multiply by the conjugate of the denominator.", "Not equating real and imaginary parts separately."],
+      "canonical_source_question_ids": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
+      "common_errors": [
+        "Using polar form for addition.",
+        "Forgetting to multiply by the conjugate of the denominator.",
+        "Not equating real and imaginary parts separately."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        }
+      ],
       "prerequisite_skills": [],
-      "recognizer_signals": ["x + iy", "conjugate", "real and imaginary parts", "is real", "complex equation"],
+      "recognizer_signals": [
+        "x + iy",
+        "conjugate",
+        "real and imaginary parts",
+        "is real",
+        "complex equation"
+      ],
       "region_id": "complex-harbor",
       "skill_id": "p3_complex_cartesian_conjugate",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32spring21_q08", "35autumn25_q05"],
-      "supported_by_quick_check_ids": ["p3-complex-form-001-qc"],
-      "supported_by_snippet_ids": ["p3-complex-form-001"],
+      "supported_by_generator_families": [
+        "complex_numbers.cartesian_conjugate_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32spring21_q08",
+        "35autumn25_q05"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-complex-form-001"
+      ],
       "syllabus_topic": "Complex numbers"
     },
     {
-      "canonical_source_question_ids": ["33autumn21_q11", "35summer25_q03", "31summer21_q05", "33summer25_q04", "31autumn25_q05"],
-      "common_errors": ["Using the calculator argument without checking quadrant.", "Mixing degrees and radians in polar form.", "Forgetting the modulus rule for products or powers."],
+      "canonical_source_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
+      "common_errors": [
+        "Using the calculator argument without checking quadrant.",
+        "Mixing degrees and radians in polar form.",
+        "Forgetting the modulus rule for products or powers."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Move between Cartesian and modulus-argument form",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_complex_cartesian_conjugate", "p3_trig_quadrant_solutions"],
-      "recognizer_signals": ["modulus", "argument", "polar form", "re^(i theta)", "Argand"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_complex_cartesian_conjugate",
+        "p3_trig_quadrant_solutions"
+      ],
+      "recognizer_signals": [
+        "modulus",
+        "argument",
+        "polar form",
+        "re^(i theta)",
+        "Argand"
+      ],
       "region_id": "complex-harbor",
       "skill_id": "p3_complex_modulus_argument_form",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["33autumn21_q11", "35summer25_q03"],
-      "supported_by_quick_check_ids": ["p3-complex-form-001-qc"],
-      "supported_by_snippet_ids": ["p3-complex-form-001"],
+      "supported_by_generator_families": [
+        "complex_numbers.modulus_argument_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "33autumn21_q11",
+        "35summer25_q03"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-complex-form-001"
+      ],
       "syllabus_topic": "Complex numbers"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q02", "32autumn21_q05", "32spring22_q02", "35autumn25_q02", "31autumn25_q05"],
-      "common_errors": ["Drawing a circle with the wrong centre.", "Shading the wrong side of a line.", "Treating an argument boundary as a horizontal or vertical line."],
+      "canonical_source_question_ids": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
+      "common_errors": [
+        "Drawing a circle with the wrong centre.",
+        "Shading the wrong side of a line.",
+        "Treating an argument boundary as a horizontal or vertical line."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Interpret loci and regions on an Argand diagram",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "coordinate_geometry", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_complex_modulus_argument_form"],
-      "recognizer_signals": ["Argand diagram", "locus", "shade the region", "|z-a|", "arg"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "coordinate_geometry",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_complex_modulus_argument_form"
+      ],
+      "recognizer_signals": [
+        "Argand diagram",
+        "locus",
+        "shade the region",
+        "|z-a|",
+        "arg"
+      ],
       "region_id": "complex-harbor",
       "skill_id": "p3_complex_argand_loci_regions",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q02", "35autumn25_q02"],
-      "supported_by_quick_check_ids": ["p3-complex-locus-argument-001-qc"],
-      "supported_by_snippet_ids": ["p3-complex-locus-argument-001"],
+      "supported_by_generator_families": [
+        "complex_numbers.locus_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q02",
+        "35autumn25_q02"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-complex-locus-argument-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
       "syllabus_topic": "Complex numbers"
     },
     {
-      "canonical_source_question_ids": ["32summer21_q05", "31summer21_q05", "33autumn21_q11", "35summer25_q03", "31summer25_q06"],
-      "common_errors": ["Finding only one root.", "Forgetting to space arguments evenly.", "Using polar multiplication rules for addition."],
+      "canonical_source_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
+      "common_errors": [
+        "Finding only one root.",
+        "Forgetting to space arguments evenly.",
+        "Using polar multiplication rules for addition."
+      ],
       "curriculum_role": "p3_core",
       "mastery_eligible": true,
       "micro_skill_name": "Find complex powers and roots using the suitable form",
       "needs_teacher_review": false,
       "prerequisite_notes": "",
-      "prerequisite_skill_refs": [{"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "algebraic_manipulation", "relationship": "supports"}, {"syllabus_id": "caie_9709_p1_2026_2027", "skill_ref": "radians_and_trigonometry", "relationship": "supports"}],
-      "prerequisite_skills": ["p3_complex_modulus_argument_form"],
-      "recognizer_signals": ["roots", "square roots", "powers", "de Moivre", "nth roots"],
+      "prerequisite_skill_refs": [
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "algebraic_manipulation",
+          "relationship": "supports"
+        },
+        {
+          "syllabus_id": "caie_9709_p1_2026_2027",
+          "skill_ref": "radians_and_trigonometry",
+          "relationship": "supports"
+        }
+      ],
+      "prerequisite_skills": [
+        "p3_complex_modulus_argument_form"
+      ],
+      "recognizer_signals": [
+        "roots",
+        "square roots",
+        "powers",
+        "de Moivre",
+        "nth roots"
+      ],
       "region_id": "complex-harbor",
       "skill_id": "p3_complex_roots_powers",
-      "supported_by_generator_families": [],
-      "supported_by_guardian_candidates": ["32summer21_q05", "31summer21_q05"],
-      "supported_by_quick_check_ids": [],
-      "supported_by_snippet_ids": ["p3-complex-form-001"],
+      "supported_by_generator_families": [
+        "complex_numbers.roots_basic"
+      ],
+      "supported_by_guardian_candidates": [
+        "32summer21_q05",
+        "31summer21_q05"
+      ],
+      "supported_by_quick_check_ids": [
+        "p3-complex-roots-001-qc"
+      ],
+      "supported_by_snippet_ids": [
+        "p3-complex-roots-001"
+      ],
       "syllabus_topic": "Complex numbers"
     }
   ]

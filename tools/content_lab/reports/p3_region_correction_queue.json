@@ -2,15 +2,15 @@
   "generated_by": "tools/content_lab/scripts/build_p3_region_correction_queue.py",
   "generated_label": "deterministic-p3-region-correction-queue-v1",
   "inventory_bridge_summary": {
-    "deferred_case_count": 14,
+    "deferred_case_count": 0,
     "inventory_schema": "asterion_p3_content_inventory_report",
     "matrix_schema": "asterion_p3_coverage_matrix",
     "support_gap_counts": {
       "field_guide": 0,
-      "quick_check": 6,
-      "snippet": 1,
-      "warm_up": 27,
-      "worked_example": 1
+      "quick_check": 0,
+      "snippet": 0,
+      "warm_up": 0,
+      "worked_example": 0
     }
   },
   "next_step_policy": {
@@ -22,386 +22,7 @@
   },
   "queue": {
     "mark_scheme_subpart_review": {
-      "deferred_evidence_cases": [
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "31summer21_q09",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_diff_chain_product_quotient:31summer21_q09",
-          "recommended_action": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "reviewed_skill_map_region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_chain_product_quotient",
-          "skill_title": "Apply chain, product, and quotient rules accurately",
-          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The first subpart supports differentiation, while the larger second subpart supports integration.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "33summer21_q08",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_diff_chain_product_quotient:33summer21_q08",
-          "recommended_action": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "reviewed_skill_map_region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_chain_product_quotient",
-          "skill_title": "Apply chain, product, and quotient rules accurately",
-          "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "31summer21_q09",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_diff_implicit_log_exp:31summer21_q09",
-          "recommended_action": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "reviewed_skill_map_region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_implicit_log_exp",
-          "skill_title": "Differentiate implicit log or exponential relations",
-          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "31summer21_q09",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_diff_stationary_tangent_normal:31summer21_q09",
-          "recommended_action": "Keep visible until reviewed for part-level stationary-point evidence.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "reviewed_skill_map_region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_stationary_tangent_normal",
-          "skill_title": "Use derivatives for stationary points, tangents, and normals",
-          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The first subpart is stationary-point evidence, but the whole question route is integration.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "33summer21_q08",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_diff_stationary_tangent_normal:33summer21_q08",
-          "recommended_action": "Keep visible until reviewed for part-level stationary-point evidence.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "calculus-cliffs",
-          "reviewed_skill_map_region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_stationary_tangent_normal",
-          "skill_title": "Use derivatives for stationary points, tangents, and normals",
-          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "calculus-cliffs",
-          "app_region_title": "Calculus Cliffs",
-          "blocked_or_risky_reason": "The question contains both an area integral and a maximum-point derivative task.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32spring21_q10",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_int_definite_improper_area:32spring21_q10",
-          "recommended_action": "Keep visible until reviewed for part-level area/integration evidence.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "reviewed_skill_map_region_title": "Integral Terraces",
-          "skill_ref": "p3_int_definite_improper_area",
-          "skill_title": "Evaluate definite and improper integrals exactly",
-          "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "differential-shrine",
-          "app_region_title": "Differential Shrine",
-          "blocked_or_risky_reason": "The question solves a differential equation using partial fractions.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "31summer21_q10",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_int_partial_fractions:31summer21_q10",
-          "recommended_action": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "reviewed_skill_map_region_title": "Integral Terraces",
-          "skill_ref": "p3_int_partial_fractions",
-          "skill_title": "Integrate rational functions using partial fractions",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "algebra-forge",
-          "app_region_title": "Algebra Vault",
-          "blocked_or_risky_reason": "The question combines decomposition and integration evidence.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32spring21_q06",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_int_partial_fractions:32spring21_q06",
-          "recommended_action": "Keep visible until reviewed for part-level integration using partial fractions.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "reviewed_skill_map_region_title": "Integral Terraces",
-          "skill_ref": "p3_int_partial_fractions",
-          "skill_title": "Integrate rational functions using partial fractions",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "algebra-forge",
-          "app_region_title": "Algebra Vault",
-          "blocked_or_risky_reason": "The question may not be valid integration evidence even though partial fractions are present.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32summer21_q09",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_int_partial_fractions:32summer21_q09",
-          "recommended_action": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "reviewed_skill_map_region_title": "Integral Terraces",
-          "skill_ref": "p3_int_partial_fractions",
-          "skill_title": "Integrate rational functions using partial fractions",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "algebra-forge",
-          "app_region_title": "Algebra Vault",
-          "blocked_or_risky_reason": "The current reviewed skill-map route may be too broad without part-level metadata.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "35summer25_q09",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_int_partial_fractions:35summer25_q09",
-          "recommended_action": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "integration-gardens",
-          "reviewed_skill_map_region_title": "Integral Terraces",
-          "skill_ref": "p3_int_partial_fractions",
-          "skill_title": "Integrate rational functions using partial fractions",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "calculus-cliffs",
-          "app_region_title": "Calculus Cliffs",
-          "blocked_or_risky_reason": "The question is an implicit differentiation problem built from a logarithmic relation.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "33autumn21_q07",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_log_calculus_contexts:33autumn21_q07",
-          "recommended_action": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
-          "region_id": "logarithm-grove",
-          "region_title": "Logarithm Observatory",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "logarithm-grove",
-          "reviewed_skill_map_region_title": "Logarithm Observatory",
-          "skill_ref": "p3_log_calculus_contexts",
-          "skill_title": "Handle log and exponential functions inside calculus questions",
-          "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question combines identity proof and integration.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "31summer21_q04",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_trig_identity_selection:31summer21_q04",
-          "recommended_action": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-          "region_id": "trig-observatory",
-          "region_title": "Trigonometry Spire",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "trig-observatory",
-          "reviewed_skill_map_region_title": "Trigonometry Spire",
-          "skill_ref": "p3_trig_identity_selection",
-          "skill_title": "Choose trig identities for proof or simplification",
-          "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question combines identity proof and integration.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32summer21_q06",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_trig_identity_selection:32summer21_q06",
-          "recommended_action": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-          "region_id": "trig-observatory",
-          "region_title": "Trigonometry Spire",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "trig-observatory",
-          "reviewed_skill_map_region_title": "Trigonometry Spire",
-          "skill_ref": "p3_trig_identity_selection",
-          "skill_title": "Choose trig identities for proof or simplification",
-          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
-          "workstream": "mark_scheme_subpart_review"
-        },
-        {
-          "app_region_id": "integration-gardens",
-          "app_region_title": "Integral Terraces",
-          "blocked_or_risky_reason": "The question combines reciprocal trigonometry, double-angle work, and integration.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "teacher_export",
-            "guardian_clearance"
-          ],
-          "category": "deferred_evidence_cases",
-          "evidence_status": "ambiguous_part_level_evidence",
-          "export_allowed": false,
-          "mastery_evidence_allowed": false,
-          "practice_allowed": true,
-          "question_id": "32summer21_q06",
-          "queue_id": "mark_scheme:deferred_evidence_cases:p3_trig_reciprocal_double_angle:32summer21_q06",
-          "recommended_action": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
-          "region_id": "trig-observatory",
-          "region_title": "Trigonometry Spire",
-          "resolution_status": "teacher_review_deferred",
-          "reviewed_skill_map_region_id": "trig-observatory",
-          "reviewed_skill_map_region_title": "Trigonometry Spire",
-          "skill_ref": "p3_trig_reciprocal_double_angle",
-          "skill_title": "Transform reciprocal and double-angle equations safely",
-          "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
-          "workstream": "mark_scheme_subpart_review"
-        }
-      ]
+      "deferred_evidence_cases": []
     },
     "route_correction": {
       "ambiguous_multi_topic_routes": [
@@ -1312,6 +933,248 @@
           "workstream": "route_correction"
         },
         {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q09",
+          "queue_id": "route:audited_route_decisions:p3_diff_chain_product_quotient:31summer21_q09",
+          "rationale": "Part (a) asks for a stationary point of y = x^(-2/3) ln x, and the mark scheme explicitly rewards the product or quotient rule, the correct derivative, and solving dy/dx = 0.",
+          "recommended_action": "Accept this as clean product-rule differentiation evidence while keeping the log and integration context visible as separate support.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "skill_title": "Apply chain, product, and quotient rules accurately",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "33summer21_q08",
+          "queue_id": "route:audited_route_decisions:p3_diff_chain_product_quotient:33summer21_q08",
+          "rationale": "Part (a) asks for the exact coordinates of the maximum point of y = ln x / x^4, and the mark scheme rewards using the quotient or product rule, forming the derivative, and setting it to zero.",
+          "recommended_action": "Accept this as clean product/quotient-rule differentiation evidence from the maximum-point subpart.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "skill_title": "Apply chain, product, and quotient rules accurately",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped calculus label with stationary-point subtopic.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35summer25_q04",
+          "queue_id": "route:audited_route_decisions:p3_diff_chain_product_quotient:35summer25_q04",
+          "rationale": "The prompt is y = 3x^3 ln(x^4), and the mark scheme rewards differentiating the logarithmic product before solving for the stationary point.",
+          "recommended_action": "Accept this as clean product-rule differentiation evidence inside a logarithmic stationary-point task.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "skill_title": "Apply chain, product, and quotient rules accurately",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "Local topic is parametric_equations and DeepSeek/app routing emphasize integration, while part (a) requires differentiating tan^-1(4x).",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35summer25_q07",
+          "queue_id": "route:audited_route_decisions:p3_diff_chain_product_quotient:35summer25_q07",
+          "rationale": "Part (a) asks for exact x-values where the gradient of y = tan^-1(4x) is 1/4, and the mark scheme rewards differentiating to obtain 4/(1+16x^2).",
+          "recommended_action": "Accept this as clean chain-rule differentiation evidence from part (a); keep the integration-by-parts subpart represented by its own integration evidence.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_chain_product_quotient",
+          "skill_title": "Apply chain, product, and quotient rules accurately",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q09",
+          "queue_id": "route:audited_route_decisions:p3_diff_implicit_log_exp:31summer21_q09",
+          "rationale": "The question uses a logarithmic expression, but the differentiation is explicit product-rule differentiation of y = x^(-2/3) ln x, not implicit differentiation.",
+          "recommended_action": "Remove this question from implicit log/exponential differentiation evidence; keep it under product-rule, stationary-point, and log-calculus context evidence instead.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "corrected_skill_map",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "skill_title": "Differentiate implicit log or exponential relations",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local and DeepSeek labels are logarithms_and_exponentials; the reviewed skill is implicit differentiation.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn21_q09",
+          "queue_id": "route:audited_route_decisions:p3_diff_implicit_log_exp:32autumn21_q09",
+          "rationale": "The mark scheme rewards implicit differentiation of an exponential relation and then uses the derivative to identify the vertical tangent point.",
+          "recommended_action": "Accept this as clean implicit differentiation evidence with exponential structure.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "skill_title": "Differentiate implicit log or exponential relations",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local and DeepSeek labels are logarithms_and_exponentials; DeepSeek subtopic is implicit_differentiation.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35autumn25_q04",
+          "queue_id": "route:audited_route_decisions:p3_diff_implicit_log_exp:35autumn25_q04",
+          "rationale": "The question asks for the gradient of a curve defined by logarithmic products, and the mark scheme rewards differentiating those terms implicitly.",
+          "recommended_action": "Accept this as clean implicit differentiation evidence with logarithmic structure.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_implicit_log_exp",
+          "skill_title": "Differentiate implicit log or exponential relations",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q09",
+          "queue_id": "route:audited_route_decisions:p3_diff_stationary_tangent_normal:31summer21_q09",
+          "rationale": "Part (a) asks for the exact coordinates of the stationary point, and the mark scheme rewards forming the derivative, setting it to zero, and finding x and y exactly.",
+          "recommended_action": "Accept this as clean stationary-point evidence in a logarithmic curve context.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "skill_title": "Use derivatives for stationary points, tangents, and normals",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "numerical-mines",
+          "app_region_title": "Iteration Forge",
+          "blocked_or_risky_reason": "Local and DeepSeek labels are numerical_methods; the first subpart asks for derivative evidence.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn21_q11",
+          "queue_id": "route:audited_route_decisions:p3_diff_stationary_tangent_normal:32autumn21_q11",
+          "rationale": "The question verifies dy/dx = 1 and derives an iteration formula, but it does not ask for a stationary point, tangent line, or normal line.",
+          "recommended_action": "Remove this question from stationary-point, tangent, and normal evidence; keep it under numerical iteration and related derivative-context support only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "corrected_skill_map",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "skill_title": "Use derivatives for stationary points, tangents, and normals",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "33summer21_q08",
+          "queue_id": "route:audited_route_decisions:p3_diff_stationary_tangent_normal:33summer21_q08",
+          "rationale": "The question identifies a maximum point M, and the mark scheme rewards differentiating, setting the derivative to zero, and finding the exact coordinates.",
+          "recommended_action": "Accept this as clean stationary-point evidence from the maximum-point subpart.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "skill_title": "Use derivatives for stationary points, tangents, and normals",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "Local topic is parametric_equations and DeepSeek/app routing emphasize integration, while part (a) asks for points with a specified gradient.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35summer25_q07",
+          "queue_id": "route:audited_route_decisions:p3_diff_stationary_tangent_normal:35summer25_q07",
+          "rationale": "The question asks when the gradient has a given value; it does not ask for a stationary point, tangent line, or normal line.",
+          "recommended_action": "Remove this question from stationary-point, tangent, and normal evidence.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "resolution_status": "corrected_skill_map",
+          "reviewed_skill_map_region_id": "calculus-cliffs",
+          "reviewed_skill_map_region_title": "Calculus Cliffs",
+          "skill_ref": "p3_diff_stationary_tangent_normal",
+          "skill_title": "Use derivatives for stationary points, tangents, and normals",
+          "workstream": "route_correction"
+        },
+        {
           "app_region_id": "algebra-forge",
           "app_region_title": "Algebra Vault",
           "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions, while the reviewed skill is forming a context model.",
@@ -1331,6 +1194,292 @@
           "reviewed_skill_map_region_title": "Differential Shrine",
           "skill_ref": "p3_de_forming_context_model",
           "skill_title": "Form differential equations from rate contexts",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "calculus-cliffs",
+          "app_region_title": "Calculus Cliffs",
+          "blocked_or_risky_reason": "Local topic is parametric_equations, but the canonical question and mark scheme are a separable differential equation with an initial condition.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32spring21_q04",
+          "queue_id": "route:audited_route_decisions:p3_de_separation_setup:32spring21_q04",
+          "rationale": "The question asks students to solve (1 - cos x) dy/dx = y sin x and the mark scheme rewards separating variables, integrating both sides, and using y = 4 when x = pi.",
+          "recommended_action": "Keep this as clean separation-of-variables evidence under Differential Shrine.",
+          "region_id": "differential-shrine",
+          "region_title": "Differential Shrine",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "differential-shrine",
+          "reviewed_skill_map_region_title": "Differential Shrine",
+          "skill_ref": "p3_de_separation_setup",
+          "skill_title": "Separate variables before integrating",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "calculus-cliffs",
+          "app_region_title": "Calculus Cliffs",
+          "blocked_or_risky_reason": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32spring21_q10",
+          "queue_id": "route:audited_route_decisions:p3_int_definite_improper_area:32spring21_q10",
+          "rationale": "Part (a) asks for the exact area under the curve, and the mark scheme rewards using the substitution, forming the definite integral, applying limits, and obtaining the exact area.",
+          "recommended_action": "Accept this as clean definite-area evidence from the area subpart.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_definite_improper_area",
+          "skill_title": "Evaluate definite and improper integrals exactly",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "33summer21_q04",
+          "queue_id": "route:audited_route_decisions:p3_int_definite_improper_area:33summer21_q04",
+          "rationale": "The question asks students to evaluate a definite integral after decomposition, and the mark scheme rewards integrating logarithmic terms and substituting limits.",
+          "recommended_action": "Accept this as clean definite-integration evidence after partial fractions.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_definite_improper_area",
+          "skill_title": "Evaluate definite and improper integrals exactly",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q10",
+          "queue_id": "route:audited_route_decisions:p3_int_partial_fractions:31summer21_q10",
+          "rationale": "The prompt explicitly says to solve the differential equation using partial fractions, and the mark scheme rewards choosing a partial-fraction form, finding constants, separating variables, and integrating the resulting terms.",
+          "recommended_action": "Accept this as clean partial-fractions integration evidence inside a differential-equation solve.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_partial_fractions",
+          "skill_title": "Integrate rational functions using partial fractions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32spring21_q06",
+          "queue_id": "route:audited_route_decisions:p3_int_partial_fractions:32spring21_q06",
+          "rationale": "Part (a) requires partial-fraction decomposition and part (b) uses it to evaluate a definite integral; the mark scheme rewards both decomposition and logarithmic integration.",
+          "recommended_action": "Accept this as clean integration-using-partial-fractions evidence.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_partial_fractions",
+          "skill_title": "Integrate rational functions using partial fractions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32summer21_q09",
+          "queue_id": "route:audited_route_decisions:p3_int_partial_fractions:32summer21_q09",
+          "rationale": "The prompt asks for partial fractions and a series expansion. The mark scheme does not ask students to integrate the partial fractions.",
+          "recommended_action": "Remove this question from integration-using-partial-fractions evidence; it belongs to partial-fraction algebra/binomial-expansion support, not integration mastery.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "corrected_skill_map",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_partial_fractions",
+          "skill_title": "Integrate rational functions using partial fractions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions integration using partial fractions.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "33summer21_q04",
+          "queue_id": "route:audited_route_decisions:p3_int_partial_fractions:33summer21_q04",
+          "rationale": "The question combines partial-fraction decomposition with an exact definite integral, and the mark scheme rewards decomposition, integration, and limit substitution.",
+          "recommended_action": "Accept this as clean integration-using-partial-fractions evidence.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_partial_fractions",
+          "skill_title": "Integrate rational functions using partial fractions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "algebra-forge",
+          "app_region_title": "Algebra Vault",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35summer25_q09",
+          "queue_id": "route:audited_route_decisions:p3_int_partial_fractions:35summer25_q09",
+          "rationale": "The prompt asks for partial fractions and a series expansion. The mark scheme rewards decomposition and expansion, not integrating the rational function.",
+          "recommended_action": "Remove this question from integration-using-partial-fractions evidence; it belongs to partial-fraction algebra/binomial-expansion support, not integration mastery.",
+          "region_id": "integration-gardens",
+          "region_title": "Integral Terraces",
+          "resolution_status": "corrected_skill_map",
+          "reviewed_skill_map_region_id": "integration-gardens",
+          "reviewed_skill_map_region_title": "Integral Terraces",
+          "skill_ref": "p3_int_partial_fractions",
+          "skill_title": "Integrate rational functions using partial fractions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights integration, but the canonical question is a logarithmic curve used in differentiation and integration contexts.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q09",
+          "queue_id": "route:audited_route_decisions:p3_log_calculus_contexts:31summer21_q09",
+          "rationale": "The prompt and mark scheme require differentiating and integrating y = x^(-2/3) ln x, so the logarithmic context is the central feature of the calculus task.",
+          "recommended_action": "Keep this as clean log-calculus context evidence.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "reviewed_skill_map_region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights differentiation, but the equation contains exponential terms throughout the implicit differentiation task.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn21_q09",
+          "queue_id": "route:audited_route_decisions:p3_log_calculus_contexts:32autumn21_q09",
+          "rationale": "The mark scheme rewards implicit differentiation of y e^(2x) - y^2 e^x = 2 and uses exponential structure again when finding the vertical tangent point.",
+          "recommended_action": "Keep this as clean log/exponential calculus-context evidence.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "reviewed_skill_map_region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "calculus-cliffs",
+          "app_region_title": "Calculus Cliffs",
+          "blocked_or_risky_reason": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "33autumn21_q07",
+          "queue_id": "route:audited_route_decisions:p3_log_calculus_contexts:33autumn21_q07",
+          "rationale": "The equation is ln(x + y) = x - 2y, and the mark scheme rewards implicit differentiation of the logarithmic relation before using the derivative condition.",
+          "recommended_action": "Accept this as clean log-calculus context evidence.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "reviewed_skill_map_region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "DeepSeek subtopic is implicit differentiation, but the equation is built from logarithmic products.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35autumn25_q04",
+          "queue_id": "route:audited_route_decisions:p3_log_calculus_contexts:35autumn25_q04",
+          "rationale": "The question asks for the gradient of a curve defined by x^2 ln(2y) - y ln(2 + x^2) = ln 6, and the mark scheme rewards differentiating logarithmic products implicitly.",
+          "recommended_action": "Keep this as clean log-calculus context evidence.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "reviewed_skill_map_region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "logarithm-grove",
+          "app_region_title": "Logarithm Observatory",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights differentiation, but the canonical task is a stationary-point problem on a logarithmic curve.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "35summer25_q04",
+          "queue_id": "route:audited_route_decisions:p3_log_calculus_contexts:35summer25_q04",
+          "rationale": "The prompt is y = 3x^3 ln(x^4), x > 0, and the mark scheme rewards product-rule differentiation of the logarithmic expression before solving for the stationary point.",
+          "recommended_action": "Keep this as clean log-calculus context evidence.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "logarithm-grove",
+          "reviewed_skill_map_region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
           "workstream": "route_correction"
         },
         {
@@ -1356,6 +1505,28 @@
           "workstream": "route_correction"
         },
         {
+          "app_region_id": "numerical-mines",
+          "app_region_title": "Iteration Forge",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights differentiation, but the later subparts form and use an iteration formula.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn21_q11",
+          "queue_id": "route:audited_route_decisions:p3_num_iteration_formula:32autumn21_q11",
+          "rationale": "The question explicitly gives an iterative formula based on the derived equation and the mark scheme rewards repeated iteration to justify a 2 decimal place answer.",
+          "recommended_action": "Keep this as clean numerical iteration-formula evidence.",
+          "region_id": "numerical-mines",
+          "region_title": "Iteration Forge",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "numerical-mines",
+          "reviewed_skill_map_region_title": "Iteration Forge",
+          "skill_ref": "p3_num_iteration_formula",
+          "skill_title": "Apply an iteration formula consistently",
+          "workstream": "route_correction"
+        },
+        {
           "app_region_id": "differential-shrine",
           "app_region_title": "Differential Shrine",
           "blocked_or_risky_reason": "Local topic was numerical_methods, while DeepSeek/app routing identify differential equations.",
@@ -1375,6 +1546,160 @@
           "reviewed_skill_map_region_title": "Iteration Forge",
           "skill_ref": "p3_num_iteration_formula",
           "skill_title": "Apply an iteration formula consistently",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "numerical-mines",
+          "app_region_title": "Iteration Forge",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights differentiation, but part (b) asks students to verify a bracket before iteration.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q07",
+          "queue_id": "route:audited_route_decisions:p3_num_sign_change_graph_evidence:31summer21_q07",
+          "rationale": "The question asks students to verify by calculation that the root lies between 1.3 and 1.5, then use an iterative formula; the mark scheme rewards the interval verification and iterations.",
+          "recommended_action": "Keep this as clean numerical bracket/iteration evidence.",
+          "region_id": "numerical-mines",
+          "region_title": "Iteration Forge",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "numerical-mines",
+          "reviewed_skill_map_region_title": "Iteration Forge",
+          "skill_ref": "p3_num_sign_change_graph_evidence",
+          "skill_title": "Justify roots using sign changes or graph evidence",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "31summer21_q04",
+          "queue_id": "route:audited_route_decisions:p3_trig_identity_selection:31summer21_q04",
+          "rationale": "Part (a) asks students to prove a double-angle identity, and the mark scheme rewards using the correct double-angle formula before the integral subpart.",
+          "recommended_action": "Accept this as clean trigonometric identity-selection evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_identity_selection",
+          "skill_title": "Choose trig identities for proof or simplification",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "trig-observatory",
+          "app_region_title": "Trigonometry Spire",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights integration, but the question begins with a trigonometric identity proof used by the integral.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn21_q06",
+          "queue_id": "route:audited_route_decisions:p3_trig_identity_selection:32autumn21_q06",
+          "rationale": "Part (a) asks for an identity proof using sine expansions, and the mark scheme rewards the identity before part (b) uses it for integration.",
+          "recommended_action": "Keep this as clean trigonometric identity-selection evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_identity_selection",
+          "skill_title": "Choose trig identities for proof or simplification",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "trig-observatory",
+          "app_region_title": "Trigonometry Spire",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights integration, but the question begins with a double-angle identity proof.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn25_q08",
+          "queue_id": "route:audited_route_decisions:p3_trig_identity_selection:32autumn25_q08",
+          "rationale": "Part (a) asks students to prove sin 4x = 4 sin x(2 cos^3 x - cos x), and the mark scheme rewards double-angle formula selection before the integral.",
+          "recommended_action": "Keep this as clean trigonometric identity-selection evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_identity_selection",
+          "skill_title": "Choose trig identities for proof or simplification",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32summer21_q06",
+          "queue_id": "route:audited_route_decisions:p3_trig_identity_selection:32summer21_q06",
+          "rationale": "Part (a) asks students to prove cosec 2\u03b8 - cot 2\u03b8 = tan \u03b8, and the mark scheme rewards choosing reciprocal and double-angle transformations.",
+          "recommended_action": "Accept this as clean trigonometric identity-selection evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_identity_selection",
+          "skill_title": "Choose trig identities for proof or simplification",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "trig-observatory",
+          "app_region_title": "Trigonometry Spire",
+          "blocked_or_risky_reason": "DeepSeek/app routing highlights integration, but the identity proof is a double-angle transformation.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32autumn25_q08",
+          "queue_id": "route:audited_route_decisions:p3_trig_reciprocal_double_angle:32autumn25_q08",
+          "rationale": "The mark scheme rewards using double-angle formulae to transform sin 4x into the required expression before the integration subpart.",
+          "recommended_action": "Keep this as clean reciprocal/double-angle evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_reciprocal_double_angle",
+          "skill_title": "Transform reciprocal and double-angle equations safely",
+          "workstream": "route_correction"
+        },
+        {
+          "app_region_id": "integration-gardens",
+          "app_region_title": "Integral Terraces",
+          "blocked_or_risky_reason": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof.",
+          "blocked_use_cases": [
+            "content_correction_without_audit_check",
+            "mastery_evidence"
+          ],
+          "category": "audited_route_decisions",
+          "question_id": "32summer21_q06",
+          "queue_id": "route:audited_route_decisions:p3_trig_reciprocal_double_angle:32summer21_q06",
+          "rationale": "The mark scheme rewards expressing cosec 2\u03b8 and cot 2\u03b8 in sine/cosine form and using double-angle formulae to obtain tan \u03b8.",
+          "recommended_action": "Accept this as clean reciprocal/double-angle evidence.",
+          "region_id": "trig-observatory",
+          "region_title": "Trigonometry Spire",
+          "resolution_status": "validated_skill_map_route",
+          "reviewed_skill_map_region_id": "trig-observatory",
+          "reviewed_skill_map_region_title": "Trigonometry Spire",
+          "skill_ref": "p3_trig_reciprocal_double_angle",
+          "skill_title": "Transform reciprocal and double-angle equations safely",
           "workstream": "route_correction"
         }
       ],
@@ -6472,700 +6797,7 @@
       ]
     },
     "support_content_gaps": {
-      "weak_or_missing_skill_support": [
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: mastery_evidence_blocked_by_routing_audit, no_clean_mastery_evidence, unreviewed_app_region_mismatch; no clean mastery evidence",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 0,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_alg_discriminant_root_conditions",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "algebra-forge",
-          "region_title": "Algebra Vault",
-          "skill_ref": "p3_alg_discriminant_root_conditions",
-          "skill_title": "Use discriminant or root conditions as evidence",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_alg_partial_fraction_form",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "algebra-forge",
-          "region_title": "Algebra Vault",
-          "skill_ref": "p3_alg_partial_fraction_form",
-          "skill_title": "Set up partial fractions from denominator structure",
-          "support_gaps": [],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_alg_polynomial_remainder_factor",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "algebra-forge",
-          "region_title": "Algebra Vault",
-          "skill_ref": "p3_alg_polynomial_remainder_factor",
-          "skill_title": "Use polynomial division and remainder or factor theorem evidence",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: mastery_evidence_blocked_by_routing_audit, no_clean_mastery_evidence, unreviewed_app_region_mismatch; no clean mastery evidence",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 0,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_alg_structure_rearrangement",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "algebra-forge",
-          "region_title": "Algebra Vault",
-          "skill_ref": "p3_alg_structure_rearrangement",
-          "skill_title": "Choose algebraic structure before expanding",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 2,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 2,
-          "queue_id": "support:weak_or_missing_skill_support:p3_diff_chain_product_quotient",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_chain_product_quotient",
-          "skill_title": "Apply chain, product, and quotient rules accurately",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: quick_check, warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 3,
-          "correction_priority": "P1_missing_core_support",
-          "coverage_status": "needs_teacher_review",
-          "deferred_evidence_count": 1,
-          "queue_id": "support:weak_or_missing_skill_support:p3_diff_implicit_log_exp",
-          "recommended_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_implicit_log_exp",
-          "skill_title": "Differentiate implicit log or exponential relations",
-          "support_gaps": [
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_diff_method_selection",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_method_selection",
-          "skill_title": "Name the differentiation method before differentiating",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_diff_parametric_gradients",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_parametric_gradients",
-          "skill_title": "Differentiate parametric equations using the derivative ratio",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 2,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 2,
-          "queue_id": "support:weak_or_missing_skill_support:p3_diff_stationary_tangent_normal",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "skill_ref": "p3_diff_stationary_tangent_normal",
-          "skill_title": "Use derivatives for stationary points, tangents, and normals",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_complex_argand_loci_regions",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "complex-harbor",
-          "region_title": "Argand Atrium",
-          "skill_ref": "p3_complex_argand_loci_regions",
-          "skill_title": "Interpret loci and regions on an Argand diagram",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_complex_cartesian_conjugate",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "complex-harbor",
-          "region_title": "Argand Atrium",
-          "skill_ref": "p3_complex_cartesian_conjugate",
-          "skill_title": "Use Cartesian complex arithmetic and conjugates",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_complex_modulus_argument_form",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "complex-harbor",
-          "region_title": "Argand Atrium",
-          "skill_ref": "p3_complex_modulus_argument_form",
-          "skill_title": "Move between Cartesian and modulus-argument form",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: quick_check, warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P1_missing_core_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_complex_roots_powers",
-          "recommended_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
-          "region_id": "complex-harbor",
-          "region_title": "Argand Atrium",
-          "skill_ref": "p3_complex_roots_powers",
-          "skill_title": "Find complex powers and roots using the suitable form",
-          "support_gaps": [
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: quick_check, warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P1_missing_core_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_de_forming_context_model",
-          "recommended_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
-          "region_id": "differential-shrine",
-          "region_title": "Differential Shrine",
-          "skill_ref": "p3_de_forming_context_model",
-          "skill_title": "Form differential equations from rate contexts",
-          "support_gaps": [
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_de_initial_condition",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "differential-shrine",
-          "region_title": "Differential Shrine",
-          "skill_ref": "p3_de_initial_condition",
-          "skill_title": "Apply initial conditions after integration",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_de_separation_setup",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "differential-shrine",
-          "region_title": "Differential Shrine",
-          "skill_ref": "p3_de_separation_setup",
-          "skill_title": "Separate variables before integrating",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: quick_check, warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P1_missing_core_support",
-          "coverage_status": "needs_teacher_review",
-          "deferred_evidence_count": 1,
-          "queue_id": "support:weak_or_missing_skill_support:p3_int_definite_improper_area",
-          "recommended_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "skill_ref": "p3_int_definite_improper_area",
-          "skill_title": "Evaluate definite and improper integrals exactly",
-          "support_gaps": [
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_int_method_choice",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "skill_ref": "p3_int_method_choice",
-          "skill_title": "Choose a direct rule, substitution, parts, or algebraic rewrite",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_int_parts_substitution",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "skill_ref": "p3_int_parts_substitution",
-          "skill_title": "Use integration by parts or substitution with correct setup",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: snippet, worked_example, quick_check, warm_up; blocking reasons: all_available_evidence_deferred, mastery_evidence_blocked_by_routing_audit, no_clean_mastery_evidence, unreviewed_app_region_mismatch; no clean mastery evidence",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 0,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 1,
-          "queue_id": "support:weak_or_missing_skill_support:p3_log_calculus_contexts",
-          "recommended_action": "Find or review clean P3 canonical mastery evidence before claiming mastery.",
-          "region_id": "logarithm-grove",
-          "region_title": "Logarithm Observatory",
-          "skill_ref": "p3_log_calculus_contexts",
-          "skill_title": "Handle log and exponential functions inside calculus questions",
-          "support_gaps": [
-            "snippet",
-            "worked_example",
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_log_domain_validation",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "logarithm-grove",
-          "region_title": "Logarithm Observatory",
-          "skill_ref": "p3_log_domain_validation",
-          "skill_title": "Reject invalid logarithmic roots using domain checks",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 3,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_log_linearisation",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "logarithm-grove",
-          "region_title": "Logarithm Observatory",
-          "skill_ref": "p3_log_linearisation",
-          "skill_title": "Linearise logarithmic or exponential relationships",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_num_accuracy_rounding",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "numerical-mines",
-          "region_title": "Iteration Forge",
-          "skill_ref": "p3_num_accuracy_rounding",
-          "skill_title": "Control accuracy and rounding in numerical solutions",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 3,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_num_iteration_formula",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "numerical-mines",
-          "region_title": "Iteration Forge",
-          "skill_ref": "p3_num_iteration_formula",
-          "skill_title": "Apply an iteration formula consistently",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up; blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 4,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_num_sign_change_graph_evidence",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "numerical-mines",
-          "region_title": "Iteration Forge",
-          "skill_ref": "p3_num_sign_change_graph_evidence",
-          "skill_title": "Justify roots using sign changes or graph evidence",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 1,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 2,
-          "queue_id": "support:weak_or_missing_skill_support:p3_trig_identity_selection",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "trig-observatory",
-          "region_title": "Trigonometry Spire",
-          "skill_ref": "p3_trig_identity_selection",
-          "skill_title": "Choose trig identities for proof or simplification",
-          "support_gaps": [],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "blocking reasons: unreviewed_app_region_mismatch",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 3,
-          "correction_priority": "P0_blocked_mastery",
-          "coverage_status": "blocked_for_mastery",
-          "deferred_evidence_count": 1,
-          "queue_id": "support:weak_or_missing_skill_support:p3_trig_reciprocal_double_angle",
-          "recommended_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
-          "region_id": "trig-observatory",
-          "region_title": "Trigonometry Spire",
-          "skill_ref": "p3_trig_reciprocal_double_angle",
-          "skill_title": "Transform reciprocal and double-angle equations safely",
-          "support_gaps": [],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: quick_check, warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P1_missing_core_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_vec_3d_geometry_modelling",
-          "recommended_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
-          "region_id": "vector-workshop",
-          "region_title": "Vectors Gate",
-          "skill_ref": "p3_vec_3d_geometry_modelling",
-          "skill_title": "Translate 3D geometric conditions into vector equations",
-          "support_gaps": [
-            "quick_check",
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_vec_line_equations_intersections",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "vector-workshop",
-          "region_title": "Vectors Gate",
-          "skill_ref": "p3_vec_line_equations_intersections",
-          "skill_title": "Form and compare vector equations of lines",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        },
-        {
-          "blocked_or_risky_reason": "missing support: warm_up",
-          "blocked_use_cases": [
-            "region_completion_claims",
-            "content_correction_signoff",
-            "mastery_evidence"
-          ],
-          "category": "weak_or_missing_skill_support",
-          "clean_mastery_evidence_count": 5,
-          "correction_priority": "P2_missing_practice_support",
-          "coverage_status": "missing_support",
-          "deferred_evidence_count": 0,
-          "queue_id": "support:weak_or_missing_skill_support:p3_vec_scalar_product_angles",
-          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
-          "region_id": "vector-workshop",
-          "region_title": "Vectors Gate",
-          "skill_ref": "p3_vec_scalar_product_angles",
-          "skill_title": "Use scalar products for angles and perpendicular conditions",
-          "support_gaps": [
-            "warm_up"
-          ],
-          "workstream": "support_content_gaps"
-        }
-      ]
+      "weak_or_missing_skill_support": []
     },
     "text_review": {
       "routing_text_or_visual_blockers": [
@@ -9710,50 +9342,45 @@
   "queue_summary": {
     "queue_counts": {
       "mark_scheme_subpart_review": {
-        "deferred_evidence_cases": 14
+        "deferred_evidence_cases": 0
       },
       "route_correction": {
         "ambiguous_multi_topic_routes": 14,
-        "audited_route_decisions": 10,
+        "audited_route_decisions": 42,
         "fallback_display_only_region_placements": 53,
         "missing_p3_routes": 53,
         "review_needed_routes": 12
       },
       "support_content_gaps": {
-        "weak_or_missing_skill_support": 30
+        "weak_or_missing_skill_support": 0
       },
       "text_review": {
         "routing_text_or_visual_blockers": 59
       }
     },
-    "total_queue_item_count": 245,
-    "unique_question_count": 91,
-    "unique_skill_count": 32
+    "total_queue_item_count": 233,
+    "unique_question_count": 97,
+    "unique_skill_count": 16
   },
   "region_summary": [
     {
       "categories": {
         "ambiguous_multi_topic_routes": 2,
-        "deferred_evidence_cases": 5,
+        "audited_route_decisions": 11,
         "fallback_display_only_region_placements": 14,
         "missing_p3_routes": 14,
-        "routing_text_or_visual_blockers": 14,
-        "weak_or_missing_skill_support": 5
+        "routing_text_or_visual_blockers": 14
       },
-      "issue_count": 54,
+      "issue_count": 55,
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_refs": [
         "p3_diff_chain_product_quotient",
         "p3_diff_implicit_log_exp",
-        "p3_diff_method_selection",
-        "p3_diff_parametric_gradients",
         "p3_diff_stationary_tangent_normal"
       ],
       "workstreams": {
-        "mark_scheme_subpart_review": 5,
-        "route_correction": 30,
-        "support_content_gaps": 5,
+        "route_correction": 41,
         "text_review": 14
       }
     },
@@ -9763,132 +9390,91 @@
         "fallback_display_only_region_placements": 11,
         "missing_p3_routes": 11,
         "review_needed_routes": 1,
-        "routing_text_or_visual_blockers": 12,
-        "weak_or_missing_skill_support": 4
+        "routing_text_or_visual_blockers": 12
       },
-      "issue_count": 46,
+      "issue_count": 42,
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_refs": [
         "p3_alg_discriminant_root_conditions",
         "p3_alg_modulus_cases",
-        "p3_alg_partial_fraction_form",
-        "p3_alg_polynomial_remainder_factor",
         "p3_alg_structure_rearrangement"
       ],
       "workstreams": {
         "route_correction": 30,
-        "support_content_gaps": 4,
         "text_review": 12
       }
     },
     {
       "categories": {
         "ambiguous_multi_topic_routes": 2,
-        "audited_route_decisions": 1,
+        "audited_route_decisions": 3,
         "fallback_display_only_region_placements": 5,
         "missing_p3_routes": 5,
         "review_needed_routes": 3,
-        "routing_text_or_visual_blockers": 8,
-        "weak_or_missing_skill_support": 3
+        "routing_text_or_visual_blockers": 8
       },
-      "issue_count": 27,
+      "issue_count": 26,
       "region_id": "numerical-mines",
       "region_title": "Iteration Forge",
       "skill_refs": [
-        "p3_num_accuracy_rounding",
         "p3_num_iteration_formula",
         "p3_num_sign_change_graph_evidence"
       ],
       "workstreams": {
-        "route_correction": 16,
-        "support_content_gaps": 3,
+        "route_correction": 18,
         "text_review": 8
       }
     },
     {
       "categories": {
         "ambiguous_multi_topic_routes": 9,
-        "deferred_evidence_cases": 5,
+        "audited_route_decisions": 7,
         "fallback_display_only_region_placements": 1,
         "missing_p3_routes": 1,
         "review_needed_routes": 5,
-        "routing_text_or_visual_blockers": 2,
-        "weak_or_missing_skill_support": 3
+        "routing_text_or_visual_blockers": 2
       },
-      "issue_count": 26,
+      "issue_count": 25,
       "region_id": "integration-gardens",
       "region_title": "Integral Terraces",
       "skill_refs": [
         "p3_int_definite_improper_area",
-        "p3_int_method_choice",
-        "p3_int_partial_fractions",
-        "p3_int_parts_substitution"
+        "p3_int_partial_fractions"
       ],
       "workstreams": {
-        "mark_scheme_subpart_review": 5,
-        "route_correction": 16,
-        "support_content_gaps": 3,
+        "route_correction": 23,
         "text_review": 2
       }
     },
     {
       "categories": {
+        "audited_route_decisions": 6,
         "fallback_display_only_region_placements": 6,
         "missing_p3_routes": 6,
-        "review_needed_routes": 1,
-        "routing_text_or_visual_blockers": 7,
-        "weak_or_missing_skill_support": 4
+        "routing_text_or_visual_blockers": 6
       },
       "issue_count": 24,
-      "region_id": "complex-harbor",
-      "region_title": "Argand Atrium",
-      "skill_refs": [
-        "p3_complex_argand_loci_regions",
-        "p3_complex_cartesian_conjugate",
-        "p3_complex_modulus_argument_form",
-        "p3_complex_roots_powers"
-      ],
-      "workstreams": {
-        "route_correction": 13,
-        "support_content_gaps": 4,
-        "text_review": 7
-      }
-    },
-    {
-      "categories": {
-        "audited_route_decisions": 1,
-        "deferred_evidence_cases": 1,
-        "fallback_display_only_region_placements": 6,
-        "missing_p3_routes": 6,
-        "routing_text_or_visual_blockers": 6,
-        "weak_or_missing_skill_support": 3
-      },
-      "issue_count": 23,
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_refs": [
         "p3_log_calculus_contexts",
-        "p3_log_domain_validation",
         "p3_log_linearisation"
       ],
       "workstreams": {
-        "mark_scheme_subpart_review": 1,
-        "route_correction": 13,
-        "support_content_gaps": 3,
+        "route_correction": 18,
         "text_review": 6
       }
     },
     {
       "categories": {
-        "deferred_evidence_cases": 3,
+        "audited_route_decisions": 6,
         "fallback_display_only_region_placements": 5,
         "missing_p3_routes": 5,
         "review_needed_routes": 1,
-        "routing_text_or_visual_blockers": 5,
-        "weak_or_missing_skill_support": 2
+        "routing_text_or_visual_blockers": 5
       },
-      "issue_count": 21,
+      "issue_count": 22,
       "region_id": "trig-observatory",
       "region_title": "Trigonometry Spire",
       "skill_refs": [
@@ -9896,51 +9482,56 @@
         "p3_trig_reciprocal_double_angle"
       ],
       "workstreams": {
-        "mark_scheme_subpart_review": 3,
-        "route_correction": 11,
-        "support_content_gaps": 2,
+        "route_correction": 17,
         "text_review": 5
+      }
+    },
+    {
+      "categories": {
+        "fallback_display_only_region_placements": 6,
+        "missing_p3_routes": 6,
+        "review_needed_routes": 1,
+        "routing_text_or_visual_blockers": 7
+      },
+      "issue_count": 20,
+      "region_id": "complex-harbor",
+      "region_title": "Argand Atrium",
+      "skill_refs": [],
+      "workstreams": {
+        "route_correction": 13,
+        "text_review": 7
       }
     },
     {
       "categories": {
         "fallback_display_only_region_placements": 5,
         "missing_p3_routes": 5,
-        "routing_text_or_visual_blockers": 5,
-        "weak_or_missing_skill_support": 3
+        "routing_text_or_visual_blockers": 5
       },
-      "issue_count": 18,
+      "issue_count": 15,
       "region_id": "vector-workshop",
       "region_title": "Vectors Gate",
-      "skill_refs": [
-        "p3_vec_3d_geometry_modelling",
-        "p3_vec_line_equations_intersections",
-        "p3_vec_scalar_product_angles"
-      ],
+      "skill_refs": [],
       "workstreams": {
         "route_correction": 10,
-        "support_content_gaps": 3,
         "text_review": 5
       }
     },
     {
       "categories": {
         "ambiguous_multi_topic_routes": 1,
-        "audited_route_decisions": 1,
-        "review_needed_routes": 1,
-        "weak_or_missing_skill_support": 3
+        "audited_route_decisions": 2,
+        "review_needed_routes": 1
       },
-      "issue_count": 6,
+      "issue_count": 4,
       "region_id": "differential-shrine",
       "region_title": "Differential Shrine",
       "skill_refs": [
         "p3_de_forming_context_model",
-        "p3_de_initial_condition",
         "p3_de_separation_setup"
       ],
       "workstreams": {
-        "route_correction": 3,
-        "support_content_gaps": 3
+        "route_correction": 4
       }
     }
   ],
@@ -9949,10 +9540,106 @@
   "skill_summary": [
     {
       "categories": {
-        "audited_route_decisions": 3,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 5
+      },
+      "issue_count": 5,
+      "question_ids": [
+        "31summer21_q10",
+        "32spring21_q06",
+        "32summer21_q09",
+        "33summer21_q04",
+        "35summer25_q09"
+      ],
+      "region_id": "integration-gardens",
+      "region_title": "Integral Terraces",
+      "skill_ref": "p3_int_partial_fractions",
+      "skill_title": "Integrate rational functions using partial fractions",
+      "workstreams": {
+        "route_correction": 5
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 5
+      },
+      "issue_count": 5,
+      "question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "35summer25_q04"
+      ],
+      "region_id": "logarithm-grove",
+      "region_title": "Logarithm Observatory",
+      "skill_ref": "p3_log_calculus_contexts",
+      "skill_title": "Handle log and exponential functions inside calculus questions",
+      "workstreams": {
+        "route_correction": 5
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 4
       },
       "issue_count": 4,
+      "question_ids": [
+        "31summer21_q09",
+        "33summer21_q08",
+        "35summer25_q04",
+        "35summer25_q07"
+      ],
+      "region_id": "calculus-cliffs",
+      "region_title": "Calculus Cliffs",
+      "skill_ref": "p3_diff_chain_product_quotient",
+      "skill_title": "Apply chain, product, and quotient rules accurately",
+      "workstreams": {
+        "route_correction": 4
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 4
+      },
+      "issue_count": 4,
+      "question_ids": [
+        "31summer21_q09",
+        "32autumn21_q11",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "region_id": "calculus-cliffs",
+      "region_title": "Calculus Cliffs",
+      "skill_ref": "p3_diff_stationary_tangent_normal",
+      "skill_title": "Use derivatives for stationary points, tangents, and normals",
+      "workstreams": {
+        "route_correction": 4
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 4
+      },
+      "issue_count": 4,
+      "question_ids": [
+        "31summer21_q04",
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "32summer21_q06"
+      ],
+      "region_id": "trig-observatory",
+      "region_title": "Trigonometry Spire",
+      "skill_ref": "p3_trig_identity_selection",
+      "skill_title": "Choose trig identities for proof or simplification",
+      "workstreams": {
+        "route_correction": 4
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 3
+      },
+      "issue_count": 3,
       "question_ids": [
         "33autumn21_q03",
         "33summer22_q03",
@@ -9963,35 +9650,32 @@
       "skill_ref": "p3_alg_structure_rearrangement",
       "skill_title": "Choose algebraic structure before expanding",
       "workstreams": {
-        "route_correction": 3,
-        "support_content_gaps": 1
+        "route_correction": 3
       }
     },
     {
       "categories": {
-        "deferred_evidence_cases": 4
-      },
-      "issue_count": 4,
-      "question_ids": [
-        "31summer21_q10",
-        "32spring21_q06",
-        "32summer21_q09",
-        "35summer25_q09"
-      ],
-      "region_id": "integration-gardens",
-      "region_title": "Integral Terraces",
-      "skill_ref": "p3_int_partial_fractions",
-      "skill_title": "Integrate rational functions using partial fractions",
-      "workstreams": {
-        "mark_scheme_subpart_review": 4
-      }
-    },
-    {
-      "categories": {
-        "audited_route_decisions": 2,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 3
       },
       "issue_count": 3,
+      "question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "35autumn25_q04"
+      ],
+      "region_id": "calculus-cliffs",
+      "region_title": "Calculus Cliffs",
+      "skill_ref": "p3_diff_implicit_log_exp",
+      "skill_title": "Differentiate implicit log or exponential relations",
+      "workstreams": {
+        "route_correction": 3
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 2
+      },
+      "issue_count": 2,
       "question_ids": [
         "31autumn25_q06",
         "33summer22_q08"
@@ -10001,65 +9685,7 @@
       "skill_ref": "p3_alg_discriminant_root_conditions",
       "skill_title": "Use discriminant or root conditions as evidence",
       "workstreams": {
-        "route_correction": 2,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "deferred_evidence_cases": 2,
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 3,
-      "question_ids": [
-        "31summer21_q09",
-        "33summer21_q08"
-      ],
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_ref": "p3_diff_chain_product_quotient",
-      "skill_title": "Apply chain, product, and quotient rules accurately",
-      "workstreams": {
-        "mark_scheme_subpart_review": 2,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "deferred_evidence_cases": 2,
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 3,
-      "question_ids": [
-        "31summer21_q09",
-        "33summer21_q08"
-      ],
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_ref": "p3_diff_stationary_tangent_normal",
-      "skill_title": "Use derivatives for stationary points, tangents, and normals",
-      "workstreams": {
-        "mark_scheme_subpart_review": 2,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "deferred_evidence_cases": 2,
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 3,
-      "question_ids": [
-        "31summer21_q04",
-        "32summer21_q06"
-      ],
-      "region_id": "trig-observatory",
-      "region_title": "Trigonometry Spire",
-      "skill_ref": "p3_trig_identity_selection",
-      "skill_title": "Choose trig identities for proof or simplification",
-      "workstreams": {
-        "mark_scheme_subpart_review": 2,
-        "support_content_gaps": 1
+        "route_correction": 2
       }
     },
     {
@@ -10081,28 +9707,60 @@
     },
     {
       "categories": {
-        "deferred_evidence_cases": 1,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 2
       },
       "issue_count": 2,
       "question_ids": [
-        "31summer21_q09"
+        "32spring21_q10",
+        "33summer21_q04"
       ],
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_ref": "p3_diff_implicit_log_exp",
-      "skill_title": "Differentiate implicit log or exponential relations",
+      "region_id": "integration-gardens",
+      "region_title": "Integral Terraces",
+      "skill_ref": "p3_int_definite_improper_area",
+      "skill_title": "Evaluate definite and improper integrals exactly",
       "workstreams": {
-        "mark_scheme_subpart_review": 1,
-        "support_content_gaps": 1
+        "route_correction": 2
       }
     },
     {
       "categories": {
-        "audited_route_decisions": 1,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 2
       },
       "issue_count": 2,
+      "question_ids": [
+        "32autumn21_q11",
+        "33autumn21_q10"
+      ],
+      "region_id": "numerical-mines",
+      "region_title": "Iteration Forge",
+      "skill_ref": "p3_num_iteration_formula",
+      "skill_title": "Apply an iteration formula consistently",
+      "workstreams": {
+        "route_correction": 2
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 2
+      },
+      "issue_count": 2,
+      "question_ids": [
+        "32autumn25_q08",
+        "32summer21_q06"
+      ],
+      "region_id": "trig-observatory",
+      "region_title": "Trigonometry Spire",
+      "skill_ref": "p3_trig_reciprocal_double_angle",
+      "skill_title": "Transform reciprocal and double-angle equations safely",
+      "workstreams": {
+        "route_correction": 2
+      }
+    },
+    {
+      "categories": {
+        "audited_route_decisions": 1
+      },
+      "issue_count": 1,
       "question_ids": [
         "31summer21_q10"
       ],
@@ -10111,52 +9769,30 @@
       "skill_ref": "p3_de_forming_context_model",
       "skill_title": "Form differential equations from rate contexts",
       "workstreams": {
-        "route_correction": 1,
-        "support_content_gaps": 1
+        "route_correction": 1
       }
     },
     {
       "categories": {
-        "deferred_evidence_cases": 1,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 1
       },
-      "issue_count": 2,
+      "issue_count": 1,
       "question_ids": [
-        "32spring21_q10"
+        "32spring21_q04"
       ],
-      "region_id": "integration-gardens",
-      "region_title": "Integral Terraces",
-      "skill_ref": "p3_int_definite_improper_area",
-      "skill_title": "Evaluate definite and improper integrals exactly",
+      "region_id": "differential-shrine",
+      "region_title": "Differential Shrine",
+      "skill_ref": "p3_de_separation_setup",
+      "skill_title": "Separate variables before integrating",
       "workstreams": {
-        "mark_scheme_subpart_review": 1,
-        "support_content_gaps": 1
+        "route_correction": 1
       }
     },
     {
       "categories": {
-        "deferred_evidence_cases": 1,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 1
       },
-      "issue_count": 2,
-      "question_ids": [
-        "33autumn21_q07"
-      ],
-      "region_id": "logarithm-grove",
-      "region_title": "Logarithm Observatory",
-      "skill_ref": "p3_log_calculus_contexts",
-      "skill_title": "Handle log and exponential functions inside calculus questions",
-      "workstreams": {
-        "mark_scheme_subpart_review": 1,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "audited_route_decisions": 1,
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 2,
+      "issue_count": 1,
       "question_ids": [
         "31summer23_q08"
       ],
@@ -10165,296 +9801,23 @@
       "skill_ref": "p3_log_linearisation",
       "skill_title": "Linearise logarithmic or exponential relationships",
       "workstreams": {
-        "route_correction": 1,
-        "support_content_gaps": 1
+        "route_correction": 1
       }
     },
     {
       "categories": {
-        "audited_route_decisions": 1,
-        "weak_or_missing_skill_support": 1
+        "audited_route_decisions": 1
       },
-      "issue_count": 2,
+      "issue_count": 1,
       "question_ids": [
-        "33autumn21_q10"
+        "31summer21_q07"
       ],
-      "region_id": "numerical-mines",
-      "region_title": "Iteration Forge",
-      "skill_ref": "p3_num_iteration_formula",
-      "skill_title": "Apply an iteration formula consistently",
-      "workstreams": {
-        "route_correction": 1,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "deferred_evidence_cases": 1,
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 2,
-      "question_ids": [
-        "32summer21_q06"
-      ],
-      "region_id": "trig-observatory",
-      "region_title": "Trigonometry Spire",
-      "skill_ref": "p3_trig_reciprocal_double_angle",
-      "skill_title": "Transform reciprocal and double-angle equations safely",
-      "workstreams": {
-        "mark_scheme_subpart_review": 1,
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "algebra-forge",
-      "region_title": "Algebra Vault",
-      "skill_ref": "p3_alg_partial_fraction_form",
-      "skill_title": "Set up partial fractions from denominator structure",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "algebra-forge",
-      "region_title": "Algebra Vault",
-      "skill_ref": "p3_alg_polynomial_remainder_factor",
-      "skill_title": "Use polynomial division and remainder or factor theorem evidence",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_ref": "p3_diff_method_selection",
-      "skill_title": "Name the differentiation method before differentiating",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_ref": "p3_diff_parametric_gradients",
-      "skill_title": "Differentiate parametric equations using the derivative ratio",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "complex-harbor",
-      "region_title": "Argand Atrium",
-      "skill_ref": "p3_complex_argand_loci_regions",
-      "skill_title": "Interpret loci and regions on an Argand diagram",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "complex-harbor",
-      "region_title": "Argand Atrium",
-      "skill_ref": "p3_complex_cartesian_conjugate",
-      "skill_title": "Use Cartesian complex arithmetic and conjugates",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "complex-harbor",
-      "region_title": "Argand Atrium",
-      "skill_ref": "p3_complex_modulus_argument_form",
-      "skill_title": "Move between Cartesian and modulus-argument form",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "complex-harbor",
-      "region_title": "Argand Atrium",
-      "skill_ref": "p3_complex_roots_powers",
-      "skill_title": "Find complex powers and roots using the suitable form",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "differential-shrine",
-      "region_title": "Differential Shrine",
-      "skill_ref": "p3_de_initial_condition",
-      "skill_title": "Apply initial conditions after integration",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "differential-shrine",
-      "region_title": "Differential Shrine",
-      "skill_ref": "p3_de_separation_setup",
-      "skill_title": "Separate variables before integrating",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "integration-gardens",
-      "region_title": "Integral Terraces",
-      "skill_ref": "p3_int_method_choice",
-      "skill_title": "Choose a direct rule, substitution, parts, or algebraic rewrite",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "integration-gardens",
-      "region_title": "Integral Terraces",
-      "skill_ref": "p3_int_parts_substitution",
-      "skill_title": "Use integration by parts or substitution with correct setup",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "logarithm-grove",
-      "region_title": "Logarithm Observatory",
-      "skill_ref": "p3_log_domain_validation",
-      "skill_title": "Reject invalid logarithmic roots using domain checks",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "numerical-mines",
-      "region_title": "Iteration Forge",
-      "skill_ref": "p3_num_accuracy_rounding",
-      "skill_title": "Control accuracy and rounding in numerical solutions",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
       "region_id": "numerical-mines",
       "region_title": "Iteration Forge",
       "skill_ref": "p3_num_sign_change_graph_evidence",
       "skill_title": "Justify roots using sign changes or graph evidence",
       "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "vector-workshop",
-      "region_title": "Vectors Gate",
-      "skill_ref": "p3_vec_3d_geometry_modelling",
-      "skill_title": "Translate 3D geometric conditions into vector equations",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "vector-workshop",
-      "region_title": "Vectors Gate",
-      "skill_ref": "p3_vec_line_equations_intersections",
-      "skill_title": "Form and compare vector equations of lines",
-      "workstreams": {
-        "support_content_gaps": 1
-      }
-    },
-    {
-      "categories": {
-        "weak_or_missing_skill_support": 1
-      },
-      "issue_count": 1,
-      "question_ids": [],
-      "region_id": "vector-workshop",
-      "region_title": "Vectors Gate",
-      "skill_ref": "p3_vec_scalar_product_angles",
-      "skill_title": "Use scalar products for angles and perpendicular conditions",
-      "workstreams": {
-        "support_content_gaps": 1
+        "route_correction": 1
       }
     }
   ],

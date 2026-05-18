@@ -1,72 +1,132 @@
 {
   "clean_mastery_evidence_summary": {
-    "skills_with_clean_mastery_evidence": 37,
-    "skills_without_clean_mastery_evidence": 3,
-    "total_clean_mastery_evidence_links": 152
+    "skills_with_clean_mastery_evidence": 40,
+    "skills_without_clean_mastery_evidence": 0,
+    "total_clean_mastery_evidence_links": 178
   },
   "correction_priority_summary": {
     "priority_counts": {
-      "P0_blocked_mastery": 12,
-      "P1_missing_core_support": 5,
-      "P2_missing_practice_support": 13,
-      "P3_teacher_review_backlog": 1,
-      "P4_polish_or_complete": 9
+      "P0_blocked_mastery": 0,
+      "P1_missing_core_support": 0,
+      "P2_missing_practice_support": 0,
+      "P3_teacher_review_backlog": 0,
+      "P4_polish_or_complete": 40
     },
     "suggested_region_correction_order": [
       {
-        "blocked_mastery_skill_count": 4,
-        "highest_priority": "P0_blocked_mastery",
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
         "priority_counts": {
-          "P0_blocked_mastery": 4,
+          "P0_blocked_mastery": 0,
           "P1_missing_core_support": 0,
           "P2_missing_practice_support": 0,
           "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 3
+          "P4_polish_or_complete": 7
         },
         "region_id": "algebra-forge",
         "region_title": "Algebra Vault",
         "skill_count": 7,
-        "support_gap_skill_count": 3
+        "support_gap_skill_count": 0
       },
       {
-        "blocked_mastery_skill_count": 2,
-        "highest_priority": "P0_blocked_mastery",
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
         "priority_counts": {
-          "P0_blocked_mastery": 2,
-          "P1_missing_core_support": 1,
-          "P2_missing_practice_support": 2,
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 0,
           "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 0
+          "P4_polish_or_complete": 5
         },
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5,
-        "support_gap_skill_count": 5
+        "support_gap_skill_count": 0
       },
       {
-        "blocked_mastery_skill_count": 2,
-        "highest_priority": "P0_blocked_mastery",
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
         "priority_counts": {
-          "P0_blocked_mastery": 2,
+          "P0_blocked_mastery": 0,
           "P1_missing_core_support": 0,
-          "P2_missing_practice_support": 1,
+          "P2_missing_practice_support": 0,
           "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 0
+          "P4_polish_or_complete": 4
         },
-        "region_id": "numerical-mines",
-        "region_title": "Iteration Forge",
-        "skill_count": 3,
-        "support_gap_skill_count": 3
+        "region_id": "complex-harbor",
+        "region_title": "Argand Atrium",
+        "skill_count": 4,
+        "support_gap_skill_count": 0
       },
       {
-        "blocked_mastery_skill_count": 2,
-        "highest_priority": "P0_blocked_mastery",
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
         "priority_counts": {
-          "P0_blocked_mastery": 2,
+          "P0_blocked_mastery": 0,
           "P1_missing_core_support": 0,
           "P2_missing_practice_support": 0,
           "P3_teacher_review_backlog": 0,
           "P4_polish_or_complete": 3
+        },
+        "region_id": "differential-shrine",
+        "region_title": "Differential Shrine",
+        "skill_count": 3,
+        "support_gap_skill_count": 0
+      },
+      {
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
+        "priority_counts": {
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 0,
+          "P3_teacher_review_backlog": 0,
+          "P4_polish_or_complete": 4
+        },
+        "region_id": "integration-gardens",
+        "region_title": "Integral Terraces",
+        "skill_count": 4,
+        "support_gap_skill_count": 0
+      },
+      {
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
+        "priority_counts": {
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 0,
+          "P3_teacher_review_backlog": 0,
+          "P4_polish_or_complete": 6
+        },
+        "region_id": "logarithm-grove",
+        "region_title": "Logarithm Observatory",
+        "skill_count": 6,
+        "support_gap_skill_count": 0
+      },
+      {
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
+        "priority_counts": {
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 0,
+          "P3_teacher_review_backlog": 0,
+          "P4_polish_or_complete": 3
+        },
+        "region_id": "numerical-mines",
+        "region_title": "Iteration Forge",
+        "skill_count": 3,
+        "support_gap_skill_count": 0
+      },
+      {
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
+        "priority_counts": {
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 0,
+          "P3_teacher_review_backlog": 0,
+          "P4_polish_or_complete": 5
         },
         "region_id": "trig-observatory",
         "region_title": "Trigonometry Spire",
@@ -74,79 +134,19 @@
         "support_gap_skill_count": 0
       },
       {
-        "blocked_mastery_skill_count": 1,
-        "highest_priority": "P0_blocked_mastery",
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P4_polish_or_complete",
         "priority_counts": {
-          "P0_blocked_mastery": 1,
-          "P1_missing_core_support": 1,
-          "P2_missing_practice_support": 1,
-          "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 0
-        },
-        "region_id": "differential-shrine",
-        "region_title": "Differential Shrine",
-        "skill_count": 3,
-        "support_gap_skill_count": 3
-      },
-      {
-        "blocked_mastery_skill_count": 1,
-        "highest_priority": "P0_blocked_mastery",
-        "priority_counts": {
-          "P0_blocked_mastery": 1,
+          "P0_blocked_mastery": 0,
           "P1_missing_core_support": 0,
-          "P2_missing_practice_support": 2,
+          "P2_missing_practice_support": 0,
           "P3_teacher_review_backlog": 0,
           "P4_polish_or_complete": 3
-        },
-        "region_id": "logarithm-grove",
-        "region_title": "Logarithm Observatory",
-        "skill_count": 6,
-        "support_gap_skill_count": 3
-      },
-      {
-        "blocked_mastery_skill_count": 0,
-        "highest_priority": "P1_missing_core_support",
-        "priority_counts": {
-          "P0_blocked_mastery": 0,
-          "P1_missing_core_support": 1,
-          "P2_missing_practice_support": 3,
-          "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 0
-        },
-        "region_id": "complex-harbor",
-        "region_title": "Argand Atrium",
-        "skill_count": 4,
-        "support_gap_skill_count": 4
-      },
-      {
-        "blocked_mastery_skill_count": 0,
-        "highest_priority": "P1_missing_core_support",
-        "priority_counts": {
-          "P0_blocked_mastery": 0,
-          "P1_missing_core_support": 1,
-          "P2_missing_practice_support": 2,
-          "P3_teacher_review_backlog": 1,
-          "P4_polish_or_complete": 0
-        },
-        "region_id": "integration-gardens",
-        "region_title": "Integral Terraces",
-        "skill_count": 4,
-        "support_gap_skill_count": 3
-      },
-      {
-        "blocked_mastery_skill_count": 0,
-        "highest_priority": "P1_missing_core_support",
-        "priority_counts": {
-          "P0_blocked_mastery": 0,
-          "P1_missing_core_support": 1,
-          "P2_missing_practice_support": 2,
-          "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 0
         },
         "region_id": "vector-workshop",
         "region_title": "Vectors Gate",
         "skill_count": 3,
-        "support_gap_skill_count": 3
+        "support_gap_skill_count": 0
       }
     ]
   },
@@ -247,24 +247,22 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "mastery_evidence_blocked_by_routing_audit",
-        "no_clean_mastery_evidence",
-        "unreviewed_app_region_mismatch"
+      "blocking_reasons": [],
+      "canonical_question_count": 1,
+      "clean_mastery_evidence_count": 1,
+      "clean_mastery_evidence_question_ids": [
+        "32autumn25_q05"
       ],
-      "canonical_question_count": 2,
-      "clean_mastery_evidence_count": 0,
-      "clean_mastery_evidence_question_ids": [],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 0,
+      "export_allowed_evidence_count": 1,
       "field_guide_status": "available",
-      "guardian_candidate_count": 0,
+      "guardian_candidate_count": 1,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -281,17 +279,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_discriminant_root_conditions",
       "skill_ref": "p3_alg_discriminant_root_conditions",
       "skill_title": "Use discriminant or root conditions as evidence",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -341,10 +337,8 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
-      "canonical_question_count": 6,
+      "blocking_reasons": [],
+      "canonical_question_count": 4,
       "clean_mastery_evidence_count": 4,
       "clean_mastery_evidence_question_ids": [
         "32spring21_q06",
@@ -352,16 +346,16 @@
         "32autumn21_q04",
         "35summer25_q09"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
       "export_allowed_evidence_count": 4,
       "field_guide_status": "available",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -373,7 +367,7 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_partial_fraction_form",
@@ -385,27 +379,26 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 4,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
         "32spring21_q02",
         "33autumn21_q01",
         "31summer22_q05",
-        "32spring24_q01"
+        "32spring24_q01",
+        "33summer23_q02"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 4,
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -417,38 +410,36 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_polynomial_remainder_factor",
       "skill_ref": "p3_alg_polynomial_remainder_factor",
       "skill_title": "Use polynomial division and remainder or factor theorem evidence",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "mastery_evidence_blocked_by_routing_audit",
-        "no_clean_mastery_evidence",
-        "unreviewed_app_region_mismatch"
+      "blocking_reasons": [],
+      "canonical_question_count": 3,
+      "clean_mastery_evidence_count": 3,
+      "clean_mastery_evidence_question_ids": [
+        "32summer22_q03",
+        "31autumn24_q01",
+        "31summer25_q05"
       ],
-      "canonical_question_count": 2,
-      "clean_mastery_evidence_count": 0,
-      "clean_mastery_evidence_question_ids": [],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 0,
+      "export_allowed_evidence_count": 3,
       "field_guide_status": "available",
-      "guardian_candidate_count": 0,
+      "guardian_candidate_count": 1,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -460,17 +451,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_structure_rearrangement",
       "skill_ref": "p3_alg_structure_rearrangement",
       "skill_title": "Choose algebraic structure before expanding",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -484,8 +473,8 @@
         "35autumn25_q02",
         "31autumn25_q05"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -510,17 +499,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "complex-harbor",
       "region_title": "Argand Atrium",
       "skill_id": "p3_complex_argand_loci_regions",
       "skill_ref": "p3_complex_argand_loci_regions",
       "skill_title": "Interpret loci and regions on an Argand diagram",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -534,8 +521,8 @@
         "33summer25_q06",
         "31autumn21_q10"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -555,17 +542,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "complex-harbor",
       "region_title": "Argand Atrium",
       "skill_id": "p3_complex_cartesian_conjugate",
       "skill_ref": "p3_complex_cartesian_conjugate",
       "skill_title": "Use Cartesian complex arithmetic and conjugates",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -579,8 +564,8 @@
         "33summer25_q04",
         "31autumn25_q05"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -605,17 +590,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "complex-harbor",
       "region_title": "Argand Atrium",
       "skill_id": "p3_complex_modulus_argument_form",
       "skill_ref": "p3_complex_modulus_argument_form",
       "skill_title": "Move between Cartesian and modulus-argument form",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -629,8 +612,8 @@
         "35summer25_q03",
         "31summer25_q06"
       ],
-      "correction_priority": "P1_missing_core_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -654,19 +637,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "complex-harbor",
       "region_title": "Argand Atrium",
       "skill_id": "p3_complex_roots_powers",
       "skill_ref": "p3_complex_roots_powers",
       "skill_title": "Find complex powers and roots using the suitable form",
       "snippet_status": "available",
-      "support_gaps": [
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -679,8 +659,8 @@
         "32autumn25_q10",
         "33summer24_q09"
       ],
-      "correction_priority": "P1_missing_core_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -704,19 +684,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "differential-shrine",
       "region_title": "Differential Shrine",
       "skill_id": "p3_de_forming_context_model",
       "skill_ref": "p3_de_forming_context_model",
       "skill_title": "Form differential equations from rate contexts",
       "snippet_status": "available",
-      "support_gaps": [
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -730,8 +707,8 @@
         "31autumn25_q08",
         "35summer25_q11"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -756,41 +733,38 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "differential-shrine",
       "region_title": "Differential Shrine",
       "skill_id": "p3_de_initial_condition",
       "skill_ref": "p3_de_initial_condition",
       "skill_title": "Apply initial conditions after integration",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 4,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
         "32summer21_q07",
+        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 4,
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Differential equations",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -807,44 +781,40 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "differential-shrine",
       "region_title": "Differential Shrine",
       "skill_id": "p3_de_separation_setup",
       "skill_ref": "p3_de_separation_setup",
       "skill_title": "Separate variables before integrating",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 2,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
-        "32summer21_q08",
-        "35summer25_q04"
-      ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
-      "curriculum_role": "p3_core",
-      "deferred_evidence_count": 2,
-      "deferred_evidence_question_ids": [
         "31summer21_q09",
-        "33summer21_q08"
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
       ],
-      "export_allowed_evidence_count": 2,
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
+      "curriculum_role": "p3_core",
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Differentiation",
-      "practice_allowed_deferred_count": 2,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -859,42 +829,38 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_id": "p3_diff_chain_product_quotient",
       "skill_ref": "p3_diff_chain_product_quotient",
       "skill_title": "Apply chain, product, and quotient rules accurately",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
       "blocking_reasons": [],
-      "canonical_question_count": 4,
+      "canonical_question_count": 3,
       "clean_mastery_evidence_count": 3,
       "clean_mastery_evidence_question_ids": [
         "32autumn21_q09",
         "33autumn21_q07",
         "35autumn25_q04"
       ],
-      "correction_priority": "P1_missing_core_support",
-      "coverage_status": "needs_teacher_review",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
-      "deferred_evidence_count": 1,
-      "deferred_evidence_question_ids": [
-        "31summer21_q09"
-      ],
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
       "export_allowed_evidence_count": 3,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Differentiation",
-      "practice_allowed_deferred_count": 1,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -908,19 +874,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_id": "p3_diff_implicit_log_exp",
       "skill_ref": "p3_diff_implicit_log_exp",
       "skill_title": "Differentiate implicit log or exponential relations",
       "snippet_status": "available",
-      "support_gaps": [
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -934,8 +897,8 @@
         "33summer21_q03",
         "35summer25_q06"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -960,17 +923,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_id": "p3_diff_method_selection",
       "skill_ref": "p3_diff_method_selection",
       "skill_title": "Name the differentiation method before differentiating",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -984,8 +945,8 @@
         "32spring21_q10",
         "35summer25_q06"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1010,44 +971,38 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_id": "p3_diff_parametric_gradients",
       "skill_ref": "p3_diff_parametric_gradients",
       "skill_title": "Differentiate parametric equations using the derivative ratio",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
-      "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 2,
+      "blocking_reasons": [],
+      "canonical_question_count": 3,
+      "clean_mastery_evidence_count": 3,
       "clean_mastery_evidence_question_ids": [
-        "32autumn21_q11",
+        "33summer21_q08",
+        "31summer21_q09",
         "31autumn25_q04"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
-      "deferred_evidence_count": 2,
-      "deferred_evidence_question_ids": [
-        "31summer21_q09",
-        "33summer21_q08"
-      ],
-      "export_allowed_evidence_count": 2,
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 3,
       "field_guide_status": "available",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Differentiation",
-      "practice_allowed_deferred_count": 2,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1062,43 +1017,40 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "calculus-cliffs",
       "region_title": "Calculus Cliffs",
       "skill_id": "p3_diff_stationary_tangent_normal",
       "skill_ref": "p3_diff_stationary_tangent_normal",
       "skill_title": "Use derivatives for stationary points, tangents, and normals",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
       "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 4,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
         "31autumn21_q04",
         "33summer21_q04",
         "33summer25_q03",
+        "32spring21_q10",
         "31summer21_q04"
       ],
-      "correction_priority": "P1_missing_core_support",
-      "coverage_status": "needs_teacher_review",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
-      "deferred_evidence_count": 1,
-      "deferred_evidence_question_ids": [
-        "32spring21_q10"
-      ],
-      "export_allowed_evidence_count": 4,
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
-      "practice_allowed_deferred_count": 1,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1112,19 +1064,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "integration-gardens",
       "region_title": "Integral Terraces",
       "skill_id": "p3_int_definite_improper_area",
       "skill_ref": "p3_int_definite_improper_area",
       "skill_title": "Evaluate definite and improper integrals exactly",
       "snippet_status": "available",
-      "support_gaps": [
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -1138,8 +1087,8 @@
         "32autumn25_q04",
         "31autumn25_q01"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1164,43 +1113,38 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "integration-gardens",
       "region_title": "Integral Terraces",
       "skill_id": "p3_int_method_choice",
       "skill_ref": "p3_int_method_choice",
       "skill_title": "Choose a direct rule, substitution, parts, or algebraic rewrite",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
       "blocking_reasons": [],
-      "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 1,
+      "canonical_question_count": 3,
+      "clean_mastery_evidence_count": 3,
       "clean_mastery_evidence_question_ids": [
-        "33summer21_q04"
-      ],
-      "correction_priority": "P3_teacher_review_backlog",
-      "coverage_status": "needs_teacher_review",
-      "curriculum_role": "p3_core",
-      "deferred_evidence_count": 4,
-      "deferred_evidence_question_ids": [
-        "31summer21_q10",
         "32spring21_q06",
-        "32summer21_q09",
-        "35summer25_q09"
+        "33summer21_q04",
+        "31summer21_q10"
       ],
-      "export_allowed_evidence_count": 1,
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
+      "curriculum_role": "p3_core",
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 3,
       "field_guide_status": "available",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
-      "practice_allowed_deferred_count": 4,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1215,7 +1159,7 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Keep deferred cases visible and route them through teacher review before export or mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "integration-gardens",
       "region_title": "Integral Terraces",
       "skill_id": "p3_int_partial_fractions",
@@ -1237,8 +1181,8 @@
         "32autumn25_q04",
         "31autumn25_q01"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1263,43 +1207,40 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "integration-gardens",
       "region_title": "Integral Terraces",
       "skill_id": "p3_int_parts_substitution",
       "skill_ref": "p3_int_parts_substitution",
       "skill_title": "Use integration by parts or substitution with correct setup",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "all_available_evidence_deferred",
-        "mastery_evidence_blocked_by_routing_audit",
-        "no_clean_mastery_evidence",
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 0,
-      "clean_mastery_evidence_question_ids": [],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
-      "curriculum_role": "p3_core",
-      "deferred_evidence_count": 1,
-      "deferred_evidence_question_ids": [
-        "33autumn21_q07"
+      "clean_mastery_evidence_count": 5,
+      "clean_mastery_evidence_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
       ],
-      "export_allowed_evidence_count": 0,
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
+      "curriculum_role": "p3_core",
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
-      "guardian_candidate_count": 0,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
-      "practice_allowed_deferred_count": 1,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1313,22 +1254,17 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Find or review clean P3 canonical mastery evidence before claiming mastery.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_id": "p3_log_calculus_contexts",
       "skill_ref": "p3_log_calculus_contexts",
       "skill_title": "Handle log and exponential functions inside calculus questions",
-      "snippet_status": "missing",
-      "support_gaps": [
-        "snippet",
-        "worked_example",
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
-      "worked_example_status": "missing"
+      "snippet_status": "available",
+      "support_gaps": [],
+      "warmup_status": "available",
+      "worked_example_status": "available"
     },
     {
       "blocking_reasons": [],
@@ -1388,8 +1324,8 @@
         "32spring21_q01",
         "33summer25_q02"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1414,17 +1350,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_id": "p3_log_domain_validation",
       "skill_ref": "p3_log_domain_validation",
       "skill_title": "Reject invalid logarithmic roots using domain checks",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -1532,8 +1466,8 @@
         "32spring22_q03",
         "35autumn25_q03"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1558,17 +1492,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_id": "p3_log_linearisation",
       "skill_ref": "p3_log_linearisation",
       "skill_title": "Linearise logarithmic or exponential relationships",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -1582,8 +1514,8 @@
         "32autumn24_q02",
         "35autumn25_q10"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1603,40 +1535,37 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "numerical-mines",
       "region_title": "Iteration Forge",
       "skill_id": "p3_num_accuracy_rounding",
       "skill_ref": "p3_num_accuracy_rounding",
       "skill_title": "Control accuracy and rounding in numerical solutions",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 4,
-      "clean_mastery_evidence_count": 3,
+      "clean_mastery_evidence_count": 4,
       "clean_mastery_evidence_question_ids": [
         "31autumn21_q08",
+        "32autumn21_q11",
         "32spring22_q07",
         "35autumn25_q10"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 3,
+      "export_allowed_evidence_count": 4,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Numerical solution of equations",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -1653,41 +1582,38 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "numerical-mines",
       "region_title": "Iteration Forge",
       "skill_id": "p3_num_iteration_formula",
       "skill_ref": "p3_num_iteration_formula",
       "skill_title": "Apply an iteration formula consistently",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 4,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
         "31autumn25_q09",
         "32autumn25_q06",
+        "31summer21_q07",
         "32spring21_q09",
         "33summer25_q11"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
-      "export_allowed_evidence_count": 4,
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Numerical solution of equations",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
@@ -1699,17 +1625,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "numerical-mines",
       "region_title": "Iteration Forge",
       "skill_id": "p3_num_sign_change_graph_evidence",
       "skill_ref": "p3_num_sign_change_graph_evidence",
       "skill_title": "Justify roots using sign changes or graph evidence",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -1761,29 +1685,28 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 1,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
-        "33summer25_q08"
-      ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
-      "curriculum_role": "p3_core",
-      "deferred_evidence_count": 2,
-      "deferred_evidence_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
         "31summer21_q04",
         "32summer21_q06"
       ],
-      "export_allowed_evidence_count": 1,
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
+      "curriculum_role": "p3_core",
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
-      "practice_allowed_deferred_count": 2,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1798,7 +1721,7 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "trig-observatory",
       "region_title": "Trigonometry Spire",
       "skill_id": "p3_trig_identity_selection",
@@ -1900,30 +1823,28 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [
-        "unreviewed_app_region_mismatch"
-      ],
+      "blocking_reasons": [],
       "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 3,
+      "clean_mastery_evidence_count": 5,
       "clean_mastery_evidence_question_ids": [
+        "32summer21_q06",
         "32autumn21_q08",
         "33summer21_q05",
+        "32autumn25_q08",
         "35summer25_q02"
       ],
-      "correction_priority": "P0_blocked_mastery",
-      "coverage_status": "blocked_for_mastery",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
-      "deferred_evidence_count": 1,
-      "deferred_evidence_question_ids": [
-        "32summer21_q06"
-      ],
-      "export_allowed_evidence_count": 3,
+      "deferred_evidence_count": 0,
+      "deferred_evidence_question_ids": [],
+      "export_allowed_evidence_count": 5,
       "field_guide_status": "available",
-      "guardian_candidate_count": 1,
+      "guardian_candidate_count": 2,
       "mastery_eligible": true,
-      "needs_teacher_review": true,
+      "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
-      "practice_allowed_deferred_count": 1,
+      "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "",
       "prerequisite_skill_refs": [
         {
@@ -1938,7 +1859,7 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "trig-observatory",
       "region_title": "Trigonometry Spire",
       "skill_id": "p3_trig_reciprocal_double_angle",
@@ -1960,8 +1881,8 @@
         "33summer23_q09",
         "33autumn23_q11"
       ],
-      "correction_priority": "P1_missing_core_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1980,19 +1901,16 @@
           "syllabus_id": "caie_9709_p1_2026_2027"
         }
       ],
-      "quick_check_status": "missing",
-      "recommended_next_action": "Add reviewed snippet, worked-example, or Quick Check support for the missing core support types.",
+      "quick_check_status": "available",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "vector-workshop",
       "region_title": "Vectors Gate",
       "skill_id": "p3_vec_3d_geometry_modelling",
       "skill_ref": "p3_vec_3d_geometry_modelling",
       "skill_title": "Translate 3D geometric conditions into vector equations",
       "snippet_status": "available",
-      "support_gaps": [
-        "quick_check",
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -2006,8 +1924,8 @@
         "31autumn25_q11",
         "35autumn25_q09"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -2027,17 +1945,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "vector-workshop",
       "region_title": "Vectors Gate",
       "skill_id": "p3_vec_line_equations_intersections",
       "skill_ref": "p3_vec_line_equations_intersections",
       "skill_title": "Form and compare vector equations of lines",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     },
     {
@@ -2051,8 +1967,8 @@
         "35summer25_q10",
         "35autumn25_q09"
       ],
-      "correction_priority": "P2_missing_practice_support",
-      "coverage_status": "missing_support",
+      "correction_priority": "P4_polish_or_complete",
+      "coverage_status": "ready_for_review",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -2072,17 +1988,15 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
       "region_id": "vector-workshop",
       "region_title": "Vectors Gate",
       "skill_id": "p3_vec_scalar_product_angles",
       "skill_ref": "p3_vec_scalar_product_angles",
       "skill_title": "Use scalar products for angles and perpendicular conditions",
       "snippet_status": "available",
-      "support_gaps": [
-        "warm_up"
-      ],
-      "warmup_status": "missing",
+      "support_gaps": [],
+      "warmup_status": "available",
       "worked_example_status": "available"
     }
   ],
@@ -2133,247 +2047,23 @@
     ]
   },
   "deferred_evidence_summary": {
-    "affected_skill_count": 8,
-    "affected_skill_refs": [
-      "p3_diff_chain_product_quotient",
-      "p3_diff_implicit_log_exp",
-      "p3_diff_stationary_tangent_normal",
-      "p3_int_definite_improper_area",
-      "p3_int_partial_fractions",
-      "p3_log_calculus_contexts",
-      "p3_trig_identity_selection",
-      "p3_trig_reciprocal_double_angle"
-    ],
-    "case_count": 14,
-    "export_allowed": false,
-    "export_blocked_case_count": 14,
-    "items": [
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "31summer21_q09",
-        "rationale": "The question contains product/quotient-rule evidence, but the app's single-region route cannot express the log-function context and calculus subparts together.",
-        "recommended_resolution": "Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_chain_product_quotient",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label; the question has differentiation and integration subparts."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q08",
-        "rationale": "The first subpart supports differentiation, while the larger second subpart supports integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level differentiation versus integration evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_chain_product_quotient",
-        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek/app routing emphasize integration by parts; the question has a maximum-point subpart."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "31summer21_q09",
-        "rationale": "The question uses logarithmic differentiation context but is not clearly implicit differentiation.",
-        "recommended_resolution": "Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_implicit_log_exp",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "31summer21_q09",
-        "rationale": "The question asks for the exact stationary point of a logarithmic curve, which spans log context and calculus evidence.",
-        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_stationary_tangent_normal",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek gives an unmapped Calculus label."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33summer21_q08",
-        "rationale": "The first subpart is stationary-point evidence, but the whole question route is integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level stationary-point evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "calculus-cliffs",
-        "skill_ref": "p3_diff_stationary_tangent_normal",
-        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
-      },
-      {
-        "app_region_id": "calculus-cliffs",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32spring21_q10",
-        "rationale": "The question contains both an area integral and a maximum-point derivative task.",
-        "recommended_resolution": "Keep visible until reviewed for part-level area/integration evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_definite_improper_area",
-        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
-      },
-      {
-        "app_region_id": "differential-shrine",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "31summer21_q10",
-        "rationale": "The question solves a differential equation using partial fractions.",
-        "recommended_resolution": "Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32spring21_q06",
-        "rationale": "The question combines decomposition and integration evidence.",
-        "recommended_resolution": "Keep visible until reviewed for part-level integration using partial fractions.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32summer21_q09",
-        "rationale": "The question may not be valid integration evidence even though partial fractions are present.",
-        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial_expansion."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "35summer25_q09",
-        "rationale": "The current reviewed skill-map route may be too broad without part-level metadata.",
-        "recommended_resolution": "Keep visible until reviewed; this looks more like partial fractions plus expansion than integration.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic is binomial expansion."
-      },
-      {
-        "app_region_id": "calculus-cliffs",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "33autumn21_q07",
-        "rationale": "The question is an implicit differentiation problem built from a logarithmic relation.",
-        "recommended_resolution": "Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "logarithm-grove",
-        "skill_ref": "p3_log_calculus_contexts",
-        "source_of_conflicting_label": "Local topic is logarithms_and_exponentials; DeepSeek/app routing identify implicit differentiation."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "31summer21_q04",
-        "rationale": "The question combines identity proof and integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "trig-observatory",
-        "skill_ref": "p3_trig_identity_selection",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize integration; the first subpart asks for a trigonometric identity proof."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32summer21_q06",
-        "rationale": "The question combines identity proof and integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level trigonometric identity evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "trig-observatory",
-        "skill_ref": "p3_trig_identity_selection",
-        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
-      },
-      {
-        "app_region_id": "integration-gardens",
-        "evidence_status": "ambiguous_part_level_evidence",
-        "export_allowed": false,
-        "mastery_evidence_allowed": false,
-        "practice_allowed": true,
-        "question_id": "32summer21_q06",
-        "rationale": "The question combines reciprocal trigonometry, double-angle work, and integration.",
-        "recommended_resolution": "Keep visible until reviewed for part-level reciprocal/double-angle evidence.",
-        "resolution_status": "teacher_review_deferred",
-        "reviewed_skill_map_region_id": "trig-observatory",
-        "skill_ref": "p3_trig_reciprocal_double_angle",
-        "source_of_conflicting_label": "DeepSeek/app routing emphasize integration; the first subpart asks for a reciprocal/double-angle proof."
-      }
-    ],
-    "mastery_evidence_allowed": false,
-    "mastery_evidence_blocked_case_count": 14,
-    "practice_allowed": true,
-    "practice_allowed_case_count": 14
+    "affected_skill_count": 0,
+    "affected_skill_refs": [],
+    "case_count": 0,
+    "export_allowed": null,
+    "export_blocked_case_count": 0,
+    "items": [],
+    "mastery_evidence_allowed": null,
+    "mastery_evidence_blocked_case_count": 0,
+    "practice_allowed": null,
+    "practice_allowed_case_count": 0
   },
   "generated_by": "tools/content_lab/scripts/build_p3_coverage_matrix.py",
   "generated_label": "deterministic-p3-coverage-matrix-v1",
   "next_step_summary": {
-    "highest_priority_skill_refs": [
-      "p3_alg_discriminant_root_conditions",
-      "p3_alg_partial_fraction_form",
-      "p3_alg_polynomial_remainder_factor",
-      "p3_alg_structure_rearrangement",
-      "p3_complex_roots_powers",
-      "p3_de_forming_context_model",
-      "p3_de_separation_setup",
-      "p3_diff_chain_product_quotient",
-      "p3_diff_implicit_log_exp",
-      "p3_diff_stationary_tangent_normal",
-      "p3_int_definite_improper_area",
-      "p3_log_calculus_contexts",
-      "p3_num_iteration_formula",
-      "p3_num_sign_change_graph_evidence",
-      "p3_trig_identity_selection",
-      "p3_trig_reciprocal_double_angle",
-      "p3_vec_3d_geometry_modelling"
-    ],
+    "highest_priority_skill_refs": [],
     "note": "Do not create learner content or resolve deferred cases in the matrix pass; use this report to choose the next correction sequence.",
-    "recommended_phase": "region_by_region_correction"
+    "recommended_phase": "validation_test_hardening"
   },
   "official_syllabus_section_summary": {
     "section_count": 9,
@@ -2416,60 +2106,38 @@
   },
   "risk_summary": {
     "app_and_deepseek_labels_override_reviewed_skill_map": false,
-    "blocked_mastery_skill_refs": [
-      "p3_alg_discriminant_root_conditions",
-      "p3_alg_partial_fraction_form",
-      "p3_alg_polynomial_remainder_factor",
-      "p3_alg_structure_rearrangement",
-      "p3_de_separation_setup",
-      "p3_diff_chain_product_quotient",
-      "p3_diff_stationary_tangent_normal",
-      "p3_log_calculus_contexts",
-      "p3_num_iteration_formula",
-      "p3_num_sign_change_graph_evidence",
-      "p3_trig_identity_selection",
-      "p3_trig_reciprocal_double_angle"
-    ],
-    "deferred_ambiguous_skill_refs": [
-      "p3_diff_chain_product_quotient",
-      "p3_diff_implicit_log_exp",
-      "p3_diff_stationary_tangent_normal",
-      "p3_int_definite_improper_area",
-      "p3_int_partial_fractions",
-      "p3_log_calculus_contexts",
-      "p3_trig_identity_selection",
-      "p3_trig_reciprocal_double_angle"
-    ],
+    "blocked_mastery_skill_refs": [],
+    "deferred_ambiguous_skill_refs": [],
     "p1_prerequisite_ref_count": 70,
     "p1_prerequisite_refs_are_mastery_evidence": false,
     "support_gap_counts": {
       "field_guide": 0,
-      "quick_check": 6,
-      "snippet": 1,
-      "warm_up": 27,
-      "worked_example": 1
+      "quick_check": 0,
+      "snippet": 0,
+      "warm_up": 0,
+      "worked_example": 0
     }
   },
   "schema_name": "asterion_p3_coverage_matrix",
   "schema_version": 1,
   "skill_summary": {
     "correction_priority_counts": {
-      "P0_blocked_mastery": 12,
-      "P1_missing_core_support": 5,
-      "P2_missing_practice_support": 13,
-      "P3_teacher_review_backlog": 1,
-      "P4_polish_or_complete": 9
+      "P0_blocked_mastery": 0,
+      "P1_missing_core_support": 0,
+      "P2_missing_practice_support": 0,
+      "P3_teacher_review_backlog": 0,
+      "P4_polish_or_complete": 40
     },
     "coverage_status_counts": {
-      "blocked_for_mastery": 12,
-      "missing_support": 16,
-      "needs_teacher_review": 3,
+      "blocked_for_mastery": 0,
+      "missing_support": 0,
+      "needs_teacher_review": 0,
       "partial": 0,
-      "ready_for_review": 9
+      "ready_for_review": 40
     },
     "mastery_eligible_skill_count": 40,
     "reviewed_skill_count": 40,
-    "teacher_review_skill_count": 15
+    "teacher_review_skill_count": 0
   },
   "teaching_support_summary": {
     "expected_support_types": [
@@ -2479,13 +2147,13 @@
       "quick_check",
       "warm_up"
     ],
-    "skills_with_any_support_gap": 27,
+    "skills_with_any_support_gap": 0,
     "support_gap_counts": {
       "field_guide": 0,
-      "quick_check": 6,
-      "snippet": 1,
-      "warm_up": 27,
-      "worked_example": 1
+      "quick_check": 0,
+      "snippet": 0,
+      "warm_up": 0,
+      "worked_example": 0
     }
   }
 }

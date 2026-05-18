@@ -16,7 +16,7 @@ Phase 1 verification artifact. This report does not mutate route metadata or beg
 - source route counts: `{"ambiguous_multi_topic_route": 14, "missing_p3_route": 53, "review_needed_route": 12, "safe_p3_route": 317, "total_p3_route_records": 396}`
 - normalized status by route-report category: `{"ambiguous_multi_topic_route": {"ambiguous-route": 14}, "missing_p3_route": {"review-only": 53}, "review_needed_route": {"ambiguous-route": 5, "review-only": 7}, "safe_p3_route": {"clean": 317}}`
 - route-queue fallback display-only items: 53
-- queue items: 245
+- queue items: 233
 
 ## Count Differences
 

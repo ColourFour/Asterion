@@ -74,7 +74,7 @@
   },
   "active_regions": [
     {
-      "generated_warmups": 15,
+      "generated_warmups": 24,
       "quick_checks": 8,
       "region_id": "algebra-forge",
       "region_name": "Algebra Vault",
@@ -82,12 +82,52 @@
       "snippets_with_examples": 8
     },
     {
+      "generated_warmups": 9,
+      "quick_checks": 4,
+      "region_id": "calculus-cliffs",
+      "region_name": "Calculus Cliffs",
+      "snippets": 4,
+      "snippets_with_examples": 4
+    },
+    {
       "generated_warmups": 3,
-      "quick_checks": 7,
+      "quick_checks": 3,
+      "region_id": "complex-harbor",
+      "region_name": "Argand Atrium",
+      "snippets": 3,
+      "snippets_with_examples": 3
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 3,
+      "region_id": "differential-shrine",
+      "region_name": "Differential Shrine",
+      "snippets": 3,
+      "snippets_with_examples": 3
+    },
+    {
+      "generated_warmups": 15,
+      "quick_checks": 5,
+      "region_id": "integration-gardens",
+      "region_name": "Integral Terraces",
+      "snippets": 5,
+      "snippets_with_examples": 5
+    },
+    {
+      "generated_warmups": 12,
+      "quick_checks": 8,
       "region_id": "logarithm-grove",
       "region_name": "Logarithm Observatory",
-      "snippets": 7,
-      "snippets_with_examples": 7
+      "snippets": 8,
+      "snippets_with_examples": 8
+    },
+    {
+      "generated_warmups": 0,
+      "quick_checks": 2,
+      "region_id": "numerical-mines",
+      "region_name": "Iteration Forge",
+      "snippets": 2,
+      "snippets_with_examples": 2
     },
     {
       "generated_warmups": 12,
@@ -99,51 +139,11 @@
     },
     {
       "generated_warmups": 0,
-      "quick_checks": 2,
-      "region_id": "complex-harbor",
-      "region_name": "Argand Atrium",
-      "snippets": 2,
-      "snippets_with_examples": 2
-    },
-    {
-      "generated_warmups": 0,
       "quick_checks": 3,
-      "region_id": "calculus-cliffs",
-      "region_name": "Calculus Cliffs",
-      "snippets": 3,
-      "snippets_with_examples": 3
-    },
-    {
-      "generated_warmups": 6,
-      "quick_checks": 4,
-      "region_id": "integration-gardens",
-      "region_name": "Integral Terraces",
-      "snippets": 4,
-      "snippets_with_examples": 4
-    },
-    {
-      "generated_warmups": 0,
-      "quick_checks": 2,
       "region_id": "vector-workshop",
       "region_name": "Vectors Gate",
-      "snippets": 2,
-      "snippets_with_examples": 2
-    },
-    {
-      "generated_warmups": 0,
-      "quick_checks": 2,
-      "region_id": "numerical-mines",
-      "region_name": "Iteration Forge",
-      "snippets": 2,
-      "snippets_with_examples": 2
-    },
-    {
-      "generated_warmups": 0,
-      "quick_checks": 2,
-      "region_id": "differential-shrine",
-      "region_name": "Differential Shrine",
-      "snippets": 2,
-      "snippets_with_examples": 2
+      "snippets": 3,
+      "snippets_with_examples": 3
     }
   ],
   "auto_eligible": 52,
@@ -151,7 +151,7 @@
     "priority_region_depth": [
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 15,
+        "generated_warmups": 24,
         "quick_checks": 8,
         "region_id": "algebra-forge",
         "region_name": "Algebra Vault",
@@ -160,12 +160,12 @@
       },
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 3,
-        "quick_checks": 7,
+        "generated_warmups": 12,
+        "quick_checks": 8,
         "region_id": "logarithm-grove",
         "region_name": "Logarithm Observatory",
-        "snippets": 7,
-        "snippets_with_examples": 7
+        "snippets": 8,
+        "snippets_with_examples": 8
       },
       {
         "depth_status": "priority_deepened",
@@ -180,27 +180,11 @@
     "regions_still_thin": [
       {
         "generated_warmups": 0,
-        "quick_checks": 2,
-        "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "complex-harbor",
-        "region_name": "Argand Atrium",
-        "snippets": 2
-      },
-      {
-        "generated_warmups": 0,
         "quick_checks": 3,
         "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "calculus-cliffs",
-        "region_name": "Calculus Cliffs",
+        "region_id": "differential-shrine",
+        "region_name": "Differential Shrine",
         "snippets": 3
-      },
-      {
-        "generated_warmups": 0,
-        "quick_checks": 2,
-        "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "vector-workshop",
-        "region_name": "Vectors Gate",
-        "snippets": 2
       },
       {
         "generated_warmups": 0,
@@ -212,11 +196,11 @@
       },
       {
         "generated_warmups": 0,
-        "quick_checks": 2,
+        "quick_checks": 3,
         "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "differential-shrine",
-        "region_name": "Differential Shrine",
-        "snippets": 2
+        "region_id": "vector-workshop",
+        "region_name": "Vectors Gate",
+        "snippets": 3
       }
     ],
     "source_trail": "tools/content_lab/outputs/content_lab_research_notes.md"
@@ -232,10 +216,10 @@
     "review_only": 1213
   },
   "content_review_status_counts": {
-    "generated_practice:needs_review": 54,
-    "generated_practice:teacher_reviewed": 30,
+    "generated_practice:needs_review": 24,
+    "generated_practice:teacher_reviewed": 69,
     "snippet:published": 3,
-    "snippet:teacher_reviewed": 31
+    "snippet:teacher_reviewed": 37
   },
   "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
   "generated_families_by_topic": {
@@ -249,6 +233,7 @@
       "binomial_expansion.first_terms_and_coefficient": 3
     },
     "complex_numbers": {
+      "complex_numbers.cartesian_conjugate_basic": 3,
       "complex_numbers.cartesian_locus_roots_basic": 3,
       "complex_numbers.modulus_argument_basic": 3
     },
@@ -258,11 +243,13 @@
     },
     "differentiation": {
       "differentiation.chain_product_basic": 3,
-      "differentiation.implicit_log_exp_basic": 3
+      "differentiation.implicit_log_exp_basic": 3,
+      "differentiation.stationary_tangent_normal_basic": 3
     },
     "integration": {
       "integration.definite_area_basic": 3,
-      "integration.method_setup_basic": 3
+      "integration.method_setup_basic": 3,
+      "integration.parts_substitution_basic": 3
     },
     "logarithms_and_exponentials": {
       "logarithms_and_exponentials.calculus_context_basic": 3,
@@ -295,12 +282,12 @@
     }
   },
   "generated_warmups_per_region": {
-    "algebra-forge": 15,
-    "calculus-cliffs": 0,
-    "complex-harbor": 0,
+    "algebra-forge": 24,
+    "calculus-cliffs": 9,
+    "complex-harbor": 3,
     "differential-shrine": 0,
-    "integration-gardens": 6,
-    "logarithm-grove": 3,
+    "integration-gardens": 15,
+    "logarithm-grove": 12,
     "numerical-mines": 0,
     "trig-observatory": 12,
     "vector-workshop": 0
@@ -313,14 +300,17 @@
     "algebra.polynomial_remainder_factor_basic": 3,
     "algebra.structure_rearrangement_basic": 3,
     "binomial_expansion.first_terms_and_coefficient": 3,
+    "complex_numbers.cartesian_conjugate_basic": 3,
     "complex_numbers.cartesian_locus_roots_basic": 3,
     "complex_numbers.modulus_argument_basic": 3,
     "differential_equations.context_model_basic": 3,
     "differential_equations.separation_basic": 3,
     "differentiation.chain_product_basic": 3,
     "differentiation.implicit_log_exp_basic": 3,
+    "differentiation.stationary_tangent_normal_basic": 3,
     "integration.definite_area_basic": 3,
     "integration.method_setup_basic": 3,
+    "integration.parts_substitution_basic": 3,
     "logarithms_and_exponentials.calculus_context_basic": 3,
     "logarithms_and_exponentials.domain_validation_basic": 3,
     "logarithms_and_exponentials.linearisation_basic": 3,
@@ -338,36 +328,63 @@
   "high_evidence_weak_teaching_support": [
     {
       "paper_family": "p3",
-      "quick_check_count": 2,
+      "quick_check_count": 0,
       "skill_target_id": "p3_complex_numbers",
-      "snippet_count": 2,
+      "snippet_count": 0,
       "source_question_count": 45,
       "topic": "complex_numbers",
       "warmup_count": 0
     },
     {
       "paper_family": "p3",
-      "quick_check_count": 2,
+      "quick_check_count": 0,
+      "skill_target_id": "p3_logarithms_and_exponentials",
+      "snippet_count": 0,
+      "source_question_count": 54,
+      "topic": "logarithms_and_exponentials",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
       "skill_target_id": "p3_numerical_methods",
-      "snippet_count": 2,
+      "snippet_count": 0,
       "source_question_count": 32,
       "topic": "numerical_methods",
       "warmup_count": 0
     },
     {
       "paper_family": "p3",
-      "quick_check_count": 1,
+      "quick_check_count": 0,
       "skill_target_id": "p3_parametric_equations",
-      "snippet_count": 1,
+      "snippet_count": 0,
       "source_question_count": 88,
       "topic": "parametric_equations",
       "warmup_count": 0
     },
     {
       "paper_family": "p3",
-      "quick_check_count": 2,
+      "quick_check_count": 0,
+      "skill_target_id": "p3_partial_fractions",
+      "snippet_count": 0,
+      "source_question_count": 27,
+      "topic": "partial_fractions",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_trigonometry",
+      "snippet_count": 0,
+      "source_question_count": 32,
+      "topic": "trigonometry",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
       "skill_target_id": "p3_vectors",
-      "snippet_count": 2,
+      "snippet_count": 0,
       "source_question_count": 36,
       "topic": "vectors",
       "warmup_count": 0
@@ -382,15 +399,15 @@
       "region_name": "Algebra Vault",
       "snippets": 8,
       "snippets_with_examples": 8,
-      "warmups": 15
+      "warmups": 24
     },
     {
       "method_snippets_missing_examples": [],
       "region_id": "logarithm-grove",
       "region_name": "Logarithm Observatory",
-      "snippets": 7,
-      "snippets_with_examples": 7,
-      "warmups": 3
+      "snippets": 8,
+      "snippets_with_examples": 8,
+      "warmups": 12
     },
     {
       "method_snippets_missing_examples": [],
@@ -403,14 +420,14 @@
   ],
   "quick_checks_per_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 3,
-    "complex-harbor": 2,
-    "differential-shrine": 2,
-    "integration-gardens": 4,
-    "logarithm-grove": 7,
+    "calculus-cliffs": 4,
+    "complex-harbor": 3,
+    "differential-shrine": 3,
+    "integration-gardens": 5,
+    "logarithm-grove": 8,
     "numerical-mines": 2,
     "trig-observatory": 5,
-    "vector-workshop": 2
+    "vector-workshop": 3
   },
   "review_only": 1213,
   "review_queue_counts_by_reason": {
@@ -491,48 +508,6 @@
   },
   "skill_targets_with_quick_checks_but_no_warmups": [
     {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_complex_numbers",
-      "topic": "complex_numbers"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_differential_equations",
-      "topic": "differential_equations"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_differentiation",
-      "topic": "differentiation"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_integration",
-      "topic": "integration"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_numerical_methods",
-      "topic": "numerical_methods"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 1,
-      "skill_target_id": "p3_parametric_equations",
-      "topic": "parametric_equations"
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 2,
-      "skill_target_id": "p3_vectors",
-      "topic": "vectors"
-    },
-    {
       "paper_family": "p4",
       "quick_check_count": 1,
       "skill_target_id": "p4_momentum_impulse",
@@ -542,25 +517,25 @@
   "skill_targets_with_snippets_but_no_quick_checks": [],
   "snippets_per_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 3,
-    "complex-harbor": 2,
-    "differential-shrine": 2,
-    "integration-gardens": 4,
-    "logarithm-grove": 7,
+    "calculus-cliffs": 4,
+    "complex-harbor": 3,
+    "differential-shrine": 3,
+    "integration-gardens": 5,
+    "logarithm-grove": 8,
     "numerical-mines": 2,
     "trig-observatory": 5,
-    "vector-workshop": 2
+    "vector-workshop": 3
   },
   "snippets_with_examples_by_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 3,
-    "complex-harbor": 2,
-    "differential-shrine": 2,
-    "integration-gardens": 4,
-    "logarithm-grove": 7,
+    "calculus-cliffs": 4,
+    "complex-harbor": 3,
+    "differential-shrine": 3,
+    "integration-gardens": 5,
+    "logarithm-grove": 8,
     "numerical-mines": 2,
     "trig-observatory": 5,
-    "vector-workshop": 2
+    "vector-workshop": 3
   },
   "topics_needing_deterministic_generators": [],
   "topics_with_no_snippets": [
@@ -871,6 +846,24 @@
     },
     {
       "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-complex-form-001"
+    },
+    {
+      "example_model_id": "p3-complex-form-001-example-1",
       "practice_id": "gen_complex_cartesian_locus_roots_basic_0001",
       "sequence_role": "first_step",
       "source_snippet_id": "p3-complex-form-001"
@@ -906,22 +899,22 @@
       "source_snippet_id": "p3-complex-form-001"
     },
     {
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "practice_id": "gen_differential_equations_context_model_basic_0001",
       "sequence_role": "first_step",
-      "source_snippet_id": "p3-differential-separation-001"
+      "source_snippet_id": "p3-differential-context-model-001"
     },
     {
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "practice_id": "gen_differential_equations_context_model_basic_0002",
       "sequence_role": "complete_step",
-      "source_snippet_id": "p3-differential-separation-001"
+      "source_snippet_id": "p3-differential-context-model-001"
     },
     {
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "practice_id": "gen_differential_equations_context_model_basic_0003",
       "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-differential-separation-001"
+      "source_snippet_id": "p3-differential-context-model-001"
     },
     {
       "example_model_id": "p3-differential-separation-001-example-1",
@@ -960,40 +953,58 @@
       "source_snippet_id": "p3-differentiation-method-001"
     },
     {
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "practice_id": "gen_differentiation_implicit_log_exp_basic_0001",
       "sequence_role": "first_step",
-      "source_snippet_id": "p3-differentiation-method-001"
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001"
     },
     {
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "practice_id": "gen_differentiation_implicit_log_exp_basic_0002",
       "sequence_role": "complete_step",
-      "source_snippet_id": "p3-differentiation-method-001"
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001"
     },
     {
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "practice_id": "gen_differentiation_implicit_log_exp_basic_0003",
       "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-differentiation-method-001"
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001"
     },
     {
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differentiation-follow-through-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differentiation-follow-through-001"
+    },
+    {
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differentiation-follow-through-001"
+    },
+    {
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "practice_id": "gen_integration_definite_area_basic_0001",
       "sequence_role": "first_step",
-      "source_snippet_id": "p3-integration-method-choice-001"
+      "source_snippet_id": "p3-integration-definite-area-001"
     },
     {
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "practice_id": "gen_integration_definite_area_basic_0002",
       "sequence_role": "complete_step",
-      "source_snippet_id": "p3-integration-method-choice-001"
+      "source_snippet_id": "p3-integration-definite-area-001"
     },
     {
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "practice_id": "gen_integration_definite_area_basic_0003",
       "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-integration-method-choice-001"
+      "source_snippet_id": "p3-integration-definite-area-001"
     },
     {
       "example_model_id": "p3-integration-method-choice-001-example-1",
@@ -1014,22 +1025,40 @@
       "source_snippet_id": "p3-integration-method-choice-001"
     },
     {
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "practice_id": "gen_integration_parts_substitution_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-integration-parts-substitution-001"
+    },
+    {
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "practice_id": "gen_integration_parts_substitution_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-integration-parts-substitution-001"
+    },
+    {
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "practice_id": "gen_integration_parts_substitution_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-integration-parts-substitution-001"
+    },
+    {
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "practice_id": "gen_log_calculus_context_basic_0001",
       "sequence_role": "first_step",
-      "source_snippet_id": "p3-ln-e-inverse-001"
+      "source_snippet_id": "p3-log-calculus-context-001"
     },
     {
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "practice_id": "gen_log_calculus_context_basic_0002",
       "sequence_role": "complete_step",
-      "source_snippet_id": "p3-ln-e-inverse-001"
+      "source_snippet_id": "p3-log-calculus-context-001"
     },
     {
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "practice_id": "gen_log_calculus_context_basic_0003",
       "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-ln-e-inverse-001"
+      "source_snippet_id": "p3-log-calculus-context-001"
     },
     {
       "example_model_id": "p3-log-domain-001-example-1",

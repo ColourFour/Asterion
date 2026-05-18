@@ -30,45 +30,45 @@ const classes: TeacherClass[] = [
 ];
 
 const students: StudentSummary[] = [
-  { id: 'student-ada', displayName: 'Ada L.', classId: 'class-p3-alpha', currentRegionId: 'algebra-vault', lastActivityAt: '2026-05-15T08:52:00.000Z', evidenceCount: 8, recommendedNextStep: 'needs_warm_up' },
-  { id: 'student-mika', displayName: 'Mika C.', classId: 'class-p3-alpha', currentRegionId: 'algebra-vault', lastActivityAt: '2026-05-15T08:48:00.000Z', evidenceCount: 7, recommendedNextStep: 'needs_warm_up' },
-  { id: 'student-sam', displayName: 'Sam R.', classId: 'class-p3-alpha', currentRegionId: 'trigonometry-spire', lastActivityAt: '2026-05-14T16:12:00.000Z', evidenceCount: 4, recommendedNextStep: 'needs_quick_check' },
-  { id: 'student-nora', displayName: 'Nora P.', classId: 'class-p3-alpha', currentRegionId: 'integral-terraces', lastActivityAt: '2026-05-15T08:10:00.000Z', evidenceCount: 10, recommendedNextStep: 'ready_for_exam_training' },
-  { id: 'student-jun', displayName: 'Jun W.', classId: 'class-p3-alpha', currentRegionId: 'trigonometry-spire', lastActivityAt: '2026-05-13T14:32:00.000Z', evidenceCount: 2, recommendedNextStep: 'needs_field_guide' },
-  { id: 'student-iman', displayName: 'Iman T.', classId: 'class-p3-alpha', currentRegionId: 'vectors-gate', lastActivityAt: '2026-05-15T07:46:00.000Z', evidenceCount: 3, recommendedNextStep: 'needs_teacher_review' },
-  { id: 'student-li', displayName: 'Li Z.', classId: 'class-p3-alpha', currentRegionId: 'integral-terraces', lastActivityAt: '2026-05-15T08:59:00.000Z', evidenceCount: 12, recommendedNextStep: 'ready_for_guardian' },
-  { id: 'student-rosa', displayName: 'Rosa M.', classId: 'class-p3-beta', currentRegionId: 'algebra-vault', lastActivityAt: '2026-05-14T10:20:00.000Z', evidenceCount: 5, recommendedNextStep: 'needs_quick_check' },
-  { id: 'student-theo', displayName: 'Theo B.', classId: 'class-p3-beta', currentRegionId: 'differential-docks', lastActivityAt: '2026-05-14T11:02:00.000Z', evidenceCount: 9, recommendedNextStep: 'ready_for_exam_training' },
+  { id: 'student-ada', displayName: 'Ada L.', classId: 'class-p3-alpha', currentRegionId: 'algebra-forge', lastActivityAt: '2026-05-15T08:52:00.000Z', evidenceCount: 8, recommendedNextStep: 'needs_warm_up' },
+  { id: 'student-mika', displayName: 'Mika C.', classId: 'class-p3-alpha', currentRegionId: 'algebra-forge', lastActivityAt: '2026-05-15T08:48:00.000Z', evidenceCount: 7, recommendedNextStep: 'needs_warm_up' },
+  { id: 'student-sam', displayName: 'Sam R.', classId: 'class-p3-alpha', currentRegionId: 'trig-observatory', lastActivityAt: '2026-05-14T16:12:00.000Z', evidenceCount: 4, recommendedNextStep: 'needs_quick_check' },
+  { id: 'student-nora', displayName: 'Nora P.', classId: 'class-p3-alpha', currentRegionId: 'integration-gardens', lastActivityAt: '2026-05-15T08:10:00.000Z', evidenceCount: 10, recommendedNextStep: 'ready_for_exam_training' },
+  { id: 'student-jun', displayName: 'Jun W.', classId: 'class-p3-alpha', currentRegionId: 'trig-observatory', lastActivityAt: '2026-05-13T14:32:00.000Z', evidenceCount: 2, recommendedNextStep: 'needs_field_guide' },
+  { id: 'student-iman', displayName: 'Iman T.', classId: 'class-p3-alpha', currentRegionId: 'vector-workshop', lastActivityAt: '2026-05-15T07:46:00.000Z', evidenceCount: 3, recommendedNextStep: 'needs_teacher_review' },
+  { id: 'student-li', displayName: 'Li Z.', classId: 'class-p3-alpha', currentRegionId: 'integration-gardens', lastActivityAt: '2026-05-15T08:59:00.000Z', evidenceCount: 12, recommendedNextStep: 'ready_for_guardian' },
+  { id: 'student-rosa', displayName: 'Rosa M.', classId: 'class-p3-beta', currentRegionId: 'algebra-forge', lastActivityAt: '2026-05-14T10:20:00.000Z', evidenceCount: 5, recommendedNextStep: 'needs_quick_check' },
+  { id: 'student-theo', displayName: 'Theo B.', classId: 'class-p3-beta', currentRegionId: 'calculus-cliffs', lastActivityAt: '2026-05-14T11:02:00.000Z', evidenceCount: 9, recommendedNextStep: 'ready_for_exam_training' },
 ];
 
 const evidenceByStudent: Record<string, EvidenceReference[]> = {
   'student-ada': [
-    { questionId: '9709-2023-32-q05', regionId: 'algebra-vault', skillId: 'p3-algebra-partial-fractions', activityType: 'warm_up', action: 'submitted', outcome: 'partial', createdAt: '2026-05-15T08:52:00.000Z' },
-    { questionId: '9709-2022-31-q04', regionId: 'algebra-vault', skillId: 'p3-algebra-partial-fractions', activityType: 'quick_check', action: 'completed', outcome: 'self_review', createdAt: '2026-05-14T09:08:00.000Z' },
+    { questionId: '9709-2023-32-q05', regionId: 'algebra-forge', skillId: 'p3-algebra-partial-fractions', activityType: 'warm_up', action: 'submitted', outcome: 'partial', createdAt: '2026-05-15T08:52:00.000Z' },
+    { questionId: '9709-2022-31-q04', regionId: 'algebra-forge', skillId: 'p3-algebra-partial-fractions', activityType: 'quick_check', action: 'completed', outcome: 'self_review', createdAt: '2026-05-14T09:08:00.000Z' },
   ],
   'student-mika': [
-    { questionId: '9709-2021-33-q03', regionId: 'algebra-vault', skillId: 'p3-algebra-modulus-equations', activityType: 'warm_up', action: 'revealed', outcome: 'self_review', createdAt: '2026-05-15T08:48:00.000Z' },
+    { questionId: '9709-2021-33-q03', regionId: 'algebra-forge', skillId: 'p3-algebra-modulus-equations', activityType: 'warm_up', action: 'revealed', outcome: 'self_review', createdAt: '2026-05-15T08:48:00.000Z' },
   ],
   'student-sam': [
-    { questionId: '9709-2022-32-q08', regionId: 'trigonometry-spire', skillId: 'p3-trig-identities', activityType: 'quick_check', action: 'submitted', outcome: 'incorrect', createdAt: '2026-05-14T16:12:00.000Z' },
+    { questionId: '9709-2022-32-q08', regionId: 'trig-observatory', skillId: 'p3-trig-identities', activityType: 'quick_check', action: 'submitted', outcome: 'incorrect', createdAt: '2026-05-14T16:12:00.000Z' },
   ],
   'student-nora': [
-    { questionId: '9709-2023-31-q10', regionId: 'integral-terraces', skillId: 'p3-integration-substitution', activityType: 'warm_up', action: 'completed', outcome: 'correct', createdAt: '2026-05-15T08:10:00.000Z' },
+    { questionId: '9709-2023-31-q10', regionId: 'integration-gardens', skillId: 'p3-integration-substitution', activityType: 'warm_up', action: 'completed', outcome: 'correct', createdAt: '2026-05-15T08:10:00.000Z' },
   ],
   'student-jun': [
-    { questionId: '9709-2020-32-q06', regionId: 'trigonometry-spire', skillId: 'p3-trig-equations', activityType: 'field_guide', action: 'started', outcome: 'unknown', createdAt: '2026-05-13T14:32:00.000Z' },
+    { questionId: '9709-2020-32-q06', regionId: 'trig-observatory', skillId: 'p3-trig-equations', activityType: 'field_guide', action: 'started', outcome: 'unknown', createdAt: '2026-05-13T14:32:00.000Z' },
   ],
   'student-iman': [
-    { questionId: '9709-2023-33-q09', regionId: 'vectors-gate', skillId: 'p3-vectors-lines', activityType: 'exam_training', action: 'revealed', outcome: 'unknown', createdAt: '2026-05-15T07:46:00.000Z' },
+    { questionId: '9709-2023-33-q09', regionId: 'vector-workshop', skillId: 'p3-vectors-lines', activityType: 'exam_training', action: 'revealed', outcome: 'unknown', createdAt: '2026-05-15T07:46:00.000Z' },
   ],
   'student-li': [
-    { questionId: '9709-2021-31-q11', regionId: 'integral-terraces', skillId: 'p3-integration-by-parts', activityType: 'guardian', action: 'completed', outcome: 'correct', createdAt: '2026-05-15T08:59:00.000Z' },
+    { questionId: '9709-2021-31-q11', regionId: 'integration-gardens', skillId: 'p3-integration-by-parts', activityType: 'guardian', action: 'completed', outcome: 'correct', createdAt: '2026-05-15T08:59:00.000Z' },
   ],
   'student-rosa': [
-    { questionId: '9709-2022-33-q02', regionId: 'algebra-vault', skillId: 'p3-algebra-functions', activityType: 'quick_check', action: 'submitted', outcome: 'partial', createdAt: '2026-05-14T10:20:00.000Z' },
+    { questionId: '9709-2022-33-q02', regionId: 'algebra-forge', skillId: 'p3-algebra-functions', activityType: 'quick_check', action: 'submitted', outcome: 'partial', createdAt: '2026-05-14T10:20:00.000Z' },
   ],
   'student-theo': [
-    { questionId: '9709-2023-32-q07', regionId: 'differential-docks', skillId: 'p3-differentiation-parametric', activityType: 'warm_up', action: 'completed', outcome: 'correct', createdAt: '2026-05-14T11:02:00.000Z' },
+    { questionId: '9709-2023-32-q07', regionId: 'calculus-cliffs', skillId: 'p3-differentiation-parametric', activityType: 'warm_up', action: 'completed', outcome: 'correct', createdAt: '2026-05-14T11:02:00.000Z' },
   ],
 };
 
@@ -101,11 +101,11 @@ function evidenceForStudents(studentIds: string[]): EvidenceReference[] {
 function buildRegionSignals(classId: string): RegionLearningSignal[] {
   const classStudents = students.filter((student) => student.classId === classId);
   const regions = [
-    { regionId: 'algebra-vault', regionName: 'Algebra Vault' },
-    { regionId: 'trigonometry-spire', regionName: 'Trigonometry Spire' },
-    { regionId: 'integral-terraces', regionName: 'Integral Terraces' },
-    { regionId: 'vectors-gate', regionName: 'Vectors Gate' },
-    { regionId: 'differential-docks', regionName: 'Differential Docks' },
+    { regionId: 'algebra-forge', regionName: 'Algebra Vault' },
+    { regionId: 'trig-observatory', regionName: 'Trigonometry Spire' },
+    { regionId: 'integration-gardens', regionName: 'Integral Terraces' },
+    { regionId: 'vector-workshop', regionName: 'Vectors Gate' },
+    { regionId: 'calculus-cliffs', regionName: 'Calculus Cliffs' },
   ];
 
   return regions.map((region) => {
@@ -143,8 +143,8 @@ function buildRegionSignals(classId: string): RegionLearningSignal[] {
 
 function buildActionCards(classId: string): TeacherActionCard[] {
   const classStudents = students.filter((student) => student.classId === classId);
-  const algebraWarmUpIds = classStudents.filter((student) => student.currentRegionId === 'algebra-vault' && student.recommendedNextStep === 'needs_warm_up').map((student) => student.id);
-  const trigSupportIds = classStudents.filter((student) => student.currentRegionId === 'trigonometry-spire' && ['needs_field_guide', 'needs_quick_check'].includes(student.recommendedNextStep)).map((student) => student.id);
+  const algebraWarmUpIds = classStudents.filter((student) => student.currentRegionId === 'algebra-forge' && student.recommendedNextStep === 'needs_warm_up').map((student) => student.id);
+  const trigSupportIds = classStudents.filter((student) => student.currentRegionId === 'trig-observatory' && ['needs_field_guide', 'needs_quick_check'].includes(student.recommendedNextStep)).map((student) => student.id);
   const examReadyIds = classStudents.filter((student) => ['ready_for_exam_training', 'ready_for_guardian'].includes(student.recommendedNextStep)).map((student) => student.id);
   const reviewIds = classStudents.filter((student) => student.recommendedNextStep === 'needs_teacher_review').map((student) => student.id);
 
@@ -154,7 +154,7 @@ function buildActionCards(classId: string): TeacherActionCard[] {
       type: 'reteach',
       title: 'Reteach partial fractions in Algebra Vault',
       summary: `${algebraWarmUpIds.length} students need Warm-Up evidence before Exam Training.`,
-      regionId: 'algebra-vault',
+      regionId: 'algebra-forge',
       skillId: 'p3-algebra-partial-fractions',
       studentIds: algebraWarmUpIds,
       evidenceRefs: evidenceForStudents(algebraWarmUpIds),
@@ -165,7 +165,7 @@ function buildActionCards(classId: string): TeacherActionCard[] {
       type: 'small_group',
       title: 'Small group for Trigonometry Spire entry',
       summary: `${trigSupportIds.length} students may need support starting this question type.`,
-      regionId: 'trigonometry-spire',
+      regionId: 'trig-observatory',
       skillId: 'p3-trig-equations',
       studentIds: trigSupportIds,
       evidenceRefs: evidenceForStudents(trigSupportIds),
@@ -185,7 +185,7 @@ function buildActionCards(classId: string): TeacherActionCard[] {
       type: 'teacher_review',
       title: 'Check thin or unclear Vectors Gate evidence',
       summary: `${reviewIds.length} student has activity that needs teacher review before a confident next step.`,
-      regionId: 'vectors-gate',
+      regionId: 'vector-workshop',
       skillId: 'p3-vectors-lines',
       studentIds: reviewIds,
       evidenceRefs: evidenceForStudents(reviewIds),

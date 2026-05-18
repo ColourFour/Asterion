@@ -1492,10 +1492,19 @@ button:disabled {
 }
 
 .app-view-dashboard {
+  --dashboard-surface: #fffdf8;
+  --dashboard-surface-muted: #f8f2e7;
+  --dashboard-ink-muted: #3f4a5a;
+  --dashboard-border: #b9ad99;
+  --dashboard-border-soft: #cfc4b2;
   background:
     linear-gradient(115deg, rgba(15, 118, 110, 0.1), transparent 34%),
     linear-gradient(245deg, rgba(183, 121, 31, 0.09), transparent 32%),
     linear-gradient(var(--color-bg), var(--color-bg-cool));
+}
+
+.app-view-dashboard::before {
+  opacity: 0.34;
 }
 
 .dashboard-shell {
@@ -1522,16 +1531,16 @@ button:disabled {
 
 .dashboard-topbar p,
 .dashboard-muted {
-  color: var(--color-text-muted);
+  color: var(--dashboard-ink-muted);
 }
 
 .dashboard-control-row,
 .dashboard-section,
 .teacher-action-card,
 .student-detail-panel {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--dashboard-border);
   border-radius: var(--radius-panel);
-  background: rgba(255, 253, 248, 0.95);
+  background: var(--dashboard-surface);
   box-shadow: var(--shadow-soft);
 }
 
@@ -1548,7 +1557,7 @@ button:disabled {
   gap: 8px;
   align-items: center;
   min-height: 42px;
-  color: var(--color-text-muted);
+  color: var(--dashboard-ink-muted);
   font-weight: 800;
 }
 
@@ -1567,7 +1576,7 @@ button:disabled {
 .dashboard-kicker {
   display: block;
   margin-bottom: 4px;
-  color: var(--color-astral-dark);
+  color: #06413e;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0;
@@ -1586,9 +1595,10 @@ button:disabled {
   display: grid;
   min-width: 150px;
   padding: 14px;
-  border: 1px solid rgba(15, 118, 110, 0.18);
+  border: 1px solid #7da7a0;
   border-radius: var(--radius-panel);
-  background: #dff4ef;
+  color: #0b3835;
+  background: #d4eee8;
 }
 
 .attention-summary strong {
@@ -1649,9 +1659,9 @@ button:disabled {
   display: grid;
   gap: 4px;
   padding: 12px;
-  border: 1px solid rgba(217, 210, 195, 0.86);
+  border: 1px solid var(--dashboard-border-soft);
   border-radius: var(--radius-panel);
-  background: #fbf7ee;
+  background: var(--dashboard-surface-muted);
 }
 
 .region-signal-card span,
@@ -1661,7 +1671,7 @@ button:disabled {
 .admin-list small,
 .student-chip small,
 .student-detail-facts dt {
-  color: var(--color-text-muted);
+  color: var(--dashboard-ink-muted);
 }
 
 .evidence-card-list {
@@ -1693,9 +1703,9 @@ button:disabled {
   min-height: 40px;
   padding: 8px 10px;
   color: var(--color-ink);
-  border: 1px solid rgba(15, 118, 110, 0.18);
+  border: 1px solid #8bb6ae;
   border-radius: var(--radius-control);
-  background: #eef8f5;
+  background: #e3f4ef;
   font-weight: 800;
 }
 
@@ -1730,8 +1740,9 @@ button:disabled {
 
 .student-detail-facts div {
   padding: 10px;
+  border: 1px solid var(--dashboard-border-soft);
   border-radius: var(--radius-panel);
-  background: #fbf7ee;
+  background: var(--dashboard-surface-muted);
 }
 
 .student-detail-facts dd {
@@ -1766,10 +1777,17 @@ button:disabled {
 .admin-action-row button {
   min-height: 40px;
   padding: 8px 12px;
-  color: var(--color-ink);
-  border: 1px solid var(--color-border);
-  background: #f5efe3;
+  color: #3f4652;
+  border: 1px solid var(--dashboard-border);
+  background: #eee7dc;
   font-weight: 900;
+}
+
+.admin-action-row button:disabled {
+  color: #3f4652;
+  background: #eee7dc;
+  border-color: var(--dashboard-border);
+  opacity: 1;
 }
 
 @keyframes region-in {
@@ -9937,6 +9955,322 @@ legend {
     grid-template-columns: 1fr;
   }
 
+}
+
+.app-view-dashboard {
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #f6f8fb;
+  --dashboard-surface-accent: #e8f3f1;
+  --dashboard-ink: #121826;
+  --dashboard-ink-muted: #475467;
+  --dashboard-border: #d0d5dd;
+  --dashboard-border-soft: #e4e7ec;
+  --dashboard-action: #0f5f59;
+  --dashboard-action-strong: #0b4f4b;
+  --dashboard-focus: rgba(15, 95, 89, 0.28);
+  min-height: 100vh;
+  color: var(--dashboard-ink);
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.98)),
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 34%),
+    #f3f6f8;
+}
+
+.app-view-dashboard::before {
+  opacity: 0.08;
+}
+
+.app-view-dashboard .dashboard-shell {
+  gap: 18px;
+  width: min(100%, 1180px);
+  color: var(--dashboard-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-view-dashboard .dashboard-topbar {
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: var(--radius-panel);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.08);
+}
+
+.app-view-dashboard .dashboard-topbar h1 {
+  max-width: none;
+  margin: 0 0 6px;
+  color: var(--dashboard-ink);
+  font-size: clamp(1.8rem, 3.4vw, 2.75rem);
+  line-height: 1.08;
+  text-shadow: none;
+  text-transform: none;
+}
+
+.app-view-dashboard .dashboard-topbar p,
+.app-view-dashboard .dashboard-muted,
+.app-view-dashboard .dashboard-section p,
+.app-view-dashboard .teacher-action-card p {
+  color: var(--dashboard-ink-muted);
+}
+
+.app-view-dashboard .mode-pill,
+.app-view-dashboard .dashboard-kicker {
+  color: #0b4f4b;
+  border-color: #badbd5;
+  background: #e8f3f1;
+  font-family: inherit;
+  text-shadow: none;
+}
+
+.app-view-dashboard .dashboard-kicker {
+  display: block;
+  width: fit-content;
+  margin-bottom: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.73rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.app-view-dashboard .dashboard-nav {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  justify-content: flex-end;
+  padding: 4px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: var(--radius-control);
+  background: var(--dashboard-surface-muted);
+}
+
+.app-view-dashboard .dashboard-nav button,
+.app-view-dashboard .quiet-button,
+.app-view-dashboard .primary-button,
+.app-view-dashboard .admin-action-row button {
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--radius-control);
+  box-shadow: none;
+  font-family: inherit;
+  font-weight: 800;
+  text-shadow: none;
+}
+
+.app-view-dashboard .dashboard-nav button,
+.app-view-dashboard .quiet-button {
+  color: #1f2937;
+  background: #ffffff;
+}
+
+.app-view-dashboard .dashboard-nav button.active,
+.app-view-dashboard .primary-button {
+  color: #ffffff !important;
+  border-color: var(--dashboard-action-strong) !important;
+  background: var(--dashboard-action) !important;
+}
+
+.app-view-dashboard .dashboard-nav button:hover,
+.app-view-dashboard .quiet-button:hover,
+.app-view-dashboard .primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.12);
+}
+
+.app-view-dashboard button:focus-visible,
+.app-view-dashboard input:focus-visible,
+.app-view-dashboard select:focus-visible {
+  outline-color: var(--dashboard-focus);
+}
+
+.app-view-dashboard .dashboard-control-row,
+.app-view-dashboard .dashboard-section,
+.app-view-dashboard .teacher-action-card,
+.app-view-dashboard .student-detail-panel {
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: var(--radius-panel);
+  background: var(--dashboard-surface);
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.07);
+}
+
+.app-view-dashboard .dashboard-control-row {
+  grid-template-columns: minmax(220px, 320px) minmax(180px, 1fr) auto;
+  padding: 14px;
+}
+
+.app-view-dashboard label {
+  color: #344054;
+}
+
+.app-view-dashboard input,
+.app-view-dashboard select {
+  color: var(--dashboard-ink);
+  border-color: var(--dashboard-border);
+  background: #ffffff;
+}
+
+.app-view-dashboard .last-updated-indicator {
+  color: var(--dashboard-ink-muted);
+}
+
+.dashboard-priority-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 14px;
+}
+
+.app-view-dashboard .attention-section {
+  display: block;
+  border-left: 5px solid var(--dashboard-action);
+}
+
+.app-view-dashboard .attention-section h2 {
+  margin-bottom: 8px;
+  color: var(--dashboard-ink);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  line-height: 1.16;
+}
+
+.app-view-dashboard .attention-section h3 {
+  margin: 0 0 8px;
+  color: #0b4f4b;
+  font-size: 1.05rem;
+}
+
+.class-summary-card {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  background: var(--dashboard-surface-accent) !important;
+}
+
+.class-summary-card strong {
+  color: var(--dashboard-ink);
+  font-size: 2.35rem;
+  line-height: 1;
+}
+
+.class-summary-card span,
+.class-summary-card small {
+  color: var(--dashboard-ink-muted);
+  font-weight: 750;
+}
+
+.app-view-dashboard .dashboard-class-overview {
+  padding: 14px 16px;
+}
+
+.app-view-dashboard .teacher-action-groups {
+  gap: 14px;
+}
+
+.app-view-dashboard .teacher-action-groups > section {
+  padding: 0;
+}
+
+.app-view-dashboard .teacher-action-groups h2 {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-size: 1rem;
+}
+
+.app-view-dashboard .teacher-action-card {
+  min-width: 0;
+  padding: 14px;
+}
+
+.app-view-dashboard .teacher-action-card h3,
+.app-view-dashboard .dashboard-section h2,
+.app-view-dashboard .admin-list strong,
+.app-view-dashboard .region-signal-card strong,
+.app-view-dashboard .evidence-card strong,
+.app-view-dashboard .next-step-group h3 {
+  color: var(--dashboard-ink);
+}
+
+.app-view-dashboard .region-signal-card,
+.app-view-dashboard .evidence-card,
+.app-view-dashboard .admin-list article,
+.app-view-dashboard .next-step-group,
+.app-view-dashboard .student-detail-facts div {
+  border-color: var(--dashboard-border-soft);
+  background: var(--dashboard-surface-muted);
+}
+
+.app-view-dashboard .region-signal-card span,
+.app-view-dashboard .evidence-card span,
+.app-view-dashboard .admin-list span,
+.app-view-dashboard .region-signal-card small,
+.app-view-dashboard .admin-list small,
+.app-view-dashboard .student-chip small,
+.app-view-dashboard .student-detail-facts dt {
+  color: var(--dashboard-ink-muted);
+}
+
+.app-view-dashboard .student-chip {
+  color: var(--dashboard-ink);
+  border-color: #badbd5;
+  background: #e8f3f1;
+}
+
+.app-view-dashboard .admin-identity svg {
+  color: var(--dashboard-action);
+}
+
+.app-view-dashboard .admin-action-row button:disabled {
+  color: #475467;
+  border-color: var(--dashboard-border);
+  background: #eef2f6;
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .app-view-dashboard .dashboard-topbar,
+  .app-view-dashboard .dashboard-control-row,
+  .dashboard-priority-row,
+  .app-view-dashboard .teacher-action-groups,
+  .app-view-dashboard .next-step-groups,
+  .app-view-dashboard .student-detail-facts,
+  .app-view-dashboard .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-view-dashboard .dashboard-topbar {
+    align-items: stretch;
+  }
+
+  .app-view-dashboard .dashboard-nav {
+    justify-content: stretch;
+  }
+
+  .app-view-dashboard .dashboard-nav button,
+  .app-view-dashboard .dashboard-control-row button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-view-dashboard .dashboard-topbar,
+  .app-view-dashboard .dashboard-control-row,
+  .app-view-dashboard .dashboard-section,
+  .app-view-dashboard .teacher-action-card,
+  .app-view-dashboard .student-detail-panel {
+    padding: 12px;
+  }
+
+  .app-view-dashboard .dashboard-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .app-view-dashboard .dashboard-nav button {
+    min-width: 0;
+    padding-inline: 8px;
+    font-size: 0.9rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

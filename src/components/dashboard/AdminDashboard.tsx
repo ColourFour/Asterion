@@ -53,11 +53,11 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
       <section className="dashboard-shell admin-dashboard">
         <header className="dashboard-topbar">
           <div>
-            <span className="mode-pill">Asterion · Admin console</span>
-            <h1>Support, repair, oversight</h1>
+            <span className="mode-pill">Asterion dashboard</span>
+            <h1>Admin Console</h1>
             <p>Mock admin view for classroom support. Curriculum, topic routing, canonical content, and image paths are not editable here.</p>
           </div>
-          <nav aria-label="Dashboard navigation">
+          <nav className="dashboard-nav" aria-label="Dashboard navigation">
             <button type="button" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
             <button type="button" className="active" onClick={() => onNavigatePath('/admin')}>Admin</button>
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>

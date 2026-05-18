@@ -30,12 +30,16 @@ function pipelineIt(name: string, fn: () => void) {
 interface GeneratedPracticeItem {
   practice_id: string;
   generator_family: string;
+  paper_family?: string;
+  topic?: string;
   skill_target_id?: string;
+  skill_target_resolution_status?: string;
   source_snippet_id?: string;
   example_model_id?: string;
   question_type?: string;
   key_method?: string;
   exam_move?: string;
+  region_ids?: string[];
   prompt: string;
   answer: string;
   worked_solution: string[];
@@ -318,11 +322,14 @@ function writeInputs(dir: string) {
   return { skillTargetsPath, snippetsPath };
 }
 
-function runGeneratedBuild(dir: string) {
+function runGeneratedBuild(dir: string, runtimeSeed?: Record<string, unknown>) {
   const { skillTargetsPath, snippetsPath } = writeInputs(dir);
   const outputPath = path.join(dir, 'generated_practice_bank.json');
   const runtimeOutputPath = path.join(dir, 'runtime_generated_practice_bank.json');
   const reportOutputPath = path.join(dir, 'content_lab_report.json');
+  if (runtimeSeed) {
+    writeFileSync(runtimeOutputPath, JSON.stringify(runtimeSeed, null, 2));
+  }
   runPython([
     buildScript,
     '--skill-targets',
@@ -348,6 +355,35 @@ function runGeneratedBuild(dir: string) {
 
 function generatedItems(json: string): GeneratedPracticeItem[] {
   return JSON.parse(json).items;
+}
+
+function existingRuntimeItem(overrides: Partial<GeneratedPracticeItem> = {}): GeneratedPracticeItem {
+  return {
+    practice_id: 'existing-reviewed-complex-locus',
+    generator_family: 'complex_numbers.locus_basic',
+    paper_family: 'p3',
+    topic: 'complex_numbers',
+    skill_target_id: 'p3_complex_argand_loci_regions',
+    skill_target_resolution_status: 'reviewed_p3_skill_map_id',
+    source_snippet_id: 'p3-complex-locus-001',
+    example_model_id: 'p3-complex-locus-001-example-1',
+    question_type: 'Complex locus',
+    key_method: 'Translate the modulus equation into a distance statement.',
+    exam_move: 'Name the centre and radius from the Argand equation.',
+    region_ids: ['complex-harbor'],
+    prompt: 'Describe the locus |z - (1 + 2i)| = 4.',
+    answer: 'A circle with centre (1, 2) and radius 4',
+    worked_solution: [
+      'The fixed complex number is 1 + 2i.',
+      'The modulus equation says every point is distance 4 from that fixed point.',
+      'So the locus is a circle with centre (1, 2) and radius 4.',
+    ],
+    parameters: { centre_real: 1, centre_imaginary: 2, radius: 4 },
+    sequence_role: 'first_step',
+    verification: { status: 'pass' },
+    review_status: 'teacher_reviewed',
+    ...overrides,
+  };
 }
 
 function numeric(value: number | string | undefined): number {
@@ -679,6 +715,36 @@ describe.sequential('generated practice Content Lab pipeline', () => {
     }
   });
 
+  pipelineIt('preserves existing reviewed runtime warm-ups that the generator does not rebuild yet', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-preserve-runtime-'));
+    try {
+      const runtimeSeed = {
+        schema_name: 'asterion_generated_practice',
+        schema_version: 2,
+        items: [
+          existingRuntimeItem(),
+          existingRuntimeItem({
+            practice_id: 'existing-failed-runtime-item',
+            verification: { status: 'fail' },
+          }),
+        ],
+      };
+      const built = runGeneratedBuild(dir, runtimeSeed);
+      const runtimeItems = generatedItems(built.runtime);
+
+      expect(runtimeItems.some((item) => item.practice_id === 'existing-reviewed-complex-locus')).toBe(true);
+      expect(runtimeItems.some((item) => item.practice_id === 'existing-failed-runtime-item')).toBe(false);
+      expect(runtimeItems.filter((item) => item.practice_id === 'existing-reviewed-complex-locus')).toHaveLength(1);
+      expect(runtimeItems.find((item) => item.practice_id === 'existing-reviewed-complex-locus')).toMatchObject({
+        generator_family: 'complex_numbers.locus_basic',
+        skill_target_id: 'p3_complex_argand_loci_regions',
+        skill_target_resolution_status: 'reviewed_p3_skill_map_id',
+      });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   pipelineIt('generates sequenced exponential warm-ups linked to the Field Guide example', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-log-'));
     try {
@@ -818,24 +884,14 @@ describe.sequential('generated practice Content Lab pipeline', () => {
     }
   });
 
-  pipelineIt('generates needs-review warm-up candidates for underserved P3 families without publishing runtime', () => {
+  pipelineIt('keeps remaining review-queue families out of runtime while publishing promoted gap-fill families', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-underserved-'));
     try {
       const built = runGeneratedBuild(dir);
       const items = generatedItems(built.output);
       const runtimeItems = generatedItems(built.runtime);
       const families = [
-        'algebra.structure_rearrangement_basic',
-        'algebra.polynomial_remainder_factor_basic',
-        'quadratics.discriminant_root_condition_basic',
-        'logarithms_and_exponentials.domain_validation_basic',
-        'logarithms_and_exponentials.linearisation_basic',
-        'logarithms_and_exponentials.calculus_context_basic',
-        'differentiation.chain_product_basic',
-        'differentiation.implicit_log_exp_basic',
         'parametric_equations.derivative_ratio_basic',
-        'integration.method_setup_basic',
-        'integration.definite_area_basic',
         'complex_numbers.modulus_argument_basic',
         'complex_numbers.cartesian_locus_roots_basic',
         'vectors.line_scalar_product_basic',
@@ -856,8 +912,36 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       }
 
       expect(runtimeItems.some((item) => families.includes(item.generator_family))).toBe(false);
+      const promotedFamilies = [
+        ['algebra.structure_rearrangement_basic', 'p3_alg_structure_rearrangement'],
+        ['algebra.polynomial_remainder_factor_basic', 'p3_alg_polynomial_remainder_factor'],
+        ['quadratics.discriminant_root_condition_basic', 'p3_alg_discriminant_root_conditions'],
+        ['logarithms_and_exponentials.domain_validation_basic', 'p3_log_domain_validation'],
+        ['logarithms_and_exponentials.linearisation_basic', 'p3_log_linearisation'],
+        ['logarithms_and_exponentials.calculus_context_basic', 'p3_log_calculus_contexts'],
+        ['differentiation.chain_product_basic', 'p3_diff_chain_product_quotient'],
+        ['differentiation.implicit_log_exp_basic', 'p3_diff_implicit_log_exp'],
+        ['differentiation.stationary_tangent_normal_basic', 'p3_diff_stationary_tangent_normal'],
+        ['integration.method_setup_basic', 'p3_int_method_choice'],
+        ['integration.definite_area_basic', 'p3_int_definite_improper_area'],
+        ['integration.parts_substitution_basic', 'p3_int_parts_substitution'],
+        ['complex_numbers.cartesian_conjugate_basic', 'p3_complex_cartesian_conjugate'],
+      ] as const;
+      for (const [family, skillTargetId] of promotedFamilies) {
+        const familyItems = items.filter((item) => item.generator_family === family);
+        const runtimeFamilyItems = runtimeItems.filter((item) => item.generator_family === family);
+        expect(familyItems.map((item) => item.sequence_role).sort()).toEqual(['complete_step', 'first_step', 'guardian_prep']);
+        expect(familyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+        expect(familyItems.every((item) => item.skill_target_id === skillTargetId)).toBe(true);
+        expect(familyItems.every((item) => item.skill_target_resolution_status === 'reviewed_p3_skill_map_id')).toBe(true);
+        expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
+        expect(runtimeFamilyItems).toHaveLength(3);
+      }
       expect(items.find((item) => item.generator_family === 'quadratics.discriminant_root_condition_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('k = -6 or k = 6');
       expect(items.find((item) => item.generator_family === 'logarithms_and_exponentials.domain_validation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 4');
+      expect(items.find((item) => item.generator_family === 'differentiation.stationary_tangent_normal_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y - 4 = -1/4(x - 2)');
+      expect(items.find((item) => item.generator_family === 'integration.parts_substitution_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x e^x - e^x + C');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_conjugate_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('z = 3 + 2i');
       expect(items.find((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic' && item.sequence_role === 'complete_step')?.answer).toBe('dy/dx = 1/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
@@ -878,11 +962,14 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       ['build_log_calculus_context_item', { item_type: 'differentiate_log_chain', a: 0, b: 1, sequence_role: 'complete_step' }],
       ['build_differentiation_item', { item_type: 'tangent_chain', c: 5, n: 4, x0: 3, sequence_role: 'guardian_prep' }],
       ['build_differentiation_implicit_log_exp_item', { item_type: 'implicit_setup', radius_squared: 0, sequence_role: 'first_step' }],
+      ['build_differentiation_stationary_tangent_item', { item_type: 'unsupported_stationary_case', sequence_role: 'guardian_prep' }],
       ['build_parametric_derivative_item', { item_type: 'tangent_line', a: 0, b: 1, c: 1, d: -4, t0: 3, sequence_role: 'guardian_prep' }],
       ['build_integration_item', { item_type: 'substitution_integrate', c: 3, n: 9, sequence_role: 'complete_step' }],
       ['build_integration_definite_area_item', { item_type: 'definite_integral', upper: 9, sequence_role: 'complete_step' }],
+      ['build_integration_parts_substitution_item', { item_type: 'unsupported_parts_case', sequence_role: 'guardian_prep' }],
       ['build_complex_modulus_argument_item', { item_type: 'modulus', real: 2, imaginary: 3, sequence_role: 'first_step' }],
       ['build_complex_cartesian_locus_roots_item', { item_type: 'cube_roots_real', root_modulus: 3, sequence_role: 'guardian_prep' }],
+      ['build_complex_cartesian_conjugate_item', { item_type: 'unsupported_conjugate_case', sequence_role: 'guardian_prep' }],
       ['build_vectors_line_scalar_item', { item_type: 'angle_cosine', left_x: 1, left_y: 1, left_z: 0, right_x: 2, right_y: 1, right_z: 0, sequence_role: 'guardian_prep' }],
       ['build_vectors_line_intersection_item', { item_type: 'point_on_line_parameter', lambda_value: 3, sequence_role: 'guardian_prep' }],
       ['build_numerical_sign_change_iteration_item', { item_type: 'sign_change', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
@@ -935,21 +1022,30 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'trigonometry.r_form_basic': 3,
         'complex_numbers.modulus_argument_basic': 3,
         'complex_numbers.cartesian_locus_roots_basic': 3,
+        'complex_numbers.cartesian_conjugate_basic': 3,
         'differential_equations.context_model_basic': 3,
         'differential_equations.separation_basic': 3,
         'differentiation.chain_product_basic': 3,
         'differentiation.implicit_log_exp_basic': 3,
+        'differentiation.stationary_tangent_normal_basic': 3,
         'integration.definite_area_basic': 3,
         'integration.method_setup_basic': 3,
+        'integration.parts_substitution_basic': 3,
         'numerical_methods.sign_change_iteration_basic': 3,
         'parametric_equations.derivative_ratio_basic': 3,
         'vectors.line_intersection_basic': 3,
         'vectors.line_scalar_product_basic': 3,
       });
       expect(report.generated_warmups_per_region).toMatchObject({
-        'logarithm-grove': 3,
-        'algebra-forge': 15,
+        'logarithm-grove': 12,
+        'algebra-forge': 24,
+        'calculus-cliffs': 9,
+        'complex-harbor': 3,
+        'differential-shrine': 0,
+        'integration-gardens': 15,
+        'numerical-mines': 0,
         'trig-observatory': 12,
+        'vector-workshop': 0,
       });
       expect(report.generated_families_by_topic).toHaveProperty('trigonometry');
       expect(report.generated_families_by_topic).toHaveProperty('parametric_equations');
@@ -976,7 +1072,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(report.active_regions.find((region: { region_id: string }) => region.region_id === 'logarithm-grove')).toMatchObject({
         quick_checks: 1,
         snippets_with_examples: 1,
-        generated_warmups: 3,
+        generated_warmups: 12,
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });

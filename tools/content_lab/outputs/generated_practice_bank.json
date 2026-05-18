@@ -24,7 +24,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-exp-equations-001",
         "p3-ln-e-inverse-001"
@@ -67,7 +68,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-exp-equations-001",
         "p3-ln-e-inverse-001"
@@ -109,7 +111,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-exp-equations-001",
         "p3-ln-e-inverse-001"
@@ -153,7 +156,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_terms_coefficients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001"
       ],
@@ -197,7 +201,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_terms_coefficients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001"
       ],
@@ -241,7 +246,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_terms_coefficients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001"
       ],
@@ -280,9 +286,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-algebra-rearrangement-001"
       ],
@@ -321,9 +328,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-algebra-rearrangement-001"
       ],
@@ -364,9 +372,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-algebra-rearrangement-001"
       ],
@@ -404,9 +413,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-polynomial-theorem-001"
       ],
@@ -448,9 +458,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-polynomial-theorem-001"
       ],
@@ -490,9 +501,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-polynomial-theorem-001"
       ],
@@ -533,8 +545,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-quadratics-discriminant-001"
       ],
@@ -575,8 +589,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-quadratics-discriminant-001"
       ],
@@ -618,8 +634,10 @@
       "region_ids": [
         "algebra-forge"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-quadratics-discriminant-001"
       ],
@@ -657,9 +675,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_domain_validation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-domain-001",
         "p3-log-invalid-operations-001"
@@ -700,9 +719,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_domain_validation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-domain-001",
         "p3-log-invalid-operations-001"
@@ -745,9 +765,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_domain_validation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-domain-001",
         "p3-log-invalid-operations-001"
@@ -786,9 +807,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_linearisation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-linearisation-001"
       ],
@@ -827,9 +849,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_linearisation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-linearisation-001"
       ],
@@ -868,9 +891,10 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_linearisation",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-log-linearisation-001"
       ],
@@ -890,10 +914,10 @@
     {
       "answer": "3e^(3x)",
       "difficulty_band": "easy",
-      "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "exam_move": "Keep $dy/dx$ visible when differentiating logarithms containing $y$.",
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "generator_family": "logarithms_and_exponentials.calculus_context_basic",
-      "key_method": "Use $\\ln$ and $e$ as inverse operations when bases do not match.",
+      "key_method": "Apply product, chain, and implicit differentiation before substituting values.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "differentiate_exp",
@@ -904,18 +928,18 @@
       },
       "practice_id": "gen_log_calculus_context_basic_0001",
       "prompt": "Differentiate e^(3x).",
-      "question_type": "Natural logarithm inverse step",
+      "question_type": "Logarithmic implicit differentiation",
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_calculus_contexts",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-exp-equations-001",
-        "p3-ln-e-inverse-001"
+        "p3-log-calculus-context-001"
       ],
-      "source_snippet_id": "p3-ln-e-inverse-001",
+      "source_snippet_id": "p3-log-calculus-context-001",
       "topic": "logarithms_and_exponentials",
       "verification": {
         "method": "deterministic",
@@ -931,10 +955,10 @@
     {
       "answer": "2/(2x + 1)",
       "difficulty_band": "medium",
-      "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "exam_move": "Keep $dy/dx$ visible when differentiating logarithms containing $y$.",
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "generator_family": "logarithms_and_exponentials.calculus_context_basic",
-      "key_method": "Use $\\ln$ and $e$ as inverse operations when bases do not match.",
+      "key_method": "Apply product, chain, and implicit differentiation before substituting values.",
       "paper_family": "p3",
       "parameters": {
         "a": 2,
@@ -946,18 +970,18 @@
       },
       "practice_id": "gen_log_calculus_context_basic_0002",
       "prompt": "Differentiate ln(2x + 1).",
-      "question_type": "Natural logarithm inverse step",
+      "question_type": "Logarithmic implicit differentiation",
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_calculus_contexts",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-exp-equations-001",
-        "p3-ln-e-inverse-001"
+        "p3-log-calculus-context-001"
       ],
-      "source_snippet_id": "p3-ln-e-inverse-001",
+      "source_snippet_id": "p3-log-calculus-context-001",
       "topic": "logarithms_and_exponentials",
       "verification": {
         "method": "deterministic",
@@ -973,10 +997,10 @@
     {
       "answer": "x = 1",
       "difficulty_band": "medium",
-      "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
-      "example_model_id": "p3-ln-e-inverse-001-example-1",
+      "exam_move": "Keep $dy/dx$ visible when differentiating logarithms containing $y$.",
+      "example_model_id": "p3-log-calculus-context-001-example-1",
       "generator_family": "logarithms_and_exponentials.calculus_context_basic",
-      "key_method": "Use $\\ln$ and $e$ as inverse operations when bases do not match.",
+      "key_method": "Apply product, chain, and implicit differentiation before substituting values.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "stationary_exp_product",
@@ -986,18 +1010,18 @@
       },
       "practice_id": "gen_log_calculus_context_basic_0003",
       "prompt": "Find the stationary x-value for y = x e^(-x).",
-      "question_type": "Natural logarithm inverse step",
+      "question_type": "Logarithmic implicit differentiation",
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_logarithms_and_exponentials",
+      "skill_target_id": "p3_log_calculus_contexts",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-exp-equations-001",
-        "p3-ln-e-inverse-001"
+        "p3-log-calculus-context-001"
       ],
-      "source_snippet_id": "p3-ln-e-inverse-001",
+      "source_snippet_id": "p3-log-calculus-context-001",
       "topic": "logarithms_and_exponentials",
       "verification": {
         "method": "deterministic",
@@ -1034,7 +1058,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1079,7 +1104,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1125,7 +1151,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1166,7 +1193,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1208,7 +1236,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1253,7 +1282,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_partial_fractions",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-partial-fractions-form-001",
         "p3-partial-fractions-repeated-linear-001"
@@ -1294,7 +1324,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_modulus_cases",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-modulus-cases-001"
       ],
@@ -1334,7 +1365,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_modulus_cases",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-modulus-cases-001"
       ],
@@ -1375,7 +1407,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_algebra",
+      "skill_target_id": "p3_alg_modulus_cases",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-modulus-cases-001"
       ],
@@ -1415,7 +1448,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_validity",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001",
         "p3-binomial-validity-range-001"
@@ -1455,7 +1489,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_validity",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001",
         "p3-binomial-validity-range-001"
@@ -1497,7 +1532,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_binomial_expansion",
+      "skill_target_id": "p3_alg_binomial_validity",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-binomial-term-001",
         "p3-binomial-validity-range-001"
@@ -1536,7 +1572,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_identity_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001",
         "p3-trig-reciprocal-rform-001"
@@ -1574,7 +1611,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_identity_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001",
         "p3-trig-reciprocal-rform-001"
@@ -1612,7 +1650,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_identity_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001",
         "p3-trig-reciprocal-rform-001"
@@ -1650,7 +1689,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_reciprocal_double_angle",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001"
       ],
@@ -1686,7 +1726,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_reciprocal_double_angle",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001"
       ],
@@ -1722,7 +1763,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_reciprocal_double_angle",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-identity-selection-001"
       ],
@@ -1759,7 +1801,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_equation_interval",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-interval-001",
         "p3-trig-lost-solutions-001"
@@ -1797,7 +1840,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_equation_interval",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-interval-001",
         "p3-trig-lost-solutions-001"
@@ -1835,7 +1879,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_equation_interval",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-interval-001",
         "p3-trig-lost-solutions-001"
@@ -1876,7 +1921,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-reciprocal-rform-001"
       ],
@@ -1915,7 +1961,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-reciprocal-rform-001"
       ],
@@ -1955,7 +2002,8 @@
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_trigonometry",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-trig-reciprocal-rform-001"
       ],
@@ -1997,9 +2045,10 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differentiation-follow-through-001",
         "p3-differentiation-method-001"
@@ -2038,9 +2087,10 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differentiation-follow-through-001",
         "p3-differentiation-method-001"
@@ -2084,9 +2134,10 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differentiation-follow-through-001",
         "p3-differentiation-method-001"
@@ -2103,6 +2154,136 @@
         "At x = 1, the gradient is 24.",
         "The point on the curve is (1, 8).",
         "Use point-gradient form to get y - 8 = 24(x - 1)."
+      ]
+    },
+    {
+      "answer": "x = -2 or x = 2",
+      "difficulty_band": "easy",
+      "exam_move": "Write the derivative and then immediately connect it to the requested geometric feature.",
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "generator_family": "differentiation.stationary_tangent_normal_basic",
+      "key_method": "The derivative is often the middle step",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "stationary_condition",
+        "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0001",
+      "prompt": "For y = x^3 - 12x, find the x-values of the stationary points.",
+      "question_type": "differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_stationary_tangent_normal",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "source_snippet_id": "p3-differentiation-follow-through-001",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Differentiate first: dy/dx = 3x^2 - 12.",
+        "Stationary points have dy/dx = 0.",
+        "Solve 3x^2 - 12 = 0 to get x^2 = 4.",
+        "So x = -2 or x = 2."
+      ]
+    },
+    {
+      "answer": "y - 10 = 6(x - 3)",
+      "difficulty_band": "medium",
+      "exam_move": "Write the derivative and then immediately connect it to the requested geometric feature.",
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "generator_family": "differentiation.stationary_tangent_normal_basic",
+      "key_method": "The derivative is often the middle step",
+      "paper_family": "p3",
+      "parameters": {
+        "gradient": 6,
+        "item_type": "tangent_line",
+        "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "x0": 3,
+        "y0": 10
+      },
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0002",
+      "prompt": "Find the tangent line to y = x^2 + 1 at x = 3.",
+      "question_type": "differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_stationary_tangent_normal",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "source_snippet_id": "p3-differentiation-follow-through-001",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Differentiate: dy/dx = 2x.",
+        "At x = 3, the gradient is 6 and y = 10.",
+        "Use point-gradient form with point (3, 10).",
+        "The tangent is y - 10 = 6(x - 3)."
+      ]
+    },
+    {
+      "answer": "y - 4 = -1/4(x - 2)",
+      "difficulty_band": "medium",
+      "exam_move": "Write the derivative and then immediately connect it to the requested geometric feature.",
+      "example_model_id": "p3-differentiation-follow-through-001-example-1",
+      "generator_family": "differentiation.stationary_tangent_normal_basic",
+      "key_method": "The derivative is often the middle step",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "normal_line",
+        "normal_gradient": "-1/4",
+        "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "tangent_gradient": 4,
+        "x0": 2,
+        "y0": 4
+      },
+      "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0003",
+      "prompt": "Find the normal line to y = x^2 at x = 2.",
+      "question_type": "differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_stationary_tangent_normal",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "source_snippet_id": "p3-differentiation-follow-through-001",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Differentiate: dy/dx = 2x.",
+        "At x = 2, the tangent gradient is 4.",
+        "The normal gradient is the negative reciprocal, -1/4.",
+        "The point is (2, 4), so the normal is y - 4 = -1/4(x - 2)."
       ]
     },
     {
@@ -2131,7 +2312,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_parametric_equations",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-parametric-derivative-001"
       ],
@@ -2177,7 +2359,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_parametric_equations",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-parametric-derivative-001"
       ],
@@ -2225,7 +2408,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_parametric_equations",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-parametric-derivative-001"
       ],
@@ -2265,9 +2449,10 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-integration-method-choice-001",
         "p3-integration-parts-substitution-001"
@@ -2308,9 +2493,10 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-integration-method-choice-001",
         "p3-integration-parts-substitution-001"
@@ -2350,9 +2536,10 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-integration-method-choice-001",
         "p3-integration-parts-substitution-001"
@@ -2369,6 +2556,128 @@
         "Then du = dx and v = e^(2x)/2.",
         "Apply integral u dv = uv - integral v du.",
         "This gives x e^(2x)/2 - e^(2x)/4 + C."
+      ]
+    },
+    {
+      "answer": "u = x^2 + 1, du = 2x dx",
+      "difficulty_band": "easy",
+      "exam_move": "Write the method cue beside the integral before transforming it.",
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose substitution, parts, or algebra first",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "substitution_setup",
+        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_integration_parts_substitution_basic_0001",
+      "prompt": "For integral of 2x(x^2 + 1)^4 dx, state a suitable substitution and du.",
+      "question_type": "integration",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "source_snippet_id": "p3-integration-parts-substitution-001",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The bracket x^2 + 1 is the inside function.",
+        "Its derivative is 2x, which appears outside the bracket.",
+        "So use u = x^2 + 1 and du = 2x dx."
+      ]
+    },
+    {
+      "answer": "(x^2 + 1)^5/5 + C",
+      "difficulty_band": "medium",
+      "exam_move": "Write the method cue beside the integral before transforming it.",
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose substitution, parts, or algebra first",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "substitution_integrate",
+        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step"
+      },
+      "practice_id": "gen_integration_parts_substitution_basic_0002",
+      "prompt": "Integrate 2x(x^2 + 1)^4 dx.",
+      "question_type": "integration",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "source_snippet_id": "p3-integration-parts-substitution-001",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Let u = x^2 + 1, so du = 2x dx.",
+        "The integral becomes integral of u^4 du.",
+        "Integrating gives u^5/5 + C.",
+        "Substitute back to get (x^2 + 1)^5/5 + C."
+      ]
+    },
+    {
+      "answer": "x e^x - e^x + C",
+      "difficulty_band": "medium",
+      "exam_move": "Write the method cue beside the integral before transforming it.",
+      "example_model_id": "p3-integration-parts-substitution-001-example-1",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose substitution, parts, or algebra first",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "parts_linear_exp",
+        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep"
+      },
+      "practice_id": "gen_integration_parts_substitution_basic_0003",
+      "prompt": "Integrate x e^x dx using integration by parts.",
+      "question_type": "integration",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "source_snippet_id": "p3-integration-parts-substitution-001",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use parts with u = x and dv = e^x dx.",
+        "Then du = dx and v = e^x.",
+        "Apply integral u dv = uv - integral v du.",
+        "This gives x e^x - e^x + C."
       ]
     },
     {
@@ -2396,7 +2705,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_modulus_argument_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -2440,7 +2750,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_modulus_argument_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -2486,7 +2797,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_modulus_argument_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -2502,6 +2814,135 @@
         "For a power, raise the modulus to the power: 2^3 = 8.",
         "Multiply the argument by 3.",
         "This gives argument pi/2."
+      ]
+    },
+    {
+      "answer": "3 + 4i",
+      "difficulty_band": "easy",
+      "exam_move": "Switch form when the operation changes from addition to powers or roots.",
+      "example_model_id": "p3-complex-form-001-example-1",
+      "generator_family": "complex_numbers.cartesian_conjugate_basic",
+      "key_method": "Change form for the operation",
+      "paper_family": "p3",
+      "parameters": {
+        "imaginary": -4,
+        "item_type": "conjugate",
+        "real": 3,
+        "safe_bounds": "small Cartesian components with exact conjugate products",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0001",
+      "prompt": "Write the conjugate of 3 - 4i.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_complex_cartesian_conjugate",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "source_snippet_id": "p3-complex-form-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The conjugate keeps the real part the same.",
+        "It changes the sign of the imaginary part.",
+        "So the conjugate of 3 - 4i is 3 + 4i."
+      ]
+    },
+    {
+      "answer": "(2 + i)/5",
+      "difficulty_band": "medium",
+      "exam_move": "Switch form when the operation changes from addition to powers or roots.",
+      "example_model_id": "p3-complex-form-001-example-1",
+      "generator_family": "complex_numbers.cartesian_conjugate_basic",
+      "key_method": "Change form for the operation",
+      "paper_family": "p3",
+      "parameters": {
+        "denominator": 5,
+        "imaginary": -1,
+        "item_type": "divide_by_complex",
+        "real": 2,
+        "safe_bounds": "small Cartesian components with exact conjugate products",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step"
+      },
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0002",
+      "prompt": "Simplify 1/(2 - i) in Cartesian form.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_complex_cartesian_conjugate",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "source_snippet_id": "p3-complex-form-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Multiply the numerator and denominator by the conjugate 2 + i.",
+        "The denominator is (2 - i)(2 + i) = 2^2 + 1^2 = 5.",
+        "The numerator is 2 + i.",
+        "So the simplified form is (2 + i)/5."
+      ]
+    },
+    {
+      "answer": "z = 3 + 2i",
+      "difficulty_band": "medium",
+      "exam_move": "Switch form when the operation changes from addition to powers or roots.",
+      "example_model_id": "p3-complex-form-001-example-1",
+      "generator_family": "complex_numbers.cartesian_conjugate_basic",
+      "key_method": "Change form for the operation",
+      "paper_family": "p3",
+      "parameters": {
+        "imaginary": 2,
+        "item_type": "solve_with_conjugate",
+        "real": 3,
+        "safe_bounds": "small Cartesian components with exact conjugate products",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep"
+      },
+      "practice_id": "gen_complex_cartesian_conjugate_basic_0003",
+      "prompt": "Given z + conjugate(z) = 6 and z - conjugate(z) = 4i, find z.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_complex_cartesian_conjugate",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001"
+      ],
+      "source_snippet_id": "p3-complex-form-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Let z = a + bi, so conjugate(z) = a - bi.",
+        "Then z + conjugate(z) = 2a = 6, so a = 3.",
+        "Also z - conjugate(z) = 2bi = 4i, so b = 2.",
+        "Therefore z = 3 + 2i."
       ]
     },
     {
@@ -2532,7 +2973,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_scalar_product_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001",
         "p3-vectors-scalar-product-001"
@@ -2579,7 +3021,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_scalar_product_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001",
         "p3-vectors-scalar-product-001"
@@ -2629,7 +3072,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_scalar_product_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001",
         "p3-vectors-scalar-product-001"
@@ -2675,7 +3119,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_numerical_methods",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-iteration-formula-discipline-001",
         "p3-numerical-method-evidence-001"
@@ -2719,7 +3164,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_numerical_methods",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-iteration-formula-discipline-001",
         "p3-numerical-method-evidence-001"
@@ -2763,7 +3209,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_numerical_methods",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-iteration-formula-discipline-001",
         "p3-numerical-method-evidence-001"
@@ -2805,7 +3252,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differential-initial-condition-001",
         "p3-differential-separation-001"
@@ -2848,7 +3296,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differential-initial-condition-001",
         "p3-differential-separation-001"
@@ -2892,7 +3341,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-differential-initial-condition-001",
         "p3-differential-separation-001"
@@ -2914,10 +3364,10 @@
     {
       "answer": "2x + 2y dy/dx = 0",
       "difficulty_band": "easy",
-      "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "generator_family": "differentiation.implicit_log_exp_basic",
-      "key_method": "Name the structure first",
+      "key_method": "Collect dy/dx before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "implicit_setup",
@@ -2932,13 +3382,14 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differentiation-method-001"
+        "p3-differentiation-implicit-log-exp-001"
       ],
-      "source_snippet_id": "p3-differentiation-method-001",
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001",
       "topic": "differentiation",
       "verification": {
         "method": "deterministic",
@@ -2955,10 +3406,10 @@
     {
       "answer": "dy/dx = -x/y",
       "difficulty_band": "medium",
-      "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "generator_family": "differentiation.implicit_log_exp_basic",
-      "key_method": "Name the structure first",
+      "key_method": "Collect dy/dx before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "implicit_solve",
@@ -2972,13 +3423,14 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differentiation-method-001"
+        "p3-differentiation-implicit-log-exp-001"
       ],
-      "source_snippet_id": "p3-differentiation-method-001",
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001",
       "topic": "differentiation",
       "verification": {
         "method": "deterministic",
@@ -2994,10 +3446,10 @@
     {
       "answer": "dy/dx = (2x - y/x)/ln x",
       "difficulty_band": "medium",
-      "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
-      "example_model_id": "p3-differentiation-method-001-example-1",
+      "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
+      "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
       "generator_family": "differentiation.implicit_log_exp_basic",
-      "key_method": "Name the structure first",
+      "key_method": "Collect dy/dx before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "implicit_log_relation",
@@ -3011,13 +3463,14 @@
       "region_ids": [
         "calculus-cliffs"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_differentiation",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differentiation-method-001"
+        "p3-differentiation-implicit-log-exp-001"
       ],
-      "source_snippet_id": "p3-differentiation-method-001",
+      "source_snippet_id": "p3-differentiation-implicit-log-exp-001",
       "topic": "differentiation",
       "verification": {
         "method": "deterministic",
@@ -3034,10 +3487,10 @@
     {
       "answer": "x^3 + x^2 + C",
       "difficulty_band": "easy",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "generator_family": "integration.definite_area_basic",
-      "key_method": "Let the integrand choose the method",
+      "key_method": "Definite integrals are upper minus lower",
       "paper_family": "p3",
       "parameters": {
         "item_type": "antiderivative",
@@ -3051,13 +3504,14 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-integration-method-choice-001"
+        "p3-integration-definite-area-001"
       ],
-      "source_snippet_id": "p3-integration-method-choice-001",
+      "source_snippet_id": "p3-integration-definite-area-001",
       "topic": "integration",
       "verification": {
         "method": "deterministic",
@@ -3074,10 +3528,10 @@
     {
       "answer": "12",
       "difficulty_band": "easy",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "generator_family": "integration.definite_area_basic",
-      "key_method": "Let the integrand choose the method",
+      "key_method": "Definite integrals are upper minus lower",
       "paper_family": "p3",
       "parameters": {
         "item_type": "definite_integral",
@@ -3093,13 +3547,14 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-integration-method-choice-001"
+        "p3-integration-definite-area-001"
       ],
-      "source_snippet_id": "p3-integration-method-choice-001",
+      "source_snippet_id": "p3-integration-definite-area-001",
       "topic": "integration",
       "verification": {
         "method": "deterministic",
@@ -3116,10 +3571,10 @@
     {
       "answer": "32/3",
       "difficulty_band": "medium",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
+      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
+      "example_model_id": "p3-integration-definite-area-001-example-1",
       "generator_family": "integration.definite_area_basic",
-      "key_method": "Let the integrand choose the method",
+      "key_method": "Definite integrals are upper minus lower",
       "paper_family": "p3",
       "parameters": {
         "area": "32/3",
@@ -3135,13 +3590,14 @@
       "region_ids": [
         "integration-gardens"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_integration",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-integration-method-choice-001"
+        "p3-integration-definite-area-001"
       ],
-      "source_snippet_id": "p3-integration-method-choice-001",
+      "source_snippet_id": "p3-integration-definite-area-001",
       "topic": "integration",
       "verification": {
         "method": "deterministic",
@@ -3183,7 +3639,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -3227,7 +3684,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -3268,7 +3726,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_complex_numbers",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-complex-form-001",
         "p3-complex-locus-argument-001"
@@ -3310,7 +3769,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_line_equations_intersections",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001"
       ],
@@ -3352,7 +3812,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_line_equations_intersections",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001"
       ],
@@ -3394,7 +3855,8 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_vectors",
+      "skill_target_id": "p3_vec_line_equations_intersections",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
         "p3-vectors-lines-001"
       ],
@@ -3414,10 +3876,10 @@
     {
       "answer": "dy/dx = 3y",
       "difficulty_band": "easy",
-      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "generator_family": "differential_equations.context_model_basic",
-      "key_method": "Separate before integrating",
+      "key_method": "Translate the context before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "proportional_model",
@@ -3434,11 +3896,12 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differential-separation-001"
+        "p3-differential-context-model-001"
       ],
-      "source_snippet_id": "p3-differential-separation-001",
+      "source_snippet_id": "p3-differential-context-model-001",
       "topic": "differential_equations",
       "verification": {
         "method": "deterministic",
@@ -3454,10 +3917,10 @@
     {
       "answer": "k = 1/2",
       "difficulty_band": "easy",
-      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "generator_family": "differential_equations.context_model_basic",
-      "key_method": "Separate before integrating",
+      "key_method": "Translate the context before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "find_rate_constant",
@@ -3476,11 +3939,12 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differential-separation-001"
+        "p3-differential-context-model-001"
       ],
-      "source_snippet_id": "p3-differential-separation-001",
+      "source_snippet_id": "p3-differential-context-model-001",
       "topic": "differential_equations",
       "verification": {
         "method": "deterministic",
@@ -3496,10 +3960,10 @@
     {
       "answer": "dP/dt = (1/5)P",
       "difficulty_band": "medium",
-      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
-      "example_model_id": "p3-differential-separation-001-example-1",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
       "generator_family": "differential_equations.context_model_basic",
-      "key_method": "Separate before integrating",
+      "key_method": "Translate the context before solving",
       "paper_family": "p3",
       "parameters": {
         "item_type": "write_model_from_rate",
@@ -3518,11 +3982,12 @@
       ],
       "review_status": "needs_review",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_differential_equations",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-differential-separation-001"
+        "p3-differential-context-model-001"
       ],
-      "source_snippet_id": "p3-differential-separation-001",
+      "source_snippet_id": "p3-differential-context-model-001",
       "topic": "differential_equations",
       "verification": {
         "method": "deterministic",

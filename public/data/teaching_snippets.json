@@ -3357,6 +3357,541 @@
       "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
+      "body": "For powers and roots, modulus-argument form does the heavy lifting. Take roots by rooting the modulus and splitting the possible arguments evenly around the Argand diagram.",
+      "common_mistakes": [
+        "Finding only one root.",
+        "Forgetting to add full turns before dividing the argument.",
+        "Returning roots in the wrong form for the question."
+      ],
+      "common_trap": "Dividing one argument once and missing the other roots.",
+      "estimated_time_minutes": 4,
+      "exam_move": "For roots, add $2k\\pi$ to the argument before dividing by the root index.",
+      "explanation": "Complex roots come in a full set. The modulus is rooted, while the arguments are separated by equal angle gaps.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving complex powers or roots.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "complex_numbers"
+        ]
+      },
+      "micro_steps": [
+        "Write the number in modulus-argument form.",
+        "Take the required root of the modulus.",
+        "Add $2k\\pi$ to the argument.",
+        "Divide each argument by the root index."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Convert between Cartesian and modulus-argument form.",
+        "Use exact trigonometric angles."
+      ],
+      "quick_check": {
+        "id": "p3-complex-roots-001-qc",
+        "region_id": "complex-harbor",
+        "topic": "complex_numbers",
+        "skill_target_id": "p3_complex_roots_powers",
+        "title": "List every root",
+        "prompt": "How many square roots does a non-zero complex number have?",
+        "answer": "Two.",
+        "explanation": "A non-zero complex number has exactly two square roots, with arguments separated by $\\pi$.",
+        "micro_skill": "Recall the number of complex square roots.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-complex-roots-001-example-1",
+        "legacy_skill_target_id": "p3_complex_numbers",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "related_skill_targets": [
+        "p3_complex_roots_powers"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-complex-roots-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_complex_roots_powers"
+      ],
+      "steps": [
+        "Convert to modulus-argument form.",
+        "Root the modulus.",
+        "Generate all arguments.",
+        "Convert form only when requested."
+      ],
+      "student_goal": "Find all complex roots without losing a branch.",
+      "title": "Roots need every argument branch",
+      "topic": "complex_numbers",
+      "topics": [
+        "complex_numbers"
+      ],
+      "worked_example": {
+        "id": "p3-complex-roots-001-example-1",
+        "prompt": "Find the square roots of $4e^{i\\pi/3}$.",
+        "steps": [
+          "The root modulus is $\\sqrt4=2$.",
+          "Use arguments $\\frac{\\pi/3+2k\\pi}{2}$ for $k=0,1$.",
+          "The arguments are $\\frac{\\pi}{6}$ and $\\frac{7\\pi}{6}$."
+        ],
+        "answer": "$2e^{i\\pi/6}$ and $2e^{i7\\pi/6}$",
+        "teaching_note": "The second branch comes from adding $2\\pi$ before dividing."
+      },
+      "legacy_skill_target_ids": [
+        "p3_complex_numbers"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "A context model starts before integration. Translate the rate sentence into a derivative statement, then use a constant of proportionality to capture the unknown scale.",
+      "common_mistakes": [
+        "Solving before forming the differential equation.",
+        "Using the quantity added instead of the quantity remaining.",
+        "Omitting the proportionality constant."
+      ],
+      "common_trap": "Treating a word statement as if the differential equation has already been given.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "explanation": "Model formation is a translation step. The marks usually come from connecting words like proportional to, increasing, decreasing, remaining, or excess to a derivative.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that begin with a rate context instead of a ready-made differential equation.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "differential_equations"
+        ]
+      },
+      "micro_steps": [
+        "Name the dependent and independent variables.",
+        "Identify the quantity the rate is proportional to.",
+        "Add a constant of proportionality.",
+        "Check the sign from increase or decrease."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Understand proportionality notation.",
+        "Read first-order rate statements."
+      ],
+      "quick_check": {
+        "id": "p3-differential-context-model-001-qc",
+        "region_id": "differential-shrine",
+        "topic": "differential_equations",
+        "skill_target_id": "p3_de_forming_context_model",
+        "title": "Translate the rate sentence",
+        "prompt": "A quantity $y$ increases at a rate proportional to $y$. Write a differential equation.",
+        "answer": "$\\frac{dy}{dt}=ky$",
+        "explanation": "Rate means $dy/dt$ and proportional to $y$ means equal to $ky$ for a constant $k$.",
+        "micro_skill": "Form a proportional-rate differential equation.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-differential-context-model-001-example-1",
+        "legacy_skill_target_id": "p3_differential_equations",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "related_skill_targets": [
+        "p3_de_forming_context_model"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-differential-context-model-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_de_forming_context_model"
+      ],
+      "steps": [
+        "Identify the rate variable.",
+        "Translate proportionality into a constant multiple.",
+        "Choose the sign from the context.",
+        "Only then start solving."
+      ],
+      "student_goal": "Form a differential equation from a rate context.",
+      "title": "Translate the context before solving",
+      "topic": "differential_equations",
+      "topics": [
+        "differential_equations"
+      ],
+      "worked_example": {
+        "id": "p3-differential-context-model-001-example-1",
+        "prompt": "A population $P$ increases at a rate proportional to $P$. Write a model.",
+        "steps": [
+          "Use $dP/dt$ for the rate of change.",
+          "Proportional to $P$ means a constant multiple of $P$.",
+          "Since it increases, the sign is positive."
+        ],
+        "answer": "$\\frac{dP}{dt}=kP$",
+        "teaching_note": "The constant $k$ is found later from data or an initial condition."
+      },
+      "legacy_skill_target_ids": [
+        "p3_differential_equations"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "Implicit differentiation treats $y$ as a function of $x$. Every time a $y$ expression is differentiated, a $dy/dx$ factor appears and must be collected before solving for the gradient.",
+      "common_mistakes": [
+        "Differentiating $y$ terms as constants.",
+        "Forgetting the chain-rule factor $dy/dx$.",
+        "Leaving $dy/dx$ terms on both sides."
+      ],
+      "common_trap": "Doing the differentiating correctly but not collecting the $dy/dx$ terms before the final answer.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
+      "explanation": "Implicit log and exponential relations often mix product, chain, and implicit rules. The safest workflow is to keep $dy/dx$ visible until the final collection step.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving implicit logarithmic or exponential relations.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "differentiation"
+        ]
+      },
+      "micro_steps": [
+        "Differentiate both sides with respect to $x$.",
+        "Attach $dy/dx$ when differentiating a $y$ expression.",
+        "Move all $dy/dx$ terms to one side.",
+        "Factor $dy/dx$ and divide."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know the chain rule.",
+        "Differentiate logarithmic expressions."
+      ],
+      "quick_check": {
+        "id": "p3-differentiation-implicit-log-exp-001-qc",
+        "region_id": "calculus-cliffs",
+        "topic": "differentiation",
+        "skill_target_id": "p3_diff_implicit_log_exp",
+        "title": "Carry the dy/dx factor",
+        "prompt": "Differentiate $\\ln y$ with respect to $x$.",
+        "answer": "$\\frac{1}{y}\\frac{dy}{dx}$",
+        "explanation": "Since $y$ is a function of $x$, the chain rule gives the extra $dy/dx$ factor.",
+        "micro_skill": "Differentiate an implicit logarithmic term.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-differentiation-implicit-log-exp-001-example-1",
+        "legacy_skill_target_id": "p3_differentiation",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "related_skill_targets": [
+        "p3_diff_implicit_log_exp"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-differentiation-implicit-log-exp-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_diff_implicit_log_exp"
+      ],
+      "steps": [
+        "Differentiate implicitly.",
+        "Keep every $dy/dx$ factor visible.",
+        "Collect and factor $dy/dx$.",
+        "Substitute a point only after a gradient expression exists."
+      ],
+      "student_goal": "Differentiate implicit log or exponential relations without dropping $dy/dx$.",
+      "title": "Collect dy/dx before solving",
+      "topic": "differentiation",
+      "topics": [
+        "differentiation"
+      ],
+      "worked_example": {
+        "id": "p3-differentiation-implicit-log-exp-001-example-1",
+        "prompt": "For $y\\ln x=x^2$, find $dy/dx$.",
+        "steps": [
+          "Differentiate the left side using the product rule.",
+          "This gives $\\frac{dy}{dx}\\ln x+\\frac{y}{x}=2x$.",
+          "Move $y/x$ to the right and divide by $\\ln x$."
+        ],
+        "answer": "$\\frac{dy}{dx}=\\frac{2x-y/x}{\\ln x}$",
+        "teaching_note": "The product rule and implicit chain rule happen in the same line."
+      },
+      "legacy_skill_target_ids": [
+        "p3_differentiation"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "Definite and area integrals need two decisions: find the correct antiderivative, then use the limits with the correct sign or area interpretation.",
+      "common_mistakes": [
+        "Forgetting to subtract the lower-limit value.",
+        "Leaving $+C$ in a definite integral.",
+        "Giving signed integral when the question asks for area."
+      ],
+      "common_trap": "Treating every definite integral as an area without checking whether the curve is below the axis.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
+      "explanation": "Exact definite-integral marks usually depend on disciplined substitution into the antiderivative. Area questions add one more check: whether the curve is above or below the axis.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving exact definite integrals or bounded areas.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "integration"
+        ]
+      },
+      "micro_steps": [
+        "Find an antiderivative.",
+        "Substitute the upper limit.",
+        "Substitute the lower limit.",
+        "Subtract lower from upper and interpret area if needed."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know standard integration rules.",
+        "Evaluate expressions exactly."
+      ],
+      "quick_check": {
+        "id": "p3-integration-definite-area-001-qc",
+        "region_id": "integration-gardens",
+        "topic": "integration",
+        "skill_target_id": "p3_int_definite_improper_area",
+        "title": "Upper minus lower",
+        "prompt": "Evaluate $\\int_0^2 3x^2\\,dx$.",
+        "answer": "$8$",
+        "explanation": "An antiderivative is $x^3$; substituting gives $2^3-0^3=8$.",
+        "micro_skill": "Evaluate a simple definite integral exactly.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-integration-definite-area-001-example-1",
+        "legacy_skill_target_id": "p3_integration",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "related_skill_targets": [
+        "p3_int_definite_improper_area"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-integration-definite-area-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_int_definite_improper_area"
+      ],
+      "steps": [
+        "Find the antiderivative.",
+        "Evaluate at the upper limit.",
+        "Evaluate at the lower limit.",
+        "Subtract in the right order."
+      ],
+      "student_goal": "Evaluate definite integrals and areas exactly.",
+      "title": "Definite integrals are upper minus lower",
+      "topic": "integration",
+      "topics": [
+        "integration"
+      ],
+      "worked_example": {
+        "id": "p3-integration-definite-area-001-example-1",
+        "prompt": "Evaluate $\\int_0^2 (3x^2+2x)\\,dx$.",
+        "steps": [
+          "An antiderivative is $x^3+x^2$.",
+          "At $x=2$, this is $8+4=12$.",
+          "At $x=0$, this is $0$."
+        ],
+        "answer": "$12$",
+        "teaching_note": "No constant of integration is needed in a definite integral."
+      },
+      "legacy_skill_target_ids": [
+        "p3_integration"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "Logarithmic and exponential expressions inside calculus questions still obey calculus rules first. Identify whether the log or exponential is part of a chain, product, implicit relation, or stationary-point task.",
+      "common_mistakes": [
+        "Using log laws when the real issue is a derivative.",
+        "Ignoring the chain rule inside $\\ln u$.",
+        "Substituting a point before forming the gradient expression."
+      ],
+      "common_trap": "Treating a log-calculus question as a pure log-equation question.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Name the calculus structure before using log or exponential facts.",
+      "explanation": "The log or exponential expression is often the setting, not the whole method. The mark scheme still rewards derivative setup, product or chain rule use, and exact substitution.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions that mix logarithmic or exponential functions with differentiation or integration.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "logarithms_and_exponentials"
+        ]
+      },
+      "micro_steps": [
+        "Identify the calculus request.",
+        "Name the log or exponential derivative rule.",
+        "Apply product, chain, or implicit rules as needed.",
+        "Use exact substitution only after the method line is correct."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Differentiate $\\ln x$ and $e^x$.",
+        "Use product and chain rules."
+      ],
+      "quick_check": {
+        "id": "p3-log-calculus-context-001-qc",
+        "region_id": "logarithm-grove",
+        "topic": "logarithms_and_exponentials",
+        "skill_target_id": "p3_log_calculus_contexts",
+        "title": "Spot the calculus structure",
+        "prompt": "Differentiate $\\ln(2x+1)$.",
+        "answer": "$\\frac{2}{2x+1}$",
+        "explanation": "Use $\\frac{d}{dx}\\ln u=\\frac{u'}{u}$ with $u=2x+1$.",
+        "micro_skill": "Differentiate a logarithmic composite.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-log-calculus-context-001-example-1",
+        "legacy_skill_target_id": "p3_logarithms_and_exponentials",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "related_skill_targets": [
+        "p3_log_calculus_contexts"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-log-calculus-context-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_log_calculus_contexts"
+      ],
+      "steps": [
+        "Decide whether the task is differentiation, integration, or equation solving.",
+        "Name the log or exponential derivative/integral rule.",
+        "Apply the surrounding calculus rule.",
+        "Only then simplify or substitute."
+      ],
+      "student_goal": "Handle log and exponential functions inside calculus questions.",
+      "title": "Log calculus is still calculus first",
+      "topic": "logarithms_and_exponentials",
+      "topics": [
+        "logarithms_and_exponentials"
+      ],
+      "worked_example": {
+        "id": "p3-log-calculus-context-001-example-1",
+        "prompt": "Differentiate $x^2\\ln(2y)$ implicitly with respect to $x$.",
+        "steps": [
+          "Use the product rule on $x^2\\ln(2y)$.",
+          "The derivative of $x^2$ is $2x$.",
+          "For $\\ln(2y)$, the chain rule gives $\\frac{1}{y}\\frac{dy}{dx}$.",
+          "So the derivative is $2x\\ln(2y)+x^2\\frac{1}{y}\\frac{dy}{dx}$."
+        ],
+        "answer": "$2x\\ln(2y)+\\frac{x^2}{y}\\frac{dy}{dx}$",
+        "teaching_note": "This mirrors the product and implicit-log moves required in mixed log-calculus exam questions.",
+        "question_type": "Logarithmic implicit differentiation",
+        "key_method": "Apply product, chain, and implicit differentiation before substituting values.",
+        "exam_move": "Keep $dy/dx$ visible when differentiating logarithms containing $y$.",
+        "source_question_ids": [
+          "35autumn25_q04"
+        ],
+        "source_question_asset_ids": [
+          "p3/35autumn25/questions/q04.png"
+        ],
+        "source_mark_scheme_asset_ids": [
+          "p3/35autumn25/mark_scheme/q04.png"
+        ]
+      },
+      "legacy_skill_target_ids": [
+        "p3_logarithms_and_exponentials"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "3D vector geometry questions hide line, midpoint, ratio, and perpendicular conditions inside the story. Translate each condition into a vector equation before calculating.",
+      "common_mistakes": [
+        "Using a point vector as a direction vector.",
+        "Ignoring the parameter range for a point on a segment.",
+        "Solving two coordinates and forgetting the third."
+      ],
+      "common_trap": "Starting with a diagram guess instead of translating the stated condition.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Turn each geometric condition into a vector equation, then solve component by component.",
+      "explanation": "The geometry words tell you which vector tool to use: a line condition gives a parameter, a midpoint gives an average, and a perpendicular condition gives a scalar product.",
+      "guardian_readiness": {
+        "readiness_note": "Use this before Guardian questions involving 3D geometry, points on lines, or vector modelling.",
+        "recommended_before_question_ids": [],
+        "supports_topics": [
+          "vectors"
+        ]
+      },
+      "micro_steps": [
+        "Identify the geometric condition.",
+        "Write the vector equation.",
+        "Compare components.",
+        "Check the result against the geometry statement."
+      ],
+      "paper_family": "p3",
+      "prerequisites": [
+        "Use vector line equations.",
+        "Compare vector components."
+      ],
+      "quick_check": {
+        "id": "p3-vectors-3d-geometry-001-qc",
+        "region_id": "vector-workshop",
+        "topic": "vectors",
+        "skill_target_id": "p3_vec_3d_geometry_modelling",
+        "title": "Translate point-on-line",
+        "prompt": "What does $\\mathbf r=\\mathbf a+\\lambda\\mathbf d$ tell you geometrically?",
+        "answer": "A point with position vector $\\mathbf a$ and direction vector $\\mathbf d$ defines a line.",
+        "explanation": "$\\mathbf a$ is a point on the line and $\\mathbf d$ is the direction moved by the parameter.",
+        "micro_skill": "Read a vector line equation geometrically.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+        "legacy_skill_target_id": "p3_vectors",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "related_skill_targets": [
+        "p3_vec_3d_geometry_modelling"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-vectors-3d-geometry-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_vec_3d_geometry_modelling"
+      ],
+      "steps": [
+        "Translate the geometry condition.",
+        "Choose the vector equation.",
+        "Compare components.",
+        "Check all coordinates."
+      ],
+      "student_goal": "Model 3D geometry conditions using vectors.",
+      "title": "Translate geometry into vectors",
+      "topic": "vectors",
+      "topics": [
+        "vectors"
+      ],
+      "worked_example": {
+        "id": "p3-vectors-3d-geometry-001-example-1",
+        "prompt": "Point $P$ lies on $\\mathbf r=(1,2,0)+\\lambda(3,-1,2)$ and has $x=7$. Find its coordinates.",
+        "steps": [
+          "Use the $x$-component: $1+3\\lambda=7$.",
+          "So $\\lambda=2$.",
+          "Substitute into the $y$ and $z$ components."
+        ],
+        "answer": "$P=(7,0,4)$",
+        "teaching_note": "One coordinate can identify the parameter, but all coordinates define the point."
+      },
+      "legacy_skill_target_ids": [
+        "p3_vectors"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
       "body": "Momentum is directional. Before writing equations, choose a positive direction and keep every velocity consistent with that choice.",
       "common_mistakes": [
         "Changing the positive direction halfway through.",

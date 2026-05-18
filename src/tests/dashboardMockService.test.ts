@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getClassRegionSignals,
   getStudentEvidence,
+  getStudentSummaries,
   getTeacherClassDashboard,
   groupStudentsByNextStep,
   listAdminAuditEvents,
@@ -8,6 +10,7 @@ import {
   listAdminTeachers,
   listTeacherClasses,
 } from '../lib/dashboardMockService';
+import { isValidP3RegionId } from '../lib/p3SkillContract';
 
 describe('dashboard mock service', () => {
   it('returns teacher classes and a class dashboard through the service boundary', async () => {
@@ -59,5 +62,32 @@ describe('dashboard mock service', () => {
     await expect(listAdminAuditEvents()).resolves.toEqual(expect.arrayContaining([
       expect.objectContaining({ actorRole: 'admin' }),
     ]));
+  });
+
+  it('keeps mock dashboard region IDs aligned with canonical P3 region IDs', async () => {
+    const classes = await listTeacherClasses();
+    for (const teacherClass of classes) {
+      const dashboard = await getTeacherClassDashboard(teacherClass.id);
+      const signals = await getClassRegionSignals(teacherClass.id);
+      const summaries = await getStudentSummaries(teacherClass.id);
+
+      for (const signal of signals) {
+        expect(isValidP3RegionId(signal.regionId), signal.regionId).toBe(true);
+      }
+
+      for (const student of summaries) {
+        expect(isValidP3RegionId(student.currentRegionId), student.currentRegionId).toBe(true);
+        for (const evidence of await getStudentEvidence(student.id)) {
+          expect(isValidP3RegionId(evidence.regionId), evidence.regionId).toBe(true);
+        }
+      }
+
+      for (const card of dashboard.actionCards) {
+        if (card.regionId) expect(isValidP3RegionId(card.regionId), card.regionId).toBe(true);
+        for (const evidence of card.evidenceRefs) {
+          expect(isValidP3RegionId(evidence.regionId), evidence.regionId).toBe(true);
+        }
+      }
+    }
   });
 });

@@ -192,12 +192,21 @@ def validate_deferred_backlog(
         errors.append("deferred_review_backlog.items must be a list")
         items = []
 
-    if route_backlog.get("mastery_evidence_allowed") is not False:
-        errors.append("deferred_review_backlog.mastery_evidence_allowed must be false")
-    if route_backlog.get("practice_allowed") is not True:
-        errors.append("deferred_review_backlog.practice_allowed must be true")
-    if route_backlog.get("export_allowed") is not False:
-        errors.append("deferred_review_backlog.export_allowed must be false")
+    has_deferred_items = bool(items)
+    if has_deferred_items:
+        if route_backlog.get("mastery_evidence_allowed") is not False:
+            errors.append("deferred_review_backlog.mastery_evidence_allowed must be false")
+        if route_backlog.get("practice_allowed") is not True:
+            errors.append("deferred_review_backlog.practice_allowed must be true")
+        if route_backlog.get("export_allowed") is not False:
+            errors.append("deferred_review_backlog.export_allowed must be false")
+    else:
+        if route_backlog.get("mastery_evidence_allowed") is not None:
+            errors.append("deferred_review_backlog.mastery_evidence_allowed must be null when there are no deferred items")
+        if route_backlog.get("practice_allowed") is not None:
+            errors.append("deferred_review_backlog.practice_allowed must be null when there are no deferred items")
+        if route_backlog.get("export_allowed") is not None:
+            errors.append("deferred_review_backlog.export_allowed must be null when there are no deferred items")
 
     expected_count_fields = {
         "case_count": len(items),
@@ -584,12 +593,20 @@ def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]
     deferred_items = deferred_summary.get("items") if isinstance(deferred_summary.get("items"), list) else []
     if deferred_summary.get("case_count") != len(deferred_items):
         errors.append("deferred_evidence_summary.case_count must equal item count")
-    if deferred_summary.get("mastery_evidence_allowed") is not False:
-        errors.append("deferred_evidence_summary.mastery_evidence_allowed must be false")
-    if deferred_summary.get("practice_allowed") is not True:
-        errors.append("deferred_evidence_summary.practice_allowed must be true")
-    if deferred_summary.get("export_allowed") is not False:
-        errors.append("deferred_evidence_summary.export_allowed must be false")
+    if deferred_items:
+        if deferred_summary.get("mastery_evidence_allowed") is not False:
+            errors.append("deferred_evidence_summary.mastery_evidence_allowed must be false")
+        if deferred_summary.get("practice_allowed") is not True:
+            errors.append("deferred_evidence_summary.practice_allowed must be true")
+        if deferred_summary.get("export_allowed") is not False:
+            errors.append("deferred_evidence_summary.export_allowed must be false")
+    else:
+        if deferred_summary.get("mastery_evidence_allowed") is not None:
+            errors.append("deferred_evidence_summary.mastery_evidence_allowed must be null when there are no deferred items")
+        if deferred_summary.get("practice_allowed") is not None:
+            errors.append("deferred_evidence_summary.practice_allowed must be null when there are no deferred items")
+        if deferred_summary.get("export_allowed") is not None:
+            errors.append("deferred_evidence_summary.export_allowed must be null when there are no deferred items")
 
     if errors:
         raise ValueError("; ".join(errors))

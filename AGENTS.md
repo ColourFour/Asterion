@@ -124,7 +124,7 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
   - `question_bank.json`
   - `question_bank.topic_routing.v1.json`
   - `asterion_content_lab_candidates_v1.json`
-- Legacy `public/data/question_bank*.json` files may exist for migration/reference, but they are not active runtime truth.
+- Legacy `public/data/question_bank*.json` files must not ship. If legacy migration/reference is needed, recover those files from git history or keep them outside `public/`.
 - Question and mark-scheme crops currently live under `public/assets/exam-bank-data/{paper-family}/{paper}/questions/q##.png` and `public/assets/exam-bank-data/{paper-family}/{paper}/mark_scheme/q##.png`. Legacy `public/assets/{paper}/...` and `public/assets/questions/{paper-family}/...` layouts are resolver fallbacks only.
 - JSON image paths may be strings or arrays.
 - Marks, deprecated difficulty metadata, subtopic, and enrichment fields may be absent.

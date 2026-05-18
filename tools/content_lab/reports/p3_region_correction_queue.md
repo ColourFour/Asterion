@@ -15,7 +15,7 @@ This deterministic queue plans future content correction only. It does not corre
 ### route_correction
 
 - `ambiguous_multi_topic_routes`: 14
-- `audited_route_decisions`: 10
+- `audited_route_decisions`: 42
 - `fallback_display_only_region_placements`: 53
 - `missing_p3_routes`: 53
 - `review_needed_routes`: 12
@@ -26,25 +26,25 @@ This deterministic queue plans future content correction only. It does not corre
 
 ### mark_scheme_subpart_review
 
-- `deferred_evidence_cases`: 14
+- `deferred_evidence_cases`: 0
 
 ### support_content_gaps
 
-- `weak_or_missing_skill_support`: 30
+- `weak_or_missing_skill_support`: 0
 
 ## Region Summary
 
 | Region | Issues | Workstreams | Categories |
 | --- | ---: | --- | --- |
-| Calculus Cliffs | 54 | mark_scheme_subpart_review:5, route_correction:30, support_content_gaps:5, text_review:14 | ambiguous_multi_topic_routes:2, deferred_evidence_cases:5, fallback_display_only_region_placements:14, missing_p3_routes:14, routing_text_or_visual_blockers:14, weak_or_missing_skill_support:5 |
-| Algebra Vault | 46 | route_correction:30, support_content_gaps:4, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12, weak_or_missing_skill_support:4 |
-| Iteration Forge | 27 | route_correction:16, support_content_gaps:3, text_review:8 | ambiguous_multi_topic_routes:2, audited_route_decisions:1, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:3, routing_text_or_visual_blockers:8, weak_or_missing_skill_support:3 |
-| Integral Terraces | 26 | mark_scheme_subpart_review:5, route_correction:16, support_content_gaps:3, text_review:2 | ambiguous_multi_topic_routes:9, deferred_evidence_cases:5, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2, weak_or_missing_skill_support:3 |
-| Argand Atrium | 24 | route_correction:13, support_content_gaps:4, text_review:7 | fallback_display_only_region_placements:6, missing_p3_routes:6, review_needed_routes:1, routing_text_or_visual_blockers:7, weak_or_missing_skill_support:4 |
-| Logarithm Observatory | 23 | mark_scheme_subpart_review:1, route_correction:13, support_content_gaps:3, text_review:6 | audited_route_decisions:1, deferred_evidence_cases:1, fallback_display_only_region_placements:6, missing_p3_routes:6, routing_text_or_visual_blockers:6, weak_or_missing_skill_support:3 |
-| Trigonometry Spire | 21 | mark_scheme_subpart_review:3, route_correction:11, support_content_gaps:2, text_review:5 | deferred_evidence_cases:3, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:1, routing_text_or_visual_blockers:5, weak_or_missing_skill_support:2 |
-| Vectors Gate | 18 | route_correction:10, support_content_gaps:3, text_review:5 | fallback_display_only_region_placements:5, missing_p3_routes:5, routing_text_or_visual_blockers:5, weak_or_missing_skill_support:3 |
-| Differential Shrine | 6 | route_correction:3, support_content_gaps:3 | ambiguous_multi_topic_routes:1, audited_route_decisions:1, review_needed_routes:1, weak_or_missing_skill_support:3 |
+| Calculus Cliffs | 55 | route_correction:41, text_review:14 | ambiguous_multi_topic_routes:2, audited_route_decisions:11, fallback_display_only_region_placements:14, missing_p3_routes:14, routing_text_or_visual_blockers:14 |
+| Algebra Vault | 42 | route_correction:30, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12 |
+| Iteration Forge | 26 | route_correction:18, text_review:8 | ambiguous_multi_topic_routes:2, audited_route_decisions:3, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:3, routing_text_or_visual_blockers:8 |
+| Integral Terraces | 25 | route_correction:23, text_review:2 | ambiguous_multi_topic_routes:9, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
+| Logarithm Observatory | 24 | route_correction:18, text_review:6 | audited_route_decisions:6, fallback_display_only_region_placements:6, missing_p3_routes:6, routing_text_or_visual_blockers:6 |
+| Trigonometry Spire | 22 | route_correction:17, text_review:5 | audited_route_decisions:6, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:1, routing_text_or_visual_blockers:5 |
+| Argand Atrium | 20 | route_correction:13, text_review:7 | fallback_display_only_region_placements:6, missing_p3_routes:6, review_needed_routes:1, routing_text_or_visual_blockers:7 |
+| Vectors Gate | 15 | route_correction:10, text_review:5 | fallback_display_only_region_placements:5, missing_p3_routes:5, routing_text_or_visual_blockers:5 |
+| Differential Shrine | 4 | route_correction:4 | ambiguous_multi_topic_routes:1, audited_route_decisions:2, review_needed_routes:1 |
 
 ## Route Correction
 
@@ -211,9 +211,41 @@ This deterministic queue plans future content correction only. It does not corre
 | p3_alg_structure_rearrangement | 33autumn21_q03 | corrected_skill_map | Algebra Vault | Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials. |
 | p3_alg_structure_rearrangement | 33summer22_q03 | corrected_skill_map | Algebra Vault | Remove this question from algebra structure evidence and correct the question-bank topic to logarithms_and_exponentials. |
 | p3_alg_structure_rearrangement | 33summer24_q08 | corrected_skill_map | Algebra Vault | Remove this question from algebra structure evidence and from the algebra Guardian candidates; correct the question-bank topic to trigonometry. |
+| p3_diff_chain_product_quotient | 31summer21_q09 | validated_skill_map_route | Calculus Cliffs | Accept this as clean product-rule differentiation evidence while keeping the log and integration context visible as separate support. |
+| p3_diff_chain_product_quotient | 33summer21_q08 | validated_skill_map_route | Calculus Cliffs | Accept this as clean product/quotient-rule differentiation evidence from the maximum-point subpart. |
+| p3_diff_chain_product_quotient | 35summer25_q04 | validated_skill_map_route | Calculus Cliffs | Accept this as clean product-rule differentiation evidence inside a logarithmic stationary-point task. |
+| p3_diff_chain_product_quotient | 35summer25_q07 | validated_skill_map_route | Calculus Cliffs | Accept this as clean chain-rule differentiation evidence from part (a); keep the integration-by-parts subpart represented by its own integration evidence. |
+| p3_diff_implicit_log_exp | 31summer21_q09 | corrected_skill_map | Calculus Cliffs | Remove this question from implicit log/exponential differentiation evidence; keep it under product-rule, stationary-point, and log-calculus context evidence instead. |
+| p3_diff_implicit_log_exp | 32autumn21_q09 | validated_skill_map_route | Calculus Cliffs | Accept this as clean implicit differentiation evidence with exponential structure. |
+| p3_diff_implicit_log_exp | 35autumn25_q04 | validated_skill_map_route | Calculus Cliffs | Accept this as clean implicit differentiation evidence with logarithmic structure. |
+| p3_diff_stationary_tangent_normal | 31summer21_q09 | validated_skill_map_route | Calculus Cliffs | Accept this as clean stationary-point evidence in a logarithmic curve context. |
+| p3_diff_stationary_tangent_normal | 32autumn21_q11 | corrected_skill_map | Calculus Cliffs | Remove this question from stationary-point, tangent, and normal evidence; keep it under numerical iteration and related derivative-context support only. |
+| p3_diff_stationary_tangent_normal | 33summer21_q08 | validated_skill_map_route | Calculus Cliffs | Accept this as clean stationary-point evidence from the maximum-point subpart. |
+| p3_diff_stationary_tangent_normal | 35summer25_q07 | corrected_skill_map | Calculus Cliffs | Remove this question from stationary-point, tangent, and normal evidence. |
 | p3_de_forming_context_model | 31summer21_q10 | corrected_skill_map | Differential Shrine | Remove this question from forming-context-model evidence. |
+| p3_de_separation_setup | 32spring21_q04 | validated_skill_map_route | Differential Shrine | Keep this as clean separation-of-variables evidence under Differential Shrine. |
+| p3_int_definite_improper_area | 32spring21_q10 | validated_skill_map_route | Integral Terraces | Accept this as clean definite-area evidence from the area subpart. |
+| p3_int_definite_improper_area | 33summer21_q04 | validated_skill_map_route | Integral Terraces | Accept this as clean definite-integration evidence after partial fractions. |
+| p3_int_partial_fractions | 31summer21_q10 | validated_skill_map_route | Integral Terraces | Accept this as clean partial-fractions integration evidence inside a differential-equation solve. |
+| p3_int_partial_fractions | 32spring21_q06 | validated_skill_map_route | Integral Terraces | Accept this as clean integration-using-partial-fractions evidence. |
+| p3_int_partial_fractions | 32summer21_q09 | corrected_skill_map | Integral Terraces | Remove this question from integration-using-partial-fractions evidence; it belongs to partial-fraction algebra/binomial-expansion support, not integration mastery. |
+| p3_int_partial_fractions | 33summer21_q04 | validated_skill_map_route | Integral Terraces | Accept this as clean integration-using-partial-fractions evidence. |
+| p3_int_partial_fractions | 35summer25_q09 | corrected_skill_map | Integral Terraces | Remove this question from integration-using-partial-fractions evidence; it belongs to partial-fraction algebra/binomial-expansion support, not integration mastery. |
+| p3_log_calculus_contexts | 31summer21_q09 | validated_skill_map_route | Logarithm Observatory | Keep this as clean log-calculus context evidence. |
+| p3_log_calculus_contexts | 32autumn21_q09 | validated_skill_map_route | Logarithm Observatory | Keep this as clean log/exponential calculus-context evidence. |
+| p3_log_calculus_contexts | 33autumn21_q07 | validated_skill_map_route | Logarithm Observatory | Accept this as clean log-calculus context evidence. |
+| p3_log_calculus_contexts | 35autumn25_q04 | validated_skill_map_route | Logarithm Observatory | Keep this as clean log-calculus context evidence. |
+| p3_log_calculus_contexts | 35summer25_q04 | validated_skill_map_route | Logarithm Observatory | Keep this as clean log-calculus context evidence. |
 | p3_log_linearisation | 31summer23_q08 | corrected_skill_map | Logarithm Observatory | Remove this question from log-linearisation evidence and correct the question-bank topic to integration. |
+| p3_num_iteration_formula | 32autumn21_q11 | validated_skill_map_route | Iteration Forge | Keep this as clean numerical iteration-formula evidence. |
 | p3_num_iteration_formula | 33autumn21_q10 | corrected_skill_map | Iteration Forge | Remove this question from iteration-formula evidence and correct the question-bank topic to differential_equations. |
+| p3_num_sign_change_graph_evidence | 31summer21_q07 | validated_skill_map_route | Iteration Forge | Keep this as clean numerical bracket/iteration evidence. |
+| p3_trig_identity_selection | 31summer21_q04 | validated_skill_map_route | Trigonometry Spire | Accept this as clean trigonometric identity-selection evidence. |
+| p3_trig_identity_selection | 32autumn21_q06 | validated_skill_map_route | Trigonometry Spire | Keep this as clean trigonometric identity-selection evidence. |
+| p3_trig_identity_selection | 32autumn25_q08 | validated_skill_map_route | Trigonometry Spire | Keep this as clean trigonometric identity-selection evidence. |
+| p3_trig_identity_selection | 32summer21_q06 | validated_skill_map_route | Trigonometry Spire | Accept this as clean trigonometric identity-selection evidence. |
+| p3_trig_reciprocal_double_angle | 32autumn25_q08 | validated_skill_map_route | Trigonometry Spire | Keep this as clean reciprocal/double-angle evidence. |
+| p3_trig_reciprocal_double_angle | 32summer21_q06 | validated_skill_map_route | Trigonometry Spire | Accept this as clean reciprocal/double-angle evidence. |
 
 ## Text Review
 
@@ -283,55 +315,11 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Skill | Question | App Region | Reviewed Region | Recommended Action |
 | --- | --- | --- | --- | --- |
-| p3_diff_chain_product_quotient | 31summer21_q09 | Integral Terraces | Calculus Cliffs | Keep visible until a reviewer decides whether this mixed log-calculus question should remain differentiation evidence or be represented with part-level metadata. |
-| p3_diff_chain_product_quotient | 33summer21_q08 | Integral Terraces | Calculus Cliffs | Keep visible until reviewed for part-level differentiation versus integration evidence. |
-| p3_diff_implicit_log_exp | 31summer21_q09 | Integral Terraces | Calculus Cliffs | Keep visible until reviewed for whether it belongs under implicit log/exponential differentiation or only under product/quotient differentiation. |
-| p3_diff_stationary_tangent_normal | 31summer21_q09 | Integral Terraces | Calculus Cliffs | Keep visible until reviewed for part-level stationary-point evidence. |
-| p3_diff_stationary_tangent_normal | 33summer21_q08 | Integral Terraces | Calculus Cliffs | Keep visible until reviewed for part-level stationary-point evidence. |
-| p3_int_definite_improper_area | 32spring21_q10 | Calculus Cliffs | Integral Terraces | Keep visible until reviewed for part-level area/integration evidence. |
-| p3_int_partial_fractions | 31summer21_q10 | Differential Shrine | Integral Terraces | Keep visible until reviewed for whether this should be differential-equation solving evidence, integration evidence, or both with part-level metadata. |
-| p3_int_partial_fractions | 32spring21_q06 | Algebra Vault | Integral Terraces | Keep visible until reviewed for part-level integration using partial fractions. |
-| p3_int_partial_fractions | 32summer21_q09 | Algebra Vault | Integral Terraces | Keep visible until reviewed; this looks more like partial fractions plus expansion than integration. |
-| p3_int_partial_fractions | 35summer25_q09 | Algebra Vault | Integral Terraces | Keep visible until reviewed; this looks more like partial fractions plus expansion than integration. |
-| p3_log_calculus_contexts | 33autumn21_q07 | Calculus Cliffs | Logarithm Observatory | Keep visible until reviewed as a log-calculus bridge or part-level implicit-differentiation item. |
-| p3_trig_identity_selection | 31summer21_q04 | Integral Terraces | Trigonometry Spire | Keep visible until reviewed for part-level trigonometric identity evidence. |
-| p3_trig_identity_selection | 32summer21_q06 | Integral Terraces | Trigonometry Spire | Keep visible until reviewed for part-level trigonometric identity evidence. |
-| p3_trig_reciprocal_double_angle | 32summer21_q06 | Integral Terraces | Trigonometry Spire | Keep visible until reviewed for part-level reciprocal/double-angle evidence. |
 
 ## Support-Content Gaps
 
 | Region | Skill | Priority | Status | Gaps / Blockers |
 | --- | --- | --- | --- | --- |
-| Algebra Vault | p3_alg_discriminant_root_conditions | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Algebra Vault | p3_alg_partial_fraction_form | P0_blocked_mastery | blocked_for_mastery | blocking reasons: unreviewed_app_region_mismatch |
-| Algebra Vault | p3_alg_polynomial_remainder_factor | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Algebra Vault | p3_alg_structure_rearrangement | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Calculus Cliffs | p3_diff_chain_product_quotient | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Calculus Cliffs | p3_diff_implicit_log_exp | P1_missing_core_support | needs_teacher_review | quick_check, warm_up |
-| Calculus Cliffs | p3_diff_method_selection | P2_missing_practice_support | missing_support | warm_up |
-| Calculus Cliffs | p3_diff_parametric_gradients | P2_missing_practice_support | missing_support | warm_up |
-| Calculus Cliffs | p3_diff_stationary_tangent_normal | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Argand Atrium | p3_complex_argand_loci_regions | P2_missing_practice_support | missing_support | warm_up |
-| Argand Atrium | p3_complex_cartesian_conjugate | P2_missing_practice_support | missing_support | warm_up |
-| Argand Atrium | p3_complex_modulus_argument_form | P2_missing_practice_support | missing_support | warm_up |
-| Argand Atrium | p3_complex_roots_powers | P1_missing_core_support | missing_support | quick_check, warm_up |
-| Differential Shrine | p3_de_forming_context_model | P1_missing_core_support | missing_support | quick_check, warm_up |
-| Differential Shrine | p3_de_initial_condition | P2_missing_practice_support | missing_support | warm_up |
-| Differential Shrine | p3_de_separation_setup | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Integral Terraces | p3_int_definite_improper_area | P1_missing_core_support | needs_teacher_review | quick_check, warm_up |
-| Integral Terraces | p3_int_method_choice | P2_missing_practice_support | missing_support | warm_up |
-| Integral Terraces | p3_int_parts_substitution | P2_missing_practice_support | missing_support | warm_up |
-| Logarithm Observatory | p3_log_calculus_contexts | P0_blocked_mastery | blocked_for_mastery | snippet, worked_example, quick_check, warm_up |
-| Logarithm Observatory | p3_log_domain_validation | P2_missing_practice_support | missing_support | warm_up |
-| Logarithm Observatory | p3_log_linearisation | P2_missing_practice_support | missing_support | warm_up |
-| Iteration Forge | p3_num_accuracy_rounding | P2_missing_practice_support | missing_support | warm_up |
-| Iteration Forge | p3_num_iteration_formula | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Iteration Forge | p3_num_sign_change_graph_evidence | P0_blocked_mastery | blocked_for_mastery | warm_up |
-| Trigonometry Spire | p3_trig_identity_selection | P0_blocked_mastery | blocked_for_mastery | blocking reasons: unreviewed_app_region_mismatch |
-| Trigonometry Spire | p3_trig_reciprocal_double_angle | P0_blocked_mastery | blocked_for_mastery | blocking reasons: unreviewed_app_region_mismatch |
-| Vectors Gate | p3_vec_3d_geometry_modelling | P1_missing_core_support | missing_support | quick_check, warm_up |
-| Vectors Gate | p3_vec_line_equations_intersections | P2_missing_practice_support | missing_support | warm_up |
-| Vectors Gate | p3_vec_scalar_product_angles | P2_missing_practice_support | missing_support | warm_up |
 
 ## Policy
 

@@ -306,7 +306,7 @@ describe('P3 skill map coverage report', () => {
       expect(report.curriculum_targets.primary.syllabus_id).toBe('caie_9709_p3_2026_2027');
       expect(report.curriculum_targets.supporting_prerequisites[0].syllabus_id).toBe('caie_9709_p1_2026_2027');
       expect(report.summary.total_skills).toBeGreaterThanOrEqual(35);
-      expect(report.summary.ready_for_full_p3_learning).toBe(false);
+      expect(report.summary.ready_for_full_p3_learning).toBe(true);
       expect(report.summary.skills_with_trainable_canonical_question).toBe(report.summary.total_skills);
       expect(report.summary.skills_by_curriculum_role.p3_core).toBe(report.summary.total_skills);
       expect(report.summary.mastery_eligible_skills).toBe(report.summary.total_skills);
@@ -319,10 +319,10 @@ describe('P3 skill map coverage report', () => {
       }));
       expect(new Set(report.dashboard.coverage_by_syllabus_topic.map((row) => row.syllabus_topic))).toEqual(new Set(expectedTopics));
       expect(report.gaps.skills_with_no_trainable_canonical_question).toEqual([]);
-      expect(ids(report.gaps.skills_with_no_snippet)).toContain('p3_log_calculus_contexts');
-      expect(ids(report.gaps.skills_with_no_quick_check)).toContain('p3_complex_roots_powers');
-      expect(ids(report.gaps.skills_with_no_generated_warm_up)).toContain('p3_diff_method_selection');
-      expect(ids(report.gaps.high_evidence_skills_with_weak_teaching_support)).toContain('p3_vec_line_equations_intersections');
+      expect(report.gaps.skills_with_no_snippet).toEqual([]);
+      expect(report.gaps.skills_with_no_quick_check).toEqual([]);
+      expect(report.gaps.skills_with_no_generated_warm_up).toEqual([]);
+      expect(report.gaps.high_evidence_skills_with_weak_teaching_support).toEqual([]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

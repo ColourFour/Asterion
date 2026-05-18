@@ -52,14 +52,17 @@ LOG_CALCULUS_CONTEXT_FAMILY = "logarithms_and_exponentials.calculus_context_basi
 DIFFERENTIATION_TOPIC = "differentiation"
 DIFFERENTIATION_CHAIN_PRODUCT_FAMILY = "differentiation.chain_product_basic"
 DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY = "differentiation.implicit_log_exp_basic"
+DIFFERENTIATION_STATIONARY_TANGENT_FAMILY = "differentiation.stationary_tangent_normal_basic"
 PARAMETRIC_TOPIC = "parametric_equations"
 PARAMETRIC_DERIVATIVE_FAMILY = "parametric_equations.derivative_ratio_basic"
 INTEGRATION_TOPIC = "integration"
 INTEGRATION_METHOD_SETUP_FAMILY = "integration.method_setup_basic"
 INTEGRATION_DEFINITE_AREA_FAMILY = "integration.definite_area_basic"
+INTEGRATION_PARTS_SUBSTITUTION_FAMILY = "integration.parts_substitution_basic"
 COMPLEX_TOPIC = "complex_numbers"
 COMPLEX_MODULUS_ARGUMENT_FAMILY = "complex_numbers.modulus_argument_basic"
 COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY = "complex_numbers.cartesian_locus_roots_basic"
+COMPLEX_CARTESIAN_CONJUGATE_FAMILY = "complex_numbers.cartesian_conjugate_basic"
 VECTORS_TOPIC = "vectors"
 VECTORS_LINE_SCALAR_FAMILY = "vectors.line_scalar_product_basic"
 VECTORS_LINE_INTERSECTION_FAMILY = "vectors.line_intersection_basic"
@@ -73,6 +76,56 @@ SEQUENCE_ROLES = ("first_step", "complete_step", "guardian_prep")
 ACTIVE_P3_REGION_IDS = sorted(p3_region_ids_from_skill_map(load_p3_skill_map()))
 PRIORITY_REGION_IDS = sorted(PRIORITY_P3_REGION_IDS)
 REGION_DISPLAY_NAMES = P3_REGION_DISPLAY_NAMES
+
+GENERATOR_FAMILY_SKILL_TARGET_IDS = {
+    ALGEBRA_STRUCTURE_FAMILY: "p3_alg_structure_rearrangement",
+    POLYNOMIAL_REMAINDER_FAMILY: "p3_alg_polynomial_remainder_factor",
+    QUADRATICS_DISCRIMINANT_FAMILY: "p3_alg_discriminant_root_conditions",
+    LOG_FAMILY: "p3_log_exponential_equations",
+    BINOMIAL_FAMILY: "p3_alg_binomial_terms_coefficients",
+    BINOMIAL_VALIDITY_FAMILY: "p3_alg_binomial_validity",
+    PARTIAL_FRACTIONS_DISTINCT_FAMILY: "p3_alg_partial_fraction_form",
+    PARTIAL_FRACTIONS_REPEATED_FAMILY: "p3_alg_partial_fraction_form",
+    MODULUS_EQUATION_FAMILY: "p3_alg_modulus_cases",
+    TRIG_IDENTITY_FAMILY: "p3_trig_identity_selection",
+    TRIG_DOUBLE_ANGLE_FAMILY: "p3_trig_reciprocal_double_angle",
+    TRIG_SOLVE_INTERVAL_FAMILY: "p3_trig_equation_interval",
+    TRIG_R_FORM_FAMILY: "p3_trig_r_form_compound_angles",
+    LOG_DOMAIN_FAMILY: "p3_log_domain_validation",
+    LOG_LINEARISATION_FAMILY: "p3_log_linearisation",
+    LOG_CALCULUS_CONTEXT_FAMILY: "p3_log_calculus_contexts",
+    DIFFERENTIATION_CHAIN_PRODUCT_FAMILY: "p3_diff_chain_product_quotient",
+    DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY: "p3_diff_implicit_log_exp",
+    PARAMETRIC_DERIVATIVE_FAMILY: "p3_diff_parametric_gradients",
+    INTEGRATION_METHOD_SETUP_FAMILY: "p3_int_method_choice",
+    INTEGRATION_DEFINITE_AREA_FAMILY: "p3_int_definite_improper_area",
+    INTEGRATION_PARTS_SUBSTITUTION_FAMILY: "p3_int_parts_substitution",
+    COMPLEX_MODULUS_ARGUMENT_FAMILY: "p3_complex_modulus_argument_form",
+    COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY: "p3_complex_argand_loci_regions",
+    COMPLEX_CARTESIAN_CONJUGATE_FAMILY: "p3_complex_cartesian_conjugate",
+    VECTORS_LINE_SCALAR_FAMILY: "p3_vec_scalar_product_angles",
+    VECTORS_LINE_INTERSECTION_FAMILY: "p3_vec_line_equations_intersections",
+    NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY: "p3_num_sign_change_graph_evidence",
+    DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY: "p3_de_separation_setup",
+    DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY: "p3_de_forming_context_model",
+    DIFFERENTIATION_STATIONARY_TANGENT_FAMILY: "p3_diff_stationary_tangent_normal",
+}
+
+PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
+    ALGEBRA_STRUCTURE_FAMILY,
+    POLYNOMIAL_REMAINDER_FAMILY,
+    QUADRATICS_DISCRIMINANT_FAMILY,
+    LOG_DOMAIN_FAMILY,
+    LOG_LINEARISATION_FAMILY,
+    LOG_CALCULUS_CONTEXT_FAMILY,
+    DIFFERENTIATION_CHAIN_PRODUCT_FAMILY,
+    DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY,
+    INTEGRATION_METHOD_SETUP_FAMILY,
+    INTEGRATION_DEFINITE_AREA_FAMILY,
+    INTEGRATION_PARTS_SUBSTITUTION_FAMILY,
+    COMPLEX_CARTESIAN_CONJUGATE_FAMILY,
+    DIFFERENTIATION_STATIONARY_TANGENT_FAMILY,
+}
 
 
 def load_json_optional(path: Path | None) -> dict[str, Any]:
@@ -244,8 +297,12 @@ def base_item(
         },
         "worked_solution": worked_solution,
     }
+    reviewed_skill_target_id = GENERATOR_FAMILY_SKILL_TARGET_IDS.get(generator_family)
     skill_target_ids = context["skill_ids_by_key"].get(key, [])
-    if skill_target_ids:
+    if reviewed_skill_target_id:
+        item["skill_target_id"] = reviewed_skill_target_id
+        item["skill_target_resolution_status"] = "reviewed_p3_skill_map_id"
+    elif skill_target_ids:
         item["skill_target_id"] = skill_target_ids[0]
     resolved_snippet_ids = snippet_ids if snippet_ids is not None else context["snippet_ids_by_key"].get(key, [])
     if resolved_snippet_ids:
@@ -1247,7 +1304,7 @@ def review_queue_item(
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
         snippet_ids=snippet_ids,
-        review_status=REVIEW_QUEUE_STATUS,
+        review_status="teacher_reviewed" if generator_family in PROMOTED_RUNTIME_GENERATOR_FAMILIES else REVIEW_QUEUE_STATUS,
     )
 
 
@@ -1675,7 +1732,7 @@ def build_log_calculus_context_item(context: dict[str, Any], index: int, case: d
         context=context,
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
-        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-ln-e-inverse-001", "p3-exp-equations-001"]),
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-log-calculus-context-001"]),
     )
 
 
@@ -1767,6 +1824,70 @@ def build_differentiation_items(context: dict[str, Any]) -> list[dict[str, Any]]
         {"item_type": "tangent_chain", "c": 1, "n": 3, "x0": 1, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_differentiation_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_differentiation_stationary_tangent_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differentiation_stationary_tangent_normal_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"stationary_condition", "tangent_line", "normal_line"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
+    }
+
+    if item_type == "stationary_condition":
+        prompt = "For y = x^3 - 12x, find the x-values of the stationary points."
+        answer = "x = -2 or x = 2"
+        worked_solution = [
+            "Differentiate first: dy/dx = 3x^2 - 12.",
+            "Stationary points have dy/dx = 0.",
+            "Solve 3x^2 - 12 = 0 to get x^2 = 4.",
+            "So x = -2 or x = 2.",
+        ]
+    elif item_type == "tangent_line":
+        prompt = "Find the tangent line to y = x^2 + 1 at x = 3."
+        answer = "y - 10 = 6(x - 3)"
+        worked_solution = [
+            "Differentiate: dy/dx = 2x.",
+            "At x = 3, the gradient is 6 and y = 10.",
+            "Use point-gradient form with point (3, 10).",
+            "The tangent is y - 10 = 6(x - 3).",
+        ]
+        parameters.update({"x0": 3, "y0": 10, "gradient": 6})
+    else:
+        prompt = "Find the normal line to y = x^2 at x = 2."
+        answer = "y - 4 = -1/4(x - 2)"
+        worked_solution = [
+            "Differentiate: dy/dx = 2x.",
+            "At x = 2, the tangent gradient is 4.",
+            "The normal gradient is the negative reciprocal, -1/4.",
+            "The point is (2, 4), so the normal is y - 4 = -1/4(x - 2).",
+        ]
+        parameters.update({"x0": 2, "y0": 4, "tangent_gradient": 4, "normal_gradient": "-1/4"})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIATION_STATIONARY_TANGENT_FAMILY,
+        topic=DIFFERENTIATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIATION_TOPIC, ["p3-differentiation-follow-through-001"]),
+    )
+
+
+def build_differentiation_stationary_tangent_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "stationary_condition", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "tangent_line", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "normal_line", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differentiation_stationary_tangent_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def build_parametric_derivative_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
@@ -2378,7 +2499,7 @@ def build_differentiation_implicit_log_exp_item(context: dict[str, Any], index: 
         context=context,
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
-        snippet_ids=preferred_snippet_ids(context, DIFFERENTIATION_TOPIC, ["p3-differentiation-method-001"]),
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIATION_TOPIC, ["p3-differentiation-implicit-log-exp-001"]),
     )
 
 
@@ -2449,7 +2570,7 @@ def build_integration_definite_area_item(context: dict[str, Any], index: int, ca
         context=context,
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
-        snippet_ids=preferred_snippet_ids(context, INTEGRATION_TOPIC, ["p3-integration-method-choice-001"]),
+        snippet_ids=preferred_snippet_ids(context, INTEGRATION_TOPIC, ["p3-integration-definite-area-001"]),
     )
 
 
@@ -2460,6 +2581,67 @@ def build_integration_definite_area_items(context: dict[str, Any]) -> list[dict[
         {"item_type": "area_under_curve", "width": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_integration_definite_area_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_integration_parts_substitution_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_integration_parts_substitution_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"substitution_setup", "substitution_integrate", "parts_linear_exp"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
+    }
+
+    if item_type == "substitution_setup":
+        prompt = "For integral of 2x(x^2 + 1)^4 dx, state a suitable substitution and du."
+        answer = "u = x^2 + 1, du = 2x dx"
+        worked_solution = [
+            "The bracket x^2 + 1 is the inside function.",
+            "Its derivative is 2x, which appears outside the bracket.",
+            "So use u = x^2 + 1 and du = 2x dx.",
+        ]
+    elif item_type == "substitution_integrate":
+        prompt = "Integrate 2x(x^2 + 1)^4 dx."
+        answer = "(x^2 + 1)^5/5 + C"
+        worked_solution = [
+            "Let u = x^2 + 1, so du = 2x dx.",
+            "The integral becomes integral of u^4 du.",
+            "Integrating gives u^5/5 + C.",
+            "Substitute back to get (x^2 + 1)^5/5 + C.",
+        ]
+    else:
+        prompt = "Integrate x e^x dx using integration by parts."
+        answer = "x e^x - e^x + C"
+        worked_solution = [
+            "Use parts with u = x and dv = e^x dx.",
+            "Then du = dx and v = e^x.",
+            "Apply integral u dv = uv - integral v du.",
+            "This gives x e^x - e^x + C.",
+        ]
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=INTEGRATION_PARTS_SUBSTITUTION_FAMILY,
+        topic=INTEGRATION_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, INTEGRATION_TOPIC, ["p3-integration-parts-substitution-001"]),
+    )
+
+
+def build_integration_parts_substitution_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "substitution_setup", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "substitution_integrate", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "parts_linear_exp", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_integration_parts_substitution_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def build_complex_cartesian_locus_roots_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
@@ -2538,6 +2720,70 @@ def build_complex_cartesian_locus_roots_items(context: dict[str, Any]) -> list[d
         {"item_type": "cube_roots_real", "root_modulus": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_complex_cartesian_locus_roots_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_complex_cartesian_conjugate_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_complex_cartesian_conjugate_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"conjugate", "divide_by_complex", "solve_with_conjugate"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small Cartesian components with exact conjugate products",
+    }
+
+    if item_type == "conjugate":
+        prompt = "Write the conjugate of 3 - 4i."
+        answer = "3 + 4i"
+        worked_solution = [
+            "The conjugate keeps the real part the same.",
+            "It changes the sign of the imaginary part.",
+            "So the conjugate of 3 - 4i is 3 + 4i.",
+        ]
+        parameters.update({"real": 3, "imaginary": -4})
+    elif item_type == "divide_by_complex":
+        prompt = "Simplify 1/(2 - i) in Cartesian form."
+        answer = "(2 + i)/5"
+        worked_solution = [
+            "Multiply the numerator and denominator by the conjugate 2 + i.",
+            "The denominator is (2 - i)(2 + i) = 2^2 + 1^2 = 5.",
+            "The numerator is 2 + i.",
+            "So the simplified form is (2 + i)/5.",
+        ]
+        parameters.update({"real": 2, "imaginary": -1, "denominator": 5})
+    else:
+        prompt = "Given z + conjugate(z) = 6 and z - conjugate(z) = 4i, find z."
+        answer = "z = 3 + 2i"
+        worked_solution = [
+            "Let z = a + bi, so conjugate(z) = a - bi.",
+            "Then z + conjugate(z) = 2a = 6, so a = 3.",
+            "Also z - conjugate(z) = 2bi = 4i, so b = 2.",
+            "Therefore z = 3 + 2i.",
+        ]
+        parameters.update({"real": 3, "imaginary": 2})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=COMPLEX_CARTESIAN_CONJUGATE_FAMILY,
+        topic=COMPLEX_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, COMPLEX_TOPIC, ["p3-complex-form-001"]),
+    )
+
+
+def build_complex_cartesian_conjugate_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "conjugate", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "divide_by_complex", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "solve_with_conjugate", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_complex_cartesian_conjugate_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def build_vectors_line_intersection_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
@@ -2669,7 +2915,7 @@ def build_differential_equations_context_model_item(context: dict[str, Any], ind
         context=context,
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
-        snippet_ids=preferred_snippet_ids(context, DIFFERENTIAL_EQUATIONS_TOPIC, ["p3-differential-separation-001"]),
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIAL_EQUATIONS_TOPIC, ["p3-differential-context-model-001"]),
     )
 
 
@@ -2702,9 +2948,12 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_trig_solve_interval_items(context)
         + build_trig_r_form_items(context)
         + build_differentiation_items(context)
+        + build_differentiation_stationary_tangent_items(context)
         + build_parametric_derivative_items(context)
         + build_integration_items(context)
+        + build_integration_parts_substitution_items(context)
         + build_complex_modulus_argument_items(context)
+        + build_complex_cartesian_conjugate_items(context)
         + build_vectors_line_scalar_items(context)
         + build_numerical_sign_change_iteration_items(context)
         + build_differential_equations_items(context)
@@ -2722,14 +2971,31 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
     }
 
 
-def runtime_payload(payload: dict[str, Any]) -> dict[str, Any]:
-    runtime_items = [
-        item for item in payload.get("items", [])
-        if isinstance(item, dict)
+def runtime_ready_item(item: Any) -> bool:
+    return (
+        isinstance(item, dict)
         and item.get("review_status") in RUNTIME_REVIEW_STATUSES
         and isinstance(item.get("verification"), dict)
         and item["verification"].get("status") == "pass"
+    )
+
+
+def runtime_payload(payload: dict[str, Any], existing_runtime: dict[str, Any] | None = None) -> dict[str, Any]:
+    runtime_items = [
+        item for item in payload.get("items", [])
+        if runtime_ready_item(item)
     ]
+    emitted_ids = {
+        item["practice_id"] for item in runtime_items
+        if non_empty_string(item.get("practice_id"))
+    }
+    if existing_runtime:
+        for item in existing_runtime.get("items", []):
+            practice_id = non_empty_string(item.get("practice_id"))
+            if not practice_id or practice_id in emitted_ids or not runtime_ready_item(item):
+                continue
+            runtime_items.append(item)
+            emitted_ids.add(practice_id)
     return {
         "generated_by": GENERATED_BY,
         "items": runtime_items,
@@ -3026,10 +3292,12 @@ def main() -> int:
     skill_targets = load_json_optional(Path(args.skill_targets))
     snippets = load_json_optional(Path(args.snippets))
     payload = build_generated_practice(skill_targets, snippets)
-    runtime = runtime_payload(payload)
+    runtime_output_path = Path(args.runtime_output)
+    existing_runtime = load_json_optional(runtime_output_path)
+    runtime = runtime_payload(payload, existing_runtime)
 
     write_json(Path(args.output), payload)
-    write_json(Path(args.runtime_output), runtime)
+    write_json(runtime_output_path, runtime)
     update_content_lab_report(Path(args.report_output), skill_targets, snippets, payload)
 
     print(f"Wrote {len(payload['items'])} generated practice items.")
