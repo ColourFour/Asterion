@@ -972,6 +972,26 @@ export async function archiveRosterStudent(teacherId: string, classId: string, r
   return { ...student };
 }
 
+export async function resetRosterClaim(input: {
+  actorRole: 'admin' | 'teacher';
+  actorTeacherId?: string;
+  classId: string;
+  rosterStudentId: string;
+}): Promise<ClassRosterStudent | undefined> {
+  const classRecord = classRecords.find((item) => item.id === input.classId && item.status === 'active');
+  if (!classRecord) return undefined;
+  if (input.actorRole === 'teacher' && classRecord.teacherId !== input.actorTeacherId) return undefined;
+  const student = rosterStudents.find((item) => item.id === input.rosterStudentId && item.classId === input.classId);
+  if (!student || student.status !== 'claimed') return undefined;
+  student.status = 'unclaimed';
+  student.claimedAt = undefined;
+  student.optionalEmail = undefined;
+  student.optionalDetails = undefined;
+  student.updatedAt = now;
+  classRecord.updatedAt = now;
+  return { ...student };
+}
+
 export async function setClassRegionAccess(input: {
   actorRole: 'admin' | 'teacher';
   actorTeacherId?: string;

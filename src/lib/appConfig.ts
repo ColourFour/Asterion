@@ -7,7 +7,7 @@ export interface AsterionRuntimeConfig {
   hostedStorageAvailable: false;
   storageNotice?: string;
   supabaseUrl?: string;
-  supabaseAnonKey?: string;
+  supabasePublishableKey?: string;
   assetBaseUrl?: string;
 }
 
@@ -34,7 +34,7 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       ? 'Hosted storage mode is not implemented yet. Local demo storage is still active in this build.'
       : undefined,
     supabaseUrl: envString(env.VITE_SUPABASE_URL),
-    supabaseAnonKey: envString(env.VITE_SUPABASE_ANON_KEY),
+    supabasePublishableKey: envString(env.VITE_SUPABASE_PUBLISHABLE_KEY),
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
   };
 }

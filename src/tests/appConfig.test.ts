@@ -15,7 +15,7 @@ describe('runtime storage config', () => {
     const config = resolveRuntimeConfig({
       VITE_ASTERION_STORAGE_MODE: 'hosted',
       VITE_SUPABASE_URL: 'https://example.supabase.co',
-      VITE_SUPABASE_ANON_KEY: 'anon-key',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
       VITE_ASSET_BASE_URL: 'https://cdn.example.test',
     });
 
@@ -24,7 +24,7 @@ describe('runtime storage config', () => {
     expect(config.hostedStorageAvailable).toBe(false);
     expect(config.storageNotice).toContain('not implemented');
     expect(config.supabaseUrl).toBe('https://example.supabase.co');
-    expect(config.supabaseAnonKey).toBe('anon-key');
+    expect(config.supabasePublishableKey).toBe('publishable-key');
     expect(config.assetBaseUrl).toBe('https://cdn.example.test');
   });
 

@@ -10,6 +10,7 @@ import {
   labelForClassRegionAccess,
   labelForTeacherRegionStatus,
   listTeacherClasses,
+  resetRosterClaim,
   setClassRegionAccess,
 } from '../../lib/dashboardMockService';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
@@ -272,6 +273,17 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
     await refreshDashboard(dashboard.class.id);
   }
 
+  async function handleResetClaim(studentId: string) {
+    if (!dashboard) return;
+    await resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: dashboard.class.teacherId,
+      classId: dashboard.class.id,
+      rosterStudentId: studentId,
+    });
+    await refreshDashboard(dashboard.class.id);
+  }
+
   async function handleRegionAccess(regionId: string, open: boolean) {
     if (!dashboard) return;
     await setClassRegionAccess({
@@ -340,6 +352,7 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
             <strong className="class-code-badge">{dashboard.classCode.code}</strong>
           </div>
           <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
+          <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
           <form className="dashboard-inline-form" onSubmit={handleAddStudent} aria-label="Add roster student">
             <input value={newStudentName} onChange={(event) => setNewStudentName(event.target.value)} placeholder="Student name" />
             <button type="submit" className="primary-button">Add student</button>
@@ -363,6 +376,11 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
                     <td>
                       {student.status === 'archived' ? (
                         <span className="dashboard-muted">Archived</span>
+                      ) : student.status === 'claimed' ? (
+                        <div className="roster-action-stack">
+                          <button type="button" className="quiet-button compact-button" onClick={() => handleResetClaim(student.id)}>Reset claim</button>
+                          <button type="button" className="quiet-button compact-button" onClick={() => handleArchiveStudent(student.id)}>Archive</button>
+                        </div>
                       ) : (
                         <button type="button" className="quiet-button compact-button" onClick={() => handleArchiveStudent(student.id)}>Archive</button>
                       )}

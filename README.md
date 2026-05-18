@@ -13,6 +13,8 @@ The strongest current areas are the image-first practice loop, normalized questi
 ## Documentation Map
 
 - [Architecture](docs/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
+- [Supabase Phase 1](docs/supabase-phase-1.md): hosted-dashboard classroom schema, RLS, seed data, and verification commands. The Vite app is not wired to Supabase yet.
+- [Hosted Supabase Setup](docs/supabase-hosted-setup.md): SQL Editor execution order and Vite/Vercel browser-safe env mapping.
 - [Roadmap](docs/ROADMAP.md): near-term, medium-term, and long-term direction.
 - [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
 - [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
@@ -553,10 +555,10 @@ Current behavior:
 
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
 - `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays in local demo storage and shows a notice.
-- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_ASSET_BASE_URL` are documented future hosted-mode inputs only.
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_ASSET_BASE_URL` are documented future hosted-mode inputs only.
 - Supabase service-role keys must never be exposed to the Vite client.
 
-See `docs/hosted-storage-design.md` for the hosted storage design draft and `docs/sql/hosted-storage-draft.sql` for non-wired schema sketches.
+See `docs/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/hosted-storage-design.md` remains the hosted storage design draft, and `docs/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
 
 ## GitHub Pages Deployment
 

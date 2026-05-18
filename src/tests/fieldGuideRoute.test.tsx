@@ -128,23 +128,14 @@ describe('Field Guide app route', () => {
     expect(topbar?.textContent).toContain('Start Practice');
     expect(topbar?.textContent).not.toContain('Review Weak Areas');
     expect(topbar?.querySelector('nav')?.textContent).not.toContain('Teacher/Export');
-    expect(topbar?.textContent).toContain('Teacher tools');
-    expect(topbar?.textContent).toContain('Open export');
+    expect(topbar?.textContent).not.toContain('Teacher tools');
+    expect(topbar?.textContent).not.toContain('Open export');
+    expect(topbar?.textContent).not.toContain('local-first classroom mode');
     expect(fieldGuideHeader).toBeTruthy();
     expect(fieldGuideHeader?.textContent).toContain('Field Guide');
     expect(fieldGuideHeader?.textContent).toContain('Algebra Vault');
     expect(container.textContent).toContain('Rearrange before expanding');
     expect(topbar!.compareDocumentPosition(fieldGuideHeader!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-
-    const teacherMenu = topbar?.querySelector<HTMLDetailsElement>('.teacher-access-menu');
-    expect(teacherMenu?.open).toBe(false);
-    await act(async () => {
-      teacherMenu!.open = true;
-      teacherMenu!.dispatchEvent(new Event('toggle', { bubbles: true }));
-      topbar?.querySelector<HTMLButtonElement>('.teacher-access-menu button')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await Promise.resolve();
-    });
-
-    expect(container.querySelector('.teacher-panel')?.textContent).toContain('Teacher/export view');
+    expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
   });
 });

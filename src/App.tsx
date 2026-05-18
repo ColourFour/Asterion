@@ -8,7 +8,6 @@ import { ProfileForm } from './components/onboarding/ProfileForm';
 import { AvatarBuilder } from './components/profile/AvatarBuilder';
 import { PracticeView } from './components/practice/PracticeView';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
-import { TeacherExport } from './components/teacher/TeacherExport';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
 import { RegionHub } from './components/world/RegionHub';
 import { getRegionFieldGuide } from './data/regionFieldGuides';
@@ -31,9 +30,9 @@ import {
 import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
+import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall';
 
 function parseDashboardRoute(pathname: string, hash: string): { kind: 'teacher'; classId?: string; detailMode: boolean } | { kind: 'admin' } | { kind: 'student' } {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
@@ -50,7 +49,6 @@ export default function App() {
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
   const [dashboardLocation, setDashboardLocation] = useState(() => `${window.location.pathname}${window.location.hash}`);
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
-  const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics>();
   const [loadError, setLoadError] = useState<string>();
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
@@ -79,7 +77,6 @@ export default function App() {
     loadQuestionBankWithDiagnostics()
       .then((loaded) => {
         setQuestions(loaded.questions);
-        setDiagnostics(loaded.diagnostics);
         setCurrentQuestion(undefined);
       })
       .catch((error: Error) => setLoadError(error.message));
@@ -424,7 +421,7 @@ export default function App() {
       <TwinklingStarfield />
       <header className="topbar">
         <div>
-          <span className="mode-pill">Local-first classroom mode</span>
+          <span className="mode-pill">Classroom practice mode</span>
           <h1>Asterion</h1>
         </div>
         <nav>
@@ -434,13 +431,6 @@ export default function App() {
           <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
         </nav>
-        <details className="teacher-access-menu">
-          <summary>Teacher tools</summary>
-          <button className={viewMode === 'teacher' ? 'active' : ''} type="button" onClick={() => {
-            clearRegionHash();
-            setViewMode('teacher');
-          }}>Open export</button>
-        </details>
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
@@ -499,13 +489,7 @@ export default function App() {
 
       {viewMode === 'class_hall' ? <ClassHall /> : null}
 
-      {viewMode === 'teacher' ? (
-        <TeacherExport progress={progress} avatarGear={avatarGear} questions={questions} regionProgress={worldProgress} diagnostics={diagnostics} onClear={() => {
-          if (window.confirm('Clear this browser profile, attempts, avatar, topic progress, and issue reports?')) {
-            setProgress(progressAdapter.clearLocalDemoProgress());
-          }
-        }} />
-      ) : viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' || viewMode === 'guardian' ? (
+      {viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' || viewMode === 'guardian' ? (
         <PracticeView
           question={currentQuestion}
           progress={progress}

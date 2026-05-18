@@ -2,6 +2,11 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
+import {
+  addRosterStudent,
+  claimRosterSlotByClassCode,
+  resetRosterClaim,
+} from '../lib/dashboardMockService';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -93,6 +98,8 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Focus this week');
     expect(container.textContent).toContain('Class progress register');
     expect(container.textContent).toContain('Class code and student roster');
+    expect(container.textContent).toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin.');
+    expect(container.textContent).toContain('Reset claim');
     expect(container.textContent).toContain('Open or lock P3 regions');
     expect(container.textContent).toContain('Export CSV');
     expect(container.textContent).not.toContain('Enter Astral Academy');
@@ -182,6 +189,8 @@ describe('dashboard routes', () => {
     expect(container.querySelector('.dashboard-shell')).toBeNull();
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Teacher Tools');
+    expect(container.textContent).not.toContain('Open Export');
   });
 
   it('still accepts path dashboard routes when the host provides an SPA fallback', async () => {
@@ -189,5 +198,43 @@ describe('dashboard routes', () => {
     const container = await render(<App />);
 
     expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+  });
+
+  it('blocks already-claimed student roster slots until a teacher resets the claim', async () => {
+    const student = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Route Reset Student');
+    await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Route Reset Student' });
+
+    const container = await render(<App />);
+    const claimForm = container.querySelector('form[aria-label="Claim class roster slot"]') as HTMLFormElement;
+    const [classCodeInput, rosterNameInput] = Array.from(claimForm.querySelectorAll('input')) as HTMLInputElement[];
+
+    await act(async () => {
+      setInputValue(classCodeInput, 'AST-P3A');
+      setInputValue(rosterNameInput, 'Route Reset Student');
+      claimForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('This roster entry has already been claimed. Ask your teacher or admin for help.');
+    expect(container.textContent).toContain('Claim roster slot');
+
+    await resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-hypatia',
+      classId: 'class-p3-alpha',
+      rosterStudentId: student!.id,
+    });
+
+    await act(async () => {
+      claimForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('Student real name');
+    expect(container.textContent).toContain('Class details came from the claimed roster slot.');
+    expect(container.textContent).not.toContain('Teacher Tools');
+    expect(container.textContent).not.toContain('Open Export');
   });
 });

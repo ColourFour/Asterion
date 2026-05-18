@@ -331,8 +331,6 @@ nav {
 }
 
 nav button,
-.teacher-access-menu summary,
-.teacher-access-menu button,
 .export-grid button,
 .quiet-button,
 .issue-box button,
@@ -355,8 +353,6 @@ nav button,
 }
 
 nav button:hover,
-.teacher-access-menu summary:hover,
-.teacher-access-menu button:hover,
 .export-grid button:hover,
 .quiet-button:hover,
 .issue-box button:hover,
@@ -372,35 +368,6 @@ nav button.active {
   color: #fff !important;
   background: var(--color-astral-dark);
   border-color: var(--color-astral-dark);
-}
-
-.teacher-access-menu {
-  position: relative;
-  margin-left: auto;
-}
-
-.teacher-access-menu summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.teacher-access-menu summary::-webkit-details-marker {
-  display: none;
-}
-
-.teacher-access-menu[open] summary {
-  color: #fff;
-  background: var(--color-astral-dark);
-  border-color: var(--color-astral-dark);
-}
-
-.teacher-access-menu button {
-  position: absolute;
-  z-index: 20;
-  right: 0;
-  top: calc(100% + 8px);
-  min-width: 144px;
-  box-shadow: 0 12px 26px rgba(23, 32, 51, 0.16);
 }
 
 .mode-pill {

@@ -19,6 +19,7 @@ import {
   listAdminTeacherRecords,
   listAdminTeachers,
   listTeacherClasses,
+  resetRosterClaim,
 } from '../lib/dashboardMockService';
 import { isValidP3RegionId } from '../lib/p3SkillContract';
 
@@ -150,6 +151,82 @@ describe('dashboard mock service', () => {
 
     const after = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
     expect(after?.students.find((student) => student.id === added!.id)?.status).toBe('archived');
+  });
+
+  it('resets only claimed active roster slots without deleting progress or creating roster entries', async () => {
+    const added = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Resettable Claim Student');
+    expect(added).toMatchObject({ status: 'unclaimed' });
+
+    const beforeRoster = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    const beforeRosterCount = beforeRoster?.students.length ?? 0;
+    const beforeProgress = await getStudentEvidence('student-ada');
+
+    const claimed = await claimRosterSlotByClassCode({
+      classCode: 'AST-P3A',
+      displayName: 'Resettable Claim Student',
+      optionalEmail: 'resettable@example.student',
+    });
+    expect(claimed.status).toBe('claimed');
+
+    const blockedBeforeReset = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Resettable Claim Student' });
+    expect(blockedBeforeReset.status).toBe('already_claimed');
+
+    const reset = await resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-hypatia',
+      classId: 'class-p3-alpha',
+      rosterStudentId: added!.id,
+    });
+    expect(reset).toMatchObject({ id: added!.id, status: 'unclaimed' });
+    expect(reset?.claimedAt).toBeUndefined();
+    expect(reset?.optionalEmail).toBeUndefined();
+    expect(reset?.optionalDetails).toBeUndefined();
+
+    const afterResetClaim = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Resettable Claim Student' });
+    expect(afterResetClaim.status).toBe('claimed');
+
+    const adminReset = await resetRosterClaim({
+      actorRole: 'admin',
+      classId: 'class-p3-alpha',
+      rosterStudentId: added!.id,
+    });
+    expect(adminReset?.status).toBe('unclaimed');
+
+    const afterRoster = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    expect(afterRoster?.students.length).toBe(beforeRosterCount);
+    expect(afterRoster?.students.filter((student) => student.displayName === 'Resettable Claim Student')).toHaveLength(1);
+    await expect(getStudentEvidence('student-ada')).resolves.toEqual(beforeProgress);
+  });
+
+  it('does not reset unclaimed, archived, or wrong-teacher roster slots', async () => {
+    const unclaimed = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Never Claimed Student');
+    await expect(resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-hypatia',
+      classId: 'class-p3-alpha',
+      rosterStudentId: unclaimed!.id,
+    })).resolves.toBeUndefined();
+
+    const claimed = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Wrong Teacher Reset Student');
+    await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Wrong Teacher Reset Student' });
+    await expect(resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-noether',
+      classId: 'class-p3-alpha',
+      rosterStudentId: claimed!.id,
+    })).resolves.toBeUndefined();
+
+    const archived = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Archived Reset Student');
+    await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Reset Student' });
+    await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', archived!.id);
+    await expect(resetRosterClaim({
+      actorRole: 'admin',
+      classId: 'class-p3-alpha',
+      rosterStudentId: archived!.id,
+    })).resolves.toBeUndefined();
+    await expect(claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Reset Student' })).resolves.toMatchObject({
+      status: 'archived',
+    });
   });
 
   it('keeps mock dashboard region IDs aligned with canonical P3 region IDs', async () => {
