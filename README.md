@@ -393,11 +393,11 @@ The projected bank is the normal app source. Raw-bank fallback/debug records are
 
 ## UI Asset Optimization
 
-Project-owned UI/world art sources remain under:
+Project-owned UI/world art sources live outside the production payload:
 
 ```text
-public/assets/ui/astral/
-public/assets/ui/astral/regions/
+assets-source/ui/astral/
+assets-source/ui/astral/regions/
 ```
 
 The app uses generated right-sized variants under:
@@ -415,7 +415,24 @@ npm run assets:ui
 
 The optimizer uses macOS `sips` and intentionally avoids adding heavy image dependencies. It does not touch canonical CAIE question or mark-scheme images. If replacing UI art, commit the source PNG and regenerate the optimized variants before checking first-load size.
 
-Current deployment note: optimized UI assets are the ones referenced by the app, but source UI PNGs still live under `public/`, so Vite copies them into `dist`. Moving source-only UI art out of `public` is the next payload cleanup pass.
+`public/assets/ui/` is production payload. Keep only runtime-ready files there. Generated drafts, oversized originals, alternates, and source exports belong under `assets-source/ui/` until reviewed and optimized. A guard test prevents non-optimized Astral source PNGs from returning to `public/assets/ui/astral/`.
+
+## Region Art Assets
+
+RegionHub artwork follows the same source/runtime split:
+
+```text
+assets-source/region-art/                         # source originals and regenerated exports
+public/assets/region-art/optimized/               # runtime variants copied into dist
+```
+
+Regenerate runtime region variants with:
+
+```bash
+npm run assets:region
+```
+
+RegionHub reads paths from `src/lib/regionAssets.ts`; components should not hard-code `public/assets/region-art` paths. Do not delete canonical question or mark-scheme images under `public/assets/exam-bank-data/` when working on region art.
 
 ## Region Matching
 

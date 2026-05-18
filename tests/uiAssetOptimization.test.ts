@@ -35,9 +35,10 @@ function directoryFiles(path: string): string[] {
 
 describe('optimized UI assets', () => {
   it('keeps generated UI variants substantially smaller than source art', () => {
-    const root = join(process.cwd(), 'public/assets/ui/astral');
-    const sourceBytes = sourceFiles.reduce((sum, file) => sum + fileSize(join(root, file)), 0);
-    const optimizedBytes = directoryFiles(join(root, 'optimized')).reduce((sum, file) => sum + fileSize(file), 0);
+    const sourceRoot = join(process.cwd(), 'assets-source/ui/astral');
+    const optimizedRoot = join(process.cwd(), 'public/assets/ui/astral/optimized');
+    const sourceBytes = sourceFiles.reduce((sum, file) => sum + fileSize(join(sourceRoot, file)), 0);
+    const optimizedBytes = directoryFiles(optimizedRoot).reduce((sum, file) => sum + fileSize(file), 0);
 
     expect(optimizedBytes).toBeLessThan(sourceBytes * 0.2);
   });

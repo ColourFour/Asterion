@@ -11,6 +11,7 @@ import {
 } from '../data/visualSupportSources';
 import { buildRegionLearningSummary } from '../lib/regionLearning';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
+import { regionHubAssets } from '../lib/regionAssets';
 import { getRegionTheme } from '../lib/regionThemes';
 import {
   REGION_LEARNING_PAGE_LABELS,
@@ -1012,7 +1013,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(artwork?.getAttribute('aria-label')).toBe('Algebra Vault region artwork');
     const artworkImage = artwork?.querySelector<HTMLImageElement>('.region-home-artwork-image');
     expect(artworkImage).toBeTruthy();
-    expect(artworkImage?.getAttribute('src')).toBe('/assets/region-art/algebra-region-hub.png');
+    expect(artworkImage?.getAttribute('src')).toBe(regionHubAssets['algebra-forge']);
     expect(artwork?.textContent).not.toContain('placeholder');
 
     const primaryAction = container.querySelector<HTMLButtonElement>('.region-home-primary-action');
@@ -1088,19 +1089,7 @@ describe('FieldGuidePanel teaching snippets', () => {
   });
 
   it('wires available region hub art files with the established naming convention', () => {
-    const expectedArt: Record<string, string> = {
-      'algebra-forge': '/assets/region-art/algebra-region-hub.png',
-      'calculus-cliffs': '/assets/region-art/calc-region-hub.png',
-      'complex-harbor': '/assets/region-art/argand-region-hub.png',
-      'differential-shrine': '/assets/region-art/differential-region-hub.png',
-      'integration-gardens': '/assets/region-art/integral-region-hub.png',
-      'logarithm-grove': '/assets/region-art/log-region-hub.png',
-      'numerical-mines': '/assets/region-art/iteration-region-hub.png',
-      'trig-observatory': '/assets/region-art/trig-region-hub.png',
-      'vector-workshop': '/assets/region-art/vectors-region-hub.png',
-    };
-
-    for (const [regionId, src] of Object.entries(expectedArt)) {
+    for (const [regionId, src] of Object.entries(regionHubAssets)) {
       const container = renderRegionHubPage({ regionId });
       expect(container.querySelector<HTMLImageElement>('.region-home-artwork-image')?.getAttribute('src')).toBe(src);
     }

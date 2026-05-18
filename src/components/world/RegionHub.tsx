@@ -10,6 +10,7 @@ import {
 } from '../../lib/regionRoutes';
 import { getRegionTheme, type RegionTheme } from '../../lib/regionThemes';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
+import { getRegionHubAsset, getRegionHubAssetDimensions } from '../../lib/regionAssets';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
 import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
@@ -83,18 +84,6 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'warm-up': 'Build fluency with one short support activity.',
   'exam-training': 'Use canonical question images and save evidence for the Guardian.',
   guardian: 'Challenge the gated check when the existing evidence unlocks it.',
-};
-
-const regionHubArtAssets: Partial<Record<string, string>> = {
-  'algebra-forge': '/assets/region-art/algebra-region-hub.png',
-  'calculus-cliffs': '/assets/region-art/calc-region-hub.png',
-  'complex-harbor': '/assets/region-art/argand-region-hub.png',
-  'differential-shrine': '/assets/region-art/differential-region-hub.png',
-  'integration-gardens': '/assets/region-art/integral-region-hub.png',
-  'numerical-mines': '/assets/region-art/iteration-region-hub.png',
-  'logarithm-grove': '/assets/region-art/log-region-hub.png',
-  'trig-observatory': '/assets/region-art/trig-region-hub.png',
-  'vector-workshop': '/assets/region-art/vectors-region-hub.png',
 };
 
 export function RegionHub({
@@ -520,7 +509,8 @@ function RegionHubHome({
 }
 
 function RegionArtwork({ regionId, theme }: { regionId: string; theme: RegionTheme }) {
-  const regionArt = regionHubArtAssets[regionId];
+  const regionArt = getRegionHubAsset(regionId);
+  const regionArtDimensions = getRegionHubAssetDimensions(regionId);
   const [imageFailed, setImageFailed] = useState(false);
 
   if (regionArt && !imageFailed) {
@@ -529,6 +519,8 @@ function RegionArtwork({ regionId, theme }: { regionId: string; theme: RegionThe
         <img
           className="region-home-artwork-image"
           src={regionArt}
+          width={regionArtDimensions?.width}
+          height={regionArtDimensions?.height}
           alt=""
           aria-hidden="true"
           onError={() => setImageFailed(true)}

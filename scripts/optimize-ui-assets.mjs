@@ -4,8 +4,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const sourceRoot = join(root, 'public', 'assets', 'ui', 'astral');
-const outputRoot = join(sourceRoot, 'optimized');
+const sourceRoot = join(root, 'assets-source', 'ui', 'astral');
+const outputRoot = join(root, 'public', 'assets', 'ui', 'astral', 'optimized');
 
 const assets = [
   ['starfield-map.png', 'starfield-map-1280.png', 1280],
