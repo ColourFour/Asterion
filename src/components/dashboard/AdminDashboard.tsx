@@ -11,6 +11,7 @@ import {
   setClassRegionAccess,
 } from '../../lib/dashboardMockService';
 import type { AdminAuditEvent, AdminClassRecord, AdminTeacherRecord } from '../../types';
+import { SupabaseDiagnosticPanel } from './SupabaseDiagnosticPanel';
 
 interface AdminDashboardProps {
   onNavigatePath: (path: string) => void;
@@ -122,6 +123,8 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Teacher, class, or join code" />
           </label>
         </section>
+
+        <SupabaseDiagnosticPanel />
 
         <div className="admin-grid">
           <section className="dashboard-section">

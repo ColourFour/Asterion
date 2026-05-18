@@ -7,6 +7,7 @@ import {
   claimRosterSlotByClassCode,
   resetRosterClaim,
 } from '../lib/dashboardMockService';
+import { checkSupabaseHealth } from '../lib/supabaseHealth';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -42,6 +43,19 @@ vi.mock('../lib/generatedPractice', () => ({
   loadGeneratedPractice: vi.fn(() => Promise.resolve([])),
 }));
 
+vi.mock('../lib/supabaseHealth', () => ({
+  checkSupabaseHealth: vi.fn(() => Promise.resolve({
+    status: 'connected',
+    payload: {
+      ok: true,
+      service: 'asterion',
+      schema_phase: 'classroom_phase_1',
+      checked_at: '2026-05-18T00:00:00.000Z',
+    },
+    checkedAt: '2026-05-18T00:00:00.000Z',
+  })),
+}));
+
 const mountedRoots: Root[] = [];
 const mountedContainers: HTMLElement[] = [];
 
@@ -70,6 +84,7 @@ function setInputValue(input: HTMLInputElement, value: string) {
 beforeEach(() => {
   localStorage.clear();
   sessionStorage.clear();
+  vi.clearAllMocks();
 });
 
 afterEach(() => {
@@ -129,8 +144,30 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Add teacher');
     expect(container.textContent).toContain('Add class');
     expect(container.textContent).toContain('Class code AST-P3A');
+    expect(container.textContent).toContain('Supabase diagnostic');
+    expect(container.textContent).toContain('Check connection');
     expect(container.textContent).toContain('Admin view and override');
     expect(container.textContent).toContain('Recent admin audit events');
+  });
+
+  it('runs the admin Supabase diagnostic only when requested', async () => {
+    window.history.replaceState(null, '', '/#/admin');
+    const container = await render(<App />);
+
+    expect(checkSupabaseHealth).not.toHaveBeenCalled();
+
+    const diagnosticButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check connection');
+    await act(async () => {
+      diagnosticButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(checkSupabaseHealth).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toContain('Connected');
+    expect(container.textContent).toContain('asterion classroom_phase_1');
+    expect(container.textContent).toContain('Teacher list');
+    expect(container.textContent).toContain('Class code AST-P3A');
   });
 
   it('adds teacher and class records from the admin forms', async () => {

@@ -1757,6 +1757,35 @@ button:disabled {
   opacity: 1;
 }
 
+.supabase-diagnostic-panel {
+  border-left: 5px solid var(--dashboard-action);
+}
+
+.diagnostic-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--radius-control);
+  color: #344054;
+  background: #ffffff;
+  font-size: 0.82rem;
+}
+
+.diagnostic-connected {
+  color: #05603a;
+  border-color: #abefc6;
+  background: #ecfdf3;
+}
+
+.diagnostic-error,
+.diagnostic-disabled {
+  color: #912018;
+  border-color: #fecdca;
+  background: #fffbfa;
+}
+
 @keyframes region-in {
   from {
     opacity: 0;

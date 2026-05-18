@@ -27,18 +27,19 @@
     "verify:content-lab": "python3 tools/content_lab/scripts/verify_content_lab_outputs.py"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.7",
-    "typescript": "^5.7.2",
+    "katex": "^0.16.45",
+    "lucide-react": "^0.468.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.468.0",
-    "katex": "^0.16.45"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
   },
   "devDependencies": {
-    "vitest": "^2.1.8",
-    "jsdom": "^25.0.1",
     "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2"
+    "@types/react-dom": "^19.0.2",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
   }
 }
