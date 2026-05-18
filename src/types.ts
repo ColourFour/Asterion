@@ -124,6 +124,109 @@ export interface RegionLearningSignal {
   evidenceCount: number;
 }
 
+export type TeacherRegionStatus =
+  | 'not_started'
+  | 'in_progress'
+  | 'needs_help'
+  | 'improving'
+  | 'secure'
+  | 'no_recent_evidence';
+
+export interface ClassProgressSummary {
+  studentCount: number;
+  overallProgressPercent: number;
+  averageMasteryPercent: number;
+  activeStudentCount: number;
+  inactiveStudentCount: number;
+  studentsNeedingHelpCount: number;
+  guardianEligibleCount: number;
+  totalAttempts: number;
+}
+
+export interface RegionProgressSummary {
+  regionId: string;
+  regionName: string;
+  averageProgressPercent: number;
+  averageMasteryPercent: number;
+  studentsNeedingHelpCount: number;
+  studentsSecureCount: number;
+  noRecentEvidenceCount: number;
+  guardianEligibleCount: number;
+  status: TeacherRegionStatus;
+}
+
+export interface StudentRegionProgressCell {
+  regionId: string;
+  regionName: string;
+  progressPercent: number;
+  masteryPercent: number;
+  status: TeacherRegionStatus;
+  attemptsCount: number;
+  averageSelfMarkPercent?: number;
+  guardianEligible: boolean;
+  lastEvidenceAt?: string;
+  warning?: string;
+}
+
+export interface StudentProgressRow {
+  id: string;
+  displayName: string;
+  classId: string;
+  overallProgressPercent: number;
+  currentFocusRegionId: string;
+  currentFocusRegionName: string;
+  regionCells: StudentRegionProgressCell[];
+  lastActivityAt?: string;
+  lastActivityLabel: string;
+  attemptsCount: number;
+  repeatedLowSelfMarkCount: number;
+  guardianEligibleRegionCount: number;
+  notes: string[];
+  warnings: string[];
+}
+
+export type FocusThisWeekType =
+  | 'weakest_region'
+  | 'most_students_needing_help'
+  | 'inactive_students'
+  | 'repeated_low_scores'
+  | 'low_guardian_eligibility';
+
+export interface FocusThisWeekItem {
+  id: string;
+  type: FocusThisWeekType;
+  title: string;
+  summary: string;
+  regionId?: string;
+  regionName?: string;
+  studentIds: string[];
+  suggestedAction: string;
+  priority: number;
+}
+
+export interface WeeklyClassSummary {
+  className: string;
+  dateRange: string;
+  classOverallProgressPercent: number;
+  topFocusRegions: Array<{ regionId: string; regionName: string; reason: string }>;
+  studentsNeedingAttention: Array<{ studentId: string; displayName: string; reason: string }>;
+  studentsDoingWell: Array<{ studentId: string; displayName: string; reason: string }>;
+  suggestedTeacherActions: string[];
+  exportDownloadText: string;
+}
+
+export interface TeacherExportRow {
+  className: string;
+  studentName: string;
+  overallProgressPercent: number;
+  currentFocusRegion: string;
+  lastActivity: string;
+  attemptsCount: number;
+  guardianEligibilitySummary: string;
+  notesWarnings: string;
+  [field: string]: string | number;
+}
+
 export type TeacherActionCardType =
   | 'reteach'
   | 'small_group'
@@ -160,6 +263,12 @@ export interface TeacherActionCard {
 export interface TeacherClassDashboard {
   class: TeacherClass;
   lastUpdatedAt: string;
+  progressSummary: ClassProgressSummary;
+  regionSummaries: RegionProgressSummary[];
+  studentRows: StudentProgressRow[];
+  focusThisWeek: FocusThisWeekItem[];
+  weeklySummary: WeeklyClassSummary;
+  exportRows: TeacherExportRow[];
   actionCards: TeacherActionCard[];
   regionSignals: RegionLearningSignal[];
   studentSummaries: StudentSummary[];

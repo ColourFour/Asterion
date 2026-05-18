@@ -10230,6 +10230,261 @@ legend {
   opacity: 1;
 }
 
+.app-view-dashboard .teacher-class-header {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.app-view-dashboard .teacher-class-actions {
+  grid-template-columns: minmax(220px, 320px) auto auto;
+  justify-content: start;
+}
+
+.class-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.snapshot-card,
+.region-progress-card,
+.focus-card {
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
+}
+
+.snapshot-card {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+}
+
+.snapshot-card span,
+.region-progress-card span {
+  color: #344054;
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.snapshot-card strong {
+  color: var(--dashboard-ink);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.snapshot-card small,
+.region-progress-card small,
+.region-progress-card em,
+.focus-card small,
+.focus-card span {
+  color: var(--dashboard-ink-muted);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.primary-snapshot {
+  border-color: #8bbdb7;
+  background: #e8f3f1;
+}
+
+.region-progress-strip {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(150px, 1fr));
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.region-progress-card {
+  display: grid;
+  min-width: 150px;
+  gap: 5px;
+  padding: 12px;
+  border-top: 5px solid #98a2b3;
+}
+
+.region-progress-card strong {
+  color: var(--dashboard-ink);
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.status-needs_help {
+  border-color: #d92d20 !important;
+  background: #fff4f2 !important;
+}
+
+.status-no_recent_evidence {
+  border-color: #b54708 !important;
+  background: #fffaeb !important;
+}
+
+.status-secure {
+  border-color: #067647 !important;
+  background: #ecfdf3 !important;
+}
+
+.status-improving {
+  border-color: #1570ef !important;
+  background: #eff8ff !important;
+}
+
+.teacher-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 14px;
+}
+
+.focus-this-week,
+.weekly-summary-preview {
+  align-self: start;
+}
+
+.focus-card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.focus-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.focus-card strong {
+  color: var(--dashboard-ink);
+  font-size: 1rem;
+}
+
+.focus-card p,
+.weekly-summary-preview p {
+  margin: 0;
+}
+
+.weekly-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.weekly-summary-grid div {
+  display: grid;
+  gap: 3px;
+  padding: 10px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: var(--dashboard-surface-muted);
+}
+
+.weekly-summary-grid strong {
+  color: var(--dashboard-ink);
+  font-size: 1.45rem;
+}
+
+.weekly-summary-grid span {
+  color: var(--dashboard-ink-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.teacher-register-section {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.teacher-register-section .dashboard-section-heading {
+  padding: 16px 16px 0;
+}
+
+.teacher-register-scroll {
+  overflow: auto;
+  max-height: 68vh;
+  padding: 0 16px 16px;
+}
+
+.teacher-register-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--dashboard-ink);
+  font-size: 0.9rem;
+}
+
+.teacher-register-table th,
+.teacher-register-table td {
+  min-width: 132px;
+  max-width: 180px;
+  padding: 10px;
+  border-right: 1px solid var(--dashboard-border-soft);
+  border-bottom: 1px solid var(--dashboard-border-soft);
+  background: #ffffff;
+  text-align: left;
+  vertical-align: top;
+}
+
+.teacher-register-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  color: #344054;
+  background: #eef2f6;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.teacher-register-table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 180px;
+  background: #ffffff;
+}
+
+.teacher-register-table thead th:first-child {
+  left: 0;
+  z-index: 4;
+}
+
+.teacher-register-table tbody th strong,
+.teacher-register-overall strong,
+.teacher-register-region strong {
+  display: block;
+  color: var(--dashboard-ink);
+}
+
+.teacher-register-table tbody th span,
+.teacher-register-overall span,
+.teacher-register-region span,
+.teacher-register-region small {
+  display: block;
+  margin-top: 3px;
+  color: var(--dashboard-ink-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.teacher-register-focus {
+  font-weight: 850;
+}
+
+.teacher-register-region {
+  border-top: 4px solid #98a2b3;
+}
+
+.student-row-warning th,
+.student-row-warning td:first-of-type {
+  background: #fffbfa;
+}
+
+.compact-button {
+  min-height: 34px !important;
+  padding: 6px 9px !important;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 900px) {
   .app-view-dashboard .dashboard-topbar,
   .app-view-dashboard .dashboard-control-row,
@@ -10237,7 +10492,11 @@ legend {
   .app-view-dashboard .teacher-action-groups,
   .app-view-dashboard .next-step-groups,
   .app-view-dashboard .student-detail-facts,
-  .app-view-dashboard .admin-grid {
+  .app-view-dashboard .admin-grid,
+  .app-view-dashboard .teacher-class-header,
+  .app-view-dashboard .teacher-class-actions,
+  .class-snapshot-grid,
+  .teacher-main-grid {
     grid-template-columns: 1fr;
   }
 
@@ -10252,6 +10511,10 @@ legend {
   .app-view-dashboard .dashboard-nav button,
   .app-view-dashboard .dashboard-control-row button {
     width: 100%;
+  }
+
+  .region-progress-strip {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
   }
 }
 

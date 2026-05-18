@@ -79,23 +79,25 @@ describe('dashboard routes', () => {
     window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
 
-    expect(container.querySelector('h1')?.textContent).toBe('Teacher Planning');
-    expect(container.textContent).toContain('What should I do with this class next?');
-    expect(container.textContent).toContain('Mock classroom signals for planning');
-    expect(container.textContent).toContain('Planning evidence snapshot');
-    expect(container.textContent).toContain('Reteach now');
-    expect(container.textContent).toContain('Ready for exam practice');
+    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+    expect(container.textContent).toContain('Teacher class dashboard');
+    expect(container.textContent).toContain('Overall progress');
+    expect(container.textContent).toContain('Focus this week');
+    expect(container.textContent).toContain('Class progress register');
+    expect(container.textContent).toContain('Export CSV');
     expect(container.textContent).not.toContain('Enter Astral Academy');
   });
 
-  it('renders teacher class detail groups by recommended next step', async () => {
+  it('renders teacher class detail as a student register with region cells', async () => {
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Class detail');
-    expect(container.textContent).toContain('Join code AST-P3A');
-    expect(container.textContent).toContain('Needs Field Guide');
-    expect(container.textContent).toContain('Ready for Guardian');
+    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+    expect(container.textContent).toContain('Class progress register');
+    expect(container.textContent).toContain('Algebra Vault');
+    expect(container.textContent).toContain('Trigonometry Spire');
+    expect(container.textContent).toContain('Needs help');
+    expect(container.textContent).toContain('Weekly email preview');
     expect(container.textContent).toContain('Ada L.');
   });
 
@@ -140,6 +142,6 @@ describe('dashboard routes', () => {
     window.history.replaceState(null, '', '/teacher');
     const container = await render(<App />);
 
-    expect(container.querySelector('h1')?.textContent).toBe('Teacher Planning');
+    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
   });
 });
