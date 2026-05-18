@@ -112,6 +112,7 @@ afterEach(() => {
   document.body.innerHTML = '';
   localStorage.clear();
   sessionStorage.clear();
+  vi.unstubAllEnvs();
 });
 
 describe('Asterion intro page', () => {
@@ -143,6 +144,16 @@ describe('Asterion intro page', () => {
     expect(Array.from(container.querySelectorAll('button')).some((button) => (
       button.textContent?.includes('Claim roster slot')
     ))).toBe(true);
+  });
+
+  it('renders without Supabase browser env', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', undefined);
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', undefined);
+
+    const container = await render(<App />);
+
+    expect(container.querySelector('.intro-copy h1')?.textContent).toBe('Asterion');
+    expect(container.textContent).toContain('Class access required');
   });
 
   it('requires a valid class-code roster claim before saving local progress', async () => {

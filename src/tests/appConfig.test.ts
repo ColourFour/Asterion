@@ -9,6 +9,7 @@ describe('runtime storage config', () => {
     expect(config.effectiveStorageMode).toBe('local');
     expect(config.hostedStorageAvailable).toBe(false);
     expect(config.storageNotice).toBeUndefined();
+    expect(config.supabaseConfigured).toBe(false);
   });
 
   it('recognizes hosted mode without silently activating hosted persistence', () => {
@@ -25,6 +26,7 @@ describe('runtime storage config', () => {
     expect(config.storageNotice).toContain('not implemented');
     expect(config.supabaseUrl).toBe('https://example.supabase.co');
     expect(config.supabasePublishableKey).toBe('publishable-key');
+    expect(config.supabaseConfigured).toBe(true);
     expect(config.assetBaseUrl).toBe('https://cdn.example.test');
   });
 

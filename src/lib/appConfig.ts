@@ -1,4 +1,5 @@
 import type { ProgressStorageMode } from './progressAdapter';
+import { resolveSupabaseConfig } from './supabaseConfig';
 
 export interface AsterionRuntimeConfig {
   requestedStorageMode: ProgressStorageMode;
@@ -8,6 +9,7 @@ export interface AsterionRuntimeConfig {
   storageNotice?: string;
   supabaseUrl?: string;
   supabasePublishableKey?: string;
+  supabaseConfigured: boolean;
   assetBaseUrl?: string;
 }
 
@@ -24,6 +26,7 @@ function configuredStorageMode(value: string | boolean | undefined): ProgressSto
 export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): AsterionRuntimeConfig {
   const requestedStorageMode = configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
   const hostedStorageRequested = requestedStorageMode === 'hosted';
+  const supabase = resolveSupabaseConfig(env);
 
   return {
     requestedStorageMode,
@@ -33,8 +36,9 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     storageNotice: hostedStorageRequested
       ? 'Hosted storage mode is not implemented yet. Local demo storage is still active in this build.'
       : undefined,
-    supabaseUrl: envString(env.VITE_SUPABASE_URL),
-    supabasePublishableKey: envString(env.VITE_SUPABASE_PUBLISHABLE_KEY),
+    supabaseUrl: supabase.url,
+    supabasePublishableKey: supabase.publishableKey,
+    supabaseConfigured: supabase.isConfigured,
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
   };
 }
