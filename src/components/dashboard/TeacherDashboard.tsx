@@ -17,7 +17,8 @@ import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, Student
 
 interface TeacherDashboardProps {
   classId?: string;
-  detailMode?: boolean;
+  page?: 'home' | 'class' | 'roster' | 'region';
+  regionId?: string;
   onNavigatePath: (path: string) => void;
 }
 
@@ -110,7 +111,7 @@ function WeeklySummaryPreview({ dashboard }: { dashboard: TeacherClassDashboard 
   );
 }
 
-function ClassRegister({ dashboard }: { dashboard: TeacherClassDashboard }) {
+function ClassRegister({ dashboard, onOpenRegion }: { dashboard: TeacherClassDashboard; onOpenRegion: (regionId: string) => void }) {
   return (
     <section className="dashboard-section teacher-register-section" aria-label="Student progress register">
       <div className="dashboard-section-heading">
@@ -128,7 +129,11 @@ function ClassRegister({ dashboard }: { dashboard: TeacherClassDashboard }) {
               <th scope="col">Overall</th>
               <th scope="col">Focus</th>
               {dashboard.regionSummaries.map((region) => (
-                <th key={region.regionId} scope="col">{region.regionName}</th>
+                <th key={region.regionId} scope="col">
+                  <button type="button" className="table-link-button" onClick={() => onOpenRegion(region.regionId)}>
+                    {region.regionName}
+                  </button>
+                </th>
               ))}
               <th scope="col">Last activity</th>
               <th scope="col">Action</th>
@@ -165,7 +170,7 @@ function rosterStatusLabel(student: ClassRosterStudent): string {
   return 'Active';
 }
 
-function ClassFirstDashboard({ dashboard }: { dashboard: TeacherClassDashboard }) {
+function ClassFirstDashboard({ dashboard, onOpenRegion }: { dashboard: TeacherClassDashboard; onOpenRegion: (regionId: string) => void }) {
   const summary = dashboard.progressSummary;
   return (
     <>
@@ -199,12 +204,17 @@ function ClassFirstDashboard({ dashboard }: { dashboard: TeacherClassDashboard }
 
       <section className="region-progress-strip" aria-label="P3 region progress">
         {dashboard.regionSummaries.map((region) => (
-          <article key={region.regionId} className={`region-progress-card status-${region.status}${region.excludedFromClassProgress ? ' access-locked' : ''}`}>
+          <button
+            key={region.regionId}
+            type="button"
+            className={`region-progress-card region-progress-button status-${region.status}${region.excludedFromClassProgress ? ' access-locked' : ''}`}
+            onClick={() => onOpenRegion(region.regionId)}
+          >
             <span>{region.regionName}</span>
             <strong>{region.excludedFromClassProgress ? 'Locked' : `${region.averageProgressPercent}%`}</strong>
             <small>{region.excludedFromClassProgress ? 'Locked / not taught yet' : labelForTeacherRegionStatus(region.status)}</small>
             <em>{region.excludedFromClassProgress ? 'Field Guide only · excluded from class progress' : `${region.studentsNeedingHelpCount} need help · ${region.guardianEligibleCount} ready`}</em>
-          </article>
+          </button>
         ))}
       </section>
 
@@ -223,12 +233,133 @@ function ClassFirstDashboard({ dashboard }: { dashboard: TeacherClassDashboard }
         <WeeklySummaryPreview dashboard={dashboard} />
       </div>
 
-      <ClassRegister dashboard={dashboard} />
+      <ClassRegister dashboard={dashboard} onOpenRegion={onOpenRegion} />
     </>
   );
 }
 
-export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }: TeacherDashboardProps) {
+function RosterManagementPage({
+  dashboard,
+  newStudentName,
+  onNewStudentNameChange,
+  onAddStudent,
+  onArchiveStudent,
+  onResetClaim,
+}: {
+  dashboard: TeacherClassDashboard;
+  newStudentName: string;
+  onNewStudentNameChange: (value: string) => void;
+  onAddStudent: (event: FormEvent<HTMLFormElement>) => void;
+  onArchiveStudent: (studentId: string) => void;
+  onResetClaim: (studentId: string) => void;
+}) {
+  return (
+    <section className="dashboard-section roster-management-section" aria-label="Roster management">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Roster</span>
+          <h2>Class code and student roster</h2>
+        </div>
+        <strong className="class-code-badge">{dashboard.classCode.code}</strong>
+      </div>
+      <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
+      <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
+      <form className="dashboard-inline-form" onSubmit={onAddStudent} aria-label="Add roster student">
+        <input value={newStudentName} onChange={(event) => onNewStudentNameChange(event.target.value)} placeholder="Student name" />
+        <button type="submit" className="primary-button">Add student</button>
+      </form>
+      <div className="roster-table-wrap">
+        <table className="teacher-register-table compact-roster-table">
+          <thead>
+            <tr>
+              <th scope="col">Student</th>
+              <th scope="col">Roster status</th>
+              <th scope="col">Optional details</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dashboard.roster.students.map((student) => (
+              <tr key={student.id} className={student.status === 'archived' ? 'archived-row' : undefined}>
+                <th scope="row">{student.displayName}</th>
+                <td>{rosterStatusLabel(student)}</td>
+                <td>{student.optionalEmail ?? 'Student can add later'}</td>
+                <td>
+                  {student.status === 'archived' ? (
+                    <span className="dashboard-muted">Archived</span>
+                  ) : student.status === 'claimed' ? (
+                    <div className="roster-action-stack">
+                      <button type="button" className="quiet-button compact-button" onClick={() => onResetClaim(student.id)}>Reset claim</button>
+                      <button type="button" className="quiet-button compact-button" onClick={() => onArchiveStudent(student.id)}>Archive</button>
+                    </div>
+                  ) : (
+                    <button type="button" className="quiet-button compact-button" onClick={() => onArchiveStudent(student.id)}>Archive</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDashboard; regionId?: string }) {
+  const region = dashboard.regionSummaries.find((item) => item.regionId === regionId) ?? dashboard.regionSummaries[0];
+  const rows = dashboard.studentRows.map((row) => ({
+    row,
+    cell: row.regionCells.find((item) => item.regionId === region.regionId),
+  })).filter((item): item is { row: StudentProgressRow; cell: StudentRegionProgressCell } => Boolean(item.cell));
+
+  return (
+    <section className="dashboard-section teacher-region-detail-section" aria-label="Region student progress">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Region progress</span>
+          <h2>{region.regionName}</h2>
+        </div>
+      </div>
+      <div className="teacher-region-detail-summary">
+        <div><span>Average progress</span><strong>{region.excludedFromClassProgress ? 'Locked' : `${region.averageProgressPercent}%`}</strong></div>
+        <div><span>Average mastery</span><strong>{region.excludedFromClassProgress ? 'Excluded' : `${region.averageMasteryPercent}%`}</strong></div>
+        <div><span>Need help</span><strong>{region.studentsNeedingHelpCount}</strong></div>
+        <div><span>Guardian-ready</span><strong>{region.guardianEligibleCount}</strong></div>
+      </div>
+      <div className="teacher-register-scroll">
+        <table className="teacher-register-table">
+          <thead>
+            <tr>
+              <th scope="col">Student</th>
+              <th scope="col">Progress</th>
+              <th scope="col">Mastery</th>
+              <th scope="col">Status</th>
+              <th scope="col">Evidence</th>
+              <th scope="col">Last activity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ row, cell }) => (
+              <tr key={`${row.id}-${cell.regionId}`} className={cell.warning ? 'student-row-warning' : undefined}>
+                <th scope="row">
+                  <strong>{row.displayName}</strong>
+                  <span>{cell.warning ?? row.notes[0]}</span>
+                </th>
+                <td className="teacher-register-overall"><strong>{cell.progressPercent}%</strong></td>
+                <td className="teacher-register-overall"><strong>{cell.masteryPercent}%</strong></td>
+                <td>{cell.excludedFromClassProgress ? 'Not opened for class' : labelForTeacherRegionStatus(cell.status)}</td>
+                <td>{cell.attemptsCount} attempts{typeof cell.averageSelfMarkPercent === 'number' ? ` · ${cell.averageSelfMarkPercent}% self-mark` : ''}</td>
+                <td>{formatDate(cell.lastEvidenceAt ?? row.lastActivityAt)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+export function TeacherDashboard({ classId, page = 'home', regionId, onNavigatePath }: TeacherDashboardProps) {
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
   const [newStudentName, setNewStudentName] = useState('');
@@ -296,6 +427,11 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
     await refreshDashboard(dashboard.class.id);
   }
 
+  function openRegion(regionId: string) {
+    if (!dashboard) return;
+    onNavigatePath(`/teacher/classes/${dashboard.class.id}/regions/${regionId}`);
+  }
+
   if (!dashboard) {
     return (
       <main className="app-shell app-view-dashboard">
@@ -332,7 +468,7 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
           <button type="button" className="primary-button" onClick={() => exportCsv(dashboard)}>
             <Download size={16} /> Export CSV
           </button>
-          {!detailMode ? (
+          {page === 'home' ? (
             <button type="button" className="quiet-button" onClick={() => onNavigatePath(`/teacher/classes/${dashboard.class.id}`)}>
               <ExternalLink size={16} /> Open class page
             </button>
@@ -341,76 +477,49 @@ export function TeacherDashboard({ classId, detailMode = false, onNavigatePath }
               <ArrowLeft size={16} /> Back to teacher home
             </button>
           )}
+          {page !== 'roster' ? (
+            <button type="button" className="quiet-button" onClick={() => onNavigatePath(`/teacher/classes/${dashboard.class.id}/roster`)}>
+              <UsersRound size={16} /> Class code and roster
+            </button>
+          ) : null}
         </section>
 
-        <section className="dashboard-section roster-management-section" aria-label="Roster management">
-          <div className="dashboard-section-heading">
-            <div>
-              <span className="dashboard-kicker">Roster</span>
-              <h2>Class code and student roster</h2>
-            </div>
-            <strong className="class-code-badge">{dashboard.classCode.code}</strong>
-          </div>
-          <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
-          <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
-          <form className="dashboard-inline-form" onSubmit={handleAddStudent} aria-label="Add roster student">
-            <input value={newStudentName} onChange={(event) => setNewStudentName(event.target.value)} placeholder="Student name" />
-            <button type="submit" className="primary-button">Add student</button>
-          </form>
-          <div className="roster-table-wrap">
-            <table className="teacher-register-table compact-roster-table">
-              <thead>
-                <tr>
-                  <th scope="col">Student</th>
-                  <th scope="col">Roster status</th>
-                  <th scope="col">Optional details</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboard.roster.students.map((student) => (
-                  <tr key={student.id} className={student.status === 'archived' ? 'archived-row' : undefined}>
-                    <th scope="row">{student.displayName}</th>
-                    <td>{rosterStatusLabel(student)}</td>
-                    <td>{student.optionalEmail ?? 'Student can add later'}</td>
-                    <td>
-                      {student.status === 'archived' ? (
-                        <span className="dashboard-muted">Archived</span>
-                      ) : student.status === 'claimed' ? (
-                        <div className="roster-action-stack">
-                          <button type="button" className="quiet-button compact-button" onClick={() => handleResetClaim(student.id)}>Reset claim</button>
-                          <button type="button" className="quiet-button compact-button" onClick={() => handleArchiveStudent(student.id)}>Archive</button>
-                        </div>
-                      ) : (
-                        <button type="button" className="quiet-button compact-button" onClick={() => handleArchiveStudent(student.id)}>Archive</button>
-                      )}
-                    </td>
-                  </tr>
+        {page === 'roster' ? (
+          <RosterManagementPage
+            dashboard={dashboard}
+            newStudentName={newStudentName}
+            onNewStudentNameChange={setNewStudentName}
+            onAddStudent={handleAddStudent}
+            onArchiveStudent={handleArchiveStudent}
+            onResetClaim={handleResetClaim}
+          />
+        ) : null}
+
+        {page === 'region' ? <RegionProgressPage dashboard={dashboard} regionId={regionId} /> : null}
+
+        {page !== 'roster' && page !== 'region' ? (
+          <>
+            <section className="dashboard-section class-region-access-section" aria-label="Class region access">
+              <div className="dashboard-section-heading">
+                <div>
+                  <span className="dashboard-kicker">Region access</span>
+                  <h2>Open or lock P3 regions for this class</h2>
+                </div>
+              </div>
+              <div className="region-access-grid">
+                {dashboard.regionAccess.map((access) => (
+                  <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
+                    <input type="checkbox" checked={access.access === 'open'} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
+                    <span>{access.regionName}</span>
+                    <small>{labelForClassRegionAccess(access.access)}{canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}</small>
+                  </label>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <section className="dashboard-section class-region-access-section" aria-label="Class region access">
-          <div className="dashboard-section-heading">
-            <div>
-              <span className="dashboard-kicker">Region access</span>
-              <h2>Open or lock P3 regions for this class</h2>
-            </div>
-          </div>
-          <div className="region-access-grid">
-            {dashboard.regionAccess.map((access) => (
-              <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
-                <input type="checkbox" checked={access.access === 'open'} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
-                <span>{access.regionName}</span>
-                <small>{labelForClassRegionAccess(access.access)}{canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}</small>
-              </label>
-            ))}
-          </div>
-        </section>
-
-        <ClassFirstDashboard dashboard={dashboard} />
+            <ClassFirstDashboard dashboard={dashboard} onOpenRegion={openRegion} />
+          </>
+        ) : null}
       </section>
     </main>
   );

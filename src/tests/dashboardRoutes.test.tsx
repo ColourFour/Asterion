@@ -112,9 +112,9 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Overall progress');
     expect(container.textContent).toContain('Focus this week');
     expect(container.textContent).toContain('Class progress register');
-    expect(container.textContent).toContain('Class code and student roster');
-    expect(container.textContent).toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin.');
-    expect(container.textContent).toContain('Reset claim');
+    expect(container.textContent).toContain('Class code and roster');
+    expect(container.textContent).not.toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin.');
+    expect(container.textContent).not.toContain('Reset claim');
     expect(container.textContent).toContain('Open or lock P3 regions');
     expect(container.textContent).toContain('Export CSV');
     expect(container.textContent).not.toContain('Enter Astral Academy');
@@ -133,6 +133,37 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Ada L.');
     expect(container.textContent).toContain('Locked / not taught yet');
     expect(container.textContent).toContain('Field Guide only');
+  });
+
+  it('opens class code and roster management on a separate teacher page', async () => {
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
+    const container = await render(<App />);
+
+    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+    expect(container.textContent).toContain('Class code and student roster');
+    expect(container.textContent).toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin.');
+    expect(container.textContent).toContain('Add student');
+    expect(container.textContent).toContain('Reset claim');
+    expect(container.textContent).not.toContain('Class progress register');
+  });
+
+  it('opens a clicked teacher region as a student progress detail page', async () => {
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
+    const container = await render(<App />);
+
+    const algebraButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Algebra Vault'));
+    await act(async () => {
+      algebraButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.hash).toBe('#/teacher/classes/class-p3-alpha/regions/algebra-forge');
+    expect(container.textContent).toContain('Region progress');
+    expect(container.textContent).toContain('Algebra Vault');
+    expect(container.textContent).toContain('Average mastery');
+    expect(container.textContent).toContain('Ada L.');
+    expect(container.textContent).not.toContain('Class code and student roster');
   });
 
   it('renders the admin console with teacher and class setup records', async () => {

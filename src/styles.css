@@ -10300,6 +10300,21 @@ legend {
   border-top: 5px solid #98a2b3;
 }
 
+.region-progress-button {
+  appearance: none;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.region-progress-button:hover,
+.region-progress-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(16, 24, 40, 0.12);
+}
+
 .region-progress-card strong {
   color: var(--dashboard-ink);
   font-size: 1.45rem;
@@ -10532,6 +10547,24 @@ legend {
   font-weight: 900;
 }
 
+.table-link-button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 900;
+  text-align: left;
+  cursor: pointer;
+}
+
+.table-link-button:hover,
+.table-link-button:focus-visible {
+  color: #175cd3;
+  text-decoration: underline;
+}
+
 .teacher-register-table tbody th {
   position: sticky;
   left: 0;
@@ -10580,6 +10613,38 @@ legend {
   min-height: 34px !important;
   padding: 6px 9px !important;
   font-size: 0.82rem;
+}
+
+.teacher-region-detail-section {
+  display: grid;
+  gap: 14px;
+}
+
+.teacher-region-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.teacher-region-detail-summary div {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: var(--dashboard-surface-muted);
+}
+
+.teacher-region-detail-summary span {
+  color: var(--dashboard-ink-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.teacher-region-detail-summary strong {
+  color: var(--dashboard-ink);
+  font-size: 1.45rem;
+  line-height: 1;
 }
 
 .class-code-claim-form {

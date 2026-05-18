@@ -34,13 +34,24 @@ import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, R
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall';
 
-function parseDashboardRoute(pathname: string, hash: string): { kind: 'teacher'; classId?: string; detailMode: boolean } | { kind: 'admin' } | { kind: 'student' } {
+type TeacherDashboardRoute = {
+  kind: 'teacher';
+  classId?: string;
+  page: 'home' | 'class' | 'roster' | 'region';
+  regionId?: string;
+};
+
+function parseDashboardRoute(pathname: string, hash: string): TeacherDashboardRoute | { kind: 'admin' } | { kind: 'student' } {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
   const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') ? hashPath : pathname;
   if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
-  if (routePath === '/teacher') return { kind: 'teacher', detailMode: false };
+  if (routePath === '/teacher') return { kind: 'teacher', page: 'home' };
+  const teacherRosterMatch = routePath.match(/^\/teacher\/classes\/([^/]+)\/roster$/);
+  if (teacherRosterMatch) return { kind: 'teacher', classId: teacherRosterMatch[1], page: 'roster' };
+  const teacherRegionMatch = routePath.match(/^\/teacher\/classes\/([^/]+)\/regions\/([^/]+)$/);
+  if (teacherRegionMatch) return { kind: 'teacher', classId: teacherRegionMatch[1], page: 'region', regionId: teacherRegionMatch[2] };
   const teacherClassMatch = routePath.match(/^\/teacher\/classes\/([^/]+)$/);
-  if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], detailMode: true };
+  if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], page: 'class' };
   return { kind: 'student' };
 }
 
@@ -345,7 +356,7 @@ export default function App() {
   }
 
   if (dashboardRoute.kind === 'teacher') {
-    return <TeacherDashboard classId={dashboardRoute.classId} detailMode={dashboardRoute.detailMode} onNavigatePath={navigatePath} />;
+    return <TeacherDashboard classId={dashboardRoute.classId} page={dashboardRoute.page} regionId={dashboardRoute.regionId} onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'admin') {
