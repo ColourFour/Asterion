@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { LOCAL_PROGRESS_STORAGE_KEY } from '../lib/progressStore';
+import { PENDING_CLASS_CLAIM_STORAGE_KEY } from '../lib/studentClassClaimStore';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -94,6 +95,7 @@ function inputForLabel(container: HTMLElement, labelText: string): HTMLInputElem
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
   setReducedMotion(false);
   window.history.replaceState(null, '', '/');
 });
@@ -109,6 +111,7 @@ afterEach(() => {
   }
   document.body.innerHTML = '';
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 describe('Asterion intro page', () => {
@@ -136,6 +139,7 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Join your teacher');
     expect(container.textContent).toContain('Class code');
     expect(container.textContent).toContain('Roster name');
+    expect(container.textContent).toContain('If your name is missing, ask your teacher. You cannot add yourself.');
     expect(Array.from(container.querySelectorAll('button')).some((button) => (
       button.textContent?.includes('Claim roster slot')
     ))).toBe(true);
@@ -171,6 +175,13 @@ describe('Asterion intro page', () => {
     expect(inputForLabel(container, 'Student real name').value).toBe('Maya Q.');
     expect(inputForLabel(container, 'Class/group').value).toBe('P3 Alpha');
     expect(inputForLabel(container, 'Teacher name').value).toBe('Ms Hypatia');
+    expect(inputForLabel(container, 'Class/group').readOnly).toBe(true);
+    expect(inputForLabel(container, 'Teacher name').readOnly).toBe(true);
+    expect(JSON.parse(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY) ?? '{}')).toMatchObject({
+      status: 'claimed',
+      classCode: 'AST-P3A',
+      displayName: 'Maya Q.',
+    });
 
     setInputValue(inputForLabel(container, 'Character name'), 'Aster');
 
@@ -196,8 +207,41 @@ describe('Asterion intro page', () => {
         displayName: 'Maya Q.',
       }),
     });
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).not.toContain('Enter Astral Academy');
+  });
+
+  it('restores a pending claim after refresh without granting app access', async () => {
+    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+      status: 'claimed',
+      classId: 'class-p3-beta',
+      className: 'P3 Beta',
+      classCode: 'AST-P3B',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'roster-beta-unclaimed-1',
+      displayName: 'Ken I.',
+      message: 'Roster slot claimed. Optional details can be added later.',
+    }));
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Student real name');
+    expect(inputForLabel(container, 'Student real name').value).toBe('Ken I.');
+    expect(inputForLabel(container, 'Class/group').value).toBe('P3 Beta');
+    expect(inputForLabel(container, 'Teacher name').value).toBe('Ms Hypatia');
+    expect(container.textContent).not.toContain('World Map');
+
+    const restartButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Use a different class code'));
+    await act(async () => {
+      restartButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
   });
 
   it('still renders the emblem when reduced motion is requested', async () => {

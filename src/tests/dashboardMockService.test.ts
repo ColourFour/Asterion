@@ -113,9 +113,30 @@ describe('dashboard mock service', () => {
     const before = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
     expect(before?.students.some((student) => student.status === 'archived')).toBe(true);
 
+    const invalidCode = await claimRosterSlotByClassCode({ classCode: 'NOPE', displayName: 'Maya Q.' });
+    expect(invalidCode).toMatchObject({
+      status: 'invalid_class_code',
+      message: 'Enter a valid class code from your teacher.',
+    });
+    expect(canStudentAccessApp(invalidCode)).toBe(false);
+
     const denied = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Self Added Student' });
     expect(denied.status).toBe('roster_name_not_found');
     expect(canStudentAccessApp(denied)).toBe(false);
+
+    const archivedDenied = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Student' });
+    expect(archivedDenied).toMatchObject({
+      status: 'archived',
+      message: 'This roster entry is archived. Ask your teacher or admin for help.',
+    });
+    expect(canStudentAccessApp(archivedDenied)).toBe(false);
+
+    const alreadyClaimed = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Ada L.' });
+    expect(alreadyClaimed).toMatchObject({
+      status: 'already_claimed',
+      message: 'This roster entry has already been claimed. Ask your teacher or admin for help.',
+    });
+    expect(canStudentAccessApp(alreadyClaimed)).toBe(false);
 
     const added = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Test Roster Student');
     expect(added).toMatchObject({ status: 'unclaimed' });

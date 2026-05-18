@@ -28,9 +28,10 @@ import {
   regionHashPath,
   type RegionLearningPageId,
 } from './lib/regionRoutes';
+import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, StudentClaimState, TrainingSessionIntent } from './types';
+import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
@@ -54,7 +55,7 @@ export default function App() {
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
-  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState>();
+  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState | undefined>(() => loadPendingClassClaim());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
@@ -329,6 +330,23 @@ export default function App() {
     }));
   }
 
+  function handleStudentClassClaim(claim: StudentClaimState) {
+    const pendingClaim = savePendingClassClaim(claim);
+    setStudentClassClaim(pendingClaim);
+  }
+
+  function restartStudentClassClaim() {
+    clearPendingClassClaim();
+    setStudentClassClaim(undefined);
+  }
+
+  function saveClaimedStudentProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) {
+    const nextProgress = progressAdapter.saveProfile(profile);
+    clearPendingClassClaim();
+    setStudentClassClaim(undefined);
+    setProgress(nextProgress);
+  }
+
   if (dashboardRoute.kind === 'teacher') {
     return <TeacherDashboard classId={dashboardRoute.classId} detailMode={dashboardRoute.detailMode} onNavigatePath={navigatePath} />;
   }
@@ -388,13 +406,14 @@ export default function App() {
               classClaim: studentClassClaim,
             }}
             lockedClassFields
-            onSave={(profile) => setProgress(progressAdapter.saveProfile({
+            onRestartClaim={restartStudentClassClaim}
+            onSave={(profile) => saveClaimedStudentProfile({
               ...profile,
               classClaim: studentClassClaim,
-            }))}
+            })}
           />
         ) : (
-          <ClassCodeClaimForm onClaimed={setStudentClassClaim} />
+          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
         )}
       </main>
     );

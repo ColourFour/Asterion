@@ -10616,6 +10616,11 @@ legend {
   margin: 0;
 }
 
+.pending-claim-summary {
+  display: grid;
+  gap: 8px;
+}
+
 .claim-claimed,
 .claim-already_claimed {
   color: #b7f7d0;

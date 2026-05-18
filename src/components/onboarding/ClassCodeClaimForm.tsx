@@ -23,7 +23,7 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
     });
     setClaimState(nextClaim);
     setSubmitting(false);
-    if (nextClaim.status === 'claimed' || nextClaim.status === 'already_claimed') {
+    if (nextClaim.status === 'claimed') {
       onClaimed(nextClaim);
     }
   }
@@ -33,7 +33,7 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
       <div className="claim-form-heading">
         <span className="mode-pill">Class access required</span>
         <h2>Join your teacher's class</h2>
-        <p>Enter the class code from your teacher, then claim the roster name your teacher already added.</p>
+        <p>Enter the class code your teacher gave you. Choose the name your teacher added to the roster.</p>
       </div>
 
       <label>
@@ -56,7 +56,7 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
           {claimState.message}
         </p>
       ) : (
-        <p className="claim-state-message">Students cannot create new roster entries. Ask your teacher if your name is missing.</p>
+        <p className="claim-state-message">If your name is missing, ask your teacher. You cannot add yourself.</p>
       )}
 
       <button className="primary-button" type="submit" disabled={submitting}>

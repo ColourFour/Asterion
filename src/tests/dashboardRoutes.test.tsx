@@ -64,6 +64,7 @@ function setInputValue(input: HTMLInputElement, value: string) {
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 afterEach(() => {
@@ -77,6 +78,7 @@ afterEach(() => {
   }
   document.body.innerHTML = '';
   localStorage.clear();
+  sessionStorage.clear();
   window.history.replaceState(null, '', '/');
 });
 

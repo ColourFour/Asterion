@@ -1013,8 +1013,8 @@ export async function claimRosterSlotByClassCode(input: { classCode: string; dis
     && student.displayName.toLowerCase() === input.displayName.trim().toLowerCase()
   ));
   if (!rosterStudent) return { status: 'roster_name_not_found', ...claimContext, message: 'Ask your teacher to add your name to the roster first.' };
-  if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher for help.' };
-  if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed.' };
+  if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher or admin for help.' };
+  if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed. Ask your teacher or admin for help.' };
   rosterStudent.status = 'claimed';
   rosterStudent.claimedAt = now;
   rosterStudent.optionalEmail = input.optionalEmail;
@@ -1023,7 +1023,7 @@ export async function claimRosterSlotByClassCode(input: { classCode: string; dis
 }
 
 export function canStudentAccessApp(claim: StudentClaimState | undefined): boolean {
-  return claim?.status === 'claimed' || claim?.status === 'already_claimed';
+  return claim?.status === 'claimed';
 }
 
 export async function listAdminAuditEvents(): Promise<AdminAuditEvent[]> {
