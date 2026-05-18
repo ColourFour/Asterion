@@ -3,6 +3,7 @@ import { UsersRound } from 'lucide-react';
 import { ClassHall } from './components/classHall/ClassHall';
 import { AdminDashboard } from './components/dashboard/AdminDashboard';
 import { TeacherDashboard } from './components/dashboard/TeacherDashboard';
+import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { AvatarBuilder } from './components/profile/AvatarBuilder';
 import { PracticeView } from './components/practice/PracticeView';
@@ -29,7 +30,7 @@ import {
 } from './lib/regionRoutes';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, TrainingSessionIntent } from './types';
+import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, QuestionBankDiagnostics, RegionDefinition, StoredProgress, StudentClaimState, TrainingSessionIntent } from './types';
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall' | 'teacher';
 
@@ -53,6 +54,7 @@ export default function App() {
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
+  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState>();
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
@@ -376,7 +378,24 @@ export default function App() {
           </div>
         </section>
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        <ProfileForm onSave={(profile) => setProgress(progressAdapter.saveProfile(profile))} />
+        {studentClassClaim ? (
+          <ProfileForm
+            initialProfile={{
+              realName: studentClassClaim.displayName ?? '',
+              classGroup: studentClassClaim.className ?? '',
+              teacherName: studentClassClaim.teacherName ?? '',
+              avatarName: '',
+              classClaim: studentClassClaim,
+            }}
+            lockedClassFields
+            onSave={(profile) => setProgress(progressAdapter.saveProfile({
+              ...profile,
+              classClaim: studentClassClaim,
+            }))}
+          />
+        ) : (
+          <ClassCodeClaimForm onClaimed={setStudentClassClaim} />
+        )}
       </main>
     );
   }

@@ -14,6 +14,7 @@ import type {
   RegionRank,
   RegionLearningRecord,
   StoredProgress,
+  StudentClaimState,
   StudentProfile,
   TopicProfile,
 } from '../types';
@@ -103,6 +104,25 @@ function normalizeSettings(value: unknown): AppSettings {
   return { activePaperFamily: value.activePaperFamily as PaperFamily };
 }
 
+function normalizeStudentClaim(value: unknown): StudentClaimState | undefined {
+  if (!isRecord(value)) return undefined;
+  const status = optionalString(value.status);
+  const message = optionalString(value.message);
+  if (!status || !message) return undefined;
+  if (!['unclaimed', 'claimed', 'invalid_class_code', 'roster_name_not_found', 'already_claimed', 'archived'].includes(status)) return undefined;
+  return {
+    status: status as StudentClaimState['status'],
+    classId: optionalString(value.classId),
+    className: optionalString(value.className),
+    classCode: optionalString(value.classCode),
+    teacherId: optionalString(value.teacherId),
+    teacherName: optionalString(value.teacherName),
+    rosterStudentId: optionalString(value.rosterStudentId),
+    displayName: optionalString(value.displayName),
+    message,
+  };
+}
+
 function normalizeProfile(value: unknown): StudentProfile | undefined {
   if (!isRecord(value)) return undefined;
   const id = optionalString(value.id);
@@ -113,7 +133,7 @@ function normalizeProfile(value: unknown): StudentProfile | undefined {
   const createdAt = optionalString(value.createdAt);
   const updatedAt = optionalString(value.updatedAt);
   if (!id || !realName || !classGroup || !teacherName || !avatarName || !createdAt || !updatedAt) return undefined;
-  return { id, realName, classGroup, teacherName, avatarName, createdAt, updatedAt };
+  return { id, realName, classGroup, teacherName, avatarName, classClaim: normalizeStudentClaim(value.classClaim), createdAt, updatedAt };
 }
 
 function normalizeMarkBreakdown(value: unknown): AttemptMarkBreakdown | undefined {

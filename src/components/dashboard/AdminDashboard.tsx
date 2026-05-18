@@ -1,7 +1,16 @@
 import { ShieldCheck } from 'lucide-react';
+import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { listAdminAuditEvents, listAdminClasses, listAdminTeachers } from '../../lib/dashboardMockService';
-import type { AdminAuditEvent, AdminTeacherSummary, TeacherClass } from '../../types';
+import {
+  addAdminClass,
+  addAdminTeacher,
+  labelForClassRegionAccess,
+  listAdminAuditEvents,
+  listAdminClassRecords,
+  listAdminTeacherRecords,
+  setClassRegionAccess,
+} from '../../lib/dashboardMockService';
+import type { AdminAuditEvent, AdminClassRecord, AdminTeacherRecord } from '../../types';
 
 interface AdminDashboardProps {
   onNavigatePath: (path: string) => void;
@@ -17,18 +26,29 @@ function formatTime(value: string): string {
 }
 
 export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
-  const [teachers, setTeachers] = useState<AdminTeacherSummary[]>([]);
-  const [classes, setClasses] = useState<TeacherClass[]>([]);
+  const [teachers, setTeachers] = useState<AdminTeacherRecord[]>([]);
+  const [classes, setClasses] = useState<AdminClassRecord[]>([]);
   const [auditEvents, setAuditEvents] = useState<AdminAuditEvent[]>([]);
   const [query, setQuery] = useState('');
+  const [teacherForm, setTeacherForm] = useState({ name: '', email: '' });
+  const [classForm, setClassForm] = useState({ name: '', teacherId: '', academicYearTerm: '2026 Term 2', code: '' });
+
+  async function refreshAdminRecords() {
+    const [nextTeachers, nextClasses, nextAuditEvents] = await Promise.all([listAdminTeacherRecords(), listAdminClassRecords(), listAdminAuditEvents()]);
+    setTeachers(nextTeachers);
+    setClasses(nextClasses);
+    setAuditEvents(nextAuditEvents);
+    setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
+  }
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([listAdminTeachers(), listAdminClasses(), listAdminAuditEvents()]).then(([nextTeachers, nextClasses, nextAuditEvents]) => {
+    Promise.all([listAdminTeacherRecords(), listAdminClassRecords(), listAdminAuditEvents()]).then(([nextTeachers, nextClasses, nextAuditEvents]) => {
       if (cancelled) return;
       setTeachers(nextTeachers);
       setClasses(nextClasses);
       setAuditEvents(nextAuditEvents);
+      setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
     });
     return () => {
       cancelled = true;
@@ -38,15 +58,38 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   const normalizedQuery = query.trim().toLowerCase();
   const filteredTeachers = useMemo(() => (
     normalizedQuery
-      ? teachers.filter((teacher) => `${teacher.displayName} ${teacher.email}`.toLowerCase().includes(normalizedQuery))
+      ? teachers.filter((teacher) => `${teacher.name} ${teacher.email}`.toLowerCase().includes(normalizedQuery))
       : teachers
   ), [normalizedQuery, teachers]);
 
   const filteredClasses = useMemo(() => (
     normalizedQuery
-      ? classes.filter((teacherClass) => `${teacherClass.name} ${teacherClass.joinCode} ${teacherClass.teacherId}`.toLowerCase().includes(normalizedQuery))
+      ? classes.filter((teacherClass) => `${teacherClass.name} ${teacherClass.classCode.code} ${teacherClass.teacherId}`.toLowerCase().includes(normalizedQuery))
       : classes
   ), [classes, normalizedQuery]);
+
+  const teacherNameById = useMemo(() => Object.fromEntries(teachers.map((teacher) => [teacher.id, teacher.name])), [teachers]);
+
+  async function handleAddTeacher(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!teacherForm.name.trim() || !teacherForm.email.trim()) return;
+    await addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
+    setTeacherForm({ name: '', email: '' });
+    await refreshAdminRecords();
+  }
+
+  async function handleAddClass(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!classForm.name.trim() || !classForm.teacherId || !classForm.code.trim()) return;
+    await addAdminClass(classForm);
+    setClassForm((current) => ({ name: '', teacherId: current.teacherId, academicYearTerm: current.academicYearTerm, code: '' }));
+    await refreshAdminRecords();
+  }
+
+  async function toggleRegion(classId: string, regionId: string, open: boolean) {
+    await setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
+    await refreshAdminRecords();
+  }
 
   return (
     <main className="app-shell app-view-dashboard">
@@ -88,12 +131,17 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
                 <h2>Teacher list</h2>
               </div>
             </div>
+            <form className="dashboard-inline-form" onSubmit={handleAddTeacher} aria-label="Add teacher">
+              <input value={teacherForm.name} onChange={(event) => setTeacherForm({ ...teacherForm, name: event.target.value })} placeholder="Teacher name" />
+              <input value={teacherForm.email} onChange={(event) => setTeacherForm({ ...teacherForm, email: event.target.value })} placeholder="teacher@example.school" />
+              <button type="submit" className="primary-button">Add teacher</button>
+            </form>
             <div className="admin-list">
               {filteredTeachers.map((teacher) => (
                 <article key={teacher.id}>
-                  <strong>{teacher.displayName}</strong>
+                  <strong>{teacher.name}</strong>
                   <span>{teacher.email}</span>
-                  <small>{teacher.classCount} classes · active {formatTime(teacher.lastActivityAt)}</small>
+                  <small>{classes.filter((item) => item.teacherId === teacher.id && item.status === 'active').length} assigned classes · {teacher.status} · updated {formatTime(teacher.updatedAt)}</small>
                 </article>
               ))}
             </div>
@@ -106,12 +154,25 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
                 <h2>Class list</h2>
               </div>
             </div>
+            <form className="dashboard-inline-form" onSubmit={handleAddClass} aria-label="Add class">
+              <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" />
+              <select value={classForm.teacherId} onChange={(event) => setClassForm({ ...classForm, teacherId: event.target.value })}>
+                {teachers.filter((teacher) => teacher.status === 'active').map((teacher) => (
+                  <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+                ))}
+              </select>
+              <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" />
+              <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code" />
+              <button type="submit" className="primary-button">Add class</button>
+            </form>
             <div className="admin-list">
               {filteredClasses.map((teacherClass) => (
                 <article key={teacherClass.id}>
                   <strong>{teacherClass.name}</strong>
-                  <span>Join code {teacherClass.joinCode}</span>
-                  <small>Teacher ID {teacherClass.teacherId} · created {formatTime(teacherClass.createdAt)}</small>
+                  <span>Class code {teacherClass.classCode.code} · {teacherClass.focus}</span>
+                  <small>{teacherNameById[teacherClass.teacherId] ?? teacherClass.teacherId} · {teacherClass.academicYearTerm} · {teacherClass.status} · {teacherClass.rosterStudentIds.length} roster entries</small>
+                  <small>{teacherClass.regionAccess.filter((access) => access.access === 'open').length} open · {teacherClass.regionAccess.filter((access) => access.access !== 'open').length} locked/not taught yet</small>
+                  <button type="button" className="quiet-button compact-button" onClick={() => onNavigatePath(`/teacher/classes/${teacherClass.id}`)}>Inspect class data</button>
                 </article>
               ))}
             </div>
@@ -121,15 +182,28 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
         <section className="dashboard-section">
           <div className="dashboard-section-heading">
             <div>
-              <span className="dashboard-kicker">Disabled support actions</span>
-              <h2>Repair tools planned for backend v1</h2>
+              <span className="dashboard-kicker">Region access</span>
+              <h2>Admin view and override</h2>
             </div>
           </div>
-          <div className="admin-action-row">
-            <button type="button" disabled>Archive class</button>
-            <button type="button" disabled>Reset join code</button>
-            <button type="button" disabled>Move student</button>
-            <button type="button" disabled>Repair progress snapshot</button>
+          <div className="admin-region-access-list">
+            {filteredClasses.map((teacherClass) => (
+              <article key={`${teacherClass.id}-regions`} className="dashboard-nested-panel">
+                <div>
+                  <strong>{teacherClass.name}</strong>
+                  <span>{teacherNameById[teacherClass.teacherId] ?? teacherClass.teacherId}</span>
+                </div>
+                <div className="region-access-grid">
+                  {teacherClass.regionAccess.map((access) => (
+                    <label key={`${teacherClass.id}-${access.regionId}`} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
+                      <input type="checkbox" checked={access.access === 'open'} onChange={(event) => toggleRegion(teacherClass.id, access.regionId, event.target.checked)} />
+                      <span>{access.regionName}</span>
+                      <small>{labelForClassRegionAccess(access.access)}</small>
+                    </label>
+                  ))}
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 

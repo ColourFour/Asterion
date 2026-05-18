@@ -70,17 +70,109 @@ export interface StudentProfile {
   classGroup: string;
   teacherName: string;
   avatarName: string;
+  classClaim?: StudentClaimState;
   createdAt: string;
   updatedAt: string;
 }
 
 export type AsterionRole = 'admin' | 'teacher' | 'student';
 
+export type AdminTeacherStatus = 'active' | 'inactive';
+export type AdminClassStatus = 'active' | 'archived';
+export type RosterStudentStatus = 'active' | 'claimed' | 'unclaimed' | 'archived';
+export type ClassRegionAccessMode = 'open' | 'field_guide_only';
+export type StudentClaimStatus =
+  | 'unclaimed'
+  | 'claimed'
+  | 'invalid_class_code'
+  | 'roster_name_not_found'
+  | 'already_claimed'
+  | 'archived';
+
+export interface AdminTeacherRecord {
+  id: string;
+  name: string;
+  email: string;
+  assignedClassIds: string[];
+  status: AdminTeacherStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClassRegionAccess {
+  regionId: string;
+  regionName: string;
+  access: ClassRegionAccessMode;
+  openedAt?: string;
+  lockedAt?: string;
+  updatedByRole: Extract<AsterionRole, 'admin' | 'teacher'>;
+  updatedAt: string;
+}
+
+export interface ClassCodeRecord {
+  id: string;
+  classId: string;
+  code: string;
+  status: 'active' | 'retired';
+  createdAt: string;
+  retiredAt?: string;
+}
+
+export interface ClassRosterStudent {
+  id: string;
+  classId: string;
+  displayName: string;
+  status: RosterStudentStatus;
+  claimedAt?: string;
+  archivedAt?: string;
+  optionalEmail?: string;
+  optionalDetails?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminClassRecord {
+  id: string;
+  name: string;
+  teacherId: string;
+  focus: 'CAIE 9709 P3';
+  academicYearTerm: string;
+  status: AdminClassStatus;
+  classCode: ClassCodeRecord;
+  rosterStudentIds: string[];
+  regionAccess: ClassRegionAccess[];
+  createdAt: string;
+  updatedAt: string;
+  archivedAt?: string;
+}
+
+export interface TeacherClassRoster {
+  classId: string;
+  className: string;
+  teacherId: string;
+  classCode: ClassCodeRecord;
+  students: ClassRosterStudent[];
+}
+
+export interface StudentClaimState {
+  status: StudentClaimStatus;
+  classId?: string;
+  className?: string;
+  classCode?: string;
+  teacherId?: string;
+  teacherName?: string;
+  rosterStudentId?: string;
+  displayName?: string;
+  message: string;
+}
+
 export interface TeacherClass {
   id: string;
   name: string;
   teacherId: string;
   joinCode: string;
+  focus?: 'CAIE 9709 P3';
+  academicYearTerm?: string;
   archivedAt?: string;
   createdAt: string;
 }
@@ -141,11 +233,17 @@ export interface ClassProgressSummary {
   studentsNeedingHelpCount: number;
   guardianEligibleCount: number;
   totalAttempts: number;
+  openRegionCount?: number;
+  lockedRegionCount?: number;
+  excludedLockedRegionCount?: number;
 }
 
 export interface RegionProgressSummary {
   regionId: string;
   regionName: string;
+  access?: ClassRegionAccessMode;
+  accessLabel?: string;
+  excludedFromClassProgress?: boolean;
   averageProgressPercent: number;
   averageMasteryPercent: number;
   studentsNeedingHelpCount: number;
@@ -158,6 +256,9 @@ export interface RegionProgressSummary {
 export interface StudentRegionProgressCell {
   regionId: string;
   regionName: string;
+  access?: ClassRegionAccessMode;
+  accessLabel?: string;
+  excludedFromClassProgress?: boolean;
   progressPercent: number;
   masteryPercent: number;
   status: TeacherRegionStatus;
@@ -217,7 +318,10 @@ export interface WeeklyClassSummary {
 
 export interface TeacherExportRow {
   className: string;
+  classCode: string;
+  teacherName: string;
   studentName: string;
+  rosterStatus: string;
   overallProgressPercent: number;
   currentFocusRegion: string;
   lastActivity: string;
@@ -272,6 +376,9 @@ export interface TeacherClassDashboard {
   actionCards: TeacherActionCard[];
   regionSignals: RegionLearningSignal[];
   studentSummaries: StudentSummary[];
+  roster: TeacherClassRoster;
+  classCode: ClassCodeRecord;
+  regionAccess: ClassRegionAccess[];
 }
 
 export interface AdminTeacherSummary {
@@ -280,6 +387,7 @@ export interface AdminTeacherSummary {
   email: string;
   classCount: number;
   lastActivityAt: string;
+  status?: AdminTeacherStatus;
 }
 
 export interface AdminAuditEvent {

@@ -5,8 +5,14 @@ import {
 } from './p3SkillContract';
 import type {
   AdminAuditEvent,
+  AdminClassRecord,
+  AdminTeacherRecord,
   AdminTeacherSummary,
+  ClassCodeRecord,
   ClassProgressSummary,
+  ClassRegionAccess,
+  ClassRegionAccessMode,
+  ClassRosterStudent,
   EvidenceReference,
   FocusThisWeekItem,
   RecommendedNextStep,
@@ -14,10 +20,12 @@ import type {
   RegionProgressSummary,
   StudentProgressRow,
   StudentRegionProgressCell,
+  StudentClaimState,
   StudentSummary,
   TeacherActionCard,
   TeacherClass,
   TeacherClassDashboard,
+  TeacherClassRoster,
   TeacherExportRow,
   TeacherRegionStatus,
   WeeklyClassSummary,
@@ -26,22 +34,116 @@ import type {
 const now = '2026-05-15T09:20:00.000Z';
 const inactiveAfterDays = 7;
 
-const classes: TeacherClass[] = [
+const teacherRecords: AdminTeacherRecord[] = [
+  {
+    id: 'teacher-hypatia',
+    name: 'Ms Hypatia',
+    email: 'hypatia@example.school',
+    assignedClassIds: ['class-p3-alpha', 'class-p3-beta'],
+    status: 'active',
+    createdAt: '2026-04-18T08:00:00.000Z',
+    updatedAt: '2026-05-15T09:12:00.000Z',
+  },
+  {
+    id: 'teacher-noether',
+    name: 'Mr Noether',
+    email: 'noether@example.school',
+    assignedClassIds: ['class-p3-gamma'],
+    status: 'active',
+    createdAt: '2026-04-18T08:00:00.000Z',
+    updatedAt: '2026-05-14T15:45:00.000Z',
+  },
+];
+
+const classCodes: ClassCodeRecord[] = [
+  { id: 'code-alpha', classId: 'class-p3-alpha', code: 'AST-P3A', status: 'active', createdAt: '2026-04-20T08:00:00.000Z' },
+  { id: 'code-beta', classId: 'class-p3-beta', code: 'AST-P3B', status: 'active', createdAt: '2026-04-22T08:00:00.000Z' },
+  { id: 'code-gamma', classId: 'class-p3-gamma', code: 'AST-P3G', status: 'active', createdAt: '2026-04-25T08:00:00.000Z' },
+];
+
+function buildRegionAccess(openRegionIds: P3RegionId[], updatedByRole: 'admin' | 'teacher'): ClassRegionAccess[] {
+  return P3_REGION_DEFINITIONS.map((region) => {
+    const open = openRegionIds.includes(region.id);
+    return {
+      regionId: region.id,
+      regionName: region.name,
+      access: open ? 'open' : 'field_guide_only',
+      openedAt: open ? '2026-05-01T08:00:00.000Z' : undefined,
+      lockedAt: open ? undefined : '2026-05-01T08:00:00.000Z',
+      updatedByRole,
+      updatedAt: '2026-05-15T09:20:00.000Z',
+    };
+  });
+}
+
+const classRecords: AdminClassRecord[] = [
   {
     id: 'class-p3-alpha',
     name: 'P3 Alpha',
     teacherId: 'teacher-hypatia',
-    joinCode: 'AST-P3A',
+    focus: 'CAIE 9709 P3',
+    academicYearTerm: '2026 Term 2',
+    status: 'active',
+    classCode: classCodes[0],
+    rosterStudentIds: [],
+    regionAccess: buildRegionAccess(['algebra-forge', 'logarithm-grove', 'trig-observatory'], 'teacher'),
     createdAt: '2026-04-20T08:00:00.000Z',
+    updatedAt: '2026-05-15T09:20:00.000Z',
   },
   {
     id: 'class-p3-beta',
     name: 'P3 Beta',
     teacherId: 'teacher-hypatia',
-    joinCode: 'AST-P3B',
+    focus: 'CAIE 9709 P3',
+    academicYearTerm: '2026 Term 2',
+    status: 'active',
+    classCode: classCodes[1],
+    rosterStudentIds: [],
+    regionAccess: buildRegionAccess(['algebra-forge', 'trig-observatory', 'calculus-cliffs'], 'teacher'),
     createdAt: '2026-04-22T08:00:00.000Z',
+    updatedAt: '2026-05-15T09:20:00.000Z',
+  },
+  {
+    id: 'class-p3-gamma',
+    name: 'P3 Gamma',
+    teacherId: 'teacher-noether',
+    focus: 'CAIE 9709 P3',
+    academicYearTerm: '2026 Term 2',
+    status: 'active',
+    classCode: classCodes[2],
+    rosterStudentIds: [],
+    regionAccess: buildRegionAccess(['algebra-forge', 'logarithm-grove'], 'teacher'),
+    createdAt: '2026-04-25T08:00:00.000Z',
+    updatedAt: '2026-05-15T09:20:00.000Z',
+  },
+  {
+    id: 'class-p3-archive',
+    name: 'P3 Archive 2025',
+    teacherId: 'teacher-noether',
+    focus: 'CAIE 9709 P3',
+    academicYearTerm: '2025 Term 3',
+    status: 'archived',
+    classCode: { id: 'code-archive', classId: 'class-p3-archive', code: 'AST-OLD', status: 'retired', createdAt: '2025-09-01T08:00:00.000Z', retiredAt: '2026-01-10T08:00:00.000Z' },
+    rosterStudentIds: [],
+    regionAccess: buildRegionAccess(['algebra-forge'], 'admin'),
+    createdAt: '2025-09-01T08:00:00.000Z',
+    updatedAt: '2026-01-10T08:00:00.000Z',
+    archivedAt: '2026-01-10T08:00:00.000Z',
   },
 ];
+
+function toTeacherClass(record: AdminClassRecord): TeacherClass {
+  return {
+    id: record.id,
+    name: record.name,
+    teacherId: record.teacherId,
+    joinCode: record.classCode.code,
+    focus: record.focus,
+    academicYearTerm: record.academicYearTerm,
+    archivedAt: record.archivedAt,
+    createdAt: record.createdAt,
+  };
+}
 
 interface StudentRegionSeed {
   progress: number;
@@ -213,12 +315,63 @@ const betaStudents: StudentSeed[] = [
   },
 ];
 
-const studentSeeds = [...alphaStudents, ...betaStudents];
-
-const adminTeachers: AdminTeacherSummary[] = [
-  { id: 'teacher-hypatia', displayName: 'Ms Hypatia', email: 'hypatia@example.school', classCount: 2, lastActivityAt: '2026-05-15T09:12:00.000Z' },
-  { id: 'teacher-noether', displayName: 'Mr Noether', email: 'noether@example.school', classCount: 1, lastActivityAt: '2026-05-14T15:45:00.000Z' },
+const gammaStudents: StudentSeed[] = [
+  {
+    id: 'student-cleo',
+    displayName: 'Cleo J.',
+    classId: 'class-p3-gamma',
+    regions: {
+      'algebra-forge': { progress: 44, mastery: 38, attempts: 4, selfMark: 40, lastEvidenceAt: '2026-05-13T09:00:00.000Z' },
+      'logarithm-grove': { progress: 24, mastery: 18, attempts: 2, selfMark: 25, lastEvidenceAt: '2026-05-12T09:00:00.000Z' },
+    },
+  },
 ];
+
+const studentSeeds = [...alphaStudents, ...betaStudents, ...gammaStudents];
+
+const rosterStudents: ClassRosterStudent[] = [
+  ...studentSeeds.map((student) => ({
+    id: student.id,
+    classId: student.classId,
+    displayName: student.displayName,
+    status: 'claimed' as const,
+    claimedAt: '2026-05-01T08:00:00.000Z',
+    optionalEmail: `${student.id.replace('student-', '')}@example.student`,
+    createdAt: '2026-04-24T08:00:00.000Z',
+    updatedAt: '2026-05-15T09:00:00.000Z',
+  })),
+  {
+    id: 'roster-alpha-unclaimed-1',
+    classId: 'class-p3-alpha',
+    displayName: 'Maya Q.',
+    status: 'unclaimed',
+    createdAt: '2026-05-12T08:00:00.000Z',
+    updatedAt: '2026-05-12T08:00:00.000Z',
+  },
+  {
+    id: 'roster-beta-unclaimed-1',
+    classId: 'class-p3-beta',
+    displayName: 'Ken I.',
+    status: 'unclaimed',
+    createdAt: '2026-05-12T08:00:00.000Z',
+    updatedAt: '2026-05-12T08:00:00.000Z',
+  },
+  {
+    id: 'roster-alpha-archived-1',
+    classId: 'class-p3-alpha',
+    displayName: 'Archived Student',
+    status: 'archived',
+    archivedAt: '2026-05-10T08:00:00.000Z',
+    createdAt: '2026-04-24T08:00:00.000Z',
+    updatedAt: '2026-05-10T08:00:00.000Z',
+  },
+];
+
+for (const classRecord of classRecords) {
+  classRecord.rosterStudentIds = rosterStudents
+    .filter((student) => student.classId === classRecord.id)
+    .map((student) => student.id);
+}
 
 const adminAuditEvents: AdminAuditEvent[] = [
   { id: 'audit-1', actorRole: 'admin', actorName: 'Support Admin', action: 'Viewed class support summary', targetType: 'class', targetLabel: 'P3 Alpha', createdAt: '2026-05-15T09:01:00.000Z' },
@@ -236,6 +389,22 @@ function daysBetween(fromIso: string, toIso: string): number {
 
 function isRecent(value: string | undefined): boolean {
   return Boolean(value && daysBetween(value, now) <= inactiveAfterDays);
+}
+
+export function labelForClassRegionAccess(access: ClassRegionAccessMode): string {
+  return access === 'open' ? 'Open now' : 'Field Guide only';
+}
+
+function accessForClass(classId: string): ClassRegionAccess[] {
+  return classRecords.find((item) => item.id === classId)?.regionAccess ?? buildRegionAccess([], 'teacher');
+}
+
+function accessByRegionForClass(classId: string): Record<string, ClassRegionAccess> {
+  return Object.fromEntries(accessForClass(classId).map((access) => [access.regionId, access]));
+}
+
+function isRegionOpen(access: ClassRegionAccess | undefined): boolean {
+  return access?.access === 'open';
 }
 
 export function labelForTeacherRegionStatus(status: TeacherRegionStatus): string {
@@ -274,15 +443,24 @@ function latestIso(values: Array<string | undefined>): string | undefined {
 }
 
 function buildStudentRows(classId: string): StudentProgressRow[] {
+  const classAccess = accessByRegionForClass(classId);
+  const activeRosterIds = new Set(rosterStudents
+    .filter((student) => student.classId === classId && student.status !== 'archived' && student.status !== 'unclaimed')
+    .map((student) => student.id));
   return studentSeeds
-    .filter((student) => student.classId === classId)
+    .filter((student) => student.classId === classId && activeRosterIds.has(student.id))
     .map((student) => {
       const regionCells = regionIds.map((regionId) => {
         const seed = student.regions[regionId];
+        const access = classAccess[regionId];
+        const excludedFromClassProgress = !isRegionOpen(access);
         const status = statusForCell(seed);
         const cell: StudentRegionProgressCell = {
           regionId,
           regionName: regionNameById[regionId],
+          access: access?.access ?? 'field_guide_only',
+          accessLabel: labelForClassRegionAccess(access?.access ?? 'field_guide_only'),
+          excludedFromClassProgress,
           progressPercent: clampPercent(seed?.progress ?? 0),
           masteryPercent: clampPercent(seed?.mastery ?? 0),
           status,
@@ -293,9 +471,10 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
         };
         return { ...cell, warning: warningForCell(cell) };
       });
-      const activeCells = regionCells.filter((cell) => cell.attemptsCount > 0);
-      const lowCells = regionCells.filter((cell) => cell.status === 'needs_help');
-      const staleCells = regionCells.filter((cell) => cell.status === 'no_recent_evidence');
+      const openCells = regionCells.filter((cell) => !cell.excludedFromClassProgress);
+      const activeCells = openCells.filter((cell) => cell.attemptsCount > 0);
+      const lowCells = openCells.filter((cell) => cell.status === 'needs_help');
+      const staleCells = openCells.filter((cell) => cell.status === 'no_recent_evidence');
       const startedAverage = activeCells.length
         ? activeCells.reduce((sum, cell) => sum + cell.progressPercent, 0) / activeCells.length
         : 0;
@@ -303,11 +482,12 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
       const currentFocus = (
         lowCells.sort((a, b) => a.progressPercent - b.progressPercent)[0]
         ?? staleCells.sort((a, b) => a.progressPercent - b.progressPercent)[0]
-        ?? regionCells.filter((cell) => cell.status === 'in_progress').sort((a, b) => a.progressPercent - b.progressPercent)[0]
-        ?? regionCells.filter((cell) => cell.status === 'not_started')[0]
+        ?? openCells.filter((cell) => cell.status === 'in_progress').sort((a, b) => a.progressPercent - b.progressPercent)[0]
+        ?? openCells.filter((cell) => cell.status === 'not_started')[0]
+        ?? openCells[0]
         ?? regionCells[0]
       );
-      const repeatedLowSelfMarkCount = regionCells.filter((cell) => (cell.averageSelfMarkPercent ?? 100) < 35 && cell.attemptsCount >= 2).length;
+      const repeatedLowSelfMarkCount = openCells.filter((cell) => (cell.averageSelfMarkPercent ?? 100) < 35 && cell.attemptsCount >= 2).length;
       const warnings = [
         ...lowCells.map((cell) => `${cell.regionName}: needs help`),
         ...staleCells.map((cell) => `${cell.regionName}: no recent evidence`),
@@ -316,7 +496,8 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
       ];
       const notes = [
         activeCells.length ? `${activeCells.length} regions started` : 'No progress evidence yet',
-        `${regionCells.filter((cell) => cell.guardianEligible).length} Guardian-ready regions`,
+        `${openCells.filter((cell) => cell.guardianEligible).length} Guardian-ready regions`,
+        `${regionCells.filter((cell) => cell.excludedFromClassProgress).length} regions not opened for class`,
       ];
 
       return {
@@ -331,7 +512,7 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
         lastActivityLabel: lastActivityAt ? lastActivityAt : 'No recent activity',
         attemptsCount: regionCells.reduce((sum, cell) => sum + cell.attemptsCount, 0),
         repeatedLowSelfMarkCount,
-        guardianEligibleRegionCount: regionCells.filter((cell) => cell.guardianEligible).length,
+        guardianEligibleRegionCount: openCells.filter((cell) => cell.guardianEligible).length,
         notes,
         warnings,
       };
@@ -340,8 +521,11 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
 
 function buildProgressSummary(rows: StudentProgressRow[]): ClassProgressSummary {
   const averageProgress = rows.reduce((sum, row) => sum + row.overallProgressPercent, 0) / Math.max(rows.length, 1);
-  const allCells = rows.flatMap((row) => row.regionCells);
+  const allCells = rows.flatMap((row) => row.regionCells).filter((cell) => !cell.excludedFromClassProgress);
   const startedCells = allCells.filter((cell) => cell.attemptsCount > 0);
+  const classCells = rows.flatMap((row) => row.regionCells);
+  const uniqueOpenRegions = new Set(classCells.filter((cell) => !cell.excludedFromClassProgress).map((cell) => cell.regionId));
+  const uniqueLockedRegions = new Set(classCells.filter((cell) => cell.excludedFromClassProgress).map((cell) => cell.regionId));
   return {
     studentCount: rows.length,
     overallProgressPercent: clampPercent(averageProgress),
@@ -351,6 +535,9 @@ function buildProgressSummary(rows: StudentProgressRow[]): ClassProgressSummary 
     studentsNeedingHelpCount: rows.filter((row) => row.warnings.length > 0).length,
     guardianEligibleCount: rows.filter((row) => row.guardianEligibleRegionCount > 0).length,
     totalAttempts: rows.reduce((sum, row) => sum + row.attemptsCount, 0),
+    openRegionCount: uniqueOpenRegions.size,
+    lockedRegionCount: uniqueLockedRegions.size,
+    excludedLockedRegionCount: uniqueLockedRegions.size,
   };
 }
 
@@ -363,13 +550,19 @@ function statusForRegionSummary(summary: Omit<RegionProgressSummary, 'status'>):
   return 'in_progress';
 }
 
-function buildRegionSummaries(rows: StudentProgressRow[]): RegionProgressSummary[] {
+function buildRegionSummaries(rows: StudentProgressRow[], classId: string): RegionProgressSummary[] {
+  const classAccess = accessByRegionForClass(classId);
   return regionIds.map((regionId) => {
     const cells = rows.map((row) => row.regionCells.find((cell) => cell.regionId === regionId)).filter((cell): cell is StudentRegionProgressCell => Boolean(cell));
     const startedCells = cells.filter((cell) => cell.attemptsCount > 0);
+    const access = classAccess[regionId];
+    const excludedFromClassProgress = !isRegionOpen(access);
     const summary = {
       regionId,
       regionName: regionNameById[regionId],
+      access: access?.access ?? 'field_guide_only',
+      accessLabel: labelForClassRegionAccess(access?.access ?? 'field_guide_only'),
+      excludedFromClassProgress,
       averageProgressPercent: clampPercent(startedCells.reduce((sum, cell) => sum + cell.progressPercent, 0) / Math.max(startedCells.length, 1)),
       averageMasteryPercent: clampPercent(startedCells.reduce((sum, cell) => sum + cell.masteryPercent, 0) / Math.max(startedCells.length, 1)),
       studentsNeedingHelpCount: cells.filter((cell) => cell.status === 'needs_help').length,
@@ -377,18 +570,22 @@ function buildRegionSummaries(rows: StudentProgressRow[]): RegionProgressSummary
       noRecentEvidenceCount: cells.filter((cell) => cell.status === 'no_recent_evidence').length,
       guardianEligibleCount: cells.filter((cell) => cell.guardianEligible).length,
     };
-    return { ...summary, status: statusForRegionSummary(summary) };
+    return {
+      ...summary,
+      status: excludedFromClassProgress ? 'not_started' : statusForRegionSummary(summary),
+    };
   });
 }
 
 function buildFocusThisWeek(rows: StudentProgressRow[], regions: RegionProgressSummary[]): FocusThisWeekItem[] {
-  const weakestRegion = [...regions]
+  const openRegions = regions.filter((region) => !region.excludedFromClassProgress);
+  const weakestRegion = [...openRegions]
     .filter((region) => region.averageProgressPercent > 0 || region.studentsNeedingHelpCount > 0)
-    .sort((a, b) => a.averageMasteryPercent - b.averageMasteryPercent)[0] ?? regions[0];
-  const mostHelpRegion = [...regions].sort((a, b) => b.studentsNeedingHelpCount - a.studentsNeedingHelpCount)[0];
+    .sort((a, b) => a.averageMasteryPercent - b.averageMasteryPercent)[0] ?? openRegions[0] ?? regions[0];
+  const mostHelpRegion = [...openRegions].sort((a, b) => b.studentsNeedingHelpCount - a.studentsNeedingHelpCount)[0] ?? weakestRegion;
   const inactiveStudents = rows.filter((row) => !isRecent(row.lastActivityAt));
   const lowScoreStudents = rows.filter((row) => row.repeatedLowSelfMarkCount >= 2);
-  const lowGuardianRegion = [...regions].sort((a, b) => a.guardianEligibleCount - b.guardianEligibleCount)[0];
+  const lowGuardianRegion = [...openRegions].sort((a, b) => a.guardianEligibleCount - b.guardianEligibleCount)[0] ?? weakestRegion;
 
   const items: FocusThisWeekItem[] = [
     {
@@ -474,15 +671,16 @@ function buildRegionSignals(rows: StudentProgressRow[], summaries: RegionProgres
   return summaries.map((region) => {
     const regionRows = rows.filter((row) => row.regionCells.some((cell) => cell.regionId === region.regionId && cell.attemptsCount > 0));
     const cellFor = (row: StudentProgressRow) => row.regionCells.find((cell) => cell.regionId === region.regionId);
+    const locked = region.excludedFromClassProgress;
     return {
       regionId: region.regionId,
       regionName: region.regionName,
-      readinessState: region.status === 'needs_help' ? 'needs_teacher_review' : region.status === 'secure' ? 'ready_for_guardian' : 'mixed',
+      readinessState: locked ? 'needs_field_guide' : region.status === 'needs_help' ? 'needs_teacher_review' : region.status === 'secure' ? 'ready_for_guardian' : 'mixed',
       studentsNeedingFieldGuide: rows.filter((row) => cellFor(row)?.status === 'not_started').map((row) => row.id),
-      studentsNeedingQuickCheck: rows.filter((row) => cellFor(row)?.status === 'in_progress').map((row) => row.id),
-      studentsNeedingWarmUp: rows.filter((row) => cellFor(row)?.status === 'improving').map((row) => row.id),
-      studentsReadyForExamTraining: rows.filter((row) => ['secure', 'improving'].includes(cellFor(row)?.status ?? '')).map((row) => row.id),
-      studentsNeedingTeacherReview: rows.filter((row) => ['needs_help', 'no_recent_evidence'].includes(cellFor(row)?.status ?? '')).map((row) => row.id),
+      studentsNeedingQuickCheck: locked ? [] : rows.filter((row) => cellFor(row)?.status === 'in_progress').map((row) => row.id),
+      studentsNeedingWarmUp: locked ? [] : rows.filter((row) => cellFor(row)?.status === 'improving').map((row) => row.id),
+      studentsReadyForExamTraining: locked ? [] : rows.filter((row) => ['secure', 'improving'].includes(cellFor(row)?.status ?? '')).map((row) => row.id),
+      studentsNeedingTeacherReview: locked ? [] : rows.filter((row) => ['needs_help', 'no_recent_evidence'].includes(cellFor(row)?.status ?? '')).map((row) => row.id),
       evidenceCount: regionRows.reduce((sum, row) => sum + (cellFor(row)?.attemptsCount ?? 0), 0),
     };
   });
@@ -515,11 +713,28 @@ function buildActionCards(classId: string, rows: StudentProgressRow[], focusItem
   }));
 }
 
-function buildExportRows(className: string, rows: StudentProgressRow[]): TeacherExportRow[] {
+function rosterForClass(classId: string): TeacherClassRoster {
+  const classRecord = classRecords.find((item) => item.id === classId) ?? classRecords[0];
+  return {
+    classId: classRecord.id,
+    className: classRecord.name,
+    teacherId: classRecord.teacherId,
+    classCode: classRecord.classCode,
+    students: rosterStudents.filter((student) => student.classId === classRecord.id),
+  };
+}
+
+function buildExportRows(classRecord: AdminClassRecord, rows: StudentProgressRow[]): TeacherExportRow[] {
+  const teacher = teacherRecords.find((item) => item.id === classRecord.teacherId);
+  const roster = rosterForClass(classRecord.id);
   return rows.map((row) => {
+    const rosterStudent = roster.students.find((student) => student.id === row.id);
     const base: TeacherExportRow = {
-      className,
+      className: classRecord.name,
+      classCode: classRecord.classCode.code,
+      teacherName: teacher?.name ?? classRecord.teacherId,
       studentName: row.displayName,
+      rosterStatus: rosterStudent?.status ?? 'claimed',
       overallProgressPercent: row.overallProgressPercent,
       currentFocusRegion: row.currentFocusRegionName,
       lastActivity: row.lastActivityAt ?? 'No recent activity',
@@ -531,6 +746,13 @@ function buildExportRows(className: string, rows: StudentProgressRow[]): Teacher
     for (const cell of row.regionCells) {
       base[`${cell.regionName} progress`] = `${cell.progressPercent}%`;
       base[`${cell.regionName} status`] = labelForTeacherRegionStatus(cell.status);
+      base[`${cell.regionName} access`] = cell.access === 'open' ? 'open' : 'Field Guide only';
+      base[`${cell.regionName} excluded from class progress`] = cell.excludedFromClassProgress ? 'yes' : 'no';
+      if (cell.excludedFromClassProgress) {
+        base[`${cell.regionName} status`] = cell.attemptsCount > 0
+          ? `${labelForTeacherRegionStatus(cell.status)}; existing progress visible; not opened for class`
+          : 'not opened for class';
+      }
     }
 
     return base;
@@ -573,10 +795,11 @@ function buildWeeklySummary(className: string, summary: ClassProgressSummary, re
 }
 
 function buildDashboard(classId: string): TeacherClassDashboard {
-  const teacherClass = classes.find((item) => item.id === classId) ?? classes[0];
-  const rows = buildStudentRows(teacherClass.id);
+  const classRecord = classRecords.find((item) => item.id === classId) ?? classRecords[0];
+  const teacherClass = toTeacherClass(classRecord);
+  const rows = buildStudentRows(classRecord.id);
   const progressSummary = buildProgressSummary(rows);
-  const regionSummaries = buildRegionSummaries(rows);
+  const regionSummaries = buildRegionSummaries(rows, classRecord.id);
   const focusThisWeek = buildFocusThisWeek(rows, regionSummaries);
   const studentSummaries = buildStudentSummaries(rows);
   const regionSignals = buildRegionSignals(rows, regionSummaries);
@@ -589,10 +812,13 @@ function buildDashboard(classId: string): TeacherClassDashboard {
     studentRows: rows,
     focusThisWeek,
     weeklySummary: buildWeeklySummary(teacherClass.name, progressSummary, regionSummaries, rows, focusThisWeek),
-    exportRows: buildExportRows(teacherClass.name, rows),
+    exportRows: buildExportRows(classRecord, rows),
     actionCards: buildActionCards(teacherClass.id, rows, focusThisWeek),
     regionSignals,
     studentSummaries,
+    roster: rosterForClass(classRecord.id),
+    classCode: classRecord.classCode,
+    regionAccess: classRecord.regionAccess,
   };
 }
 
@@ -607,12 +833,24 @@ export function groupStudentsByNextStep(studentSummaries: StudentSummary[]): Rec
   };
 }
 
-export async function listTeacherClasses(): Promise<TeacherClass[]> {
-  return classes.filter((item) => !item.archivedAt);
+export function canUseRegionActivity(access: ClassRegionAccessMode, activity: 'field_guide' | 'quick_check' | 'warm_up' | 'exam_practice' | 'guardian' | 'mastery_progression'): boolean {
+  if (activity === 'field_guide') return true;
+  return access === 'open';
+}
+
+export async function listTeacherClasses(teacherId = 'teacher-hypatia'): Promise<TeacherClass[]> {
+  return classRecords
+    .filter((item) => item.status === 'active' && item.teacherId === teacherId)
+    .map(toTeacherClass);
 }
 
 export async function getTeacherClassDashboard(classId: string): Promise<TeacherClassDashboard> {
   return buildDashboard(classId);
+}
+
+export async function getTeacherClassDashboardForTeacher(teacherId: string, classId: string): Promise<TeacherClassDashboard | undefined> {
+  const classRecord = classRecords.find((item) => item.id === classId && item.teacherId === teacherId && item.status === 'active');
+  return classRecord ? buildDashboard(classRecord.id) : undefined;
 }
 
 export async function getClassRegionSignals(classId: string): Promise<RegionLearningSignal[]> {
@@ -630,11 +868,162 @@ export async function getStudentEvidence(studentId: string): Promise<EvidenceRef
 }
 
 export async function listAdminTeachers(): Promise<AdminTeacherSummary[]> {
-  return adminTeachers;
+  return teacherRecords.map((teacher) => ({
+    id: teacher.id,
+    displayName: teacher.name,
+    email: teacher.email,
+    classCount: classRecords.filter((item) => item.teacherId === teacher.id && item.status === 'active').length,
+    lastActivityAt: teacher.updatedAt,
+    status: teacher.status,
+  }));
+}
+
+export async function listAdminTeacherRecords(): Promise<AdminTeacherRecord[]> {
+  return teacherRecords.map((teacher) => ({ ...teacher, assignedClassIds: [...teacher.assignedClassIds] }));
 }
 
 export async function listAdminClasses(): Promise<TeacherClass[]> {
-  return classes;
+  return classRecords.map(toTeacherClass);
+}
+
+export async function listAdminClassRecords(): Promise<AdminClassRecord[]> {
+  return classRecords.map((classRecord) => ({
+    ...classRecord,
+    rosterStudentIds: [...classRecord.rosterStudentIds],
+    regionAccess: classRecord.regionAccess.map((access) => ({ ...access })),
+  }));
+}
+
+export async function addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive' }): Promise<AdminTeacherRecord> {
+  const id = `teacher-${input.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || teacherRecords.length + 1}`;
+  const teacher: AdminTeacherRecord = {
+    id,
+    name: input.name.trim(),
+    email: input.email.trim(),
+    assignedClassIds: [],
+    status: input.status ?? 'active',
+    createdAt: now,
+    updatedAt: now,
+  };
+  teacherRecords.push(teacher);
+  return { ...teacher, assignedClassIds: [] };
+}
+
+export async function addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code: string }): Promise<AdminClassRecord> {
+  const teacher = teacherRecords.find((item) => item.id === input.teacherId && item.status === 'active');
+  if (!teacher) throw new Error('Class must be assigned to one active teacher.');
+  const id = `class-${input.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || classRecords.length + 1}`;
+  const classCode: ClassCodeRecord = { id: `code-${id}`, classId: id, code: input.code.trim(), status: 'active', createdAt: now };
+  const classRecord: AdminClassRecord = {
+    id,
+    name: input.name.trim(),
+    teacherId: teacher.id,
+    focus: 'CAIE 9709 P3',
+    academicYearTerm: input.academicYearTerm.trim(),
+    status: 'active',
+    classCode,
+    rosterStudentIds: [],
+    regionAccess: buildRegionAccess(['algebra-forge'], 'admin'),
+    createdAt: now,
+    updatedAt: now,
+  };
+  classRecords.push(classRecord);
+  classCodes.push(classCode);
+  teacher.assignedClassIds.push(id);
+  teacher.updatedAt = now;
+  return {
+    ...classRecord,
+    rosterStudentIds: [],
+    regionAccess: classRecord.regionAccess.map((access) => ({ ...access })),
+  };
+}
+
+export async function getTeacherClassRoster(teacherId: string, classId: string): Promise<TeacherClassRoster | undefined> {
+  const classRecord = classRecords.find((item) => item.id === classId && item.teacherId === teacherId && item.status === 'active');
+  return classRecord ? rosterForClass(classRecord.id) : undefined;
+}
+
+export async function addRosterStudent(teacherId: string, classId: string, displayName: string): Promise<ClassRosterStudent | undefined> {
+  const classRecord = classRecords.find((item) => item.id === classId && item.teacherId === teacherId && item.status === 'active');
+  if (!classRecord) return undefined;
+  const id = `roster-${classId}-${displayName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || rosterStudents.length + 1}`;
+  const student: ClassRosterStudent = {
+    id,
+    classId,
+    displayName: displayName.trim(),
+    status: 'unclaimed',
+    createdAt: now,
+    updatedAt: now,
+  };
+  rosterStudents.push(student);
+  classRecord.rosterStudentIds.push(student.id);
+  classRecord.updatedAt = now;
+  return { ...student };
+}
+
+export async function archiveRosterStudent(teacherId: string, classId: string, rosterStudentId: string): Promise<ClassRosterStudent | undefined> {
+  const classRecord = classRecords.find((item) => item.id === classId && item.teacherId === teacherId && item.status === 'active');
+  if (!classRecord) return undefined;
+  const student = rosterStudents.find((item) => item.id === rosterStudentId && item.classId === classId);
+  if (!student) return undefined;
+  student.status = 'archived';
+  student.archivedAt = now;
+  student.updatedAt = now;
+  return { ...student };
+}
+
+export async function setClassRegionAccess(input: {
+  actorRole: 'admin' | 'teacher';
+  actorTeacherId?: string;
+  classId: string;
+  regionId: string;
+  access: ClassRegionAccessMode;
+}): Promise<ClassRegionAccess | undefined> {
+  if (!isValidP3RegionId(input.regionId)) return undefined;
+  const classRecord = classRecords.find((item) => item.id === input.classId);
+  if (!classRecord) return undefined;
+  if (input.actorRole === 'teacher' && classRecord.teacherId !== input.actorTeacherId) return undefined;
+  const region = P3_REGION_DEFINITIONS.find((item) => item.id === input.regionId);
+  const access = classRecord.regionAccess.find((item) => item.regionId === input.regionId);
+  if (!access || !region) return undefined;
+  access.access = input.access;
+  access.regionName = region.name;
+  access.openedAt = input.access === 'open' ? now : undefined;
+  access.lockedAt = input.access === 'field_guide_only' ? now : undefined;
+  access.updatedByRole = input.actorRole;
+  access.updatedAt = now;
+  classRecord.updatedAt = now;
+  return { ...access };
+}
+
+export async function claimRosterSlotByClassCode(input: { classCode: string; displayName: string; optionalEmail?: string }): Promise<StudentClaimState> {
+  const classCode = classCodes.find((item) => item.code.toLowerCase() === input.classCode.trim().toLowerCase() && item.status === 'active');
+  if (!classCode) return { status: 'invalid_class_code', message: 'Enter a valid class code from your teacher.' };
+  const classRecord = classRecords.find((item) => item.id === classCode.classId);
+  const teacher = teacherRecords.find((item) => item.id === classRecord?.teacherId);
+  const claimContext = {
+    classId: classCode.classId,
+    className: classRecord?.name,
+    classCode: classCode.code,
+    teacherId: teacher?.id,
+    teacherName: teacher?.name,
+  };
+  const rosterStudent = rosterStudents.find((student) => (
+    student.classId === classCode.classId
+    && student.displayName.toLowerCase() === input.displayName.trim().toLowerCase()
+  ));
+  if (!rosterStudent) return { status: 'roster_name_not_found', ...claimContext, message: 'Ask your teacher to add your name to the roster first.' };
+  if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher for help.' };
+  if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed.' };
+  rosterStudent.status = 'claimed';
+  rosterStudent.claimedAt = now;
+  rosterStudent.optionalEmail = input.optionalEmail;
+  rosterStudent.updatedAt = now;
+  return { status: 'claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'Roster slot claimed. Optional details can be added later.' };
+}
+
+export function canStudentAccessApp(claim: StudentClaimState | undefined): boolean {
+  return claim?.status === 'claimed' || claim?.status === 'already_claimed';
 }
 
 export async function listAdminAuditEvents(): Promise<AdminAuditEvent[]> {

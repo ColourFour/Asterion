@@ -10330,6 +10330,107 @@ legend {
   background: #eff8ff !important;
 }
 
+.access-locked,
+.region-locked-cell {
+  border-color: #667085 !important;
+  background: #f2f4f7 !important;
+}
+
+.class-code-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 8px;
+  background: var(--dashboard-surface-accent);
+  color: var(--dashboard-ink);
+  font-size: 0.92rem;
+}
+
+.dashboard-inline-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.dashboard-inline-form input,
+.dashboard-inline-form select {
+  min-width: 0;
+}
+
+.dashboard-nested-panel {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: var(--dashboard-surface-muted);
+}
+
+.admin-region-access-list,
+.roster-table-wrap {
+  display: grid;
+  gap: 12px;
+}
+
+.region-access-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.region-access-grid label {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  gap: 3px 8px;
+  align-items: start;
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.region-access-grid label small {
+  grid-column: 2;
+  color: var(--dashboard-ink-muted);
+  font-weight: 750;
+}
+
+.region-access-grid .access-open {
+  border-color: #8bbdb7;
+  background: #e8f3f1;
+}
+
+.region-access-grid .access-locked {
+  border-color: #d0d5dd;
+  background: #f2f4f7;
+}
+
+.roster-management-section,
+.class-region-access-section {
+  display: grid;
+  gap: 12px;
+}
+
+.compact-roster-table {
+  width: 100%;
+}
+
+.compact-roster-table th,
+.compact-roster-table td {
+  min-width: 120px;
+  max-width: none;
+}
+
+.archived-row th,
+.archived-row td {
+  color: var(--dashboard-ink-muted);
+  background: #f2f4f7 !important;
+}
+
 .teacher-main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -10485,6 +10586,47 @@ legend {
   font-size: 0.82rem;
 }
 
+.class-code-claim-form {
+  align-self: start;
+}
+
+.claim-form-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.claim-form-heading h2,
+.claim-form-heading p {
+  margin: 0;
+}
+
+.claim-form-heading h2 {
+  color: #f8fafc;
+  font-size: 1.3rem;
+}
+
+.claim-form-heading p,
+.claim-state-message {
+  color: #d6e3f0;
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.claim-state-message {
+  margin: 0;
+}
+
+.claim-claimed,
+.claim-already_claimed {
+  color: #b7f7d0;
+}
+
+.claim-invalid_class_code,
+.claim-roster_name_not_found,
+.claim-archived {
+  color: #fecaca;
+}
+
 @media (max-width: 900px) {
   .app-view-dashboard .dashboard-topbar,
   .app-view-dashboard .dashboard-control-row,
@@ -10495,6 +10637,8 @@ legend {
   .app-view-dashboard .admin-grid,
   .app-view-dashboard .teacher-class-header,
   .app-view-dashboard .teacher-class-actions,
+  .dashboard-inline-form,
+  .region-access-grid,
   .class-snapshot-grid,
   .teacher-main-grid {
     grid-template-columns: 1fr;

@@ -1,13 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import {
+  addRosterStudent,
+  archiveRosterStudent,
+  canStudentAccessApp,
+  canUseRegionActivity,
+  claimRosterSlotByClassCode,
   generateTeacherCsvExport,
   getClassRegionSignals,
   getStudentEvidence,
   getStudentSummaries,
   getTeacherClassDashboard,
+  getTeacherClassDashboardForTeacher,
+  getTeacherClassRoster,
   groupStudentsByNextStep,
+  listAdminClassRecords,
   listAdminAuditEvents,
   listAdminClasses,
+  listAdminTeacherRecords,
   listAdminTeachers,
   listTeacherClasses,
 } from '../lib/dashboardMockService';
@@ -28,11 +37,14 @@ describe('dashboard mock service', () => {
     const dashboard = await getTeacherClassDashboard(classes[0].id);
     expect(dashboard.class.id).toBe(classes[0].id);
     expect(dashboard.progressSummary.studentCount).toBeGreaterThan(0);
+    expect(dashboard.progressSummary.lockedRegionCount).toBeGreaterThan(0);
     expect(dashboard.regionSummaries.length).toBeGreaterThan(0);
     expect(dashboard.studentRows.length).toBeGreaterThan(0);
     expect(dashboard.focusThisWeek.length).toBe(3);
     expect(dashboard.weeklySummary.className).toBe(dashboard.class.name);
     expect(dashboard.exportRows.length).toBe(dashboard.studentRows.length);
+    expect(dashboard.roster.students.some((student) => student.status === 'unclaimed')).toBe(true);
+    expect(dashboard.classCode.code).toMatch(/^AST-/);
     expect(dashboard.actionCards[0].evidenceRefs[0]).toMatchObject({
       questionId: expect.any(String),
       regionId: expect.any(String),
@@ -47,7 +59,7 @@ describe('dashboard mock service', () => {
     const dashboard = await getTeacherClassDashboard('class-p3-alpha');
     const grouped = groupStudentsByNextStep(dashboard.studentSummaries);
 
-    expect(grouped.needs_field_guide.length).toBeGreaterThan(0);
+    expect(grouped.needs_warm_up.length + grouped.needs_teacher_review.length).toBeGreaterThan(0);
     expect(dashboard.studentSummaries.length).toBe(dashboard.studentRows.length);
     expect(dashboard.studentRows.find((student) => student.displayName === 'Nora P.')?.guardianEligibleRegionCount).toBeGreaterThan(0);
     expect(grouped.needs_teacher_review.length).toBeGreaterThan(0);
@@ -68,6 +80,57 @@ describe('dashboard mock service', () => {
     ]));
   });
 
+  it('renders admin teacher and class records with exactly one teacher per class and class codes', async () => {
+    const teachers = await listAdminTeacherRecords();
+    const classes = await listAdminClassRecords();
+    const teacherIds = new Set(teachers.map((teacher) => teacher.id));
+
+    expect(teachers.length).toBeGreaterThanOrEqual(2);
+    expect(classes.filter((item) => item.status === 'active').length).toBeGreaterThanOrEqual(2);
+    expect(classes.some((item) => item.status === 'archived')).toBe(true);
+
+    for (const classRecord of classes) {
+      expect(classRecord.teacherId).toEqual(expect.any(String));
+      expect(teacherIds.has(classRecord.teacherId)).toBe(true);
+      expect(classRecord.classCode.code).toEqual(expect.any(String));
+      expect(classRecord.classCode.classId).toBe(classRecord.id);
+    }
+  });
+
+  it('limits teacher roster and class management to assigned classes', async () => {
+    const hypatiaClasses = await listTeacherClasses('teacher-hypatia');
+    const noetherClasses = await listTeacherClasses('teacher-noether');
+
+    expect(hypatiaClasses.every((teacherClass) => teacherClass.teacherId === 'teacher-hypatia')).toBe(true);
+    expect(noetherClasses.every((teacherClass) => teacherClass.teacherId === 'teacher-noether')).toBe(true);
+    await expect(getTeacherClassDashboardForTeacher('teacher-noether', 'class-p3-alpha')).resolves.toBeUndefined();
+    await expect(getTeacherClassDashboardForTeacher('teacher-hypatia', 'class-p3-alpha')).resolves.toMatchObject({
+      class: expect.objectContaining({ id: 'class-p3-alpha' }),
+    });
+  });
+
+  it('keeps roster slots teacher-created, claimable by class code, and archive-not-delete', async () => {
+    const before = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    expect(before?.students.some((student) => student.status === 'archived')).toBe(true);
+
+    const denied = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Self Added Student' });
+    expect(denied.status).toBe('roster_name_not_found');
+    expect(canStudentAccessApp(denied)).toBe(false);
+
+    const added = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Test Roster Student');
+    expect(added).toMatchObject({ status: 'unclaimed' });
+
+    const claimed = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Test Roster Student', optionalEmail: 'test@example.student' });
+    expect(claimed.status).toBe('claimed');
+    expect(canStudentAccessApp(claimed)).toBe(true);
+
+    const archived = await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', added!.id);
+    expect(archived).toMatchObject({ status: 'archived', archivedAt: expect.any(String) });
+
+    const after = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    expect(after?.students.find((student) => student.id === added!.id)?.status).toBe('archived');
+  });
+
   it('keeps mock dashboard region IDs aligned with canonical P3 region IDs', async () => {
     const classes = await listTeacherClasses();
     for (const teacherClass of classes) {
@@ -81,6 +144,10 @@ describe('dashboard mock service', () => {
 
       for (const region of dashboard.regionSummaries) {
         expect(isValidP3RegionId(region.regionId), region.regionId).toBe(true);
+      }
+
+      for (const access of dashboard.regionAccess) {
+        expect(isValidP3RegionId(access.regionId), access.regionId).toBe(true);
       }
 
       for (const row of dashboard.studentRows) {
@@ -115,7 +182,10 @@ describe('dashboard mock service', () => {
     expect(dashboard.weeklySummary.suggestedTeacherActions.length).toBe(3);
     expect(dashboard.exportRows[0]).toMatchObject({
       className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherName: 'Ms Hypatia',
       studentName: expect.any(String),
+      rosterStatus: expect.any(String),
       overallProgressPercent: expect.any(Number),
       currentFocusRegion: expect.any(String),
       attemptsCount: expect.any(Number),
@@ -125,6 +195,37 @@ describe('dashboard mock service', () => {
     const csv = generateTeacherCsvExport(dashboard.exportRows);
     expect(csv).toContain('"className"');
     expect(csv).toContain('"Algebra Vault progress"');
+    expect(csv).toContain('"Algebra Vault access"');
+    expect(csv).toContain('"Argand Atrium excluded from class progress"');
     expect(csv).toContain('"P3 Alpha"');
+  });
+
+  it('excludes locked regions from progress pressure while preserving visible evidence', async () => {
+    const dashboard = await getTeacherClassDashboard('class-p3-alpha');
+    const lockedRegion = dashboard.regionSummaries.find((region) => region.regionId === 'complex-harbor');
+    const mika = dashboard.studentRows.find((row) => row.displayName === 'Mika C.');
+    const mikaComplex = mika?.regionCells.find((cell) => cell.regionId === 'complex-harbor');
+
+    expect(lockedRegion).toMatchObject({
+      access: 'field_guide_only',
+      excludedFromClassProgress: true,
+      accessLabel: 'Field Guide only',
+    });
+    expect(lockedRegion?.averageProgressPercent).toBeGreaterThan(0);
+    expect(mikaComplex).toMatchObject({
+      attemptsCount: 1,
+      excludedFromClassProgress: true,
+    });
+    expect(mika?.warnings.some((warning) => warning.includes('Argand Atrium'))).toBe(false);
+  });
+
+  it('models locked region activity permissions as Field Guide only', () => {
+    expect(canUseRegionActivity('field_guide_only', 'field_guide')).toBe(true);
+    expect(canUseRegionActivity('field_guide_only', 'quick_check')).toBe(false);
+    expect(canUseRegionActivity('field_guide_only', 'warm_up')).toBe(false);
+    expect(canUseRegionActivity('field_guide_only', 'exam_practice')).toBe(false);
+    expect(canUseRegionActivity('field_guide_only', 'guardian')).toBe(false);
+    expect(canUseRegionActivity('field_guide_only', 'mastery_progression')).toBe(false);
+    expect(canUseRegionActivity('open', 'guardian')).toBe(true);
   });
 });

@@ -56,6 +56,12 @@ async function render(ui: ReactNode): Promise<HTMLElement> {
   return container;
 }
 
+function setInputValue(input: HTMLInputElement, value: string) {
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+  setter?.call(input, value);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
 beforeEach(() => {
   localStorage.clear();
 });
@@ -84,6 +90,8 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Overall progress');
     expect(container.textContent).toContain('Focus this week');
     expect(container.textContent).toContain('Class progress register');
+    expect(container.textContent).toContain('Class code and student roster');
+    expect(container.textContent).toContain('Open or lock P3 regions');
     expect(container.textContent).toContain('Export CSV');
     expect(container.textContent).not.toContain('Enter Astral Academy');
   });
@@ -99,16 +107,51 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('Needs help');
     expect(container.textContent).toContain('Weekly email preview');
     expect(container.textContent).toContain('Ada L.');
+    expect(container.textContent).toContain('Locked / not taught yet');
+    expect(container.textContent).toContain('Field Guide only');
   });
 
-  it('renders the admin console with disabled support actions', async () => {
+  it('renders the admin console with teacher and class setup records', async () => {
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
 
     expect(container.querySelector('h1')?.textContent).toBe('Admin Console');
     expect(container.textContent).toContain('Teacher list');
+    expect(container.textContent).toContain('Add teacher');
+    expect(container.textContent).toContain('Add class');
+    expect(container.textContent).toContain('Class code AST-P3A');
+    expect(container.textContent).toContain('Admin view and override');
     expect(container.textContent).toContain('Recent admin audit events');
-    expect(Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Archive class'))?.disabled).toBe(true);
+  });
+
+  it('adds teacher and class records from the admin forms', async () => {
+    window.history.replaceState(null, '', '/#/admin');
+    const container = await render(<App />);
+
+    const teacherForm = container.querySelector('form[aria-label="Add teacher"]') as HTMLFormElement;
+    const [teacherName, teacherEmail] = Array.from(teacherForm.querySelectorAll('input'));
+    await act(async () => {
+      setInputValue(teacherName, 'Dr Curie');
+      setInputValue(teacherEmail, 'curie@example.school');
+      teacherForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('Dr Curie');
+
+    const classForm = container.querySelector('form[aria-label="Add class"]') as HTMLFormElement;
+    const classInputs = Array.from(classForm.querySelectorAll('input'));
+    await act(async () => {
+      setInputValue(classInputs[0], 'P3 Delta');
+      setInputValue(classInputs[2], 'AST-P3D');
+      classForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('P3 Delta');
+    expect(container.textContent).toContain('Class code AST-P3D');
   });
 
   it('keeps Teacher/Admin/Student app navigation reachable from dashboard routes', async () => {
@@ -135,7 +178,8 @@ describe('dashboard routes', () => {
     expect(window.location.pathname).toBe('/');
     expect(window.location.hash).toBe('');
     expect(container.querySelector('.dashboard-shell')).toBeNull();
-    expect(container.textContent).toContain('Enter Astral Academy');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
   });
 
   it('still accepts path dashboard routes when the host provides an SPA fallback', async () => {

@@ -132,24 +132,51 @@ describe('Asterion intro page', () => {
     expect(emblem?.querySelector('.emblem-letter')?.textContent).toBe('A');
     expect(emblem?.querySelector('.emblem-orbit-star')).toBeTruthy();
 
-    expect(container.textContent).toContain('Student real name');
-    expect(container.textContent).toContain('Class/group');
-    expect(container.textContent).toContain('Teacher name');
-    expect(container.textContent).toContain('Character name');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Join your teacher');
+    expect(container.textContent).toContain('Class code');
+    expect(container.textContent).toContain('Roster name');
     expect(Array.from(container.querySelectorAll('button')).some((button) => (
-      button.textContent?.includes('Enter Astral Academy')
+      button.textContent?.includes('Claim roster slot')
     ))).toBe(true);
   });
 
-  it('keeps the Enter Astral Academy submit flow wired to local progress', async () => {
+  it('requires a valid class-code roster claim before saving local progress', async () => {
     const container = await render(<App />);
 
-    setInputValue(inputForLabel(container, 'Student real name'), 'Ada Lovelace');
-    setInputValue(inputForLabel(container, 'Class/group'), 'P3 Alpha');
-    setInputValue(inputForLabel(container, 'Teacher name'), 'Ms Hypatia');
+    setInputValue(inputForLabel(container, 'Class code'), 'AST-P3A');
+    setInputValue(inputForLabel(container, 'Roster name'), 'Student Not On Roster');
+
+    const claimForm = container.querySelector('form[aria-label="Claim class roster slot"]');
+    expect(claimForm).toBeTruthy();
+
+    await act(async () => {
+      claimForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('Ask your teacher to add your name to the roster first.');
+    expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeNull();
+
+    setInputValue(inputForLabel(container, 'Roster name'), 'Maya Q.');
+
+    await act(async () => {
+      claimForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('Student real name');
+    expect(inputForLabel(container, 'Student real name').value).toBe('Maya Q.');
+    expect(inputForLabel(container, 'Class/group').value).toBe('P3 Alpha');
+    expect(inputForLabel(container, 'Teacher name').value).toBe('Ms Hypatia');
+
     setInputValue(inputForLabel(container, 'Character name'), 'Aster');
 
-    const form = container.querySelector('form');
+    const form = Array.from(container.querySelectorAll('form')).find((candidate) => (
+      candidate.textContent?.includes('Enter Astral Academy')
+    ));
     expect(form).toBeTruthy();
 
     await act(async () => {
@@ -159,10 +186,15 @@ describe('Asterion intro page', () => {
 
     const storedProgress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
     expect(storedProgress.profile).toMatchObject({
-      realName: 'Ada Lovelace',
+      realName: 'Maya Q.',
       classGroup: 'P3 Alpha',
       teacherName: 'Ms Hypatia',
       avatarName: 'Aster',
+      classClaim: expect.objectContaining({
+        status: 'claimed',
+        classCode: 'AST-P3A',
+        displayName: 'Maya Q.',
+      }),
     });
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).not.toContain('Enter Astral Academy');
