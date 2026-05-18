@@ -5,10 +5,15 @@ describe('Supabase integration boundary', () => {
   it('keeps dashboard data routes on the mock service boundary', () => {
     const teacherDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/TeacherDashboard.tsx`, 'utf8');
     const adminDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/AdminDashboard.tsx`, 'utf8');
+    const dashboardDataService = readFileSync(`${process.cwd()}/src/lib/dashboardDataService.ts`, 'utf8');
     const classClaimForm = readFileSync(`${process.cwd()}/src/components/onboarding/ClassCodeClaimForm.tsx`, 'utf8');
 
-    expect(teacherDashboard).toContain("../../lib/dashboardMockService");
-    expect(adminDashboard).toContain("../../lib/dashboardMockService");
+    expect(teacherDashboard).toContain('../../lib/dashboardDataService');
+    expect(adminDashboard).toContain('../../lib/dashboardDataService');
+    expect(teacherDashboard).not.toContain('dashboardMockService');
+    expect(adminDashboard).not.toContain('dashboardMockService');
+    expect(dashboardDataService).toContain('./dashboardMockService');
+    expect(dashboardDataService).toContain('DashboardDataService');
     expect(classClaimForm).toContain("../../lib/dashboardMockService");
     expect(teacherDashboard).not.toContain('supabase');
     expect(classClaimForm).not.toContain('supabase');

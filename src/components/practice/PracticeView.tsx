@@ -75,6 +75,7 @@ interface PracticeViewProps {
   sessionIntent?: TrainingSessionIntent;
   sessionReason?: string;
   guardianPassThreshold?: number;
+  progressionBlockedReason?: string;
   onAttempt: (attempt: Attempt) => void;
   onIssue: (questionId: string, issueType: IssueType, note?: string) => void;
   onReturnToMap?: () => void;
@@ -97,6 +98,7 @@ export function PracticeView({
   sessionIntent,
   sessionReason,
   guardianPassThreshold,
+  progressionBlockedReason,
   onAttempt,
   onIssue,
   onReturnToMap,
@@ -137,7 +139,7 @@ export function PracticeView({
   const trainingBlockers = useMemo(() => (question ? trainingBlockersForQuestion(question) : []), [question]);
   const questionIsTrainable = trainingBlockers.length === 0;
   const markSchemeIsAvailable = markSchemeAvailability === 'available';
-  const canSaveScoredAttempt = questionIsTrainable && markSchemeIsAvailable;
+  const canSaveScoredAttempt = questionIsTrainable && markSchemeIsAvailable && !progressionBlockedReason;
   const isFullScore = Boolean(
     scoreValidation.isValid
     && typeof scoreValidation.earned === 'number'
@@ -150,7 +152,9 @@ export function PracticeView({
     ? fullScoreConfirmed && fullScoreEvidenceNoteIsReady
     : selectedMistakeTypes.length > 0;
   const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && attemptReflectionIsReady);
-  const markSchemeNoticeTitle = questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
+  const markSchemeNoticeTitle = progressionBlockedReason
+    ? 'Region activity locked'
+    : questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
   const scorePreview = useMemo(() => {
     if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
     return Math.round(scoreValidation.scoreRatio * 100);
@@ -352,7 +356,8 @@ export function PracticeView({
             {!canSaveScoredAttempt ? (
               <div className="mark-scheme-unavailable" role="status">
                 <strong>{markSchemeNoticeTitle}</strong>
-                <p>The official mark scheme is unavailable or this record is paused for scoring. Asterion will not save marks, XP, mastery, or avatar progress for this question.</p>
+                <p>{progressionBlockedReason ?? 'The official mark scheme is unavailable or this record is paused for scoring. Asterion will not save marks, XP, mastery, or avatar progress for this question.'}</p>
+                {progressionBlockedReason ? <small>Asterion will not save marks, XP, mastery, guardian clears, or avatar progress for this locked region.</small> : null}
                 {trainingBlockers.length ? <small>Teacher check: {trainingBlockers.join('; ')}</small> : null}
                 {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the canonical mark scheme. Saving unlocks only after it loads.</small> : null}
               </div>

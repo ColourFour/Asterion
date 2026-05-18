@@ -83,7 +83,7 @@ const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' }
 function renderPractice(
   testQuestion: NormalizedQuestion,
   onAttempt = vi.fn<(attempt: Attempt) => void>(),
-  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition } = {},
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string } = {},
 ) {
   const onIssue = options.onIssue ?? vi.fn<(questionId: string, issueType: IssueType, note?: string) => void>();
   return {
@@ -98,6 +98,7 @@ function renderPractice(
         regionProgress={[]}
         avatarLocation={avatarLocation}
         selectedRegion={options.selectedRegion}
+        progressionBlockedReason={options.progressionBlockedReason}
         onAttempt={onAttempt}
         onIssue={onIssue}
         onContinuePractice={options.onContinuePractice}
@@ -177,6 +178,25 @@ describe('PracticeView mark-scheme availability', () => {
 
     expect(container.textContent).toContain('Asterion will not save marks, XP, mastery, or avatar progress for this question.');
     expect(saveAttemptButton(container).disabled).toBe(true);
+  });
+
+  it('blocks locked-region attempts from awarding mastery or progression', () => {
+    const onAttempt = vi.fn<(attempt: Attempt) => void>();
+    const { container } = renderPractice(question(), onAttempt, {
+      progressionBlockedReason: 'Your teacher has opened the Field Guide for this region.',
+    });
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    expect(container.textContent).toContain('Region activity locked');
+    expect(container.textContent).toContain('Asterion will not save marks, XP, mastery, guardian clears, or avatar progress for this locked region.');
+    expect(saveAttemptButton(container).disabled).toBe(true);
+
+    act(() => {
+      container.querySelector<HTMLFormElement>('.attempt-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    expect(onAttempt).not.toHaveBeenCalled();
   });
 });
 

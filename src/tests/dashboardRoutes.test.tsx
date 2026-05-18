@@ -75,6 +75,10 @@ async function render(ui: ReactNode): Promise<HTMLElement> {
   return container;
 }
 
+function enableDashboardDemo() {
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', 'enabled');
+}
+
 function setInputValue(input: HTMLInputElement, value: string) {
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
   setter?.call(input, value);
@@ -82,6 +86,7 @@ function setInputValue(input: HTMLInputElement, value: string) {
 }
 
 beforeEach(() => {
+  vi.unstubAllEnvs();
   localStorage.clear();
   sessionStorage.clear();
   vi.clearAllMocks();
@@ -103,7 +108,69 @@ afterEach(() => {
 });
 
 describe('dashboard routes', () => {
-  it('renders the teacher dashboard before student onboarding', async () => {
+  it('keeps the normal student onboarding route rendering by default', async () => {
+    window.history.replaceState(null, '', '/');
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Teacher class dashboard');
+    expect(container.textContent).not.toContain('Admin Console');
+    expect(container.textContent).not.toContain('Demo dashboard disabled');
+  });
+
+  it('does not expose teacher dashboard routes by default', async () => {
+    window.history.replaceState(null, '', '/#/teacher');
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Demo dashboard disabled');
+    expect(container.textContent).toContain('teacher dashboard is a private demo route');
+    expect(container.textContent).toContain('VITE_ASTERION_DASHBOARD_DEMO=enabled');
+    expect(container.textContent).toContain('Student app');
+    expect(container.textContent).not.toContain('Teacher class dashboard');
+    expect(container.textContent).not.toContain('Class progress register');
+    expect(container.textContent).not.toContain('Export CSV');
+  });
+
+  it('does not expose admin dashboard routes by default', async () => {
+    window.history.replaceState(null, '', '/#/admin');
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Demo dashboard disabled');
+    expect(container.textContent).toContain('admin console is a private demo route');
+    expect(container.textContent).toContain('VITE_ASTERION_DASHBOARD_DEMO=enabled');
+    expect(container.textContent).not.toContain('Admin Console');
+    expect(container.textContent).not.toContain('Teacher list');
+    expect(container.textContent).not.toContain('Admin view and override');
+  });
+
+  it('requires the explicit demo flag before dashboards can render before onboarding', async () => {
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
+    let container = await render(<App />);
+
+    expect(container.textContent).toContain('Demo dashboard disabled');
+    expect(container.textContent).not.toContain('Class progress register');
+
+    for (const root of mountedRoots.splice(0)) {
+      act(() => {
+        root.unmount();
+      });
+    }
+    for (const mountedContainer of mountedContainers.splice(0)) {
+      mountedContainer.remove();
+    }
+    document.body.innerHTML = '';
+
+    enableDashboardDemo();
+    container = await render(<App />);
+
+    expect(container.textContent).toContain('Teacher class dashboard');
+    expect(container.textContent).toContain('Class progress register');
+    expect(container.textContent).not.toContain('Class access required');
+  });
+
+  it('renders the teacher dashboard before student onboarding when demo access is enabled', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
 
@@ -121,6 +188,7 @@ describe('dashboard routes', () => {
   });
 
   it('renders teacher class detail as a student register with region cells', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
 
@@ -136,6 +204,7 @@ describe('dashboard routes', () => {
   });
 
   it('opens class code and roster management on a separate teacher page', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
     const container = await render(<App />);
 
@@ -148,6 +217,7 @@ describe('dashboard routes', () => {
   });
 
   it('opens a clicked teacher region as a student progress detail page', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
 
@@ -167,6 +237,7 @@ describe('dashboard routes', () => {
   });
 
   it('renders the admin console with teacher and class setup records', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
 
@@ -182,6 +253,7 @@ describe('dashboard routes', () => {
   });
 
   it('runs the admin Supabase diagnostic only when requested', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
 
@@ -202,6 +274,7 @@ describe('dashboard routes', () => {
   });
 
   it('adds teacher and class records from the admin forms', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
 
@@ -232,6 +305,7 @@ describe('dashboard routes', () => {
   });
 
   it('keeps Teacher/Admin/Student app navigation reachable from dashboard routes', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
 
@@ -262,6 +336,7 @@ describe('dashboard routes', () => {
   });
 
   it('still accepts path dashboard routes when the host provides an SPA fallback', async () => {
+    enableDashboardDemo();
     window.history.replaceState(null, '', '/teacher');
     const container = await render(<App />);
 

@@ -15,6 +15,7 @@ import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
 import { resolveRuntimeConfig } from './lib/appConfig';
+import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, getProgressStorageAdapter } from './lib/progressStore';
@@ -53,6 +54,32 @@ function parseDashboardRoute(pathname: string, hash: string): TeacherDashboardRo
   const teacherClassMatch = routePath.match(/^\/teacher\/classes\/([^/]+)$/);
   if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], page: 'class' };
   return { kind: 'student' };
+}
+
+function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'teacher' | 'admin'; onNavigatePath: (path: string) => void }) {
+  return (
+    <main className="app-shell onboarding-shell">
+      <TwinklingStarfield />
+      <section className="intro-panel academy-admission">
+        <div className="intro-copy">
+          <span className="mode-pill">Demo dashboard disabled</span>
+          <h1>Asterion</h1>
+          <p>
+            The {routeKind === 'teacher' ? 'teacher dashboard' : 'admin console'} is a private demo route and is not
+            available in this build.
+          </p>
+        </div>
+        <div className="onboarding-briefing">
+          <strong>Student app active</strong>
+          <span>Normal Paper 3 practice still runs locally without Supabase or hosted classroom access.</span>
+          <span>Set VITE_ASTERION_DASHBOARD_DEMO=enabled only for an intentional local dashboard demo.</span>
+        </div>
+        <button className="primary-button" type="button" onClick={() => onNavigatePath('/')}>
+          Student app
+        </button>
+      </section>
+    </main>
+  );
 }
 
 export default function App() {
@@ -171,6 +198,9 @@ export default function App() {
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
+  const selectedRegionAccess = useMemo(() => (
+    selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id) : undefined
+  ), [progress.profile, selectedRegion]);
   const selectedRegionTeachingSnippets = useMemo(() => (
     selectedRegion
       ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion)
@@ -277,6 +307,11 @@ export default function App() {
   }
 
   function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
+    const access = getStudentRegionAccess(progress.profile, region.id);
+    if (!canStudentUseRegionActivity(access, 'exam_practice')) {
+      openRegionPage(region, 'hub');
+      return;
+    }
     setSelectedRegion(region);
     setTrainingIntent(intent);
     setViewMode('target_topic');
@@ -289,6 +324,11 @@ export default function App() {
   }
 
   function challengeGuardian(region: RegionDefinition, question: NormalizedQuestion) {
+    const access = getStudentRegionAccess(progress.profile, region.id);
+    if (!canStudentUseRegionActivity(access, 'guardian')) {
+      openRegionPage(region, 'hub');
+      return;
+    }
     setSelectedRegion(region);
     setTrainingIntent(undefined);
     setViewMode('guardian');
@@ -353,6 +393,14 @@ export default function App() {
     clearPendingClassClaim();
     setStudentClassClaim(undefined);
     setProgress(nextProgress);
+  }
+
+  if (dashboardRoute.kind === 'teacher' && !runtimeConfig.dashboardDemoEnabled) {
+    return <DisabledDashboardRoute routeKind="teacher" onNavigatePath={navigatePath} />;
+  }
+
+  if (dashboardRoute.kind === 'admin' && !runtimeConfig.dashboardDemoEnabled) {
+    return <DisabledDashboardRoute routeKind="admin" onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'teacher') {
@@ -475,8 +523,13 @@ export default function App() {
           learningActivityAttempts={progress.learningActivityAttempts.filter((attempt) => attempt.regionId === selectedRegion.id)}
           profileId={progress.profile.id}
           summary={selectedRegionLearningSummary}
+          studentRegionAccess={selectedRegionAccess}
           onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
-          onLearningActivityAttempt={(attempt: LearningActivityAttempt) => setProgress(progressAdapter.addLearningActivityAttempt(attempt))}
+          onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
+            const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
+            if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
+            setProgress(progressAdapter.addLearningActivityAttempt(attempt));
+          }}
           onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
           onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
           activePage={selectedRegionPage}
@@ -517,7 +570,11 @@ export default function App() {
             ? 'You are challenging the Region Guardian because your saved local evidence unlocked this check.'
             : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
           guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
+          progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
+            ? lockedRegionMessage(selectedRegionAccess)
+            : undefined}
           onAttempt={(attempt: Attempt) => {
+            if (selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')) return;
             const evidenceAttempt: Attempt = {
               ...attempt,
               masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,

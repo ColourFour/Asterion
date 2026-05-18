@@ -7,6 +7,7 @@ import {
   claimRosterSlotByClassCode,
   generateTeacherCsvExport,
   getClassRegionSignals,
+  getClassRegionAccess,
   getStudentEvidence,
   getStudentSummaries,
   getTeacherClassDashboard,
@@ -318,6 +319,10 @@ describe('dashboard mock service', () => {
   });
 
   it('models locked region activity permissions as Field Guide only', () => {
+    const classAccess = getClassRegionAccess('class-p3-alpha');
+    expect(classAccess.find((access) => access.regionId === 'algebra-forge')?.access).toBe('open');
+    expect(classAccess.find((access) => access.regionId === 'complex-harbor')?.access).toBe('field_guide_only');
+
     expect(canUseRegionActivity('field_guide_only', 'field_guide')).toBe(true);
     expect(canUseRegionActivity('field_guide_only', 'quick_check')).toBe(false);
     expect(canUseRegionActivity('field_guide_only', 'warm_up')).toBe(false);

@@ -12,6 +12,7 @@ import { getRegionTheme, type RegionTheme } from '../../lib/regionThemes';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
 import { getRegionHubAsset, getRegionHubAssetDimensions } from '../../lib/regionAssets';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
+import { canStudentUseRegionActivity, lockedRegionMessage, type StudentRegionAccess } from '../../lib/classRegionAccess';
 import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
@@ -30,6 +31,7 @@ interface RegionHubProps {
   learningActivityAttempts?: LearningActivityAttempt[];
   profileId?: string;
   summary: RegionLearningSummary;
+  studentRegionAccess?: StudentRegionAccess;
   onCompleteFieldGuide: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
   onStartTraining: (intent: TrainingSessionIntent) => void;
@@ -95,6 +97,7 @@ export function RegionHub({
   learningActivityAttempts = [],
   profileId,
   summary,
+  studentRegionAccess,
   onCompleteFieldGuide,
   onLearningActivityAttempt,
   onStartTraining,
@@ -106,6 +109,11 @@ export function RegionHub({
   const { region } = regionProgress;
   const theme = getRegionTheme(region);
   const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
+  const canUseQuickCheck = canStudentUseRegionActivity(studentRegionAccess, 'quick_check');
+  const canUseWarmUp = canStudentUseRegionActivity(studentRegionAccess, 'warm_up');
+  const canUseExamPractice = canStudentUseRegionActivity(studentRegionAccess, 'exam_practice');
+  const canUseGuardian = canStudentUseRegionActivity(studentRegionAccess, 'guardian');
+  const accessLocked = !canUseExamPractice;
   const guardianQuestion = summary.guardianEligibility.guardianQuestion;
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
@@ -137,7 +145,7 @@ export function RegionHub({
             maxInitialSnippets={Math.max(2, teachingSnippets.length)}
             onCompleteFieldGuide={onCompleteFieldGuide}
             onBackToRegionHub={() => onNavigatePage?.('hub')}
-            onContinueToQuickChecks={() => onNavigatePage?.('quick-check')}
+            onContinueToQuickChecks={canUseQuickCheck ? () => onNavigatePage?.('quick-check') : undefined}
           />
         </div>
       </RegionLearningLayout>
@@ -149,6 +157,7 @@ export function RegionHub({
       {activePage === 'hub' ? (
         <RegionHubHome
           canTrain={canTrain}
+          accessLocked={accessLocked}
           fieldGuideCompleted={fieldGuideCompleted}
           generatedPracticeCount={generatedPractice.length}
           guardianCleared={guardianCleared}
@@ -156,6 +165,7 @@ export function RegionHub({
           regionProgress={regionProgress}
           stateLabel={stateLabels[summary.state] ?? summary.state}
           summary={summary}
+          studentRegionAccess={studentRegionAccess}
           theme={theme}
           onNavigatePage={onNavigatePage}
           onReturnToMap={onReturnToMap}
@@ -176,47 +186,55 @@ export function RegionHub({
 
           <div className={`region-page-shell region-page-${activePage}`}>
             {activePage === 'quick-check' ? (
-              <QuickChecksPanel
-                teachingSnippets={teachingSnippets}
-                region={region}
-                profileId={profileId}
-                activityAttempts={learningActivityAttempts}
-                maxInitialItems={Math.max(2, quickCheckCount)}
-                onContinueToWarmUp={() => onNavigatePage?.('warm-up')}
-                onContinueToExamPractice={() => onNavigatePage?.('exam-training')}
-                onLearningActivityAttempt={onLearningActivityAttempt}
-              />
+              canUseQuickCheck ? (
+                <QuickChecksPanel
+                  teachingSnippets={teachingSnippets}
+                  region={region}
+                  profileId={profileId}
+                  activityAttempts={learningActivityAttempts}
+                  maxInitialItems={Math.max(2, quickCheckCount)}
+                  onContinueToWarmUp={canUseWarmUp ? () => onNavigatePage?.('warm-up') : undefined}
+                  onContinueToExamPractice={canUseExamPractice ? () => onNavigatePage?.('exam-training') : undefined}
+                  onLearningActivityAttempt={onLearningActivityAttempt}
+                />
+              ) : <LockedRegionActivityPanel activityLabel="Quick Checks" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
             {activePage === 'warm-up' ? (
-              <WarmUpPracticePanel
-                practiceItems={generatedPractice}
-                region={region}
-                profileId={profileId}
-                activityAttempts={learningActivityAttempts}
-                maxInitialItems={3}
-                onContinueToFieldGuide={() => onNavigatePage?.('field-guide')}
-                onContinueToExamPractice={() => onNavigatePage?.('exam-training')}
-                onLearningActivityAttempt={onLearningActivityAttempt}
-              />
+              canUseWarmUp ? (
+                <WarmUpPracticePanel
+                  practiceItems={generatedPractice}
+                  region={region}
+                  profileId={profileId}
+                  activityAttempts={learningActivityAttempts}
+                  maxInitialItems={3}
+                  onContinueToFieldGuide={() => onNavigatePage?.('field-guide')}
+                  onContinueToExamPractice={canUseExamPractice ? () => onNavigatePage?.('exam-training') : undefined}
+                  onLearningActivityAttempt={onLearningActivityAttempt}
+                />
+              ) : <LockedRegionActivityPanel activityLabel="Warm-Up Practice" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
             {activePage === 'exam-training' ? (
-              <TrainingGroundsPanel
-                canTrain={canTrain}
-                summary={summary}
-                onStartTraining={onStartTraining}
-              />
+              canUseExamPractice ? (
+                <TrainingGroundsPanel
+                  canTrain={canTrain}
+                  summary={summary}
+                  onStartTraining={onStartTraining}
+                />
+              ) : <LockedRegionActivityPanel activityLabel="Exam Training" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
             {activePage === 'guardian' ? (
-              <GuardianEligibilityPanel
-                guardianCleared={guardianCleared}
-                guardianQuestion={guardianQuestion}
-                regionName={theme.title}
-                summary={summary}
-                onChallengeGuardian={onChallengeGuardian}
-              />
+              canUseGuardian ? (
+                <GuardianEligibilityPanel
+                  guardianCleared={guardianCleared}
+                  guardianQuestion={guardianQuestion}
+                  regionName={theme.title}
+                  summary={summary}
+                  onChallengeGuardian={onChallengeGuardian}
+                />
+              ) : <LockedRegionActivityPanel activityLabel="Guardian Challenge" studentRegionAccess={studentRegionAccess} />
             ) : null}
           </div>
         </>
@@ -296,6 +314,7 @@ function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProp
 
 interface RegionHubHomeProps {
   canTrain: boolean;
+  accessLocked: boolean;
   fieldGuideCompleted: boolean;
   generatedPracticeCount: number;
   guardianCleared: boolean;
@@ -303,6 +322,7 @@ interface RegionHubHomeProps {
   regionProgress: RegionProgress;
   stateLabel: string;
   summary: RegionLearningSummary;
+  studentRegionAccess?: StudentRegionAccess;
   theme: RegionTheme;
   onNavigatePage?: (page: RegionLearningPageId) => void;
   onReturnToMap: () => void;
@@ -329,8 +349,19 @@ function hubActionState(input: {
   page: HubActionPageId;
   quickCheckCount: number;
   summary: RegionLearningSummary;
+  studentRegionAccess?: StudentRegionAccess;
 }): { disabled: boolean; status: string } {
   if (input.page === 'field-guide') return { disabled: false, status: input.fieldGuideCompleted ? 'Complete' : 'Ready' };
+  const activity = input.page === 'exam-training'
+    ? 'exam_practice'
+    : input.page === 'quick-check'
+      ? 'quick_check'
+      : input.page === 'warm-up'
+        ? 'warm_up'
+        : 'guardian';
+  if (!canStudentUseRegionActivity(input.studentRegionAccess, activity)) {
+    return { disabled: true, status: 'Field Guide only' };
+  }
   if (input.page === 'quick-check') return { disabled: false, status: input.quickCheckCount ? `${input.quickCheckCount} available` : 'No checks yet' };
   if (input.page === 'warm-up') return { disabled: false, status: input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'No warm-ups yet' };
   if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
@@ -379,6 +410,7 @@ function recommendedHubPage(input: {
 
 function RegionHubHome({
   canTrain,
+  accessLocked,
   fieldGuideCompleted,
   generatedPracticeCount,
   guardianCleared,
@@ -386,6 +418,7 @@ function RegionHubHome({
   regionProgress,
   stateLabel,
   summary,
+  studentRegionAccess,
   theme,
   onNavigatePage,
   onReturnToMap,
@@ -406,6 +439,7 @@ function RegionHubHome({
     page: primaryPage,
     quickCheckCount,
     summary,
+    studentRegionAccess,
   });
   const secondaryPages = hubActionPages.filter((page) => page !== primaryPage);
   const stats = [
@@ -439,6 +473,16 @@ function RegionHubHome({
           Return to map
         </button>
       </header>
+
+      {accessLocked ? (
+        <div className="region-access-notice" role="status">
+          <Lock size={18} aria-hidden="true" />
+          <div>
+            <strong>Field Guide only</strong>
+            <span>{lockedRegionMessage(studentRegionAccess)} Existing progress stays visible, but this region will not add progress pressure while locked.</span>
+          </div>
+        </div>
+      ) : null}
 
       <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
 
@@ -479,6 +523,7 @@ function RegionHubHome({
                 page,
                 quickCheckCount,
                 summary,
+                studentRegionAccess,
               });
               return (
                 <button
@@ -505,6 +550,20 @@ function RegionHubHome({
         </details>
       </nav>
     </div>
+  );
+}
+
+function LockedRegionActivityPanel({ activityLabel, studentRegionAccess }: { activityLabel: string; studentRegionAccess?: StudentRegionAccess }) {
+  return (
+    <section className="region-activity-locked-panel" aria-label={`${activityLabel} locked`}>
+      <Lock size={24} aria-hidden="true" />
+      <div>
+        <span className="mode-pill">Field Guide only</span>
+        <h3>{activityLabel} is locked for this class</h3>
+        <p>{lockedRegionMessage(studentRegionAccess)}</p>
+        <p>Existing progress remains visible, but locked-region activities cannot save learning attempts, guardian clears, or mastery evidence.</p>
+      </div>
+    </section>
   );
 }
 

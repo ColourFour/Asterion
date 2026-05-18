@@ -6122,6 +6122,46 @@ legend {
     linear-gradient(180deg, color-mix(in srgb, var(--region-panel-strong) 90%, #000 10%), var(--region-panel-strong));
 }
 
+.region-home-primary-action.is-locked {
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.region-access-notice,
+.region-activity-locked-panel {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  color: var(--region-body);
+  background: color-mix(in srgb, var(--region-panel) 88%, #fff 12%);
+  border: 1px dashed color-mix(in srgb, var(--region-accent) 45%, var(--region-panel-border));
+  border-radius: var(--radius-panel);
+}
+
+.region-access-notice strong,
+.region-activity-locked-panel h3 {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--region-heading);
+}
+
+.region-access-notice span,
+.region-activity-locked-panel p {
+  margin: 0;
+  color: var(--region-body);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.region-activity-locked-panel {
+  max-width: 920px;
+}
+
+.region-activity-locked-panel .mode-pill {
+  margin-bottom: 8px;
+}
+
 .region-home-action-icon {
   grid-area: icon;
   display: grid;

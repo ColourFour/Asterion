@@ -1,18 +1,7 @@
 import { ArrowLeft, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  addRosterStudent,
-  archiveRosterStudent,
-  canUseRegionActivity,
-  generateTeacherCsvExport,
-  getTeacherClassDashboard,
-  labelForClassRegionAccess,
-  labelForTeacherRegionStatus,
-  listTeacherClasses,
-  resetRosterClaim,
-  setClassRegionAccess,
-} from '../../lib/dashboardMockService';
+import { dashboardDataService } from '../../lib/dashboardDataService';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
 
 interface TeacherDashboardProps {
@@ -48,7 +37,7 @@ function studentNames(rows: StudentProgressRow[], studentIds: string[]): string 
 }
 
 function exportCsv(dashboard: TeacherClassDashboard) {
-  const csv = generateTeacherCsvExport(dashboard.exportRows);
+  const csv = dashboardDataService.generateTeacherCsvExport(dashboard.exportRows);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -63,7 +52,7 @@ function RegionStatusCell({ cell }: { cell: StudentRegionProgressCell }) {
   return (
     <td className={`teacher-register-region status-${cell.status}${locked ? ' region-locked-cell' : ''}`}>
       <strong>{cell.progressPercent}%</strong>
-      <span>{locked ? 'Not opened for class' : labelForTeacherRegionStatus(cell.status)}</span>
+      <span>{locked ? 'Not opened for class' : dashboardDataService.labelForTeacherRegionStatus(cell.status)}</span>
       {locked && cell.attemptsCount > 0 ? <small>existing progress visible</small> : cell.warning ? <small>{cell.warning}</small> : <small>{cell.attemptsCount} attempts</small>}
     </td>
   );
@@ -212,7 +201,7 @@ function ClassFirstDashboard({ dashboard, onOpenRegion }: { dashboard: TeacherCl
           >
             <span>{region.regionName}</span>
             <strong>{region.excludedFromClassProgress ? 'Locked' : `${region.averageProgressPercent}%`}</strong>
-            <small>{region.excludedFromClassProgress ? 'Locked / not taught yet' : labelForTeacherRegionStatus(region.status)}</small>
+            <small>{region.excludedFromClassProgress ? 'Locked / not taught yet' : dashboardDataService.labelForTeacherRegionStatus(region.status)}</small>
             <em>{region.excludedFromClassProgress ? 'Field Guide only · excluded from class progress' : `${region.studentsNeedingHelpCount} need help · ${region.guardianEligibleCount} ready`}</em>
           </button>
         ))}
@@ -347,7 +336,7 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
                 </th>
                 <td className="teacher-register-overall"><strong>{cell.progressPercent}%</strong></td>
                 <td className="teacher-register-overall"><strong>{cell.masteryPercent}%</strong></td>
-                <td>{cell.excludedFromClassProgress ? 'Not opened for class' : labelForTeacherRegionStatus(cell.status)}</td>
+                <td>{cell.excludedFromClassProgress ? 'Not opened for class' : dashboardDataService.labelForTeacherRegionStatus(cell.status)}</td>
                 <td>{cell.attemptsCount} attempts{typeof cell.averageSelfMarkPercent === 'number' ? ` · ${cell.averageSelfMarkPercent}% self-mark` : ''}</td>
                 <td>{formatDate(cell.lastEvidenceAt ?? row.lastActivityAt)}</td>
               </tr>
@@ -366,18 +355,18 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
 
   async function refreshDashboard(nextClassId = dashboard?.class.id ?? classId ?? classes[0]?.id) {
     if (!nextClassId) return;
-    const nextDashboard = await getTeacherClassDashboard(nextClassId);
+    const nextDashboard = await dashboardDataService.getTeacherClassDashboard(nextClassId);
     setDashboard(nextDashboard);
   }
 
   useEffect(() => {
     let cancelled = false;
-    listTeacherClasses().then((items) => {
+    dashboardDataService.listTeacherClasses().then((items) => {
       if (cancelled) return;
       setClasses(items);
       const selectedClassId = classId ?? items[0]?.id;
       if (selectedClassId) {
-        getTeacherClassDashboard(selectedClassId).then((nextDashboard) => {
+        dashboardDataService.getTeacherClassDashboard(selectedClassId).then((nextDashboard) => {
           if (!cancelled) setDashboard(nextDashboard);
         });
       }
@@ -393,20 +382,20 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   async function handleAddStudent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!dashboard || !newStudentName.trim()) return;
-    await addRosterStudent(dashboard.class.teacherId, dashboard.class.id, newStudentName);
+    await dashboardDataService.addRosterStudent(dashboard.class.teacherId, dashboard.class.id, newStudentName);
     setNewStudentName('');
     await refreshDashboard(dashboard.class.id);
   }
 
   async function handleArchiveStudent(studentId: string) {
     if (!dashboard) return;
-    await archiveRosterStudent(dashboard.class.teacherId, dashboard.class.id, studentId);
+    await dashboardDataService.archiveRosterStudent(dashboard.class.teacherId, dashboard.class.id, studentId);
     await refreshDashboard(dashboard.class.id);
   }
 
   async function handleResetClaim(studentId: string) {
     if (!dashboard) return;
-    await resetRosterClaim({
+    await dashboardDataService.resetRosterClaim({
       actorRole: 'teacher',
       actorTeacherId: dashboard.class.teacherId,
       classId: dashboard.class.id,
@@ -417,7 +406,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
 
   async function handleRegionAccess(regionId: string, open: boolean) {
     if (!dashboard) return;
-    await setClassRegionAccess({
+    await dashboardDataService.setClassRegionAccess({
       actorRole: 'teacher',
       actorTeacherId: dashboard.class.teacherId,
       classId: dashboard.class.id,
@@ -511,7 +500,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
                   <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
                     <input type="checkbox" checked={access.access === 'open'} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
                     <span>{access.regionName}</span>
-                    <small>{labelForClassRegionAccess(access.access)}{canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}</small>
+                    <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}</small>
                   </label>
                 ))}
               </div>

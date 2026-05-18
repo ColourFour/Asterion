@@ -4,6 +4,7 @@ import { resolveSupabaseConfig } from './supabaseConfig';
 export interface AsterionRuntimeConfig {
   requestedStorageMode: ProgressStorageMode;
   effectiveStorageMode: 'local';
+  dashboardDemoEnabled: boolean;
   hostedStorageRequested: boolean;
   hostedStorageAvailable: false;
   storageNotice?: string;
@@ -27,10 +28,12 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
   const requestedStorageMode = configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
   const hostedStorageRequested = requestedStorageMode === 'hosted';
   const supabase = resolveSupabaseConfig(env);
+  const dashboardDemoEnabled = env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled';
 
   return {
     requestedStorageMode,
     effectiveStorageMode: 'local',
+    dashboardDemoEnabled,
     hostedStorageRequested,
     hostedStorageAvailable: false,
     storageNotice: hostedStorageRequested

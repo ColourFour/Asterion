@@ -1,15 +1,7 @@
 import { ShieldCheck } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  addAdminClass,
-  addAdminTeacher,
-  labelForClassRegionAccess,
-  listAdminAuditEvents,
-  listAdminClassRecords,
-  listAdminTeacherRecords,
-  setClassRegionAccess,
-} from '../../lib/dashboardMockService';
+import { dashboardDataService } from '../../lib/dashboardDataService';
 import type { AdminAuditEvent, AdminClassRecord, AdminTeacherRecord } from '../../types';
 import { SupabaseDiagnosticPanel } from './SupabaseDiagnosticPanel';
 
@@ -35,7 +27,11 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   const [classForm, setClassForm] = useState({ name: '', teacherId: '', academicYearTerm: '2026 Term 2', code: '' });
 
   async function refreshAdminRecords() {
-    const [nextTeachers, nextClasses, nextAuditEvents] = await Promise.all([listAdminTeacherRecords(), listAdminClassRecords(), listAdminAuditEvents()]);
+    const [nextTeachers, nextClasses, nextAuditEvents] = await Promise.all([
+      dashboardDataService.listAdminTeacherRecords(),
+      dashboardDataService.listAdminClassRecords(),
+      dashboardDataService.listAdminAuditEvents(),
+    ]);
     setTeachers(nextTeachers);
     setClasses(nextClasses);
     setAuditEvents(nextAuditEvents);
@@ -44,7 +40,11 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([listAdminTeacherRecords(), listAdminClassRecords(), listAdminAuditEvents()]).then(([nextTeachers, nextClasses, nextAuditEvents]) => {
+    Promise.all([
+      dashboardDataService.listAdminTeacherRecords(),
+      dashboardDataService.listAdminClassRecords(),
+      dashboardDataService.listAdminAuditEvents(),
+    ]).then(([nextTeachers, nextClasses, nextAuditEvents]) => {
       if (cancelled) return;
       setTeachers(nextTeachers);
       setClasses(nextClasses);
@@ -74,7 +74,7 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   async function handleAddTeacher(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!teacherForm.name.trim() || !teacherForm.email.trim()) return;
-    await addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
+    await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
     setTeacherForm({ name: '', email: '' });
     await refreshAdminRecords();
   }
@@ -82,13 +82,13 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   async function handleAddClass(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!classForm.name.trim() || !classForm.teacherId || !classForm.code.trim()) return;
-    await addAdminClass(classForm);
+    await dashboardDataService.addAdminClass(classForm);
     setClassForm((current) => ({ name: '', teacherId: current.teacherId, academicYearTerm: current.academicYearTerm, code: '' }));
     await refreshAdminRecords();
   }
 
   async function toggleRegion(classId: string, regionId: string, open: boolean) {
-    await setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
+    await dashboardDataService.setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
     await refreshAdminRecords();
   }
 
@@ -201,7 +201,7 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
                     <label key={`${teacherClass.id}-${access.regionId}`} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
                       <input type="checkbox" checked={access.access === 'open'} onChange={(event) => toggleRegion(teacherClass.id, access.regionId, event.target.checked)} />
                       <span>{access.regionName}</span>
-                      <small>{labelForClassRegionAccess(access.access)}</small>
+                      <small>{dashboardDataService.labelForClassRegionAccess(access.access)}</small>
                     </label>
                   ))}
                 </div>

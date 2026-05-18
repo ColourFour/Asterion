@@ -8,8 +8,14 @@ describe('runtime storage config', () => {
     expect(config.requestedStorageMode).toBe('local');
     expect(config.effectiveStorageMode).toBe('local');
     expect(config.hostedStorageAvailable).toBe(false);
+    expect(config.dashboardDemoEnabled).toBe(false);
     expect(config.storageNotice).toBeUndefined();
     expect(config.supabaseConfigured).toBe(false);
+  });
+
+  it('requires an explicit demo flag for dashboard routes', () => {
+    expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'true' }).dashboardDemoEnabled).toBe(false);
+    expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'enabled' }).dashboardDemoEnabled).toBe(true);
   });
 
   it('recognizes hosted mode without silently activating hosted persistence', () => {

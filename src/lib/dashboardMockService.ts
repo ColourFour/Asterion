@@ -399,6 +399,10 @@ function accessForClass(classId: string): ClassRegionAccess[] {
   return classRecords.find((item) => item.id === classId)?.regionAccess ?? buildRegionAccess([], 'teacher');
 }
 
+export function getClassRegionAccess(classId: string): ClassRegionAccess[] {
+  return accessForClass(classId).map((access) => ({ ...access }));
+}
+
 function accessByRegionForClass(classId: string): Record<string, ClassRegionAccess> {
   return Object.fromEntries(accessForClass(classId).map((access) => [access.regionId, access]));
 }

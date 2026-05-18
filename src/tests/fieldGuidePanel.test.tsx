@@ -13,6 +13,7 @@ import { buildRegionLearningSummary } from '../lib/regionLearning';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import { regionHubAssets } from '../lib/regionAssets';
 import { getRegionTheme } from '../lib/regionThemes';
+import type { StudentRegionAccess } from '../lib/classRegionAccess';
 import {
   REGION_LEARNING_PAGE_LABELS,
   parseAsterionHashRoute,
@@ -313,6 +314,7 @@ function renderRegionHubPage(options: {
   onStartTraining?: (intent: TrainingSessionIntent) => void;
   onChallengeGuardian?: (question: NormalizedQuestion) => void;
   onNavigatePage?: (page: RegionLearningPageId) => void;
+  studentRegionAccess?: StudentRegionAccess;
 } = {}) {
   const progress = regionProgress(options.regionId, options.progressOverrides);
   const summary = buildRegionLearningSummary({
@@ -331,6 +333,7 @@ function renderRegionHubPage(options: {
       generatedPractice={options.practiceItems ?? [generatedPractice]}
       learningActivityAttempts={[]}
       summary={summary}
+      studentRegionAccess={options.studentRegionAccess}
       activePage={options.activePage}
       onCompleteFieldGuide={options.onCompleteFieldGuide ?? vi.fn()}
       onLearningActivityAttempt={options.onLearningActivityAttempt ?? vi.fn()}
@@ -341,6 +344,18 @@ function renderRegionHubPage(options: {
     />,
   );
 }
+
+const lockedStudentRegionAccess: StudentRegionAccess = {
+  regionId: 'logarithm-grove',
+  access: 'field_guide_only',
+  classroomControlled: true,
+};
+
+const openStudentRegionAccess: StudentRegionAccess = {
+  regionId: 'logarithm-grove',
+  access: 'open',
+  classroomControlled: true,
+};
 
 describe('FieldGuidePanel teaching snippets', () => {
   it('keeps approved visual-support registry records complete and inspectable', () => {
@@ -1185,6 +1200,91 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.textContent).toContain('Guardian Challenge');
     expect(guardianPage.textContent).toContain('Guardian not ready yet');
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
+  });
+
+  it('keeps Field Guide accessible while classroom access locks practice activities', () => {
+    const fieldGuidePage = renderRegionHubPage({
+      activePage: 'field-guide',
+      studentRegionAccess: lockedStudentRegionAccess,
+    });
+    expect(fieldGuidePage.textContent).toContain('Field Guide');
+    expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
+    expect(fieldGuidePage.querySelector('.region-activity-locked-panel')).toBeFalsy();
+
+    const lockedPages: Array<[RegionLearningPageId, string]> = [
+      ['quick-check', 'Quick Checks is locked for this class'],
+      ['warm-up', 'Warm-Up Practice is locked for this class'],
+      ['exam-training', 'Exam Training is locked for this class'],
+      ['guardian', 'Guardian Challenge is locked for this class'],
+    ];
+
+    for (const [activePage, lockedText] of lockedPages) {
+      const container = renderRegionHubPage({
+        activePage,
+        studentRegionAccess: lockedStudentRegionAccess,
+      });
+      expect(container.textContent).toContain(lockedText);
+      expect(container.textContent).toContain('cannot save learning attempts, guardian clears, or mastery evidence');
+      expect(container.querySelector('.quick-check-card')).toBeFalsy();
+      expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
+      expect(container.querySelector('.training-card')).toBeFalsy();
+      expect(container.querySelector('.guardian-card')).toBeFalsy();
+    }
+  });
+
+  it('keeps existing locked-region progress visible without opening progress routes', () => {
+    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
+    const container = renderRegionHubPage({
+      fieldGuideCompleted: true,
+      progressOverrides: {
+        attempts: 5,
+        totalMarksEarned: 22,
+        totalMarksAvailable: 30,
+        averageScoreRatio: 22 / 30,
+        rank: 'Silver',
+      },
+      regionAttempts: [regionAttempt(1), regionAttempt(2), regionAttempt(3)],
+      studentRegionAccess: lockedStudentRegionAccess,
+      onNavigatePage,
+    });
+
+    expect(container.textContent).toContain('Field Guide only');
+    expect(container.textContent).toContain('Existing progress stays visible');
+    expect(container.querySelector('.region-home-stats')?.textContent).toContain('Silver');
+    expect(container.querySelector('.region-home-stats')?.textContent).toContain('5');
+
+    const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'));
+    expect(actionButtons.find((button) => button.dataset.regionPage === 'field-guide')?.disabled).toBe(false);
+    for (const page of ['quick-check', 'warm-up', 'exam-training', 'guardian']) {
+      const button = actionButtons.find((candidate) => candidate.dataset.regionPage === page);
+      expect(button?.disabled).toBe(true);
+      expect(button?.textContent).toContain('Field Guide only');
+    }
+
+    act(() => {
+      actionButtons.find((button) => button.dataset.regionPage === 'quick-check')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).not.toHaveBeenCalledWith('quick-check');
+  });
+
+  it('leaves unlocked classroom regions on the normal learning path', () => {
+    const onStartTraining = vi.fn<(intent: TrainingSessionIntent) => void>();
+    const container = renderRegionHubPage({
+      activePage: 'exam-training',
+      fieldGuideCompleted: true,
+      studentRegionAccess: openStudentRegionAccess,
+      onStartTraining,
+    });
+
+    expect(container.querySelector('.region-activity-locked-panel')).toBeFalsy();
+    expect(container.querySelector('.training-card')).toBeTruthy();
+
+    const startButton = container.querySelector<HTMLButtonElement>('.training-primary-start');
+    expect(startButton?.disabled).toBe(false);
+    act(() => {
+      startButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onStartTraining).toHaveBeenCalled();
   });
 
   it('shows one primary recommended Training Grounds action and hides alternatives until expanded', () => {
