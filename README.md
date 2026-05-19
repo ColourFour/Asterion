@@ -6,21 +6,29 @@ The question image and mark-scheme image are the student-facing source of truth.
 
 ## Current Status
 
-Asterion is in active MVP development. The student app remains static-hosting compatible: practice, attempts, Guardian checks, avatar progress, and classroom practice flow run from committed assets, browser-local progress storage, and the configured class-claim/region-access source. Keep the P3 Astral Academy loop legible and evidence-gated before adding broader worlds or production hosted progress sync.
+Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, region hubs, Field Guides, Quick Checks, generated warm-ups, image-first exam practice, Guardian checks, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
 
-The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, and mock dashboard service boundary. The main open gaps are static payload size, large UI/CSS/controller files, remaining part-level teacher review for mixed-topic evidence, the quarantined `33autumn25` mark-scheme gap, lack of full browser/mobile smoke automation, and the absence of a production classroom backend.
+The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
 
-Supabase Phase 1 is schema, seed, verification, and limited browser-safe infrastructure. The app can use Supabase for a read-only dashboard adapter and roster-claim RPC only when explicitly configured; it still does not use Supabase for hosted progress sync, academic source-of-truth behavior, or learner-response writes. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
+The main student-release blockers are not the core P3 loop. They are release hardening: phone-readable canonical image viewing, production-build browser smoke verification, the quarantined `33autumn25` mark-scheme gap, final teacher-facing scope decisions, clearer support/reset instructions for browser-local progress, and privacy/auth decisions before any hosted classroom authority.
+
+Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work, and optional roster-claim RPC plumbing. It is explicitly not hosted progress sync, not learner-response storage, and not the academic source of truth. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
 ## Documentation Map
 
 - [Architecture](docs/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
-- [Supabase Phase 1](docs/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, and diagnostic RPC. The Vite app is not wired to Supabase for classroom behavior.
+- [Backend Contract](docs/backend-contract.md): boundaries for hosted classroom data and future storage.
+- [Supabase Phase 1](docs/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, diagnostic RPC, and opt-in read-only/claim plumbing. Supabase is not hosted progress sync or production classroom authority yet.
 - [Hosted Supabase Setup](docs/supabase-hosted-setup.md): SQL Editor execution order and Vite/Vercel browser-safe env mapping.
-- [Roadmap](docs/ROADMAP.md): near-term, medium-term, and long-term direction.
+- [Teacher Dashboard V1](docs/teacher-dashboard-v1.md): current gated dashboard scope, mock/read-only boundaries, and export contract.
+- [Admin Teacher Roster V1](docs/admin-teacher-roster-v1.md): admin roster and class-region access direction.
+- [Roadmap](docs/ROADMAP.md): product direction and longer-term boundaries.
 - [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
 - [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
 - [Deployment Readiness](docs/deployment-readiness.md): static deployment target, route behavior, payload findings, repo-cleanliness rules, and CSS split plan.
+- [Browser Smoke Verification](docs/BROWSER_SMOKE_VERIFICATION_2026_05_18.md): latest manual browser/mobile smoke findings and release risks.
+- [Environment Configuration Audit](docs/ENVIRONMENT_CONFIGURATION_AUDIT_2026_05_19.md): safe Vite env values, Supabase modes, and server-only verifier env.
+- [Bundle Splitting Pass](docs/BUNDLE_SPLITTING_PASS_2026_05_19.md): route-level lazy loading work that removed the Vite 500 kB app chunk warning.
 - [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
 - [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
@@ -153,7 +161,7 @@ Coverage counts are generated by the verifier output rather than maintained by h
 python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 ```
 
-As of 2026-05-16, runtime Content Lab coverage is 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families. All 40 reviewed P3 skills have Field Guide, snippet, worked-example, Quick Check, warm-up, canonical-question, and Guardian-candidate support. The coverage matrix currently reports 40 ready rows, 0 teacher-review rows, 0 deferred evidence cases, and 0 mastery-blocked rows. The verifier is the source of truth for current counts.
+As of the 2026-05-19 verification pass, runtime Content Lab coverage is 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families. All 40 reviewed P3 skills have Field Guide, snippet, worked-example, Quick Check, warm-up, canonical-question, and Guardian-candidate support. The coverage matrix currently reports 40 ready rows, 0 teacher-review rows, 0 deferred evidence cases, and 0 mastery-blocked rows. The verifier is the source of truth for current counts.
 
 P3 curriculum contract and inventory reports are generated separately:
 
@@ -590,24 +598,89 @@ See `docs/deployment-readiness.md` for current payload findings, route expectati
 - Teacher/admin dashboard data can come from mock demo data or the read-only Supabase adapter, but roster actions, dashboard exports, and region toggles are not production authority without a reviewed auth/session and write policy.
 - No AI marking.
 - No browser-side answer input or automatic grading for Quick Checks or generated warm-ups.
-- No automated browser smoke test for the full student flow.
+- No automated browser smoke test for the full student flow; the latest browser smoke was manual/agent-browser based against the Vite dev server.
+- No production-build browser smoke pass yet.
 - Adaptive selection is intentionally simple and rule-based.
 - Generated warm-up coverage is intentionally still being expanded through reviewed deterministic families.
 - P3 `33autumn25` records are quarantined from training until canonical mark-scheme images are available.
-- Source UI art still contributes to static deploy size because it remains under `public/`.
+- Phone-width image readability needs work. One smoke-tested canonical question crop loaded correctly but displayed too short to read comfortably on a 390 px mobile viewport.
+- Static payload is still large because canonical exam-bank images and JSON ship with the static app.
+- `src/styles.css`, `src/App.tsx`, `TeacherDashboard`, and `dashboardMockService` remain large enough to need deliberate follow-up refactors.
 - Mastered region rank is reserved for a later mixed review/mastery trial loop.
 
-## Roadmap
+## Student Release Roadmap
 
-- Move source-only UI art out of `public` or exclude it from static deploy output while preserving optimized runtime assets.
-- Split `src/styles.css` into smaller feature-owned style files before more UI work.
-- Extract attempt construction from `PracticeView` into a pure tested utility.
-- Extract root app orchestration from `App.tsx` into a controller hook once region flows stabilize further.
-- Add deterministic warm-up generators for trigonometry, differentiation, integration, vectors, and numerical methods.
-- Extend Guardian attempts with clearer teacher-facing reporting once a controlled demo identifies useful export columns.
-- Tighten practice-ladder selection so warm-up, weak-area review, and challenge sessions choose questions differently where the bank has enough metadata.
-- Add avatar unlock history derived from guardian or mixed-review evidence, not from Field Guide completion alone.
-- Resolve or continue explicitly quarantining the `33autumn25` mark-scheme gap.
-- Run browser/mobile QA and hosted-readiness cleanup before any public classroom pilot.
-- Add broader P1, P4/Mechanics, and P5/Statistics worlds only after the P3 region loop is proven.
-- Implement real classroom backend behavior only after auth/identity, durable roster authority, read-only dashboard adapter, student-side region access enforcement backed by durable data, live RLS verification, bounded progress snapshot policy, export/delete, local-to-hosted migration UX, canonical asset access, and learner-response privacy decisions are reviewed.
+This roadmap is ordered for getting Asterion safely in front of students without weakening mastery evidence or over-promising hosted classroom behavior.
+
+### 1. Pilot Readiness Gate
+
+Goal: make the current local/static P3 loop safe for a small supervised student pilot.
+
+- Add a phone-friendly canonical image reader for question and mark-scheme crops. The minimum acceptable version is a full-screen or high-resolution zoom path that preserves the original image as the source of truth.
+- Keep `33autumn25` quarantined unless canonical mark-scheme images are restored and asset integrity passes.
+- Decide the pilot browser support target. At minimum, verify desktop Chrome/Edge plus one common phone-width viewport.
+- Keep dashboard routes disabled in the normal student build unless an intentional demo or read-only Supabase test build is being reviewed.
+- Write a short teacher/student operating note: browser-local progress, no cross-device sync, how to reset local progress, how issue reports work, and what data is not stored remotely.
+- Run the release command gate:
+
+```bash
+npm test
+npm run verify:content-lab
+npm run data:p3
+npm run validate:p3-skill-map
+npm run inventory:p3-content
+npm run coverage:p3-matrix
+npm run build
+```
+
+Manual pilot checks:
+
+- onboarding and class-code claim
+- world map and every active region hub
+- Field Guide, Quick Check, warm-up, Training Grounds, Guardian locked/unlocked states
+- question image and mark-scheme image readability on desktop and phone width
+- attempt save, reload persistence, profile/avatar progress, Class Hall
+- disabled dashboard routes in the normal student build
+
+### 2. Supervised Student Pilot
+
+Goal: prove the P3 learning loop with a small class before adding hosted progress.
+
+- Use one or two teacher-controlled groups and a known class-code roster.
+- Start with 2-3 target regions, then widen only after students complete the loop without confusion.
+- Track issue reports, unreadable images, route confusion, Guardian confusion, and places where students guess or rush mark entry.
+- Review local export/dashboard demo data only as pilot-support evidence, not as an official gradebook.
+- Do not add AI marking, generated exam wording, random rewards, stamina, or broader paper worlds during the pilot.
+
+Exit criteria:
+
+- students can complete the intended region loop without teacher rescue
+- no critical image-readability blockers remain
+- saved attempts and Guardian evidence survive reloads
+- no observed reward path inflates mastery through guessing or Field Guide completion alone
+
+### 3. Teacher Visibility Beta
+
+Goal: make teacher-facing progress useful without making it production authority too early.
+
+- Decide whether the beta uses mock dashboard demos, read-only Supabase dashboard rows, or exported local evidence.
+- If Supabase is used, require reviewed auth/session behavior, RLS verification, route access policy, and clear "read-only beta" labeling.
+- Add teacher-facing Guardian/evidence fields only after the pilot identifies useful columns.
+- Define privacy, export, delete, and retention expectations before syncing any learner responses.
+
+### 4. Hosted Classroom Release
+
+Goal: add durable classroom behavior only after the local P3 loop is proven.
+
+- Implement hosted progress behind `src/lib/progressStore.ts` and the progress adapter boundary.
+- Keep academic attempt fields clean and migratable; do not bury academic data inside RPG/avatar state.
+- Add local-to-hosted migration UX, conflict handling, export/delete policy, and live RLS verification.
+- Keep canonical question and mark-scheme assets as the student-facing source of truth.
+
+### 5. Curriculum Expansion
+
+Goal: expand only after P3 is reliable with real students.
+
+- Add mixed-review and Mastered-region loops for P3 first.
+- Add more deterministic warm-up families where they improve readiness without replacing exam images.
+- Add P1, Mechanics, and Statistics worlds only after P3 routing, mastery, teacher reporting, and support workflows are stable.
