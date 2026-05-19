@@ -319,7 +319,7 @@ export function PracticeView({
               <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
                 Reveal Mark Scheme
               </button>
-              <button type="button" disabled>Save Attempt</button>
+              <button className="practice-save-placeholder" type="button" disabled>Save Attempt</button>
             </div>
           ) : null}
           <details className="practice-support-details">
