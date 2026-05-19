@@ -22,6 +22,7 @@ import { createId, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
+import { validatePendingClassClaim } from './lib/dashboardMockService';
 import {
   getP3RegionById,
   parseAsterionHashRoute,
@@ -41,6 +42,13 @@ type TeacherDashboardRoute = {
   page: 'home' | 'class' | 'roster' | 'region';
   regionId?: string;
 };
+
+function loadValidatedPendingClassClaim(): StudentClaimState | undefined {
+  const pendingClaim = loadPendingClassClaim();
+  const validatedClaim = validatePendingClassClaim(pendingClaim);
+  if (pendingClaim && !validatedClaim) clearPendingClassClaim();
+  return validatedClaim;
+}
 
 function parseDashboardRoute(pathname: string, hash: string): TeacherDashboardRoute | { kind: 'admin' } | { kind: 'student' } {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
@@ -91,7 +99,7 @@ export default function App() {
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
-  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState | undefined>(() => loadPendingClassClaim());
+  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState | undefined>(() => loadValidatedPendingClassClaim());
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
@@ -379,8 +387,13 @@ export default function App() {
   }
 
   function handleStudentClassClaim(claim: StudentClaimState) {
-    const pendingClaim = savePendingClassClaim(claim);
-    setStudentClassClaim(pendingClaim);
+    const validatedClaim = validatePendingClassClaim(claim);
+    if (!validatedClaim) {
+      clearPendingClassClaim();
+      setStudentClassClaim(undefined);
+      return;
+    }
+    setStudentClassClaim(savePendingClassClaim(validatedClaim));
   }
 
   function restartStudentClassClaim() {

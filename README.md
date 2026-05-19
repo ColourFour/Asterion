@@ -1,19 +1,21 @@
 # Asterion
 
-Asterion is a local-first, image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, Quick Checks, deterministic warm-up practice, and evidence-gated Guardian checks.
+Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, Quick Checks, deterministic warm-up practice, and evidence-gated Guardian checks.
 
 The question image and mark-scheme image are the student-facing source of truth. For P3 curriculum behavior, the reviewed P3 skill map is the authority. OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are advisory metadata only; they must not be treated as curriculum truth.
 
 ## Current Status
 
-Asterion is in active local-first MVP development. The current direction is stable: keep the P3 Astral Academy loop legible, evidence-gated, and GitHub Pages compatible before adding broader worlds or hosted classroom storage.
+Asterion is in active MVP development. The student app remains local-progress and GitHub Pages compatible: practice, attempts, Guardian checks, avatar progress, and classroom practice flow run from static assets plus browser localStorage. Keep the P3 Astral Academy loop legible and evidence-gated before adding broader worlds or real hosted classroom storage.
 
-The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, teacher export, and data-health checks. The main open gaps are static payload size, large UI/CSS/controller files, remaining part-level teacher review for mixed-topic evidence, the quarantined `33autumn25` mark-scheme gap, and lack of full browser/mobile smoke automation.
+The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, and mock dashboard service boundary. The main open gaps are static payload size, large UI/CSS/controller files, remaining part-level teacher review for mixed-topic evidence, the quarantined `33autumn25` mark-scheme gap, lack of full browser/mobile smoke automation, and the absence of a production classroom backend.
+
+Supabase Phase 1 is schema, seed, verification, and diagnostic-only infrastructure. The app does not yet use Supabase for auth, classroom reads, roster authority, dashboard data, progress sync, or writes. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
 ## Documentation Map
 
 - [Architecture](docs/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
-- [Supabase Phase 1](docs/supabase-phase-1.md): hosted-dashboard classroom schema, RLS, seed data, and verification commands. The Vite app is not wired to Supabase yet.
+- [Supabase Phase 1](docs/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, and diagnostic RPC. The Vite app is not wired to Supabase for classroom behavior.
 - [Hosted Supabase Setup](docs/supabase-hosted-setup.md): SQL Editor execution order and Vite/Vercel browser-safe env mapping.
 - [Roadmap](docs/ROADMAP.md): near-term, medium-term, and long-term direction.
 - [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
@@ -61,7 +63,7 @@ Subtopic     -> station/building/quest line
 Attempt      -> work action
 Marks        -> XP/progress/restoration
 Mastery      -> region restoration and checkmarks
-Export       -> academic record
+Local attempt -> academic record
 ```
 
 This is intentionally a polished map dashboard, not a full tile-based game. There is no walking, collision, inventory system, or game engine.
@@ -504,7 +506,7 @@ npm run coverage:p3-matrix
 4. Keep topic-routing records clean/reviewed before treating placement as validated. Fallback label placements are display-only.
 5. Run `npm run assets:ui` after changing project-owned UI art.
 6. Start the app with `npm run dev`.
-7. Open Teacher/Export, then open **Data health**.
+7. During a local diagnostic pass, use the data-health utilities/tests rather than the removed student topbar Teacher/Export entry.
 8. Check:
    - main JSON file loaded
    - main content source
@@ -535,7 +537,8 @@ Common path problems:
 
 - Local student profile with real name, class/group, teacher name, and avatar name.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
-- P3-focused modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, Teacher/Export.
+- P3-focused student modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, and Class Hall.
+- Teacher/admin dashboard routes exist only as private demo routes when `VITE_ASTERION_DASHBOARD_DEMO=enabled`; they use mock dashboard data and are not production authority.
 - Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
 - Normalization layer that merges the projected/raw bank and topic-routing sidecar without crashing on malformed legacy enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
@@ -544,7 +547,7 @@ Common path problems:
 - Region restoration derived from attempts, marks, recent accuracy, subtopics touched, and clean P3 evidence.
 - Local topic mastery, ranks, checkmarks, XP, and placeholder avatar gear derived from progress.
 - Quiet per-question issue reporting.
-- Teacher exports as JSON and CSV, including world/region fields where attempts have that context.
+- Local export utilities/components still exist for teacher-readable evidence, but the old student topbar Teacher/Export entry is no longer exposed. Dashboard CSV exports are mock/demo data only.
 - Versioned localStorage persistence for profile, attempts, issue reports, avatar, and settings behind the progress storage adapter. Topic progress, region progress, XP, ranks, and avatar unlocks are derived from saved attempts rather than stored as source truth.
 
 ## Storage Mode
@@ -555,7 +558,9 @@ Current behavior:
 
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
 - `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays in local demo storage and shows a notice.
-- `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_ASSET_BASE_URL` are documented future hosted-mode inputs only.
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` enable only the optional admin diagnostic health check. They do not enable classroom reads, writes, auth, roster authority, dashboard replacement, or progress sync.
+- `VITE_ASSET_BASE_URL` is a documented future hosted-asset input only.
+- `VITE_ASTERION_DASHBOARD_DEMO=enabled` exposes private mock teacher/admin dashboard routes for intentional demos only.
 - Supabase service-role keys must never be exposed to the Vite client.
 
 See `docs/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/hosted-storage-design.md` remains the hosted storage design draft, and `docs/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
@@ -570,15 +575,17 @@ npm run build
 
 Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSON files and image assets must be committed under `public/` before building, or copied into the deployed static output.
 
-Dashboard routes are hash-compatible for GitHub Pages: use `#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback.
+Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible demo routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same demo gate.
 
 See `docs/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 
 ## Current Limitations
 
-- No authentication.
-- No backend or cross-device sync.
-- No Supabase storage yet.
+- No authentication or durable identity.
+- No production classroom backend or cross-device sync.
+- No Supabase classroom reads/writes, roster authority, dashboard adapter, or progress sync yet.
+- Supabase diagnostic "Connected" state is not backend readiness.
+- Teacher/admin dashboard data, roster actions, dashboard exports, and region toggles are mock/demo-only unless a future Supabase-backed adapter is implemented and gated behind real auth.
 - No AI marking.
 - No browser-side answer input or automatic grading for Quick Checks or generated warm-ups.
 - No automated browser smoke test for the full student flow.
@@ -595,10 +602,10 @@ See `docs/deployment-readiness.md` for current payload findings, route expectati
 - Extract attempt construction from `PracticeView` into a pure tested utility.
 - Extract root app orchestration from `App.tsx` into a controller hook once region flows stabilize further.
 - Add deterministic warm-up generators for trigonometry, differentiation, integration, vectors, and numerical methods.
-- Extend Guardian attempts with clearer teacher-facing reporting once the first classroom trial identifies useful export columns.
+- Extend Guardian attempts with clearer teacher-facing reporting once a controlled demo identifies useful export columns.
 - Tighten practice-ladder selection so warm-up, weak-area review, and challenge sessions choose questions differently where the bank has enough metadata.
 - Add avatar unlock history derived from guardian or mixed-review evidence, not from Field Guide completion alone.
 - Resolve or continue explicitly quarantining the `33autumn25` mark-scheme gap.
 - Run browser/mobile QA and hosted-readiness cleanup before any public classroom pilot.
 - Add broader P1, P4/Mechanics, and P5/Statistics worlds only after the P3 region loop is proven.
-- Implement hosted storage behind the existing progress adapter only after auth, RLS, export/delete, local-to-hosted migration UX, and canonical asset access decisions are reviewed.
+- Implement real classroom backend behavior only after auth/identity, durable roster authority, read-only dashboard adapter, student-side region access enforcement backed by durable data, live RLS verification, bounded progress snapshot policy, export/delete, local-to-hosted migration UX, canonical asset access, and learner-response privacy decisions are reviewed.

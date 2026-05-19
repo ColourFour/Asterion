@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
+import { addRosterStudent, archiveRosterStudent, claimRosterSlotByClassCode } from '../lib/dashboardMockService';
 import { LOCAL_PROGRESS_STORAGE_KEY } from '../lib/progressStore';
 import { PENDING_CLASS_CLAIM_STORAGE_KEY } from '../lib/studentClassClaimStore';
 
@@ -223,23 +224,15 @@ describe('Asterion intro page', () => {
     expect(container.textContent).not.toContain('Enter Astral Academy');
   });
 
-  it('restores a pending claim after refresh without granting app access', async () => {
-    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
-      status: 'claimed',
-      classId: 'class-p3-beta',
-      className: 'P3 Beta',
-      classCode: 'AST-P3B',
-      teacherId: 'teacher-hypatia',
-      teacherName: 'Ms Hypatia',
-      rosterStudentId: 'roster-beta-unclaimed-1',
-      displayName: 'Ken I.',
-      message: 'Roster slot claimed. Optional details can be added later.',
-    }));
+  it('restores a revalidated pending claim after refresh without granting app access', async () => {
+    await addRosterStudent('teacher-hypatia', 'class-p3-beta', 'Refresh Valid Student');
+    const pendingClaim = await claimRosterSlotByClassCode({ classCode: 'AST-P3B', displayName: 'Refresh Valid Student' });
+    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(pendingClaim));
 
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Student real name');
-    expect(inputForLabel(container, 'Student real name').value).toBe('Ken I.');
+    expect(inputForLabel(container, 'Student real name').value).toBe('Refresh Valid Student');
     expect(inputForLabel(container, 'Class/group').value).toBe('P3 Beta');
     expect(inputForLabel(container, 'Teacher name').value).toBe('Ms Hypatia');
     expect(container.textContent).not.toContain('World Map');
@@ -253,6 +246,67 @@ describe('Asterion intro page', () => {
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
+  });
+
+  it('clears forged or stale pending claims and returns to class-code claim', async () => {
+    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+      status: 'claimed',
+      classId: 'class-p3-alpha',
+      className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'forged-roster-id',
+      displayName: 'Forged Student',
+      message: 'Roster slot claimed. Optional details can be added later.',
+    }));
+
+    let container = await render(<App />);
+
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Student real name');
+
+    await act(async () => {
+      mountedRoots.pop()?.unmount();
+      mountedContainers.pop()?.remove();
+      await Promise.resolve();
+    });
+
+    await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Archived Pending Student');
+    const staleClaim = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Pending Student' });
+    await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', staleClaim.rosterStudentId!);
+    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(staleClaim));
+
+    container = await render(<App />);
+
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Archived Pending Student');
+  });
+
+  it('shows duplicate roster names as ambiguous and keeps students on the claim form', async () => {
+    await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Intro Duplicate Student');
+    await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'intro duplicate student');
+
+    const container = await render(<App />);
+    const claimForm = container.querySelector('form[aria-label="Claim class roster slot"]');
+
+    setInputValue(inputForLabel(container, 'Class code'), 'AST-P3A');
+    setInputValue(inputForLabel(container, 'Roster name'), 'INTRO DUPLICATE STUDENT');
+
+    await act(async () => {
+      claimForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('More than one unclaimed roster entry uses that name.');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Student real name');
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
   });
 
   it('still renders the emblem when reduced motion is requested', async () => {

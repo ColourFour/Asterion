@@ -950,7 +950,13 @@ export async function getTeacherClassRoster(teacherId: string, classId: string):
 export async function addRosterStudent(teacherId: string, classId: string, displayName: string): Promise<ClassRosterStudent | undefined> {
   const classRecord = classRecords.find((item) => item.id === classId && item.teacherId === teacherId && item.status === 'active');
   if (!classRecord) return undefined;
-  const id = `roster-${classId}-${displayName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || rosterStudents.length + 1}`;
+  const baseId = `roster-${classId}-${displayName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || rosterStudents.length + 1}`;
+  let id = baseId;
+  let suffix = 2;
+  while (rosterStudents.some((student) => student.id === id)) {
+    id = `${baseId}-${suffix}`;
+    suffix += 1;
+  }
   const student: ClassRosterStudent = {
     id,
     classId,
@@ -1020,22 +1026,40 @@ export async function setClassRegionAccess(input: {
   return { ...access };
 }
 
+function claimContextForClassCode(classCode: ClassCodeRecord) {
+  const classRecord = classRecords.find((item) => item.id === classCode.classId && item.status === 'active');
+  const teacher = teacherRecords.find((item) => item.id === classRecord?.teacherId);
+  return {
+    classRecord,
+    teacher,
+    claimContext: {
+      classId: classCode.classId,
+      className: classRecord?.name,
+      classCode: classCode.code,
+      teacherId: teacher?.id,
+      teacherName: teacher?.name,
+    },
+  };
+}
+
 export async function claimRosterSlotByClassCode(input: { classCode: string; displayName: string; optionalEmail?: string }): Promise<StudentClaimState> {
   const classCode = classCodes.find((item) => item.code.toLowerCase() === input.classCode.trim().toLowerCase() && item.status === 'active');
   if (!classCode) return { status: 'invalid_class_code', message: 'Enter a valid class code from your teacher.' };
-  const classRecord = classRecords.find((item) => item.id === classCode.classId);
-  const teacher = teacherRecords.find((item) => item.id === classRecord?.teacherId);
-  const claimContext = {
-    classId: classCode.classId,
-    className: classRecord?.name,
-    classCode: classCode.code,
-    teacherId: teacher?.id,
-    teacherName: teacher?.name,
-  };
-  const rosterStudent = rosterStudents.find((student) => (
+  const { claimContext } = claimContextForClassCode(classCode);
+  const matchingRosterStudents = rosterStudents.filter((student) => (
     student.classId === classCode.classId
     && student.displayName.toLowerCase() === input.displayName.trim().toLowerCase()
   ));
+  const unclaimedMatches = matchingRosterStudents.filter((student) => student.status === 'unclaimed');
+  if (unclaimedMatches.length > 1) {
+    return {
+      status: 'ambiguous_roster_name',
+      ...claimContext,
+      displayName: input.displayName.trim(),
+      message: 'More than one unclaimed roster entry uses that name. Ask your teacher to make the roster name unique before claiming.',
+    };
+  }
+  const rosterStudent = matchingRosterStudents[0];
   if (!rosterStudent) return { status: 'roster_name_not_found', ...claimContext, message: 'Ask your teacher to add your name to the roster first.' };
   if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher or admin for help.' };
   if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed. Ask your teacher or admin for help.' };
@@ -1046,8 +1070,43 @@ export async function claimRosterSlotByClassCode(input: { classCode: string; dis
   return { status: 'claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'Roster slot claimed. Optional details can be added later.' };
 }
 
+export function validatePendingClassClaim(claim: StudentClaimState | undefined): StudentClaimState | undefined {
+  if (claim?.status !== 'claimed') return undefined;
+  if (!claim.classId || !claim.className || !claim.classCode || !claim.teacherId || !claim.teacherName || !claim.rosterStudentId || !claim.displayName) return undefined;
+
+  const classCode = classCodes.find((item) => (
+    item.code.toLowerCase() === claim.classCode?.toLowerCase()
+    && item.classId === claim.classId
+    && item.status === 'active'
+  ));
+  if (!classCode) return undefined;
+
+  const { classRecord, teacher } = claimContextForClassCode(classCode);
+  if (!classRecord || classRecord.name !== claim.className) return undefined;
+  if (!teacher || teacher.id !== claim.teacherId || teacher.name !== claim.teacherName) return undefined;
+
+  const rosterStudent = rosterStudents.find((student) => student.id === claim.rosterStudentId);
+  if (!rosterStudent) return undefined;
+  if (rosterStudent.classId !== classCode.classId) return undefined;
+  if (rosterStudent.displayName.toLowerCase() !== claim.displayName.toLowerCase()) return undefined;
+  if (rosterStudent.status !== 'claimed') return undefined;
+  if (rosterStudent.claimedAt !== now) return undefined;
+
+  return {
+    status: 'claimed',
+    classId: classRecord.id,
+    className: classRecord.name,
+    classCode: classCode.code,
+    teacherId: teacher.id,
+    teacherName: teacher.name,
+    rosterStudentId: rosterStudent.id,
+    displayName: rosterStudent.displayName,
+    message: claim.message,
+  };
+}
+
 export function canStudentAccessApp(claim: StudentClaimState | undefined): boolean {
-  return claim?.status === 'claimed';
+  return Boolean(validatePendingClassClaim(claim));
 }
 
 export async function listAdminAuditEvents(): Promise<AdminAuditEvent[]> {

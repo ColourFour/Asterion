@@ -21,6 +21,7 @@ import {
   listAdminTeachers,
   listTeacherClasses,
   resetRosterClaim,
+  validatePendingClassClaim,
 } from '../lib/dashboardMockService';
 import { isValidP3RegionId } from '../lib/p3SkillContract';
 
@@ -152,6 +153,68 @@ describe('dashboard mock service', () => {
 
     const after = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
     expect(after?.students.find((student) => student.id === added!.id)?.status).toBe('archived');
+  });
+
+  it('blocks case-insensitive duplicate unclaimed roster names instead of picking a slot', async () => {
+    const first = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Duplicate Claim Student');
+    const second = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'duplicate claim student');
+    expect(first).toMatchObject({ status: 'unclaimed' });
+    expect(second).toMatchObject({ status: 'unclaimed' });
+    expect(first?.id).not.toBe(second?.id);
+
+    const ambiguous = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'DUPLICATE CLAIM STUDENT' });
+
+    expect(ambiguous).toMatchObject({
+      status: 'ambiguous_roster_name',
+      message: 'More than one unclaimed roster entry uses that name. Ask your teacher to make the roster name unique before claiming.',
+    });
+    expect(canStudentAccessApp(ambiguous)).toBe(false);
+
+    const roster = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    expect(roster?.students.filter((student) => (
+      student.displayName.toLowerCase() === 'duplicate claim student'
+      && student.status === 'unclaimed'
+    ))).toHaveLength(2);
+  });
+
+  it('revalidates pending claims against current mock roster authority', async () => {
+    const added = await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Pending Authority Student');
+    const claimed = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Pending Authority Student' });
+
+    expect(validatePendingClassClaim(claimed)).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: added?.id,
+      displayName: 'Pending Authority Student',
+    });
+    expect(canStudentAccessApp(claimed)).toBe(true);
+
+    expect(validatePendingClassClaim({
+      status: 'claimed',
+      classId: 'class-p3-alpha',
+      className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'not-a-real-roster-id',
+      displayName: 'Forged Student',
+      message: 'Roster slot claimed. Optional details can be added later.',
+    })).toBeUndefined();
+
+    expect(validatePendingClassClaim({
+      status: 'claimed',
+      classId: 'class-p3-alpha',
+      className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'student-ada',
+      displayName: 'Ada L.',
+      message: 'Roster slot claimed. Optional details can be added later.',
+    })).toBeUndefined();
+
+    await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', added!.id);
+    expect(validatePendingClassClaim(claimed)).toBeUndefined();
+    expect(canStudentAccessApp(claimed)).toBe(false);
   });
 
   it('resets only claimed active roster slots without deleting progress or creating roster entries', async () => {

@@ -86,6 +86,7 @@ export type StudentClaimStatus =
   | 'claimed'
   | 'invalid_class_code'
   | 'roster_name_not_found'
+  | 'ambiguous_roster_name'
   | 'already_claimed'
   | 'archived';
 
