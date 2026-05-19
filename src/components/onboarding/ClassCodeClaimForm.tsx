@@ -1,4 +1,7 @@
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
+import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
+import { resolveRuntimeConfig } from '../../lib/appConfig';
+import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import { claimStudentRosterSlot } from '../../lib/studentClassClaimService';
 import type { StudentClaimState } from '../../types';
 
@@ -7,14 +10,24 @@ interface ClassCodeClaimFormProps {
 }
 
 export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
+  const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
+  const hostedClaimMode = runtimeConfig.studentClassClaimSource === 'supabase';
   const [classCode, setClassCode] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [optionalEmail, setOptionalEmail] = useState('');
   const [claimState, setClaimState] = useState<StudentClaimState>();
   const [submitting, setSubmitting] = useState(false);
+  const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(hostedClaimMode ? 'loading' : 'signed-out');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (hostedClaimMode && authStatus !== 'signed-in') {
+      setClaimState({
+        status: 'unauthenticated',
+        message: 'Sign in with Supabase before claiming a hosted roster slot.',
+      });
+      return;
+    }
     setSubmitting(true);
     const nextClaim = await claimStudentRosterSlot({
       classCode,
@@ -35,6 +48,17 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
         <h2>Join your teacher's class</h2>
         <p>Enter the class code your teacher gave you. Choose the name your teacher added to the roster.</p>
       </div>
+
+      {hostedClaimMode ? (
+        <SupabaseAuthPanel
+          className="class-code-auth-panel"
+          title="Sign in before hosted roster claim"
+          signedOutMessage="Hosted class claiming uses Supabase Auth. Request a magic link, then return here to claim your existing roster name."
+          onStatusChange={setAuthStatus}
+        />
+      ) : null}
+
+      {runtimeConfig.studentClassClaimNotice ? <p className="claim-state-message">{runtimeConfig.studentClassClaimNotice}</p> : null}
 
       <label>
         Class code
@@ -60,7 +84,7 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
       )}
 
       <button className="primary-button" type="submit" disabled={submitting}>
-        {submitting ? 'Checking roster...' : 'Claim roster slot'}
+        {submitting ? 'Checking roster...' : hostedClaimMode && authStatus !== 'signed-in' ? 'Sign in to claim roster slot' : 'Claim roster slot'}
       </button>
     </form>
   );

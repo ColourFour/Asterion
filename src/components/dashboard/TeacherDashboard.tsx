@@ -1,7 +1,9 @@
 import { ArrowLeft, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
 import { dashboardDataService, isDashboardDataServiceError, type DashboardServiceSource } from '../../lib/dashboardDataService';
+import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
 
 interface TeacherDashboardProps {
@@ -86,10 +88,12 @@ function DashboardBlockedState({
   issue,
   onNavigatePath,
   source,
+  onAuthStatusChange,
 }: {
   issue: DashboardLoadIssue;
   onNavigatePath: (path: string) => void;
   source: DashboardServiceSource;
+  onAuthStatusChange: (status: SupabaseAuthStatus) => void;
 }) {
   return (
     <main className="app-shell app-view-dashboard">
@@ -117,6 +121,14 @@ function DashboardBlockedState({
           {source.detail ? <p>{source.detail}</p> : null}
           {issue.detail ? <p className="dashboard-muted">{issue.detail}</p> : null}
         </section>
+        {source.kind === 'supabase' ? (
+          <SupabaseAuthPanel
+            className="dashboard-auth-panel"
+            title="Sign in for Supabase dashboard reads"
+            signedOutMessage="Request a magic link for the email attached to your Asterion Supabase role."
+            onStatusChange={onAuthStatusChange}
+          />
+        ) : null}
       </section>
     </main>
   );
@@ -440,6 +452,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
   const [loadIssue, setLoadIssue] = useState<DashboardLoadIssue>();
   const [newStudentName, setNewStudentName] = useState('');
+  const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
 
   async function refreshDashboard(nextClassId = dashboard?.class.id ?? classId ?? classes[0]?.id) {
     if (!nextClassId) return;
@@ -479,7 +492,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
     return () => {
       cancelled = true;
     };
-  }, [classId, source.kind]);
+  }, [classId, source.kind, authStatus]);
 
   const selectedClassId = dashboard?.class.id ?? classId ?? classes[0]?.id;
   const classRows = useMemo(() => dashboard?.studentRows ?? [], [dashboard]);
@@ -531,7 +544,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   }
 
   if (loadIssue) {
-    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} />;
+    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} onAuthStatusChange={setAuthStatus} />;
   }
 
   if (!dashboard) {
@@ -560,6 +573,15 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
           </nav>
         </header>
+
+        {source.kind === 'supabase' ? (
+          <SupabaseAuthPanel
+            className="dashboard-auth-panel"
+            title="Supabase dashboard session"
+            signedOutMessage="Sign in to refresh authorized dashboard rows."
+            onStatusChange={setAuthStatus}
+          />
+        ) : null}
 
         <section className="dashboard-control-row teacher-class-actions">
           <label>

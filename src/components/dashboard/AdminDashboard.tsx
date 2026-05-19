@@ -1,7 +1,9 @@
 import { ShieldCheck } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
 import { dashboardDataService, isDashboardDataServiceError, type DashboardServiceSource } from '../../lib/dashboardDataService';
+import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import type { AdminAuditEvent, AdminClassRecord, AdminTeacherRecord } from '../../types';
 import { SupabaseDiagnosticPanel } from './SupabaseDiagnosticPanel';
 
@@ -57,10 +59,12 @@ function DashboardBlockedState({
   issue,
   onNavigatePath,
   source,
+  onAuthStatusChange,
 }: {
   issue: DashboardLoadIssue;
   onNavigatePath: (path: string) => void;
   source: DashboardServiceSource;
+  onAuthStatusChange: (status: SupabaseAuthStatus) => void;
 }) {
   return (
     <main className="app-shell app-view-dashboard">
@@ -88,6 +92,14 @@ function DashboardBlockedState({
           {source.detail ? <p>{source.detail}</p> : null}
           {issue.detail ? <p className="dashboard-muted">{issue.detail}</p> : null}
         </section>
+        {source.kind === 'supabase' ? (
+          <SupabaseAuthPanel
+            className="dashboard-auth-panel"
+            title="Sign in for Supabase admin reads"
+            signedOutMessage="Request a magic link for the email attached to your Asterion Supabase role."
+            onStatusChange={onAuthStatusChange}
+          />
+        ) : null}
         <SupabaseDiagnosticPanel />
       </section>
     </main>
@@ -104,6 +116,7 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   const [query, setQuery] = useState('');
   const [teacherForm, setTeacherForm] = useState({ name: '', email: '' });
   const [classForm, setClassForm] = useState({ name: '', teacherId: '', academicYearTerm: '2026 Term 2', code: '' });
+  const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
 
   async function refreshAdminRecords() {
     try {
@@ -115,6 +128,14 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
       setTeachers(nextTeachers);
       setClasses(nextClasses);
       setAuditEvents(nextAuditEvents);
+      if (source.kind === 'supabase' && nextTeachers.length === 0 && nextClasses.length === 0) {
+        setLoadIssue({
+          title: 'No authorized dashboard data',
+          message: 'The signed-in Supabase session is valid, but RLS returned no teacher or admin classroom rows.',
+          detail: 'Check the user_roles assignment and classroom membership for this Supabase user. Mock data is not shown in Supabase mode.',
+        });
+        return;
+      }
       setLoadIssue(undefined);
       setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
     } catch (error) {
@@ -136,6 +157,15 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
         setTeachers(nextTeachers);
         setClasses(nextClasses);
         setAuditEvents(nextAuditEvents);
+        if (source.kind === 'supabase' && nextTeachers.length === 0 && nextClasses.length === 0) {
+          setLoadIssue({
+            title: 'No authorized dashboard data',
+            message: 'The signed-in Supabase session is valid, but RLS returned no teacher or admin classroom rows.',
+            detail: 'Check the user_roles assignment and classroom membership for this Supabase user. Mock data is not shown in Supabase mode.',
+          });
+          return;
+        }
+        setLoadIssue(undefined);
         setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
       } catch (error) {
         if (!cancelled) setLoadIssue(issueForDashboardError(error));
@@ -145,7 +175,7 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
     return () => {
       cancelled = true;
     };
-  }, [source.kind]);
+  }, [source.kind, authStatus]);
 
   const normalizedQuery = query.trim().toLowerCase();
   const filteredTeachers = useMemo(() => (
@@ -187,7 +217,7 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
   }
 
   if (loadIssue) {
-    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} />;
+    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} onAuthStatusChange={setAuthStatus} />;
   }
 
   return (
@@ -206,6 +236,15 @@ export function AdminDashboard({ onNavigatePath }: AdminDashboardProps) {
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
           </nav>
         </header>
+
+        {source.kind === 'supabase' ? (
+          <SupabaseAuthPanel
+            className="dashboard-auth-panel"
+            title="Supabase admin session"
+            signedOutMessage="Sign in to refresh authorized admin rows."
+            onStatusChange={setAuthStatus}
+          />
+        ) : null}
 
         <section className="dashboard-section admin-identity">
           <ShieldCheck size={22} />

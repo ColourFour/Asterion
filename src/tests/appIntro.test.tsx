@@ -95,6 +95,10 @@ function inputForLabel(container: HTMLElement, labelText: string): HTMLInputElem
 }
 
 beforeEach(() => {
+  vi.unstubAllEnvs();
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', '');
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'mock');
+  vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', 'mock');
   localStorage.clear();
   sessionStorage.clear();
   setReducedMotion(false);

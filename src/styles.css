@@ -10735,6 +10735,40 @@ legend {
   margin: 0;
 }
 
+.supabase-auth-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.84);
+}
+
+.supabase-auth-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.supabase-auth-heading h2,
+.supabase-auth-panel p {
+  margin: 0;
+}
+
+.supabase-auth-form,
+.supabase-auth-signed-in {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-auth-panel {
+  border-color: var(--dashboard-border-soft);
+  background: var(--dashboard-surface-muted);
+}
+
+.class-code-auth-panel {
+  background: #f6fbff;
+}
+
 .pending-claim-summary {
   display: grid;
   gap: 8px;

@@ -57,13 +57,27 @@ export function normalizeRosterClaimRpcResult(row: ClaimRosterSlotRpcRow | null 
 
 async function claimViaSupabase(
   input: StudentClassClaimInput,
-  createClient: () => Promise<AsterionSupabaseClient | undefined> = () => createSupabaseBrowserClient(),
+  createClient: () => Promise<AsterionSupabaseClient | undefined> = () => createSupabaseBrowserClient(undefined, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }),
 ): Promise<StudentClaimState> {
   const client = await createClient();
   if (!client) {
     return {
       status: 'claim_unavailable',
       message: claimStatusMessages.claim_unavailable,
+    };
+  }
+
+  const sessionResult = await client.auth.getSession();
+  if (sessionResult.error || !sessionResult.data.session) {
+    return {
+      status: 'unauthenticated',
+      message: claimStatusMessages.unauthenticated,
     };
   }
 

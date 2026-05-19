@@ -18,7 +18,8 @@ describe('Supabase integration boundary', () => {
     expect(classClaimForm).toContain('../../lib/studentClassClaimService');
     expect(teacherDashboard).not.toContain('supabaseClient');
     expect(teacherDashboard).not.toContain('.from(');
-    expect(classClaimForm).not.toContain('supabase');
+    expect(classClaimForm).not.toContain('supabaseClient');
+    expect(classClaimForm).not.toContain('.from(');
     expect(adminDashboard).not.toContain('supabaseClient');
     expect(adminDashboard).not.toContain('.from(');
     expect(adminDashboard).toContain('SupabaseDiagnosticPanel');
@@ -46,5 +47,24 @@ describe('Supabase integration boundary', () => {
     expect(health).not.toContain('.from(');
     expect(health).not.toMatch(/insert|upsert|update|delete/i);
     expect(diagnosticPanel).not.toMatch(/organizations|classes|students|memberships|progress/i);
+  });
+
+  it('does not reference server-only Supabase env vars in browser source', () => {
+    const browserSources = [
+      'src/App.tsx',
+      'src/lib/supabaseAuth.ts',
+      'src/lib/supabaseClient.ts',
+      'src/lib/supabaseConfig.ts',
+      'src/lib/supabaseDashboardService.ts',
+      'src/lib/studentClassClaimService.ts',
+      'src/components/auth/SupabaseAuthPanel.tsx',
+      'src/components/dashboard/TeacherDashboard.tsx',
+      'src/components/dashboard/AdminDashboard.tsx',
+      'src/components/onboarding/ClassCodeClaimForm.tsx',
+    ].map((path) => readFileSync(`${process.cwd()}/${path}`, 'utf8')).join('\n');
+
+    expect(browserSources).not.toContain(['ASTERION', 'SUPABASE', 'DB', 'URL'].join('_'));
+    expect(browserSources).not.toContain(['SUPABASE', 'SERVICE', 'ROLE'].join('_'));
+    expect(browserSources).not.toContain(['SUPABASE', 'JWT', 'SECRET'].join('_'));
   });
 });

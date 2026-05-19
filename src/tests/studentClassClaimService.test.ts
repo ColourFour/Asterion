@@ -19,11 +19,17 @@ function runtimeConfig(source: AsterionRuntimeConfig['studentClassClaimSource'])
   };
 }
 
-function mockRpcClient(row: unknown, error: unknown = null): AsterionSupabaseClient {
+function mockRpcClient(row: unknown, error: unknown = null, session = true): AsterionSupabaseClient {
   const data = row && typeof row === 'object'
     ? { functionName: 'claim_class_roster_slot', ...(row as Record<string, unknown>) }
     : row;
   return {
+    auth: {
+      getSession: async () => ({
+        data: { session: session ? { user: { id: 'student-user-1', email: 'student@example.test' } } : null },
+        error: null,
+      }),
+    },
     rpc: (functionName: string, params: Record<string, unknown>) => ({
       single: async () => ({
         data: data && typeof data === 'object' ? { ...(data as Record<string, unknown>), functionName, params } : data,
@@ -94,6 +100,32 @@ describe('student class claim service', () => {
 
     expect(claim.status).toBe('claim_unavailable');
     expect(claim.rosterStudentId).toBeUndefined();
+  });
+
+  it('requires a Supabase session before calling the hosted claim RPC', async () => {
+    const claim = await claimStudentRosterSlot(
+      { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => mockRpcClient({ status: 'claimed' }, null, false),
+      },
+    );
+
+    expect(claim.status).toBe('unauthenticated');
+    expect(claim.message).toBe('Sign in before claiming a roster slot.');
+  });
+
+  it.each([
+    'claimed',
+    'unauthenticated',
+    'unauthorized',
+    'invalid_class_code',
+    'roster_name_not_found',
+    'ambiguous_roster_name',
+    'archived',
+    'already_claimed',
+  ])('maps hosted claim RPC status %s', (status) => {
+    expect(normalizeRosterClaimRpcResult({ status })).toMatchObject({ status });
   });
 
   it('keeps the existing mock path as the default local/demo mode', async () => {
