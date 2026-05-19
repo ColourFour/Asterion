@@ -14,6 +14,7 @@
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
     "supabase:verify": "node scripts/verify-supabase-schema.mjs",
+    "supabase:verify:live": "node scripts/verify-supabase-rls-live.mjs",
     "test": "vitest run",
     "test:unit": "vitest run --exclude tests/contentLabPipeline.test.ts --exclude tests/generatedPracticePipeline.test.ts",
     "test:pipeline": "vitest run tests/contentLabPipeline.test.ts tests/generatedPracticePipeline.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --no-file-parallelism",
