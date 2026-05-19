@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { dashboardDataService } from '../../lib/dashboardDataService';
 import { checkSupabaseHealth, type SupabaseHealthResult } from '../../lib/supabaseHealth';
 import { supabaseConfig } from '../../lib/supabaseConfig';
 
@@ -14,10 +15,11 @@ function statusLabel(result: SupabaseHealthResult | undefined): string {
 }
 
 function statusDetail(result: SupabaseHealthResult | undefined): string {
+  const source = dashboardDataService.source;
   if (!result) {
-    if (supabaseConfig.missing.length > 0) return 'Browser-safe Supabase config is missing. Dashboard data remains mock/local.';
-    if (!supabaseConfig.isConfigured) return 'Browser-safe Supabase config is invalid. Dashboard data remains mock/local.';
-    return 'Browser-safe Supabase config is present. Dashboard data remains mock/local.';
+    if (supabaseConfig.missing.length > 0) return `Browser-safe Supabase config is missing. Current dashboard source: ${source.label}.`;
+    if (!supabaseConfig.isConfigured) return `Browser-safe Supabase config is invalid. Current dashboard source: ${source.label}.`;
+    return `Browser-safe Supabase config is present. Current dashboard source: ${source.label}.`;
   }
   if (result.status === 'connected') return `${result.payload.service} ${result.payload.schema_phase} checked at ${new Date(result.payload.checked_at).toLocaleString()}.`;
   return result.message;

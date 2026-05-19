@@ -85,6 +85,15 @@ function setInputValue(input: HTMLInputElement, value: string) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
+async function waitForText(container: HTMLElement, text: string) {
+  for (let index = 0; index < 40; index += 1) {
+    if (container.textContent?.includes(text)) return;
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+  }
+}
+
 beforeEach(() => {
   vi.unstubAllEnvs();
   localStorage.clear();
@@ -142,6 +151,47 @@ describe('dashboard routes', () => {
     expect(container.textContent).not.toContain('Admin Console');
     expect(container.textContent).not.toContain('Teacher list');
     expect(container.textContent).not.toContain('Admin view and override');
+  });
+
+  it('keeps normal student startup independent when Supabase dashboard mode lacks config', async () => {
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
+    window.history.replaceState(null, '', '/');
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('Supabase dashboard not configured');
+    expect(container.textContent).not.toContain('Teacher class dashboard');
+  });
+
+  it('shows a safe blocked state when Supabase dashboard mode lacks browser config', async () => {
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
+    vi.stubEnv('VITE_SUPABASE_URL', '');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', '');
+    window.history.replaceState(null, '', '/#/teacher');
+    const container = await render(<App />);
+    await waitForText(container, 'Supabase dashboard not configured');
+
+    expect(container.textContent).toContain('Supabase dashboard not configured');
+    expect(container.textContent).toContain('Supabase classroom setup data');
+    expect(container.textContent).toContain('Normal student practice remains local and available.');
+    expect(container.textContent).not.toContain('P3 Alpha');
+    expect(container.textContent).not.toContain('Class progress register');
+  });
+
+  it('requires an authenticated Supabase session before Supabase dashboard data is shown', async () => {
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+    window.history.replaceState(null, '', '/#/teacher');
+    const container = await render(<App />);
+    await waitForText(container, 'Supabase sign-in required');
+
+    expect(container.textContent).toContain('Supabase sign-in required');
+    expect(container.textContent).toContain('Mock data is not shown in Supabase dashboard mode.');
+    expect(container.textContent).toContain('Supabase classroom setup data');
+    expect(container.textContent).not.toContain('P3 Alpha');
+    expect(container.textContent).not.toContain('Class progress register');
   });
 
   it('requires the explicit demo flag before dashboards can render before onboarding', async () => {

@@ -80,7 +80,7 @@ function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'tea
         <div className="onboarding-briefing">
           <strong>Student app active</strong>
           <span>Normal Paper 3 practice still runs locally without Supabase or hosted classroom access.</span>
-          <span>Set VITE_ASTERION_DASHBOARD_DEMO=enabled only for an intentional local dashboard demo.</span>
+          <span>Set VITE_ASTERION_DASHBOARD_DEMO=enabled for a mock demo, or VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase for the read-only Supabase dashboard adapter.</span>
         </div>
         <button className="primary-button" type="button" onClick={() => onNavigatePath('/')}>
           Student app
@@ -408,11 +408,11 @@ export default function App() {
     setProgress(nextProgress);
   }
 
-  if (dashboardRoute.kind === 'teacher' && !runtimeConfig.dashboardDemoEnabled) {
+  if (dashboardRoute.kind === 'teacher' && !runtimeConfig.dashboardRoutesEnabled) {
     return <DisabledDashboardRoute routeKind="teacher" onNavigatePath={navigatePath} />;
   }
 
-  if (dashboardRoute.kind === 'admin' && !runtimeConfig.dashboardDemoEnabled) {
+  if (dashboardRoute.kind === 'admin' && !runtimeConfig.dashboardRoutesEnabled) {
     return <DisabledDashboardRoute routeKind="admin" onNavigatePath={navigatePath} />;
   }
 

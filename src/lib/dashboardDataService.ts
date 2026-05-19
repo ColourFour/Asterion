@@ -15,6 +15,8 @@ import type {
   TeacherExportRow,
   TeacherRegionStatus,
 } from '../types';
+import { resolveDashboardDataSource, type DashboardDataSourceKind } from './dashboardDataSource';
+import { DashboardDataServiceError, isDashboardDataServiceError } from './dashboardServiceErrors';
 import {
   addAdminClass,
   addAdminTeacher,
@@ -40,16 +42,22 @@ import {
   resetRosterClaim,
   setClassRegionAccess,
 } from './dashboardMockService';
+import { createSupabaseDashboardDataService } from './supabaseDashboardService';
+import { resolveSupabaseConfig } from './supabaseConfig';
 
-export type DashboardSourceKind = 'mock';
+export { DashboardDataServiceError, isDashboardDataServiceError };
 
 export type RegionActivityAccess = 'field_guide' | 'quick_check' | 'warm_up' | 'exam_practice' | 'guardian' | 'mastery_progression';
 
+export interface DashboardServiceSource {
+  kind: DashboardDataSourceKind;
+  label: string;
+  readOnly: boolean;
+  detail?: string;
+}
+
 export interface DashboardDataService {
-  readonly source: {
-    kind: DashboardSourceKind;
-    label: string;
-  };
+  readonly source: DashboardServiceSource;
   listTeacherClasses(teacherId?: string): Promise<TeacherClass[]>;
   getTeacherClassDashboard(classId: string): Promise<TeacherClassDashboard>;
   getTeacherClassDashboardForTeacher(teacherId: string, classId: string): Promise<TeacherClassDashboard | undefined>;
@@ -90,6 +98,8 @@ export const mockDashboardDataService: DashboardDataService = {
   source: {
     kind: 'mock',
     label: 'Mock local dashboard data',
+    readOnly: false,
+    detail: 'Local demo data. No Supabase classroom tables are read.',
   },
   listTeacherClasses,
   getTeacherClassDashboard,
@@ -116,4 +126,56 @@ export const mockDashboardDataService: DashboardDataService = {
   canUseRegionActivity,
 };
 
-export const dashboardDataService: DashboardDataService = mockDashboardDataService;
+type DashboardRuntimeEnv = Parameters<typeof resolveDashboardDataSource>[0] & Parameters<typeof resolveSupabaseConfig>[0];
+
+export function createDashboardDataService(env: DashboardRuntimeEnv = import.meta.env): DashboardDataService {
+  const selection = resolveDashboardDataSource(env);
+  if (selection.effective === 'supabase') {
+    return createSupabaseDashboardDataService({ config: resolveSupabaseConfig(env) });
+  }
+
+  if (selection.fallbackReason) {
+    return {
+      ...mockDashboardDataService,
+      source: {
+        ...mockDashboardDataService.source,
+        detail: selection.fallbackReason,
+      },
+    };
+  }
+
+  return mockDashboardDataService;
+}
+
+function activeDashboardDataService(): DashboardDataService {
+  return createDashboardDataService();
+}
+
+export const dashboardDataService: DashboardDataService = {
+  get source() {
+    return activeDashboardDataService().source;
+  },
+  listTeacherClasses: (...args) => activeDashboardDataService().listTeacherClasses(...args),
+  getTeacherClassDashboard: (...args) => activeDashboardDataService().getTeacherClassDashboard(...args),
+  getTeacherClassDashboardForTeacher: (...args) => activeDashboardDataService().getTeacherClassDashboardForTeacher(...args),
+  getTeacherClassRoster: (...args) => activeDashboardDataService().getTeacherClassRoster(...args),
+  getClassRegionSignals: (...args) => activeDashboardDataService().getClassRegionSignals(...args),
+  getStudentSummaries: (...args) => activeDashboardDataService().getStudentSummaries(...args),
+  getStudentEvidence: (...args) => activeDashboardDataService().getStudentEvidence(...args),
+  getClassRegionAccess: (...args) => activeDashboardDataService().getClassRegionAccess(...args),
+  addRosterStudent: (...args) => activeDashboardDataService().addRosterStudent(...args),
+  archiveRosterStudent: (...args) => activeDashboardDataService().archiveRosterStudent(...args),
+  resetRosterClaim: (...args) => activeDashboardDataService().resetRosterClaim(...args),
+  setClassRegionAccess: (...args) => activeDashboardDataService().setClassRegionAccess(...args),
+  listAdminTeachers: (...args) => activeDashboardDataService().listAdminTeachers(...args),
+  listAdminTeacherRecords: (...args) => activeDashboardDataService().listAdminTeacherRecords(...args),
+  listAdminClasses: (...args) => activeDashboardDataService().listAdminClasses(...args),
+  listAdminClassRecords: (...args) => activeDashboardDataService().listAdminClassRecords(...args),
+  listAdminAuditEvents: (...args) => activeDashboardDataService().listAdminAuditEvents(...args),
+  addAdminTeacher: (...args) => activeDashboardDataService().addAdminTeacher(...args),
+  addAdminClass: (...args) => activeDashboardDataService().addAdminClass(...args),
+  generateTeacherCsvExport: (...args) => activeDashboardDataService().generateTeacherCsvExport(...args),
+  labelForClassRegionAccess: (...args) => activeDashboardDataService().labelForClassRegionAccess(...args),
+  labelForTeacherRegionStatus: (...args) => activeDashboardDataService().labelForTeacherRegionStatus(...args),
+  canUseRegionActivity: (...args) => activeDashboardDataService().canUseRegionActivity(...args),
+};

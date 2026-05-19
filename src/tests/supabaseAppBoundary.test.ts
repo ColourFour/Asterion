@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 describe('Supabase integration boundary', () => {
-  it('keeps dashboard data routes on the mock service boundary', () => {
+  it('keeps dashboard data routes on the dashboard service boundary', () => {
     const teacherDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/TeacherDashboard.tsx`, 'utf8');
     const adminDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/AdminDashboard.tsx`, 'utf8');
     const dashboardDataService = readFileSync(`${process.cwd()}/src/lib/dashboardDataService.ts`, 'utf8');
@@ -13,10 +13,14 @@ describe('Supabase integration boundary', () => {
     expect(teacherDashboard).not.toContain('dashboardMockService');
     expect(adminDashboard).not.toContain('dashboardMockService');
     expect(dashboardDataService).toContain('./dashboardMockService');
+    expect(dashboardDataService).toContain('./supabaseDashboardService');
     expect(dashboardDataService).toContain('DashboardDataService');
     expect(classClaimForm).toContain("../../lib/dashboardMockService");
-    expect(teacherDashboard).not.toContain('supabase');
+    expect(teacherDashboard).not.toContain('supabaseClient');
+    expect(teacherDashboard).not.toContain('.from(');
     expect(classClaimForm).not.toContain('supabase');
+    expect(adminDashboard).not.toContain('supabaseClient');
+    expect(adminDashboard).not.toContain('.from(');
     expect(adminDashboard).toContain('SupabaseDiagnosticPanel');
   });
 

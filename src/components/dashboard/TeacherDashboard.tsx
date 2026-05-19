@@ -1,7 +1,7 @@
 import { ArrowLeft, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { dashboardDataService } from '../../lib/dashboardDataService';
+import { dashboardDataService, isDashboardDataServiceError, type DashboardServiceSource } from '../../lib/dashboardDataService';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
 
 interface TeacherDashboardProps {
@@ -45,6 +45,81 @@ function exportCsv(dashboard: TeacherClassDashboard) {
   link.download = `${dashboard.class.name.toLowerCase().replace(/\s+/g, '-')}-teacher-progress.csv`;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+interface DashboardLoadIssue {
+  title: string;
+  message: string;
+  detail?: string;
+}
+
+function issueForDashboardError(error: unknown): DashboardLoadIssue {
+  if (isDashboardDataServiceError(error)) {
+    if (error.code === 'auth_required') {
+      return {
+        title: 'Supabase sign-in required',
+        message: 'This dashboard is configured for Supabase-backed classroom data, but there is no authenticated Supabase session.',
+        detail: 'Mock data is not shown in Supabase dashboard mode.',
+      };
+    }
+    if (error.code === 'config_missing' || error.code === 'config_invalid' || error.code === 'supabase_unavailable') {
+      return {
+        title: 'Supabase dashboard not configured',
+        message: error.safeMessage,
+        detail: 'Normal student practice remains local and available.',
+      };
+    }
+    return {
+      title: 'Dashboard data unavailable',
+      message: error.safeMessage,
+      detail: 'The dashboard did not fall back to mock data for this Supabase read.',
+    };
+  }
+
+  return {
+    title: 'Dashboard data unavailable',
+    message: error instanceof Error ? error.message : 'The dashboard could not load.',
+  };
+}
+
+function DashboardBlockedState({
+  issue,
+  onNavigatePath,
+  source,
+}: {
+  issue: DashboardLoadIssue;
+  onNavigatePath: (path: string) => void;
+  source: DashboardServiceSource;
+}) {
+  return (
+    <main className="app-shell app-view-dashboard">
+      <section className="dashboard-shell teacher-dashboard">
+        <header className="dashboard-topbar teacher-class-header">
+          <div>
+            <span className="mode-pill">Teacher class dashboard</span>
+            <h1>{issue.title}</h1>
+            <p>{issue.message}</p>
+          </div>
+          <nav className="dashboard-nav" aria-label="Dashboard navigation">
+            <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
+            <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button>
+            <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
+          </nav>
+        </header>
+        <section className="dashboard-section">
+          <div className="dashboard-section-heading">
+            <div>
+              <span className="dashboard-kicker">Dashboard data source</span>
+              <h2>{source.label}</h2>
+            </div>
+            <strong className="diagnostic-status diagnostic-idle">{source.readOnly ? 'Read-only' : 'Mock'}</strong>
+          </div>
+          {source.detail ? <p>{source.detail}</p> : null}
+          {issue.detail ? <p className="dashboard-muted">{issue.detail}</p> : null}
+        </section>
+      </section>
+    </main>
+  );
 }
 
 function RegionStatusCell({ cell }: { cell: StudentRegionProgressCell }) {
@@ -234,6 +309,7 @@ function RosterManagementPage({
   onAddStudent,
   onArchiveStudent,
   onResetClaim,
+  readOnly,
 }: {
   dashboard: TeacherClassDashboard;
   newStudentName: string;
@@ -241,6 +317,7 @@ function RosterManagementPage({
   onAddStudent: (event: FormEvent<HTMLFormElement>) => void;
   onArchiveStudent: (studentId: string) => void;
   onResetClaim: (studentId: string) => void;
+  readOnly: boolean;
 }) {
   return (
     <section className="dashboard-section roster-management-section" aria-label="Roster management">
@@ -252,11 +329,17 @@ function RosterManagementPage({
         <strong className="class-code-badge">{dashboard.classCode.code}</strong>
       </div>
       <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
-      <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
-      <form className="dashboard-inline-form" onSubmit={onAddStudent} aria-label="Add roster student">
-        <input value={newStudentName} onChange={(event) => onNewStudentNameChange(event.target.value)} placeholder="Student name" />
-        <button type="submit" className="primary-button">Add student</button>
-      </form>
+      {readOnly ? (
+        <p className="dashboard-muted">Supabase dashboard mode is read-only. Roster add, archive, and claim reset actions are disabled in this build.</p>
+      ) : (
+        <>
+          <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
+          <form className="dashboard-inline-form" onSubmit={onAddStudent} aria-label="Add roster student">
+            <input value={newStudentName} onChange={(event) => onNewStudentNameChange(event.target.value)} placeholder="Student name" />
+            <button type="submit" className="primary-button">Add student</button>
+          </form>
+        </>
+      )}
       <div className="roster-table-wrap">
         <table className="teacher-register-table compact-roster-table">
           <thead>
@@ -276,6 +359,8 @@ function RosterManagementPage({
                 <td>
                   {student.status === 'archived' ? (
                     <span className="dashboard-muted">Archived</span>
+                  ) : readOnly ? (
+                    <span className="dashboard-muted">Read-only</span>
                   ) : student.status === 'claimed' ? (
                     <div className="roster-action-stack">
                       <button type="button" className="quiet-button compact-button" onClick={() => onResetClaim(student.id)}>Reset claim</button>
@@ -349,38 +434,59 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
 }
 
 export function TeacherDashboard({ classId, page = 'home', regionId, onNavigatePath }: TeacherDashboardProps) {
+  const source = dashboardDataService.source;
+  const readOnly = source.readOnly;
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
+  const [loadIssue, setLoadIssue] = useState<DashboardLoadIssue>();
   const [newStudentName, setNewStudentName] = useState('');
 
   async function refreshDashboard(nextClassId = dashboard?.class.id ?? classId ?? classes[0]?.id) {
     if (!nextClassId) return;
-    const nextDashboard = await dashboardDataService.getTeacherClassDashboard(nextClassId);
-    setDashboard(nextDashboard);
+    try {
+      const nextDashboard = await dashboardDataService.getTeacherClassDashboard(nextClassId);
+      setDashboard(nextDashboard);
+      setLoadIssue(undefined);
+    } catch (error) {
+      setLoadIssue(issueForDashboardError(error));
+    }
   }
 
   useEffect(() => {
     let cancelled = false;
-    dashboardDataService.listTeacherClasses().then((items) => {
-      if (cancelled) return;
-      setClasses(items);
-      const selectedClassId = classId ?? items[0]?.id;
-      if (selectedClassId) {
-        dashboardDataService.getTeacherClassDashboard(selectedClassId).then((nextDashboard) => {
-          if (!cancelled) setDashboard(nextDashboard);
-        });
+    async function loadDashboard() {
+      try {
+        setLoadIssue(undefined);
+        const items = await dashboardDataService.listTeacherClasses();
+        if (cancelled) return;
+        setClasses(items);
+        const selectedClassId = classId ?? items[0]?.id;
+        if (!selectedClassId) {
+          setLoadIssue({
+            title: 'No classes visible',
+            message: 'No teacher classes are visible to the current dashboard data source.',
+            detail: source.kind === 'supabase' ? 'Check the signed-in Supabase user and row-level security class scope.' : undefined,
+          });
+          return;
+        }
+        const nextDashboard = await dashboardDataService.getTeacherClassDashboard(selectedClassId);
+        if (!cancelled) setDashboard(nextDashboard);
+      } catch (error) {
+        if (!cancelled) setLoadIssue(issueForDashboardError(error));
       }
-    });
+    }
+    loadDashboard();
     return () => {
       cancelled = true;
     };
-  }, [classId]);
+  }, [classId, source.kind]);
 
   const selectedClassId = dashboard?.class.id ?? classId ?? classes[0]?.id;
   const classRows = useMemo(() => dashboard?.studentRows ?? [], [dashboard]);
 
   async function handleAddStudent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (readOnly) return;
     if (!dashboard || !newStudentName.trim()) return;
     await dashboardDataService.addRosterStudent(dashboard.class.teacherId, dashboard.class.id, newStudentName);
     setNewStudentName('');
@@ -388,12 +494,14 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   }
 
   async function handleArchiveStudent(studentId: string) {
+    if (readOnly) return;
     if (!dashboard) return;
     await dashboardDataService.archiveRosterStudent(dashboard.class.teacherId, dashboard.class.id, studentId);
     await refreshDashboard(dashboard.class.id);
   }
 
   async function handleResetClaim(studentId: string) {
+    if (readOnly) return;
     if (!dashboard) return;
     await dashboardDataService.resetRosterClaim({
       actorRole: 'teacher',
@@ -405,6 +513,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   }
 
   async function handleRegionAccess(regionId: string, open: boolean) {
+    if (readOnly) return;
     if (!dashboard) return;
     await dashboardDataService.setClassRegionAccess({
       actorRole: 'teacher',
@@ -421,11 +530,15 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
     onNavigatePath(`/teacher/classes/${dashboard.class.id}/regions/${regionId}`);
   }
 
+  if (loadIssue) {
+    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} />;
+  }
+
   if (!dashboard) {
     return (
       <main className="app-shell app-view-dashboard">
         <section className="dashboard-shell">
-          <p>Loading teacher dashboard...</p>
+          <p>Loading teacher dashboard from {source.label}...</p>
         </section>
       </main>
     );
@@ -438,7 +551,8 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
           <div>
             <span className="mode-pill">Teacher class dashboard</span>
             <h1>{dashboard.class.name}</h1>
-            <p>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · mock local planning data</p>
+            <p>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · {source.label}{readOnly ? ' · read-only' : ''}</p>
+            {source.detail ? <p className="dashboard-muted">{source.detail}</p> : null}
           </div>
           <nav className="dashboard-nav" aria-label="Dashboard navigation">
             <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
@@ -481,6 +595,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
             onAddStudent={handleAddStudent}
             onArchiveStudent={handleArchiveStudent}
             onResetClaim={handleResetClaim}
+            readOnly={readOnly}
           />
         ) : null}
 
@@ -498,9 +613,9 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
               <div className="region-access-grid">
                 {dashboard.regionAccess.map((access) => (
                   <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
-                    <input type="checkbox" checked={access.access === 'open'} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
+                    <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
                     <span>{access.regionName}</span>
-                    <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}</small>
+                    <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}{readOnly ? ' · read-only' : ''}</small>
                   </label>
                 ))}
               </div>

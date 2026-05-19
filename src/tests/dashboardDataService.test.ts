@@ -1,15 +1,32 @@
 import { describe, expect, it } from 'vitest';
-import { dashboardDataService, mockDashboardDataService, type DashboardDataService } from '../lib/dashboardDataService';
+import { createDashboardDataService, dashboardDataService, mockDashboardDataService, type DashboardDataService } from '../lib/dashboardDataService';
 import * as dashboardMockService from '../lib/dashboardMockService';
 
 describe('dashboard data service adapter', () => {
   it('uses the mock dashboard service as the default implementation', () => {
     const service: DashboardDataService = dashboardDataService;
 
-    expect(service).toBe(mockDashboardDataService);
-    expect(service.source).toEqual({
+    expect(createDashboardDataService({})).toBe(mockDashboardDataService);
+    expect(service.source).toMatchObject({
       kind: 'mock',
       label: 'Mock local dashboard data',
+      readOnly: false,
+    });
+  });
+
+  it('selects Supabase only through the explicit dashboard data-source setting', () => {
+    expect(createDashboardDataService({
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
+      VITE_SUPABASE_URL: 'https://asterion-example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example',
+    }).source).toMatchObject({
+      kind: 'supabase',
+      readOnly: true,
+    });
+
+    expect(createDashboardDataService({ VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'hosted' }).source).toMatchObject({
+      kind: 'mock',
+      detail: expect.stringContaining('Unsupported dashboard data source'),
     });
   });
 

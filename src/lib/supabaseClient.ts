@@ -3,15 +3,26 @@ import { resolveSupabaseConfig, supabaseConfig, type SupabaseConfig } from './su
 
 export type AsterionSupabaseClient = SupabaseClient;
 
-export async function createSupabaseBrowserClient(config: SupabaseConfig = supabaseConfig): Promise<AsterionSupabaseClient | undefined> {
+export interface SupabaseBrowserClientOptions {
+  auth?: {
+    persistSession?: boolean;
+    autoRefreshToken?: boolean;
+    detectSessionInUrl?: boolean;
+  };
+}
+
+export async function createSupabaseBrowserClient(
+  config: SupabaseConfig = supabaseConfig,
+  options: SupabaseBrowserClientOptions = {},
+): Promise<AsterionSupabaseClient | undefined> {
   if (!config.isConfigured || !config.url || !config.publishableKey) return undefined;
 
   const { createClient } = await import('@supabase/supabase-js');
   return createClient(config.url, config.publishableKey, {
     auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
+      persistSession: options.auth?.persistSession ?? false,
+      autoRefreshToken: options.auth?.autoRefreshToken ?? false,
+      detectSessionInUrl: options.auth?.detectSessionInUrl ?? false,
     },
   });
 }

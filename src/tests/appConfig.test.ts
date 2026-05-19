@@ -9,6 +9,8 @@ describe('runtime storage config', () => {
     expect(config.effectiveStorageMode).toBe('local');
     expect(config.hostedStorageAvailable).toBe(false);
     expect(config.dashboardDemoEnabled).toBe(false);
+    expect(config.dashboardDataSource).toBe('mock');
+    expect(config.dashboardRoutesEnabled).toBe(false);
     expect(config.storageNotice).toBeUndefined();
     expect(config.supabaseConfigured).toBe(false);
   });
@@ -16,6 +18,20 @@ describe('runtime storage config', () => {
   it('requires an explicit demo flag for dashboard routes', () => {
     expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'true' }).dashboardDemoEnabled).toBe(false);
     expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'enabled' }).dashboardDemoEnabled).toBe(true);
+    expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'enabled' }).dashboardRoutesEnabled).toBe(true);
+  });
+
+  it('requires an explicit dashboard data source before Supabase dashboard mode is active', () => {
+    expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase' })).toMatchObject({
+      dashboardDataSource: 'supabase',
+      dashboardDataSourceExplicit: true,
+      dashboardRoutesEnabled: true,
+    });
+
+    const invalid = resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'hosted' });
+    expect(invalid.dashboardDataSource).toBe('mock');
+    expect(invalid.dashboardRoutesEnabled).toBe(false);
+    expect(invalid.dashboardDataSourceNotice).toContain('Unsupported dashboard data source');
   });
 
   it('recognizes hosted mode without silently activating hosted persistence', () => {
