@@ -1458,22 +1458,6 @@ button:disabled {
   font-size: 1.2rem;
 }
 
-.app-view-dashboard {
-  --dashboard-surface: #fffdf8;
-  --dashboard-surface-muted: #f8f2e7;
-  --dashboard-ink-muted: #3f4a5a;
-  --dashboard-border: #b9ad99;
-  --dashboard-border-soft: #cfc4b2;
-  background:
-    linear-gradient(115deg, rgba(15, 118, 110, 0.1), transparent 34%),
-    linear-gradient(245deg, rgba(183, 121, 31, 0.09), transparent 32%),
-    linear-gradient(var(--color-bg), var(--color-bg-cool));
-}
-
-.app-view-dashboard::before {
-  opacity: 0.34;
-}
-
 .dashboard-shell {
   display: grid;
   gap: 16px;
@@ -10014,6 +9998,7 @@ legend {
 
 }
 
+/* Teacher/admin dashboard readability layer. Keep these selectors scoped so student UI stays isolated. */
 .app-view-dashboard {
   --dashboard-surface: #ffffff;
   --dashboard-surface-muted: #f6f8fb;
@@ -10038,14 +10023,19 @@ legend {
 }
 
 .app-view-dashboard .dashboard-shell {
-  gap: 18px;
-  width: min(100%, 1180px);
+  display: grid;
+  gap: 20px;
+  width: min(100%, 1280px);
   color: var(--dashboard-ink);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .app-view-dashboard .dashboard-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
   align-items: center;
+  justify-content: space-between;
   padding: 18px;
   border: 1px solid var(--dashboard-border-soft);
   border-radius: var(--radius-panel);
@@ -10154,8 +10144,23 @@ legend {
 }
 
 .app-view-dashboard .dashboard-control-row {
+  display: grid;
   grid-template-columns: minmax(220px, 320px) minmax(180px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
   padding: 14px;
+}
+
+.app-view-dashboard .dashboard-section {
+  padding: 18px;
+}
+
+.app-view-dashboard .dashboard-section-heading {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
 }
 
 .app-view-dashboard label {
@@ -10221,10 +10226,15 @@ legend {
 }
 
 .app-view-dashboard .teacher-action-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
 .app-view-dashboard .teacher-action-groups > section {
+  display: grid;
+  align-content: start;
+  gap: 10px;
   padding: 0;
 }
 
@@ -10235,6 +10245,8 @@ legend {
 }
 
 .app-view-dashboard .teacher-action-card {
+  display: grid;
+  gap: 8px;
   min-width: 0;
   padding: 14px;
 }
@@ -10253,6 +10265,9 @@ legend {
 .app-view-dashboard .admin-list article,
 .app-view-dashboard .next-step-group,
 .app-view-dashboard .student-detail-facts div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
   border-color: var(--dashboard-border-soft);
   background: var(--dashboard-surface-muted);
 }
@@ -10268,13 +10283,37 @@ legend {
 }
 
 .app-view-dashboard .student-chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 10px;
   color: var(--dashboard-ink);
   border-color: #badbd5;
   background: #e8f3f1;
+  font-weight: 800;
 }
 
 .app-view-dashboard .admin-identity svg {
   color: var(--dashboard-action);
+}
+
+.app-view-dashboard .admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.app-view-dashboard .admin-list,
+.app-view-dashboard .audit-list {
+  display: grid;
+  gap: 8px;
+}
+
+.app-view-dashboard .admin-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .app-view-dashboard .admin-action-row button:disabled {
@@ -10380,27 +10419,32 @@ legend {
 }
 
 .status-needs_help {
+  color: #912018 !important;
   border-color: #d92d20 !important;
   background: #fff4f2 !important;
 }
 
 .status-no_recent_evidence {
+  color: #93370d !important;
   border-color: #b54708 !important;
   background: #fffaeb !important;
 }
 
 .status-secure {
+  color: #05603a !important;
   border-color: #067647 !important;
   background: #ecfdf3 !important;
 }
 
 .status-improving {
+  color: #1849a9 !important;
   border-color: #1570ef !important;
   background: #eff8ff !important;
 }
 
 .access-locked,
 .region-locked-cell {
+  color: #344054 !important;
   border-color: #667085 !important;
   background: #f2f4f7 !important;
 }
@@ -10460,6 +10504,7 @@ legend {
   border: 1px solid var(--dashboard-border-soft);
   border-radius: 8px;
   background: #ffffff;
+  line-height: 1.35;
 }
 
 .region-access-grid label small {
@@ -10585,14 +10630,15 @@ legend {
 
 .teacher-register-table th,
 .teacher-register-table td {
-  min-width: 132px;
-  max-width: 180px;
+  min-width: 140px;
+  max-width: 220px;
   padding: 10px;
   border-right: 1px solid var(--dashboard-border-soft);
   border-bottom: 1px solid var(--dashboard-border-soft);
   background: #ffffff;
   text-align: left;
   vertical-align: top;
+  line-height: 1.38;
 }
 
 .teacher-register-table thead th {
@@ -10627,8 +10673,9 @@ legend {
   position: sticky;
   left: 0;
   z-index: 2;
-  min-width: 180px;
+  min-width: 200px;
   background: #ffffff;
+  box-shadow: 1px 0 0 var(--dashboard-border-soft);
 }
 
 .teacher-register-table thead th:first-child {
@@ -10665,6 +10712,16 @@ legend {
 .student-row-warning th,
 .student-row-warning td:first-of-type {
   background: #fffbfa;
+}
+
+.teacher-register-table tbody tr:nth-child(even) td,
+.teacher-register-table tbody tr:nth-child(even) th {
+  background: #fcfcfd;
+}
+
+.teacher-register-table tbody tr:hover td,
+.teacher-register-table tbody tr:hover th {
+  background: #f8fbff;
 }
 
 .compact-button {

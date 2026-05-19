@@ -1,19 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { UsersRound } from 'lucide-react';
-import { ClassHall } from './components/classHall/ClassHall';
-import { AdminDashboard } from './components/dashboard/AdminDashboard';
-import { TeacherDashboard } from './components/dashboard/TeacherDashboard';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
-import { AvatarBuilder } from './components/profile/AvatarBuilder';
-import { PracticeView } from './components/practice/PracticeView';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
-import { RegionHub } from './components/world/RegionHub';
 import { getRegionFieldGuide } from './data/regionFieldGuides';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
+import { parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
@@ -36,32 +31,18 @@ import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, R
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall';
 
-type TeacherDashboardRoute = {
-  kind: 'teacher';
-  classId?: string;
-  page: 'home' | 'class' | 'roster' | 'region';
-  regionId?: string;
-};
+const TeacherDashboard = lazy(() => import('./components/dashboard/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
+const AdminDashboard = lazy(() => import('./components/dashboard/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
+const AvatarBuilder = lazy(() => import('./components/profile/AvatarBuilder').then((module) => ({ default: module.AvatarBuilder })));
+const ClassHall = lazy(() => import('./components/classHall/ClassHall').then((module) => ({ default: module.ClassHall })));
+const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
+const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
 
 function loadValidatedPendingClassClaim(): StudentClaimState | undefined {
   const pendingClaim = loadPendingClassClaim();
   const validatedClaim = validatePendingClassClaim(pendingClaim);
   if (pendingClaim && !validatedClaim) clearPendingClassClaim();
   return validatedClaim;
-}
-
-function parseDashboardRoute(pathname: string, hash: string): TeacherDashboardRoute | { kind: 'admin' } | { kind: 'student' } {
-  const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
-  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') ? hashPath : pathname;
-  if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
-  if (routePath === '/teacher') return { kind: 'teacher', page: 'home' };
-  const teacherRosterMatch = routePath.match(/^\/teacher\/classes\/([^/]+)\/roster$/);
-  if (teacherRosterMatch) return { kind: 'teacher', classId: teacherRosterMatch[1], page: 'roster' };
-  const teacherRegionMatch = routePath.match(/^\/teacher\/classes\/([^/]+)\/regions\/([^/]+)$/);
-  if (teacherRegionMatch) return { kind: 'teacher', classId: teacherRegionMatch[1], page: 'region', regionId: teacherRegionMatch[2] };
-  const teacherClassMatch = routePath.match(/^\/teacher\/classes\/([^/]+)$/);
-  if (teacherClassMatch) return { kind: 'teacher', classId: teacherClassMatch[1], page: 'class' };
-  return { kind: 'student' };
 }
 
 function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'teacher' | 'admin'; onNavigatePath: (path: string) => void }) {
@@ -87,6 +68,30 @@ function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'tea
         </button>
       </section>
     </main>
+  );
+}
+
+function DashboardRouteFallback() {
+  return (
+    <main className="app-shell onboarding-shell" aria-busy="true">
+      <TwinklingStarfield />
+      <section className="intro-panel academy-admission">
+        <div className="intro-copy">
+          <span className="mode-pill">Dashboard loading</span>
+          <h1>Asterion</h1>
+          <p>Loading dashboard route...</p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function StudentViewFallback({ label }: { label: string }) {
+  return (
+    <section className="region-panel" aria-busy="true">
+      <span className="mode-pill">{label}</span>
+      <p>Loading...</p>
+    </section>
   );
 }
 
@@ -417,11 +422,19 @@ export default function App() {
   }
 
   if (dashboardRoute.kind === 'teacher') {
-    return <TeacherDashboard classId={dashboardRoute.classId} page={dashboardRoute.page} regionId={dashboardRoute.regionId} onNavigatePath={navigatePath} />;
+    return (
+      <Suspense fallback={<DashboardRouteFallback />}>
+        <TeacherDashboard classId={dashboardRoute.classId} page={dashboardRoute.page} regionId={dashboardRoute.regionId} onNavigatePath={navigatePath} />
+      </Suspense>
+    );
   }
 
   if (dashboardRoute.kind === 'admin') {
-    return <AdminDashboard onNavigatePath={navigatePath} />;
+    return (
+      <Suspense fallback={<DashboardRouteFallback />}>
+        <AdminDashboard onNavigatePath={navigatePath} />
+      </Suspense>
+    );
   }
 
   if (!progress.profile) {
@@ -527,108 +540,118 @@ export default function App() {
       ) : null}
 
       {viewMode === 'region_hub' && selectedRegion && selectedRegionProgress && selectedRegionLearningSummary ? (
-        <RegionHub
-          regionProgress={selectedRegionProgress}
-          fieldGuide={getRegionFieldGuide(selectedRegion)}
-          fieldGuideCompleted={selectedRegionFieldGuideCompleted}
-          teachingSnippets={selectedRegionTeachingSnippets}
-          generatedPractice={selectedRegionGeneratedPractice}
-          learningActivityAttempts={progress.learningActivityAttempts.filter((attempt) => attempt.regionId === selectedRegion.id)}
-          profileId={progress.profile.id}
-          summary={selectedRegionLearningSummary}
-          studentRegionAccess={selectedRegionAccess}
-          onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
-          onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
-            const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
-            if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
-            setProgress(progressAdapter.addLearningActivityAttempt(attempt));
-          }}
-          onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
-          onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
-          activePage={selectedRegionPage}
-          onNavigatePage={(page) => openRegionPage(selectedRegion, page)}
-          onReturnToMap={returnToMap}
-        />
+        <Suspense fallback={<StudentViewFallback label="Region loading" />}>
+          <RegionHub
+            regionProgress={selectedRegionProgress}
+            fieldGuide={getRegionFieldGuide(selectedRegion)}
+            fieldGuideCompleted={selectedRegionFieldGuideCompleted}
+            teachingSnippets={selectedRegionTeachingSnippets}
+            generatedPractice={selectedRegionGeneratedPractice}
+            learningActivityAttempts={progress.learningActivityAttempts.filter((attempt) => attempt.regionId === selectedRegion.id)}
+            profileId={progress.profile.id}
+            summary={selectedRegionLearningSummary}
+            studentRegionAccess={selectedRegionAccess}
+            onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
+            onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
+              const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
+              if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
+              setProgress(progressAdapter.addLearningActivityAttempt(attempt));
+            }}
+            onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
+            onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
+            activePage={selectedRegionPage}
+            onNavigatePage={(page) => openRegionPage(selectedRegion, page)}
+            onReturnToMap={returnToMap}
+          />
+        </Suspense>
       ) : null}
 
       {viewMode === 'profile' ? (
-        <AvatarBuilder
-          profile={progress.profile}
-          avatar={progress.avatar}
-          avatarGear={avatarGear}
-          attempts={progress.attempts}
-          questions={trainableQuestions}
-          regionLearning={progress.regionLearning}
-          regionProgress={worldProgress}
-          onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
-        />
+        <Suspense fallback={<StudentViewFallback label="Profile loading" />}>
+          <AvatarBuilder
+            profile={progress.profile}
+            avatar={progress.avatar}
+            avatarGear={avatarGear}
+            attempts={progress.attempts}
+            questions={trainableQuestions}
+            regionLearning={progress.regionLearning}
+            regionProgress={worldProgress}
+            onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
+          />
+        </Suspense>
       ) : null}
 
-      {viewMode === 'class_hall' ? <ClassHall /> : null}
+      {viewMode === 'class_hall' ? (
+        <Suspense fallback={<StudentViewFallback label="Class Hall loading" />}>
+          <ClassHall />
+        </Suspense>
+      ) : null}
 
       {viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' || viewMode === 'guardian' ? (
-        <PracticeView
-          question={currentQuestion}
-          progress={progress}
-          avatarName={progress.profile.avatarName}
-          avatar={progress.avatar}
-          regionProgress={worldProgress}
-          avatarLocation={avatarLocation}
-          worldName={selectedRegion ? P3_WORLD_NAME : undefined}
-          selectedRegion={selectedRegion}
-          selectedRegionRank={selectedRegionProgress?.rank}
-          regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
-          sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
-          sessionReason={viewMode === 'guardian'
-            ? 'You are challenging the Region Guardian because your saved local evidence unlocked this check.'
-            : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
-          guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
-          progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
-            ? lockedRegionMessage(selectedRegionAccess)
-            : undefined}
-          onAttempt={(attempt: Attempt) => {
-            if (selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')) return;
-            const evidenceAttempt: Attempt = {
-              ...attempt,
-              masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,
-              guardianEligible: currentQuestion?.eligibility?.guardianEligible.eligible,
-              masteryEvidenceReadiness: currentQuestion?.masteryReadiness?.status,
-              masteryEvidenceReasonCodes: currentQuestion?.masteryReadiness?.reasonCodes,
-              validatedRegionId: currentQuestion?.routeEvidence?.validatedRegionId,
-              displayRegionId: currentQuestion?.routeEvidence?.displayRegionId,
-            };
-            const nextProgress = progressAdapter.addAttempt(evidenceAttempt);
-            if (viewMode === 'guardian' && selectedRegion) {
-              const scoreRatio = typeof evidenceAttempt.scoreRatio === 'number'
-                ? evidenceAttempt.scoreRatio
-                : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
-                  ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
-                  : 0;
-              setProgress(progressAdapter.recordRegionGuardianAttempt({
-                regionId: selectedRegion.id,
-                questionId: evidenceAttempt.questionId,
-                attemptId: evidenceAttempt.id,
-                passed: scoreRatio >= GUARDIAN_PASS_SCORE_RATIO,
-                attemptedAt: evidenceAttempt.attemptedAt,
-              }));
-              return;
-            }
-            setProgress(nextProgress);
-          }}
-          onIssue={(questionId: string, issueType: IssueType, note?: string) => {
-            setProgress(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
-          }}
-          onReturnToMap={returnToMap}
-          onReviewWeak={() => reviewWeakAreas()}
-          onContinuePractice={() => {
-            if (viewMode === 'guardian' && selectedRegion) {
-              enterRegion(selectedRegion);
-              return;
-            }
-            chooseNext(progress, selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
-          }}
-          continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
-        />
+        <Suspense fallback={<StudentViewFallback label="Practice loading" />}>
+          <PracticeView
+            question={currentQuestion}
+            progress={progress}
+            avatarName={progress.profile.avatarName}
+            avatar={progress.avatar}
+            regionProgress={worldProgress}
+            avatarLocation={avatarLocation}
+            worldName={selectedRegion ? P3_WORLD_NAME : undefined}
+            selectedRegion={selectedRegion}
+            selectedRegionRank={selectedRegionProgress?.rank}
+            regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
+            sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
+            sessionReason={viewMode === 'guardian'
+              ? 'You are challenging the Region Guardian because your saved local evidence unlocked this check.'
+              : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
+            guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
+            progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
+              ? lockedRegionMessage(selectedRegionAccess)
+              : undefined}
+            onAttempt={(attempt: Attempt) => {
+              if (selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')) return;
+              const evidenceAttempt: Attempt = {
+                ...attempt,
+                masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,
+                guardianEligible: currentQuestion?.eligibility?.guardianEligible.eligible,
+                masteryEvidenceReadiness: currentQuestion?.masteryReadiness?.status,
+                masteryEvidenceReasonCodes: currentQuestion?.masteryReadiness?.reasonCodes,
+                validatedRegionId: currentQuestion?.routeEvidence?.validatedRegionId,
+                displayRegionId: currentQuestion?.routeEvidence?.displayRegionId,
+              };
+              const nextProgress = progressAdapter.addAttempt(evidenceAttempt);
+              if (viewMode === 'guardian' && selectedRegion) {
+                const scoreRatio = typeof evidenceAttempt.scoreRatio === 'number'
+                  ? evidenceAttempt.scoreRatio
+                  : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
+                    ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
+                    : 0;
+                setProgress(progressAdapter.recordRegionGuardianAttempt({
+                  regionId: selectedRegion.id,
+                  questionId: evidenceAttempt.questionId,
+                  attemptId: evidenceAttempt.id,
+                  passed: scoreRatio >= GUARDIAN_PASS_SCORE_RATIO,
+                  attemptedAt: evidenceAttempt.attemptedAt,
+                }));
+                return;
+              }
+              setProgress(nextProgress);
+            }}
+            onIssue={(questionId: string, issueType: IssueType, note?: string) => {
+              setProgress(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
+            }}
+            onReturnToMap={returnToMap}
+            onReviewWeak={() => reviewWeakAreas()}
+            onContinuePractice={() => {
+              if (viewMode === 'guardian' && selectedRegion) {
+                enterRegion(selectedRegion);
+                return;
+              }
+              chooseNext(progress, selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
+            }}
+            continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
+          />
+        </Suspense>
       ) : null}
 
     </main>

@@ -297,6 +297,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
+    await waitForText(container, 'Admin Console');
 
     expect(container.querySelector('h1')?.textContent).toBe('Admin Console');
     expect(container.textContent).toContain('Teacher list');
@@ -313,6 +314,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
+    await waitForText(container, 'Admin Console');
 
     expect(checkSupabaseHealth).not.toHaveBeenCalled();
 
@@ -334,6 +336,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/admin');
     const container = await render(<App />);
+    await waitForText(container, 'Admin Console');
 
     const teacherForm = container.querySelector('form[aria-label="Add teacher"]') as HTMLFormElement;
     const [teacherName, teacherEmail] = Array.from(teacherForm.querySelectorAll('input'));
@@ -372,6 +375,7 @@ describe('dashboard routes', () => {
       await Promise.resolve();
       await Promise.resolve();
     });
+    await waitForText(container, 'Admin Console');
 
     expect(window.location.hash).toBe('#/admin');
     expect(container.querySelector('h1')?.textContent).toBe('Admin Console');

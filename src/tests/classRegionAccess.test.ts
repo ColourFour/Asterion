@@ -40,7 +40,7 @@ describe('student class region access', () => {
     expect(canStudentUseRegionActivity(lockedAccess, 'mastery_progression')).toBe(false);
   });
 
-  it('keeps unclaimed local demo profiles open', () => {
+  it('keeps missing class-claim context migration-tolerant', () => {
     const openAccess = getStudentRegionAccess(undefined, 'complex-harbor');
 
     expect(openAccess).toMatchObject({

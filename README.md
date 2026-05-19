@@ -6,7 +6,7 @@ The question image and mark-scheme image are the student-facing source of truth.
 
 ## Current Status
 
-Asterion is in active MVP development. The student app remains local-progress and GitHub Pages compatible: practice, attempts, Guardian checks, avatar progress, and classroom practice flow run from static assets plus browser localStorage. Keep the P3 Astral Academy loop legible and evidence-gated before adding broader worlds or real hosted classroom storage.
+Asterion is in active MVP development. The student app remains static-hosting compatible: practice, attempts, Guardian checks, avatar progress, and classroom practice flow run from committed assets, browser-local progress storage, and the configured class-claim/region-access source. Keep the P3 Astral Academy loop legible and evidence-gated before adding broader worlds or production hosted progress sync.
 
 The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, and mock dashboard service boundary. The main open gaps are static payload size, large UI/CSS/controller files, remaining part-level teacher review for mixed-topic evidence, the quarantined `33autumn25` mark-scheme gap, lack of full browser/mobile smoke automation, and the absence of a production classroom backend.
 
@@ -21,10 +21,10 @@ Supabase Phase 1 is schema, seed, verification, and limited browser-safe infrast
 - [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
 - [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
 - [Deployment Readiness](docs/deployment-readiness.md): static deployment target, route behavior, payload findings, repo-cleanliness rules, and CSS split plan.
-- [Project State Snapshot](docs/project-state-2026-05-09.md): previous current-state snapshot retained for continuity.
 - [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
 - [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
+- [Cleanup Archive](docs/archive/cleanup-2026-05-19/README.md): historical May 2026 snapshots and superseded planning notes retained for continuity.
 
 ## Core Principles
 
@@ -393,7 +393,7 @@ public/assets/exam-bank-data/question_bank.json                    # raw fallbac
 public/assets/exam-bank-data/question_bank.topic_routing.v1.json
 ```
 
-The projected bank is the normal app source. Raw-bank fallback/debug records are marked unsafe for mastery, Guardian checks, and Content Lab generation even if they have clean route metadata. This keeps the local demo login-free and GitHub Pages compatible without treating old `public/data/question_bank*.json` files as active runtime truth. A guard test prevents those legacy bundles from being reintroduced under `public/data`.
+The projected bank is the normal app source. Raw-bank fallback/debug records are marked unsafe for mastery, Guardian checks, and Content Lab generation even if they have clean route metadata. This keeps the static student app GitHub Pages compatible without treating old `public/data/question_bank*.json` files as active runtime truth. A guard test prevents those legacy bundles from being reintroduced under `public/data`.
 
 ## UI Asset Optimization
 
@@ -535,7 +535,7 @@ Common path problems:
 
 ## MVP Features
 
-- Local student profile with real name, class/group, teacher name, and avatar name.
+- Class-claimed student profile with real name, class/group, teacher name, and avatar name, persisted through the progress storage adapter.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
 - P3-focused student modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, and Class Hall.
 - Teacher/admin dashboard routes render only when `VITE_ASTERION_DASHBOARD_DEMO=enabled` for mock demo mode or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase` for the read-only Supabase adapter; neither mode is production authority by itself.
@@ -547,17 +547,17 @@ Common path problems:
 - Region restoration derived from attempts, marks, recent accuracy, subtopics touched, and clean P3 evidence.
 - Local topic mastery, ranks, checkmarks, XP, and placeholder avatar gear derived from progress.
 - Quiet per-question issue reporting.
-- Local export utilities/components still exist for teacher-readable evidence, but the old student topbar Teacher/Export entry is no longer exposed. Dashboard CSV exports are mock/demo data only.
+- Teacher-readable export utilities still exist outside the student task flow, and the old student topbar Teacher/Export entry is no longer exposed. Dashboard CSV exports are only as authoritative as the configured dashboard data source.
 - Versioned localStorage persistence for profile, attempts, issue reports, avatar, and settings behind the progress storage adapter. Topic progress, region progress, XP, ranks, and avatar unlocks are derived from saved attempts rather than stored as source truth.
 
-## Storage Mode
+## Progress Storage
 
-Local demo storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.
+Browser-local progress storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.
 
 Current behavior:
 
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
-- `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays in local demo storage and shows a notice.
+- `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays on browser-local progress storage and shows a notice.
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected. They do not enable hosted progress sync or learner-response writes.
 - `VITE_ASSET_BASE_URL` is a documented future hosted-asset input only.
 - `VITE_ASTERION_DASHBOARD_DEMO=enabled` exposes private mock teacher/admin dashboard routes for intentional demos only.

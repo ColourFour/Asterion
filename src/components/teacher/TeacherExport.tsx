@@ -39,7 +39,7 @@ export function TeacherExport({ progress, avatarGear, questions, regionProgress,
     <section className="teacher-panel">
       <div className="teacher-header">
         <span className="mode-pill">Asterion · Evidence Archive</span>
-        <h2>Teacher/export view</h2>
+        <h2>Teacher evidence export</h2>
         <p>Local classroom evidence from official question images, self-marked attempts, region progress, and data-health checks.</p>
       </div>
       <div className="export-grid">

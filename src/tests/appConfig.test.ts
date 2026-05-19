@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { resolveRuntimeConfig } from '../lib/appConfig';
 
 describe('runtime storage config', () => {
-  it('defaults to local demo storage', () => {
+  it('defaults to browser-local progress storage', () => {
     const config = resolveRuntimeConfig({});
 
     expect(config.requestedStorageMode).toBe('local');

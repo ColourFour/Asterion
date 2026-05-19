@@ -84,6 +84,15 @@ async function render(ui: ReactNode): Promise<HTMLElement> {
   return container;
 }
 
+async function waitForText(container: HTMLElement, text: string) {
+  for (let index = 0; index < 40; index += 1) {
+    if (container.textContent?.includes(text)) return;
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+  }
+}
+
 beforeEach(() => {
   localStorage.clear();
   const progress = emptyProgress();
@@ -118,6 +127,7 @@ afterEach(() => {
 describe('Field Guide app route', () => {
   it('keeps the global navigation visible above the focused Field Guide page', async () => {
     const container = await render(<App />);
+    await waitForText(container, 'Rearrange before expanding');
 
     const topbar = container.querySelector<HTMLElement>('.topbar');
     const fieldGuideHeader = container.querySelector<HTMLElement>('.focused-region-page-header');
