@@ -10,7 +10,7 @@ Asterion is in active MVP development. The student app remains local-progress an
 
 The strongest current areas are the image-first practice loop, normalized question-bank loading, region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, and mock dashboard service boundary. The main open gaps are static payload size, large UI/CSS/controller files, remaining part-level teacher review for mixed-topic evidence, the quarantined `33autumn25` mark-scheme gap, lack of full browser/mobile smoke automation, and the absence of a production classroom backend.
 
-Supabase Phase 1 is schema, seed, verification, and diagnostic-only infrastructure. The app does not yet use Supabase for auth, classroom reads, roster authority, dashboard data, progress sync, or writes. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
+Supabase Phase 1 is schema, seed, verification, and limited browser-safe infrastructure. The app can use Supabase for a read-only dashboard adapter and roster-claim RPC only when explicitly configured; it still does not use Supabase for hosted progress sync, academic source-of-truth behavior, or learner-response writes. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
 ## Documentation Map
 
@@ -538,7 +538,7 @@ Common path problems:
 - Local student profile with real name, class/group, teacher name, and avatar name.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
 - P3-focused student modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, and Class Hall.
-- Teacher/admin dashboard routes exist only as private demo routes when `VITE_ASTERION_DASHBOARD_DEMO=enabled`; they use mock dashboard data and are not production authority.
+- Teacher/admin dashboard routes render only when `VITE_ASTERION_DASHBOARD_DEMO=enabled` for mock demo mode or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase` for the read-only Supabase adapter; neither mode is production authority by itself.
 - Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
 - Normalization layer that merges the projected/raw bank and topic-routing sidecar without crashing on malformed legacy enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
@@ -558,9 +558,11 @@ Current behavior:
 
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
 - `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays in local demo storage and shows a notice.
-- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` enable only the optional admin diagnostic health check. They do not enable classroom reads, writes, auth, roster authority, dashboard replacement, or progress sync.
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected. They do not enable hosted progress sync or learner-response writes.
 - `VITE_ASSET_BASE_URL` is a documented future hosted-asset input only.
 - `VITE_ASTERION_DASHBOARD_DEMO=enabled` exposes private mock teacher/admin dashboard routes for intentional demos only.
+- `VITE_ASTERION_DASHBOARD_DATA_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
+- `VITE_ASTERION_STUDENT_CLAIM_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
 - Supabase service-role keys must never be exposed to the Vite client.
 
 See `docs/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/hosted-storage-design.md` remains the hosted storage design draft, and `docs/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
@@ -575,7 +577,7 @@ npm run build
 
 Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSON files and image assets must be committed under `public/` before building, or copied into the deployed static output.
 
-Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible demo routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same demo gate.
+Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled` or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate.
 
 See `docs/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 
@@ -583,9 +585,9 @@ See `docs/deployment-readiness.md` for current payload findings, route expectati
 
 - No authentication or durable identity.
 - No production classroom backend or cross-device sync.
-- No Supabase classroom reads/writes, roster authority, dashboard adapter, or progress sync yet.
+- No Supabase hosted progress sync, learner-response writes, or production classroom authority yet.
 - Supabase diagnostic "Connected" state is not backend readiness.
-- Teacher/admin dashboard data, roster actions, dashboard exports, and region toggles are mock/demo-only unless a future Supabase-backed adapter is implemented and gated behind real auth.
+- Teacher/admin dashboard data can come from mock demo data or the read-only Supabase adapter, but roster actions, dashboard exports, and region toggles are not production authority without a reviewed auth/session and write policy.
 - No AI marking.
 - No browser-side answer input or automatic grading for Quick Checks or generated warm-ups.
 - No automated browser smoke test for the full student flow.

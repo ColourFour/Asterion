@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import {
   buildLiveRlsChecks,
@@ -57,6 +59,123 @@ describe('live Supabase RLS verifier definitions', () => {
     for (const regionId of expectedRegionIds) {
       expect(regionCheck.sql).toContain(regionId);
     }
+  });
+
+  it('sets the Supabase authenticated JWT context for roster-claim RPC checks in one transaction', () => {
+    const claimCheck = buildLiveRlsChecks().find(
+      (check) => check.name === 'student roster claim RPC claims an existing unclaimed slot',
+    );
+
+    expect(claimCheck.kind).toBe('status_count');
+    expect(claimCheck.sql).toContain('begin;');
+    expect(claimCheck.sql).toContain('insert into auth.users');
+    expect(claimCheck.sql).toContain('insert into public.user_roles');
+    expect(claimCheck.sql).toContain(
+      "'11000000-0000-0000-0000-000000000303'",
+    );
+    expect(claimCheck.sql).toContain(
+      "'00000000-0000-0000-0000-000000000303'",
+    );
+    expect(claimCheck.sql).toContain("'student'");
+    expect(claimCheck.sql).toContain(
+      "'10000000-0000-0000-0000-000000000001'",
+    );
+    expect(claimCheck.sql).toContain("'active'");
+    expect(claimCheck.sql.indexOf('insert into public.user_roles')).toBeLessThan(
+      claimCheck.sql.indexOf('set local role authenticated;'),
+    );
+    expect(claimCheck.sql).toContain('set local role authenticated;');
+    expect(claimCheck.sql).toContain("set local request.jwt.claim.role = 'authenticated';");
+    expect(claimCheck.sql).toContain(
+      'set local request.jwt.claims = \'{\"role\":\"authenticated\",\"sub\":\"00000000-0000-0000-0000-000000000303\"}\';',
+    );
+    expect(claimCheck.sql).toContain(
+      "set local request.jwt.claim.sub = '00000000-0000-0000-0000-000000000303';",
+    );
+    expect(claimCheck.sql.indexOf('set local role authenticated;')).toBeLessThan(
+      claimCheck.sql.indexOf('public.claim_class_roster_slot'),
+    );
+    expect(claimCheck.sql).toContain('rollback;');
+  });
+
+  it('keeps every authenticated roster-claim RPC check rollback-local and Lyra-authorized', () => {
+    const claimChecks = buildLiveRlsChecks().filter(
+      (check) =>
+        check.name.includes('student roster claim RPC') &&
+        check.name !== 'anonymous users cannot execute student roster claim RPC',
+    );
+
+    expect(claimChecks).toHaveLength(6);
+
+    for (const check of claimChecks) {
+      expect(check.sql).toContain('begin;');
+      expect(check.sql).toContain('rollback;');
+      expect(check.sql).toContain('insert into auth.users');
+      expect(check.sql).toContain('insert into public.user_roles');
+      expect(check.sql).toContain("'00000000-0000-0000-0000-000000000303'");
+      expect(check.sql).toContain("'student'");
+      expect(check.sql).toContain("'active'");
+      expect(check.sql.indexOf('insert into public.user_roles')).toBeLessThan(
+        check.sql.indexOf('set local role authenticated;'),
+      );
+      expect(check.sql.indexOf('set local role authenticated;')).toBeLessThan(
+        check.sql.indexOf('public.claim_class_roster_slot'),
+      );
+    }
+  });
+
+  it('does not add the Lyra authorization fixture to the anonymous roster-claim denial check', () => {
+    const anonClaimCheck = buildLiveRlsChecks().find(
+      (check) => check.name === 'anonymous users cannot execute student roster claim RPC',
+    );
+
+    expect(anonClaimCheck.kind).toBe('deny');
+    expect(anonClaimCheck.sql).toContain('set local role anon;');
+    expect(anonClaimCheck.sql).not.toContain('insert into auth.users');
+    expect(anonClaimCheck.sql).not.toContain('insert into public.user_roles');
+  });
+
+  it('keeps the hosted demo seed copy aligned with the authorized Lyra claim user', () => {
+    const seedSql = readFileSync(
+      join(process.cwd(), 'supabase', 'sql', '002_classroom_seed_demo.sql'),
+      'utf8',
+    );
+
+    expect(seedSql).toContain("'00000000-0000-0000-0000-000000000303'");
+    expect(seedSql).toContain("'student-lyra@asterion.invalid'");
+    expect(seedSql).toContain(
+      "('11000000-0000-0000-0000-000000000303', '00000000-0000-0000-0000-000000000303', 'student', '10000000-0000-0000-0000-000000000001', 'active'",
+    );
+  });
+
+  it('keeps setup rows and authenticated roster-claim RPC calls inside the same transaction', () => {
+    const archivedClaimCheck = buildLiveRlsChecks().find(
+      (check) => check.name === 'student roster claim RPC blocks archived roster slots',
+    );
+
+    expect(archivedClaimCheck.sql.indexOf('begin;')).toBeLessThan(
+      archivedClaimCheck.sql.indexOf('Archived Claim Check'),
+    );
+    expect(archivedClaimCheck.sql.indexOf('Archived Claim Check')).toBeLessThan(
+      archivedClaimCheck.sql.indexOf('set local role authenticated;'),
+    );
+    expect(archivedClaimCheck.sql.indexOf('set local role authenticated;')).toBeLessThan(
+      archivedClaimCheck.sql.indexOf('public.claim_class_roster_slot'),
+    );
+    expect(archivedClaimCheck.sql.indexOf('public.claim_class_roster_slot')).toBeLessThan(
+      archivedClaimCheck.sql.indexOf('rollback;'),
+    );
+  });
+
+  it('returns actual roster-claim statuses for live verifier diagnostics', () => {
+    const claimCheck = buildLiveRlsChecks().find(
+      (check) => check.name === 'student roster claim RPC blocks missing roster names without self-add',
+    );
+
+    expect(claimCheck.kind).toBe('status_count');
+    expect(claimCheck.expectedStatus).toBe('roster_name_not_found');
+    expect(claimCheck.sql).toContain('actual_statuses');
+    expect(claimCheck.sql).toContain('string_agg(distinct status');
   });
 
   it('redacts connection strings and token-like diagnostics', () => {

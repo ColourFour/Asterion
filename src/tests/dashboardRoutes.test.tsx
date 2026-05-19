@@ -79,6 +79,12 @@ function enableDashboardDemo() {
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', 'enabled');
 }
 
+function useMockRuntimeEnv() {
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', '');
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', '');
+  vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', '');
+}
+
 function setInputValue(input: HTMLInputElement, value: string) {
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
   setter?.call(input, value);
@@ -96,6 +102,7 @@ async function waitForText(container: HTMLElement, text: string) {
 
 beforeEach(() => {
   vi.unstubAllEnvs();
+  useMockRuntimeEnv();
   localStorage.clear();
   sessionStorage.clear();
   vi.clearAllMocks();

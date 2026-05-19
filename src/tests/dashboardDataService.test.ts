@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createDashboardDataService, dashboardDataService, mockDashboardDataService, type DashboardDataService } from '../lib/dashboardDataService';
 import * as dashboardMockService from '../lib/dashboardMockService';
 
 describe('dashboard data service adapter', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', '');
+  });
+
   it('uses the mock dashboard service as the default implementation', () => {
     const service: DashboardDataService = dashboardDataService;
 

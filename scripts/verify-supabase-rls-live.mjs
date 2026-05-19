@@ -57,12 +57,27 @@ function sqlList(values) {
   return values.map((value) => `'${value.replaceAll("'", "''")}'`).join(',');
 }
 
-function asRole(role, sql, userId = null) {
-  const claims = userId ? `set local request.jwt.claim.sub = '${userId}';` : '';
+function sqlString(value) {
+  return String(value).replaceAll("'", "''");
+}
+
+function asRole(role, sql, userId = null, setupSql = '') {
+  const jwtClaims = {
+    role,
+    ...(userId ? { sub: userId } : {}),
+  };
+  const userClaims = userId
+    ? `
+    set local request.jwt.claim.sub = '${sqlString(userId)}';`
+    : '';
+
   return `
     begin;
+    ${setupSql}
     set local role ${role};
-    ${claims}
+    set local request.jwt.claim.role = '${sqlString(role)}';
+    set local request.jwt.claims = '${sqlString(JSON.stringify(jwtClaims))}';
+    ${userClaims}
     ${sql}
     rollback;
   `;
@@ -124,11 +139,68 @@ function insertAuditEventSql(actorUserId = 'auth.uid()') {
   `;
 }
 
+function setupAuthorizedLyraClaimUserSql() {
+  return `
+    insert into auth.users (
+      id,
+      instance_id,
+      aud,
+      role,
+      email,
+      encrypted_password,
+      email_confirmed_at,
+      raw_app_meta_data,
+      raw_user_meta_data,
+      created_at,
+      updated_at
+    )
+    values (
+      '${demoIds.studentLyraUser}',
+      '00000000-0000-0000-0000-000000000000',
+      'authenticated',
+      'authenticated',
+      'student-lyra@asterion.invalid',
+      extensions.crypt('asterion-demo-password', extensions.gen_salt('bf')),
+      now(),
+      '{"provider":"email","providers":["email"]}'::jsonb,
+      '{"name":"Student Lyra"}'::jsonb,
+      now(),
+      now()
+    )
+    on conflict (id) do update
+    set aud = excluded.aud,
+        role = excluded.role,
+        email = excluded.email,
+        raw_app_meta_data = excluded.raw_app_meta_data,
+        raw_user_meta_data = excluded.raw_user_meta_data,
+        updated_at = excluded.updated_at;
+
+    insert into public.user_roles (id, user_id, role, organization_id, status, created_at, updated_at)
+    values (
+      '11000000-0000-0000-0000-000000000303',
+      '${demoIds.studentLyraUser}',
+      'student',
+      '${demoIds.organization}',
+      'active',
+      now(),
+      now()
+    )
+    on conflict (user_id, organization_id, role) do update
+    set status = excluded.status,
+        updated_at = excluded.updated_at;
+  `;
+}
+
 function claimStatusCountSql({ classCode, rosterName, expectedStatus }) {
   return `
-    select count(*)
-    from public.claim_class_roster_slot('${classCode.replaceAll("'", "''")}', '${rosterName.replaceAll("'", "''")}')
-    where status = '${expectedStatus.replaceAll("'", "''")}';
+    with claim_result as (
+      select status
+      from public.claim_class_roster_slot('${sqlString(classCode)}', '${sqlString(rosterName)}')
+    )
+    select
+      count(*) filter (where status = '${sqlString(expectedStatus)}') as matched_count,
+      coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
+    from claim_result;
   `;
 }
 
@@ -463,61 +535,69 @@ export function buildLiveRlsChecks() {
     },
     {
       name: 'student roster claim RPC claims an existing unclaimed slot',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
+      expectedStatus: 'claimed',
       sql: asRole(
         'authenticated',
         claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'claimed' }),
         demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql(),
       ),
     },
     {
       name: 'student roster claim RPC blocks a second claim of the same slot',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
+      expectedStatus: 'already_claimed',
       sql: asRole(
         'authenticated',
         `
-          select count(*)
-          from (
+          with claim_result as (
             select status
             from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
             union all
             select status
             from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
-          ) results
-          where status = 'already_claimed';
+          )
+          select
+            count(*) filter (where status = 'already_claimed') as matched_count,
+            coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
+          from claim_result;
         `,
         demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql(),
       ),
     },
     {
       name: 'student roster claim RPC blocks archived roster slots',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
-      sql: `
-        begin;
-        ${setupArchivedRosterSlotSql()}
-        set local role authenticated;
-        set local request.jwt.claim.sub = '${demoIds.studentLyraUser}';
-        ${claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Archived Claim Check', expectedStatus: 'archived' })}
-        rollback;
-      `,
+      expectedStatus: 'archived',
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Archived Claim Check', expectedStatus: 'archived' }),
+        demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql() + setupArchivedRosterSlotSql(),
+      ),
     },
     {
       name: 'student roster claim RPC reports already claimed roster slots',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
+      expectedStatus: 'already_claimed',
       sql: asRole(
         'authenticated',
         claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Orion A.', expectedStatus: 'already_claimed' }),
         demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql(),
       ),
     },
     {
       name: 'student roster claim RPC blocks missing roster names without self-add',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
+      expectedStatus: 'roster_name_not_found',
       sql: asRole(
         'authenticated',
         `
@@ -525,31 +605,34 @@ export function buildLiveRlsChecks() {
             select status
             from public.claim_class_roster_slot('AST-P3A', 'Self Add Verification')
           )
-          select count(*)
-          from claim
-          where status = 'roster_name_not_found'
-            and not exists (
-              select 1
-              from public.class_memberships
-              where class_id = '${demoIds.classAlpha}'
-                and roster_name = 'Self Add Verification'
-            );
+          select
+            count(*) filter (
+              where status = 'roster_name_not_found'
+                and not exists (
+                  select 1
+                  from public.class_memberships
+                  where class_id = '${demoIds.classAlpha}'
+                    and roster_name = 'Self Add Verification'
+                )
+            ) as matched_count,
+            coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
+          from claim;
         `,
         demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql(),
       ),
     },
     {
       name: 'student roster claim RPC blocks duplicate roster-name ambiguity',
-      kind: 'count',
+      kind: 'status_count',
       expected: 1,
-      sql: `
-        begin;
-        ${setupDuplicateRosterSlotSql()}
-        set local role authenticated;
-        set local request.jwt.claim.sub = '${demoIds.studentLyraUser}';
-        ${claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'ambiguous_roster_name' })}
-        rollback;
-      `,
+      expectedStatus: 'ambiguous_roster_name',
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'ambiguous_roster_name' }),
+        demoIds.studentLyraUser,
+        setupAuthorizedLyraClaimUserSql() + setupDuplicateRosterSlotSql(),
+      ),
     },
     {
       name: 'anonymous users cannot execute student roster claim RPC',
@@ -613,6 +696,28 @@ function parseCount(stdout) {
   return value;
 }
 
+function parseStatusCount(stdout) {
+  const line = stdout
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .at(-1);
+  if (!line) {
+    throw new Error('Expected status count row, received: [empty output]');
+  }
+
+  const [countValue, actualStatuses = '[none]'] = line.split('|');
+  const count = Number(countValue);
+  if (!Number.isFinite(count)) {
+    throw new Error(`Expected status count row, received: ${sanitizeDiagnostic(stdout) || '[empty output]'}`);
+  }
+
+  return {
+    count,
+    actualStatuses: sanitizeDiagnostic(actualStatuses),
+  };
+}
+
 function evaluateCheck(check, result) {
   const output = result.stdout.trim();
   const diagnostic = sanitizeDiagnostic(result.stderr || result.stdout);
@@ -639,6 +744,16 @@ function evaluateCheck(check, result) {
 
   if (result.status !== 0) {
     return { ok: false, detail: diagnostic || 'query failed' };
+  }
+
+  if (check.kind === 'status_count') {
+    const { count, actualStatuses } = parseStatusCount(output);
+    return count === check.expected
+      ? { ok: true, detail: `status ${check.expectedStatus}: ${count}` }
+      : {
+          ok: false,
+          detail: `expected status ${check.expectedStatus} count ${check.expected}, got ${count}; actual statuses: ${actualStatuses}`,
+        };
   }
 
   const count = parseCount(output);
