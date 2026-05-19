@@ -85,8 +85,8 @@ function insertSnapshotSql({ membershipId, studentProfileId, classId }) {
       '${classId}',
       99,
       'local_student_app',
-      '{"verify":true}'::jsonb,
-      '{}'::jsonb
+      '{"schemaVersion":1,"paperFamily":"p3","generatedAt":"2026-05-19T00:00:00Z","attemptCount":0,"masteryEligibleAttemptCount":0,"learningActivityAttemptCount":0,"issueReportCount":0,"regionsStarted":0,"guardianReadyRegionCount":0,"guardianClearedRegionCount":0,"openRegionCount":9,"fieldGuideOnlyRegionCount":0}'::jsonb,
+      '{"algebra-forge":{"regionId":"algebra-forge","rank":"Discovered","status":"available","progressRatio":0,"attemptCount":0,"totalMarksEarned":0,"totalMarksAvailable":0,"guardianStatus":"locked","fieldGuideStatus":"not_started","accessStatus":"open"}}'::jsonb
     );
   `;
 }

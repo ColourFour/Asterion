@@ -71,6 +71,7 @@ function assertStaticContract(sql) {
   }
 
   assertRosterClaimRpc(sql);
+  assertProgressSnapshotContract(sql);
 
   const p3Contract = readFileSync(p3ContractPath, 'utf8');
   const contractRegionIds = expectedRegionIds.filter((regionId) => p3Contract.includes(`id: '${regionId}'`));
@@ -86,6 +87,56 @@ function assertStaticContract(sql) {
   }
 
   assertClientEnvSafety();
+}
+
+function assertProgressSnapshotContract(sql) {
+  const requiredFunctions = [
+    'asterion_snapshot_json_has_forbidden_key',
+    'asterion_valid_progress_snapshot_summary',
+    'asterion_valid_progress_snapshot_regions',
+  ];
+
+  for (const helper of requiredFunctions) {
+    const helperPattern = new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\b`, 'i');
+    if (!helperPattern.test(sql)) fail(`Missing progress snapshot validator public.${helper}`);
+  }
+
+  const snapshotStart = sql.search(/create\s+table\s+public\.student_progress_snapshots\b/i);
+  if (snapshotStart === -1) fail('Missing table public.student_progress_snapshots');
+  const snapshotEnd = sql.indexOf(');', snapshotStart);
+  const snapshotTable = sql.slice(snapshotStart, snapshotEnd);
+
+  if (!/summary_json\s+jsonb\s+not\s+null\s+check\s*\(\s*public\.asterion_valid_progress_snapshot_summary\(summary_json\)\s*\)/i.test(snapshotTable)) {
+    fail('student_progress_snapshots.summary_json must be guarded by the bounded snapshot summary validator');
+  }
+
+  if (!/region_summary_json\s+jsonb\s+not\s+null\s+check\s*\(\s*public\.asterion_valid_progress_snapshot_regions\(region_summary_json\)\s*\)/i.test(snapshotTable)) {
+    fail('student_progress_snapshots.region_summary_json must be guarded by the bounded region summary validator');
+  }
+
+  const requiredSnapshotTerms = [
+    'learnerResponse',
+    'learningActivityAttempts',
+    'issueReports',
+    'questionImageUrls',
+    'markSchemeImageUrls',
+    'localStorage',
+    'schemaVersion',
+    'masteryEligibleAttemptCount',
+    'guardianReadyRegionCount',
+    'fieldGuideOnlyRegionCount',
+    'guardianStatus',
+    'accessStatus',
+  ];
+
+  for (const term of requiredSnapshotTerms) {
+    if (!sql.includes(term)) fail(`Progress snapshot SQL contract is missing ${term}`);
+  }
+
+  const seed = readFileSync(seedPath, 'utf8');
+  if (/"overallProgress"|"verify":true|"learnerResponse"|"note"/.test(seed)) {
+    fail('supabase/seed.sql contains a legacy or raw progress snapshot key');
+  }
 }
 
 function assertRosterClaimRpc(sql) {

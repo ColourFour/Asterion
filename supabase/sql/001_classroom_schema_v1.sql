@@ -108,6 +108,287 @@ create table public.class_region_access (
   unique (class_id, region_id)
 );
 
+create or replace function public.asterion_snapshot_json_has_forbidden_key(payload jsonb)
+returns boolean
+language plpgsql
+immutable
+as $$
+declare
+  item record;
+  value jsonb;
+  forbidden_keys text[] := array[
+    'answer',
+    'answerText',
+    'attempt',
+    'attempts',
+    'explanation',
+    'imagePaths',
+    'imageUrls',
+    'issueReport',
+    'issueReports',
+    'learnerResponse',
+    'learningActivityAttempts',
+    'localStorage',
+    'markSchemeImagePaths',
+    'markSchemeImageRawPaths',
+    'markSchemeImageUrls',
+    'markSchemeImages',
+    'note',
+    'notes',
+    'prompt',
+    'questionImagePaths',
+    'questionImageRawPaths',
+    'questionImageUrls',
+    'questionImages',
+    'raw',
+    'rawAnswer',
+    'rawResponse',
+    'response',
+    'studentExplanation',
+    'studentNote',
+    'studentResponse'
+  ];
+begin
+  if payload is null then
+    return false;
+  end if;
+
+  if jsonb_typeof(payload) = 'object' then
+    for item in select key, value from jsonb_each(payload) loop
+      if item.key = any (forbidden_keys) then
+        return true;
+      end if;
+      if public.asterion_snapshot_json_has_forbidden_key(item.value) then
+        return true;
+      end if;
+    end loop;
+  elsif jsonb_typeof(payload) = 'array' then
+    for value in select jsonb_array_elements(payload) loop
+      if public.asterion_snapshot_json_has_forbidden_key(value) then
+        return true;
+      end if;
+    end loop;
+  end if;
+
+  return false;
+end;
+$$;
+
+create or replace function public.asterion_valid_progress_snapshot_summary(payload jsonb)
+returns boolean
+language plpgsql
+immutable
+as $$
+declare
+  key text;
+  numeric_key text;
+  required_keys text[] := array[
+    'schemaVersion',
+    'paperFamily',
+    'generatedAt',
+    'attemptCount',
+    'masteryEligibleAttemptCount',
+    'learningActivityAttemptCount',
+    'issueReportCount',
+    'regionsStarted',
+    'guardianReadyRegionCount',
+    'guardianClearedRegionCount',
+    'openRegionCount',
+    'fieldGuideOnlyRegionCount'
+  ];
+  allowed_keys text[] := required_keys || array['lastActivityAt'];
+begin
+  if jsonb_typeof(payload) <> 'object' then
+    return false;
+  end if;
+
+  if length(payload::text) > 2048 or public.asterion_snapshot_json_has_forbidden_key(payload) then
+    return false;
+  end if;
+
+  for key in select jsonb_object_keys(payload) loop
+    if key <> all (allowed_keys) then
+      return false;
+    end if;
+  end loop;
+
+  foreach key in array required_keys loop
+    if not payload ? key then
+      return false;
+    end if;
+  end loop;
+
+  if payload->>'schemaVersion' <> '1' or payload->>'paperFamily' <> 'p3' then
+    return false;
+  end if;
+
+  if jsonb_typeof(payload->'generatedAt') <> 'string' or length(payload->>'generatedAt') > 40 then
+    return false;
+  end if;
+
+  if payload ? 'lastActivityAt' and (jsonb_typeof(payload->'lastActivityAt') <> 'string' or length(payload->>'lastActivityAt') > 40) then
+    return false;
+  end if;
+
+  foreach numeric_key in array array[
+    'attemptCount',
+    'masteryEligibleAttemptCount',
+    'learningActivityAttemptCount',
+    'issueReportCount',
+    'regionsStarted',
+    'guardianReadyRegionCount',
+    'guardianClearedRegionCount',
+    'openRegionCount',
+    'fieldGuideOnlyRegionCount'
+  ] loop
+    if jsonb_typeof(payload->numeric_key) <> 'number'
+      or (payload->>numeric_key)::numeric < 0
+      or (payload->>numeric_key)::numeric > 100000
+      or trunc((payload->>numeric_key)::numeric) <> (payload->>numeric_key)::numeric then
+      return false;
+    end if;
+  end loop;
+
+  return true;
+end;
+$$;
+
+create or replace function public.asterion_valid_progress_snapshot_regions(payload jsonb)
+returns boolean
+language plpgsql
+immutable
+as $$
+declare
+  region_key text;
+  region_value jsonb;
+  key text;
+  numeric_key text;
+  region_count integer := 0;
+  allowed_region_ids text[] := array[
+    'algebra-forge',
+    'logarithm-grove',
+    'trig-observatory',
+    'complex-harbor',
+    'calculus-cliffs',
+    'integration-gardens',
+    'vector-workshop',
+    'numerical-mines',
+    'differential-shrine'
+  ];
+  allowed_keys text[] := array[
+    'regionId',
+    'rank',
+    'status',
+    'progressRatio',
+    'attemptCount',
+    'totalMarksEarned',
+    'totalMarksAvailable',
+    'guardianStatus',
+    'fieldGuideStatus',
+    'accessStatus',
+    'lastActivityAt'
+  ];
+  required_keys text[] := array[
+    'regionId',
+    'rank',
+    'status',
+    'progressRatio',
+    'attemptCount',
+    'totalMarksEarned',
+    'totalMarksAvailable',
+    'guardianStatus',
+    'fieldGuideStatus',
+    'accessStatus'
+  ];
+begin
+  if jsonb_typeof(payload) <> 'object' then
+    return false;
+  end if;
+
+  if length(payload::text) > 12000 or public.asterion_snapshot_json_has_forbidden_key(payload) then
+    return false;
+  end if;
+
+  for region_key, region_value in select key, value from jsonb_each(payload) loop
+    region_count := region_count + 1;
+    if region_count > 9 or region_key <> all (allowed_region_ids) then
+      return false;
+    end if;
+
+    if jsonb_typeof(region_value) <> 'object' then
+      return false;
+    end if;
+
+    for key in select jsonb_object_keys(region_value) loop
+      if key <> all (allowed_keys) then
+        return false;
+      end if;
+    end loop;
+
+    foreach key in array required_keys loop
+      if not region_value ? key then
+        return false;
+      end if;
+    end loop;
+
+    if region_value->>'regionId' <> region_key then
+      return false;
+    end if;
+
+    if (region_value->>'rank') <> all (array['Dormant', 'Discovered', 'Bronze', 'Silver', 'Gold', 'Mastered']) then
+      return false;
+    end if;
+
+    if (region_value->>'status') <> all (array[
+      'locked',
+      'available',
+      'field_guide_started',
+      'field_guide_completed',
+      'training_in_progress',
+      'guardian_unlocked',
+      'guardian_attempted',
+      'guardian_cleared',
+      'mastered',
+      'needs_review'
+    ]) then
+      return false;
+    end if;
+
+    if (region_value->>'guardianStatus') <> all (array['locked', 'ready', 'attempted', 'cleared', 'mastered', 'needs_review']) then
+      return false;
+    end if;
+
+    if (region_value->>'fieldGuideStatus') <> all (array['not_started', 'started', 'completed']) then
+      return false;
+    end if;
+
+    if (region_value->>'accessStatus') <> all (array['open', 'field_guide_only']) then
+      return false;
+    end if;
+
+    foreach numeric_key in array array['progressRatio', 'attemptCount', 'totalMarksEarned', 'totalMarksAvailable'] loop
+      if jsonb_typeof(region_value->numeric_key) <> 'number'
+        or (region_value->>numeric_key)::numeric < 0
+        or (region_value->>numeric_key)::numeric > 1000000 then
+        return false;
+      end if;
+    end loop;
+
+    if (region_value->>'progressRatio')::numeric > 1
+      or trunc((region_value->>'attemptCount')::numeric) <> (region_value->>'attemptCount')::numeric
+      or (region_value->>'totalMarksEarned')::numeric > (region_value->>'totalMarksAvailable')::numeric then
+      return false;
+    end if;
+
+    if region_value ? 'lastActivityAt' and (jsonb_typeof(region_value->'lastActivityAt') <> 'string' or length(region_value->>'lastActivityAt') > 40) then
+      return false;
+    end if;
+  end loop;
+
+  return true;
+end;
+$$;
+
 create table public.student_progress_snapshots (
   id uuid primary key default gen_random_uuid(),
   class_membership_id uuid not null references public.class_memberships(id) on delete cascade,
@@ -115,8 +396,8 @@ create table public.student_progress_snapshots (
   class_id uuid not null references public.classes(id) on delete cascade,
   snapshot_version integer not null check (snapshot_version > 0),
   source text not null default 'local_student_app' check (source in ('local_student_app')),
-  summary_json jsonb not null default '{}'::jsonb,
-  region_summary_json jsonb not null default '{}'::jsonb,
+  summary_json jsonb not null check (public.asterion_valid_progress_snapshot_summary(summary_json)),
+  region_summary_json jsonb not null check (public.asterion_valid_progress_snapshot_regions(region_summary_json)),
   created_at timestamptz not null default now()
 );
 

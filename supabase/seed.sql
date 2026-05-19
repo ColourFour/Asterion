@@ -232,8 +232,8 @@ values
     '40000000-0000-0000-0000-000000000401',
     1,
     'local_student_app',
-    '{"overallProgress":42,"attemptCount":8,"lastActivity":"2026-05-15"}'::jsonb,
-    '{"algebra-forge":{"status":"in_progress","progress":0.58},"logarithm-grove":{"status":"needs_help","progress":0.25}}'::jsonb,
+    '{"schemaVersion":1,"paperFamily":"p3","generatedAt":"2026-05-15T09:20:00Z","attemptCount":8,"masteryEligibleAttemptCount":7,"learningActivityAttemptCount":4,"issueReportCount":0,"regionsStarted":2,"guardianReadyRegionCount":1,"guardianClearedRegionCount":0,"openRegionCount":9,"fieldGuideOnlyRegionCount":0,"lastActivityAt":"2026-05-15T09:20:00Z"}'::jsonb,
+    '{"algebra-forge":{"regionId":"algebra-forge","rank":"Bronze","status":"guardian_unlocked","progressRatio":0.58,"attemptCount":5,"totalMarksEarned":29,"totalMarksAvailable":50,"guardianStatus":"ready","fieldGuideStatus":"completed","accessStatus":"open","lastActivityAt":"2026-05-15T09:20:00Z"},"logarithm-grove":{"regionId":"logarithm-grove","rank":"Discovered","status":"training_in_progress","progressRatio":0.25,"attemptCount":3,"totalMarksEarned":9,"totalMarksAvailable":36,"guardianStatus":"locked","fieldGuideStatus":"started","accessStatus":"open","lastActivityAt":"2026-05-14T15:00:00Z"}}'::jsonb,
     '2026-05-15T09:20:00Z'
   ),
   (
@@ -243,8 +243,8 @@ values
     '40000000-0000-0000-0000-000000000402',
     1,
     'local_student_app',
-    '{"overallProgress":18,"attemptCount":3,"lastActivity":"2026-05-12"}'::jsonb,
-    '{"trig-observatory":{"status":"not_started","progress":0},"calculus-cliffs":{"status":"field_guide_only","progress":0}}'::jsonb,
+    '{"schemaVersion":1,"paperFamily":"p3","generatedAt":"2026-05-12T11:00:00Z","attemptCount":3,"masteryEligibleAttemptCount":3,"learningActivityAttemptCount":1,"issueReportCount":0,"regionsStarted":1,"guardianReadyRegionCount":0,"guardianClearedRegionCount":0,"openRegionCount":8,"fieldGuideOnlyRegionCount":1,"lastActivityAt":"2026-05-12T11:00:00Z"}'::jsonb,
+    '{"trig-observatory":{"regionId":"trig-observatory","rank":"Discovered","status":"available","progressRatio":0,"attemptCount":0,"totalMarksEarned":0,"totalMarksAvailable":0,"guardianStatus":"locked","fieldGuideStatus":"not_started","accessStatus":"open"},"calculus-cliffs":{"regionId":"calculus-cliffs","rank":"Dormant","status":"locked","progressRatio":0,"attemptCount":0,"totalMarksEarned":0,"totalMarksAvailable":0,"guardianStatus":"locked","fieldGuideStatus":"not_started","accessStatus":"field_guide_only"}}'::jsonb,
     '2026-05-12T11:00:00Z'
   )
 on conflict (id) do nothing;
