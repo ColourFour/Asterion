@@ -16,6 +16,9 @@ export interface AsterionRuntimeConfig {
   supabaseUrl?: string;
   supabasePublishableKey?: string;
   supabaseConfigured: boolean;
+  studentClassClaimSource: 'mock' | 'supabase';
+  studentClassClaimSourceExplicit: boolean;
+  studentClassClaimNotice?: string;
   assetBaseUrl?: string;
 }
 
@@ -29,6 +32,10 @@ function configuredStorageMode(value: string | boolean | undefined): ProgressSto
   return value === 'hosted' ? 'hosted' : 'local';
 }
 
+function configuredStudentClassClaimSource(value: string | boolean | undefined): 'mock' | 'supabase' {
+  return value === 'supabase' ? 'supabase' : 'mock';
+}
+
 export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): AsterionRuntimeConfig {
   const requestedStorageMode = configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
   const hostedStorageRequested = requestedStorageMode === 'hosted';
@@ -36,6 +43,8 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
   const dashboardDemoEnabled = env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled';
   const dashboardDataSource = resolveDashboardDataSource(env);
   const supabaseDashboardRequested = dashboardDataSource.effective === 'supabase';
+  const studentClassClaimSource = configuredStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
+  const studentClassClaimSourceExplicit = typeof env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'string';
 
   return {
     requestedStorageMode,
@@ -53,6 +62,11 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     supabaseUrl: supabase.url,
     supabasePublishableKey: supabase.publishableKey,
     supabaseConfigured: supabase.isConfigured,
+    studentClassClaimSource,
+    studentClassClaimSourceExplicit,
+    studentClassClaimNotice: studentClassClaimSource === 'supabase' && !supabase.isConfigured
+      ? 'Supabase roster claiming was requested, but Supabase browser configuration is incomplete.'
+      : undefined,
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
   };
 }

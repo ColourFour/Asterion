@@ -12,6 +12,7 @@ export const demoIds = {
   teacherNoetherUser: '00000000-0000-0000-0000-000000000202',
   studentOrionUser: '00000000-0000-0000-0000-000000000301',
   studentVegaUser: '00000000-0000-0000-0000-000000000302',
+  studentLyraUser: '00000000-0000-0000-0000-000000000303',
   teacherHypatiaProfile: '20000000-0000-0000-0000-000000000201',
   teacherNoetherProfile: '20000000-0000-0000-0000-000000000202',
   studentOrionProfile: '30000000-0000-0000-0000-000000000301',
@@ -119,6 +120,70 @@ function insertAuditEventSql(actorUserId = 'auth.uid()') {
       'organization',
       '${demoIds.organization}',
       '{"verify":true}'::jsonb
+    );
+  `;
+}
+
+function claimStatusCountSql({ classCode, rosterName, expectedStatus }) {
+  return `
+    select count(*)
+    from public.claim_class_roster_slot('${classCode.replaceAll("'", "''")}', '${rosterName.replaceAll("'", "''")}')
+    where status = '${expectedStatus.replaceAll("'", "''")}';
+  `;
+}
+
+function setupArchivedRosterSlotSql() {
+  return `
+    insert into public.student_profiles (id, organization_id, display_name, status)
+    values (
+      '30000000-0000-0000-0000-000000000801',
+      '${demoIds.organization}',
+      'Archived Claim Check',
+      'archived'
+    );
+
+    insert into public.class_memberships (
+      id,
+      class_id,
+      student_profile_id,
+      roster_name,
+      roster_status,
+      archived_at
+    )
+    values (
+      '50000000-0000-0000-0000-000000000801',
+      '${demoIds.classAlpha}',
+      '30000000-0000-0000-0000-000000000801',
+      'Archived Claim Check',
+      'archived',
+      now()
+    );
+  `;
+}
+
+function setupDuplicateRosterSlotSql() {
+  return `
+    insert into public.student_profiles (id, organization_id, display_name, status)
+    values (
+      '30000000-0000-0000-0000-000000000802',
+      '${demoIds.organization}',
+      'Lyra C.',
+      'active'
+    );
+
+    insert into public.class_memberships (
+      id,
+      class_id,
+      student_profile_id,
+      roster_name,
+      roster_status
+    )
+    values (
+      '50000000-0000-0000-0000-000000000802',
+      '${demoIds.classAlpha}',
+      '30000000-0000-0000-0000-000000000802',
+      'Lyra C.',
+      'unclaimed'
     );
   `;
 }
@@ -395,6 +460,101 @@ export function buildLiveRlsChecks() {
       name: 'authenticated user can append own audit event',
       kind: 'allow',
       sql: asRole('authenticated', insertAuditEventSql('auth.uid()'), demoIds.studentOrionUser),
+    },
+    {
+      name: 'student roster claim RPC claims an existing unclaimed slot',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'claimed' }),
+        demoIds.studentLyraUser,
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks a second claim of the same slot',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        `
+          select count(*)
+          from (
+            select status
+            from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
+            union all
+            select status
+            from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
+          ) results
+          where status = 'already_claimed';
+        `,
+        demoIds.studentLyraUser,
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks archived roster slots',
+      kind: 'count',
+      expected: 1,
+      sql: `
+        begin;
+        ${setupArchivedRosterSlotSql()}
+        set local role authenticated;
+        set local request.jwt.claim.sub = '${demoIds.studentLyraUser}';
+        ${claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Archived Claim Check', expectedStatus: 'archived' })}
+        rollback;
+      `,
+    },
+    {
+      name: 'student roster claim RPC reports already claimed roster slots',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Orion A.', expectedStatus: 'already_claimed' }),
+        demoIds.studentLyraUser,
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks missing roster names without self-add',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        `
+          with claim as (
+            select status
+            from public.claim_class_roster_slot('AST-P3A', 'Self Add Verification')
+          )
+          select count(*)
+          from claim
+          where status = 'roster_name_not_found'
+            and not exists (
+              select 1
+              from public.class_memberships
+              where class_id = '${demoIds.classAlpha}'
+                and roster_name = 'Self Add Verification'
+            );
+        `,
+        demoIds.studentLyraUser,
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks duplicate roster-name ambiguity',
+      kind: 'count',
+      expected: 1,
+      sql: `
+        begin;
+        ${setupDuplicateRosterSlotSql()}
+        set local role authenticated;
+        set local request.jwt.claim.sub = '${demoIds.studentLyraUser}';
+        ${claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'ambiguous_roster_name' })}
+        rollback;
+      `,
+    },
+    {
+      name: 'anonymous users cannot execute student roster claim RPC',
+      kind: 'deny',
+      sql: asRole('anon', `select * from public.claim_class_roster_slot('AST-P3A', 'Lyra C.');`),
     },
   );
 

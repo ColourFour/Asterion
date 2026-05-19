@@ -88,7 +88,10 @@ export type StudentClaimStatus =
   | 'roster_name_not_found'
   | 'ambiguous_roster_name'
   | 'already_claimed'
-  | 'archived';
+  | 'archived'
+  | 'unauthenticated'
+  | 'unauthorized'
+  | 'claim_unavailable';
 
 export interface AdminTeacherRecord {
   id: string;

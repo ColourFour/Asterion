@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { claimRosterSlotByClassCode } from '../../lib/dashboardMockService';
+import { claimStudentRosterSlot } from '../../lib/studentClassClaimService';
 import type { StudentClaimState } from '../../types';
 
 interface ClassCodeClaimFormProps {
@@ -16,7 +16,7 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
-    const nextClaim = await claimRosterSlotByClassCode({
+    const nextClaim = await claimStudentRosterSlot({
       classCode,
       displayName,
       optionalEmail: optionalEmail.trim() || undefined,

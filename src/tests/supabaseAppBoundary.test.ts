@@ -15,7 +15,7 @@ describe('Supabase integration boundary', () => {
     expect(dashboardDataService).toContain('./dashboardMockService');
     expect(dashboardDataService).toContain('./supabaseDashboardService');
     expect(dashboardDataService).toContain('DashboardDataService');
-    expect(classClaimForm).toContain("../../lib/dashboardMockService");
+    expect(classClaimForm).toContain('../../lib/studentClassClaimService');
     expect(teacherDashboard).not.toContain('supabaseClient');
     expect(teacherDashboard).not.toContain('.from(');
     expect(classClaimForm).not.toContain('supabase');

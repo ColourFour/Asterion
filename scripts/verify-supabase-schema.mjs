@@ -70,6 +70,8 @@ function assertStaticContract(sql) {
     if (!helperPattern.test(sql)) fail(`Missing RLS helper public.${helper}`);
   }
 
+  assertRosterClaimRpc(sql);
+
   const p3Contract = readFileSync(p3ContractPath, 'utf8');
   const contractRegionIds = expectedRegionIds.filter((regionId) => p3Contract.includes(`id: '${regionId}'`));
   if (contractRegionIds.length !== expectedRegionIds.length) {
@@ -84,6 +86,41 @@ function assertStaticContract(sql) {
   }
 
   assertClientEnvSafety();
+}
+
+function assertRosterClaimRpc(sql) {
+  const rpcPattern = /create\s+or\s+replace\s+function\s+public\.claim_class_roster_slot\s*\(\s*p_class_code\s+text\s*,\s*p_roster_name\s+text\s*\)/i;
+  if (!rpcPattern.test(sql)) fail('Missing RPC public.claim_class_roster_slot(text, text)');
+
+  const rpcStart = sql.search(rpcPattern);
+  const rpcEnd = sql.indexOf('comment on function public.claim_class_roster_slot', rpcStart);
+  if (rpcEnd === -1) fail('Missing documentation comment for public.claim_class_roster_slot');
+  const rpcBody = sql.slice(rpcStart, rpcEnd);
+
+  const requiredPatterns = [
+    [/security\s+definer/i, 'RPC must be SECURITY DEFINER so it can inspect hidden unclaimed roster rows without broad RLS policies'],
+    [/auth\.uid\(\)/i, 'RPC must bind claims to auth.uid()'],
+    [/for\s+update\s+of\s+cm\s*,\s*sp/i, 'RPC must lock the matching roster row before claiming'],
+    [/update\s+public\.class_memberships/i, 'RPC must update an existing roster membership'],
+    [/update\s+public\.student_profiles/i, 'RPC must bind the existing student profile to the authenticated user'],
+    [/matching_count\s*>\s*1/i, 'RPC must detect duplicate roster-name ambiguity'],
+    [/roster_status\s*=\s*'unclaimed'/i, 'RPC must only claim unclaimed roster slots'],
+    [/roster_status\s*=\s*'archived'/i, 'RPC must explicitly block archived roster slots'],
+    [/grant\s+execute\s+on\s+function\s+public\.claim_class_roster_slot\(text,\s*text\)\s+to\s+authenticated/i, 'RPC must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.claim_class_roster_slot\(text,\s*text\)\s+from\s+anon/i, 'RPC must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of requiredPatterns) {
+    if (!pattern.test(sql)) fail(message);
+  }
+
+  if (/insert\s+into\s+public\.(class_memberships|student_profiles|student_progress_snapshots)/i.test(rpcBody)) {
+    fail('Roster claim RPC must not create roster, profile, or progress rows');
+  }
+
+  if (/student_progress_snapshots|summary_json|region_summary_json/i.test(rpcBody)) {
+    fail('Roster claim RPC must not touch progress snapshot or learner response data');
+  }
 }
 
 function assertClientEnvSafety() {

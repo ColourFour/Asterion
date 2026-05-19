@@ -13,6 +13,8 @@ describe('runtime storage config', () => {
     expect(config.dashboardRoutesEnabled).toBe(false);
     expect(config.storageNotice).toBeUndefined();
     expect(config.supabaseConfigured).toBe(false);
+    expect(config.studentClassClaimSource).toBe('mock');
+    expect(config.studentClassClaimSourceExplicit).toBe(false);
   });
 
   it('requires an explicit demo flag for dashboard routes', () => {
@@ -50,6 +52,33 @@ describe('runtime storage config', () => {
     expect(config.supabasePublishableKey).toBe('publishable-key');
     expect(config.supabaseConfigured).toBe(true);
     expect(config.assetBaseUrl).toBe('https://cdn.example.test');
+  });
+
+  it('keeps hosted student roster claiming behind an explicit Supabase source flag', () => {
+    const defaultWithSupabase = resolveRuntimeConfig({
+      VITE_SUPABASE_URL: 'https://example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(defaultWithSupabase.studentClassClaimSource).toBe('mock');
+    expect(defaultWithSupabase.studentClassClaimNotice).toBeUndefined();
+
+    const requested = resolveRuntimeConfig({
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
+      VITE_SUPABASE_URL: 'https://example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(requested.studentClassClaimSource).toBe('supabase');
+    expect(requested.studentClassClaimSourceExplicit).toBe(true);
+    expect(requested.studentClassClaimNotice).toBeUndefined();
+
+    const missingConfig = resolveRuntimeConfig({
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
+    });
+
+    expect(missingConfig.studentClassClaimSource).toBe('supabase');
+    expect(missingConfig.studentClassClaimNotice).toContain('incomplete');
   });
 
   it('treats unknown storage modes as local', () => {
