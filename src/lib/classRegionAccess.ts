@@ -10,7 +10,21 @@ export interface StudentRegionAccess {
   classroomControlled: boolean;
 }
 
-export function getStudentRegionAccess(profile: StudentProfile | undefined, regionId: string): StudentRegionAccess {
+export function getStudentRegionAccess(
+  profile: StudentProfile | undefined,
+  regionId: string,
+  hostedRegionAccess?: ClassRegionAccess[],
+): StudentRegionAccess {
+  if (hostedRegionAccess) {
+    const accessRecord = hostedRegionAccess.find((item) => item.regionId === regionId);
+    return {
+      regionId,
+      access: accessRecord?.access ?? 'field_guide_only',
+      accessRecord,
+      classroomControlled: true,
+    };
+  }
+
   const classId = profile?.classClaim?.status === 'claimed' ? profile.classClaim.classId : undefined;
   if (!classId) {
     return {

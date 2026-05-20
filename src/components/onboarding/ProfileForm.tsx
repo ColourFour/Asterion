@@ -46,7 +46,9 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
       {lockedClassFields ? (
         <div className="pending-claim-summary">
           <p className="claim-state-message">Class details came from the claimed roster slot for this browser profile.</p>
-          <button type="button" className="quiet-button compact-button" onClick={onRestartClaim}>Use a different class code</button>
+          {onRestartClaim ? (
+            <button type="button" className="quiet-button compact-button" onClick={onRestartClaim}>Use a different class code</button>
+          ) : null}
         </div>
       ) : null}
       <label>

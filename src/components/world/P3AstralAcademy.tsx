@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { BookOpenCheck, FileText, Target, Trophy } from 'lucide-react';
-import type { AvatarSettings, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
+import type { AvatarSettings, ClassRegionAccess, RegionDefinition, RegionProgress, WorldDefinition } from '../../types';
 import { calculateAcademySummary, nextRegionGoal } from '../../lib/academyProgress';
 import { buildAstralRegionMapLayout, type AstralMapPriority } from '../../lib/astralRegionLayout';
 import { astralAssets, getAstralRegionAsset, getAstralRegionAssetDimensions } from '../../lib/astralAssets';
@@ -17,6 +17,7 @@ interface P3AstralAcademyProps {
   avatar: AvatarSettings;
   avatarLocation: AvatarLocation;
   regionLearningSummaries?: Record<string, RegionLearningSummary>;
+  regionAccess?: ClassRegionAccess[];
   notice?: string;
   onTrain: (region: RegionDefinition) => void;
 }
@@ -191,15 +192,23 @@ interface RegionMapNodeProps {
   priority: AstralMapPriority;
   regionProgress: RegionProgress;
   regionLearningSummary?: RegionLearningSummary;
+  regionAccess?: ClassRegionAccess;
   style: CSSProperties;
   onTrain: (region: RegionDefinition) => void;
 }
 
-function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionProgress, regionLearningSummary, style, onTrain }: RegionMapNodeProps) {
+function classAccessLabel(access?: ClassRegionAccess): string | undefined {
+  if (!access) return undefined;
+  return access.access === 'open' ? 'Class open' : 'Field Guide only';
+}
+
+function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionProgress, regionLearningSummary, regionAccess, style, onTrain }: RegionMapNodeProps) {
   const { region } = regionProgress;
   const goal = nextRegionGoal(regionProgress);
   const tooltipId = `region-tooltip-${region.id}`;
   const learningStatus = learningStateLabel(regionLearningSummary);
+  const accessLabel = classAccessLabel(regionAccess);
+  const isFieldGuideOnly = regionAccess?.access === 'field_guide_only';
   const nodeRef = useRef<HTMLElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -242,7 +251,7 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
 
   return (
     <article
-      className={`map-region-node region-${region.id} map-priority-${priority} rank-${regionProgress.rank.toLowerCase()} learning-${regionLearningSummary?.visualTreatment ?? 'not_started'}${isRecommended ? ' recommended-region' : ''}`}
+      className={`map-region-node region-${region.id} map-priority-${priority} rank-${regionProgress.rank.toLowerCase()} learning-${regionLearningSummary?.visualTreatment ?? 'not_started'}${isRecommended ? ' recommended-region' : ''}${isFieldGuideOnly ? ' field-guide-only-region' : ''}`}
       key={region.id}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) hideTooltip();
@@ -257,13 +266,13 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
         type="button"
         disabled={!canTrain}
         onClick={() => onTrain(region)}
-        aria-label={`${region.name}: ${learningStatus}, ${regionProgress.rank}, ${percent(regionProgress.averageScoreRatio)} average. ${region.description} ${regionLearningSummary?.nextAction.label ?? goal.label}`}
+        aria-label={`${region.name}: ${accessLabel ? `${accessLabel}, ` : ''}${learningStatus}, ${regionProgress.rank}, ${percent(regionProgress.averageScoreRatio)} average. ${region.description} ${regionLearningSummary?.nextAction.label ?? goal.label}`}
         aria-describedby={tooltipId}
       >
         <RegionIslandArt regionId={region.id} fallbackArt={fallbackArt} />
         <span className="map-region-label">
           <strong>{region.name}</strong>
-          {isRecommended ? <small>Daily Quest</small> : null}
+          {accessLabel ? <small>{accessLabel}</small> : isRecommended ? <small>Daily Quest</small> : null}
         </span>
         <span className="region-orbit" aria-hidden="true">{rankSymbol(regionProgress.rank)}</span>
       </button>
@@ -279,9 +288,9 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
           } as CSSProperties}
         >
           <strong className="node-popover-title">{region.name}</strong>
-          <span className="node-popover-status">{canTrain ? learningStatus : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>
+          <span className="node-popover-status">{accessLabel ?? (canTrain ? learningStatus : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing')}</span>
           <p className="node-popover-description">{region.description}</p>
-          <p className="node-popover-goal">{regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
+          <p className="node-popover-goal">{isFieldGuideOnly ? 'Field Guide is available. Quick Check, Warm-Up, Practice, Guardian, and mastery progression are locked for this class.' : regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
         </div>,
         document.body,
       )}
@@ -296,6 +305,7 @@ export function P3AstralAcademy({
   avatar,
   avatarLocation,
   regionLearningSummaries,
+  regionAccess,
   notice,
   onTrain,
 }: P3AstralAcademyProps) {
@@ -359,6 +369,7 @@ export function P3AstralAcademy({
               label: { placement: 'lower' as const, xPct: 50, bottomPx: 8, maxWidthPx: 148 },
             };
             const regionLearningSummary = regionLearningSummaries?.[region.id];
+            const access = regionAccess?.find((item) => item.regionId === region.id);
             return (
               <RegionMapNode
                 canTrain={canTrain}
@@ -369,6 +380,7 @@ export function P3AstralAcademy({
                 priority={layout.priority}
                 regionProgress={regionProgress}
                 regionLearningSummary={regionLearningSummary}
+                regionAccess={access}
                 style={{
                   '--node-scale': layout.scale,
                   '--node-z': layout.zIndex,
@@ -409,7 +421,7 @@ export function P3AstralAcademy({
   );
 }
 
-export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain }: Pick<P3AstralAcademyProps, 'progress' | 'regionLearningSummaries' | 'onTrain'>) {
+export function AstralRegionLedger({ progress, regionLearningSummaries, regionAccess, onTrain }: Pick<P3AstralAcademyProps, 'progress' | 'regionLearningSummaries' | 'regionAccess' | 'onTrain'>) {
   const ledgerProgress = [...progress].sort((a, b) => (
     restorationLedgerIndex(a.region.id) - restorationLedgerIndex(b.region.id)
     || a.region.name.localeCompare(b.region.name)
@@ -428,12 +440,15 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
           const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
           const goal = nextRegionGoal(regionProgress);
           const learningSummary = regionLearningSummaries?.[region.id];
+          const access = regionAccess?.find((item) => item.regionId === region.id);
+          const accessLabel = classAccessLabel(access);
+          const isFieldGuideOnly = access?.access === 'field_guide_only';
           const theme = getRegionTheme(region);
           return (
             <article
               aria-disabled={!canTrain}
-              aria-label={`${region.name}: ${canTrain ? 'open region hub' : regionProgress.isActive ? 'no questions loaded yet' : 'coming soon'}`}
-              className={`region-card ${canTrain ? 'is-clickable' : 'is-disabled'} ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}`}
+              aria-label={`${region.name}: ${accessLabel ? `${accessLabel}, ` : ''}${canTrain ? 'open region hub' : regionProgress.isActive ? 'no questions loaded yet' : 'coming soon'}`}
+              className={`region-card ${canTrain ? 'is-clickable' : 'is-disabled'} ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}${isFieldGuideOnly ? ' field-guide-only-region' : ''}`}
               key={region.id}
               onClick={(event) => {
                 if (!canTrain) return;
@@ -451,7 +466,7 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
             >
               <div className="region-card-header">
                 <div>
-                  <span className="region-state">{canTrain ? learningStateLabel(learningSummary) : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing'}</span>
+                  <span className="region-state">{accessLabel ?? (canTrain ? learningStateLabel(learningSummary) : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing')}</span>
                   <h3>{region.name}</h3>
                 </div>
                 <strong>{regionProgress.rank}</strong>
@@ -471,7 +486,7 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
               </div>
               <div className="region-goal">
                 <Target size={14} />
-                <span>{learningSummary?.nextAction.explanation ?? goal.label}</span>
+                <span>{isFieldGuideOnly ? 'Field Guide is available. Practice, Guardian, and mastery progression are locked for this class.' : learningSummary?.nextAction.explanation ?? goal.label}</span>
               </div>
               <button type="button" disabled={!canTrain} onClick={() => onTrain(region)}>
                 {canTrain ? (learningSummary?.nextAction.kind === 'field_guide' ? 'Start region' : 'Open region hub') : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}

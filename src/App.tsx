@@ -27,6 +27,7 @@ import {
   type RegionLearningPageId,
 } from './lib/regionRoutes';
 import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
+import { useStudentClassroomContext, type StudentClassroomContext } from './lib/studentClassroomService';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
@@ -40,7 +41,11 @@ const ClassHall = lazy(() => import('./components/classHall/ClassHall').then((mo
 const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
 const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
 
-function loadValidatedPendingClassClaim(): StudentClaimState | undefined {
+function loadValidatedPendingClassClaim(runtimeConfig: AsterionRuntimeConfig): StudentClaimState | undefined {
+  if (runtimeConfig.profile.name === 'classroom-pilot') {
+    clearPendingClassClaim();
+    return undefined;
+  }
   const pendingClaim = loadPendingClassClaim();
   const validatedClaim = validatePendingClassClaim(pendingClaim);
   if (pendingClaim && !validatedClaim) clearPendingClassClaim();
@@ -114,16 +119,49 @@ function StudentViewFallback({ label }: { label: string }) {
   );
 }
 
+function HostedStudentGateMessage({
+  state,
+}: {
+  state: Exclude<ReturnType<typeof useStudentClassroomContext>[0], { status: 'ready' }>;
+}) {
+  if (state.status === 'loading') {
+    return <div className="notice" role="status">Checking hosted classroom membership...</div>;
+  }
+  if (state.status === 'signed-out') {
+    return <div className="notice">Sign in and claim your hosted roster slot before entering the classroom pilot.</div>;
+  }
+  if (state.status === 'missing-membership') {
+    return <div className="notice">{state.message}</div>;
+  }
+  return <div className="notice">{state.error}{state.detail ? ` ${state.detail}` : ''}</div>;
+}
+
+function hostedInitialProfile(context: StudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
+  return {
+    realName: context.membership.rosterName || context.studentProfile.displayName,
+    classGroup: context.classRecord.name,
+    teacherName: context.teacher.displayName,
+    avatarName,
+    classClaim: context.claim,
+  };
+}
+
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
+  const hostedStudentRequired = runtimeConfig.profile.name === 'classroom-pilot';
+  const [hostedClassroomReloadKey, setHostedClassroomReloadKey] = useState(0);
+  const [hostedClassroomState, refreshHostedClassroomContext] = useStudentClassroomContext({
+    enabled: hostedStudentRequired,
+    reloadKey: hostedClassroomReloadKey,
+  });
   const [dashboardLocation, setDashboardLocation] = useState(() => `${window.location.pathname}${window.location.hash}`);
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [loadError, setLoadError] = useState<string>();
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
-  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState | undefined>(() => loadValidatedPendingClassClaim());
+  const [studentClassClaim, setStudentClassClaim] = useState<StudentClaimState | undefined>(() => loadValidatedPendingClassClaim(runtimeConfig));
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
@@ -230,9 +268,11 @@ export default function App() {
   const avatarGear = useMemo(() => deriveAvatarGear(worldProgress), [worldProgress]);
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
+  const hostedClassroomContext = hostedClassroomState.status === 'ready' ? hostedClassroomState.context : undefined;
+  const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
-    selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id) : undefined
-  ), [progress.profile, selectedRegion]);
+    selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
+  ), [hostedRegionAccess, progress.profile, selectedRegion]);
   const selectedRegionTeachingSnippets = useMemo(() => (
     selectedRegion
       ? getTeachingSnippetsForRegion(teachingSnippets, P3_ASTRAL_ACADEMY.paperFamily, selectedRegion)
@@ -348,7 +388,7 @@ export default function App() {
   }
 
   function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
-    const access = getStudentRegionAccess(progress.profile, region.id);
+    const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
     if (!canStudentUseRegionActivity(access, 'exam_practice')) {
       openRegionPage(region, 'hub');
       return;
@@ -365,7 +405,7 @@ export default function App() {
   }
 
   function challengeGuardian(region: RegionDefinition, question: NormalizedQuestion) {
-    const access = getStudentRegionAccess(progress.profile, region.id);
+    const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
     if (!canStudentUseRegionActivity(access, 'guardian')) {
       openRegionPage(region, 'hub');
       return;
@@ -420,6 +460,18 @@ export default function App() {
   }
 
   function handleStudentClassClaim(claim: StudentClaimState) {
+    if (hostedStudentRequired) {
+      if (claim.status !== 'claimed') {
+        clearPendingClassClaim();
+        setStudentClassClaim(undefined);
+        return;
+      }
+      setStudentClassClaim(savePendingClassClaim(claim));
+      setHostedClassroomReloadKey((value) => value + 1);
+      refreshHostedClassroomContext();
+      return;
+    }
+
     const validatedClaim = validatePendingClassClaim(claim);
     if (!validatedClaim) {
       clearPendingClassClaim();
@@ -435,6 +487,20 @@ export default function App() {
   }
 
   function saveClaimedStudentProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) {
+    if (hostedStudentRequired && hostedClassroomContext) {
+      const nextProgress = progressAdapter.saveProfile({
+        ...profile,
+        realName: hostedClassroomContext.membership.rosterName,
+        classGroup: hostedClassroomContext.classRecord.name,
+        teacherName: hostedClassroomContext.teacher.displayName,
+        classClaim: hostedClassroomContext.claim,
+      });
+      clearPendingClassClaim();
+      setStudentClassClaim(undefined);
+      setProgress(nextProgress);
+      return;
+    }
+
     const nextProgress = progressAdapter.saveProfile(profile);
     clearPendingClassClaim();
     setStudentClassClaim(undefined);
@@ -499,7 +565,32 @@ export default function App() {
     );
   }
 
+  if (hostedStudentRequired && hostedClassroomState.status !== 'ready') {
+    return (
+      <main className="app-shell onboarding-shell">
+        <TwinklingStarfield />
+        <section className="intro-panel academy-admission">
+          <div className="intro-copy">
+            <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
+            <h1>Asterion</h1>
+          </div>
+          <div className="onboarding-briefing">
+            <strong>Hosted classroom access</strong>
+            <span>Class membership, teacher, and region access are checked through Supabase before the map opens.</span>
+            <span>Existing browser profiles cannot enter without a currently claimed hosted roster slot.</span>
+            <span>{onboardingProgressMessage(runtimeConfig)}</span>
+          </div>
+        </section>
+        <HostedStudentGateMessage state={hostedClassroomState} />
+        {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
+        {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
+        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
+      </main>
+    );
+  }
+
   if (!progress.profile) {
+    const hostedInitial = hostedClassroomContext ? hostedInitialProfile(hostedClassroomContext, studentClassClaim?.displayName === hostedClassroomContext.membership.rosterName ? '' : '') : undefined;
     return (
       <main className="app-shell onboarding-shell">
         <TwinklingStarfield />
@@ -547,7 +638,16 @@ export default function App() {
         </section>
         {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        {studentClassClaim ? (
+        {hostedClassroomContext ? (
+          <ProfileForm
+            initialProfile={hostedInitial}
+            lockedClassFields
+            onSave={(profile) => saveClaimedStudentProfile({
+              ...profile,
+              classClaim: hostedClassroomContext.claim,
+            })}
+          />
+        ) : studentClassClaim ? (
           <ProfileForm
             initialProfile={{
               realName: studentClassClaim.displayName ?? '',
@@ -600,13 +700,14 @@ export default function App() {
           avatar={progress.avatar}
           avatarLocation={avatarLocation}
           regionLearningSummaries={regionLearningSummaries}
+          regionAccess={hostedRegionAccess}
           notice={worldNotice}
           onTrain={enterRegion}
         />
       ) : null}
 
       {viewMode === 'regions' ? (
-        <AstralRegionLedger progress={worldProgress} regionLearningSummaries={regionLearningSummaries} onTrain={enterRegion} />
+        <AstralRegionLedger progress={worldProgress} regionLearningSummaries={regionLearningSummaries} regionAccess={hostedRegionAccess} onTrain={enterRegion} />
       ) : null}
 
       {viewMode === 'region_hub' && selectedRegion && selectedRegionProgress && selectedRegionLearningSummary ? (

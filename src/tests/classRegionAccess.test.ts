@@ -51,4 +51,24 @@ describe('student class region access', () => {
     expect(canStudentUseRegionActivity(openAccess, 'exam_practice')).toBe(true);
     expect(canStudentUseRegionActivity(openAccess, 'guardian')).toBe(true);
   });
+
+  it('uses hosted region access ahead of mock/local class labels', () => {
+    const hostedLockedAccess = getStudentRegionAccess(claimedAlphaProfile, 'algebra-forge', [
+      {
+        regionId: 'algebra-forge',
+        regionName: 'Algebra Forge',
+        access: 'field_guide_only',
+        updatedByRole: 'teacher',
+        updatedAt: '2026-05-20T08:00:00.000Z',
+      },
+    ]);
+
+    expect(hostedLockedAccess).toMatchObject({
+      regionId: 'algebra-forge',
+      access: 'field_guide_only',
+      classroomControlled: true,
+    });
+    expect(canStudentUseRegionActivity(hostedLockedAccess, 'field_guide')).toBe(true);
+    expect(canStudentUseRegionActivity(hostedLockedAccess, 'mastery_progression')).toBe(false);
+  });
 });
