@@ -262,6 +262,92 @@ describe('PracticeView self-mark reflection', () => {
     ]);
   });
 
+  it('opens and closes a full-size canonical question image view', () => {
+    const { container } = renderPractice(question());
+    const questionImage = container.querySelector<HTMLImageElement>('.question-panel .image-stack-item img');
+    const zoomButton = Array.from(container.querySelectorAll<HTMLButtonElement>('.question-panel button'))
+      .find((button) => button.textContent === 'Open full-size question');
+
+    expect(questionImage?.getAttribute('src')).toBe('/assets/31autumn21/questions/q01.png');
+    expect(questionImage?.getAttribute('alt')).toBe('Question 1');
+    expect(zoomButton).toBeTruthy();
+
+    act(() => {
+      zoomButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    const dialog = container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]');
+    const fullSizeImage = dialog?.querySelector<HTMLImageElement>('.image-lightbox-scroll img');
+    expect(dialog?.getAttribute('aria-label')).toBe('Full-size question image');
+    expect(fullSizeImage?.getAttribute('src')).toBe('/assets/31autumn21/questions/q01.png');
+    expect(fullSizeImage?.getAttribute('alt')).toBe('Question 1');
+
+    clickButton(container, 'Close');
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  it('keeps mark-scheme images and full-size controls hidden until reveal', () => {
+    const { container } = renderPractice(question());
+
+    expect(container.querySelector('.mark-scheme-panel')).toBeNull();
+    expect(container.textContent).not.toContain('Open full-size mark scheme');
+    expect(container.querySelector<HTMLImageElement>('img[src="/assets/31autumn21/mark_scheme/q01.png"]')).toBeNull();
+
+    clickButton(container, 'Reveal Mark Scheme');
+
+    const markSchemeImage = container.querySelector<HTMLImageElement>('.mark-scheme-panel .image-stack-item img');
+    const zoomButton = Array.from(container.querySelectorAll<HTMLButtonElement>('.mark-scheme-panel button'))
+      .find((button) => button.textContent === 'Open full-size mark scheme');
+
+    expect(markSchemeImage?.getAttribute('src')).toBe('/assets/31autumn21/mark_scheme/q01.png');
+    expect(markSchemeImage?.getAttribute('alt')).toBe('Mark scheme 1');
+    expect(zoomButton).toBeTruthy();
+  });
+
+  it('opens and closes a full-size canonical mark-scheme image view after reveal', () => {
+    const { container } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+    clickButton(container, 'Open full-size mark scheme');
+
+    const dialog = container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]');
+    const fullSizeImage = dialog?.querySelector<HTMLImageElement>('.image-lightbox-scroll img');
+    expect(dialog?.getAttribute('aria-label')).toBe('Full-size mark scheme image');
+    expect(fullSizeImage?.getAttribute('src')).toBe('/assets/31autumn21/mark_scheme/q01.png');
+    expect(fullSizeImage?.getAttribute('alt')).toBe('Mark scheme 1');
+
+    clickButton(container, 'Close');
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  it('closes the full-size mark-scheme image view with Escape', () => {
+    const { container } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+    clickButton(container, 'Open full-size mark scheme');
+    expect(container.querySelector('[role="dialog"]')).toBeTruthy();
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  it('closes the full-size question image view with Escape', () => {
+    const { container } = renderPractice(question());
+    clickButton(container, 'Open full-size question');
+    expect(container.querySelector('[role="dialog"]')).toBeTruthy();
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
+  });
+
   it('saves part-by-part scores when question part metadata exists', () => {
     const { container, onAttempt } = renderPractice(question({
       marksAvailable: 7,

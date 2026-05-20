@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export type ImageStackAvailability = 'pending' | 'available' | 'unavailable';
 
@@ -6,10 +6,12 @@ interface AssetImageProps {
   candidates: string[];
   alt: string;
   groupIndex: number;
+  label: string;
+  onOpenFullSize: (src: string, alt: string, trigger: HTMLButtonElement) => void;
   onStatusChange?: (groupIndex: number, status: ImageStackAvailability) => void;
 }
 
-function AssetImage({ candidates, alt, groupIndex, onStatusChange }: AssetImageProps) {
+function AssetImage({ candidates, alt, groupIndex, label, onOpenFullSize, onStatusChange }: AssetImageProps) {
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState<string[]>([]);
   const [status, setStatus] = useState<ImageStackAvailability>(candidates.length ? 'pending' : 'unavailable');
@@ -35,19 +37,31 @@ function AssetImage({ candidates, alt, groupIndex, onStatusChange }: AssetImageP
   }
 
   return (
-    <img
-      src={current}
-      alt={alt}
-      loading="lazy"
-      decoding="async"
-      onLoad={() => setStatus('available')}
-      onError={() => {
-        const next = index + 1;
-        setFailed((values) => [...values, current]);
-        if (next >= candidates.length) setStatus('unavailable');
-        setIndex(next);
-      }}
-    />
+    <figure className="image-stack-item">
+      <img
+        src={current}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setStatus('available')}
+        onError={() => {
+          const next = index + 1;
+          setFailed((values) => [...values, current]);
+          if (next >= candidates.length) setStatus('unavailable');
+          setIndex(next);
+        }}
+      />
+      <figcaption>
+        <button
+          className="image-zoom-button"
+          type="button"
+          onClick={(event) => onOpenFullSize(current, alt, event.currentTarget)}
+          aria-label={`Open full-size ${label.toLowerCase()} image`}
+        >
+          Open full-size {label.toLowerCase()}
+        </button>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -72,9 +86,22 @@ function dedupeCandidateGroups(candidateGroups: string[][]): string[][] {
 export function ImageStack({ candidateGroups, label, onAvailabilityChange }: ImageStackProps) {
   const visibleCandidateGroups = useMemo(() => dedupeCandidateGroups(candidateGroups), [candidateGroups]);
   const groupKey = visibleCandidateGroups.map((group) => group.join('|')).join('||');
+  const restoreFocusRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [fullSizeImage, setFullSizeImage] = useState<{ src: string; alt: string } | undefined>();
   const [groupStatuses, setGroupStatuses] = useState<ImageStackAvailability[]>(() => (
     visibleCandidateGroups.map((group) => (group.length ? 'pending' : 'unavailable'))
   ));
+
+  const closeFullSizeImage = useCallback(() => {
+    setFullSizeImage(undefined);
+    window.setTimeout(() => restoreFocusRef.current?.focus(), 0);
+  }, []);
+
+  const openFullSizeImage = useCallback((src: string, alt: string, trigger: HTMLButtonElement) => {
+    restoreFocusRef.current = trigger;
+    setFullSizeImage({ src, alt });
+  }, []);
 
   const updateGroupStatus = useCallback((index: number, status: ImageStackAvailability) => {
     setGroupStatuses((current) => {
@@ -98,6 +125,18 @@ export function ImageStack({ candidateGroups, label, onAvailabilityChange }: Ima
     onAvailabilityChange?.(stackStatus);
   }, [onAvailabilityChange, stackStatus]);
 
+  useEffect(() => {
+    if (!fullSizeImage) return;
+    closeButtonRef.current?.focus();
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeFullSizeImage();
+    };
+
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [closeFullSizeImage, fullSizeImage]);
+
   if (visibleCandidateGroups.length === 0) {
     return <div className="image-placeholder">{label} image unavailable</div>;
   }
@@ -110,9 +149,29 @@ export function ImageStack({ candidateGroups, label, onAvailabilityChange }: Ima
           candidates={candidates}
           alt={`${label} ${index + 1}`}
           groupIndex={index}
+          label={label}
+          onOpenFullSize={openFullSizeImage}
           onStatusChange={updateGroupStatus}
         />
       ))}
+      {fullSizeImage ? (
+        <div
+          className="image-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Full-size ${label.toLowerCase()} image`}
+        >
+          <div className="image-lightbox-bar">
+            <strong>{label} image</strong>
+            <button ref={closeButtonRef} type="button" onClick={closeFullSizeImage}>
+              Close
+            </button>
+          </div>
+          <div className="image-lightbox-scroll">
+            <img src={fullSizeImage.src} alt={fullSizeImage.alt} />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
