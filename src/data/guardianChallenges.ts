@@ -16,6 +16,17 @@ export interface GuardianChallenge {
 
 export const GUARDIAN_PLACEHOLDER_WARNING = 'This stretch challenge is a pilot placeholder. It is designed to feel like a boss problem for this region. It may go beyond CAIE 9709 P3 and does not count as official mastery evidence yet.';
 
+const guardianAssetPaths: Partial<Record<P3RegionId, string>> = {
+  'algebra-forge': '/assets/guardian-art/optimized/algebra-forge-guardian-960.png',
+  'calculus-cliffs': '/assets/guardian-art/optimized/calculus-cliffs-guardian-960.png',
+  'complex-harbor': '/assets/guardian-art/optimized/complex-harbor-guardian-960.png',
+  'differential-shrine': '/assets/guardian-art/optimized/differential-shrine-guardian-960.png',
+  'integration-gardens': '/assets/guardian-art/optimized/integration-gardens-guardian-960.png',
+  'logarithm-grove': '/assets/guardian-art/optimized/logarithm-grove-guardian-960.png',
+  'numerical-mines': '/assets/guardian-art/optimized/numerical-mines-guardian-960.png',
+  'trig-observatory': '/assets/guardian-art/optimized/trig-observatory-guardian-960.png',
+};
+
 const challengeRecords: Array<Omit<GuardianChallenge, 'guardianAssetPath' | 'status' | 'countsForMastery' | 'studentFacingWarning'>> = [
   {
     regionId: 'algebra-forge',
@@ -119,7 +130,7 @@ const challengeRecords: Array<Omit<GuardianChallenge, 'guardianAssetPath' | 'sta
 ];
 
 export const guardianChallenges: GuardianChallenge[] = challengeRecords.map((record) => {
-  const asset = getRegionHubAsset(record.regionId);
+  const asset = guardianAssetPaths[record.regionId] ?? getRegionHubAsset(record.regionId);
   return {
     ...record,
     studentFacingWarning: GUARDIAN_PLACEHOLDER_WARNING,
