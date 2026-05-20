@@ -212,6 +212,23 @@ describe('dashboard mock service', () => {
       message: 'Roster slot claimed. Optional details can be added later.',
     })).toBeUndefined();
 
+    const unclaimedReloadClaim = validatePendingClassClaim({
+      status: 'claimed',
+      classId: 'class-p3-alpha',
+      className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'roster-alpha-unclaimed-1',
+      displayName: 'Maya Q.',
+      message: 'Roster slot claimed. Optional details can be added later.',
+    });
+    expect(unclaimedReloadClaim).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: 'roster-alpha-unclaimed-1',
+      displayName: 'Maya Q.',
+    });
+
     await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', added!.id);
     expect(validatePendingClassClaim(claimed)).toBeUndefined();
     expect(canStudentAccessApp(claimed)).toBe(false);

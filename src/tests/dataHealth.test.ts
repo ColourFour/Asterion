@@ -232,19 +232,19 @@ describe('buildP3RouteEvidenceDistribution', () => {
       'ambiguous-route': 19,
     });
     expect(healthSummary.eligibilityBucketCounts).toMatchObject({
-      generationEligible: { eligible: 293, blocked: 103, missing: 0 },
-      masteryEligible: { eligible: 126, blocked: 270, missing: 0 },
-      guardianEligible: { eligible: 126, blocked: 270, missing: 0 },
+      generationEligible: { eligible: 303, blocked: 93, missing: 0 },
+      masteryEligible: { eligible: 131, blocked: 265, missing: 0 },
+      guardianEligible: { eligible: 131, blocked: 265, missing: 0 },
     });
     expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 396 });
     expect(healthSummary.fallbackDisplayOnlyCountsByRegion).toEqual({});
     expect(healthSummary.rawBankFallbackCount).toBe(0);
     expect(healthSummary.rawBankDebugCount).toBe(0);
-    expect(healthSummary.generationEligibleCounts).toEqual({ true: 293, false: 103, missing: 0 });
+    expect(healthSummary.generationEligibleCounts).toEqual({ true: 303, false: 93, missing: 0 });
     expect(healthSummary.generationBlockerReasonCounts).toEqual({
       'blocked-review-only': 60,
-      'blocked-hard-failed-text': 31,
-      'missing-content-lab-usable-text': 31,
+      'blocked-hard-failed-text': 17,
+      'missing-content-lab-usable-text': 17,
       'blocked-ambiguous-route': 19,
     });
   });

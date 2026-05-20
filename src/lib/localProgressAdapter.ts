@@ -346,10 +346,9 @@ function normalizeLearningActivityAttempt(value: unknown): LearningActivityAttem
 
 function normalizeRegionLearningRecord(regionId: string, value: unknown): RegionLearningRecord | undefined {
   if (!isRecord(value)) return undefined;
-  const recordRegionId = optionalString(value.regionId) ?? regionId;
-  if (!recordRegionId) return undefined;
+  if (!regionId) return undefined;
   return {
-    regionId: recordRegionId,
+    regionId,
     fieldGuideStartedAt: optionalString(value.fieldGuideStartedAt),
     fieldGuideCompletedAt: optionalString(value.fieldGuideCompletedAt),
     guardianQuestionId: optionalString(value.guardianQuestionId),

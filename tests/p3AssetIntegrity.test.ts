@@ -3,7 +3,7 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { auditQuestionAssetAvailability } from '../src/lib/dataHealth';
 import { normalizeQuestionBank } from '../src/lib/normalizeQuestionBank';
-import { isQuestionTrainable, isTrainableP3Question, trainingBlockersForQuestion } from '../src/lib/questionTraining';
+import { isQuestionTrainable, isTrainableP3Question } from '../src/lib/questionTraining';
 import { isP3Question } from '../src/lib/worldMap';
 
 function readJson(path: string): unknown {
@@ -49,20 +49,20 @@ describe('real P3 asset integrity', () => {
     const audit = auditQuestionAssetAvailability(trainableP3Questions, assetUrls);
 
     expect(p3Questions).toHaveLength(396);
-    expect(trainableP3Questions).toHaveLength(385);
-    expect(audit.checkedQuestions).toBe(385);
+    expect(trainableP3Questions).toHaveLength(396);
+    expect(audit.checkedQuestions).toBe(396);
     expect(audit.missingQuestionImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingMarkSchemeImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingExamples, formatMissingAssets(audit.missingExamples)).toEqual([]);
   });
 
-  it('keeps 33autumn25 explicitly blocked until canonical mark schemes are available', () => {
+  it('keeps 33autumn25 connected to canonical question and mark-scheme images', () => {
     const questions = loadNormalizedQuestions();
-    const blocked = questions.filter((question) => question.paper === '33autumn25');
+    const autumn25Questions = questions.filter((question) => question.paper === '33autumn25');
 
-    expect(blocked).toHaveLength(11);
-    expect(blocked.every((question) => !isQuestionTrainable(question))).toBe(true);
-    expect(blocked.map((question) => question.id)).toEqual([
+    expect(autumn25Questions).toHaveLength(11);
+    expect(autumn25Questions.every((question) => isQuestionTrainable(question))).toBe(true);
+    expect(autumn25Questions.map((question) => question.id)).toEqual([
       '33autumn25_q01',
       '33autumn25_q02',
       '33autumn25_q03',
@@ -75,31 +75,30 @@ describe('real P3 asset integrity', () => {
       '33autumn25_q10',
       '33autumn25_q11',
     ]);
-    expect(trainingBlockersForQuestion(blocked[0]).join(' ')).toContain('Missing mark-scheme image metadata.');
+    expect(autumn25Questions.map((question) => Array.from(new Set(question.markSchemeImageRawPaths)))).toEqual([
+      ['p3/33autumn25/mark_scheme/q01.png'],
+      ['p3/33autumn25/mark_scheme/q02.png'],
+      ['p3/33autumn25/mark_scheme/q03.png'],
+      ['p3/33autumn25/mark_scheme/q04.png'],
+      ['p3/33autumn25/mark_scheme/q05.png'],
+      ['p3/33autumn25/mark_scheme/q06.png'],
+      ['p3/33autumn25/mark_scheme/q07.png'],
+      ['p3/33autumn25/mark_scheme/q08.png'],
+      ['p3/33autumn25/mark_scheme/q09.png'],
+      ['p3/33autumn25/mark_scheme/q10.png'],
+      ['p3/33autumn25/mark_scheme/q11.png'],
+    ]);
   });
 
-  it('reports the quarantined 33autumn25 records in the full P3 asset audit', () => {
+  it('reports no missing P3 image groups in the full P3 asset audit', () => {
     const questions = loadNormalizedQuestions();
     const p3Questions = questions.filter(isP3Question);
     const assetUrls = collectAssetUrls(join(process.cwd(), 'public/assets'));
     const audit = auditQuestionAssetAvailability(p3Questions, assetUrls);
-    const missingMarkSchemes = audit.missingExamples.filter((item) => item.missing === 'mark_scheme');
 
     expect(audit.checkedQuestions).toBe(396);
     expect(audit.missingQuestionImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
-    expect(audit.missingMarkSchemeImageGroups, formatMissingAssets(audit.missingExamples)).toBe(11);
-    expect(missingMarkSchemes.map((item) => item.id)).toEqual([
-      '33autumn25_q01',
-      '33autumn25_q02',
-      '33autumn25_q03',
-      '33autumn25_q04',
-      '33autumn25_q05',
-      '33autumn25_q06',
-      '33autumn25_q07',
-      '33autumn25_q08',
-      '33autumn25_q09',
-      '33autumn25_q10',
-      '33autumn25_q11',
-    ]);
+    expect(audit.missingMarkSchemeImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
+    expect(audit.missingExamples, formatMissingAssets(audit.missingExamples)).toEqual([]);
   });
 });

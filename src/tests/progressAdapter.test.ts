@@ -229,6 +229,100 @@ describe('local progress adapter', () => {
     expect(loaded.attempts[1].fullScoreConfirmed).toBe(true);
   });
 
+  it('round-trips the student pilot evidence loop through local reloads', () => {
+    const withProfile = localProgressAdapter.saveProfile({
+      realName: 'Ada Lovelace',
+      classGroup: 'P3 Alpha',
+      teacherName: 'Dr Noether',
+      avatarName: 'Aster',
+      classClaim: {
+        status: 'claimed',
+        classId: 'class-p3-alpha',
+        className: 'P3 Alpha',
+        classCode: 'AST-P3A',
+        teacherId: 'teacher-noether',
+        teacherName: 'Dr Noether',
+        rosterStudentId: 'roster-ada',
+        displayName: 'Ada Lovelace',
+        message: 'Claimed roster slot.',
+      },
+    });
+
+    localProgressAdapter.saveAvatarSettings({
+      ...emptyProgress().avatar,
+      crest: 'compass',
+      equipped: { ...DEFAULT_EQUIPPED_AVATAR_ITEMS, cloak: 'apprentice-cloak' },
+    });
+    localProgressAdapter.completeRegionFieldGuide('logarithm-grove');
+    localProgressAdapter.addLearningActivityAttempt({
+      ...learningActivityAttempt,
+      profileId: withProfile.profile!.id,
+    });
+    localProgressAdapter.addAttempt({
+      ...attempt,
+      id: 'attempt-self-mark',
+      profileId: withProfile.profile!.id,
+      questionId: 'p3-log-q1',
+      topicDisplayName: 'Logarithms',
+      marksEarned: 6,
+      markBreakdown: { m: 3, b: 1, a: 2 },
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6, markBreakdown: { m: 3, b: 0, a: 2 } },
+        { label: '(b)', marksEarned: 1, marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
+      ],
+      marksAvailable: 7,
+      scoreRatio: 6 / 7,
+      validatedRegionId: 'logarithm-grove',
+      displayRegionId: 'logarithm-grove',
+      regionName: 'Logarithm Observatory',
+    });
+    localProgressAdapter.recordRegionGuardianAttempt({
+      regionId: 'logarithm-grove',
+      questionId: 'p3-log-q1',
+      attemptId: 'attempt-self-mark',
+      passed: true,
+      attemptedAt: '2026-05-08T00:15:00.000Z',
+    });
+
+    const reloaded = localProgressAdapter.loadProgressContext();
+
+    expect(reloaded.profile).toMatchObject({
+      id: withProfile.profile!.id,
+      classClaim: {
+        status: 'claimed',
+        classId: 'class-p3-alpha',
+        rosterStudentId: 'roster-ada',
+      },
+    });
+    expect(reloaded.avatar.crest).toBe('compass');
+    expect(reloaded.avatar.equipped?.cloak).toBe('apprentice-cloak');
+    expect(reloaded.learningActivityAttempts).toHaveLength(1);
+    expect(reloaded.attempts).toHaveLength(1);
+    expect(reloaded.attempts[0]).toMatchObject({
+      id: 'attempt-self-mark',
+      profileId: withProfile.profile!.id,
+      questionId: 'p3-log-q1',
+      markSchemeRevealed: true,
+      marksEarned: 6,
+      marksAvailable: 7,
+      markBreakdown: { m: 3, b: 1, a: 2 },
+      partScores: [
+        { label: '(a)', marksEarned: 5, marksAvailable: 6, markBreakdown: { m: 3, b: 0, a: 2 } },
+        { label: '(b)', marksEarned: 1, marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
+      ],
+      validatedRegionId: 'logarithm-grove',
+    });
+    expect(reloaded.regionLearning?.['logarithm-grove']).toMatchObject({
+      regionId: 'logarithm-grove',
+      fieldGuideCompletedAt: expect.any(String),
+      guardianQuestionId: 'p3-log-q1',
+      guardianAttemptId: 'attempt-self-mark',
+      guardianAttemptedAt: '2026-05-08T00:15:00.000Z',
+      guardianClearedAt: '2026-05-08T00:15:00.000Z',
+    });
+    expect(reloaded.topicProfiles.Logarithms.attempts).toBe(1);
+  });
+
   it('normalizes malformed region learning records without blocking progress load', () => {
     localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
       schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
@@ -247,6 +341,36 @@ describe('local progress adapter', () => {
     expect(loaded.regionLearning?.['logarithm-grove'].fieldGuideCompletedAt).toBe('2026-05-08T00:00:00.000Z');
     expect(loaded.regionLearning?.['logarithm-grove'].guardianClearedAt).toBeUndefined();
     expect(loaded.regionLearning?.broken).toBeUndefined();
+  });
+
+  it('keeps region learning storage keys authoritative when malformed records contain mismatched region IDs', () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: CURRENT_PROGRESS_SCHEMA_VERSION,
+      regionLearning: {
+        'algebra-forge': {
+          regionId: 'logarithm-grove',
+          fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        },
+        'logarithm-grove': {
+          regionId: 'algebra-forge',
+          guardianAttemptId: 'guardian-log-1',
+          guardianQuestionId: 'p3-log-q1',
+          guardianAttemptedAt: '2026-05-08T00:10:00.000Z',
+        },
+      },
+    }));
+
+    const loaded = localProgressAdapter.loadProgressContext();
+
+    expect(loaded.regionLearning?.['algebra-forge']).toMatchObject({
+      regionId: 'algebra-forge',
+      fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+    });
+    expect(loaded.regionLearning?.['logarithm-grove']).toMatchObject({
+      regionId: 'logarithm-grove',
+      guardianAttemptId: 'guardian-log-1',
+      guardianQuestionId: 'p3-log-q1',
+    });
   });
 
   it('drops malformed learning activity attempts without inflating canonical attempts', () => {

@@ -1089,8 +1089,9 @@ export function validatePendingClassClaim(claim: StudentClaimState | undefined):
   if (!rosterStudent) return undefined;
   if (rosterStudent.classId !== classCode.classId) return undefined;
   if (rosterStudent.displayName.toLowerCase() !== claim.displayName.toLowerCase()) return undefined;
-  if (rosterStudent.status !== 'claimed') return undefined;
-  if (rosterStudent.claimedAt !== now) return undefined;
+  const matchesCurrentClaim = rosterStudent.status === 'claimed' && rosterStudent.claimedAt === now;
+  const matchesReloadedLocalClaim = rosterStudent.status === 'unclaimed';
+  if (!matchesCurrentClaim && !matchesReloadedLocalClaim) return undefined;
 
   return {
     status: 'claimed',

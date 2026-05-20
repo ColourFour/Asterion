@@ -317,6 +317,7 @@
           "primary_region_title": "Integral Terraces",
           "primary_topic_id": "9709_p3_topic_integration",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -368,6 +369,7 @@
           "primary_region_title": "Integral Terraces",
           "primary_topic_id": "9709_p3_topic_integration",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -530,6 +532,7 @@
           "primary_region_title": "Integral Terraces",
           "primary_topic_id": "9709_p3_topic_integration",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -689,6 +692,7 @@
           "primary_region_title": "Iteration Forge",
           "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -743,9 +747,8 @@
           "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "33summer23_q05",
@@ -1723,6 +1726,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -1762,7 +1766,9 @@
           "primary_region_id": "",
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
-          "quality_reason_codes": [],
+          "quality_reason_codes": [
+            "question_crop_not_high_confidence"
+          ],
           "question_id": "31summer23_q03",
           "question_number": "3",
           "queue_id": "route:fallback_display_only_region_placements:31summer23_q03",
@@ -1799,6 +1805,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -1840,6 +1847,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -1924,6 +1932,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -2342,6 +2351,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -2550,9 +2560,8 @@
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
             "question_crop_not_high_confidence",
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "32autumn22_q08",
@@ -3271,18 +3280,15 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
-            "canonical_assets_missing_or_unhashed",
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
-            "mapping_status_fail",
             "mark_scheme_crop_not_high_confidence",
-            "missing_mark_scheme_image_path",
             "question_crop_not_high_confidence",
             "text_only_blocked_status_fail",
             "text_only_blocked_trust_low",
             "text_only_blocked_untrusted_math_text",
             "text_only_blocked_visual_required",
-            "validation_status_review"
+            "validation_status_fail"
           ],
           "question_id": "33autumn25_q03",
           "question_number": "3",
@@ -3742,6 +3748,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -3954,6 +3961,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -3993,7 +4001,9 @@
           "primary_region_id": "",
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
-          "quality_reason_codes": [],
+          "quality_reason_codes": [
+            "question_crop_not_high_confidence"
+          ],
           "question_id": "31summer23_q03",
           "question_number": "3",
           "queue_id": "route:missing_p3_routes:31summer23_q03",
@@ -4030,6 +4040,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -4071,6 +4082,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -4155,6 +4167,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -4573,6 +4586,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -4781,9 +4795,8 @@
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
             "question_crop_not_high_confidence",
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "32autumn22_q08",
@@ -5502,18 +5515,15 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
-            "canonical_assets_missing_or_unhashed",
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
-            "mapping_status_fail",
             "mark_scheme_crop_not_high_confidence",
-            "missing_mark_scheme_image_path",
             "question_crop_not_high_confidence",
             "text_only_blocked_status_fail",
             "text_only_blocked_trust_low",
             "text_only_blocked_untrusted_math_text",
             "text_only_blocked_visual_required",
-            "validation_status_review"
+            "validation_status_fail"
           ],
           "question_id": "33autumn25_q03",
           "question_number": "3",
@@ -5973,6 +5983,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -6713,9 +6724,8 @@
           "primary_region_title": "Iteration Forge",
           "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
           "quality_reason_codes": [
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "32summer23_q06",
@@ -6765,9 +6775,8 @@
             "content_lab_blocked_topic_uncertain",
             "mark_scheme_crop_not_high_confidence",
             "question_crop_not_high_confidence",
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "33summer24_q07",
@@ -6820,6 +6829,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -6859,7 +6869,9 @@
           "primary_region_id": "",
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
-          "quality_reason_codes": [],
+          "quality_reason_codes": [
+            "question_crop_not_high_confidence"
+          ],
           "question_id": "31summer23_q03",
           "question_number": "3",
           "queue_id": "text:routing_text_or_visual_blockers:31summer23_q03",
@@ -6896,6 +6908,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -6937,6 +6950,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -7021,6 +7035,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -7489,6 +7504,7 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
@@ -7697,9 +7713,8 @@
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
             "question_crop_not_high_confidence",
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "32autumn22_q08",
@@ -8525,18 +8540,15 @@
           "primary_region_title": "Unmapped",
           "primary_topic_id": "",
           "quality_reason_codes": [
-            "canonical_assets_missing_or_unhashed",
             "content_lab_blocked_topic_confidence_low",
             "content_lab_blocked_topic_uncertain",
-            "mapping_status_fail",
             "mark_scheme_crop_not_high_confidence",
-            "missing_mark_scheme_image_path",
             "question_crop_not_high_confidence",
             "text_only_blocked_status_fail",
             "text_only_blocked_trust_low",
             "text_only_blocked_untrusted_math_text",
             "text_only_blocked_visual_required",
-            "validation_status_review"
+            "validation_status_fail"
           ],
           "question_id": "33autumn25_q03",
           "question_number": "3",
@@ -8845,9 +8857,8 @@
           "primary_region_title": "Iteration Forge",
           "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
           "quality_reason_codes": [
-            "text_only_blocked_status_fail",
-            "text_only_blocked_trust_low",
-            "text_only_blocked_untrusted_math_text",
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
           "question_id": "32summer23_q06",
@@ -9145,6 +9156,7 @@
           "primary_topic_id": "",
           "quality_reason_codes": [
             "mark_scheme_crop_not_high_confidence",
+            "question_crop_not_high_confidence",
             "text_only_blocked_status_review",
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"

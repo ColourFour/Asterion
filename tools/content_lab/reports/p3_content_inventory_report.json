@@ -4769,8 +4769,8 @@
     "referenced_canonical_question_count": 130,
     "referenced_trainable_p3_question_count": 130,
     "total_question_count": 1301,
-    "trainable_p3_question_count": 385,
-    "unreferenced_trainable_p3_question_count": 255
+    "trainable_p3_question_count": 396,
+    "unreferenced_trainable_p3_question_count": 266
   },
   "region_summary": {
     "region_count": 9,
