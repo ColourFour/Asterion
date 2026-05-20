@@ -51,6 +51,11 @@ interface SupabaseQueryResult<T> {
   error: unknown;
 }
 
+interface SupabaseRpcResult<T> {
+  data: T[] | T | null;
+  error: unknown;
+}
+
 export interface SupabaseQueryBuilder<T = Record<string, unknown>> extends PromiseLike<SupabaseQueryResult<T>> {
   select(columns: string): SupabaseQueryBuilder<T>;
   eq(column: string, value: unknown): SupabaseQueryBuilder<T>;
@@ -61,6 +66,7 @@ export interface SupabaseQueryBuilder<T = Record<string, unknown>> extends Promi
 export interface SupabaseDashboardClient {
   auth: SupabaseAuthClient;
   from<T = Record<string, unknown>>(table: string): SupabaseQueryBuilder<T>;
+  rpc<T = Record<string, unknown>>(fn: string, args?: Record<string, unknown>): Promise<SupabaseRpcResult<T>>;
 }
 
 interface SupabaseDashboardServiceOptions {
@@ -141,6 +147,18 @@ async function readRows<T>(query: PromiseLike<SupabaseQueryResult<T>>, context: 
     throw new DashboardDataServiceError('read_failed', `${context}: ${queryErrorMessage(error)}`, error);
   }
   return data ?? [];
+}
+
+async function readRpcSingle<T>(rpc: Promise<SupabaseRpcResult<T>>, context: string): Promise<T> {
+  const { data, error } = await rpc;
+  if (error) {
+    throw new DashboardDataServiceError('write_failed', `${context}: ${queryErrorMessage(error)}`, error);
+  }
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) {
+    throw new DashboardDataServiceError('write_failed', `${context}: Supabase RPC returned no row.`);
+  }
+  return row;
 }
 
 function classCodeFor(row: ClassRow): ClassCodeRecord {
@@ -470,10 +488,6 @@ function adminTeacherFromRows(teacher: TeacherProfileRow, classes: ClassRow[]): 
   };
 }
 
-function readonlyError(): Promise<never> {
-  return Promise.reject(new DashboardDataServiceError('read_only', 'Supabase dashboard mode is read-only in this build.'));
-}
-
 export function createSupabaseDashboardDataService(options: SupabaseDashboardServiceOptions = {}): DashboardDataService {
   const config = options.config ?? supabaseConfig;
   const now = options.now ?? (() => new Date().toISOString());
@@ -623,12 +637,61 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     return [];
   }
 
+  async function addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive'; organizationId?: string }): Promise<AdminTeacherRecord> {
+    const client = await requireClient();
+    const teacher = await readRpcSingle<TeacherProfileRow>(
+      client.rpc('admin_add_teacher_by_email', {
+        p_email: input.email,
+        p_display_name: input.name,
+        p_organization_id: input.organizationId ?? null,
+      }),
+      'admin_add_teacher_by_email',
+    );
+    const rows = await readClassroomRows();
+    return adminTeacherFromRows(teacher, rows.classes);
+  }
+
+  async function addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code?: string }): Promise<AdminClassRecord> {
+    const client = await requireClient();
+    const classRow = await readRpcSingle<ClassRow>(
+      client.rpc('create_class_with_region_access', {
+        p_teacher_id: input.teacherId,
+        p_name: input.name,
+        p_academic_year_or_term: input.academicYearTerm,
+        p_class_code: input.code?.trim() ? input.code : null,
+      }),
+      'create_class_with_region_access',
+    );
+    const rows = await readClassroomRows(classRow.id);
+    return adminClassFromRows(classRow, rows);
+  }
+
+  async function setClassRegionAccess(input: {
+    actorRole: 'admin' | 'teacher';
+    actorTeacherId?: string;
+    classId: string;
+    regionId: string;
+    access: ClassRegionAccessMode;
+  }): Promise<ClassRegionAccess | undefined> {
+    if (!isValidP3RegionId(input.regionId)) return undefined;
+    const client = await requireClient();
+    const row = await readRpcSingle<ClassRegionAccessRow>(
+      client.rpc('set_class_region_access', {
+        p_class_id: input.classId,
+        p_region_id: input.regionId,
+        p_access_status: input.access,
+      }),
+      'set_class_region_access',
+    );
+    return mapAccessRow(row);
+  }
+
   return {
     source: {
       kind: 'supabase',
       label: 'Supabase classroom setup data',
-      readOnly: true,
-      detail: 'Auth required. Reads teacher profiles, classes, roster rows, and region access only.',
+      readOnly: false,
+      detail: 'Auth required. Teacher attachment, class creation, and region access writes use Supabase RPCs.',
     },
     listTeacherClasses,
     getTeacherClassDashboard,
@@ -638,17 +701,23 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     getStudentSummaries,
     getStudentEvidence,
     getClassRegionAccess: () => [],
-    addRosterStudent: readonlyError,
-    archiveRosterStudent: readonlyError,
-    resetRosterClaim: readonlyError,
-    setClassRegionAccess: readonlyError,
+    addRosterStudent: async () => {
+      throw new DashboardDataServiceError('read_only', 'Hosted roster add is not implemented in this Phase 2A pass.');
+    },
+    archiveRosterStudent: async () => {
+      throw new DashboardDataServiceError('read_only', 'Hosted roster archive is not implemented in this Phase 2A pass.');
+    },
+    resetRosterClaim: async () => {
+      throw new DashboardDataServiceError('read_only', 'Hosted roster claim reset is not implemented in this Phase 2A pass.');
+    },
+    setClassRegionAccess,
     listAdminTeachers,
     listAdminTeacherRecords,
     listAdminClasses,
     listAdminClassRecords,
     listAdminAuditEvents,
-    addAdminTeacher: readonlyError,
-    addAdminClass: readonlyError,
+    addAdminTeacher,
+    addAdminClass,
     generateTeacherCsvExport,
     labelForClassRegionAccess,
     labelForTeacherRegionStatus,

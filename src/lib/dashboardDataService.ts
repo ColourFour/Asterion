@@ -86,8 +86,8 @@ export interface DashboardDataService {
   listAdminClasses(): Promise<TeacherClass[]>;
   listAdminClassRecords(): Promise<AdminClassRecord[]>;
   listAdminAuditEvents(): Promise<AdminAuditEvent[]>;
-  addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive' }): Promise<AdminTeacherRecord>;
-  addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code: string }): Promise<AdminClassRecord>;
+  addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive'; organizationId?: string }): Promise<AdminTeacherRecord>;
+  addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code?: string }): Promise<AdminClassRecord>;
   generateTeacherCsvExport(rows: TeacherExportRow[]): string;
   labelForClassRegionAccess(access: ClassRegionAccessMode): string;
   labelForTeacherRegionStatus(status: TeacherRegionStatus): string;

@@ -4,6 +4,7 @@ export type DashboardDataServiceErrorCode =
   | 'config_invalid'
   | 'supabase_unavailable'
   | 'read_failed'
+  | 'write_failed'
   | 'not_found'
   | 'read_only';
 

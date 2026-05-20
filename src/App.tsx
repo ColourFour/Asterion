@@ -80,7 +80,7 @@ function DisabledDashboardRoute({ routeKind, runtimeConfig, onNavigatePath }: { 
         <div className="onboarding-briefing">
           <strong>Student app active</strong>
           <span>{classroomPilotActive ? 'Normal Paper 3 practice remains available. Hosted classroom authority uses Supabase, not this browser.' : 'Normal Paper 3 practice still runs locally without Supabase or hosted classroom access.'}</span>
-          <span>{classroomPilotActive ? 'Use #/teacher or #/admin for hosted dashboard entry points after sign-in and role bootstrap.' : 'Set VITE_ASTERION_DASHBOARD_DEMO=enabled for a mock demo, or VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase for the read-only Supabase dashboard adapter.'}</span>
+          <span>{classroomPilotActive ? 'Use #/teacher or #/admin for hosted dashboard entry points after sign-in and role bootstrap.' : 'Set VITE_ASTERION_DASHBOARD_DEMO=enabled for a mock demo, or VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase for the hosted Supabase dashboard adapter.'}</span>
         </div>
         <button className="primary-button" type="button" onClick={() => onNavigatePath('/')}>
           Student app

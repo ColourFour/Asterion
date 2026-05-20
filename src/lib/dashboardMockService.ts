@@ -898,7 +898,7 @@ export async function listAdminClassRecords(): Promise<AdminClassRecord[]> {
   }));
 }
 
-export async function addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive' }): Promise<AdminTeacherRecord> {
+export async function addAdminTeacher(input: { name: string; email: string; status?: 'active' | 'inactive'; organizationId?: string }): Promise<AdminTeacherRecord> {
   const id = `teacher-${input.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || teacherRecords.length + 1}`;
   const teacher: AdminTeacherRecord = {
     id,
@@ -913,11 +913,11 @@ export async function addAdminTeacher(input: { name: string; email: string; stat
   return { ...teacher, assignedClassIds: [] };
 }
 
-export async function addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code: string }): Promise<AdminClassRecord> {
+export async function addAdminClass(input: { name: string; teacherId: string; academicYearTerm: string; code?: string }): Promise<AdminClassRecord> {
   const teacher = teacherRecords.find((item) => item.id === input.teacherId && item.status === 'active');
   if (!teacher) throw new Error('Class must be assigned to one active teacher.');
   const id = `class-${input.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || classRecords.length + 1}`;
-  const classCode: ClassCodeRecord = { id: `code-${id}`, classId: id, code: input.code.trim(), status: 'active', createdAt: now };
+  const classCode: ClassCodeRecord = { id: `code-${id}`, classId: id, code: input.code?.trim() || `AST-${classRecords.length + 1}`, status: 'active', createdAt: now };
   const classRecord: AdminClassRecord = {
     id,
     name: input.name.trim(),
@@ -927,7 +927,7 @@ export async function addAdminClass(input: { name: string; teacherId: string; ac
     status: 'active',
     classCode,
     rosterStudentIds: [],
-    regionAccess: buildRegionAccess(['algebra-forge'], 'admin'),
+    regionAccess: buildRegionAccess([], 'admin'),
     createdAt: now,
     updatedAt: now,
   };

@@ -25,7 +25,7 @@ describe('dashboard data service adapter', () => {
       VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example',
     }).source).toMatchObject({
       kind: 'supabase',
-      readOnly: true,
+      readOnly: false,
     });
 
     expect(createDashboardDataService({ VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'hosted' }).source).toMatchObject({
@@ -42,7 +42,7 @@ describe('dashboard data service adapter', () => {
       VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example',
     }).source).toMatchObject({
       kind: 'supabase',
-      readOnly: true,
+      readOnly: false,
     });
   });
 

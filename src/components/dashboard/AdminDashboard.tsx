@@ -93,7 +93,7 @@ function DashboardBlockedState({
               <span className="dashboard-kicker">Dashboard data source</span>
               <h2>{source.label}</h2>
             </div>
-            <strong className="diagnostic-status diagnostic-idle">{source.readOnly ? 'Read-only' : 'Mock'}</strong>
+            <strong className="diagnostic-status diagnostic-idle">{source.kind === 'supabase' ? 'Hosted setup' : source.readOnly ? 'Read-only' : 'Mock'}</strong>
           </div>
           {source.detail ? <p>{source.detail}</p> : null}
           {issue.detail ? <p className="dashboard-muted">{issue.detail}</p> : null}
@@ -123,6 +123,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
   const [query, setQuery] = useState('');
   const [teacherForm, setTeacherForm] = useState({ name: '', email: '' });
   const [classForm, setClassForm] = useState({ name: '', teacherId: '', academicYearTerm: '2026 Term 2', code: '' });
+  const [actionIssue, setActionIssue] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
 
   async function refreshAdminRecords() {
@@ -203,24 +204,39 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     event.preventDefault();
     if (readOnly) return;
     if (!teacherForm.name.trim() || !teacherForm.email.trim()) return;
-    await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
-    setTeacherForm({ name: '', email: '' });
-    await refreshAdminRecords();
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
+      setTeacherForm({ name: '', email: '' });
+      await refreshAdminRecords();
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Teacher could not be added.');
+    }
   }
 
   async function handleAddClass(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (readOnly) return;
-    if (!classForm.name.trim() || !classForm.teacherId || !classForm.code.trim()) return;
-    await dashboardDataService.addAdminClass(classForm);
-    setClassForm((current) => ({ name: '', teacherId: current.teacherId, academicYearTerm: current.academicYearTerm, code: '' }));
-    await refreshAdminRecords();
+    if (!classForm.name.trim() || !classForm.teacherId) return;
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.addAdminClass(classForm);
+      setClassForm((current) => ({ name: '', teacherId: current.teacherId, academicYearTerm: current.academicYearTerm, code: '' }));
+      await refreshAdminRecords();
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Class could not be created.');
+    }
   }
 
   async function toggleRegion(classId: string, regionId: string, open: boolean) {
     if (readOnly) return;
-    await dashboardDataService.setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
-    await refreshAdminRecords();
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
+      await refreshAdminRecords();
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Region access could not be updated.');
+    }
   }
 
   if (loadIssue) {
@@ -271,6 +287,13 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
 
         <SupabaseDiagnosticPanel />
 
+        {actionIssue ? (
+          <section className="dashboard-section dashboard-error-state" role="alert">
+            <strong>Action failed</strong>
+            <p>{actionIssue}</p>
+          </section>
+        ) : null}
+
         <div className="admin-grid">
           <section className="dashboard-section">
             <div className="dashboard-section-heading">
@@ -286,6 +309,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
                 <input value={teacherForm.name} onChange={(event) => setTeacherForm({ ...teacherForm, name: event.target.value })} placeholder="Teacher name" />
                 <input value={teacherForm.email} onChange={(event) => setTeacherForm({ ...teacherForm, email: event.target.value })} placeholder="teacher@example.school" />
                 <button type="submit" className="primary-button">Add teacher</button>
+                {source.kind === 'supabase' ? <small className="dashboard-muted">The teacher must sign in once before admin can attach their account.</small> : null}
               </form>
             )}
             <div className="admin-list">
@@ -317,7 +341,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
                   ))}
                 </select>
                 <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" />
-                <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code" />
+                <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code (optional)" />
                 <button type="submit" className="primary-button">Add class</button>
               </form>
             )}

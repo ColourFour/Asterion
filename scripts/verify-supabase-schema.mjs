@@ -71,6 +71,7 @@ function assertStaticContract(sql) {
   }
 
   assertRosterClaimRpc(sql);
+  assertHostedSetupWrites(sql);
   assertProgressSnapshotContract(sql);
 
   const p3Contract = readFileSync(p3ContractPath, 'utf8');
@@ -87,6 +88,70 @@ function assertStaticContract(sql) {
   }
 
   assertClientEnvSafety();
+}
+
+function assertHostedSetupWrites(sql) {
+  const requiredRpcs = [
+    'admin_add_teacher_by_email',
+    'create_class_with_region_access',
+    'set_class_region_access',
+  ];
+
+  for (const rpc of requiredRpcs) {
+    const rpcPattern = new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${rpc}\\b`, 'i');
+    if (!rpcPattern.test(sql)) fail(`Missing hosted setup RPC public.${rpc}`);
+  }
+
+  const addTeacherStart = sql.search(/create\s+or\s+replace\s+function\s+public\.admin_add_teacher_by_email\b/i);
+  const addTeacherEnd = sql.indexOf('comment on function public.admin_add_teacher_by_email', addTeacherStart);
+  if (addTeacherStart === -1 || addTeacherEnd === -1) fail('Missing documentation comment for public.admin_add_teacher_by_email');
+  const addTeacherBody = sql.slice(addTeacherStart, addTeacherEnd);
+
+  const addTeacherPatterns = [
+    [/security\s+definer/i, 'admin_add_teacher_by_email must be SECURITY DEFINER'],
+    [/from\s+auth\.users/i, 'admin_add_teacher_by_email must look up an existing auth.users row'],
+    [/auth_user_missing/i, 'admin_add_teacher_by_email must reject teachers who have not signed in once'],
+    [/public\.is_admin\(/i, 'admin_add_teacher_by_email must require an admin role'],
+    [/insert\s+into\s+public\.user_roles/i, 'admin_add_teacher_by_email must activate a teacher role row'],
+    [/insert\s+into\s+public\.teacher_profiles/i, 'admin_add_teacher_by_email must create or update a teacher profile'],
+    [/grant\s+execute\s+on\s+function\s+public\.admin_add_teacher_by_email\(text,\s*text,\s*uuid\)\s+to\s+authenticated/i, 'admin_add_teacher_by_email must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.admin_add_teacher_by_email\(text,\s*text,\s*uuid\)\s+from\s+anon/i, 'admin_add_teacher_by_email must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of addTeacherPatterns) {
+    if (!pattern.test(addTeacherBody) && !pattern.test(sql)) fail(message);
+  }
+
+  const createClassStart = sql.search(/create\s+or\s+replace\s+function\s+public\.create_class_with_region_access\b/i);
+  const createClassEnd = sql.indexOf('comment on function public.create_class_with_region_access', createClassStart);
+  if (createClassStart === -1 || createClassEnd === -1) fail('Missing documentation comment for public.create_class_with_region_access');
+  const createClassBody = sql.slice(createClassStart, createClassEnd);
+
+  const createClassPatterns = [
+    [/security\s+definer/i, 'create_class_with_region_access must be SECURITY DEFINER'],
+    [/public\.is_admin\(.+public\.is_teacher_in_organization/s, 'create_class_with_region_access must allow only admins or the assigned teacher'],
+    [/insert\s+into\s+public\.classes/i, 'create_class_with_region_access must create the class row'],
+    [/insert\s+into\s+public\.class_region_access/i, 'create_class_with_region_access must create class_region_access rows'],
+    [/field_guide_only/i, 'create_class_with_region_access must default region access to field_guide_only'],
+    [/grant\s+execute\s+on\s+function\s+public\.create_class_with_region_access\(uuid,\s*text,\s*text,\s*text\)\s+to\s+authenticated/i, 'create_class_with_region_access must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.create_class_with_region_access\(uuid,\s*text,\s*text,\s*text\)\s+from\s+anon/i, 'create_class_with_region_access must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of createClassPatterns) {
+    if (!pattern.test(createClassBody) && !pattern.test(sql)) fail(message);
+  }
+
+  for (const regionId of expectedRegionIds) {
+    const regionInsertPattern = new RegExp(`\\(class_row\\.id,\\s*'${regionId}',\\s*'field_guide_only'`, 'i');
+    if (!regionInsertPattern.test(createClassBody)) {
+      fail(`create_class_with_region_access does not create locked access for ${regionId}`);
+    }
+  }
+
+  const auditPolicyPattern = /create\s+policy\s+"active organization actors can append own audit events"[\s\S]+actor_user_id\s*=\s*auth\.uid\(\)[\s\S]+public\.user_roles[\s\S]+status\s*=\s*'active'/i;
+  if (!auditPolicyPattern.test(sql)) {
+    fail('Audit insert policy must require actor_user_id = auth.uid() and an active organization role');
+  }
 }
 
 function assertProgressSnapshotContract(sql) {

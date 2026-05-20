@@ -106,8 +106,10 @@ function createFakeSupabaseClient({
   rows?: typeof fixtureRows;
   errorByTable?: Partial<Record<FixtureTable, unknown>>;
 } = {}) {
+  const mutableRows = JSON.parse(JSON.stringify(rows)) as typeof fixtureRows;
   const tableReads: string[] = [];
   const queryOps: string[] = [];
+  const rpcCalls: Array<{ fn: string; args?: Record<string, unknown> }> = [];
   const writes = {
     insert: vi.fn(),
     upsert: vi.fn(),
@@ -170,7 +172,7 @@ function createFakeSupabaseClient({
     ): PromiseLike<TResult1 | TResult2> {
       tableReads.push(this.table);
       const error = errorByTable[this.table] ?? null;
-      const tableRows = rows[this.table] as Array<Record<string, unknown>>;
+      const tableRows = mutableRows[this.table] as Array<Record<string, unknown>>;
       const data = error
         ? null
         : [...tableRows]
@@ -184,6 +186,73 @@ function createFakeSupabaseClient({
   }
 
   const from = vi.fn((table: string) => new QueryBuilder<Record<string, unknown>>(table as FixtureTable));
+  const rpc = vi.fn(async (fn: string, args?: Record<string, unknown>) => {
+    rpcCalls.push({ fn, args });
+    if (fn === 'admin_add_teacher_by_email') {
+      const teacher = {
+        id: 'teacher-new',
+        user_id: 'user-teacher-new',
+        organization_id: 'org-1',
+        display_name: String(args?.p_display_name),
+        email: String(args?.p_email),
+        status: 'active' as const,
+        created_at: '2026-05-20T08:00:00.000Z',
+        updated_at: '2026-05-20T08:00:00.000Z',
+      };
+      mutableRows.teacher_profiles.push(teacher);
+      return { data: [teacher], error: null };
+    }
+    if (fn === 'create_class_with_region_access') {
+      const classRow = {
+        id: 'class-new',
+        organization_id: 'org-1',
+        teacher_id: String(args?.p_teacher_id),
+        name: String(args?.p_name),
+        course_code: 'CAIE_9709_P3',
+        academic_year_or_term: String(args?.p_academic_year_or_term),
+        class_code: args?.p_class_code ? String(args.p_class_code) : 'AST-NEW1',
+        status: 'active' as const,
+        created_at: '2026-05-20T08:00:00.000Z',
+        updated_at: '2026-05-20T08:00:00.000Z',
+      };
+      mutableRows.classes.push(classRow);
+      mutableRows.class_region_access.push(
+        ...[
+          'algebra-forge',
+          'logarithm-grove',
+          'trig-observatory',
+          'complex-harbor',
+          'calculus-cliffs',
+          'integration-gardens',
+          'vector-workshop',
+          'numerical-mines',
+          'differential-shrine',
+        ].map((regionId) => ({
+          id: `access-new-${regionId}`,
+          class_id: 'class-new',
+          region_id: regionId,
+          access_status: 'field_guide_only' as const,
+          updated_by_user_id: 'user-teacher-1',
+          updated_at: '2026-05-20T08:00:00.000Z',
+          created_at: '2026-05-20T08:00:00.000Z',
+        })),
+      );
+      return { data: [classRow], error: null };
+    }
+    if (fn === 'set_class_region_access') {
+      const row = {
+        id: `access-${String(args?.p_region_id)}`,
+        class_id: String(args?.p_class_id),
+        region_id: String(args?.p_region_id),
+        access_status: args?.p_access_status === 'open' ? 'open' as const : 'field_guide_only' as const,
+        updated_by_user_id: 'user-teacher-1',
+        updated_at: '2026-05-20T08:00:00.000Z',
+        created_at: '2026-05-02T08:00:00.000Z',
+      };
+      return { data: [row], error: null };
+    }
+    return { data: null, error: { message: `Unexpected RPC ${fn}` } };
+  });
   const client: SupabaseDashboardClient = {
     auth: {
       getSession: vi.fn(async () => ({
@@ -192,12 +261,14 @@ function createFakeSupabaseClient({
       })),
     },
     from: from as unknown as SupabaseDashboardClient['from'],
+    rpc: rpc as unknown as SupabaseDashboardClient['rpc'],
   };
 
   return {
     client,
     tableReads,
     queryOps,
+    rpcCalls,
     writes,
   };
 }
@@ -303,30 +374,59 @@ describe('Supabase dashboard service', () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it('performs no Supabase writes, including when mutation methods are called', async () => {
+  it('uses hosted setup RPCs for teacher attachment, class creation, and region access', async () => {
     const fake = createFakeSupabaseClient();
     const service = createSupabaseDashboardDataService({
       config: validConfig,
       createClient: vi.fn(async () => fake.client),
     });
 
-    await service.listTeacherClasses();
-    await service.getTeacherClassDashboard('class-alpha');
-    await service.listAdminClassRecords();
-    await expect(service.addRosterStudent('teacher-1', 'class-alpha', 'New Student')).rejects.toBeInstanceOf(DashboardDataServiceError);
-    await expect(service.setClassRegionAccess({
+    const teacher = await service.addAdminTeacher({ name: 'New Teacher', email: 'new.teacher@example.school' });
+    const teacherClass = await service.addAdminClass({ name: 'Hosted P3 Beta', teacherId: 'teacher-1', academicYearTerm: '2026 Term 2' });
+    const access = await service.setClassRegionAccess({
       actorRole: 'teacher',
       actorTeacherId: 'teacher-1',
       classId: 'class-alpha',
       regionId: 'algebra-forge',
       access: 'field_guide_only',
-    })).rejects.toMatchObject({ code: 'read_only' });
+    });
 
+    expect(teacher).toMatchObject({ id: 'teacher-new', name: 'New Teacher', email: 'new.teacher@example.school' });
+    expect(teacherClass).toMatchObject({
+      id: 'class-new',
+      classCode: expect.objectContaining({ code: 'AST-NEW1' }),
+    });
+    expect(teacherClass.regionAccess).toHaveLength(9);
+    expect(teacherClass.regionAccess.every((row) => row.access === 'field_guide_only')).toBe(true);
+    expect(access).toMatchObject({ regionId: 'algebra-forge', access: 'field_guide_only' });
+    expect(fake.rpcCalls.map((call) => call.fn)).toEqual([
+      'admin_add_teacher_by_email',
+      'create_class_with_region_access',
+      'set_class_region_access',
+    ]);
     expect(fake.writes.insert).not.toHaveBeenCalled();
     expect(fake.writes.upsert).not.toHaveBeenCalled();
     expect(fake.writes.update).not.toHaveBeenCalled();
     expect(fake.writes.delete).not.toHaveBeenCalled();
     expect(fake.queryOps.join('\n')).not.toMatch(/\b(insert|upsert|update|delete)\b/i);
+  });
+
+  it('keeps hosted roster writes disabled in the Phase 2A service', async () => {
+    const fake = createFakeSupabaseClient();
+    const service = createSupabaseDashboardDataService({
+      config: validConfig,
+      createClient: vi.fn(async () => fake.client),
+    });
+
+    await expect(service.addRosterStudent('teacher-1', 'class-alpha', 'New Student')).rejects.toMatchObject({ code: 'read_only' });
+    await expect(service.archiveRosterStudent('teacher-1', 'class-alpha', 'membership-unclaimed')).rejects.toMatchObject({ code: 'read_only' });
+    await expect(service.resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-1',
+      classId: 'class-alpha',
+      rosterStudentId: 'membership-claimed',
+    })).rejects.toMatchObject({ code: 'read_only' });
+    expect(fake.rpcCalls).toEqual([]);
   });
 
   it('surfaces read failures without falling back to mock data', async () => {

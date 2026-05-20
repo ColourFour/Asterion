@@ -42,13 +42,49 @@ describe('live Supabase RLS verifier definitions', () => {
         'teacher cannot read unassigned class region access',
         'teacher can manage assigned class region access',
         'teacher cannot manage unassigned class region access',
+        'assigned teacher can update region access through RPC',
+        'teacher cannot update unassigned region access through RPC',
+        'teacher can create own class with all regions field guide only',
+        'teacher cannot create class for another teacher',
         'admin can read setup and support data',
+        'admin can attach existing auth user as teacher',
+        'teacher cannot self-assign teacher role through admin RPC',
+        'admin can create class for active teacher with all regions field guide only',
         'unauthenticated users cannot insert audit events',
         'authenticated user cannot insert audit event for another actor',
         'authenticated user can append own audit event',
         'region access rows exist for expected seeded class and region combinations',
       ]),
     );
+  });
+
+  it('checks hosted setup RPCs in rollback-local live verification', () => {
+    const checks = buildLiveRlsChecks();
+    const teacherCreateCheck = checks.find(
+      (check) => check.name === 'teacher can create own class with all regions field guide only',
+    );
+    const adminAttachCheck = checks.find(
+      (check) => check.name === 'admin can attach existing auth user as teacher',
+    );
+    const selfAssignCheck = checks.find(
+      (check) => check.name === 'teacher cannot self-assign teacher role through admin RPC',
+    );
+
+    expect(teacherCreateCheck.kind).toBe('count');
+    expect(teacherCreateCheck.expected).toBe(expectedRegionIds.length);
+    expect(teacherCreateCheck.sql).toContain('begin;');
+    expect(teacherCreateCheck.sql).toContain('rollback;');
+    expect(teacherCreateCheck.sql).toContain('public.create_class_with_region_access');
+    expect(teacherCreateCheck.sql).toContain("cra.access_status = 'field_guide_only'");
+    for (const regionId of expectedRegionIds) {
+      expect(teacherCreateCheck.sql).toContain(regionId);
+    }
+
+    expect(adminAttachCheck.sql).toContain('public.admin_add_teacher_by_email');
+    expect(adminAttachCheck.sql).toContain('teacher-noether@asterion.invalid');
+    expect(selfAssignCheck.kind).toBe('deny');
+    expect(selfAssignCheck.sql).toContain('public.admin_add_teacher_by_email');
+    expect(selfAssignCheck.sql).toContain('teacher-hypatia@asterion.invalid');
   });
 
   it('keeps canonical region coverage in the live data check', () => {

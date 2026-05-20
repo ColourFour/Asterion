@@ -118,6 +118,53 @@ function updateRegionAccessSql(classId) {
   `;
 }
 
+function setRegionAccessRpcCountSql({ classId, regionId, accessStatus }) {
+  return `
+    with updated as (
+      select *
+      from public.set_class_region_access(
+        '${classId}',
+        '${sqlString(regionId)}',
+        '${sqlString(accessStatus)}'
+      )
+    )
+    select count(*) from updated where access_status = '${sqlString(accessStatus)}';
+  `;
+}
+
+function createClassWithRegionAccessCountSql({ teacherId, className, classCode }) {
+  return `
+    with created as (
+      select id
+      from public.create_class_with_region_access(
+        '${teacherId}',
+        '${sqlString(className)}',
+        '2026 Verification',
+        '${sqlString(classCode)}'
+      )
+    )
+    select count(*)
+    from created c
+    join public.class_region_access cra on cra.class_id = c.id
+    where cra.access_status = 'field_guide_only'
+      and cra.region_id = any(array[${sqlList(expectedRegionIds)}]);
+  `;
+}
+
+function addTeacherByEmailCountSql({ email, displayName }) {
+  return `
+    with teacher as (
+      select *
+      from public.admin_add_teacher_by_email(
+        '${sqlString(email)}',
+        '${sqlString(displayName)}',
+        '${demoIds.organization}'
+      )
+    )
+    select count(*) from teacher where lower(email) = lower('${sqlString(email)}');
+  `;
+}
+
 function insertAuditEventSql(actorUserId = 'auth.uid()') {
   return `
     insert into public.audit_events (
@@ -499,6 +546,60 @@ export function buildLiveRlsChecks() {
       sql: asRole('authenticated', updateRegionAccessSql(demoIds.classArchive), demoIds.teacherHypatiaUser),
     },
     {
+      name: 'assigned teacher can update region access through RPC',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        setRegionAccessRpcCountSql({
+          classId: demoIds.classAlpha,
+          regionId: 'algebra-forge',
+          accessStatus: 'open',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher cannot update unassigned region access through RPC',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        setRegionAccessRpcCountSql({
+          classId: demoIds.classArchive,
+          regionId: 'algebra-forge',
+          accessStatus: 'open',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher can create own class with all regions field guide only',
+      kind: 'count',
+      expected: expectedRegionIds.length,
+      sql: asRole(
+        'authenticated',
+        createClassWithRegionAccessCountSql({
+          teacherId: demoIds.teacherHypatiaProfile,
+          className: 'Verifier Teacher Class',
+          classCode: 'AST-VT1',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher cannot create class for another teacher',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        createClassWithRegionAccessCountSql({
+          teacherId: demoIds.teacherNoetherProfile,
+          className: 'Verifier Wrong Teacher Class',
+          classCode: 'AST-VT2',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
       name: 'admin can read setup and support data',
       kind: 'count',
       expected: 1,
@@ -515,6 +616,45 @@ export function buildLiveRlsChecks() {
               and exists (select 1 from public.audit_events where organization_id = '${demoIds.organization}')
             then 1 else 0 end;
         `,
+        demoIds.adminUser,
+      ),
+    },
+    {
+      name: 'admin can attach existing auth user as teacher',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        addTeacherByEmailCountSql({
+          email: 'teacher-noether@asterion.invalid',
+          displayName: 'Teacher Noether Verification',
+        }),
+        demoIds.adminUser,
+      ),
+    },
+    {
+      name: 'teacher cannot self-assign teacher role through admin RPC',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        addTeacherByEmailCountSql({
+          email: 'teacher-hypatia@asterion.invalid',
+          displayName: 'Teacher Hypatia Self Assign',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'admin can create class for active teacher with all regions field guide only',
+      kind: 'count',
+      expected: expectedRegionIds.length,
+      sql: asRole(
+        'authenticated',
+        createClassWithRegionAccessCountSql({
+          teacherId: demoIds.teacherNoetherProfile,
+          className: 'Verifier Admin Class',
+          classCode: 'AST-VA1',
+        }),
         demoIds.adminUser,
       ),
     },

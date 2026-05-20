@@ -122,7 +122,7 @@ function DashboardBlockedState({
               <span className="dashboard-kicker">Dashboard data source</span>
               <h2>{source.label}</h2>
             </div>
-            <strong className="diagnostic-status diagnostic-idle">{source.readOnly ? 'Read-only' : 'Mock'}</strong>
+            <strong className="diagnostic-status diagnostic-idle">{source.kind === 'supabase' ? 'Hosted setup' : source.readOnly ? 'Read-only' : 'Mock'}</strong>
           </div>
           {source.detail ? <p>{source.detail}</p> : null}
           {issue.detail ? <p className="dashboard-muted">{issue.detail}</p> : null}
@@ -353,7 +353,7 @@ function RosterManagementPage({
       </div>
       <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
       {readOnly ? (
-        <p className="dashboard-muted">Supabase dashboard mode is read-only. Roster add, archive, and claim reset actions are disabled in this build.</p>
+        <p className="dashboard-muted">Roster add, archive, and claim reset actions are disabled in this build.</p>
       ) : (
         <>
           <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin. It does not recover progress from another browser or cleared site data.</p>
@@ -459,12 +459,16 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
 export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleContext, onNavigatePath }: TeacherDashboardProps) {
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
+  const rosterWritesDisabled = source.kind === 'supabase';
   const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
   const [loadIssue, setLoadIssue] = useState<DashboardLoadIssue>();
   const [newStudentName, setNewStudentName] = useState('');
+  const [classForm, setClassForm] = useState({ name: '', academicYearTerm: '2026 Term 2', code: '' });
+  const [actionIssue, setActionIssue] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
+  const teacherProfileId = hostedRoleContext?.teacherProfiles.find((profile) => profile.status === 'active')?.id ?? dashboard?.class.teacherId ?? classes[0]?.teacherId ?? '';
 
   async function refreshDashboard(nextClassId = dashboard?.class.id ?? classId ?? classes[0]?.id) {
     if (!nextClassId) return;
@@ -487,11 +491,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
         setClasses(items);
         const selectedClassId = classId ?? items[0]?.id;
         if (!selectedClassId) {
-          setLoadIssue({
-            title: 'No classes visible',
-            message: 'No teacher classes are visible to the current dashboard data source.',
-            detail: source.kind === 'supabase' ? 'Check the signed-in Supabase user and row-level security class scope.' : undefined,
-          });
+          setDashboard(undefined);
           return;
         }
         const nextDashboard = await dashboardDataService.getTeacherClassDashboard(selectedClassId);
@@ -518,6 +518,27 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
     await refreshDashboard(dashboard.class.id);
   }
 
+  async function handleCreateClass(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (readOnly || !teacherProfileId || !classForm.name.trim()) return;
+    try {
+      setActionIssue(undefined);
+      const created = await dashboardDataService.addAdminClass({
+        name: classForm.name,
+        teacherId: teacherProfileId,
+        academicYearTerm: classForm.academicYearTerm,
+        code: classForm.code,
+      });
+      setClassForm((current) => ({ name: '', academicYearTerm: current.academicYearTerm, code: '' }));
+      const items = await dashboardDataService.listTeacherClasses();
+      setClasses(items);
+      await refreshDashboard(created.id);
+      onNavigatePath(`/teacher/classes/${created.id}`);
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Class could not be created.');
+    }
+  }
+
   async function handleArchiveStudent(studentId: string) {
     if (readOnly) return;
     if (!dashboard) return;
@@ -540,14 +561,19 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   async function handleRegionAccess(regionId: string, open: boolean) {
     if (readOnly) return;
     if (!dashboard) return;
-    await dashboardDataService.setClassRegionAccess({
-      actorRole: 'teacher',
-      actorTeacherId: dashboard.class.teacherId,
-      classId: dashboard.class.id,
-      regionId,
-      access: open ? 'open' : 'field_guide_only',
-    });
-    await refreshDashboard(dashboard.class.id);
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.setClassRegionAccess({
+        actorRole: 'teacher',
+        actorTeacherId: dashboard.class.teacherId,
+        classId: dashboard.class.id,
+        regionId,
+        access: open ? 'open' : 'field_guide_only',
+      });
+      await refreshDashboard(dashboard.class.id);
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Region access could not be updated.');
+    }
   }
 
   function openRegion(regionId: string) {
@@ -562,8 +588,54 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   if (!dashboard) {
     return (
       <main className="app-shell app-view-dashboard">
-        <section className="dashboard-shell">
-          <p>Loading teacher dashboard from {source.label}...</p>
+        <section className="dashboard-shell teacher-dashboard">
+          <header className="dashboard-topbar teacher-class-header">
+            <div>
+              <span className="mode-pill">Teacher class dashboard</span>
+              <h1>{classes.length === 0 ? 'Create a class' : 'Loading teacher dashboard'}</h1>
+              <p>{source.label}{readOnly ? ' · read-only' : ''}</p>
+            </div>
+            <nav className="dashboard-nav" aria-label="Dashboard navigation">
+              <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
+              {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
+              <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
+            </nav>
+          </header>
+          {source.kind === 'supabase' ? (
+            <SupabaseAuthPanel
+              className="dashboard-auth-panel"
+              title="Supabase dashboard session"
+              signedOutMessage="Sign in to create and refresh authorized dashboard rows."
+              onStatusChange={setAuthStatus}
+            />
+          ) : null}
+          {actionIssue ? (
+            <section className="dashboard-section dashboard-error-state" role="alert">
+              <strong>Action failed</strong>
+              <p>{actionIssue}</p>
+            </section>
+          ) : null}
+          <section className="dashboard-section">
+            <div className="dashboard-section-heading">
+              <div>
+                <span className="dashboard-kicker">Class setup</span>
+                <h2>Start a pilot class</h2>
+              </div>
+            </div>
+            {readOnly ? (
+              <p className="dashboard-muted">Class creation is disabled for this dashboard data source.</p>
+            ) : !teacherProfileId ? (
+              <p className="dashboard-muted">No active hosted teacher profile is attached to this signed-in account.</p>
+            ) : (
+              <form className="dashboard-inline-form" onSubmit={handleCreateClass} aria-label="Create teacher class">
+                <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" />
+                <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" />
+                <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code (optional)" />
+                <button type="submit" className="primary-button">Create class</button>
+              </form>
+            )}
+            <p className="dashboard-muted">New classes start with all P3 regions set to Field Guide only. Open Algebra or any other region later through Region access.</p>
+          </section>
         </section>
       </main>
     );
@@ -595,6 +667,13 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           />
         ) : null}
 
+        {actionIssue ? (
+          <section className="dashboard-section dashboard-error-state" role="alert">
+            <strong>Action failed</strong>
+            <p>{actionIssue}</p>
+          </section>
+        ) : null}
+
         <section className="dashboard-control-row teacher-class-actions">
           <label>
             Class
@@ -621,6 +700,24 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           ) : null}
         </section>
 
+        {page === 'home' || page === 'class' ? (
+          <section className="dashboard-section">
+            <div className="dashboard-section-heading">
+              <div>
+                <span className="dashboard-kicker">Class setup</span>
+                <h2>Create another pilot class</h2>
+              </div>
+            </div>
+            <form className="dashboard-inline-form" onSubmit={handleCreateClass} aria-label="Create teacher class">
+              <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" disabled={readOnly || !teacherProfileId} />
+              <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" disabled={readOnly || !teacherProfileId} />
+              <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code (optional)" disabled={readOnly || !teacherProfileId} />
+              <button type="submit" className="primary-button" disabled={readOnly || !teacherProfileId}>Create class</button>
+            </form>
+            <p className="dashboard-muted">New classes receive all nine canonical regions as Field Guide only.</p>
+          </section>
+        ) : null}
+
         {page === 'roster' ? (
           <RosterManagementPage
             dashboard={dashboard}
@@ -629,7 +726,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             onAddStudent={handleAddStudent}
             onArchiveStudent={handleArchiveStudent}
             onResetClaim={handleResetClaim}
-            readOnly={readOnly}
+            readOnly={readOnly || rosterWritesDisabled}
           />
         ) : null}
 
