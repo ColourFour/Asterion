@@ -26,9 +26,9 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
     >
       {!profile ? (
         <div className="profile-form-heading">
-          <span className="mode-pill">Local profile</span>
+          <span className="mode-pill">{lockedClassFields ? 'Hosted classroom profile' : 'Local profile'}</span>
           <h2>Name your academy character</h2>
-          <p>After this, choose a region on the P3 map and start with its Field Guide.</p>
+          <p>{lockedClassFields ? 'Your class details come from your teacher roster. Choose a character name, then start Algebra from the P3 map.' : 'After this, choose a region on the P3 map and start with its Field Guide.'}</p>
         </div>
       ) : null}
       <label>
