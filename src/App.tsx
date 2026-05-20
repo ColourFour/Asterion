@@ -11,6 +11,7 @@ import { determineAvatarLocation } from './lib/avatarLocation';
 import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
+import { buildLocalClassHallSnapshot } from './lib/classHall';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, getProgressStorageAdapter } from './lib/progressStore';
@@ -233,6 +234,15 @@ export default function App() {
     () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
     [worldProgress, selectedRegion, currentQuestion],
   );
+  const localClassHallSnapshot = useMemo(() => (
+    progress.profile
+      ? buildLocalClassHallSnapshot({
+        profile: progress.profile,
+        avatar: progress.avatar,
+        avatarGear,
+      })
+      : undefined
+  ), [avatarGear, progress.avatar, progress.profile]);
   const worldNotice = useMemo(() => {
     const p3 = questions.filter(isP3Question);
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
@@ -597,7 +607,7 @@ export default function App() {
 
       {viewMode === 'class_hall' ? (
         <Suspense fallback={<StudentViewFallback label="Class Hall loading" />}>
-          <ClassHall />
+          <ClassHall currentStudentAvatar={localClassHallSnapshot} />
         </Suspense>
       ) : null}
 

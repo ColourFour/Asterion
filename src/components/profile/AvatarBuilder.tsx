@@ -60,7 +60,7 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
       <header className="avatar-builder-header">
         <span className="mode-pill">Character sheet</span>
         <h2 id="avatar-builder-title">Avatar Builder</h2>
-        <p>Equip mastery rewards earned from real region progress. This sheet is saved on this browser/device only.</p>
+        <p>Equip local reward cosmetics earned from saved region evidence. This sheet is saved on this browser/device only.</p>
       </header>
 
       <section className="avatar-builder-hero">
@@ -102,8 +102,9 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
           <section className={`p3-readiness-card readiness-${readinessClass(p3Readiness)}`} aria-labelledby="p3-readiness-title">
             <div className="p3-readiness-heading">
               <div>
-                <span>Assessment readiness</span>
-                <h3 id="p3-readiness-title">P3 Readiness Index</h3>
+                <span>Local evidence index</span>
+                <h3 id="p3-readiness-title">P3 Evidence Readiness</h3>
+                <small>Informal local signal, not an official grade.</small>
               </div>
               <strong>{p3Readiness.score}/100</strong>
             </div>

@@ -5,10 +5,14 @@ import { ClassHallCard } from './ClassHallCard';
 
 interface ClassHallProps {
   avatars?: ClassHallAvatarSnapshot[];
+  currentStudentAvatar?: ClassHallAvatarSnapshot;
 }
 
-export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps) {
-  const classHallAvatars = useMemo(() => normalizeClassHallAvatars(avatars), [avatars]);
+export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS, currentStudentAvatar }: ClassHallProps) {
+  const classHallAvatars = useMemo(() => normalizeClassHallAvatars([
+    ...(currentStudentAvatar ? [currentStudentAvatar] : []),
+    ...avatars,
+  ]), [avatars, currentStudentAvatar]);
 
   return (
     <section className="class-hall-screen" aria-labelledby="class-hall-title">
@@ -16,10 +20,10 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps)
         <div>
           <span className="mode-pill">Class Hall</span>
           <h2 id="class-hall-title">Class Hall</h2>
-          <p>A local trophy-room gathering for academy avatars, house crests, earned cosmetics, and low-pressure badges.</p>
+          <p>A local avatar showcase for cosmetics and low-pressure badges from this browser.</p>
         </div>
         <aside className="class-hall-local-note" aria-label="Class Hall privacy note">
-          Local demo snapshots only. No hosted gradebook, marks, weak topics, exact scores, or rankings.
+          Browser-local showcase only. No hosted sync, official gradebook, marks, weak topics, exact scores, or rankings.
         </aside>
       </header>
 

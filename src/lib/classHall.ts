@@ -1,5 +1,5 @@
 import { AVATAR_SLOT_LABELS } from '../data/avatarCatalog';
-import type { AvatarSettings, AvatarSlot } from '../types';
+import type { AvatarGear, AvatarSettings, AvatarSlot, StudentProfile } from '../types';
 import { getVisibleAvatarLayers } from './avatarLayers';
 import { normalizeAvatarSettings } from './avatarStore';
 
@@ -106,4 +106,26 @@ export function normalizeClassHallAvatar(snapshot: ClassHallAvatarSnapshot, inde
 
 export function normalizeClassHallAvatars(snapshots: ClassHallAvatarSnapshot[]): ClassHallAvatar[] {
   return snapshots.map((snapshot, index) => normalizeClassHallAvatar(snapshot, index));
+}
+
+export function buildLocalClassHallSnapshot(input: {
+  profile: StudentProfile;
+  avatar: AvatarSettings;
+  avatarGear: AvatarGear;
+}): ClassHallAvatarSnapshot {
+  const rewards = input.avatarGear.gear.slice(-2).reverse();
+  const badges = rewards.length ? rewards : ['Local avatar'];
+  return {
+    id: `local-${input.profile.id}`,
+    nickname: input.profile.avatarName,
+    avatar: input.avatar,
+    house: {
+      name: 'This browser',
+      crest: input.avatar.crest,
+    },
+    titles: [input.avatarGear.title],
+    badges,
+    motto: 'Saved locally on this device.',
+    favoriteRegion: input.avatarGear.strongestRegionName,
+  };
 }

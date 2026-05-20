@@ -49,9 +49,9 @@ export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: Gu
   if (!isUnlocked) {
     return (
       <RegionActionCard
-        eyebrow="Step 5 · Mastery locked"
+        eyebrow="Step 5 · Guardian locked"
         title="Guardian Challenge"
-        description={`${regionName} mastery gate unlocks after the required saved evidence is complete.`}
+        description={`${regionName} Guardian check unlocks after the required saved local evidence is complete.`}
         icon={<ShieldCheck size={22} />}
         stateIcon={<Lock size={22} aria-label="Guardian locked" />}
         className="guardian-card guardian-placeholder-card guardian-locked-card"
@@ -72,9 +72,9 @@ export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: Gu
 
   return (
     <RegionActionCard
-      eyebrow="Step 5 · Mastery challenge"
+      eyebrow="Step 5 · Guardian challenge"
       title="Guardian Challenge"
-      description={`${regionName} mastery gate for the pilot version.`}
+      description={`${regionName} pilot Guardian check.`}
       icon={<Sparkles size={22} />}
       className="guardian-card guardian-placeholder-card"
     >

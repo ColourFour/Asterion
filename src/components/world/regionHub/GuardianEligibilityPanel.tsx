@@ -24,9 +24,9 @@ export function GuardianEligibilityPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 5 · Mastery"
+      eyebrow="Step 5 · Guardian evidence"
       title="Guardian Challenge"
-      description="A real exam-style mastery check unlocked by saved practice evidence."
+      description="A local exam-style evidence check unlocked by saved practice evidence."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card"
@@ -36,7 +36,7 @@ export function GuardianEligibilityPanel({
           <Trophy size={22} />
           <div>
             <strong>Region restored</strong>
-            <span>Guardian cleared. Reward placeholder unlocked: {regionName} restoration sigil.</span>
+            <span>Guardian cleared from saved local evidence. Reward placeholder unlocked: {regionName} restoration sigil.</span>
           </div>
         </div>
       ) : summary.guardianEligibility.eligible && guardianQuestion ? (

@@ -32,7 +32,7 @@ export function GearInventory({ avatar, regionProgress, onEquip }: GearInventory
           <span className="mode-pill">Reward inventory</span>
           <h3 id="gear-inventory-title">Avatar Gear</h3>
         </div>
-        <p>Unlocked rewards can be equipped now. Locked rewards stay visible so the next mastery target is clear.</p>
+        <p>Unlocked rewards can be equipped now. Locked rewards stay visible so the next local evidence goal is clear.</p>
       </div>
       <div className="gear-tabs" role="tablist" aria-label="Avatar gear categories">
         {AVATAR_CATEGORIES.map((category) => (

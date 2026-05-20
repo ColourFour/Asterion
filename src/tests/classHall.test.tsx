@@ -5,8 +5,8 @@ import { ClassHall } from '../components/classHall/ClassHall';
 import { AstralRegionLedger, P3AstralAcademy } from '../components/world/P3AstralAcademy';
 import type { AvatarLocation } from '../lib/avatarLocation';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
-import type { ClassHallAvatarSnapshot } from '../lib/classHall';
-import type { RegionProgress } from '../types';
+import { buildLocalClassHallSnapshot, type ClassHallAvatarSnapshot } from '../lib/classHall';
+import type { AvatarGear, RegionProgress, StudentProfile } from '../types';
 import { emptyProgress } from '../lib/progressStore';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
@@ -63,6 +63,25 @@ const baseSnapshot: ClassHallAvatarSnapshot = {
   favoriteRegion: 'Algebra Vault',
 };
 
+const profile: StudentProfile = {
+  id: 'profile-local',
+  realName: 'Maya Q.',
+  classGroup: 'P3 Alpha',
+  teacherName: 'Ms Hypatia',
+  avatarName: 'Aster',
+  createdAt: '2026-05-20T00:00:00.000Z',
+  updatedAt: '2026-05-20T00:00:00.000Z',
+};
+
+const avatarGear: AvatarGear = {
+  title: 'Region Specialist',
+  gear: ['Bronze Academy Frame', 'Algebra Pin'],
+  restoredRegions: 1,
+  goldRegions: 0,
+  strongestRegionName: 'Algebra Vault',
+  strongestRegionRank: 'Silver',
+};
+
 function regionProgress(overrides: Partial<RegionProgress> = {}): RegionProgress {
   const region = P3_ASTRAL_ACADEMY.regions[0];
   return {
@@ -89,8 +108,37 @@ describe('ClassHall', () => {
     expect(container.textContent).toContain('Lyra');
     expect(container.textContent).toContain('Orin');
     expect(container.textContent).toContain('Sena');
-    expect(container.textContent).toContain('Local demo snapshots only. No hosted gradebook, marks, weak topics, exact scores, or rankings.');
+    expect(container.textContent).toContain('Browser-local showcase only. No hosted sync, official gradebook, marks, weak topics, exact scores, or rankings.');
     expect(container.querySelectorAll('[data-class-hall-card]').length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('can render the current browser-local student without academic scores or sync claims', () => {
+    const currentStudentAvatar = buildLocalClassHallSnapshot({
+      profile,
+      avatar: {
+        ...emptyProgress().avatar,
+        crest: 'compass',
+        equipped: {
+          hair: 'stargazer-sweep',
+          outfit: 'academy-uniform',
+          accessory: 'algebra-pin',
+          frame: 'bronze-academy-frame',
+        },
+      },
+      avatarGear,
+    });
+    const container = render(<ClassHall avatars={[]} currentStudentAvatar={currentStudentAvatar} />);
+
+    expect(container.textContent).toContain('Aster');
+    expect(container.textContent).toContain('This browser');
+    expect(container.textContent).toContain('Region Specialist');
+    expect(container.textContent).toContain('Algebra Pin');
+    expect(container.textContent).toContain('Favorite wing: Algebra Vault');
+    expect(container.textContent).toContain('Saved locally on this device.');
+    expect(container.textContent).not.toContain('Maya Q.');
+    expect(container.textContent).not.toContain('P3 Alpha');
+    expect(container.textContent).not.toContain('Ms Hypatia');
+    expect(container.textContent).not.toContain('97%');
   });
 
   it('renders avatar metadata and equipped cosmetics', () => {
