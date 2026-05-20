@@ -24,36 +24,38 @@ export interface RegionFieldGuide {
 const guides: Record<string, RegionFieldGuide> = {
   'algebra-forge': {
     regionId: 'algebra-forge',
-    topic: 'Algebraic structure, functions, polynomials, partial fractions, and binomial expansions.',
+    topic: 'Algebraic structure, polynomials, modulus equations, partial fractions, and binomial expansions.',
     whatToRecognize: [
       'Expressions that need rearranging before a standard method appears.',
       'Polynomial division prompts such as factor, remainder, or quotient language.',
       'Proper and improper rational expressions before partial fractions.',
+      'Modulus equations that split into cases after checking the sign boundary.',
     ],
     commonExamMoves: [
       'Factor first, then compare coefficients.',
       'Use the remainder theorem before committing to long division.',
-      'State restrictions when functions, inverses, or composite functions are involved.',
+      'State validity conditions for binomial expansions and restrictions introduced by fractions or modulus cases.',
     ],
     commonTraps: [
       'Expanding too early and hiding a simple factor.',
-      'Dropping domain restrictions for inverse functions.',
+      'Forgetting the validity range for a binomial expansion.',
       'Forgetting repeated-linear-factor terms in partial fractions.',
     ],
     workedExamples: [
       {
-        title: 'Binomial first terms',
-        focus: 'Write the first three terms of $(1+2x)^5$.',
-        setup: 'Use the first binomial terms with $u=2x$: $$ (1+u)^n=1+\\binom{n}{1}u+\\binom{n}{2}u^2+\\cdots $$',
+        title: 'Binomial first terms and validity',
+        focus: 'Write the first three terms of $(1+2x)^{-1/2}$ and state the validity range.',
+        setup: 'Use the rational-index binomial expansion with $u=2x$: $$ (1+u)^n=1+nu+\\frac{n(n-1)}{2}u^2+\\cdots,\\quad |u|<1 $$',
         steps: [
-          'Substitute $u=2x$ and $n=5$ into the first three binomial terms.',
-          'Compute the linear term: $$ 5(2x)=10x $$',
-          'Compute the quadratic term: $$ \\binom{5}{2}(2x)^2=10\\cdot4x^2=40x^2 $$',
+          'Substitute $u=2x$ and $n=-\\frac12$ into the first three binomial terms.',
+          'Compute the linear term: $$ -\\frac12(2x)=-x $$',
+          'Compute the quadratic term: $$ \\frac{(-\\frac12)(-\\frac32)}{2}(2x)^2=\\frac{3}{8}\\cdot4x^2=\\frac32x^2 $$',
+          'Use $|2x|<1$ for the validity range.',
         ],
-        answer: '$$ 1+10x+40x^2 $$',
-        keyMove: 'Choose the binomial coefficient before simplifying powers.',
-        check: 'The final terms are arranged by increasing powers of $x$.',
-        why: 'The expansion is arranged by powers of $x$, so stopping at $x^2$ is enough.',
+        answer: '$$ 1-x+\\frac32x^2,\\quad |x|<\\frac12 $$',
+        keyMove: 'Use the rational-index coefficient formula and carry the validity condition.',
+        check: 'The final terms are arranged by increasing powers of $x$ and include the allowed range.',
+        why: 'P3 binomial expansion often uses rational powers, so the validity range is part of the answer.',
       },
       {
         title: 'Partial fractions setup',
@@ -87,7 +89,7 @@ const guides: Record<string, RegionFieldGuide> = {
     readinessChecklist: [
       'Divide a cubic by a linear factor without losing signs.',
       'Choose a partial-fraction form from the denominator.',
-      'Explain when an inverse function exists.',
+      'State the validity range for a rational-index binomial expansion.',
     ],
   },
   'logarithm-grove': {
@@ -238,17 +240,17 @@ const guides: Record<string, RegionFieldGuide> = {
     topic: 'Complex numbers, Argand diagrams, polar form, arguments, loci, and roots.',
     whatToRecognize: [
       'Questions that ask for geometry in the Argand plane.',
-      'Modulus-argument forms where multiplication or roots become easier.',
+      'Modulus-argument forms where multiplication, division, or square roots become easier.',
       'Conjugates that simplify quotients or real/imaginary conditions.',
     ],
     commonExamMoves: [
       'Convert between cartesian and polar form when the operation demands it.',
       'Draw a quick Argand sketch before solving locus conditions.',
-      'Use De Moivre for roots and powers.',
+      'Use modulus-argument form for multiplication, division, and square-root questions.',
     ],
     commonTraps: [
       'Using the wrong quadrant for the argument.',
-      'Forgetting all roots when taking powers or roots.',
+      'Forgetting the second square root when solving $w^2=z$.',
       'Treating modulus equations as ordinary linear equations.',
     ],
     workedExamples: [
@@ -267,18 +269,18 @@ const guides: Record<string, RegionFieldGuide> = {
         why: 'The argument is a directed angle from the positive real axis.',
       },
       {
-        title: 'Root pattern',
-        focus: 'Find the cube roots of $8e^{i\\pi}$.',
-        setup: 'For cube roots, divide the modulus root and spread angles by $\\frac{2\\pi}{3}$.',
+        title: 'Square-root pair',
+        focus: 'Find the square roots of $4e^{2\\pi i/3}$.',
+        setup: 'If $w^2=4e^{2\\pi i/3}$, square-root the modulus and halve the argument, then add $\\pi$ for the second root.',
         steps: [
-          'Cube-root the modulus: $$ \\sqrt[3]{8}=2 $$',
-          'Use angles $$ \\frac{\\pi+2k\\pi}{3}\\quad\\text{for}\\quad k=0,1,2 $$',
-          'This gives $$ \\frac{\\pi}{3},\\quad \\pi,\\quad \\frac{5\\pi}{3} $$',
+          'Square-root the modulus: $$ \\sqrt4=2 $$',
+          'Halve the argument for one root: $$ \\frac{1}{2}\\cdot\\frac{2\\pi}{3}=\\frac{\\pi}{3} $$',
+          'Add $\\pi$ to get the other root: $$ \\frac{\\pi}{3}+\\pi=\\frac{4\\pi}{3} $$',
         ],
-        answer: '$$ 2e^{i\\pi/3},\\quad 2e^{i\\pi},\\quad 2e^{5\\pi i/3} $$',
-        keyMove: 'Use every value of $k$ from $0$ to $n-1$.',
-        check: 'Three cube roots should be equally spaced.',
-        why: 'Adding $2\\pi$ before dividing creates the full set of roots.',
+        answer: '$$ 2e^{i\\pi/3},\\quad 2e^{4\\pi i/3} $$',
+        keyMove: 'A complex number has two square roots, separated by $\\pi$.',
+        check: 'Squaring either root gives modulus $4$ and argument $2\\pi/3$ modulo $2\\pi$.',
+        why: 'P3 square-root questions use the modulus-argument form without needing general nth-root machinery.',
       },
       {
         title: 'Locus sketch',
@@ -297,7 +299,7 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     readinessChecklist: [
       'Plot a complex number and its conjugate.',
-      'Convert between $a+bi$ and $re^{i\\theta}$.',
+      'Convert between $a+bi$ and $r(\\cos\\theta+i\\sin\\theta)$ or $re^{i\\theta}$.',
       'Explain what a modulus or argument condition means geometrically.',
     ],
   },
@@ -372,14 +374,14 @@ const guides: Record<string, RegionFieldGuide> = {
   },
   'integration-gardens': {
     regionId: 'integration-gardens',
-    topic: 'Integration methods, areas, definite integrals, substitution, and parts.',
+    topic: 'Integration methods, definite integrals, given substitutions, integration by parts, and partial fractions.',
     whatToRecognize: [
-      'Integrals that need substitution, parts, or partial fractions before evaluating.',
+      'Integrals that need a given substitution, parts, or partial fractions before evaluating.',
       'Area questions where limits and sign matter.',
       'Expressions that simplify before integration begins.',
     ],
     commonExamMoves: [
-      'Choose substitution when a derivative-like factor is present.',
+      'Use a substitution when it is supplied, changing limits for definite integrals or returning to $x$ before evaluating.',
       'Choose parts for products involving logs, inverse trig, or mixed algebraic terms.',
       'Keep limits consistent when substituting in definite integrals.',
     ],
@@ -390,16 +392,16 @@ const guides: Record<string, RegionFieldGuide> = {
     ],
     workedExamples: [
       {
-        title: 'Substitution setup',
-        focus: 'Evaluate $\\int 2x(x^2+1)^3\\,dx$.',
-        setup: 'The factor $2x$ is the derivative of $x^2+1$.',
+        title: 'Given substitution setup',
+        focus: 'Use the substitution $u=x^2+1$ to evaluate $\\int 2x(x^2+1)^3\\,dx$.',
+        setup: 'The substitution is given, so transform $dx$ through $du=2x\\,dx$.',
         steps: [
           'Let $u=x^2+1$, so $$ du=2x\\,dx $$',
           'Rewrite the integral as $$ \\int u^3\\,du $$',
           'Integrate to get $$ \\frac{u^4}{4}+C $$',
         ],
         answer: '$$ \\frac{(x^2+1)^4}{4}+C $$',
-        keyMove: 'Choose substitution when a derivative-like factor is present.',
+        keyMove: 'Use the substitution stated in the question and transform the differential.',
         check: 'Differentiate the answer to recover the original integrand.',
         why: 'Substitution turns a composite expression into a simpler power.',
       },
@@ -418,22 +420,22 @@ const guides: Record<string, RegionFieldGuide> = {
         why: 'Parts reverses the product rule.',
       },
       {
-        title: 'Area under a curve',
-        focus: 'Find the area between $y=x^2-4$ and the $x$-axis from $x=0$ to $x=3$.',
-        setup: 'The curve crosses the axis at $x=2$, so split the area.',
+        title: 'Partial fractions before integrating',
+        focus: 'Integrate $\\frac{5x+1}{(x-1)(x+2)}$.',
+        setup: 'Decompose the rational expression before applying logarithmic integrals.',
         steps: [
-          'Split signed area at the crossing: $$ -\\int_0^2 (x^2-4)\\,dx+\\int_2^3 (x^2-4)\\,dx $$',
-          'Use antiderivative $$ \\frac{x^3}{3}-4x $$',
-          'Evaluate each positive area piece separately.',
+          'Use partial fractions: $$ \\frac{5x+1}{(x-1)(x+2)}=\\frac{2}{x-1}+\\frac{3}{x+2} $$',
+          'Integrate each term: $$ \\int\\frac{2}{x-1}\\,dx+\\int\\frac{3}{x+2}\\,dx $$',
+          'Add the constant of integration.',
         ],
-        answer: '$$ \\frac{16}{3}+\\frac{7}{3}=\\frac{23}{3} $$',
-        keyMove: 'Split at the axis crossing before calculating area.',
-        check: 'Area cannot be negative.',
-        why: 'A definite integral is signed area; exam area questions usually want positive area.',
+        answer: '$$ 2\\ln|x-1|+3\\ln|x+2|+C $$',
+        keyMove: 'Decompose first; the integral becomes a sum of logarithms.',
+        check: 'Differentiate the answer to recover the original rational expression.',
+        why: 'P3 rational-function integrals often begin with a partial-fraction algebra step.',
       },
     ],
     readinessChecklist: [
-      'Recognize when substitution is likely.',
+      'Use a given substitution and handle limits or back-substitution correctly.',
       'Apply integration by parts without losing terms.',
       'Evaluate a definite integral with correct limits.',
     ],
@@ -444,7 +446,7 @@ const guides: Record<string, RegionFieldGuide> = {
     whatToRecognize: [
       'Line equations in vector form and parameters that need solving together.',
       'Dot-product questions asking for angle, perpendicularity, or projection.',
-      'Intersection and shortest-route prompts.',
+      'Intersection, angle, perpendicularity, and point-to-line prompts.',
     ],
     commonExamMoves: [
       'Compare components to solve for parameters.',
@@ -512,7 +514,7 @@ const guides: Record<string, RegionFieldGuide> = {
     whatToRecognize: [
       'Questions asking for sign changes, iterations, or decimal-place accuracy.',
       'Rearrangements of $f(x)=0$ into $x=g(x)$.',
-      'Root intervals that need justified convergence or approximation.',
+      'Root intervals, requested iterations, and decimal-place accuracy checks.',
     ],
     commonExamMoves: [
       'Show sign changes with values of $f(x)$ at interval endpoints.',
@@ -522,7 +524,7 @@ const guides: Record<string, RegionFieldGuide> = {
     commonTraps: [
       'Rounding intermediate values too aggressively.',
       'Using a rearrangement different from the one given.',
-      'Claiming a root without a sign-change or convergence argument.',
+      'Claiming a root without sign-change evidence or without following the requested iteration.',
     ],
     workedExamples: [
       {

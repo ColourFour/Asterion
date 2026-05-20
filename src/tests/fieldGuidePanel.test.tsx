@@ -857,6 +857,76 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(onLearningActivityAttempt).toHaveBeenCalledTimes(2);
   });
 
+  it('uses method-steering placeholders for warm-up practice', () => {
+    const integrationRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'integration-gardens');
+    const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge');
+    expect(integrationRegion).toBeTruthy();
+    expect(algebraRegion).toBeTruthy();
+
+    const integrationPractice: GeneratedPracticeItem = {
+      ...generatedPractice,
+      practiceId: 'gen_integration_method_setup_basic_placeholder',
+      generatorFamily: 'integration.method_setup_basic',
+      topic: 'integration',
+      regionIds: ['integration-gardens'],
+      prompt: 'Using u = x^2 + 1, transform the integral of 2x(x^2 + 1)^4 dx.',
+      answer: 'u = x^2 + 1, du = 2x dx',
+      questionType: 'integration',
+      keyMethod: 'Use the given substitution.',
+      examMove: 'Transform the setup before evaluating.',
+    };
+    const binomialPractice: GeneratedPracticeItem = {
+      ...generatedPractice,
+      practiceId: 'gen_binomial_first_terms_placeholder',
+      generatorFamily: 'binomial_expansion.first_terms_and_coefficient',
+      topic: 'binomial_expansion',
+      regionIds: ['algebra-forge'],
+      prompt: 'Expand (1 - 2x)^-3/2 up to x^2, with the validity condition.',
+      answer: '1 + 3x + (15/2)x^2, valid for |x| < 1/2',
+      questionType: 'Binomial term or coefficient',
+      keyMethod: 'Find requested binomial terms and validity.',
+      examMove: 'Use the rational-index binomial expansion.',
+    };
+
+    const integrationContainer = render(
+      <WarmUpPracticePanel practiceItems={[integrationPractice]} region={integrationRegion!} />,
+    );
+    expect(integrationContainer.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder)
+      .toBe('Show the setup and answer, e.g. u = x^2 + 1, du = 2x dx');
+
+    const binomialContainer = render(
+      <WarmUpPracticePanel practiceItems={[binomialPractice]} region={algebraRegion!} />,
+    );
+    expect(binomialContainer.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder)
+      .toBe('Include requested terms and validity, e.g. 1 - x, |x| < 1');
+  });
+
+  it('uses method-steering placeholders for integration Quick Checks', () => {
+    const integrationRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'integration-gardens');
+    expect(integrationRegion).toBeTruthy();
+
+    const integrationSnippet: TeachingSnippet = {
+      ...snippet,
+      snippetId: 'p3-integration-placeholder-check',
+      regionIds: ['integration-gardens'],
+      topics: ['integration'],
+      title: 'Use the given substitution',
+      quickCheck: {
+        prompt: 'Using $u=x^2+1$, what does $\\int 2x(x^2+1)^5\\,dx$ become?',
+        answer: '$\\int u^5\\,du$',
+        explanation: '$du=2x\\,dx$, so transform the whole integral first.',
+        topic: 'integration',
+      },
+    };
+
+    const container = render(
+      <QuickChecksPanel teachingSnippets={[integrationSnippet]} region={integrationRegion!} />,
+    );
+
+    expect(container.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder)
+      .toBe('Show the method line, e.g. u = x^2 + 1, du = 2x dx');
+  });
+
   it('advances Quick Checks one at a time after saving answer feedback', () => {
     const snippets = [snippetVariant(1), snippetVariant(2), snippetVariant(3)];
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
@@ -1180,13 +1250,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
-    expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder).toBe('Use exact form if needed, e.g. 3/2 or sqrt(5)');
+    expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
 
     const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
     expect(warmUpPage.textContent).toContain('Warm-up Practice');
     expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
-    expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('For equations, include the variable, e.g. y = 2x + 1');
+    expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
 
     const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
     expect(examTrainingPage.textContent).toContain('Exam Training');
@@ -1671,7 +1741,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       .flatMap(workedExampleTextParts)
       .join('\n');
 
-    expect(source).toContain('\\binom');
+    expect(source).toContain('|u|<1');
     expect(source).toContain('\\frac');
     expect(source).toContain('\\ln');
     expect(source).toContain('\\int');

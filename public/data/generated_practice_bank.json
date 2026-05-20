@@ -131,7 +131,7 @@
       ]
     },
     {
-      "answer": "1 + 12x",
+      "answer": "1 - (3/2)x, valid for |3x| < 1",
       "difficulty_band": "easy",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
@@ -142,14 +142,14 @@
         "a": 3,
         "item_type": "expand_first_terms",
         "max_power": 1,
-        "n": 4,
+        "n": "-1/2",
         "sequence_role": "first_step",
         "sequence_stage": "first_step",
-        "x2_coefficient": 54,
-        "x_coefficient": 12
+        "x2_coefficient": "27/8",
+        "x_coefficient": "-3/2"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
-      "prompt": "Write the constant and x term in the expansion of (1 + 3x)^4.",
+      "prompt": "Write the constant and x term in the expansion of (1 + 3x)^-1/2, and state the validity condition.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -169,14 +169,15 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use (1 + t)^n = 1 + nt + ... with t = 3x and n = 4.",
+        "Use (1 + t)^n = 1 + nt + ... with t = 3x and n = -1/2.",
         "For this first step, stop after the linear term.",
-        "The x term is 4(3x) = 12x.",
-        "So the requested start of the expansion is 1 + 12x."
+        "The x term is (-1/2)(3x) = -(3/2)x.",
+        "The validity condition is |3x| < 1.",
+        "So the requested start of the expansion is 1 - (3/2)x, valid for |3x| < 1."
       ]
     },
     {
-      "answer": "1 - 10x + 40x^2",
+      "answer": "1 + 3x + (15/2)x^2, valid for |-2x| < 1",
       "difficulty_band": "easy",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
@@ -187,14 +188,14 @@
         "a": -2,
         "item_type": "expand_first_terms",
         "max_power": 2,
-        "n": 5,
+        "n": "-3/2",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
-        "x2_coefficient": 40,
-        "x_coefficient": -10
+        "x2_coefficient": "15/2",
+        "x_coefficient": "3"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0002",
-      "prompt": "Expand (1 - 2x)^5 up to and including the x^2 term.",
+      "prompt": "Expand (1 - 2x)^-3/2 up to and including the x^2 term, with the validity condition.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -214,14 +215,15 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use (1 + t)^n = 1 + nt + C(n,2)t^2 + ... with t = -2x and n = 5.",
-        "The x term is 5(-2x) = -10x.",
-        "The x^2 term is C(5,2)(-2x)^2 = 40x^2.",
-        "So the expansion up to x^2 is 1 - 10x + 40x^2."
+        "Use (1 + t)^n = 1 + nt + n(n - 1)t^2/2 + ... with t = -2x and n = -3/2.",
+        "The x term is (-3/2)(-2x) = 3x.",
+        "The x^2 term is n(n - 1)(-2x)^2/2 = (15/2)x^2.",
+        "The validity condition is |-2x| < 1.",
+        "So the expansion up to x^2 is 1 + 3x + (15/2)x^2, valid for |-2x| < 1."
       ]
     },
     {
-      "answer": "Coefficient of x^2 = -6",
+      "answer": "Coefficient of x^2 = 3",
       "difficulty_band": "medium",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
@@ -231,15 +233,15 @@
       "parameters": {
         "a": 2,
         "b": -1,
-        "coefficient_x2": -6,
+        "coefficient_x2": "3",
         "item_type": "coefficient_product",
-        "m": 3,
-        "n": 4,
+        "m": "-1",
+        "n": "-2",
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0003",
-      "prompt": "Find the coefficient of x^2 in (1 + 2x)^3(1 - x)^4.",
+      "prompt": "Find the coefficient of x^2 in (1 + 2x)^-1(1 - x)^-2, using valid binomial expansions.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -259,10 +261,10 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "First terms: (1 + 2x)^3 = 1 + 6x + 12x^2 + ...",
-        "First terms: (1 - x)^4 = 1 - 4x + 6x^2 + ...",
+        "First terms: (1 + 2x)^-1 = 1 - 2x + 4x^2 + ...",
+        "First terms: (1 - x)^-2 = 1 + 2x + 3x^2 + ...",
         "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
-        "So the coefficient is 12 + (6)(-4) + 6 = -6."
+        "So the coefficient is 4 + (-2)(2) + 3 = 3."
       ]
     },
     {
@@ -2303,7 +2305,7 @@
         "sequence_stage": "first_step"
       },
       "practice_id": "gen_integration_method_setup_basic_0001",
-      "prompt": "For integral of 2x(x^2 + 5)^4 dx, state a suitable substitution and du.",
+      "prompt": "Using u = x^2 + 5, transform the integral of 2x(x^2 + 5)^4 dx.",
       "question_type": "integration",
       "region_ids": [
         "integration-gardens"
@@ -2324,9 +2326,9 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Look for a bracket whose derivative appears as a factor.",
+        "The substitution is given as u = x^2 + 5.",
         "The derivative of x^2 + 5 is 2x.",
-        "So use u = x^2 + 5, du = 2x dx."
+        "So du = 2x dx and the method line is u = x^2 + 5, du = 2x dx."
       ]
     },
     {
@@ -2347,7 +2349,7 @@
         "sequence_stage": "complete_step"
       },
       "practice_id": "gen_integration_method_setup_basic_0002",
-      "prompt": "Integrate 2x(x^2 + 3)^2 dx.",
+      "prompt": "Integrate 2x(x^2 + 3)^2 dx using u = x^2 + 3.",
       "question_type": "integration",
       "region_ids": [
         "integration-gardens"
@@ -2368,7 +2370,7 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Let u = x^2 + 3, so du = 2x dx.",
+        "Use the given substitution u = x^2 + 3, so du = 2x dx.",
         "The integral becomes integral of u^2 du.",
         "Integrating gives u^3/3 + C.",
         "Substitute back to get (x^2 + 3)^3/3 + C."
@@ -2432,7 +2434,7 @@
         "sequence_stage": "first_step"
       },
       "practice_id": "gen_integration_parts_substitution_basic_0001",
-      "prompt": "For integral of 2x(x^2 + 1)^4 dx, state a suitable substitution and du.",
+      "prompt": "Using u = x^2 + 1, transform the integral of 2x(x^2 + 1)^4 dx.",
       "question_type": "integration",
       "region_ids": [
         "integration-gardens"
@@ -2452,9 +2454,9 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The bracket x^2 + 1 is the inside function.",
+        "The substitution is given as u = x^2 + 1.",
         "Its derivative is 2x, which appears outside the bracket.",
-        "So use u = x^2 + 1 and du = 2x dx."
+        "So du = 2x dx and the method line is u = x^2 + 1, du = 2x dx."
       ]
     },
     {
@@ -2472,7 +2474,7 @@
         "sequence_stage": "complete_step"
       },
       "practice_id": "gen_integration_parts_substitution_basic_0002",
-      "prompt": "Integrate 2x(x^2 + 1)^4 dx.",
+      "prompt": "Integrate 2x(x^2 + 1)^4 dx using u = x^2 + 1.",
       "question_type": "integration",
       "region_ids": [
         "integration-gardens"
@@ -3000,10 +3002,10 @@
     {
       "answer": "2e^(i*pi/6) and 2e^(i*7pi/6)",
       "difficulty_band": "medium",
-      "exam_move": "Add 2pi before dividing the argument to get all roots.",
+      "exam_move": "Halve the argument for one square root, then add pi for the second square root.",
       "example_model_id": "p3-complex-form-001-example-1",
       "generator_family": "complex_numbers.roots_basic",
-      "key_method": "Divide the argument and spread roots evenly around the Argand diagram.",
+      "key_method": "Find the pair of square roots in modulus-argument form.",
       "paper_family": "p3",
       "parameters": {
         "argument": "pi/3",

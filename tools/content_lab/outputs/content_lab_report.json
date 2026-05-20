@@ -219,7 +219,7 @@
     "generated_practice:needs_review": 24,
     "generated_practice:teacher_reviewed": 69,
     "snippet:published": 3,
-    "snippet:teacher_reviewed": 37
+    "snippet:teacher_reviewed": 36
   },
   "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
   "generated_families_by_topic": {
@@ -506,14 +506,7 @@
       "work_energy_power": 1
     }
   },
-  "skill_targets_with_quick_checks_but_no_warmups": [
-    {
-      "paper_family": "p4",
-      "quick_check_count": 1,
-      "skill_target_id": "p4_momentum_impulse",
-      "topic": "momentum_impulse"
-    }
-  ],
+  "skill_targets_with_quick_checks_but_no_warmups": [],
   "skill_targets_with_snippets_but_no_quick_checks": [],
   "snippets_per_region": {
     "algebra-forge": 8,
@@ -668,12 +661,7 @@
       "topic": "work_energy_power"
     }
   ],
-  "topics_with_snippets_but_no_warmups": [
-    {
-      "paper_family": "p4",
-      "topic": "momentum_impulse"
-    }
-  ],
+  "topics_with_snippets_but_no_warmups": [],
   "topics_with_source_records_but_no_skill_targets": [
     {
       "paper_family": "p1",

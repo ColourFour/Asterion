@@ -318,4 +318,19 @@ describe('teaching snippets runtime loader', () => {
       answer: expect.stringContaining('\\ln(5x)'),
     });
   });
+
+  it('keeps reviewed public Quick Checks inside the P3 runtime scope', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+    const quickChecks = snippets.flatMap((snippet) => (
+      snippet.quickCheck ? [{ snippet, quickCheck: snippet.quickCheck }] : []
+    ));
+
+    expect(quickChecks.length).toBeGreaterThan(0);
+    expect(quickChecks.every(({ snippet }) => snippet.paperFamily === 'p3')).toBe(true);
+    expect(quickChecks.every(({ snippet }) => snippet.regionIds.length > 0)).toBe(true);
+    expect(quickChecks.every(({ quickCheck }) => quickCheck.id?.startsWith('p3-'))).toBe(true);
+    expect(quickChecks.every(({ quickCheck }) => quickCheck.skillTargetId?.startsWith('p3_'))).toBe(true);
+    expect(JSON.stringify(publicSnippetData)).not.toContain('momentum_impulse');
+    expect(JSON.stringify(publicSnippetData)).not.toContain('p4-');
+  });
 });

@@ -173,4 +173,26 @@ describe('generated practice runtime loader', () => {
       expect(getGeneratedPracticeForRegion(normalized, region.id, 'p3').length, region.id).toBeGreaterThanOrEqual(1);
     }
   });
+
+  it('keeps reviewed runtime warm-ups inside P3 scope and method-steering content', () => {
+    const normalized = normalizeGeneratedPracticeData(publicGeneratedPracticeData);
+    const serialized = JSON.stringify(publicGeneratedPracticeData).toLowerCase();
+    const byId = new Map(normalized.map((practice) => [practice.practiceId, practice]));
+
+    expect(normalized.every((practice) => practice.paperFamily === 'p3')).toBe(true);
+    expect(normalized.every((practice) => practice.regionIds.length > 0)).toBe(true);
+    expect(normalized.every((practice) => practice.skillTargetId?.startsWith('p3_'))).toBe(true);
+    expect(serialized).not.toContain('momentum');
+    expect(serialized).not.toContain('impulse');
+    expect(serialized).not.toContain('p4_');
+    expect(serialized).not.toContain('suitable substitution');
+    expect(serialized).not.toContain('(1 + 3x)^4');
+    expect(serialized).not.toContain('(1 - 2x)^5');
+
+    expect(byId.get('gen_binomial_first_terms_and_coefficient_0001')?.prompt).toContain('validity condition');
+    expect(byId.get('gen_binomial_first_terms_and_coefficient_0002')?.answer).toContain('valid for');
+    expect(byId.get('gen_integration_method_setup_basic_0001')?.prompt).toContain('Using u = x^2 + 5');
+    expect(byId.get('gen_integration_parts_substitution_basic_0001')?.prompt).toContain('Using u = x^2 + 1');
+    expect(byId.get('gen_complex_roots_basic_0001')?.keyMethod).toBe('Find the pair of square roots in modulus-argument form.');
+  });
 });

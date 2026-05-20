@@ -572,7 +572,7 @@ def build_log_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     return items
 
 
-def binomial_expression(a: int, n: int) -> str:
+def binomial_expression(a: int, n: int | str) -> str:
     if a == 1:
         inner = "1 + x"
     elif a == -1:
@@ -584,15 +584,24 @@ def binomial_expression(a: int, n: int) -> str:
     return f"({inner})^{n}"
 
 
-def term_text(coefficient: int, power: int) -> str:
+def signed_fraction_text(value: Fraction | int) -> str:
+    fraction = value if isinstance(value, Fraction) else Fraction(value, 1)
+    return fraction_text(fraction.numerator, fraction.denominator)
+
+
+def term_text(coefficient: Fraction | int, power: int) -> str:
     if power == 0:
-        return str(abs(coefficient))
+        return signed_fraction_text(abs(coefficient))
     variable = "x" if power == 1 else f"x^{power}"
     magnitude = abs(coefficient)
-    return variable if magnitude == 1 else f"{magnitude}{variable}"
+    if magnitude == 1:
+        return variable
+    if isinstance(magnitude, Fraction) and magnitude.denominator != 1:
+        return f"({signed_fraction_text(magnitude)}){variable}"
+    return f"{magnitude}{variable}"
 
 
-def polynomial_text(terms: list[tuple[int, int]]) -> str:
+def polynomial_text(terms: list[tuple[Fraction | int, int]]) -> str:
     pieces: list[str] = []
     for coefficient, power in terms:
         if coefficient == 0:
@@ -609,22 +618,28 @@ def first_three_coefficients(a: int, n: int) -> tuple[int, int, int]:
     return (1, n * a, comb(n, 2) * a * a)
 
 
+def first_three_coefficients_general(a: int, n: Fraction) -> tuple[Fraction, Fraction, Fraction]:
+    return (Fraction(1), n * a, n * (n - 1) * a * a / 2)
+
+
 def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     expand_cases = [
-        {"a": 3, "n": 4, "max_power": 1, "sequence_stage": "first_step", "difficulty_band": "easy"},
-        {"a": -2, "n": 5, "max_power": 2, "sequence_stage": "complete_step", "difficulty_band": "easy"},
+        {"a": 3, "n": Fraction(-1, 2), "max_power": 1, "sequence_stage": "first_step", "difficulty_band": "easy"},
+        {"a": -2, "n": Fraction(-3, 2), "max_power": 2, "sequence_stage": "complete_step", "difficulty_band": "easy"},
     ]
     product_cases = [
-        {"a": 2, "m": 3, "b": -1, "n": 4, "sequence_stage": "guardian_prep", "difficulty_band": "medium"},
+        {"a": 2, "m": Fraction(-1, 1), "b": -1, "n": Fraction(-2, 1), "sequence_stage": "guardian_prep", "difficulty_band": "medium"},
     ]
 
     items: list[dict[str, Any]] = []
     index = 1
     for case in expand_cases:
         a = int(case["a"])
-        n = int(case["n"])
+        n = case["n"]
+        if not isinstance(n, Fraction):
+            raise ValueError("Binomial expansion index must be a Fraction")
         max_power = int(case["max_power"])
-        _, x_coefficient, x2_coefficient = first_three_coefficients(a, n)
+        _, x_coefficient, x2_coefficient = first_three_coefficients_general(a, n)
         if abs(x2_coefficient) > 120:
             raise ValueError("Expansion coefficient is too large")
         terms = [(1, 0), (x_coefficient, 1)]
@@ -633,37 +648,42 @@ def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
         expansion = polynomial_text(terms)
         expression = binomial_expression(a, n)
         practice_id = f"gen_binomial_first_terms_and_coefficient_{index:04d}"
+        n_text = signed_fraction_text(n)
         parameters = {
             "a": a,
             "item_type": "expand_first_terms",
             "max_power": max_power,
-            "n": n,
+            "n": n_text,
             "sequence_stage": str(case["sequence_stage"]),
-            "x_coefficient": x_coefficient,
-            "x2_coefficient": x2_coefficient,
+            "x_coefficient": signed_fraction_text(x_coefficient),
+            "x2_coefficient": signed_fraction_text(x2_coefficient),
         }
         if max_power == 1:
-            prompt = f"Write the constant and x term in the expansion of {expression}."
+            prompt = f"Write the constant and x term in the expansion of {expression}, and state the validity condition."
             worked_solution = [
-                f"Use (1 + t)^n = 1 + nt + ... with t = {a}x and n = {n}.",
+                f"Use (1 + t)^n = 1 + nt + ... with t = {a}x and n = {n_text}.",
                 "For this first step, stop after the linear term.",
-                f"The x term is {n}({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
-                f"So the requested start of the expansion is {expansion}.",
+                f"The x term is ({n_text})({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
+                f"The validity condition is |{a}x| < 1.",
+                f"So the requested start of the expansion is {expansion}, valid for |{a}x| < 1.",
             ]
+            answer = f"{expansion}, valid for |{a}x| < 1"
         else:
-            prompt = f"Expand {expression} up to and including the x^2 term."
+            prompt = f"Expand {expression} up to and including the x^2 term, with the validity condition."
             worked_solution = [
-                f"Use (1 + t)^n = 1 + nt + C(n,2)t^2 + ... with t = {a}x and n = {n}.",
-                f"The x term is {n}({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
-                f"The x^2 term is C({n},2)({a}x)^2 = {polynomial_text([(x2_coefficient, 2)])}.",
-                f"So the expansion up to x^2 is {expansion}.",
+                f"Use (1 + t)^n = 1 + nt + n(n - 1)t^2/2 + ... with t = {a}x and n = {n_text}.",
+                f"The x term is ({n_text})({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
+                f"The x^2 term is n(n - 1)({a}x)^2/2 = {polynomial_text([(x2_coefficient, 2)])}.",
+                f"The validity condition is |{a}x| < 1.",
+                f"So the expansion up to x^2 is {expansion}, valid for |{a}x| < 1.",
             ]
+            answer = f"{expansion}, valid for |{a}x| < 1"
         items.append(base_item(
             practice_id=practice_id,
             generator_family=BINOMIAL_FAMILY,
             topic=BINOMIAL_TOPIC,
             prompt=prompt,
-            answer=expansion,
+            answer=answer,
             worked_solution=worked_solution,
             parameters=parameters,
             context=context,
@@ -675,11 +695,13 @@ def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
 
     for case in product_cases:
         a = int(case["a"])
-        m = int(case["m"])
+        m = case["m"]
         b = int(case["b"])
-        n = int(case["n"])
-        _, left_x, left_x2 = first_three_coefficients(a, m)
-        _, right_x, right_x2 = first_three_coefficients(b, n)
+        n = case["n"]
+        if not isinstance(m, Fraction) or not isinstance(n, Fraction):
+            raise ValueError("Binomial product indices must be Fractions")
+        _, left_x, left_x2 = first_three_coefficients_general(a, m)
+        _, right_x, right_x2 = first_three_coefficients_general(b, n)
         coefficient = left_x2 + (left_x * right_x) + right_x2
         if abs(coefficient) > 120:
             raise ValueError("Product coefficient is too large")
@@ -688,26 +710,28 @@ def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
         left_terms = polynomial_text([(1, 0), (left_x, 1), (left_x2, 2)])
         right_terms = polynomial_text([(1, 0), (right_x, 1), (right_x2, 2)])
         practice_id = f"gen_binomial_first_terms_and_coefficient_{index:04d}"
+        m_text = signed_fraction_text(m)
+        n_text = signed_fraction_text(n)
         parameters = {
             "a": a,
             "b": b,
-            "coefficient_x2": coefficient,
+            "coefficient_x2": signed_fraction_text(coefficient),
             "item_type": "coefficient_product",
-            "m": m,
-            "n": n,
+            "m": m_text,
+            "n": n_text,
             "sequence_stage": str(case["sequence_stage"]),
         }
         items.append(base_item(
             practice_id=practice_id,
             generator_family=BINOMIAL_FAMILY,
             topic=BINOMIAL_TOPIC,
-            prompt=f"Find the coefficient of x^2 in {left_expression}{right_expression}.",
-            answer=f"Coefficient of x^2 = {coefficient}",
+            prompt=f"Find the coefficient of x^2 in {left_expression}{right_expression}, using valid binomial expansions.",
+            answer=f"Coefficient of x^2 = {signed_fraction_text(coefficient)}",
             worked_solution=[
                 f"First terms: {left_expression} = {left_terms} + ...",
                 f"First terms: {right_expression} = {right_terms} + ...",
                 "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
-                f"So the coefficient is {left_x2} + ({left_x})({right_x}) + {right_x2} = {coefficient}.",
+                f"So the coefficient is {signed_fraction_text(left_x2)} + ({signed_fraction_text(left_x)})({signed_fraction_text(right_x)}) + {signed_fraction_text(right_x2)} = {signed_fraction_text(coefficient)}.",
             ],
             parameters=parameters,
             context=context,
@@ -2002,19 +2026,19 @@ def build_integration_item(context: dict[str, Any], index: int, case: dict[str, 
         n = int_parameter(case, "n", practice_id, min_value=1, max_value=5)
         integrand = f"2x(x^2 + {c})^{n}"
         if item_type == "substitution_setup":
-            prompt = f"For integral of {integrand} dx, state a suitable substitution and du."
+            prompt = f"Using u = x^2 + {c}, transform the integral of {integrand} dx."
             answer = f"u = x^2 + {c}, du = 2x dx"
             worked_solution = [
-                "Look for a bracket whose derivative appears as a factor.",
+                f"The substitution is given as u = x^2 + {c}.",
                 f"The derivative of x^2 + {c} is 2x.",
-                f"So use {answer}.",
+                f"So du = 2x dx and the method line is {answer}.",
             ]
         else:
             result_power = n + 1
-            prompt = f"Integrate {integrand} dx."
+            prompt = f"Integrate {integrand} dx using u = x^2 + {c}."
             answer = f"(x^2 + {c})^{result_power}/{result_power} + C"
             worked_solution = [
-                f"Let u = x^2 + {c}, so du = 2x dx.",
+                f"Use the given substitution u = x^2 + {c}, so du = 2x dx.",
                 f"The integral becomes integral of u^{n} du.",
                 f"Integrating gives u^{result_power}/{result_power} + C.",
                 f"Substitute back to get {answer}.",
@@ -2594,15 +2618,15 @@ def build_integration_parts_substitution_item(context: dict[str, Any], index: in
     }
 
     if item_type == "substitution_setup":
-        prompt = "For integral of 2x(x^2 + 1)^4 dx, state a suitable substitution and du."
+        prompt = "Using u = x^2 + 1, transform the integral of 2x(x^2 + 1)^4 dx."
         answer = "u = x^2 + 1, du = 2x dx"
         worked_solution = [
-            "The bracket x^2 + 1 is the inside function.",
+            "The substitution is given as u = x^2 + 1.",
             "Its derivative is 2x, which appears outside the bracket.",
-            "So use u = x^2 + 1 and du = 2x dx.",
+            "So du = 2x dx and the method line is u = x^2 + 1, du = 2x dx.",
         ]
     elif item_type == "substitution_integrate":
-        prompt = "Integrate 2x(x^2 + 1)^4 dx."
+        prompt = "Integrate 2x(x^2 + 1)^4 dx using u = x^2 + 1."
         answer = "(x^2 + 1)^5/5 + C"
         worked_solution = [
             "Let u = x^2 + 1, so du = 2x dx.",

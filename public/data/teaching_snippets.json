@@ -1573,11 +1573,11 @@
         "region_id": "integration-gardens",
         "topic": "integration",
         "skill_target_id": "p3_int_method_choice",
-        "title": "Let the integrand choose the method",
-        "prompt": "For $\\int 2x(x^2+1)^5\\,dx$, which method would you try first?",
-        "answer": "Substitution is a natural first choice.",
-        "explanation": "The factor $2x$ is the derivative of $x^2+1$, so the integrand has a composite structure.",
-        "micro_skill": "Choose substitution from a hidden derivative.",
+        "title": "Use the given substitution",
+        "prompt": "Using $u=x^2+1$, what does $\\int 2x(x^2+1)^5\\,dx$ become?",
+        "answer": "$\\int u^5\\,du$",
+        "explanation": "$du=2x\\,dx$, so the integral changes completely into $\\int u^5\\,du$ before integrating.",
+        "micro_skill": "Transform an integral using a given substitution.",
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
@@ -3890,88 +3890,6 @@
         "p3_vectors"
       ],
       "skill_target_resolution_status": "reviewed_p3_skill_map_id"
-    },
-    {
-      "body": "Momentum is directional. Before writing equations, choose a positive direction and keep every velocity consistent with that choice.",
-      "common_mistakes": [
-        "Changing the positive direction halfway through.",
-        "Treating a negative final velocity as impossible.",
-        "Using speed where velocity with direction is required."
-      ],
-      "common_trap": "Changing sign convention halfway through a collision or impulse calculation.",
-      "estimated_time_minutes": 3,
-      "exam_move": "Write a sign convention beside the equation before substituting values.",
-      "explanation": "Momentum keeps direction. Once a positive direction is chosen, negative answers are information about direction, not a sign that the method failed.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving impulse, collisions, or conservation of momentum.",
-        "recommended_before_question_ids": [],
-        "supports_topics": [
-          "momentum_impulse"
-        ]
-      },
-      "micro_steps": [
-        "Choose the positive direction.",
-        "Write each velocity with a sign.",
-        "Apply the momentum or impulse equation.",
-        "Interpret negative values as direction."
-      ],
-      "paper_family": "p4",
-      "prerequisites": [
-        "Know momentum is mass times velocity.",
-        "Understand signed velocity."
-      ],
-      "quick_check": {
-        "id": "p4-momentum-direction-001-qc",
-        "region_id": "p4-mechanics",
-        "topic": "momentum_impulse",
-        "skill_target_id": "p4_momentum_impulse",
-        "title": "Direction is part of momentum",
-        "prompt": "A $2\\,\\mathrm{kg}$ particle moves at $3\\,\\mathrm{m\\,s^{-1}}$ opposite to the positive direction. What is its momentum?",
-        "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
-        "explanation": "Momentum is $mv=2\\times(-3)=-6$ in the chosen positive direction.",
-        "micro_skill": "Apply a signed velocity convention.",
-        "difficulty_band": "easy",
-        "estimated_time_minutes": 1,
-        "review_status": "teacher_reviewed",
-        "legacy_skill_target_id": "p4_momentum_impulse",
-        "skill_target_resolution_status": "legacy_unresolved"
-      },
-      "region_ids": [],
-      "related_skill_targets": [
-        "p4_momentum_impulse"
-      ],
-      "review_status": "teacher_reviewed",
-      "snippet_id": "p4-momentum-direction-001",
-      "snippet_type": "concept",
-      "source": "teacher_authored",
-      "source_skill_target_ids": [
-        "p4_momentum_impulse"
-      ],
-      "steps": [
-        "Choose a positive direction.",
-        "Write velocities with signs before calculating.",
-        "Interpret negative answers as direction, not failure."
-      ],
-      "student_goal": "Use consistent signs in momentum and impulse questions.",
-      "title": "Direction is part of momentum",
-      "topics": [
-        "momentum_impulse"
-      ],
-      "topic": "momentum_impulse",
-      "worked_example": {
-        "id": "p4-momentum-direction-001-example-1",
-        "prompt": "A $2\\,\\mathrm{kg}$ particle moves at $3\\,\\mathrm{m\\,s^{-1}}$ opposite to the positive direction. Find its momentum.",
-        "steps": [
-          "Opposite to the positive direction means velocity $-3\\,\\mathrm{m\\,s^{-1}}$.",
-          "Momentum is $mv=2(-3)$."
-        ],
-        "answer": "$-6\\,\\mathrm{kg\\,m\\,s^{-1}}$",
-        "teaching_note": "The negative sign is direction information, not an error."
-      },
-      "legacy_skill_target_ids": [
-        "p4_momentum_impulse"
-      ],
-      "skill_target_resolution_status": "legacy_unresolved"
     }
   ]
 }
