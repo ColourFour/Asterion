@@ -20,7 +20,7 @@ import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Qu
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import { validatePendingClassClaim } from './lib/dashboardMockService';
-import { syncCurrentProgressSnapshot } from './lib/supabaseProgressSnapshotService';
+import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
 import {
   getP3RegionById,
   parseAsterionHashRoute,
@@ -138,7 +138,7 @@ function HostedStudentGateMessage({
 }
 
 function hostedSyncWarningText(error: string): string {
-  return `Classroom progress summary could not sync to Supabase. Local practice is saved in this browser. ${error}`;
+  return `Classroom hosted activity could not sync to Supabase. Local practice is saved in this browser, but teachers will not see this unsynced activity. ${error}`;
 }
 
 function hostedInitialProfile(context: StudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
@@ -494,14 +494,24 @@ export default function App() {
 
   function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
     setProgress(nextProgress);
+  }
+
+  function recordHostedClassroomActivity(input: {
+    regionId: string;
+    activityType: HostedProgressActivityType;
+    eventType: HostedProgressEventType;
+    contentId?: string;
+    questionId?: string;
+    skillId?: string;
+    eventPayload?: HostedProgressEventPayload;
+  }) {
     if (!runtimeConfig.profile.hostedProgressSyncEnabled || !hostedClassroomContext) {
       return;
     }
 
-    void syncCurrentProgressSnapshot({
-      progress: nextProgress,
-      questions,
+    void recordHostedProgressEvent({
       classroomContext: hostedClassroomContext,
+      ...input,
     }).then((result) => {
       if (result.status === 'synced') {
         setHostedSyncWarning(undefined);
@@ -748,11 +758,30 @@ export default function App() {
             profileId={progress.profile.id}
             summary={selectedRegionLearningSummary}
             studentRegionAccess={selectedRegionAccess}
-            onCompleteFieldGuide={() => persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
+            onCompleteFieldGuide={() => {
+              persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuide(selectedRegion.id));
+              recordHostedClassroomActivity({
+                regionId: selectedRegion.id,
+                activityType: 'field_guide',
+                eventType: 'field_guide_completed',
+                eventPayload: { completed: true },
+              });
+            }}
             onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
               const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
               if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
               persistProgressAfterMeaningfulEvent(progressAdapter.addLearningActivityAttempt(attempt));
+              recordHostedClassroomActivity({
+                regionId: selectedRegion.id,
+                activityType: attempt.activityType,
+                eventType: attempt.activityType === 'quick_check' ? 'quick_check_completed' : 'warm_up_completed',
+                contentId: attempt.activityId,
+                skillId: attempt.skillTargetId,
+                eventPayload: {
+                  outcome: attempt.outcome,
+                  completed: true,
+                },
+              });
             }}
             onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
             onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
@@ -823,16 +852,49 @@ export default function App() {
                   : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
                     ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
                     : 0;
+                const passed = scoreRatio >= GUARDIAN_PASS_SCORE_RATIO;
                 persistProgressAfterMeaningfulEvent(progressAdapter.recordRegionGuardianAttempt({
                   regionId: selectedRegion.id,
                   questionId: evidenceAttempt.questionId,
                   attemptId: evidenceAttempt.id,
-                  passed: scoreRatio >= GUARDIAN_PASS_SCORE_RATIO,
+                  passed,
                   attemptedAt: evidenceAttempt.attemptedAt,
                 }));
+                recordHostedClassroomActivity({
+                  regionId: selectedRegion.id,
+                  activityType: 'guardian',
+                  eventType: passed ? 'guardian_completed' : 'guardian_attempted',
+                  questionId: evidenceAttempt.questionId,
+                  eventPayload: {
+                    scoreRatio,
+                    marksEarned: evidenceAttempt.marksEarned,
+                    marksAvailable: evidenceAttempt.marksAvailable,
+                    durationSeconds: evidenceAttempt.timeSpentSeconds,
+                    passed,
+                  },
+                });
                 return;
               }
               persistProgressAfterMeaningfulEvent(nextProgress);
+              if (selectedRegion) {
+                const scoreRatio = typeof evidenceAttempt.scoreRatio === 'number'
+                  ? evidenceAttempt.scoreRatio
+                  : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
+                    ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
+                    : undefined;
+                recordHostedClassroomActivity({
+                  regionId: selectedRegion.id,
+                  activityType: 'exam_practice',
+                  eventType: 'practice_attempt_saved',
+                  questionId: evidenceAttempt.questionId,
+                  eventPayload: {
+                    scoreRatio,
+                    marksEarned: evidenceAttempt.marksEarned,
+                    marksAvailable: evidenceAttempt.marksAvailable,
+                    durationSeconds: evidenceAttempt.timeSpentSeconds,
+                  },
+                });
+              }
             }}
             onIssue={(questionId: string, issueType: IssueType, note?: string) => {
               persistProgressAfterMeaningfulEvent(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));

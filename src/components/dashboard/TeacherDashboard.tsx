@@ -265,7 +265,7 @@ function ClassFirstDashboard({ dashboard, onOpenRegion }: { dashboard: TeacherCl
         <article className="snapshot-card">
           <span>Average mastery</span>
           <strong>{summary.averageMasteryPercent}%</strong>
-          <small>from mock class evidence</small>
+          <small>from class activity summaries</small>
         </article>
         <article className="snapshot-card">
           <span>Need attention</span>

@@ -1,5 +1,6 @@
 -- Asterion hosted dashboard verification queries.
--- Run this after 001_classroom_schema_v1.sql and 002_classroom_seed_demo.sql.
+-- Run this after 001_classroom_schema_v1.sql, 002_classroom_seed_demo.sql,
+-- and 007_hosted_progress_events.sql.
 
 do $$
 declare
@@ -12,6 +13,7 @@ declare
     'class_memberships',
     'class_region_access',
     'student_progress_snapshots',
+    'student_progress_events',
     'audit_events'
   ];
   canonical_regions text[] := array[
@@ -107,23 +109,18 @@ begin;
 set local role authenticated;
 set local request.jwt.claim.sub = '00000000-0000-0000-0000-000000000301';
 
-insert into public.student_progress_snapshots (
-  class_membership_id,
-  student_profile_id,
-  class_id,
-  snapshot_version,
-  source,
-  summary_json,
-  region_summary_json
-)
-values (
+select *
+from public.record_student_progress_event(
+  '40000000-0000-0000-0000-000000000401',
   '50000000-0000-0000-0000-000000000501',
   '30000000-0000-0000-0000-000000000301',
-  '40000000-0000-0000-0000-000000000401',
-  2,
-  'local_student_app',
-  '{"schemaVersion":1,"paperFamily":"p3","generatedAt":"2026-05-19T00:00:00Z","attemptCount":0,"masteryEligibleAttemptCount":0,"learningActivityAttemptCount":0,"issueReportCount":0,"regionsStarted":0,"guardianReadyRegionCount":0,"guardianClearedRegionCount":0,"openRegionCount":9,"fieldGuideOnlyRegionCount":0}'::jsonb,
-  '{"algebra-forge":{"regionId":"algebra-forge","rank":"Discovered","status":"available","progressRatio":0,"attemptCount":0,"totalMarksEarned":0,"totalMarksAvailable":0,"guardianStatus":"locked","fieldGuideStatus":"not_started","accessStatus":"open"}}'::jsonb
+  'algebra-forge',
+  'exam_practice',
+  'practice_attempt_saved',
+  null,
+  '9709_s23_qp32_q1',
+  null,
+  '{"scoreRatio":0.75,"marksEarned":6,"marksAvailable":8,"durationSeconds":240}'::jsonb
 );
 
 rollback;

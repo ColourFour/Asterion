@@ -32,7 +32,6 @@ import {
 } from './dashboardMockService';
 import { DashboardDataServiceError } from './dashboardServiceErrors';
 import { P3_REGION_DEFINITIONS, isValidP3RegionId, type P3RegionId } from './p3SkillContract';
-import type { ProgressSnapshotRegionJson, ProgressSnapshotSummaryJson } from './progressSnapshot';
 import { createSupabaseBrowserClient } from './supabaseClient';
 import { supabaseConfig, type SupabaseConfig } from './supabaseConfig';
 
@@ -123,15 +122,28 @@ interface ClassRegionAccessRow {
   created_at: string;
 }
 
-interface StudentProgressSnapshotRow {
+interface StudentProgressEventRow {
   id: string;
+  organization_id: string;
+  class_id: string;
   class_membership_id: string;
   student_profile_id: string;
-  class_id: string;
-  snapshot_version: number;
-  source: 'local_student_app';
-  summary_json: ProgressSnapshotSummaryJson;
-  region_summary_json: Partial<Record<P3RegionId, ProgressSnapshotRegionJson>>;
+  actor_user_id: string;
+  region_id: string;
+  activity_type: 'field_guide' | 'quick_check' | 'warm_up' | 'exam_practice' | 'mark_scheme' | 'guardian';
+  content_id: string | null;
+  question_id: string | null;
+  skill_id: string | null;
+  event_type: 'field_guide_completed' | 'quick_check_completed' | 'warm_up_completed' | 'practice_attempt_saved' | 'mark_scheme_revealed' | 'guardian_attempted' | 'guardian_completed';
+  event_payload: {
+    scoreRatio?: number;
+    marksEarned?: number;
+    marksAvailable?: number;
+    outcome?: 'got_it' | 'partial' | 'missed';
+    completed?: boolean;
+    passed?: boolean;
+    durationSeconds?: number;
+  };
   created_at: string;
 }
 
@@ -140,14 +152,14 @@ interface ClassroomRows {
   classes: ClassRow[];
   memberships: ClassMembershipRow[];
   regionAccess: ClassRegionAccessRow[];
-  progressSnapshots: StudentProgressSnapshotRow[];
+  progressEvents: StudentProgressEventRow[];
 }
 
 const classColumns = 'id, organization_id, teacher_id, name, course_code, academic_year_or_term, class_code, status, created_at, updated_at';
 const teacherColumns = 'id, user_id, organization_id, display_name, email, status, created_at, updated_at';
 const membershipColumns = 'id, class_id, student_profile_id, roster_name, roster_status, claimed_by_user_id, claimed_at, archived_at, created_at, updated_at';
 const regionAccessColumns = 'id, class_id, region_id, access_status, updated_by_user_id, updated_at, created_at';
-const progressSnapshotColumns = 'id, class_membership_id, student_profile_id, class_id, snapshot_version, source, summary_json, region_summary_json, created_at';
+const progressEventColumns = 'id, organization_id, class_id, class_membership_id, student_profile_id, actor_user_id, region_id, activity_type, content_id, question_id, skill_id, event_type, event_payload, created_at';
 
 function queryErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'message' in error && typeof (error as { message?: unknown }).message === 'string') {
@@ -273,33 +285,43 @@ function percent(value: number | undefined): number {
   return Math.max(0, Math.min(100, Math.round(value * 100)));
 }
 
-function latestSnapshotByMembership(snapshots: StudentProgressSnapshotRow[]): Map<string, StudentProgressSnapshotRow> {
-  const byMembership = new Map<string, StudentProgressSnapshotRow>();
-  for (const snapshot of snapshots) {
-    const current = byMembership.get(snapshot.class_membership_id);
-    if (!current || Date.parse(snapshot.created_at) > Date.parse(current.created_at)) {
-      byMembership.set(snapshot.class_membership_id, snapshot);
-    }
+function latestEvent(events: StudentProgressEventRow[]): StudentProgressEventRow | undefined {
+  return events
+    .slice()
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))[0];
+}
+
+function eventsByMembership(events: StudentProgressEventRow[]): Map<string, StudentProgressEventRow[]> {
+  const byMembership = new Map<string, StudentProgressEventRow[]>();
+  for (const event of events) {
+    const list = byMembership.get(event.class_membership_id) ?? [];
+    list.push(event);
+    byMembership.set(event.class_membership_id, list);
   }
   return byMembership;
 }
 
-function teacherStatusForRegion(region: ProgressSnapshotRegionJson | undefined): TeacherRegionStatus {
-  if (!region || (region.attemptCount === 0 && region.fieldGuideStatus === 'not_started' && region.guardianStatus === 'locked')) return 'not_started';
-  if (region.guardianStatus === 'cleared' || region.guardianStatus === 'mastered' || region.rank === 'Gold' || region.rank === 'Mastered') return 'secure';
-  if (region.attemptCount > 0 && region.progressRatio < 0.45) return 'needs_help';
-  if (region.attemptCount > 0 && region.progressRatio >= 0.7) return 'improving';
+function regionScoreRatio(events: StudentProgressEventRow[]): number | undefined {
+  const ratios = events
+    .map((event) => event.event_payload.scoreRatio)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+  if (ratios.length > 0) return ratios.reduce((sum, value) => sum + value, 0) / ratios.length;
+  if (events.some((event) => event.event_type === 'field_guide_completed')) return 0.1;
+  return undefined;
+}
+
+function teacherStatusForRegion(events: StudentProgressEventRow[]): TeacherRegionStatus {
+  if (events.length === 0) return 'not_started';
+  if (events.some((event) => event.event_type === 'guardian_completed')) return 'secure';
+  const scoreRatio = regionScoreRatio(events);
+  if (typeof scoreRatio === 'number' && scoreRatio < 0.45 && events.some((event) => event.activity_type === 'exam_practice' || event.activity_type === 'guardian')) return 'needs_help';
+  if (typeof scoreRatio === 'number' && scoreRatio >= 0.7) return 'improving';
   return 'in_progress';
 }
 
-function currentFocusRegion(access: ClassRegionAccess[], snapshot?: StudentProgressSnapshotRow): ClassRegionAccess {
-  const regionsWithActivity = snapshot
-    ? Object.values(snapshot.region_summary_json)
-      .filter((region): region is ProgressSnapshotRegionJson => Boolean(region?.lastActivityAt))
-      .sort((a, b) => Date.parse(a.lastActivityAt ?? '') - Date.parse(b.lastActivityAt ?? ''))
-    : [];
-  const latestRegion = regionsWithActivity[regionsWithActivity.length - 1];
-  return access.find((item) => item.regionId === latestRegion?.regionId) ?? firstOpenRegion(access);
+function currentFocusRegion(access: ClassRegionAccess[], events: StudentProgressEventRow[]): ClassRegionAccess {
+  const event = latestEvent(events);
+  return access.find((item) => item.regionId === event?.region_id) ?? firstOpenRegion(access);
 }
 
 function average(values: number[]): number {
@@ -308,37 +330,48 @@ function average(values: number[]): number {
 }
 
 function lastActivityLabel(lastActivityAt?: string): string {
-  if (!lastActivityAt) return 'No hosted progress yet';
+  if (!lastActivityAt) return 'No hosted activity yet';
   return `Last hosted activity ${lastActivityAt.slice(0, 10)}`;
 }
 
-function studentRowsForRoster(roster: TeacherClassRoster, access: ClassRegionAccess[], snapshots: StudentProgressSnapshotRow[]): StudentProgressRow[] {
+function studentRowsForRoster(roster: TeacherClassRoster, access: ClassRegionAccess[], events: StudentProgressEventRow[]): StudentProgressRow[] {
   const visibleStudents = roster.students.filter((student) => student.status === 'claimed' || student.status === 'active');
-  const snapshotsByMembership = latestSnapshotByMembership(snapshots);
+  const eventsByStudent = eventsByMembership(events);
 
   return visibleStudents.map((student) => {
-    const snapshot = snapshotsByMembership.get(student.id);
-    const focusRegion = currentFocusRegion(access, snapshot);
+    const studentEvents = eventsByStudent.get(student.id) ?? [];
+    const focusRegion = currentFocusRegion(access, studentEvents);
+    const latest = latestEvent(studentEvents);
     const regionCells: StudentRegionProgressCell[] = access.map((regionAccess) => {
       const excluded = regionAccess.access !== 'open';
-      const regionSnapshot = isValidP3RegionId(regionAccess.regionId)
-        ? snapshot?.region_summary_json[regionAccess.regionId]
-        : undefined;
+      const regionEvents = isValidP3RegionId(regionAccess.regionId)
+        ? studentEvents.filter((event) => event.region_id === regionAccess.regionId)
+        : [];
+      const scoreRatio = regionScoreRatio(regionEvents);
+      const lastRegionEvent = latestEvent(regionEvents);
+      const activityAttempts = regionEvents.filter((event) => (
+        event.event_type === 'quick_check_completed'
+        || event.event_type === 'warm_up_completed'
+        || event.event_type === 'practice_attempt_saved'
+        || event.event_type === 'guardian_attempted'
+        || event.event_type === 'guardian_completed'
+      ));
+      const guardianEligible = regionEvents.some((event) => event.event_type === 'guardian_attempted' || event.event_type === 'guardian_completed');
       return {
         regionId: regionAccess.regionId,
         regionName: regionAccess.regionName,
         access: regionAccess.access,
         accessLabel: labelForClassRegionAccess(regionAccess.access),
         excludedFromClassProgress: excluded,
-        progressPercent: percent(regionSnapshot?.progressRatio),
-        masteryPercent: percent(regionSnapshot?.progressRatio),
-        status: teacherStatusForRegion(regionSnapshot),
-        attemptsCount: regionSnapshot?.attemptCount ?? 0,
-        averageSelfMarkPercent: regionSnapshot ? percent(regionSnapshot.progressRatio) : undefined,
-        guardianEligible: regionSnapshot?.guardianStatus === 'ready' || regionSnapshot?.guardianStatus === 'attempted',
-        lastEvidenceAt: regionSnapshot?.lastActivityAt,
-        warning: excluded && regionSnapshot && (regionSnapshot.attemptCount > 0 || regionSnapshot.fieldGuideStatus !== 'not_started' || regionSnapshot.guardianStatus !== 'locked')
-          ? 'Existing progress from a currently Field Guide only region.'
+        progressPercent: percent(scoreRatio),
+        masteryPercent: percent(scoreRatio),
+        status: teacherStatusForRegion(regionEvents),
+        attemptsCount: activityAttempts.length,
+        averageSelfMarkPercent: typeof scoreRatio === 'number' ? percent(scoreRatio) : undefined,
+        guardianEligible,
+        lastEvidenceAt: lastRegionEvent?.created_at,
+        warning: excluded && regionEvents.some((event) => event.activity_type !== 'field_guide')
+          ? 'Hosted activity exists in a currently Field Guide only region; verify region access history.'
           : undefined,
       };
     });
@@ -353,12 +386,12 @@ function studentRowsForRoster(roster: TeacherClassRoster, access: ClassRegionAcc
       currentFocusRegionId: focusRegion.regionId,
       currentFocusRegionName: focusRegion.regionName,
       regionCells,
-      lastActivityAt: snapshot?.summary_json.lastActivityAt,
-      lastActivityLabel: lastActivityLabel(snapshot?.summary_json.lastActivityAt),
-      attemptsCount: snapshot?.summary_json.attemptCount ?? 0,
+      lastActivityAt: latest?.created_at,
+      lastActivityLabel: lastActivityLabel(latest?.created_at),
+      attemptsCount: studentEvents.length,
       repeatedLowSelfMarkCount: 0,
       guardianEligibleRegionCount,
-      notes: snapshot ? ['Hosted progress summary read from latest bounded snapshot.'] : ['No hosted progress snapshot has been synced for this student yet.'],
+      notes: studentEvents.length > 0 ? ['Hosted activity summary derived from Supabase progress events.'] : ['No hosted activity events have been recorded for this student yet.'],
       warnings: regionCells.flatMap((cell) => cell.warning ? [cell.warning] : []),
     };
   });
@@ -428,8 +461,8 @@ function focusItemsFor(rows: StudentProgressRow[], roster: TeacherClassRoster): 
     items.push({
       id: `${roster.classId}-hosted-unsynced`,
       type: 'inactive_students',
-      title: 'No hosted snapshot yet',
-      summary: `${unsynced.length} claimed student${unsynced.length === 1 ? ' has' : 's have'} not synced a teacher-visible progress summary yet.`,
+      title: 'No hosted activity yet',
+      summary: `${unsynced.length} claimed student${unsynced.length === 1 ? ' has' : 's have'} not recorded teacher-visible hosted activity yet.`,
       studentIds: unsynced.map((row) => row.id),
       suggestedAction: 'Ask students to complete a Field Guide, Quick Check, Warm-Up, or save an attempt.',
       priority: 2,
@@ -489,7 +522,7 @@ function weeklySummaryFor(classRow: ClassRow, rows: StudentProgressRow[], focusI
   const activeRows = rows.filter((row) => row.lastActivityAt);
   return {
     className: classRow.name,
-    dateRange: 'Latest hosted snapshots',
+    dateRange: 'Latest hosted activity events',
     classOverallProgressPercent: average(rows.map((row) => row.overallProgressPercent)),
     topFocusRegions: [],
     studentsNeedingAttention: rows
@@ -499,7 +532,7 @@ function weeklySummaryFor(classRow: ClassRow, rows: StudentProgressRow[], focusI
       .filter((row) => row.overallProgressPercent >= 70 || row.guardianEligibleRegionCount > 0)
       .map((row) => ({ studentId: row.id, displayName: row.displayName, reason: 'Hosted summary shows secure progress or Guardian readiness.' })),
     suggestedTeacherActions: focusItems.map((item) => item.suggestedAction),
-    exportDownloadText: 'CSV export uses latest hosted bounded progress snapshots. Raw learner work remains local.',
+    exportDownloadText: 'CSV export uses hosted activity events only. Raw learner work remains local.',
   };
 }
 
@@ -514,7 +547,7 @@ function exportRowsFor(classRow: ClassRow, teacher: TeacherProfileRow | undefine
       rosterStatus: rosterStudent?.status ?? 'claimed',
       overallProgressPercent: row.overallProgressPercent,
       currentFocusRegion: row.currentFocusRegionName,
-      lastActivity: row.lastActivityAt ?? 'No hosted progress yet',
+      lastActivity: row.lastActivityAt ?? 'No hosted activity yet',
       attemptsCount: row.attemptsCount,
       guardianEligibilitySummary: `${row.guardianEligibleRegionCount} region(s)`,
       notesWarnings: [...row.notes, ...row.warnings].join('; '),
@@ -547,7 +580,7 @@ function dashboardFromRows(rows: ClassroomRows, classId: string, now: string): T
   const studentRows = studentRowsForRoster(
     roster,
     regionAccess,
-    rows.progressSnapshots.filter((snapshot) => snapshot.class_id === classRow.id),
+    rows.progressEvents.filter((event) => event.class_id === classRow.id),
   );
   const focusThisWeek = focusItemsFor(studentRows, roster);
 
@@ -650,7 +683,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
         classes,
         memberships: [],
         regionAccess: [],
-        progressSnapshots: [],
+        progressEvents: [],
       };
     }
 
@@ -664,14 +697,14 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
         classes,
         memberships: [],
         regionAccess: [],
-        progressSnapshots: [],
+        progressEvents: [],
       };
     }
 
-    const [memberships, regionAccess, progressSnapshots] = await Promise.all([
+    const [memberships, regionAccess, progressEvents] = await Promise.all([
       readRows(client.from<ClassMembershipRow>('class_memberships').select(membershipColumns).in('class_id', classIds).order('roster_name', { ascending: true }), 'class_memberships'),
       readRows(client.from<ClassRegionAccessRow>('class_region_access').select(regionAccessColumns).in('class_id', classIds).order('region_id', { ascending: true }), 'class_region_access'),
-      readRows(client.from<StudentProgressSnapshotRow>('student_progress_snapshots').select(progressSnapshotColumns).in('class_id', classIds).order('created_at', { ascending: false }), 'student_progress_snapshots'),
+      readRows(client.from<StudentProgressEventRow>('student_progress_events').select(progressEventColumns).in('class_id', classIds).order('created_at', { ascending: false }), 'student_progress_events'),
     ]);
 
     return {
@@ -679,7 +712,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
       classes,
       memberships,
       regionAccess,
-      progressSnapshots,
+      progressEvents,
     };
   }
 

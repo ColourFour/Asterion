@@ -18,6 +18,7 @@ const requiredTables = [
   'class_memberships',
   'class_region_access',
   'student_progress_snapshots',
+  'student_progress_events',
   'audit_events',
 ];
 
@@ -73,6 +74,7 @@ function assertStaticContract(sql) {
   assertRosterClaimRpc(sql);
   assertHostedSetupWrites(sql);
   assertProgressSnapshotContract(sql);
+  assertHostedProgressEventContract(sql);
 
   const p3Contract = readFileSync(p3ContractPath, 'utf8');
   const contractRegionIds = expectedRegionIds.filter((regionId) => p3Contract.includes(`id: '${regionId}'`));
@@ -216,13 +218,12 @@ function assertHostedSetupWrites(sql) {
 }
 
 function assertProgressSnapshotContract(sql) {
-  const requiredFunctions = [
-    'asterion_snapshot_json_has_forbidden_key',
-    'asterion_valid_progress_snapshot_summary',
-    'asterion_valid_progress_snapshot_regions',
-  ];
+  const oneArgForbiddenKeyHelperPattern = /create\s+or\s+replace\s+function\s+public\.asterion_snapshot_json_has_forbidden_key\s*\(\s*payload\s+jsonb\s*\)/i;
+  if (!oneArgForbiddenKeyHelperPattern.test(sql)) {
+    fail('Missing progress snapshot validator public.asterion_snapshot_json_has_forbidden_key(jsonb)');
+  }
 
-  for (const helper of requiredFunctions) {
+  for (const helper of ['asterion_valid_progress_snapshot_summary', 'asterion_valid_progress_snapshot_regions']) {
     const helperPattern = new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\b`, 'i');
     if (!helperPattern.test(sql)) fail(`Missing progress snapshot validator public.${helper}`);
   }
@@ -262,6 +263,106 @@ function assertProgressSnapshotContract(sql) {
   const seed = readFileSync(seedPath, 'utf8');
   if (/"overallProgress"|"verify":true|"learnerResponse"|"note"/.test(seed)) {
     fail('supabase/seed.sql contains a legacy or raw progress snapshot key');
+  }
+
+  if (!/drop\s+policy\s+if\s+exists\s+"students can insert own bounded progress snapshots"\s+on\s+public\.student_progress_snapshots/i.test(sql)) {
+    fail('Student direct insert policy for local progress snapshots must be dropped after hosted progress events are introduced');
+  }
+}
+
+function assertHostedProgressEventContract(sql) {
+  const requiredFunctions = [
+    'asterion_safe_progress_event_identifier',
+    'asterion_valid_progress_event_payload',
+    'enforce_student_progress_event_membership',
+    'record_student_progress_event',
+  ];
+
+  for (const helper of requiredFunctions) {
+    const helperPattern = new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\b`, 'i');
+    if (!helperPattern.test(sql)) fail(`Missing hosted progress event function public.${helper}`);
+  }
+
+  const twoArgForbiddenKeyHelperPattern = /create\s+or\s+replace\s+function\s+public\.asterion_snapshot_json_has_forbidden_key\s*\(\s*payload\s+jsonb\s*,\s*forbidden_keys\s+text\[\]\s*\)[\s\S]+?immutable[\s\S]+?strict/i;
+  if (!twoArgForbiddenKeyHelperPattern.test(sql)) {
+    fail('Missing strict immutable overload public.asterion_snapshot_json_has_forbidden_key(jsonb, text[]) for hosted progress event payload validation');
+  }
+
+  const overloadStart = sql.search(/create\s+or\s+replace\s+function\s+public\.asterion_snapshot_json_has_forbidden_key\s*\(\s*payload\s+jsonb\s*,\s*forbidden_keys\s+text\[\]\s*\)/i);
+  const payloadValidatorStart = sql.search(/create\s+or\s+replace\s+function\s+public\.asterion_valid_progress_event_payload\b/i);
+  if (overloadStart === -1 || payloadValidatorStart === -1 || overloadStart > payloadValidatorStart) {
+    fail('Hosted progress event SQL must define the jsonb/text[] forbidden-key overload before first use');
+  }
+
+  const eventStart = sql.search(/create\s+table\s+public\.student_progress_events\b/i);
+  if (eventStart === -1) fail('Missing table public.student_progress_events');
+  const eventEnd = sql.indexOf(');', eventStart);
+  const eventTable = sql.slice(eventStart, eventEnd);
+
+  const requiredColumns = [
+    'organization_id',
+    'class_id',
+    'class_membership_id',
+    'student_profile_id',
+    'actor_user_id',
+    'region_id',
+    'activity_type',
+    'content_id',
+    'question_id',
+    'skill_id',
+    'event_type',
+    'event_payload',
+  ];
+
+  for (const column of requiredColumns) {
+    if (!new RegExp(`\\b${column}\\b`, 'i').test(eventTable)) fail(`student_progress_events is missing ${column}`);
+  }
+
+  for (const term of [
+    'field_guide_completed',
+    'quick_check_completed',
+    'warm_up_completed',
+    'practice_attempt_saved',
+    'guardian_attempted',
+    'guardian_completed',
+    'field_guide_only',
+    'learnerResponse',
+    'localStorage',
+    'sessionStorage',
+  ]) {
+    if (!sql.includes(term)) fail(`Hosted progress event SQL contract is missing ${term}`);
+  }
+
+  const rpcStart = sql.search(/create\s+or\s+replace\s+function\s+public\.record_student_progress_event\b/i);
+  const rpcEnd = sql.indexOf('comment on function public.record_student_progress_event', rpcStart);
+  if (rpcStart === -1 || rpcEnd === -1) fail('Missing documentation comment for public.record_student_progress_event');
+  const rpcBody = sql.slice(rpcStart, rpcEnd);
+
+  const requiredPatterns = [
+    [/security\s+definer/i, 'record_student_progress_event must be SECURITY DEFINER'],
+    [/auth\.uid\(\)/i, 'record_student_progress_event must bind writes to auth.uid()'],
+    [/public\.is_student_for_membership\(p_class_membership_id\)/i, 'record_student_progress_event must require own claimed membership'],
+    [/cm\.roster_status\s*=\s*'claimed'/i, 'record_student_progress_event must require claimed roster status'],
+    [/cm\.claimed_by_user_id\s*=\s*auth\.uid\(\)/i, 'record_student_progress_event must require actor membership ownership'],
+    [/membership_row\.class_id\s*<>\s*p_class_id/i, 'record_student_progress_event must reject wrong class context'],
+    [/membership_row\.student_profile_id\s*<>\s*p_student_profile_id/i, 'record_student_progress_event must reject wrong student profile context'],
+    [/public\.class_region_access/i, 'record_student_progress_event must check class_region_access'],
+    [/access_status\s*<>\s*'open'/i, 'record_student_progress_event must block progression events outside open regions'],
+    [/insert\s+into\s+public\.student_progress_events/i, 'record_student_progress_event must insert append-only progress events'],
+    [/grant\s+execute\s+on\s+function\s+public\.record_student_progress_event\(uuid,\s*uuid,\s*uuid,\s*text,\s*text,\s*text,\s*text,\s*text,\s*text,\s*jsonb\)\s+to\s+authenticated/i, 'record_student_progress_event must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.record_student_progress_event\(uuid,\s*uuid,\s*uuid,\s*text,\s*text,\s*text,\s*text,\s*text,\s*text,\s*jsonb\)\s+from\s+anon/i, 'record_student_progress_event must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of requiredPatterns) {
+    if (!pattern.test(rpcBody) && !pattern.test(sql)) fail(message);
+  }
+
+  if (/student_progress_snapshots|summary_json|region_summary_json/i.test(rpcBody)) {
+    fail('record_student_progress_event must not write local-progress snapshots');
+  }
+
+  if (/create\s+policy\s+[^;]+on\s+public\.student_progress_events\s+for\s+(insert|update|delete)/i.test(sql)) {
+    fail('student_progress_events must not expose direct insert, update, or delete policies during the pilot');
   }
 }
 

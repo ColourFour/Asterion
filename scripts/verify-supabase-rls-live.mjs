@@ -17,12 +17,14 @@ export const demoIds = {
   teacherNoetherProfile: '20000000-0000-0000-0000-000000000202',
   studentOrionProfile: '30000000-0000-0000-0000-000000000301',
   studentVegaProfile: '30000000-0000-0000-0000-000000000302',
+  studentArchiveProfile: '30000000-0000-0000-0000-000000000304',
   classAlpha: '40000000-0000-0000-0000-000000000401',
   classBeta: '40000000-0000-0000-0000-000000000402',
   classArchive: '40000000-0000-0000-0000-000000000403',
   membershipOrionAlpha: '50000000-0000-0000-0000-000000000501',
   membershipLyraAlpha: '50000000-0000-0000-0000-000000000502',
   membershipVegaBeta: '50000000-0000-0000-0000-000000000503',
+  membershipArchive: '50000000-0000-0000-0000-000000000504',
   snapshotOrionAlpha: '60000000-0000-0000-0000-000000000601',
   snapshotVegaBeta: '60000000-0000-0000-0000-000000000602',
 };
@@ -36,6 +38,7 @@ export const requiredTables = [
   'class_memberships',
   'class_region_access',
   'student_progress_snapshots',
+  'student_progress_events',
   'audit_events',
 ];
 
@@ -103,6 +106,36 @@ function insertSnapshotSql({ membershipId, studentProfileId, classId }) {
       '{"schemaVersion":1,"paperFamily":"p3","generatedAt":"2026-05-19T00:00:00Z","attemptCount":0,"masteryEligibleAttemptCount":0,"learningActivityAttemptCount":0,"issueReportCount":0,"regionsStarted":0,"guardianReadyRegionCount":0,"guardianClearedRegionCount":0,"openRegionCount":9,"fieldGuideOnlyRegionCount":0}'::jsonb,
       '{"algebra-forge":{"regionId":"algebra-forge","rank":"Discovered","status":"available","progressRatio":0,"attemptCount":0,"totalMarksEarned":0,"totalMarksAvailable":0,"guardianStatus":"locked","fieldGuideStatus":"not_started","accessStatus":"open"}}'::jsonb
     );
+  `;
+}
+
+function recordProgressEventCountSql({
+  classId,
+  membershipId,
+  studentProfileId,
+  regionId,
+  activityType,
+  eventType,
+  questionId = null,
+  payload = '{}',
+}) {
+  return `
+    with event_row as (
+      select *
+      from public.record_student_progress_event(
+        '${classId}',
+        '${membershipId}',
+        '${studentProfileId}',
+        '${sqlString(regionId)}',
+        '${sqlString(activityType)}',
+        '${sqlString(eventType)}',
+        null,
+        ${questionId ? `'${sqlString(questionId)}'` : 'null'},
+        null,
+        '${sqlString(payload)}'::jsonb
+      )
+    )
+    select count(*) from event_row where event_type = '${sqlString(eventType)}';
   `;
 }
 
@@ -496,8 +529,8 @@ export function buildLiveRlsChecks() {
       ),
     },
     {
-      name: 'student can insert snapshot for own claimed membership',
-      kind: 'allow',
+      name: 'student cannot insert local progress snapshots for own claimed membership',
+      kind: 'deny',
       sql: asRole(
         'authenticated',
         insertSnapshotSql({
@@ -519,6 +552,219 @@ export function buildLiveRlsChecks() {
           classId: demoIds.classAlpha,
         }),
         demoIds.studentVegaUser,
+      ),
+    },
+    {
+      name: 'student can record field guide event for field-guide-only region',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classAlpha,
+          membershipId: demoIds.membershipOrionAlpha,
+          studentProfileId: demoIds.studentOrionProfile,
+          regionId: 'complex-harbor',
+          activityType: 'field_guide',
+          eventType: 'field_guide_completed',
+          payload: '{"completed":true}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'student cannot record quick check event for field-guide-only region',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classAlpha,
+          membershipId: demoIds.membershipOrionAlpha,
+          studentProfileId: demoIds.studentOrionProfile,
+          regionId: 'complex-harbor',
+          activityType: 'quick_check',
+          eventType: 'quick_check_completed',
+          payload: '{"outcome":"got_it","completed":true}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'student can record practice event for open region',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classAlpha,
+          membershipId: demoIds.membershipOrionAlpha,
+          studentProfileId: demoIds.studentOrionProfile,
+          regionId: 'algebra-forge',
+          activityType: 'exam_practice',
+          eventType: 'practice_attempt_saved',
+          questionId: '9709_s23_qp32_q1',
+          payload: '{"scoreRatio":0.75,"marksEarned":6,"marksAvailable":8,"durationSeconds":240}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'student cannot record progress event for another membership',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classBeta,
+          membershipId: demoIds.membershipVegaBeta,
+          studentProfileId: demoIds.studentVegaProfile,
+          regionId: 'algebra-forge',
+          activityType: 'exam_practice',
+          eventType: 'practice_attempt_saved',
+          questionId: '9709_s23_qp32_q1',
+          payload: '{"scoreRatio":0.75}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'student cannot record event with wrong class or student profile context',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classBeta,
+          membershipId: demoIds.membershipOrionAlpha,
+          studentProfileId: demoIds.studentVegaProfile,
+          regionId: 'algebra-forge',
+          activityType: 'exam_practice',
+          eventType: 'practice_attempt_saved',
+          payload: '{"scoreRatio":0.75}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'student cannot record hosted progress payload with raw learner data keys',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        recordProgressEventCountSql({
+          classId: demoIds.classAlpha,
+          membershipId: demoIds.membershipOrionAlpha,
+          studentProfileId: demoIds.studentOrionProfile,
+          regionId: 'algebra-forge',
+          activityType: 'exam_practice',
+          eventType: 'practice_attempt_saved',
+          questionId: '9709_s23_qp32_q1',
+          payload: '{"scoreRatio":0.75,"learnerResponse":"raw"}',
+        }),
+        demoIds.studentOrionUser,
+      ),
+    },
+    {
+      name: 'teacher can read assigned hosted progress events',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        `select count(*) from public.student_progress_events where class_id = '${demoIds.classAlpha}';`,
+        demoIds.teacherHypatiaUser,
+        `
+          insert into public.student_profiles (
+            id,
+            organization_id,
+            user_id,
+            display_name,
+            status
+          )
+          values (
+            '30000000-0000-0000-0000-000000000901',
+            '${demoIds.organization}',
+            '${demoIds.studentVegaUser}',
+            'Verifier Other Class Student',
+            'active'
+          );
+
+          insert into public.class_memberships (
+            id,
+            class_id,
+            student_profile_id,
+            roster_name,
+            roster_status,
+            claimed_by_user_id,
+            claimed_at
+          )
+          values (
+            '50000000-0000-0000-0000-000000000901',
+            '${demoIds.classArchive}',
+            '30000000-0000-0000-0000-000000000901',
+            'Verifier Other Class Student',
+            'claimed',
+            '${demoIds.studentVegaUser}',
+            now()
+          );
+
+          insert into public.student_progress_events (
+            organization_id,
+            class_id,
+            class_membership_id,
+            student_profile_id,
+            actor_user_id,
+            region_id,
+            activity_type,
+            question_id,
+            event_type,
+            event_payload
+          )
+          values (
+            '${demoIds.organization}',
+            '${demoIds.classAlpha}',
+            '${demoIds.membershipOrionAlpha}',
+            '${demoIds.studentOrionProfile}',
+            '${demoIds.studentOrionUser}',
+            'algebra-forge',
+            'exam_practice',
+            '9709_s23_qp32_q1',
+            'practice_attempt_saved',
+            '{"scoreRatio":0.75}'::jsonb
+          );
+        `,
+      ),
+    },
+    {
+      name: 'teacher cannot read hosted progress events for another teacher class',
+      kind: 'count',
+      expected: 0,
+      sql: asRole(
+        'authenticated',
+        `select count(*) from public.student_progress_events where class_id = '${demoIds.classArchive}';`,
+        demoIds.teacherHypatiaUser,
+        `
+          insert into public.student_progress_events (
+            organization_id,
+            class_id,
+            class_membership_id,
+            student_profile_id,
+            actor_user_id,
+            region_id,
+            activity_type,
+            question_id,
+            event_type,
+            event_payload
+          )
+          values (
+            '${demoIds.organization}',
+            '${demoIds.classArchive}',
+            '50000000-0000-0000-0000-000000000901',
+            '30000000-0000-0000-0000-000000000901',
+            '${demoIds.studentVegaUser}',
+            'algebra-forge',
+            'exam_practice',
+            '9709_s23_qp32_q1',
+            'practice_attempt_saved',
+            '{"scoreRatio":0.75}'::jsonb
+          );
+        `,
       ),
     },
     {
