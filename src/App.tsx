@@ -45,7 +45,12 @@ function loadValidatedPendingClassClaim(): StudentClaimState | undefined {
   return validatedClaim;
 }
 
-function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'teacher' | 'admin'; onNavigatePath: (path: string) => void }) {
+function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'teacher' | 'admin' | 'dashboard'; onNavigatePath: (path: string) => void }) {
+  const routeLabel = routeKind === 'teacher'
+    ? 'teacher dashboard'
+    : routeKind === 'admin'
+      ? 'admin console'
+      : 'dashboard route';
   return (
     <main className="app-shell onboarding-shell">
       <TwinklingStarfield />
@@ -54,8 +59,7 @@ function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'tea
           <span className="mode-pill">Demo dashboard disabled</span>
           <h1>Asterion</h1>
           <p>
-            The {routeKind === 'teacher' ? 'teacher dashboard' : 'admin console'} is a private demo route and is not
-            available in this build.
+            The {routeLabel} is private review-build functionality and is not available in this student pilot build.
           </p>
         </div>
         <div className="onboarding-briefing">
@@ -419,6 +423,10 @@ export default function App() {
 
   if (dashboardRoute.kind === 'admin' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
     return <DisabledDashboardRoute routeKind="admin" onNavigatePath={navigatePath} />;
+  }
+
+  if (dashboardRoute.kind === 'dashboard') {
+    return <DisabledDashboardRoute routeKind="dashboard" onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'teacher') {

@@ -7,15 +7,17 @@ export type TeacherDashboardRoute = {
   regionId?: string;
 };
 
-export type DashboardRoute = TeacherDashboardRoute | { kind: 'admin' } | { kind: 'student' };
+export type DashboardRoute = TeacherDashboardRoute | { kind: 'admin' } | { kind: 'dashboard' } | { kind: 'student' };
 
 export function dashboardRouteEnabled(route: DashboardRoute, config: Pick<AsterionRuntimeConfig, 'dashboardRoutesEnabled'>): boolean {
+  if (route.kind === 'dashboard') return false;
   return route.kind === 'student' || config.dashboardRoutesEnabled;
 }
 
 export function parseDashboardRoute(pathname: string, hash: string): DashboardRoute {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
-  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') ? hashPath : pathname;
+  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') || hashPath.startsWith('/dashboard') ? hashPath : pathname;
+  if (routePath === '/dashboard' || routePath.startsWith('/dashboard/')) return { kind: 'dashboard' };
   if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
   if (routePath === '/teacher') return { kind: 'teacher', page: 'home' };
 

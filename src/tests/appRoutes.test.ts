@@ -32,6 +32,12 @@ describe('parseDashboardRoute', () => {
     expect(parseDashboardRoute('/admin/settings', '')).toEqual({ kind: 'admin' });
   });
 
+  it('quarantines generic dashboard routes instead of treating them as student routes', () => {
+    expect(parseDashboardRoute('/', '#/dashboard')).toEqual({ kind: 'dashboard' });
+    expect(parseDashboardRoute('/dashboard', '')).toEqual({ kind: 'dashboard' });
+    expect(parseDashboardRoute('/dashboard/demo', '')).toEqual({ kind: 'dashboard' });
+  });
+
   it('falls back to the pathname when the hash belongs to student routing', () => {
     expect(parseDashboardRoute('/teacher/classes/class-p3-alpha', '#/regions/algebra')).toEqual({
       kind: 'teacher',
@@ -44,6 +50,8 @@ describe('parseDashboardRoute', () => {
     expect(dashboardRouteEnabled({ kind: 'student' }, { dashboardRoutesEnabled: false })).toBe(true);
     expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: false })).toBe(false);
     expect(dashboardRouteEnabled({ kind: 'admin' }, { dashboardRoutesEnabled: false })).toBe(false);
+    expect(dashboardRouteEnabled({ kind: 'dashboard' }, { dashboardRoutesEnabled: false })).toBe(false);
     expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: true })).toBe(true);
+    expect(dashboardRouteEnabled({ kind: 'dashboard' }, { dashboardRoutesEnabled: true })).toBe(false);
   });
 });

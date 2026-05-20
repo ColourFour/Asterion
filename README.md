@@ -567,7 +567,7 @@ npm run dev:student-pilot
 npm run build:student-pilot
 ```
 
-These commands load `.env.student-pilot`, which sets `VITE_ASTERION_APP_PROFILE=student-pilot`. When that profile is active, conflicting hosted/dashboard env values are ignored for the runtime student app: progress remains local, student class claiming remains mock/local, dashboard data remains mock, and `#/teacher` / `#/admin` stay disabled. Supabase URL/key values may exist for other local tests, but they are not required by the student pilot profile and do not enable hosted learner progress.
+These commands load `.env.student-pilot`, which sets `VITE_ASTERION_APP_PROFILE=student-pilot`. When that profile is active, conflicting hosted/dashboard env values are ignored for the runtime student app: progress remains local, student class claiming remains mock/local, dashboard data remains mock, and `#/teacher` / `#/admin` stay disabled. Generic dashboard aliases such as `#/dashboard` and `/dashboard` are quarantined and are not review-build entry points. Supabase URL/key values may exist for other local tests, but they are not required by the student pilot profile and do not enable hosted learner progress.
 
 ## Progress Storage
 
@@ -597,7 +597,7 @@ npm run build
 
 Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSON files and image assets must be committed under `public/` before building, or copied into the deployed static output.
 
-Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled` or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate.
+Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled` or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate. Generic dashboard aliases (`#/dashboard`, `/dashboard`, and nested dashboard paths) always show the disabled-dashboard quarantine state so they cannot be mistaken for a production classroom dashboard.
 
 See `docs/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 

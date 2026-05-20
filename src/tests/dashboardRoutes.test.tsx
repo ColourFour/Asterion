@@ -140,7 +140,7 @@ describe('dashboard routes', () => {
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Demo dashboard disabled');
-    expect(container.textContent).toContain('teacher dashboard is a private demo route');
+    expect(container.textContent).toContain('teacher dashboard is private review-build functionality');
     expect(container.textContent).toContain('VITE_ASTERION_DASHBOARD_DEMO=enabled');
     expect(container.textContent).toContain('Student app');
     expect(container.textContent).not.toContain('Teacher class dashboard');
@@ -153,11 +153,23 @@ describe('dashboard routes', () => {
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Demo dashboard disabled');
-    expect(container.textContent).toContain('admin console is a private demo route');
+    expect(container.textContent).toContain('admin console is private review-build functionality');
     expect(container.textContent).toContain('VITE_ASTERION_DASHBOARD_DEMO=enabled');
     expect(container.textContent).not.toContain('Admin Console');
     expect(container.textContent).not.toContain('Teacher list');
     expect(container.textContent).not.toContain('Admin view and override');
+  });
+
+  it('quarantines generic dashboard aliases in the student pilot build', async () => {
+    window.history.replaceState(null, '', '/#/dashboard');
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Demo dashboard disabled');
+    expect(container.textContent).toContain('dashboard route is private review-build functionality');
+    expect(container.textContent).toContain('Student app active');
+    expect(container.textContent).not.toContain('Teacher class dashboard');
+    expect(container.textContent).not.toContain('Admin Console');
+    expect(container.textContent).not.toContain('Export CSV');
   });
 
   it('keeps normal student startup independent when Supabase dashboard mode lacks config', async () => {
