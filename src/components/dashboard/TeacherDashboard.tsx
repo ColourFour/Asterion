@@ -459,7 +459,6 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
 export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleContext, onNavigatePath }: TeacherDashboardProps) {
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
-  const rosterWritesDisabled = source.kind === 'supabase';
   const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
@@ -513,9 +512,14 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
     event.preventDefault();
     if (readOnly) return;
     if (!dashboard || !newStudentName.trim()) return;
-    await dashboardDataService.addRosterStudent(dashboard.class.teacherId, dashboard.class.id, newStudentName);
-    setNewStudentName('');
-    await refreshDashboard(dashboard.class.id);
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.addRosterStudent(dashboard.class.teacherId, dashboard.class.id, newStudentName);
+      setNewStudentName('');
+      await refreshDashboard(dashboard.class.id);
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Roster student could not be added.');
+    }
   }
 
   async function handleCreateClass(event: FormEvent<HTMLFormElement>) {
@@ -542,20 +546,30 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   async function handleArchiveStudent(studentId: string) {
     if (readOnly) return;
     if (!dashboard) return;
-    await dashboardDataService.archiveRosterStudent(dashboard.class.teacherId, dashboard.class.id, studentId);
-    await refreshDashboard(dashboard.class.id);
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.archiveRosterStudent(dashboard.class.teacherId, dashboard.class.id, studentId);
+      await refreshDashboard(dashboard.class.id);
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Roster student could not be archived.');
+    }
   }
 
   async function handleResetClaim(studentId: string) {
     if (readOnly) return;
     if (!dashboard) return;
-    await dashboardDataService.resetRosterClaim({
-      actorRole: 'teacher',
-      actorTeacherId: dashboard.class.teacherId,
-      classId: dashboard.class.id,
-      rosterStudentId: studentId,
-    });
-    await refreshDashboard(dashboard.class.id);
+    try {
+      setActionIssue(undefined);
+      await dashboardDataService.resetRosterClaim({
+        actorRole: 'teacher',
+        actorTeacherId: dashboard.class.teacherId,
+        classId: dashboard.class.id,
+        rosterStudentId: studentId,
+      });
+      await refreshDashboard(dashboard.class.id);
+    } catch (error) {
+      setActionIssue(isDashboardDataServiceError(error) ? error.safeMessage : error instanceof Error ? error.message : 'Roster claim could not be reset.');
+    }
   }
 
   async function handleRegionAccess(regionId: string, open: boolean) {
@@ -726,7 +740,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             onAddStudent={handleAddStudent}
             onArchiveStudent={handleArchiveStudent}
             onResetClaim={handleResetClaim}
-            readOnly={readOnly || rosterWritesDisabled}
+            readOnly={readOnly}
           />
         ) : null}
 

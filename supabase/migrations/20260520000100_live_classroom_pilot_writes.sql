@@ -248,6 +248,295 @@ $$;
 comment on function public.create_class_with_region_access(uuid, text, text, text) is
   'Creates an active P3 class for an authorized teacher/admin and inserts all canonical class_region_access rows as field_guide_only.';
 
+create or replace function public.add_class_roster_student(
+  p_class_id uuid,
+  p_roster_name text
+)
+returns table (
+  id uuid,
+  class_id uuid,
+  student_profile_id uuid,
+  roster_name text,
+  roster_status text,
+  claimed_by_user_id uuid,
+  claimed_at timestamptz,
+  archived_at timestamptz,
+  created_at timestamptz,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_class public.classes%rowtype;
+  normalized_roster_name text := nullif(trim(coalesce(p_roster_name, '')), '');
+  student_row public.student_profiles%rowtype;
+  membership_row public.class_memberships%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'auth_required';
+  end if;
+
+  if normalized_roster_name is null then
+    raise exception 'roster_name_required';
+  end if;
+
+  select *
+  into target_class
+  from public.classes c
+  where c.id = p_class_id
+    and c.status = 'active';
+
+  if target_class.id is null then
+    raise exception 'active_class_required';
+  end if;
+
+  if not (public.is_admin(target_class.organization_id) or public.is_teacher_for_class(target_class.id)) then
+    raise exception 'teacher_or_admin_required';
+  end if;
+
+  insert into public.student_profiles (organization_id, display_name, status)
+  values (target_class.organization_id, normalized_roster_name, 'active')
+  returning *
+  into student_row;
+
+  insert into public.class_memberships (
+    class_id,
+    student_profile_id,
+    roster_name,
+    roster_status
+  )
+  values (
+    target_class.id,
+    student_row.id,
+    normalized_roster_name,
+    'unclaimed'
+  )
+  returning *
+  into membership_row;
+
+  insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
+  values (
+    target_class.organization_id,
+    auth.uid(),
+    'class.roster.added',
+    'class_membership',
+    membership_row.id,
+    jsonb_build_object('class_id', target_class.id, 'roster_status', membership_row.roster_status)
+  );
+
+  return query select
+    membership_row.id,
+    membership_row.class_id,
+    membership_row.student_profile_id,
+    membership_row.roster_name,
+    membership_row.roster_status,
+    membership_row.claimed_by_user_id,
+    membership_row.claimed_at,
+    membership_row.archived_at,
+    membership_row.created_at,
+    membership_row.updated_at;
+end;
+$$;
+
+comment on function public.add_class_roster_student(uuid, text) is
+  'Creates an unclaimed roster slot for an active class. Students cannot self-add roster rows.';
+
+create or replace function public.archive_class_roster_student(
+  p_membership_id uuid
+)
+returns table (
+  id uuid,
+  class_id uuid,
+  student_profile_id uuid,
+  roster_name text,
+  roster_status text,
+  claimed_by_user_id uuid,
+  claimed_at timestamptz,
+  archived_at timestamptz,
+  created_at timestamptz,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_class public.classes%rowtype;
+  target_membership public.class_memberships%rowtype;
+  membership_row public.class_memberships%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'auth_required';
+  end if;
+
+  select cm.*
+  into target_membership
+  from public.class_memberships cm
+  where cm.id = p_membership_id
+  for update;
+
+  if target_membership.id is null then
+    raise exception 'roster_membership_required';
+  end if;
+
+  select *
+  into target_class
+  from public.classes c
+  where c.id = target_membership.class_id
+    and c.status = 'active';
+
+  if target_class.id is null then
+    raise exception 'active_class_required';
+  end if;
+
+  if not (public.is_admin(target_class.organization_id) or public.is_teacher_for_class(target_class.id)) then
+    raise exception 'teacher_or_admin_required';
+  end if;
+
+  update public.class_memberships
+  set roster_status = 'archived',
+      claimed_by_user_id = null,
+      claimed_at = null,
+      archived_at = now(),
+      updated_at = now()
+  where id = target_membership.id
+  returning *
+  into membership_row;
+
+  update public.student_profiles
+  set user_id = null,
+      status = 'archived',
+      updated_at = now()
+  where id = membership_row.student_profile_id;
+
+  insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
+  values (
+    target_class.organization_id,
+    auth.uid(),
+    'class.roster.archived',
+    'class_membership',
+    membership_row.id,
+    jsonb_build_object('class_id', target_class.id, 'previous_status', target_membership.roster_status)
+  );
+
+  return query select
+    membership_row.id,
+    membership_row.class_id,
+    membership_row.student_profile_id,
+    membership_row.roster_name,
+    membership_row.roster_status,
+    membership_row.claimed_by_user_id,
+    membership_row.claimed_at,
+    membership_row.archived_at,
+    membership_row.created_at,
+    membership_row.updated_at;
+end;
+$$;
+
+comment on function public.archive_class_roster_student(uuid) is
+  'Archives a roster membership for an assigned teacher or admin while clearing claim fields and preserving the row for audit/history.';
+
+create or replace function public.reset_class_roster_claim(
+  p_membership_id uuid
+)
+returns table (
+  id uuid,
+  class_id uuid,
+  student_profile_id uuid,
+  roster_name text,
+  roster_status text,
+  claimed_by_user_id uuid,
+  claimed_at timestamptz,
+  archived_at timestamptz,
+  created_at timestamptz,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_class public.classes%rowtype;
+  target_membership public.class_memberships%rowtype;
+  membership_row public.class_memberships%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'auth_required';
+  end if;
+
+  select cm.*
+  into target_membership
+  from public.class_memberships cm
+  where cm.id = p_membership_id
+  for update;
+
+  if target_membership.id is null then
+    raise exception 'roster_membership_required';
+  end if;
+
+  if target_membership.roster_status <> 'claimed' then
+    raise exception 'claimed_roster_required';
+  end if;
+
+  select *
+  into target_class
+  from public.classes c
+  where c.id = target_membership.class_id
+    and c.status = 'active';
+
+  if target_class.id is null then
+    raise exception 'active_class_required';
+  end if;
+
+  if not (public.is_admin(target_class.organization_id) or public.is_teacher_for_class(target_class.id)) then
+    raise exception 'teacher_or_admin_required';
+  end if;
+
+  update public.class_memberships
+  set roster_status = 'unclaimed',
+      claimed_by_user_id = null,
+      claimed_at = null,
+      archived_at = null,
+      updated_at = now()
+  where id = target_membership.id
+  returning *
+  into membership_row;
+
+  update public.student_profiles
+  set user_id = null,
+      status = 'active',
+      updated_at = now()
+  where id = membership_row.student_profile_id;
+
+  insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
+  values (
+    target_class.organization_id,
+    auth.uid(),
+    'class.roster.claim_reset',
+    'class_membership',
+    membership_row.id,
+    jsonb_build_object('class_id', target_class.id, 'previous_claimed_by_user_id', target_membership.claimed_by_user_id)
+  );
+
+  return query select
+    membership_row.id,
+    membership_row.class_id,
+    membership_row.student_profile_id,
+    membership_row.roster_name,
+    membership_row.roster_status,
+    membership_row.claimed_by_user_id,
+    membership_row.claimed_at,
+    membership_row.archived_at,
+    membership_row.created_at,
+    membership_row.updated_at;
+end;
+$$;
+
+comment on function public.reset_class_roster_claim(uuid) is
+  'Resets a claimed roster membership to unclaimed for an assigned teacher or admin and clears the linked student profile user_id.';
+
 create or replace function public.set_class_region_access(
   p_class_id uuid,
   p_region_id text,
@@ -272,6 +561,20 @@ declare
 begin
   if auth.uid() is null then
     raise exception 'auth_required';
+  end if;
+
+  if p_region_id not in (
+    'algebra-forge',
+    'logarithm-grove',
+    'trig-observatory',
+    'complex-harbor',
+    'calculus-cliffs',
+    'integration-gardens',
+    'vector-workshop',
+    'numerical-mines',
+    'differential-shrine'
+  ) then
+    raise exception 'invalid_region_id';
   end if;
 
   if p_access_status not in ('open', 'field_guide_only') then
@@ -348,6 +651,18 @@ grant execute on function public.admin_add_teacher_by_email(text, text, uuid) to
 revoke all on function public.create_class_with_region_access(uuid, text, text, text) from public;
 revoke all on function public.create_class_with_region_access(uuid, text, text, text) from anon;
 grant execute on function public.create_class_with_region_access(uuid, text, text, text) to authenticated;
+
+revoke all on function public.add_class_roster_student(uuid, text) from public;
+revoke all on function public.add_class_roster_student(uuid, text) from anon;
+grant execute on function public.add_class_roster_student(uuid, text) to authenticated;
+
+revoke all on function public.archive_class_roster_student(uuid) from public;
+revoke all on function public.archive_class_roster_student(uuid) from anon;
+grant execute on function public.archive_class_roster_student(uuid) to authenticated;
+
+revoke all on function public.reset_class_roster_claim(uuid) from public;
+revoke all on function public.reset_class_roster_claim(uuid) from anon;
+grant execute on function public.reset_class_roster_claim(uuid) to authenticated;
 
 revoke all on function public.set_class_region_access(uuid, text, text) from public;
 revoke all on function public.set_class_region_access(uuid, text, text) from anon;

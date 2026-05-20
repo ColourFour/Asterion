@@ -94,6 +94,9 @@ function assertHostedSetupWrites(sql) {
   const requiredRpcs = [
     'admin_add_teacher_by_email',
     'create_class_with_region_access',
+    'add_class_roster_student',
+    'archive_class_roster_student',
+    'reset_class_roster_claim',
     'set_class_region_access',
   ];
 
@@ -146,6 +149,64 @@ function assertHostedSetupWrites(sql) {
     if (!regionInsertPattern.test(createClassBody)) {
       fail(`create_class_with_region_access does not create locked access for ${regionId}`);
     }
+  }
+
+  const addRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.add_class_roster_student\b/i);
+  const addRosterEnd = sql.indexOf('comment on function public.add_class_roster_student', addRosterStart);
+  if (addRosterStart === -1 || addRosterEnd === -1) fail('Missing documentation comment for public.add_class_roster_student');
+  const addRosterBody = sql.slice(addRosterStart, addRosterEnd);
+
+  const addRosterPatterns = [
+    [/security\s+definer/i, 'add_class_roster_student must be SECURITY DEFINER'],
+    [/public\.is_admin\(.+public\.is_teacher_for_class/s, 'add_class_roster_student must allow only admins or the assigned teacher'],
+    [/insert\s+into\s+public\.student_profiles/i, 'add_class_roster_student must create a hosted student profile row'],
+    [/insert\s+into\s+public\.class_memberships/i, 'add_class_roster_student must create a class membership row'],
+    [/roster_status[\s\S]+unclaimed/i, 'add_class_roster_student must create unclaimed roster rows'],
+    [/grant\s+execute\s+on\s+function\s+public\.add_class_roster_student\(uuid,\s*text\)\s+to\s+authenticated/i, 'add_class_roster_student must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.add_class_roster_student\(uuid,\s*text\)\s+from\s+anon/i, 'add_class_roster_student must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of addRosterPatterns) {
+    if (!pattern.test(addRosterBody) && !pattern.test(sql)) fail(message);
+  }
+
+  const archiveRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.archive_class_roster_student\b/i);
+  const archiveRosterEnd = sql.indexOf('comment on function public.archive_class_roster_student', archiveRosterStart);
+  if (archiveRosterStart === -1 || archiveRosterEnd === -1) fail('Missing documentation comment for public.archive_class_roster_student');
+  const archiveRosterBody = sql.slice(archiveRosterStart, archiveRosterEnd);
+
+  const archiveRosterPatterns = [
+    [/security\s+definer/i, 'archive_class_roster_student must be SECURITY DEFINER'],
+    [/for\s+update/i, 'archive_class_roster_student must lock the roster row before changing claim state'],
+    [/public\.is_admin\(.+public\.is_teacher_for_class/s, 'archive_class_roster_student must allow only admins or the assigned teacher'],
+    [/set\s+roster_status\s*=\s*'archived'[\s\S]+claimed_by_user_id\s*=\s*null[\s\S]+claimed_at\s*=\s*null[\s\S]+archived_at\s*=\s*now\(\)/i, 'archive_class_roster_student must archive and clear claim fields safely'],
+    [/update\s+public\.student_profiles[\s\S]+user_id\s*=\s*null/i, 'archive_class_roster_student must clear the linked student profile user_id'],
+    [/grant\s+execute\s+on\s+function\s+public\.archive_class_roster_student\(uuid\)\s+to\s+authenticated/i, 'archive_class_roster_student must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.archive_class_roster_student\(uuid\)\s+from\s+anon/i, 'archive_class_roster_student must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of archiveRosterPatterns) {
+    if (!pattern.test(archiveRosterBody) && !pattern.test(sql)) fail(message);
+  }
+
+  const resetRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.reset_class_roster_claim\b/i);
+  const resetRosterEnd = sql.indexOf('comment on function public.reset_class_roster_claim', resetRosterStart);
+  if (resetRosterStart === -1 || resetRosterEnd === -1) fail('Missing documentation comment for public.reset_class_roster_claim');
+  const resetRosterBody = sql.slice(resetRosterStart, resetRosterEnd);
+
+  const resetRosterPatterns = [
+    [/security\s+definer/i, 'reset_class_roster_claim must be SECURITY DEFINER'],
+    [/for\s+update/i, 'reset_class_roster_claim must lock the roster row before changing claim state'],
+    [/roster_status\s*<>\s*'claimed'/i, 'reset_class_roster_claim must only work on claimed rows'],
+    [/public\.is_admin\(.+public\.is_teacher_for_class/s, 'reset_class_roster_claim must allow only admins or the assigned teacher'],
+    [/set\s+roster_status\s*=\s*'unclaimed'[\s\S]+claimed_by_user_id\s*=\s*null[\s\S]+claimed_at\s*=\s*null/i, 'reset_class_roster_claim must reset claimed rows to unclaimed and clear claim fields'],
+    [/update\s+public\.student_profiles[\s\S]+user_id\s*=\s*null/i, 'reset_class_roster_claim must clear the linked student profile user_id'],
+    [/grant\s+execute\s+on\s+function\s+public\.reset_class_roster_claim\(uuid\)\s+to\s+authenticated/i, 'reset_class_roster_claim must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.reset_class_roster_claim\(uuid\)\s+from\s+anon/i, 'reset_class_roster_claim must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of resetRosterPatterns) {
+    if (!pattern.test(resetRosterBody) && !pattern.test(sql)) fail(message);
   }
 
   const auditPolicyPattern = /create\s+policy\s+"active organization actors can append own audit events"[\s\S]+actor_user_id\s*=\s*auth\.uid\(\)[\s\S]+public\.user_roles[\s\S]+status\s*=\s*'active'/i;

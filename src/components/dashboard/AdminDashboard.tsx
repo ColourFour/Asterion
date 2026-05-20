@@ -400,7 +400,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
             {auditEvents.length === 0 ? (
               <article>
                 <strong>No audit events shown</strong>
-                <span>{source.kind === 'supabase' ? 'The read-only Supabase adapter does not read audit events in this pass.' : 'No mock audit events are available.'}</span>
+                <span>{source.kind === 'supabase' ? 'The Supabase dashboard adapter does not read audit events in this pass.' : 'No mock audit events are available.'}</span>
               </article>
             ) : auditEvents.map((event) => (
               <article key={event.id}>

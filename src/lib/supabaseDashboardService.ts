@@ -686,12 +686,53 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     return mapAccessRow(row);
   }
 
+  async function addRosterStudent(_teacherId: string, classId: string, displayName: string): Promise<ClassRosterStudent | undefined> {
+    const trimmedName = displayName.trim();
+    if (!trimmedName) return undefined;
+    const client = await requireClient();
+    const row = await readRpcSingle<ClassMembershipRow>(
+      client.rpc('add_class_roster_student', {
+        p_class_id: classId,
+        p_roster_name: trimmedName,
+      }),
+      'add_class_roster_student',
+    );
+    return rosterStudentFromMembership(row);
+  }
+
+  async function archiveRosterStudent(_teacherId: string, _classId: string, rosterStudentId: string): Promise<ClassRosterStudent | undefined> {
+    const client = await requireClient();
+    const row = await readRpcSingle<ClassMembershipRow>(
+      client.rpc('archive_class_roster_student', {
+        p_membership_id: rosterStudentId,
+      }),
+      'archive_class_roster_student',
+    );
+    return rosterStudentFromMembership(row);
+  }
+
+  async function resetRosterClaim(input: {
+    actorRole: 'admin' | 'teacher';
+    actorTeacherId?: string;
+    classId: string;
+    rosterStudentId: string;
+  }): Promise<ClassRosterStudent | undefined> {
+    const client = await requireClient();
+    const row = await readRpcSingle<ClassMembershipRow>(
+      client.rpc('reset_class_roster_claim', {
+        p_membership_id: input.rosterStudentId,
+      }),
+      'reset_class_roster_claim',
+    );
+    return rosterStudentFromMembership(row);
+  }
+
   return {
     source: {
       kind: 'supabase',
       label: 'Supabase classroom setup data',
       readOnly: false,
-      detail: 'Auth required. Teacher attachment, class creation, and region access writes use Supabase RPCs.',
+      detail: 'Auth required. Teacher attachment, class creation, roster management, and region access writes use Supabase RPCs.',
     },
     listTeacherClasses,
     getTeacherClassDashboard,
@@ -701,15 +742,9 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     getStudentSummaries,
     getStudentEvidence,
     getClassRegionAccess: () => [],
-    addRosterStudent: async () => {
-      throw new DashboardDataServiceError('read_only', 'Hosted roster add is not implemented in this Phase 2A pass.');
-    },
-    archiveRosterStudent: async () => {
-      throw new DashboardDataServiceError('read_only', 'Hosted roster archive is not implemented in this Phase 2A pass.');
-    },
-    resetRosterClaim: async () => {
-      throw new DashboardDataServiceError('read_only', 'Hosted roster claim reset is not implemented in this Phase 2A pass.');
-    },
+    addRosterStudent,
+    archiveRosterStudent,
+    resetRosterClaim,
     setClassRegionAccess,
     listAdminTeachers,
     listAdminTeacherRecords,

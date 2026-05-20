@@ -165,6 +165,54 @@ function addTeacherByEmailCountSql({ email, displayName }) {
   `;
 }
 
+function addRosterStudentCountSql({ classId, rosterName }) {
+  return `
+    with roster as (
+      select *
+      from public.add_class_roster_student(
+        '${classId}',
+        '${sqlString(rosterName)}'
+      )
+    )
+    select count(*)
+    from roster
+    where roster_name = '${sqlString(rosterName)}'
+      and roster_status = 'unclaimed'
+      and claimed_by_user_id is null
+      and claimed_at is null;
+  `;
+}
+
+function archiveRosterStudentCountSql({ membershipId }) {
+  return `
+    with archived as (
+      select *
+      from public.archive_class_roster_student('${membershipId}')
+    )
+    select count(*)
+    from archived
+    where roster_status = 'archived'
+      and claimed_by_user_id is null
+      and claimed_at is null
+      and archived_at is not null;
+  `;
+}
+
+function resetRosterClaimCountSql({ membershipId }) {
+  return `
+    with reset_claim as (
+      select *
+      from public.reset_class_roster_claim('${membershipId}')
+    )
+    select count(*)
+    from reset_claim
+    where roster_status = 'unclaimed'
+      and claimed_by_user_id is null
+      and claimed_at is null
+      and archived_at is null;
+  `;
+}
+
 function insertAuditEventSql(actorUserId = 'auth.uid()') {
   return `
     insert into public.audit_events (
@@ -570,6 +618,69 @@ export function buildLiveRlsChecks() {
           accessStatus: 'open',
         }),
         demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'assigned teacher can add unclaimed roster slot through RPC',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        addRosterStudentCountSql({
+          classId: demoIds.classAlpha,
+          rosterName: 'Verifier Added Student',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher cannot add roster slot to unassigned class through RPC',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        addRosterStudentCountSql({
+          classId: demoIds.classArchive,
+          rosterName: 'Verifier Wrong Class Student',
+        }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'assigned teacher can archive roster slot through RPC',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        archiveRosterStudentCountSql({ membershipId: demoIds.membershipLyraAlpha }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher cannot archive unassigned roster slot through RPC',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        archiveRosterStudentCountSql({ membershipId: demoIds.membershipVegaBeta }),
+        demoIds.teacherNoetherUser,
+      ),
+    },
+    {
+      name: 'assigned teacher can reset claimed roster slot through RPC',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        resetRosterClaimCountSql({ membershipId: demoIds.membershipOrionAlpha }),
+        demoIds.teacherHypatiaUser,
+      ),
+    },
+    {
+      name: 'teacher cannot reset unassigned roster slot through RPC',
+      kind: 'deny',
+      sql: asRole(
+        'authenticated',
+        resetRosterClaimCountSql({ membershipId: demoIds.membershipVegaBeta }),
+        demoIds.teacherNoetherUser,
       ),
     },
     {

@@ -251,6 +251,42 @@ function createFakeSupabaseClient({
       };
       return { data: [row], error: null };
     }
+    if (fn === 'add_class_roster_student') {
+      const row = {
+        id: 'membership-new',
+        class_id: String(args?.p_class_id),
+        student_profile_id: 'student-new',
+        roster_name: String(args?.p_roster_name),
+        roster_status: 'unclaimed' as const,
+        claimed_by_user_id: null,
+        claimed_at: null,
+        archived_at: null,
+        created_at: '2026-05-20T08:00:00.000Z',
+        updated_at: '2026-05-20T08:00:00.000Z',
+      };
+      mutableRows.class_memberships.push(row);
+      return { data: [row], error: null };
+    }
+    if (fn === 'archive_class_roster_student') {
+      const row = mutableRows.class_memberships.find((item) => item.id === args?.p_membership_id);
+      if (!row) return { data: null, error: { message: 'roster_membership_required' } };
+      row.roster_status = 'archived';
+      row.claimed_by_user_id = null;
+      row.claimed_at = null;
+      row.archived_at = '2026-05-20T08:00:00.000Z';
+      row.updated_at = '2026-05-20T08:00:00.000Z';
+      return { data: [row], error: null };
+    }
+    if (fn === 'reset_class_roster_claim') {
+      const row = mutableRows.class_memberships.find((item) => item.id === args?.p_membership_id);
+      if (!row) return { data: null, error: { message: 'roster_membership_required' } };
+      row.roster_status = 'unclaimed';
+      row.claimed_by_user_id = null;
+      row.claimed_at = null;
+      row.archived_at = null;
+      row.updated_at = '2026-05-20T08:00:00.000Z';
+      return { data: [row], error: null };
+    }
     return { data: null, error: { message: `Unexpected RPC ${fn}` } };
   });
   const client: SupabaseDashboardClient = {
@@ -374,7 +410,7 @@ describe('Supabase dashboard service', () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it('uses hosted setup RPCs for teacher attachment, class creation, and region access', async () => {
+  it('uses hosted setup RPCs for teacher attachment, class creation, roster management, and region access', async () => {
     const fake = createFakeSupabaseClient();
     const service = createSupabaseDashboardDataService({
       config: validConfig,
@@ -383,6 +419,14 @@ describe('Supabase dashboard service', () => {
 
     const teacher = await service.addAdminTeacher({ name: 'New Teacher', email: 'new.teacher@example.school' });
     const teacherClass = await service.addAdminClass({ name: 'Hosted P3 Beta', teacherId: 'teacher-1', academicYearTerm: '2026 Term 2' });
+    const rosterStudent = await service.addRosterStudent('teacher-1', 'class-alpha', '  New Student  ');
+    const archived = await service.archiveRosterStudent('teacher-1', 'class-alpha', 'membership-unclaimed');
+    const reset = await service.resetRosterClaim({
+      actorRole: 'teacher',
+      actorTeacherId: 'teacher-1',
+      classId: 'class-alpha',
+      rosterStudentId: 'membership-claimed',
+    });
     const access = await service.setClassRegionAccess({
       actorRole: 'teacher',
       actorTeacherId: 'teacher-1',
@@ -398,35 +442,27 @@ describe('Supabase dashboard service', () => {
     });
     expect(teacherClass.regionAccess).toHaveLength(9);
     expect(teacherClass.regionAccess.every((row) => row.access === 'field_guide_only')).toBe(true);
+    expect(rosterStudent).toMatchObject({ id: 'membership-new', displayName: 'New Student', status: 'unclaimed' });
+    expect(archived).toMatchObject({ id: 'membership-unclaimed', status: 'archived' });
+    expect(reset).toMatchObject({ id: 'membership-claimed', status: 'unclaimed' });
     expect(access).toMatchObject({ regionId: 'algebra-forge', access: 'field_guide_only' });
     expect(fake.rpcCalls.map((call) => call.fn)).toEqual([
       'admin_add_teacher_by_email',
       'create_class_with_region_access',
+      'add_class_roster_student',
+      'archive_class_roster_student',
+      'reset_class_roster_claim',
       'set_class_region_access',
     ]);
+    expect(fake.rpcCalls.find((call) => call.fn === 'add_class_roster_student')?.args).toMatchObject({
+      p_class_id: 'class-alpha',
+      p_roster_name: 'New Student',
+    });
     expect(fake.writes.insert).not.toHaveBeenCalled();
     expect(fake.writes.upsert).not.toHaveBeenCalled();
     expect(fake.writes.update).not.toHaveBeenCalled();
     expect(fake.writes.delete).not.toHaveBeenCalled();
     expect(fake.queryOps.join('\n')).not.toMatch(/\b(insert|upsert|update|delete)\b/i);
-  });
-
-  it('keeps hosted roster writes disabled in the Phase 2A service', async () => {
-    const fake = createFakeSupabaseClient();
-    const service = createSupabaseDashboardDataService({
-      config: validConfig,
-      createClient: vi.fn(async () => fake.client),
-    });
-
-    await expect(service.addRosterStudent('teacher-1', 'class-alpha', 'New Student')).rejects.toMatchObject({ code: 'read_only' });
-    await expect(service.archiveRosterStudent('teacher-1', 'class-alpha', 'membership-unclaimed')).rejects.toMatchObject({ code: 'read_only' });
-    await expect(service.resetRosterClaim({
-      actorRole: 'teacher',
-      actorTeacherId: 'teacher-1',
-      classId: 'class-alpha',
-      rosterStudentId: 'membership-claimed',
-    })).rejects.toMatchObject({ code: 'read_only' });
-    expect(fake.rpcCalls).toEqual([]);
   });
 
   it('surfaces read failures without falling back to mock data', async () => {
