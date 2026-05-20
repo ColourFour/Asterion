@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseDashboardRoute } from '../lib/appRoutes';
+import { dashboardRouteEnabled, parseDashboardRoute } from '../lib/appRoutes';
 
 describe('parseDashboardRoute', () => {
   it('keeps normal paths on the student route', () => {
@@ -38,5 +38,12 @@ describe('parseDashboardRoute', () => {
       classId: 'class-p3-alpha',
       page: 'class',
     });
+  });
+
+  it('keeps dashboard routes disabled for the student pilot config gate', () => {
+    expect(dashboardRouteEnabled({ kind: 'student' }, { dashboardRoutesEnabled: false })).toBe(true);
+    expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: false })).toBe(false);
+    expect(dashboardRouteEnabled({ kind: 'admin' }, { dashboardRoutesEnabled: false })).toBe(false);
+    expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: true })).toBe(true);
   });
 });

@@ -19,6 +19,7 @@ describe('.env.example', () => {
   it('uses only valid browser-safe runtime values', () => {
     const env = parseEnvExample();
 
+    expect(['', 'student-pilot']).toContain(env.VITE_ASTERION_APP_PROFILE);
     expect(['', 'enabled']).toContain(env.VITE_ASTERION_DASHBOARD_DEMO);
     expect(['', 'mock', 'supabase']).toContain(env.VITE_ASTERION_DASHBOARD_DATA_SOURCE);
     expect(['', 'mock', 'supabase']).toContain(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);

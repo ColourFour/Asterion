@@ -2,7 +2,23 @@ import type { ProgressStorageMode } from './progressAdapter';
 import { resolveDashboardDataSource, type DashboardDataSourceKind } from './dashboardDataSource';
 import { resolveSupabaseConfig } from './supabaseConfig';
 
+export type AsterionAppProfile = 'student-pilot' | 'custom';
+
+export interface AsterionRuntimeProfile {
+  name: AsterionAppProfile;
+  explicit: boolean;
+  staticHostingCompatible: boolean;
+  browserLocalProgress: boolean;
+  supabaseRequired: boolean;
+  hostedProgressSyncEnabled: boolean;
+  aiMarkingEnabled: boolean;
+  productionDashboardAuthority: boolean;
+  dashboardDemoBehaviorEnabled: boolean;
+}
+
 export interface AsterionRuntimeConfig {
+  profile: AsterionRuntimeProfile;
+  profileNotice?: string;
   requestedStorageMode: ProgressStorageMode;
   effectiveStorageMode: 'local';
   dashboardDemoEnabled: boolean;
@@ -36,24 +52,57 @@ function configuredStudentClassClaimSource(value: string | boolean | undefined):
   return value === 'supabase' ? 'supabase' : 'mock';
 }
 
+function configuredAppProfile(value: string | boolean | undefined): AsterionAppProfile | undefined {
+  if (value === 'student-pilot') return 'student-pilot';
+  return undefined;
+}
+
+function hasNonPilotRuntimeOverride(env: RuntimeEnv): boolean {
+  return env.VITE_ASTERION_STORAGE_MODE === 'hosted'
+    || env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled'
+    || env.VITE_ASTERION_DASHBOARD_DATA_SOURCE === 'supabase'
+    || env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'supabase';
+}
+
 export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): AsterionRuntimeConfig {
-  const requestedStorageMode = configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
+  const configuredProfile = configuredAppProfile(env.VITE_ASTERION_APP_PROFILE);
+  const explicitProfile = configuredProfile !== undefined;
+  const profileName: AsterionAppProfile = configuredProfile ?? (hasNonPilotRuntimeOverride(env) ? 'custom' : 'student-pilot');
+  const studentPilotProfileActive = profileName === 'student-pilot';
+  const requestedStorageMode = studentPilotProfileActive ? 'local' : configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
   const hostedStorageRequested = requestedStorageMode === 'hosted';
   const supabase = resolveSupabaseConfig(env);
-  const dashboardDemoEnabled = env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled';
+  const dashboardDemoEnabled = studentPilotProfileActive ? false : env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled';
   const dashboardDataSource = resolveDashboardDataSource(env);
-  const supabaseDashboardRequested = dashboardDataSource.effective === 'supabase';
-  const studentClassClaimSource = configuredStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
+  const effectiveDashboardDataSource = studentPilotProfileActive ? 'mock' : dashboardDataSource.effective;
+  const supabaseDashboardRequested = effectiveDashboardDataSource === 'supabase';
+  const studentClassClaimSource = studentPilotProfileActive ? 'mock' : configuredStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
   const studentClassClaimSourceExplicit = typeof env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'string';
+  const dashboardRoutesEnabled = dashboardDemoEnabled || supabaseDashboardRequested;
+  const profileNotice = studentPilotProfileActive && hasNonPilotRuntimeOverride(env)
+    ? 'Student pilot profile is active; hosted storage, Supabase claim/dashboard modes, and dashboard demo routes are disabled for this build.'
+    : undefined;
 
   return {
+    profile: {
+      name: profileName,
+      explicit: explicitProfile,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: false,
+      hostedProgressSyncEnabled: false,
+      aiMarkingEnabled: false,
+      productionDashboardAuthority: false,
+      dashboardDemoBehaviorEnabled: dashboardRoutesEnabled,
+    },
+    profileNotice,
     requestedStorageMode,
     effectiveStorageMode: 'local',
     dashboardDemoEnabled,
-    dashboardDataSource: dashboardDataSource.effective,
+    dashboardDataSource: effectiveDashboardDataSource,
     dashboardDataSourceExplicit: dashboardDataSource.explicit,
     dashboardDataSourceNotice: dashboardDataSource.fallbackReason,
-    dashboardRoutesEnabled: dashboardDemoEnabled || supabaseDashboardRequested,
+    dashboardRoutesEnabled,
     hostedStorageRequested,
     hostedStorageAvailable: false,
     storageNotice: hostedStorageRequested

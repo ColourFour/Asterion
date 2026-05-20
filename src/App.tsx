@@ -8,7 +8,7 @@ import { getRegionFieldGuide } from './data/regionFieldGuides';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
-import { parseDashboardRoute } from './lib/appRoutes';
+import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
@@ -413,11 +413,11 @@ export default function App() {
     setProgress(nextProgress);
   }
 
-  if (dashboardRoute.kind === 'teacher' && !runtimeConfig.dashboardRoutesEnabled) {
+  if (dashboardRoute.kind === 'teacher' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
     return <DisabledDashboardRoute routeKind="teacher" onNavigatePath={navigatePath} />;
   }
 
-  if (dashboardRoute.kind === 'admin' && !runtimeConfig.dashboardRoutesEnabled) {
+  if (dashboardRoute.kind === 'admin' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
     return <DisabledDashboardRoute routeKind="admin" onNavigatePath={navigatePath} />;
   }
 

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:student-pilot": "vite --mode student-pilot",
     "build": "tsc -b && vite build",
+    "build:student-pilot": "tsc -b && vite build --mode student-pilot",
     "assets:ui": "node scripts/optimize-ui-assets.mjs",
     "assets:region": "node scripts/optimize-region-assets.mjs",
     "data:p3": "vite-node scripts/generate-p3-data.ts",

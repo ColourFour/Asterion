@@ -558,12 +558,24 @@ Common path problems:
 - Teacher-readable export utilities still exist outside the student task flow, and the old student topbar Teacher/Export entry is no longer exposed. Dashboard CSV exports are only as authoritative as the configured dashboard data source.
 - Versioned localStorage persistence for profile, attempts, issue reports, avatar, and settings behind the progress storage adapter. Topic progress, region progress, XP, ranks, and avatar unlocks are derived from saved attempts rather than stored as source truth.
 
+## Student Pilot Profile
+
+The named near-term classroom pilot profile is `student-pilot`. It is the normal browser-local P3 student build: static-hosting compatible, no Supabase requirement, no hosted progress sync expectation, no AI marking, no production teacher/admin authority, and no dashboard demo routes in the student experience.
+
+```bash
+npm run dev:student-pilot
+npm run build:student-pilot
+```
+
+These commands load `.env.student-pilot`, which sets `VITE_ASTERION_APP_PROFILE=student-pilot`. When that profile is active, conflicting hosted/dashboard env values are ignored for the runtime student app: progress remains local, student class claiming remains mock/local, dashboard data remains mock, and `#/teacher` / `#/admin` stay disabled. Supabase URL/key values may exist for other local tests, but they are not required by the student pilot profile and do not enable hosted learner progress.
+
 ## Progress Storage
 
 Browser-local progress storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.
 
 Current behavior:
 
+- `VITE_ASTERION_APP_PROFILE=student-pilot` selects the supervised student pilot profile. Omitted profile values use `student-pilot` unless non-pilot dashboard/Supabase/storage flags are explicitly set for a local custom test build.
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
 - `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays on browser-local progress storage and shows a notice.
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected. They do not enable hosted progress sync or learner-response writes.

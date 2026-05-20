@@ -5,6 +5,17 @@ describe('runtime storage config', () => {
   it('defaults to browser-local progress storage', () => {
     const config = resolveRuntimeConfig({});
 
+    expect(config.profile).toMatchObject({
+      name: 'student-pilot',
+      explicit: false,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: false,
+      hostedProgressSyncEnabled: false,
+      aiMarkingEnabled: false,
+      productionDashboardAuthority: false,
+      dashboardDemoBehaviorEnabled: false,
+    });
     expect(config.requestedStorageMode).toBe('local');
     expect(config.effectiveStorageMode).toBe('local');
     expect(config.hostedStorageAvailable).toBe(false);
@@ -15,6 +26,52 @@ describe('runtime storage config', () => {
     expect(config.supabaseConfigured).toBe(false);
     expect(config.studentClassClaimSource).toBe('mock');
     expect(config.studentClassClaimSourceExplicit).toBe(false);
+  });
+
+  it('makes the explicit student pilot profile inspectable and blocks non-pilot runtime flags', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_APP_PROFILE: 'student-pilot',
+      VITE_ASTERION_STORAGE_MODE: 'hosted',
+      VITE_ASTERION_DASHBOARD_DEMO: 'enabled',
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
+      VITE_SUPABASE_URL: 'https://example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(config.profile).toMatchObject({
+      name: 'student-pilot',
+      explicit: true,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: false,
+      hostedProgressSyncEnabled: false,
+      aiMarkingEnabled: false,
+      productionDashboardAuthority: false,
+      dashboardDemoBehaviorEnabled: false,
+    });
+    expect(config.requestedStorageMode).toBe('local');
+    expect(config.effectiveStorageMode).toBe('local');
+    expect(config.hostedStorageRequested).toBe(false);
+    expect(config.dashboardDemoEnabled).toBe(false);
+    expect(config.dashboardDataSource).toBe('mock');
+    expect(config.dashboardRoutesEnabled).toBe(false);
+    expect(config.studentClassClaimSource).toBe('mock');
+    expect(config.supabaseConfigured).toBe(true);
+    expect(config.profileNotice).toContain('Student pilot profile is active');
+  });
+
+  it('keeps legacy dashboard and Supabase test flags available as a custom profile when no profile is set', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
+    });
+
+    expect(config.profile.name).toBe('custom');
+    expect(config.profile.explicit).toBe(false);
+    expect(config.dashboardDataSource).toBe('supabase');
+    expect(config.dashboardRoutesEnabled).toBe(true);
+    expect(config.studentClassClaimSource).toBe('supabase');
   });
 
   it('requires an explicit demo flag for dashboard routes', () => {

@@ -5,6 +5,17 @@ import type { AsterionSupabaseClient } from '../lib/supabaseClient';
 
 function runtimeConfig(source: AsterionRuntimeConfig['studentClassClaimSource']): AsterionRuntimeConfig {
   return {
+    profile: {
+      name: source === 'supabase' ? 'custom' : 'student-pilot',
+      explicit: false,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: false,
+      hostedProgressSyncEnabled: false,
+      aiMarkingEnabled: false,
+      productionDashboardAuthority: false,
+      dashboardDemoBehaviorEnabled: false,
+    },
     requestedStorageMode: 'local',
     effectiveStorageMode: 'local',
     dashboardDemoEnabled: false,

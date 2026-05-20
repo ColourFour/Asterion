@@ -1,3 +1,5 @@
+import type { AsterionRuntimeConfig } from './appConfig';
+
 export type TeacherDashboardRoute = {
   kind: 'teacher';
   classId?: string;
@@ -6,6 +8,10 @@ export type TeacherDashboardRoute = {
 };
 
 export type DashboardRoute = TeacherDashboardRoute | { kind: 'admin' } | { kind: 'student' };
+
+export function dashboardRouteEnabled(route: DashboardRoute, config: Pick<AsterionRuntimeConfig, 'dashboardRoutesEnabled'>): boolean {
+  return route.kind === 'student' || config.dashboardRoutesEnabled;
+}
 
 export function parseDashboardRoute(pathname: string, hash: string): DashboardRoute {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';

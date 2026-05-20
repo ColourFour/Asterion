@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  readonly VITE_ASTERION_APP_PROFILE?: string;
   readonly VITE_ASTERION_DASHBOARD_DATA_SOURCE?: string;
   readonly VITE_ASTERION_DASHBOARD_DEMO?: string;
   readonly VITE_ASTERION_STUDENT_CLAIM_SOURCE?: string;
