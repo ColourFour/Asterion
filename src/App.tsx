@@ -20,6 +20,7 @@ import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Qu
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import { validatePendingClassClaim } from './lib/dashboardMockService';
+import { syncCurrentProgressSnapshot } from './lib/supabaseProgressSnapshotService';
 import {
   getP3RegionById,
   parseAsterionHashRoute,
@@ -136,6 +137,10 @@ function HostedStudentGateMessage({
   return <div className="notice">{state.error}{state.detail ? ` ${state.detail}` : ''}</div>;
 }
 
+function hostedSyncWarningText(error: string): string {
+  return `Classroom progress summary could not sync to Supabase. Local practice is saved in this browser. ${error}`;
+}
+
 function hostedInitialProfile(context: StudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
   return {
     realName: context.membership.rosterName || context.studentProfile.displayName,
@@ -166,6 +171,7 @@ export default function App() {
   const [selectedRegion, setSelectedRegion] = useState<RegionDefinition>();
   const [selectedRegionPage, setSelectedRegionPage] = useState<RegionLearningPageId>('hub');
   const [regionRouteError, setRegionRouteError] = useState<string>();
+  const [hostedSyncWarning, setHostedSyncWarning] = useState<string>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
   const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
 
@@ -486,6 +492,25 @@ export default function App() {
     setStudentClassClaim(undefined);
   }
 
+  function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
+    setProgress(nextProgress);
+    if (!runtimeConfig.profile.hostedProgressSyncEnabled || !hostedClassroomContext) {
+      return;
+    }
+
+    void syncCurrentProgressSnapshot({
+      progress: nextProgress,
+      questions,
+      classroomContext: hostedClassroomContext,
+    }).then((result) => {
+      if (result.status === 'synced') {
+        setHostedSyncWarning(undefined);
+      } else if (result.status === 'failed') {
+        setHostedSyncWarning(hostedSyncWarningText(result.error));
+      }
+    });
+  }
+
   function saveClaimedStudentProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) {
     if (hostedStudentRequired && hostedClassroomContext) {
       const nextProgress = progressAdapter.saveProfile({
@@ -497,14 +522,14 @@ export default function App() {
       });
       clearPendingClassClaim();
       setStudentClassClaim(undefined);
-      setProgress(nextProgress);
+      persistProgressAfterMeaningfulEvent(nextProgress);
       return;
     }
 
     const nextProgress = progressAdapter.saveProfile(profile);
     clearPendingClassClaim();
     setStudentClassClaim(undefined);
-    setProgress(nextProgress);
+    persistProgressAfterMeaningfulEvent(nextProgress);
   }
 
   if (dashboardRoute.kind === 'teacher' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
@@ -691,6 +716,7 @@ export default function App() {
       {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       {regionRouteError ? <div className="notice">{regionRouteError}</div> : null}
+      {hostedSyncWarning ? <div className="classroom-sync-warning" role="status">{hostedSyncWarning}</div> : null}
 
       {viewMode === 'map' ? (
         <P3AstralAcademy
@@ -722,11 +748,11 @@ export default function App() {
             profileId={progress.profile.id}
             summary={selectedRegionLearningSummary}
             studentRegionAccess={selectedRegionAccess}
-            onCompleteFieldGuide={() => setProgress(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
+            onCompleteFieldGuide={() => persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuide(selectedRegion.id))}
             onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
               const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
               if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
-              setProgress(progressAdapter.addLearningActivityAttempt(attempt));
+              persistProgressAfterMeaningfulEvent(progressAdapter.addLearningActivityAttempt(attempt));
             }}
             onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
             onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
@@ -797,7 +823,7 @@ export default function App() {
                   : typeof evidenceAttempt.marksAvailable === 'number' && evidenceAttempt.marksAvailable > 0
                     ? evidenceAttempt.marksEarned / evidenceAttempt.marksAvailable
                     : 0;
-                setProgress(progressAdapter.recordRegionGuardianAttempt({
+                persistProgressAfterMeaningfulEvent(progressAdapter.recordRegionGuardianAttempt({
                   regionId: selectedRegion.id,
                   questionId: evidenceAttempt.questionId,
                   attemptId: evidenceAttempt.id,
@@ -806,10 +832,10 @@ export default function App() {
                 }));
                 return;
               }
-              setProgress(nextProgress);
+              persistProgressAfterMeaningfulEvent(nextProgress);
             }}
             onIssue={(questionId: string, issueType: IssueType, note?: string) => {
-              setProgress(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
+              persistProgressAfterMeaningfulEvent(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
             }}
             onReturnToMap={returnToMap}
             onReviewWeak={() => reviewWeakAreas()}

@@ -93,6 +93,99 @@ const fixtureRows = {
       created_at: '2026-05-02T08:00:00.000Z',
     },
   ],
+  student_progress_snapshots: [
+    {
+      id: 'snapshot-old',
+      class_membership_id: 'membership-claimed',
+      student_profile_id: 'student-1',
+      class_id: 'class-alpha',
+      snapshot_version: 1,
+      source: 'local_student_app',
+      summary_json: {
+        schemaVersion: 1,
+        paperFamily: 'p3',
+        generatedAt: '2026-05-13T08:00:00.000Z',
+        attemptCount: 1,
+        masteryEligibleAttemptCount: 1,
+        learningActivityAttemptCount: 0,
+        issueReportCount: 0,
+        regionsStarted: 1,
+        guardianReadyRegionCount: 0,
+        guardianClearedRegionCount: 0,
+        openRegionCount: 1,
+        fieldGuideOnlyRegionCount: 8,
+        lastActivityAt: '2026-05-13T08:00:00.000Z',
+      },
+      region_summary_json: {
+        'algebra-forge': {
+          regionId: 'algebra-forge',
+          rank: 'Discovered',
+          status: 'training_in_progress',
+          progressRatio: 0.4,
+          attemptCount: 1,
+          totalMarksEarned: 4,
+          totalMarksAvailable: 10,
+          guardianStatus: 'locked',
+          fieldGuideStatus: 'completed',
+          accessStatus: 'open',
+          lastActivityAt: '2026-05-13T08:00:00.000Z',
+        },
+      },
+      created_at: '2026-05-13T08:00:00.000Z',
+    },
+    {
+      id: 'snapshot-latest',
+      class_membership_id: 'membership-claimed',
+      student_profile_id: 'student-1',
+      class_id: 'class-alpha',
+      snapshot_version: 1,
+      source: 'local_student_app',
+      summary_json: {
+        schemaVersion: 1,
+        paperFamily: 'p3',
+        generatedAt: '2026-05-14T08:00:00.000Z',
+        attemptCount: 3,
+        masteryEligibleAttemptCount: 3,
+        learningActivityAttemptCount: 2,
+        issueReportCount: 1,
+        regionsStarted: 2,
+        guardianReadyRegionCount: 1,
+        guardianClearedRegionCount: 0,
+        openRegionCount: 1,
+        fieldGuideOnlyRegionCount: 8,
+        lastActivityAt: '2026-05-14T08:00:00.000Z',
+      },
+      region_summary_json: {
+        'algebra-forge': {
+          regionId: 'algebra-forge',
+          rank: 'Bronze',
+          status: 'guardian_unlocked',
+          progressRatio: 0.76,
+          attemptCount: 3,
+          totalMarksEarned: 19,
+          totalMarksAvailable: 25,
+          guardianStatus: 'ready',
+          fieldGuideStatus: 'completed',
+          accessStatus: 'open',
+          lastActivityAt: '2026-05-14T08:00:00.000Z',
+        },
+        'trig-observatory': {
+          regionId: 'trig-observatory',
+          rank: 'Discovered',
+          status: 'field_guide_completed',
+          progressRatio: 0,
+          attemptCount: 0,
+          totalMarksEarned: 0,
+          totalMarksAvailable: 0,
+          guardianStatus: 'locked',
+          fieldGuideStatus: 'completed',
+          accessStatus: 'field_guide_only',
+          lastActivityAt: '2026-05-14T07:00:00.000Z',
+        },
+      },
+      created_at: '2026-05-14T08:00:00.000Z',
+    },
+  ],
 };
 
 type FixtureTable = keyof typeof fixtureRows;
@@ -336,27 +429,39 @@ describe('Supabase dashboard service', () => {
     expect(dashboard.studentRows[0]).toMatchObject({
       id: 'membership-claimed',
       displayName: 'Ada S.',
-      overallProgressPercent: 0,
-      attemptsCount: 0,
+      overallProgressPercent: 76,
+      attemptsCount: 3,
+      guardianEligibleRegionCount: 1,
+      lastActivityAt: '2026-05-14T08:00:00.000Z',
+    });
+    expect(dashboard.studentRows[0].regionCells.find((item) => item.regionId === 'algebra-forge')).toMatchObject({
+      progressPercent: 76,
+      status: 'improving',
+      guardianEligible: true,
+    });
+    expect(dashboard.exportRows[0]).toMatchObject({
+      attemptsCount: 3,
+      guardianEligibilitySummary: '1 region(s)',
+      lastActivity: '2026-05-14T08:00:00.000Z',
     });
     expect(dashboard.regionAccess).toHaveLength(9);
     expect(dashboard.regionAccess.find((item) => item.regionId === 'algebra-forge')).toMatchObject({ access: 'open' });
     expect(dashboard.regionAccess.find((item) => item.regionId === 'complex-harbor')).toMatchObject({ access: 'field_guide_only' });
     expect(dashboard.progressSummary).toMatchObject({
       studentCount: 1,
-      overallProgressPercent: 0,
-      totalAttempts: 0,
+      overallProgressPercent: 76,
+      totalAttempts: 3,
       openRegionCount: 1,
       lockedRegionCount: 8,
     });
-    expect(dashboard.weeklySummary.exportDownloadText).toContain('no hosted progress snapshots');
+    expect(dashboard.weeklySummary.exportDownloadText).toContain('latest hosted bounded progress snapshots');
     expect(fake.tableReads).toEqual(expect.arrayContaining([
       'classes',
       'teacher_profiles',
       'class_memberships',
       'class_region_access',
+      'student_progress_snapshots',
     ]));
-    expect(fake.tableReads).not.toContain('student_progress_snapshots');
     expect(fake.tableReads).not.toContain('student_profiles');
   });
 

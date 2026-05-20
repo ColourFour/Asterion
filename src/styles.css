@@ -1176,6 +1176,20 @@ button:disabled {
   margin: 0 auto 92px;
 }
 
+.classroom-sync-warning {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto 1rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(151, 96, 21, 0.32);
+  border-radius: 8px;
+  background: var(--color-warning-bg);
+  color: #5d3d11;
+  font-size: 0.88rem;
+  box-shadow: 0 12px 24px rgba(77, 52, 18, 0.08);
+}
+
 .encounter-chamber {
   background:
     linear-gradient(180deg, rgba(255, 253, 248, 0.99), rgba(247, 242, 232, 0.95)),
