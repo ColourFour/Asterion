@@ -4,12 +4,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
 import { dashboardDataService, isDashboardDataServiceError, type DashboardServiceSource } from '../../lib/dashboardDataService';
 import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
+import { hasSupabaseRole, type SupabaseRoleContext } from '../../lib/supabaseRoleService';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
 
 interface TeacherDashboardProps {
   classId?: string;
   page?: 'home' | 'class' | 'roster' | 'region';
   regionId?: string;
+  hostedRoleContext?: SupabaseRoleContext;
   onNavigatePath: (path: string) => void;
 }
 
@@ -88,13 +90,17 @@ function DashboardBlockedState({
   issue,
   onNavigatePath,
   source,
+  hostedRoleContext,
   onAuthStatusChange,
 }: {
   issue: DashboardLoadIssue;
   onNavigatePath: (path: string) => void;
   source: DashboardServiceSource;
+  hostedRoleContext?: SupabaseRoleContext;
   onAuthStatusChange: (status: SupabaseAuthStatus) => void;
 }) {
+  const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
+
   return (
     <main className="app-shell app-view-dashboard">
       <section className="dashboard-shell teacher-dashboard">
@@ -106,7 +112,7 @@ function DashboardBlockedState({
           </div>
           <nav className="dashboard-nav" aria-label="Dashboard navigation">
             <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
-            <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button>
+            {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
           </nav>
         </header>
@@ -450,9 +456,10 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
   );
 }
 
-export function TeacherDashboard({ classId, page = 'home', regionId, onNavigatePath }: TeacherDashboardProps) {
+export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleContext, onNavigatePath }: TeacherDashboardProps) {
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
+  const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
   const [loadIssue, setLoadIssue] = useState<DashboardLoadIssue>();
@@ -549,7 +556,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
   }
 
   if (loadIssue) {
-    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} onAuthStatusChange={setAuthStatus} />;
+    return <DashboardBlockedState issue={loadIssue} onNavigatePath={onNavigatePath} source={source} hostedRoleContext={hostedRoleContext} onAuthStatusChange={setAuthStatus} />;
   }
 
   if (!dashboard) {
@@ -574,7 +581,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, onNavigateP
           </div>
           <nav className="dashboard-nav" aria-label="Dashboard navigation">
             <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
-            <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button>
+            {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
             <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
           </nav>
         </header>

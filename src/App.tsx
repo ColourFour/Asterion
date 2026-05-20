@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { UsersRound } from 'lucide-react';
+import { RoleGate } from './components/auth/RoleGate';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
@@ -453,6 +454,24 @@ export default function App() {
   }
 
   if (dashboardRoute.kind === 'teacher') {
+    if (runtimeConfig.dashboardDataSource === 'supabase') {
+      return (
+        <Suspense fallback={<DashboardRouteFallback />}>
+          <RoleGate requiredRole="teacher" onNavigatePath={navigatePath}>
+            {(hostedRoleContext) => (
+              <TeacherDashboard
+                classId={dashboardRoute.classId}
+                page={dashboardRoute.page}
+                regionId={dashboardRoute.regionId}
+                hostedRoleContext={hostedRoleContext}
+                onNavigatePath={navigatePath}
+              />
+            )}
+          </RoleGate>
+        </Suspense>
+      );
+    }
+
     return (
       <Suspense fallback={<DashboardRouteFallback />}>
         <TeacherDashboard classId={dashboardRoute.classId} page={dashboardRoute.page} regionId={dashboardRoute.regionId} onNavigatePath={navigatePath} />
@@ -461,6 +480,18 @@ export default function App() {
   }
 
   if (dashboardRoute.kind === 'admin') {
+    if (runtimeConfig.dashboardDataSource === 'supabase') {
+      return (
+        <Suspense fallback={<DashboardRouteFallback />}>
+          <RoleGate requiredRole="admin" onNavigatePath={navigatePath}>
+            {(hostedRoleContext) => (
+              <AdminDashboard hostedRoleContext={hostedRoleContext} onNavigatePath={navigatePath} />
+            )}
+          </RoleGate>
+        </Suspense>
+      );
+    }
+
     return (
       <Suspense fallback={<DashboardRouteFallback />}>
         <AdminDashboard onNavigatePath={navigatePath} />

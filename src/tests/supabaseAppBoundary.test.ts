@@ -5,19 +5,27 @@ describe('Supabase integration boundary', () => {
   it('keeps dashboard data routes on the dashboard service boundary', () => {
     const teacherDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/TeacherDashboard.tsx`, 'utf8');
     const adminDashboard = readFileSync(`${process.cwd()}/src/components/dashboard/AdminDashboard.tsx`, 'utf8');
+    const roleGate = readFileSync(`${process.cwd()}/src/components/auth/RoleGate.tsx`, 'utf8');
     const dashboardDataService = readFileSync(`${process.cwd()}/src/lib/dashboardDataService.ts`, 'utf8');
+    const supabaseRoleService = readFileSync(`${process.cwd()}/src/lib/supabaseRoleService.ts`, 'utf8');
     const classClaimForm = readFileSync(`${process.cwd()}/src/components/onboarding/ClassCodeClaimForm.tsx`, 'utf8');
 
     expect(teacherDashboard).toContain('../../lib/dashboardDataService');
     expect(adminDashboard).toContain('../../lib/dashboardDataService');
+    expect(roleGate).toContain('../../lib/supabaseRoleService');
     expect(teacherDashboard).not.toContain('dashboardMockService');
     expect(adminDashboard).not.toContain('dashboardMockService');
     expect(dashboardDataService).toContain('./dashboardMockService');
     expect(dashboardDataService).toContain('./supabaseDashboardService');
     expect(dashboardDataService).toContain('DashboardDataService');
+    expect(supabaseRoleService).toContain("from<UserRoleRow>('user_roles')");
+    expect(supabaseRoleService).toContain("from<TeacherProfileRow>('teacher_profiles')");
+    expect(supabaseRoleService).toContain("from<StudentProfileRow>('student_profiles')");
     expect(classClaimForm).toContain('../../lib/studentClassClaimService');
     expect(teacherDashboard).not.toContain('supabaseClient');
     expect(teacherDashboard).not.toContain('.from(');
+    expect(roleGate).not.toContain('supabaseClient');
+    expect(roleGate).not.toContain('.from(');
     expect(classClaimForm).not.toContain('supabaseClient');
     expect(classClaimForm).not.toContain('.from(');
     expect(adminDashboard).not.toContain('supabaseClient');
@@ -56,8 +64,10 @@ describe('Supabase integration boundary', () => {
       'src/lib/supabaseClient.ts',
       'src/lib/supabaseConfig.ts',
       'src/lib/supabaseDashboardService.ts',
+      'src/lib/supabaseRoleService.ts',
       'src/lib/studentClassClaimService.ts',
       'src/components/auth/SupabaseAuthPanel.tsx',
+      'src/components/auth/RoleGate.tsx',
       'src/components/dashboard/TeacherDashboard.tsx',
       'src/components/dashboard/AdminDashboard.tsx',
       'src/components/onboarding/ClassCodeClaimForm.tsx',

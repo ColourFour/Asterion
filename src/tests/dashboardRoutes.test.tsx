@@ -68,8 +68,10 @@ async function render(ui: ReactNode): Promise<HTMLElement> {
 
   await act(async () => {
     root.render(ui);
-    await Promise.resolve();
-    await Promise.resolve();
+    for (let index = 0; index < 5; index += 1) {
+      await Promise.resolve();
+    }
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
 
   return container;
@@ -249,6 +251,7 @@ describe('dashboard routes', () => {
 
     enableDashboardDemo();
     container = await render(<App />);
+    await waitForText(container, 'Teacher class dashboard');
 
     expect(container.textContent).toContain('Teacher class dashboard');
     expect(container.textContent).toContain('Class progress register');
@@ -259,6 +262,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
+    await waitForText(container, 'P3 Alpha');
 
     expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
     expect(container.textContent).toContain('Teacher class dashboard');
@@ -277,6 +281,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
+    await waitForText(container, 'P3 Alpha');
 
     expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
     expect(container.textContent).toContain('Class progress register');
@@ -293,6 +298,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
     const container = await render(<App />);
+    await waitForText(container, 'P3 Alpha');
 
     expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
     expect(container.textContent).toContain('Class code and student roster');
@@ -308,6 +314,7 @@ describe('dashboard routes', () => {
     vi.stubGlobal('confirm', confirm);
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
     const container = await render(<App />);
+    await waitForText(container, 'Reset claim');
 
     const resetButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Reset claim'));
     expect(resetButton).toBeTruthy();
@@ -325,6 +332,7 @@ describe('dashboard routes', () => {
     enableDashboardDemo();
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     const container = await render(<App />);
+    await waitForText(container, 'Algebra Vault');
 
     const algebraButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Algebra Vault'));
     await act(async () => {
@@ -332,6 +340,7 @@ describe('dashboard routes', () => {
       await Promise.resolve();
       await Promise.resolve();
     });
+    await waitForText(container, 'Region progress');
 
     expect(window.location.hash).toBe('#/teacher/classes/class-p3-alpha/regions/algebra-forge');
     expect(container.textContent).toContain('Region progress');
