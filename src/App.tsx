@@ -9,7 +9,7 @@ import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
 import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
-import { resolveRuntimeConfig } from './lib/appConfig';
+import { resolveRuntimeConfig, type AsterionRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
 import { buildLocalClassHallSnapshot } from './lib/classHall';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
@@ -46,7 +46,18 @@ function loadValidatedPendingClassClaim(): StudentClaimState | undefined {
   return validatedClaim;
 }
 
-function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'teacher' | 'admin' | 'dashboard'; onNavigatePath: (path: string) => void }) {
+function studentPracticeModeLabel(config: AsterionRuntimeConfig): string {
+  return config.profile.name === 'classroom-pilot' ? 'Classroom practice mode' : 'Browser-local practice mode';
+}
+
+function onboardingProgressMessage(config: AsterionRuntimeConfig): string {
+  return config.profile.name === 'classroom-pilot'
+    ? 'Student practice state remains available in this browser. Hosted classroom access and teacher-visible records must come from Supabase.'
+    : 'Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.';
+}
+
+function DisabledDashboardRoute({ routeKind, runtimeConfig, onNavigatePath }: { routeKind: 'teacher' | 'admin' | 'dashboard'; runtimeConfig: AsterionRuntimeConfig; onNavigatePath: (path: string) => void }) {
+  const classroomPilotActive = runtimeConfig.profile.name === 'classroom-pilot';
   const routeLabel = routeKind === 'teacher'
     ? 'teacher dashboard'
     : routeKind === 'admin'
@@ -60,13 +71,15 @@ function DisabledDashboardRoute({ routeKind, onNavigatePath }: { routeKind: 'tea
           <span className="mode-pill">Demo dashboard disabled</span>
           <h1>Asterion</h1>
           <p>
-            The {routeLabel} is private review-build functionality and is not available in this student pilot build.
+            {classroomPilotActive
+              ? `The ${routeLabel} is not available through this dashboard alias.`
+              : `The ${routeLabel} is private review-build functionality and is not available in this student pilot build.`}
           </p>
         </div>
         <div className="onboarding-briefing">
           <strong>Student app active</strong>
-          <span>Normal Paper 3 practice still runs locally without Supabase or hosted classroom access.</span>
-          <span>Set VITE_ASTERION_DASHBOARD_DEMO=enabled for a mock demo, or VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase for the read-only Supabase dashboard adapter.</span>
+          <span>{classroomPilotActive ? 'Normal Paper 3 practice remains available. Hosted classroom authority uses Supabase, not this browser.' : 'Normal Paper 3 practice still runs locally without Supabase or hosted classroom access.'}</span>
+          <span>{classroomPilotActive ? 'Use #/teacher or #/admin for hosted dashboard entry points after sign-in and role bootstrap.' : 'Set VITE_ASTERION_DASHBOARD_DEMO=enabled for a mock demo, or VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase for the read-only Supabase dashboard adapter.'}</span>
         </div>
         <button className="primary-button" type="button" onClick={() => onNavigatePath('/')}>
           Student app
@@ -428,15 +441,15 @@ export default function App() {
   }
 
   if (dashboardRoute.kind === 'teacher' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
-    return <DisabledDashboardRoute routeKind="teacher" onNavigatePath={navigatePath} />;
+    return <DisabledDashboardRoute routeKind="teacher" runtimeConfig={runtimeConfig} onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'admin' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
-    return <DisabledDashboardRoute routeKind="admin" onNavigatePath={navigatePath} />;
+    return <DisabledDashboardRoute routeKind="admin" runtimeConfig={runtimeConfig} onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'dashboard') {
-    return <DisabledDashboardRoute routeKind="dashboard" onNavigatePath={navigatePath} />;
+    return <DisabledDashboardRoute routeKind="dashboard" runtimeConfig={runtimeConfig} onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'teacher') {
@@ -492,7 +505,7 @@ export default function App() {
             <strong>Academy charter</strong>
             <span>Your quest begins here.</span>
             <span>Restore the P3 regions, collect evidence from real practice, and travel toward the A*.</span>
-            <span>Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.</span>
+            <span>{onboardingProgressMessage(runtimeConfig)}</span>
             <span>One region at a time. One skill at a time.</span>
           </div>
           <ol className="first-run-flow" aria-label="First-run flow">
@@ -501,6 +514,7 @@ export default function App() {
             <li><strong>3</strong><span>Read guide, practise, self-mark</span></li>
           </ol>
         </section>
+        {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
         {studentClassClaim ? (
           <ProfileForm
@@ -530,7 +544,7 @@ export default function App() {
       <TwinklingStarfield />
       <header className="topbar">
         <div>
-          <span className="mode-pill">Browser-local practice mode</span>
+          <span className="mode-pill">{studentPracticeModeLabel(runtimeConfig)}</span>
           <h1>Asterion</h1>
         </div>
         <nav>
@@ -543,6 +557,7 @@ export default function App() {
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
+      {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       {regionRouteError ? <div className="notice">{regionRouteError}</div> : null}
 

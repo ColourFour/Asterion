@@ -74,6 +74,57 @@ describe('runtime storage config', () => {
     expect(config.studentClassClaimSource).toBe('supabase');
   });
 
+  it('activates hosted classroom behavior through the explicit classroom pilot profile', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_APP_PROFILE: 'classroom-pilot',
+      VITE_ASTERION_DASHBOARD_DEMO: 'enabled',
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'mock',
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'mock',
+      VITE_ASTERION_STORAGE_MODE: 'hosted',
+      VITE_SUPABASE_URL: 'https://example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(config.profile).toMatchObject({
+      name: 'classroom-pilot',
+      explicit: true,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: true,
+      hostedProgressSyncEnabled: true,
+      aiMarkingEnabled: false,
+      productionDashboardAuthority: true,
+      dashboardDemoBehaviorEnabled: false,
+    });
+    expect(config.requestedStorageMode).toBe('local');
+    expect(config.effectiveStorageMode).toBe('local');
+    expect(config.hostedStorageRequested).toBe(false);
+    expect(config.dashboardDemoEnabled).toBe(false);
+    expect(config.dashboardDataSource).toBe('supabase');
+    expect(config.dashboardDataSourceExplicit).toBe(true);
+    expect(config.dashboardRoutesEnabled).toBe(true);
+    expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.studentClassClaimSourceExplicit).toBe(true);
+    expect(config.supabaseConfigured).toBe(true);
+    expect(config.profileNotice).toBeUndefined();
+    expect(config.studentClassClaimNotice).toBeUndefined();
+  });
+
+  it('keeps classroom pilot on Supabase sources and reports missing Supabase config clearly', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_APP_PROFILE: 'classroom-pilot',
+    });
+
+    expect(config.profile.supabaseRequired).toBe(true);
+    expect(config.profile.hostedProgressSyncEnabled).toBe(true);
+    expect(config.dashboardDataSource).toBe('supabase');
+    expect(config.dashboardRoutesEnabled).toBe(true);
+    expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.supabaseConfigured).toBe(false);
+    expect(config.profileNotice).toContain('Classroom pilot profile requires');
+    expect(config.studentClassClaimNotice).toContain('Supabase roster claiming is active');
+  });
+
   it('requires an explicit demo flag for dashboard routes', () => {
     expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'true' }).dashboardDemoEnabled).toBe(false);
     expect(resolveRuntimeConfig({ VITE_ASTERION_DASHBOARD_DEMO: 'enabled' }).dashboardDemoEnabled).toBe(true);

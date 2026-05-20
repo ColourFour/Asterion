@@ -199,6 +199,22 @@ describe('dashboard routes', () => {
     expect(container.textContent).not.toContain('Class progress register');
   });
 
+  it('does not fall back to mock dashboard data in the classroom pilot profile', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'mock');
+    vi.stubEnv('VITE_SUPABASE_URL', '');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', '');
+    window.history.replaceState(null, '', '/#/admin');
+    const container = await render(<App />);
+    await waitForText(container, 'Supabase dashboard not configured');
+
+    expect(container.textContent).toContain('Supabase dashboard not configured');
+    expect(container.textContent).toContain('Supabase classroom setup data');
+    expect(container.textContent).not.toContain('Teacher list');
+    expect(container.textContent).not.toContain('Add teacher');
+    expect(container.textContent).not.toContain('P3 Alpha');
+  });
+
   it('requires an authenticated Supabase session before Supabase dashboard data is shown', async () => {
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');

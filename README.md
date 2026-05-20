@@ -546,7 +546,7 @@ Common path problems:
 - Class-claimed student profile with real name, class/group, teacher name, and avatar name, persisted through the progress storage adapter.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
 - P3-focused student modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, and Class Hall.
-- Teacher/admin dashboard routes render only when `VITE_ASTERION_DASHBOARD_DEMO=enabled` for mock demo mode or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase` for the read-only Supabase adapter; neither mode is production authority by itself.
+- Teacher/admin dashboard routes render only when `VITE_ASTERION_DASHBOARD_DEMO=enabled` for mock demo mode, `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase` for the read-only Supabase adapter, or `VITE_ASTERION_APP_PROFILE=classroom-pilot` for the hosted classroom pilot profile.
 - Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
 - Normalization layer that merges the projected/raw bank and topic-routing sidecar without crashing on malformed legacy enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
@@ -558,9 +558,9 @@ Common path problems:
 - Teacher-readable export utilities still exist outside the student task flow, and the old student topbar Teacher/Export entry is no longer exposed. Dashboard CSV exports are only as authoritative as the configured dashboard data source.
 - Versioned localStorage persistence for profile, attempts, issue reports, avatar, and settings behind the progress storage adapter. Topic progress, region progress, XP, ranks, and avatar unlocks are derived from saved attempts rather than stored as source truth.
 
-## Student Pilot Profile
+## Runtime Profiles
 
-The named near-term classroom pilot profile is `student-pilot`. It is the normal browser-local P3 student build: static-hosting compatible, no Supabase requirement, no hosted progress sync expectation, no AI marking, no production teacher/admin authority, and no dashboard demo routes in the student experience.
+The default named profile is `student-pilot`. It is the normal browser-local P3 student build: static-hosting compatible, no Supabase requirement, no hosted progress sync expectation, no AI marking, no production teacher/admin authority, and no dashboard demo routes in the student experience.
 
 ```bash
 npm run dev:student-pilot
@@ -569,6 +569,15 @@ npm run build:student-pilot
 
 These commands load `.env.student-pilot`, which sets `VITE_ASTERION_APP_PROFILE=student-pilot`. When that profile is active, conflicting hosted/dashboard env values are ignored for the runtime student app: progress remains local, student class claiming remains mock/local, dashboard data remains mock, and `#/teacher` / `#/admin` stay disabled. Generic dashboard aliases such as `#/dashboard` and `/dashboard` are quarantined and are not review-build entry points. Supabase URL/key values may exist for other local tests, but they are not required by the student pilot profile and do not enable hosted learner progress.
 
+The hosted classroom pilot profile is `classroom-pilot`. It requires browser-safe Supabase config, forces Supabase roster claims, forces Supabase dashboard data, opens the teacher/admin route shells, and marks bounded progress snapshot sync as enabled for the profile. It does not expose teacher/admin tools in the normal student topbar, does not create a browser self-promotion path, and does not make local browser progress teacher-visible authority.
+
+```bash
+npm run dev:classroom-pilot
+npm run build:classroom-pilot
+```
+
+Use `.env.classroom-pilot.example` or Vercel environment variables as the template for hosted pilot config. The real app owner must sign into Supabase once, then run `supabase/sql/005_live_pilot_bootstrap_template.sql` from the Supabase SQL Editor to create the live organization and active owner admin role. Do not run the demo seed in the live pilot project.
+
 ## Progress Storage
 
 Browser-local progress storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.
@@ -576,9 +585,10 @@ Browser-local progress storage is the active default. The app uses a progress ad
 Current behavior:
 
 - `VITE_ASTERION_APP_PROFILE=student-pilot` selects the supervised student pilot profile. Omitted profile values use `student-pilot` unless non-pilot dashboard/Supabase/storage flags are explicitly set for a local custom test build.
+- `VITE_ASTERION_APP_PROFILE=classroom-pilot` selects the hosted Vercel + Supabase classroom pilot profile. Missing Supabase URL/key values are reported clearly, and mock dashboard/claim sources are not fallback authority.
 - `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
 - `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays on browser-local progress storage and shows a notice.
-- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected. They do not enable hosted progress sync or learner-response writes.
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected or when `classroom-pilot` is active. They do not enable learner-response writes.
 - `VITE_ASSET_BASE_URL` is a documented future hosted-asset input only.
 - `VITE_ASTERION_DASHBOARD_DEMO=enabled` exposes private mock teacher/admin dashboard routes for intentional demos only.
 - `VITE_ASTERION_DASHBOARD_DATA_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
@@ -597,15 +607,15 @@ npm run build
 
 Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSON files and image assets must be committed under `public/` before building, or copied into the deployed static output.
 
-Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled` or `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate. Generic dashboard aliases (`#/dashboard`, `/dashboard`, and nested dashboard paths) always show the disabled-dashboard quarantine state so they cannot be mistaken for a production classroom dashboard.
+Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled`, `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`, or `VITE_ASTERION_APP_PROFILE=classroom-pilot`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate. Generic dashboard aliases (`#/dashboard`, `/dashboard`, and nested dashboard paths) always show the disabled-dashboard quarantine state so they cannot be mistaken for a production classroom dashboard.
 
 See `docs/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 
 ## Current Limitations
 
-- No authentication or durable identity.
-- No production classroom backend or cross-device sync.
-- No Supabase hosted progress sync, learner-response writes, or production classroom authority yet.
+- Hosted classroom identity and read-only dashboard setup are present only when the Supabase-backed classroom pilot profile is configured.
+- No raw learner-response writes or full cross-device attempt recovery.
+- Bounded hosted progress snapshot sync is profile-enabled for classroom pilot readiness, but browser insert/read wiring is still a follow-up phase.
 - Supabase diagnostic "Connected" state is not backend readiness.
 - Teacher/admin dashboard data can come from mock demo data or the read-only Supabase adapter, but roster actions, dashboard exports, and region toggles are not production authority without a reviewed auth/session and write policy.
 - No AI marking.

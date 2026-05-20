@@ -34,6 +34,18 @@ describe('dashboard data service adapter', () => {
     });
   });
 
+  it('uses Supabase dashboard data for the classroom pilot profile without mock fallback', () => {
+    expect(createDashboardDataService({
+      VITE_ASTERION_APP_PROFILE: 'classroom-pilot',
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'mock',
+      VITE_SUPABASE_URL: 'https://asterion-example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example',
+    }).source).toMatchObject({
+      kind: 'supabase',
+      readOnly: true,
+    });
+  });
+
   it('returns the same core teacher dashboard data as dashboardMockService', async () => {
     const [adapterClasses, mockClasses] = await Promise.all([
       dashboardDataService.listTeacherClasses('teacher-hypatia'),

@@ -167,6 +167,22 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Class access required');
   });
 
+  it('uses hosted classroom copy in the classroom pilot profile without local-only classroom language', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', undefined);
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', undefined);
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Student practice state remains available in this browser.');
+    expect(container.textContent).toContain('Hosted classroom access and teacher-visible records must come from Supabase.');
+    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).toContain('Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
+    expect(container.textContent).not.toContain('Progress is saved on this browser/device only.');
+    expect(container.textContent).not.toContain('local-first classroom mode');
+  });
+
   it('requires a valid class-code roster claim before saving local progress', async () => {
     const container = await render(<App />);
 
