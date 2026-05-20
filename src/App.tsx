@@ -482,8 +482,14 @@ export default function App() {
             <strong>Academy charter</strong>
             <span>Your quest begins here.</span>
             <span>Restore the P3 regions, collect evidence from real practice, and travel toward the A*.</span>
+            <span>Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.</span>
             <span>One region at a time. One skill at a time.</span>
           </div>
+          <ol className="first-run-flow" aria-label="First-run flow">
+            <li><strong>1</strong><span>Claim class slot</span></li>
+            <li><strong>2</strong><span>Enter P3 map</span></li>
+            <li><strong>3</strong><span>Read guide, practise, self-mark</span></li>
+          </ol>
         </section>
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
         {studentClassClaim ? (
@@ -514,7 +520,7 @@ export default function App() {
       <TwinklingStarfield />
       <header className="topbar">
         <div>
-          <span className="mode-pill">Classroom practice mode</span>
+          <span className="mode-pill">Browser-local practice mode</span>
           <h1>Asterion</h1>
         </div>
         <nav>

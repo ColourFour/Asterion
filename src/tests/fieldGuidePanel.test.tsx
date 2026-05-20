@@ -1086,6 +1086,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('P3 Region');
     expect(container.querySelector('#region-hub-title')?.textContent).toBe('Algebra Vault');
     expect(container.textContent).toContain('A guarded vault for expansions, factors, remainders, and locked algebraic forms.');
+    expect(container.textContent).toContain('Learning loop');
+    expect(container.textContent).toContain('Follow these steps in order the first time.');
+    expect(container.textContent).toContain('Progress comes from saved answers and exact self-marking against official mark schemes.');
 
     const stats = container.querySelector('.region-home-stats');
     expect(stats).toBeTruthy();
@@ -1152,6 +1155,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Practice real questions');
     expect(container.textContent).toContain('Guardian Challenge');
     expect(container.textContent).toContain('Try a pilot boss problem');
+    expect(container.textContent).toContain('Evidence needed');
+    expect(container.textContent).toContain('Complete the Field Guide.');
 
     expect(container.querySelector('.region-learning-nav')).toBeFalsy();
     expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
@@ -1270,18 +1275,101 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const guardianPage = renderRegionHubPage({ activePage: 'guardian' });
     expect(guardianPage.textContent).toContain('Guardian Challenge');
-    expect(guardianPage.textContent).toContain('Stretch Guardian Challenge');
-    expect(guardianPage.textContent).toContain(GUARDIAN_PLACEHOLDER_WARNING);
-    expect(guardianPage.textContent).toContain('Lantern Growth Gate');
+    expect(guardianPage.textContent).toContain('Guardian challenge locked');
+    expect(guardianPage.textContent).not.toContain(GUARDIAN_PLACEHOLDER_WARNING);
+    expect(guardianPage.textContent).not.toContain('Lantern Growth Gate');
+    expect(guardianPage.textContent).not.toContain('Solve \\log_2(x+3)');
+    expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
+    expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(guardianPage.textContent).toContain('Guardian not ready yet');
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
   });
 
-  it('lets students draft and reveal Guardian placeholder guidance without official evidence actions', () => {
-    const onChallengeGuardian = vi.fn();
+  it('shows Guardian artwork but no challenge question or answer controls while locked', () => {
     const container = renderRegionHubPage({
       activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      regionAttempts: [],
+    });
+
+    expect(container.textContent).toContain('Guardian challenge locked');
+    expect(container.textContent).toContain('Complete the Step 5 prerequisites first');
+    expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
+    expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
+    expect(container.textContent).not.toContain('Lantern Growth Gate');
+    expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
+    expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Challenge the Guardian'))).toBe(false);
+  });
+
+  it('shows Guardian artwork, challenge question, and answer controls after unlock evidence is complete', () => {
+    const onChallengeGuardian = vi.fn();
+    const regionAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
+      questionId: 'q1',
+      topicDisplayName: 'Logarithms',
+      subtopic: 'logarithmic equations',
+      marksEarned: index === 1 ? 4.5 : 5,
+      marksAvailable: 6,
+      scoreRatio: index === 1 ? 0.75 : 5 / 6,
+      validatedRegionId: 'logarithm-grove',
+      displayRegionId: 'logarithm-grove',
+      worldName: 'P3 Astral Academy',
+      regionName: 'Logarithm Grove',
+      masteryEligible: true,
+    }));
+    const container = renderRegionHubPage({
+      activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      progressOverrides: {
+        attempts: 3,
+        averageScoreRatio: 0.81,
+        recentScoreRatio: 5 / 6,
+        rank: 'Bronze',
+        subtopicsTouched: 1,
+      },
+      regionAttempts,
+      onChallengeGuardian,
+    });
+
+    expect(container.textContent).not.toContain('Guardian challenge locked');
+    expect(container.textContent).toContain(GUARDIAN_PLACEHOLDER_WARNING);
+    expect(container.textContent).toContain('Lantern Growth Gate');
+    expect(container.textContent).toContain('Solve \\log_2(x+3)');
+    expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
+    expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeTruthy();
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(true);
+
+    const challengeButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Challenge the Guardian'));
+    expect(challengeButton).toBeTruthy();
+    act(() => {
+      challengeButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onChallengeGuardian).toHaveBeenCalledWith(expect.objectContaining({ id: 'q1' }));
+  });
+
+  it('lets students draft and reveal Guardian placeholder guidance without official evidence actions', () => {
+    const onChallengeGuardian = vi.fn();
+    const regionAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
+      questionId: 'q1',
+      topicDisplayName: 'Logarithms',
+      subtopic: 'logarithmic equations',
+      scoreRatio: 0.8,
+      validatedRegionId: 'logarithm-grove',
+      displayRegionId: 'logarithm-grove',
+      masteryEligible: true,
+    }));
+    const container = renderRegionHubPage({
+      activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      progressOverrides: {
+        attempts: 3,
+        averageScoreRatio: 0.8,
+        recentScoreRatio: 0.8,
+        rank: 'Bronze',
+      },
+      regionAttempts,
       onChallengeGuardian,
     });
 
@@ -1312,9 +1400,9 @@ describe('FieldGuidePanel teaching snippets', () => {
       ...guardianChallenges[0],
       guardianAssetPath: undefined,
     };
-    const container = render(<GuardianChallengePanel challenge={challenge} regionName="Algebra Vault" />);
+    const container = render(<GuardianChallengePanel challenge={challenge} isUnlocked={false} regionName="Algebra Vault" />);
 
-    expect(container.textContent).toContain('Stretch Guardian Challenge');
+    expect(container.textContent).toContain('Guardian Challenge');
     expect(container.textContent).toContain('Guardian artwork is not available for this region yet.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')).toBeFalsy();
   });
@@ -1389,6 +1477,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       expect(button?.disabled).toBe(true);
       expect(button?.textContent).toContain('Field Guide only');
     }
+    expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Needs evidence');
 
     act(() => {
       actionButtons.find((button) => button.dataset.regionPage === 'quick-check')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));

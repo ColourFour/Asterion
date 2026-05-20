@@ -90,6 +90,13 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   guardian: 'Try the stretch placeholder. It does not count as official mastery evidence yet.',
 };
 
+function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSummary): string | undefined {
+  if (page !== 'guardian') return undefined;
+  if (summary.guardianEligibility.eligible) return undefined;
+  const firstMissing = summary.guardianEligibility.requirements.find((requirement) => !requirement.completed);
+  return firstMissing?.detail ?? 'Complete the listed Guardian evidence first.';
+}
+
 export function RegionHub({
   regionProgress,
   fieldGuide,
@@ -231,7 +238,11 @@ export function RegionHub({
             {activePage === 'guardian' ? (
               canUseGuardian ? (
                 <>
-                  <GuardianChallengePanel challenge={guardianChallenge} regionName={theme.title} />
+                  <GuardianChallengePanel
+                    challenge={guardianChallenge}
+                    isUnlocked={summary.guardianEligibility.eligible}
+                    regionName={theme.title}
+                  />
                   <GuardianEligibilityPanel
                     guardianCleared={guardianCleared}
                     guardianQuestion={guardianQuestion}
@@ -371,7 +382,7 @@ function hubActionState(input: {
   if (input.page === 'quick-check') return { disabled: false, status: input.quickCheckCount ? `${input.quickCheckCount} available` : 'No checks yet' };
   if (input.page === 'warm-up') return { disabled: false, status: input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'No warm-ups yet' };
   if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
-  return { disabled: false, status: input.guardianCleared ? 'Cleared' : 'Pilot ready' };
+  return { disabled: false, status: input.guardianCleared ? 'Cleared' : input.summary.guardianEligibility.eligible ? 'Unlocked' : 'Evidence needed' };
 }
 
 function recommendedHubPage(input: {
@@ -454,6 +465,38 @@ function RegionHubHome({
     { label: 'Average', value: percent(regionProgress.averageScoreRatio) },
     { label: 'Guardian', value: guardianStatus(summary, guardianCleared) },
   ];
+  const steps: Array<{ page: HubActionPageId; label: string; state: 'done' | 'current' | 'available' | 'locked'; helper: string }> = [
+    {
+      page: 'field-guide',
+      label: 'Field Guide',
+      state: fieldGuideCompleted ? 'done' : primaryPage === 'field-guide' ? 'current' : 'available',
+      helper: fieldGuideCompleted ? 'Read' : 'Read first',
+    },
+    {
+      page: 'quick-check',
+      label: 'Quick Check',
+      state: !canStudentUseRegionActivity(studentRegionAccess, 'quick_check') ? 'locked' : primaryPage === 'quick-check' ? 'current' : summary.learningActivityReadiness.quickCheckAttempts > 0 ? 'done' : 'available',
+      helper: summary.learningActivityReadiness.quickCheckAttempts > 0 ? `${summary.learningActivityReadiness.quickCheckAttempts} saved` : 'Short check',
+    },
+    {
+      page: 'warm-up',
+      label: 'Warm-Up',
+      state: !canStudentUseRegionActivity(studentRegionAccess, 'warm_up') ? 'locked' : primaryPage === 'warm-up' ? 'current' : summary.learningActivityReadiness.warmUpAttempts > 0 ? 'done' : 'available',
+      helper: summary.learningActivityReadiness.warmUpAttempts > 0 ? `${summary.learningActivityReadiness.warmUpAttempts} saved` : 'Fluency',
+    },
+    {
+      page: 'exam-training',
+      label: 'Exam Training',
+      state: !canStudentUseRegionActivity(studentRegionAccess, 'exam_practice') ? 'locked' : primaryPage === 'exam-training' ? 'current' : regionProgress.attempts > 0 ? 'done' : 'available',
+      helper: regionProgress.attempts > 0 ? `${regionProgress.attempts} saved` : 'Real images',
+    },
+    {
+      page: 'guardian',
+      label: 'Guardian',
+      state: !canStudentUseRegionActivity(studentRegionAccess, 'guardian') || !summary.guardianEligibility.eligible ? 'locked' : guardianCleared ? 'done' : primaryPage === 'guardian' ? 'current' : 'available',
+      helper: guardianCleared ? 'Cleared' : summary.guardianEligibility.eligible ? 'Unlocked' : 'Needs evidence',
+    },
+  ];
 
   return (
     <div className="region-home">
@@ -489,6 +532,24 @@ function RegionHubHome({
         </div>
       ) : null}
 
+      <section className="region-first-run-loop" aria-label="Region learning loop">
+        <div>
+          <span className="mode-pill">Learning loop</span>
+          <strong>Follow these steps in order the first time.</strong>
+          <p>Progress comes from saved answers and exact self-marking against official mark schemes.</p>
+        </div>
+        <ol>
+          {steps.map((step) => (
+            <li className={`is-${step.state}`} key={step.page}>
+              <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
+                <span>{step.label}</span>
+                <small>{step.helper}</small>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
 
       <nav className="region-home-actions" aria-label="Region learning actions">
@@ -507,6 +568,9 @@ function RegionHubHome({
             <p>{summary.nextAction.explanation}</p>
           </span>
           <span className="region-home-primary-detail">{hubActionPrimaryCopy[primaryPage]}</span>
+          {hubActionLockReason(primaryPage, summary) ? (
+            <span className="region-home-lock-reason">Locked: {hubActionLockReason(primaryPage, summary)}</span>
+          ) : null}
           <span className="region-home-action-status">
             {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
             {primaryActionState.status}
@@ -548,6 +612,9 @@ function RegionHubHome({
                     {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
                     {actionState.status}
                   </span>
+                  {hubActionLockReason(page, summary) ? (
+                    <span className="region-home-action-reason">{hubActionLockReason(page, summary)}</span>
+                  ) : null}
                 </button>
               );
             })}

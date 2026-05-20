@@ -24,6 +24,13 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
         onSave({ realName, classGroup, teacherName, avatarName, classClaim: defaults?.classClaim });
       }}
     >
+      {!profile ? (
+        <div className="profile-form-heading">
+          <span className="mode-pill">Local profile</span>
+          <h2>Name your academy character</h2>
+          <p>After this, choose a region on the P3 map and start with its Field Guide.</p>
+        </div>
+      ) : null}
       <label>
         Student real name
         <input value={realName} onChange={(event) => setRealName(event.target.value)} required readOnly={lockedClassFields} />
@@ -38,7 +45,7 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
       </label>
       {lockedClassFields ? (
         <div className="pending-claim-summary">
-          <p className="claim-state-message">Class details came from the claimed roster slot.</p>
+          <p className="claim-state-message">Class details came from the claimed roster slot for this browser profile.</p>
           <button type="button" className="quiet-button compact-button" onClick={onRestartClaim}>Use a different class code</button>
         </div>
       ) : null}

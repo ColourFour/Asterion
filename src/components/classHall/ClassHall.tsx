@@ -19,7 +19,7 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps)
           <p>A local trophy-room gathering for academy avatars, house crests, earned cosmetics, and low-pressure badges.</p>
         </div>
         <aside className="class-hall-local-note" aria-label="Class Hall privacy note">
-          Demo snapshots only. No marks, grades, weak topics, exact scores, or rankings.
+          Local demo snapshots only. No hosted gradebook, marks, weak topics, exact scores, or rankings.
         </aside>
       </header>
 
@@ -30,7 +30,7 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS }: ClassHallProps)
       ) : (
         <div className="class-hall-empty" role="status">
           <strong>The Class Hall is quiet.</strong>
-          <span>Avatar snapshots can be imported locally later without changing this view.</span>
+          <span>No local avatar snapshots are stored in this browser yet.</span>
         </div>
       )}
     </section>

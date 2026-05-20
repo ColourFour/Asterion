@@ -126,6 +126,24 @@ describe('local progress adapter', () => {
     expect(localProgressAdapter.loadProgressContext().profile).toBeUndefined();
   });
 
+  it('loads an empty local context when this browser has no saved progress', () => {
+    localProgressAdapter.saveProfile({
+      realName: 'Ada Lovelace',
+      classGroup: 'P3',
+      teacherName: 'Dr Noether',
+      avatarName: 'Aster',
+    });
+    expect(localProgressAdapter.loadProgressContext().profile?.realName).toBe('Ada Lovelace');
+
+    localStorage.removeItem(LOCAL_PROGRESS_STORAGE_KEY);
+    const freshBrowserContext = localProgressAdapter.loadProgressContext();
+
+    expect(freshBrowserContext.profile).toBeUndefined();
+    expect(freshBrowserContext.attempts).toEqual([]);
+    expect(freshBrowserContext.learningActivityAttempts).toEqual([]);
+    expect(freshBrowserContext.regionLearning).toEqual({});
+  });
+
   it('stores explicitly mastery-ineligible attempts without advancing topic profiles', () => {
     const stored = localProgressAdapter.addAttempt({
       ...attempt,

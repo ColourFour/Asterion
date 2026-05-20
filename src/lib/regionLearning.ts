@@ -241,10 +241,10 @@ export function computeRegionLearningState(input: {
 
   if (!regionProgress.isActive || regionProgress.availableQuestions === 0) return 'locked';
   if (regionProgress.rank === 'Mastered') return 'mastered';
-  if (learningRecord?.guardianClearedAt) {
+  if (learningRecord?.guardianClearedAt && guardianEligibility.eligible) {
     return (regionProgress.recentScoreRatio ?? 1) < 0.55 ? 'needs_review' : 'guardian_cleared';
   }
-  if (learningRecord?.guardianAttemptedAt) return 'guardian_attempted';
+  if (learningRecord?.guardianAttemptedAt && guardianEligibility.eligible) return 'guardian_attempted';
   if (guardianEligibility.eligible) return 'guardian_unlocked';
   if (regionProgress.attempts > 0) return 'training_in_progress';
   if (learningRecord?.fieldGuideCompletedAt) return 'field_guide_completed';

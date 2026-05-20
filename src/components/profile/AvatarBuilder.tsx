@@ -60,7 +60,7 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
       <header className="avatar-builder-header">
         <span className="mode-pill">Character sheet</span>
         <h2 id="avatar-builder-title">Avatar Builder</h2>
-        <p>Equip mastery rewards earned from real region progress, then use the character sheet as your academy identity.</p>
+        <p>Equip mastery rewards earned from real region progress. This sheet is saved on this browser/device only.</p>
       </header>
 
       <section className="avatar-builder-hero">

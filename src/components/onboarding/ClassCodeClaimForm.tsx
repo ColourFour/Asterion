@@ -46,7 +46,8 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
       <div className="claim-form-heading">
         <span className="mode-pill">Class access required</span>
         <h2>Join your teacher's class</h2>
-        <p>Enter the class code your teacher gave you. Choose the name your teacher added to the roster.</p>
+        <p>Enter the class code your teacher gave you. Next you will name your character, then open the P3 world map.</p>
+        <p className="claim-form-note">This starts a local browser profile, not a cross-device gradebook.</p>
       </div>
 
       {hostedClaimMode ? (

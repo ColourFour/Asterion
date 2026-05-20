@@ -334,6 +334,28 @@ describe('region learning loop logic', () => {
     })).toBe('guardian_cleared');
   });
 
+  it('does not honor guardian attempted or cleared flags without current eligible evidence', () => {
+    const regionProgress = progress({ attempts: 0, recentScoreRatio: 1 });
+    const eligibility = computeGuardianEligibility({
+      region: logarithms,
+      regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
+      regionQuestions: [question()],
+      regionAttempts: [],
+    });
+
+    expect(eligibility.eligible).toBe(false);
+    expect(computeRegionLearningState({
+      regionProgress,
+      guardianEligibility: eligibility,
+      learningRecord: learning({
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        guardianAttemptedAt: '2026-05-08T00:04:00.000Z',
+        guardianClearedAt: '2026-05-08T00:04:00.000Z',
+      }),
+    })).toBe('field_guide_completed');
+  });
+
   it('returns a restored-region next action after guardian clear', () => {
     const summary = buildRegionLearningSummary({
       regionProgress: progress({ attempts: 4, recentScoreRatio: 0.8 }),

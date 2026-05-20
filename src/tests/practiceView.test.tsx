@@ -234,6 +234,8 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.querySelector('.mark-scheme-panel img')).toBeTruthy();
     expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Compare mark scheme');
     expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Save attempt');
+    expect(container.textContent).toContain('Use this image to decide every M, B, and A mark. Asterion does not auto-mark.');
+    expect(container.textContent).toContain('Self-marking means you enter the exact marks you earned from the official mark scheme.');
     expect(container.textContent).toContain('Enter your mark from the official mark scheme above.');
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
   });

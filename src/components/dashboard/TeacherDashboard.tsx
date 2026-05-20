@@ -331,6 +331,11 @@ function RosterManagementPage({
   onResetClaim: (studentId: string) => void;
   readOnly: boolean;
 }) {
+  function handleResetClaim(studentId: string, displayName: string) {
+    const confirmed = window.confirm(`Reset ${displayName}'s class claim? They will need to claim this roster slot again. This does not restore browser-local progress cleared from a device.`);
+    if (confirmed) onResetClaim(studentId);
+  }
+
   return (
     <section className="dashboard-section roster-management-section" aria-label="Roster management">
       <div className="dashboard-section-heading">
@@ -345,7 +350,7 @@ function RosterManagementPage({
         <p className="dashboard-muted">Supabase dashboard mode is read-only. Roster add, archive, and claim reset actions are disabled in this build.</p>
       ) : (
         <>
-          <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin.</p>
+          <p className="dashboard-muted">Use Reset claim only if a student claimed the wrong slot or needs to rejoin. It does not recover progress from another browser or cleared site data.</p>
           <form className="dashboard-inline-form" onSubmit={onAddStudent} aria-label="Add roster student">
             <input value={newStudentName} onChange={(event) => onNewStudentNameChange(event.target.value)} placeholder="Student name" />
             <button type="submit" className="primary-button">Add student</button>
@@ -375,7 +380,7 @@ function RosterManagementPage({
                     <span className="dashboard-muted">Read-only</span>
                   ) : student.status === 'claimed' ? (
                     <div className="roster-action-stack">
-                      <button type="button" className="quiet-button compact-button" onClick={() => onResetClaim(student.id)}>Reset claim</button>
+                      <button type="button" className="quiet-button compact-button" onClick={() => handleResetClaim(student.id, student.displayName)}>Reset claim</button>
                       <button type="button" className="quiet-button compact-button" onClick={() => onArchiveStudent(student.id)}>Archive</button>
                     </div>
                   ) : (

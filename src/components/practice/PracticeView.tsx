@@ -285,7 +285,7 @@ export function PracticeView({
       <div className="encounter-panel">
         <div>
           <strong>Encounter sequence</strong>
-          <span>Work from the question image first. Reveal the official mark scheme only when ready to self-mark.</span>
+          <span>Work from the question image first. The mark scheme is the official answer key for exact self-marking.</span>
         </div>
         <ol className="encounter-steps">
           <li className="active"><FileSearch size={16} /> Solve</li>
@@ -319,7 +319,7 @@ export function PracticeView({
               <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
                 Reveal Mark Scheme
               </button>
-              <button className="practice-save-placeholder" type="button" disabled>Save Attempt</button>
+              <button className="practice-save-placeholder" type="button" disabled title="Reveal the mark scheme, enter exact marks, and reflect before saving.">Save Attempt</button>
             </div>
           ) : null}
           <details className="practice-support-details">
@@ -334,6 +334,7 @@ export function PracticeView({
             <div className="archive-heading">
               <span>Official archive</span>
               <h3>Compare your working</h3>
+              <p>Use this image to decide every M, B, and A mark. Asterion does not auto-mark.</p>
             </div>
             {questionParts?.length ? (
               <div className="mark-scheme-part-guide" aria-label="Mark scheme part guide">
@@ -420,6 +421,9 @@ export function PracticeView({
               <span>Reflect</span>
               <span>Save attempt</span>
             </div>
+            <p className="self-mark-helper">
+              Self-marking means you enter the exact marks you earned from the official mark scheme. Saved attempts become region and Guardian evidence.
+            </p>
             {questionParts?.length ? (
               <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
                 <legend>Your Mark by Part</legend>

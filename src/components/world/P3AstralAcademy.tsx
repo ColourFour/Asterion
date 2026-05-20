@@ -305,9 +305,22 @@ export function P3AstralAcademy({
     : undefined;
   const focusRegionId = avatarLocation.region?.id ?? recommended?.region.id;
   const mapLayout = buildAstralRegionMapLayout(progress, focusRegionId);
+  const hasSavedEvidence = summary.attempts > 0 || progress.some((item) => item.attempts > 0);
 
   return (
     <section className="world-screen">
+      {!hasSavedEvidence ? (
+        <aside className="first-run-map-guide" aria-label="First-run learning path">
+          <span className="mode-pill">Start here</span>
+          <strong>Choose a region to begin Paper 3 practice.</strong>
+          <ol>
+            <li>Open the Daily Quest region.</li>
+            <li>Read the Field Guide.</li>
+            <li>Try Quick Check, Warm-Up, then real image questions.</li>
+          </ol>
+        </aside>
+      ) : null}
+
       <div className="map-shell">
         <div className="starfield" aria-hidden="true" style={{ '--astral-starfield': `url("${astralAssets.starfieldMap}")` } as CSSProperties}>
           <span className="constellation constellation-a" />
@@ -461,7 +474,7 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, onTrain 
                 <span>{learningSummary?.nextAction.explanation ?? goal.label}</span>
               </div>
               <button type="button" disabled={!canTrain} onClick={() => onTrain(region)}>
-                {canTrain ? 'Open region hub' : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}
+                {canTrain ? (learningSummary?.nextAction.kind === 'field_guide' ? 'Start region' : 'Open region hub') : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}
               </button>
             </article>
           );

@@ -89,6 +89,7 @@ describe('ClassHall', () => {
     expect(container.textContent).toContain('Lyra');
     expect(container.textContent).toContain('Orin');
     expect(container.textContent).toContain('Sena');
+    expect(container.textContent).toContain('Local demo snapshots only. No hosted gradebook, marks, weak topics, exact scores, or rankings.');
     expect(container.querySelectorAll('[data-class-hall-card]').length).toBeGreaterThanOrEqual(4);
   });
 
@@ -127,6 +128,7 @@ describe('ClassHall', () => {
     const container = render(<ClassHall avatars={[]} />);
 
     expect(container.textContent).toContain('The Class Hall is quiet.');
+    expect(container.textContent).toContain('No local avatar snapshots are stored in this browser yet.');
     expect(container.textContent).not.toContain('Academy Commons');
     expect(container.querySelectorAll('[data-class-hall-card]')).toHaveLength(0);
   });

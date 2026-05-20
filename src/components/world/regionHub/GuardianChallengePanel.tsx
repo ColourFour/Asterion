@@ -1,15 +1,32 @@
 import { useState } from 'react';
-import { Eye, ShieldCheck, Sparkles } from 'lucide-react';
+import { Eye, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import type { GuardianChallenge } from '../../../data/guardianChallenges';
 import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
 
 interface GuardianChallengePanelProps {
   challenge?: GuardianChallenge;
+  isUnlocked: boolean;
   regionName: string;
 }
 
-export function GuardianChallengePanel({ challenge, regionName }: GuardianChallengePanelProps) {
+function GuardianArtwork({ challenge, regionName }: { challenge: GuardianChallenge; regionName: string }) {
+  if (challenge.guardianAssetPath) {
+    return (
+      <figure className="guardian-placeholder-figure guardian-artwork-frame">
+        <img src={challenge.guardianAssetPath} alt={`${regionName} Guardian artwork`} loading="lazy" />
+      </figure>
+    );
+  }
+
+  return (
+    <div className="guardian-placeholder-missing-art" role="status">
+      Guardian artwork is not available for this region yet.
+    </div>
+  );
+}
+
+export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: GuardianChallengePanelProps) {
   const [draft, setDraft] = useState('');
   const [guidanceRevealed, setGuidanceRevealed] = useState(false);
 
@@ -29,13 +46,35 @@ export function GuardianChallengePanel({ challenge, regionName }: GuardianChalle
     );
   }
 
+  if (!isUnlocked) {
+    return (
+      <RegionActionCard
+        eyebrow="Step 5 · Mastery locked"
+        title="Guardian Challenge"
+        description={`${regionName} mastery gate unlocks after the required saved evidence is complete.`}
+        icon={<ShieldCheck size={22} />}
+        stateIcon={<Lock size={22} aria-label="Guardian locked" />}
+        className="guardian-card guardian-placeholder-card guardian-locked-card"
+      >
+        <GuardianArtwork challenge={challenge} regionName={regionName} />
+        <div className="guardian-locked-state" role="status">
+          <Lock size={20} aria-hidden="true" />
+          <div>
+            <strong>Guardian challenge locked</strong>
+            <span>Complete the Step 5 prerequisites first. The challenge question and answer controls are hidden until the Guardian unlocks.</span>
+          </div>
+        </div>
+      </RegionActionCard>
+    );
+  }
+
   const guidanceId = `guardian-placeholder-guidance-${challenge.regionId}`;
 
   return (
     <RegionActionCard
-      eyebrow="Step 5 · Pilot placeholder"
-      title="Stretch Guardian Challenge"
-      description={`${regionName} boss problem for the pilot version.`}
+      eyebrow="Step 5 · Mastery challenge"
+      title="Guardian Challenge"
+      description={`${regionName} mastery gate for the pilot version.`}
       icon={<Sparkles size={22} />}
       className="guardian-card guardian-placeholder-card"
     >
@@ -53,15 +92,7 @@ export function GuardianChallengePanel({ challenge, regionName }: GuardianChalle
           <MathText text={challenge.prompt} />
         </p>
 
-        {challenge.guardianAssetPath ? (
-          <figure className="guardian-placeholder-figure">
-            <img src={challenge.guardianAssetPath} alt={`${regionName} Guardian artwork`} loading="lazy" />
-          </figure>
-        ) : (
-          <div className="guardian-placeholder-missing-art" role="status">
-            Guardian artwork is not available for this region yet.
-          </div>
-        )}
+        <GuardianArtwork challenge={challenge} regionName={regionName} />
       </article>
 
       <label className="activity-response-field guardian-placeholder-response">

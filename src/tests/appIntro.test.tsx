@@ -133,7 +133,11 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Academy charter');
     expect(container.textContent).toContain('Your quest begins here.');
     expect(container.textContent).toContain('Restore the P3 regions, collect evidence from real practice, and travel toward the A*.');
+    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
     expect(container.textContent).toContain('One region at a time. One skill at a time.');
+    expect(container.textContent).toContain('Claim class slot');
+    expect(container.textContent).toContain('Enter P3 map');
+    expect(container.textContent).toContain('Read guide, practise, self-mark');
 
     const emblem = container.querySelector('[data-testid="asterion-emblem"]');
     expect(emblem).toBeTruthy();
@@ -143,6 +147,8 @@ describe('Asterion intro page', () => {
 
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Join your teacher');
+    expect(container.textContent).toContain('Next you will name your character, then open the P3 world map.');
+    expect(container.textContent).toContain('This starts a local browser profile, not a cross-device gradebook.');
     expect(container.textContent).toContain('Class code');
     expect(container.textContent).toContain('Roster name');
     expect(container.textContent).toContain('If your name is missing, ask your teacher. You cannot add yourself.');
@@ -225,7 +231,49 @@ describe('Asterion intro page', () => {
     });
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('World Map');
+    expect(container.textContent).toContain('Start here');
+    expect(container.textContent).toContain('Choose a region to begin Paper 3 practice.');
+    expect(container.textContent).toContain('Try Quick Check, Warm-Up, then real image questions.');
+    expect(container.textContent).toContain('Browser-local practice mode');
     expect(container.textContent).not.toContain('Enter Astral Academy');
+  });
+
+  it('treats cleared site storage or a different browser as a fresh local start', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-existing',
+        realName: 'Stored Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Aster',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+
+    let container = await render(<App />);
+    expect(container.textContent).toContain('World Map');
+    expect(container.textContent).not.toContain('Enter Astral Academy');
+
+    await act(async () => {
+      mountedRoots.pop()?.unmount();
+      mountedContainers.pop()?.remove();
+      await Promise.resolve();
+    });
+    localStorage.removeItem(LOCAL_PROGRESS_STORAGE_KEY);
+
+    container = await render(<App />);
+
+    expect(container.textContent).toContain('Enter the class code your teacher gave you.');
+    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
   });
 
   it('restores a revalidated pending claim after refresh without granting app access', async () => {
