@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ArrowLeft, BookOpenCheck, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
+import { getGuardianChallengeForRegion } from '../../data/guardianChallenges';
 import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
 import {
   REGION_LEARNING_PAGE_LABELS,
@@ -15,6 +16,7 @@ import type { TeachingSnippet } from '../../lib/teachingSnippets';
 import { canStudentUseRegionActivity, lockedRegionMessage, type StudentRegionAccess } from '../../lib/classRegionAccess';
 import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
+import { GuardianChallengePanel } from './regionHub/GuardianChallengePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
 import { QuickChecksPanel } from './regionHub/QuickChecksPanel';
 import { RegionLearningLayout } from './regionHub/RegionLearningLayout';
@@ -77,7 +79,7 @@ const hubActionDescriptions: Record<HubActionPageId, string> = {
   'quick-check': 'Check one skill',
   'warm-up': 'Build fluency',
   'exam-training': 'Practice real questions',
-  guardian: 'Prove mastery',
+  guardian: 'Try a pilot boss problem',
 };
 
 const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
@@ -85,7 +87,7 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'quick-check': 'Try one answer-first check before moving into longer practice.',
   'warm-up': 'Build fluency with one short support activity.',
   'exam-training': 'Use canonical question images and save evidence for the Guardian.',
-  guardian: 'Challenge the gated check when the existing evidence unlocks it.',
+  guardian: 'Try the stretch placeholder. It does not count as official mastery evidence yet.',
 };
 
 export function RegionHub({
@@ -117,6 +119,7 @@ export function RegionHub({
   const guardianQuestion = summary.guardianEligibility.guardianQuestion;
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
+  const guardianChallenge = getGuardianChallengeForRegion(region.id);
 
   if (activePage === 'field-guide') {
     return (
@@ -227,13 +230,16 @@ export function RegionHub({
 
             {activePage === 'guardian' ? (
               canUseGuardian ? (
-                <GuardianEligibilityPanel
-                  guardianCleared={guardianCleared}
-                  guardianQuestion={guardianQuestion}
-                  regionName={theme.title}
-                  summary={summary}
-                  onChallengeGuardian={onChallengeGuardian}
-                />
+                <>
+                  <GuardianChallengePanel challenge={guardianChallenge} regionName={theme.title} />
+                  <GuardianEligibilityPanel
+                    guardianCleared={guardianCleared}
+                    guardianQuestion={guardianQuestion}
+                    regionName={theme.title}
+                    summary={summary}
+                    onChallengeGuardian={onChallengeGuardian}
+                  />
+                </>
               ) : <LockedRegionActivityPanel activityLabel="Guardian Challenge" studentRegionAccess={studentRegionAccess} />
             ) : null}
           </div>
@@ -365,8 +371,7 @@ function hubActionState(input: {
   if (input.page === 'quick-check') return { disabled: false, status: input.quickCheckCount ? `${input.quickCheckCount} available` : 'No checks yet' };
   if (input.page === 'warm-up') return { disabled: false, status: input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'No warm-ups yet' };
   if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
-  const locked = !input.guardianCleared && !input.summary.guardianEligibility.eligible;
-  return { disabled: locked, status: guardianStatus(input.summary, input.guardianCleared) };
+  return { disabled: false, status: input.guardianCleared ? 'Cleared' : 'Pilot ready' };
 }
 
 function recommendedHubPage(input: {

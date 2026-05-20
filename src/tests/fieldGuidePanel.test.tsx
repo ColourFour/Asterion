@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
+import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
 import {
   findVisualSupportSource,
   isDisplayableVisualSupportSource,
@@ -25,6 +26,7 @@ import type { Attempt, LearningActivityAttempt, NormalizedQuestion, RegionLearni
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import { RegionHub } from '../components/world/RegionHub';
 import { FieldGuidePanel } from '../components/world/regionHub/FieldGuidePanel';
+import { GuardianChallengePanel } from '../components/world/regionHub/GuardianChallengePanel';
 import { QuickChecksPanel } from '../components/world/regionHub/QuickChecksPanel';
 import { RegionProgressStrip } from '../components/world/regionHub/RegionProgressStrip';
 import { TrainingGroundsPanel } from '../components/world/regionHub/TrainingGroundsPanel';
@@ -1149,7 +1151,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Exam Training');
     expect(container.textContent).toContain('Practice real questions');
     expect(container.textContent).toContain('Guardian Challenge');
-    expect(container.textContent).toContain('Prove mastery');
+    expect(container.textContent).toContain('Try a pilot boss problem');
 
     expect(container.querySelector('.region-learning-nav')).toBeFalsy();
     expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
@@ -1166,11 +1168,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
 
     const guardianCard = secondaryActions.find((button) => button.dataset.regionPage === 'guardian');
-    expect(guardianCard?.disabled).toBe(true);
+    expect(guardianCard?.disabled).toBe(false);
     act(() => {
       guardianCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(onNavigatePage).not.toHaveBeenCalled();
+    expect(onNavigatePage).toHaveBeenCalledWith('guardian');
   });
 
   it('wires available region hub art files with the established naming convention', () => {
@@ -1268,8 +1270,65 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const guardianPage = renderRegionHubPage({ activePage: 'guardian' });
     expect(guardianPage.textContent).toContain('Guardian Challenge');
+    expect(guardianPage.textContent).toContain('Stretch Guardian Challenge');
+    expect(guardianPage.textContent).toContain(GUARDIAN_PLACEHOLDER_WARNING);
+    expect(guardianPage.textContent).toContain('Lantern Growth Gate');
+    expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(guardianPage.textContent).toContain('Guardian not ready yet');
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
+  });
+
+  it('lets students draft and reveal Guardian placeholder guidance without official evidence actions', () => {
+    const onChallengeGuardian = vi.fn();
+    const container = renderRegionHubPage({
+      activePage: 'guardian',
+      onChallengeGuardian,
+    });
+
+    const textarea = container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea');
+    expect(textarea).toBeTruthy();
+    act(() => {
+      setTextareaValue(textarea!, 'I will combine logs, solve, then check the domain.');
+    });
+    expect(textarea?.value).toContain('combine logs');
+
+    expect(container.textContent).not.toContain('Placeholder guidance for the pilot version. Your teacher may discuss the official approach later.');
+    const reveal = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Reveal placeholder guidance'));
+    expect(reveal).toBeTruthy();
+    act(() => {
+      reveal!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('This is placeholder guidance for the pilot version. Your teacher may discuss the official approach later.');
+    expect(container.textContent).toContain('Revealing this does not save official P3 mastery evidence or clear the reviewed Guardian check.');
+    expect(onChallengeGuardian).not.toHaveBeenCalled();
+    expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');
+    expect(container.textContent?.toLowerCase()).not.toContain('admin');
+    expect(container.textContent?.toLowerCase()).not.toContain('export');
+  });
+
+  it('gracefully handles Guardian placeholder content without artwork', () => {
+    const challenge = {
+      ...guardianChallenges[0],
+      guardianAssetPath: undefined,
+    };
+    const container = render(<GuardianChallengePanel challenge={challenge} regionName="Algebra Vault" />);
+
+    expect(container.textContent).toContain('Stretch Guardian Challenge');
+    expect(container.textContent).toContain('Guardian artwork is not available for this region yet.');
+    expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')).toBeFalsy();
+  });
+
+  it('has placeholder Guardian challenge content for every active P3 region without mastery credit', () => {
+    const regionIds = P3_ASTRAL_ACADEMY.regions.map((region) => region.id).sort();
+    expect(guardianChallenges.map((challenge) => challenge.regionId).sort()).toEqual(regionIds);
+    for (const challenge of guardianChallenges) {
+      expect(challenge.status).toBe('placeholder');
+      expect(challenge.countsForMastery).toBe(false);
+      expect(challenge.studentFacingWarning).toContain('does not count as official mastery evidence yet');
+      expect(challenge.prompt.length).toBeGreaterThan(40);
+      expect(challenge.guidance.length).toBeGreaterThanOrEqual(2);
+    }
   });
 
   it('keeps Field Guide accessible while classroom access locks practice activities', () => {

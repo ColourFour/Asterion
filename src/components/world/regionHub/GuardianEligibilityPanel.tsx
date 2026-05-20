@@ -26,7 +26,7 @@ export function GuardianEligibilityPanel({
     <RegionActionCard
       eyebrow="Step 5 · Mastery"
       title="Guardian Challenge"
-      description="A real exam-style mastery check unlocked by saved local evidence."
+      description="A real exam-style mastery check unlocked by saved practice evidence."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card"
