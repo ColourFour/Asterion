@@ -94,6 +94,14 @@ function inputForLabel(container: HTMLElement, labelText: string): HTMLInputElem
   return input!;
 }
 
+async function openStudentEntry(container: HTMLElement): Promise<void> {
+  await act(async () => {
+    Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+}
+
 beforeEach(() => {
   vi.unstubAllEnvs();
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', '');
@@ -121,23 +129,17 @@ afterEach(() => {
 });
 
 describe('Asterion intro page', () => {
-  it('renders the lighter academy entrance copy, emblem, and entry form', async () => {
+  it('renders the branded public landing page', async () => {
     const container = await render(<App />);
 
     expect(container.textContent).toContain('CAIE 9709 · Paper 3 Astral Academy');
-    expect(container.querySelector('.intro-copy h1')?.textContent).toBe('Asterion');
+    expect(container.querySelector('#home-landing-title')?.textContent).toBe('Asterion');
     expect(container.textContent).not.toContain('Step into a local-first maths academy');
     expect(container.textContent).not.toContain('No AI marking');
     expect(container.textContent).not.toContain('generated exam clones');
-
-    expect(container.textContent).toContain('Academy charter');
-    expect(container.textContent).toContain('Your quest begins here.');
-    expect(container.textContent).toContain('Restore the P3 regions, collect evidence from real practice, and travel toward the A*.');
-    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
-    expect(container.textContent).toContain('One region at a time. One skill at a time.');
-    expect(container.textContent).toContain('Claim class slot');
-    expect(container.textContent).toContain('Enter P3 map');
-    expect(container.textContent).toContain('Read guide, practise, self-mark');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.textContent).toContain('Admin login');
 
     const emblem = container.querySelector('[data-testid="asterion-emblem"]');
     expect(emblem).toBeTruthy();
@@ -145,10 +147,18 @@ describe('Asterion intro page', () => {
     expect(emblem?.querySelector('.emblem-letter')?.textContent).toBe('A');
     expect(emblem?.querySelector('.emblem-orbit-star')).toBeTruthy();
 
+    expect(container.textContent).not.toContain('Class access required');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
+  });
+
+  it('opens the student entry claim form from the landing page', async () => {
+    const container = await render(<App />);
+    await openStudentEntry(container);
+
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Join your teacher');
     expect(container.textContent).toContain('Next you will name your character, then open the P3 world map.');
-    expect(container.textContent).toContain('This starts a local browser profile, not a cross-device gradebook.');
+    expect(container.textContent).toContain('Use the class code and roster name provided by your teacher.');
     expect(container.textContent).toContain('Class code');
     expect(container.textContent).toContain('Roster name');
     expect(container.textContent).toContain('If your name is missing, ask your teacher. You cannot add yourself.');
@@ -163,8 +173,9 @@ describe('Asterion intro page', () => {
 
     const container = await render(<App />);
 
-    expect(container.querySelector('.intro-copy h1')?.textContent).toBe('Asterion');
-    expect(container.textContent).toContain('Class access required');
+    expect(container.querySelector('#home-landing-title')?.textContent).toBe('Asterion');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).not.toContain('Class access required');
   });
 
   it('uses hosted classroom copy in the classroom pilot profile without local-only classroom language', async () => {
@@ -173,9 +184,8 @@ describe('Asterion intro page', () => {
     vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', undefined);
 
     const container = await render(<App />);
+    await openStudentEntry(container);
 
-    expect(container.textContent).toContain('Your class membership and teacher summaries are hosted.');
-    expect(container.textContent).toContain('Raw practice work stays on this browser.');
     expect(container.textContent).toContain('This uses an existing hosted roster slot.');
     expect(container.textContent).toContain('Teacher login');
     expect(container.textContent).toContain('Admin login');
@@ -208,6 +218,7 @@ describe('Asterion intro page', () => {
     }));
 
     const container = await render(<App />);
+    await openStudentEntry(container);
 
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('Hosted classroom access');
@@ -218,6 +229,7 @@ describe('Asterion intro page', () => {
 
   it('requires a valid class-code roster claim before saving local progress', async () => {
     const container = await render(<App />);
+    await openStudentEntry(container);
 
     setInputValue(inputForLabel(container, 'Class code'), 'AST-P3A');
     setInputValue(inputForLabel(container, 'Roster name'), 'Student Not On Roster');
@@ -352,8 +364,11 @@ describe('Asterion intro page', () => {
 
     container = await render(<App />);
 
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).not.toContain('World Map');
+    await openStudentEntry(container);
+
     expect(container.textContent).toContain('Enter the class code your teacher gave you.');
-    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
     expect(container.textContent).toContain('Claim roster slot');
     expect(container.textContent).not.toContain('World Map');
   });
@@ -478,6 +493,7 @@ describe('Asterion intro page', () => {
     let container = await render(<App />);
 
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    await openStudentEntry(container);
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
     expect(container.textContent).not.toContain('Student real name');
@@ -496,6 +512,7 @@ describe('Asterion intro page', () => {
     container = await render(<App />);
 
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    await openStudentEntry(container);
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
     expect(container.textContent).not.toContain('Archived Pending Student');
@@ -506,6 +523,7 @@ describe('Asterion intro page', () => {
     await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'intro duplicate student');
 
     const container = await render(<App />);
+    await openStudentEntry(container);
     const claimForm = container.querySelector('form[aria-label="Claim class roster slot"]');
 
     setInputValue(inputForLabel(container, 'Class code'), 'AST-P3A');

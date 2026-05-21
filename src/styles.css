@@ -329,6 +329,78 @@ h2 {
   align-items: stretch;
 }
 
+.home-landing-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+
+.home-landing-panel {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(200px, 300px);
+  grid-template-areas:
+    "copy mark"
+    "actions mark";
+  gap: clamp(22px, 4vw, 48px);
+  align-items: center;
+  width: min(100%, 1080px);
+}
+
+.home-landing-copy {
+  grid-area: copy;
+}
+
+.home-landing-copy h1 {
+  color: #ffe39a;
+  text-shadow: 0 3px 0 rgba(47, 26, 16, 0.72), 0 0 36px rgba(240, 182, 56, 0.2);
+}
+
+.home-landing-copy p {
+  max-width: 660px;
+  margin: 0;
+  color: #f7e7bf;
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-weight: 750;
+}
+
+.home-landing-panel .asterion-emblem {
+  grid-area: mark;
+}
+
+.home-entry-card {
+  grid-area: actions;
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+  padding: 18px;
+  border: 2px solid rgba(240, 182, 56, 0.5);
+  border-radius: var(--radius-panel);
+  background: rgba(18, 19, 45, 0.88);
+  box-shadow: 0 4px 0 rgba(59, 32, 20, 0.82), 0 18px 34px rgba(3, 6, 22, 0.3);
+}
+
+.home-primary-entry {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  min-height: 62px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.home-primary-entry span {
+  font-size: 0.86rem;
+  font-weight: 750;
+  opacity: 0.9;
+}
+
+.home-staff-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .student-onboarding-panel {
   display: grid;
   align-content: center;
@@ -2160,6 +2232,7 @@ button:disabled {
 
   .onboarding-shell,
   .academy-admission,
+  .home-landing-panel,
   .dashboard-band,
   .attempt-form,
   .academy-summary,
@@ -2189,6 +2262,19 @@ button:disabled {
       "emblem"
       "charter";
     justify-items: center;
+  }
+
+  .home-landing-panel {
+    grid-template-areas:
+      "copy"
+      "mark"
+      "actions";
+    justify-items: center;
+    text-align: center;
+  }
+
+  .home-entry-card {
+    width: 100%;
   }
 
   .intro-copy,
@@ -2291,7 +2377,8 @@ button:disabled {
   }
 
   .avatar-preset-grid,
-  .academy-path-grid {
+  .academy-path-grid,
+  .home-staff-entry-grid {
     grid-template-columns: 1fr;
   }
 
@@ -10674,31 +10761,32 @@ legend {
 /* Teacher/admin dashboard readability layer. Keep these selectors scoped so student UI stays isolated. */
 .app-view-dashboard {
   --dashboard-surface: #ffffff;
-  --dashboard-surface-muted: #f6f8fb;
-  --dashboard-surface-accent: #e8f3f1;
-  --dashboard-ink: #121826;
-  --dashboard-ink-muted: #475467;
-  --dashboard-border: #d0d5dd;
-  --dashboard-border-soft: #e4e7ec;
-  --dashboard-action: #0f5f59;
-  --dashboard-action-strong: #0b4f4b;
-  --dashboard-focus: rgba(15, 95, 89, 0.28);
+  --dashboard-surface-muted: #f7f9fc;
+  --dashboard-surface-accent: #eef6ff;
+  --dashboard-ink: #101828;
+  --dashboard-ink-muted: #667085;
+  --dashboard-border: #d6dce8;
+  --dashboard-border-soft: #e7ebf2;
+  --dashboard-navy: #0a2342;
+  --dashboard-navy-2: #12375f;
+  --dashboard-action: #1d6fd8;
+  --dashboard-action-strong: #1757a6;
+  --dashboard-focus: rgba(29, 111, 216, 0.3);
   min-height: 100vh;
+  padding: 0 0 32px;
   color: var(--dashboard-ink);
-  background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.98)),
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 34%),
-    #f3f6f8;
+  background: #f4f7fb;
 }
 
 .app-view-dashboard::before {
-  opacity: 0.08;
+  display: none;
 }
 
 .app-view-dashboard .dashboard-shell {
   display: grid;
-  gap: 20px;
-  width: min(100%, 1280px);
+  gap: 22px;
+  width: min(100% - 32px, 1240px);
+  margin: 0 auto;
   color: var(--dashboard-ink);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -10707,39 +10795,58 @@ legend {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: 18px;
-  border: 1px solid var(--dashboard-border-soft);
-  border-radius: var(--radius-panel);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.08);
+  margin-inline: calc((100vw - min(100vw, 1240px)) / -2);
+  padding: 34px max(24px, calc((100vw - 1240px) / 2 + 16px)) 28px;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(29, 111, 216, 0.22), transparent 44%),
+    linear-gradient(180deg, var(--dashboard-navy), #081a32);
+  box-shadow: none;
 }
 
 .app-view-dashboard .dashboard-topbar h1 {
   max-width: none;
-  margin: 0 0 6px;
-  color: var(--dashboard-ink);
-  font-size: clamp(1.8rem, 3.4vw, 2.75rem);
-  line-height: 1.08;
+  margin: 10px 0 8px;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.04;
   text-shadow: none;
   text-transform: none;
 }
 
-.app-view-dashboard .dashboard-topbar p,
 .app-view-dashboard .dashboard-muted,
 .app-view-dashboard .dashboard-section p,
 .app-view-dashboard .teacher-action-card p {
   color: var(--dashboard-ink-muted);
 }
 
+.app-view-dashboard .dashboard-topbar p {
+  max-width: 860px;
+  margin-bottom: 0;
+  color: #cbd8ea;
+  font-size: 1.02rem;
+}
+
+.app-view-dashboard .dashboard-hero-copy {
+  min-width: min(100%, 520px);
+}
+
 .app-view-dashboard .mode-pill,
 .app-view-dashboard .dashboard-kicker {
-  color: #0b4f4b;
-  border-color: #badbd5;
-  background: #e8f3f1;
+  color: #1d4f91;
+  border-color: #c9ddf8;
+  background: #eef6ff;
   font-family: inherit;
   text-shadow: none;
+}
+
+.app-view-dashboard .mode-pill {
+  color: #e9f3ff;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .app-view-dashboard .dashboard-kicker {
@@ -10760,10 +10867,10 @@ legend {
   flex: 0 0 auto;
   gap: 6px;
   justify-content: flex-end;
-  padding: 4px;
-  border: 1px solid var(--dashboard-border-soft);
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-control);
-  background: var(--dashboard-surface-muted);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .app-view-dashboard .dashboard-nav button,
@@ -10782,7 +10889,7 @@ legend {
 
 .app-view-dashboard .dashboard-nav button,
 .app-view-dashboard .quiet-button {
-  color: #1f2937;
+  color: #344054;
   background: #ffffff;
 }
 
@@ -10791,6 +10898,40 @@ legend {
   color: #ffffff !important;
   border-color: var(--dashboard-action-strong) !important;
   background: var(--dashboard-action) !important;
+}
+
+.app-view-dashboard .dashboard-tabs {
+  display: flex;
+  gap: 26px;
+  align-items: flex-end;
+  min-height: 58px;
+  margin-top: -22px;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--dashboard-border-soft);
+  background: #ffffff;
+}
+
+.app-view-dashboard .dashboard-tabs a,
+.app-view-dashboard .dashboard-tabs button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 2px 0 0;
+  color: #475467;
+  border: 0;
+  border-bottom: 4px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: inherit;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.app-view-dashboard .dashboard-tabs a.active,
+.app-view-dashboard .dashboard-tabs button.active {
+  color: var(--dashboard-action);
+  border-bottom-color: var(--dashboard-action);
 }
 
 .app-view-dashboard .dashboard-nav button:hover,
@@ -10813,7 +10954,7 @@ legend {
   border: 1px solid var(--dashboard-border-soft);
   border-radius: var(--radius-panel);
   background: var(--dashboard-surface);
-  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.07);
+  box-shadow: 0 8px 20px rgba(16, 24, 40, 0.05);
 }
 
 .app-view-dashboard .dashboard-control-row {
@@ -10825,7 +10966,7 @@ legend {
 }
 
 .app-view-dashboard .dashboard-section {
-  padding: 18px;
+  padding: 22px;
 }
 
 .app-view-dashboard .dashboard-section-heading {
@@ -11012,14 +11153,71 @@ legend {
 }
 
 .app-view-dashboard .teacher-class-actions {
-  grid-template-columns: minmax(220px, 320px) auto auto;
+  grid-template-columns: minmax(220px, 320px) auto auto auto;
   justify-content: start;
 }
 
-.class-snapshot-grid {
+.class-snapshot-grid,
+.admin-overview-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+}
+
+.teacher-class-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.teacher-class-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--dashboard-border-soft);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(16, 24, 40, 0.05);
+}
+
+.teacher-class-card.active {
+  border-color: #9cc4f5;
+  box-shadow: 0 0 0 3px rgba(29, 111, 216, 0.1), 0 8px 20px rgba(16, 24, 40, 0.05);
+}
+
+.teacher-class-card strong {
+  display: block;
+  color: var(--dashboard-ink);
+  font-size: 1.2rem;
+}
+
+.teacher-class-card span {
+  color: var(--dashboard-ink-muted);
+}
+
+.teacher-class-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.teacher-class-card dt {
+  color: var(--dashboard-ink-muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.teacher-class-card dd {
+  margin: 0;
+  color: var(--dashboard-ink);
+  font-weight: 900;
+}
+
+.dashboard-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .class-code-copy-group {
@@ -11069,8 +11267,8 @@ legend {
 }
 
 .primary-snapshot {
-  border-color: #8bbdb7;
-  background: #e8f3f1;
+  border-color: #9cc4f5;
+  background: #eef6ff;
 }
 
 .region-progress-strip {
@@ -11584,12 +11782,15 @@ legend {
   .dashboard-inline-form,
   .region-access-grid,
   .class-snapshot-grid,
+  .admin-overview-grid,
   .teacher-main-grid {
     grid-template-columns: 1fr;
   }
 
   .app-view-dashboard .dashboard-topbar {
     align-items: stretch;
+    margin-inline: -16px;
+    padding-inline: 16px;
   }
 
   .app-view-dashboard .dashboard-nav {
@@ -11599,6 +11800,12 @@ legend {
   .app-view-dashboard .dashboard-nav button,
   .app-view-dashboard .dashboard-control-row button {
     width: 100%;
+  }
+
+  .app-view-dashboard .dashboard-tabs {
+    gap: 18px;
+    overflow-x: auto;
+    padding-inline: 16px;
   }
 
   .operator-entry-points {

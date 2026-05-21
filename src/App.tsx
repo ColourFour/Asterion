@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { UsersRound } from 'lucide-react';
 import { RoleGate } from './components/auth/RoleGate';
+import { AsterionHomeLanding } from './components/home/AsterionHomeLanding';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { StudentOnboarding } from './components/onboarding/StudentOnboarding';
@@ -62,7 +63,7 @@ function studentPracticeModeLabel(config: AsterionRuntimeConfig): string {
 
 function onboardingProgressMessage(config: AsterionRuntimeConfig): string {
   return config.profile.name === 'classroom-pilot'
-    ? 'Your class membership and teacher summaries are hosted. Raw practice work stays on this browser.'
+    ? 'Your class membership and supported teacher summaries use the hosted classroom roster.'
     : 'Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.';
 }
 
@@ -166,6 +167,10 @@ function staffPreviewInitialProfile(context: StaffPreviewClassroomContext): Omit
     onboardingCompletedAt: new Date().toISOString(),
     classClaim: context.claim,
   };
+}
+
+function isHomeEntryRoute(pathname: string, hash: string): boolean {
+  return pathname === '/' && (hash === '' || hash === '#/' || hash === '#');
 }
 
 export default function App() {
@@ -367,6 +372,10 @@ export default function App() {
     setDashboardLocation(`${window.location.pathname}${window.location.hash}`);
   }
 
+  function enterStudentFlow() {
+    navigatePath('/student');
+  }
+
   function activePracticeMode(): PracticeMode {
     return viewMode === 'weak_areas' || viewMode === 'target_topic' || viewMode === 'start' ? viewMode : 'start';
   }
@@ -526,6 +535,7 @@ export default function App() {
   function restartStudentClassClaim() {
     clearPendingClassClaim();
     setStudentClassClaim(undefined);
+    navigatePath('/student');
   }
 
   function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
@@ -650,6 +660,16 @@ export default function App() {
       <Suspense fallback={<DashboardRouteFallback />}>
         <AdminDashboard onNavigatePath={navigatePath} />
       </Suspense>
+    );
+  }
+
+  if (isHomeEntryRoute(window.location.pathname, window.location.hash) && !progress.profile && !studentClassClaim && !hostedRosterContext && !staffPreviewContext) {
+    return (
+      <AsterionHomeLanding
+        onStudentEntry={enterStudentFlow}
+        onTeacherEntry={() => navigatePath('/teacher')}
+        onAdminEntry={() => navigatePath('/admin')}
+      />
     );
   }
 

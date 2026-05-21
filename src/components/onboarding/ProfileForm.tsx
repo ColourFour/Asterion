@@ -54,7 +54,7 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
       </label>
       {lockedClassFields ? (
         <div className="pending-claim-summary">
-          <p className="claim-state-message">Class membership is hosted. Your character and raw practice work stay on this browser.</p>
+          <p className="claim-state-message">Class membership comes from the hosted roster. Your teacher will see supported classroom progress after you enter the academy.</p>
           {onRestartClaim ? (
             <button type="button" className="quiet-button compact-button" onClick={onRestartClaim}>Use a different class code</button>
           ) : null}

@@ -127,15 +127,35 @@ afterEach(() => {
 });
 
 describe('dashboard routes', () => {
-  it('keeps the normal student onboarding route rendering by default', async () => {
+  it('shows the branded public landing page at the root route by default', async () => {
     window.history.replaceState(null, '', '/');
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).toContain('Asterion');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.textContent).toContain('Admin login');
+    expect(container.querySelector('[data-testid="asterion-emblem"]')).toBeTruthy();
+    expect(container.textContent).not.toContain('Class access required');
     expect(container.textContent).not.toContain('Teacher class dashboard');
     expect(container.textContent).not.toContain('Admin Console');
     expect(container.textContent).not.toContain('Demo dashboard disabled');
+  });
+
+  it('opens the student claim flow from the public landing page', async () => {
+    window.history.replaceState(null, '', '/');
+    const container = await render(<App />);
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.hash).toBe('#/student');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
   it('does not expose teacher dashboard routes by default', async () => {
@@ -179,6 +199,12 @@ describe('dashboard routes', () => {
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     window.history.replaceState(null, '', '/');
     const container = await render(<App />);
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
 
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('This uses an existing hosted roster slot.');
@@ -295,8 +321,10 @@ describe('dashboard routes', () => {
 
     expect(window.location.pathname).toBe('/');
     expect(window.location.hash).toBe('');
-    expect(container.textContent).toContain('Hosted classroom access');
-    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.querySelector('[data-testid="asterion-emblem"]')).toBeTruthy();
+    expect(container.textContent).not.toContain('Class access required');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
@@ -316,8 +344,10 @@ describe('dashboard routes', () => {
 
     expect(window.location.pathname).toBe('/');
     expect(window.location.hash).toBe('');
-    expect(container.textContent).toContain('Hosted classroom access');
-    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.querySelector('[data-testid="asterion-emblem"]')).toBeTruthy();
+    expect(container.textContent).not.toContain('Class access required');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
@@ -599,8 +629,9 @@ describe('dashboard routes', () => {
     expect(window.location.pathname).toBe('/');
     expect(window.location.hash).toBe('');
     expect(container.querySelector('.dashboard-shell')).toBeNull();
-    expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.querySelector('[data-testid="asterion-emblem"]')).toBeTruthy();
     expect(container.textContent).not.toContain('Teacher Tools');
     expect(container.textContent).not.toContain('Open Export');
   });
@@ -618,6 +649,11 @@ describe('dashboard routes', () => {
     await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Route Reset Student' });
 
     const container = await render(<App />);
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
     const claimForm = container.querySelector('form[aria-label="Claim class roster slot"]') as HTMLFormElement;
     const [classCodeInput, rosterNameInput] = Array.from(claimForm.querySelectorAll('input')) as HTMLInputElement[];
 
@@ -646,7 +682,7 @@ describe('dashboard routes', () => {
     });
 
     expect(container.textContent).toContain('Student real name');
-    expect(container.textContent).toContain('Class membership is hosted. Your character and raw practice work stay on this browser.');
+    expect(container.textContent).toContain('Class membership comes from the hosted roster.');
     expect(container.textContent).not.toContain('Teacher Tools');
     expect(container.textContent).not.toContain('Open Export');
   });

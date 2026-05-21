@@ -6,6 +6,7 @@ import { dashboardDataService, isDashboardDataServiceError, type DashboardServic
 import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import { hasSupabaseRole, roleSummary, type SupabaseRoleContext } from '../../lib/supabaseRoleService';
 import type { AdminAuditEvent, AdminClassRecord, AdminTeacherRecord } from '../../types';
+import { DashboardShell, type DashboardNavItem, type DashboardTabItem } from './DashboardShell';
 import { SupabaseDiagnosticPanel } from './SupabaseDiagnosticPanel';
 
 interface AdminDashboardProps {
@@ -71,22 +72,15 @@ function DashboardBlockedState({
   onAuthStatusChange: (status: SupabaseAuthStatus) => void;
 }) {
   const showTeacherNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'teacher');
+  const navItems: DashboardNavItem[] = [
+    ...(showTeacherNav ? [{ label: 'Teacher', onClick: () => onNavigatePath('/teacher') }] : []),
+    { label: 'Admin', active: true, onClick: () => onNavigatePath('/admin') },
+    { label: 'Student app', onClick: () => onNavigatePath('/') },
+  ];
 
   return (
     <main className="app-shell app-view-dashboard">
-      <section className="dashboard-shell admin-dashboard">
-        <header className="dashboard-topbar">
-          <div>
-            <span className="mode-pill">Asterion dashboard</span>
-            <h1>{issue.title}</h1>
-            <p>{issue.message}</p>
-          </div>
-          <nav className="dashboard-nav" aria-label="Dashboard navigation">
-            {showTeacherNav ? <button type="button" onClick={() => onNavigatePath('/teacher')}>Teacher</button> : null}
-            <button type="button" className="active" onClick={() => onNavigatePath('/admin')}>Admin</button>
-            <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
-          </nav>
-        </header>
+      <DashboardShell className="admin-dashboard" kicker="Asterion dashboard" title={issue.title} description={issue.message} navItems={navItems}>
         <section className="dashboard-section">
           <div className="dashboard-section-heading">
             <div>
@@ -107,7 +101,7 @@ function DashboardBlockedState({
           />
         ) : null}
         <SupabaseDiagnosticPanel />
-      </section>
+      </DashboardShell>
     </main>
   );
 }
@@ -218,6 +212,21 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
 
   const teacherNameById = useMemo(() => Object.fromEntries(teachers.map((teacher) => [teacher.id, teacher.name])), [teachers]);
   const firstRunEmpty = source.kind === 'supabase' && teachers.length === 0 && classes.length === 0;
+  const navItems: DashboardNavItem[] = [
+    ...(showTeacherNav ? [{ label: 'Teacher', onClick: () => onNavigatePath('/teacher') }] : []),
+    { label: 'Admin', active: true, onClick: () => onNavigatePath('/admin') },
+    { label: 'Student app', onClick: () => onNavigatePath('/') },
+  ];
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  const adminTabs: DashboardTabItem[] = [
+    { label: 'Overview', active: true, onClick: () => scrollToSection('admin-overview') },
+    { label: 'Teachers', onClick: () => scrollToSection('admin-teachers') },
+    { label: 'Classes', onClick: () => scrollToSection('admin-classes') },
+    { label: 'Region access', onClick: () => scrollToSection('admin-region-access') },
+    { label: 'Diagnostics', onClick: () => scrollToSection('admin-diagnostics') },
+  ];
 
   async function handleAddTeacher(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -270,20 +279,15 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
 
   return (
     <main className="app-shell app-view-dashboard">
-      <section className="dashboard-shell admin-dashboard">
-        <header className="dashboard-topbar">
-          <div>
-            <span className="mode-pill">Asterion dashboard</span>
-            <h1>Admin Console</h1>
-            <p>{source.label}{readOnly ? ' · read-only' : ''}. Curriculum, topic routing, canonical content, and image paths are not editable here.</p>
-            {source.detail ? <p className="dashboard-muted">{source.detail}</p> : null}
-          </div>
-          <nav className="dashboard-nav" aria-label="Dashboard navigation">
-            {showTeacherNav ? <button type="button" onClick={() => onNavigatePath('/teacher')}>Teacher</button> : null}
-            <button type="button" className="active" onClick={() => onNavigatePath('/admin')}>Admin</button>
-            <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
-          </nav>
-        </header>
+      <DashboardShell
+        className="admin-dashboard"
+        kicker="Asterion dashboard"
+        title="Admin Console"
+        description={<>{source.label}{readOnly ? ' · read-only' : ''}. Curriculum, topic routing, canonical content, and image paths are not editable here.</>}
+        detail={source.detail}
+        navItems={navItems}
+        tabs={adminTabs}
+      >
 
         {source.kind === 'supabase' ? (
           <SupabaseAuthPanel
@@ -294,13 +298,36 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           />
         ) : null}
 
-        <section className="dashboard-section admin-identity">
+        <section id="admin-overview" className="dashboard-section admin-identity">
           <ShieldCheck size={22} />
           <div>
             <span className="dashboard-kicker">{hostedRoleContext ? 'Signed-in hosted admin' : 'Demo admin identity'}</span>
             <h2>{hostedRoleContext?.user.email ?? 'Support Admin'}</h2>
             <p>Organization: {adminOrganizationLabel} · role: {hostedRoleContext ? roleSummary(hostedRoleContext) : 'admin'} · destructive support actions are disabled in this v0. {readOnly ? 'Supabase writes are disabled.' : ''}</p>
           </div>
+        </section>
+
+        <section className="admin-overview-grid" aria-label="Admin overview">
+          <article className="snapshot-card primary-snapshot">
+            <span>Teachers</span>
+            <strong>{teachers.length}</strong>
+            <small>{teachers.filter((teacher) => teacher.status === 'active').length} active · {teachers.filter((teacher) => teacher.status === 'pending').length} pending</small>
+          </article>
+          <article className="snapshot-card">
+            <span>Classes</span>
+            <strong>{classes.length}</strong>
+            <small>{classes.filter((teacherClass) => teacherClass.status === 'active').length} active class records</small>
+          </article>
+          <article className="snapshot-card">
+            <span>Roster slots</span>
+            <strong>{classes.reduce((total, teacherClass) => total + teacherClass.rosterStudentIds.length, 0)}</strong>
+            <small>across visible classes</small>
+          </article>
+          <article className="snapshot-card">
+            <span>Locked regions</span>
+            <strong>{classes.reduce((total, teacherClass) => total + teacherClass.regionAccess.filter((access) => access.access !== 'open').length, 0)}</strong>
+            <small>still visible in exports and progress views</small>
+          </article>
         </section>
 
         {firstRunEmpty ? (
@@ -327,7 +354,9 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           </label>
         </section>
 
-        <SupabaseDiagnosticPanel />
+        <div id="admin-diagnostics">
+          <SupabaseDiagnosticPanel />
+        </div>
 
         {actionIssue ? (
           <section className="dashboard-section dashboard-error-state" role="alert">
@@ -342,7 +371,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
         ) : null}
 
         <div className="admin-grid">
-          <section className="dashboard-section">
+          <section id="admin-teachers" className="dashboard-section">
             <div className="dashboard-section-heading">
               <div>
                 <span className="dashboard-kicker">Teachers</span>
@@ -370,7 +399,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
             </div>
           </section>
 
-          <section className="dashboard-section">
+          <section id="admin-classes" className="dashboard-section">
             <div className="dashboard-section-heading">
               <div>
                 <span className="dashboard-kicker">Classes</span>
@@ -408,7 +437,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           </section>
         </div>
 
-        <section className="dashboard-section">
+        <section id="admin-region-access" className="dashboard-section">
           <div className="dashboard-section-heading">
             <div>
               <span className="dashboard-kicker">Region access</span>
@@ -458,7 +487,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
             ))}
           </div>
         </section>
-      </section>
+      </DashboardShell>
     </main>
   );
 }

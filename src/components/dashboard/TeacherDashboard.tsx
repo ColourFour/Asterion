@@ -6,6 +6,7 @@ import { dashboardDataService, isDashboardDataServiceError, type DashboardServic
 import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import { hasSupabaseRole, type SupabaseRoleContext } from '../../lib/supabaseRoleService';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
+import { DashboardShell, type DashboardNavItem, type DashboardTabItem } from './DashboardShell';
 
 interface TeacherDashboardProps {
   classId?: string;
@@ -100,22 +101,15 @@ function DashboardBlockedState({
   onAuthStatusChange: (status: SupabaseAuthStatus) => void;
 }) {
   const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
+  const navItems: DashboardNavItem[] = [
+    { label: 'Teacher', active: true, onClick: () => onNavigatePath('/teacher') },
+    ...(showAdminNav ? [{ label: 'Admin', onClick: () => onNavigatePath('/admin') }] : []),
+    { label: 'Student app', onClick: () => onNavigatePath('/') },
+  ];
 
   return (
     <main className="app-shell app-view-dashboard">
-      <section className="dashboard-shell teacher-dashboard">
-        <header className="dashboard-topbar teacher-class-header">
-          <div>
-            <span className="mode-pill">Teacher class dashboard</span>
-            <h1>{issue.title}</h1>
-            <p>{issue.message}</p>
-          </div>
-          <nav className="dashboard-nav" aria-label="Dashboard navigation">
-            <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
-            {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
-            <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
-          </nav>
-        </header>
+      <DashboardShell className="teacher-dashboard" kicker="Teacher class dashboard" title={issue.title} description={issue.message} navItems={navItems}>
         <section className="dashboard-section">
           <div className="dashboard-section-heading">
             <div>
@@ -135,7 +129,7 @@ function DashboardBlockedState({
             onStatusChange={onAuthStatusChange}
           />
         ) : null}
-      </section>
+      </DashboardShell>
     </main>
   );
 }
@@ -257,6 +251,77 @@ function TeacherProgressScopeNote() {
     <section className="dashboard-section dashboard-scope-note" aria-label="Teacher progress scope note">
       <strong>Practice feedback, not official grades</strong>
       <p>Teacher summaries use hosted classroom events and student self-mark entries. Raw working, notes, and full local practice state stay on each student's browser.</p>
+    </section>
+  );
+}
+
+function TeacherClassCards({
+  classes,
+  activeClassId,
+  dashboard,
+  onNavigatePath,
+}: {
+  classes: TeacherClass[];
+  activeClassId?: string;
+  dashboard?: TeacherClassDashboard;
+  onNavigatePath: (path: string) => void;
+}) {
+  if (classes.length === 0) {
+    return (
+      <section className="dashboard-section dashboard-empty-state" aria-label="Teacher classes">
+        <div>
+          <span className="dashboard-kicker">Classes</span>
+          <h2>No classes yet</h2>
+          <p>Create a class to start roster setup, region access, and teacher progress views.</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="dashboard-section teacher-classes-section" aria-label="Teacher classes">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Classes</span>
+          <h2>Your classes</h2>
+        </div>
+      </div>
+      <div className="teacher-class-card-grid">
+        {classes.map((teacherClass) => {
+          const selected = teacherClass.id === activeClassId;
+          const summary = selected ? dashboard?.progressSummary : undefined;
+          return (
+            <article key={teacherClass.id} className={`teacher-class-card${selected ? ' active' : ''}`}>
+              <div>
+                <strong>{teacherClass.name}</strong>
+                <span>{teacherClass.academicYearTerm} · {teacherClass.focus}</span>
+              </div>
+              <dl>
+                <div>
+                  <dt>Students</dt>
+                  <dd>{summary?.activeStudentCount ?? 'Open class'}</dd>
+                </div>
+                <div>
+                  <dt>Open regions</dt>
+                  <dd>{summary?.openRegionCount ?? 'Open class'}</dd>
+                </div>
+                <div>
+                  <dt>Class code</dt>
+                  <dd>{selected ? dashboard?.classCode.code ?? 'Open class' : 'Open class'}</dd>
+                </div>
+              </dl>
+              <div className="dashboard-card-actions">
+                <button type="button" className="primary-button compact-button" onClick={() => onNavigatePath(`/teacher/classes/${teacherClass.id}`)}>
+                  View students
+                </button>
+                <button type="button" className="quiet-button compact-button" onClick={() => onNavigatePath(`/teacher/classes/${teacherClass.id}/roster`)}>
+                  Roster
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </section>
   );
 }
@@ -567,6 +632,18 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
 
   const selectedClassId = dashboard?.class.id ?? classId ?? classes[0]?.id;
   const classRows = useMemo(() => dashboard?.studentRows ?? [], [dashboard]);
+  const dashboardNavItems: DashboardNavItem[] = [
+    { label: 'Teacher', active: true, onClick: () => onNavigatePath('/teacher') },
+    ...(showAdminNav ? [{ label: 'Admin', onClick: () => onNavigatePath('/admin') }] : []),
+    { label: 'Student app', onClick: () => onNavigatePath('/') },
+  ];
+  const teacherTabs: DashboardTabItem[] = dashboard ? [
+    { label: 'Classes', active: page === 'home', onClick: () => onNavigatePath('/teacher') },
+    { label: 'Students', active: page === 'class' || page === 'region', onClick: () => onNavigatePath(`/teacher/classes/${dashboard.class.id}`) },
+    { label: 'Resources / Controls', active: page === 'roster', onClick: () => onNavigatePath(`/teacher/classes/${dashboard.class.id}/roster`) },
+  ] : [
+    { label: 'Classes', active: true, onClick: () => onNavigatePath('/teacher') },
+  ];
 
   async function handleAddStudent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -662,19 +739,14 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   if (!dashboard) {
     return (
       <main className="app-shell app-view-dashboard">
-        <section className="dashboard-shell teacher-dashboard">
-          <header className="dashboard-topbar teacher-class-header">
-            <div>
-              <span className="mode-pill">Teacher class dashboard</span>
-              <h1>{classes.length === 0 ? 'Create a class' : 'Loading teacher dashboard'}</h1>
-              <p>{source.label}{readOnly ? ' · read-only' : ''}</p>
-            </div>
-            <nav className="dashboard-nav" aria-label="Dashboard navigation">
-              <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
-              {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
-              <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
-            </nav>
-          </header>
+        <DashboardShell
+          className="teacher-dashboard"
+          kicker="Teacher class dashboard"
+          title={classes.length === 0 ? 'Create a class' : 'Loading teacher dashboard'}
+          description={<>{source.label}{readOnly ? ' · read-only' : ''}</>}
+          navItems={dashboardNavItems}
+          tabs={teacherTabs}
+        >
           {source.kind === 'supabase' ? (
             <SupabaseAuthPanel
               className="dashboard-auth-panel"
@@ -718,27 +790,22 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             )}
             <p className="dashboard-muted">New classes start with all P3 regions set to Field Guide only. Open Algebra or any other region later through Region access.</p>
           </section>
-        </section>
+        </DashboardShell>
       </main>
     );
   }
 
   return (
     <main className="app-shell app-view-dashboard">
-      <section className="dashboard-shell teacher-dashboard">
-        <header className="dashboard-topbar teacher-class-header">
-          <div>
-            <span className="mode-pill">Teacher class dashboard</span>
-            <h1>{dashboard.class.name}</h1>
-            <p>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · {source.label}{readOnly ? ' · read-only' : ''}</p>
-            {source.detail ? <p className="dashboard-muted">{source.detail}</p> : null}
-          </div>
-          <nav className="dashboard-nav" aria-label="Dashboard navigation">
-            <button type="button" className="active" onClick={() => onNavigatePath('/teacher')}>Teacher</button>
-            {showAdminNav ? <button type="button" onClick={() => onNavigatePath('/admin')}>Admin</button> : null}
-            <button type="button" onClick={() => onNavigatePath('/')}>Student app</button>
-          </nav>
-        </header>
+      <DashboardShell
+        className="teacher-dashboard"
+        kicker="Teacher class dashboard"
+        title={dashboard.class.name}
+        description={<>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · {source.label}{readOnly ? ' · read-only' : ''}</>}
+        detail={source.detail}
+        navItems={dashboardNavItems}
+        tabs={teacherTabs}
+      >
 
         {source.kind === 'supabase' ? (
           <SupabaseAuthPanel
@@ -764,6 +831,10 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
         ) : null}
 
         <TeacherProgressScopeNote />
+
+        {page === 'home' ? (
+          <TeacherClassCards classes={classes} activeClassId={selectedClassId} dashboard={dashboard} onNavigatePath={onNavigatePath} />
+        ) : null}
 
         <section className="dashboard-control-row teacher-class-actions">
           <label>
@@ -849,7 +920,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             <ClassFirstDashboard dashboard={dashboard} onOpenRegion={openRegion} />
           </>
         ) : null}
-      </section>
+      </DashboardShell>
     </main>
   );
 }
