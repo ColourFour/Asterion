@@ -46,7 +46,7 @@ const PracticeView = lazy(() => import('./components/practice/PracticeView').the
 const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
 
 function loadValidatedPendingClassClaim(runtimeConfig: AsterionRuntimeConfig): StudentClaimState | undefined {
-  if (runtimeConfig.profile.name === 'classroom-pilot') {
+  if (runtimeConfig.studentClassClaimSource === 'supabase') {
     clearPendingClassClaim();
     return undefined;
   }
@@ -171,7 +171,7 @@ function staffPreviewInitialProfile(context: StaffPreviewClassroomContext): Omit
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
-  const hostedStudentRequired = runtimeConfig.profile.name === 'classroom-pilot';
+  const hostedStudentRequired = runtimeConfig.studentClassClaimSource === 'supabase';
   const [hostedClassroomReloadKey, setHostedClassroomReloadKey] = useState(0);
   const [hostedClassroomState, refreshHostedClassroomContext] = useStudentClassroomContext({
     enabled: hostedStudentRequired,

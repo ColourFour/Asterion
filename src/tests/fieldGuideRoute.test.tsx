@@ -94,7 +94,12 @@ async function waitForText(container: HTMLElement, text: string) {
 }
 
 beforeEach(() => {
+  vi.unstubAllEnvs();
+  vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'student-pilot');
+  vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'mock');
+  vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', 'mock');
   localStorage.clear();
+  sessionStorage.clear();
   const progress = emptyProgress();
   localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
     ...progress,
@@ -124,6 +129,8 @@ afterEach(() => {
     container.remove();
   }
   localStorage.clear();
+  sessionStorage.clear();
+  vi.unstubAllEnvs();
   window.history.replaceState(null, '', '/');
 });
 

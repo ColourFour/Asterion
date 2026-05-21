@@ -13,6 +13,7 @@ interface ClassCodeClaimFormProps {
 export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaimFormProps) {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const hostedClaimMode = runtimeConfig.studentClassClaimSource === 'supabase';
+  const hostedClaimConfigBlocked = hostedClaimMode && !runtimeConfig.supabaseConfigured;
   const [classCode, setClassCode] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [optionalEmail, setOptionalEmail] = useState('');
@@ -22,6 +23,13 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (hostedClaimConfigBlocked) {
+      setClaimState({
+        status: 'claim_unavailable',
+        message: runtimeConfig.studentClassClaimNotice ?? 'Hosted roster claiming is blocked until Supabase browser configuration is fixed.',
+      });
+      return;
+    }
     if (hostedClaimMode && authStatus !== 'signed-in') {
       setClaimState({
         status: 'unauthenticated',
@@ -59,7 +67,13 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
         <p className="claim-form-note">{hostedClaimMode ? 'This uses an existing hosted roster slot. It does not let students add themselves to a class.' : 'This starts a local browser profile, not a cross-device gradebook.'}</p>
       </div>
 
-      {hostedClaimMode ? (
+      {hostedClaimConfigBlocked ? (
+        <p className="form-error" role="alert">
+          {runtimeConfig.studentClassClaimNotice ?? 'Hosted roster claiming is blocked until Supabase browser configuration is fixed.'}
+        </p>
+      ) : null}
+
+      {hostedClaimMode && !hostedClaimConfigBlocked ? (
         <SupabaseAuthPanel
           className="class-code-auth-panel"
           title="Sign in before hosted roster claim"
@@ -80,10 +94,12 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
         <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} placeholder="Your name as your teacher entered it" required />
       </label>
 
-      <label>
-        Email, optional
-        <input type="email" value={optionalEmail} onChange={(event) => setOptionalEmail(event.target.value)} placeholder="Add later if preferred" />
-      </label>
+      {!hostedClaimMode ? (
+        <label>
+          Email, optional
+          <input type="email" value={optionalEmail} onChange={(event) => setOptionalEmail(event.target.value)} placeholder="Add later if preferred" />
+        </label>
+      ) : null}
 
       {claimState ? (
         <p className={`claim-state-message claim-${claimState.status}`} role="status">
@@ -93,8 +109,8 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
         <p className="claim-state-message">If your name is missing, ask your teacher. You cannot add yourself.</p>
       )}
 
-      <button className="primary-button" type="submit" disabled={submitting}>
-        {submitting ? 'Checking roster...' : hostedClaimMode && authStatus !== 'signed-in' ? 'Sign in to claim roster slot' : 'Claim roster slot'}
+      <button className="primary-button" type="submit" disabled={submitting || hostedClaimConfigBlocked}>
+        {hostedClaimConfigBlocked ? 'Supabase config required' : submitting ? 'Checking roster...' : hostedClaimMode && authStatus !== 'signed-in' ? 'Sign in to claim roster slot' : 'Claim roster slot'}
       </button>
 
       {runtimeConfig.profile.name === 'classroom-pilot' ? (

@@ -50,6 +50,30 @@ function mockRpcClient(row: unknown, error: unknown = null, session = true): Ast
   } as unknown as AsterionSupabaseClient;
 }
 
+function capturingRpcClient(
+  row: unknown,
+  calls: Array<{ functionName: string; params: Record<string, unknown> }>,
+  session = true,
+): AsterionSupabaseClient {
+  return {
+    auth: {
+      getSession: async () => ({
+        data: { session: session ? { user: { id: 'student-user-1', email: 'student@example.test' } } : null },
+        error: null,
+      }),
+    },
+    rpc: (functionName: string, params: Record<string, unknown>) => {
+      calls.push({ functionName, params });
+      return {
+        single: async () => ({
+          data: row,
+          error: null,
+        }),
+      };
+    },
+  } as unknown as AsterionSupabaseClient;
+}
+
 describe('student class claim service', () => {
   it('normalizes the safe RPC claim result shape used by pending profile setup', () => {
     expect(normalizeRosterClaimRpcResult({
@@ -75,7 +99,7 @@ describe('student class claim service', () => {
     });
   });
 
-  it('uses the Supabase RPC only when student claim source is explicitly Supabase', async () => {
+  it('uses the Supabase RPC when runtime student claim source is Supabase', async () => {
     const claim = await claimStudentRosterSlot(
       { classCode: 'AST-P3A', displayName: 'Lyra C.', optionalEmail: 'ignored@example.test' },
       {
@@ -97,6 +121,40 @@ describe('student class claim service', () => {
       status: 'claimed',
       rosterStudentId: 'membership-id',
       displayName: 'Lyra C.',
+    });
+  });
+
+  it('calls the hosted claim RPC with the generated class code and exact roster name', async () => {
+    const calls: Array<{ functionName: string; params: Record<string, unknown> }> = [];
+    const claim = await claimStudentRosterSlot(
+      { classCode: 'AST-E87C6A', displayName: 'Blake' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => capturingRpcClient({
+          status: 'claimed',
+          class_id: 'class-id',
+          class_name: 'Generated class',
+          class_code: 'AST-E87C6A',
+          teacher_id: 'teacher-id',
+          teacher_name: 'Teacher',
+          roster_membership_id: 'membership-id',
+          roster_name: 'Blake',
+          message: 'claimed',
+        }, calls),
+      },
+    );
+
+    expect(calls).toEqual([{
+      functionName: 'claim_class_roster_slot',
+      params: {
+        p_class_code: 'AST-E87C6A',
+        p_roster_name: 'Blake',
+      },
+    }]);
+    expect(claim).toMatchObject({
+      status: 'claimed',
+      classCode: 'AST-E87C6A',
+      displayName: 'Blake',
     });
   });
 

@@ -72,6 +72,23 @@ describe('runtime storage config', () => {
     expect(config.dashboardDataSource).toBe('supabase');
     expect(config.dashboardRoutesEnabled).toBe(true);
     expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.profileNotice).toContain('without VITE_ASTERION_APP_PROFILE=classroom-pilot');
+  });
+
+  it('forces Supabase student claims whenever Supabase dashboard data is active', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
+      VITE_SUPABASE_URL: 'https://example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(config.profile.name).toBe('custom');
+    expect(config.dashboardDataSource).toBe('supabase');
+    expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.studentClassClaimSourceExplicit).toBe(true);
+    expect(config.profile.supabaseRequired).toBe(true);
+    expect(config.profileNotice).toContain('Student claims are forced to Supabase');
+    expect(config.studentClassClaimNotice).toBeUndefined();
   });
 
   it('activates hosted classroom behavior through the explicit classroom pilot profile', () => {
@@ -123,6 +140,19 @@ describe('runtime storage config', () => {
     expect(config.supabaseConfigured).toBe(false);
     expect(config.profileNotice).toContain('Classroom pilot profile requires');
     expect(config.studentClassClaimNotice).toContain('Supabase roster claiming is active');
+    expect(config.studentClassClaimNotice).toContain('Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
+  });
+
+  it('blocks classroom-pilot hosted claims when Supabase browser config is invalid', () => {
+    const config = resolveRuntimeConfig({
+      VITE_ASTERION_APP_PROFILE: 'classroom-pilot',
+      VITE_SUPABASE_URL: 'not-a-url',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'publishable-key',
+    });
+
+    expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.supabaseConfigured).toBe(false);
+    expect(config.studentClassClaimNotice).toContain('configuration is invalid');
   });
 
   it('requires an explicit demo flag for dashboard routes', () => {

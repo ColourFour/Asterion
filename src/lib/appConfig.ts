@@ -44,12 +44,25 @@ function envString(value: string | boolean | undefined): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 
+function envValueEquals(value: string | boolean | undefined, expected: string): boolean {
+  return envString(value)?.trim().toLowerCase() === expected;
+}
+
 function configuredStorageMode(value: string | boolean | undefined): ProgressStorageMode {
   return value === 'hosted' ? 'hosted' : 'local';
 }
 
-function configuredStudentClassClaimSource(value: string | boolean | undefined): 'mock' | 'supabase' {
-  return value === 'supabase' ? 'supabase' : 'mock';
+function configuredStudentClassClaimSource(value: string | boolean | undefined): 'mock' | 'supabase' | undefined {
+  const normalized = envString(value)?.trim().toLowerCase();
+  if (normalized === 'mock' || normalized === 'supabase') return normalized;
+  return undefined;
+}
+
+function invalidStudentClassClaimSource(value: string | boolean | undefined): string | undefined {
+  const rawValue = envString(value)?.trim();
+  const normalized = rawValue?.toLowerCase();
+  if (!rawValue || normalized === 'mock' || normalized === 'supabase') return undefined;
+  return rawValue;
 }
 
 function configuredAppProfile(value: string | boolean | undefined): AsterionAppProfile | undefined {
@@ -59,10 +72,10 @@ function configuredAppProfile(value: string | boolean | undefined): AsterionAppP
 }
 
 function hasNonPilotRuntimeOverride(env: RuntimeEnv): boolean {
-  return env.VITE_ASTERION_STORAGE_MODE === 'hosted'
-    || env.VITE_ASTERION_DASHBOARD_DEMO === 'enabled'
-    || env.VITE_ASTERION_DASHBOARD_DATA_SOURCE === 'supabase'
-    || env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'supabase';
+  return envValueEquals(env.VITE_ASTERION_STORAGE_MODE, 'hosted')
+    || envValueEquals(env.VITE_ASTERION_DASHBOARD_DEMO, 'enabled')
+    || envValueEquals(env.VITE_ASTERION_DASHBOARD_DATA_SOURCE, 'supabase')
+    || envValueEquals(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE, 'supabase');
 }
 
 export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): AsterionRuntimeConfig {
@@ -80,10 +93,12 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     ? 'mock'
     : classroomPilotProfileActive ? 'supabase' : dashboardDataSource.effective;
   const supabaseDashboardRequested = effectiveDashboardDataSource === 'supabase';
+  const configuredClaimSource = configuredStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
+  const invalidClaimSource = invalidStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
   const studentClassClaimSource = studentPilotProfileActive
     ? 'mock'
-    : classroomPilotProfileActive ? 'supabase' : configuredStudentClassClaimSource(env.VITE_ASTERION_STUDENT_CLAIM_SOURCE);
-  const studentClassClaimSourceExplicit = classroomPilotProfileActive || typeof env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'string';
+    : classroomPilotProfileActive || supabaseDashboardRequested ? 'supabase' : configuredClaimSource ?? 'mock';
+  const studentClassClaimSourceExplicit = classroomPilotProfileActive || supabaseDashboardRequested || typeof env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'string';
   const dashboardRoutesEnabled = classroomPilotProfileActive || dashboardDemoEnabled || supabaseDashboardRequested;
   const profileNotices = [
     studentPilotProfileActive && hasNonPilotRuntimeOverride(env)
@@ -91,6 +106,12 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       : undefined,
     classroomPilotProfileActive && !supabase.isConfigured
       ? 'Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY before hosted classroom routes and claims can be used.'
+      : undefined,
+    !explicitProfile && supabaseDashboardRequested
+      ? 'Supabase dashboard data is active without VITE_ASTERION_APP_PROFILE=classroom-pilot. Student claims are forced to Supabase, but deployment should set the classroom-pilot profile.'
+      : undefined,
+    invalidClaimSource
+      ? `Unsupported student claim source "${invalidClaimSource}" ignored. Use "mock" or "supabase".`
       : undefined,
   ].filter((notice): notice is string => Boolean(notice));
   const profileNotice = profileNotices.length ? profileNotices.join(' ') : undefined;
@@ -101,8 +122,8 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       explicit: explicitProfile,
       staticHostingCompatible: true,
       browserLocalProgress: true,
-      supabaseRequired: classroomPilotProfileActive,
-      hostedProgressSyncEnabled: classroomPilotProfileActive,
+      supabaseRequired: classroomPilotProfileActive || supabaseDashboardRequested || studentClassClaimSource === 'supabase',
+      hostedProgressSyncEnabled: classroomPilotProfileActive || supabaseDashboardRequested,
       aiMarkingEnabled: false,
       productionDashboardAuthority: classroomPilotProfileActive,
       dashboardDemoBehaviorEnabled: dashboardDemoEnabled,
@@ -126,7 +147,9 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     studentClassClaimSource,
     studentClassClaimSourceExplicit,
     studentClassClaimNotice: studentClassClaimSource === 'supabase' && !supabase.isConfigured
-      ? 'Supabase roster claiming is active, but Supabase browser configuration is incomplete.'
+      ? supabase.invalid.length > 0
+        ? 'Supabase roster claiming is active, but Supabase browser configuration is invalid. VITE_SUPABASE_URL must be a valid HTTPS URL.'
+        : 'Supabase roster claiming is active, but Supabase browser configuration is incomplete. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.'
       : undefined,
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
   };

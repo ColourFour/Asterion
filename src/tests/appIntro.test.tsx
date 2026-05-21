@@ -180,9 +180,40 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Teacher login');
     expect(container.textContent).toContain('Admin login');
     expect(container.textContent).toContain('Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
+    expect(container.textContent).toContain('Supabase roster claiming is active, but Supabase browser configuration is incomplete.');
+    expect(container.textContent).toContain('Supabase config required');
+    expect(Array.from(container.querySelectorAll('button')).find((button) => (
+      button.textContent === 'Supabase config required'
+    ))?.hasAttribute('disabled')).toBe(true);
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
+    expect(container.textContent).not.toContain('Email, optional');
     expect(container.textContent).not.toContain('Progress is saved on this browser/device only.');
     expect(container.textContent).not.toContain('local-first classroom mode');
+  });
+
+  it('does not accept a stored local pending claim in classroom pilot hosted claim mode', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', undefined);
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', undefined);
+    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+      status: 'claimed',
+      classId: 'class-1',
+      className: 'Local class',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-1',
+      teacherName: 'Teacher',
+      rosterStudentId: 'roster-1',
+      displayName: 'Maya Q.',
+      message: 'Local claim',
+    }));
+
+    const container = await render(<App />);
+
+    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(container.textContent).toContain('Hosted classroom access');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).not.toContain('Local class');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
   it('requires a valid class-code roster claim before saving local progress', async () => {

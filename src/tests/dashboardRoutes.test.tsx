@@ -175,13 +175,16 @@ describe('dashboard routes', () => {
     expect(container.textContent).not.toContain('Export CSV');
   });
 
-  it('keeps normal student startup independent when Supabase dashboard mode lacks config', async () => {
+  it('forces hosted student claim mode when Supabase dashboard mode is active without classroom profile', async () => {
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     window.history.replaceState(null, '', '/');
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).toContain('Sign in to claim roster slot');
+    expect(container.textContent).toContain('Student claims are forced to Supabase');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
     expect(container.textContent).not.toContain('Supabase dashboard not configured');
     expect(container.textContent).not.toContain('Teacher class dashboard');
   });
@@ -274,6 +277,48 @@ describe('dashboard routes', () => {
     expect(container.textContent).toContain('The admin console requires a signed-in Supabase session and an active admin role.');
     expect(container.textContent).not.toContain('Admin Console');
     expect(container.textContent).not.toContain('Teacher list');
+  });
+
+  it('routes the admin Student app button to hosted classroom-pilot student entry', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+    window.history.replaceState(null, '', '/#/admin');
+    const container = await render(<App />);
+    await waitForText(container, 'Supabase sign-in required');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Student app')?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.pathname).toBe('/');
+    expect(window.location.hash).toBe('');
+    expect(container.textContent).toContain('Hosted classroom access');
+    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
+  });
+
+  it('routes the teacher Student app button to hosted classroom-pilot student entry', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+    window.history.replaceState(null, '', '/#/teacher');
+    const container = await render(<App />);
+    await waitForText(container, 'Supabase sign-in required');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Student app')?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(window.location.pathname).toBe('/');
+    expect(window.location.hash).toBe('');
+    expect(container.textContent).toContain('Hosted classroom access');
+    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
   it('requires the explicit demo flag before dashboards can render before onboarding', async () => {
