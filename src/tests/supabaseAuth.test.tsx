@@ -70,6 +70,7 @@ afterEach(() => {
     container.remove();
   }
   document.body.innerHTML = '';
+  window.localStorage.clear();
 });
 
 describe('Supabase Auth shell', () => {
@@ -90,6 +91,7 @@ describe('Supabase Auth shell', () => {
   });
 
   it('sends an email OTP and shows the check-your-email state', async () => {
+    window.history.replaceState(null, '', '/#/teacher');
     const fake = createAuthClient(null);
     const container = await render(
       <SupabaseAuthPanel hookOptions={{ config: validConfig, createClient: async () => fake.client }} />,
@@ -105,9 +107,12 @@ describe('Supabase Auth shell', () => {
     expect(fake.signInWithOtp).toHaveBeenCalledWith({
       email: 'teacher@example.test',
       options: {
-        emailRedirectTo: window.location.href,
+        emailRedirectTo: window.location.origin,
       },
     });
+    const [signInInput] = fake.signInWithOtp.mock.calls[0] as unknown as [{ options: { emailRedirectTo: string } }];
+    expect(signInInput.options.emailRedirectTo).not.toContain('#/teacher');
+    expect(window.localStorage.getItem('asterion:supabase-auth:intended-dashboard-route')).toBe('/teacher');
     expect(container.textContent).toContain('Check your email for the Asterion sign-in link.');
     expect(container.textContent).toContain('Sign-in does not guarantee teacher or admin access.');
   });

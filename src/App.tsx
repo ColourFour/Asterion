@@ -29,6 +29,7 @@ import {
 } from './lib/regionRoutes';
 import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
 import { useStudentClassroomContext, type StudentClassroomContext } from './lib/studentClassroomService';
+import { recoverSupabaseAuthRedirect } from './lib/supabaseAuthRedirect';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
@@ -184,6 +185,18 @@ export default function App() {
     return () => {
       window.removeEventListener('popstate', syncPath);
       window.removeEventListener('hashchange', syncPath);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void recoverSupabaseAuthRedirect().then((intendedRoute) => {
+      if (!cancelled && intendedRoute) {
+        setDashboardLocation(`${window.location.pathname}${window.location.hash}`);
+      }
+    });
+    return () => {
+      cancelled = true;
     };
   }, []);
 

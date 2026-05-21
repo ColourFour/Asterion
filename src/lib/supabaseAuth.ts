@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createSupabaseBrowserClient } from './supabaseClient';
 import { resolveSupabaseConfig, type SupabaseConfig } from './supabaseConfig';
+import {
+  dashboardAuthRouteFromLocation,
+  saveSupabaseAuthIntendedRoute,
+  supabaseMagicLinkRedirectTo,
+} from './supabaseAuthRedirect';
 
 export type SupabaseAuthStatus = 'loading' | 'signed-out' | 'signed-in' | 'error';
 
@@ -184,10 +189,13 @@ export function useSupabaseAuthSession(options: SupabaseAuthHookOptions = {}): S
     const client = await ensureClient();
     if (!client) return { ok: false, error: 'Supabase Auth is unavailable.' };
 
+    if (!redirectTo) {
+      saveSupabaseAuthIntendedRoute(dashboardAuthRouteFromLocation(window.location.pathname, window.location.hash));
+    }
     const result = await client.auth.signInWithOtp({
       email: trimmed,
       options: {
-        emailRedirectTo: redirectTo ?? window.location.href,
+        emailRedirectTo: redirectTo ?? supabaseMagicLinkRedirectTo(),
       },
     });
     if (result.error) {
