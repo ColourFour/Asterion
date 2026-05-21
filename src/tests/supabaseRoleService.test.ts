@@ -92,10 +92,12 @@ function createFakeRoleClient({
   userId,
   email,
   rows = baseRows,
+  rpc,
 }: {
   userId?: string;
   email?: string;
   rows?: typeof baseRows;
+  rpc?: SupabaseRoleClient['rpc'];
 }) {
   const tableReads: string[] = [];
   const queryOps: string[] = [];
@@ -158,6 +160,7 @@ function createFakeRoleClient({
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe } } })),
     },
     from: from as unknown as SupabaseRoleClient['from'],
+    rpc,
   };
 
   return {
@@ -207,6 +210,36 @@ describe('Supabase role service', () => {
     expect(hasSupabaseRole(state.context, 'teacher')).toBe(false);
     expect(hasSupabaseRole(state.context, 'admin')).toBe(false);
     expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles', 'student_profiles', 'organizations']));
+  });
+
+  it('attempts pending teacher activation after sign-in before reading hosted roles', async () => {
+    const rpc = vi.fn(async () => ({ data: [], error: null }));
+    const fake = createFakeRoleClient({ userId: 'teacher-user-1', email: 'teacher@example.school', rpc });
+
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    expect(rpc).toHaveBeenCalledWith('activate_pending_teacher_role_for_current_user');
+    expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles']));
+  });
+
+  it('does not let sign-in alone grant teacher access when no hosted role is activated', async () => {
+    const rpc = vi.fn(async () => ({ data: [], error: null }));
+    const rows = {
+      ...baseRows,
+      user_roles: [],
+      teacher_profiles: [],
+      student_profiles: [],
+    };
+    const fake = createFakeRoleClient({ userId: 'unapproved-user', email: 'wrong@example.school', rows, rpc });
+
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(state.context.roleNames).toEqual([]);
+    expect(hasSupabaseRole(state.context, 'teacher')).toBe(false);
+    expect(rpc).toHaveBeenCalledWith('activate_pending_teacher_role_for_current_user');
   });
 
   it('loads multi-role teacher/admin context through the service boundary', async () => {

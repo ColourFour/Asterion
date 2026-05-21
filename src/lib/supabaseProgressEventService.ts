@@ -127,6 +127,10 @@ async function createDefaultClient(config: SupabaseConfig): Promise<SupabaseProg
 }
 
 export async function recordHostedProgressEvent(input: RecordHostedProgressEventInput): Promise<HostedProgressEventResult> {
+  if (input.classroomContext.accessMode === 'staff_preview') {
+    return { status: 'skipped', reason: 'Staff preview progress is not recorded as student work.' };
+  }
+
   const config = input.config ?? resolveSupabaseConfig();
   if (config.missing.length > 0 || !config.isConfigured) {
     return { status: 'skipped', reason: 'Supabase browser configuration is not available.' };

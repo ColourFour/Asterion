@@ -10,6 +10,7 @@ export const demoIds = {
   adminUser: '00000000-0000-0000-0000-000000000101',
   teacherHypatiaUser: '00000000-0000-0000-0000-000000000201',
   teacherNoetherUser: '00000000-0000-0000-0000-000000000202',
+  teacherPendingUser: '00000000-0000-0000-0000-000000000203',
   studentOrionUser: '00000000-0000-0000-0000-000000000301',
   studentVegaUser: '00000000-0000-0000-0000-000000000302',
   studentLyraUser: '00000000-0000-0000-0000-000000000303',
@@ -33,6 +34,7 @@ export const requiredTables = [
   'organizations',
   'user_roles',
   'teacher_profiles',
+  'teacher_invites',
   'student_profiles',
   'classes',
   'class_memberships',
@@ -195,6 +197,109 @@ function addTeacherByEmailCountSql({ email, displayName }) {
       )
     )
     select count(*) from teacher where lower(email) = lower('${sqlString(email)}');
+  `;
+}
+
+function pendingTeacherInviteCountSql({ email, displayName }) {
+  return `
+    with teacher as (
+      select *
+      from public.admin_add_teacher_by_email(
+        '${sqlString(email)}',
+        '${sqlString(displayName)}',
+        '${demoIds.organization}'
+      )
+    )
+    select count(*)
+    from teacher
+    where lower(email) = lower('${sqlString(email)}')
+      and status = 'pending'
+      and user_id is null
+      and exists (
+        select 1
+        from public.teacher_invites ti
+        where ti.organization_id = '${demoIds.organization}'
+          and ti.email = lower('${sqlString(email)}')
+          and ti.status = 'pending'
+      );
+  `;
+}
+
+function setupPendingTeacherActivationSql({ email, displayName, status = 'pending' }) {
+  return `
+    insert into auth.users (
+      id,
+      instance_id,
+      aud,
+      role,
+      email,
+      encrypted_password,
+      email_confirmed_at,
+      raw_app_meta_data,
+      raw_user_meta_data,
+      created_at,
+      updated_at
+    )
+    values (
+      '${demoIds.teacherPendingUser}',
+      '00000000-0000-0000-0000-000000000000',
+      'authenticated',
+      'authenticated',
+      '${sqlString(email)}',
+      extensions.crypt('asterion-demo-password', extensions.gen_salt('bf')),
+      now(),
+      '{"provider":"email","providers":["email"]}'::jsonb,
+      '{"name":"Pending Teacher"}'::jsonb,
+      now(),
+      now()
+    )
+    on conflict (id) do update
+    set aud = excluded.aud,
+        role = excluded.role,
+        email = excluded.email,
+        email_confirmed_at = excluded.email_confirmed_at,
+        raw_app_meta_data = excluded.raw_app_meta_data,
+        raw_user_meta_data = excluded.raw_user_meta_data,
+        updated_at = excluded.updated_at;
+
+    insert into public.teacher_invites (organization_id, email, display_name, status, created_by)
+    values (
+      '${demoIds.organization}',
+      lower('${sqlString(email)}'),
+      '${sqlString(displayName)}',
+      '${sqlString(status)}',
+      '${demoIds.adminUser}'
+    );
+  `;
+}
+
+function activatePendingTeacherCountSql({ email }) {
+  return `
+    with teacher as (
+      select *
+      from public.activate_pending_teacher_role_for_current_user()
+    )
+    select count(*)
+    from teacher
+    where user_id = '${demoIds.teacherPendingUser}'
+      and lower(email) = lower('${sqlString(email)}')
+      and status = 'active'
+      and exists (
+        select 1
+        from public.user_roles ur
+        where ur.user_id = '${demoIds.teacherPendingUser}'
+          and ur.organization_id = '${demoIds.organization}'
+          and ur.role = 'teacher'
+          and ur.status = 'active'
+      )
+      and exists (
+        select 1
+        from public.teacher_invites ti
+        where ti.organization_id = '${demoIds.organization}'
+          and ti.email = lower('${sqlString(email)}')
+          and ti.status = 'activated'
+          and ti.activated_user_id = '${demoIds.teacherPendingUser}'
+      );
   `;
 }
 
@@ -987,6 +1092,78 @@ export function buildLiveRlsChecks() {
           displayName: 'Teacher Noether Verification',
         }),
         demoIds.adminUser,
+      ),
+    },
+    {
+      name: 'admin can pre-authorize teacher email before auth user exists',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        pendingTeacherInviteCountSql({
+          email: 'pending-teacher@asterion.invalid',
+          displayName: 'Pending Teacher Verification',
+        }),
+        demoIds.adminUser,
+      ),
+    },
+    {
+      name: 'pending teacher activates after sign-in with matching email',
+      kind: 'count',
+      expected: 1,
+      sql: asRole(
+        'authenticated',
+        activatePendingTeacherCountSql({
+          email: 'activate-teacher@asterion.invalid',
+        }),
+        demoIds.teacherPendingUser,
+        setupPendingTeacherActivationSql({
+          email: 'activate-teacher@asterion.invalid',
+          displayName: 'Activate Teacher Verification',
+        }),
+      ),
+    },
+    {
+      name: 'wrong teacher email cannot activate pending teacher access',
+      kind: 'count',
+      expected: 0,
+      sql: asRole(
+        'authenticated',
+        activatePendingTeacherCountSql({
+          email: 'someone-else@asterion.invalid',
+        }),
+        demoIds.teacherPendingUser,
+        setupPendingTeacherActivationSql({
+          email: 'wrong-signed-in-email@asterion.invalid',
+          displayName: 'Wrong Email Verification',
+        }).replaceAll('someone-else@asterion.invalid', 'wrong-signed-in-email@asterion.invalid')
+          + `
+            update auth.users
+            set email = 'wrong-signed-in-email@asterion.invalid'
+            where id = '${demoIds.teacherPendingUser}';
+
+            update public.teacher_invites
+            set email = 'someone-else@asterion.invalid'
+            where organization_id = '${demoIds.organization}'
+              and display_name = 'Wrong Email Verification';
+          `,
+      ),
+    },
+    {
+      name: 'archived pending teacher invite does not activate',
+      kind: 'count',
+      expected: 0,
+      sql: asRole(
+        'authenticated',
+        activatePendingTeacherCountSql({
+          email: 'archived-teacher@asterion.invalid',
+        }),
+        demoIds.teacherPendingUser,
+        setupPendingTeacherActivationSql({
+          email: 'archived-teacher@asterion.invalid',
+          displayName: 'Archived Teacher Verification',
+          status: 'archived',
+        }),
       ),
     },
     {

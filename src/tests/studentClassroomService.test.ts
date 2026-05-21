@@ -12,6 +12,17 @@ const validConfig = resolveSupabaseConfig({
 });
 
 const fixtureRows = {
+  user_roles: [
+    {
+      id: 'role-student',
+      user_id: 'student-user-1',
+      organization_id: 'org-1',
+      role: 'student',
+      status: 'active',
+      created_at: '2026-05-01T08:00:00.000Z',
+      updated_at: '2026-05-12T08:00:00.000Z',
+    },
+  ],
   student_profiles: [
     {
       id: 'student-profile-1',
@@ -90,9 +101,13 @@ type FixtureRows = Record<FixtureTable, Array<Record<string, unknown>>>;
 
 function createFakeClient({
   session = true,
+  userId = 'student-user-1',
+  email = 'student@example.school',
   rows = fixtureRows,
 }: {
   session?: boolean;
+  userId?: string;
+  email?: string;
   rows?: FixtureRows;
 } = {}) {
   const tableReads: string[] = [];
@@ -148,7 +163,7 @@ function createFakeClient({
       getSession: vi.fn(async () => ({
         data: {
           session: session
-            ? { user: { id: 'student-user-1', email: 'student@example.school' } }
+            ? { user: { id: userId, email } }
             : null,
         },
         error: null,
@@ -190,11 +205,85 @@ describe('student classroom service', () => {
       'class_region_access',
     ]));
     expect(fake.queryOps).toEqual(expect.arrayContaining([
+      'user_roles.eq:user_id',
       'student_profiles.eq:user_id',
       'class_memberships.eq:claimed_by_user_id',
       'class_memberships.eq:roster_status',
       'class_region_access.eq:class_id',
     ]));
+  });
+
+  it('returns staff-preview context for hosted admin without requiring a claimed roster slot', async () => {
+    const fake = createFakeClient({
+      userId: 'admin-user-1',
+      email: 'admin@example.school',
+      rows: {
+        ...fixtureRows,
+        user_roles: [{
+          id: 'role-admin',
+          user_id: 'admin-user-1',
+          organization_id: 'org-1',
+          role: 'admin',
+          status: 'active',
+          created_at: '2026-05-01T08:00:00.000Z',
+          updated_at: '2026-05-12T08:00:00.000Z',
+        }],
+        student_profiles: [],
+        class_memberships: [],
+      },
+    });
+
+    const state = await getCurrentStudentClassroomContext({
+      config: validConfig,
+      createClient: async () => fake.client,
+    });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') throw new Error('expected ready state');
+    expect(state.context).toMatchObject({
+      accessMode: 'staff_preview',
+      staffRole: 'admin',
+      claim: {
+        status: 'unclaimed',
+        message: 'Staff preview: regions are unlocked and progress is not recorded as student work.',
+      },
+    });
+    expect(state.context.regionAccess.length).toBeGreaterThan(0);
+    expect(state.context.regionAccess.every((item) => item.access === 'open')).toBe(true);
+    expect(fake.tableReads).toEqual(['user_roles']);
+  });
+
+  it('returns staff-preview context for hosted teacher without requiring class-region access rows', async () => {
+    const fake = createFakeClient({
+      userId: 'teacher-user-1',
+      email: 'teacher@example.school',
+      rows: {
+        ...fixtureRows,
+        user_roles: [{
+          id: 'role-teacher',
+          user_id: 'teacher-user-1',
+          organization_id: 'org-1',
+          role: 'teacher',
+          status: 'active',
+          created_at: '2026-05-01T08:00:00.000Z',
+          updated_at: '2026-05-12T08:00:00.000Z',
+        }],
+        student_profiles: [],
+        class_memberships: [],
+        class_region_access: [],
+      },
+    });
+
+    const state = await getCurrentStudentClassroomContext({
+      config: validConfig,
+      createClient: async () => fake.client,
+    });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') throw new Error('expected ready state');
+    expect(state.context.accessMode).toBe('staff_preview');
+    expect(state.context.regionAccess.find((item) => item.regionId === 'trig-observatory')?.access).toBe('open');
+    expect(fake.tableReads).toEqual(['user_roles']);
   });
 
   it('does not grant app context when the student is signed out', async () => {

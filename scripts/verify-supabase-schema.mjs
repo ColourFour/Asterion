@@ -13,6 +13,7 @@ const requiredTables = [
   'organizations',
   'user_roles',
   'teacher_profiles',
+  'teacher_invites',
   'student_profiles',
   'classes',
   'class_memberships',
@@ -56,7 +57,7 @@ function assertStaticContract(sql) {
   if (!existsSync(envExamplePath)) fail('.env.example is missing');
 
   for (const table of requiredTables) {
-    const tablePattern = new RegExp(`create\\s+table\\s+public\\.${table}\\b`, 'i');
+    const tablePattern = new RegExp(`create\\s+table\\s+(?:if\\s+not\\s+exists\\s+)?public\\.${table}\\b`, 'i');
     if (!tablePattern.test(sql)) fail(`Missing table public.${table}`);
 
     const rlsPattern = new RegExp(`alter\\s+table\\s+public\\.${table}\\s+enable\\s+row\\s+level\\s+security`, 'i');
@@ -95,6 +96,7 @@ function assertStaticContract(sql) {
 function assertHostedSetupWrites(sql) {
   const requiredRpcs = [
     'admin_add_teacher_by_email',
+    'activate_pending_teacher_role_for_current_user',
     'create_class_with_region_access',
     'add_class_roster_student',
     'archive_class_roster_student',
@@ -115,7 +117,8 @@ function assertHostedSetupWrites(sql) {
   const addTeacherPatterns = [
     [/security\s+definer/i, 'admin_add_teacher_by_email must be SECURITY DEFINER'],
     [/from\s+auth\.users/i, 'admin_add_teacher_by_email must look up an existing auth.users row'],
-    [/auth_user_missing/i, 'admin_add_teacher_by_email must reject teachers who have not signed in once'],
+    [/insert\s+into\s+public\.teacher_invites/i, 'admin_add_teacher_by_email must create pending teacher invites when no auth user exists'],
+    [/on\s+conflict\s+\(organization_id,\s*email\)\s+where\s+status\s*=\s*'pending'/i, 'admin_add_teacher_by_email must deduplicate pending teacher emails per organization'],
     [/public\.is_admin\(/i, 'admin_add_teacher_by_email must require an admin role'],
     [/insert\s+into\s+public\.user_roles/i, 'admin_add_teacher_by_email must activate a teacher role row'],
     [/insert\s+into\s+public\.teacher_profiles/i, 'admin_add_teacher_by_email must create or update a teacher profile'],
@@ -125,6 +128,28 @@ function assertHostedSetupWrites(sql) {
 
   for (const [pattern, message] of addTeacherPatterns) {
     if (!pattern.test(addTeacherBody) && !pattern.test(sql)) fail(message);
+  }
+
+  const activateTeacherStart = sql.search(/create\s+or\s+replace\s+function\s+public\.activate_pending_teacher_role_for_current_user\b/i);
+  const activateTeacherEnd = sql.indexOf('comment on function public.activate_pending_teacher_role_for_current_user', activateTeacherStart);
+  if (activateTeacherStart === -1 || activateTeacherEnd === -1) fail('Missing documentation comment for public.activate_pending_teacher_role_for_current_user');
+  const activateTeacherBody = sql.slice(activateTeacherStart, activateTeacherEnd);
+
+  const activateTeacherPatterns = [
+    [/security\s+definer/i, 'activate_pending_teacher_role_for_current_user must be SECURITY DEFINER'],
+    [/auth\.uid\(\)/i, 'activate_pending_teacher_role_for_current_user must use auth.uid()'],
+    [/from\s+auth\.users/i, 'activate_pending_teacher_role_for_current_user must read the signed-in auth user email server-side'],
+    [/email_confirmed_at/i, 'activate_pending_teacher_role_for_current_user must require a verified Supabase Auth email'],
+    [/public\.teacher_invites/i, 'activate_pending_teacher_role_for_current_user must consume pending teacher invites'],
+    [/status\s*=\s*'pending'/i, 'activate_pending_teacher_role_for_current_user must activate only pending invites'],
+    [/insert\s+into\s+public\.user_roles/i, 'activate_pending_teacher_role_for_current_user must create or reactivate the hosted teacher role'],
+    [/insert\s+into\s+public\.teacher_profiles/i, 'activate_pending_teacher_role_for_current_user must create or update the hosted teacher profile'],
+    [/grant\s+execute\s+on\s+function\s+public\.activate_pending_teacher_role_for_current_user\(\)\s+to\s+authenticated/i, 'activate_pending_teacher_role_for_current_user must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.activate_pending_teacher_role_for_current_user\(\)\s+from\s+anon/i, 'activate_pending_teacher_role_for_current_user must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of activateTeacherPatterns) {
+    if (!pattern.test(activateTeacherBody) && !pattern.test(sql)) fail(message);
   }
 
   const createClassStart = sql.search(/create\s+or\s+replace\s+function\s+public\.create_class_with_region_access\b/i);

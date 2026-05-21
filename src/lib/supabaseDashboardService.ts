@@ -77,11 +77,25 @@ interface SupabaseDashboardServiceOptions {
 
 interface TeacherProfileRow {
   id: string;
-  user_id: string;
+  user_id: string | null;
   organization_id: string;
   display_name: string;
   email: string | null;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'pending';
+  created_at: string;
+  updated_at: string;
+}
+
+interface TeacherInviteRow {
+  id: string;
+  organization_id: string;
+  email: string;
+  display_name: string;
+  status: 'pending' | 'activated' | 'archived' | 'disabled';
+  created_by: string | null;
+  activated_user_id: string | null;
+  activated_teacher_profile_id: string | null;
+  activated_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -149,6 +163,7 @@ interface StudentProgressEventRow {
 
 interface ClassroomRows {
   teachers: TeacherProfileRow[];
+  teacherInvites: TeacherInviteRow[];
   classes: ClassRow[];
   memberships: ClassMembershipRow[];
   regionAccess: ClassRegionAccessRow[];
@@ -157,6 +172,7 @@ interface ClassroomRows {
 
 const classColumns = 'id, organization_id, teacher_id, name, course_code, academic_year_or_term, class_code, status, created_at, updated_at';
 const teacherColumns = 'id, user_id, organization_id, display_name, email, status, created_at, updated_at';
+const teacherInviteColumns = 'id, organization_id, email, display_name, status, created_by, activated_user_id, activated_teacher_profile_id, activated_at, created_at, updated_at';
 const membershipColumns = 'id, class_id, student_profile_id, roster_name, roster_status, claimed_by_user_id, claimed_at, archived_at, created_at, updated_at';
 const regionAccessColumns = 'id, class_id, region_id, access_status, updated_by_user_id, updated_at, created_at';
 const progressEventColumns = 'id, organization_id, class_id, class_membership_id, student_profile_id, actor_user_id, region_id, activity_type, content_id, question_id, skill_id, event_type, event_payload, created_at';
@@ -170,9 +186,6 @@ function queryErrorMessage(error: unknown): string {
 
 function rpcErrorMessage(error: unknown): string {
   const message = queryErrorMessage(error);
-  if (message.includes('auth_user_missing')) {
-    return 'That email has not signed in yet. Ask the teacher to open Asterion and request a magic link once, then try again.';
-  }
   return message;
 }
 
@@ -642,6 +655,18 @@ function adminTeacherFromRows(teacher: TeacherProfileRow, classes: ClassRow[]): 
   };
 }
 
+function adminTeacherFromInvite(invite: TeacherInviteRow): AdminTeacherRecord {
+  return {
+    id: invite.id,
+    name: invite.display_name,
+    email: invite.email,
+    assignedClassIds: [],
+    status: 'pending',
+    createdAt: invite.created_at,
+    updatedAt: invite.updated_at,
+  };
+}
+
 export function createSupabaseDashboardDataService(options: SupabaseDashboardServiceOptions = {}): DashboardDataService {
   const config = options.config ?? supabaseConfig;
   const now = options.now ?? (() => new Date().toISOString());
@@ -690,6 +715,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     if (classId && classIds.length === 0) {
       return {
         teachers: [],
+        teacherInvites: [],
         classes,
         memberships: [],
         regionAccess: [],
@@ -700,10 +726,14 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
     const teachers = teacherIds.length
       ? await readRows(client.from<TeacherProfileRow>('teacher_profiles').select(teacherColumns).in('id', teacherIds).order('display_name', { ascending: true }), 'teacher_profiles')
       : await readRows(client.from<TeacherProfileRow>('teacher_profiles').select(teacherColumns).order('display_name', { ascending: true }), 'teacher_profiles');
+    const teacherInvites = classId
+      ? []
+      : await readRows(client.from<TeacherInviteRow>('teacher_invites').select(teacherInviteColumns).eq('status', 'pending').order('display_name', { ascending: true }), 'teacher_invites');
 
     if (classIds.length === 0) {
       return {
         teachers,
+        teacherInvites,
         classes,
         memberships: [],
         regionAccess: [],
@@ -719,6 +749,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
 
     return {
       teachers,
+      teacherInvites,
       classes,
       memberships,
       regionAccess,
@@ -765,7 +796,12 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
 
   async function listAdminTeacherRecords(): Promise<AdminTeacherRecord[]> {
     const rows = await readClassroomRows();
-    return rows.teachers.map((teacher) => adminTeacherFromRows(teacher, rows.classes));
+    const activeTeacherEmails = new Set(rows.teachers.map((teacher) => (teacher.email ?? '').toLowerCase()).filter(Boolean));
+    const activeTeachers = rows.teachers.map((teacher) => adminTeacherFromRows(teacher, rows.classes));
+    const pendingTeachers = rows.teacherInvites
+      .filter((invite) => !activeTeacherEmails.has(invite.email.toLowerCase()))
+      .map(adminTeacherFromInvite);
+    return [...activeTeachers, ...pendingTeachers].sort((a, b) => a.name.localeCompare(b.name));
   }
 
   async function listAdminTeachers(): Promise<AdminTeacherSummary[]> {
@@ -776,7 +812,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
       email: teacher.email ?? '',
       classCount: rows.classes.filter((item) => item.teacher_id === teacher.id && item.status === 'active').length,
       lastActivityAt: teacher.updated_at,
-      status: teacher.status,
+      status: teacher.status === 'pending' ? 'inactive' : teacher.status,
     }));
   }
 

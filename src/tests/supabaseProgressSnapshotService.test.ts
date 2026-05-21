@@ -11,6 +11,7 @@ const validConfig = resolveSupabaseConfig({
 
 function classroomContext(): StudentClassroomContext {
   return {
+    accessMode: 'student',
     user: { id: 'student-user-1', email: 'student@example.school' },
     studentProfile: {
       id: 'student-profile-1',

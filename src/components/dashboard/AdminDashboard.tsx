@@ -131,6 +131,12 @@ function primaryAdminOrganizationId(context: SupabaseRoleContext | undefined): s
   return adminOrganizationIds.length === 1 ? adminOrganizationIds[0] : undefined;
 }
 
+function teacherStatusLabel(status: AdminTeacherRecord['status']): string {
+  if (status === 'pending') return 'Pending sign-in';
+  if (status === 'inactive') return 'Inactive';
+  return 'Teacher access active';
+}
+
 export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashboardProps) {
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
@@ -145,6 +151,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
   const [teacherForm, setTeacherForm] = useState({ name: '', email: '' });
   const [classForm, setClassForm] = useState({ name: '', teacherId: '', academicYearTerm: '2026 Term 2', code: '' });
   const [actionIssue, setActionIssue] = useState<string>();
+  const [actionMessage, setActionMessage] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
 
   async function refreshAdminRecords() {
@@ -212,7 +219,11 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     if (!teacherForm.name.trim() || !teacherForm.email.trim()) return;
     try {
       setActionIssue(undefined);
-      await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email, organizationId: adminOrganizationId });
+      setActionMessage(undefined);
+      const teacher = await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email, organizationId: adminOrganizationId });
+      setActionMessage(teacher.status === 'pending'
+        ? 'Teacher added. They can sign in with this email to activate access.'
+        : 'Teacher access active.');
       setTeacherForm({ name: '', email: '' });
       await refreshAdminRecords();
     } catch (error) {
@@ -226,6 +237,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     if (!classForm.name.trim() || !classForm.teacherId) return;
     try {
       setActionIssue(undefined);
+      setActionMessage(undefined);
       await dashboardDataService.addAdminClass(classForm);
       setClassForm((current) => ({ name: '', teacherId: current.teacherId, academicYearTerm: current.academicYearTerm, code: '' }));
       await refreshAdminRecords();
@@ -238,6 +250,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     if (readOnly) return;
     try {
       setActionIssue(undefined);
+      setActionMessage(undefined);
       await dashboardDataService.setClassRegionAccess({ actorRole: 'admin', classId, regionId, access: open ? 'open' : 'field_guide_only' });
       await refreshAdminRecords();
     } catch (error) {
@@ -296,7 +309,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
             {readOnly ? (
               <p className="dashboard-muted">Teacher setup is disabled because this dashboard data source is read-only.</p>
             ) : (
-              <p className="dashboard-muted">Use Add teacher below. In Supabase mode this calls public.admin_add_teacher_by_email(...) and remains limited by user_roles plus RLS.</p>
+              <p className="dashboard-muted">Use Add teacher below. In Supabase mode this calls public.admin_add_teacher_by_email(...) and remains limited by hosted roles plus RLS.</p>
             )}
           </section>
         ) : null}
@@ -316,6 +329,11 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
             <p>{actionIssue}</p>
           </section>
         ) : null}
+        {actionMessage ? (
+          <section className="dashboard-section" role="status">
+            <strong>{actionMessage}</strong>
+          </section>
+        ) : null}
 
         <div className="admin-grid">
           <section className="dashboard-section">
@@ -332,7 +350,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
                 <input value={teacherForm.name} onChange={(event) => setTeacherForm({ ...teacherForm, name: event.target.value })} placeholder="Teacher name" />
                 <input value={teacherForm.email} onChange={(event) => setTeacherForm({ ...teacherForm, email: event.target.value })} placeholder="teacher@example.school" />
                 <button type="submit" className="primary-button">Add teacher</button>
-                {source.kind === 'supabase' ? <small className="dashboard-muted">The teacher must sign in once before admin can attach their account.</small> : null}
+                {source.kind === 'supabase' ? <small className="dashboard-muted">Teacher added. They can sign in with this email to activate access.</small> : null}
               </form>
             )}
             <div className="admin-list">
@@ -340,7 +358,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
                 <article key={teacher.id}>
                   <strong>{teacher.name}</strong>
                   <span>{teacher.email}</span>
-                  <small>{classes.filter((item) => item.teacherId === teacher.id && item.status === 'active').length} assigned classes · {teacher.status} · updated {formatTime(teacher.updatedAt)}</small>
+                  <small>{classes.filter((item) => item.teacherId === teacher.id && item.status === 'active').length} assigned classes · {teacherStatusLabel(teacher.status)} · updated {formatTime(teacher.updatedAt)}</small>
                 </article>
               ))}
             </div>

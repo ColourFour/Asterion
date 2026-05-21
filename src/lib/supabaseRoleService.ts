@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { AsterionRole } from '../types';
+import { canAccessHostedRole, type HostedRoleRequirement } from './hostedRoleHierarchy';
 import { createSupabaseBrowserClient } from './supabaseClient';
 import { resolveSupabaseConfig, type SupabaseConfig } from './supabaseConfig';
 
@@ -26,6 +27,11 @@ interface SupabaseQueryResult<T> {
   error: unknown;
 }
 
+interface SupabaseRpcResult<T> {
+  data: T[] | T | null;
+  error: unknown;
+}
+
 export interface SupabaseRoleQueryBuilder<T = Record<string, unknown>> extends PromiseLike<SupabaseQueryResult<T>> {
   select(columns: string): SupabaseRoleQueryBuilder<T>;
   eq(column: string, value: unknown): SupabaseRoleQueryBuilder<T>;
@@ -36,6 +42,7 @@ export interface SupabaseRoleQueryBuilder<T = Record<string, unknown>> extends P
 export interface SupabaseRoleClient {
   auth: SupabaseRoleAuthClient;
   from<T = Record<string, unknown>>(table: string): SupabaseRoleQueryBuilder<T>;
+  rpc?<T = Record<string, unknown>>(fn: string, args?: Record<string, unknown>): Promise<SupabaseRpcResult<T>>;
 }
 
 export interface SupabaseRoleServiceOptions {
@@ -126,6 +133,17 @@ interface TeacherProfileRow {
   updated_at: string;
 }
 
+interface ActivationRow {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  display_name: string;
+  email: string | null;
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
+}
+
 interface StudentProfileRow {
   id: string;
   user_id: string | null;
@@ -192,6 +210,12 @@ async function readRows<T>(query: PromiseLike<SupabaseQueryResult<T>>, context: 
   return data ?? [];
 }
 
+async function activatePendingTeacherRole(client: SupabaseRoleClient): Promise<void> {
+  if (!client.rpc) return;
+  const { error } = await client.rpc<ActivationRow>('activate_pending_teacher_role_for_current_user');
+  if (error) throw new Error(`activate_pending_teacher_role_for_current_user: ${errorMessage(error, 'Pending teacher access could not be activated.')}`);
+}
+
 function unique(values: string[]): string[] {
   return Array.from(new Set(values.filter(Boolean))).sort((a, b) => a.localeCompare(b));
 }
@@ -249,6 +273,7 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
   if (!userId) return { status: 'signed-out' };
 
   try {
+    await activatePendingTeacherRole(client);
     const [roleRows, teacherProfileRows, studentProfileRows] = await Promise.all([
       readRows(
         client.from<UserRoleRow>('user_roles')
@@ -349,8 +374,8 @@ export async function readSupabaseRoleContext(options: SupabaseRoleServiceOption
   return readContextForSession(client, sessionResult.data?.session ?? null);
 }
 
-export function hasSupabaseRole(context: SupabaseRoleContext | undefined, role: AsterionRole): boolean {
-  return Boolean(context?.roleNames.includes(role));
+export function hasSupabaseRole(context: SupabaseRoleContext | undefined, role: HostedRoleRequirement): boolean {
+  return canAccessHostedRole(context?.roleNames, role);
 }
 
 export function roleSummary(context: SupabaseRoleContext): string {

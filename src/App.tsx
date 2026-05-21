@@ -29,7 +29,7 @@ import {
   type RegionLearningPageId,
 } from './lib/regionRoutes';
 import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
-import { useStudentClassroomContext, type StudentClassroomContext } from './lib/studentClassroomService';
+import { useStudentClassroomContext, type HostedRosterStudentClassroomContext, type StaffPreviewClassroomContext, type StudentClassroomContext } from './lib/studentClassroomService';
 import { completeStudentOnboarding } from './lib/studentOnboarding';
 import { recoverSupabaseAuthRedirect } from './lib/supabaseAuthRedirect';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
@@ -144,12 +144,26 @@ function hostedSyncWarningText(error: string): string {
   return `Classroom hosted activity could not sync to Supabase. Local practice is saved in this browser, but teachers will not see this unsynced activity. ${error}`;
 }
 
-function hostedInitialProfile(context: StudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
+function hostedInitialProfile(context: HostedRosterStudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
   return {
     realName: context.membership.rosterName || context.studentProfile.displayName,
     classGroup: context.classRecord.name,
     teacherName: context.teacher.displayName,
     avatarName,
+    classClaim: context.claim,
+  };
+}
+
+function staffPreviewInitialProfile(context: StaffPreviewClassroomContext): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
+  const label = context.staffRole === 'admin' ? 'Admin Preview' : 'Teacher Preview';
+  return {
+    realName: label,
+    classGroup: 'Staff preview',
+    teacherName: 'Asterion staff',
+    avatarName: label,
+    avatarId: 'star-apprentice',
+    onboardingCompleted: true,
+    onboardingCompletedAt: new Date().toISOString(),
     classClaim: context.claim,
   };
 }
@@ -290,6 +304,8 @@ export default function App() {
   const selectedRegionProgress = selectedRegion ? worldProgress.find((item) => item.region.id === selectedRegion.id) : undefined;
   const selectedRegionLearningSummary = selectedRegion ? regionLearningSummaries[selectedRegion.id] : undefined;
   const hostedClassroomContext = hostedClassroomState.status === 'ready' ? hostedClassroomState.context : undefined;
+  const hostedRosterContext = hostedClassroomContext?.accessMode === 'student' ? hostedClassroomContext : undefined;
+  const staffPreviewContext = hostedClassroomContext?.accessMode === 'staff_preview' ? hostedClassroomContext : undefined;
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -328,6 +344,11 @@ export default function App() {
     if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
     return undefined;
   }, [questions, worldProgress]);
+
+  useEffect(() => {
+    if (!staffPreviewContext || progress.profile) return;
+    setProgress(progressAdapter.saveProfile(staffPreviewInitialProfile(staffPreviewContext)));
+  }, [progress.profile, progressAdapter, staffPreviewContext]);
 
   const dashboardRoute = useMemo(
     () => parseDashboardRoute(window.location.pathname, window.location.hash),
@@ -537,13 +558,13 @@ export default function App() {
   }
 
   function saveClaimedStudentProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) {
-    if (hostedStudentRequired && hostedClassroomContext) {
+    if (hostedStudentRequired && hostedRosterContext) {
       const nextProgress = progressAdapter.saveProfile({
         ...profile,
-        realName: hostedClassroomContext.membership.rosterName,
-        classGroup: hostedClassroomContext.classRecord.name,
-        teacherName: hostedClassroomContext.teacher.displayName,
-        classClaim: hostedClassroomContext.claim,
+        realName: hostedRosterContext.membership.rosterName,
+        classGroup: hostedRosterContext.classRecord.name,
+        teacherName: hostedRosterContext.teacher.displayName,
+        classClaim: hostedRosterContext.claim,
       });
       clearPendingClassClaim();
       setStudentClassClaim(undefined);
@@ -657,7 +678,7 @@ export default function App() {
   }
 
   if (!progress.profile) {
-    const hostedInitial = hostedClassroomContext ? hostedInitialProfile(hostedClassroomContext, studentClassClaim?.displayName === hostedClassroomContext.membership.rosterName ? '' : '') : undefined;
+    const hostedInitial = hostedRosterContext ? hostedInitialProfile(hostedRosterContext, studentClassClaim?.displayName === hostedRosterContext.membership.rosterName ? '' : '') : undefined;
     return (
       <main className="app-shell onboarding-shell">
         <TwinklingStarfield />
@@ -693,7 +714,7 @@ export default function App() {
           <div className="onboarding-briefing">
             <strong>Academy charter</strong>
             <span>Your quest begins here.</span>
-            <span>Restore the P3 regions, collect evidence from real practice, and travel toward the A*.</span>
+            <span>{staffPreviewContext ? 'Preview the student-side flow with all regions unlocked. Staff preview progress is not recorded as student work.' : 'Restore the P3 regions, collect evidence from real practice, and travel toward the A*.'}</span>
             <span>{onboardingProgressMessage(runtimeConfig)}</span>
             <span>One region at a time. One skill at a time.</span>
           </div>
@@ -705,13 +726,15 @@ export default function App() {
         </section>
         {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        {hostedClassroomContext ? (
+        {staffPreviewContext ? (
+          <div className="notice" role="status">Preparing staff preview...</div>
+        ) : hostedRosterContext ? (
           <ProfileForm
             initialProfile={hostedInitial}
             lockedClassFields
             onSave={(profile) => saveClaimedStudentProfile({
               ...profile,
-              classClaim: hostedClassroomContext.claim,
+              classClaim: hostedRosterContext.claim,
             })}
           />
         ) : studentClassClaim ? (
@@ -772,6 +795,7 @@ export default function App() {
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       {regionRouteError ? <div className="notice">{regionRouteError}</div> : null}
       {hostedSyncWarning ? <div className="classroom-sync-warning" role="status">{hostedSyncWarning}</div> : null}
+      {staffPreviewContext ? <div className="notice" role="status">Staff preview: regions are unlocked and progress is not recorded as student work.</div> : null}
 
       {viewMode === 'map' ? (
         <P3AstralAcademy

@@ -187,7 +187,7 @@ describe('RoleGate', () => {
     await waitForText(container, 'Teacher access required');
 
     expect(container.textContent).toContain('Teacher access required');
-    expect(container.textContent).toContain('Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher.');
+    expect(container.textContent).toContain('Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher, or use an active admin account.');
     expect(container.textContent).toContain('Active hosted roles: student.');
     expect(container.textContent).not.toContain('Teacher Shell');
     expect(Array.from(container.querySelectorAll('nav button')).map((button) => button.textContent)).toEqual(['Student app']);
@@ -225,6 +225,38 @@ describe('RoleGate', () => {
 
     expect(container.textContent).toContain('Teacher Shell for teacher-user-1@example.school');
     expect(container.textContent).not.toContain('Admin access required');
+  });
+
+  it('allows a signed-in admin into the teacher dashboard shell', async () => {
+    const container = await render(
+      <RoleGate
+        requiredRole="teacher"
+        roleServiceOptions={{ config: validConfig, createClient: async () => createRoleGateClient({ userId: 'admin-user-1', roles: ['admin'] }) }}
+        onNavigatePath={vi.fn()}
+      >
+        {(context) => <div>Teacher Shell for {context.user.email}</div>}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Teacher Shell');
+
+    expect(container.textContent).toContain('Teacher Shell for admin-user-1@example.school');
+    expect(container.textContent).not.toContain('Teacher access required');
+  });
+
+  it('rejects a signed-in teacher from the admin dashboard shell', async () => {
+    const container = await render(
+      <RoleGate
+        requiredRole="admin"
+        roleServiceOptions={{ config: validConfig, createClient: async () => createRoleGateClient({ userId: 'teacher-user-1', roles: ['teacher'] }) }}
+        onNavigatePath={vi.fn()}
+      >
+        {() => <div>Admin Shell</div>}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Admin access required');
+
+    expect(container.textContent).toContain('Admin access required');
+    expect(container.textContent).not.toContain('Admin Shell');
   });
 
   it('allows a signed-in admin into the admin dashboard shell', async () => {

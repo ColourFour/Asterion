@@ -23,7 +23,7 @@ function roleRouteLabel(role: DashboardRole): string {
 function missingRoleMessage(role: DashboardRole): string {
   return role === 'admin'
     ? 'Admin access was not found for this account. Use the bootstrapped admin account or complete admin setup.'
-    : 'Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher.';
+    : 'Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher, or use an active admin account.';
 }
 
 function DashboardAccessNav({

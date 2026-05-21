@@ -10,6 +10,7 @@ const validConfig = resolveSupabaseConfig({
 
 function classroomContext(): StudentClassroomContext {
   return {
+    accessMode: 'student',
     user: { id: 'student-user-1', email: 'student@example.school' },
     studentProfile: {
       id: 'student-profile-1',
@@ -181,5 +182,33 @@ describe('Supabase progress event service', () => {
       config: validConfig,
       createClient: async () => fake.client,
     })).resolves.toEqual({ status: 'failed', error: 'region_access_blocked' });
+  });
+
+  it('skips hosted progress writes for staff-preview context', async () => {
+    const fake = createClient();
+
+    await expect(recordHostedProgressEvent({
+      classroomContext: {
+        accessMode: 'staff_preview',
+        staffRole: 'admin',
+        organizationIds: ['org-1'],
+        user: { id: 'admin-user-1', email: 'admin@example.school' },
+        regionAccess: [
+          { regionId: 'algebra-forge', regionName: 'Algebra Vault', access: 'open', updatedByRole: 'admin', updatedAt: '2026-05-12T08:00:00.000Z' },
+        ],
+        claim: {
+          status: 'unclaimed',
+          displayName: 'Admin preview',
+          message: 'Staff preview: regions are unlocked and progress is not recorded as student work.',
+        },
+      },
+      regionId: 'algebra-forge',
+      activityType: 'exam_practice',
+      eventType: 'practice_attempt_saved',
+      config: validConfig,
+      createClient: async () => fake.client,
+    })).resolves.toEqual({ status: 'skipped', reason: 'Staff preview progress is not recorded as student work.' });
+
+    expect(fake.rpc).not.toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import type { ClassRegionAccess, ClassRegionAccessMode, StudentClaimState } from
 import { createSupabaseBrowserClient } from './supabaseClient';
 import { resolveSupabaseConfig, type SupabaseConfig } from './supabaseConfig';
 import { P3_REGION_DEFINITIONS, isValidP3RegionId } from './p3SkillContract';
+import { canAccessHostedRole, highestHostedRole } from './hostedRoleHierarchy';
 
 interface SupabaseAuthSession {
   user?: {
@@ -88,18 +89,30 @@ export interface HostedTeacherContext {
   updatedAt: string;
 }
 
-export interface StudentClassroomContext {
+interface StudentClassroomContextBase {
   user: {
     id: string;
     email?: string;
   };
+  regionAccess: ClassRegionAccess[];
+  claim: StudentClaimState;
+}
+
+export interface HostedRosterStudentClassroomContext extends StudentClassroomContextBase {
+  accessMode: 'student';
   studentProfile: HostedStudentProfileContext;
   membership: HostedClassMembershipContext;
   classRecord: HostedClassContext;
   teacher: HostedTeacherContext;
-  regionAccess: ClassRegionAccess[];
-  claim: StudentClaimState;
 }
+
+export interface StaffPreviewClassroomContext extends StudentClassroomContextBase {
+  accessMode: 'staff_preview';
+  staffRole: 'admin' | 'teacher';
+  organizationIds: string[];
+}
+
+export type StudentClassroomContext = HostedRosterStudentClassroomContext | StaffPreviewClassroomContext;
 
 export type StudentClassroomContextState =
   | { status: 'loading' }
@@ -165,6 +178,17 @@ interface ClassRegionAccessRow {
   created_at: string;
 }
 
+interface UserRoleRow {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  role: 'admin' | 'teacher' | 'student';
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
+}
+
+const roleColumns = 'id, user_id, organization_id, role, status, created_at, updated_at';
 const studentProfileColumns = 'id, user_id, organization_id, display_name, optional_email, status, created_at, updated_at';
 const membershipColumns = 'id, class_id, student_profile_id, roster_name, roster_status, claimed_by_user_id, claimed_at, archived_at, created_at, updated_at';
 const classColumns = 'id, organization_id, teacher_id, name, academic_year_or_term, class_code, status, created_at, updated_at';
@@ -251,6 +275,42 @@ function regionAccessFromRows(rows: ClassRegionAccessRow[]): ClassRegionAccess[]
   ));
 }
 
+function staffPreviewRegionAccess(): ClassRegionAccess[] {
+  const now = new Date(0).toISOString();
+  return P3_REGION_DEFINITIONS.map((region) => ({
+    regionId: region.id,
+    regionName: region.name,
+    access: 'open',
+    openedAt: now,
+    updatedByRole: 'admin',
+    updatedAt: now,
+  }));
+}
+
+function buildStaffPreviewContext(
+  session: SupabaseAuthSession,
+  roles: UserRoleRow[],
+): StaffPreviewClassroomContext | undefined {
+  const roleNames = roles.map((role) => role.role);
+  if (!canAccessHostedRole(roleNames, 'student_preview')) return undefined;
+  const staffRole = highestHostedRole(roleNames) === 'admin' ? 'admin' : 'teacher';
+  return {
+    accessMode: 'staff_preview',
+    staffRole,
+    organizationIds: Array.from(new Set(roles.map((role) => role.organization_id))).sort((a, b) => a.localeCompare(b)),
+    user: {
+      id: session.user?.id ?? '',
+      email: session.user?.email,
+    },
+    regionAccess: staffPreviewRegionAccess(),
+    claim: {
+      status: 'unclaimed',
+      displayName: staffRole === 'admin' ? 'Admin preview' : 'Teacher preview',
+      message: 'Staff preview: regions are unlocked and progress is not recorded as student work.',
+    },
+  };
+}
+
 function buildClaim(classRow: ClassRow, teacher: TeacherProfileRow, membership: ClassMembershipRow): StudentClaimState {
   return {
     status: 'claimed',
@@ -270,6 +330,22 @@ async function readContextForSession(client: SupabaseStudentClassroomClient, ses
   if (!userId) return { status: 'signed-out' };
 
   try {
+    const activeRoles = await readRows(
+      client.from<UserRoleRow>('user_roles')
+        .select(roleColumns)
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .order('role', { ascending: true }),
+      'user_roles',
+    );
+    const staffPreview = buildStaffPreviewContext(session, activeRoles);
+    if (staffPreview) {
+      return {
+        status: 'ready',
+        context: staffPreview,
+      };
+    }
+
     const studentProfile = firstRow(await readRows(
       client.from<StudentProfileRow>('student_profiles')
         .select(studentProfileColumns)
@@ -345,6 +421,7 @@ async function readContextForSession(client: SupabaseStudentClassroomClient, ses
     return {
       status: 'ready',
       context: {
+        accessMode: 'student',
         user: {
           id: userId,
           email: session.user?.email,

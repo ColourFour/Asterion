@@ -21,6 +21,21 @@ const fixtureRows = {
       updated_at: '2026-05-10T08:00:00.000Z',
     },
   ],
+  teacher_invites: [
+    {
+      id: 'invite-pending',
+      organization_id: 'org-1',
+      email: 'pending.teacher@example.school',
+      display_name: 'Pending Teacher',
+      status: 'pending',
+      created_by: 'admin-user-1',
+      activated_user_id: null,
+      activated_teacher_profile_id: null,
+      activated_at: null,
+      created_at: '2026-05-19T08:00:00.000Z',
+      updated_at: '2026-05-19T08:00:00.000Z',
+    },
+  ],
   classes: [
     {
       id: 'class-alpha',
@@ -163,6 +178,7 @@ const fixtureRows = {
 
 const emptyHostedRows: typeof fixtureRows = {
   teacher_profiles: [],
+  teacher_invites: [],
   classes: [],
   class_memberships: [],
   class_region_access: [],
@@ -266,6 +282,23 @@ function createFakeSupabaseClient({
     rpcCalls.push({ fn, args });
     if (errorByRpc[fn]) return { data: null, error: errorByRpc[fn] };
     if (fn === 'admin_add_teacher_by_email') {
+      if (String(args?.p_email).includes('pending')) {
+        const invite = {
+          id: 'invite-new',
+          organization_id: 'org-1',
+          email: String(args?.p_email).toLowerCase(),
+          display_name: String(args?.p_display_name),
+          status: 'pending' as const,
+          created_by: 'admin-user-1',
+          activated_user_id: null,
+          activated_teacher_profile_id: null,
+          activated_at: null,
+          created_at: '2026-05-20T08:00:00.000Z',
+          updated_at: '2026-05-20T08:00:00.000Z',
+        };
+        mutableRows.teacher_invites.push(invite);
+        return { data: [invite], error: null };
+      }
       const teacher = {
         id: 'teacher-new',
         user_id: 'user-teacher-new',
@@ -462,6 +495,12 @@ describe('Supabase dashboard service', () => {
         name: 'Ms Supabase',
         assignedClassIds: ['class-alpha'],
       }),
+      expect.objectContaining({
+        id: 'invite-pending',
+        name: 'Pending Teacher',
+        email: 'pending.teacher@example.school',
+        status: 'pending',
+      }),
     ]);
     await expect(service.listAdminClassRecords()).resolves.toEqual([
       expect.objectContaining({
@@ -482,7 +521,7 @@ describe('Supabase dashboard service', () => {
     await expect(service.listAdminTeacherRecords()).resolves.toEqual([]);
     await expect(service.listAdminClassRecords()).resolves.toEqual([]);
     await expect(service.listTeacherClasses()).resolves.toEqual([]);
-    expect(fake.tableReads).toEqual(expect.arrayContaining(['classes', 'teacher_profiles']));
+    expect(fake.tableReads).toEqual(expect.arrayContaining(['classes', 'teacher_profiles', 'teacher_invites']));
     expect(fake.tableReads).not.toContain('student_profiles');
   });
 
@@ -568,20 +607,22 @@ describe('Supabase dashboard service', () => {
     expect(fake.queryOps.join('\n')).not.toMatch(/\b(insert|upsert|update|delete)\b/i);
   });
 
-  it('maps missing auth users to an admin-operable teacher setup message', async () => {
-    const fake = createFakeSupabaseClient({
-      errorByRpc: {
-        admin_add_teacher_by_email: { message: 'auth_user_missing' },
-      },
-    });
+  it('allows admins to pre-authorize a teacher email before an auth user exists', async () => {
+    const fake = createFakeSupabaseClient();
     const service = createSupabaseDashboardDataService({
       config: validConfig,
       createClient: vi.fn(async () => fake.client),
     });
 
-    await expect(service.addAdminTeacher({ name: 'Unsigned Teacher', email: 'unsigned@example.school' })).rejects.toMatchObject({
-      code: 'write_failed',
-      safeMessage: 'That email has not signed in yet. Ask the teacher to open Asterion and request a magic link once, then try again.',
+    await expect(service.addAdminTeacher({ name: 'Unsigned Teacher', email: 'pending.teacher2@example.school' })).resolves.toMatchObject({
+      id: 'invite-new',
+      name: 'Unsigned Teacher',
+      email: 'pending.teacher2@example.school',
+      status: 'pending',
+    });
+    expect(fake.rpcCalls.find((call) => call.fn === 'admin_add_teacher_by_email')?.args).toMatchObject({
+      p_email: 'pending.teacher2@example.school',
+      p_display_name: 'Unsigned Teacher',
     });
   });
 

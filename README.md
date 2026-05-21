@@ -579,6 +579,16 @@ Use `.env.classroom-pilot.example` or Vercel environment variables as the templa
 
 For pilot staff access, create admin/teacher Auth accounts manually in Supabase with a unique temporary password or invite/reset flow, then add the matching hosted Asterion role. Supabase Auth login by itself is not dashboard authorization. Teachers should change temporary passwords after first login, and no temporary passwords should be stored in the app.
 
+Hosted role hierarchy:
+
+- `admin` is the top classroom operations role. Admin can use admin tools, teacher tools, and the student-side preview flow.
+- `teacher` is below admin. Teacher can use teacher tools and the student-side preview flow, but cannot access admin tools.
+- `student` can use only student-side learning surfaces and remains class/region locked according to teacher settings.
+- Signed-in users with no active hosted role cannot access teacher/admin dashboards and do not receive staff preview bypass.
+- Teacher/Admin login buttons are navigation intent only. RoleGate, Supabase `user_roles`, RPC checks, and RLS remain the authorization boundary.
+
+Teachers and admins can preview the student side with all canonical P3 regions unlocked. Staff preview does not require claiming a roster slot, does not require class-region access rows, and does not count as student progress or create teacher-visible student dashboard records.
+
 ## Progress Storage
 
 Browser-local progress storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.

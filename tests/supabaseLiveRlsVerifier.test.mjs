@@ -56,6 +56,10 @@ describe('live Supabase RLS verifier definitions', () => {
         'teacher cannot create class for another teacher',
         'admin can read setup and support data',
         'admin can attach existing auth user as teacher',
+        'admin can pre-authorize teacher email before auth user exists',
+        'pending teacher activates after sign-in with matching email',
+        'wrong teacher email cannot activate pending teacher access',
+        'archived pending teacher invite does not activate',
         'teacher cannot self-assign teacher role through admin RPC',
         'admin can create class for active teacher with all regions field guide only',
         'unauthenticated users cannot insert audit events',
@@ -77,6 +81,12 @@ describe('live Supabase RLS verifier definitions', () => {
     const selfAssignCheck = checks.find(
       (check) => check.name === 'teacher cannot self-assign teacher role through admin RPC',
     );
+    const pendingAttachCheck = checks.find(
+      (check) => check.name === 'admin can pre-authorize teacher email before auth user exists',
+    );
+    const activationCheck = checks.find(
+      (check) => check.name === 'pending teacher activates after sign-in with matching email',
+    );
 
     expect(teacherCreateCheck.kind).toBe('count');
     expect(teacherCreateCheck.expected).toBe(expectedRegionIds.length);
@@ -90,6 +100,12 @@ describe('live Supabase RLS verifier definitions', () => {
 
     expect(adminAttachCheck.sql).toContain('public.admin_add_teacher_by_email');
     expect(adminAttachCheck.sql).toContain('teacher-noether@asterion.invalid');
+    expect(pendingAttachCheck.sql).toContain('public.admin_add_teacher_by_email');
+    expect(pendingAttachCheck.sql).toContain('public.teacher_invites');
+    expect(pendingAttachCheck.sql).toContain('pending-teacher@asterion.invalid');
+    expect(activationCheck.sql).toContain('public.activate_pending_teacher_role_for_current_user');
+    expect(activationCheck.sql).toContain('insert into auth.users');
+    expect(activationCheck.sql).toContain('insert into public.teacher_invites');
     expect(selfAssignCheck.kind).toBe('deny');
     expect(selfAssignCheck.sql).toContain('public.admin_add_teacher_by_email');
     expect(selfAssignCheck.sql).toContain('teacher-hypatia@asterion.invalid');
