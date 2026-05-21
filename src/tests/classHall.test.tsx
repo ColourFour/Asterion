@@ -108,7 +108,8 @@ describe('ClassHall', () => {
     expect(container.textContent).toContain('Lyra');
     expect(container.textContent).toContain('Orin');
     expect(container.textContent).toContain('Sena');
-    expect(container.textContent).toContain('Browser-local showcase only. No hosted sync, official gradebook, marks, weak topics, exact scores, or rankings.');
+    expect(container.textContent).toContain('Hosted teacher summaries are separate.');
+    expect(container.textContent).toContain('This showcase does not sync marks, weak topics, exact scores, rankings, or official grades.');
     expect(container.querySelectorAll('[data-class-hall-card]').length).toBeGreaterThanOrEqual(4);
   });
 

@@ -606,7 +606,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Log and exponential shape reminder');
 
     const checkButton = Array.from(container.querySelectorAll('button'))
-      .find((button) => button.textContent === 'Check answer');
+      .find((button) => button.textContent === 'Ready to compare');
     expect(checkButton).toBeTruthy();
     expect(checkButton?.hasAttribute('disabled')).toBe(true);
 
@@ -629,7 +629,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       checkButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(container.textContent).toContain('Feedback');
-    expect(container.textContent).toContain('Reveal the solution');
+    expect(container.textContent).toContain('No automatic marking here.');
     const revealButton = Array.from(container.querySelectorAll('button'))
       .find((button) => button.textContent === 'Reveal solution');
     expect(revealButton).toBeTruthy();
@@ -683,7 +683,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     );
 
     const revealAnyway = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal anyway');
-    expect(Array.from(container.querySelectorAll('button'))[0].textContent).toBe('Check answer');
+    expect(Array.from(container.querySelectorAll('button'))[0].textContent).toBe('Ready to compare');
     expect(container.querySelector<HTMLDetailsElement>('.warm-up-help-detail')?.open).toBe(false);
     act(() => {
       const helpDetail = container.querySelector<HTMLDetailsElement>('.warm-up-help-detail')!;
@@ -799,11 +799,12 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       setTextareaValue(firstTextarea!, 'Warm-up answer 1');
     });
-    const checkFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
+    const checkFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Ready to compare');
     act(() => {
       checkFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(container.textContent).toContain('Your answer looks close.');
+    expect(container.textContent).toContain('No automatic marking here.');
+    expect(container.textContent).not.toContain('Your answer looks close.');
     expect(container.textContent).not.toContain('Use the product law.');
 
     const revealFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Reveal solution');
@@ -833,7 +834,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       setTextareaValue(secondTextarea!, 'Warm-up answer 2');
     });
     act(() => {
-      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check answer')!
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Ready to compare')!
         .dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     act(() => {

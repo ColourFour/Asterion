@@ -103,15 +103,10 @@ function WarmUpPracticeCard({
     skillIds: [item.skillTargetId],
   }) : undefined;
 
-  function checkAnswer() {
+  function prepareComparison() {
     if (!responseReady) return;
-    const likelyMatch = answerLooksClose(learnerResponse, item.answer);
     setAnswerChecked(true);
-    setAnswerFeedback(
-      likelyMatch
-        ? 'Your answer looks close. Reveal the worked solution and check the route.'
-        : 'Compare your answer with the expected result next. Reveal the solution to find the first gap.',
-    );
+    setAnswerFeedback('No automatic marking here. Reveal the worked solution, compare your answer and method, then self-record how it went.');
   }
 
   function reveal(early: boolean) {
@@ -198,9 +193,9 @@ function WarmUpPracticeCard({
             className="activity-primary-action warm-up-reveal-button"
             type="button"
             disabled={!responseReady}
-            onClick={checkAnswer}
+            onClick={prepareComparison}
           >
-            Check answer
+            Ready to compare
           </button>
           {answerChecked ? (
             <button
@@ -296,22 +291,6 @@ function humanReadableLabel(value: string): string {
   return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function normalizeAnswer(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/[{}()[\],.;:]/g, '')
-    .replace(/\\(?:left|right)/g, '')
-    .replace(/×/g, '*');
-}
-
-function answerLooksClose(response: string, answer: string): boolean {
-  const normalizedResponse = normalizeAnswer(response);
-  const normalizedAnswer = normalizeAnswer(answer);
-  if (!normalizedResponse || !normalizedAnswer) return false;
-  return normalizedResponse === normalizedAnswer || normalizedResponse.includes(normalizedAnswer);
-}
-
 export function WarmUpPracticePanel({
   practiceItems,
   region,
@@ -349,7 +328,7 @@ export function WarmUpPracticePanel({
     >
       {visiblePractice.length ? (
         <>
-          <p className="section-helper warm-up-set-note">Work through one prompt at a time. Check your answer first, then reveal the worked route.</p>
+          <p className="section-helper warm-up-set-note">Work through one prompt at a time. Write your answer first, then reveal the worked route and compare it yourself.</p>
           <ol className="warm-up-sequence-list" aria-label="Warm-up sequence">
             {visiblePractice.map((item, index) => (
               <li

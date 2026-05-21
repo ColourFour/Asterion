@@ -10,7 +10,7 @@ Asterion is in active MVP development. The current product surface is a static-h
 
 The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
 
-The main student-release blockers are not the core P3 loop. They are release hardening: phone-readable canonical image viewing, production-build browser smoke verification, the quarantined `33autumn25` mark-scheme gap, final teacher-facing scope decisions, clearer support/reset instructions for browser-local progress, and privacy/auth decisions before any hosted classroom authority.
+The main student-release blockers are not the core P3 loop. They are release hardening: phone-readable canonical image viewing, production-build browser smoke verification, final teacher-facing scope decisions, clearer support/reset instructions for browser-local progress, and privacy/auth decisions before any hosted classroom authority. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
 
 Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work, and optional roster-claim RPC plumbing. It is explicitly not hosted progress sync, not learner-response storage, and not the academic source of truth. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
@@ -623,7 +623,7 @@ See `docs/deployment-readiness.md` for current payload findings, route expectati
 - No production-build browser smoke pass yet.
 - Adaptive selection is intentionally simple and rule-based.
 - Generated warm-up coverage is intentionally still being expanded through reviewed deterministic families.
-- P3 `33autumn25` records are quarantined from training until canonical mark-scheme images are available.
+- P3 `33autumn25` records are trainable again after canonical question and mark-scheme image restoration.
 - Phone-width image readability needs work. One smoke-tested canonical question crop loaded correctly but displayed too short to read comfortably on a 390 px mobile viewport.
 - Static payload is still large because canonical exam-bank images and JSON ship with the static app.
 - `src/styles.css`, `src/App.tsx`, `TeacherDashboard`, and `dashboardMockService` remain large enough to need deliberate follow-up refactors.
@@ -638,7 +638,7 @@ This roadmap is ordered for getting Asterion safely in front of students without
 Goal: make the current local/static P3 loop safe for a small supervised student pilot.
 
 - Add a phone-friendly canonical image reader for question and mark-scheme crops. The minimum acceptable version is a full-screen or high-resolution zoom path that preserves the original image as the source of truth.
-- Keep `33autumn25` quarantined unless canonical mark-scheme images are restored and asset integrity passes.
+- Keep `33autumn25` trainable only while canonical question and mark-scheme image integrity continues to pass.
 - Decide the pilot browser support target. At minimum, verify desktop Chrome/Edge plus one common phone-width viewport.
 - Keep dashboard routes disabled in the normal student build unless an intentional demo or read-only Supabase test build is being reviewed.
 - Write a short teacher/student operating note: browser-local progress, no cross-device sync, how to reset local progress, how issue reports work, and what data is not stored remotely.

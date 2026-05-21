@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
+import { ArrowLeft, Copy, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
@@ -252,6 +252,15 @@ function rosterStatusLabel(student: ClassRosterStudent): string {
   return 'Active';
 }
 
+function TeacherProgressScopeNote() {
+  return (
+    <section className="dashboard-section dashboard-scope-note" aria-label="Teacher progress scope note">
+      <strong>Practice feedback, not official grades</strong>
+      <p>Teacher summaries use hosted classroom events and student self-mark entries. Raw working, notes, and full local practice state stay on each student's browser.</p>
+    </section>
+  );
+}
+
 function ClassFirstDashboard({ dashboard, onOpenRegion }: { dashboard: TeacherClassDashboard; onOpenRegion: (regionId: string) => void }) {
   const summary = dashboard.progressSummary;
   return (
@@ -337,9 +346,33 @@ function RosterManagementPage({
   onResetClaim: (studentId: string) => void;
   readOnly: boolean;
 }) {
+  const [copyStatus, setCopyStatus] = useState<string>();
+
+  async function copyClaimText(text: string, status: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus(status);
+    } catch {
+      setCopyStatus('Copy failed. Select the class code or roster row and copy it manually.');
+    }
+  }
+
+  function claimPacketFor(student: ClassRosterStudent): string {
+    return [
+      `Roster name: ${student.displayName}`,
+      `Class code: ${dashboard.classCode.code}`,
+      'Open Asterion, sign in, then enter this roster name and class code.',
+    ].join('\n');
+  }
+
   function handleResetClaim(studentId: string, displayName: string) {
     const confirmed = window.confirm(`Reset ${displayName}'s class claim? They will need to claim this roster slot again. This does not restore browser-local progress cleared from a device.`);
     if (confirmed) onResetClaim(studentId);
+  }
+
+  function handleArchive(studentId: string, displayName: string) {
+    const confirmed = window.confirm(`Archive ${displayName}'s roster slot? They will not be able to claim this row, and any existing claim will be cleared. Use Reset claim instead if the student only needs to rejoin.`);
+    if (confirmed) onArchiveStudent(studentId);
   }
 
   return (
@@ -349,9 +382,19 @@ function RosterManagementPage({
           <span className="dashboard-kicker">Roster</span>
           <h2>Class code and student roster</h2>
         </div>
-        <strong className="class-code-badge">{dashboard.classCode.code}</strong>
+        <div className="class-code-copy-group">
+          <strong className="class-code-badge">{dashboard.classCode.code}</strong>
+          <button
+            type="button"
+            className="quiet-button compact-button"
+            onClick={() => copyClaimText(dashboard.classCode.code, 'Class code copied.')}
+          >
+            <Copy size={14} aria-hidden="true" /> Copy class code
+          </button>
+        </div>
       </div>
       <p className="dashboard-muted">Students enter this class code, then claim one existing teacher-created roster name. Optional details such as email can be added after joining.</p>
+      {copyStatus ? <p className="dashboard-muted" role="status">{copyStatus}</p> : null}
       {readOnly ? (
         <p className="dashboard-muted">Roster add, archive, and claim reset actions are disabled in this build.</p>
       ) : (
@@ -370,6 +413,7 @@ function RosterManagementPage({
               <th scope="col">Student</th>
               <th scope="col">Roster status</th>
               <th scope="col">Optional details</th>
+              <th scope="col">Claim copy</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -382,15 +426,28 @@ function RosterManagementPage({
                 <td>
                   {student.status === 'archived' ? (
                     <span className="dashboard-muted">Archived</span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="quiet-button compact-button"
+                      onClick={() => copyClaimText(claimPacketFor(student), `Claim info copied for ${student.displayName}.`)}
+                    >
+                      <Copy size={14} aria-hidden="true" /> Copy claim info
+                    </button>
+                  )}
+                </td>
+                <td>
+                  {student.status === 'archived' ? (
+                    <span className="dashboard-muted">Archived</span>
                   ) : readOnly ? (
                     <span className="dashboard-muted">Read-only</span>
                   ) : student.status === 'claimed' ? (
                     <div className="roster-action-stack">
                       <button type="button" className="quiet-button compact-button" onClick={() => handleResetClaim(student.id, student.displayName)}>Reset claim</button>
-                      <button type="button" className="quiet-button compact-button" onClick={() => onArchiveStudent(student.id)}>Archive</button>
+                      <button type="button" className="quiet-button compact-button" onClick={() => handleArchive(student.id, student.displayName)}>Archive</button>
                     </div>
                   ) : (
-                    <button type="button" className="quiet-button compact-button" onClick={() => onArchiveStudent(student.id)}>Archive</button>
+                    <button type="button" className="quiet-button compact-button" onClick={() => handleArchive(student.id, student.displayName)}>Archive</button>
                   )}
                 </td>
               </tr>
@@ -687,6 +744,8 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             <p>{actionIssue}</p>
           </section>
         ) : null}
+
+        <TeacherProgressScopeNote />
 
         <section className="dashboard-control-row teacher-class-actions">
           <label>

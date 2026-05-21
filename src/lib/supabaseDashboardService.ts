@@ -168,6 +168,14 @@ function queryErrorMessage(error: unknown): string {
   return 'Supabase dashboard data could not be read.';
 }
 
+function rpcErrorMessage(error: unknown): string {
+  const message = queryErrorMessage(error);
+  if (message.includes('auth_user_missing')) {
+    return 'That email has not signed in yet. Ask the teacher to open Asterion and request a magic link once, then try again.';
+  }
+  return message;
+}
+
 async function readRows<T>(query: PromiseLike<SupabaseQueryResult<T>>, context: string): Promise<T[]> {
   const { data, error } = await query;
   if (error) {
@@ -179,7 +187,9 @@ async function readRows<T>(query: PromiseLike<SupabaseQueryResult<T>>, context: 
 async function readRpcSingle<T>(rpc: Promise<SupabaseRpcResult<T>>, context: string): Promise<T> {
   const { data, error } = await rpc;
   if (error) {
-    throw new DashboardDataServiceError('write_failed', `${context}: ${queryErrorMessage(error)}`, error);
+    const rawMessage = queryErrorMessage(error);
+    const safeMessage = rpcErrorMessage(error);
+    throw new DashboardDataServiceError('write_failed', safeMessage === rawMessage ? `${context}: ${safeMessage}` : safeMessage, error);
   }
   const row = Array.isArray(data) ? data[0] : data;
   if (!row) {

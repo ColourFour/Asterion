@@ -174,8 +174,8 @@ describe('Asterion intro page', () => {
 
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Student practice state remains available in this browser.');
-    expect(container.textContent).toContain('Hosted classroom access and teacher-visible records must come from Supabase.');
+    expect(container.textContent).toContain('Your class membership and teacher summaries are hosted.');
+    expect(container.textContent).toContain('Raw practice work stays on this browser.');
     expect(container.textContent).toContain('This uses an existing hosted roster slot.');
     expect(container.textContent).toContain('Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');

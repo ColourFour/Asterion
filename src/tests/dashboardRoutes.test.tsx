@@ -302,10 +302,43 @@ describe('dashboard routes', () => {
 
     expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
     expect(container.textContent).toContain('Class code and student roster');
+    expect(container.textContent).toContain('Copy class code');
+    expect(container.textContent).toContain('Copy claim info');
     expect(container.textContent).toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin. It does not recover progress from another browser or cleared site data.');
     expect(container.textContent).toContain('Add student');
     expect(container.textContent).toContain('Reset claim');
     expect(container.textContent).not.toContain('Class progress register');
+  });
+
+  it('copies teacher class code and per-student claim packets', async () => {
+    enableDashboardDemo();
+    const writeText = vi.fn(() => Promise.resolve());
+    vi.stubGlobal('navigator', {
+      ...navigator,
+      clipboard: { writeText },
+    });
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
+    const container = await render(<App />);
+    await waitForText(container, 'Copy class code');
+
+    const copyClassCode = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Copy class code'));
+    await act(async () => {
+      copyClassCode?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+
+    expect(writeText).toHaveBeenCalledWith('AST-P3A');
+    expect(container.textContent).toContain('Class code copied.');
+
+    const claimInfoButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Copy claim info'));
+    await act(async () => {
+      claimInfoButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('Class code: AST-P3A'));
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('Roster name:'));
+    expect(container.textContent).toContain('Claim info copied for');
   });
 
   it('confirms teacher roster claim reset before clearing a claim', async () => {
@@ -326,6 +359,36 @@ describe('dashboard routes', () => {
 
     expect(confirm).toHaveBeenCalledWith(expect.stringContaining('They will need to claim this roster slot again.'));
     expect(confirm).toHaveBeenCalledWith(expect.stringContaining('This does not restore browser-local progress cleared from a device.'));
+  });
+
+  it('confirms teacher roster archive before archiving a slot', async () => {
+    enableDashboardDemo();
+    const confirm = vi.fn(() => false);
+    vi.stubGlobal('confirm', confirm);
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha/roster');
+    const container = await render(<App />);
+    await waitForText(container, 'Archive');
+
+    const archiveButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Archive'));
+    expect(archiveButton).toBeTruthy();
+
+    await act(async () => {
+      archiveButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('They will not be able to claim this row'));
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('Use Reset claim instead'));
+  });
+
+  it('labels teacher dashboard progress as hosted practice feedback, not official grades', async () => {
+    enableDashboardDemo();
+    window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
+    const container = await render(<App />);
+    await waitForText(container, 'Practice feedback, not official grades');
+
+    expect(container.textContent).toContain('Teacher summaries use hosted classroom events and student self-mark entries.');
+    expect(container.textContent).toContain("Raw working, notes, and full local practice state stay on each student's browser.");
   });
 
   it('opens a clicked teacher region as a student progress detail page', async () => {
@@ -494,7 +557,7 @@ describe('dashboard routes', () => {
     });
 
     expect(container.textContent).toContain('Student real name');
-    expect(container.textContent).toContain('Class details came from the claimed roster slot for this browser profile.');
+    expect(container.textContent).toContain('Class membership is hosted. Your character and raw practice work stay on this browser.');
     expect(container.textContent).not.toContain('Teacher Tools');
     expect(container.textContent).not.toContain('Open Export');
   });

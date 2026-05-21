@@ -59,7 +59,7 @@ function studentPracticeModeLabel(config: AsterionRuntimeConfig): string {
 
 function onboardingProgressMessage(config: AsterionRuntimeConfig): string {
   return config.profile.name === 'classroom-pilot'
-    ? 'Student practice state remains available in this browser. Hosted classroom access and teacher-visible records must come from Supabase.'
+    ? 'Your class membership and teacher summaries are hosted. Raw practice work stays on this browser.'
     : 'Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.';
 }
 

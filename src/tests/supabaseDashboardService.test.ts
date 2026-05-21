@@ -167,10 +167,12 @@ function createFakeSupabaseClient({
   session = true,
   rows = fixtureRows,
   errorByTable = {},
+  errorByRpc = {},
 }: {
   session?: boolean;
   rows?: typeof fixtureRows;
   errorByTable?: Partial<Record<FixtureTable, unknown>>;
+  errorByRpc?: Partial<Record<string, unknown>>;
 } = {}) {
   const mutableRows = JSON.parse(JSON.stringify(rows)) as typeof fixtureRows;
   const tableReads: string[] = [];
@@ -254,6 +256,7 @@ function createFakeSupabaseClient({
   const from = vi.fn((table: string) => new QueryBuilder<Record<string, unknown>>(table as FixtureTable));
   const rpc = vi.fn(async (fn: string, args?: Record<string, unknown>) => {
     rpcCalls.push({ fn, args });
+    if (errorByRpc[fn]) return { data: null, error: errorByRpc[fn] };
     if (fn === 'admin_add_teacher_by_email') {
       const teacher = {
         id: 'teacher-new',
@@ -541,6 +544,23 @@ describe('Supabase dashboard service', () => {
     expect(fake.writes.update).not.toHaveBeenCalled();
     expect(fake.writes.delete).not.toHaveBeenCalled();
     expect(fake.queryOps.join('\n')).not.toMatch(/\b(insert|upsert|update|delete)\b/i);
+  });
+
+  it('maps missing auth users to an admin-operable teacher setup message', async () => {
+    const fake = createFakeSupabaseClient({
+      errorByRpc: {
+        admin_add_teacher_by_email: { message: 'auth_user_missing' },
+      },
+    });
+    const service = createSupabaseDashboardDataService({
+      config: validConfig,
+      createClient: vi.fn(async () => fake.client),
+    });
+
+    await expect(service.addAdminTeacher({ name: 'Unsigned Teacher', email: 'unsigned@example.school' })).rejects.toMatchObject({
+      code: 'write_failed',
+      safeMessage: 'That email has not signed in yet. Ask the teacher to open Asterion and request a magic link once, then try again.',
+    });
   });
 
   it('surfaces read failures without falling back to mock data', async () => {

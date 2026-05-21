@@ -20,10 +20,10 @@ export function ClassHall({ avatars = CLASS_HALL_DEMO_AVATARS, currentStudentAva
         <div>
           <span className="mode-pill">Class Hall</span>
           <h2 id="class-hall-title">Class Hall</h2>
-          <p>A local avatar showcase for cosmetics and low-pressure badges from this browser.</p>
+          <p>A browser-only avatar showcase for cosmetics and low-pressure badges.</p>
         </div>
         <aside className="class-hall-local-note" aria-label="Class Hall privacy note">
-          Browser-local showcase only. No hosted sync, official gradebook, marks, weak topics, exact scores, or rankings.
+          Hosted teacher summaries are separate. This showcase does not sync marks, weak topics, exact scores, rankings, or official grades.
         </aside>
       </header>
 
