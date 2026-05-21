@@ -61,20 +61,26 @@ describe('Supabase integration boundary', () => {
     const browserSources = [
       'src/App.tsx',
       'src/lib/supabaseAuth.ts',
+      'src/lib/supabaseAuthRedirect.ts',
       'src/lib/supabaseClient.ts',
       'src/lib/supabaseConfig.ts',
       'src/lib/supabaseDashboardService.ts',
+      'src/lib/supabaseProgressEventService.ts',
       'src/lib/supabaseRoleService.ts',
       'src/lib/studentClassClaimService.ts',
+      'src/lib/studentClassroomService.ts',
       'src/components/auth/SupabaseAuthPanel.tsx',
       'src/components/auth/RoleGate.tsx',
       'src/components/dashboard/TeacherDashboard.tsx',
       'src/components/dashboard/AdminDashboard.tsx',
+      'src/components/dashboard/SupabaseDiagnosticPanel.tsx',
       'src/components/onboarding/ClassCodeClaimForm.tsx',
     ].map((path) => readFileSync(`${process.cwd()}/${path}`, 'utf8')).join('\n');
 
     expect(browserSources).not.toContain(['ASTERION', 'SUPABASE', 'DB', 'URL'].join('_'));
     expect(browserSources).not.toContain(['SUPABASE', 'SERVICE', 'ROLE'].join('_'));
     expect(browserSources).not.toContain(['SUPABASE', 'JWT', 'SECRET'].join('_'));
+    expect(browserSources).not.toMatch(/supabase[_-]?service[_-]?role/i);
+    expect(browserSources).not.toMatch(/supabase[_-]?admin[_-]?key/i);
   });
 });

@@ -20,6 +20,12 @@ function roleRouteLabel(role: DashboardRole): string {
   return role === 'admin' ? 'admin console' : 'teacher dashboard';
 }
 
+function missingRoleMessage(role: DashboardRole): string {
+  return role === 'admin'
+    ? 'Admin access was not found for this account. Use the bootstrapped admin account or complete admin setup.'
+    : 'Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher.';
+}
+
 function DashboardAccessNav({
   context,
   onNavigatePath,
@@ -131,8 +137,7 @@ export function RoleGate({ requiredRole, roleServiceOptions, onNavigatePath, chi
     return (
       <DashboardAccessState
         title={`${requiredRoleLabel[0].toUpperCase()}${requiredRoleLabel.slice(1)} access required`}
-        message={`This signed-in account does not have an active ${requiredRoleLabel} role for the hosted ${routeLabel}.`}
-        detail="Students can continue to the student app, but teacher/admin dashboards and controls stay hidden."
+        message={missingRoleMessage(requiredRole)}
         context={roleState.context}
         showAuthPanel
         onNavigatePath={onNavigatePath}

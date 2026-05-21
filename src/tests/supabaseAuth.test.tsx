@@ -23,6 +23,8 @@ const mountedContainers: HTMLElement[] = [];
 
 function createAuthClient(session: { user: { id: string; email?: string } } | null = null) {
   const signInWithOtp = vi.fn(async () => ({ error: null }));
+  const signInWithPassword = vi.fn(async () => ({ error: null }));
+  const updateUser = vi.fn(async () => ({ error: null }));
   const signOut = vi.fn(async () => ({ error: null }));
   const unsubscribe = vi.fn();
   const client: SupabaseAuthClient = {
@@ -30,10 +32,12 @@ function createAuthClient(session: { user: { id: string; email?: string } } | nu
       getSession: vi.fn(async () => ({ data: { session }, error: null })),
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe } } })),
       signInWithOtp,
+      signInWithPassword,
+      updateUser,
       signOut,
     },
   };
-  return { client, signInWithOtp, signOut, unsubscribe };
+  return { client, signInWithOtp, signInWithPassword, updateUser, signOut, unsubscribe };
 }
 
 async function render(ui: ReactNode): Promise<HTMLElement> {
@@ -117,6 +121,28 @@ describe('Supabase Auth shell', () => {
     expect(container.textContent).toContain('Sign-in does not guarantee teacher or admin access.');
   });
 
+  it('supports Supabase email/password sign-in without granting roles', async () => {
+    const fake = createAuthClient(null);
+    const container = await render(
+      <SupabaseAuthPanel hookOptions={{ config: validConfig, createClient: async () => fake.client }} />,
+    );
+
+    setInputValue(container.querySelector('input[type="email"]')!, 'teacher@example.test');
+    setInputValue(container.querySelector('input[type="password"]')!, 'temporary-password');
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Sign in with password'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(fake.signInWithPassword).toHaveBeenCalledWith({
+      email: 'teacher@example.test',
+      password: 'temporary-password',
+    });
+    expect(container.textContent).toContain('Signed in with Supabase Auth.');
+    expect(container.textContent).toContain('Sign-in does not guarantee teacher or admin access.');
+  });
+
   it('shows signed-in email and signs out', async () => {
     const fake = createAuthClient({ user: { id: 'user-1', email: 'admin@example.test' } });
     const container = await render(
@@ -131,6 +157,26 @@ describe('Supabase Auth shell', () => {
     });
 
     expect(fake.signOut).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toContain('Sign in with password');
     expect(container.textContent).toContain('Send magic link');
+  });
+
+  it('lets a signed-in user change their Supabase password', async () => {
+    const fake = createAuthClient({ user: { id: 'user-1', email: 'teacher@example.test' } });
+    const container = await render(
+      <SupabaseAuthPanel hookOptions={{ config: validConfig, createClient: async () => fake.client }} />,
+    );
+
+    const passwordInput = container.querySelector<HTMLInputElement>('input[type="password"]');
+    expect(passwordInput).toBeTruthy();
+    setInputValue(passwordInput!, 'new-password-123');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Change password'))?.click();
+      await Promise.resolve();
+    });
+
+    expect(fake.updateUser).toHaveBeenCalledWith({ password: 'new-password-123' });
+    expect(container.textContent).toContain('Password updated.');
   });
 });

@@ -14,12 +14,11 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
   const [academyName, setAcademyName] = useState(profile.avatarName);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
   const selectedPreset = ACADEMY_AVATAR_PRESETS.find((preset) => preset.id === avatarId) ?? ACADEMY_AVATAR_PRESETS[0];
+  const displayName = academyName.trim() || profile.avatarName.trim() || profile.realName.trim() || 'Asterion Student';
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const trimmedName = academyName.trim();
-    if (!trimmedName) return;
-    onComplete({ avatarName: trimmedName, avatarId: selectedPreset.id, avatar: selectedPreset.avatar });
+    onComplete({ avatarName: displayName, avatarId: selectedPreset.id, avatar: selectedPreset.avatar });
   }
 
   return (
@@ -54,7 +53,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
 
         <label>
           Academy name
-          <input value={academyName} onChange={(event) => setAcademyName(event.target.value)} required maxLength={40} />
+          <input value={academyName} onChange={(event) => setAcademyName(event.target.value)} maxLength={40} />
         </label>
 
         <fieldset className="avatar-preset-grid">
@@ -68,7 +67,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                 type="radio"
                 value={preset.id}
               />
-              <AvatarPreview avatarName={academyName || profile.avatarName} avatar={preset.avatar} regionProgress={[]} />
+              <AvatarPreview avatarName={displayName} avatar={preset.avatar} regionProgress={[]} />
               <strong>{preset.label}</strong>
               <span>{preset.description}</span>
             </label>
@@ -76,10 +75,10 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
         </fieldset>
 
         <div className="academy-avatar-preview" aria-label="Selected academy profile">
-          <AvatarPreview avatarName={academyName || profile.avatarName} avatar={selectedPreset.avatar} regionProgress={[]} />
+          <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
           <div>
             <span>Ready for the map</span>
-            <strong>{academyName || profile.avatarName}</strong>
+            <strong>{displayName}</strong>
             <small>{selectedPreset.label}</small>
           </div>
         </div>

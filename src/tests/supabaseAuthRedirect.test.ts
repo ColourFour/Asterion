@@ -82,6 +82,8 @@ describe('Supabase auth redirect handling', () => {
           return { data: { subscription: { unsubscribe } } };
         }),
         signInWithOtp: vi.fn(),
+        signInWithPassword: vi.fn(),
+        updateUser: vi.fn(),
         signOut: vi.fn(),
       },
     };

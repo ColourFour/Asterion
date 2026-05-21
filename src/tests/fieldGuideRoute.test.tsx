@@ -143,6 +143,9 @@ describe('Field Guide app route', () => {
     expect(topbar?.querySelector('nav')?.textContent).not.toContain('Teacher/Export');
     expect(topbar?.textContent).not.toContain('Teacher tools');
     expect(topbar?.textContent).not.toContain('Open export');
+    expect(topbar?.textContent).not.toContain('Teacher login');
+    expect(topbar?.textContent).not.toContain('Admin login');
+    expect(topbar?.textContent).not.toContain('Admin Console');
     expect(topbar?.textContent).not.toContain('local-first classroom mode');
     expect(fieldGuideHeader).toBeTruthy();
     expect(fieldGuideHeader?.textContent).toContain('Field Guide');

@@ -177,6 +177,8 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Your class membership and teacher summaries are hosted.');
     expect(container.textContent).toContain('Raw practice work stays on this browser.');
     expect(container.textContent).toContain('This uses an existing hosted roster slot.');
+    expect(container.textContent).toContain('Teacher login');
+    expect(container.textContent).toContain('Admin login');
     expect(container.textContent).toContain('Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
     expect(container.textContent).not.toContain('Progress is saved on this browser/device only.');
@@ -349,6 +351,60 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Welcome to Asterion Academy');
     expect(container.textContent).toContain('Create your avatar');
     expect(container.textContent).not.toContain('World Map');
+  });
+
+  it('trims academy names, allows empty fallback, and preserves onboarding after refresh', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-fallback-name',
+        realName: 'Fallback Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Aster',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+
+    let container = await render(<App />);
+    const academyName = inputForLabel(container, 'Academy name');
+    expect(academyName.maxLength).toBe(40);
+    expect(academyName.required).toBe(false);
+
+    setInputValue(academyName, '   ');
+
+    await act(async () => {
+      container.querySelector('form[aria-label="Create academy avatar"]')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+    });
+
+    const onboardedProgress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
+    expect(onboardedProgress.profile).toMatchObject({
+      avatarName: 'Aster',
+      avatarId: 'star-apprentice',
+      onboardingCompleted: true,
+      onboardingCompletedAt: expect.any(String),
+    });
+    expect(container.textContent).toContain('World Map');
+    expect(container.textContent).toContain('Aster');
+
+    await act(async () => {
+      mountedRoots.pop()?.unmount();
+      mountedContainers.pop()?.remove();
+      await Promise.resolve();
+    });
+
+    container = await render(<App />);
+
+    expect(container.textContent).toContain('World Map');
+    expect(container.textContent).toContain('Aster');
+    expect(container.textContent).not.toContain('Welcome to Asterion Academy');
   });
 
   it('restores a revalidated pending claim after refresh without granting app access', async () => {

@@ -187,9 +187,28 @@ describe('RoleGate', () => {
     await waitForText(container, 'Teacher access required');
 
     expect(container.textContent).toContain('Teacher access required');
+    expect(container.textContent).toContain('Teacher access was not found for this account. Ask the Asterion admin to add this email as a teacher.');
     expect(container.textContent).toContain('Active hosted roles: student.');
     expect(container.textContent).not.toContain('Teacher Shell');
     expect(Array.from(container.querySelectorAll('nav button')).map((button) => button.textContent)).toEqual(['Student app']);
+  });
+
+  it('blocks a signed-in non-admin from admin dashboard content with setup guidance', async () => {
+    const container = await render(
+      <RoleGate
+        requiredRole="admin"
+        roleServiceOptions={{ config: validConfig, createClient: async () => createRoleGateClient({ userId: 'teacher-user-1', roles: ['teacher'] }) }}
+        onNavigatePath={vi.fn()}
+      >
+        {() => <div>Admin Shell</div>}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Admin access required');
+
+    expect(container.textContent).toContain('Admin access was not found for this account. Use the bootstrapped admin account or complete admin setup.');
+    expect(container.textContent).toContain('Active hosted roles: teacher.');
+    expect(container.textContent).not.toContain('Admin Shell');
+    expect(Array.from(container.querySelectorAll('nav button')).map((button) => button.textContent)).toEqual(['Teacher', 'Student app']);
   });
 
   it('allows a signed-in teacher into the teacher dashboard shell', async () => {

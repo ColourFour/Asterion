@@ -577,6 +577,8 @@ npm run build:classroom-pilot
 
 Use `.env.classroom-pilot.example` or Vercel environment variables as the template for hosted pilot config. The real app owner must sign into Supabase once, then run `supabase/sql/005_live_pilot_bootstrap_template.sql` from the Supabase SQL Editor to create the live organization and active owner admin role. Do not run the demo seed in the live pilot project.
 
+For pilot staff access, create admin/teacher Auth accounts manually in Supabase with a unique temporary password or invite/reset flow, then add the matching hosted Asterion role. Supabase Auth login by itself is not dashboard authorization. Teachers should change temporary passwords after first login, and no temporary passwords should be stored in the app.
+
 ## Progress Storage
 
 Browser-local progress storage is the active default. The app uses a progress adapter boundary so a future hosted implementation can be added without moving academic correctness, mastery, routing, or reward logic into React components.

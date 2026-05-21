@@ -232,6 +232,50 @@ describe('dashboard routes', () => {
     expect(container.textContent).not.toContain('Class progress register');
   });
 
+  it('uses classroom-pilot Teacher login as navigation intent without bypassing RoleGate', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+    window.history.replaceState(null, '', '/');
+    const container = await render(<App />);
+    await waitForText(container, 'Teacher login');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Teacher login'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    await waitForText(container, 'Supabase sign-in required');
+
+    expect(window.location.hash).toBe('#/teacher');
+    expect(container.textContent).toContain('Supabase sign-in required');
+    expect(container.textContent).toContain('The teacher dashboard requires a signed-in Supabase session and an active teacher role.');
+    expect(container.textContent).not.toContain('Teacher class dashboard');
+    expect(container.textContent).not.toContain('Class progress register');
+  });
+
+  it('uses classroom-pilot Admin login as navigation intent without bypassing RoleGate', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+    window.history.replaceState(null, '', '/');
+    const container = await render(<App />);
+    await waitForText(container, 'Admin login');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Admin login'))?.click();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    await waitForText(container, 'Supabase sign-in required');
+
+    expect(window.location.hash).toBe('#/admin');
+    expect(container.textContent).toContain('Supabase sign-in required');
+    expect(container.textContent).toContain('The admin console requires a signed-in Supabase session and an active admin role.');
+    expect(container.textContent).not.toContain('Admin Console');
+    expect(container.textContent).not.toContain('Teacher list');
+  });
+
   it('requires the explicit demo flag before dashboards can render before onboarding', async () => {
     window.history.replaceState(null, '', '/#/teacher/classes/class-p3-alpha');
     let container = await render(<App />);
