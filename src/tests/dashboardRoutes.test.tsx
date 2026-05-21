@@ -82,6 +82,7 @@ function enableDashboardDemo() {
 }
 
 function useMockRuntimeEnv() {
+  vi.stubEnv('VITE_ASTERION_APP_PROFILE', '');
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', '');
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', '');
   vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', '');
@@ -100,6 +101,14 @@ async function waitForText(container: HTMLElement, text: string) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     });
   }
+}
+
+async function clickButton(container: HTMLElement, text: string) {
+  await act(async () => {
+    Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
 }
 
 beforeEach(() => {
@@ -154,7 +163,7 @@ describe('dashboard routes', () => {
 
     expect(window.location.hash).toBe('#/student');
     expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).toMatch(/Claim roster slot|Sign in to claim roster slot/);
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 
@@ -378,16 +387,18 @@ describe('dashboard routes', () => {
     const container = await render(<App />);
     await waitForText(container, 'P3 Alpha');
 
-    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+    expect(container.querySelector('h1')?.textContent).toBe('Teacher dashboard');
     expect(container.textContent).toContain('Teacher class dashboard');
-    expect(container.textContent).toContain('Overall progress');
-    expect(container.textContent).toContain('Focus this week');
-    expect(container.textContent).toContain('Class progress register');
-    expect(container.textContent).toContain('Class code and roster');
+    expect(container.textContent).toContain('Your classes');
+    expect(container.textContent).toContain('View students');
+    expect(container.textContent).toContain('Create another pilot class');
+    expect(container.textContent).not.toContain('Overall progress');
+    expect(container.textContent).not.toContain('Focus this week');
+    expect(container.textContent).not.toContain('Class progress register');
     expect(container.textContent).not.toContain('Use Reset claim only if a student claimed the wrong slot or needs to rejoin.');
     expect(container.textContent).not.toContain('Reset claim');
-    expect(container.textContent).toContain('Open or lock P3 regions');
-    expect(container.textContent).toContain('Export CSV');
+    expect(container.textContent).not.toContain('Open or lock P3 regions');
+    expect(container.textContent).not.toContain('Export CSV');
     expect(container.textContent).not.toContain('Enter Astral Academy');
   });
 
@@ -534,13 +545,20 @@ describe('dashboard routes', () => {
     await waitForText(container, 'Admin Console');
 
     expect(container.querySelector('h1')?.textContent).toBe('Admin Console');
+    expect(container.textContent).toContain('Options');
+
+    await clickButton(container, 'Teachers');
     expect(container.textContent).toContain('Teacher list');
     expect(container.textContent).toContain('Add teacher');
+    await clickButton(container, 'Classes');
     expect(container.textContent).toContain('Add class');
     expect(container.textContent).toContain('Class code AST-P3A');
+    await clickButton(container, 'Diagnostics');
     expect(container.textContent).toContain('Supabase diagnostic');
     expect(container.textContent).toContain('Check connection');
+    await clickButton(container, 'Region access');
     expect(container.textContent).toContain('Admin view and override');
+    await clickButton(container, 'Diagnostics');
     expect(container.textContent).toContain('Recent admin audit events');
   });
 
@@ -552,6 +570,7 @@ describe('dashboard routes', () => {
 
     expect(checkSupabaseHealth).not.toHaveBeenCalled();
 
+    await clickButton(container, 'Diagnostics');
     const diagnosticButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Check connection');
     await act(async () => {
       diagnosticButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -562,8 +581,7 @@ describe('dashboard routes', () => {
     expect(checkSupabaseHealth).toHaveBeenCalledTimes(1);
     expect(container.textContent).toContain('Connected');
     expect(container.textContent).toContain('asterion classroom_phase_1');
-    expect(container.textContent).toContain('Teacher list');
-    expect(container.textContent).toContain('Class code AST-P3A');
+    expect(container.textContent).toContain('Recent admin audit events');
   });
 
   it('adds teacher and class records from the admin forms', async () => {
@@ -572,6 +590,7 @@ describe('dashboard routes', () => {
     const container = await render(<App />);
     await waitForText(container, 'Admin Console');
 
+    await clickButton(container, 'Teachers');
     const teacherForm = container.querySelector('form[aria-label="Add teacher"]') as HTMLFormElement;
     const [teacherName, teacherEmail] = Array.from(teacherForm.querySelectorAll('input'));
     await act(async () => {
@@ -584,6 +603,7 @@ describe('dashboard routes', () => {
 
     expect(container.textContent).toContain('Dr Curie');
 
+    await clickButton(container, 'Classes');
     const classForm = container.querySelector('form[aria-label="Add class"]') as HTMLFormElement;
     const classInputs = Array.from(classForm.querySelectorAll('input'));
     await act(async () => {
@@ -636,7 +656,8 @@ describe('dashboard routes', () => {
     window.history.replaceState(null, '', '/teacher');
     const container = await render(<App />);
 
-    expect(container.querySelector('h1')?.textContent).toBe('P3 Alpha');
+    expect(container.querySelector('h1')?.textContent).toBe('Teacher dashboard');
+    expect(container.textContent).toContain('P3 Alpha');
   });
 
   it('blocks already-claimed student roster slots until a teacher resets the claim', async () => {

@@ -104,6 +104,7 @@ async function openStudentEntry(container: HTMLElement): Promise<void> {
 
 beforeEach(() => {
   vi.unstubAllEnvs();
+  vi.stubEnv('VITE_ASTERION_APP_PROFILE', '');
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DEMO', '');
   vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'mock');
   vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', 'mock');

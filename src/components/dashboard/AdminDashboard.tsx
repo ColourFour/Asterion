@@ -14,6 +14,8 @@ interface AdminDashboardProps {
   onNavigatePath: (path: string) => void;
 }
 
+type AdminDashboardPage = 'overview' | 'teachers' | 'classes' | 'regions' | 'diagnostics';
+
 function formatTime(value: string): string {
   return new Date(value).toLocaleString(undefined, {
     month: 'short',
@@ -153,6 +155,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
   const [actionIssue, setActionIssue] = useState<string>();
   const [actionMessage, setActionMessage] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
+  const [activePage, setActivePage] = useState<AdminDashboardPage>('overview');
 
   async function refreshAdminRecords() {
     try {
@@ -217,15 +220,12 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     { label: 'Admin', active: true, onClick: () => onNavigatePath('/admin') },
     { label: 'Student app', onClick: () => onNavigatePath('/') },
   ];
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
   const adminTabs: DashboardTabItem[] = [
-    { label: 'Overview', active: true, onClick: () => scrollToSection('admin-overview') },
-    { label: 'Teachers', onClick: () => scrollToSection('admin-teachers') },
-    { label: 'Classes', onClick: () => scrollToSection('admin-classes') },
-    { label: 'Region access', onClick: () => scrollToSection('admin-region-access') },
-    { label: 'Diagnostics', onClick: () => scrollToSection('admin-diagnostics') },
+    { label: 'Overview', active: activePage === 'overview', onClick: () => setActivePage('overview') },
+    { label: 'Teachers', active: activePage === 'teachers', onClick: () => setActivePage('teachers') },
+    { label: 'Classes', active: activePage === 'classes', onClick: () => setActivePage('classes') },
+    { label: 'Region access', active: activePage === 'regions', onClick: () => setActivePage('regions') },
+    { label: 'Diagnostics', active: activePage === 'diagnostics', onClick: () => setActivePage('diagnostics') },
   ];
 
   async function handleAddTeacher(event: FormEvent<HTMLFormElement>) {
@@ -298,66 +298,6 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           />
         ) : null}
 
-        <section id="admin-overview" className="dashboard-section admin-identity">
-          <ShieldCheck size={22} />
-          <div>
-            <span className="dashboard-kicker">{hostedRoleContext ? 'Signed-in hosted admin' : 'Demo admin identity'}</span>
-            <h2>{hostedRoleContext?.user.email ?? 'Support Admin'}</h2>
-            <p>Organization: {adminOrganizationLabel} · role: {hostedRoleContext ? roleSummary(hostedRoleContext) : 'admin'} · destructive support actions are disabled in this v0. {readOnly ? 'Supabase writes are disabled.' : ''}</p>
-          </div>
-        </section>
-
-        <section className="admin-overview-grid" aria-label="Admin overview">
-          <article className="snapshot-card primary-snapshot">
-            <span>Teachers</span>
-            <strong>{teachers.length}</strong>
-            <small>{teachers.filter((teacher) => teacher.status === 'active').length} active · {teachers.filter((teacher) => teacher.status === 'pending').length} pending</small>
-          </article>
-          <article className="snapshot-card">
-            <span>Classes</span>
-            <strong>{classes.length}</strong>
-            <small>{classes.filter((teacherClass) => teacherClass.status === 'active').length} active class records</small>
-          </article>
-          <article className="snapshot-card">
-            <span>Roster slots</span>
-            <strong>{classes.reduce((total, teacherClass) => total + teacherClass.rosterStudentIds.length, 0)}</strong>
-            <small>across visible classes</small>
-          </article>
-          <article className="snapshot-card">
-            <span>Locked regions</span>
-            <strong>{classes.reduce((total, teacherClass) => total + teacherClass.regionAccess.filter((access) => access.access !== 'open').length, 0)}</strong>
-            <small>still visible in exports and progress views</small>
-          </article>
-        </section>
-
-        {firstRunEmpty ? (
-          <section className="dashboard-section dashboard-empty-state" aria-label="First-run admin setup">
-            <div className="dashboard-section-heading">
-              <div>
-                <span className="dashboard-kicker">First-run setup</span>
-                <h2>{adminOrganizationLabel}</h2>
-              </div>
-            </div>
-            <p>No teachers or classes exist for this organization yet. Your active admin role is enough to open the admin shell; classroom rows will appear after you attach a teacher and create a class.</p>
-            {readOnly ? (
-              <p className="dashboard-muted">Teacher setup is disabled because this dashboard data source is read-only.</p>
-            ) : (
-              <p className="dashboard-muted">Use Add teacher below. In Supabase mode this calls public.admin_add_teacher_by_email(...) and remains limited by hosted roles plus RLS.</p>
-            )}
-          </section>
-        ) : null}
-
-        <section className="dashboard-control-row">
-          <label>
-            Search support records
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Teacher, class, or join code" />
-          </label>
-        </section>
-
-        <div id="admin-diagnostics">
-          <SupabaseDiagnosticPanel />
-        </div>
-
         {actionIssue ? (
           <section className="dashboard-section dashboard-error-state" role="alert">
             <strong>Action failed</strong>
@@ -370,8 +310,91 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           </section>
         ) : null}
 
-        <div className="admin-grid">
-          <section id="admin-teachers" className="dashboard-section">
+        {activePage === 'overview' ? (
+          <>
+            <section className="dashboard-section admin-identity">
+              <ShieldCheck size={22} />
+              <div>
+                <span className="dashboard-kicker">{hostedRoleContext ? 'Signed-in hosted admin' : 'Demo admin identity'}</span>
+                <h2>{hostedRoleContext?.user.email ?? 'Support Admin'}</h2>
+                <p>Organization: {adminOrganizationLabel} · role: {hostedRoleContext ? roleSummary(hostedRoleContext) : 'admin'} · destructive support actions are disabled in this v0. {readOnly ? 'Supabase writes are disabled.' : ''}</p>
+              </div>
+            </section>
+
+            <section className="admin-overview-grid" aria-label="Admin overview">
+              <article className="snapshot-card primary-snapshot">
+                <span>Teachers</span>
+                <strong>{teachers.length}</strong>
+                <small>{teachers.filter((teacher) => teacher.status === 'active').length} active · {teachers.filter((teacher) => teacher.status === 'pending').length} pending</small>
+              </article>
+              <article className="snapshot-card">
+                <span>Classes</span>
+                <strong>{classes.length}</strong>
+                <small>{classes.filter((teacherClass) => teacherClass.status === 'active').length} active class records</small>
+              </article>
+              <article className="snapshot-card">
+                <span>Roster slots</span>
+                <strong>{classes.reduce((total, teacherClass) => total + teacherClass.rosterStudentIds.length, 0)}</strong>
+                <small>across visible classes</small>
+              </article>
+              <article className="snapshot-card">
+                <span>Locked regions</span>
+                <strong>{classes.reduce((total, teacherClass) => total + teacherClass.regionAccess.filter((access) => access.access !== 'open').length, 0)}</strong>
+                <small>still visible in exports and progress views</small>
+              </article>
+            </section>
+
+            {firstRunEmpty ? (
+              <section className="dashboard-section dashboard-empty-state" aria-label="First-run admin setup">
+                <div className="dashboard-section-heading">
+                  <div>
+                    <span className="dashboard-kicker">First-run setup</span>
+                    <h2>{adminOrganizationLabel}</h2>
+                  </div>
+                </div>
+                <p>No teachers or classes exist for this organization yet. Your active admin role is enough to open the admin shell; classroom rows will appear after you attach a teacher and create a class.</p>
+                {readOnly ? (
+                  <p className="dashboard-muted">Teacher setup is disabled because this dashboard data source is read-only.</p>
+                ) : (
+                  <>
+                    <p className="dashboard-muted">Add a teacher first. In Supabase mode this calls public.admin_add_teacher_by_email(...) and remains limited by hosted roles plus RLS.</p>
+                    <div className="dashboard-card-actions">
+                      <button type="button" className="primary-button" onClick={() => setActivePage('teachers')}>Add teacher</button>
+                      <button type="button" className="quiet-button" onClick={() => setActivePage('diagnostics')}>Run diagnostics</button>
+                    </div>
+                  </>
+                )}
+              </section>
+            ) : (
+              <section className="dashboard-section admin-page-options" aria-label="Admin options">
+                <div className="dashboard-section-heading">
+                  <div>
+                    <span className="dashboard-kicker">Options</span>
+                    <h2>Choose a workspace</h2>
+                  </div>
+                </div>
+                <div className="dashboard-card-actions">
+                  <button type="button" className="primary-button" onClick={() => setActivePage('teachers')}>Manage teachers</button>
+                  <button type="button" className="quiet-button" onClick={() => setActivePage('classes')}>Manage classes</button>
+                  <button type="button" className="quiet-button" onClick={() => setActivePage('regions')}>Region access</button>
+                  <button type="button" className="quiet-button" onClick={() => setActivePage('diagnostics')}>Diagnostics</button>
+                </div>
+              </section>
+            )}
+          </>
+        ) : null}
+
+        {activePage === 'teachers' || activePage === 'classes' || activePage === 'regions' ? (
+          <section className="dashboard-control-row">
+            <label>
+              Search support records
+              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Teacher, class, or join code" />
+            </label>
+          </section>
+        ) : null}
+
+        {activePage === 'teachers' ? (
+          <section className="dashboard-section">
             <div className="dashboard-section-heading">
               <div>
                 <span className="dashboard-kicker">Teachers</span>
@@ -398,8 +421,10 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
               ))}
             </div>
           </section>
+        ) : null}
 
-          <section id="admin-classes" className="dashboard-section">
+        {activePage === 'classes' ? (
+          <section className="dashboard-section">
             <div className="dashboard-section-heading">
               <div>
                 <span className="dashboard-kicker">Classes</span>
@@ -435,58 +460,65 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
               ))}
             </div>
           </section>
-        </div>
+        ) : null}
 
-        <section id="admin-region-access" className="dashboard-section">
-          <div className="dashboard-section-heading">
-            <div>
-              <span className="dashboard-kicker">Region access</span>
-              <h2>Admin view and override</h2>
+        {activePage === 'regions' ? (
+          <section className="dashboard-section">
+            <div className="dashboard-section-heading">
+              <div>
+                <span className="dashboard-kicker">Region access</span>
+                <h2>Admin view and override</h2>
+              </div>
             </div>
-          </div>
-          <div className="admin-region-access-list">
-            {filteredClasses.map((teacherClass) => (
-              <article key={`${teacherClass.id}-regions`} className="dashboard-nested-panel">
+            <div className="admin-region-access-list">
+              {filteredClasses.map((teacherClass) => (
+                <article key={`${teacherClass.id}-regions`} className="dashboard-nested-panel">
+                  <div>
+                    <strong>{teacherClass.name}</strong>
+                    <span>{teacherNameById[teacherClass.teacherId] ?? teacherClass.teacherId}</span>
+                  </div>
+                  <div className="region-access-grid">
+                    {teacherClass.regionAccess.map((access) => (
+                      <label key={`${teacherClass.id}-${access.regionId}`} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
+                        <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => toggleRegion(teacherClass.id, access.regionId, event.target.checked)} />
+                        <span>{access.regionName}</span>
+                        <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{readOnly ? ' · read-only' : ''}</small>
+                      </label>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {activePage === 'diagnostics' ? (
+          <>
+            <SupabaseDiagnosticPanel />
+            <section className="dashboard-section">
+              <div className="dashboard-section-heading">
                 <div>
-                  <strong>{teacherClass.name}</strong>
-                  <span>{teacherNameById[teacherClass.teacherId] ?? teacherClass.teacherId}</span>
+                  <span className="dashboard-kicker">Audit trail</span>
+                  <h2>Recent admin audit events</h2>
                 </div>
-                <div className="region-access-grid">
-                  {teacherClass.regionAccess.map((access) => (
-                    <label key={`${teacherClass.id}-${access.regionId}`} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
-                      <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => toggleRegion(teacherClass.id, access.regionId, event.target.checked)} />
-                      <span>{access.regionName}</span>
-                      <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{readOnly ? ' · read-only' : ''}</small>
-                    </label>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="dashboard-section">
-          <div className="dashboard-section-heading">
-            <div>
-              <span className="dashboard-kicker">Audit trail</span>
-              <h2>Recent admin audit events</h2>
-            </div>
-          </div>
-          <div className="admin-list audit-list">
-            {auditEvents.length === 0 ? (
-              <article>
-                <strong>No audit events shown</strong>
-                <span>{source.kind === 'supabase' ? 'The Supabase dashboard adapter does not read audit events in this pass.' : 'No mock audit events are available.'}</span>
-              </article>
-            ) : auditEvents.map((event) => (
-              <article key={event.id}>
-                <strong>{event.action}</strong>
-                <span>{event.targetType}: {event.targetLabel}</span>
-                <small>{event.actorName} · {formatTime(event.createdAt)}</small>
-              </article>
-            ))}
-          </div>
-        </section>
+              </div>
+              <div className="admin-list audit-list">
+                {auditEvents.length === 0 ? (
+                  <article>
+                    <strong>No audit events shown</strong>
+                    <span>{source.kind === 'supabase' ? 'The Supabase dashboard adapter does not read audit events in this pass.' : 'No mock audit events are available.'}</span>
+                  </article>
+                ) : auditEvents.map((event) => (
+                  <article key={event.id}>
+                    <strong>{event.action}</strong>
+                    <span>{event.targetType}: {event.targetLabel}</span>
+                    <small>{event.actorName} · {formatTime(event.createdAt)}</small>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </>
+        ) : null}
       </DashboardShell>
     </main>
   );

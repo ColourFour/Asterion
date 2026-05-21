@@ -235,6 +235,14 @@ function setInputValue(input: HTMLInputElement, value: string) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
+async function clickButton(container: HTMLElement, text: string) {
+  await act(async () => {
+    Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+}
+
 beforeEach(() => {
   resetDashboardService();
 });
@@ -273,6 +281,7 @@ describe('hosted dashboard empty states', () => {
     expect(container.textContent).not.toContain('P3 Alpha');
     expect(container.textContent).not.toContain('Ms Hypatia');
 
+    await clickButton(container, 'Add teacher');
     const form = container.querySelector('form[aria-label="Add teacher"]') as HTMLFormElement;
     const [nameInput, emailInput] = Array.from(form.querySelectorAll('input')) as HTMLInputElement[];
     await act(async () => {
@@ -307,7 +316,9 @@ describe('hosted dashboard empty states', () => {
     await waitForText(container, 'Hosted P3 Alpha');
 
     expect(container.textContent).toContain('Admin Console');
+    await clickButton(container, 'Teachers');
     expect(container.textContent).toContain('Ms Supabase');
+    await clickButton(container, 'Classes');
     expect(container.textContent).toContain('Class code SUP-P3A');
     expect(container.textContent).not.toContain('First-run setup');
     expect(container.textContent).not.toContain('No authorized dashboard data');
@@ -330,6 +341,7 @@ describe('hosted dashboard empty states', () => {
     );
     await waitForText(container, 'Pending Teacher');
 
+    await clickButton(container, 'Classes');
     const classForm = container.querySelector('form[aria-label="Add class"]') as HTMLFormElement;
     const teacherOptions = Array.from(classForm.querySelectorAll('option')).map((option) => option.textContent);
     expect(teacherOptions).toContain('Ms Supabase');

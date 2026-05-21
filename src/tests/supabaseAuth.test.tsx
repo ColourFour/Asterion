@@ -167,12 +167,17 @@ describe('Supabase Auth shell', () => {
       <SupabaseAuthPanel hookOptions={{ config: validConfig, createClient: async () => fake.client }} />,
     );
 
+    await act(async () => {
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Change password'))?.click();
+      await Promise.resolve();
+    });
+
     const passwordInput = container.querySelector<HTMLInputElement>('input[type="password"]');
     expect(passwordInput).toBeTruthy();
     setInputValue(passwordInput!, 'new-password-123');
 
     await act(async () => {
-      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Change password'))?.click();
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Save password'))?.click();
       await Promise.resolve();
     });
 

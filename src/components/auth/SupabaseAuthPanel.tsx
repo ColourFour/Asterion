@@ -20,6 +20,7 @@ export function SupabaseAuthPanel({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [actionMessage, setActionMessage] = useState<string>();
   const [actionError, setActionError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
@@ -66,6 +67,7 @@ export function SupabaseAuthPanel({
       return;
     }
     setNewPassword('');
+    setShowPasswordChange(false);
     setActionMessage('Password updated.');
   }
 
@@ -99,22 +101,37 @@ export function SupabaseAuthPanel({
             Signed in as <strong>{auth.user?.email ?? auth.user?.id}</strong>.
           </p>
           <p className="dashboard-muted">Sign-in only authenticates the browser session. Teacher/admin access still depends on Supabase user_roles and RLS.</p>
-          <label>
-            New password
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(event) => setNewPassword(event.target.value)}
-              placeholder="At least 8 characters"
-              autoComplete="new-password"
-            />
-          </label>
-          <button type="button" className="quiet-button" onClick={handleChangePassword} disabled={submitting}>
-            {submitting ? 'Updating password...' : 'Change password'}
-          </button>
-          <button type="button" className="quiet-button" onClick={handleSignOut} disabled={submitting}>
-            {submitting ? 'Signing out...' : 'Sign out'}
-          </button>
+          {showPasswordChange ? (
+            <>
+              <label>
+                New password
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                  placeholder="At least 8 characters"
+                  autoComplete="new-password"
+                />
+              </label>
+              <div className="admin-action-row">
+                <button type="button" className="quiet-button" onClick={handleChangePassword} disabled={submitting}>
+                  {submitting ? 'Updating password...' : 'Save password'}
+                </button>
+                <button type="button" className="quiet-button" onClick={() => setShowPasswordChange(false)} disabled={submitting}>
+                  Cancel
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="admin-action-row">
+              <button type="button" className="quiet-button" onClick={() => setShowPasswordChange(true)} disabled={submitting}>
+                Change password
+              </button>
+              <button type="button" className="quiet-button" onClick={handleSignOut} disabled={submitting}>
+                {submitting ? 'Signing out...' : 'Sign out'}
+              </button>
+            </div>
+          )}
         </div>
       ) : null}
 

@@ -10918,20 +10918,21 @@ legend {
   min-height: 58px;
   padding: 2px 0 0;
   color: #475467;
-  border: 0;
+  border: 0 !important;
   border-bottom: 4px solid transparent;
   border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  background: transparent !important;
+  box-shadow: none !important;
   font-family: inherit;
   font-weight: 850;
   text-decoration: none;
+  text-shadow: none !important;
 }
 
 .app-view-dashboard .dashboard-tabs a.active,
 .app-view-dashboard .dashboard-tabs button.active {
-  color: var(--dashboard-action);
-  border-bottom-color: var(--dashboard-action);
+  color: var(--dashboard-action) !important;
+  border-bottom-color: var(--dashboard-action) !important;
 }
 
 .app-view-dashboard .dashboard-nav button:hover,

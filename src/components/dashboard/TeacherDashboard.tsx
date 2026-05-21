@@ -1,4 +1,4 @@
-import { ArrowLeft, Copy, Download, ExternalLink, Mail, UsersRound } from 'lucide-react';
+import { ArrowLeft, Copy, Download, Mail, UsersRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
@@ -321,6 +321,113 @@ function TeacherClassCards({
             </article>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function CreateTeacherClassSection({
+  classForm,
+  onClassFormChange,
+  onCreateClass,
+  readOnly,
+  teacherProfileId,
+  adminOperatorProfileMissing,
+}: {
+  classForm: { name: string; academicYearTerm: string; code: string };
+  onClassFormChange: (value: { name: string; academicYearTerm: string; code: string }) => void;
+  onCreateClass: (event: FormEvent<HTMLFormElement>) => void;
+  readOnly: boolean;
+  teacherProfileId: string;
+  adminOperatorProfileMissing: boolean;
+}) {
+  return (
+    <section className="dashboard-section">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Class setup</span>
+          <h2>Create another pilot class</h2>
+        </div>
+      </div>
+      {readOnly ? (
+        <p className="dashboard-muted">Class creation is disabled for this dashboard data source.</p>
+      ) : adminOperatorProfileMissing ? (
+        <p className="dashboard-muted">Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.</p>
+      ) : !teacherProfileId ? (
+        <p className="dashboard-muted">No active hosted teacher profile is attached to this signed-in account.</p>
+      ) : null}
+      <form className="dashboard-inline-form" onSubmit={onCreateClass} aria-label="Create teacher class">
+        <input value={classForm.name} onChange={(event) => onClassFormChange({ ...classForm, name: event.target.value })} placeholder="Class name" disabled={readOnly || !teacherProfileId} />
+        <input value={classForm.academicYearTerm} onChange={(event) => onClassFormChange({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" disabled={readOnly || !teacherProfileId} />
+        <input value={classForm.code} onChange={(event) => onClassFormChange({ ...classForm, code: event.target.value })} placeholder="Class code (optional)" disabled={readOnly || !teacherProfileId} />
+        <button type="submit" className="primary-button" disabled={readOnly || !teacherProfileId}>Create class</button>
+      </form>
+      <p className="dashboard-muted">New classes receive all nine canonical regions as Field Guide only.</p>
+    </section>
+  );
+}
+
+function TeacherClassActions({
+  classes,
+  dashboard,
+  page,
+  selectedClassId,
+  onNavigatePath,
+}: {
+  classes: TeacherClass[];
+  dashboard: TeacherClassDashboard;
+  page: 'class' | 'roster' | 'region';
+  selectedClassId?: string;
+  onNavigatePath: (path: string) => void;
+}) {
+  return (
+    <section className="dashboard-control-row teacher-class-actions">
+      <label>
+        Class
+        <select value={selectedClassId} onChange={(event) => onNavigatePath(`/teacher/classes/${event.target.value}`)}>
+          {classes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+        </select>
+      </label>
+      <button type="button" className="primary-button" onClick={() => exportCsv(dashboard)}>
+        <Download size={16} /> Export CSV
+      </button>
+      <button type="button" className="quiet-button" onClick={() => onNavigatePath('/teacher')}>
+        <ArrowLeft size={16} /> Back to teacher home
+      </button>
+      {page !== 'roster' ? (
+        <button type="button" className="quiet-button" onClick={() => onNavigatePath(`/teacher/classes/${dashboard.class.id}/roster`)}>
+          <UsersRound size={16} /> Class code and roster
+        </button>
+      ) : null}
+    </section>
+  );
+}
+
+function ClassRegionAccessSection({
+  dashboard,
+  readOnly,
+  onRegionAccessChange,
+}: {
+  dashboard: TeacherClassDashboard;
+  readOnly: boolean;
+  onRegionAccessChange: (regionId: string, open: boolean) => void;
+}) {
+  return (
+    <section className="dashboard-section class-region-access-section" aria-label="Class region access">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Region access</span>
+          <h2>Open or lock P3 regions for this class</h2>
+        </div>
+      </div>
+      <div className="region-access-grid">
+        {dashboard.regionAccess.map((access) => (
+          <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
+            <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => onRegionAccessChange(access.regionId, event.target.checked)} />
+            <span>{access.regionName}</span>
+            <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}{readOnly ? ' · read-only' : ''}</small>
+          </label>
+        ))}
       </div>
     </section>
   );
@@ -800,8 +907,10 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
       <DashboardShell
         className="teacher-dashboard"
         kicker="Teacher class dashboard"
-        title={dashboard.class.name}
-        description={<>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · {source.label}{readOnly ? ' · read-only' : ''}</>}
+        title={page === 'home' ? 'Teacher dashboard' : dashboard.class.name}
+        description={page === 'home'
+          ? <>Manage classes, rosters, region access, and progress views · {source.label}{readOnly ? ' · read-only' : ''}</>
+          : <>Last updated {formatTime(dashboard.lastUpdatedAt)} · class code {dashboard.classCode.code} · {classRows.length} claimed students · {source.label}{readOnly ? ' · read-only' : ''}</>}
         detail={source.detail}
         navItems={dashboardNavItems}
         tabs={teacherTabs}
@@ -830,93 +939,49 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           </section>
         ) : null}
 
-        <TeacherProgressScopeNote />
-
         {page === 'home' ? (
-          <TeacherClassCards classes={classes} activeClassId={selectedClassId} dashboard={dashboard} onNavigatePath={onNavigatePath} />
-        ) : null}
-
-        <section className="dashboard-control-row teacher-class-actions">
-          <label>
-            Class
-            <select value={selectedClassId} onChange={(event) => onNavigatePath(`/teacher/classes/${event.target.value}`)}>
-              {classes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
-            </select>
-          </label>
-          <button type="button" className="primary-button" onClick={() => exportCsv(dashboard)}>
-            <Download size={16} /> Export CSV
-          </button>
-          {page === 'home' ? (
-            <button type="button" className="quiet-button" onClick={() => onNavigatePath(`/teacher/classes/${dashboard.class.id}`)}>
-              <ExternalLink size={16} /> Open class page
-            </button>
-          ) : (
-            <button type="button" className="quiet-button" onClick={() => onNavigatePath('/teacher')}>
-              <ArrowLeft size={16} /> Back to teacher home
-            </button>
-          )}
-          {page !== 'roster' ? (
-            <button type="button" className="quiet-button" onClick={() => onNavigatePath(`/teacher/classes/${dashboard.class.id}/roster`)}>
-              <UsersRound size={16} /> Class code and roster
-            </button>
-          ) : null}
-        </section>
-
-        {page === 'home' || page === 'class' ? (
-          <section className="dashboard-section">
-            <div className="dashboard-section-heading">
-              <div>
-                <span className="dashboard-kicker">Class setup</span>
-                <h2>Create another pilot class</h2>
-              </div>
-            </div>
-            {adminOperatorProfileMissing ? (
-              <p className="dashboard-muted">Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.</p>
-            ) : null}
-            <form className="dashboard-inline-form" onSubmit={handleCreateClass} aria-label="Create teacher class">
-              <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" disabled={readOnly || !teacherProfileId} />
-              <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" disabled={readOnly || !teacherProfileId} />
-              <input value={classForm.code} onChange={(event) => setClassForm({ ...classForm, code: event.target.value })} placeholder="Class code (optional)" disabled={readOnly || !teacherProfileId} />
-              <button type="submit" className="primary-button" disabled={readOnly || !teacherProfileId}>Create class</button>
-            </form>
-            <p className="dashboard-muted">New classes receive all nine canonical regions as Field Guide only.</p>
-          </section>
+          <>
+            <TeacherClassCards classes={classes} activeClassId={selectedClassId} dashboard={dashboard} onNavigatePath={onNavigatePath} />
+            <CreateTeacherClassSection
+              classForm={classForm}
+              onClassFormChange={setClassForm}
+              onCreateClass={handleCreateClass}
+              readOnly={readOnly}
+              teacherProfileId={teacherProfileId}
+              adminOperatorProfileMissing={adminOperatorProfileMissing}
+            />
+          </>
         ) : null}
 
         {page === 'roster' ? (
-          <RosterManagementPage
-            dashboard={dashboard}
-            newStudentName={newStudentName}
-            onNewStudentNameChange={setNewStudentName}
-            onAddStudent={handleAddStudent}
-            onArchiveStudent={handleArchiveStudent}
-            onResetClaim={handleResetClaim}
-            readOnly={readOnly}
-          />
+          <>
+            <TeacherProgressScopeNote />
+            <TeacherClassActions classes={classes} dashboard={dashboard} page={page} selectedClassId={selectedClassId} onNavigatePath={onNavigatePath} />
+            <RosterManagementPage
+              dashboard={dashboard}
+              newStudentName={newStudentName}
+              onNewStudentNameChange={setNewStudentName}
+              onAddStudent={handleAddStudent}
+              onArchiveStudent={handleArchiveStudent}
+              onResetClaim={handleResetClaim}
+              readOnly={readOnly}
+            />
+            <ClassRegionAccessSection dashboard={dashboard} readOnly={readOnly} onRegionAccessChange={handleRegionAccess} />
+          </>
         ) : null}
 
-        {page === 'region' ? <RegionProgressPage dashboard={dashboard} regionId={regionId} /> : null}
-
-        {page !== 'roster' && page !== 'region' ? (
+        {page === 'region' ? (
           <>
-            <section className="dashboard-section class-region-access-section" aria-label="Class region access">
-              <div className="dashboard-section-heading">
-                <div>
-                  <span className="dashboard-kicker">Region access</span>
-                  <h2>Open or lock P3 regions for this class</h2>
-                </div>
-              </div>
-              <div className="region-access-grid">
-                {dashboard.regionAccess.map((access) => (
-                  <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
-                    <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => handleRegionAccess(access.regionId, event.target.checked)} />
-                    <span>{access.regionName}</span>
-                    <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Quick Check, Warm-Up, Exam Practice, Guardian, and mastery blocked'}{readOnly ? ' · read-only' : ''}</small>
-                  </label>
-                ))}
-              </div>
-            </section>
+            <TeacherProgressScopeNote />
+            <TeacherClassActions classes={classes} dashboard={dashboard} page={page} selectedClassId={selectedClassId} onNavigatePath={onNavigatePath} />
+            <RegionProgressPage dashboard={dashboard} regionId={regionId} />
+          </>
+        ) : null}
 
+        {page === 'class' ? (
+          <>
+            <TeacherProgressScopeNote />
+            <TeacherClassActions classes={classes} dashboard={dashboard} page={page} selectedClassId={selectedClassId} onNavigatePath={onNavigatePath} />
             <ClassFirstDashboard dashboard={dashboard} onOpenRegion={openRegion} />
           </>
         ) : null}

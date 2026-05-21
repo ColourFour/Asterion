@@ -1,14 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createDashboardDataService, dashboardDataService, mockDashboardDataService, type DashboardDataService } from '../lib/dashboardDataService';
+import { createDashboardDataService, mockDashboardDataService, type DashboardDataService } from '../lib/dashboardDataService';
 import * as dashboardMockService from '../lib/dashboardMockService';
 
 describe('dashboard data service adapter', () => {
   beforeEach(() => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', '');
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', '');
   });
 
+  function defaultMockService(): DashboardDataService {
+    return createDashboardDataService({
+      VITE_ASTERION_APP_PROFILE: '',
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: '',
+    });
+  }
+
   it('uses the mock dashboard service as the default implementation', () => {
-    const service: DashboardDataService = dashboardDataService;
+    const service: DashboardDataService = defaultMockService();
 
     expect(createDashboardDataService({})).toBe(mockDashboardDataService);
     expect(service.source).toMatchObject({
@@ -48,14 +56,14 @@ describe('dashboard data service adapter', () => {
 
   it('returns the same core teacher dashboard data as dashboardMockService', async () => {
     const [adapterClasses, mockClasses] = await Promise.all([
-      dashboardDataService.listTeacherClasses('teacher-hypatia'),
+      defaultMockService().listTeacherClasses('teacher-hypatia'),
       dashboardMockService.listTeacherClasses('teacher-hypatia'),
     ]);
 
     expect(adapterClasses).toEqual(mockClasses);
 
     const [adapterDashboard, mockDashboard] = await Promise.all([
-      dashboardDataService.getTeacherClassDashboard('class-p3-alpha'),
+      defaultMockService().getTeacherClassDashboard('class-p3-alpha'),
       dashboardMockService.getTeacherClassDashboard('class-p3-alpha'),
     ]);
 
@@ -71,29 +79,31 @@ describe('dashboard data service adapter', () => {
   });
 
   it('returns the same admin records and audit events as dashboardMockService', async () => {
-    await expect(dashboardDataService.listAdminTeacherRecords()).resolves.toEqual(await dashboardMockService.listAdminTeacherRecords());
-    await expect(dashboardDataService.listAdminClassRecords()).resolves.toEqual(await dashboardMockService.listAdminClassRecords());
-    await expect(dashboardDataService.listAdminAuditEvents()).resolves.toEqual(await dashboardMockService.listAdminAuditEvents());
+    const service = defaultMockService();
+    await expect(service.listAdminTeacherRecords()).resolves.toEqual(await dashboardMockService.listAdminTeacherRecords());
+    await expect(service.listAdminClassRecords()).resolves.toEqual(await dashboardMockService.listAdminClassRecords());
+    await expect(service.listAdminAuditEvents()).resolves.toEqual(await dashboardMockService.listAdminAuditEvents());
   });
 
   it('preserves mock formatting and access helper behavior', async () => {
-    const dashboard = await dashboardDataService.getTeacherClassDashboard('class-p3-alpha');
+    const service = defaultMockService();
+    const dashboard = await service.getTeacherClassDashboard('class-p3-alpha');
 
-    expect(dashboardDataService.generateTeacherCsvExport(dashboard.exportRows)).toEqual(
+    expect(service.generateTeacherCsvExport(dashboard.exportRows)).toEqual(
       dashboardMockService.generateTeacherCsvExport(dashboard.exportRows),
     );
-    expect(dashboardDataService.labelForClassRegionAccess('field_guide_only')).toBe(
+    expect(service.labelForClassRegionAccess('field_guide_only')).toBe(
       dashboardMockService.labelForClassRegionAccess('field_guide_only'),
     );
-    expect(dashboardDataService.labelForTeacherRegionStatus('needs_help')).toBe(
+    expect(service.labelForTeacherRegionStatus('needs_help')).toBe(
       dashboardMockService.labelForTeacherRegionStatus('needs_help'),
     );
-    expect(dashboardDataService.canUseRegionActivity('field_guide_only', 'quick_check')).toBe(false);
-    expect(dashboardDataService.canUseRegionActivity('open', 'guardian')).toBe(true);
+    expect(service.canUseRegionActivity('field_guide_only', 'quick_check')).toBe(false);
+    expect(service.canUseRegionActivity('open', 'guardian')).toBe(true);
   });
 
   it('routes mock roster mutations through the adapter boundary', async () => {
-    const added = await dashboardDataService.addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Adapter Boundary Student');
+    const added = await defaultMockService().addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Adapter Boundary Student');
 
     expect(added).toMatchObject({
       classId: 'class-p3-alpha',
