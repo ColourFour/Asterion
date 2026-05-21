@@ -24,15 +24,14 @@ Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work
 - [Admin Teacher Roster V1](docs/admin-teacher-roster-v1.md): admin roster and class-region access direction.
 - [Roadmap](docs/ROADMAP.md): product direction and longer-term boundaries.
 - [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
-- [File Audit](docs/FILE_AUDIT.md): graded review of tracked source, config, docs, tests, data, and grouped assets.
 - [Deployment Readiness](docs/deployment-readiness.md): static deployment target, route behavior, payload findings, repo-cleanliness rules, and CSS split plan.
-- [Browser Smoke Verification](docs/BROWSER_SMOKE_VERIFICATION_2026_05_18.md): latest manual browser/mobile smoke findings and release risks.
-- [Environment Configuration Audit](docs/ENVIRONMENT_CONFIGURATION_AUDIT_2026_05_19.md): safe Vite env values, Supabase modes, and server-only verifier env.
-- [Bundle Splitting Pass](docs/BUNDLE_SPLITTING_PASS_2026_05_19.md): route-level lazy loading work that removed the Vite 500 kB app chunk warning.
+- [Live Classroom Pilot Final Audit](docs/LIVE_CLASSROOM_PILOT_FINAL_AUDIT_2026_05_21.md): current live-classroom readiness verdict, launch checklist, and rollback conditions.
+- [Docs Review](docs/DOCS_REVIEW_2026_05_21.md): active documentation inventory, archived categories, and deletion candidates.
 - [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
 - [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
 - [Cleanup Archive](docs/archive/cleanup-2026-05-19/README.md): historical May 2026 snapshots and superseded planning notes retained for continuity.
+- [Docs Review Archive](docs/archive/docs-review-2026-05-21/README.md): dated audits, reports, handoffs, smoke artifacts, and superseded review notes moved out of the active docs root.
 
 ## Core Principles
 
