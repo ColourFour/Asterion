@@ -29,6 +29,7 @@ interface SupabaseQueryResult<T> {
 export interface SupabaseRoleQueryBuilder<T = Record<string, unknown>> extends PromiseLike<SupabaseQueryResult<T>> {
   select(columns: string): SupabaseRoleQueryBuilder<T>;
   eq(column: string, value: unknown): SupabaseRoleQueryBuilder<T>;
+  in(column: string, values: unknown[]): SupabaseRoleQueryBuilder<T>;
   order(column: string, options?: { ascending?: boolean }): SupabaseRoleQueryBuilder<T>;
 }
 
@@ -80,11 +81,20 @@ export interface SupabaseStudentProfileContext {
   updatedAt: string;
 }
 
+export interface SupabaseOrganizationContext {
+  id: string;
+  name: string;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface SupabaseRoleContext {
   user: SupabaseRoleUser;
   roles: SupabaseUserRoleRecord[];
   roleNames: AsterionRole[];
   organizationIds: string[];
+  organizations: SupabaseOrganizationContext[];
   teacherProfiles: SupabaseTeacherProfileContext[];
   studentProfiles: SupabaseStudentProfileContext[];
 }
@@ -127,9 +137,18 @@ interface StudentProfileRow {
   updated_at: string;
 }
 
+interface OrganizationRow {
+  id: string;
+  name: string;
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
+}
+
 const roleColumns = 'id, user_id, organization_id, role, status, created_at, updated_at';
 const teacherProfileColumns = 'id, user_id, organization_id, display_name, email, status, created_at, updated_at';
 const studentProfileColumns = 'id, user_id, organization_id, display_name, optional_email, status, created_at, updated_at';
+const organizationColumns = 'id, name, status, created_at, updated_at';
 const roleOrder: AsterionRole[] = ['admin', 'teacher', 'student'];
 
 function errorMessage(error: unknown, fallback: string): string {
@@ -215,6 +234,16 @@ function mapStudentProfile(row: StudentProfileRow): SupabaseStudentProfileContex
   };
 }
 
+function mapOrganization(row: OrganizationRow): SupabaseOrganizationContext {
+  return {
+    id: row.id,
+    name: row.name,
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 async function readContextForSession(client: SupabaseRoleClient, session: SupabaseRoleAuthSession | null | undefined): Promise<SupabaseRoleContextState> {
   const userId = session?.user?.id;
   if (!userId) return { status: 'signed-out' };
@@ -256,6 +285,16 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
       ...teacherProfiles.map((profile) => profile.organizationId),
       ...studentProfiles.map((profile) => profile.organizationId),
     ]);
+    const organizationRows = organizationIds.length
+      ? await readRows(
+        client.from<OrganizationRow>('organizations')
+          .select(organizationColumns)
+          .in('id', organizationIds)
+          .order('name', { ascending: true }),
+        'organizations',
+      )
+      : [];
+    const organizations = organizationRows.map(mapOrganization);
 
     return {
       status: 'ready',
@@ -267,6 +306,7 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
         roles,
         roleNames,
         organizationIds,
+        organizations,
         teacherProfiles,
         studentProfiles,
       },

@@ -13,6 +13,15 @@ const validConfig = resolveSupabaseConfig({
 });
 
 const baseRows = {
+  organizations: [
+    {
+      id: 'org-1',
+      name: 'Hosted School',
+      status: 'active',
+      created_at: '2026-05-18T08:00:00.000Z',
+      updated_at: '2026-05-18T08:00:00.000Z',
+    },
+  ],
   user_roles: [
     {
       id: 'role-student',
@@ -109,6 +118,12 @@ function createFakeRoleClient({
       return this;
     }
 
+    in(column: string, values: unknown[]) {
+      queryOps.push(`${this.table}.in:${column}`);
+      this.filters.push((row) => values.includes(row[column]));
+      return this;
+    }
+
     order(column: string) {
       queryOps.push(`${this.table}.order:${column}`);
       this.orderColumn = column;
@@ -185,10 +200,13 @@ describe('Supabase role service', () => {
     expect(state.context.studentProfiles).toEqual([
       expect.objectContaining({ id: 'student-profile-1', displayName: 'Ada Student' }),
     ]);
+    expect(state.context.organizations).toEqual([
+      expect.objectContaining({ id: 'org-1', name: 'Hosted School' }),
+    ]);
     expect(hasSupabaseRole(state.context, 'student')).toBe(true);
     expect(hasSupabaseRole(state.context, 'teacher')).toBe(false);
     expect(hasSupabaseRole(state.context, 'admin')).toBe(false);
-    expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles', 'student_profiles']));
+    expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles', 'student_profiles', 'organizations']));
   });
 
   it('loads multi-role teacher/admin context through the service boundary', async () => {
@@ -199,6 +217,9 @@ describe('Supabase role service', () => {
     if (state.status !== 'ready') return;
     expect(state.context.roleNames).toEqual(['admin', 'teacher']);
     expect(state.context.organizationIds).toEqual(['org-1']);
+    expect(state.context.organizations).toEqual([
+      expect.objectContaining({ id: 'org-1', name: 'Hosted School' }),
+    ]);
     expect(state.context.teacherProfiles).toEqual([
       expect.objectContaining({ id: 'teacher-profile-1', displayName: 'Ms Hosted' }),
     ]);
@@ -209,6 +230,7 @@ describe('Supabase role service', () => {
       'user_roles.eq:status',
       'teacher_profiles.eq:user_id',
       'student_profiles.eq:user_id',
+      'organizations.in:id',
     ]));
   });
 });

@@ -28,6 +28,13 @@ function createRoleGateClient({
 }) {
   const now = '2026-05-20T08:00:00.000Z';
   const rows = {
+    organizations: [{
+      id: 'org-1',
+      name: 'Test School',
+      status: 'active',
+      created_at: now,
+      updated_at: now,
+    }],
     user_roles: roles.map((role) => ({
       id: `role-${role}`,
       user_id: userId,
@@ -71,6 +78,11 @@ function createRoleGateClient({
 
     eq(column: string, value: unknown) {
       this.filters.push((row) => row[column] === value);
+      return this;
+    }
+
+    in(column: string, values: unknown[]) {
+      this.filters.push((row) => values.includes(row[column]));
       return this;
     }
 

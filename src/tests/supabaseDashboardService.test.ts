@@ -161,6 +161,14 @@ const fixtureRows = {
   ],
 };
 
+const emptyHostedRows: typeof fixtureRows = {
+  teacher_profiles: [],
+  classes: [],
+  class_memberships: [],
+  class_region_access: [],
+  student_progress_events: [],
+};
+
 type FixtureTable = keyof typeof fixtureRows;
 
 function createFakeSupabaseClient({
@@ -462,6 +470,20 @@ describe('Supabase dashboard service', () => {
         rosterStudentIds: ['membership-claimed', 'membership-archived', 'membership-unclaimed'],
       }),
     ]);
+  });
+
+  it('treats an empty hosted organization as data, not an authorization failure or mock fallback', async () => {
+    const fake = createFakeSupabaseClient({ rows: emptyHostedRows });
+    const service = createSupabaseDashboardDataService({
+      config: validConfig,
+      createClient: vi.fn(async () => fake.client),
+    });
+
+    await expect(service.listAdminTeacherRecords()).resolves.toEqual([]);
+    await expect(service.listAdminClassRecords()).resolves.toEqual([]);
+    await expect(service.listTeacherClasses()).resolves.toEqual([]);
+    expect(fake.tableReads).toEqual(expect.arrayContaining(['classes', 'teacher_profiles']));
+    expect(fake.tableReads).not.toContain('student_profiles');
   });
 
   it('requires auth before reading classroom tables', async () => {

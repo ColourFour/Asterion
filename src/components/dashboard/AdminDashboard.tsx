@@ -112,10 +112,31 @@ function DashboardBlockedState({
   );
 }
 
+function organizationLabel(context: SupabaseRoleContext | undefined): string {
+  if (!context) return 'Demo organization';
+  const adminOrganizationIds = context.roles
+    .filter((role) => role.role === 'admin' && role.status === 'active')
+    .map((role) => role.organizationId);
+  const labels = adminOrganizationIds.map((organizationId) => {
+    const organization = context.organizations.find((item) => item.id === organizationId);
+    return organization?.name ?? organizationId;
+  });
+  return labels.length ? labels.join(', ') : context.organizationIds.join(', ') || 'Hosted organization';
+}
+
+function primaryAdminOrganizationId(context: SupabaseRoleContext | undefined): string | undefined {
+  const adminOrganizationIds = context?.roles
+    .filter((role) => role.role === 'admin' && role.status === 'active')
+    .map((role) => role.organizationId) ?? [];
+  return adminOrganizationIds.length === 1 ? adminOrganizationIds[0] : undefined;
+}
+
 export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashboardProps) {
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
   const showTeacherNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'teacher');
+  const adminOrganizationLabel = organizationLabel(hostedRoleContext);
+  const adminOrganizationId = primaryAdminOrganizationId(hostedRoleContext);
   const [teachers, setTeachers] = useState<AdminTeacherRecord[]>([]);
   const [classes, setClasses] = useState<AdminClassRecord[]>([]);
   const [auditEvents, setAuditEvents] = useState<AdminAuditEvent[]>([]);
@@ -136,14 +157,6 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
       setTeachers(nextTeachers);
       setClasses(nextClasses);
       setAuditEvents(nextAuditEvents);
-      if (source.kind === 'supabase' && nextTeachers.length === 0 && nextClasses.length === 0) {
-        setLoadIssue({
-          title: 'No authorized dashboard data',
-          message: 'The signed-in Supabase session is valid, but RLS returned no teacher or admin classroom rows.',
-          detail: 'Check the user_roles assignment and classroom membership for this Supabase user. Mock data is not shown in Supabase mode.',
-        });
-        return;
-      }
       setLoadIssue(undefined);
       setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
     } catch (error) {
@@ -165,14 +178,6 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
         setTeachers(nextTeachers);
         setClasses(nextClasses);
         setAuditEvents(nextAuditEvents);
-        if (source.kind === 'supabase' && nextTeachers.length === 0 && nextClasses.length === 0) {
-          setLoadIssue({
-            title: 'No authorized dashboard data',
-            message: 'The signed-in Supabase session is valid, but RLS returned no teacher or admin classroom rows.',
-            detail: 'Check the user_roles assignment and classroom membership for this Supabase user. Mock data is not shown in Supabase mode.',
-          });
-          return;
-        }
         setLoadIssue(undefined);
         setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
       } catch (error) {
@@ -199,6 +204,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
   ), [classes, normalizedQuery]);
 
   const teacherNameById = useMemo(() => Object.fromEntries(teachers.map((teacher) => [teacher.id, teacher.name])), [teachers]);
+  const firstRunEmpty = source.kind === 'supabase' && teachers.length === 0 && classes.length === 0;
 
   async function handleAddTeacher(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -206,7 +212,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
     if (!teacherForm.name.trim() || !teacherForm.email.trim()) return;
     try {
       setActionIssue(undefined);
-      await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email });
+      await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email, organizationId: adminOrganizationId });
       setTeacherForm({ name: '', email: '' });
       await refreshAdminRecords();
     } catch (error) {
@@ -274,9 +280,26 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
           <div>
             <span className="dashboard-kicker">{hostedRoleContext ? 'Signed-in hosted admin' : 'Demo admin identity'}</span>
             <h2>{hostedRoleContext?.user.email ?? 'Support Admin'}</h2>
-            <p>Role: {hostedRoleContext ? roleSummary(hostedRoleContext) : 'admin'} · destructive support actions are disabled in this v0. {readOnly ? 'Supabase writes are disabled.' : ''}</p>
+            <p>Organization: {adminOrganizationLabel} · role: {hostedRoleContext ? roleSummary(hostedRoleContext) : 'admin'} · destructive support actions are disabled in this v0. {readOnly ? 'Supabase writes are disabled.' : ''}</p>
           </div>
         </section>
+
+        {firstRunEmpty ? (
+          <section className="dashboard-section dashboard-empty-state" aria-label="First-run admin setup">
+            <div className="dashboard-section-heading">
+              <div>
+                <span className="dashboard-kicker">First-run setup</span>
+                <h2>{adminOrganizationLabel}</h2>
+              </div>
+            </div>
+            <p>No teachers or classes exist for this organization yet. Your active admin role is enough to open the admin shell; classroom rows will appear after you attach a teacher and create a class.</p>
+            {readOnly ? (
+              <p className="dashboard-muted">Teacher setup is disabled because this dashboard data source is read-only.</p>
+            ) : (
+              <p className="dashboard-muted">Use Add teacher below. In Supabase mode this calls public.admin_add_teacher_by_email(...) and remains limited by user_roles plus RLS.</p>
+            )}
+          </section>
+        ) : null}
 
         <section className="dashboard-control-row">
           <label>
