@@ -135,6 +135,8 @@ describe('student class claim service', () => {
     'ambiguous_roster_name',
     'archived',
     'already_claimed',
+    'reserved_for_other_user',
+    'staff_account_cannot_claim_student_slot',
   ])('maps hosted claim RPC status %s', (status) => {
     expect(normalizeRosterClaimRpcResult({ status })).toMatchObject({ status });
   });

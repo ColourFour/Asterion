@@ -92,6 +92,8 @@ export type StudentClaimStatus =
   | 'ambiguous_roster_name'
   | 'already_claimed'
   | 'archived'
+  | 'reserved_for_other_user'
+  | 'staff_account_cannot_claim_student_slot'
   | 'unauthenticated'
   | 'unauthorized'
   | 'claim_unavailable';

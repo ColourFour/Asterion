@@ -18,6 +18,7 @@ export const demoIds = {
   teacherNoetherProfile: '20000000-0000-0000-0000-000000000202',
   studentOrionProfile: '30000000-0000-0000-0000-000000000301',
   studentVegaProfile: '30000000-0000-0000-0000-000000000302',
+  studentLyraProfile: '30000000-0000-0000-0000-000000000303',
   studentArchiveProfile: '30000000-0000-0000-0000-000000000304',
   classAlpha: '40000000-0000-0000-0000-000000000401',
   classBeta: '40000000-0000-0000-0000-000000000402',
@@ -372,7 +373,7 @@ function insertAuditEventSql(actorUserId = 'auth.uid()') {
   `;
 }
 
-function setupAuthorizedLyraClaimUserSql() {
+function setupLyraClaimUserSql() {
   return `
     insert into auth.users (
       id,
@@ -407,7 +408,11 @@ function setupAuthorizedLyraClaimUserSql() {
         raw_app_meta_data = excluded.raw_app_meta_data,
         raw_user_meta_data = excluded.raw_user_meta_data,
         updated_at = excluded.updated_at;
+  `;
+}
 
+function setupActiveLyraStudentRoleSql() {
+  return `
     insert into public.user_roles (id, user_id, role, organization_id, status, created_at, updated_at)
     values (
       '11000000-0000-0000-0000-000000000303',
@@ -424,6 +429,19 @@ function setupAuthorizedLyraClaimUserSql() {
   `;
 }
 
+function setupAuthorizedLyraClaimUserSql() {
+  return setupLyraClaimUserSql() + setupActiveLyraStudentRoleSql();
+}
+
+function setupFirstTimeLyraClaimUserSql() {
+  return setupLyraClaimUserSql() + `
+    delete from public.user_roles
+    where user_id = '${demoIds.studentLyraUser}'
+      and organization_id = '${demoIds.organization}'
+      and role = 'student';
+  `;
+}
+
 function claimStatusCountSql({ classCode, rosterName, expectedStatus }) {
   return `
     with claim_result as (
@@ -432,6 +450,43 @@ function claimStatusCountSql({ classCode, rosterName, expectedStatus }) {
     )
     select
       count(*) filter (where status = '${sqlString(expectedStatus)}') as matched_count,
+      coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
+    from claim_result;
+  `;
+}
+
+function firstTimeClaimProvisioningCountSql() {
+  return `
+    with claim_result as (
+      select *
+      from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
+    )
+    select
+      count(*) filter (
+        where status = 'claimed'
+          and exists (
+            select 1
+            from public.user_roles ur
+            where ur.user_id = '${demoIds.studentLyraUser}'
+              and ur.organization_id = '${demoIds.organization}'
+              and ur.role = 'student'
+              and ur.status = 'active'
+          )
+          and exists (
+            select 1
+            from public.student_profiles sp
+            where sp.id = '${demoIds.studentLyraProfile}'
+              and sp.user_id = '${demoIds.studentLyraUser}'
+          )
+          and exists (
+            select 1
+            from public.class_memberships cm
+            where cm.id = '${demoIds.membershipLyraAlpha}'
+              and cm.roster_status = 'claimed'
+              and cm.claimed_by_user_id = '${demoIds.studentLyraUser}'
+              and cm.claimed_at is not null
+          )
+      ) as matched_count,
       coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
     from claim_result;
   `;
@@ -488,6 +543,68 @@ function setupDuplicateRosterSlotSql() {
       '${demoIds.classAlpha}',
       '30000000-0000-0000-0000-000000000802',
       'Lyra C.',
+      'unclaimed'
+    );
+  `;
+}
+
+function setupReservedRosterSlotSql() {
+  return `
+    insert into auth.users (
+      id,
+      instance_id,
+      aud,
+      role,
+      email,
+      encrypted_password,
+      email_confirmed_at,
+      raw_app_meta_data,
+      raw_user_meta_data,
+      created_at,
+      updated_at
+    )
+    values (
+      '00000000-0000-0000-0000-000000000804',
+      '00000000-0000-0000-0000-000000000000',
+      'authenticated',
+      'authenticated',
+      'reserved-student@asterion.invalid',
+      extensions.crypt('asterion-demo-password', extensions.gen_salt('bf')),
+      now(),
+      '{"provider":"email","providers":["email"]}'::jsonb,
+      '{"name":"Reserved Student"}'::jsonb,
+      now(),
+      now()
+    )
+    on conflict (id) do update
+    set aud = excluded.aud,
+        role = excluded.role,
+        email = excluded.email,
+        raw_app_meta_data = excluded.raw_app_meta_data,
+        raw_user_meta_data = excluded.raw_user_meta_data,
+        updated_at = excluded.updated_at;
+
+    insert into public.student_profiles (id, user_id, organization_id, display_name, status)
+    values (
+      '30000000-0000-0000-0000-000000000804',
+      '00000000-0000-0000-0000-000000000804',
+      '${demoIds.organization}',
+      'Reserved Claim Check',
+      'active'
+    );
+
+    insert into public.class_memberships (
+      id,
+      class_id,
+      student_profile_id,
+      roster_name,
+      roster_status
+    )
+    values (
+      '50000000-0000-0000-0000-000000000804',
+      '${demoIds.classAlpha}',
+      '30000000-0000-0000-0000-000000000804',
+      'Reserved Claim Check',
       'unclaimed'
     );
   `;
@@ -1208,7 +1325,19 @@ export function buildLiveRlsChecks() {
       sql: asRole('authenticated', insertAuditEventSql('auth.uid()'), demoIds.studentOrionUser),
     },
     {
-      name: 'student roster claim RPC claims an existing unclaimed slot',
+      name: 'first-time student roster claim RPC provisions student role and claims slot',
+      kind: 'status_count',
+      expected: 1,
+      expectedStatus: 'claimed',
+      sql: asRole(
+        'authenticated',
+        firstTimeClaimProvisioningCountSql(),
+        demoIds.studentLyraUser,
+        setupFirstTimeLyraClaimUserSql(),
+      ),
+    },
+    {
+      name: 'existing student role roster claim RPC still claims an existing unclaimed slot',
       kind: 'status_count',
       expected: 1,
       expectedStatus: 'claimed',
@@ -1217,6 +1346,18 @@ export function buildLiveRlsChecks() {
         claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'claimed' }),
         demoIds.studentLyraUser,
         setupAuthorizedLyraClaimUserSql(),
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks invalid class codes',
+      kind: 'status_count',
+      expected: 1,
+      expectedStatus: 'invalid_class_code',
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-NOPE', rosterName: 'Lyra C.', expectedStatus: 'invalid_class_code' }),
+        demoIds.studentLyraUser,
+        setupFirstTimeLyraClaimUserSql(),
       ),
     },
     {
@@ -1306,6 +1447,29 @@ export function buildLiveRlsChecks() {
         claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'ambiguous_roster_name' }),
         demoIds.studentLyraUser,
         setupAuthorizedLyraClaimUserSql() + setupDuplicateRosterSlotSql(),
+      ),
+    },
+    {
+      name: 'student roster claim RPC blocks roster slots reserved for another user',
+      kind: 'status_count',
+      expected: 1,
+      expectedStatus: 'reserved_for_other_user',
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Reserved Claim Check', expectedStatus: 'reserved_for_other_user' }),
+        demoIds.studentLyraUser,
+        setupFirstTimeLyraClaimUserSql() + setupReservedRosterSlotSql(),
+      ),
+    },
+    {
+      name: 'staff account without student role cannot claim student roster slot',
+      kind: 'status_count',
+      expected: 1,
+      expectedStatus: 'staff_account_cannot_claim_student_slot',
+      sql: asRole(
+        'authenticated',
+        claimStatusCountSql({ classCode: 'AST-P3A', rosterName: 'Lyra C.', expectedStatus: 'staff_account_cannot_claim_student_slot' }),
+        demoIds.teacherHypatiaUser,
       ),
     },
     {

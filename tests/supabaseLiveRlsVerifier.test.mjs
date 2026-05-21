@@ -65,6 +65,15 @@ describe('live Supabase RLS verifier definitions', () => {
         'unauthenticated users cannot insert audit events',
         'authenticated user cannot insert audit event for another actor',
         'authenticated user can append own audit event',
+        'first-time student roster claim RPC provisions student role and claims slot',
+        'existing student role roster claim RPC still claims an existing unclaimed slot',
+        'student roster claim RPC blocks invalid class codes',
+        'student roster claim RPC blocks archived roster slots',
+        'student roster claim RPC reports already claimed roster slots',
+        'student roster claim RPC blocks missing roster names without self-add',
+        'student roster claim RPC blocks duplicate roster-name ambiguity',
+        'student roster claim RPC blocks roster slots reserved for another user',
+        'staff account without student role cannot claim student roster slot',
         'region access rows exist for expected seeded class and region combinations',
       ]),
     );
@@ -123,16 +132,13 @@ describe('live Supabase RLS verifier definitions', () => {
 
   it('sets the Supabase authenticated JWT context for roster-claim RPC checks in one transaction', () => {
     const claimCheck = buildLiveRlsChecks().find(
-      (check) => check.name === 'student roster claim RPC claims an existing unclaimed slot',
+      (check) => check.name === 'first-time student roster claim RPC provisions student role and claims slot',
     );
 
     expect(claimCheck.kind).toBe('status_count');
     expect(claimCheck.sql).toContain('begin;');
     expect(claimCheck.sql).toContain('insert into auth.users');
-    expect(claimCheck.sql).toContain('insert into public.user_roles');
-    expect(claimCheck.sql).toContain(
-      "'11000000-0000-0000-0000-000000000303'",
-    );
+    expect(claimCheck.sql).toContain('delete from public.user_roles');
     expect(claimCheck.sql).toContain(
       "'00000000-0000-0000-0000-000000000303'",
     );
@@ -141,7 +147,7 @@ describe('live Supabase RLS verifier definitions', () => {
       "'10000000-0000-0000-0000-000000000001'",
     );
     expect(claimCheck.sql).toContain("'active'");
-    expect(claimCheck.sql.indexOf('insert into public.user_roles')).toBeLessThan(
+    expect(claimCheck.sql.indexOf('delete from public.user_roles')).toBeLessThan(
       claimCheck.sql.indexOf('set local role authenticated;'),
     );
     expect(claimCheck.sql).toContain('set local role authenticated;');
@@ -158,30 +164,36 @@ describe('live Supabase RLS verifier definitions', () => {
     expect(claimCheck.sql).toContain('rollback;');
   });
 
-  it('keeps every authenticated roster-claim RPC check rollback-local and Lyra-authorized', () => {
+  it('keeps every authenticated roster-claim RPC check rollback-local', () => {
     const claimChecks = buildLiveRlsChecks().filter(
       (check) =>
-        check.name.includes('student roster claim RPC') &&
+        check.name.includes('roster claim RPC') &&
         check.name !== 'anonymous users cannot execute student roster claim RPC',
     );
 
-    expect(claimChecks).toHaveLength(6);
+    expect(claimChecks).toHaveLength(9);
 
     for (const check of claimChecks) {
       expect(check.sql).toContain('begin;');
       expect(check.sql).toContain('rollback;');
-      expect(check.sql).toContain('insert into auth.users');
-      expect(check.sql).toContain('insert into public.user_roles');
-      expect(check.sql).toContain("'00000000-0000-0000-0000-000000000303'");
-      expect(check.sql).toContain("'student'");
-      expect(check.sql).toContain("'active'");
-      expect(check.sql.indexOf('insert into public.user_roles')).toBeLessThan(
-        check.sql.indexOf('set local role authenticated;'),
-      );
       expect(check.sql.indexOf('set local role authenticated;')).toBeLessThan(
         check.sql.indexOf('public.claim_class_roster_slot'),
       );
     }
+  });
+
+  it('keeps the existing-student-role roster claim fixture explicit', () => {
+    const claimCheck = buildLiveRlsChecks().find(
+      (check) => check.name === 'existing student role roster claim RPC still claims an existing unclaimed slot',
+    );
+
+    expect(claimCheck.sql).toContain('insert into auth.users');
+    expect(claimCheck.sql).toContain('insert into public.user_roles');
+    expect(claimCheck.sql).toContain("'11000000-0000-0000-0000-000000000303'");
+    expect(claimCheck.sql).toContain("'00000000-0000-0000-0000-000000000303'");
+    expect(claimCheck.sql.indexOf('insert into public.user_roles')).toBeLessThan(
+      claimCheck.sql.indexOf('set local role authenticated;'),
+    );
   });
 
   it('does not add the Lyra authorization fixture to the anonymous roster-claim denial check', () => {

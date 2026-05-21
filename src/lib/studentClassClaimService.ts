@@ -29,6 +29,8 @@ const claimStatusMessages: Record<StudentClaimStatus, string> = {
   ambiguous_roster_name: 'More than one roster entry uses that name. Ask your teacher to make the roster name unique before claiming.',
   already_claimed: 'This roster entry has already been claimed. Ask your teacher or admin for help.',
   archived: 'This roster entry is archived. Ask your teacher or admin for help.',
+  reserved_for_other_user: 'This roster entry is reserved for another signed-in account.',
+  staff_account_cannot_claim_student_slot: 'This staff account is not a student account. Use a student sign-in to claim this roster slot.',
   unauthenticated: 'Sign in before claiming a roster slot.',
   unauthorized: 'This signed-in account is not authorized to claim that roster slot.',
   claim_unavailable: 'Hosted roster claiming is unavailable in this build. Ask your teacher or admin for help.',
