@@ -34,6 +34,7 @@ DEFAULT_PROJECTED_BANK = REPO_ROOT / "public/assets/exam-bank-data/asterion_ques
 DEFAULT_RAW_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
 DEFAULT_TOPIC_ROUTING = REPO_ROOT / "public/assets/exam-bank-data/question_bank.topic_routing.v1.json"
 DEFAULT_ROUTING_AUDIT = REPO_ROOT / "tools/content_lab/reviews/p3_app_region_routing_audit.json"
+DEFAULT_ROUTE_DECISIONS = REPO_ROOT / "tools/content_lab/reviews/p3_route_evidence_decisions_v1.json"
 DEFAULT_INVENTORY = REPO_ROOT / "tools/content_lab/reports/p3_content_inventory_report.json"
 DEFAULT_MATRIX = REPO_ROOT / "tools/content_lab/reports/p3_coverage_matrix.json"
 DEFAULT_WORLD_MAP = REPO_ROOT / "src/lib/worldMap.ts"
@@ -73,6 +74,16 @@ P3_ROUTE_REVIEW_LABELS = {
     "ambiguous_multi_topic_route": "Ambiguous multi-topic route",
     "missing_p3_route": "Missing P3 route",
 }
+DECISION_STATUSES = [
+    "clean",
+    "thin",
+    "ambiguous",
+    "fallback_only",
+    "blocked",
+    "deferred",
+    "review_needed",
+    "still_needs_review",
+]
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -455,6 +466,75 @@ def count_by(items: list[dict[str, Any]], field: str) -> dict[str, int]:
     return {label: sum(1 for item in items if item.get(field) == label) for label in labels}
 
 
+def route_decision_records(route_decisions: dict[str, Any]) -> list[dict[str, Any]]:
+    decisions = route_decisions.get("decisions")
+    if not isinstance(decisions, list):
+        return []
+    return [as_record(decision) for decision in decisions if as_record(decision)]
+
+
+def decision_status(decision: dict[str, Any]) -> str:
+    status = non_empty_string(decision.get("reviewed_status")) or "still_needs_review"
+    return status if status in DECISION_STATUSES else "still_needs_review"
+
+
+def route_decision_summary(
+    route_items: list[dict[str, Any]],
+    route_decisions: dict[str, Any],
+) -> dict[str, Any]:
+    decisions = route_decision_records(route_decisions)
+    route_question_ids = {
+        str(item.get("question_id"))
+        for item in route_items
+        if item.get("workstream") == "route_correction"
+        and item.get("category") in {
+            "missing_p3_routes",
+            "ambiguous_multi_topic_routes",
+            "review_needed_routes",
+            "fallback_display_only_region_placements",
+        }
+        and item.get("question_id")
+    }
+    decided_question_ids = {
+        str(decision.get("question_id"))
+        for decision in decisions
+        if non_empty_string(decision.get("question_id"))
+    }
+    counts = {status: 0 for status in DECISION_STATUSES}
+    for decision in decisions:
+        counts[decision_status(decision)] += 1
+    still_needs_review_ids = sorted(route_question_ids - decided_question_ids)
+    counts["still_needs_review"] = len(still_needs_review_ids)
+    return {
+        "decision_source_schema": route_decisions.get("schema_name"),
+        "review_label": route_decisions.get("review_label"),
+        "reviewer": route_decisions.get("reviewer"),
+        "reviewed_at": route_decisions.get("reviewed_at"),
+        "counts_by_status": counts,
+        "total_recorded_decision_count": len(decisions),
+        "decided_question_count": len(decided_question_ids),
+        "still_needs_review_count": len(still_needs_review_ids),
+        "still_needs_review_question_ids": still_needs_review_ids,
+        "decisions": sorted([
+            {
+                "question_id": non_empty_string(decision.get("question_id")) or "",
+                "paper": non_empty_string(decision.get("paper")) or "",
+                "question_number": non_empty_string(decision.get("question_number")) or "",
+                "previous_route_status": non_empty_string(decision.get("previous_route_status")) or "",
+                "reviewed_status": decision_status(decision),
+                "reviewed_region_id": non_empty_string(decision.get("reviewed_region_id")) or "",
+                "reviewed_region_title": region_title(non_empty_string(decision.get("reviewed_region_id"))),
+                "reviewed_source_skill_ids": string_list(decision.get("reviewed_source_skill_ids")),
+                "mastery_evidence_allowed": as_record(decision.get("use_case_permissions")).get("mastery_evidence_allowed"),
+                "content_lab_generation_allowed": as_record(decision.get("use_case_permissions")).get("content_lab_generation_allowed"),
+                "candidate_promotion_allowed": as_record(decision.get("use_case_permissions")).get("candidate_promotion_allowed"),
+                "reason": non_empty_string(decision.get("reason")) or "",
+            }
+            for decision in decisions
+        ], key=lambda item: (str(item["reviewed_status"]), str(item["question_id"]))),
+    }
+
+
 def empty_queue() -> dict[str, dict[str, list[dict[str, Any]]]]:
     return {
         "route_correction": {category: [] for category in ROUTE_CATEGORIES},
@@ -531,6 +611,7 @@ def build_report(
     raw_bank: dict[str, Any],
     topic_routing: dict[str, Any],
     routing_audit: dict[str, Any],
+    route_decisions: dict[str, Any],
     inventory: dict[str, Any],
     matrix: dict[str, Any],
     world_map_path: Path,
@@ -579,6 +660,7 @@ def build_report(
     queue["support_content_gaps"]["weak_or_missing_skill_support"] = sorted_items(support_items)
 
     all_items = flatten_queue(queue)
+    decision_summary = route_decision_summary(all_items, route_decisions)
     report = {
         "schema_name": REPORT_SCHEMA_NAME,
         "schema_version": REPORT_SCHEMA_VERSION,
@@ -604,6 +686,7 @@ def build_report(
             "unique_question_count": len({item["question_id"] for item in all_items if item.get("question_id")}),
             "unique_skill_count": len({item["skill_ref"] for item in all_items if item.get("skill_ref")}),
         },
+        "route_decision_summary": decision_summary,
         "region_summary": build_region_summary(all_items),
         "skill_summary": build_skill_summary(all_items, skill_by_ref),
         "queue": queue,
@@ -707,6 +790,25 @@ def validate_report(report: dict[str, Any]) -> None:
     if as_record(report.get("queue_summary")).get("total_queue_item_count") != total:
         errors.append("total queue item count does not match queue details")
 
+    decision_summary = as_record(report.get("route_decision_summary"))
+    decision_counts = as_record(decision_summary.get("counts_by_status"))
+    for status in DECISION_STATUSES:
+        if isinstance(decision_counts.get(status), bool) or not isinstance(decision_counts.get(status), int):
+            errors.append(f"route_decision_summary.counts_by_status missing integer {status}")
+    decisions = decision_summary.get("decisions")
+    if not isinstance(decisions, list):
+        errors.append("route_decision_summary.decisions must be a list")
+    else:
+        for decision in decisions:
+            row = as_record(decision)
+            status = non_empty_string(row.get("reviewed_status"))
+            if status not in DECISION_STATUSES:
+                errors.append(f"route decision {row.get('question_id')} has invalid status {status}")
+            if not non_empty_string(row.get("question_id")):
+                errors.append("route decision row is missing question_id")
+            if not non_empty_string(row.get("reason")):
+                errors.append(f"route decision {row.get('question_id')} is missing reason")
+
     if errors:
         raise ValueError("; ".join(errors))
 
@@ -773,6 +875,9 @@ def render_markdown(report: dict[str, Any]) -> str:
     text_items = queue["text_review"]["routing_text_or_visual_blockers"]
     deferred = queue["mark_scheme_subpart_review"]["deferred_evidence_cases"]
     support = queue["support_content_gaps"]["weak_or_missing_skill_support"]
+    decision_summary = as_record(report.get("route_decision_summary"))
+    decision_counts = as_record(decision_summary.get("counts_by_status"))
+    decision_rows = decision_summary.get("decisions") if isinstance(decision_summary.get("decisions"), list) else []
 
     lines = [
         "# P3 Region-Correction Queue",
@@ -790,6 +895,25 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.extend([f"### {workstream}", "", md_count_list(counts[workstream]), ""])
 
     lines.extend([
+        "## Reviewed Route Decision Summary",
+        "",
+        f"- review label: `{md_escape(decision_summary.get('review_label'))}`",
+        f"- recorded decisions: {decision_summary.get('total_recorded_decision_count')}",
+        f"- decided questions: {decision_summary.get('decided_question_count')}",
+        f"- still-needs-review route questions: {decision_summary.get('still_needs_review_count')}",
+        "",
+        md_count_list(decision_counts),
+        "",
+        *route_table(decision_rows, [
+            ("Question", "question_id"),
+            ("Previous", "previous_route_status"),
+            ("Decision", "reviewed_status"),
+            ("Reviewed Region", "reviewed_region_title"),
+            ("Mastery", "mastery_evidence_allowed"),
+            ("Generation", "content_lab_generation_allowed"),
+            ("Reason", "reason"),
+        ], limit=80),
+        "",
         "## Region Summary",
         "",
         *render_region_issue_list(report["region_summary"]),
@@ -883,6 +1007,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-bank", type=Path, default=DEFAULT_RAW_BANK)
     parser.add_argument("--topic-routing", type=Path, default=DEFAULT_TOPIC_ROUTING)
     parser.add_argument("--routing-audit", type=Path, default=DEFAULT_ROUTING_AUDIT)
+    parser.add_argument("--route-decisions", type=Path, default=DEFAULT_ROUTE_DECISIONS)
     parser.add_argument("--inventory", type=Path, default=DEFAULT_INVENTORY)
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--world-map", type=Path, default=DEFAULT_WORLD_MAP)
@@ -900,6 +1025,7 @@ def main() -> int:
         "raw_bank": args.raw_bank,
         "topic_routing_sidecar": args.topic_routing,
         "routing_audit": args.routing_audit,
+        "route_evidence_decisions": args.route_decisions,
         "content_inventory": args.inventory,
         "coverage_matrix": args.matrix,
         "world_map": args.world_map,
@@ -912,6 +1038,7 @@ def main() -> int:
             raw_bank=load_json(args.raw_bank),
             topic_routing=load_json(args.topic_routing),
             routing_audit=load_json(args.routing_audit),
+            route_decisions=load_json(args.route_decisions) if args.route_decisions.exists() else {},
             inventory=load_json(args.inventory),
             matrix=load_json(args.matrix),
             world_map_path=args.world_map,

@@ -161,9 +161,9 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 16,
+      "canonical_question_count": 14,
       "field_guide_count": 1,
-      "guardian_candidate_count": 10,
+      "guardian_candidate_count": 9,
       "instructional_status": "ready",
       "missing_support_flags": [],
       "quick_check_count": 4,
@@ -1666,9 +1666,7 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [
-        "32spring21_q04"
-      ],
+      "app_region_mismatch_question_ids": [],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -2019,16 +2017,14 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
-        "31summer23_q05",
         "32summer23_q07",
         "31summer21_q06",
         "33summer21_q03",
         "35summer25_q06"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "31summer23_q05",
         "32summer23_q07",
         "31summer21_q06",
         "33summer21_q03",
@@ -2038,17 +2034,15 @@
       "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "calculus-cliffs",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "31summer23_q05",
         "35summer25_q06"
       ],
       "instructional_status": "ready",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
-        "31summer23_q05",
         "32summer23_q07",
         "31summer21_q06",
         "33summer21_q03",
@@ -2073,7 +2067,6 @@
       "practice_allowed_deferred_question_ids": [],
       "practice_allowed_question_ids": [
         "31summer21_q06",
-        "31summer23_q05",
         "32summer23_q07",
         "33summer21_q03",
         "35summer25_q06"
@@ -2133,19 +2126,17 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "33summer21_q03",
         "31summer21_q06",
         "31autumn25_q07",
-        "32spring21_q10",
         "35summer25_q06"
       ],
       "canonical_question_ids_routed_to_skill": [
         "33summer21_q03",
         "31summer21_q06",
         "31autumn25_q07",
-        "32spring21_q10",
         "35summer25_q06"
       ],
       "curriculum_role": "p3_core",
@@ -2160,12 +2151,11 @@
       "instructional_status": "ready",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "33summer21_q03",
         "31summer21_q06",
         "31autumn25_q07",
-        "32spring21_q10",
         "35summer25_q06"
       ],
       "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
@@ -2188,7 +2178,6 @@
       "practice_allowed_question_ids": [
         "31autumn25_q07",
         "31summer21_q06",
-        "32spring21_q10",
         "33summer21_q03",
         "35summer25_q06"
       ],
@@ -2345,9 +2334,7 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [
-        "32spring21_q10"
-      ],
+      "app_region_mismatch_question_ids": [],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -4730,14 +4717,14 @@
         "skill_count": 4
       },
       {
-        "app_routed_p3_question_count": 52,
-        "canonical_question_count": 16,
+        "app_routed_p3_question_count": 50,
+        "canonical_question_count": 14,
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 49,
+        "app_routed_p3_question_count": 50,
         "canonical_question_count": 11,
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
@@ -4758,7 +4745,7 @@
         "skill_count": 3
       },
       {
-        "app_routed_p3_question_count": 32,
+        "app_routed_p3_question_count": 33,
         "canonical_question_count": 11,
         "region_id": "differential-shrine",
         "region_title": "Differential Shrine",
@@ -4766,11 +4753,11 @@
       }
     ],
     "p3_question_count": 396,
-    "referenced_canonical_question_count": 130,
-    "referenced_trainable_p3_question_count": 130,
+    "referenced_canonical_question_count": 129,
+    "referenced_trainable_p3_question_count": 129,
     "total_question_count": 1301,
     "trainable_p3_question_count": 396,
-    "unreferenced_trainable_p3_question_count": 266
+    "unreferenced_trainable_p3_question_count": 267
   },
   "region_summary": {
     "region_count": 9,
@@ -4871,7 +4858,7 @@
       "status": "clear"
     },
     {
-      "count": 37,
+      "count": 35,
       "risk_id": "resolved_app_region_mismatches",
       "risk_type": "audit_result",
       "status": "resolved"
@@ -4921,22 +4908,8 @@
     "inactive_teacher_review_entries": [],
     "inactive_teacher_review_entry_count": 0,
     "original_reviewed_mismatch_count": 42,
-    "resolved_mismatch_count": 37,
+    "resolved_mismatch_count": 35,
     "resolved_mismatches": [
-      {
-        "app_region_id": "calculus-cliffs",
-        "evidence_status": "clean_mastery_evidence",
-        "export_allowed": true,
-        "mastery_evidence_allowed": true,
-        "practice_allowed": true,
-        "question_id": "32spring21_q04",
-        "rationale": "The question asks students to solve (1 - cos x) dy/dx = y sin x and the mark scheme rewards separating variables, integrating both sides, and using y = 4 when x = pi.",
-        "recommended_resolution": "Keep this as clean separation-of-variables evidence under Differential Shrine.",
-        "resolution_status": "validated_skill_map_route",
-        "reviewed_skill_map_region_id": "differential-shrine",
-        "skill_ref": "p3_de_separation_setup",
-        "source_of_conflicting_label": "Local topic is parametric_equations, but the canonical question and mark scheme are a separable differential equation with an initial condition."
-      },
       {
         "app_region_id": "integration-gardens",
         "evidence_status": "clean_mastery_evidence",
@@ -5006,20 +4979,6 @@
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
-      },
-      {
-        "app_region_id": "calculus-cliffs",
-        "evidence_status": "clean_mastery_evidence",
-        "export_allowed": true,
-        "mastery_evidence_allowed": true,
-        "practice_allowed": true,
-        "question_id": "32spring21_q10",
-        "rationale": "Part (a) asks for the exact area under the curve, and the mark scheme rewards using the substitution, forming the definite integral, applying limits, and obtaining the exact area.",
-        "recommended_resolution": "Accept this as clean definite-area evidence from the area subpart.",
-        "resolution_status": "validated_skill_map_route",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_definite_improper_area",
-        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
       },
       {
         "app_region_id": "differential-shrine",
@@ -5442,7 +5401,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations and DeepSeek/app routing emphasize integration, while part (a) asks for points with a specified gradient."
       }
     ],
-    "resolved_skill_warning_count": 16,
+    "resolved_skill_warning_count": 14,
     "review_label": "phase-3-routing-audit-v1",
     "teacher_review_mismatch_count": 0,
     "teacher_review_mismatches": [],

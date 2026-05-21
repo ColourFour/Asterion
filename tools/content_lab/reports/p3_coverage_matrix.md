@@ -68,48 +68,62 @@ none
 
 ## Compact Skill Matrix
 
-| Skill | Section | Region | Status | Clean Evidence | Deferred Evidence | Support Gaps | Priority | Next Action |
-| --- | --- | --- | --- | ---: | ---: | --- | --- | --- |
-| p3_alg_binomial_terms_coefficients | Algebra | Algebra Vault | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_binomial_validity | Algebra | Algebra Vault | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_discriminant_root_conditions | Algebra | Algebra Vault | ready_for_review | 1 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_modulus_cases | Algebra | Algebra Vault | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_partial_fraction_form | Algebra | Algebra Vault | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_polynomial_remainder_factor | Algebra | Algebra Vault | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_structure_rearrangement | Algebra | Algebra Vault | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_complex_argand_loci_regions | Complex numbers | Argand Atrium | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_complex_cartesian_conjugate | Complex numbers | Argand Atrium | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_complex_modulus_argument_form | Complex numbers | Argand Atrium | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_complex_roots_powers | Complex numbers | Argand Atrium | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_de_forming_context_model | Differential equations | Differential Shrine | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_de_initial_condition | Differential equations | Differential Shrine | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_de_separation_setup | Differential equations | Differential Shrine | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_diff_chain_product_quotient | Differentiation | Calculus Cliffs | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_diff_implicit_log_exp | Differentiation | Calculus Cliffs | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_diff_method_selection | Differentiation | Calculus Cliffs | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_diff_parametric_gradients | Differentiation | Calculus Cliffs | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_diff_stationary_tangent_normal | Differentiation | Calculus Cliffs | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_int_definite_improper_area | Integration | Integral Terraces | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_int_method_choice | Integration | Integral Terraces | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_int_partial_fractions | Integration | Integral Terraces | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_int_parts_substitution | Integration | Integral Terraces | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_calculus_contexts | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_convert_forms | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_domain_validation | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_exponential_equations | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_laws_equations | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_linearisation | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 3 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_num_accuracy_rounding | Numerical solution of equations | Iteration Forge | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_num_iteration_formula | Numerical solution of equations | Iteration Forge | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_num_sign_change_graph_evidence | Numerical solution of equations | Iteration Forge | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_trig_equation_interval | Trigonometry | Trigonometry Spire | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_trig_identity_selection | Trigonometry | Trigonometry Spire | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_trig_quadrant_solutions | Trigonometry | Trigonometry Spire | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_trig_r_form_compound_angles | Trigonometry | Trigonometry Spire | ready_for_review | 4 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_trig_reciprocal_double_angle | Trigonometry | Trigonometry Spire | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_vec_3d_geometry_modelling | Vectors | Vectors Gate | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_vec_line_equations_intersections | Vectors | Vectors Gate | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_vec_scalar_product_angles | Vectors | Vectors Gate | ready_for_review | 5 | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| Skill | Section | Region | Status | Clean Evidence | Evidence Resilience | Deferred Evidence | Support Gaps | Priority | Next Action |
+| --- | --- | --- | --- | ---: | --- | ---: | --- | --- | --- |
+| p3_alg_binomial_terms_coefficients | Algebra | Algebra Vault | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_binomial_validity | Algebra | Algebra Vault | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_discriminant_root_conditions | Algebra | Algebra Vault | ready_for_review | 1 | thin_resilience_risk | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_modulus_cases | Algebra | Algebra Vault | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_partial_fraction_form | Algebra | Algebra Vault | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_polynomial_remainder_factor | Algebra | Algebra Vault | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_structure_rearrangement | Algebra | Algebra Vault | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_complex_argand_loci_regions | Complex numbers | Argand Atrium | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_complex_cartesian_conjugate | Complex numbers | Argand Atrium | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_complex_modulus_argument_form | Complex numbers | Argand Atrium | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_complex_roots_powers | Complex numbers | Argand Atrium | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_de_forming_context_model | Differential equations | Differential Shrine | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_de_initial_condition | Differential equations | Differential Shrine | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_de_separation_setup | Differential equations | Differential Shrine | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_diff_chain_product_quotient | Differentiation | Calculus Cliffs | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_diff_implicit_log_exp | Differentiation | Calculus Cliffs | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_diff_method_selection | Differentiation | Calculus Cliffs | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_diff_parametric_gradients | Differentiation | Calculus Cliffs | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_diff_stationary_tangent_normal | Differentiation | Calculus Cliffs | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_int_definite_improper_area | Integration | Integral Terraces | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_int_method_choice | Integration | Integral Terraces | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_int_partial_fractions | Integration | Integral Terraces | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_int_parts_substitution | Integration | Integral Terraces | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_calculus_contexts | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_convert_forms | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_domain_validation | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_exponential_equations | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_laws_equations | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_linearisation | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_num_accuracy_rounding | Numerical solution of equations | Iteration Forge | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_num_iteration_formula | Numerical solution of equations | Iteration Forge | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_num_sign_change_graph_evidence | Numerical solution of equations | Iteration Forge | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_trig_equation_interval | Trigonometry | Trigonometry Spire | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_trig_identity_selection | Trigonometry | Trigonometry Spire | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_trig_quadrant_solutions | Trigonometry | Trigonometry Spire | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_trig_r_form_compound_angles | Trigonometry | Trigonometry Spire | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_trig_reciprocal_double_angle | Trigonometry | Trigonometry Spire | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_vec_3d_geometry_modelling | Vectors | Vectors Gate | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_vec_line_equations_intersections | Vectors | Vectors Gate | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_vec_scalar_product_angles | Vectors | Vectors Gate | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+
+## Evidence Resilience Risks
+
+- Low clean-evidence threshold: 1
+
+Status counts:
+
+- `blocked_no_clean_mastery_evidence`: 0
+- `healthy_evidence_count`: 39
+- `thin_resilience_risk`: 1
+
+| Skill | Region | Clean Evidence | Status | Risk | Next Action |
+| --- | --- | ---: | --- | --- | --- |
+| p3_alg_discriminant_root_conditions | Algebra Vault | 1 | ready_for_review | thin_resilience_risk | Add or review more canonical P3 evidence links before relying on this skill as resilient. |
 
 ## Blocked Mastery Skills
 

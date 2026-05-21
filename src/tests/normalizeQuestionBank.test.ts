@@ -208,6 +208,41 @@ describe('normalizeQuestionBank', () => {
     expect(challenge.eligibility?.generationEligible.eligible).toBe(true);
   });
 
+  it('lets reviewed clean route approval override stale advisory sidecar errors', () => {
+    const question = normalizeQuestionBank(
+      {
+        questions: [{
+          id: 'stale-error-clean-route',
+          paper_family: 'p3',
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+        }],
+      },
+      {},
+      {
+        records: {
+          'stale-error-clean-route': {
+            primary_topic_id: '9709_p3_topic_differentiation',
+            route_approved: true,
+            route_review_status: 'validated_route_approved',
+            evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+            error: {
+              type: 'schema_validation_error',
+              message: 'stale advisory validation error from pre-review routing',
+            },
+          },
+        },
+      },
+    )[0];
+
+    expect(question.routeEvidence).toMatchObject({
+      status: 'clean',
+      validatedRegionId: 'calculus-cliffs',
+      reasonCodes: ['validated-topic-routing'],
+    });
+    expect(question.eligibility?.masteryEligible.eligible).toBe(true);
+  });
+
   it('blocks unsafe route statuses from mastery and generation even when images exist', () => {
     const questions = normalizeQuestionBank(
       {
@@ -250,6 +285,55 @@ describe('normalizeQuestionBank', () => {
       .toContain('blocked-hard-failure');
     expect(questions.every((question) => question.eligibility?.masteryEligible.eligible === false)).toBe(true);
     expect(questions.every((question) => question.eligibility?.generationEligible.eligible === false)).toBe(true);
+  });
+
+  it('keeps unresolved visual and text quality blockers out of mastery, Guardian, and generation', () => {
+    const question = normalizeQuestionBank(
+      {
+        questions: [{
+          id: 'quality-blocked-clean-route',
+          paper_family: 'p3',
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          question_text: 'Find a derivative.',
+          mark_scheme_text: 'Use the quotient rule.',
+          text_only_status: 'ready',
+          quality_gate: {
+            text_only_display_allowed: true,
+            content_lab_generation_allowed: false,
+            reason_codes: ['question_crop_not_high_confidence'],
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'quality-blocked-clean-route': {
+            primary_topic_id: '9709_p3_topic_differentiation',
+            route_approved: true,
+          },
+        },
+      },
+    )[0];
+
+    expect(question.eligibility?.practiceEligible.eligible).toBe(true);
+    expect(question.eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: expect.arrayContaining([
+        'validated-topic-routing',
+        'blocked-content-lab-quality-gate',
+        'quality-question_crop_not_high_confidence',
+      ]),
+    });
+    expect(question.eligibility?.guardianEligible.eligible).toBe(false);
+    expect(question.eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: expect.arrayContaining([
+        'validated-topic-routing',
+        'content-lab-generation-blocked-by-quality-gate',
+        'quality-question_crop_not_high_confidence',
+      ]),
+    });
   });
 
   it('uses the topic-routing sidecar as the route authority over source or fallback hints', () => {
@@ -657,6 +741,9 @@ describe('normalizeQuestionBank', () => {
                 primary_topic_id: '9709_p3_topic_algebra',
                 skill_ref: 'p3_alg_structure_rearrangement',
                 mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
               },
               {
                 label: 'b',
@@ -664,6 +751,9 @@ describe('normalizeQuestionBank', () => {
                 primary_topic_id: '9709_p3_topic_algebra',
                 skill_ref: 'p3_alg_structure_rearrangement',
                 mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
               },
             ],
           },
@@ -695,6 +785,263 @@ describe('normalizeQuestionBank', () => {
       acceptedPartLabels: ['(a)', '(b)'],
     });
     expect(questions[0].eligibility?.masteryEligible.eligible).toBe(true);
+  });
+
+  it('allows ambiguous routes into mastery only when reviewed part evidence resolves to one skill', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-ambiguous-reviewed-same-skill',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [3, 4],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'p3-ambiguous-reviewed-same-skill': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 55 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 45 },
+            ],
+            part_mappings: [
+              {
+                label: 'a',
+                subpart_id: 'p3-ambiguous-reviewed-same-skill_a',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+              {
+                label: 'b',
+                subpart_id: 'p3-ambiguous-reviewed-same-skill_b',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].routeEvidence?.status).toBe('ambiguous-route');
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'precise_skill_evidence',
+      acceptedPartLabels: ['(a)', '(b)'],
+      reasonCodes: expect.arrayContaining(['resolved-ambiguous-route-by-reviewed-part-mapping']),
+    });
+    expect(questions[0].eligibility?.masteryEligible.eligible).toBe(true);
+    expect(questions[0].eligibility?.generationEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: expect.arrayContaining(['blocked-ambiguous-route']),
+    });
+  });
+
+  it('does not let a bare mapping_reviewed flag resolve ambiguous route mastery', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-ambiguous-weak-mapping',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [3, 4],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'p3-ambiguous-weak-mapping': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 55 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 45 },
+            ],
+            part_mappings: [
+              {
+                label: 'a',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                route_evidence_status: 'clean',
+              },
+              {
+                label: 'b',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                route_evidence_status: 'clean',
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'rejected_ambiguous_without_part_mapping',
+      rejectedPartLabels: ['(a)', '(b)'],
+    });
+    expect(questions[0].eligibility?.masteryEligible).toMatchObject({
+      eligible: false,
+      reasonCodes: expect.arrayContaining(['blocked-ambiguous-route']),
+    });
+  });
+
+  it('requires explicit clean reviewed part route status before part mappings resolve ambiguity', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-ambiguous-missing-part-route-status',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          mark_scheme_image_path: 'p3/a/mark_scheme/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [3, 4],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'p3-ambiguous-missing-part-route-status': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 55 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 45 },
+            ],
+            part_mappings: [
+              {
+                label: 'a',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+              {
+                label: 'b',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'rejected_ambiguous_without_part_mapping',
+      rejectedPartLabels: ['(a)', '(b)'],
+    });
+    expect(questions[0].eligibility?.masteryEligible.eligible).toBe(false);
+  });
+
+  it('requires canonical image evidence before part mappings resolve ambiguity', () => {
+    const questions = normalizeQuestionBank(
+      {
+        questions: [{
+          question_id: 'p3-ambiguous-missing-mark-scheme',
+          paper_family: 'p3',
+          question_solution_marks: 7,
+          question_image_path: 'p3/a/questions/q01.png',
+          subparts: ['a', 'b'],
+          notes: {
+            question_structure_detected: {
+              subparts: ['a', 'b'],
+              mark_values_detected: [3, 4],
+              question_total_detected: 7,
+            },
+          },
+        }],
+      },
+      {},
+      {
+        records: {
+          'p3-ambiguous-missing-mark-scheme': {
+            primary_topic_id: '9709_p3_topic_algebra',
+            confidence: 'high',
+            topic_distribution: [
+              { topic_id: '9709_p3_topic_algebra', fit_percent: 55 },
+              { topic_id: '9709_p3_topic_trigonometry', fit_percent: 45 },
+            ],
+            part_mappings: [
+              {
+                label: 'a',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+              {
+                label: 'b',
+                primary_topic_id: '9709_p3_topic_algebra',
+                skill_ref: 'p3_alg_structure_rearrangement',
+                mapped_region_id: 'algebra-forge',
+                mapping_reviewed: true,
+                review_status: 'teacher_reviewed',
+                route_evidence_status: 'clean',
+                evidence_used: ['canonical_question_image', 'canonical_mark_scheme_image'],
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(questions[0].masteryReadiness).toMatchObject({
+      status: 'rejected_ambiguous_without_part_mapping',
+      reasonCodes: expect.arrayContaining(['missing-canonical-image-evidence']),
+      acceptedPartLabels: ['(a)', '(b)'],
+    });
+    expect(questions[0].eligibility?.masteryEligible.eligible).toBe(false);
   });
 
   it('normalizes projected bank artifacts and keeps review-usable text separate from canonical images', () => {
@@ -767,7 +1114,14 @@ describe('normalizeQuestionBank', () => {
     expect(questions[0].eligibility?.practiceEligible.eligible).toBe(true);
     expect(questions[0].eligibility?.generationEligible).toMatchObject({
       eligible: false,
-      reasonCodes: ['validated-topic-routing', 'missing-content-lab-usable-text', 'blocked-hard-failed-text'],
+      reasonCodes: expect.arrayContaining([
+        'validated-topic-routing',
+        'missing-content-lab-usable-text',
+        'content-lab-generation-blocked-by-quality-gate',
+        'quality-text_only_blocked_status_fail',
+        'quality-text_only_blocked_untrusted_math_text',
+        'blocked-hard-failed-text',
+      ]),
     });
     expect(questions[0].eligibility?.textOnlyEligible).toMatchObject({
       eligible: false,

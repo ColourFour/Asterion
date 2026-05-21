@@ -1146,13 +1146,13 @@
       "weak_support_reasons": []
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 4,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": true,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
+      "high_evidence": false,
       "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Name the differentiation method before differentiating",
@@ -1175,7 +1175,6 @@
         "differentiation.chain_rule_basic"
       ],
       "resolved_guardian_candidates": [
-        "31summer23_q05",
         "35summer25_q06"
       ],
       "resolved_quick_check_ids": [
@@ -1185,7 +1184,6 @@
         "p3-differentiation-method-001"
       ],
       "resolved_trainable_canonical_question_ids": [
-        "31summer23_q05",
         "32summer23_q07",
         "31summer21_q06",
         "33summer21_q03",
@@ -1193,7 +1191,7 @@
       ],
       "skill_id": "p3_diff_method_selection",
       "syllabus_topic": "Differentiation",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 4,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -1204,13 +1202,13 @@
       "weak_support_reasons": []
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 4,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": true,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
+      "high_evidence": false,
       "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
@@ -1246,12 +1244,11 @@
         "33summer21_q03",
         "31summer21_q06",
         "31autumn25_q07",
-        "32spring21_q10",
         "35summer25_q06"
       ],
       "skill_id": "p3_diff_parametric_gradients",
       "syllabus_topic": "Differentiation",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 4,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
@@ -2512,7 +2509,7 @@
     }
   ],
   "summary": {
-    "high_evidence_skills": 27,
+    "high_evidence_skills": 25,
     "high_evidence_weak_teaching_support": 0,
     "mastery_eligible_skills": 40,
     "ready_for_full_p3_learning": true,

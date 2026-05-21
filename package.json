@@ -29,7 +29,8 @@
     "queue:p3-region-correction": "python3 tools/content_lab/scripts/build_p3_region_correction_queue.py --json-output tools/content_lab/reports/p3_region_correction_queue.json --markdown-output tools/content_lab/reports/p3_region_correction_queue.md",
     "report:p3-route-evidence": "python3 tools/content_lab/scripts/build_p3_route_evidence_report.py --json-output tools/content_lab/reports/p3_route_evidence_status_report.json --markdown-output tools/content_lab/reports/p3_route_evidence_status_report.md",
     "audit:legacy-skill-targets": "python3 tools/content_lab/scripts/audit_legacy_skill_targets.py",
-    "verify:content-lab": "python3 tools/content_lab/scripts/verify_content_lab_outputs.py"
+    "verify:content-lab": "python3 tools/content_lab/scripts/verify_content_lab_outputs.py",
+    "content-lab:verify": "npm run validate:p3-skill-map && npm run inventory:p3-content && npm run coverage:p3-matrix && npm run queue:p3-region-correction && python3 tools/content_lab/scripts/verify_content_lab_outputs.py && npm test && npm run build && git diff --check"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

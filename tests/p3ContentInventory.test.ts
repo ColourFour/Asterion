@@ -416,8 +416,8 @@ describe('P3 content inventory report', () => {
       expect(report.question_routing_summary.p3_question_count).toBeGreaterThan(0);
       expect(report.question_routing_summary.referenced_trainable_p3_question_count).toBeGreaterThan(0);
       expect(report.routing_audit_summary.original_reviewed_mismatch_count).toBe(42);
-      expect(report.routing_audit_summary.resolved_mismatch_count).toBe(37);
-      expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(16);
+      expect(report.routing_audit_summary.resolved_mismatch_count).toBe(35);
+      expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(14);
       expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(0);
       expect(report.routing_audit_summary.teacher_review_skill_warning_count).toBe(0);
       expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(0);

@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 const repoRoot = process.cwd();
 const buildScript = path.join(repoRoot, 'tools/content_lab/scripts/build_skill_targets.py');
 const verifyScript = path.join(repoRoot, 'tools/content_lab/scripts/verify_content_lab_outputs.py');
+const routeDecisionsPath = path.join(repoRoot, 'tools/content_lab/reviews/p3_route_evidence_decisions_v1.json');
 const pythonTimeoutMs = 10_000;
 const pipelineTestTimeoutMs = 15_000;
 
@@ -104,21 +105,21 @@ function regionCoverageSnippets(snippetOverrides: Record<string, unknown> = {}) 
   };
   const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
     logarithms_and_exponentials: {
-      questionId: '32spring21_q01',
-      questionAsset: 'p3/32spring21/questions/q01.png',
-      markSchemeAsset: 'p3/32spring21/mark_scheme/q01.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Logarithm equation',
     },
     binomial_expansion: {
-      questionId: '33summer21_q01',
-      questionAsset: 'p3/33summer21/questions/q01.png',
-      markSchemeAsset: 'p3/33summer21/mark_scheme/q01.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Binomial term or coefficient',
     },
     trigonometry: {
-      questionId: '32spring21_q03',
-      questionAsset: 'p3/32spring21/questions/q03.png',
-      markSchemeAsset: 'p3/32spring21/mark_scheme/q03.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Trigonometric equation',
     },
   };
@@ -228,7 +229,7 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
   }, null, 2));
 }
 
-function runVerifier(outputDir: string, snippetsPath: string): string {
+function runVerifier(outputDir: string, snippetsPath: string, extraArgs: string[] = []): string {
   return readPython([
     verifyScript,
     '--outputs-dir',
@@ -238,7 +239,45 @@ function runVerifier(outputDir: string, snippetsPath: string): string {
     '--runtime-generated-practice',
     path.join(outputDir, 'runtime_generated_practice_bank.json'),
     '--skip-question-bank-git-check',
+    ...extraArgs,
   ]);
+}
+
+function sourceBackedWorkedExample(source: {
+  questionId: string;
+  questionAsset: string;
+  markSchemeAsset: string;
+}, overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'p3-log-check-example-1',
+    prompt: 'State the method needed for this example.',
+    steps: ['Identify the structure.', 'Choose the method.'],
+    answer: 'Use the named method.',
+    question_type: 'Reviewed source check',
+    key_method: 'Choose the method before calculating.',
+    exam_move: 'Name the method before calculating.',
+    source_question_ids: [source.questionId],
+    source_question_asset_ids: [source.questionAsset],
+    source_mark_scheme_asset_ids: [source.markSchemeAsset],
+    ...overrides,
+  };
+}
+
+function routeDecisionsWithStatus(dir: string, sourceQuestionId: string, reviewedStatus: string): string {
+  const payload = JSON.parse(readFileSync(routeDecisionsPath, 'utf8'));
+  const decision = payload.decisions.find((item: { question_id?: string }) => item.question_id === sourceQuestionId);
+  if (!decision) throw new Error(`Missing route decision fixture for ${sourceQuestionId}`);
+  decision.reviewed_status = reviewedStatus;
+  decision.use_case_permissions = {
+    mastery_evidence_allowed: false,
+    guardian_evidence_allowed: false,
+    teacher_export_mastery_allowed: false,
+    content_lab_generation_allowed: false,
+    candidate_promotion_allowed: false,
+  };
+  const outputPath = path.join(dir, `route_decisions_${reviewedStatus}.json`);
+  writeFileSync(outputPath, JSON.stringify(payload, null, 2));
+  return outputPath;
 }
 
 describe.sequential('Content Lab skill target pipeline', () => {
@@ -353,6 +392,34 @@ describe.sequential('Content Lab skill target pipeline', () => {
     }
   });
 
+  pipelineIt('normalizes plural worked examples when verifying reviewed teaching snippets', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-plural-examples-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: undefined,
+        worked_examples: [
+          {
+            id: 'p3-log-check-example-1',
+            prompt: 'State the method needed for this example.',
+            steps: ['Identify the structure.', 'Choose the method.'],
+            answer: 'Use the named method.',
+            question_type: 'Logarithm equation',
+            key_method: 'Choose the method before calculating.',
+            exam_move: 'Name the method before calculating.',
+            source_question_ids: ['31autumn23_q01'],
+            source_question_asset_ids: ['p3/31autumn23/questions/q01.png'],
+            source_mark_scheme_asset_ids: ['p3/31autumn23/mark_scheme/q01.png'],
+          },
+        ],
+      });
+
+      expect(runVerifier(dir, snippetsPath)).toContain('Content Lab outputs verified.');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   pipelineIt('rejects malformed quick-check objects in reviewed teaching snippets', () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-bad-'));
     const snippetsPath = path.join(dir, 'snippets.json');
@@ -375,6 +442,173 @@ describe.sequential('Content Lab skill target pipeline', () => {
       });
 
       expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects published P3 worked examples outside the priority batch when source assets are missing', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-example-assets-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath);
+      const payload = JSON.parse(readFileSync(snippetsPath, 'utf8'));
+      const complexSnippet = payload.snippets.find((snippet: { snippet_id: string }) => snippet.snippet_id === 'p3-complex-check');
+      complexSnippet.worked_example = {
+        id: 'p3-complex-check-example-1',
+        prompt: 'State the complex-number form to use.',
+        steps: ['Choose the form before calculating.'],
+        answer: 'Use modulus-argument form.',
+        source_question_ids: ['31autumn23_q01'],
+      };
+      writeFileSync(snippetsPath, JSON.stringify(payload, null, 2));
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects published P3 worked examples backed by non-clean route decisions', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-thin-example-source-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: {
+          id: 'p3-log-check-example-1',
+          prompt: 'State the method needed for this example.',
+          steps: ['Identify the structure.', 'Choose the method.'],
+          answer: 'Use the named method.',
+          question_type: 'Logarithm equation',
+          key_method: 'Choose the method before calculating.',
+          exam_move: 'Name the method before calculating.',
+          source_question_ids: ['31summer23_q05'],
+          source_question_asset_ids: ['p3/31summer23/questions/q05.png'],
+          source_mark_scheme_asset_ids: ['p3/31summer23/mark_scheme/q05.png'],
+        },
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects published P3 worked examples backed by ambiguous, blocked, deferred, review-needed, or fallback-only route decisions', () => {
+    const unsafeSources = [
+      {
+        questionId: '31autumn23_q09',
+        questionAsset: 'p3/31autumn23/questions/q09.png',
+        markSchemeAsset: 'p3/31autumn23/mark_scheme/q09.png',
+      },
+      {
+        questionId: '31summer23_q02',
+        questionAsset: 'p3/31summer23/questions/q02.png',
+        markSchemeAsset: 'p3/31summer23/mark_scheme/q02.png',
+      },
+      {
+        questionId: '33autumn24_q07',
+        questionAsset: 'p3/33autumn24/questions/q07.png',
+        markSchemeAsset: 'p3/33autumn24/mark_scheme/q07.png',
+      },
+      {
+        questionId: '32autumn22_q03',
+        questionAsset: 'p3/32autumn22/questions/q03.png',
+        markSchemeAsset: 'p3/32autumn22/mark_scheme/q03.png',
+      },
+      {
+        questionId: '31summer23_q05',
+        questionAsset: 'p3/31summer23/questions/q05.png',
+        markSchemeAsset: 'p3/31summer23/mark_scheme/q05.png',
+        routeStatusOverride: 'fallback_only',
+      },
+    ];
+
+    for (const source of unsafeSources) {
+      const dir = mkdtempSync(path.join(tmpdir(), `asterion-content-lab-verify-${source.questionId}-`));
+      const snippetsPath = path.join(dir, 'snippets.json');
+      try {
+        writeValidVerifierOutputs(dir, snippetsPath, {
+          worked_example: sourceBackedWorkedExample(source),
+        });
+        const extraArgs = source.routeStatusOverride
+          ? ['--route-decisions', routeDecisionsWithStatus(dir, source.questionId, source.routeStatusOverride)]
+          : [];
+
+        expect(() => runVerifier(dir, snippetsPath, extraArgs)).toThrow();
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    }
+  });
+
+  pipelineIt('rejects published P3 worked examples that omit canonical mark-scheme source assets', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-mark-scheme-source-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: sourceBackedWorkedExample({
+          questionId: '31autumn23_q01',
+          questionAsset: 'p3/31autumn23/questions/q01.png',
+          markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
+        }, {
+          source_mark_scheme_asset_ids: [],
+        }),
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects published P3 worked examples whose source is missing reviewed route evidence', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-missing-route-review-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath, {
+        worked_example: sourceBackedWorkedExample({
+          questionId: '32spring21_q01',
+          questionAsset: 'p3/32spring21/questions/q01.png',
+          markSchemeAsset: 'p3/32spring21/mark_scheme/q01.png',
+        }),
+      });
+
+      expect(() => runVerifier(dir, snippetsPath)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('validates route-decision asset paths against the canonical question bank', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-verify-route-decision-assets-'));
+    const snippetsPath = path.join(dir, 'snippets.json');
+    const routeDecisionsPath = path.join(dir, 'route_decisions.json');
+    try {
+      writeValidVerifierOutputs(dir, snippetsPath);
+      writeFileSync(routeDecisionsPath, JSON.stringify({
+        schema_name: 'asterion_p3_route_evidence_decisions',
+        schema_version: 1,
+        decisions: [
+          {
+            question_id: '31autumn23_q01',
+            reviewed_status: 'clean',
+            evidence_basis: {
+              question_asset_path: 'p3/31autumn23/questions/q99.png',
+              mark_scheme_asset_path: 'p3/31autumn23/mark_scheme/q01.png',
+            },
+            use_case_permissions: {
+              mastery_evidence_allowed: true,
+              guardian_evidence_allowed: true,
+              teacher_export_mastery_allowed: true,
+              content_lab_generation_allowed: true,
+              candidate_promotion_allowed: false,
+            },
+          },
+        ],
+      }, null, 2));
+
+      expect(() => runVerifier(dir, snippetsPath, ['--route-decisions', routeDecisionsPath])).toThrow();
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -411,9 +645,9 @@ describe.sequential('Content Lab skill target pipeline', () => {
           answer: '$\\ln(2x)$',
           question_type: 'Logarithm laws',
           key_method: 'Use the product law.',
-          source_question_ids: ['32spring21_q01'],
-          source_question_asset_ids: ['p3/32spring21/questions/q01.png'],
-          source_mark_scheme_asset_ids: ['p3/32spring21/mark_scheme/q01.png'],
+          source_question_ids: ['31autumn23_q01'],
+          source_question_asset_ids: ['p3/31autumn23/questions/q01.png'],
+          source_mark_scheme_asset_ids: ['p3/31autumn23/mark_scheme/q01.png'],
         },
       });
 
@@ -436,9 +670,9 @@ describe.sequential('Content Lab skill target pipeline', () => {
           question_type: 'Logarithm laws',
           key_method: 'Use the product law.',
           exam_move: 'Combine logs before solving.',
-          source_question_ids: ['32spring21_q01'],
-          source_question_asset_ids: ['p3/32spring21/questions/q01.png'],
-          source_mark_scheme_asset_ids: ['p3/32spring21/mark_scheme/q01.png'],
+          source_question_ids: ['31autumn23_q01'],
+          source_question_asset_ids: ['p3/31autumn23/questions/q01.png'],
+          source_mark_scheme_asset_ids: ['p3/31autumn23/mark_scheme/q01.png'],
         },
       });
 

@@ -109,6 +109,63 @@ describe('mastery evidence adapter', () => {
     );
   });
 
+  it('accepts ambiguous routes only when reviewed part mappings resolve one skill and region', () => {
+    const resolvedAmbiguousQuestion = question({
+      routeEvidence: routeEvidence({
+        status: 'ambiguous-route',
+        validatedRegionId: undefined,
+        candidateRegionIds: ['algebra-forge', 'trig-observatory'],
+        reasonCodes: ['multiple-p3-candidate-regions'],
+      }),
+      topicRouting: {
+        primaryTopicId: '9709_p3_topic_algebra',
+        topicDistribution: [
+          { topicId: '9709_p3_topic_algebra', mappedRegionId: 'algebra-forge', fitPercent: 55 },
+          { topicId: '9709_p3_topic_trigonometry', mappedRegionId: 'trig-observatory', fitPercent: 45 },
+        ],
+      },
+      parts: [
+        {
+          partId: 'part-a',
+          subpartId: 'q1_a',
+          label: '(a)',
+          marksAvailable: 5,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          routeEvidenceStatus: 'clean',
+          mappingReviewed: true,
+          reviewStatus: 'teacher_reviewed',
+          evidenceUsed: ['canonical_question_image', 'canonical_mark_scheme_image'],
+        },
+        {
+          partId: 'part-b',
+          subpartId: 'q1_b',
+          label: '(b)',
+          marksAvailable: 5,
+          primaryTopicId: '9709_p3_topic_algebra',
+          skillRef: 'p3_alg_structure_rearrangement',
+          mappedRegionId: 'algebra-forge',
+          routeEvidenceStatus: 'clean',
+          mappingReviewed: true,
+          reviewStatus: 'teacher_reviewed',
+          evidenceUsed: ['canonical_question_image', 'canonical_mark_scheme_image'],
+        },
+      ],
+      eligibility: {
+        ...question().eligibility!,
+        masteryEligible: { eligible: true, reasonCodes: ['validated-topic-routing', 'reviewed-part-skill-mapping'] },
+        guardianEligible: { eligible: true, reasonCodes: ['validated-topic-routing', 'reviewed-part-skill-mapping'] },
+      },
+    });
+
+    expect(explainNonMasteryEvidence({ attempt: attempt(), question: resolvedAmbiguousQuestion })).toEqual([]);
+    expect(toMasteryEvidence({ attempt: attempt(), question: resolvedAmbiguousQuestion })).toMatchObject({
+      validatedRegionId: 'algebra-forge',
+      partEvidence: undefined,
+    });
+  });
+
   it('keeps multi-part questions without reviewed part mapping out of precise mastery', () => {
     const multiPartQuestion = question({
       parts: [
@@ -157,6 +214,7 @@ describe('mastery evidence adapter', () => {
           routeEvidenceStatus: 'clean',
           mappingReviewed: true,
           reviewStatus: 'teacher_reviewed',
+          evidenceUsed: ['canonical_question_image', 'canonical_mark_scheme_image'],
         },
         {
           partId: 'part-b',
@@ -169,6 +227,7 @@ describe('mastery evidence adapter', () => {
           routeEvidenceStatus: 'clean',
           mappingReviewed: true,
           reviewStatus: 'teacher_reviewed',
+          evidenceUsed: ['canonical_question_image', 'canonical_mark_scheme_image'],
         },
       ],
     });

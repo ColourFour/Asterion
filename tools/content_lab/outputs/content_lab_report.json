@@ -82,7 +82,7 @@
       "snippets_with_examples": 8
     },
     {
-      "generated_warmups": 9,
+      "generated_warmups": 12,
       "quick_checks": 4,
       "region_id": "calculus-cliffs",
       "region_name": "Calculus Cliffs",
@@ -90,7 +90,7 @@
       "snippets_with_examples": 4
     },
     {
-      "generated_warmups": 3,
+      "generated_warmups": 6,
       "quick_checks": 3,
       "region_id": "complex-harbor",
       "region_name": "Argand Atrium",
@@ -98,7 +98,7 @@
       "snippets_with_examples": 3
     },
     {
-      "generated_warmups": 0,
+      "generated_warmups": 3,
       "quick_checks": 3,
       "region_id": "differential-shrine",
       "region_name": "Differential Shrine",
@@ -122,7 +122,7 @@
       "snippets_with_examples": 8
     },
     {
-      "generated_warmups": 0,
+      "generated_warmups": 3,
       "quick_checks": 2,
       "region_id": "numerical-mines",
       "region_name": "Iteration Forge",
@@ -138,7 +138,7 @@
       "snippets_with_examples": 5
     },
     {
-      "generated_warmups": 0,
+      "generated_warmups": 3,
       "quick_checks": 3,
       "region_id": "vector-workshop",
       "region_name": "Vectors Gate",
@@ -146,6 +146,7 @@
       "snippets_with_examples": 3
     }
   ],
+  "artifact_scope": "internal_planning",
   "auto_eligible": 52,
   "batch_7_depth_summary": {
     "priority_region_depth": [
@@ -180,27 +181,11 @@
     "regions_still_thin": [
       {
         "generated_warmups": 0,
-        "quick_checks": 3,
-        "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "differential-shrine",
-        "region_name": "Differential Shrine",
-        "snippets": 3
-      },
-      {
-        "generated_warmups": 0,
         "quick_checks": 2,
         "reason": "low snippet/check count or no deterministic warm-up",
         "region_id": "numerical-mines",
         "region_name": "Iteration Forge",
         "snippets": 2
-      },
-      {
-        "generated_warmups": 0,
-        "quick_checks": 3,
-        "reason": "low snippet/check count or no deterministic warm-up",
-        "region_id": "vector-workshop",
-        "region_name": "Vectors Gate",
-        "snippets": 3
       }
     ],
     "source_trail": "tools/content_lab/outputs/content_lab_research_notes.md"
@@ -281,16 +266,17 @@
       "vectors.line_scalar_product_basic": 3
     }
   },
+  "generated_practice_scope_note": "Legacy generated_warmup coverage fields now report runtime-reviewed public warm-ups. Internal planning/candidate counts are separated under internal_generated_practice_summary.",
   "generated_warmups_per_region": {
     "algebra-forge": 24,
-    "calculus-cliffs": 9,
-    "complex-harbor": 3,
-    "differential-shrine": 0,
+    "calculus-cliffs": 12,
+    "complex-harbor": 6,
+    "differential-shrine": 3,
     "integration-gardens": 15,
     "logarithm-grove": 12,
-    "numerical-mines": 0,
+    "numerical-mines": 3,
     "trig-observatory": 12,
-    "vector-workshop": 0
+    "vector-workshop": 3
   },
   "generator_family_counts": {
     "algebra.binomial_validity_range": 3,
@@ -390,6 +376,65 @@
       "warmup_count": 0
     }
   ],
+  "internal_generated_practice_summary": {
+    "artifact_scope": "internal_planning",
+    "blocked_candidate_count": 0,
+    "generator_family_counts": {
+      "algebra.binomial_validity_range": 3,
+      "algebra.modulus_equation_basic": 3,
+      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.partial_fractions_repeated_linear": 3,
+      "algebra.polynomial_remainder_factor_basic": 3,
+      "algebra.structure_rearrangement_basic": 3,
+      "binomial_expansion.first_terms_and_coefficient": 3,
+      "complex_numbers.cartesian_conjugate_basic": 3,
+      "complex_numbers.cartesian_locus_roots_basic": 3,
+      "complex_numbers.modulus_argument_basic": 3,
+      "differential_equations.context_model_basic": 3,
+      "differential_equations.separation_basic": 3,
+      "differentiation.chain_product_basic": 3,
+      "differentiation.implicit_log_exp_basic": 3,
+      "differentiation.stationary_tangent_normal_basic": 3,
+      "integration.definite_area_basic": 3,
+      "integration.method_setup_basic": 3,
+      "integration.parts_substitution_basic": 3,
+      "logarithms_and_exponentials.calculus_context_basic": 3,
+      "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.linearisation_basic": 3,
+      "logarithms_and_exponentials.log_equation_basic": 3,
+      "numerical_methods.sign_change_iteration_basic": 3,
+      "parametric_equations.derivative_ratio_basic": 3,
+      "quadratics.discriminant_root_condition_basic": 3,
+      "trigonometry.double_angle_basic": 3,
+      "trigonometry.identity_rewrite_basic": 3,
+      "trigonometry.r_form_basic": 3,
+      "trigonometry.solve_equation_interval_basic": 3,
+      "vectors.line_intersection_basic": 3,
+      "vectors.line_scalar_product_basic": 3
+    },
+    "internal_candidate_count": 0,
+    "missing_example_model_id_count": 0,
+    "needs_review_internal_count": 24,
+    "published_runtime_count": 0,
+    "review_status_counts": {
+      "needs_review": 24,
+      "teacher_reviewed": 69
+    },
+    "runtime_reviewed_count": 69,
+    "total_count": 93,
+    "verification_failure_count": 0
+  },
+  "internal_generated_warmups_per_region": {
+    "algebra-forge": 24,
+    "calculus-cliffs": 9,
+    "complex-harbor": 3,
+    "differential-shrine": 0,
+    "integration-gardens": 15,
+    "logarithm-grove": 12,
+    "numerical-mines": 0,
+    "trig-observatory": 12,
+    "vector-workshop": 0
+  },
   "method_snippets_missing_examples": [],
   "missing_active_region_snippet_coverage": [],
   "priority_region_example_coverage": [
@@ -443,6 +488,60 @@
     "validation_status_review": 358,
     "visual_curation_status_review": 1017,
     "visual_required": 1171
+  },
+  "runtime_generated_practice_summary": {
+    "artifact_scope": "runtime",
+    "blocked_candidate_count": 0,
+    "generator_family_counts": {
+      "algebra.binomial_validity_range": 3,
+      "algebra.modulus_equation_basic": 3,
+      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.partial_fractions_repeated_linear": 3,
+      "algebra.polynomial_remainder_factor_basic": 3,
+      "algebra.structure_rearrangement_basic": 3,
+      "binomial_expansion.first_terms_and_coefficient": 3,
+      "complex_numbers.cartesian_conjugate_basic": 3,
+      "complex_numbers.locus_basic": 1,
+      "complex_numbers.modulus_argument_basic": 1,
+      "complex_numbers.roots_basic": 1,
+      "differential_equations.context_model_basic": 1,
+      "differential_equations.initial_condition_basic": 1,
+      "differential_equations.separation_basic": 1,
+      "differentiation.chain_product_basic": 3,
+      "differentiation.chain_rule_basic": 1,
+      "differentiation.implicit_log_exp_basic": 3,
+      "differentiation.product_rule_basic": 1,
+      "differentiation.stationary_tangent_normal_basic": 3,
+      "integration.definite_area_basic": 3,
+      "integration.method_setup_basic": 3,
+      "integration.parts_substitution_basic": 3,
+      "logarithms_and_exponentials.calculus_context_basic": 3,
+      "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.linearisation_basic": 3,
+      "logarithms_and_exponentials.log_equation_basic": 3,
+      "numerical_methods.accuracy_rounding_basic": 1,
+      "numerical_methods.iteration_formula_basic": 1,
+      "numerical_methods.sign_change_iteration_basic": 1,
+      "parametric_equations.derivative_ratio_basic": 1,
+      "quadratics.discriminant_root_condition_basic": 3,
+      "trigonometry.double_angle_basic": 3,
+      "trigonometry.identity_rewrite_basic": 3,
+      "trigonometry.r_form_basic": 3,
+      "trigonometry.solve_equation_interval_basic": 3,
+      "vectors.line_intersection_basic": 1,
+      "vectors.line_relationship_basic": 1,
+      "vectors.line_scalar_product_basic": 1
+    },
+    "internal_candidate_count": 0,
+    "missing_example_model_id_count": 0,
+    "needs_review_internal_count": 0,
+    "published_runtime_count": 84,
+    "review_status_counts": {
+      "teacher_reviewed": 84
+    },
+    "runtime_reviewed_count": 84,
+    "total_count": 84,
+    "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
   "schema_version": 1,

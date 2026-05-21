@@ -113,6 +113,12 @@ REQUIRED_DEFERRED_ITEM_FIELDS = {
     "reviewed_skill_map_region_id",
     "skill_ref",
 }
+LOW_CLEAN_MASTERY_EVIDENCE_THRESHOLD = 1
+EVIDENCE_RESILIENCE_STATUSES = {
+    "blocked_no_clean_mastery_evidence",
+    "thin_resilience_risk",
+    "healthy_evidence_count",
+}
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -310,6 +316,14 @@ def correction_priority(row: dict[str, Any], missing_support: list[str], blocker
     return "P4_polish_or_complete"
 
 
+def evidence_resilience_status(blockers: list[str], clean_count: int) -> str:
+    if "no_clean_mastery_evidence" in blockers or clean_count == 0:
+        return "blocked_no_clean_mastery_evidence"
+    if clean_count <= LOW_CLEAN_MASTERY_EVIDENCE_THRESHOLD:
+        return "thin_resilience_risk"
+    return "healthy_evidence_count"
+
+
 def next_action(status: str, priority: str, missing_support: list[str], blockers: list[str], deferred_count: int) -> str:
     if priority == "P0_blocked_mastery":
         if "all_available_evidence_deferred" in blockers:
@@ -479,6 +493,7 @@ def build_matrix_rows(
             "curriculum_role": skill["curriculum_role"],
             "deferred_evidence_count": len(deferred_ids),
             "deferred_evidence_question_ids": deferred_ids,
+            "evidence_resilience_status": evidence_resilience_status(blockers, len(clean_ids)),
             "export_allowed_evidence_count": len(clean_ids),
             "field_guide_status": support_status(int(inventory.get("field_guide_count") or 0)),
             "guardian_candidate_count": int(inventory.get("guardian_candidate_count") or 0),
@@ -527,6 +542,7 @@ def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]
         "curriculum_role",
         "deferred_evidence_count",
         "deferred_evidence_question_ids",
+        "evidence_resilience_status",
         "export_allowed_evidence_count",
         "official_syllabus_section",
         "practice_allowed_deferred_count",
@@ -553,6 +569,8 @@ def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]
             errors.append(f"coverage row {skill_ref} has invalid coverage_status {row.get('coverage_status')}")
         if row.get("correction_priority") not in CORRECTION_PRIORITY_LABELS:
             errors.append(f"coverage row {skill_ref} has invalid correction_priority {row.get('correction_priority')}")
+        if row.get("evidence_resilience_status") not in EVIDENCE_RESILIENCE_STATUSES:
+            errors.append(f"coverage row {skill_ref} has invalid evidence_resilience_status {row.get('evidence_resilience_status')}")
         if not non_empty_string(row.get("recommended_next_action")):
             errors.append(f"coverage row {skill_ref} missing deterministic recommended_next_action")
         for field in (
@@ -576,6 +594,7 @@ def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]
 
     status_counts = count_by(rows, "coverage_status", sorted(COVERAGE_STATUS_LABELS))
     priority_counts = count_by(rows, "correction_priority", sorted(CORRECTION_PRIORITY_LABELS))
+    resilience_counts = count_by(rows, "evidence_resilience_status", sorted(EVIDENCE_RESILIENCE_STATUSES))
     section_counts = count_by(rows, "official_syllabus_section")
     region_counts = count_by(rows, "region_id")
     if report.get("skill_summary", {}).get("reviewed_skill_count") != len(rows):
@@ -584,6 +603,8 @@ def validate_report_contract(report: dict[str, Any], skills: list[dict[str, Any]
         errors.append("skill_summary.coverage_status_counts must equal detailed row counts")
     if report.get("skill_summary", {}).get("correction_priority_counts") != priority_counts:
         errors.append("skill_summary.correction_priority_counts must equal detailed row counts")
+    if as_record(report.get("evidence_resilience_summary")).get("status_counts") != resilience_counts:
+        errors.append("evidence_resilience_summary.status_counts must equal detailed row counts")
     if report.get("official_syllabus_section_summary", {}).get("skill_counts") != section_counts:
         errors.append("official_syllabus_section_summary.skill_counts must equal detailed row counts")
     if report.get("region_summary", {}).get("skill_counts") != region_counts:
@@ -625,6 +646,9 @@ def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[s
     }
     deferred_rows = [row for row in rows if row["deferred_evidence_count"] > 0]
     blocked_rows = [row for row in rows if row["coverage_status"] == "blocked_for_mastery"]
+    no_clean_evidence_rows = [row for row in rows if row["evidence_resilience_status"] == "blocked_no_clean_mastery_evidence"]
+    thin_evidence_rows = [row for row in rows if row["evidence_resilience_status"] == "thin_resilience_risk"]
+    healthy_evidence_rows = [row for row in rows if row["evidence_resilience_status"] == "healthy_evidence_count"]
 
     route_backlog = as_record(as_record(inventory.get("routing_audit_summary")).get("deferred_review_backlog"))
     deferred_items = route_backlog.get("items") if isinstance(route_backlog.get("items"), list) else []
@@ -665,6 +689,31 @@ def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[s
             "skills_without_clean_mastery_evidence": sum(1 for row in rows if row["clean_mastery_evidence_count"] == 0),
             "total_clean_mastery_evidence_links": sum(row["clean_mastery_evidence_count"] for row in rows),
         },
+        "evidence_resilience_summary": {
+            "low_clean_mastery_evidence_threshold": LOW_CLEAN_MASTERY_EVIDENCE_THRESHOLD,
+            "status_counts": count_by(rows, "evidence_resilience_status", sorted(EVIDENCE_RESILIENCE_STATUSES)),
+            "blocked_no_clean_mastery_evidence_skill_refs": [row["skill_ref"] for row in no_clean_evidence_rows],
+            "thin_resilience_risk_skill_refs": [row["skill_ref"] for row in thin_evidence_rows],
+            "healthy_evidence_skill_count": len(healthy_evidence_rows),
+            "risk_rows": [
+                {
+                    "skill_ref": row["skill_ref"],
+                    "region_id": row["region_id"],
+                    "region_title": row["region_title"],
+                    "clean_mastery_evidence_count": row["clean_mastery_evidence_count"],
+                    "clean_mastery_evidence_question_ids": row["clean_mastery_evidence_question_ids"],
+                    "coverage_status": row["coverage_status"],
+                    "evidence_resilience_status": row["evidence_resilience_status"],
+                    "blocking_reasons": row["blocking_reasons"],
+                    "recommended_next_action": (
+                        "Add or review more canonical P3 evidence links before relying on this skill as resilient."
+                        if row["evidence_resilience_status"] == "thin_resilience_risk"
+                        else row["recommended_next_action"]
+                    ),
+                }
+                for row in no_clean_evidence_rows + thin_evidence_rows
+            ],
+        },
         "deferred_evidence_summary": {
             "affected_skill_count": len(deferred_rows),
             "affected_skill_refs": [row["skill_ref"] for row in deferred_rows],
@@ -688,6 +737,7 @@ def build_report(skill_map: dict[str, Any], inventory: dict[str, Any]) -> dict[s
         },
         "risk_summary": {
             "blocked_mastery_skill_refs": [row["skill_ref"] for row in blocked_rows],
+            "thin_mastery_evidence_skill_refs": [row["skill_ref"] for row in thin_evidence_rows],
             "deferred_ambiguous_skill_refs": [row["skill_ref"] for row in deferred_rows],
             "support_gap_counts": support_gap_counts,
             "p1_prerequisite_ref_count": sum(len(row["prerequisite_skill_refs"]) for row in rows),
@@ -765,6 +815,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     support_gap_counts = report["teaching_support_summary"]["support_gap_counts"]
     blocked_rows = [row for row in rows if row["coverage_status"] == "blocked_for_mastery"]
     deferred_items = report["deferred_evidence_summary"]["items"]
+    resilience_rows = report["evidence_resilience_summary"]["risk_rows"]
 
     lines = [
         "# P3 Coverage Matrix",
@@ -801,8 +852,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines.extend([
         "## Compact Skill Matrix",
         "",
-        "| Skill | Section | Region | Status | Clean Evidence | Deferred Evidence | Support Gaps | Priority | Next Action |",
-        "| --- | --- | --- | --- | ---: | ---: | --- | --- | --- |",
+        "| Skill | Section | Region | Status | Clean Evidence | Evidence Resilience | Deferred Evidence | Support Gaps | Priority | Next Action |",
+        "| --- | --- | --- | --- | ---: | --- | ---: | --- | --- | --- |",
     ])
     for row in rows:
         gaps = ", ".join(row["support_gaps"]) if row["support_gaps"] else "none"
@@ -814,6 +865,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 md_escape(row["region_title"]),
                 md_escape(row["coverage_status"]),
                 str(row["clean_mastery_evidence_count"]),
+                md_escape(row["evidence_resilience_status"]),
                 str(row["deferred_evidence_count"]),
                 md_escape(gaps),
                 md_escape(row["correction_priority"]),
@@ -821,6 +873,27 @@ def render_markdown(report: dict[str, Any]) -> str:
             ])
             + " |"
         )
+
+    lines.extend(["", "## Evidence Resilience Risks", ""])
+    lines.extend([
+        f"- Low clean-evidence threshold: {report['evidence_resilience_summary']['low_clean_mastery_evidence_threshold']}",
+        "",
+        "Status counts:",
+        "",
+        md_count_list(report["evidence_resilience_summary"]["status_counts"]),
+        "",
+    ])
+    if resilience_rows:
+        lines.extend([
+            "| Skill | Region | Clean Evidence | Status | Risk | Next Action |",
+            "| --- | --- | ---: | --- | --- | --- |",
+        ])
+        for row in resilience_rows:
+            lines.append(
+                f"| {md_escape(row['skill_ref'])} | {md_escape(row['region_title'])} | {row['clean_mastery_evidence_count']} | {md_escape(row['coverage_status'])} | {md_escape(row['evidence_resilience_status'])} | {md_escape(row['recommended_next_action'])} |"
+            )
+    else:
+        lines.append("No low-evidence resilience risks are currently visible.")
 
     lines.extend(["", "## Blocked Mastery Skills", ""])
     if blocked_rows:

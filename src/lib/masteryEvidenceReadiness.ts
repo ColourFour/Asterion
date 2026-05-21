@@ -42,17 +42,74 @@ function mappedRegionForPart(part: QuestionPartMark): string | undefined {
 }
 
 function partTarget(part: QuestionPartMark): string | undefined {
-  return part.skillRef ?? part.primaryTopicId;
+  return part.skillRef;
+}
+
+function normalizedReviewStatus(value: string | undefined): string {
+  return (value ?? '').trim().toLowerCase().replace(/[\s-]+/g, '_');
+}
+
+function partMappingReviewApproved(part: QuestionPartMark): boolean {
+  return [
+    'approved',
+    'clean_approved',
+    'published',
+    'reviewed',
+    'route_approved',
+    'teacher_reviewed',
+    'validated_route_approved',
+  ].includes(normalizedReviewStatus(part.reviewStatus));
+}
+
+function partUsesCanonicalEvidence(part: QuestionPartMark): boolean {
+  const evidence = new Set(part.evidenceUsed ?? []);
+  return evidence.has('canonical_question_image') && evidence.has('canonical_mark_scheme_image');
+}
+
+function questionHasCanonicalImageEvidence(question: NormalizedQuestion): boolean {
+  return question.questionImageCandidates.length > 0 && question.markSchemeImageCandidates.length > 0;
+}
+
+function normalizedDependencyMarker(value: string | undefined): string {
+  return (value ?? '').trim().toLowerCase().replace(/[\s_]+/g, '-');
+}
+
+function partHasUnsafeDependency(part: QuestionPartMark): boolean {
+  const unsafeMarkers = [
+    normalizedDependencyMarker(part.reviewStatus),
+    ...(part.reasonCodes ?? []).map(normalizedDependencyMarker),
+  ];
+  return unsafeMarkers.some((marker) => (
+    marker.includes('fallback-only')
+    || marker.includes('fallback-display-only')
+    || marker.includes('blocked')
+    || marker.includes('thin')
+    || marker.includes('deferred')
+    || marker.includes('review-needed')
+    || marker.includes('review-only')
+    || marker.includes('ambiguous-whole-question')
+    || marker.includes('unsafe')
+    || marker.includes('hard-failure')
+  ));
+}
+
+function questionHasUnsafeQualityGateDependency(question: NormalizedQuestion): boolean {
+  return question.textQuality?.contentLabGenerationAllowed === false
+    || Boolean(question.textQuality?.generationBlockerReasonCodes?.length)
+    || question.textQuality?.hardFailed === true;
 }
 
 function partRouteIsClean(part: QuestionPartMark): boolean {
-  return !part.routeEvidenceStatus || part.routeEvidenceStatus === 'clean';
+  return part.routeEvidenceStatus === 'clean';
 }
 
 export function isReviewedPartSkillMapping(part: QuestionPartMark): boolean {
   return (
     part.mappingReviewed === true
+    && partMappingReviewApproved(part)
+    && partUsesCanonicalEvidence(part)
     && partRouteIsClean(part)
+    && !partHasUnsafeDependency(part)
     && Boolean(mappedRegionForPart(part))
     && Boolean(partTarget(part))
   );
@@ -65,6 +122,8 @@ function reviewedPartMappings(question: NormalizedQuestion): QuestionPartMark[] 
 function hasSufficientReviewedPartSkillMapping(question: NormalizedQuestion): boolean {
   const parts = question.parts ?? [];
   if (parts.length === 0) return false;
+  if (!questionHasCanonicalImageEvidence(question)) return false;
+  if (questionHasUnsafeQualityGateDependency(question)) return false;
   if (!parts.every(isReviewedPartSkillMapping)) return false;
 
   const targetCount = unique(parts.map(partTarget)).length;
@@ -85,6 +144,20 @@ export function deriveQuestionMasteryReadiness(question: NormalizedQuestion): Qu
     .filter((part) => !isReviewedPartSkillMapping(part))
     .map(partLabel);
 
+  if (routeStatus === 'ambiguous-route' && hasSufficientReviewedPartSkillMapping(question)) {
+    return {
+      status: 'precise_skill_evidence',
+      reasonCodes: unique([
+        'validated-topic-routing',
+        'reviewed-part-skill-mapping',
+        'resolved-ambiguous-route-by-reviewed-part-mapping',
+        ...routeReasons,
+      ]),
+      requiresPartMapping,
+      acceptedPartLabels,
+    };
+  }
+
   if (routeStatus === 'ambiguous-route') {
     return {
       status: 'rejected_ambiguous_without_part_mapping',
@@ -92,6 +165,8 @@ export function deriveQuestionMasteryReadiness(question: NormalizedQuestion): Qu
         normalizedStatusReason('rejected_ambiguous_without_part_mapping'),
         routeStatusReason(routeStatus),
         'missing-reviewed-part-mapping',
+        ...(questionHasCanonicalImageEvidence(question) ? [] : ['missing-canonical-image-evidence']),
+        ...(questionHasUnsafeQualityGateDependency(question) ? ['unsafe-quality-gate-dependency'] : []),
         ...routeReasons,
       ]),
       requiresPartMapping,
@@ -136,6 +211,8 @@ export function deriveQuestionMasteryReadiness(question: NormalizedQuestion): Qu
       reasonCodes: unique([
         normalizedStatusReason(status),
         'missing-reviewed-part-mapping',
+        ...(questionHasCanonicalImageEvidence(question) ? [] : ['missing-canonical-image-evidence']),
+        ...(questionHasUnsafeQualityGateDependency(question) ? ['unsafe-quality-gate-dependency'] : []),
         'validated-topic-routing',
         ...routeReasons,
       ]),

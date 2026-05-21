@@ -456,21 +456,21 @@ function regionCoverageSnippets() {
   };
   const firstBatchSources: Record<string, { questionId: string; questionAsset: string; markSchemeAsset: string; questionType: string }> = {
     logarithms_and_exponentials: {
-      questionId: '32spring21_q01',
-      questionAsset: 'p3/32spring21/questions/q01.png',
-      markSchemeAsset: 'p3/32spring21/mark_scheme/q01.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Logarithm equation',
     },
     binomial_expansion: {
-      questionId: '33summer21_q01',
-      questionAsset: 'p3/33summer21/questions/q01.png',
-      markSchemeAsset: 'p3/33summer21/mark_scheme/q01.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Binomial term or coefficient',
     },
     trigonometry: {
-      questionId: '32spring21_q03',
-      questionAsset: 'p3/32spring21/questions/q03.png',
-      markSchemeAsset: 'p3/32spring21/mark_scheme/q03.png',
+      questionId: '31autumn23_q01',
+      questionAsset: 'p3/31autumn23/questions/q01.png',
+      markSchemeAsset: 'p3/31autumn23/mark_scheme/q01.png',
       questionType: 'Trigonometric equation',
     },
   };
@@ -601,7 +601,8 @@ function writeVerifierBase(dir: string, runtimePracticePath: string, practiceOve
         generator_family: 'logarithms_and_exponentials.log_equation_basic',
         paper_family: 'p3',
         topic: 'logarithms_and_exponentials',
-        skill_target_id: 'p3_logarithms_and_exponentials',
+        skill_target_id: 'p3_log_laws_equations',
+        skill_target_resolution_status: 'reviewed_p3_skill_map_id',
         snippet_ids: ['p3-log-check'],
         region_ids: ['logarithm-grove'],
         prompt: 'Solve ln(x) = ln(2).',
@@ -731,6 +732,10 @@ describe.sequential('generated practice Content Lab pipeline', () => {
             practice_id: 'existing-failed-runtime-item',
             verification: { status: 'fail' },
           }),
+          existingRuntimeItem({
+            practice_id: 'existing-fallback-runtime-item',
+            route_evidence_status: 'fallback-display-only',
+          }),
         ],
       };
       const built = runGeneratedBuild(dir, runtimeSeed);
@@ -738,6 +743,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
 
       expect(runtimeItems.some((item) => item.practice_id === 'existing-reviewed-complex-locus')).toBe(true);
       expect(runtimeItems.some((item) => item.practice_id === 'existing-failed-runtime-item')).toBe(false);
+      expect(runtimeItems.some((item) => item.practice_id === 'existing-fallback-runtime-item')).toBe(false);
       expect(runtimeItems.filter((item) => item.practice_id === 'existing-reviewed-complex-locus')).toHaveLength(1);
       expect(runtimeItems.find((item) => item.practice_id === 'existing-reviewed-complex-locus')).toMatchObject({
         generator_family: 'complex_numbers.locus_basic',
@@ -1180,6 +1186,124 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         snippetsPath,
         '--runtime-generated-practice',
         runtimePracticePath,
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects runtime generated practice with unresolved route evidence blockers', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-generated-practice-route-blocker-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {
+        route_evidence_status: 'fallback-display-only',
+        generation_gate: {
+          blocked: true,
+          block_reasons: ['fallback_only_route'],
+        },
+      });
+
+      expectPythonFailure([
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('rejects promoted Content Lab candidates without reviewed source evidence and image pairs', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-candidate-contract-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    const candidatesPath = path.join(dir, 'candidates.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {});
+      writeFileSync(candidatesPath, JSON.stringify({
+        schema_name: 'asterion.content_lab_candidates',
+        schema_version: 1,
+        candidates: [
+          {
+            candidate_id: 'promoted_without_evidence',
+            question_id: '32spring21_q01',
+            paper_family: 'p3',
+            candidate_selection: { reviewed_or_approved_subpart: false },
+            source_artifacts: {
+              question_crop_path: 'p3/32spring21/questions/q01.png',
+              mark_scheme_crop_path: '',
+            },
+            source_skill_ids: [],
+            source_mark_event_count: 0,
+            role_statuses: { generated_warmup_pattern_source: 'approved' },
+            generation_gate: { status: 'approved', blocked: false, block_reasons: [] },
+            review_status: 'published',
+          },
+        ],
+      }, null, 2));
+
+      expectPythonFailure([
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+        '--content-lab-candidates',
+        candidatesPath,
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  pipelineIt('allows blocked Content Lab candidates to remain visible as backlog', () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'asterion-content-lab-candidate-backlog-'));
+    const runtimePracticePath = path.join(dir, 'runtime_generated_practice_bank.json');
+    const candidatesPath = path.join(dir, 'candidates.json');
+    try {
+      const snippetsPath = writeVerifierBase(dir, runtimePracticePath, {});
+      writeFileSync(candidatesPath, JSON.stringify({
+        schema_name: 'asterion.content_lab_candidates',
+        schema_version: 1,
+        candidates: [
+          {
+            candidate_id: 'blocked_backlog_candidate',
+            question_id: '32spring21_q01',
+            paper_family: 'p3',
+            candidate_selection: { reviewed_or_approved_subpart: false },
+            source_artifacts: {
+              question_crop_path: 'p3/32spring21/questions/q01.png',
+              mark_scheme_crop_path: 'p3/32spring21/mark_scheme/q01.png',
+            },
+            source_skill_ids: [],
+            source_mark_event_count: 0,
+            role_statuses: { generated_warmup_pattern_source: 'blocked_until_reviewed' },
+            generation_gate: {
+              status: 'blocked_until_reviewed',
+              blocked: true,
+              block_reasons: ['missing_source_skill_ids'],
+            },
+            review_status: 'blocked_until_reviewed',
+          },
+        ],
+      }, null, 2));
+
+      runPython([
+        verifyScript,
+        '--outputs-dir',
+        dir,
+        '--snippets',
+        snippetsPath,
+        '--runtime-generated-practice',
+        runtimePracticePath,
+        '--content-lab-candidates',
+        candidatesPath,
       ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });

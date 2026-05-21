@@ -48,6 +48,20 @@ interface RegionCorrectionQueue {
     unique_skill_count: number;
     queue_counts: Record<string, Record<string, number>>;
   };
+  route_decision_summary: {
+    counts_by_status: Record<string, number>;
+    total_recorded_decision_count: number;
+    decided_question_count: number;
+    still_needs_review_count: number;
+    decisions: Array<{
+      question_id: string;
+      reviewed_status: string;
+      reviewed_region_id: string;
+      reason: string;
+      mastery_evidence_allowed: boolean;
+      content_lab_generation_allowed: boolean;
+    }>;
+  };
   region_summary: Array<{
     region_id: string;
     region_title: string;
@@ -183,16 +197,16 @@ describe('P3 region-correction queue', () => {
 
     expect(queue.source_route_summary.counts).toMatchObject({
       total_p3_route_records: 396,
-      safe_p3_route: 317,
-      missing_p3_route: 53,
-      ambiguous_multi_topic_route: 14,
-      review_needed_route: 12,
+      safe_p3_route: 319,
+      missing_p3_route: 47,
+      ambiguous_multi_topic_route: 16,
+      review_needed_route: 14,
     });
-    expect(countItemsByCategory(queue, 'route_correction', 'missing_p3_routes')).toBe(53);
-    expect(countItemsByCategory(queue, 'route_correction', 'ambiguous_multi_topic_routes')).toBe(14);
-    expect(countItemsByCategory(queue, 'route_correction', 'review_needed_routes')).toBe(12);
-    expect(countItemsByCategory(queue, 'route_correction', 'fallback_display_only_region_placements')).toBe(53);
-    expect(countItemsByCategory(queue, 'text_review', 'routing_text_or_visual_blockers')).toBeGreaterThan(53);
+    expect(countItemsByCategory(queue, 'route_correction', 'missing_p3_routes')).toBe(47);
+    expect(countItemsByCategory(queue, 'route_correction', 'ambiguous_multi_topic_routes')).toBe(16);
+    expect(countItemsByCategory(queue, 'route_correction', 'review_needed_routes')).toBe(14);
+    expect(countItemsByCategory(queue, 'route_correction', 'fallback_display_only_region_placements')).toBe(47);
+    expect(countItemsByCategory(queue, 'text_review', 'routing_text_or_visual_blockers')).toBeGreaterThan(47);
   });
 
   it('keeps missing routes and fallback display placements explicit', () => {
@@ -201,8 +215,8 @@ describe('P3 region-correction queue', () => {
     const fallback = queue.queue.route_correction.fallback_display_only_region_placements;
     const missingIds = new Set(missing.map((item) => item.question_id));
 
-    expect(missing).toHaveLength(53);
-    expect(fallback).toHaveLength(53);
+    expect(missing).toHaveLength(47);
+    expect(fallback).toHaveLength(47);
     for (const item of missing) {
       expect(item.primary_region_id).toBe('');
       expect(item.blocked_or_risky_reason).toContain('No mapped P3 primary topic');
@@ -212,6 +226,36 @@ describe('P3 region-correction queue', () => {
       expect(item.fallback_region_id).toBeTruthy();
       expect(item.category).toBe('fallback_display_only_region_placements');
     }
+  });
+
+  it('keeps reviewed route decisions traceable without hiding unresolved queue records', () => {
+    const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
+
+    expect(queue.route_decision_summary.counts_by_status).toMatchObject({
+      clean: 2,
+      thin: 2,
+      ambiguous: 2,
+      blocked: 2,
+      deferred: 1,
+      review_needed: 1,
+      fallback_only: 0,
+    });
+    expect(queue.route_decision_summary.total_recorded_decision_count).toBe(10);
+    expect(queue.route_decision_summary.decided_question_count).toBe(10);
+    expect(queue.route_decision_summary.still_needs_review_count).toBeGreaterThan(0);
+
+    const q09 = queue.route_decision_summary.decisions.find((item) => item.question_id === '31autumn23_q09');
+    expect(q09).toMatchObject({
+      reviewed_status: 'ambiguous',
+      mastery_evidence_allowed: false,
+      content_lab_generation_allowed: false,
+    });
+    const q01 = queue.route_decision_summary.decisions.find((item) => item.question_id === '31autumn23_q01');
+    expect(q01).toMatchObject({
+      reviewed_status: 'clean',
+      reviewed_region_id: 'calculus-cliffs',
+      mastery_evidence_allowed: true,
+    });
   });
 
   it('reports no deferred mark-scheme evidence after audited cases are resolved', () => {
@@ -264,6 +308,7 @@ describe('P3 region-correction queue', () => {
     expect(markdown).toContain('### Ambiguous Multi-Topic Routes');
     expect(markdown).toContain('### Review-Needed Routes');
     expect(markdown).toContain('### Fallback Display-Only Region Placements');
+    expect(markdown).toContain('## Reviewed Route Decision Summary');
     expect(markdown).toContain('p3_int_partial_fractions');
     expect(markdown).toContain('Fallback display routes are browsing hints only');
     expect(markdown).not.toMatch(/Content mutation allowed in this pass: `true`/);

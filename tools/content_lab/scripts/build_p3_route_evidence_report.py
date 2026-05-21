@@ -359,6 +359,8 @@ def build_report(
     if route_queue:
         existing_counts = as_record(as_record(route_queue.get("source_route_summary")).get("counts"))
         route_report_counts = {**route_report_counts, **{key: value for key, value in existing_counts.items() if isinstance(value, int)}}
+    route_decision_summary = as_record(route_queue.get("route_decision_summary")) if route_queue else {}
+    missing_count = int(route_report_counts.get("missing_p3_route", 0))
 
     return {
         "schema_name": REPORT_SCHEMA_NAME,
@@ -381,10 +383,10 @@ def build_report(
         },
         "mapping_notes": [
             "Runtime clean and route-report safe now align exactly.",
-            "The 53 route-report missing_p3_route records are not runtime missing-route records after route stamping because their sidecar review reasons make them review-only; in the projected normalized bank they have no displayRegionId.",
+            f"The {missing_count} route-report missing_p3_route records are not runtime missing-route records after route stamping because their sidecar review reasons make them review-only; in the projected normalized bank they have no displayRegionId.",
             "Runtime ambiguous-route is broader than route-report ambiguous_multi_topic_route because ambiguous review reasons are stamped ambiguous even when the queue category is missing_p3_route or review_needed_route.",
             "Runtime review-only is broader than route-report review_needed_route because unresolved review reasons on missing primary routes are preserved as review-only instead of being downgraded to fallback display.",
-            "The route-correction queue still lists raw-bank fallback placements for the 53 missing routes as correction aids; those are not runtime fallback-display-only routeEvidence records.",
+            f"The route-correction queue still lists raw-bank fallback placements for the {missing_count} missing routes as correction aids; those are not runtime fallback-display-only routeEvidence records.",
             "Queue item totals are not route-status totals because the queue also includes text review, deferred mark-scheme evidence, and support-content gaps.",
         ],
         "normalized_distribution": {
@@ -407,6 +409,7 @@ def build_report(
             "route_queue_fallback_display_only_items": len(as_record(as_record(route_queue.get("queue")).get("route_correction")).get("fallback_display_only_region_placements", [])) if route_queue else None,
             "queue_items": as_record(route_queue.get("queue_summary")).get("total_queue_item_count") if route_queue else None,
         },
+        "route_decision_summary": route_decision_summary,
         "differences": {
             "clean_minus_safe_routes": status_counts.get("clean", 0) - int(route_report_counts.get("safe_p3_route", 0)),
             "missing_route_minus_missing_routes": status_counts.get("missing-route", 0) - int(route_report_counts.get("missing_p3_route", 0)),
@@ -427,6 +430,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     route_counts = as_record(route_report.get("source_route_counts"))
     cross_tab = as_record(route_report.get("normalized_status_by_route_report_category"))
     differences = as_record(report.get("differences"))
+    route_decisions = as_record(report.get("route_decision_summary"))
     lines = [
         "# P3 Route Evidence Status Report",
         "",
@@ -447,6 +451,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- normalized status by route-report category: `{json.dumps(cross_tab, sort_keys=True)}`",
         f"- route-queue fallback display-only items: {route_report.get('route_queue_fallback_display_only_items')}",
         f"- queue items: {route_report.get('queue_items')}",
+        f"- route decision counts: `{json.dumps(route_decisions.get('counts_by_status'), sort_keys=True)}`",
+        f"- still-needs-review route questions: {route_decisions.get('still_needs_review_count')}",
         "",
         "## Count Differences",
         "",

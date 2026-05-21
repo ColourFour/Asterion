@@ -1,5 +1,5 @@
 import type { Attempt, MasteryEvidenceReadinessStatus, NormalizedQuestion, QuestionPartMark, RegionDefinition } from '../types';
-import { deriveQuestionMasteryReadiness } from './masteryEvidenceReadiness';
+import { deriveQuestionMasteryReadiness, isReviewedPartSkillMapping } from './masteryEvidenceReadiness';
 import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { normalizeLabel } from './worldMap';
 
@@ -93,8 +93,21 @@ function scoreRatio(attempt: Attempt): number | undefined {
   return undefined;
 }
 
+function reviewedPartRegionId(question?: NormalizedQuestion): string | undefined {
+  const partRegions = new Set(
+    (question?.parts ?? [])
+      .filter(isReviewedPartSkillMapping)
+      .map((part) => part.mappedRegionId)
+      .filter((regionId): regionId is string => Boolean(regionId)),
+  );
+  return partRegions.size === 1 ? Array.from(partRegions)[0] : undefined;
+}
+
 function validatedRegionId(attempt: Attempt, question?: NormalizedQuestion): string | undefined {
-  return question?.routeEvidence?.validatedRegionId ?? attempt.validatedRegionId;
+  const readiness = question ? question.masteryReadiness ?? deriveQuestionMasteryReadiness(question) : undefined;
+  return question?.routeEvidence?.validatedRegionId
+    ?? (readiness?.status === 'precise_skill_evidence' ? reviewedPartRegionId(question) : undefined)
+    ?? attempt.validatedRegionId;
 }
 
 function isP3Evidence(attempt: Attempt, question?: NormalizedQuestion): boolean {
@@ -149,13 +162,14 @@ export function explainNonMasteryEvidence(input: {
 
   if (question) {
     const status = question.routeEvidence?.status;
+    const readiness = question.masteryReadiness ?? deriveQuestionMasteryReadiness(question);
+    const ambiguousResolvedByParts = status === 'ambiguous-route' && readiness.status === 'precise_skill_evidence';
     if (!status) {
       reasons.add('missing-route');
     } else {
       const reason = routeStatusReason(status);
-      if (reason) reasons.add(reason);
+      if (reason && !ambiguousResolvedByParts) reasons.add(reason);
     }
-    const readiness = question.masteryReadiness ?? deriveQuestionMasteryReadiness(question);
     const readinessReason = readinessStatusReason(readiness.status);
     if (readinessReason) reasons.add(readinessReason);
     if (question.eligibility?.masteryEligible.eligible !== true) reasons.add('mastery-ineligible');

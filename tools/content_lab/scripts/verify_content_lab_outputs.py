@@ -33,6 +33,49 @@ V2_BATCH_REQUIRED_FIELDS = ("question_type", "key_method", "exam_move")
 REVIEWED_SKILL_TARGET_STATUS = "reviewed_p3_skill_map_id"
 UNRESOLVED_SKILL_TARGET_STATUS = "legacy_unresolved"
 REVIEWED_P3_SKILL_IDS = p3_skill_ids_from_skill_map(load_p3_skill_map())
+GENERATED_PRACTICE_SUMMARY_KEYS = (
+    "total_count",
+    "runtime_reviewed_count",
+    "published_runtime_count",
+    "internal_candidate_count",
+    "needs_review_internal_count",
+    "blocked_candidate_count",
+    "verification_failure_count",
+    "missing_example_model_id_count",
+)
+PROMOTED_CANDIDATE_REVIEW_STATUSES = {"approved", "published", "ready", "teacher_reviewed"}
+PROMOTED_CANDIDATE_ROLE_STATUSES = {"approved", "published", "ready", "runtime", "teacher_reviewed"}
+UNSAFE_EVIDENCE_STATUSES = {
+    "ambiguous",
+    "ambiguous-route",
+    "blocked",
+    "deferred",
+    "fallback-only",
+    "fallback-display-only",
+    "hard-failure",
+    "missing",
+    "missing-route",
+    "not-found",
+    "review-needed",
+    "review-only",
+    "thin",
+    "unsafe",
+}
+ROUTE_DECISION_PERMISSION_KEYS = (
+    "mastery_evidence_allowed",
+    "guardian_evidence_allowed",
+    "teacher_export_mastery_allowed",
+    "content_lab_generation_allowed",
+    "candidate_promotion_allowed",
+)
+PUBLISHED_SOURCE_PERMISSION_KEYS = (
+    "mastery_evidence_allowed",
+    "guardian_evidence_allowed",
+    "teacher_export_mastery_allowed",
+    "content_lab_generation_allowed",
+)
+CLEAN_PUBLISHED_SOURCE_STATUSES = {"clean"}
+ROUTE_DECISION_STATUSES = CLEAN_PUBLISHED_SOURCE_STATUSES | UNSAFE_EVIDENCE_STATUSES
 ACTIVE_P3_REGION_SUPPORT = {
     "algebra-forge": {
         "primary_topic": "algebra_functions_and_binomial",
@@ -198,6 +241,10 @@ def string_list(value: Any) -> list[str]:
     return [item.strip() for item in value if isinstance(item, str) and item.strip()]
 
 
+def as_record(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
 def first_non_empty_string(*values: Any) -> str | None:
     for value in values:
         if is_non_empty_string(value):
@@ -212,6 +259,12 @@ def normalize_label(value: Any) -> str:
     normalized = re.sub(r"[/_-]+", " ", normalized)
     normalized = re.sub(r"[^a-z0-9 ]+", "", normalized)
     return re.sub(r"\s+", " ", normalized).strip()
+
+
+def normalize_status_marker(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    return value.strip().lower().replace("_", "-")
 
 
 def normalized_region_topics(region_id: str) -> set[str]:
@@ -317,6 +370,108 @@ def source_index_from_question_bank(path: Path, errors: list[str]) -> dict[str, 
     return source_index
 
 
+def topic_routing_records_from_path(path: Path, errors: list[str], warnings: list[str]) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        warnings.append(f"Topic-routing sidecar not found: {path}")
+        return {}
+    data = load_json(path)
+    require(isinstance(data, dict), f"{path} must contain an object", errors)
+    if not isinstance(data, dict):
+        return {}
+    records = as_record(data.get("records"))
+    require(bool(records), f"{path} must contain records object", errors)
+    return {str(question_id): record for question_id, record in records.items() if isinstance(record, dict)}
+
+
+def route_decision_index_from_review(
+    path: Path,
+    source_index: dict[str, dict[str, set[str]]],
+    topic_routing_records: dict[str, dict[str, Any]],
+    errors: list[str],
+    warnings: list[str],
+) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        warnings.append(f"Route-decision review artifact not found: {path}")
+        return {}
+
+    data = load_json(path)
+    require(isinstance(data, dict), f"{path} must contain an object", errors)
+    if not isinstance(data, dict):
+        return {}
+    decisions = data.get("decisions")
+    require(isinstance(decisions, list), f"{path} must contain decisions[]", errors)
+    if not isinstance(decisions, list):
+        return {}
+
+    decision_index: dict[str, dict[str, Any]] = {}
+    seen: set[str] = set()
+    for index, value in enumerate(decisions):
+        decision = require_record(value, f"route_decisions[{index}]", errors)
+        if not decision:
+            continue
+        question_id = first_non_empty_string(decision.get("question_id"))
+        owner = f"route_decisions[{index}]" if not question_id else f"route decision {question_id}"
+        require(bool(question_id), f"{owner} missing question_id", errors)
+        if not question_id:
+            continue
+        require(question_id not in seen, f"Duplicate route decision for {question_id}", errors)
+        seen.add(question_id)
+
+        reviewed_status = normalize_status_marker(decision.get("reviewed_status"))
+        require(bool(reviewed_status), f"{owner} missing reviewed_status", errors)
+        require(reviewed_status in ROUTE_DECISION_STATUSES, f"{owner} has unsupported reviewed_status {reviewed_status}", errors)
+        evidence_basis = as_record(decision.get("evidence_basis"))
+        question_asset_path = first_non_empty_string(evidence_basis.get("question_asset_path"))
+        mark_scheme_asset_path = first_non_empty_string(evidence_basis.get("mark_scheme_asset_path"))
+        require(bool(question_asset_path), f"{owner} missing evidence_basis.question_asset_path", errors)
+        require(bool(mark_scheme_asset_path), f"{owner} missing evidence_basis.mark_scheme_asset_path", errors)
+
+        permissions = as_record(decision.get("use_case_permissions"))
+        for key in ROUTE_DECISION_PERMISSION_KEYS:
+            require(isinstance(permissions.get(key), bool), f"{owner}.use_case_permissions.{key} must be boolean", errors)
+
+        source = source_index.get(question_id)
+        require(source is not None, f"{owner} question_id is not in canonical question bank", errors)
+        if source and question_asset_path:
+            require(question_asset_path in source["question_assets"], f"{owner} question asset is not canonical for {question_id}", errors)
+        if source and mark_scheme_asset_path:
+            require(mark_scheme_asset_path in source["mark_scheme_assets"], f"{owner} mark-scheme asset is not canonical for {question_id}", errors)
+
+        sidecar_record = topic_routing_records.get(question_id)
+        require(sidecar_record is not None, f"{owner} question_id is not in topic-routing sidecar", errors)
+        if sidecar_record:
+            sidecar_question_assets = set(string_list(sidecar_record.get("source_question_asset_ids")))
+            sidecar_mark_scheme_assets = set(string_list(sidecar_record.get("source_mark_scheme_asset_ids")))
+            if sidecar_question_assets and question_asset_path:
+                require(question_asset_path in sidecar_question_assets, f"{owner} question asset does not match sidecar source_question_asset_ids", errors)
+            if sidecar_mark_scheme_assets and mark_scheme_asset_path:
+                require(mark_scheme_asset_path in sidecar_mark_scheme_assets, f"{owner} mark-scheme asset does not match sidecar source_mark_scheme_asset_ids", errors)
+            if sidecar_record.get("route_approved") is True:
+                require(reviewed_status == "clean", f"{owner} sidecar route_approved=true but reviewed_status is {reviewed_status}", errors)
+            if sidecar_record.get("route_approved") is False:
+                require(reviewed_status != "clean", f"{owner} sidecar route_approved=false but reviewed_status is clean", errors)
+
+        published_source_allowed = (
+            reviewed_status in CLEAN_PUBLISHED_SOURCE_STATUSES
+            and all(permissions.get(key) is True for key in PUBLISHED_SOURCE_PERMISSION_KEYS)
+        )
+        if reviewed_status == "clean":
+            for key in PUBLISHED_SOURCE_PERMISSION_KEYS:
+                require(permissions.get(key) is True, f"{owner} clean evidence must allow {key}", errors)
+        elif reviewed_status:
+            for key in ROUTE_DECISION_PERMISSION_KEYS:
+                require(permissions.get(key) is False, f"{owner} non-clean evidence must not allow {key}", errors)
+
+        decision_index[question_id] = {
+            "reviewed_status": reviewed_status,
+            "question_asset_path": question_asset_path,
+            "mark_scheme_asset_path": mark_scheme_asset_path,
+            "published_source_allowed": published_source_allowed,
+        }
+
+    return decision_index
+
+
 def require_source_traceability(
     record: dict[str, Any],
     owner: str,
@@ -324,17 +479,45 @@ def require_source_traceability(
     errors: list[str],
     *,
     require_asset_ids: bool,
+    route_decision_index: dict[str, dict[str, Any]] | None = None,
+    require_clean_reviewed_route: bool = False,
+    require_source_question_ids: bool = True,
 ) -> None:
     source_question_ids = string_list(record.get("source_question_ids"))
-    require(bool(source_question_ids), f"{owner} missing source link: source_question_ids is required", errors)
+    if require_source_question_ids:
+        require(bool(source_question_ids), f"{owner} missing source link: source_question_ids is required", errors)
     if not source_question_ids:
         return
 
     expected_question_assets: set[str] = set()
     expected_mark_scheme_assets: set[str] = set()
+    required_reviewed_question_assets: set[str] = set()
+    required_reviewed_mark_scheme_assets: set[str] = set()
     for source_question_id in source_question_ids:
         source = source_index.get(source_question_id)
         require(source is not None, f"{owner} has unresolved source_question_id {source_question_id}", errors)
+        route_decision = (route_decision_index or {}).get(source_question_id)
+        if require_clean_reviewed_route:
+            require(
+                route_decision is not None,
+                f"{owner} source_question_id {source_question_id} is not found in reviewed route evidence",
+                errors,
+            )
+        if require_clean_reviewed_route and route_decision:
+            reviewed_status = str(route_decision.get("reviewed_status") or "missing")
+            require(
+                route_decision.get("published_source_allowed") is True,
+                f"{owner} source_question_id {source_question_id} has non-clean reviewed route evidence ({reviewed_status})",
+                errors,
+            )
+            route_question_asset = first_non_empty_string(route_decision.get("question_asset_path"))
+            route_mark_scheme_asset = first_non_empty_string(route_decision.get("mark_scheme_asset_path"))
+            require(bool(route_question_asset), f"{owner} source_question_id {source_question_id} lacks reviewed canonical question asset evidence", errors)
+            require(bool(route_mark_scheme_asset), f"{owner} source_question_id {source_question_id} lacks reviewed canonical mark-scheme asset evidence", errors)
+            if route_question_asset:
+                required_reviewed_question_assets.add(route_question_asset)
+            if route_mark_scheme_asset:
+                required_reviewed_mark_scheme_assets.add(route_mark_scheme_asset)
         if not source:
             continue
         require(bool(source["question_assets"]), f"{owner} source_question_id {source_question_id} has no canonical question image asset", errors)
@@ -351,10 +534,23 @@ def require_source_traceability(
     require(bool(mark_scheme_asset_ids), f"{owner} missing source_mark_scheme_asset_ids", errors)
     unresolved_question_assets = question_asset_ids - expected_question_assets
     unresolved_mark_scheme_assets = mark_scheme_asset_ids - expected_mark_scheme_assets
+    missing_reviewed_question_assets = required_reviewed_question_assets - question_asset_ids
+    missing_reviewed_mark_scheme_assets = required_reviewed_mark_scheme_assets - mark_scheme_asset_ids
     for asset_id in sorted(unresolved_question_assets):
         errors.append(f"{owner} has unresolved source_question_asset_id {asset_id}")
     for asset_id in sorted(unresolved_mark_scheme_assets):
         errors.append(f"{owner} has unresolved source_mark_scheme_asset_id {asset_id}")
+    for asset_id in sorted(missing_reviewed_question_assets):
+        errors.append(f"{owner} is missing reviewed source_question_asset_id {asset_id}")
+    for asset_id in sorted(missing_reviewed_mark_scheme_assets):
+        errors.append(f"{owner} is missing reviewed source_mark_scheme_asset_id {asset_id}")
+
+
+def has_source_traceability_fields(record: dict[str, Any]) -> bool:
+    return any(
+        key in record
+        for key in ("source_question_ids", "source_question_asset_ids", "source_mark_scheme_asset_ids")
+    )
 
 
 def require_string_array(
@@ -433,6 +629,112 @@ def require_reviewed_p3_skill_id_or_legacy_marker(
     return False
 
 
+def candidate_role_statuses(candidate: dict[str, Any]) -> set[str]:
+    statuses = set()
+    role_statuses = as_record(candidate.get("role_statuses"))
+    for value in role_statuses.values():
+        if is_non_empty_string(value):
+            statuses.add(str(value))
+    return statuses
+
+
+def candidate_is_promoted(candidate: dict[str, Any]) -> bool:
+    gate = as_record(candidate.get("generation_gate"))
+    return (
+        candidate.get("review_status") in PROMOTED_CANDIDATE_REVIEW_STATUSES
+        or gate.get("blocked") is False
+        or bool(candidate_role_statuses(candidate) & PROMOTED_CANDIDATE_ROLE_STATUSES)
+    )
+
+
+def candidate_has_unsafe_evidence_marker(candidate: dict[str, Any]) -> bool:
+    for key in ("route_evidence_status", "routing_evidence_status", "evidence_status", "reviewed_status"):
+        value = normalize_status_marker(first_non_empty_string(candidate.get(key)))
+        if value and value in UNSAFE_EVIDENCE_STATUSES:
+            return True
+    if first_non_empty_string(candidate.get("fallback_region_id"), candidate.get("fallback_topic"), candidate.get("fallback_label")):
+        return True
+    return False
+
+
+def verify_content_lab_candidates(
+    path: Path,
+    errors: list[str],
+    warnings: list[str] | None = None,
+    *,
+    source_index: dict[str, dict[str, set[str]]] | None = None,
+) -> None:
+    warnings = warnings if warnings is not None else []
+    source_index = source_index or {}
+    if not path.exists():
+        warnings.append(f"Content Lab candidates file not found: {path}")
+        return
+
+    data = load_json(path)
+    require(isinstance(data, dict), f"{path} must contain an object", errors)
+    if not isinstance(data, dict):
+        return
+    candidates = data.get("candidates")
+    require(isinstance(candidates, list), f"{path} must contain candidates[]", errors)
+    if not isinstance(candidates, list):
+        return
+
+    seen = set()
+    promoted_count = 0
+    blocked_count = 0
+    for index, value in enumerate(candidates):
+        candidate = require_record(value, f"content_lab_candidates[{index}]", errors)
+        if not candidate:
+            continue
+        owner = str(candidate.get("candidate_id") or f"content_lab_candidates[{index}]")
+        require_non_empty_string(candidate, "candidate_id", owner, errors)
+        require(candidate.get("candidate_id") not in seen, f"Duplicate candidate_id: {candidate.get('candidate_id')}", errors)
+        seen.add(candidate.get("candidate_id"))
+        require_non_empty_string(candidate, "question_id", owner, errors)
+        require_non_empty_string(candidate, "paper_family", owner, errors)
+        source_artifacts = as_record(candidate.get("source_artifacts"))
+        question_crop_path = first_non_empty_string(source_artifacts.get("question_crop_path"))
+        mark_scheme_crop_path = first_non_empty_string(source_artifacts.get("mark_scheme_crop_path"))
+        require(bool(question_crop_path), f"{owner} missing source_artifacts.question_crop_path", errors)
+        require(bool(mark_scheme_crop_path), f"{owner} missing source_artifacts.mark_scheme_crop_path", errors)
+        generation_gate = require_record(candidate.get("generation_gate"), f"{owner}.generation_gate", errors)
+        source_skill_ids = string_list(candidate.get("source_skill_ids"))
+        promoted = candidate_is_promoted(candidate)
+        if promoted:
+            promoted_count += 1
+        elif generation_gate and generation_gate.get("blocked") is True:
+            blocked_count += 1
+
+        if not promoted:
+            continue
+
+        require(candidate.get("paper_family") == "p3", f"{owner} promotion is only allowed for reviewed P3 candidates in the MVP", errors)
+        if generation_gate:
+            require(generation_gate.get("blocked") is False, f"{owner} cannot be promoted with generation_gate.blocked=true", errors)
+            require(not string_list(generation_gate.get("block_reasons")), f"{owner} cannot be promoted with generation gate block reasons", errors)
+        require(not candidate_has_unsafe_evidence_marker(candidate), f"{owner} cannot be promoted from fallback-only, ambiguous, blocked, thin, or deferred evidence", errors)
+        require(bool(source_skill_ids), f"{owner} promoted candidate missing reviewed source_skill_ids", errors)
+        for skill_id in source_skill_ids:
+            require(skill_id in REVIEWED_P3_SKILL_IDS, f"{owner} uses non-reviewed P3 source_skill_id {skill_id}", errors)
+        require(
+            isinstance(candidate.get("source_mark_event_count"), int) and candidate.get("source_mark_event_count") > 0,
+            f"{owner} promoted candidate missing reviewed mark-event evidence",
+            errors,
+        )
+        selection = as_record(candidate.get("candidate_selection"))
+        require(selection.get("reviewed_or_approved_subpart") is True, f"{owner} promoted candidate requires reviewed_or_approved_subpart=true", errors)
+
+        question_id = first_non_empty_string(candidate.get("question_id"))
+        source_assets = source_index.get(question_id or "")
+        require(source_assets is not None, f"{owner} has unresolved source question {question_id}", errors)
+        if source_assets:
+            require(question_crop_path in source_assets["question_assets"], f"{owner} question crop is not a canonical question asset", errors)
+            require(mark_scheme_crop_path in source_assets["mark_scheme_assets"], f"{owner} mark-scheme crop is not a canonical mark-scheme asset", errors)
+
+    if promoted_count == 0 and blocked_count == 0:
+        warnings.append(f"{path} has no promoted or blocked candidates to summarize")
+
+
 def require_worked_example(
     value: Any,
     owner: str,
@@ -441,6 +743,7 @@ def require_worked_example(
     *,
     first_batch: bool = False,
     source_index: dict[str, dict[str, set[str]]] | None = None,
+    route_decision_index: dict[str, dict[str, Any]] | None = None,
 ) -> bool:
     require(isinstance(value, dict), f"{owner} must be an object", errors)
     if not isinstance(value, dict):
@@ -456,7 +759,16 @@ def require_worked_example(
     if first_batch:
         for key in V2_BATCH_REQUIRED_FIELDS:
             require_non_empty_string(value, key, owner, errors)
-        require_source_traceability(value, owner, source_index or {}, errors, require_asset_ids=True)
+        if has_source_traceability_fields(value):
+            require_source_traceability(
+                value,
+                owner,
+                source_index or {},
+                errors,
+                require_asset_ids=True,
+                route_decision_index=route_decision_index,
+                require_clean_reviewed_route=True,
+            )
 
     prompt = value.get("prompt")
     steps = value.get("steps")
@@ -493,7 +805,9 @@ def require_worked_examples(
     warnings: list[str],
     *,
     first_batch: bool = False,
+    require_published_p3_source_assets: bool = False,
     source_index: dict[str, dict[str, set[str]]] | None = None,
+    route_decision_index: dict[str, dict[str, Any]] | None = None,
 ) -> int:
     example_count = 0
 
@@ -510,8 +824,19 @@ def require_worked_examples(
             warnings,
             first_batch=first_batch,
             source_index=source_index,
+            route_decision_index=route_decision_index,
         ):
             example_count += 1
+        if require_published_p3_source_assets and isinstance(example, dict) and has_source_traceability_fields(example):
+            require_source_traceability(
+                example,
+                example_owner,
+                source_index or {},
+                errors,
+                require_asset_ids=True,
+                route_decision_index=route_decision_index,
+                require_clean_reviewed_route=True,
+            )
 
     return example_count
 
@@ -588,9 +913,11 @@ def verify_teaching_snippets(
     warnings: list[str] | None = None,
     *,
     source_index: dict[str, dict[str, set[str]]] | None = None,
+    route_decision_index: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     warnings = warnings if warnings is not None else []
     source_index = source_index or {}
+    route_decision_index = route_decision_index or {}
     data = load_json(path)
     require(isinstance(data, dict), f"{path} must contain an object", errors)
     if not isinstance(data, dict):
@@ -706,13 +1033,19 @@ def verify_teaching_snippets(
             paper_family == "p3"
             and bool(PRIORITY_REGION_IDS.intersection(region_ids))
         )
+        published_p3_snippet = (
+            paper_family == "p3"
+            and snippet.get("review_status") in RUNTIME_REVIEW_STATUSES
+        )
         worked_example_count = require_worked_examples(
             snippet,
             owner,
             errors,
             warnings,
             first_batch=first_batch_snippet,
+            require_published_p3_source_assets=published_p3_snippet,
             source_index=source_index,
+            route_decision_index=route_decision_index,
         )
         if (
             paper_family == "p3"
@@ -746,6 +1079,56 @@ def verify_teaching_snippets(
     }
 
 
+def count_by_review_status(items: list[dict[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for item in items:
+        status = str(item.get("review_status") or "missing")
+        counts[status] = counts.get(status, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def generated_practice_scope_summary(path: Path, items: list[dict[str, Any]], *, runtime: bool) -> dict[str, Any]:
+    verification_failures = [
+        str(item.get("practice_id") or f"items[{index}]")
+        for index, item in enumerate(items)
+        if as_record(item.get("verification")).get("status") != "pass"
+    ]
+    missing_example_ids = [
+        str(item.get("practice_id") or f"items[{index}]")
+        for index, item in enumerate(items)
+        if not is_non_empty_string(item.get("example_model_id"))
+    ]
+    runtime_reviewed = [
+        item for item in items
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES
+        and as_record(item.get("verification")).get("status") == "pass"
+    ]
+    return {
+        "artifact_scope": "runtime" if runtime else "internal_planning",
+        "path": str(path),
+        "total_count": len(items),
+        "review_status_counts": count_by_review_status(items),
+        "runtime_reviewed_count": len(runtime_reviewed),
+        "published_runtime_count": len(runtime_reviewed) if runtime else 0,
+        "internal_candidate_count": sum(1 for item in items if item.get("review_status") == "candidate"),
+        "needs_review_internal_count": sum(1 for item in items if item.get("review_status") == "needs_review"),
+        "blocked_candidate_count": sum(1 for item in items if item.get("review_status") == "blocked"),
+        "verification_failure_count": len(verification_failures),
+        "verification_failure_ids": verification_failures,
+        "missing_example_model_id_count": len(missing_example_ids),
+        "missing_example_model_id_ids": missing_example_ids,
+    }
+
+
+def validate_generated_practice_scope_summary(summary: dict[str, Any], owner: str, errors: list[str]) -> None:
+    if summary.get("artifact_scope") not in {"runtime", "internal_planning"}:
+        errors.append(f"{owner}.artifact_scope must be runtime or internal_planning")
+    for key in GENERATED_PRACTICE_SUMMARY_KEYS:
+        value = summary.get(key)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            errors.append(f"{owner}.{key} must be a non-negative integer")
+
+
 def verify_generated_practice(
     path: Path,
     errors: list[str],
@@ -757,20 +1140,33 @@ def verify_generated_practice(
     warnings = warnings if warnings is not None else []
     snippet_context = snippet_context or {"snippet_ids": set(), "example_ids": set()}
     if not path.exists():
-        return {"reviewed_generated_practice_count": 0, "generator_families": set()}
+        return {
+            "reviewed_generated_practice_count": 0,
+            "generator_families": set(),
+            "scope_summary": generated_practice_scope_summary(path, [], runtime=runtime),
+        }
 
     data = load_json(path)
     require(isinstance(data, dict), f"{path} must contain an object", errors)
     if not isinstance(data, dict):
-        return {"reviewed_generated_practice_count": 0, "generator_families": set()}
+        return {
+            "reviewed_generated_practice_count": 0,
+            "generator_families": set(),
+            "scope_summary": generated_practice_scope_summary(path, [], runtime=runtime),
+        }
     items = data.get("items")
     require(isinstance(items, list), f"{path} must contain items[]", errors)
     if not isinstance(items, list):
-        return {"reviewed_generated_practice_count": 0, "generator_families": set()}
+        return {
+            "reviewed_generated_practice_count": 0,
+            "generator_families": set(),
+            "scope_summary": generated_practice_scope_summary(path, [], runtime=runtime),
+        }
 
     seen = set()
     reviewed_generated_practice_count = 0
     generator_families: set[str] = set()
+    item_records = [item for item in items if isinstance(item, dict)]
     for index, item_value in enumerate(items):
         item = require_record(item_value, f"generated_practice.items[{index}]", errors)
         if not item:
@@ -834,6 +1230,13 @@ def verify_generated_practice(
             require(review_status in RUNTIME_REVIEW_STATUSES, f"Runtime practice {owner} must be teacher_reviewed or published", errors)
             require(review_status not in PRACTICE_RUNTIME_BLOCKED_STATUSES, f"Runtime practice {owner} cannot be {review_status}", errors)
             require(verification_status == "pass", f"Runtime practice {owner} must have verification.status pass", errors)
+            require_non_empty_string(item, "example_model_id", f"Runtime practice {owner}", errors)
+            require(not candidate_has_unsafe_evidence_marker(item), f"Runtime practice {owner} cannot use fallback-only, ambiguous, blocked, thin, or deferred route evidence", errors)
+            generation_gate = as_record(item.get("generation_gate"))
+            if generation_gate:
+                require(generation_gate.get("blocked") is not True, f"Runtime practice {owner} cannot have generation_gate.blocked=true", errors)
+                require(not string_list(generation_gate.get("block_reasons")), f"Runtime practice {owner} cannot have generation gate block reasons", errors)
+            require(not string_list(item.get("block_reasons")), f"Runtime practice {owner} cannot have block_reasons", errors)
             if review_status in RUNTIME_REVIEW_STATUSES and verification_status == "pass" and skill_target_ready:
                 reviewed_generated_practice_count += 1
                 family = item.get("generator_family")
@@ -849,6 +1252,7 @@ def verify_generated_practice(
     return {
         "reviewed_generated_practice_count": reviewed_generated_practice_count,
         "generator_families": generator_families,
+        "scope_summary": generated_practice_scope_summary(path, item_records, runtime=runtime),
     }
 
 
@@ -860,6 +1264,7 @@ def verify_content_lab_report(path: Path, errors: list[str], warnings: list[str]
     if not isinstance(data, dict):
         return
     require(data.get("schema_name") == "asterion_content_lab_report", f"{path} has invalid schema_name", errors)
+    require(data.get("artifact_scope") == "internal_planning", f"{path}.artifact_scope must be internal_planning", errors)
     for key in (
         "active_regions",
         "snippets_per_region",
@@ -881,8 +1286,18 @@ def verify_content_lab_report(path: Path, errors: list[str], warnings: list[str]
         "warmups_linked_to_examples",
         "warmups_without_example_model",
         "priority_region_example_coverage",
+        "internal_generated_practice_summary",
+        "runtime_generated_practice_summary",
+        "generated_practice_scope_note",
     ):
         require(key in data, f"{path} missing {key}", errors)
+
+    for key in ("internal_generated_practice_summary", "runtime_generated_practice_summary"):
+        summary = as_record(data.get(key))
+        if summary:
+            validate_generated_practice_scope_summary(summary, f"{path}.{key}", errors)
+        else:
+            errors.append(f"{path}.{key} must be an object")
 
     active_regions = data.get("active_regions")
     require(isinstance(active_regions, list), f"{path}.active_regions must be an array", errors)
@@ -927,7 +1342,10 @@ def main() -> int:
     parser.add_argument("--outputs-dir", default="tools/content_lab/outputs")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json")
     parser.add_argument("--runtime-generated-practice", default="public/data/generated_practice_bank.json")
+    parser.add_argument("--content-lab-candidates", default="public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json")
     parser.add_argument("--question-bank", default="public/assets/exam-bank-data/question_bank.json")
+    parser.add_argument("--topic-routing", default="public/assets/exam-bank-data/question_bank.topic_routing.v1.json")
+    parser.add_argument("--route-decisions", default="tools/content_lab/reviews/p3_route_evidence_decisions_v1.json")
     parser.add_argument("--skip-question-bank-git-check", action="store_true")
     args = parser.parse_args()
 
@@ -935,9 +1353,25 @@ def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
     source_index: dict[str, dict[str, set[str]]] = {}
+    topic_routing_records: dict[str, dict[str, Any]] = {}
+    route_decision_index: dict[str, dict[str, Any]] = {}
     verify_region_support_matches_skill_map(errors)
     try:
         source_index = source_index_from_question_bank(Path(args.question_bank), errors)
+    except ValueError as error:
+        errors.append(str(error))
+    try:
+        topic_routing_records = topic_routing_records_from_path(Path(args.topic_routing), errors, warnings)
+    except ValueError as error:
+        errors.append(str(error))
+    try:
+        route_decision_index = route_decision_index_from_review(
+            Path(args.route_decisions),
+            source_index,
+            topic_routing_records,
+            errors,
+            warnings,
+        )
     except ValueError as error:
         errors.append(str(error))
 
@@ -952,7 +1386,13 @@ def main() -> int:
 
     snippet_context: dict[str, Any] = {"snippet_ids": set(), "example_ids": set(), "reviewed_snippet_count": 0, "quick_check_count": 0}
     try:
-        snippet_context = verify_teaching_snippets(Path(args.snippets), errors, warnings, source_index=source_index)
+        snippet_context = verify_teaching_snippets(
+            Path(args.snippets),
+            errors,
+            warnings,
+            source_index=source_index,
+            route_decision_index=route_decision_index,
+        )
     except ValueError as error:
         errors.append(str(error))
 
@@ -961,7 +1401,14 @@ def main() -> int:
     except ValueError as error:
         errors.append(str(error))
 
+    try:
+        verify_content_lab_candidates(Path(args.content_lab_candidates), errors, warnings, source_index=source_index)
+    except ValueError as error:
+        errors.append(str(error))
+
     runtime_practice_summary: dict[str, Any] = {"reviewed_generated_practice_count": 0, "generator_families": set()}
+    internal_practice_scope: dict[str, Any] = generated_practice_scope_summary(outputs_dir / "generated_practice_bank.json", [], runtime=False)
+    runtime_practice_scope: dict[str, Any] = generated_practice_scope_summary(Path(args.runtime_generated_practice), [], runtime=True)
     for path, runtime in (
         (outputs_dir / "generated_practice_bank.json", False),
         (Path(args.runtime_generated_practice), True),
@@ -970,8 +1417,23 @@ def main() -> int:
             summary = verify_generated_practice(path, errors, warnings, runtime=runtime, snippet_context=snippet_context)
             if runtime:
                 runtime_practice_summary = summary
+                runtime_practice_scope = as_record(summary.get("scope_summary"))
+            else:
+                internal_practice_scope = as_record(summary.get("scope_summary"))
         except ValueError as error:
             errors.append(str(error))
+
+    if runtime_practice_scope.get("artifact_scope") == "runtime":
+        if runtime_practice_scope.get("internal_candidate_count", 0) > 0:
+            errors.append("Runtime generated practice contains candidate records")
+        if runtime_practice_scope.get("needs_review_internal_count", 0) > 0:
+            errors.append("Runtime generated practice contains needs_review records")
+        if runtime_practice_scope.get("blocked_candidate_count", 0) > 0:
+            errors.append("Runtime generated practice contains blocked records")
+        if runtime_practice_scope.get("verification_failure_count", 0) > 0:
+            errors.append("Runtime generated practice contains verification failures")
+        if runtime_practice_scope.get("missing_example_model_id_count", 0) > 0:
+            errors.append("Runtime generated practice contains items missing example_model_id")
 
     if not args.skip_question_bank_git_check:
         verify_question_bank_not_modified(Path(args.question_bank), errors)
@@ -985,6 +1447,14 @@ def main() -> int:
 
     for warning in warnings:
         print(f"WARNING: {warning}")
+    print(
+        "Content Lab generated practice scope check: "
+        f"runtime={runtime_practice_scope.get('runtime_reviewed_count', 0)} reviewed/published, "
+        f"internal={internal_practice_scope.get('total_count', 0)} planning items, "
+        f"needs_review_internal={internal_practice_scope.get('needs_review_internal_count', 0)}, "
+        f"runtime_missing_example_model_id={runtime_practice_scope.get('missing_example_model_id_count', 0)}, "
+        f"runtime_verification_failures={runtime_practice_scope.get('verification_failure_count', 0)}."
+    )
     print(
         "Content Lab runtime coverage: "
         f"{snippet_context.get('reviewed_snippet_count', 0)} reviewed teaching snippets, "

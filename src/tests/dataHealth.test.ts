@@ -203,14 +203,14 @@ describe('buildP3RouteEvidenceDistribution', () => {
     expect(distribution).toMatchObject({
       totalP3Questions: 396,
       statusCounts: {
-        clean: 317,
-        'review-only': 60,
-        'ambiguous-route': 19,
+        clean: 319,
+        'review-only': 56,
+        'ambiguous-route': 21,
       },
-      validatedRegionIdCount: 317,
-      displayRegionIdOnlyCount: 26,
+      validatedRegionIdCount: 319,
+      displayRegionIdOnlyCount: 30,
       fallbackDisplayOnlyCount: 0,
-      noDisplayRegionIdCount: 53,
+      noDisplayRegionIdCount: 47,
     });
     expect(distribution.totalP3Questions).toBe(report.normalized_distribution.total_p3_questions);
     expect(distribution.statusCounts).toEqual(report.normalized_distribution.status_counts);
@@ -219,33 +219,33 @@ describe('buildP3RouteEvidenceDistribution', () => {
     expect(distribution.fallbackDisplayOnlyCount).toBe(report.normalized_distribution.fallback_display_only_count);
     expect(distribution.noDisplayRegionIdCount).toBe(report.normalized_distribution.no_display_region_id_count);
     expect(report.route_report_distribution.normalized_status_by_route_report_category).toEqual({
-      safe_p3_route: { clean: 317 },
-      missing_p3_route: { 'review-only': 53 },
-      ambiguous_multi_topic_route: { 'ambiguous-route': 14 },
-      review_needed_route: { 'ambiguous-route': 5, 'review-only': 7 },
+      safe_p3_route: { clean: 319 },
+      missing_p3_route: { 'review-only': 47 },
+      ambiguous_multi_topic_route: { 'ambiguous-route': 16 },
+      review_needed_route: { 'ambiguous-route': 5, 'review-only': 9 },
     });
 
     const healthSummary = buildDataHealthSummary(questions, []);
     expect(healthSummary.routeEvidenceStatusCounts).toEqual({
-      clean: 317,
-      'review-only': 60,
-      'ambiguous-route': 19,
+      clean: 319,
+      'review-only': 56,
+      'ambiguous-route': 21,
     });
     expect(healthSummary.eligibilityBucketCounts).toMatchObject({
-      generationEligible: { eligible: 303, blocked: 93, missing: 0 },
-      masteryEligible: { eligible: 131, blocked: 265, missing: 0 },
-      guardianEligible: { eligible: 131, blocked: 265, missing: 0 },
+      generationEligible: { eligible: 37, blocked: 359, missing: 0 },
+      masteryEligible: { eligible: 18, blocked: 378, missing: 0 },
+      guardianEligible: { eligible: 18, blocked: 378, missing: 0 },
     });
     expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 396 });
     expect(healthSummary.fallbackDisplayOnlyCountsByRegion).toEqual({});
     expect(healthSummary.rawBankFallbackCount).toBe(0);
     expect(healthSummary.rawBankDebugCount).toBe(0);
-    expect(healthSummary.generationEligibleCounts).toEqual({ true: 303, false: 93, missing: 0 });
+    expect(healthSummary.generationEligibleCounts).toEqual({ true: 37, false: 359, missing: 0 });
     expect(healthSummary.generationBlockerReasonCounts).toEqual({
-      'blocked-review-only': 60,
+      'blocked-review-only': 56,
       'blocked-hard-failed-text': 17,
-      'missing-content-lab-usable-text': 17,
-      'blocked-ambiguous-route': 19,
+      'missing-content-lab-usable-text': 342,
+      'blocked-ambiguous-route': 21,
     });
   });
 });

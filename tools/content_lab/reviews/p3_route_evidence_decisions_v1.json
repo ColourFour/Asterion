@@ -1,0 +1,412 @@
+{
+  "schema_name": "asterion_p3_route_evidence_decisions",
+  "schema_version": 1,
+  "review_label": "phase-1-route-and-evidence-cleanup-v1",
+  "reviewer": "codex",
+  "reviewed_at": "2026-05-21",
+  "scope_note": "Phase 1 route and evidence cleanup decisions for a small audited batch from the P3 region-correction queue. These decisions are audit metadata; only clean reviewed routes with canonical question and mark-scheme evidence may feed mastery. Thin, ambiguous, fallback_only, blocked, deferred, and review_needed decisions remain non-generation and non-mastery unless a later reviewed artifact explicitly resolves them.",
+  "policy": {
+    "canonical_assets_required": true,
+    "fallback_labels_are_display_only": true,
+    "support_content_counts_as_mastery": false,
+    "unresolved_text_or_visual_blockers_block_generation": true,
+    "ambiguous_whole_question_routes_require_reviewed_part_mapping": true
+  },
+  "decisions": [
+    {
+      "question_id": "31autumn23_q01",
+      "paper": "31autumn23",
+      "paper_family": "p3",
+      "question_number": "1",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_chain_product_quotient",
+        "p3_diff_stationary_tangent_normal"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn23/questions/q01.png",
+        "mark_scheme_asset_path": "p3/31autumn23/mark_scheme/q01.png",
+        "question_summary": "Curve y = x^2/(1 - 3x); find points where tangent gradient is 8.",
+        "mark_scheme_summary": "Mark scheme rewards quotient or product rule, solving dy/dx = 8, then coordinates."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Canonical question and mark scheme support a clean differentiation route. Candidate promotion remains blocked because mark events are still machine candidates, not reviewed source-skill evidence."
+    },
+    {
+      "question_id": "31autumn23_q06",
+      "paper": "31autumn23",
+      "paper_family": "p3",
+      "question_number": "6",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_parametric_gradients"
+      ],
+      "part_mappings": [
+        {
+          "label": "a",
+          "subpart_id": "31autumn23_q06_a",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_diff_parametric_gradients",
+          "reviewed_topic_id": "9709_p3_topic_differentiation",
+          "reviewed_region_id": "calculus-cliffs",
+          "evidence_summary": "dy/dx is obtained from dy/dt over dx/dt."
+        },
+        {
+          "label": "b",
+          "subpart_id": "31autumn23_q06_b",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_diff_parametric_gradients",
+          "reviewed_topic_id": "9709_p3_topic_differentiation",
+          "reviewed_region_id": "calculus-cliffs",
+          "evidence_summary": "Normal-gradient condition is solved using the parametric derivative from part a."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn23/questions/q06.png",
+        "mark_scheme_asset_path": "p3/31autumn23/mark_scheme/q06.png",
+        "question_summary": "Parametric curve with x = sqrt(t) + 3 and y = ln t; find dy/dx and a normal-gradient point.",
+        "mark_scheme_summary": "Mark scheme rewards dx/dt, dy/dt, chain rule derivative ratio, then using dy/dx for the normal condition."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Both subparts resolve to the same reviewed P3 differentiation skill, so the multipart route can be clean without broad-route mastery inflation."
+    },
+    {
+      "question_id": "31autumn23_q09",
+      "paper": "31autumn23",
+      "paper_family": "p3",
+      "question_number": "9",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "ambiguous",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_chain_product_quotient",
+        "p3_diff_stationary_tangent_normal",
+        "p3_int_parts_substitution",
+        "p3_int_definite_improper_area"
+      ],
+      "part_mappings": [
+        {
+          "label": "a",
+          "subpart_id": "31autumn23_q09_a",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_diff_stationary_tangent_normal",
+          "reviewed_topic_id": "9709_p3_topic_differentiation",
+          "reviewed_region_id": "calculus-cliffs",
+          "evidence_summary": "Mark scheme rewards product-rule differentiation and setting the derivative to zero to find M."
+        },
+        {
+          "label": "b",
+          "subpart_id": "31autumn23_q09_b",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_int_parts_substitution",
+          "reviewed_topic_id": "9709_p3_topic_integration",
+          "reviewed_region_id": "integration-gardens",
+          "evidence_summary": "Mark scheme rewards a substitution-based definite integral for area."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn23/questions/q09.png",
+        "mark_scheme_asset_path": "p3/31autumn23/mark_scheme/q09.png",
+        "question_summary": "Part a finds a maximum point by differentiation; part b evaluates an area by integration.",
+        "mark_scheme_summary": "Mark scheme splits cleanly between product-rule stationary-point work and a substitution/area integral."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "The route is resolvable at part level but not as a single mastery claim because the reviewed parts belong to different regions."
+    },
+    {
+      "question_id": "31summer23_q05",
+      "paper": "31summer23",
+      "paper_family": "p3",
+      "question_number": "5",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "thin",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_implicit_log_exp"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31summer23/questions/q05.png",
+        "mark_scheme_asset_path": "p3/31summer23/mark_scheme/q05.png",
+        "question_summary": "Implicit differentiation question with a vertical tangent condition.",
+        "mark_scheme_summary": "Mark scheme rewards differentiating implicitly and using the vertical tangent condition."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "The region is clear, but the current reviewed skill target is thinner than the exact implicit-differentiation evidence. Keep review-only until a reviewer accepts the source-skill fit."
+    },
+    {
+      "question_id": "32spring21_q04",
+      "paper": "32spring21",
+      "paper_family": "p3",
+      "question_number": "4",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "thin",
+      "reviewed_primary_topic_id": "9709_p3_topic_differential_equations",
+      "reviewed_region_id": "differential-shrine",
+      "reviewed_source_skill_ids": [
+        "p3_de_separation_setup",
+        "p3_de_initial_condition"
+      ],
+      "part_mappings": [
+        {
+          "label": "a",
+          "subpart_id": "32spring21_q04_a",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_de_separation_setup",
+          "reviewed_topic_id": "9709_p3_topic_differential_equations",
+          "reviewed_region_id": "differential-shrine",
+          "evidence_summary": "Mark scheme rewards separating variables, integrating both sides, and applying y = 4 when x = pi."
+        },
+        {
+          "label": "b",
+          "subpart_id": "32spring21_q04_b",
+          "reviewed_status": "review_needed",
+          "reviewed_source_skill_id": "",
+          "reviewed_topic_id": "9709_p3_topic_differential_equations",
+          "reviewed_region_id": "differential-shrine",
+          "evidence_summary": "One-mark graph sketch follows from the solution and remains visual-dependent support rather than mastery evidence."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/32spring21/questions/q04.png",
+        "mark_scheme_asset_path": "p3/32spring21/mark_scheme/q04.png",
+        "question_summary": "Solve a first-order differential equation and sketch the resulting curve.",
+        "mark_scheme_summary": "Part a is separable differential equations; part b is a visual sketch mark with follow-through guidance."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Part a has reviewed differential-equation evidence, but the whole record includes visual sketch evidence and should stay review-only until subpart publication semantics are explicit."
+    },
+    {
+      "question_id": "32spring21_q10",
+      "paper": "32spring21",
+      "paper_family": "p3",
+      "question_number": "10",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "ambiguous",
+      "reviewed_primary_topic_id": "9709_p3_topic_integration",
+      "reviewed_region_id": "integration-gardens",
+      "reviewed_source_skill_ids": [
+        "p3_int_definite_improper_area",
+        "p3_diff_stationary_tangent_normal"
+      ],
+      "part_mappings": [
+        {
+          "label": "a",
+          "subpart_id": "32spring21_q10_a",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_int_definite_improper_area",
+          "reviewed_topic_id": "9709_p3_topic_integration",
+          "reviewed_region_id": "integration-gardens",
+          "evidence_summary": "Mark scheme rewards substitution and exact definite area."
+        },
+        {
+          "label": "b",
+          "subpart_id": "32spring21_q10_b",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_diff_stationary_tangent_normal",
+          "reviewed_topic_id": "9709_p3_topic_differentiation",
+          "reviewed_region_id": "calculus-cliffs",
+          "evidence_summary": "Mark scheme rewards product-rule differentiation, setting derivative to zero, and solving for the maximum point."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/32spring21/questions/q10.png",
+        "mark_scheme_asset_path": "p3/32spring21/mark_scheme/q10.png",
+        "question_summary": "Diagram-backed curve with part a area by substitution and part b maximum point by differentiation.",
+        "mark_scheme_summary": "Mark scheme separates the area integral from the product-rule stationary-point calculation."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Part-level evidence is reviewed but split across integration and differentiation, so the whole question remains mastery-ineligible."
+    },
+    {
+      "question_id": "31summer23_q02",
+      "paper": "31summer23",
+      "paper_family": "p3",
+      "question_number": "2",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "blocked",
+      "reviewed_primary_topic_id": "9709_p3_topic_algebra",
+      "reviewed_region_id": "algebra-forge",
+      "reviewed_source_skill_ids": [
+        "p3_alg_modulus_cases"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31summer23/questions/q02.png",
+        "mark_scheme_asset_path": "p3/31summer23/mark_scheme/q02.png",
+        "question_summary": "Modulus graph and modulus inequality, not a calculus question.",
+        "mark_scheme_summary": "Mark scheme rewards modulus graph features and inequality solving."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Canonical evidence shows the old fallback region is wrong, but the projected quality gate still has an unresolved question-crop confidence blocker. Leave blocked instead of converting it to clean mastery evidence."
+    },
+    {
+      "question_id": "32autumn22_q03",
+      "paper": "32autumn22",
+      "paper_family": "p3",
+      "question_number": "3",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "review_needed",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [],
+      "evidence_basis": {
+        "question_asset_path": "p3/32autumn22/questions/q03.png",
+        "mark_scheme_asset_path": "p3/32autumn22/mark_scheme/q03.png",
+        "question_summary": "Likely differentiation with trigonometric structure, but source-image quality flags remain unresolved.",
+        "mark_scheme_summary": "Do not treat extracted text or labels as proof without a dedicated image review."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Question crop confidence is low and topic uncertainty remains. Keep in review_needed rather than making a clean route from old labels."
+    },
+    {
+      "question_id": "33autumn24_q07",
+      "paper": "33autumn24",
+      "paper_family": "p3",
+      "question_number": "7",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "deferred",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_parametric_gradients"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/33autumn24/questions/q07.png",
+        "mark_scheme_asset_path": "p3/33autumn24/mark_scheme/q07.png",
+        "question_summary": "Parametric-style differentiation evidence appears likely.",
+        "mark_scheme_summary": "Mark-scheme crop is only medium confidence and source-image crop is low confidence."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Defer route cleanup until the crop uncertainty and topic uncertainty are resolved with a dedicated image review."
+    },
+    {
+      "question_id": "33autumn24_q11",
+      "paper": "33autumn24",
+      "paper_family": "p3",
+      "question_number": "11",
+      "previous_route_status": "missing_p3_route",
+      "previous_routing_source": "deepseek_topic_routing_error",
+      "previous_fallback_region_id": "calculus-cliffs",
+      "reviewed_status": "blocked",
+      "reviewed_primary_topic_id": "9709_p3_topic_differentiation",
+      "reviewed_region_id": "calculus-cliffs",
+      "reviewed_source_skill_ids": [
+        "p3_diff_stationary_tangent_normal",
+        "p3_int_definite_improper_area"
+      ],
+      "part_mappings": [
+        {
+          "label": "a",
+          "subpart_id": "33autumn24_q11_a",
+          "reviewed_status": "blocked",
+          "reviewed_source_skill_id": "p3_diff_stationary_tangent_normal",
+          "reviewed_topic_id": "9709_p3_topic_differentiation",
+          "reviewed_region_id": "calculus-cliffs",
+          "evidence_summary": "Canonical images show product/chain-rule stationary-point work, but projected quality blocks remain unresolved."
+        },
+        {
+          "label": "b",
+          "subpart_id": "33autumn24_q11_b",
+          "reviewed_status": "blocked",
+          "reviewed_source_skill_id": "p3_int_definite_improper_area",
+          "reviewed_topic_id": "9709_p3_topic_integration",
+          "reviewed_region_id": "integration-gardens",
+          "evidence_summary": "Canonical images show substitution-area work, but text and crop quality are blocked."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/33autumn24/questions/q11.png",
+        "mark_scheme_asset_path": "p3/33autumn24/mark_scheme/q11.png",
+        "question_summary": "Mixed differentiation and integration question with a diagram and shaded region.",
+        "mark_scheme_summary": "Mark scheme splits product/chain-rule stationary work and substitution-area work."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": false,
+        "guardian_evidence_allowed": false,
+        "teacher_export_mastery_allowed": false,
+        "content_lab_generation_allowed": false,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Projected quality gate has validation failure, untrusted math text, low question crop confidence, and medium mark-scheme crop confidence. Keep blocked even though canonical images reveal the likely route."
+    }
+  ]
+}

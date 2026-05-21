@@ -58,6 +58,7 @@ interface CoverageMatrix {
     canonical_question_count: number;
     clean_mastery_evidence_count: number;
     clean_mastery_evidence_question_ids: string[];
+    evidence_resilience_status: string;
     deferred_evidence_count: number;
     deferred_evidence_question_ids: string[];
     practice_allowed_deferred_count: number;
@@ -89,6 +90,18 @@ interface CoverageMatrix {
     expected_support_types: string[];
     support_gap_counts: Record<string, number>;
     skills_with_any_support_gap: number;
+  };
+  evidence_resilience_summary: {
+    low_clean_mastery_evidence_threshold: number;
+    status_counts: Record<string, number>;
+    blocked_no_clean_mastery_evidence_skill_refs: string[];
+    thin_resilience_risk_skill_refs: string[];
+    healthy_evidence_skill_count: number;
+    risk_rows: Array<{
+      skill_ref: string;
+      clean_mastery_evidence_count: number;
+      evidence_resilience_status: string;
+    }>;
   };
   correction_priority_summary: {
     priority_counts: Record<CorrectionPriority, number>;
@@ -234,6 +247,7 @@ function validateMatrixContract(matrix: CoverageMatrix, skillMap: SkillMap) {
       'recommended_next_action',
       'clean_mastery_evidence_count',
       'clean_mastery_evidence_question_ids',
+      'evidence_resilience_status',
       'deferred_evidence_count',
       'deferred_evidence_question_ids',
       'practice_allowed_deferred_count',
@@ -291,6 +305,9 @@ function validateMatrixContract(matrix: CoverageMatrix, skillMap: SkillMap) {
     if (row.clean_mastery_evidence_count !== row.clean_mastery_evidence_question_ids.length) {
       errors.push(`row ${row.skill_ref} clean evidence count mismatch`);
     }
+    if (!['blocked_no_clean_mastery_evidence', 'thin_resilience_risk', 'healthy_evidence_count'].includes(row.evidence_resilience_status)) {
+      errors.push(`row ${row.skill_ref} invalid evidence resilience status`);
+    }
     if (row.deferred_evidence_count !== row.deferred_evidence_question_ids.length) {
       errors.push(`row ${row.skill_ref} deferred evidence count mismatch`);
     }
@@ -321,6 +338,10 @@ function validateMatrixContract(matrix: CoverageMatrix, skillMap: SkillMap) {
   }
   if (JSON.stringify(matrix.skill_summary.correction_priority_counts) !== JSON.stringify(countRows(matrix.coverage_rows, 'correction_priority', correctionPriorityLabels))) {
     errors.push('correction_priority summary mismatch');
+  }
+  const resilienceLabels = ['blocked_no_clean_mastery_evidence', 'healthy_evidence_count', 'thin_resilience_risk'];
+  if (JSON.stringify(matrix.evidence_resilience_summary.status_counts) !== JSON.stringify(countRows(matrix.coverage_rows, 'evidence_resilience_status', resilienceLabels))) {
+    errors.push('evidence resilience summary mismatch');
   }
   if (JSON.stringify(matrix.region_summary.skill_counts) !== JSON.stringify(countRowsDynamic(matrix.coverage_rows, 'region_id'))) {
     errors.push('region summary mismatch');
@@ -483,6 +504,7 @@ describe('P3 coverage matrix', () => {
       expect(matrix.generated_label).toBe('deterministic-p3-coverage-matrix-v1');
       expect(markdown).toContain('# P3 Coverage Matrix');
       expect(markdown).toContain('## Compact Skill Matrix');
+      expect(markdown).toContain('## Evidence Resilience Risks');
       expect(markdown).toContain('## Deferred Ambiguous Evidence');
     });
   });
@@ -584,6 +606,8 @@ describe('P3 coverage matrix', () => {
     expect(matrix.teaching_support_summary.expected_support_types).toEqual(supportTypes);
     expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual([]);
     expect(matrix.risk_summary.blocked_mastery_skill_refs).toEqual([]);
+    expect(matrix.evidence_resilience_summary.thin_resilience_risk_skill_refs).toContain('p3_alg_discriminant_root_conditions');
+    expect(matrix.evidence_resilience_summary.blocked_no_clean_mastery_evidence_skill_refs).toEqual([]);
 
     for (const row of matrix.coverage_rows) {
       expect(row.support_gaps, row.skill_ref).toEqual([]);
@@ -630,11 +654,13 @@ describe('P3 coverage matrix', () => {
     expect(markdown).toContain('## Counts By Region');
     expect(markdown).toContain('## Priority Buckets');
     expect(markdown).toContain('## Compact Skill Matrix');
+    expect(markdown).toContain('## Evidence Resilience Risks');
     expect(markdown).toContain('## Blocked Mastery Skills');
     expect(markdown).toContain('## Deferred Ambiguous Evidence');
     expect(markdown).toContain('## Support Gaps');
     expect(markdown).toContain('## Suggested Region-By-Region Correction Order');
     expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('No skills are currently blocked for mastery.');
+    expect(markdownSection(markdown, '## Evidence Resilience Risks')).toContain('p3_alg_discriminant_root_conditions');
     expect(markdownSection(markdown, '## Blocked Mastery Skills')).not.toContain('p3_log_calculus_contexts');
     expect(markdownSection(markdown, '## Deferred Ambiguous Evidence')).toContain('Deferred case count: 0');
     expect(markdownSection(markdown, '## Deferred Ambiguous Evidence')).not.toContain('p3_log_calculus_contexts');

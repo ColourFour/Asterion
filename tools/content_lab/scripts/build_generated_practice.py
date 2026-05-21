@@ -19,7 +19,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from p3_skill_contract import P3_REGION_DISPLAY_NAMES, PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map
+from p3_skill_contract import P3_REGION_DISPLAY_NAMES, PRIORITY_P3_REGION_IDS, load_p3_skill_map, p3_region_ids_from_skill_map, p3_skill_ids_from_skill_map
 
 
 GENERATED_BY = "tools/content_lab/scripts/build_generated_practice.py"
@@ -74,6 +74,7 @@ DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY = "differential_equations.context_mo
 PAPER_FAMILY = "p3"
 SEQUENCE_ROLES = ("first_step", "complete_step", "guardian_prep")
 ACTIVE_P3_REGION_IDS = sorted(p3_region_ids_from_skill_map(load_p3_skill_map()))
+REVIEWED_P3_SKILL_IDS = p3_skill_ids_from_skill_map(load_p3_skill_map())
 PRIORITY_REGION_IDS = sorted(PRIORITY_P3_REGION_IDS)
 REGION_DISPLAY_NAMES = P3_REGION_DISPLAY_NAMES
 
@@ -2995,13 +2996,104 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
     }
 
 
+UNSAFE_RUNTIME_EVIDENCE_STATUSES = {
+    "ambiguous",
+    "ambiguous-route",
+    "blocked",
+    "deferred",
+    "fallback-display-only",
+    "fallback_only",
+    "hard-failure",
+    "missing-route",
+    "review-needed",
+    "review-only",
+    "review_needed",
+    "thin",
+}
+
+
+def has_unsafe_runtime_evidence_marker(item: dict[str, Any]) -> bool:
+    for key in ("route_evidence_status", "routing_evidence_status", "evidence_status", "reviewed_status"):
+        value = non_empty_string(item.get(key))
+        if value and value in UNSAFE_RUNTIME_EVIDENCE_STATUSES:
+            return True
+    gate = item.get("generation_gate")
+    if isinstance(gate, dict) and gate.get("blocked") is True:
+        return True
+    if string_list(item.get("block_reasons")):
+        return True
+    return False
+
+
 def runtime_ready_item(item: Any) -> bool:
-    return (
-        isinstance(item, dict)
-        and item.get("review_status") in RUNTIME_REVIEW_STATUSES
-        and isinstance(item.get("verification"), dict)
-        and item["verification"].get("status") == "pass"
-    )
+    if not isinstance(item, dict):
+        return False
+    if item.get("review_status") not in RUNTIME_REVIEW_STATUSES:
+        return False
+    if not isinstance(item.get("verification"), dict) or item["verification"].get("status") != "pass":
+        return False
+    if non_empty_string(item.get("paper_family")) == PAPER_FAMILY:
+        if non_empty_string(item.get("skill_target_id")) not in REVIEWED_P3_SKILL_IDS:
+            return False
+        if item.get("skill_target_resolution_status") != "reviewed_p3_skill_map_id":
+            return False
+    if not non_empty_string(item.get("source_snippet_id")):
+        return False
+    if not non_empty_string(item.get("example_model_id")):
+        return False
+    if has_unsafe_runtime_evidence_marker(item):
+        return False
+    return True
+
+
+def generated_practice_scope_summary(payload: dict[str, Any], *, artifact_scope: str) -> dict[str, Any]:
+    items = [item for item in payload.get("items", []) if isinstance(item, dict)]
+    status_counts: dict[str, int] = {}
+    generator_family_counts: dict[str, int] = {}
+    for item in items:
+        status = non_empty_string(item.get("review_status")) or "missing"
+        status_counts[status] = status_counts.get(status, 0) + 1
+        family = non_empty_string(item.get("generator_family")) or "unknown"
+        generator_family_counts[family] = generator_family_counts.get(family, 0) + 1
+    runtime_reviewed = [item for item in items if runtime_ready_item(item)]
+    return {
+        "artifact_scope": artifact_scope,
+        "total_count": len(items),
+        "review_status_counts": dict(sorted(status_counts.items())),
+        "runtime_reviewed_count": len(runtime_reviewed),
+        "published_runtime_count": len(runtime_reviewed) if artifact_scope == "runtime" else 0,
+        "internal_candidate_count": sum(1 for item in items if item.get("review_status") == "candidate"),
+        "needs_review_internal_count": sum(1 for item in items if item.get("review_status") == "needs_review"),
+        "blocked_candidate_count": sum(1 for item in items if item.get("review_status") == "blocked"),
+        "verification_failure_count": sum(
+            1
+            for item in items
+            if not isinstance(item.get("verification"), dict)
+            or item["verification"].get("status") != "pass"
+        ),
+        "missing_example_model_id_count": sum(1 for item in items if not non_empty_string(item.get("example_model_id"))),
+        "generator_family_counts": dict(sorted(generator_family_counts.items())),
+    }
+
+
+def with_scope_metadata(payload: dict[str, Any], *, artifact_scope: str) -> dict[str, Any]:
+    summary = generated_practice_scope_summary(payload, artifact_scope=artifact_scope)
+    return {
+        **payload,
+        "artifact_scope": artifact_scope,
+        "scope_note": (
+            "Runtime app-facing reviewed warm-up practice."
+            if artifact_scope == "runtime"
+            else "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime."
+        ),
+        "runtime_reviewed_count": summary["runtime_reviewed_count"],
+        "published_runtime_count": summary["published_runtime_count"],
+        "internal_candidate_count": summary["internal_candidate_count"],
+        "needs_review_internal_count": summary["needs_review_internal_count"],
+        "blocked_candidate_count": summary["blocked_candidate_count"],
+        "verification_failure_count": summary["verification_failure_count"],
+        "missing_example_model_id_count": summary["missing_example_model_id_count"],
+    }
 
 
 def runtime_payload(payload: dict[str, Any], existing_runtime: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -3033,6 +3125,7 @@ def update_content_lab_report(
     skill_targets: dict[str, Any],
     snippets: dict[str, Any],
     generated_practice: dict[str, Any],
+    runtime_practice: dict[str, Any],
 ) -> None:
     report = load_json_optional(report_path)
     if not report:
@@ -3093,6 +3186,7 @@ def update_content_lab_report(
             })
 
     generated_warmups_per_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_IDS}
+    runtime_warmups_per_region = {region_id: 0 for region_id in ACTIVE_P3_REGION_IDS}
     generator_family_counts: dict[str, int] = {}
     generated_families_by_topic: dict[str, dict[str, int]] = {}
     verification_failure_counts: dict[str, int] = {}
@@ -3138,6 +3232,17 @@ def update_content_lab_report(
                 if region_id in generated_warmups_per_region:
                     generated_warmups_per_region[region_id] += 1
 
+    for item in runtime_practice.get("items", []):
+        if not isinstance(item, dict):
+            continue
+        verification = item.get("verification") if isinstance(item.get("verification"), dict) else {}
+        verification_status = non_empty_string(verification.get("status")) if isinstance(verification, dict) else None
+        sequence_role = non_empty_string(item.get("sequence_role"))
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES and verification_status == "pass" and sequence_role in SEQUENCE_ROLES:
+            for region_id in string_list(item.get("region_ids")):
+                if region_id in runtime_warmups_per_region:
+                    runtime_warmups_per_region[region_id] += 1
+
     skill_targets_per_topic: dict[str, dict[str, int]] = {}
     skill_target_topics: dict[str, tuple[str, str]] = {}
     skill_target_source_counts: dict[str, int] = {}
@@ -3161,7 +3266,7 @@ def update_content_lab_report(
             "snippets": snippets_per_region[region_id],
             "snippets_with_examples": snippets_with_examples_by_region[region_id],
             "quick_checks": quick_checks_per_region[region_id],
-            "generated_warmups": generated_warmups_per_region[region_id],
+            "generated_warmups": runtime_warmups_per_region[region_id],
         }
         for region_id in ACTIVE_P3_REGION_IDS
     ]
@@ -3193,12 +3298,12 @@ def update_content_lab_report(
             "depth_status": "priority_deepened" if (
                 snippets_per_region[region_id] >= 4
                 and quick_checks_per_region[region_id] >= 4
-                and generated_warmups_per_region[region_id] >= 3
+                and runtime_warmups_per_region[region_id] >= 3
             ) else "needs_more_depth",
             "snippets": snippets_per_region[region_id],
             "snippets_with_examples": snippets_with_examples_by_region[region_id],
             "quick_checks": quick_checks_per_region[region_id],
-            "generated_warmups": generated_warmups_per_region[region_id],
+            "generated_warmups": runtime_warmups_per_region[region_id],
         }
         for region_id in PRIORITY_REGION_IDS
     ]
@@ -3214,7 +3319,7 @@ def update_content_lab_report(
         for region_id in ACTIVE_P3_REGION_IDS
         if snippets_per_region[region_id] < 3
         or quick_checks_per_region[region_id] < 2
-        or generated_warmups_per_region[region_id] == 0
+        or runtime_warmups_per_region[region_id] == 0
     ]
     high_evidence_weak_teaching_support = [
         {
@@ -3251,7 +3356,7 @@ def update_content_lab_report(
                 for item in method_snippets_missing_examples
                 if region_id in item["region_ids"]
             ],
-            "warmups": generated_warmups_per_region[region_id],
+            "warmups": runtime_warmups_per_region[region_id],
         }
         for region_id in PRIORITY_REGION_IDS
     ]
@@ -3259,15 +3364,20 @@ def update_content_lab_report(
     report.update({
         "schema_name": "asterion_content_lab_report",
         "schema_version": 1,
+        "artifact_scope": "internal_planning",
+        "generated_practice_scope_note": "Legacy generated_warmup coverage fields now report runtime-reviewed public warm-ups. Internal planning/candidate counts are separated under internal_generated_practice_summary.",
         "active_regions": active_regions,
         "snippets_per_region": snippets_per_region,
         "quick_checks_per_region": quick_checks_per_region,
         "snippets_with_examples_by_region": snippets_with_examples_by_region,
         "method_snippets_missing_examples": method_snippets_missing_examples,
-        "generated_warmups_per_region": generated_warmups_per_region,
+        "generated_warmups_per_region": runtime_warmups_per_region,
+        "internal_generated_warmups_per_region": generated_warmups_per_region,
         "warmups_linked_to_examples": sorted(warmups_linked_to_examples, key=lambda item: item["practice_id"]),
         "warmups_without_example_model": sorted(warmups_without_example_model),
         "priority_region_example_coverage": priority_region_example_coverage,
+        "internal_generated_practice_summary": generated_practice_scope_summary(generated_practice, artifact_scope="internal_planning"),
+        "runtime_generated_practice_summary": generated_practice_scope_summary(runtime_practice, artifact_scope="runtime"),
         "skill_targets_per_topic": skill_targets_per_topic,
         "batch_7_depth_summary": {
             "priority_region_depth": priority_region_depth,
@@ -3319,10 +3429,12 @@ def main() -> int:
     runtime_output_path = Path(args.runtime_output)
     existing_runtime = load_json_optional(runtime_output_path)
     runtime = runtime_payload(payload, existing_runtime)
+    payload = with_scope_metadata(payload, artifact_scope="internal_planning")
+    runtime = with_scope_metadata(runtime, artifact_scope="runtime")
 
     write_json(Path(args.output), payload)
     write_json(runtime_output_path, runtime)
-    update_content_lab_report(Path(args.report_output), skill_targets, snippets, payload)
+    update_content_lab_report(Path(args.report_output), skill_targets, snippets, payload, runtime)
 
     print(f"Wrote {len(payload['items'])} generated practice items.")
     print(f"Wrote {len(runtime['items'])} reviewed runtime practice items.")

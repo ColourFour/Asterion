@@ -439,6 +439,7 @@ export interface QuestionTextQuality {
   questionTextTrust?: string;
   questionTextRole?: string;
   textOnlyDisplayAllowed?: boolean;
+  contentLabGenerationAllowed?: boolean;
   visualRequired?: boolean;
   hardFailed: boolean;
   reviewUsable: boolean;
@@ -446,6 +447,7 @@ export interface QuestionTextQuality {
   contentLabSupportUsable: boolean;
   statusLabel: string;
   reasonCodes: string[];
+  generationBlockerReasonCodes?: string[];
 }
 
 export interface QuestionTopicRouting {

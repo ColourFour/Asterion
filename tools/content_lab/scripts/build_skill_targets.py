@@ -966,12 +966,41 @@ def generated_practice_coverage(items: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def generated_practice_scope_summary(items: list[dict[str, Any]], *, artifact_scope: str) -> dict[str, Any]:
+    status_counts: dict[str, int] = {}
+    generator_family_counts: dict[str, int] = {}
+    for item in items:
+        status = non_empty_string(item.get("review_status")) or "missing"
+        status_counts[status] = status_counts.get(status, 0) + 1
+        family = non_empty_string(item.get("generator_family")) or "unknown"
+        generator_family_counts[family] = generator_family_counts.get(family, 0) + 1
+    runtime_reviewed = [
+        item for item in items
+        if item.get("review_status") in RUNTIME_REVIEW_STATUSES
+        and as_record(item.get("verification")).get("status") == "pass"
+    ]
+    return {
+        "artifact_scope": artifact_scope,
+        "total_count": len(items),
+        "review_status_counts": dict(sorted(status_counts.items())),
+        "runtime_reviewed_count": len(runtime_reviewed),
+        "published_runtime_count": len(runtime_reviewed) if artifact_scope == "runtime" else 0,
+        "internal_candidate_count": sum(1 for item in items if item.get("review_status") == "candidate"),
+        "needs_review_internal_count": sum(1 for item in items if item.get("review_status") == "needs_review"),
+        "blocked_candidate_count": sum(1 for item in items if item.get("review_status") == "blocked"),
+        "verification_failure_count": sum(1 for item in items if as_record(item.get("verification")).get("status") != "pass"),
+        "missing_example_model_id_count": sum(1 for item in items if not non_empty_string(item.get("example_model_id"))),
+        "generator_family_counts": dict(sorted(generator_family_counts.items())),
+    }
+
+
 def build_content_lab_report(
     records: list[dict[str, Any]],
     skill_targets: dict[str, Any],
     review_queue: dict[str, Any],
     snippets_path: Path,
     generated_practice_path: Path | None = None,
+    runtime_generated_practice_path: Path | None = None,
 ) -> dict[str, Any]:
     eligibility_counts = {
         "auto_eligible": 0,
@@ -1030,7 +1059,10 @@ def build_content_lab_report(
 
     snippets = runtime_reviewed_snippets(snippets_path)
     snippet_report = snippet_coverage(snippets)
-    practice_report = generated_practice_coverage(practice_items(generated_practice_path))
+    internal_practice_items = practice_items(generated_practice_path)
+    runtime_practice_items = practice_items(runtime_generated_practice_path) if runtime_generated_practice_path else []
+    practice_report = generated_practice_coverage(runtime_practice_items or internal_practice_items)
+    internal_practice_report = generated_practice_coverage(internal_practice_items)
     reviewed_topic_keys = snippet_report["snippet_topic_keys"]
     practice_topic_keys = practice_report["practice_topic_keys"]
     guardian_topic_keys = snippet_report["guardian_topic_keys"]
@@ -1099,6 +1131,8 @@ def build_content_lab_report(
         "schema_name": "asterion_content_lab_report",
         "schema_version": 1,
         "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
+        "artifact_scope": "internal_planning",
+        "generated_practice_scope_note": "Runtime/app-facing generated-practice counts and internal planning/candidate counts are separated. Legacy generated_warmup coverage fields report runtime-reviewed public warm-ups when available.",
         "total_records_read": len(records),
         "auto_eligible": eligibility_counts.get("auto_eligible", 0),
         "review_only": eligibility_counts.get("review_only", 0),
@@ -1114,10 +1148,14 @@ def build_content_lab_report(
         "snippets_with_examples_by_region": snippet_report["snippets_with_examples_by_region"],
         "method_snippets_missing_examples": snippet_report["method_snippets_missing_examples"],
         "generated_warmups_per_region": practice_report["generated_warmups_per_region"],
+        "internal_generated_warmups_per_region": internal_practice_report["generated_warmups_per_region"],
         "warmups_linked_to_examples": practice_report["warmups_linked_to_examples"],
         "warmups_without_example_model": practice_report["warmups_without_example_model"],
         "priority_region_example_coverage": priority_region_example_coverage,
+        "internal_generated_practice_summary": generated_practice_scope_summary(internal_practice_items, artifact_scope="internal_planning"),
+        "runtime_generated_practice_summary": generated_practice_scope_summary(runtime_practice_items, artifact_scope="runtime"),
         "generator_family_counts": practice_report["generator_family_counts"],
+        "internal_generator_family_counts": internal_practice_report["generator_family_counts"],
         "verification_failure_counts": practice_report["verification_failure_counts"],
         "skill_targets_created_by_paper_family_topic": skill_target_counts,
         "skill_targets_per_topic": skill_target_counts,
@@ -1145,6 +1183,7 @@ def main() -> int:
     parser.add_argument("--report-output", help="Path for content_lab_report.json; overrides --output-dir")
     parser.add_argument("--snippets", default="public/data/teaching_snippets.json", help="Path to reviewed teaching snippets")
     parser.add_argument("--generated-practice", default="tools/content_lab/outputs/generated_practice_bank.json", help="Path to generated practice output for coverage reporting")
+    parser.add_argument("--runtime-generated-practice", default="public/data/generated_practice_bank.json", help="Path to runtime reviewed generated practice")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -1154,9 +1193,17 @@ def main() -> int:
     review_output_path = Path(args.review_output) if args.review_output else output_dir / "review_queue.json"
     report_output_path = Path(args.report_output) if args.report_output else output_dir / "content_lab_report.json"
     generated_practice_path = Path(args.generated_practice) if args.generated_practice else None
+    runtime_generated_practice_path = Path(args.runtime_generated_practice) if args.runtime_generated_practice else None
     records = load_question_records(input_path)
     skill_targets, review_queue = build_skill_targets(records)
-    report = build_content_lab_report(records, skill_targets, review_queue, snippets_path, generated_practice_path)
+    report = build_content_lab_report(
+        records,
+        skill_targets,
+        review_queue,
+        snippets_path,
+        generated_practice_path,
+        runtime_generated_practice_path,
+    )
 
     write_json(output_path, skill_targets)
     write_json(review_output_path, review_queue)

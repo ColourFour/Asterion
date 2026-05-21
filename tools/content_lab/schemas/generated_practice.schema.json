@@ -10,6 +10,15 @@
     "schema_name": { "const": "asterion_generated_practice" },
     "schema_version": { "type": "integer", "minimum": 1 },
     "generated_by": { "type": "string", "minLength": 1 },
+    "artifact_scope": { "enum": ["runtime", "internal_planning"] },
+    "scope_note": { "type": "string", "minLength": 1 },
+    "runtime_reviewed_count": { "type": "integer", "minimum": 0 },
+    "published_runtime_count": { "type": "integer", "minimum": 0 },
+    "internal_candidate_count": { "type": "integer", "minimum": 0 },
+    "needs_review_internal_count": { "type": "integer", "minimum": 0 },
+    "blocked_candidate_count": { "type": "integer", "minimum": 0 },
+    "verification_failure_count": { "type": "integer", "minimum": 0 },
+    "missing_example_model_id_count": { "type": "integer", "minimum": 0 },
     "items": {
       "type": "array",
       "items": {

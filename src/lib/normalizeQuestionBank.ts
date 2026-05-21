@@ -91,6 +91,8 @@ function pickRouteEvidenceStatus(...records: Array<LooseRecord | undefined>) {
     'curriculumRouteStatus',
     'evidence_status',
     'evidenceStatus',
+    'reviewed_status',
+    'reviewedStatus',
     'status',
   ];
   for (const record of records) {
@@ -256,6 +258,20 @@ function normalizeTextQuality(record: LooseRecord): QuestionTextQuality {
   const questionTextRecord = textObject(firstSubpart, 'question_text') ?? textObject(record, 'question_text');
   const markSchemeTextRecord = textObject(firstSubpart, 'mark_scheme_text') ?? textObject(record, 'mark_scheme_text');
   const reasonCodes = stringArray(gate?.reason_codes);
+  const contentLabGenerationAllowed = pickBoolean(gate, ['content_lab_generation_allowed', 'contentLabGenerationAllowed']);
+  const generationBlockerReasonCodes = reasonCodes.filter((code) => (
+    code.includes('content_lab_blocked')
+    || code.includes('question_crop_not_high_confidence')
+    || code.includes('mark_scheme_crop_not_high_confidence')
+    || code.includes('canonical_assets_missing')
+    || code.includes('canonical_assets_not_ok')
+    || code.includes('mapping_status_fail')
+    || code.includes('marks_inconsistent')
+    || code.includes('paper_total_inconsistent')
+    || code.includes('text_only_blocked_status_fail')
+    || code.includes('text_only_blocked_untrusted_math_text')
+    || code.includes('validation_status_fail')
+  ));
   const questionText = pickString(questionTextRecord, ['text']) ?? pickString(record, ['question_text', 'ocr_text']);
   const markSchemeText = pickString(markSchemeTextRecord, ['text']) ?? pickString(record, ['mark_scheme_text']);
   const questionTextTrust = pickString(questionTextRecord, ['trust_level', 'trust']) ?? pickString(record, ['question_text_trust', 'ocr_text_trust']);
@@ -269,6 +285,7 @@ function normalizeTextQuality(record: LooseRecord): QuestionTextQuality {
     || ['fail', 'failed', 'hard_fail', 'hard_failed'].includes((textOnlyStatus ?? '').toLowerCase())
     || questionTextRole === 'untrusted_math_text';
   const hasUsableText = Boolean(questionText || markSchemeText) && !hardFailed;
+  const generationBlocked = contentLabGenerationAllowed === false || generationBlockerReasonCodes.length > 0;
 
   return {
     questionText,
@@ -276,13 +293,15 @@ function normalizeTextQuality(record: LooseRecord): QuestionTextQuality {
     questionTextTrust,
     questionTextRole,
     textOnlyDisplayAllowed: pickBoolean(questionTextRecord, ['text_only_display_allowed']) ?? pickBoolean(gate, ['text_only_display_allowed']),
+    contentLabGenerationAllowed,
     visualRequired: pickBoolean(gate, ['visual_required']) ?? pickBoolean(record, ['visual_required']),
     hardFailed,
     reviewUsable: hasUsableText,
     routingUsable: hasUsableText,
-    contentLabSupportUsable: hasUsableText,
+    contentLabSupportUsable: hasUsableText && !generationBlocked,
     statusLabel: hardFailed ? 'hard_failed' : textOnlyStatus ?? (hasUsableText ? 'review_usable' : 'missing_text'),
     reasonCodes,
+    generationBlockerReasonCodes: generationBlockerReasonCodes.length ? generationBlockerReasonCodes : undefined,
   };
 }
 
@@ -387,6 +406,8 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   const hasTextOnlySource = Boolean(textQuality?.questionText && textQuality?.markSchemeText);
   const textOnlyAllowed = textQuality?.textOnlyDisplayAllowed === true;
   const textHardFailed = textQuality?.hardFailed === true;
+  const evidenceQualityBlocked = textQuality?.contentLabGenerationAllowed === false
+    || Boolean(textQuality?.generationBlockerReasonCodes?.length);
   const trainingBlockers = question.trainingBlockers ?? [];
   const contentSource = question.contentSource ?? normalizeContentSource(undefined);
 
@@ -411,6 +432,10 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (!preciseMasteryReady && routeIsClean) masteryReasons.push(...masteryReadiness.reasonCodes);
   if (!hasImagePracticeAssets) masteryReasons.push('missing-image-practice-assets');
   if (trainingBlockers.length) masteryReasons.push('blocked-training-status');
+  if (evidenceQualityBlocked) {
+    masteryReasons.push('blocked-content-lab-quality-gate');
+    masteryReasons.push(...(textQuality?.generationBlockerReasonCodes ?? []).map((code) => `quality-${code}`));
+  }
   if (contentSource.unsafeForMastery) masteryReasons.push(...contentSource.reasonCodes);
 
   const textOnlyReasons: string[] = [];
@@ -424,11 +449,15 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (routeIsClean) generationReasons.push('validated-topic-routing');
   else generationReasons.push(...routeBlocks);
   if (!textQuality?.contentLabSupportUsable) generationReasons.push('missing-content-lab-usable-text');
+  if (textQuality?.contentLabGenerationAllowed === false || textQuality?.generationBlockerReasonCodes?.length) {
+    generationReasons.push('content-lab-generation-blocked-by-quality-gate');
+    generationReasons.push(...(textQuality.generationBlockerReasonCodes ?? []).map((code) => `quality-${code}`));
+  }
   if (textHardFailed) generationReasons.push('blocked-hard-failed-text');
   if (contentSource.unsafeForGeneration) generationReasons.push(...contentSource.reasonCodes);
 
   const imagePracticeEligible = hasImagePracticeAssets && trainingBlockers.length === 0;
-  const masteryEligible = preciseMasteryReady && imagePracticeEligible && !contentSource.unsafeForMastery;
+  const masteryEligible = preciseMasteryReady && imagePracticeEligible && !evidenceQualityBlocked && !contentSource.unsafeForMastery;
   const guardianEligible = masteryEligible && !contentSource.unsafeForGuardian;
   const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed && !contentSource.unsafeForGeneration;
   const textOnlyEligible = routeIsClean && hasTextOnlySource && textOnlyAllowed && !textHardFailed;
@@ -569,6 +598,8 @@ function partRouteMappingReviewed(record: LooseRecord, nestedRouting?: LooseReco
   if (explicit !== undefined) return explicit;
 
   const reviewStatus = pickString(record, [
+    'reviewed_status',
+    'reviewedStatus',
     'mapping_review_status',
     'mappingReviewStatus',
     'route_review_status',
@@ -576,6 +607,8 @@ function partRouteMappingReviewed(record: LooseRecord, nestedRouting?: LooseReco
     'review_status',
     'reviewStatus',
   ]) ?? pickString(nestedRouting, [
+    'reviewed_status',
+    'reviewedStatus',
     'mapping_review_status',
     'mappingReviewStatus',
     'route_review_status',
@@ -591,10 +624,10 @@ function normalizePartRouteMapping(value: unknown): QuestionPartRouteMapping | u
   if (!record) return undefined;
   const nestedRouting = nestedRecord(record, 'topic_routing') ?? nestedRecord(record, 'topicRouting');
   const routeEvidenceRecord = nestedRecord(record, 'route_evidence') ?? nestedRecord(record, 'routeEvidence');
-  const primaryTopicId = pickString(record, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId'])
-    ?? pickString(nestedRouting, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId']);
-  const mappedRegionId = pickString(record, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId'])
-    ?? pickString(nestedRouting, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId'])
+  const primaryTopicId = pickString(record, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId', 'reviewed_topic_id'])
+    ?? pickString(nestedRouting, ['primary_topic_id', 'primaryTopicId', 'topic_id', 'topicId', 'reviewed_topic_id']);
+  const mappedRegionId = pickString(record, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId', 'reviewed_region_id'])
+    ?? pickString(nestedRouting, ['mapped_region_id', 'mappedRegionId', 'region_id', 'regionId', 'reviewed_region_id'])
     ?? p3RegionIdForTopicId(primaryTopicId);
   const reviewStatus = pickString(record, [
     'mapping_review_status',
@@ -616,7 +649,7 @@ function normalizePartRouteMapping(value: unknown): QuestionPartRouteMapping | u
     subpartId: pickString(record, ['subpart_id', 'subpartId']),
     label: pickString(record, ['label', 'subpart_label', 'subpartLabel', 'part_label', 'partLabel']),
     primaryTopicId,
-    skillRef: pickString(record, ['skill_ref', 'skillRef', 'skill_id', 'skillId', 'reviewed_skill_ref', 'reviewedSkillRef', 'reviewed_p3_skill_id']),
+    skillRef: pickString(record, ['skill_ref', 'skillRef', 'skill_id', 'skillId', 'reviewed_skill_ref', 'reviewedSkillRef', 'reviewed_p3_skill_id', 'reviewed_source_skill_id']),
     mappedRegionId,
     routeEvidenceStatus: pickRouteEvidenceStatus(routeEvidenceRecord, nestedRouting, record),
     mappingReviewed: partRouteMappingReviewed(record, nestedRouting),

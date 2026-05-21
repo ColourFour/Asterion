@@ -1046,7 +1046,6 @@
     },
     {
       "canonical_source_question_ids": [
-        "31summer23_q05",
         "32summer23_q07",
         "31summer21_q06",
         "33summer21_q03",
@@ -1089,7 +1088,6 @@
         "differentiation.chain_rule_basic"
       ],
       "supported_by_guardian_candidates": [
-        "31summer23_q05",
         "35summer25_q06"
       ],
       "supported_by_quick_check_ids": [
@@ -1217,11 +1215,10 @@
     },
     {
       "canonical_source_question_ids": [
-        "33summer21_q03",
-        "31summer21_q06",
-        "31autumn25_q07",
-        "32spring21_q10",
-        "35summer25_q06"
+      "33summer21_q03",
+      "31summer21_q06",
+      "31autumn25_q07",
+      "35summer25_q06"
       ],
       "common_errors": [
         "Forgetting dy/dx = (dy/dt)/(dx/dt).",

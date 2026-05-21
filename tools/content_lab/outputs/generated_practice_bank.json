@@ -1,5 +1,8 @@
 {
+  "artifact_scope": "internal_planning",
+  "blocked_candidate_count": 0,
   "generated_by": "tools/content_lab/scripts/build_generated_practice.py",
+  "internal_candidate_count": 0,
   "items": [
     {
       "answer": "x = (1/2)ln 7",
@@ -4003,6 +4006,12 @@
       ]
     }
   ],
+  "missing_example_model_id_count": 0,
+  "needs_review_internal_count": 24,
+  "published_runtime_count": 0,
+  "runtime_reviewed_count": 69,
   "schema_name": "asterion_generated_practice",
-  "schema_version": 2
+  "schema_version": 2,
+  "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",
+  "verification_failure_count": 0
 }

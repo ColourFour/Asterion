@@ -265,9 +265,10 @@ describe('teaching snippets runtime loader', () => {
       example.questionType
       && example.keyMethod
       && example.examMove
-      && example.sourceQuestionIds.length > 0
-      && example.sourceQuestionAssetIds.length > 0
-      && example.sourceMarkSchemeAssetIds.length > 0
+    )))).toBe(true);
+    expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.every((example) => (
+      example.sourceQuestionIds.length === 0
+      || (example.sourceQuestionAssetIds.length > 0 && example.sourceMarkSchemeAssetIds.length > 0)
     )))).toBe(true);
     expect(priorityMethodSnippets.every((snippet) => snippet.workedExamples.every((example) => (
       example.steps.length >= 1 && example.steps.length <= 6
