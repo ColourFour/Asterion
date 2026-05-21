@@ -325,6 +325,152 @@ h2 {
   line-height: 1.2;
 }
 
+.student-onboarding-shell {
+  align-items: stretch;
+}
+
+.student-onboarding-panel {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  max-width: 680px;
+  color: #fff6ca;
+}
+
+.student-onboarding-panel h1 {
+  max-width: 620px;
+  color: #ffe39a;
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  line-height: 0.96;
+  text-shadow: 0 3px 0 rgba(47, 26, 16, 0.72), 0 0 36px rgba(240, 182, 56, 0.2);
+}
+
+.student-onboarding-panel p {
+  max-width: 600px;
+  margin: 0;
+  color: #f7e7bf;
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.academy-path-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 680px;
+}
+
+.academy-path-grid span {
+  display: grid;
+  min-height: 62px;
+  place-items: center;
+  padding: 8px;
+  color: #2f1a10;
+  background: linear-gradient(180deg, #fff6ca, #f0b638);
+  border: 1px solid rgba(138, 76, 15, 0.76);
+  border-radius: var(--radius-control);
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.15;
+  box-shadow: 0 4px 0 rgba(59, 32, 20, 0.72);
+}
+
+.academy-avatar-form {
+  align-self: center;
+}
+
+.avatar-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.avatar-preset-grid legend {
+  margin-bottom: 8px;
+  color: #344154;
+  font-weight: 900;
+}
+
+.avatar-preset-card {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #d5cab8;
+  border-radius: var(--radius-control);
+  background: #fffdf8;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.avatar-preset-card:hover,
+.avatar-preset-card.selected {
+  border-color: #c98725;
+  box-shadow: 0 10px 20px rgba(23, 32, 51, 0.1);
+  transform: translateY(-1px);
+}
+
+.avatar-preset-card input {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 18px;
+  min-height: 18px;
+}
+
+.avatar-preset-card .avatar-renderer {
+  width: min(100%, 92px);
+  margin: 0 auto;
+}
+
+.avatar-preset-card strong,
+.avatar-preset-card span {
+  display: block;
+  min-width: 0;
+  text-align: center;
+}
+
+.avatar-preset-card span {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.academy-avatar-preview {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: var(--radius-control);
+  background: #edf7f4;
+}
+
+.academy-avatar-preview .avatar-renderer {
+  width: 76px;
+}
+
+.academy-avatar-preview span,
+.academy-avatar-preview small {
+  display: block;
+  color: var(--color-text-muted);
+  font-weight: 800;
+}
+
+.academy-avatar-preview strong {
+  display: block;
+  color: var(--color-astral-dark);
+  font-size: 1.2rem;
+}
+
 @keyframes asterion-emblem-float {
   0%,
   100% {
@@ -362,6 +508,29 @@ h2 {
 
 .topbar h1 {
   font-size: clamp(2.1rem, 5vw, 3.3rem);
+}
+
+.student-profile-chip {
+  display: grid;
+  min-width: 150px;
+  padding: 10px 14px;
+  color: #fff6ca;
+  background: rgba(18, 19, 45, 0.84);
+  border: 1px solid rgba(240, 182, 56, 0.45);
+  border-radius: var(--radius-control);
+  box-shadow: 0 3px 0 rgba(59, 32, 20, 0.72);
+}
+
+.student-profile-chip span {
+  color: #f7e7bf;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.student-profile-chip strong {
+  color: #ffe39a;
+  font-size: 1rem;
 }
 
 nav {
@@ -2004,6 +2173,10 @@ button:disabled {
     justify-self: stretch;
   }
 
+  .academy-path-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .academy-admission {
     grid-template-areas:
       "title"
@@ -2109,6 +2282,17 @@ button:disabled {
 
   .topic-ranks {
     max-width: none;
+  }
+
+  .avatar-preset-grid,
+  .academy-path-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .academy-avatar-preview {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 }
 

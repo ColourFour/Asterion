@@ -38,6 +38,8 @@ export interface SupabaseAuthClient {
       callback: (event: string, session: SupabaseAuthSession | null) => void,
     ): { data?: { subscription?: SupabaseAuthSubscription | null } | null };
     signInWithOtp(input: { email: string; options?: { emailRedirectTo?: string } }): Promise<{ error?: unknown }>;
+    signInWithPassword(input: { email: string; password: string }): Promise<{ error?: unknown }>;
+    updateUser(input: { password: string }): Promise<{ error?: unknown }>;
     signOut(): Promise<{ error?: unknown }>;
   };
 }
@@ -51,6 +53,8 @@ export interface SupabaseAuthHookOptions {
 
 export interface SupabaseAuthController extends SupabaseAuthState {
   signInWithOtp(email: string): Promise<{ ok: boolean; error?: string }>;
+  signInWithPassword(email: string, password: string): Promise<{ ok: boolean; error?: string }>;
+  updatePassword(password: string): Promise<{ ok: boolean; error?: string }>;
   signOut(): Promise<{ ok: boolean; error?: string }>;
 }
 
@@ -208,6 +212,46 @@ export function useSupabaseAuthSession(options: SupabaseAuthHookOptions = {}): S
     return { ok: true };
   }, [ensureClient, redirectTo]);
 
+  const signInWithPassword = useCallback(async (email: string, password: string) => {
+    const trimmed = email.trim();
+    if (!trimmed) return { ok: false, error: 'Enter an email address.' };
+    if (!password) return { ok: false, error: 'Enter a password.' };
+
+    const client = await ensureClient();
+    if (!client) return { ok: false, error: 'Supabase Auth is unavailable.' };
+
+    const result = await client.auth.signInWithPassword({
+      email: trimmed,
+      password,
+    });
+    if (result.error) {
+      return {
+        ok: false,
+        error: authErrorMessage(result.error, 'Supabase password sign-in failed.'),
+      };
+    }
+    const session = await client.auth.getSession();
+    setState(supabaseAuthStateFromSession(session.data?.session));
+    return { ok: true };
+  }, [ensureClient]);
+
+  const updatePassword = useCallback(async (password: string) => {
+    if (!password) return { ok: false, error: 'Enter a new password.' };
+    if (password.length < 8) return { ok: false, error: 'Use at least 8 characters for the new password.' };
+
+    const client = await ensureClient();
+    if (!client) return { ok: false, error: 'Supabase Auth is unavailable.' };
+
+    const result = await client.auth.updateUser({ password });
+    if (result.error) {
+      return {
+        ok: false,
+        error: authErrorMessage(result.error, 'Supabase password update failed.'),
+      };
+    }
+    return { ok: true };
+  }, [ensureClient]);
+
   const signOut = useCallback(async () => {
     const client = await ensureClient();
     if (!client) return { ok: false, error: 'Supabase Auth is unavailable.' };
@@ -226,6 +270,8 @@ export function useSupabaseAuthSession(options: SupabaseAuthHookOptions = {}): S
   return {
     ...state,
     signInWithOtp,
+    signInWithPassword,
+    updatePassword,
     signOut,
   };
 }

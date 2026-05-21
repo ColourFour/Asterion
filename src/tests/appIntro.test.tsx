@@ -224,7 +224,7 @@ describe('Asterion intro page', () => {
     setInputValue(inputForLabel(container, 'Character name'), 'Aster');
 
     const form = Array.from(container.querySelectorAll('form')).find((candidate) => (
-      candidate.textContent?.includes('Enter Astral Academy')
+      candidate.textContent?.includes('Continue to academy avatar')
     ));
     expect(form).toBeTruthy();
 
@@ -246,12 +246,42 @@ describe('Asterion intro page', () => {
       }),
     });
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+
+    expect(container.textContent).toContain('Welcome to Asterion Academy');
+    expect(container.textContent).toContain('Create your avatar');
+    expect(container.textContent).toContain('Field Guide');
+    expect(container.textContent).toContain('Guardian Challenge');
+    expect(container.textContent).not.toContain('World Map');
+
+    setInputValue(inputForLabel(container, 'Academy name'), 'Maya Prime');
+
+    const avatarForm = container.querySelector('form[aria-label="Create academy avatar"]');
+    expect(avatarForm).toBeTruthy();
+
+    await act(async () => {
+      avatarForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+    });
+
+    const onboardedProgress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
+    expect(onboardedProgress.profile).toMatchObject({
+      id: storedProgress.profile.id,
+      realName: 'Maya Q.',
+      classGroup: 'P3 Alpha',
+      teacherName: 'Ms Hypatia',
+      avatarName: 'Maya Prime',
+      avatarId: 'star-apprentice',
+      onboardingCompleted: true,
+      onboardingCompletedAt: expect.any(String),
+    });
     expect(container.textContent).toContain('World Map');
+    expect(container.textContent).toContain('Maya Prime');
+    expect(container.textContent).toContain('Academy avatar');
     expect(container.textContent).toContain('Start here');
     expect(container.textContent).toContain('Choose a region to begin Paper 3 practice.');
     expect(container.textContent).toContain('Try Quick Check, Warm-Up, then real image questions.');
     expect(container.textContent).toContain('Browser-local practice mode');
-    expect(container.textContent).not.toContain('Enter Astral Academy');
+    expect(container.textContent).not.toContain('Create your avatar');
   });
 
   it('treats cleared site storage or a different browser as a fresh local start', async () => {
@@ -259,6 +289,47 @@ describe('Asterion intro page', () => {
       schemaVersion: 1,
       profile: {
         id: 'profile-existing',
+        realName: 'Stored Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Aster',
+        avatarId: 'star-apprentice',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+
+    let container = await render(<App />);
+    expect(container.textContent).toContain('World Map');
+    expect(container.textContent).not.toContain('Welcome to Asterion Academy');
+
+    await act(async () => {
+      mountedRoots.pop()?.unmount();
+      mountedContainers.pop()?.remove();
+      await Promise.resolve();
+    });
+    localStorage.removeItem(LOCAL_PROGRESS_STORAGE_KEY);
+
+    container = await render(<App />);
+
+    expect(container.textContent).toContain('Enter the class code your teacher gave you.');
+    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
+  });
+
+  it('routes an existing student profile without completed onboarding through avatar setup', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-not-onboarded',
         realName: 'Stored Student',
         classGroup: 'P3 Alpha',
         teacherName: 'Ms Hypatia',
@@ -273,22 +344,10 @@ describe('Asterion intro page', () => {
       settings: { activePaperFamily: 'p3' },
     }));
 
-    let container = await render(<App />);
-    expect(container.textContent).toContain('World Map');
-    expect(container.textContent).not.toContain('Enter Astral Academy');
+    const container = await render(<App />);
 
-    await act(async () => {
-      mountedRoots.pop()?.unmount();
-      mountedContainers.pop()?.remove();
-      await Promise.resolve();
-    });
-    localStorage.removeItem(LOCAL_PROGRESS_STORAGE_KEY);
-
-    container = await render(<App />);
-
-    expect(container.textContent).toContain('Enter the class code your teacher gave you.');
-    expect(container.textContent).toContain('Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.');
-    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).toContain('Welcome to Asterion Academy');
+    expect(container.textContent).toContain('Create your avatar');
     expect(container.textContent).not.toContain('World Map');
   });
 

@@ -3,6 +3,7 @@ import { UsersRound } from 'lucide-react';
 import { RoleGate } from './components/auth/RoleGate';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
+import { StudentOnboarding } from './components/onboarding/StudentOnboarding';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
 import { getRegionFieldGuide } from './data/regionFieldGuides';
@@ -29,6 +30,7 @@ import {
 } from './lib/regionRoutes';
 import { clearPendingClassClaim, loadPendingClassClaim, savePendingClassClaim } from './lib/studentClassClaimStore';
 import { useStudentClassroomContext, type StudentClassroomContext } from './lib/studentClassroomService';
+import { completeStudentOnboarding } from './lib/studentOnboarding';
 import { recoverSupabaseAuthRedirect } from './lib/supabaseAuthRedirect';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
@@ -555,6 +557,23 @@ export default function App() {
     persistProgressAfterMeaningfulEvent(nextProgress);
   }
 
+  function completeOnboarding(input: { avatarName: string; avatarId: string; avatar: StoredProgress['avatar'] }) {
+    if (!progress.profile) return;
+    const nextProfile = completeStudentOnboarding(progress.profile, {
+      avatarName: input.avatarName,
+      avatarId: input.avatarId,
+    });
+    const withProfile = progressAdapter.saveProfile(nextProfile, progress.profile);
+    const withAvatar = progressAdapter.saveAvatarSettings(input.avatar);
+    clearRegionHash();
+    setSelectedRegion(undefined);
+    setSelectedRegionPage('hub');
+    setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
+    setViewMode('map');
+    persistProgressAfterMeaningfulEvent({ ...withAvatar, profile: withProfile.profile });
+  }
+
   if (dashboardRoute.kind === 'teacher' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
     return <DisabledDashboardRoute routeKind="teacher" runtimeConfig={runtimeConfig} onNavigatePath={navigatePath} />;
   }
@@ -632,7 +651,7 @@ export default function App() {
         <HostedStudentGateMessage state={hostedClassroomState} />
         {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
+        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} onNavigatePath={navigatePath} />
       </main>
     );
   }
@@ -712,9 +731,18 @@ export default function App() {
             })}
           />
         ) : (
-          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
+          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} onNavigatePath={navigatePath} />
         )}
       </main>
+    );
+  }
+
+  if (!progress.profile.onboardingCompleted) {
+    return (
+      <StudentOnboarding
+        profile={progress.profile}
+        onComplete={completeOnboarding}
+      />
     );
   }
 
@@ -725,6 +753,10 @@ export default function App() {
         <div>
           <span className="mode-pill">{studentPracticeModeLabel(runtimeConfig)}</span>
           <h1>Asterion</h1>
+        </div>
+        <div className="student-profile-chip" aria-label="Academy profile">
+          <span>{progress.profile.avatarId ? 'Academy avatar' : 'Academy profile'}</span>
+          <strong>{progress.profile.avatarName}</strong>
         </div>
         <nav>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>

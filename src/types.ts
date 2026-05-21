@@ -70,6 +70,9 @@ export interface StudentProfile {
   classGroup: string;
   teacherName: string;
   avatarName: string;
+  avatarId?: string;
+  onboardingCompleted?: boolean;
+  onboardingCompletedAt?: string;
   classClaim?: StudentClaimState;
   createdAt: string;
   updatedAt: string;

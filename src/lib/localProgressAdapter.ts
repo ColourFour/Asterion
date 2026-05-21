@@ -133,7 +133,19 @@ function normalizeProfile(value: unknown): StudentProfile | undefined {
   const createdAt = optionalString(value.createdAt);
   const updatedAt = optionalString(value.updatedAt);
   if (!id || !realName || !classGroup || !teacherName || !avatarName || !createdAt || !updatedAt) return undefined;
-  return { id, realName, classGroup, teacherName, avatarName, classClaim: normalizeStudentClaim(value.classClaim), createdAt, updatedAt };
+  return {
+    id,
+    realName,
+    classGroup,
+    teacherName,
+    avatarName,
+    avatarId: optionalString(value.avatarId),
+    onboardingCompleted: optionalBoolean(value.onboardingCompleted),
+    onboardingCompletedAt: optionalString(value.onboardingCompletedAt),
+    classClaim: normalizeStudentClaim(value.classClaim),
+    createdAt,
+    updatedAt,
+  };
 }
 
 function normalizeMarkBreakdown(value: unknown): AttemptMarkBreakdown | undefined {

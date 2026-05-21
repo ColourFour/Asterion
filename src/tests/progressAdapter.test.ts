@@ -71,10 +71,18 @@ describe('local progress adapter', () => {
       classGroup: 'P3',
       teacherName: 'Dr Noether',
       avatarName: 'Aster',
+      avatarId: 'star-apprentice',
+      onboardingCompleted: true,
+      onboardingCompletedAt: '2026-05-08T00:00:00.000Z',
     });
 
     expect(withProfile.schemaVersion).toBe(CURRENT_PROGRESS_SCHEMA_VERSION);
     expect(withProfile.profile?.id).toMatch(/^profile_/);
+    expect(withProfile.profile).toMatchObject({
+      avatarId: 'star-apprentice',
+      onboardingCompleted: true,
+      onboardingCompletedAt: '2026-05-08T00:00:00.000Z',
+    });
 
     const withAvatar = localProgressAdapter.saveAvatarSettings({
       ...emptyProgress().avatar,

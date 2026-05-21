@@ -7,9 +7,10 @@ import type { StudentClaimState } from '../../types';
 
 interface ClassCodeClaimFormProps {
   onClaimed: (claim: StudentClaimState) => void;
+  onNavigatePath?: (path: string) => void;
 }
 
-export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
+export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaimFormProps) {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const hostedClaimMode = runtimeConfig.studentClassClaimSource === 'supabase';
   const [classCode, setClassCode] = useState('');
@@ -39,6 +40,14 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
     if (nextClaim.status === 'claimed') {
       onClaimed(nextClaim);
     }
+  }
+
+  function navigateOperator(path: '/teacher' | '/admin') {
+    if (onNavigatePath) {
+      onNavigatePath(path);
+      return;
+    }
+    window.location.hash = `#${path}`;
   }
 
   return (
@@ -87,6 +96,19 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
       <button className="primary-button" type="submit" disabled={submitting}>
         {submitting ? 'Checking roster...' : hostedClaimMode && authStatus !== 'signed-in' ? 'Sign in to claim roster slot' : 'Claim roster slot'}
       </button>
+
+      {runtimeConfig.profile.name === 'classroom-pilot' ? (
+        <div className="operator-entry-points" aria-label="Staff login entry points">
+          <button className="operator-entry-card" type="button" onClick={() => navigateOperator('/teacher')}>
+            <strong>Teacher login</strong>
+            <span>Open the hosted teacher sign-in flow.</span>
+          </button>
+          <button className="operator-entry-card" type="button" onClick={() => navigateOperator('/admin')}>
+            <strong>Admin login</strong>
+            <span>Open the hosted admin sign-in flow.</span>
+          </button>
+        </div>
+      ) : null}
     </form>
   );
 }

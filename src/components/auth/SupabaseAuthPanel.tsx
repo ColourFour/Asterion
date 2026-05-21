@@ -18,6 +18,8 @@ export function SupabaseAuthPanel({
 }: SupabaseAuthPanelProps) {
   const auth = useSupabaseAuthSession(hookOptions);
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [actionMessage, setActionMessage] = useState<string>();
   const [actionError, setActionError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
@@ -37,6 +39,34 @@ export function SupabaseAuthPanel({
       return;
     }
     setActionMessage('Check your email for the Asterion sign-in link.');
+  }
+
+  async function handlePasswordSignIn() {
+    setSubmitting(true);
+    setActionError(undefined);
+    setActionMessage(undefined);
+    const result = await auth.signInWithPassword(email, password);
+    setSubmitting(false);
+    if (!result.ok) {
+      setActionError(result.error ?? 'Supabase password sign-in failed.');
+      return;
+    }
+    setPassword('');
+    setActionMessage('Signed in with Supabase Auth.');
+  }
+
+  async function handleChangePassword() {
+    setSubmitting(true);
+    setActionError(undefined);
+    setActionMessage(undefined);
+    const result = await auth.updatePassword(newPassword);
+    setSubmitting(false);
+    if (!result.ok) {
+      setActionError(result.error ?? 'Supabase password update failed.');
+      return;
+    }
+    setNewPassword('');
+    setActionMessage('Password updated.');
   }
 
   async function handleSignOut() {
@@ -69,6 +99,19 @@ export function SupabaseAuthPanel({
             Signed in as <strong>{auth.user?.email ?? auth.user?.id}</strong>.
           </p>
           <p className="dashboard-muted">Sign-in only authenticates the browser session. Teacher/admin access still depends on Supabase user_roles and RLS.</p>
+          <label>
+            New password
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              placeholder="At least 8 characters"
+              autoComplete="new-password"
+            />
+          </label>
+          <button type="button" className="quiet-button" onClick={handleChangePassword} disabled={submitting}>
+            {submitting ? 'Updating password...' : 'Change password'}
+          </button>
           <button type="button" className="quiet-button" onClick={handleSignOut} disabled={submitting}>
             {submitting ? 'Signing out...' : 'Sign out'}
           </button>
@@ -89,6 +132,19 @@ export function SupabaseAuthPanel({
               required
             />
           </label>
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Temporary or current password"
+              autoComplete="current-password"
+            />
+          </label>
+          <button type="button" className="primary-button" onClick={handlePasswordSignIn} disabled={submitting}>
+            {submitting ? 'Signing in...' : 'Sign in with password'}
+          </button>
           <button type="button" className="primary-button" onClick={handleSignIn} disabled={submitting}>
             {submitting ? 'Sending link...' : 'Send magic link'}
           </button>

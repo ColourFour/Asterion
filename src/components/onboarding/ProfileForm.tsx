@@ -21,14 +21,23 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
       className="profile-form"
       onSubmit={(event) => {
         event.preventDefault();
-        onSave({ realName, classGroup, teacherName, avatarName, classClaim: defaults?.classClaim });
+        onSave({
+          realName,
+          classGroup,
+          teacherName,
+          avatarName,
+          avatarId: defaults?.avatarId,
+          onboardingCompleted: defaults?.onboardingCompleted,
+          onboardingCompletedAt: defaults?.onboardingCompletedAt,
+          classClaim: defaults?.classClaim,
+        });
       }}
     >
       {!profile ? (
         <div className="profile-form-heading">
           <span className="mode-pill">{lockedClassFields ? 'Hosted classroom profile' : 'Local profile'}</span>
           <h2>Name your academy character</h2>
-          <p>{lockedClassFields ? 'Your class details come from your teacher roster. Choose a character name, then start Algebra from the P3 map.' : 'After this, choose a region on the P3 map and start with its Field Guide.'}</p>
+          <p>{lockedClassFields ? 'Your class details come from your teacher roster. Next you will create your academy avatar.' : 'After this, create your academy avatar and enter the P3 map.'}</p>
         </div>
       ) : null}
       <label>
@@ -56,7 +65,7 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
         <input value={avatarName} onChange={(event) => setAvatarName(event.target.value)} required />
       </label>
       <button className="primary-button" type="submit">
-        {profile ? 'Update profile' : 'Enter Astral Academy'}
+        {profile ? 'Update profile' : 'Continue to academy avatar'}
       </button>
     </form>
   );
