@@ -134,7 +134,13 @@ function primaryAdminOrganizationId(context: SupabaseRoleContext | undefined): s
 function teacherStatusLabel(status: AdminTeacherRecord['status']): string {
   if (status === 'pending') return 'Pending sign-in';
   if (status === 'inactive') return 'Inactive';
+  if (status === 'archived') return 'Archived';
+  if (status === 'disabled') return 'Disabled';
   return 'Teacher access active';
+}
+
+function teacherCanOwnClass(status: AdminTeacherRecord['status']): boolean {
+  return status === 'active' || status === 'pending';
 }
 
 export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashboardProps) {
@@ -165,7 +171,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
       setClasses(nextClasses);
       setAuditEvents(nextAuditEvents);
       setLoadIssue(undefined);
-      setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
+      setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacherCanOwnClass(teacher.status))?.id || '' }));
     } catch (error) {
       setLoadIssue(issueForDashboardError(error));
     }
@@ -186,7 +192,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
         setClasses(nextClasses);
         setAuditEvents(nextAuditEvents);
         setLoadIssue(undefined);
-        setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacher.status === 'active')?.id || '' }));
+        setClassForm((current) => ({ ...current, teacherId: current.teacherId || nextTeachers.find((teacher) => teacherCanOwnClass(teacher.status))?.id || '' }));
       } catch (error) {
         if (!cancelled) setLoadIssue(issueForDashboardError(error));
       }
@@ -222,7 +228,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
       setActionMessage(undefined);
       const teacher = await dashboardDataService.addAdminTeacher({ name: teacherForm.name, email: teacherForm.email, organizationId: adminOrganizationId });
       setActionMessage(teacher.status === 'pending'
-        ? 'Teacher added. They can sign in with this email to activate access.'
+        ? 'Teacher added as pending. They can sign in with this email to activate access.'
         : 'Teacher access active.');
       setTeacherForm({ name: '', email: '' });
       await refreshAdminRecords();
@@ -350,7 +356,7 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
                 <input value={teacherForm.name} onChange={(event) => setTeacherForm({ ...teacherForm, name: event.target.value })} placeholder="Teacher name" />
                 <input value={teacherForm.email} onChange={(event) => setTeacherForm({ ...teacherForm, email: event.target.value })} placeholder="teacher@example.school" />
                 <button type="submit" className="primary-button">Add teacher</button>
-                {source.kind === 'supabase' ? <small className="dashboard-muted">Teacher added. They can sign in with this email to activate access.</small> : null}
+                {source.kind === 'supabase' ? <small className="dashboard-muted">Teacher added as pending. They can sign in with this email to activate access.</small> : null}
               </form>
             )}
             <div className="admin-list">
@@ -377,8 +383,8 @@ export function AdminDashboard({ hostedRoleContext, onNavigatePath }: AdminDashb
               <form className="dashboard-inline-form" onSubmit={handleAddClass} aria-label="Add class">
                 <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" />
                 <select value={classForm.teacherId} onChange={(event) => setClassForm({ ...classForm, teacherId: event.target.value })}>
-                  {teachers.filter((teacher) => teacher.status === 'active').map((teacher) => (
-                    <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+                  {teachers.filter((teacher) => teacherCanOwnClass(teacher.status)).map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>{teacher.name}{teacher.status === 'pending' ? ' (pending sign-in)' : ''}</option>
                   ))}
                 </select>
                 <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" />

@@ -517,6 +517,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   const source = dashboardDataService.source;
   const readOnly = source.readOnly;
   const showAdminNav = source.kind === 'mock' || hasSupabaseRole(hostedRoleContext, 'admin');
+  const adminOperatorMode = source.kind === 'supabase' && hasSupabaseRole(hostedRoleContext, 'admin');
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [dashboard, setDashboard] = useState<TeacherClassDashboard>();
   const [loadIssue, setLoadIssue] = useState<DashboardLoadIssue>();
@@ -524,7 +525,9 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   const [classForm, setClassForm] = useState({ name: '', academicYearTerm: '2026 Term 2', code: '' });
   const [actionIssue, setActionIssue] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
-  const teacherProfileId = hostedRoleContext?.teacherProfiles.find((profile) => profile.status === 'active')?.id ?? dashboard?.class.teacherId ?? classes[0]?.teacherId ?? '';
+  const activeHostedTeacherProfileId = hostedRoleContext?.teacherProfiles.find((profile) => profile.status === 'active')?.id;
+  const teacherProfileId = activeHostedTeacherProfileId ?? (source.kind === 'mock' ? dashboard?.class.teacherId ?? classes[0]?.teacherId ?? '' : '');
+  const adminOperatorProfileMissing = adminOperatorMode && !activeHostedTeacherProfileId;
 
   async function refreshDashboard(nextClassId = dashboard?.class.id ?? classId ?? classes[0]?.id) {
     if (!nextClassId) return;
@@ -686,6 +689,12 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
               <p>{actionIssue}</p>
             </section>
           ) : null}
+          {adminOperatorMode ? (
+            <section className="dashboard-section dashboard-scope-note" aria-label="Admin operator mode">
+              <strong>Admin operator mode</strong>
+              <p>Admin operator mode: you can create and manage classes for setup/troubleshooting. Classes created here are owned by your admin operator teacher profile.</p>
+            </section>
+          ) : null}
           <section className="dashboard-section">
             <div className="dashboard-section-heading">
               <div>
@@ -695,6 +704,8 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
             </div>
             {readOnly ? (
               <p className="dashboard-muted">Class creation is disabled for this dashboard data source.</p>
+            ) : adminOperatorProfileMissing ? (
+              <p className="dashboard-muted">Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.</p>
             ) : !teacherProfileId ? (
               <p className="dashboard-muted">No active hosted teacher profile is attached to this signed-in account.</p>
             ) : (
@@ -745,6 +756,13 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           </section>
         ) : null}
 
+        {adminOperatorMode ? (
+          <section className="dashboard-section dashboard-scope-note" aria-label="Admin operator mode">
+            <strong>Admin operator mode</strong>
+            <p>Admin operator mode: you can create and manage classes for setup/troubleshooting. Classes created here are owned by your admin operator teacher profile.</p>
+          </section>
+        ) : null}
+
         <TeacherProgressScopeNote />
 
         <section className="dashboard-control-row teacher-class-actions">
@@ -781,6 +799,9 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
                 <h2>Create another pilot class</h2>
               </div>
             </div>
+            {adminOperatorProfileMissing ? (
+              <p className="dashboard-muted">Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.</p>
+            ) : null}
             <form className="dashboard-inline-form" onSubmit={handleCreateClass} aria-label="Create teacher class">
               <input value={classForm.name} onChange={(event) => setClassForm({ ...classForm, name: event.target.value })} placeholder="Class name" disabled={readOnly || !teacherProfileId} />
               <input value={classForm.academicYearTerm} onChange={(event) => setClassForm({ ...classForm, academicYearTerm: event.target.value })} placeholder="Academic year/term" disabled={readOnly || !teacherProfileId} />

@@ -97,6 +97,7 @@ function assertHostedSetupWrites(sql) {
   const requiredRpcs = [
     'admin_add_teacher_by_email',
     'activate_pending_teacher_role_for_current_user',
+    'ensure_admin_teacher_operator_profile_for_current_user',
     'create_class_with_region_access',
     'add_class_roster_student',
     'archive_class_roster_student',
@@ -117,7 +118,9 @@ function assertHostedSetupWrites(sql) {
   const addTeacherPatterns = [
     [/security\s+definer/i, 'admin_add_teacher_by_email must be SECURITY DEFINER'],
     [/from\s+auth\.users/i, 'admin_add_teacher_by_email must look up an existing auth.users row'],
+    [/insert\s+into\s+public\.teacher_profiles[\s\S]+status[\s\S]+'pending'/i, 'admin_add_teacher_by_email must create pending teacher profile rows when no auth user exists'],
     [/insert\s+into\s+public\.teacher_invites/i, 'admin_add_teacher_by_email must create pending teacher invites when no auth user exists'],
+    [/on\s+conflict\s+\(organization_id,\s*email\)\s+where\s+email\s+is\s+not\s+null/i, 'admin_add_teacher_by_email must deduplicate teacher profiles by normalized email per organization'],
     [/on\s+conflict\s+\(organization_id,\s*email\)\s+where\s+status\s*=\s*'pending'/i, 'admin_add_teacher_by_email must deduplicate pending teacher emails per organization'],
     [/public\.is_admin\(/i, 'admin_add_teacher_by_email must require an admin role'],
     [/insert\s+into\s+public\.user_roles/i, 'admin_add_teacher_by_email must activate a teacher role row'],
@@ -140,6 +143,7 @@ function assertHostedSetupWrites(sql) {
     [/auth\.uid\(\)/i, 'activate_pending_teacher_role_for_current_user must use auth.uid()'],
     [/from\s+auth\.users/i, 'activate_pending_teacher_role_for_current_user must read the signed-in auth user email server-side'],
     [/email_confirmed_at/i, 'activate_pending_teacher_role_for_current_user must require a verified Supabase Auth email'],
+    [/public\.teacher_profiles/i, 'activate_pending_teacher_role_for_current_user must consume pending teacher profiles'],
     [/public\.teacher_invites/i, 'activate_pending_teacher_role_for_current_user must consume pending teacher invites'],
     [/status\s*=\s*'pending'/i, 'activate_pending_teacher_role_for_current_user must activate only pending invites'],
     [/insert\s+into\s+public\.user_roles/i, 'activate_pending_teacher_role_for_current_user must create or reactivate the hosted teacher role'],
@@ -152,6 +156,25 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(activateTeacherBody) && !pattern.test(sql)) fail(message);
   }
 
+  const ensureOperatorStart = sql.search(/create\s+or\s+replace\s+function\s+public\.ensure_admin_teacher_operator_profile_for_current_user\b/i);
+  const ensureOperatorEnd = sql.indexOf('comment on function public.ensure_admin_teacher_operator_profile_for_current_user', ensureOperatorStart);
+  if (ensureOperatorStart === -1 || ensureOperatorEnd === -1) fail('Missing documentation comment for public.ensure_admin_teacher_operator_profile_for_current_user');
+  const ensureOperatorBody = sql.slice(ensureOperatorStart, ensureOperatorEnd);
+
+  const ensureOperatorPatterns = [
+    [/security\s+definer/i, 'ensure_admin_teacher_operator_profile_for_current_user must be SECURITY DEFINER'],
+    [/auth\.uid\(\)/i, 'ensure_admin_teacher_operator_profile_for_current_user must use auth.uid()'],
+    [/from\s+auth\.users/i, 'ensure_admin_teacher_operator_profile_for_current_user must read the signed-in auth user email server-side'],
+    [/role\s*=\s*'admin'/i, 'ensure_admin_teacher_operator_profile_for_current_user must require an active admin role'],
+    [/insert\s+into\s+public\.teacher_profiles/i, 'ensure_admin_teacher_operator_profile_for_current_user must create a real teacher profile'],
+    [/grant\s+execute\s+on\s+function\s+public\.ensure_admin_teacher_operator_profile_for_current_user\(\)\s+to\s+authenticated/i, 'ensure_admin_teacher_operator_profile_for_current_user must be executable by authenticated users'],
+    [/revoke\s+all\s+on\s+function\s+public\.ensure_admin_teacher_operator_profile_for_current_user\(\)\s+from\s+anon/i, 'ensure_admin_teacher_operator_profile_for_current_user must not be executable by anon users'],
+  ];
+
+  for (const [pattern, message] of ensureOperatorPatterns) {
+    if (!pattern.test(ensureOperatorBody) && !pattern.test(sql)) fail(message);
+  }
+
   const createClassStart = sql.search(/create\s+or\s+replace\s+function\s+public\.create_class_with_region_access\b/i);
   const createClassEnd = sql.indexOf('comment on function public.create_class_with_region_access', createClassStart);
   if (createClassStart === -1 || createClassEnd === -1) fail('Missing documentation comment for public.create_class_with_region_access');
@@ -160,6 +183,8 @@ function assertHostedSetupWrites(sql) {
   const createClassPatterns = [
     [/security\s+definer/i, 'create_class_with_region_access must be SECURITY DEFINER'],
     [/public\.is_admin\(.+public\.is_teacher_in_organization/s, 'create_class_with_region_access must allow only admins or the assigned teacher'],
+    [/tp\.status\s+in\s+\('active',\s*'pending'\)/i, 'create_class_with_region_access must let admins assign classes to active or pending teacher profiles'],
+    [/target_teacher\.status\s*=\s*'active'[\s\S]+target_teacher\.user_id\s*=\s*auth\.uid\(\)/i, 'create_class_with_region_access must require non-admin teachers to use their own active profile'],
     [/insert\s+into\s+public\.classes/i, 'create_class_with_region_access must create the class row'],
     [/insert\s+into\s+public\.class_region_access/i, 'create_class_with_region_access must create class_region_access rows'],
     [/field_guide_only/i, 'create_class_with_region_access must default region access to field_guide_only'],
@@ -169,6 +194,17 @@ function assertHostedSetupWrites(sql) {
 
   for (const [pattern, message] of createClassPatterns) {
     if (!pattern.test(createClassBody) && !pattern.test(sql)) fail(message);
+  }
+
+  const pendingProfileContract = [
+    [/alter\s+table\s+public\.teacher_profiles\s+alter\s+column\s+user_id\s+drop\s+not\s+null/i, 'teacher_profiles.user_id must be nullable for pending teachers'],
+    [/teacher_profiles_status_check[\s\S]+status\s+in\s+\('pending',\s*'active',\s*'inactive',\s*'archived',\s*'disabled'\)/i, 'teacher_profiles.status must support pending and inactive lifecycle states'],
+    [/teacher_profiles_email_normalized/i, 'teacher_profiles must enforce normalized email storage'],
+    [/create\s+unique\s+index\s+if\s+not\s+exists\s+teacher_profiles_one_email_per_org/i, 'teacher_profiles must deduplicate normalized emails per organization'],
+  ];
+
+  for (const [pattern, message] of pendingProfileContract) {
+    if (!pattern.test(sql)) fail(message);
   }
 
   for (const regionId of expectedRegionIds) {

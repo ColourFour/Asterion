@@ -80,7 +80,7 @@ export interface StudentProfile {
 
 export type AsterionRole = 'admin' | 'teacher' | 'student';
 
-export type AdminTeacherStatus = 'active' | 'inactive' | 'pending';
+export type AdminTeacherStatus = 'active' | 'inactive' | 'pending' | 'archived' | 'disabled';
 export type AdminClassStatus = 'active' | 'archived';
 export type RosterStudentStatus = 'active' | 'claimed' | 'unclaimed' | 'archived';
 export type ClassRegionAccessMode = 'open' | 'field_guide_only';

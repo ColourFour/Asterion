@@ -213,7 +213,31 @@ async function readRows<T>(query: PromiseLike<SupabaseQueryResult<T>>, context: 
 async function activatePendingTeacherRole(client: SupabaseRoleClient): Promise<void> {
   if (!client.rpc) return;
   const { error } = await client.rpc<ActivationRow>('activate_pending_teacher_role_for_current_user');
-  if (error) throw new Error(`activate_pending_teacher_role_for_current_user: ${errorMessage(error, 'Pending teacher access could not be activated.')}`);
+  if (error && !isMissingOptionalRpcError(error)) {
+    throw new Error(`activate_pending_teacher_role_for_current_user: ${errorMessage(error, 'Pending teacher access could not be activated.')}`);
+  }
+}
+
+async function ensureAdminTeacherOperatorProfile(client: SupabaseRoleClient): Promise<void> {
+  if (!client.rpc) return;
+  const { error } = await client.rpc<ActivationRow>('ensure_admin_teacher_operator_profile_for_current_user');
+  if (error && !isMissingOptionalRpcError(error)) {
+    throw new Error(`ensure_admin_teacher_operator_profile_for_current_user: ${errorMessage(error, 'Admin teacher-operator profile could not be repaired.')}`);
+  }
+}
+
+function isMissingOptionalRpcError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const code = 'code' in error ? String((error as { code?: unknown }).code ?? '') : '';
+  const status = 'status' in error ? String((error as { status?: unknown }).status ?? '') : '';
+  const message = errorMessage(error, '').toLowerCase();
+  return code === 'PGRST202'
+    || code === '42883'
+    || status === '404'
+    || message.includes('could not find the function')
+    || message.includes('function public.activate_pending_teacher_role_for_current_user')
+    || message.includes('function public.ensure_admin_teacher_operator_profile_for_current_user')
+    || message.includes('does not exist');
 }
 
 function unique(values: string[]): string[] {
@@ -274,6 +298,7 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
 
   try {
     await activatePendingTeacherRole(client);
+    await ensureAdminTeacherOperatorProfile(client);
     const [roleRows, teacherProfileRows, studentProfileRows] = await Promise.all([
       readRows(
         client.from<UserRoleRow>('user_roles')

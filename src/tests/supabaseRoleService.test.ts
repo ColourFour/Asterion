@@ -99,6 +99,7 @@ function createFakeRoleClient({
   rows?: typeof baseRows;
   rpc?: SupabaseRoleClient['rpc'];
 }) {
+  const mutableRows = rows;
   const tableReads: string[] = [];
   const queryOps: string[] = [];
   const unsubscribe = vi.fn();
@@ -137,7 +138,7 @@ function createFakeRoleClient({
       onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
     ): PromiseLike<TResult1 | TResult2> {
       tableReads.push(this.table);
-      const tableRows = rows[this.table] as Array<Record<string, unknown>>;
+      const tableRows = mutableRows[this.table] as Array<Record<string, unknown>>;
       const data = [...tableRows]
         .filter((row) => this.filters.every((filter) => filter(row)))
         .sort((a, b) => {
@@ -220,6 +221,7 @@ describe('Supabase role service', () => {
 
     expect(state.status).toBe('ready');
     expect(rpc).toHaveBeenCalledWith('activate_pending_teacher_role_for_current_user');
+    expect(rpc).toHaveBeenCalledWith('ensure_admin_teacher_operator_profile_for_current_user');
     expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles']));
   });
 
@@ -240,6 +242,68 @@ describe('Supabase role service', () => {
     expect(state.context.roleNames).toEqual([]);
     expect(hasSupabaseRole(state.context, 'teacher')).toBe(false);
     expect(rpc).toHaveBeenCalledWith('activate_pending_teacher_role_for_current_user');
+    expect(rpc).toHaveBeenCalledWith('ensure_admin_teacher_operator_profile_for_current_user');
+  });
+
+  it('does not fail hosted role loading when optional activation RPCs are missing from schema cache', async () => {
+    const rpc = vi.fn(async () => ({
+      data: null,
+      error: {
+        code: 'PGRST202',
+        message: 'Could not find the function public.activate_pending_teacher_role_for_current_user without parameters in the schema cache',
+      },
+    }));
+    const fake = createFakeRoleClient({ userId: 'teacher-user-1', email: 'teacher@example.school', rpc });
+
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(state.context.roleNames).toEqual(['admin', 'teacher']);
+    expect(rpc).toHaveBeenCalledWith('activate_pending_teacher_role_for_current_user');
+    expect(rpc).toHaveBeenCalledWith('ensure_admin_teacher_operator_profile_for_current_user');
+  });
+
+  it('loads an admin operator teacher profile after the repair RPC creates it', async () => {
+    const rows: typeof baseRows = {
+      ...baseRows,
+      user_roles: [{
+        id: 'role-admin',
+        user_id: 'admin-user-1',
+        organization_id: 'org-1',
+        role: 'admin',
+        status: 'active',
+        created_at: '2026-05-18T08:00:00.000Z',
+        updated_at: '2026-05-18T08:00:00.000Z',
+      }],
+      teacher_profiles: [],
+      student_profiles: [],
+    };
+    const rpc = vi.fn(async (fn: string) => {
+      if (fn === 'ensure_admin_teacher_operator_profile_for_current_user') {
+        rows.teacher_profiles.push({
+          id: 'admin-operator-profile',
+          user_id: 'admin-user-1',
+          organization_id: 'org-1',
+          display_name: 'admin@example.school',
+          email: 'admin@example.school',
+          status: 'active',
+          created_at: '2026-05-20T08:00:00.000Z',
+          updated_at: '2026-05-20T08:00:00.000Z',
+        });
+      }
+      return { data: [], error: null };
+    });
+    const fake = createFakeRoleClient({ userId: 'admin-user-1', email: 'admin@example.school', rows, rpc });
+
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(state.context.roleNames).toEqual(['admin']);
+    expect(state.context.teacherProfiles).toEqual([
+      expect.objectContaining({ id: 'admin-operator-profile', userId: 'admin-user-1' }),
+    ]);
   });
 
   it('loads multi-role teacher/admin context through the service boundary', async () => {

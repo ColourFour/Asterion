@@ -49,6 +49,16 @@ const teacherRecord: AdminTeacherRecord = {
   updatedAt: now,
 };
 
+const pendingTeacherRecord: AdminTeacherRecord = {
+  id: 'teacher-pending',
+  name: 'Pending Teacher',
+  email: 'pending.teacher@example.school',
+  assignedClassIds: [],
+  status: 'pending',
+  createdAt: now,
+  updatedAt: now,
+};
+
 const classRecord: AdminClassRecord = {
   id: 'class-alpha',
   name: 'Hosted P3 Alpha',
@@ -303,6 +313,29 @@ describe('hosted dashboard empty states', () => {
     expect(container.textContent).not.toContain('No authorized dashboard data');
   });
 
+  it('includes pending teachers as class owners in admin class setup', async () => {
+    resetDashboardService({
+      listAdminTeacherRecords: vi.fn(async () => [teacherRecord, pendingTeacherRecord]),
+      listAdminClassRecords: vi.fn(async () => []),
+    });
+
+    const container = await render(
+      <RoleGate
+        requiredRole="admin"
+        roleServiceOptions={{ config: validConfig, createClient: async () => createRoleClient({ roles: ['admin'] }) }}
+        onNavigatePath={vi.fn()}
+      >
+        {(context) => <AdminDashboard hostedRoleContext={context} onNavigatePath={vi.fn()} />}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Pending Teacher');
+
+    const classForm = container.querySelector('form[aria-label="Add class"]') as HTMLFormElement;
+    const teacherOptions = Array.from(classForm.querySelectorAll('option')).map((option) => option.textContent);
+    expect(teacherOptions).toContain('Ms Supabase');
+    expect(teacherOptions).toContain('Pending Teacher (pending sign-in)');
+  });
+
   it('renders teacher empty state for an active teacher with no assigned classes', async () => {
     const container = await render(
       <RoleGate
@@ -320,6 +353,23 @@ describe('hosted dashboard empty states', () => {
     expect(container.textContent).toContain('Create class');
     expect(container.textContent).not.toContain('No authorized dashboard data');
     expect(container.textContent).not.toContain('P3 Alpha');
+  });
+
+  it('shows an actionable admin operator repair error instead of the teacher-profile blocker', async () => {
+    const container = await render(
+      <RoleGate
+        requiredRole="teacher"
+        roleServiceOptions={{ config: validConfig, createClient: async () => createRoleClient({ roles: ['admin'] }) }}
+        onNavigatePath={vi.fn()}
+      >
+        {(context) => <TeacherDashboard hostedRoleContext={context} onNavigatePath={vi.fn()} />}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.');
+
+    expect(container.textContent).toContain('Admin operator mode: you can create and manage classes for setup/troubleshooting.');
+    expect(container.textContent).toContain('Admin teacher-operator profile is missing. Run the admin bootstrap/repair migration.');
+    expect(container.textContent).not.toContain('No active hosted teacher profile is attached to this signed-in account.');
   });
 
   it('blocks a signed-in user with no active role before dashboard data renders', async () => {

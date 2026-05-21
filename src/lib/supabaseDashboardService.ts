@@ -81,7 +81,7 @@ interface TeacherProfileRow {
   organization_id: string;
   display_name: string;
   email: string | null;
-  status: 'active' | 'inactive' | 'pending';
+  status: 'active' | 'inactive' | 'pending' | 'archived' | 'disabled';
   created_at: string;
   updated_at: string;
 }
@@ -723,7 +723,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
       };
     }
 
-    const teachers = teacherIds.length
+    const teachers = classId && teacherIds.length
       ? await readRows(client.from<TeacherProfileRow>('teacher_profiles').select(teacherColumns).in('id', teacherIds).order('display_name', { ascending: true }), 'teacher_profiles')
       : await readRows(client.from<TeacherProfileRow>('teacher_profiles').select(teacherColumns).order('display_name', { ascending: true }), 'teacher_profiles');
     const teacherInvites = classId
@@ -812,7 +812,7 @@ export function createSupabaseDashboardDataService(options: SupabaseDashboardSer
       email: teacher.email ?? '',
       classCount: rows.classes.filter((item) => item.teacher_id === teacher.id && item.status === 'active').length,
       lastActivityAt: teacher.updated_at,
-      status: teacher.status === 'pending' ? 'inactive' : teacher.status,
+      status: teacher.status,
     }));
   }
 
