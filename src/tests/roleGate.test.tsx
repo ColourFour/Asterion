@@ -22,9 +22,11 @@ type RoleName = 'admin' | 'teacher' | 'student';
 function createRoleGateClient({
   userId,
   roles,
+  repairError,
 }: {
   userId?: string;
   roles: RoleName[];
+  repairError?: unknown;
 }) {
   const now = '2026-05-20T08:00:00.000Z';
   const rows = {
@@ -109,6 +111,10 @@ function createRoleGateClient({
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
     },
     from: vi.fn((table: string) => new QueryBuilder<Record<string, unknown>>(table as FixtureTable)) as unknown as SupabaseRoleClient['from'],
+    rpc: vi.fn(async (fn: string) => ({
+      data: [],
+      error: fn === 'ensure_admin_teacher_operator_profile_for_current_user' ? repairError ?? null : null,
+    })),
   };
   return client;
 }
@@ -273,5 +279,30 @@ describe('RoleGate', () => {
 
     expect(container.textContent).toContain('Admin Shell for admin-user-1@example.school');
     expect(container.textContent).not.toContain('Teacher access required');
+  });
+
+  it('shows a non-blocking admin operator repair warning without blocking admin access', async () => {
+    const container = await render(
+      <RoleGate
+        requiredRole="admin"
+        roleServiceOptions={{
+          config: validConfig,
+          createClient: async () => createRoleGateClient({
+            userId: 'admin-user-1',
+            roles: ['admin'],
+            repairError: { message: 'column reference "id" is ambiguous' },
+          }),
+        }}
+        onNavigatePath={vi.fn()}
+      >
+        {(context) => <div>Admin Shell for {context.user.email}</div>}
+      </RoleGate>,
+    );
+    await waitForText(container, 'Admin Shell');
+
+    expect(container.textContent).toContain('Admin Shell for admin-user-1@example.school');
+    expect(container.textContent).toContain('Admin teacher-operator profile repair failed: column reference "id" is ambiguous');
+    expect(container.textContent).not.toContain('Dashboard access unavailable');
+    expect(container.textContent).not.toContain('Supabase role context could not be loaded.');
   });
 });

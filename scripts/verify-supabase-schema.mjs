@@ -52,6 +52,41 @@ function extractQuotedRegionIds(source) {
   return new Set([...source.matchAll(/'([a-z]+(?:-[a-z]+)+)'/g)].map((match) => match[1]));
 }
 
+function extractFunctionBody(sql, functionName) {
+  const startPattern = new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${functionName}\\b`, 'i');
+  const starts = [...sql.matchAll(new RegExp(startPattern.source, 'gi'))].map((match) => match.index ?? -1);
+  const start = starts.at(-1) ?? -1;
+  const end = sql.indexOf(`comment on function public.${functionName}`, start);
+  if (start === -1 || end === -1) fail(`Missing documentation comment for public.${functionName}`);
+  return sql.slice(start, end);
+}
+
+function assertNoAmbiguousBareIdPatterns(sql) {
+  const checkedFunctions = [
+    'admin_add_teacher_by_email',
+    'activate_pending_teacher_role_for_current_user',
+    'ensure_admin_teacher_operator_profile_for_current_user',
+    'create_class_with_region_access',
+  ];
+  const forbiddenPatterns = [
+    [/\bwhere\s+id\s*=/i, 'bare WHERE id ='],
+    [/\breturning\s+id\b/i, 'bare RETURNING id'],
+    [/\bselect\s+id\b/i, 'bare SELECT id'],
+    [/\bupdate\s+public\.[a-z_]+\s+set[\s\S]{0,500}\bwhere\s+id\s*=/i, 'unaliased UPDATE ... WHERE id ='],
+    [/\bcoalesce\s*\([^)]*,\s*email\s*\)/i, 'bare email fallback inside coalesce()'],
+    [/\bwhen\s+status\s*=/i, 'bare status in CASE predicate'],
+  ];
+
+  for (const functionName of checkedFunctions) {
+    const body = extractFunctionBody(sql, functionName);
+    for (const [pattern, description] of forbiddenPatterns) {
+      if (pattern.test(body)) {
+        fail(`Potential ambiguous SQL reference in public.${functionName}: ${description}`);
+      }
+    }
+  }
+}
+
 function assertStaticContract(sql) {
   if (!existsSync(seedPath)) fail('supabase/seed.sql is missing');
   if (!existsSync(envExamplePath)) fail('.env.example is missing');
@@ -74,6 +109,7 @@ function assertStaticContract(sql) {
 
   assertRosterClaimRpc(sql);
   assertHostedSetupWrites(sql);
+  assertNoAmbiguousBareIdPatterns(sql);
   assertProgressSnapshotContract(sql);
   assertHostedProgressEventContract(sql);
 

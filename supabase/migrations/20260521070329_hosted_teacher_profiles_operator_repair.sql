@@ -75,7 +75,7 @@ declare
   normalized_email text := lower(trim(coalesce(p_email, '')));
   normalized_display_name text := nullif(trim(coalesce(p_display_name, '')), '');
   target_user record;
-  target_organization_id uuid;
+  v_organization_id uuid;
   teacher_row public.teacher_profiles%rowtype;
   invite_row public.teacher_invites%rowtype;
 begin
@@ -92,10 +92,10 @@ begin
   end if;
 
   if p_organization_id is not null then
-    target_organization_id := p_organization_id;
+    v_organization_id := p_organization_id;
   else
     select ur.organization_id
-    into target_organization_id
+    into v_organization_id
     from public.user_roles ur
     join public.organizations o on o.id = ur.organization_id
     where ur.user_id = auth.uid()
@@ -106,7 +106,7 @@ begin
     limit 1;
   end if;
 
-  if target_organization_id is null or not public.is_admin(target_organization_id) then
+  if v_organization_id is null or not public.is_admin(v_organization_id) then
     raise exception 'admin_required';
   end if;
 
@@ -117,20 +117,20 @@ begin
   order by u.created_at desc
   limit 1;
 
-  select *
+  select tp.*
   into teacher_row
   from public.teacher_profiles tp
-  where tp.organization_id = target_organization_id
+  where tp.organization_id = v_organization_id
     and tp.email = normalized_email
   order by tp.created_at
   limit 1
   for update;
 
   if teacher_row.id is null and target_user.id is not null then
-    select *
+    select tp.*
     into teacher_row
     from public.teacher_profiles tp
-    where tp.organization_id = target_organization_id
+    where tp.organization_id = v_organization_id
       and tp.user_id = target_user.id
     order by tp.created_at
     limit 1
@@ -140,7 +140,7 @@ begin
   if target_user.id is null then
     if teacher_row.id is null then
       insert into public.teacher_profiles (user_id, organization_id, display_name, email, status)
-      values (null, target_organization_id, normalized_display_name, normalized_email, 'pending')
+      values (null, v_organization_id, normalized_display_name, normalized_email, 'pending')
       on conflict (organization_id, email) where email is not null do update
         set display_name = excluded.display_name,
             status = case
@@ -151,21 +151,21 @@ begin
       returning *
       into teacher_row;
     else
-      update public.teacher_profiles
+      update public.teacher_profiles tp
       set display_name = normalized_display_name,
           email = normalized_email,
           status = case
-            when status = 'active' then status
+            when tp.status = 'active' then tp.status
             else 'pending'
           end,
           updated_at = now()
-      where id = teacher_row.id
-      returning *
+      where tp.id = teacher_row.id
+      returning tp.*
       into teacher_row;
     end if;
 
     insert into public.teacher_invites (organization_id, email, display_name, status, created_by)
-    values (target_organization_id, normalized_email, normalized_display_name, 'pending', auth.uid())
+    values (v_organization_id, normalized_email, normalized_display_name, 'pending', auth.uid())
     on conflict (organization_id, email) where status = 'pending' do update
       set display_name = excluded.display_name,
           created_by = excluded.created_by,
@@ -175,7 +175,7 @@ begin
 
     insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
     values (
-      target_organization_id,
+      v_organization_id,
       auth.uid(),
       'admin.teacher.pending_profile_upserted',
       'teacher_profile',
@@ -196,7 +196,7 @@ begin
   end if;
 
   insert into public.user_roles (user_id, role, organization_id, status)
-  values (target_user.id, 'teacher', target_organization_id, 'active')
+  values (target_user.id, 'teacher', v_organization_id, 'active')
   on conflict (user_id, organization_id, role) do update
     set status = 'active',
         updated_at = now();
@@ -205,7 +205,7 @@ begin
     insert into public.teacher_profiles (user_id, organization_id, display_name, email, status)
     values (
       target_user.id,
-      target_organization_id,
+      v_organization_id,
       normalized_display_name,
       normalized_email,
       'active'
@@ -219,30 +219,30 @@ begin
     returning *
     into teacher_row;
   else
-    update public.teacher_profiles
+    update public.teacher_profiles tp
     set user_id = target_user.id,
         display_name = normalized_display_name,
         email = normalized_email,
         status = 'active',
         updated_at = now()
-    where id = teacher_row.id
-    returning *
+    where tp.id = teacher_row.id
+    returning tp.*
     into teacher_row;
   end if;
 
-  update public.teacher_invites
+  update public.teacher_invites ti
   set status = 'activated',
       activated_user_id = target_user.id,
       activated_teacher_profile_id = teacher_row.id,
       activated_at = now(),
       updated_at = now()
-  where organization_id = target_organization_id
-    and email = normalized_email
-    and status = 'pending';
+  where ti.organization_id = v_organization_id
+    and ti.email = normalized_email
+    and ti.status = 'pending';
 
   insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
   values (
-    target_organization_id,
+    v_organization_id,
     auth.uid(),
     'admin.teacher.attached',
     'teacher_profile',
@@ -281,23 +281,23 @@ security definer
 set search_path = public
 as $$
 declare
-  current_user_id uuid := auth.uid();
-  current_email text;
+  v_user_id uuid := auth.uid();
+  v_email text;
   invite_row public.teacher_invites%rowtype;
   teacher_row public.teacher_profiles%rowtype;
 begin
-  if current_user_id is null then
+  if v_user_id is null then
     raise exception 'auth_required';
   end if;
 
   select lower(trim(u.email))
-  into current_email
+  into v_email
   from auth.users u
-  where u.id = current_user_id
+  where u.id = v_user_id
     and u.email is not null
     and u.email_confirmed_at is not null;
 
-  if current_email is null or current_email = '' then
+  if v_email is null or v_email = '' then
     return;
   end if;
 
@@ -305,45 +305,45 @@ begin
     select tp.*
     from public.teacher_profiles tp
     join public.organizations o on o.id = tp.organization_id
-    where tp.email = current_email
+    where tp.email = v_email
       and tp.status = 'pending'
       and o.status = 'active'
     order by tp.created_at
     for update of tp
   loop
     insert into public.user_roles (user_id, role, organization_id, status)
-    values (current_user_id, 'teacher', teacher_row.organization_id, 'active')
+    values (v_user_id, 'teacher', teacher_row.organization_id, 'active')
     on conflict (user_id, organization_id, role) do update
       set status = 'active',
           updated_at = now();
 
-    update public.teacher_profiles
-    set user_id = current_user_id,
-        email = current_email,
+    update public.teacher_profiles tp
+    set user_id = v_user_id,
+        email = v_email,
         status = 'active',
         updated_at = now()
-    where id = teacher_row.id
-    returning *
+    where tp.id = teacher_row.id
+    returning tp.*
     into teacher_row;
 
-    update public.teacher_invites
+    update public.teacher_invites ti
     set status = 'activated',
-        activated_user_id = current_user_id,
+        activated_user_id = v_user_id,
         activated_teacher_profile_id = teacher_row.id,
         activated_at = now(),
         updated_at = now()
-    where organization_id = teacher_row.organization_id
-      and email = current_email
-      and status = 'pending';
+    where ti.organization_id = teacher_row.organization_id
+      and ti.email = v_email
+      and ti.status = 'pending';
 
     insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
     values (
       teacher_row.organization_id,
-      current_user_id,
+      v_user_id,
       'teacher.pending_profile_activated',
       'teacher_profile',
       teacher_row.id,
-      jsonb_build_object('email', current_email)
+      jsonb_build_object('email', v_email)
     );
 
     return query select
@@ -361,7 +361,7 @@ begin
     select ti.*
     from public.teacher_invites ti
     join public.organizations o on o.id = ti.organization_id
-    where ti.email = current_email
+    where ti.email = v_email
       and ti.status = 'pending'
       and o.status = 'active'
       and not exists (
@@ -374,17 +374,17 @@ begin
     for update of ti
   loop
     insert into public.user_roles (user_id, role, organization_id, status)
-    values (current_user_id, 'teacher', invite_row.organization_id, 'active')
+    values (v_user_id, 'teacher', invite_row.organization_id, 'active')
     on conflict (user_id, organization_id, role) do update
       set status = 'active',
           updated_at = now();
 
     insert into public.teacher_profiles (user_id, organization_id, display_name, email, status)
     values (
-      current_user_id,
+      v_user_id,
       invite_row.organization_id,
       invite_row.display_name,
-      current_email,
+      v_email,
       'active'
     )
     on conflict (organization_id, email) where email is not null do update
@@ -396,22 +396,22 @@ begin
     returning *
     into teacher_row;
 
-    update public.teacher_invites
+    update public.teacher_invites ti
     set status = 'activated',
-        activated_user_id = current_user_id,
+        activated_user_id = v_user_id,
         activated_teacher_profile_id = teacher_row.id,
         activated_at = now(),
         updated_at = now()
-    where id = invite_row.id;
+    where ti.id = invite_row.id;
 
     insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
     values (
       teacher_row.organization_id,
-      current_user_id,
+      v_user_id,
       'teacher.pending_invite_activated',
       'teacher_profile',
       teacher_row.id,
-      jsonb_build_object('teacher_invite_id', invite_row.id, 'email', current_email)
+      jsonb_build_object('teacher_invite_id', invite_row.id, 'email', v_email)
     );
 
     return query select
@@ -446,47 +446,49 @@ security definer
 set search_path = public
 as $$
 declare
-  current_user_id uuid := auth.uid();
-  current_email text;
-  admin_role record;
+  v_user_id uuid := auth.uid();
+  v_email text;
+  v_role_id uuid;
+  v_organization_id uuid;
+  v_teacher_profile_id uuid;
   teacher_row public.teacher_profiles%rowtype;
 begin
-  if current_user_id is null then
+  if v_user_id is null then
     raise exception 'auth_required';
   end if;
 
   select lower(trim(u.email))
-  into current_email
+  into v_email
   from auth.users u
-  where u.id = current_user_id
+  where u.id = v_user_id
     and u.email is not null
     and u.email_confirmed_at is not null;
 
-  for admin_role in
-    select ur.organization_id
+  for v_role_id, v_organization_id in
+    select ur.id, ur.organization_id
     from public.user_roles ur
     join public.organizations o on o.id = ur.organization_id
-    where ur.user_id = current_user_id
+    where ur.user_id = v_user_id
       and ur.role = 'admin'
       and ur.status = 'active'
       and o.status = 'active'
     order by ur.created_at
   loop
-    select *
+    select tp.*
     into teacher_row
     from public.teacher_profiles tp
-    where tp.organization_id = admin_role.organization_id
-      and tp.user_id = current_user_id
+    where tp.organization_id = v_organization_id
+      and tp.user_id = v_user_id
     order by tp.created_at
     limit 1
     for update;
 
-    if teacher_row.id is null and current_email is not null and current_email <> '' then
-      select *
+    if teacher_row.id is null and v_email is not null and v_email <> '' then
+      select tp.*
       into teacher_row
       from public.teacher_profiles tp
-      where tp.organization_id = admin_role.organization_id
-        and tp.email = current_email
+      where tp.organization_id = v_organization_id
+        and tp.email = v_email
       order by tp.created_at
       limit 1
       for update;
@@ -495,29 +497,31 @@ begin
     if teacher_row.id is null then
       insert into public.teacher_profiles (user_id, organization_id, display_name, email, status)
       values (
-        current_user_id,
-        admin_role.organization_id,
-        coalesce(current_email, 'Admin Operator'),
-        current_email,
+        v_user_id,
+        v_organization_id,
+        coalesce(v_email, 'Admin Operator'),
+        v_email,
         'active'
       )
       returning *
       into teacher_row;
     else
-      update public.teacher_profiles
-      set user_id = current_user_id,
-          email = coalesce(current_email, email),
+      v_teacher_profile_id := teacher_row.id;
+
+      update public.teacher_profiles tp
+      set user_id = v_user_id,
+          email = coalesce(v_email, tp.email),
           status = 'active',
           updated_at = now()
-      where id = teacher_row.id
-      returning *
+      where tp.id = v_teacher_profile_id
+      returning tp.*
       into teacher_row;
     end if;
 
     insert into public.audit_events (organization_id, actor_user_id, event_type, entity_type, entity_id, metadata)
     values (
-      admin_role.organization_id,
-      current_user_id,
+      v_organization_id,
+      v_user_id,
       'admin.teacher_operator_profile_ensured',
       'teacher_profile',
       teacher_row.id,

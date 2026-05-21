@@ -264,6 +264,41 @@ describe('Supabase role service', () => {
     expect(rpc).toHaveBeenCalledWith('ensure_admin_teacher_operator_profile_for_current_user');
   });
 
+  it('loads existing admin role context with a warning when admin operator repair fails', async () => {
+    const rows: typeof baseRows = {
+      ...baseRows,
+      user_roles: [{
+        id: 'role-admin',
+        user_id: 'admin-user-1',
+        organization_id: 'org-1',
+        role: 'admin',
+        status: 'active',
+        created_at: '2026-05-18T08:00:00.000Z',
+        updated_at: '2026-05-18T08:00:00.000Z',
+      }],
+      teacher_profiles: [],
+      student_profiles: [],
+    };
+    const rpc = vi.fn(async (fn: string) => ({
+      data: [],
+      error: fn === 'ensure_admin_teacher_operator_profile_for_current_user'
+        ? { message: 'column reference "id" is ambiguous' }
+        : null,
+    }));
+    const fake = createFakeRoleClient({ userId: 'admin-user-1', email: 'admin@example.school', rows, rpc });
+
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(state.context.roleNames).toEqual(['admin']);
+    expect(hasSupabaseRole(state.context, 'admin')).toBe(true);
+    expect(state.context.warnings).toEqual([
+      'Admin teacher-operator profile repair failed: column reference "id" is ambiguous',
+    ]);
+    expect(fake.tableReads).toEqual(expect.arrayContaining(['user_roles', 'teacher_profiles', 'student_profiles', 'organizations']));
+  });
+
   it('loads an admin operator teacher profile after the repair RPC creates it', async () => {
     const rows: typeof baseRows = {
       ...baseRows,
@@ -304,6 +339,7 @@ describe('Supabase role service', () => {
     expect(state.context.teacherProfiles).toEqual([
       expect.objectContaining({ id: 'admin-operator-profile', userId: 'admin-user-1' }),
     ]);
+    expect(state.context.warnings).toEqual([]);
   });
 
   it('loads multi-role teacher/admin context through the service boundary', async () => {
@@ -329,5 +365,62 @@ describe('Supabase role service', () => {
       'student_profiles.eq:user_id',
       'organizations.in:id',
     ]));
+  });
+
+  it('keeps admin as teacher-capable through the hosted role hierarchy', async () => {
+    const rows: typeof baseRows = {
+      ...baseRows,
+      user_roles: [{
+        id: 'role-admin',
+        user_id: 'admin-user-1',
+        organization_id: 'org-1',
+        role: 'admin',
+        status: 'active',
+        created_at: '2026-05-18T08:00:00.000Z',
+        updated_at: '2026-05-18T08:00:00.000Z',
+      }],
+      teacher_profiles: [],
+      student_profiles: [],
+    };
+    const fake = createFakeRoleClient({ userId: 'admin-user-1', email: 'admin@example.school', rows, rpc: vi.fn(async () => ({ data: [], error: null })) });
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(hasSupabaseRole(state.context, 'teacher')).toBe(true);
+    expect(hasSupabaseRole(state.context, 'admin')).toBe(true);
+  });
+
+  it('does not let a teacher-only role satisfy admin access', async () => {
+    const rows: typeof baseRows = {
+      ...baseRows,
+      user_roles: [{
+        id: 'role-teacher',
+        user_id: 'teacher-only-user-1',
+        organization_id: 'org-1',
+        role: 'teacher',
+        status: 'active',
+        created_at: '2026-05-18T08:00:00.000Z',
+        updated_at: '2026-05-18T08:00:00.000Z',
+      }],
+      teacher_profiles: [{
+        id: 'teacher-profile-only',
+        user_id: 'teacher-only-user-1',
+        organization_id: 'org-1',
+        display_name: 'Teacher Only',
+        email: 'teacher-only@example.school',
+        status: 'active',
+        created_at: '2026-05-18T08:00:00.000Z',
+        updated_at: '2026-05-18T08:00:00.000Z',
+      }],
+      student_profiles: [],
+    };
+    const fake = createFakeRoleClient({ userId: 'teacher-only-user-1', email: 'teacher-only@example.school', rows, rpc: vi.fn(async () => ({ data: [], error: null })) });
+    const state = await readSupabaseRoleContext({ config: validConfig, createClient: async () => fake.client });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') return;
+    expect(hasSupabaseRole(state.context, 'teacher')).toBe(true);
+    expect(hasSupabaseRole(state.context, 'admin')).toBe(false);
   });
 });

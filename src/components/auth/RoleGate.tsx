@@ -145,5 +145,14 @@ export function RoleGate({ requiredRole, roleServiceOptions, onNavigatePath, chi
     );
   }
 
-  return <>{children(roleState.context)}</>;
+  return (
+    <>
+      {roleState.context.warnings.map((warning) => (
+        <div key={warning} className="classroom-sync-warning" role="status">
+          {warning}
+        </div>
+      ))}
+      {children(roleState.context)}
+    </>
+  );
 }

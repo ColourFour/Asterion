@@ -104,6 +104,7 @@ export interface SupabaseRoleContext {
   organizations: SupabaseOrganizationContext[];
   teacherProfiles: SupabaseTeacherProfileContext[];
   studentProfiles: SupabaseStudentProfileContext[];
+  warnings: string[];
 }
 
 export type SupabaseRoleContextState =
@@ -218,12 +219,13 @@ async function activatePendingTeacherRole(client: SupabaseRoleClient): Promise<v
   }
 }
 
-async function ensureAdminTeacherOperatorProfile(client: SupabaseRoleClient): Promise<void> {
-  if (!client.rpc) return;
+async function ensureAdminTeacherOperatorProfile(client: SupabaseRoleClient): Promise<string | undefined> {
+  if (!client.rpc) return undefined;
   const { error } = await client.rpc<ActivationRow>('ensure_admin_teacher_operator_profile_for_current_user');
   if (error && !isMissingOptionalRpcError(error)) {
-    throw new Error(`ensure_admin_teacher_operator_profile_for_current_user: ${errorMessage(error, 'Admin teacher-operator profile could not be repaired.')}`);
+    return `Admin teacher-operator profile repair failed: ${errorMessage(error, 'Admin teacher-operator profile could not be repaired.')}`;
   }
+  return undefined;
 }
 
 function isMissingOptionalRpcError(error: unknown): boolean {
@@ -298,7 +300,7 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
 
   try {
     await activatePendingTeacherRole(client);
-    await ensureAdminTeacherOperatorProfile(client);
+    const repairWarning = await ensureAdminTeacherOperatorProfile(client);
     const [roleRows, teacherProfileRows, studentProfileRows] = await Promise.all([
       readRows(
         client.from<UserRoleRow>('user_roles')
@@ -359,6 +361,7 @@ async function readContextForSession(client: SupabaseRoleClient, session: Supaba
         organizations,
         teacherProfiles,
         studentProfiles,
+        warnings: repairWarning ? [repairWarning] : [],
       },
     };
   } catch (error) {
