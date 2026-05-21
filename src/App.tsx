@@ -17,7 +17,7 @@ import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessag
 import { buildLocalClassHallSnapshot } from './lib/classHall';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
-import { createId, getProgressStorageAdapter } from './lib/progressStore';
+import { createId, emptyProgress, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
@@ -169,6 +169,54 @@ function staffPreviewInitialProfile(context: StaffPreviewClassroomContext): Omit
   };
 }
 
+function staffPreviewProfileId(context: StaffPreviewClassroomContext): string {
+  return `staff-preview-${context.user.id || context.staffRole}`;
+}
+
+function createStaffPreviewProgress(context: StaffPreviewClassroomContext): StoredProgress {
+  const base = emptyProgress();
+  const now = new Date().toISOString();
+  return {
+    ...base,
+    profile: {
+      ...staffPreviewInitialProfile(context),
+      id: staffPreviewProfileId(context),
+      createdAt: now,
+      updatedAt: now,
+    },
+  };
+}
+
+function RuntimeConfigurationBlocked({
+  runtimeConfig,
+}: {
+  runtimeConfig: AsterionRuntimeConfig;
+}) {
+  const diagnostics = runtimeConfig.diagnostics;
+  const yesNo = (value: boolean) => (value ? 'yes' : 'no');
+
+  return (
+    <main className="app-shell onboarding-shell">
+      <TwinklingStarfield />
+      <section className="intro-panel academy-admission">
+        <div className="intro-copy">
+          <span className="mode-pill">Configuration blocked</span>
+          <h1>Asterion</h1>
+          <p>{runtimeConfig.configurationBlockReason ?? 'This build is blocked by the classroom configuration contract.'}</p>
+        </div>
+        <div className="onboarding-briefing">
+          <strong>Safe runtime diagnostic</strong>
+          <span>Profile: {diagnostics.profileName} · explicit: {yesNo(diagnostics.profileExplicit)}</span>
+          <span>Supabase configured: {yesNo(diagnostics.supabaseConfigured)} · required: {yesNo(diagnostics.supabaseRequired)}</span>
+          <span>Dashboard source: {diagnostics.dashboardDataSource} · routes: {yesNo(diagnostics.dashboardRoutesEnabled)}</span>
+          <span>Student claim source: {diagnostics.studentClassClaimSource} · hosted progress sync: {yesNo(diagnostics.hostedProgressSyncEnabled)}</span>
+          <span>Production dashboard authority: {yesNo(diagnostics.productionDashboardAuthority)}</span>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function isHomeEntryRoute(pathname: string, hash: string): boolean {
   return pathname === '/' && (hash === '' || hash === '#/' || hash === '#');
 }
@@ -311,6 +359,7 @@ export default function App() {
   const hostedClassroomContext = hostedClassroomState.status === 'ready' ? hostedClassroomState.context : undefined;
   const hostedRosterContext = hostedClassroomContext?.accessMode === 'student' ? hostedClassroomContext : undefined;
   const staffPreviewContext = hostedClassroomContext?.accessMode === 'staff_preview' ? hostedClassroomContext : undefined;
+  const staffPreviewProgressReady = !staffPreviewContext || progress.profile?.id === staffPreviewProfileId(staffPreviewContext);
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -351,9 +400,9 @@ export default function App() {
   }, [questions, worldProgress]);
 
   useEffect(() => {
-    if (!staffPreviewContext || progress.profile) return;
-    setProgress(progressAdapter.saveProfile(staffPreviewInitialProfile(staffPreviewContext)));
-  }, [progress.profile, progressAdapter, staffPreviewContext]);
+    if (!staffPreviewContext) return;
+    setProgress(createStaffPreviewProgress(staffPreviewContext));
+  }, [staffPreviewContext]);
 
   const dashboardRoute = useMemo(
     () => parseDashboardRoute(window.location.pathname, window.location.hash),
@@ -539,6 +588,7 @@ export default function App() {
   }
 
   function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
+    if (staffPreviewContext) return;
     setProgress(nextProgress);
   }
 
@@ -603,6 +653,10 @@ export default function App() {
     setTrainingIntent(undefined);
     setViewMode('map');
     persistProgressAfterMeaningfulEvent({ ...withAvatar, profile: withProfile.profile });
+  }
+
+  if (runtimeConfig.configurationBlocked) {
+    return <RuntimeConfigurationBlocked runtimeConfig={runtimeConfig} />;
   }
 
   if (dashboardRoute.kind === 'teacher' && !dashboardRouteEnabled(dashboardRoute, runtimeConfig)) {
@@ -693,6 +747,24 @@ export default function App() {
         {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
         <ClassCodeClaimForm onClaimed={handleStudentClassClaim} onNavigatePath={navigatePath} />
+      </main>
+    );
+  }
+
+  if (staffPreviewContext && !staffPreviewProgressReady) {
+    return (
+      <main className="app-shell onboarding-shell">
+        <TwinklingStarfield />
+        <section className="intro-panel academy-admission">
+          <div className="intro-copy">
+            <span className="mode-pill">Staff preview</span>
+            <h1>Asterion</h1>
+          </div>
+          <div className="onboarding-briefing">
+            <strong>Preparing preview</strong>
+            <span>Staff preview uses in-memory progress only and does not load an existing student browser profile.</span>
+          </div>
+        </section>
       </main>
     );
   }
@@ -848,6 +920,7 @@ export default function App() {
             summary={selectedRegionLearningSummary}
             studentRegionAccess={selectedRegionAccess}
             onCompleteFieldGuide={() => {
+              if (staffPreviewContext) return;
               persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuide(selectedRegion.id));
               recordHostedClassroomActivity({
                 regionId: selectedRegion.id,
@@ -859,6 +932,7 @@ export default function App() {
             onLearningActivityAttempt={(attempt: LearningActivityAttempt) => {
               const activity = attempt.activityType === 'quick_check' ? 'quick_check' : 'warm_up';
               if (!canStudentUseRegionActivity(selectedRegionAccess, activity)) return;
+              if (staffPreviewContext) return;
               persistProgressAfterMeaningfulEvent(progressAdapter.addLearningActivityAttempt(attempt));
               recordHostedClassroomActivity({
                 regionId: selectedRegion.id,
@@ -891,7 +965,13 @@ export default function App() {
             questions={trainableQuestions}
             regionLearning={progress.regionLearning}
             regionProgress={worldProgress}
-            onAvatarChange={(avatar) => setProgress(progressAdapter.saveAvatarSettings(avatar))}
+            onAvatarChange={(avatar) => {
+              if (staffPreviewContext) {
+                setProgress((current) => ({ ...current, avatar }));
+                return;
+              }
+              setProgress(progressAdapter.saveAvatarSettings(avatar));
+            }}
           />
         </Suspense>
       ) : null}
@@ -925,6 +1005,7 @@ export default function App() {
               : undefined}
             onAttempt={(attempt: Attempt) => {
               if (selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')) return;
+              if (staffPreviewContext) return;
               const evidenceAttempt: Attempt = {
                 ...attempt,
                 masteryEligible: currentQuestion?.eligibility?.masteryEligible.eligible,
@@ -986,6 +1067,7 @@ export default function App() {
               }
             }}
             onIssue={(questionId: string, issueType: IssueType, note?: string) => {
+              if (staffPreviewContext) return;
               persistProgressAfterMeaningfulEvent(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
             }}
             onReturnToMap={returnToMap}

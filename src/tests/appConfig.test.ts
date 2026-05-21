@@ -61,7 +61,7 @@ describe('runtime storage config', () => {
     expect(config.profileNotice).toContain('Student pilot profile is active');
   });
 
-  it('keeps legacy dashboard and Supabase test flags available as a custom profile when no profile is set', () => {
+  it('blocks Supabase classroom sources when no classroom-pilot profile is set', () => {
     const config = resolveRuntimeConfig({
       VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
       VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
@@ -72,6 +72,17 @@ describe('runtime storage config', () => {
     expect(config.dashboardDataSource).toBe('supabase');
     expect(config.dashboardRoutesEnabled).toBe(true);
     expect(config.studentClassClaimSource).toBe('supabase');
+    expect(config.configurationBlocked).toBe(true);
+    expect(config.configurationBlockReason).toContain('without VITE_ASTERION_APP_PROFILE=classroom-pilot');
+    expect(config.diagnostics).toMatchObject({
+      profileName: 'custom',
+      profileExplicit: false,
+      supabaseRequired: true,
+      dashboardDataSource: 'supabase',
+      studentClassClaimSource: 'supabase',
+      hostedProgressSyncEnabled: true,
+      productionDashboardAuthority: false,
+    });
     expect(config.profileNotice).toContain('without VITE_ASTERION_APP_PROFILE=classroom-pilot');
   });
 
@@ -87,7 +98,8 @@ describe('runtime storage config', () => {
     expect(config.studentClassClaimSource).toBe('supabase');
     expect(config.studentClassClaimSourceExplicit).toBe(true);
     expect(config.profile.supabaseRequired).toBe(true);
-    expect(config.profileNotice).toContain('Student claims are forced to Supabase');
+    expect(config.configurationBlocked).toBe(true);
+    expect(config.profileNotice).toContain('without VITE_ASTERION_APP_PROFILE=classroom-pilot');
     expect(config.studentClassClaimNotice).toBeUndefined();
   });
 
@@ -123,8 +135,20 @@ describe('runtime storage config', () => {
     expect(config.studentClassClaimSource).toBe('supabase');
     expect(config.studentClassClaimSourceExplicit).toBe(true);
     expect(config.supabaseConfigured).toBe(true);
+    expect(config.configurationBlocked).toBe(false);
     expect(config.profileNotice).toBeUndefined();
     expect(config.studentClassClaimNotice).toBeUndefined();
+    expect(config.diagnostics).toMatchObject({
+      profileName: 'classroom-pilot',
+      profileExplicit: true,
+      supabaseConfigured: true,
+      supabaseRequired: true,
+      dashboardDataSource: 'supabase',
+      dashboardRoutesEnabled: true,
+      studentClassClaimSource: 'supabase',
+      hostedProgressSyncEnabled: true,
+      productionDashboardAuthority: true,
+    });
   });
 
   it('keeps classroom pilot on Supabase sources and reports missing Supabase config clearly', () => {

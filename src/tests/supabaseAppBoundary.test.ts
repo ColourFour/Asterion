@@ -54,7 +54,16 @@ describe('Supabase integration boundary', () => {
     expect(health).toContain("rpc('asterion_health_check')");
     expect(health).not.toContain('.from(');
     expect(health).not.toMatch(/insert|upsert|update|delete/i);
-    expect(diagnosticPanel).not.toMatch(/organizations|classes|students|memberships|progress/i);
+    expect(diagnosticPanel).not.toMatch(/organizations|classes|students|memberships|student_progress_events/i);
+    expect(diagnosticPanel).toContain('hosted progress');
+  });
+
+  it('keeps staff preview progress in memory instead of using student persistence writes', () => {
+    const app = readFileSync(`${process.cwd()}/src/App.tsx`, 'utf8');
+
+    expect(app).toContain('createStaffPreviewProgress');
+    expect(app).toContain('if (staffPreviewContext) return;');
+    expect(app).not.toContain('progressAdapter.saveProfile(staffPreviewInitialProfile');
   });
 
   it('does not reference server-only Supabase env vars in browser source', () => {

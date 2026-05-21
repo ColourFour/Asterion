@@ -16,6 +16,7 @@ function runtimeConfig(source: AsterionRuntimeConfig['studentClassClaimSource'])
       productionDashboardAuthority: source === 'supabase',
       dashboardDemoBehaviorEnabled: false,
     },
+    configurationBlocked: false,
     requestedStorageMode: 'local',
     effectiveStorageMode: 'local',
     dashboardDemoEnabled: false,
@@ -27,6 +28,17 @@ function runtimeConfig(source: AsterionRuntimeConfig['studentClassClaimSource'])
     supabaseConfigured: source === 'supabase',
     studentClassClaimSource: source,
     studentClassClaimSourceExplicit: source === 'supabase',
+    diagnostics: {
+      profileName: source === 'supabase' ? 'custom' : 'student-pilot',
+      profileExplicit: false,
+      supabaseConfigured: source === 'supabase',
+      supabaseRequired: source === 'supabase',
+      dashboardDataSource: 'mock',
+      dashboardRoutesEnabled: false,
+      studentClassClaimSource: source,
+      hostedProgressSyncEnabled: source === 'supabase',
+      productionDashboardAuthority: source === 'supabase',
+    },
   };
 }
 

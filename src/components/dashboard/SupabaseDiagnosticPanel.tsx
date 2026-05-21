@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { resolveRuntimeConfig } from '../../lib/appConfig';
 import { dashboardDataService } from '../../lib/dashboardDataService';
 import { checkSupabaseHealth, type SupabaseHealthResult } from '../../lib/supabaseHealth';
 import { supabaseConfig } from '../../lib/supabaseConfig';
@@ -26,8 +27,10 @@ function statusDetail(result: SupabaseHealthResult | undefined): string {
 }
 
 export function SupabaseDiagnosticPanel() {
+  const runtimeConfig = resolveRuntimeConfig();
   const [result, setResult] = useState<SupabaseHealthResult>();
   const [checking, setChecking] = useState(false);
+  const diagnostics = runtimeConfig.diagnostics;
 
   async function handleCheckConnection() {
     setChecking(true);
@@ -50,6 +53,14 @@ export function SupabaseDiagnosticPanel() {
         <strong className={`diagnostic-status diagnostic-${result?.status ?? 'idle'}`}>{checking ? 'Checking' : label}</strong>
       </div>
       <p>{statusDetail(result)}</p>
+      <p className="dashboard-muted">
+        Profile {diagnostics.profileName}
+        {' · '}Supabase required {diagnostics.supabaseRequired ? 'yes' : 'no'}
+        {' · '}configured {diagnostics.supabaseConfigured ? 'yes' : 'no'}
+        {' · '}dashboard {diagnostics.dashboardDataSource}
+        {' · '}claim {diagnostics.studentClassClaimSource}
+        {' · '}hosted progress {diagnostics.hostedProgressSyncEnabled ? 'yes' : 'no'}
+      </p>
       <div className="admin-action-row">
         <button type="button" className="quiet-button" onClick={handleCheckConnection} disabled={checking}>
           {checking ? 'Checking connection' : 'Check connection'}

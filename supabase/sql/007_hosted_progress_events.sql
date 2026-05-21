@@ -131,7 +131,7 @@ as $$
 $$;
 
 create table public.student_progress_events (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete restrict,
   class_id uuid not null references public.classes(id) on delete cascade,
   class_membership_id uuid not null references public.class_memberships(id) on delete cascade,

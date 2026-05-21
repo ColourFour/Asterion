@@ -201,6 +201,24 @@ describe('Asterion intro page', () => {
     expect(container.textContent).not.toContain('local-first classroom mode');
   });
 
+  it('blocks Supabase classroom sources without the classroom-pilot profile', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', undefined);
+    vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
+    vi.stubEnv('VITE_ASTERION_STUDENT_CLAIM_SOURCE', 'supabase');
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
+    vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Configuration blocked');
+    expect(container.textContent).toContain('Supabase classroom sources are active without VITE_ASTERION_APP_PROFILE=classroom-pilot');
+    expect(container.textContent).toContain('Profile: custom');
+    expect(container.textContent).toContain('Dashboard source: supabase');
+    expect(container.textContent).toContain('Student claim source: supabase');
+    expect(container.textContent).not.toContain('Student entry');
+    expect(container.textContent).not.toContain('Class access required');
+  });
+
   it('does not accept a stored local pending claim in classroom pilot hosted claim mode', async () => {
     vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
     vi.stubEnv('VITE_SUPABASE_URL', undefined);

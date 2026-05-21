@@ -1,7 +1,7 @@
 create extension if not exists pgcrypto with schema extensions;
 
 create table public.organizations (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   name text not null,
   status text not null default 'active' check (status in ('active', 'archived')),
   created_at timestamptz not null default now(),
@@ -9,7 +9,7 @@ create table public.organizations (
 );
 
 create table public.user_roles (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   role text not null check (role in ('admin', 'teacher', 'student')),
   organization_id uuid not null references public.organizations(id) on delete cascade,
@@ -20,7 +20,7 @@ create table public.user_roles (
 );
 
 create table public.teacher_profiles (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   organization_id uuid not null references public.organizations(id) on delete cascade,
   display_name text not null,
@@ -32,7 +32,7 @@ create table public.teacher_profiles (
 );
 
 create table public.student_profiles (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   user_id uuid references auth.users(id) on delete set null,
   organization_id uuid not null references public.organizations(id) on delete cascade,
   display_name text not null,
@@ -43,7 +43,7 @@ create table public.student_profiles (
 );
 
 create table public.classes (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   teacher_id uuid not null references public.teacher_profiles(id) on delete restrict,
   name text not null,
@@ -56,7 +56,7 @@ create table public.classes (
 );
 
 create table public.class_memberships (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   class_id uuid not null references public.classes(id) on delete cascade,
   student_profile_id uuid not null references public.student_profiles(id) on delete restrict,
   roster_name text not null,
@@ -86,7 +86,7 @@ create table public.class_memberships (
 );
 
 create table public.class_region_access (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   class_id uuid not null references public.classes(id) on delete cascade,
   region_id text not null check (
     region_id in (
@@ -390,7 +390,7 @@ end;
 $$;
 
 create table public.student_progress_snapshots (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   class_membership_id uuid not null references public.class_memberships(id) on delete cascade,
   student_profile_id uuid not null references public.student_profiles(id) on delete cascade,
   class_id uuid not null references public.classes(id) on delete cascade,
@@ -402,7 +402,7 @@ create table public.student_progress_snapshots (
 );
 
 create table public.audit_events (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   actor_user_id uuid references auth.users(id) on delete set null,
   event_type text not null,

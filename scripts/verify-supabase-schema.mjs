@@ -110,6 +110,8 @@ function assertStaticContract(sql) {
   assertRosterClaimRpc(sql);
   assertHostedSetupWrites(sql);
   assertNoAmbiguousBareIdPatterns(sql);
+  assertExtensionCallsQualified(sql);
+  assertSecurityDefinerSearchPaths(sql);
   assertProgressSnapshotContract(sql);
   assertHostedProgressEventContract(sql);
 
@@ -127,6 +129,28 @@ function assertStaticContract(sql) {
   }
 
   assertClientEnvSafety();
+}
+
+function assertExtensionCallsQualified(sql) {
+  const unqualifiedExtensionCall = /(?<!extensions\.)\bgen_random_(?:uuid|bytes)\s*\(/i;
+  const match = sql.match(unqualifiedExtensionCall);
+  if (match) {
+    fail(`Supabase pgcrypto calls must be schema-qualified as extensions.*; found unqualified ${match[0]}`);
+  }
+}
+
+function assertSecurityDefinerSearchPaths(sql) {
+  const functionPattern = /create\s+or\s+replace\s+function\s+public\.([a-z_]+)\b[\s\S]*?\$\$;/gi;
+  for (const match of sql.matchAll(functionPattern)) {
+    const body = match[0];
+    if (!/security\s+definer/i.test(body)) continue;
+    if (!/set\s+search_path\s*=\s*public\b/i.test(body)) {
+      fail(`SECURITY DEFINER function public.${match[1]} must set an explicit narrow search_path`);
+    }
+    if (/set\s+search_path\s*=\s*[^;\n]*(?:extensions|auth|public\s*,|,\s*public)/i.test(body)) {
+      fail(`SECURITY DEFINER function public.${match[1]} must not use a wide search_path; qualify non-public objects instead`);
+    }
+  }
 }
 
 function assertHostedSetupWrites(sql) {
@@ -467,10 +491,7 @@ function assertRosterClaimRpc(sql) {
   const rpcPattern = /create\s+or\s+replace\s+function\s+public\.claim_class_roster_slot\s*\(\s*p_class_code\s+text\s*,\s*p_roster_name\s+text\s*\)/i;
   if (!rpcPattern.test(sql)) fail('Missing RPC public.claim_class_roster_slot(text, text)');
 
-  const rpcStart = sql.search(rpcPattern);
-  const rpcEnd = sql.indexOf('comment on function public.claim_class_roster_slot', rpcStart);
-  if (rpcEnd === -1) fail('Missing documentation comment for public.claim_class_roster_slot');
-  const rpcBody = sql.slice(rpcStart, rpcEnd);
+  const rpcBody = extractFunctionBody(sql, 'claim_class_roster_slot');
 
   const requiredPatterns = [
     [/security\s+definer/i, 'RPC must be SECURITY DEFINER so it can inspect hidden unclaimed roster rows without broad RLS policies'],
@@ -485,11 +506,18 @@ function assertRosterClaimRpc(sql) {
     [/staff_account_cannot_claim_student_slot/i, 'RPC must explicitly block staff accounts without an active student role'],
     [/roster_status\s*=\s*'unclaimed'/i, 'RPC must only claim unclaimed roster slots'],
     [/roster_status\s*=\s*'archived'/i, 'RPC must explicitly block archived roster slots'],
+  ];
+
+  for (const [pattern, message] of requiredPatterns) {
+    if (!pattern.test(rpcBody)) fail(message);
+  }
+
+  const grantPatterns = [
     [/grant\s+execute\s+on\s+function\s+public\.claim_class_roster_slot\(text,\s*text\)\s+to\s+authenticated/i, 'RPC must be executable by authenticated users'],
     [/revoke\s+all\s+on\s+function\s+public\.claim_class_roster_slot\(text,\s*text\)\s+from\s+anon/i, 'RPC must not be executable by anon users'],
   ];
 
-  for (const [pattern, message] of requiredPatterns) {
+  for (const [pattern, message] of grantPatterns) {
     if (!pattern.test(sql)) fail(message);
   }
 
@@ -499,6 +527,10 @@ function assertRosterClaimRpc(sql) {
 
   if (/student_progress_snapshots|summary_json|region_summary_json/i.test(rpcBody)) {
     fail('Roster claim RPC must not touch progress snapshot or learner response data');
+  }
+
+  if (/lower\s*\(\s*trim\s*\(\s*cm\.roster_name\s*\)\s*\)/i.test(rpcBody)) {
+    fail('Roster claim RPC must claim an exact roster-name slot, not a case-folded fallback match');
   }
 }
 

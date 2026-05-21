@@ -19,6 +19,8 @@ export interface AsterionRuntimeProfile {
 export interface AsterionRuntimeConfig {
   profile: AsterionRuntimeProfile;
   profileNotice?: string;
+  configurationBlocked: boolean;
+  configurationBlockReason?: string;
   requestedStorageMode: ProgressStorageMode;
   effectiveStorageMode: 'local';
   dashboardDemoEnabled: boolean;
@@ -36,6 +38,17 @@ export interface AsterionRuntimeConfig {
   studentClassClaimSourceExplicit: boolean;
   studentClassClaimNotice?: string;
   assetBaseUrl?: string;
+  diagnostics: {
+    profileName: AsterionAppProfile;
+    profileExplicit: boolean;
+    supabaseConfigured: boolean;
+    supabaseRequired: boolean;
+    dashboardDataSource: DashboardDataSourceKind;
+    dashboardRoutesEnabled: boolean;
+    studentClassClaimSource: 'mock' | 'supabase';
+    hostedProgressSyncEnabled: boolean;
+    productionDashboardAuthority: boolean;
+  };
 }
 
 type RuntimeEnv = Partial<Record<string, string | boolean | undefined>>;
@@ -100,6 +113,12 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     : classroomPilotProfileActive || supabaseDashboardRequested ? 'supabase' : configuredClaimSource ?? 'mock';
   const studentClassClaimSourceExplicit = classroomPilotProfileActive || supabaseDashboardRequested || typeof env.VITE_ASTERION_STUDENT_CLAIM_SOURCE === 'string';
   const dashboardRoutesEnabled = classroomPilotProfileActive || dashboardDemoEnabled || supabaseDashboardRequested;
+  const supabaseSourceWithoutClassroomPilot = !classroomPilotProfileActive
+    && !studentPilotProfileActive
+    && (supabaseDashboardRequested || studentClassClaimSource === 'supabase');
+  const configurationBlockReason = supabaseSourceWithoutClassroomPilot
+    ? 'Supabase classroom sources are active without VITE_ASTERION_APP_PROFILE=classroom-pilot. This build is blocked to avoid mixing hosted authority with a custom/local profile.'
+    : undefined;
   const profileNotices = [
     studentPilotProfileActive && hasNonPilotRuntimeOverride(env)
       ? 'Student pilot profile is active; hosted storage, Supabase claim/dashboard modes, and dashboard demo routes are disabled for this build.'
@@ -108,8 +127,9 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       ? 'Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY before hosted classroom routes and claims can be used.'
       : undefined,
     !explicitProfile && supabaseDashboardRequested
-      ? 'Supabase dashboard data is active without VITE_ASTERION_APP_PROFILE=classroom-pilot. Student claims are forced to Supabase, but deployment should set the classroom-pilot profile.'
+      ? 'Supabase dashboard data is active without VITE_ASTERION_APP_PROFILE=classroom-pilot.'
       : undefined,
+    configurationBlockReason,
     invalidClaimSource
       ? `Unsupported student claim source "${invalidClaimSource}" ignored. Use "mock" or "supabase".`
       : undefined,
@@ -129,6 +149,8 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       dashboardDemoBehaviorEnabled: dashboardDemoEnabled,
     },
     profileNotice,
+    configurationBlocked: Boolean(configurationBlockReason),
+    configurationBlockReason,
     requestedStorageMode,
     effectiveStorageMode: 'local',
     dashboardDemoEnabled,
@@ -152,5 +174,16 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
         : 'Supabase roster claiming is active, but Supabase browser configuration is incomplete. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.'
       : undefined,
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
+    diagnostics: {
+      profileName,
+      profileExplicit: explicitProfile,
+      supabaseConfigured: supabase.isConfigured,
+      supabaseRequired: classroomPilotProfileActive || supabaseDashboardRequested || studentClassClaimSource === 'supabase',
+      dashboardDataSource: effectiveDashboardDataSource,
+      dashboardRoutesEnabled,
+      studentClassClaimSource,
+      hostedProgressSyncEnabled: classroomPilotProfileActive || supabaseDashboardRequested,
+      productionDashboardAuthority: classroomPilotProfileActive,
+    },
   };
 }

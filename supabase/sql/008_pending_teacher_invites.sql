@@ -1,5 +1,5 @@
 create table if not exists public.teacher_invites (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   email text not null,
   display_name text not null,

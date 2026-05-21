@@ -119,7 +119,7 @@ declare
   candidate text;
 begin
   loop
-    candidate := 'AST-' || upper(substr(encode(gen_random_bytes(4), 'hex'), 1, 6));
+    candidate := 'AST-' || upper(substr(encode(extensions.gen_random_bytes(4), 'hex'), 1, 6));
     exit when not exists (
       select 1
       from public.classes c

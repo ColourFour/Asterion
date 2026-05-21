@@ -195,37 +195,31 @@ describe('dashboard routes', () => {
     expect(container.textContent).not.toContain('Export CSV');
   });
 
-  it('forces hosted student claim mode when Supabase dashboard mode is active without classroom profile', async () => {
+  it('blocks Supabase dashboard mode when the classroom-pilot profile is missing', async () => {
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     window.history.replaceState(null, '', '/');
     const container = await render(<App />);
 
-    await act(async () => {
-      Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-
-    expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
-    expect(container.textContent).toContain('Sign in to claim roster slot');
-    expect(container.textContent).toContain('Student claims are forced to Supabase');
+    expect(container.textContent).toContain('Configuration blocked');
+    expect(container.textContent).toContain('Supabase classroom sources are active without VITE_ASTERION_APP_PROFILE=classroom-pilot');
+    expect(container.textContent).toContain('Dashboard source: supabase');
+    expect(container.textContent).toContain('Student claim source: supabase');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
-    expect(container.textContent).not.toContain('Supabase dashboard not configured');
+    expect(container.textContent).not.toContain('Class access required');
     expect(container.textContent).not.toContain('Teacher class dashboard');
   });
 
-  it('shows a safe blocked state when Supabase dashboard mode lacks browser config', async () => {
+  it('blocks Supabase dashboard mode before config probing when the classroom-pilot profile is missing', async () => {
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     vi.stubEnv('VITE_SUPABASE_URL', '');
     vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', '');
     window.history.replaceState(null, '', '/#/teacher');
     const container = await render(<App />);
-    await waitForText(container, 'Supabase dashboard not configured');
+    await waitForText(container, 'Configuration blocked');
 
-    expect(container.textContent).toContain('Supabase dashboard not configured');
-    expect(container.textContent).toContain('Supabase classroom setup data');
-    expect(container.textContent).toContain('Normal student practice remains local and available.');
+    expect(container.textContent).toContain('Configuration blocked');
+    expect(container.textContent).toContain('Profile: custom');
+    expect(container.textContent).toContain('Supabase configured: no');
     expect(container.textContent).not.toContain('P3 Alpha');
     expect(container.textContent).not.toContain('Class progress register');
   });
@@ -247,6 +241,7 @@ describe('dashboard routes', () => {
   });
 
   it('requires an authenticated Supabase session before Supabase dashboard data is shown', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
     vi.stubEnv('VITE_ASTERION_DASHBOARD_DATA_SOURCE', 'supabase');
     vi.stubEnv('VITE_SUPABASE_URL', 'https://asterion-example.supabase.co');
     vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'sb_publishable_example');
