@@ -1,0 +1,2859 @@
+{
+  "artifact_scope": "p3_gold_skill_pack_readiness",
+  "contract": {
+    "blocker_semantics": "A blocker means the skill is not MVP gold. Readiness blockers are report states unless they are listed as contract violations.",
+    "contract_violations_fail_command": true,
+    "mvp_gold_ready_definition": "A reviewed P3 skill is MVP-gold ready only when it has no Phase 2A blockers and no Phase 2A warnings.",
+    "required_warmup_sequence_roles": [
+      "first_step",
+      "complete_step",
+      "guardian_prep"
+    ],
+    "source_evidence_statuses": [
+      "ambiguous",
+      "blocked",
+      "clean",
+      "fallback_only",
+      "missing",
+      "thin"
+    ],
+    "support_content_counts_as_mastery_evidence": false,
+    "warning_semantics": "A warning means the skill has support or resilience risk but does not necessarily make the repo invalid."
+  },
+  "contract_violation_summary": {
+    "items": [],
+    "violation_count": 0,
+    "violation_type_counts": {}
+  },
+  "generated_at": "2026-05-21T14:32:56.088113+00:00",
+  "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
+  "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
+  "per_region_summary": [
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 7,
+      "mvp_gold_ready_count": 0,
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "skill_count": 7,
+      "thin_evidence_skill_count": 1,
+      "warmup_role_gap_skill_count": 0,
+      "warning_only_skill_count": 7,
+      "worked_example_gap_skill_count": 4
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 4,
+      "mvp_gold_ready_count": 0,
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "skill_count": 4,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 4,
+      "worked_example_gap_skill_count": 1
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 5,
+      "mvp_gold_ready_count": 0,
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "skill_count": 5,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 2,
+      "warning_only_skill_count": 5,
+      "worked_example_gap_skill_count": 2
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "region": "Differential Shrine",
+      "region_id": "differential-shrine",
+      "skill_count": 3,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 1
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 4,
+      "mvp_gold_ready_count": 0,
+      "region": "Integral Terraces",
+      "region_id": "integration-gardens",
+      "skill_count": 4,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 0,
+      "warning_only_skill_count": 4,
+      "worked_example_gap_skill_count": 1
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "region": "Iteration Forge",
+      "region_id": "numerical-mines",
+      "skill_count": 3,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 3
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 6,
+      "mvp_gold_ready_count": 0,
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "skill_count": 6,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 0,
+      "warning_only_skill_count": 6,
+      "worked_example_gap_skill_count": 3
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 5,
+      "mvp_gold_ready_count": 0,
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "skill_count": 5,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 0,
+      "warning_only_skill_count": 5,
+      "worked_example_gap_skill_count": 1
+    },
+    {
+      "blocked_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "region": "Vectors Gate",
+      "region_id": "vector-workshop",
+      "skill_count": 3,
+      "thin_evidence_skill_count": 0,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 2
+    }
+  ],
+  "schema_name": "asterion_p3_gold_skill_pack_readiness",
+  "schema_version": 1,
+  "skill_rows": [
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "33summer21_q01",
+        "31autumn21_q06",
+        "31summer22_q02",
+        "31summer23_q03",
+        "32autumn24_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-binomial-term-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-binomial-term-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_binomial_terms_coefficients",
+      "skill_name": "Find binomial terms and coefficients efficiently",
+      "skill_title": "Find binomial terms and coefficients efficiently",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_binomial_first_terms_and_coefficient_0001",
+        "gen_binomial_first_terms_and_coefficient_0002",
+        "gen_binomial_first_terms_and_coefficient_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-binomial-term-001-example-1",
+        "p3-binomial-term-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "31autumn21_q06",
+        "31summer24_q01",
+        "32autumn24_q01",
+        "33summer21_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-binomial-validity-range-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [
+        "p3-binomial-validity-range-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-binomial-validity-range-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_binomial_validity",
+      "skill_name": "State and use binomial expansion validity",
+      "skill_title": "State and use binomial expansion validity",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_binomial_validity_range_0001",
+        "gen_binomial_validity_range_0002",
+        "gen_binomial_validity_range_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-binomial-validity-range-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 1,
+      "clean_evidence_question_ids": [
+        "32autumn25_q05"
+      ],
+      "evidence_status": "thin",
+      "field_guide_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-quadratics-discriminant-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_discriminant_root_conditions",
+      "skill_name": "Use discriminant or root conditions as evidence",
+      "skill_title": "Use discriminant or root conditions as evidence",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_quadratics_discriminant_root_condition_basic_0001",
+        "gen_quadratics_discriminant_root_condition_basic_0002",
+        "gen_quadratics_discriminant_root_condition_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse",
+        "thin_evidence_resilience"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-quadratics-discriminant-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "32autumn21_q02",
+        "33summer25_q01",
+        "32autumn25_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-modulus-cases-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [
+        "p3-modulus-cases-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-modulus-cases-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_modulus_cases",
+      "skill_name": "Split modulus equations or inequalities into valid cases",
+      "skill_title": "Split modulus equations or inequalities into valid cases",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_modulus_equation_basic_0001",
+        "gen_modulus_equation_basic_0002",
+        "gen_modulus_equation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-modulus-cases-001-example-1",
+        "p3-modulus-cases-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "32spring21_q06",
+        "32summer21_q09",
+        "32autumn21_q04",
+        "35summer25_q09"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-partial-fractions-form-001-qc",
+        "p3-partial-fractions-repeated-linear-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_partial_fraction_form",
+      "skill_name": "Set up partial fractions from denominator structure",
+      "skill_title": "Set up partial fractions from denominator structure",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 6,
+      "warmup_practice_ids": [
+        "gen_partial_fractions_distinct_linear_0001",
+        "gen_partial_fractions_distinct_linear_0002",
+        "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_repeated_linear_0001",
+        "gen_partial_fractions_repeated_linear_0002",
+        "gen_partial_fractions_repeated_linear_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-partial-fractions-form-001-example-1",
+        "p3-partial-fractions-repeated-linear-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring21_q02",
+        "33autumn21_q01",
+        "31summer22_q05",
+        "32spring24_q01",
+        "33summer23_q02"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-polynomial-theorem-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_polynomial_remainder_factor",
+      "skill_name": "Use polynomial division and remainder or factor theorem evidence",
+      "skill_title": "Use polynomial division and remainder or factor theorem evidence",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_polynomial_remainder_factor_basic_0001",
+        "gen_polynomial_remainder_factor_basic_0002",
+        "gen_polynomial_remainder_factor_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-polynomial-theorem-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "32summer22_q03",
+        "31autumn24_q01",
+        "31summer25_q05"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Algebra",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-algebra-rearrangement-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Algebra Vault",
+      "region_id": "algebra-forge",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_alg_structure_rearrangement",
+      "skill_name": "Choose algebraic structure before expanding",
+      "skill_title": "Choose algebraic structure before expanding",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Algebra",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_algebra_structure_rearrangement_basic_0001",
+        "gen_algebra_structure_rearrangement_basic_0002",
+        "gen_algebra_structure_rearrangement_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-algebra-rearrangement-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q02",
+        "32autumn21_q05",
+        "32spring22_q02",
+        "35autumn25_q02",
+        "31autumn25_q05"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Complex numbers",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-complex-locus-argument-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_complex_argand_loci_regions",
+      "skill_name": "Interpret loci and regions on an Argand diagram",
+      "skill_title": "Interpret loci and regions on an Argand diagram",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Complex numbers",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_complex_locus_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "complete_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-complex-locus-argument-001-example-1",
+        "p3-complex-locus-argument-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring21_q08",
+        "32autumn21_q03",
+        "35autumn25_q05",
+        "33summer25_q06",
+        "31autumn21_q10"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-complex-form-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Complex numbers",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_complex_cartesian_conjugate",
+      "skill_name": "Use Cartesian complex arithmetic and conjugates",
+      "skill_title": "Use Cartesian complex arithmetic and conjugates",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Complex numbers",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_complex_cartesian_conjugate_basic_0001",
+        "gen_complex_cartesian_conjugate_basic_0002",
+        "gen_complex_cartesian_conjugate_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-complex-form-001-example-1",
+        "p3-complex-form-001-example-2",
+        "p3-complex-form-001-example-3"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer21_q05",
+        "33summer25_q04",
+        "31autumn25_q05"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-complex-form-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Complex numbers",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-complex-form-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_complex_modulus_argument_form",
+      "skill_name": "Move between Cartesian and modulus-argument form",
+      "skill_title": "Move between Cartesian and modulus-argument form",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Complex numbers",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_complex_modulus_argument_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "first_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-complex-form-001-example-1",
+        "p3-complex-form-001-example-2",
+        "p3-complex-form-001-example-3"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q05",
+        "31summer21_q05",
+        "33autumn21_q11",
+        "35summer25_q03",
+        "31summer25_q06"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-complex-roots-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Complex numbers",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-complex-roots-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_complex_roots_powers",
+      "skill_name": "Find complex powers and roots using the suitable form",
+      "skill_title": "Find complex powers and roots using the suitable form",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Complex numbers",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_complex_roots_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "complete_step"
+      ],
+      "warmup_roles_present": [
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-complex-roots-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "33autumn21_q10",
+        "35autumn25_q11",
+        "32autumn25_q10",
+        "33summer24_q09"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differential equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differential-context-model-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Differential Shrine",
+      "region_id": "differential-shrine",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_de_forming_context_model",
+      "skill_name": "Form differential equations from rate contexts",
+      "skill_title": "Form differential equations from rate contexts",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differential equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_differential_context_model_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "complete_step"
+      ],
+      "warmup_roles_present": [
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-differential-context-model-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q07",
+        "32autumn21_q07",
+        "32summer25_q08",
+        "31autumn25_q08",
+        "35summer25_q11"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differential equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differential-initial-condition-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Differential Shrine",
+      "region_id": "differential-shrine",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_de_initial_condition",
+      "skill_name": "Apply initial conditions after integration",
+      "skill_title": "Apply initial conditions after integration",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differential equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_differential_initial_condition_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "complete_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differential-initial-condition-001-example-1",
+        "p3-differential-initial-condition-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q07",
+        "32spring21_q04",
+        "32autumn21_q07",
+        "35summer25_q11",
+        "33summer25_q10"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differential-separation-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differential equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differential-separation-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Differential Shrine",
+      "region_id": "differential-shrine",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_de_separation_setup",
+      "skill_name": "Separate variables before integrating",
+      "skill_title": "Separate variables before integrating",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differential equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_differential_separation_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "first_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differential-separation-001-example-1",
+        "p3-differential-separation-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31summer21_q09",
+        "32summer21_q08",
+        "35summer25_q04",
+        "33summer21_q08",
+        "35summer25_q07"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differentiation",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_diff_chain_product_quotient",
+      "skill_name": "Apply chain, product, and quotient rules accurately",
+      "skill_title": "Apply chain, product, and quotient rules accurately",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 3,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differentiation",
+      "warmup_practice_count": 4,
+      "warmup_practice_ids": [
+        "gen_differentiation_chain_product_basic_0001",
+        "gen_differentiation_chain_product_basic_0002",
+        "gen_differentiation_chain_product_basic_0003",
+        "gen_differentiation_product_rule_basic_0001"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note"
+      ],
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-differentiation-method-001-example-1",
+        "p3-differentiation-method-001-example-2",
+        "p3-differentiation-method-001-example-3"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differentiation-implicit-log-exp-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differentiation",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differentiation-implicit-log-exp-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_diff_implicit_log_exp",
+      "skill_name": "Differentiate implicit log or exponential relations",
+      "skill_title": "Differentiate implicit log or exponential relations",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differentiation",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_differentiation_implicit_log_exp_basic_0001",
+        "gen_differentiation_implicit_log_exp_basic_0002",
+        "gen_differentiation_implicit_log_exp_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-differentiation-implicit-log-exp-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "32summer23_q07",
+        "31summer21_q06",
+        "33summer21_q03",
+        "35summer25_q06"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differentiation-method-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differentiation",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differentiation-method-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_diff_method_selection",
+      "skill_name": "Name the differentiation method before differentiating",
+      "skill_title": "Name the differentiation method before differentiating",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 3,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differentiation",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_differentiation_chain_rule_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "first_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles"
+      ],
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-differentiation-method-001-example-1",
+        "p3-differentiation-method-001-example-2",
+        "p3-differentiation-method-001-example-3"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "33summer21_q03",
+        "31summer21_q06",
+        "31autumn25_q07",
+        "35summer25_q06"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differentiation",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-parametric-derivative-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_diff_parametric_gradients",
+      "skill_name": "Differentiate parametric equations using the derivative ratio",
+      "skill_title": "Differentiate parametric equations using the derivative ratio",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differentiation",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_parametric_derivative_ratio_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "complete_step"
+      ],
+      "warmup_roles_present": [
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-parametric-derivative-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "33summer21_q08",
+        "31summer21_q09",
+        "31autumn25_q04"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-differentiation-follow-through-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Differentiation",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-differentiation-follow-through-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Calculus Cliffs",
+      "region_id": "calculus-cliffs",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_diff_stationary_tangent_normal",
+      "skill_name": "Use derivatives for stationary points, tangents, and normals",
+      "skill_title": "Use derivatives for stationary points, tangents, and normals",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Differentiation",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_differentiation_stationary_tangent_normal_basic_0001",
+        "gen_differentiation_stationary_tangent_normal_basic_0002",
+        "gen_differentiation_stationary_tangent_normal_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-differentiation-follow-through-001-example-1",
+        "p3-differentiation-follow-through-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn21_q04",
+        "33summer21_q04",
+        "33summer25_q03",
+        "32spring21_q10",
+        "31summer21_q04"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-integration-definite-area-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Integration",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-integration-definite-area-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Integral Terraces",
+      "region_id": "integration-gardens",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_int_definite_improper_area",
+      "skill_name": "Evaluate definite and improper integrals exactly",
+      "skill_title": "Evaluate definite and improper integrals exactly",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Integration",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_integration_definite_area_basic_0001",
+        "gen_integration_definite_area_basic_0002",
+        "gen_integration_definite_area_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-integration-definite-area-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn21_q04",
+        "32summer21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Integration",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-integration-method-choice-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Integral Terraces",
+      "region_id": "integration-gardens",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_int_method_choice",
+      "skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+      "skill_title": "Choose a direct rule, substitution, parts, or algebraic rewrite",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Integration",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_integration_method_setup_basic_0001",
+        "gen_integration_method_setup_basic_0002",
+        "gen_integration_method_setup_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-integration-method-choice-001-example-1",
+        "p3-integration-method-choice-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "32spring21_q06",
+        "33summer21_q04",
+        "31summer21_q10"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-integration-method-choice-001",
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Integration",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-integration-method-choice-001-qc",
+        "p3-partial-fractions-form-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Integral Terraces",
+      "region_id": "integration-gardens",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_int_partial_fractions",
+      "skill_name": "Integrate rational functions using partial fractions",
+      "skill_title": "Integrate rational functions using partial fractions",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Integration",
+      "warmup_practice_count": 6,
+      "warmup_practice_ids": [
+        "gen_partial_fractions_distinct_linear_0001",
+        "gen_partial_fractions_distinct_linear_0002",
+        "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_repeated_linear_0001",
+        "gen_partial_fractions_repeated_linear_0002",
+        "gen_partial_fractions_repeated_linear_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 4,
+      "worked_example_ids": [
+        "p3-integration-method-choice-001-example-1",
+        "p3-integration-method-choice-001-example-2",
+        "p3-partial-fractions-form-001-example-1",
+        "p3-partial-fractions-repeated-linear-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q04",
+        "31autumn21_q04",
+        "33autumn21_q04",
+        "32autumn25_q04",
+        "31autumn25_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Integration",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-integration-parts-substitution-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Integral Terraces",
+      "region_id": "integration-gardens",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_int_parts_substitution",
+      "skill_name": "Use integration by parts or substitution with correct setup",
+      "skill_title": "Use integration by parts or substitution with correct setup",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Integration",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_integration_parts_substitution_basic_0001",
+        "gen_integration_parts_substitution_basic_0002",
+        "gen_integration_parts_substitution_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-integration-parts-substitution-001-example-1",
+        "p3-integration-parts-substitution-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35summer25_q04",
+        "35autumn25_q04"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-log-calculus-context-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-log-calculus-context-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_calculus_contexts",
+      "skill_name": "Handle log and exponential functions inside calculus questions",
+      "skill_title": "Handle log and exponential functions inside calculus questions",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_calculus_context_basic_0001",
+        "gen_log_calculus_context_basic_0002",
+        "gen_log_calculus_context_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-log-calculus-context-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring23_q01",
+        "31autumn25_q02",
+        "32spring22_q03",
+        "32autumn21_q01",
+        "33summer25_q02"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-log-exp-convert-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_convert_forms",
+      "skill_name": "Convert between logarithmic and exponential form",
+      "skill_title": "Convert between logarithmic and exponential form",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-log-exp-convert-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "33autumn22_q01",
+        "31autumn25_q02",
+        "32spring21_q01",
+        "33summer25_q02"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-log-domain-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [
+        "p3-log-domain-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-log-domain-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_domain_validation",
+      "skill_name": "Reject invalid logarithmic roots using domain checks",
+      "skill_title": "Reject invalid logarithmic roots using domain checks",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_domain_validation_basic_0001",
+        "gen_log_domain_validation_basic_0002",
+        "gen_log_domain_validation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-log-domain-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn22_q03",
+        "31summer23_q01",
+        "35summer25_q01",
+        "32autumn25_q02",
+        "33summer23_q01"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-exp-equations-001-qc",
+        "p3-ln-e-inverse-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_exponential_equations",
+      "skill_name": "Solve exponential equations using matching bases or natural logs",
+      "skill_title": "Solve exponential equations using matching bases or natural logs",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-exp-equations-001-example-1",
+        "p3-ln-e-inverse-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring21_q01",
+        "31autumn25_q02",
+        "33summer25_q02",
+        "32summer23_q02",
+        "32spring24_q04"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-log-invalid-operations-001",
+        "p3-log-laws-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [
+        "p3-log-invalid-operations-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-log-invalid-operations-001-qc",
+        "p3-log-laws-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_laws_equations",
+      "skill_name": "Use log laws to solve logarithmic equations",
+      "skill_title": "Use log laws to solve logarithmic equations",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_equation_basic_0001",
+        "gen_log_equation_basic_0002",
+        "gen_log_equation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-log-invalid-operations-001-example-1",
+        "p3-log-laws-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 3,
+      "clean_evidence_question_ids": [
+        "32summer21_q03",
+        "32spring22_q03",
+        "35autumn25_q03"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-log-linearisation-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Logarithmic and exponential functions",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-log-linearisation-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Logarithm Observatory",
+      "region_id": "logarithm-grove",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_log_linearisation",
+      "skill_name": "Linearise logarithmic or exponential relationships",
+      "skill_title": "Linearise logarithmic or exponential relationships",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Logarithmic and exponential functions",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_log_linearisation_basic_0001",
+        "gen_log_linearisation_basic_0002",
+        "gen_log_linearisation_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-log-linearisation-001-example-1",
+        "p3-log-linearisation-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring21_q09",
+        "33summer21_q06",
+        "32summer24_q05",
+        "32autumn24_q02",
+        "35autumn25_q10"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Numerical solution of equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Iteration Forge",
+      "region_id": "numerical-mines",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_num_accuracy_rounding",
+      "skill_name": "Control accuracy and rounding in numerical solutions",
+      "skill_title": "Control accuracy and rounding in numerical solutions",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Numerical solution of equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_numerical_accuracy_rounding_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "complete_step"
+      ],
+      "warmup_roles_present": [
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-numerical-method-evidence-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "31autumn21_q08",
+        "32autumn21_q11",
+        "32spring22_q07",
+        "35autumn25_q10"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Numerical solution of equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-iteration-formula-discipline-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Iteration Forge",
+      "region_id": "numerical-mines",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_num_iteration_formula",
+      "skill_name": "Apply an iteration formula consistently",
+      "skill_title": "Apply an iteration formula consistently",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Numerical solution of equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_numerical_iteration_formula_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "complete_step"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-iteration-formula-discipline-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn25_q09",
+        "32autumn25_q06",
+        "31summer21_q07",
+        "32spring21_q09",
+        "33summer25_q11"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Numerical solution of equations",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-numerical-method-evidence-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Iteration Forge",
+      "region_id": "numerical-mines",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_num_sign_change_graph_evidence",
+      "skill_name": "Justify roots using sign changes or graph evidence",
+      "skill_title": "Justify roots using sign changes or graph evidence",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Numerical solution of equations",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_numerical_sign_change_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "first_step"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-numerical-method-evidence-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn21_q05",
+        "32spring21_q03",
+        "33autumn21_q05",
+        "35summer25_q02",
+        "31autumn25_q03"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-trig-interval-001",
+        "p3-trig-lost-solutions-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [
+        "p3-trig-lost-solutions-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Trigonometry",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-trig-interval-001-qc",
+        "p3-trig-lost-solutions-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_trig_equation_interval",
+      "skill_name": "Solve trig equations over a specified interval",
+      "skill_title": "Solve trig equations over a specified interval",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Trigonometry",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_trig_solve_equation_interval_basic_0001",
+        "gen_trig_solve_equation_interval_basic_0002",
+        "gen_trig_solve_equation_interval_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-interval-001-example-1",
+        "p3-trig-lost-solutions-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32autumn21_q06",
+        "32autumn25_q08",
+        "33summer25_q08",
+        "31summer21_q04",
+        "32summer21_q06"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-trig-identity-selection-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Trigonometry",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-trig-identity-selection-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_trig_identity_selection",
+      "skill_name": "Choose trig identities for proof or simplification",
+      "skill_title": "Choose trig identities for proof or simplification",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Trigonometry",
+      "warmup_practice_count": 6,
+      "warmup_practice_ids": [
+        "gen_trig_double_angle_basic_0001",
+        "gen_trig_double_angle_basic_0002",
+        "gen_trig_double_angle_basic_0003",
+        "gen_trig_identity_rewrite_basic_0001",
+        "gen_trig_identity_rewrite_basic_0002",
+        "gen_trig_identity_rewrite_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-identity-selection-001-example-1",
+        "p3-trig-identity-selection-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer22_q02",
+        "31autumn21_q05",
+        "35summer25_q02",
+        "33autumn21_q05",
+        "31autumn25_q03"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Trigonometry",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-trig-quadrant-discipline-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_trig_quadrant_solutions",
+      "skill_name": "Use quadrant discipline to find every trig solution",
+      "skill_title": "Use quadrant discipline to find every trig solution",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Trigonometry",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_trig_solve_equation_interval_basic_0001",
+        "gen_trig_solve_equation_interval_basic_0002",
+        "gen_trig_solve_equation_interval_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-trig-quadrant-discipline-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 4,
+      "clean_evidence_question_ids": [
+        "32spring21_q05",
+        "31autumn21_q02",
+        "33autumn21_q06",
+        "31autumn25_q03"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Trigonometry",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_trig_r_form_compound_angles",
+      "skill_name": "Rewrite a sin and cos combination in R-form",
+      "skill_title": "Rewrite a sin and cos combination in R-form",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Trigonometry",
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_trig_r_form_basic_0001",
+        "gen_trig_r_form_basic_0002",
+        "gen_trig_r_form_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-reciprocal-rform-001-example-1",
+        "p3-trig-reciprocal-rform-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32summer21_q06",
+        "32autumn21_q08",
+        "33summer21_q05",
+        "32autumn25_q08",
+        "35summer25_q02"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Trigonometry",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-trig-reciprocal-rform-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Trigonometry Spire",
+      "region_id": "trig-observatory",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_trig_reciprocal_double_angle",
+      "skill_name": "Transform reciprocal and double-angle equations safely",
+      "skill_title": "Transform reciprocal and double-angle equations safely",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Trigonometry",
+      "warmup_practice_count": 6,
+      "warmup_practice_ids": [
+        "gen_trig_double_angle_basic_0001",
+        "gen_trig_double_angle_basic_0002",
+        "gen_trig_double_angle_basic_0003",
+        "gen_trig_identity_rewrite_basic_0001",
+        "gen_trig_identity_rewrite_basic_0002",
+        "gen_trig_identity_rewrite_basic_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 2,
+      "worked_example_ids": [
+        "p3-trig-reciprocal-rform-001-example-1",
+        "p3-trig-reciprocal-rform-001-example-2"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "33autumn21_q08",
+        "31autumn25_q11",
+        "32autumn25_q11",
+        "33summer23_q09",
+        "33autumn23_q11"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-vectors-3d-geometry-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Vectors",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-vectors-3d-geometry-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Vectors Gate",
+      "region_id": "vector-workshop",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_vec_3d_geometry_modelling",
+      "skill_name": "Translate 3D geometric conditions into vector equations",
+      "skill_title": "Translate 3D geometric conditions into vector equations",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Vectors",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_vectors_line_relationship_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "complete_step"
+      ],
+      "warmup_roles_present": [
+        "guardian_prep"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-vectors-3d-geometry-001-example-1"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "32spring21_q07",
+        "32autumn21_q10",
+        "33summer25_q09",
+        "31autumn25_q11",
+        "35autumn25_q09"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-vectors-lines-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Vectors",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-vectors-lines-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Vectors Gate",
+      "region_id": "vector-workshop",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_vec_line_equations_intersections",
+      "skill_name": "Form and compare vector equations of lines",
+      "skill_title": "Form and compare vector equations of lines",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Vectors",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_vectors_line_intersection_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "complete_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "first_step"
+      ],
+      "warnings": [
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 3,
+      "worked_example_ids": [
+        "p3-vectors-lines-001-example-1",
+        "p3-vectors-lines-001-example-2",
+        "p3-vectors-lines-001-example-3"
+      ]
+    },
+    {
+      "blockers": [],
+      "clean_evidence_count": 5,
+      "clean_evidence_question_ids": [
+        "31autumn21_q09",
+        "31summer21_q08",
+        "32summer21_q11",
+        "35summer25_q10",
+        "35autumn25_q09"
+      ],
+      "evidence_status": "clean",
+      "field_guide_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
+      "field_guide_status": "available",
+      "future_enhancements": [],
+      "mark_scheme_move_note_ids": [],
+      "mark_scheme_move_note_status": "missing",
+      "mastery_policy_status": "available",
+      "misconception_repair_ids": [],
+      "misconception_repair_status": "missing",
+      "mvp_gold_ready": false,
+      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "official_syllabus_section": "Vectors",
+      "prerequisite_ref_status": "support_only",
+      "prerequisite_repair_status": "missing",
+      "quick_check_ids": [
+        "p3-vectors-scalar-product-001-qc"
+      ],
+      "quick_check_status": "available",
+      "region": "Vectors Gate",
+      "region_id": "vector-workshop",
+      "reviewed_p3_skill_map_row_status": "exists",
+      "skill_id": "p3_vec_scalar_product_angles",
+      "skill_name": "Use scalar products for angles and perpendicular conditions",
+      "skill_title": "Use scalar products for angles and perpendicular conditions",
+      "source_backed_worked_example_contract_errors": [],
+      "source_backed_worked_example_count": 0,
+      "support_content_contaminating_ids": [],
+      "support_content_status": "separated",
+      "syllabus_section": "Vectors",
+      "warmup_practice_count": 1,
+      "warmup_practice_ids": [
+        "gen_vectors_scalar_product_basic_0001"
+      ],
+      "warmup_roles_missing": [
+        "first_step",
+        "guardian_prep"
+      ],
+      "warmup_roles_present": [
+        "complete_step"
+      ],
+      "warnings": [
+        "fewer_than_two_worked_examples",
+        "missing_mark_scheme_move_note",
+        "missing_misconception_repair_note",
+        "missing_prerequisite_repair_note",
+        "missing_some_warmup_sequence_roles",
+        "source_backed_worked_examples_sparse"
+      ],
+      "worked_example_count": 1,
+      "worked_example_ids": [
+        "p3-vectors-scalar-product-001-example-1"
+      ]
+    }
+  ],
+  "skill_summary": {
+    "blocked_skill_count": 0,
+    "blocker_counts": {},
+    "evidence_status_counts": {
+      "ambiguous": 0,
+      "blocked": 0,
+      "clean": 39,
+      "fallback_only": 0,
+      "missing": 0,
+      "thin": 1
+    },
+    "mvp_gold_ready_count": 0,
+    "thin_resilience_risk_skill_count": 1,
+    "total_reviewed_p3_skills": 40,
+    "warning_counts": {
+      "fewer_than_two_worked_examples": 18,
+      "missing_mark_scheme_move_note": 40,
+      "missing_misconception_repair_note": 35,
+      "missing_prerequisite_repair_note": 40,
+      "missing_some_warmup_sequence_roles": 14,
+      "source_backed_worked_examples_sparse": 38,
+      "thin_evidence_resilience": 1
+    },
+    "warning_only_skill_count": 40
+  },
+  "thin_region_priority_summary": [
+    {
+      "blocked_skill_count": 0,
+      "low_clean_evidence_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "priority_rank": 1,
+      "reasons": [
+        "missing sequence-role breadth",
+        "fewer warm-ups",
+        "fewer worked examples",
+        "missing repair tags"
+      ],
+      "region": "Differential Shrine",
+      "region_id": "differential-shrine",
+      "skill_count": 3,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 1
+    },
+    {
+      "blocked_skill_count": 0,
+      "low_clean_evidence_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "priority_rank": 2,
+      "reasons": [
+        "missing sequence-role breadth",
+        "fewer warm-ups",
+        "fewer worked examples",
+        "missing repair tags"
+      ],
+      "region": "Iteration Forge",
+      "region_id": "numerical-mines",
+      "skill_count": 3,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 3
+    },
+    {
+      "blocked_skill_count": 0,
+      "low_clean_evidence_skill_count": 0,
+      "missing_repair_note_skill_count": 3,
+      "mvp_gold_ready_count": 0,
+      "priority_rank": 3,
+      "reasons": [
+        "missing sequence-role breadth",
+        "fewer warm-ups",
+        "fewer worked examples",
+        "missing repair tags"
+      ],
+      "region": "Vectors Gate",
+      "region_id": "vector-workshop",
+      "skill_count": 3,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 2
+    },
+    {
+      "blocked_skill_count": 0,
+      "low_clean_evidence_skill_count": 0,
+      "missing_repair_note_skill_count": 4,
+      "mvp_gold_ready_count": 0,
+      "priority_rank": 4,
+      "reasons": [
+        "missing sequence-role breadth",
+        "fewer warm-ups",
+        "fewer worked examples",
+        "missing repair tags"
+      ],
+      "region": "Argand Atrium",
+      "region_id": "complex-harbor",
+      "skill_count": 4,
+      "warmup_role_gap_skill_count": 3,
+      "warning_only_skill_count": 4,
+      "worked_example_gap_skill_count": 1
+    }
+  ]
+}

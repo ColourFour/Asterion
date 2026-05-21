@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Asterion P3 Gold Skill Pack Readiness Report",
+  "type": "object",
+  "required": [
+    "schema_name",
+    "schema_version",
+    "generated_at",
+    "artifact_scope",
+    "skill_summary",
+    "per_region_summary",
+    "thin_region_priority_summary",
+    "skill_rows",
+    "contract_violation_summary"
+  ],
+  "properties": {
+    "schema_name": { "const": "asterion_p3_gold_skill_pack_readiness" },
+    "schema_version": { "const": 1 },
+    "artifact_scope": { "const": "p3_gold_skill_pack_readiness" },
+    "generated_at": { "type": "string" },
+    "skill_summary": {
+      "type": "object",
+      "required": [
+        "total_reviewed_p3_skills",
+        "mvp_gold_ready_count",
+        "blocked_skill_count",
+        "warning_only_skill_count",
+        "thin_resilience_risk_skill_count"
+      ]
+    },
+    "skill_rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "skill_id",
+          "skill_name",
+          "region",
+          "syllabus_section",
+          "evidence_status",
+          "clean_evidence_count",
+          "support_content_status",
+          "field_guide_status",
+          "worked_example_count",
+          "source_backed_worked_example_count",
+          "quick_check_status",
+          "warmup_roles_present",
+          "warmup_roles_missing",
+          "misconception_repair_status",
+          "prerequisite_repair_status",
+          "mark_scheme_move_note_status",
+          "blockers",
+          "warnings",
+          "next_action"
+        ],
+        "properties": {
+          "evidence_status": {
+            "enum": ["clean", "thin", "ambiguous", "blocked", "fallback_only", "missing"]
+          },
+          "support_content_status": {
+            "enum": ["separated", "contaminated"]
+          },
+          "field_guide_status": {
+            "enum": ["available", "missing"]
+          },
+          "quick_check_status": {
+            "enum": ["available", "missing"]
+          },
+          "misconception_repair_status": {
+            "enum": ["available", "missing"]
+          },
+          "prerequisite_repair_status": {
+            "enum": ["available", "missing", "not_applicable"]
+          },
+          "mark_scheme_move_note_status": {
+            "enum": ["available", "missing"]
+          }
+        }
+      }
+    }
+  }
+}

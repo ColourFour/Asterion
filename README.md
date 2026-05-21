@@ -30,6 +30,7 @@ Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work
 - [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
 - [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
+- [Phase 2 Content Lab Gold Skill Packs](docs/phase-2-content-lab-gold-skill-packs.md): P3-only Gold Skill Pack Depth Pass for real-student readiness.
 - [Cleanup Archive](docs/archive/cleanup-2026-05-19/README.md): historical May 2026 snapshots and superseded planning notes retained for continuity.
 - [Docs Review Archive](docs/archive/docs-review-2026-05-21/README.md): dated audits, reports, handoffs, smoke artifacts, and superseded review notes moved out of the active docs root.
 
@@ -168,9 +169,10 @@ P3 curriculum contract and inventory reports are generated separately:
 npm run validate:p3-skill-map
 npm run inventory:p3-content
 npm run coverage:p3-matrix
+npm run report:p3-gold-skill-packs
 ```
 
-`validate:p3-skill-map` checks the reviewed CAIE 9709 P3 skill contract and writes the coverage report. `inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`, which inventories Field Guides, snippets, worked examples, Quick Checks, warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export tags, and routing-audit status by region and reviewed skill. `coverage:p3-matrix` writes the teacher-facing JSON and Markdown coverage matrix, including clean mastery evidence, deferred ambiguous evidence when present, support gaps, and correction priorities. Missing instructional support is reported as a gap; unsafe P3 mastery evidence fails the command. Image-reviewed app-route mismatches can be accepted only with `validated_skill_map_route`, `clean_mastery_evidence`, and explicit mastery/practice/export allow flags. Mixed-topic or part-level ambiguous P3 routing cases must be deferred when they cannot be resolved: they remain visible and practice-allowed where image evidence is structurally valid, but are blocked from mastery evidence and export.
+`validate:p3-skill-map` checks the reviewed CAIE 9709 P3 skill contract and writes the coverage report. `inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`, which inventories Field Guides, snippets, worked examples, Quick Checks, warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export tags, and routing-audit status by region and reviewed skill. `coverage:p3-matrix` writes the teacher-facing JSON and Markdown coverage matrix, including clean mastery evidence, deferred ambiguous evidence when present, support gaps, and correction priorities. `report:p3-gold-skill-packs` writes the Phase 2A MVP-gold readiness report and separates blockers from warnings without generating new content. Missing instructional support is reported as a gap; unsafe P3 mastery evidence fails the command. Image-reviewed app-route mismatches can be accepted only with `validated_skill_map_route`, `clean_mastery_evidence`, and explicit mastery/practice/export allow flags. Mixed-topic or part-level ambiguous P3 routing cases must be deferred when they cannot be resolved: they remain visible and practice-allowed where image evidence is structurally valid, but are blocked from mastery evidence and export.
 
 Run the pipeline with:
 
@@ -191,7 +193,7 @@ python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 
 `public/assets/exam-bank-data/question_bank.json` must remain unchanged by Content Lab work. Legacy `public/data/question_bank*.json` files are not the active exam-bank runtime truth and must not be treated as curriculum authority.
 
-Phase 1 enforcement is intentionally narrow: every method, concept, and mistake-repair snippet in Logarithm Observatory, Algebra Vault, and Trigonometry Spire must have at least one reviewed, traceable worked example, and first-batch Quick Checks and warm-ups must resolve their `example_model_id` links. Phase 2 expands the same rule to all P3 regions only after the first batch passes.
+Phase 1 enforcement is intentionally narrow: every method, concept, and mistake-repair snippet in Logarithm Observatory, Algebra Vault, and Trigonometry Spire must have at least one reviewed, traceable worked example, and first-batch Quick Checks and warm-ups must resolve their `example_model_id` links. [Phase 2](docs/phase-2-content-lab-gold-skill-packs.md) expands the same rule to all P3 regions only after the first batch passes.
 
 ## System Boundaries
 
@@ -508,6 +510,7 @@ For JSON paths like `p3/15autumn25/questions/q01.png`, Asterion tries `/assets/e
 npm run validate:p3-skill-map
 npm run inventory:p3-content
 npm run coverage:p3-matrix
+npm run report:p3-gold-skill-packs
 ```
 
 4. Keep topic-routing records clean/reviewed before treating placement as validated. Fallback label placements are display-only.
@@ -663,6 +666,7 @@ npm run data:p3
 npm run validate:p3-skill-map
 npm run inventory:p3-content
 npm run coverage:p3-matrix
+npm run report:p3-gold-skill-packs
 npm run build
 ```
 
