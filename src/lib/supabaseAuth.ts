@@ -189,13 +189,14 @@ export function useSupabaseAuthSession(options: SupabaseAuthHookOptions = {}): S
     const client = await ensureClient();
     if (!client) return { ok: false, error: 'Supabase Auth is unavailable.' };
 
+    const intendedRoute = redirectTo ? undefined : dashboardAuthRouteFromLocation(window.location.pathname, window.location.hash);
     if (!redirectTo) {
-      saveSupabaseAuthIntendedRoute(dashboardAuthRouteFromLocation(window.location.pathname, window.location.hash));
+      saveSupabaseAuthIntendedRoute(intendedRoute);
     }
     const result = await client.auth.signInWithOtp({
       email: trimmed,
       options: {
-        emailRedirectTo: redirectTo ?? supabaseMagicLinkRedirectTo(),
+        emailRedirectTo: redirectTo ?? supabaseMagicLinkRedirectTo(window.location, intendedRoute),
       },
     });
     if (result.error) {

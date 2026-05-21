@@ -107,7 +107,7 @@ describe('Supabase Auth shell', () => {
     expect(fake.signInWithOtp).toHaveBeenCalledWith({
       email: 'teacher@example.test',
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/?asterion_auth_route=teacher`,
       },
     });
     const [signInInput] = fake.signInWithOtp.mock.calls[0] as unknown as [{ options: { emailRedirectTo: string } }];
