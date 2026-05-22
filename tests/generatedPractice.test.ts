@@ -193,6 +193,6 @@ describe('generated practice runtime loader', () => {
     expect(byId.get('gen_binomial_first_terms_and_coefficient_0002')?.answer).toContain('valid for');
     expect(byId.get('gen_integration_method_setup_basic_0001')?.prompt).toContain('Using u = x^2 + 5');
     expect(byId.get('gen_integration_parts_substitution_basic_0001')?.prompt).toContain('Using u = x^2 + 1');
-    expect(byId.get('gen_complex_roots_basic_0001')?.keyMethod).toBe('Find the pair of square roots in modulus-argument form.');
+    expect(byId.get('gen_complex_roots_basic_0001')?.keyMethod).toBe('Roots need every argument branch');
   });
 });

@@ -493,7 +493,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Complex numbers",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: plotting centres, distances, and angles prepares the locus move but does not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -542,7 +542,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Complex numbers",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation is support-only here: students should rehearse expanding products and simplifying fractions, but only clean P3 complex-number evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -586,7 +586,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Complex numbers",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: use them to check quadrant and angle work, without treating prerequisite practice as P3 complex-number mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -635,7 +635,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Complex numbers",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and radians/trigonometry are support-only: exact-angle fluency helps list branches, but only reviewed P3 complex roots/powers evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

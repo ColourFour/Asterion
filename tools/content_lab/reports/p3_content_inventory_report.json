@@ -156,8 +156,8 @@
       ],
       "skill_count": 4,
       "snippet_count": 3,
-      "warmup_support_count": 6,
-      "worked_example_count": 6
+      "warmup_support_count": 12,
+      "worked_example_count": 7
     },
     {
       "active_by_default": false,
@@ -1069,7 +1069,7 @@
         "32summer21_q02",
         "35autumn25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: plotting centres, distances, and angles prepares the locus move but does not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1103,9 +1103,11 @@
         "complex_numbers.locus_basic"
       ],
       "warmup_practice_ids": [
-        "gen_complex_locus_basic_0001"
+        "gen_complex_locus_basic_0001",
+        "gen_complex_locus_basic_0002",
+        "gen_complex_locus_basic_0003"
       ],
-      "warmup_support_count": 1,
+      "warmup_support_count": 3,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-complex-locus-argument-001-example-1",
@@ -1177,7 +1179,7 @@
         "33summer25_q06",
         "35autumn25_q05"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation is support-only here: students should rehearse expanding products and simplifying fractions, but only clean P3 complex-number evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1288,7 +1290,7 @@
         "33summer25_q04",
         "35summer25_q03"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: use them to check quadrant and angle work, without treating prerequisite practice as P3 complex-number mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1322,9 +1324,11 @@
         "complex_numbers.modulus_argument_basic"
       ],
       "warmup_practice_ids": [
-        "gen_complex_modulus_argument_basic_0001"
+        "gen_complex_modulus_argument_basic_0001",
+        "gen_complex_modulus_argument_basic_0002",
+        "gen_complex_modulus_argument_basic_0003"
       ],
-      "warmup_support_count": 1,
+      "warmup_support_count": 3,
       "worked_example_count": 3,
       "worked_example_ids": [
         "p3-complex-form-001-example-1",
@@ -1402,7 +1406,7 @@
         "33autumn21_q11",
         "35summer25_q03"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and radians/trigonometry are support-only: exact-angle fluency helps list branches, but only reviewed P3 complex roots/powers evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1436,12 +1440,15 @@
         "complex_numbers.roots_basic"
       ],
       "warmup_practice_ids": [
-        "gen_complex_roots_basic_0001"
+        "gen_complex_roots_basic_0001",
+        "gen_complex_roots_basic_0002",
+        "gen_complex_roots_basic_0003"
       ],
-      "warmup_support_count": 1,
-      "worked_example_count": 1,
+      "warmup_support_count": 3,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-complex-roots-001-example-1"
+        "p3-complex-roots-001-example-1",
+        "p3-complex-roots-001-example-2"
       ]
     },
     {

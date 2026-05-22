@@ -360,7 +360,7 @@ function generatedItems(json: string): GeneratedPracticeItem[] {
 function existingRuntimeItem(overrides: Partial<GeneratedPracticeItem> = {}): GeneratedPracticeItem {
   return {
     practice_id: 'existing-reviewed-complex-locus',
-    generator_family: 'complex_numbers.locus_basic',
+    generator_family: 'complex_numbers.legacy_locus_reviewed',
     paper_family: 'p3',
     topic: 'complex_numbers',
     skill_target_id: 'p3_complex_argand_loci_regions',
@@ -746,7 +746,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(runtimeItems.some((item) => item.practice_id === 'existing-fallback-runtime-item')).toBe(false);
       expect(runtimeItems.filter((item) => item.practice_id === 'existing-reviewed-complex-locus')).toHaveLength(1);
       expect(runtimeItems.find((item) => item.practice_id === 'existing-reviewed-complex-locus')).toMatchObject({
-        generator_family: 'complex_numbers.locus_basic',
+        generator_family: 'complex_numbers.legacy_locus_reviewed',
         skill_target_id: 'p3_complex_argand_loci_regions',
         skill_target_resolution_status: 'reviewed_p3_skill_map_id',
       });
@@ -895,7 +895,6 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       const runtimeItems = generatedItems(built.runtime);
       const families = [
         'parametric_equations.derivative_ratio_basic',
-        'complex_numbers.modulus_argument_basic',
         'complex_numbers.cartesian_locus_roots_basic',
       ];
 
@@ -923,6 +922,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         ['integration.method_setup_basic', 'p3_int_method_choice'],
         ['integration.definite_area_basic', 'p3_int_definite_improper_area'],
         ['integration.parts_substitution_basic', 'p3_int_parts_substitution'],
+        ['complex_numbers.modulus_argument_basic', 'p3_complex_modulus_argument_form'],
+        ['complex_numbers.locus_basic', 'p3_complex_argand_loci_regions'],
+        ['complex_numbers.roots_basic', 'p3_complex_roots_powers'],
         ['complex_numbers.cartesian_conjugate_basic', 'p3_complex_cartesian_conjugate'],
         ['numerical_methods.sign_change_iteration_basic', 'p3_num_sign_change_graph_evidence'],
         ['numerical_methods.iteration_formula_basic', 'p3_num_iteration_formula'],
@@ -948,12 +950,14 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(items.find((item) => item.generator_family === 'logarithms_and_exponentials.domain_validation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 4');
       expect(items.find((item) => item.generator_family === 'differentiation.stationary_tangent_normal_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y - 4 = -1/4(x - 2)');
       expect(items.find((item) => item.generator_family === 'integration.parts_substitution_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x e^x - e^x + C');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.locus_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('ray from');
+      expect(items.find((item) => item.generator_family === 'complex_numbers.roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_conjugate_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('z = 3 + 2i');
       expect(items.find((item) => item.generator_family === 'numerical_methods.sign_change_iteration_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('A root is justified in (1, 2)');
       expect(items.find((item) => item.generator_family === 'numerical_methods.iteration_formula_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe("Yes, it is locally suitable because |g'(x)| < 1");
       expect(items.find((item) => item.generator_family === 'numerical_methods.accuracy_rounding_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 0.15 to 2 d.p.');
       expect(items.find((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic' && item.sequence_role === 'complete_step')?.answer).toBe('dy/dx = 1/2');
-      expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
       expect(items.find((item) => item.generator_family === 'vectors.line_scalar_product_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('cos theta = 8/9');
       expect(items.find((item) => item.generator_family === 'vectors.line_relationship_basic' && item.sequence_role === 'first_step')?.answer).toBe('<3, 3, 2>');
@@ -980,6 +984,8 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       ['build_integration_definite_area_item', { item_type: 'definite_integral', upper: 9, sequence_role: 'complete_step' }],
       ['build_integration_parts_substitution_item', { item_type: 'unsupported_parts_case', sequence_role: 'guardian_prep' }],
       ['build_complex_modulus_argument_item', { item_type: 'modulus', real: 2, imaginary: 3, sequence_role: 'first_step' }],
+      ['build_complex_locus_item', { item_type: 'equal_distance_bisector', left_real: 2, right_real: 2, imaginary: 0, sequence_role: 'complete_step' }],
+      ['build_complex_roots_item', { item_type: 'square_roots', modulus: 9, sequence_role: 'complete_step' }],
       ['build_complex_cartesian_locus_roots_item', { item_type: 'cube_roots_real', root_modulus: 3, sequence_role: 'guardian_prep' }],
       ['build_complex_cartesian_conjugate_item', { item_type: 'unsupported_conjugate_case', sequence_role: 'guardian_prep' }],
       ['build_vectors_line_scalar_item', { item_type: 'angle_cosine', left_x: 1, left_y: 1, left_z: 0, right_x: 2, right_y: 1, right_z: 0, sequence_role: 'guardian_prep' }],
@@ -1037,6 +1043,8 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'trigonometry.solve_equation_interval_basic': 3,
         'trigonometry.r_form_basic': 3,
         'complex_numbers.modulus_argument_basic': 3,
+        'complex_numbers.locus_basic': 3,
+        'complex_numbers.roots_basic': 3,
         'complex_numbers.cartesian_locus_roots_basic': 3,
         'complex_numbers.cartesian_conjugate_basic': 3,
         'differential_equations.context_model_basic': 3,
@@ -1060,7 +1068,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'logarithm-grove': 12,
         'algebra-forge': 24,
         'calculus-cliffs': 9,
-        'complex-harbor': 3,
+        'complex-harbor': 12,
         'differential-shrine': 9,
         'integration-gardens': 15,
         'numerical-mines': 9,

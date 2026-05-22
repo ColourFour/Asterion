@@ -61,6 +61,8 @@ INTEGRATION_DEFINITE_AREA_FAMILY = "integration.definite_area_basic"
 INTEGRATION_PARTS_SUBSTITUTION_FAMILY = "integration.parts_substitution_basic"
 COMPLEX_TOPIC = "complex_numbers"
 COMPLEX_MODULUS_ARGUMENT_FAMILY = "complex_numbers.modulus_argument_basic"
+COMPLEX_LOCUS_FAMILY = "complex_numbers.locus_basic"
+COMPLEX_ROOTS_FAMILY = "complex_numbers.roots_basic"
 COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY = "complex_numbers.cartesian_locus_roots_basic"
 COMPLEX_CARTESIAN_CONJUGATE_FAMILY = "complex_numbers.cartesian_conjugate_basic"
 VECTORS_TOPIC = "vectors"
@@ -106,6 +108,8 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     INTEGRATION_DEFINITE_AREA_FAMILY: "p3_int_definite_improper_area",
     INTEGRATION_PARTS_SUBSTITUTION_FAMILY: "p3_int_parts_substitution",
     COMPLEX_MODULUS_ARGUMENT_FAMILY: "p3_complex_modulus_argument_form",
+    COMPLEX_LOCUS_FAMILY: "p3_complex_argand_loci_regions",
+    COMPLEX_ROOTS_FAMILY: "p3_complex_roots_powers",
     COMPLEX_CARTESIAN_LOCUS_ROOTS_FAMILY: "p3_complex_argand_loci_regions",
     COMPLEX_CARTESIAN_CONJUGATE_FAMILY: "p3_complex_cartesian_conjugate",
     VECTORS_LINE_SCALAR_FAMILY: "p3_vec_scalar_product_angles",
@@ -132,6 +136,9 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     INTEGRATION_METHOD_SETUP_FAMILY,
     INTEGRATION_DEFINITE_AREA_FAMILY,
     INTEGRATION_PARTS_SUBSTITUTION_FAMILY,
+    COMPLEX_MODULUS_ARGUMENT_FAMILY,
+    COMPLEX_LOCUS_FAMILY,
+    COMPLEX_ROOTS_FAMILY,
     COMPLEX_CARTESIAN_CONJUGATE_FAMILY,
     DIFFERENTIATION_STATIONARY_TANGENT_FAMILY,
     NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY,
@@ -2189,6 +2196,168 @@ def build_complex_modulus_argument_items(context: dict[str, Any]) -> list[dict[s
     return [build_complex_modulus_argument_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
+def build_complex_locus_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_complex_locus_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"circle_centre_radius", "equal_distance_bisector", "argument_ray"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small integer centres and simple pi-fraction argument rays",
+    }
+
+    if item_type == "circle_centre_radius":
+        center_real = int_parameter(case, "center_real", practice_id, min_value=-6, max_value=6)
+        center_imaginary = int_parameter(case, "center_imaginary", practice_id, min_value=-6, max_value=6)
+        radius = int_parameter(case, "radius", practice_id, min_value=1, max_value=8)
+        prompt = f"For |z - ({complex_text(center_real, center_imaginary)})| = {radius}, state the centre and radius of the locus."
+        answer = f"centre ({center_real}, {center_imaginary}), radius {radius}"
+        worked_solution = [
+            "|z - a| = r means distance r from the point a.",
+            f"Here a = {complex_text(center_real, center_imaginary)}.",
+            f"So the centre is ({center_real}, {center_imaginary}) and the radius is {radius}.",
+        ]
+        parameters.update({"center_real": center_real, "center_imaginary": center_imaginary, "radius": radius})
+    elif item_type == "equal_distance_bisector":
+        left_real = int_parameter(case, "left_real", practice_id, min_value=-6, max_value=6)
+        right_real = int_parameter(case, "right_real", practice_id, min_value=-6, max_value=6)
+        imaginary = int_parameter(case, "imaginary", practice_id, min_value=-6, max_value=6)
+        require_safe(left_real != right_real, practice_id, "equal-distance points must be distinct")
+        midpoint = Fraction(left_real + right_real, 2)
+        midpoint_text = fraction_text(midpoint.numerator, midpoint.denominator)
+        prompt = f"Describe the locus |z - ({complex_text(left_real, imaginary)})| = |z - ({complex_text(right_real, imaginary)})|."
+        answer = f"the vertical line Re(z) = {midpoint_text}"
+        worked_solution = [
+            "The equation says the point z is the same distance from two fixed points.",
+            "That locus is the perpendicular bisector of the segment joining the fixed points.",
+            f"The midpoint has real part {midpoint_text}, so the line is Re(z) = {midpoint_text}.",
+        ]
+        parameters.update({"left_real": left_real, "right_real": right_real, "imaginary": imaginary, "midpoint_real": str(midpoint)})
+    else:
+        start_real = int_parameter(case, "start_real", practice_id, min_value=-6, max_value=6)
+        start_imaginary = int_parameter(case, "start_imaginary", practice_id, min_value=-6, max_value=6)
+        argument_numerator = int_parameter(case, "argument_numerator", practice_id, min_value=1, max_value=5)
+        argument_denominator = int_parameter(case, "argument_denominator", practice_id, min_value=3, max_value=8)
+        require_safe(argument_numerator < argument_denominator, practice_id, "argument ray fraction must be proper")
+        angle = pi_fraction_text(argument_numerator, argument_denominator)
+        prompt = f"Describe the locus arg(z - ({complex_text(start_real, start_imaginary)})) = {angle}."
+        answer = f"a ray from ({start_real}, {start_imaginary}) at angle {angle} to the positive real direction"
+        worked_solution = [
+            "arg(z - a) measures direction from the point a.",
+            f"Here the starting point is {complex_text(start_real, start_imaginary)}.",
+            f"The locus is the ray from that point at angle {angle}.",
+        ]
+        parameters.update({
+            "start_real": start_real,
+            "start_imaginary": start_imaginary,
+            "argument_numerator": argument_numerator,
+            "argument_denominator": argument_denominator,
+        })
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=COMPLEX_LOCUS_FAMILY,
+        topic=COMPLEX_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, COMPLEX_TOPIC, ["p3-complex-locus-argument-001"]),
+    )
+
+
+def build_complex_locus_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "circle_centre_radius", "center_real": 2, "center_imaginary": 1, "radius": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "equal_distance_bisector", "left_real": 1, "right_real": 5, "imaginary": 0, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "argument_ray", "start_real": 1, "start_imaginary": -2, "argument_numerator": 1, "argument_denominator": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_complex_locus_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_complex_roots_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_complex_roots_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"power_argument", "square_roots", "cube_roots_real"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small moduli and standard pi-fraction arguments with exact roots",
+    }
+
+    if item_type == "power_argument":
+        modulus = int_parameter(case, "modulus", practice_id, min_value=1, max_value=5)
+        argument_numerator = int_parameter(case, "argument_numerator", practice_id, min_value=1, max_value=6)
+        argument_denominator = int_parameter(case, "argument_denominator", practice_id, min_value=2, max_value=12)
+        power = int_parameter(case, "power", practice_id, min_value=2, max_value=4)
+        require_safe(argument_numerator < argument_denominator, practice_id, "argument fraction must be proper")
+        powered_modulus = modulus ** power
+        argument = pi_fraction_text(argument_numerator, argument_denominator)
+        powered_argument = pi_fraction_text(argument_numerator * power, argument_denominator)
+        prompt = f"If z = {modulus}e^(i*{argument}), find z^{power} in modulus-argument form."
+        answer = f"{powered_modulus}e^(i*{powered_argument})"
+        worked_solution = [
+            f"Raise the modulus to the power: {modulus}^{power} = {powered_modulus}.",
+            f"Multiply the argument by {power}.",
+            f"So z^{power} has argument {powered_argument}.",
+        ]
+        parameters.update({
+            "modulus": modulus,
+            "argument_numerator": argument_numerator,
+            "argument_denominator": argument_denominator,
+            "power": power,
+            "powered_modulus": powered_modulus,
+        })
+    elif item_type == "square_roots":
+        modulus = int_parameter(case, "modulus", practice_id, min_value=1, max_value=16)
+        require_safe(modulus == 4, practice_id, "square-root warm-up uses modulus 4 for exact root modulus")
+        prompt = "Find the square roots of 4e^(i*pi/3) in modulus-argument form."
+        answer = "2e^(i*pi/6) and 2e^(i*7pi/6)"
+        worked_solution = [
+            "The square-root modulus is sqrt(4) = 2.",
+            "Use arguments (pi/3 + 2kpi)/2 for k = 0 and k = 1.",
+            "This gives pi/6 and 7pi/6.",
+        ]
+        parameters.update({"modulus": modulus, "root_count": 2})
+    else:
+        root_modulus = int_parameter(case, "root_modulus", practice_id, min_value=1, max_value=5)
+        require_safe(root_modulus == 2, practice_id, "cube-root warm-up uses roots of 8 for exact simple roots")
+        prompt = "Find the cube roots of 8 in Cartesian form."
+        answer = "2, -1 + sqrt(3)i, -1 - sqrt(3)i"
+        worked_solution = [
+            "Write 8 as 8e^(i0).",
+            "Cube roots have modulus 2 and arguments 0, 2pi/3, and 4pi/3.",
+            "Converting these to Cartesian form gives 2, -1 + sqrt(3)i, and -1 - sqrt(3)i.",
+        ]
+        parameters.update({"root_modulus": root_modulus, "root_count": 3})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=COMPLEX_ROOTS_FAMILY,
+        topic=COMPLEX_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, COMPLEX_TOPIC, ["p3-complex-roots-001", "p3-complex-form-001"]),
+    )
+
+
+def build_complex_roots_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "power_argument", "modulus": 2, "argument_numerator": 1, "argument_denominator": 6, "power": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "square_roots", "modulus": 4, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "cube_roots_real", "root_modulus": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_complex_roots_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
 def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_vectors_line_scalar_product_basic_{index:04d}"
     item_type = item_type_parameter(case, practice_id, {"dot_product", "perpendicular_check", "angle_cosine"})
@@ -3334,6 +3503,8 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_integration_items(context)
         + build_integration_parts_substitution_items(context)
         + build_complex_modulus_argument_items(context)
+        + build_complex_locus_items(context)
+        + build_complex_roots_items(context)
         + build_complex_cartesian_conjugate_items(context)
         + build_vectors_line_scalar_items(context)
         + build_vectors_line_relationship_items(context)

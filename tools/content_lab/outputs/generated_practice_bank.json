@@ -2708,7 +2708,7 @@
       "region_ids": [
         "complex-harbor"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
       "skill_target_id": "p3_complex_modulus_argument_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -2753,7 +2753,7 @@
       "region_ids": [
         "complex-harbor"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
       "skill_target_id": "p3_complex_modulus_argument_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -2800,7 +2800,7 @@
       "region_ids": [
         "complex-harbor"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
       "skill_target_id": "p3_complex_modulus_argument_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -2819,6 +2819,269 @@
         "For a power, raise the modulus to the power: 2^3 = 8.",
         "Multiply the argument by 3.",
         "This gives argument pi/2."
+      ]
+    },
+    {
+      "answer": "centre (2, 1), radius 3",
+      "difficulty_band": "easy",
+      "exam_move": "Translate the complex statement into Argand geometry before doing algebra.",
+      "example_model_id": "p3-complex-locus-argument-001-example-1",
+      "generator_family": "complex_numbers.locus_basic",
+      "key_method": "Loci describe geometry on Argand diagrams",
+      "paper_family": "p3",
+      "parameters": {
+        "center_imaginary": 1,
+        "center_real": 2,
+        "item_type": "circle_centre_radius",
+        "radius": 3,
+        "safe_bounds": "small integer centres and simple pi-fraction argument rays",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_complex_locus_basic_0001",
+      "prompt": "For |z - (2 + i)| = 3, state the centre and radius of the locus.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "source_snippet_id": "p3-complex-locus-argument-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "|z - a| = r means distance r from the point a.",
+        "Here a = 2 + i.",
+        "So the centre is (2, 1) and the radius is 3."
+      ]
+    },
+    {
+      "answer": "the vertical line Re(z) = 3",
+      "difficulty_band": "medium",
+      "exam_move": "Translate the complex statement into Argand geometry before doing algebra.",
+      "example_model_id": "p3-complex-locus-argument-001-example-1",
+      "generator_family": "complex_numbers.locus_basic",
+      "key_method": "Loci describe geometry on Argand diagrams",
+      "paper_family": "p3",
+      "parameters": {
+        "imaginary": 0,
+        "item_type": "equal_distance_bisector",
+        "left_real": 1,
+        "midpoint_real": "3",
+        "right_real": 5,
+        "safe_bounds": "small integer centres and simple pi-fraction argument rays",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step"
+      },
+      "practice_id": "gen_complex_locus_basic_0002",
+      "prompt": "Describe the locus |z - (1)| = |z - (5)|.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "source_snippet_id": "p3-complex-locus-argument-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The equation says the point z is the same distance from two fixed points.",
+        "That locus is the perpendicular bisector of the segment joining the fixed points.",
+        "The midpoint has real part 3, so the line is Re(z) = 3."
+      ]
+    },
+    {
+      "answer": "a ray from (1, -2) at angle pi/4 to the positive real direction",
+      "difficulty_band": "medium",
+      "exam_move": "Translate the complex statement into Argand geometry before doing algebra.",
+      "example_model_id": "p3-complex-locus-argument-001-example-1",
+      "generator_family": "complex_numbers.locus_basic",
+      "key_method": "Loci describe geometry on Argand diagrams",
+      "paper_family": "p3",
+      "parameters": {
+        "argument_denominator": 4,
+        "argument_numerator": 1,
+        "item_type": "argument_ray",
+        "safe_bounds": "small integer centres and simple pi-fraction argument rays",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "start_imaginary": -2,
+        "start_real": 1
+      },
+      "practice_id": "gen_complex_locus_basic_0003",
+      "prompt": "Describe the locus arg(z - (1 - 2i)) = pi/4.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_complex_argand_loci_regions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-locus-argument-001"
+      ],
+      "source_snippet_id": "p3-complex-locus-argument-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "arg(z - a) measures direction from the point a.",
+        "Here the starting point is 1 - 2i.",
+        "The locus is the ray from that point at angle pi/4."
+      ]
+    },
+    {
+      "answer": "8e^(i*pi/2)",
+      "difficulty_band": "easy",
+      "exam_move": "For roots, add $2k\\pi$ to the argument before dividing by the root index.",
+      "example_model_id": "p3-complex-roots-001-example-1",
+      "generator_family": "complex_numbers.roots_basic",
+      "key_method": "Roots need every argument branch",
+      "paper_family": "p3",
+      "parameters": {
+        "argument_denominator": 6,
+        "argument_numerator": 1,
+        "item_type": "power_argument",
+        "modulus": 2,
+        "power": 3,
+        "powered_modulus": 8,
+        "safe_bounds": "small moduli and standard pi-fraction arguments with exact roots",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_complex_roots_basic_0001",
+      "prompt": "If z = 2e^(i*pi/6), find z^3 in modulus-argument form.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_complex_roots_powers",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001",
+        "p3-complex-roots-001"
+      ],
+      "source_snippet_id": "p3-complex-roots-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Raise the modulus to the power: 2^3 = 8.",
+        "Multiply the argument by 3.",
+        "So z^3 has argument pi/2."
+      ]
+    },
+    {
+      "answer": "2e^(i*pi/6) and 2e^(i*7pi/6)",
+      "difficulty_band": "medium",
+      "exam_move": "For roots, add $2k\\pi$ to the argument before dividing by the root index.",
+      "example_model_id": "p3-complex-roots-001-example-1",
+      "generator_family": "complex_numbers.roots_basic",
+      "key_method": "Roots need every argument branch",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "square_roots",
+        "modulus": 4,
+        "root_count": 2,
+        "safe_bounds": "small moduli and standard pi-fraction arguments with exact roots",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step"
+      },
+      "practice_id": "gen_complex_roots_basic_0002",
+      "prompt": "Find the square roots of 4e^(i*pi/3) in modulus-argument form.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_complex_roots_powers",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001",
+        "p3-complex-roots-001"
+      ],
+      "source_snippet_id": "p3-complex-roots-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The square-root modulus is sqrt(4) = 2.",
+        "Use arguments (pi/3 + 2kpi)/2 for k = 0 and k = 1.",
+        "This gives pi/6 and 7pi/6."
+      ]
+    },
+    {
+      "answer": "2, -1 + sqrt(3)i, -1 - sqrt(3)i",
+      "difficulty_band": "medium",
+      "exam_move": "For roots, add $2k\\pi$ to the argument before dividing by the root index.",
+      "example_model_id": "p3-complex-roots-001-example-1",
+      "generator_family": "complex_numbers.roots_basic",
+      "key_method": "Roots need every argument branch",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cube_roots_real",
+        "root_count": 3,
+        "root_modulus": 2,
+        "safe_bounds": "small moduli and standard pi-fraction arguments with exact roots",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep"
+      },
+      "practice_id": "gen_complex_roots_basic_0003",
+      "prompt": "Find the cube roots of 8 in Cartesian form.",
+      "question_type": "complex_numbers",
+      "region_ids": [
+        "complex-harbor"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_complex_roots_powers",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-complex-form-001",
+        "p3-complex-roots-001"
+      ],
+      "source_snippet_id": "p3-complex-roots-001",
+      "topic": "complex_numbers",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Write 8 as 8e^(i0).",
+        "Cube roots have modulus 2 and arguments 0, 2pi/3, and 4pi/3.",
+        "Converting these to Cartesian form gives 2, -1 + sqrt(3)i, and -1 - sqrt(3)i."
       ]
     },
     {
@@ -4537,9 +4800,9 @@
     }
   ],
   "missing_example_model_id_count": 0,
-  "needs_review_internal_count": 9,
+  "needs_review_internal_count": 6,
   "published_runtime_count": 0,
-  "runtime_reviewed_count": 96,
+  "runtime_reviewed_count": 105,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",

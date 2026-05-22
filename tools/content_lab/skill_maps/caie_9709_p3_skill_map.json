@@ -2052,7 +2052,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use Cartesian complex arithmetic and conjugates",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation is support-only here: students should rehearse expanding products and simplifying fractions, but only clean P3 complex-number evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -2102,7 +2102,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Move between Cartesian and modulus-argument form",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: use them to check quadrant and angle work, without treating prerequisite practice as P3 complex-number mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -2160,7 +2160,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Interpret loci and regions on an Argand diagram",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and radians/trigonometry are support-only: plotting centres, distances, and angles prepares the locus move but does not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -2217,7 +2217,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Find complex powers and roots using the suitable form",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and radians/trigonometry are support-only: exact-angle fluency helps list branches, but only reviewed P3 complex roots/powers evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",

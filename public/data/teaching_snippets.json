@@ -1082,6 +1082,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Switch form when the operation changes from addition to powers or roots.",
       "explanation": "Complex-number form is a tool choice. Cartesian form keeps real and imaginary parts visible; modulus-argument form makes multiplying, dividing, powers, and roots much cleaner.",
+      "mark_scheme_move_note": "Show the Cartesian or modulus-argument conversion line, keep the argument in the requested range, and use the conjugate before simplifying a complex denominator.",
+      "misconception_repair_note": {
+        "wrong_move": "Accepting arctan(y/x) or a complex fraction answer without checking the quadrant or clearing the denominator.",
+        "why_it_fails": "The calculator angle can point to the wrong quadrant, and an uncleared complex denominator is not the requested Cartesian form.",
+        "safer_move": "Plot the sign of the real and imaginary parts first, then multiply by the conjugate before simplifying fractions.",
+        "quick_check": "If z is in quadrant II, should arg z be the acute calculator angle or pi minus that angle?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that ask for powers, roots, or geometric interpretation of complex numbers.",
         "recommended_before_question_ids": [],
@@ -1189,6 +1196,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Translate the complex statement into Argand geometry before doing algebra.",
       "explanation": "Complex loci become clearer when read as geometry first. A fixed distance gives a circle; a fixed argument gives a ray or line direction with restrictions.",
+      "mark_scheme_move_note": "Identify the centre, radius, ray angle, or boundary condition before shading or describing the locus, and state endpoint or inequality restrictions when they matter.",
+      "misconception_repair_note": {
+        "wrong_move": "Drawing every modulus condition around the origin or treating an argument condition as a full line.",
+        "why_it_fails": "The expression z-a shifts the reference point, and arg(z-a)=theta describes a directed ray from that point.",
+        "safer_move": "Translate z-a as movement from the point a, then decide whether the statement gives a circle, perpendicular bisector, ray, or region.",
+        "quick_check": "For |z-(2+i)|=3, is the centre 0 or 2+i?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on interpret modulus and argument statements geometrically.",
         "recommended_before_question_ids": [],
@@ -3283,6 +3297,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "For roots, add $2k\\pi$ to the argument before dividing by the root index.",
       "explanation": "Complex roots come in a full set. The modulus is rooted, while the arguments are separated by equal angle gaps.",
+      "mark_scheme_move_note": "Write the modulus-argument form, include the full argument family before dividing for roots, and give all roots in the form requested.",
+      "misconception_repair_note": {
+        "wrong_move": "Taking one divided argument and stopping after the first root.",
+        "why_it_fails": "Non-zero complex numbers have multiple root branches spaced evenly around the Argand diagram.",
+        "safer_move": "Add $2k\\pi$ before dividing the argument, then list the allowed k-values for the required number of roots.",
+        "quick_check": "For cube roots, how many different k-values should you use?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving complex powers or roots.",
         "recommended_before_question_ids": [],
@@ -3343,17 +3364,29 @@
       "topics": [
         "complex_numbers"
       ],
-      "worked_example": {
-        "id": "p3-complex-roots-001-example-1",
-        "prompt": "Find the square roots of $4e^{i\\pi/3}$.",
-        "steps": [
-          "The root modulus is $\\sqrt4=2$.",
-          "Use arguments $\\frac{\\pi/3+2k\\pi}{2}$ for $k=0,1$.",
-          "The arguments are $\\frac{\\pi}{6}$ and $\\frac{7\\pi}{6}$."
-        ],
-        "answer": "$2e^{i\\pi/6}$ and $2e^{i7\\pi/6}$",
-        "teaching_note": "The second branch comes from adding $2\\pi$ before dividing."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-complex-roots-001-example-1",
+          "prompt": "Find the square roots of $4e^{i\\pi/3}$.",
+          "steps": [
+            "The root modulus is $\\sqrt4=2$.",
+            "Use arguments $\\frac{\\pi/3+2k\\pi}{2}$ for $k=0,1$.",
+            "The arguments are $\\frac{\\pi}{6}$ and $\\frac{7\\pi}{6}$."
+          ],
+          "answer": "$2e^{i\\pi/6}$ and $2e^{i7\\pi/6}$",
+          "teaching_note": "The second branch comes from adding $2\\pi$ before dividing."
+        },
+        {
+          "id": "p3-complex-roots-001-example-2",
+          "prompt": "If $z=2e^{i\\pi/6}$, find $z^3$ in modulus-argument form.",
+          "steps": [
+            "Raise the modulus to the power: $2^3=8$.",
+            "Multiply the argument by $3$: $3\\cdot\\frac{\\pi}{6}=\\frac{\\pi}{2}$."
+          ],
+          "answer": "$8e^{i\\pi/2}$",
+          "teaching_note": "Powers use one branch; roots need every branch."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_complex_numbers"
       ],
