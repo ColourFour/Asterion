@@ -11945,6 +11945,34 @@ legend {
   align-content: start;
   width: min(100%, 1240px);
   margin: 0 auto;
+  color: #172033;
+  background:
+    linear-gradient(180deg, #f8f5ee, #edf4f3);
+}
+
+.app-shell.ui-review-shell::before {
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(15, 118, 110, 0.04) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 78%);
+}
+
+.ui-review-shell .mode-pill {
+  border: 1px solid #9bc9c2;
+  border-radius: 999px;
+  color: #073f3c;
+  background: #dff4ef;
+  text-shadow: none;
+}
+
+.ui-review-shell a {
+  color: #075f58;
+}
+
+.ui-review-shell a:focus-visible {
+  outline: 3px solid rgba(7, 95, 88, 0.36);
+  outline-offset: 3px;
 }
 
 .ui-review-header,
@@ -11952,9 +11980,9 @@ legend {
 .ui-review-preview-panel,
 .ui-review-system-state,
 .ui-review-avatar-preview {
-  border: 1px solid var(--color-border);
+  border: 1px solid #cfc8ba;
   border-radius: var(--radius-panel);
-  background: rgba(255, 253, 248, 0.94);
+  background: #fffdf8;
   box-shadow: var(--shadow-soft);
 }
 
@@ -11975,12 +12003,12 @@ legend {
 .ui-review-preview-panel p,
 .ui-review-system-state p,
 .ui-review-card p {
-  color: var(--color-text-muted);
+  color: #4f5a69;
 }
 
 .ui-review-back-link {
   width: fit-content;
-  color: var(--color-astral-dark);
+  color: #075f58;
   font-weight: 800;
   text-decoration: none;
 }
@@ -12011,9 +12039,10 @@ legend {
 .ui-review-label-guide p {
   margin: 0;
   padding: 10px;
-  border: 1px solid rgba(15, 118, 110, 0.18);
+  border: 1px solid #b8d8d4;
   border-radius: var(--radius-control);
-  background: rgba(232, 241, 240, 0.68);
+  background: #eef8f6;
+  color: #172033;
 }
 
 .ui-review-section {
@@ -12039,9 +12068,9 @@ legend {
   align-content: start;
   min-height: 245px;
   padding: 16px;
-  border: 1px solid rgba(23, 32, 51, 0.13);
+  border: 1px solid #d8d0c0;
   border-radius: var(--radius-panel);
-  background: rgba(255, 253, 248, 0.96);
+  background: #fffdf8;
   box-shadow: 0 12px 28px rgba(23, 32, 51, 0.08);
 }
 
@@ -12064,10 +12093,10 @@ legend {
   min-width: 0;
   padding: 8px;
   overflow-wrap: anywhere;
-  border: 1px solid rgba(23, 32, 51, 0.12);
+  border: 1px solid #cfc8ba;
   border-radius: var(--radius-control);
-  background: #f7f2e8;
-  color: var(--color-astral-dark);
+  background: #f4efe5;
+  color: #12334a;
   font-size: 0.82rem;
 }
 
@@ -12084,31 +12113,37 @@ legend {
   min-height: 26px;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(23, 32, 51, 0.08);
-  color: var(--color-ink);
+  border: 1px solid transparent;
+  background: #e7ebef;
+  color: #172033;
   font-size: 0.78rem;
   font-weight: 800;
+  text-shadow: none;
 }
 
 .badge-live-route {
-  background: rgba(15, 118, 110, 0.13);
-  color: var(--color-astral-dark);
+  border-color: #7eb4ad;
+  background: #d9f0ec;
+  color: #073f3c;
 }
 
 .badge-preview-route,
 .badge-mock-state {
-  background: rgba(183, 121, 31, 0.16);
-  color: var(--color-gold-dark);
+  border-color: #d8b16c;
+  background: #fff1d0;
+  color: #5a3308;
 }
 
 .badge-requires-login {
-  background: rgba(102, 84, 199, 0.14);
-  color: #44369a;
+  border-color: #aa9ee6;
+  background: #ece8ff;
+  color: #33257d;
 }
 
 .badge-not-yet-covered {
-  background: rgba(92, 102, 118, 0.14);
-  color: var(--color-text-muted);
+  border-color: #b9c0c9;
+  background: #eef0f3;
+  color: #3f4a58;
 }
 
 .ui-review-open-button {
@@ -12119,19 +12154,23 @@ legend {
   min-height: 40px;
   padding: 9px 14px;
   border-radius: var(--radius-control);
-  background: var(--color-astral);
+  border: 1px solid #064743;
+  background: #075f58;
   color: #fff;
   font-weight: 900;
   text-decoration: none;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 .ui-review-open-button:hover {
-  background: var(--color-astral-dark);
+  background: #064743;
 }
 
 .ui-review-open-button.disabled {
-  background: rgba(92, 102, 118, 0.28);
-  color: var(--color-text-muted);
+  border-color: #b9c0c9;
+  background: #dfe3e7;
+  color: #3f4a58;
 }
 
 .ui-review-preview-shell .world-screen {
@@ -12182,13 +12221,13 @@ legend {
 
 .ui-review-avatar-copy div {
   padding: 10px;
-  border: 1px solid rgba(15, 118, 110, 0.18);
+  border: 1px solid #b8d8d4;
   border-radius: var(--radius-control);
-  background: rgba(232, 241, 240, 0.68);
+  background: #eef8f6;
 }
 
 .ui-review-avatar-copy dt {
-  color: var(--color-text-muted);
+  color: #4f5a69;
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -12211,16 +12250,31 @@ legend {
 }
 
 .ui-review-system-error {
-  border-color: rgba(180, 35, 24, 0.36);
+  border-color: #d89b92;
   background: #fff8f5;
 }
 
 .ui-review-system-loading {
-  border-color: rgba(15, 118, 110, 0.36);
+  border-color: #8bc0b9;
 }
 
 .ui-review-system-empty {
-  border-color: rgba(183, 121, 31, 0.34);
+  border-color: #d8b16c;
+}
+
+.ui-review-shell .primary-button,
+.ui-review-shell .quiet-button {
+  border: 1px solid #064743 !important;
+  border-radius: var(--radius-control);
+  background: #075f58 !important;
+  color: #fff !important;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.ui-review-shell .quiet-button {
+  background: #fffdf8 !important;
+  color: #075f58 !important;
 }
 
 .ui-review-mock-form button:disabled {
