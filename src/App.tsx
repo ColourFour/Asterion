@@ -887,7 +887,7 @@ export default function App() {
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       {regionRouteError ? <div className="notice">{regionRouteError}</div> : null}
       {hostedSyncWarning ? <div className="classroom-sync-warning" role="status">{hostedSyncWarning}</div> : null}
-      {staffPreviewContext ? <div className="notice" role="status">Staff preview: regions are unlocked and progress is not recorded as student work.</div> : null}
+      {staffPreviewContext ? <div className="notice" role="status">Staff preview: regions are unlocked and progress is not recorded as student work. Use a private window to test student roster claiming.</div> : null}
 
       {viewMode === 'map' ? (
         <P3AstralAcademy

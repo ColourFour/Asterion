@@ -3,7 +3,7 @@ import type { StudentClaimState } from '../types';
 export const PENDING_CLASS_CLAIM_STORAGE_KEY = 'asterion.pendingClassClaim.v1';
 
 function storage(): Storage | undefined {
-  return typeof sessionStorage === 'undefined' ? undefined : sessionStorage;
+  return typeof localStorage === 'undefined' ? undefined : localStorage;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

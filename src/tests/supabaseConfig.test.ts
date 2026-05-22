@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { createSupabaseBrowserClient, createSupabaseBrowserClientFromEnv } from '../lib/supabaseClient';
+import { createSupabaseBrowserClient, createSupabaseBrowserClientFromEnv, defaultSupabaseBrowserAuthOptions } from '../lib/supabaseClient';
 import { resolveSupabaseConfig } from '../lib/supabaseConfig';
 
 describe('Supabase browser config smoke check', () => {
@@ -26,6 +26,14 @@ describe('Supabase browser config smoke check', () => {
       invalid: [],
     });
     await expect(createSupabaseBrowserClient(config)).resolves.toBeTruthy();
+  });
+
+  it('defaults browser clients to persistent Supabase sessions and token refresh', () => {
+    expect(defaultSupabaseBrowserAuthOptions).toEqual({
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    });
   });
 
   it('does not create a client for malformed URL config', async () => {

@@ -231,7 +231,7 @@ describe('Asterion intro page', () => {
     vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
     vi.stubEnv('VITE_SUPABASE_URL', undefined);
     vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', undefined);
-    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+    localStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
       status: 'claimed',
       classId: 'class-1',
       className: 'Local class',
@@ -246,7 +246,7 @@ describe('Asterion intro page', () => {
     const container = await render(<App />);
     await openStudentEntry(container);
 
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('Hosted classroom access');
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).not.toContain('Local class');
@@ -286,7 +286,7 @@ describe('Asterion intro page', () => {
     expect(inputForLabel(container, 'Teacher name').value).toBe('Ms Hypatia');
     expect(inputForLabel(container, 'Class/group').readOnly).toBe(true);
     expect(inputForLabel(container, 'Teacher name').readOnly).toBe(true);
-    expect(JSON.parse(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY) ?? '{}')).toMatchObject({
+    expect(JSON.parse(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY) ?? '{}')).toMatchObject({
       status: 'claimed',
       classCode: 'AST-P3A',
       displayName: 'Maya Q.',
@@ -316,7 +316,7 @@ describe('Asterion intro page', () => {
         displayName: 'Maya Q.',
       }),
     });
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
 
     expect(container.textContent).toContain('Choose your academy avatar');
     expect(container.textContent).toContain('Pick a starter look.');
@@ -497,7 +497,7 @@ describe('Asterion intro page', () => {
   it('restores a revalidated pending claim after refresh without granting app access', async () => {
     await addRosterStudent('teacher-hypatia', 'class-p3-beta', 'Refresh Valid Student');
     const pendingClaim = await claimRosterSlotByClassCode({ classCode: 'AST-P3B', displayName: 'Refresh Valid Student' });
-    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(pendingClaim));
+    localStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(pendingClaim));
 
     const container = await render(<App />);
 
@@ -513,13 +513,13 @@ describe('Asterion intro page', () => {
       await Promise.resolve();
     });
 
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
   });
 
   it('clears forged or stale pending claims and returns to class-code claim', async () => {
-    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+    localStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
       status: 'claimed',
       classId: 'class-p3-alpha',
       className: 'P3 Alpha',
@@ -533,7 +533,7 @@ describe('Asterion intro page', () => {
 
     let container = await render(<App />);
 
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     await openStudentEntry(container);
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
@@ -548,11 +548,11 @@ describe('Asterion intro page', () => {
     await addRosterStudent('teacher-hypatia', 'class-p3-alpha', 'Archived Pending Student');
     const staleClaim = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Pending Student' });
     await archiveRosterStudent('teacher-hypatia', 'class-p3-alpha', staleClaim.rosterStudentId!);
-    sessionStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(staleClaim));
+    localStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify(staleClaim));
 
     container = await render(<App />);
 
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
     await openStudentEntry(container);
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
@@ -579,7 +579,7 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('More than one unclaimed roster entry uses that name.');
     expect(container.textContent).toContain('Claim roster slot');
     expect(container.textContent).not.toContain('Student real name');
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
   });
 
   it('still renders the emblem when reduced motion is requested', async () => {

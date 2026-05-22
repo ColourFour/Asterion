@@ -109,7 +109,20 @@ function normalizeStudentClaim(value: unknown): StudentClaimState | undefined {
   const status = optionalString(value.status);
   const message = optionalString(value.message);
   if (!status || !message) return undefined;
-  if (!['unclaimed', 'claimed', 'invalid_class_code', 'roster_name_not_found', 'already_claimed', 'archived'].includes(status)) return undefined;
+  if (![
+    'unclaimed',
+    'claimed',
+    'invalid_class_code',
+    'roster_name_not_found',
+    'ambiguous_roster_name',
+    'already_claimed',
+    'archived',
+    'reserved_for_other_user',
+    'staff_account_cannot_claim_student_slot',
+    'unauthenticated',
+    'unauthorized',
+    'claim_unavailable',
+  ].includes(status)) return undefined;
   return {
     status: status as StudentClaimState['status'],
     classId: optionalString(value.classId),

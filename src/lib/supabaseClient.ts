@@ -11,15 +11,21 @@ export interface SupabaseBrowserClientOptions {
   };
 }
 
+export const defaultSupabaseBrowserAuthOptions = {
+  persistSession: true,
+  autoRefreshToken: true,
+  detectSessionInUrl: true,
+} as const;
+
 const browserClientPromises = new Map<string, Promise<AsterionSupabaseClient | undefined>>();
 
 function browserClientCacheKey(config: SupabaseConfig, options: SupabaseBrowserClientOptions): string {
   return JSON.stringify({
     url: config.url,
     publishableKey: config.publishableKey,
-    persistSession: options.auth?.persistSession ?? false,
-    autoRefreshToken: options.auth?.autoRefreshToken ?? false,
-    detectSessionInUrl: options.auth?.detectSessionInUrl ?? false,
+    persistSession: options.auth?.persistSession ?? defaultSupabaseBrowserAuthOptions.persistSession,
+    autoRefreshToken: options.auth?.autoRefreshToken ?? defaultSupabaseBrowserAuthOptions.autoRefreshToken,
+    detectSessionInUrl: options.auth?.detectSessionInUrl ?? defaultSupabaseBrowserAuthOptions.detectSessionInUrl,
   });
 }
 
@@ -36,9 +42,9 @@ export async function createSupabaseBrowserClient(
   const { url, publishableKey } = config;
   const promise = import('@supabase/supabase-js').then(({ createClient }) => createClient(url, publishableKey, {
     auth: {
-      persistSession: options.auth?.persistSession ?? false,
-      autoRefreshToken: options.auth?.autoRefreshToken ?? false,
-      detectSessionInUrl: options.auth?.detectSessionInUrl ?? false,
+      persistSession: options.auth?.persistSession ?? defaultSupabaseBrowserAuthOptions.persistSession,
+      autoRefreshToken: options.auth?.autoRefreshToken ?? defaultSupabaseBrowserAuthOptions.autoRefreshToken,
+      detectSessionInUrl: options.auth?.detectSessionInUrl ?? defaultSupabaseBrowserAuthOptions.detectSessionInUrl,
     },
   }));
   browserClientPromises.set(cacheKey, promise);

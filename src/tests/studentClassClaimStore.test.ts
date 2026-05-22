@@ -21,16 +21,16 @@ const claim: StudentClaimState = {
 
 describe('student class claim local handoff store', () => {
   beforeEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
   });
 
-  it('keeps a claimed roster slot available across page reload before profile save', () => {
+  it('keeps a claimed roster slot available across browser restart before profile save', () => {
     expect(savePendingClassClaim(claim)).toEqual(claim);
 
     const reloaded = loadPendingClassClaim();
 
     expect(reloaded).toEqual(claim);
-    expect(JSON.parse(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY) ?? '{}')).toMatchObject({
+    expect(JSON.parse(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY) ?? '{}')).toMatchObject({
       status: 'claimed',
       classId: 'class-p3-alpha',
       rosterStudentId: 'roster-ada',
@@ -42,6 +42,6 @@ describe('student class claim local handoff store', () => {
     clearPendingClassClaim();
 
     expect(loadPendingClassClaim()).toBeUndefined();
-    expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
   });
 });
