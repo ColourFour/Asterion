@@ -26,29 +26,15 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
       <TwinklingStarfield />
       <section className="student-onboarding-panel" aria-labelledby="student-onboarding-title">
         <span className="mode-pill">First day at Asterion Academy</span>
-        <h1 id="student-onboarding-title">Welcome to Asterion Academy</h1>
-        <p>
-          This is a training world for mastering Pure Mathematics 3.
-          Each region teaches a different part of the course.
-        </p>
-        <div className="academy-path-grid" aria-label="Academy training path">
-          <span>Field Guide</span>
-          <span>Quick Check</span>
-          <span>Warm-Up</span>
-          <span>Exam Questions</span>
-          <span>Guardian Challenge</span>
-        </div>
-        <p>
-          Study the guide, build confidence, then train with real exam-question images.
-          First, create your academy avatar.
-        </p>
+        <h1 id="student-onboarding-title">Choose your academy avatar</h1>
+        <p>Pick a starter look. Your class, roster name, and progress rules stay the same.</p>
       </section>
 
       <form className="profile-form academy-avatar-form" onSubmit={handleSubmit} aria-label="Create academy avatar">
         <div className="profile-form-heading">
           <span className="mode-pill">Academy profile</span>
-          <h2>Create your avatar</h2>
-          <p>Your class access and progress rules stay the same. This only sets your student profile.</p>
+          <h2>{displayName}</h2>
+          <p>Choose one avatar, then enter the P3 world map.</p>
         </div>
 
         <label>
@@ -59,7 +45,12 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
         <fieldset className="avatar-preset-grid">
           <legend>Choose a starter avatar</legend>
           {ACADEMY_AVATAR_PRESETS.map((preset) => (
-            <label className={`avatar-preset-card${preset.id === selectedPreset.id ? ' selected' : ''}`} key={preset.id}>
+            <label
+              aria-label={`${preset.label}${preset.id === selectedPreset.id ? ', selected' : ''}`}
+              className={`avatar-preset-card${preset.id === selectedPreset.id ? ' selected' : ''}`}
+              data-selected={preset.id === selectedPreset.id ? 'true' : undefined}
+              key={preset.id}
+            >
               <input
                 checked={preset.id === selectedPreset.id}
                 name="academy-avatar"
@@ -69,6 +60,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
               />
               <AvatarPreview avatarName={displayName} avatar={preset.avatar} regionProgress={[]} />
               <strong>{preset.label}</strong>
+              {preset.id === selectedPreset.id ? <span className="selected-avatar-badge">Selected</span> : null}
               <span>{preset.description}</span>
             </label>
           ))}

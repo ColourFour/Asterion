@@ -163,6 +163,10 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Class code');
     expect(container.textContent).toContain('Roster name');
     expect(container.textContent).toContain('If your name is missing, ask your teacher. You cannot add yourself.');
+    expect(container.textContent).not.toContain('Email, optional');
+    expect(container.querySelector('input[type="email"]')).toBeNull();
+    expect(container.querySelector('input[type="password"]')).toBeNull();
+    expect(container.textContent).not.toContain('magic link');
     expect(Array.from(container.querySelectorAll('button')).some((button) => (
       button.textContent?.includes('Claim roster slot')
     ))).toBe(true);
@@ -314,16 +318,29 @@ describe('Asterion intro page', () => {
     });
     expect(sessionStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
 
-    expect(container.textContent).toContain('Welcome to Asterion Academy');
-    expect(container.textContent).toContain('Create your avatar');
-    expect(container.textContent).toContain('Field Guide');
-    expect(container.textContent).toContain('Guardian Challenge');
+    expect(container.textContent).toContain('Choose your academy avatar');
+    expect(container.textContent).toContain('Pick a starter look.');
+    expect(container.querySelector('.academy-path-grid')).toBeNull();
     expect(container.textContent).not.toContain('World Map');
 
     setInputValue(inputForLabel(container, 'Academy name'), 'Maya Prime');
 
     const avatarForm = container.querySelector('form[aria-label="Create academy avatar"]');
     expect(avatarForm).toBeTruthy();
+    expect(avatarForm?.querySelectorAll('.avatar-preset-card')).toHaveLength(4);
+    expect(avatarForm?.querySelectorAll('.avatar-preset-card.selected')).toHaveLength(1);
+    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Selected');
+    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.getAttribute('data-selected')).toBe('true');
+
+    const aquaPreset = Array.from(avatarForm?.querySelectorAll('label') ?? []).find((label) => label.textContent?.includes('Aqua Analyst'));
+    expect(aquaPreset).toBeTruthy();
+
+    await act(async () => {
+      aquaPreset?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+
+    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Aqua Analyst');
 
     await act(async () => {
       avatarForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -337,18 +354,21 @@ describe('Asterion intro page', () => {
       classGroup: 'P3 Alpha',
       teacherName: 'Ms Hypatia',
       avatarName: 'Maya Prime',
-      avatarId: 'star-apprentice',
+      avatarId: 'aqua-analyst',
       onboardingCompleted: true,
       onboardingCompletedAt: expect.any(String),
     });
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).toContain('Maya Prime');
     expect(container.textContent).toContain('Academy avatar');
-    expect(container.textContent).toContain('Start here');
-    expect(container.textContent).toContain('Choose a region to begin Paper 3 practice.');
-    expect(container.textContent).toContain('Try Quick Check, Warm-Up, then real image questions.');
+    expect(container.textContent).not.toContain('Start here');
+    expect(container.textContent).not.toContain('Choose a region to begin Paper 3 practice.');
+    expect(container.textContent).not.toContain('Try Quick Check, Warm-Up, then real image questions.');
     expect(container.textContent).toContain('Browser-local practice mode');
     expect(container.textContent).not.toContain('Create your avatar');
+    expect(container.textContent).not.toContain('magic link');
+    expect(container.querySelector('input[type="email"]')).toBeNull();
+    expect(container.querySelector('input[type="password"]')).toBeNull();
   });
 
   it('treats cleared site storage or a different browser as a fresh local start', async () => {
@@ -416,8 +436,7 @@ describe('Asterion intro page', () => {
 
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Welcome to Asterion Academy');
-    expect(container.textContent).toContain('Create your avatar');
+    expect(container.textContent).toContain('Choose your academy avatar');
     expect(container.textContent).not.toContain('World Map');
   });
 

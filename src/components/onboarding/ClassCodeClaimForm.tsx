@@ -13,7 +13,6 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
   const hostedClaimConfigBlocked = hostedClaimMode && !runtimeConfig.supabaseConfigured;
   const [classCode, setClassCode] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [optionalEmail, setOptionalEmail] = useState('');
   const [claimState, setClaimState] = useState<StudentClaimState>();
   const [submitting, setSubmitting] = useState(false);
 
@@ -30,7 +29,6 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
     const nextClaim = await claimStudentRosterSlot({
       classCode,
       displayName,
-      optionalEmail: optionalEmail.trim() || undefined,
     });
     setClaimState(nextClaim);
     setSubmitting(false);
@@ -65,13 +63,6 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
         Roster name
         <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} placeholder="Your name as your teacher entered it" required />
       </label>
-
-      {!hostedClaimMode ? (
-        <label>
-          Email, optional
-          <input type="email" value={optionalEmail} onChange={(event) => setOptionalEmail(event.target.value)} placeholder="Add later if preferred" />
-        </label>
-      ) : null}
 
       {claimState ? (
         <p className={`claim-state-message claim-${claimState.status}`} role="status">
