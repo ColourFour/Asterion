@@ -2350,6 +2350,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Make each iteration line auditable from the previous one.",
       "explanation": "Iteration marks depend on reproducible steps. A rounded intermediate value can move the final answer, so preserve accuracy until the end.",
+      "mark_scheme_move_note": "State the recurrence, substitute the previous approximation into that same recurrence, and show enough iteration lines to justify the requested approximation.",
+      "misconception_repair_note": {
+        "wrong_move": "Replacing the stated recurrence with a different rearrangement halfway through.",
+        "why_it_fails": "The approximations no longer come from the method being assessed, so the later values cannot justify the requested fixed point.",
+        "safer_move": "Copy the recurrence once, then use each new value as the input for the next line without changing the formula.",
+        "short_check": "Can every displayed value be obtained by substituting the previous value into the same recurrence?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on apply $x_{n+1}=g(x_n)$ with enough accuracy and clear rounding.",
         "recommended_before_question_ids": [],
@@ -2409,17 +2416,36 @@
       "topics": [
         "numerical_methods"
       ],
-      "worked_example": {
-        "id": "p3-iteration-formula-discipline-001-example-1",
-        "prompt": "Use $x_{n+1}=\\sqrt{3+x_n}$ with $x_0=1$ to find $x_1$ and $x_2$.",
-        "steps": [
-          "$x_1=\\sqrt{3+1}=2$.",
-          "$x_2=\\sqrt{3+2}=\\sqrt5$.",
-          "Keep extra figures: $x_2\\approx2.2360679$."
-        ],
-        "answer": "$x_1=2$, $x_2=\\sqrt5\\approx2.2360679$",
-        "teaching_note": "Round the final answer only when the requested accuracy is known."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-iteration-formula-discipline-001-example-1",
+          "question_type": "Fixed-point iteration",
+          "key_method": "Use the stated iteration exactly.",
+          "exam_move": "Make each iteration line auditable from the previous one.",
+          "prompt": "Use $x_{n+1}=\\sqrt{3+x_n}$ with $x_0=1$ to find $x_1$ and $x_2$.",
+          "steps": [
+            "$x_1=\\sqrt{3+1}=2$.",
+            "$x_2=\\sqrt{3+2}=\\sqrt5$.",
+            "Keep extra figures: $x_2\\approx2.2360679$."
+          ],
+          "answer": "$x_1=2$, $x_2=\\sqrt5\\approx2.2360679$",
+          "teaching_note": "Round the final answer only when the requested accuracy is known."
+        },
+        {
+          "id": "p3-iteration-formula-discipline-001-example-2",
+          "question_type": "Fixed-point iteration",
+          "key_method": "Use the stated iteration exactly.",
+          "exam_move": "Make each iteration line auditable from the previous one.",
+          "prompt": "Use $x_{n+1}=\\frac{6}{x_n+1}$ with $x_0=2$ to find $x_1$ and $x_2$.",
+          "steps": [
+            "Substitute $x_0=2$: $x_1=\\frac{6}{2+1}=2$.",
+            "Use the new value in the same formula: $x_2=\\frac{6}{2+1}=2$.",
+            "The repeated value shows the iteration has already reached a fixed point for this start."
+          ],
+          "answer": "$x_1=2$, $x_2=2$",
+          "teaching_note": "The method is still the substitution chain, even when the value does not change."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_numerical_methods"
       ],
@@ -2436,6 +2462,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the interval check or iteration table clearly enough that each approximation can be audited.",
       "explanation": "This manual snippet covers the process marks common to iteration and sign-change questions.",
+      "mark_scheme_move_note": "Show the sign-change interval or the iteration table before giving the rounded value, and keep enough working accuracy to make the final approximation credible.",
+      "misconception_repair_note": {
+        "wrong_move": "Giving a rounded root without the endpoint signs or the iteration values that produced it.",
+        "why_it_fails": "The answer may be numerically plausible, but the working does not prove where the root lies or how the approximation was obtained.",
+        "safer_move": "Write the endpoint values or successive approximations first, then state the rounded conclusion.",
+        "short_check": "Would another student be able to reproduce the final decimal from the displayed working?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving root intervals, iteration, or decimal-place accuracy.",
         "recommended_before_question_ids": [],
@@ -2477,6 +2510,7 @@
         "numerical-mines"
       ],
       "related_skill_targets": [
+        "p3_num_accuracy_rounding",
         "p3_num_sign_change_graph_evidence"
       ],
       "review_status": "teacher_reviewed",
@@ -2484,6 +2518,7 @@
       "snippet_type": "method",
       "source": "teacher_authored",
       "source_skill_target_ids": [
+        "p3_num_accuracy_rounding",
         "p3_num_sign_change_graph_evidence"
       ],
       "steps": [
@@ -2497,16 +2532,34 @@
       "topics": [
         "numerical_methods"
       ],
-      "worked_example": {
-        "id": "p3-numerical-method-evidence-001-example-1",
-        "prompt": "If $f(1)=-2$ and $f(2)=3$, explain the root evidence.",
-        "steps": [
-          "The function values have opposite signs.",
-          "For a continuous function, a sign change means a root lies between the two inputs."
-        ],
-        "answer": "There is a root in $1<x<2$.",
-        "teaching_note": "Show both endpoint values; the interval claim needs evidence."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-numerical-method-evidence-001-example-1",
+          "question_type": "Sign-change evidence",
+          "key_method": "Evaluate both endpoints before claiming an interval.",
+          "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+          "prompt": "If $f(1)=-2$ and $f(2)=3$, explain the root evidence.",
+          "steps": [
+            "The function values have opposite signs.",
+            "For a continuous function, a sign change means a root lies between the two inputs."
+          ],
+          "answer": "There is a root in $1<x<2$.",
+          "teaching_note": "Show both endpoint values; the interval claim needs evidence."
+        },
+        {
+          "id": "p3-numerical-method-evidence-001-example-2",
+          "question_type": "Rounding numerical approximations",
+          "key_method": "Use displayed approximations to justify final rounding.",
+          "exam_move": "Show enough iteration values before stating the rounded root.",
+          "prompt": "Two successive approximations are $1.5248$ and $1.5242$. State the value to 3 significant figures with evidence.",
+          "steps": [
+            "Both displayed values begin $1.52$ to 3 significant figures.",
+            "The change is small enough for this support check to justify the stated rounded value."
+          ],
+          "answer": "$1.52$ to 3 significant figures",
+          "teaching_note": "Do not round early; use the working values as the evidence for the final accuracy."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_numerical_methods"
       ],

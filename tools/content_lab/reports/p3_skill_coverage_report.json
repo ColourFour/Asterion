@@ -1908,7 +1908,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Control accuracy and rounding in numerical solutions",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 calculator accuracy and rounding conventions support this skill; they are prerequisite repair only and must not promote P3 numerical-method mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1946,7 +1946,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -1961,7 +1961,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Apply an iteration formula consistently",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic rearrangement and function notation support reading the recurrence, but P3 mastery must come from clean iteration evidence with canonical question and mark-scheme images.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2003,7 +2003,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -2018,7 +2018,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Justify roots using sign changes or graph evidence",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 function-evaluation and graph-intersection ideas support the sign-change explanation only; they must not be counted as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2056,7 +2056,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {

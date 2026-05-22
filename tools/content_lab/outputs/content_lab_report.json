@@ -122,7 +122,7 @@
       "snippets_with_examples": 8
     },
     {
-      "generated_warmups": 3,
+      "generated_warmups": 9,
       "quick_checks": 2,
       "region_id": "numerical-mines",
       "region_name": "Iteration Forge",
@@ -180,7 +180,7 @@
     ],
     "regions_still_thin": [
       {
-        "generated_warmups": 0,
+        "generated_warmups": 9,
         "quick_checks": 2,
         "reason": "low snippet/check count or no deterministic warm-up",
         "region_id": "numerical-mines",
@@ -201,8 +201,8 @@
     "review_only": 1213
   },
   "content_review_status_counts": {
-    "generated_practice:needs_review": 18,
-    "generated_practice:teacher_reviewed": 78,
+    "generated_practice:needs_review": 15,
+    "generated_practice:teacher_reviewed": 87,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 36
   },
@@ -244,6 +244,8 @@
       "logarithms_and_exponentials.log_equation_basic": 3
     },
     "numerical_methods": {
+      "numerical_methods.accuracy_rounding_basic": 3,
+      "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3
     },
     "parametric_equations": {
@@ -275,7 +277,7 @@
     "differential-shrine": 12,
     "integration-gardens": 15,
     "logarithm-grove": 12,
-    "numerical-mines": 3,
+    "numerical-mines": 9,
     "trig-observatory": 12,
     "vector-workshop": 3
   },
@@ -303,6 +305,8 @@
     "logarithms_and_exponentials.domain_validation_basic": 3,
     "logarithms_and_exponentials.linearisation_basic": 3,
     "logarithms_and_exponentials.log_equation_basic": 3,
+    "numerical_methods.accuracy_rounding_basic": 3,
+    "numerical_methods.iteration_formula_basic": 3,
     "numerical_methods.sign_change_iteration_basic": 3,
     "parametric_equations.derivative_ratio_basic": 3,
     "quadratics.discriminant_root_condition_basic": 3,
@@ -313,71 +317,7 @@
     "vectors.line_intersection_basic": 3,
     "vectors.line_scalar_product_basic": 3
   },
-  "high_evidence_weak_teaching_support": [
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_complex_numbers",
-      "snippet_count": 0,
-      "source_question_count": 45,
-      "topic": "complex_numbers",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_logarithms_and_exponentials",
-      "snippet_count": 0,
-      "source_question_count": 54,
-      "topic": "logarithms_and_exponentials",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_numerical_methods",
-      "snippet_count": 0,
-      "source_question_count": 32,
-      "topic": "numerical_methods",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_parametric_equations",
-      "snippet_count": 0,
-      "source_question_count": 88,
-      "topic": "parametric_equations",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_partial_fractions",
-      "snippet_count": 0,
-      "source_question_count": 27,
-      "topic": "partial_fractions",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_trigonometry",
-      "snippet_count": 0,
-      "source_question_count": 32,
-      "topic": "trigonometry",
-      "warmup_count": 0
-    },
-    {
-      "paper_family": "p3",
-      "quick_check_count": 0,
-      "skill_target_id": "p3_vectors",
-      "snippet_count": 0,
-      "source_question_count": 36,
-      "topic": "vectors",
-      "warmup_count": 0
-    }
-  ],
+  "high_evidence_weak_teaching_support": [],
   "internal_generated_practice_summary": {
     "artifact_scope": "internal_planning",
     "blocked_candidate_count": 0,
@@ -405,6 +345,8 @@
       "logarithms_and_exponentials.domain_validation_basic": 3,
       "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3,
+      "numerical_methods.accuracy_rounding_basic": 3,
+      "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 3,
       "quadratics.discriminant_root_condition_basic": 3,
@@ -417,14 +359,14 @@
     },
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
-    "needs_review_internal_count": 18,
+    "needs_review_internal_count": 15,
     "published_runtime_count": 0,
     "review_status_counts": {
-      "needs_review": 18,
-      "teacher_reviewed": 78
+      "needs_review": 15,
+      "teacher_reviewed": 87
     },
-    "runtime_reviewed_count": 78,
-    "total_count": 96,
+    "runtime_reviewed_count": 87,
+    "total_count": 102,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
@@ -434,7 +376,7 @@
     "differential-shrine": 9,
     "integration-gardens": 15,
     "logarithm-grove": 12,
-    "numerical-mines": 0,
+    "numerical-mines": 9,
     "trig-observatory": 12,
     "vector-workshop": 0
   },
@@ -522,9 +464,9 @@
       "logarithms_and_exponentials.domain_validation_basic": 3,
       "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3,
-      "numerical_methods.accuracy_rounding_basic": 1,
-      "numerical_methods.iteration_formula_basic": 1,
-      "numerical_methods.sign_change_iteration_basic": 1,
+      "numerical_methods.accuracy_rounding_basic": 3,
+      "numerical_methods.iteration_formula_basic": 3,
+      "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 1,
       "quadratics.discriminant_root_condition_basic": 3,
       "trigonometry.double_angle_basic": 3,
@@ -538,12 +480,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 93,
+    "published_runtime_count": 99,
     "review_status_counts": {
-      "teacher_reviewed": 93
+      "teacher_reviewed": 99
     },
-    "runtime_reviewed_count": 93,
-    "total_count": 93,
+    "runtime_reviewed_count": 99,
+    "total_count": 99,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -578,36 +520,7 @@
       "work_energy_power": 1
     }
   },
-  "skill_targets_per_topic": {
-    "p1": {
-      "algebra": 1,
-      "binomial_expansion": 1,
-      "differentiation": 1,
-      "integration": 1,
-      "quadratics": 1,
-      "series_and_sequences": 1,
-      "trigonometry": 1
-    },
-    "p3": {
-      "algebra": 1,
-      "binomial_expansion": 1,
-      "complex_numbers": 1,
-      "differential_equations": 1,
-      "differentiation": 1,
-      "integration": 1,
-      "logarithms_and_exponentials": 1,
-      "numerical_methods": 1,
-      "parametric_equations": 1,
-      "partial_fractions": 1,
-      "trigonometry": 1,
-      "vectors": 1
-    },
-    "p4": {
-      "kinematics_constant_acceleration": 1,
-      "momentum_impulse": 1,
-      "work_energy_power": 1
-    }
-  },
+  "skill_targets_per_topic": {},
   "skill_targets_with_quick_checks_but_no_warmups": [],
   "skill_targets_with_snippets_but_no_quick_checks": [],
   "snippets_per_region": {
@@ -1242,19 +1155,55 @@
     },
     {
       "example_model_id": "p3-numerical-method-evidence-001-example-1",
-      "practice_id": "gen_numerical_sign_change_iteration_basic_0001",
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0001",
       "sequence_role": "first_step",
       "source_snippet_id": "p3-numerical-method-evidence-001"
     },
     {
       "example_model_id": "p3-numerical-method-evidence-001-example-1",
-      "practice_id": "gen_numerical_sign_change_iteration_basic_0002",
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0002",
       "sequence_role": "complete_step",
       "source_snippet_id": "p3-numerical-method-evidence-001"
     },
     {
       "example_model_id": "p3-numerical-method-evidence-001-example-1",
-      "practice_id": "gen_numerical_sign_change_iteration_basic_0003",
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "practice_id": "gen_numerical_iteration_formula_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-iteration-formula-discipline-001"
+    },
+    {
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "practice_id": "gen_numerical_iteration_formula_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-iteration-formula-discipline-001"
+    },
+    {
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "practice_id": "gen_numerical_iteration_formula_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-iteration-formula-discipline-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-numerical-method-evidence-001"
+    },
+    {
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "practice_id": "gen_numerical_sign_change_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-numerical-method-evidence-001"
     },

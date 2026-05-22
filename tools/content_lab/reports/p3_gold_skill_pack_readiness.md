@@ -1,6 +1,6 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-22T05:14:44.131649+00:00`
+Generated at: `2026-05-22T05:35:19.229358+00:00`
 
 ## Summary
 
@@ -20,11 +20,11 @@ No readiness blockers.
 
 ## Warning Counts
 
-- `fewer_than_two_worked_examples`: 17
-- `missing_mark_scheme_move_note`: 37
-- `missing_misconception_repair_note`: 32
-- `missing_prerequisite_repair_note`: 37
-- `missing_some_warmup_sequence_roles`: 11
+- `fewer_than_two_worked_examples`: 14
+- `missing_mark_scheme_move_note`: 34
+- `missing_misconception_repair_note`: 29
+- `missing_prerequisite_repair_note`: 34
+- `missing_some_warmup_sequence_roles`: 8
 - `source_backed_worked_examples_sparse`: 38
 - `thin_evidence_resilience`: 1
 
@@ -33,7 +33,7 @@ No readiness blockers.
 | Rank | Region | Skills | Ready | Blocked | Warning-Only | Reasons |
 | ---: | --- | ---: | ---: | ---: | ---: | --- |
 | 1 | Differential Shrine | 3 | 0 | 0 | 3 | source-backed examples sparse |
-| 2 | Iteration Forge | 3 | 0 | 0 | 3 | missing sequence-role breadth, fewer warm-ups, fewer worked examples, source-backed examples sparse, missing repair tags |
+| 2 | Iteration Forge | 3 | 0 | 0 | 3 | source-backed examples sparse |
 | 3 | Vectors Gate | 3 | 0 | 0 | 3 | missing sequence-role breadth, fewer warm-ups, fewer worked examples, source-backed examples sparse, missing repair tags |
 | 4 | Argand Atrium | 4 | 0 | 0 | 4 | missing sequence-role breadth, fewer warm-ups, fewer worked examples, source-backed examples sparse, missing repair tags |
 
@@ -46,7 +46,7 @@ No readiness blockers.
 | Calculus Cliffs | 5 | 0 | 0 | 5 | 0 | 2 | 2 | 5 |
 | Differential Shrine | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Integral Terraces | 4 | 0 | 0 | 4 | 0 | 0 | 1 | 4 |
-| Iteration Forge | 3 | 0 | 0 | 3 | 0 | 3 | 3 | 3 |
+| Iteration Forge | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Logarithm Observatory | 6 | 0 | 0 | 6 | 0 | 0 | 3 | 6 |
 | Trigonometry Spire | 5 | 0 | 0 | 5 | 0 | 0 | 1 | 5 |
 | Vectors Gate | 3 | 0 | 0 | 3 | 0 | 3 | 2 | 3 |
@@ -84,9 +84,9 @@ No readiness blockers.
 | p3_log_exponential_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_log_laws_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_log_linearisation | Logarithm Observatory | Logarithmic and exponential functions | clean | 3 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_num_accuracy_rounding | Iteration Forge | Numerical solution of equations | clean | 5 | available | 1 | 0 | available | first_step, complete_step | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_num_iteration_formula | Iteration Forge | Numerical solution of equations | clean | 4 | available | 1 | 0 | available | first_step, guardian_prep | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_num_sign_change_graph_evidence | Iteration Forge | Numerical solution of equations | clean | 5 | available | 1 | 0 | available | complete_step, guardian_prep | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
+| p3_num_accuracy_rounding | Iteration Forge | Numerical solution of equations | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_num_iteration_formula | Iteration Forge | Numerical solution of equations | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_num_sign_change_graph_evidence | Iteration Forge | Numerical solution of equations | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_trig_equation_interval | Trigonometry Spire | Trigonometry | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_trig_identity_selection | Trigonometry Spire | Trigonometry | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_trig_quadrant_solutions | Trigonometry Spire | Trigonometry | clean | 5 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |

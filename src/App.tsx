@@ -5,6 +5,8 @@ import { AsterionHomeLanding } from './components/home/AsterionHomeLanding';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { StudentOnboarding } from './components/onboarding/StudentOnboarding';
+import { AsterionEntryShell } from './components/shared/AsterionEntryShell';
+import { AsterionMark } from './components/shared/AsterionMark';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
 import { UiReview } from './components/uiReview/UiReview';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
@@ -140,6 +142,41 @@ function HostedStudentGateMessage({
     return <div className="notice">{state.message}</div>;
   }
   return <div className="notice">{state.error}{state.detail ? ` ${state.detail}` : ''}</div>;
+}
+
+function StudentClaimEntryPage({
+  runtimeConfig,
+  hostedState,
+  onClaimed,
+}: {
+  runtimeConfig: AsterionRuntimeConfig;
+  hostedState?: Exclude<ReturnType<typeof useStudentClassroomContext>[0], { status: 'ready' }>;
+  onClaimed: (claim: StudentClaimState) => void;
+}) {
+  const hostedMode = runtimeConfig.studentClassClaimSource === 'supabase';
+
+  return (
+    <AsterionEntryShell
+      eyebrow="CAIE 9709 · Paper 3 Astral Academy"
+      description={hostedMode
+        ? 'Class membership, teacher, and region access are checked before the map opens.'
+        : 'Claim your teacher-created roster slot, then name your character and enter the P3 world map.'}
+      cardLabel="Student class-code roster claim"
+      copyId="student-entry-title"
+    >
+      {hostedMode ? (
+        <div className="entry-context-note">
+          <strong>Hosted classroom access</strong>
+          <span>Existing browser profiles cannot enter without a current roster slot.</span>
+          <span>{onboardingProgressMessage(runtimeConfig)}</span>
+        </div>
+      ) : null}
+      {hostedState ? <HostedStudentGateMessage state={hostedState} /> : null}
+      {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
+      {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
+      <ClassCodeClaimForm onClaimed={onClaimed} />
+    </AsterionEntryShell>
+  );
 }
 
 function hostedSyncWarningText(error: string): string {
@@ -734,25 +771,11 @@ export default function App() {
 
   if (hostedStudentRequired && hostedClassroomState.status !== 'ready') {
     return (
-      <main className="app-shell onboarding-shell">
-        <TwinklingStarfield />
-        <section className="intro-panel academy-admission">
-          <div className="intro-copy">
-            <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
-            <h1>Asterion</h1>
-          </div>
-          <div className="onboarding-briefing">
-            <strong>Hosted classroom access</strong>
-            <span>Class membership, teacher, and region access are checked before the map opens.</span>
-            <span>Existing browser profiles cannot enter without a current roster slot.</span>
-            <span>{onboardingProgressMessage(runtimeConfig)}</span>
-          </div>
-        </section>
-        <HostedStudentGateMessage state={hostedClassroomState} />
-        {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
-        {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
-      </main>
+      <StudentClaimEntryPage
+        runtimeConfig={runtimeConfig}
+        hostedState={hostedClassroomState}
+        onClaimed={handleStudentClassClaim}
+      />
     );
   }
 
@@ -774,7 +797,7 @@ export default function App() {
     );
   }
 
-  if (!progress.profile) {
+  if (!progress.profile && (staffPreviewContext || hostedRosterContext || studentClassClaim)) {
     const hostedInitial = hostedRosterContext ? hostedInitialProfile(hostedRosterContext, studentClassClaim?.displayName === hostedRosterContext.membership.rosterName ? '' : '') : undefined;
     return (
       <main className="app-shell onboarding-shell">
@@ -784,30 +807,7 @@ export default function App() {
             <span className="mode-pill">CAIE 9709 · Paper 3 Astral Academy</span>
             <h1>Asterion</h1>
           </div>
-          <div className="asterion-emblem" role="img" aria-label="Golden Asterion A emblem" data-testid="asterion-emblem">
-            <span className="emblem-orbit" aria-hidden="true">
-              <span className="emblem-orbit-star" />
-            </span>
-            <svg className="asterion-emblem-mark" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
-              <defs>
-                <radialGradient id="emblemGlow" cx="50%" cy="42%" r="62%">
-                  <stop offset="0%" stopColor="#fff7be" />
-                  <stop offset="48%" stopColor="#efb536" />
-                  <stop offset="100%" stopColor="#7c4510" />
-                </radialGradient>
-                <linearGradient id="emblemGold" x1="64" x2="174" y1="54" y2="184" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#fff2a8" />
-                  <stop offset="54%" stopColor="#f0b638" />
-                  <stop offset="100%" stopColor="#a76018" />
-                </linearGradient>
-              </defs>
-              <circle className="emblem-aura" cx="120" cy="120" r="94" />
-              <circle className="emblem-ring" cx="120" cy="120" r="78" />
-              <path className="emblem-cross-orbit" d="M44 132c35-43 72-65 111-66 26-1 49 8 69 28" />
-              <path className="emblem-cross-orbit" d="M38 152c38 21 78 27 121 17 25-6 46-19 63-39" />
-              <text className="emblem-letter" x="120" y="158" textAnchor="middle">A</text>
-            </svg>
-          </div>
+          <AsterionMark />
           <div className="onboarding-briefing">
             <strong>Academy charter</strong>
             <span>Your quest begins here.</span>
@@ -850,10 +850,17 @@ export default function App() {
               classClaim: studentClassClaim,
             })}
           />
-        ) : (
-          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
-        )}
+        ) : null}
       </main>
+    );
+  }
+
+  if (!progress.profile) {
+    return (
+      <StudentClaimEntryPage
+        runtimeConfig={runtimeConfig}
+        onClaimed={handleStudentClassClaim}
+      />
     );
   }
 

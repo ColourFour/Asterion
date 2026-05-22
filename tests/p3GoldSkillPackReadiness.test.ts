@@ -70,6 +70,7 @@ interface ReadinessReport {
     mark_scheme_move_note_status: string;
     blockers: string[];
     warnings: string[];
+    source_backed_worked_example_contract_errors: string[];
     mvp_gold_ready: boolean;
     next_action: string;
   }>;
@@ -304,6 +305,69 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
     }
+  });
+
+  it('reports Phase 2B Iteration Forge repairs, warm-up role breadth, and support-only prerequisite handling', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: unknown;
+      mark_scheme_move_note?: unknown;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      skill_target_id?: string;
+      sequence_role?: string;
+      review_status?: string;
+    }> }>(generatedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const iterationSkills = [
+      'p3_num_accuracy_rounding',
+      'p3_num_iteration_formula',
+      'p3_num_sign_change_graph_evidence',
+    ];
+
+    for (const skillId of iterationSkills) {
+      const row = reportRow(report, skillId);
+      const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+      const warmupItems = generatedPractice.items.filter((item) => item.skill_target_id === skillId);
+
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.source_backed_worked_example_count).toBe(0);
+      expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+      expect(row.warnings).not.toContain('fewer_than_two_worked_examples');
+      expect(row.warnings).not.toContain('missing_misconception_repair_note');
+      expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
+      expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
+      expect(row.warnings).toContain('source_backed_worked_examples_sparse');
+      expect(warmupItems).toHaveLength(3);
+      expect(warmupItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+      expect(new Set(warmupItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
+      expect(skill?.prerequisite_notes).toContain('support');
+      expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+    }
+
+    for (const snippetId of ['p3-iteration-formula-discipline-001', 'p3-numerical-method-evidence-001']) {
+      const snippet = snippets.snippets.find((item) => item.snippet_id === snippetId);
+      expect(snippet?.misconception_repair_note).toBeDefined();
+      expect(snippet?.mark_scheme_move_note).toBeDefined();
+      expect(snippet?.worked_examples).toHaveLength(2);
+      expect(snippet?.worked_examples?.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+    }
+
+    expect(generatedPractice.items.some((item) => (
+      iterationSkills.includes(String(item.skill_target_id)) && ['candidate', 'needs_review', 'blocked'].includes(String(item.review_status))
+    ))).toBe(false);
   });
 
   it('fails hard for a published source-backed worked example using non-clean evidence', () => {

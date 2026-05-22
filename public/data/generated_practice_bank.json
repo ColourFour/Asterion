@@ -2674,6 +2674,401 @@
       ]
     },
     {
+      "answer": "f(2) = -1 and f(3) = 4, so a root lies in (2, 3)",
+      "difficulty_band": "easy",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 5,
+        "item_type": "endpoint_check",
+        "left": 2,
+        "left_value": -1,
+        "right": 3,
+        "right_value": 4,
+        "safe_bounds": "small integer endpoint checks with explicit opposite signs",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_numerical_sign_change_basic_0001",
+      "prompt": "For f(x) = x^2 - 5, check whether the interval (2, 3) contains a root.",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Evaluate the function at both ends: f(2) = -1.",
+        "Evaluate the other end: f(3) = 4.",
+        "The signs are opposite, so the continuous function crosses zero in the interval."
+      ]
+    },
+    {
+      "answer": "A root lies in (2, 3)",
+      "difficulty_band": "easy",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 7,
+        "interval": "(2, 3)",
+        "item_type": "interval_select",
+        "left": 2,
+        "mid": 3,
+        "right": 4,
+        "safe_bounds": "small integer endpoint checks with explicit opposite signs",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "values": {
+          "2": -3,
+          "3": 2,
+          "4": 9
+        }
+      },
+      "practice_id": "gen_numerical_sign_change_basic_0002",
+      "prompt": "For f(x) = x^2 - 7, use f(2), f(3) and f(4) to choose an interval containing a root.",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The endpoint values are f(2) = -3, f(3) = 2, and f(4) = 9.",
+        "The sign change is between 2 and 3.",
+        "So the justified interval is (2, 3)."
+      ]
+    },
+    {
+      "answer": "A root is justified in (1, 2)",
+      "difficulty_band": "medium",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "graph_interpret",
+        "lower": 1,
+        "lower_value": -3,
+        "safe_bounds": "small integer endpoint checks with explicit opposite signs",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "upper": 2,
+        "upper_value": 4
+      },
+      "practice_id": "gen_numerical_sign_change_basic_0003",
+      "prompt": "A graph of y = f(x) shows f(1) = -3 and f(2) = 4. What root interval is justified?",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Read the two endpoint signs from the graph evidence.",
+        "f(1) and f(2) have opposite signs.",
+        "That supports a crossing in (1, 2)."
+      ]
+    },
+    {
+      "answer": "x_(n+1) = 6/x_n",
+      "difficulty_band": "easy",
+      "exam_move": "Make each iteration line auditable from the previous one.",
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Use the stated iteration exactly.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 6,
+        "item_type": "identify_formula",
+        "safe_bounds": "small positive constants; iteration values checked positive and bounded",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_numerical_iteration_formula_basic_0001",
+      "prompt": "For x^2 = 6, which recurrence keeps the fixed-point equation unchanged: x_(n+1) = sqrt(6) or x_(n+1) = 6/x_n?",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "A fixed point must satisfy x = g(x).",
+        "For x = 6/x, multiplying by x gives x^2 = 6.",
+        "The constant square-root option does not use the previous approximation."
+      ]
+    },
+    {
+      "answer": "x_1 = 2.250, x_2 = 2.236",
+      "difficulty_band": "medium",
+      "exam_move": "Make each iteration line auditable from the previous one.",
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Use the stated iteration exactly.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 5,
+        "item_type": "perform_iterations",
+        "iterations": 2,
+        "safe_bounds": "small positive constants; iteration values checked positive and bounded",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "x0": 2,
+        "x1_3dp": "2.250",
+        "x2_3dp": "2.236"
+      },
+      "practice_id": "gen_numerical_iteration_formula_basic_0002",
+      "prompt": "Use x_(n+1) = (x_n + 5/x_n)/2 with x_0 = 2. Find x_1 and x_2 to 3 d.p.",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Substitute x_0 = 2 into the iteration formula.",
+        "x_1 = 2.250.",
+        "Use x_1 in the same formula to get x_2 = 2.236."
+      ]
+    },
+    {
+      "answer": "Yes, it is locally suitable because |g'(x)| < 1",
+      "difficulty_band": "medium",
+      "exam_move": "Make each iteration line auditable from the previous one.",
+      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Use the stated iteration exactly.",
+      "paper_family": "p3",
+      "parameters": {
+        "gradient_abs": "3/5",
+        "item_type": "suitability_check",
+        "safe_bounds": "small positive constants; iteration values checked positive and bounded",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep"
+      },
+      "practice_id": "gen_numerical_iteration_formula_basic_0003",
+      "prompt": "Near the fixed point, an iteration has |g'(x)| = 3/5. Is this locally suitable for convergence?",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use the lightweight fixed-point check.",
+        "The gradient magnitude is 3/5, which is less than 1.",
+        "That supports local convergence for the warm-up check."
+      ]
+    },
+    {
+      "answer": "x = 1.52",
+      "difficulty_band": "easy",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.accuracy_rounding_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "round_decimal",
+        "safe_bounds": "short decimal checks using fixed deterministic approximations",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "significant_figures": 3,
+        "value": "1.5248"
+      },
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0001",
+      "prompt": "An iteration gives x = 1.5248. State x to 3 significant figures.",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_accuracy_rounding",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Keep the displayed approximation until the final step.",
+        "Count three significant figures from the first non-zero digit.",
+        "The rounded value is 1.52."
+      ]
+    },
+    {
+      "answer": "No, keep extra figures before finding x_2",
+      "difficulty_band": "medium",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.accuracy_rounding_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 5,
+        "item_type": "avoid_early_rounding",
+        "safe_bounds": "short decimal checks using fixed deterministic approximations",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "x0": 2,
+        "x1_5dp": "2.25000",
+        "x2_5dp": "2.23611"
+      },
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0002",
+      "prompt": "For x_(n+1) = (x_n + 5/x_n)/2 and x_0 = 2, should x_1 = 2.25000 be rounded to 2.2 before finding x_2?",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_accuracy_rounding",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Early rounding changes the input to the next iteration.",
+        "Use the stored value near 2.25000, then compute x_2 near 2.23611.",
+        "Round only after the requested iteration or accuracy is reached."
+      ]
+    },
+    {
+      "answer": "x = 0.15 to 2 d.p.",
+      "difficulty_band": "medium",
+      "exam_move": "Write the interval check clearly enough that the root claim is justified.",
+      "example_model_id": "p3-numerical-method-evidence-001-example-1",
+      "generator_family": "numerical_methods.accuracy_rounding_basic",
+      "key_method": "Evaluate both endpoints before claiming an interval.",
+      "paper_family": "p3",
+      "parameters": {
+        "decimal_places": 2,
+        "item_type": "successive_bounds",
+        "lower_value": "0.1523",
+        "safe_bounds": "short decimal checks using fixed deterministic approximations",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "upper_value": "0.1524"
+      },
+      "practice_id": "gen_numerical_accuracy_rounding_basic_0003",
+      "prompt": "Two successive approximations are 0.1523 and 0.1524. Give the value to 2 d.p. if both round the same way.",
+      "question_type": "Sign-change evidence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_accuracy_rounding",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "0.1523 rounds to 0.15.",
+        "0.1524 also rounds to 0.15.",
+        "So the justified 2 d.p. value is 0.15."
+      ]
+    },
+    {
       "answer": "(1/y) dy = 3x^2 dx",
       "difficulty_band": "easy",
       "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
@@ -3667,122 +4062,6 @@
       ]
     },
     {
-      "answer": "There is a root between 2 and 3",
-      "difficulty_band": "easy",
-      "exam_move": "Show both endpoint values and their signs.",
-      "example_model_id": "p3-numerical-method-evidence-001-example-1",
-      "generator_family": "numerical_methods.sign_change_iteration_basic",
-      "key_method": "Use a sign change to justify a root in an interval.",
-      "paper_family": "p3",
-      "parameters": {
-        "left": 2,
-        "right": 3,
-        "sequence_role": "first_step"
-      },
-      "practice_id": "gen_numerical_sign_change_basic_0001",
-      "prompt": "Show that f(x) = x^3 - 2x - 5 has a root between 2 and 3.",
-      "question_type": "Sign-change evidence",
-      "region_ids": [
-        "numerical-mines"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_num_sign_change_graph_evidence",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-numerical-method-evidence-001"
-      ],
-      "source_snippet_id": "p3-numerical-method-evidence-001",
-      "topic": "numerical_methods",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "teacher_static_review"
-      },
-      "worked_solution": [
-        "f(2) = 8 - 4 - 5 = -1.",
-        "f(3) = 27 - 6 - 5 = 16.",
-        "The function changes sign between 2 and 3.",
-        "Therefore there is a root between 2 and 3."
-      ]
-    },
-    {
-      "answer": "x3 = sqrt(3 + 2) = sqrt5",
-      "difficulty_band": "easy",
-      "exam_move": "Use the iteration formula exactly as printed.",
-      "example_model_id": "p3-iteration-formula-discipline-001-example-1",
-      "generator_family": "numerical_methods.iteration_formula_basic",
-      "key_method": "Substitute each iterate into the stated recurrence.",
-      "paper_family": "p3",
-      "parameters": {
-        "initial": 1,
-        "sequence_role": "complete_step"
-      },
-      "practice_id": "gen_numerical_iteration_formula_basic_0001",
-      "prompt": "Use x_(n+1) = sqrt(3 + x_n), with x_1 = 1, to find x_3 exactly.",
-      "question_type": "Fixed-point iteration",
-      "region_ids": [
-        "numerical-mines"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "complete_step",
-      "skill_target_id": "p3_num_iteration_formula",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-iteration-formula-discipline-001"
-      ],
-      "source_snippet_id": "p3-iteration-formula-discipline-001",
-      "topic": "numerical_methods",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "teacher_static_review"
-      },
-      "worked_solution": [
-        "x_2 = sqrt(3 + 1) = 2.",
-        "x_3 = sqrt(3 + x_2).",
-        "So x_3 = sqrt(3 + 2) = sqrt5."
-      ]
-    },
-    {
-      "answer": "x = 1.52 to 2 d.p.",
-      "difficulty_band": "medium",
-      "exam_move": "Use consecutive approximations to justify the requested accuracy.",
-      "example_model_id": "p3-numerical-method-evidence-001-example-1",
-      "generator_family": "numerical_methods.accuracy_rounding_basic",
-      "key_method": "Compare stable rounded values before stating the final approximation.",
-      "paper_family": "p3",
-      "parameters": {
-        "accuracy": "2dp",
-        "sequence_role": "guardian_prep"
-      },
-      "practice_id": "gen_numerical_accuracy_rounding_basic_0001",
-      "prompt": "Two successive approximations are 1.524 and 1.523. State the root to 2 d.p. with evidence.",
-      "question_type": "Numerical accuracy statement",
-      "region_ids": [
-        "numerical-mines"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_num_accuracy_rounding",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-numerical-method-evidence-001"
-      ],
-      "source_snippet_id": "p3-numerical-method-evidence-001",
-      "topic": "numerical_methods",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "teacher_static_review"
-      },
-      "worked_solution": [
-        "1.524 rounds to 1.52 to 2 d.p.",
-        "1.523 also rounds to 1.52 to 2 d.p.",
-        "Since the rounded value is stable, state x = 1.52 to 2 d.p."
-      ]
-    },
-    {
       "answer": "y = Ae^(3x^2/2)",
       "difficulty_band": "easy",
       "exam_move": "Separate variables before integrating either side.",
@@ -3900,8 +4179,8 @@
   ],
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 0,
-  "published_runtime_count": 93,
-  "runtime_reviewed_count": 93,
+  "published_runtime_count": 99,
+  "runtime_reviewed_count": 99,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Runtime app-facing reviewed warm-up practice.",

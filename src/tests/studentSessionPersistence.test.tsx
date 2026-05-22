@@ -193,6 +193,16 @@ async function remountApp(): Promise<HTMLElement> {
   return render(<App />);
 }
 
+async function clickButtonContaining(container: HTMLElement, text: string): Promise<void> {
+  const button = Array.from(container.querySelectorAll('button')).find((candidate) => candidate.textContent?.includes(text));
+  expect(button).toBeTruthy();
+  await act(async () => {
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+}
+
 beforeEach(() => {
   vi.unstubAllEnvs();
   vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
@@ -284,11 +294,9 @@ describe('hosted student session persistence', () => {
     expect(container.textContent).toContain('Choose your academy avatar');
     expect(container.textContent).not.toContain('World Map');
 
-    await act(async () => {
-      container.querySelector('form[aria-label="Create academy avatar"]')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      await Promise.resolve();
-      await Promise.resolve();
-    });
+    await clickButtonContaining(container, 'Next step');
+    await clickButtonContaining(container, 'Continue');
+    await clickButtonContaining(container, 'Enter the P3 world map');
 
     const saved = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
     expect(saved.profile).toMatchObject({

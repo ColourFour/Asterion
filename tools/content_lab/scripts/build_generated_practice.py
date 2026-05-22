@@ -68,6 +68,8 @@ VECTORS_LINE_SCALAR_FAMILY = "vectors.line_scalar_product_basic"
 VECTORS_LINE_INTERSECTION_FAMILY = "vectors.line_intersection_basic"
 NUMERICAL_TOPIC = "numerical_methods"
 NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY = "numerical_methods.sign_change_iteration_basic"
+NUMERICAL_ITERATION_FORMULA_FAMILY = "numerical_methods.iteration_formula_basic"
+NUMERICAL_ACCURACY_ROUNDING_FAMILY = "numerical_methods.accuracy_rounding_basic"
 DIFFERENTIAL_EQUATIONS_TOPIC = "differential_equations"
 DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY = "differential_equations.separation_basic"
 DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY = "differential_equations.initial_condition_basic"
@@ -108,6 +110,8 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     VECTORS_LINE_SCALAR_FAMILY: "p3_vec_scalar_product_angles",
     VECTORS_LINE_INTERSECTION_FAMILY: "p3_vec_line_equations_intersections",
     NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY: "p3_num_sign_change_graph_evidence",
+    NUMERICAL_ITERATION_FORMULA_FAMILY: "p3_num_iteration_formula",
+    NUMERICAL_ACCURACY_ROUNDING_FAMILY: "p3_num_accuracy_rounding",
     DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY: "p3_de_separation_setup",
     DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY: "p3_de_initial_condition",
     DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY: "p3_de_forming_context_model",
@@ -128,6 +132,9 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     INTEGRATION_PARTS_SUBSTITUTION_FAMILY,
     COMPLEX_CARTESIAN_CONJUGATE_FAMILY,
     DIFFERENTIATION_STATIONARY_TANGENT_FAMILY,
+    NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY,
+    NUMERICAL_ITERATION_FORMULA_FAMILY,
+    NUMERICAL_ACCURACY_ROUNDING_FAMILY,
     DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY,
     DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY,
     DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY,
@@ -2326,16 +2333,16 @@ def newton_sqrt_sequence(constant: int, x0: int, iterations: int, practice_id: s
 
 
 def build_numerical_sign_change_iteration_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
-    practice_id = f"gen_numerical_sign_change_iteration_basic_{index:04d}"
-    item_type = item_type_parameter(case, practice_id, {"sign_change", "sqrt_iteration", "sqrt_iteration_guardian"})
+    practice_id = f"gen_numerical_sign_change_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"endpoint_check", "interval_select", "graph_interpret"})
     sequence_role = sequence_role_parameter(case, practice_id)
     difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
     parameters: dict[str, Any] = {
         "item_type": item_type,
-        "safe_bounds": "positive square-root constants below 20; iteration values checked positive and bounded",
+        "safe_bounds": "small integer endpoint checks with explicit opposite signs",
     }
 
-    if item_type == "sign_change":
+    if item_type == "endpoint_check":
         constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=30)
         left = int_parameter(case, "left", practice_id, min_value=-10, max_value=10)
         right = int_parameter(case, "right", practice_id, min_value=-10, max_value=10)
@@ -2351,29 +2358,43 @@ def build_numerical_sign_change_iteration_item(context: dict[str, Any], index: i
             "The signs are opposite, so the continuous function crosses zero in the interval.",
         ]
         parameters.update({"constant": constant, "left": left, "right": right, "left_value": left_value, "right_value": right_value})
-    else:
-        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=19)
-        x0 = int_parameter(case, "x0", practice_id, min_value=1, max_value=9)
-        iterations = int_parameter(case, "iterations", practice_id, min_value=2, max_value=4)
-        values = newton_sqrt_sequence(constant, x0, iterations, practice_id)
-        rounded_values = [decimal_text(value) for value in values]
-        if item_type == "sqrt_iteration":
-            prompt = f"Use x_(n+1) = (x_n + {constant}/x_n)/2 with x_0 = {x0}. Find x_1 and x_2 to 3 d.p."
-            answer = f"x_1 = {rounded_values[1]}, x_2 = {rounded_values[2]}"
-            worked_solution = [
-                f"Substitute x_0 = {x0} into the iteration formula.",
-                f"x_1 = {rounded_values[1]}.",
-                f"Use x_1 in the same formula to get x_2 = {rounded_values[2]}.",
-            ]
+    elif item_type == "interval_select":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=30)
+        left = int_parameter(case, "left", practice_id, min_value=-10, max_value=10)
+        mid = int_parameter(case, "mid", practice_id, min_value=-10, max_value=10)
+        right = int_parameter(case, "right", practice_id, min_value=-10, max_value=10)
+        require_safe(left < mid < right, practice_id, "endpoints must be ordered")
+        values = {point: point * point - constant for point in (left, mid, right)}
+        require_safe(values[left] * values[mid] < 0 or values[mid] * values[right] < 0, practice_id, "one adjacent pair must give a sign change")
+        if values[left] * values[mid] < 0:
+            interval = f"({left}, {mid})"
+            pair = (left, mid)
         else:
-            prompt = f"Use x_(n+1) = (x_n + {constant}/x_n)/2 from x_0 = {x0} for {iterations} iterations, then give the estimate to 3 d.p."
-            answer = f"x = {rounded_values[-1]} to 3 d.p."
-            worked_solution = [
-                "Keep the calculator values through the iteration rather than rounding early.",
-                f"The successive values to 3 d.p. are {', '.join(rounded_values[1:])}.",
-                f"After {iterations} iterations the estimate is {rounded_values[-1]} to 3 d.p.",
-            ]
-        parameters.update({"constant": constant, "x0": x0, "iterations": iterations, "final_value_3dp": rounded_values[-1]})
+            interval = f"({mid}, {right})"
+            pair = (mid, right)
+        prompt = f"For f(x) = x^2 - {constant}, use f({left}), f({mid}) and f({right}) to choose an interval containing a root."
+        answer = f"A root lies in {interval}"
+        worked_solution = [
+            f"The endpoint values are f({left}) = {values[left]}, f({mid}) = {values[mid]}, and f({right}) = {values[right]}.",
+            f"The sign change is between {pair[0]} and {pair[1]}.",
+            f"So the justified interval is {interval}.",
+        ]
+        parameters.update({"constant": constant, "left": left, "mid": mid, "right": right, "values": values, "interval": interval})
+    else:
+        lower = int_parameter(case, "lower", practice_id, min_value=-10, max_value=10)
+        upper = int_parameter(case, "upper", practice_id, min_value=-10, max_value=10)
+        lower_value = int_parameter(case, "lower_value", practice_id, min_value=-50, max_value=50)
+        upper_value = int_parameter(case, "upper_value", practice_id, min_value=-50, max_value=50)
+        require_safe(lower < upper, practice_id, "lower endpoint must be smaller than upper endpoint")
+        require_safe(lower_value * upper_value < 0, practice_id, "graph endpoint values must give a sign change")
+        prompt = f"A graph of y = f(x) shows f({lower}) = {lower_value} and f({upper}) = {upper_value}. What root interval is justified?"
+        answer = f"A root is justified in ({lower}, {upper})"
+        worked_solution = [
+            "Read the two endpoint signs from the graph evidence.",
+            f"f({lower}) and f({upper}) have opposite signs.",
+            f"That supports a crossing in ({lower}, {upper}).",
+        ]
+        parameters.update({"lower": lower, "upper": upper, "lower_value": lower_value, "upper_value": upper_value})
 
     return review_queue_item(
         practice_id=practice_id,
@@ -2386,20 +2407,167 @@ def build_numerical_sign_change_iteration_item(context: dict[str, Any], index: i
         context=context,
         sequence_role=sequence_role,
         difficulty_band=difficulty_band,
-        snippet_ids=preferred_snippet_ids(context, NUMERICAL_TOPIC, [
-            "p3-numerical-method-evidence-001",
-            "p3-iteration-formula-discipline-001",
-        ]),
+        snippet_ids=preferred_snippet_ids(context, NUMERICAL_TOPIC, ["p3-numerical-method-evidence-001"]),
     )
 
 
 def build_numerical_sign_change_iteration_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"item_type": "sign_change", "constant": 5, "left": 2, "right": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"item_type": "sqrt_iteration", "constant": 5, "x0": 2, "iterations": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
-        {"item_type": "sqrt_iteration_guardian", "constant": 7, "x0": 3, "iterations": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {"item_type": "endpoint_check", "constant": 5, "left": 2, "right": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "interval_select", "constant": 7, "left": 2, "mid": 3, "right": 4, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "graph_interpret", "lower": 1, "upper": 2, "lower_value": -3, "upper_value": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_numerical_sign_change_iteration_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_numerical_iteration_formula_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_numerical_iteration_formula_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"identify_formula", "perform_iterations", "suitability_check"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small positive constants; iteration values checked positive and bounded",
+    }
+
+    if item_type == "identify_formula":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=20)
+        prompt = f"For x^2 = {constant}, which recurrence keeps the fixed-point equation unchanged: x_(n+1) = sqrt({constant}) or x_(n+1) = {constant}/x_n?"
+        answer = f"x_(n+1) = {constant}/x_n"
+        worked_solution = [
+            f"A fixed point must satisfy x = g(x).",
+            f"For x = {constant}/x, multiplying by x gives x^2 = {constant}.",
+            "The constant square-root option does not use the previous approximation.",
+        ]
+        parameters.update({"constant": constant})
+    elif item_type == "perform_iterations":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=19)
+        x0 = int_parameter(case, "x0", practice_id, min_value=1, max_value=9)
+        iterations = int_parameter(case, "iterations", practice_id, min_value=2, max_value=4)
+        values = newton_sqrt_sequence(constant, x0, iterations, practice_id)
+        rounded_values = [decimal_text(value) for value in values]
+        prompt = f"Use x_(n+1) = (x_n + {constant}/x_n)/2 with x_0 = {x0}. Find x_1 and x_2 to 3 d.p."
+        answer = f"x_1 = {rounded_values[1]}, x_2 = {rounded_values[2]}"
+        worked_solution = [
+            f"Substitute x_0 = {x0} into the iteration formula.",
+            f"x_1 = {rounded_values[1]}.",
+            f"Use x_1 in the same formula to get x_2 = {rounded_values[2]}.",
+        ]
+        parameters.update({"constant": constant, "x0": x0, "iterations": iterations, "x1_3dp": rounded_values[1], "x2_3dp": rounded_values[2]})
+    else:
+        multiplier = int_parameter(case, "multiplier", practice_id, min_value=2, max_value=9)
+        gradient_abs = Fraction(multiplier, 10)
+        gradient_text = fraction_text(gradient_abs.numerator, gradient_abs.denominator)
+        require_safe(gradient_abs < 1, practice_id, "fixed-point suitability check requires gradient magnitude below 1")
+        prompt = f"Near the fixed point, an iteration has |g'(x)| = {gradient_text}. Is this locally suitable for convergence?"
+        answer = "Yes, it is locally suitable because |g'(x)| < 1"
+        worked_solution = [
+            "Use the lightweight fixed-point check.",
+            f"The gradient magnitude is {gradient_text}, which is less than 1.",
+            "That supports local convergence for the warm-up check.",
+        ]
+        parameters.update({"gradient_abs": gradient_text})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=NUMERICAL_ITERATION_FORMULA_FAMILY,
+        topic=NUMERICAL_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, NUMERICAL_TOPIC, ["p3-iteration-formula-discipline-001"]),
+    )
+
+
+def build_numerical_iteration_formula_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "identify_formula", "constant": 6, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "perform_iterations", "constant": 5, "x0": 2, "iterations": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "suitability_check", "multiplier": 6, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_numerical_iteration_formula_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_numerical_accuracy_rounding_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_numerical_accuracy_rounding_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"round_decimal", "avoid_early_rounding", "successive_bounds"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "short decimal checks using fixed deterministic approximations",
+    }
+
+    if item_type == "round_decimal":
+        numerator = int_parameter(case, "numerator", practice_id, min_value=1000, max_value=99999)
+        value = Fraction(numerator, 10000)
+        prompt = f"An iteration gives x = {decimal_text(value, 4)}. State x to 3 significant figures."
+        answer = f"x = {float(value):.3g}"
+        worked_solution = [
+            "Keep the displayed approximation until the final step.",
+            "Count three significant figures from the first non-zero digit.",
+            f"The rounded value is {float(value):.3g}.",
+        ]
+        parameters.update({"value": decimal_text(value, 4), "significant_figures": 3})
+    elif item_type == "avoid_early_rounding":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=19)
+        x0 = int_parameter(case, "x0", practice_id, min_value=1, max_value=9)
+        values = newton_sqrt_sequence(constant, x0, 2, practice_id)
+        exact_x1 = decimal_text(values[1], 5)
+        rounded_x1 = decimal_text(values[1], 1)
+        exact_x2 = decimal_text(values[2], 5)
+        prompt = f"For x_(n+1) = (x_n + {constant}/x_n)/2 and x_0 = {x0}, should x_1 = {exact_x1} be rounded to {rounded_x1} before finding x_2?"
+        answer = "No, keep extra figures before finding x_2"
+        worked_solution = [
+            "Early rounding changes the input to the next iteration.",
+            f"Use the stored value near {exact_x1}, then compute x_2 near {exact_x2}.",
+            "Round only after the requested iteration or accuracy is reached.",
+        ]
+        parameters.update({"constant": constant, "x0": x0, "x1_5dp": exact_x1, "x2_5dp": exact_x2})
+    else:
+        lower_numerator = int_parameter(case, "lower_numerator", practice_id, min_value=1000, max_value=9999)
+        upper_numerator = int_parameter(case, "upper_numerator", practice_id, min_value=1000, max_value=9999)
+        lower_value = Fraction(lower_numerator, 10000)
+        upper_value = Fraction(upper_numerator, 10000)
+        require_safe(lower_value < upper_value, practice_id, "successive bounds must be ordered")
+        lower_2dp = f"{float(lower_value):.2f}"
+        upper_2dp = f"{float(upper_value):.2f}"
+        require_safe(lower_2dp == upper_2dp, practice_id, "bounds must justify the same 2 d.p. value")
+        prompt = f"Two successive approximations are {decimal_text(lower_value, 4)} and {decimal_text(upper_value, 4)}. Give the value to 2 d.p. if both round the same way."
+        answer = f"x = {lower_2dp} to 2 d.p."
+        worked_solution = [
+            f"{decimal_text(lower_value, 4)} rounds to {lower_2dp}.",
+            f"{decimal_text(upper_value, 4)} also rounds to {upper_2dp}.",
+            f"So the justified 2 d.p. value is {lower_2dp}.",
+        ]
+        parameters.update({"lower_value": decimal_text(lower_value, 4), "upper_value": decimal_text(upper_value, 4), "decimal_places": 2})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=NUMERICAL_ACCURACY_ROUNDING_FAMILY,
+        topic=NUMERICAL_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, NUMERICAL_TOPIC, ["p3-numerical-method-evidence-001"]),
+    )
+
+
+def build_numerical_accuracy_rounding_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "round_decimal", "numerator": 15248, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "avoid_early_rounding", "constant": 5, "x0": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "successive_bounds", "lower_numerator": 1523, "upper_numerator": 1524, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_numerical_accuracy_rounding_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def build_differential_equations_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
@@ -3058,6 +3226,8 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_complex_cartesian_conjugate_items(context)
         + build_vectors_line_scalar_items(context)
         + build_numerical_sign_change_iteration_items(context)
+        + build_numerical_iteration_formula_items(context)
+        + build_numerical_accuracy_rounding_items(context)
         + build_differential_equations_items(context)
         + build_differential_initial_condition_items(context)
         + build_differentiation_implicit_log_exp_items(context)

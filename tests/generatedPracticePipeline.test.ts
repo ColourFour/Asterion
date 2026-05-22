@@ -899,7 +899,6 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'complex_numbers.cartesian_locus_roots_basic',
         'vectors.line_scalar_product_basic',
         'vectors.line_intersection_basic',
-        'numerical_methods.sign_change_iteration_basic',
       ];
 
       for (const family of families) {
@@ -927,6 +926,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         ['integration.definite_area_basic', 'p3_int_definite_improper_area'],
         ['integration.parts_substitution_basic', 'p3_int_parts_substitution'],
         ['complex_numbers.cartesian_conjugate_basic', 'p3_complex_cartesian_conjugate'],
+        ['numerical_methods.sign_change_iteration_basic', 'p3_num_sign_change_graph_evidence'],
+        ['numerical_methods.iteration_formula_basic', 'p3_num_iteration_formula'],
+        ['numerical_methods.accuracy_rounding_basic', 'p3_num_accuracy_rounding'],
         ['differential_equations.separation_basic', 'p3_de_separation_setup'],
         ['differential_equations.initial_condition_basic', 'p3_de_initial_condition'],
         ['differential_equations.context_model_basic', 'p3_de_forming_context_model'],
@@ -946,6 +948,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(items.find((item) => item.generator_family === 'differentiation.stationary_tangent_normal_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y - 4 = -1/4(x - 2)');
       expect(items.find((item) => item.generator_family === 'integration.parts_substitution_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x e^x - e^x + C');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_conjugate_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('z = 3 + 2i');
+      expect(items.find((item) => item.generator_family === 'numerical_methods.sign_change_iteration_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('A root is justified in (1, 2)');
+      expect(items.find((item) => item.generator_family === 'numerical_methods.iteration_formula_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe("Yes, it is locally suitable because |g'(x)| < 1");
+      expect(items.find((item) => item.generator_family === 'numerical_methods.accuracy_rounding_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 0.15 to 2 d.p.');
       expect(items.find((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic' && item.sequence_role === 'complete_step')?.answer).toBe('dy/dx = 1/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
@@ -977,7 +982,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       ['build_complex_cartesian_conjugate_item', { item_type: 'unsupported_conjugate_case', sequence_role: 'guardian_prep' }],
       ['build_vectors_line_scalar_item', { item_type: 'angle_cosine', left_x: 1, left_y: 1, left_z: 0, right_x: 2, right_y: 1, right_z: 0, sequence_role: 'guardian_prep' }],
       ['build_vectors_line_intersection_item', { item_type: 'point_on_line_parameter', lambda_value: 3, sequence_role: 'guardian_prep' }],
-      ['build_numerical_sign_change_iteration_item', { item_type: 'sign_change', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
+      ['build_numerical_sign_change_iteration_item', { item_type: 'endpoint_check', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
+      ['build_numerical_iteration_formula_item', { item_type: 'perform_iterations', constant: 5, x0: 0, iterations: 2, sequence_role: 'complete_step' }],
+      ['build_numerical_accuracy_rounding_item', { item_type: 'successive_bounds', lower_numerator: 1549, upper_numerator: 1551, sequence_role: 'guardian_prep' }],
       ['build_differential_equations_item', { item_type: 'initial_condition_value', y0: 2, x_value: 4, sequence_role: 'guardian_prep' }],
       ['build_differential_initial_condition_item', { item_type: 'value_from_relation', y0: 2, x0: 0, x_value: 4, sequence_role: 'guardian_prep' }],
       ['build_differential_equations_context_model_item', { item_type: 'find_rate_constant', value: 0, rate: 5, sequence_role: 'complete_step' }],
@@ -1038,6 +1045,8 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'integration.definite_area_basic': 3,
         'integration.method_setup_basic': 3,
         'integration.parts_substitution_basic': 3,
+        'numerical_methods.accuracy_rounding_basic': 3,
+        'numerical_methods.iteration_formula_basic': 3,
         'numerical_methods.sign_change_iteration_basic': 3,
         'parametric_equations.derivative_ratio_basic': 3,
         'vectors.line_intersection_basic': 3,
@@ -1050,7 +1059,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'complex-harbor': 3,
         'differential-shrine': 9,
         'integration-gardens': 15,
-        'numerical-mines': 0,
+        'numerical-mines': 9,
         'trig-observatory': 12,
         'vector-workshop': 0,
       });

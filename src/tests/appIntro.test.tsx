@@ -102,6 +102,15 @@ async function openStudentEntry(container: HTMLElement): Promise<void> {
   });
 }
 
+async function clickButtonContaining(container: HTMLElement, text: string): Promise<void> {
+  const button = Array.from(container.querySelectorAll('button')).find((candidate) => candidate.textContent?.includes(text));
+  expect(button).toBeTruthy();
+  await act(async () => {
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+  });
+}
+
 beforeEach(() => {
   vi.unstubAllEnvs();
   vi.stubEnv('VITE_ASTERION_APP_PROFILE', '');
@@ -320,13 +329,23 @@ describe('Asterion intro page', () => {
 
     expect(container.textContent).toContain('Choose your academy avatar');
     expect(container.textContent).toContain('Pick a starter look.');
+    expect(container.textContent).toContain('Next step');
+    expect(container.textContent).not.toContain('Academy name');
+    expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
     expect(container.querySelector('.academy-path-grid')).toBeNull();
     expect(container.textContent).not.toContain('World Map');
 
+    await clickButtonContaining(container, 'Next step');
+
     setInputValue(inputForLabel(container, 'Academy name'), 'Maya Prime');
+    expect(container.textContent).toContain('Continue');
+    expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
+
+    await clickButtonContaining(container, 'Continue');
 
     const avatarForm = container.querySelector('form[aria-label="Create academy avatar"]');
     expect(avatarForm).toBeTruthy();
+    expect(container.textContent).toContain('Back');
     expect(avatarForm?.querySelectorAll('.avatar-preset-card')).toHaveLength(4);
     expect(avatarForm?.querySelectorAll('.avatar-preset-card.selected')).toHaveLength(1);
     expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Selected');
@@ -460,11 +479,14 @@ describe('Asterion intro page', () => {
     }));
 
     let container = await render(<App />);
+    await clickButtonContaining(container, 'Next step');
     const academyName = inputForLabel(container, 'Academy name');
     expect(academyName.maxLength).toBe(40);
     expect(academyName.required).toBe(false);
 
     setInputValue(academyName, '   ');
+
+    await clickButtonContaining(container, 'Continue');
 
     await act(async () => {
       container.querySelector('form[aria-label="Create academy avatar"]')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
