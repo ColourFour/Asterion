@@ -61,12 +61,22 @@ function extractFunctionBody(sql, functionName) {
   return sql.slice(start, end);
 }
 
+function findLatestFunctionStart(sql, functionName) {
+  return [...sql.matchAll(new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${functionName}\\b`, 'gi'))]
+    .map((match) => match.index ?? -1)
+    .at(-1) ?? -1;
+}
+
 function assertNoAmbiguousBareIdPatterns(sql) {
   const checkedFunctions = [
     'admin_add_teacher_by_email',
     'activate_pending_teacher_role_for_current_user',
     'ensure_admin_teacher_operator_profile_for_current_user',
     'create_class_with_region_access',
+    'archive_class_roster_student',
+    'reset_class_roster_claim',
+    'set_class_region_access',
+    'claim_class_roster_slot',
   ];
   const forbiddenPatterns = [
     [/\bwhere\s+id\s*=/i, 'bare WHERE id ='],
@@ -83,6 +93,67 @@ function assertNoAmbiguousBareIdPatterns(sql) {
       if (pattern.test(body)) {
         fail(`Potential ambiguous SQL reference in public.${functionName}: ${description}`);
       }
+    }
+  }
+}
+
+function assertNoAmbiguousJsonbTraversal(sql) {
+  const oneArgStarts = [...sql.matchAll(/create\s+or\s+replace\s+function\s+public\.asterion_snapshot_json_has_forbidden_key\s*\(\s*payload\s+jsonb\s*\)/gi)]
+    .map((match) => match.index ?? -1);
+  const twoArgStarts = [...sql.matchAll(/create\s+or\s+replace\s+function\s+public\.asterion_snapshot_json_has_forbidden_key\s*\(\s*payload\s+jsonb\s*,\s*forbidden_keys\s+text\[\]\s*\)/gi)]
+    .map((match) => match.index ?? -1);
+  const helperStarts = [oneArgStarts.at(-1), twoArgStarts.at(-1)].filter((start) => typeof start === 'number' && start >= 0);
+  const helperBodies = helperStarts.map((start) => {
+    const end = sql.indexOf('comment on function public.asterion_snapshot_json_has_forbidden_key', start);
+    if (end === -1) fail('Missing documentation comment for public.asterion_snapshot_json_has_forbidden_key overload');
+    return sql.slice(start, end);
+  });
+
+  for (const body of helperBodies) {
+    if (/select\s+key\s*,\s*value\s+from\s+jsonb_each\s*\(\s*payload\s*\)/i.test(body)) {
+      fail('Forbidden-key JSONB helpers must alias jsonb_each columns instead of selecting bare key, value');
+    }
+    if (/for\s+value\s+in\s+select\s+jsonb_array_elements\s*\(\s*payload\s*\)/i.test(body)) {
+      fail('Forbidden-key JSONB helpers must not loop over a PL/pgSQL variable named value');
+    }
+  }
+}
+
+function assertNamedConflictTargets(sql) {
+  const namedConflictExpectations = [
+    ['admin_add_teacher_by_email', 'user_roles_user_id_organization_id_role_key'],
+    ['admin_add_teacher_by_email', 'teacher_profiles_organization_id_email_key'],
+    ['activate_pending_teacher_role_for_current_user', 'user_roles_user_id_organization_id_role_key'],
+    ['activate_pending_teacher_role_for_current_user', 'teacher_profiles_organization_id_email_key'],
+    ['create_class_with_region_access', 'class_region_access_class_id_region_id_key'],
+    ['set_class_region_access', 'class_region_access_class_id_region_id_key'],
+    ['claim_class_roster_slot', 'user_roles_user_id_organization_id_role_key'],
+  ];
+
+  for (const [functionName, constraintName] of namedConflictExpectations) {
+    const body = extractFunctionBody(sql, functionName);
+    const pattern = new RegExp(`on\\s+conflict\\s+on\\s+constraint\\s+${constraintName}\\b`, 'i');
+    if (!pattern.test(body)) {
+      fail(`public.${functionName} must use named ON CONFLICT target ${constraintName}`);
+    }
+  }
+
+  for (const functionName of ['set_class_region_access', 'create_class_with_region_access']) {
+    const body = extractFunctionBody(sql, functionName);
+    if (/on\s+conflict\s*\(\s*class_id\s*,\s*region_id\s*\)/i.test(body)) {
+      fail(`public.${functionName} must not use ambiguous bare ON CONFLICT (class_id, region_id)`);
+    }
+  }
+}
+
+function assertRosterUpdatesAreAliased(sql) {
+  for (const functionName of ['archive_class_roster_student', 'reset_class_roster_claim']) {
+    const body = extractFunctionBody(sql, functionName);
+    if (/update\s+public\.class_memberships\s*(?!as\s+cm\b)[\s\S]+?\bwhere\s+id\s*=/i.test(body)) {
+      fail(`public.${functionName} must alias class_memberships updates and qualify cm.id`);
+    }
+    if (/\bwhere\s+id\s*=\s*target_membership\.id/i.test(body)) {
+      fail(`public.${functionName} must not use bare WHERE id = target_membership.id`);
     }
   }
 }
@@ -110,6 +181,9 @@ function assertStaticContract(sql) {
   assertRosterClaimRpc(sql);
   assertHostedSetupWrites(sql);
   assertNoAmbiguousBareIdPatterns(sql);
+  assertNoAmbiguousJsonbTraversal(sql);
+  assertNamedConflictTargets(sql);
+  assertRosterUpdatesAreAliased(sql);
   assertExtensionCallsQualified(sql);
   assertSecurityDefinerSearchPaths(sql);
   assertProgressSnapshotContract(sql);
@@ -170,7 +244,7 @@ function assertHostedSetupWrites(sql) {
     if (!rpcPattern.test(sql)) fail(`Missing hosted setup RPC public.${rpc}`);
   }
 
-  const addTeacherStart = sql.search(/create\s+or\s+replace\s+function\s+public\.admin_add_teacher_by_email\b/i);
+  const addTeacherStart = findLatestFunctionStart(sql, 'admin_add_teacher_by_email');
   const addTeacherEnd = sql.indexOf('comment on function public.admin_add_teacher_by_email', addTeacherStart);
   if (addTeacherStart === -1 || addTeacherEnd === -1) fail('Missing documentation comment for public.admin_add_teacher_by_email');
   const addTeacherBody = sql.slice(addTeacherStart, addTeacherEnd);
@@ -180,8 +254,8 @@ function assertHostedSetupWrites(sql) {
     [/from\s+auth\.users/i, 'admin_add_teacher_by_email must look up an existing auth.users row'],
     [/insert\s+into\s+public\.teacher_profiles[\s\S]+status[\s\S]+'pending'/i, 'admin_add_teacher_by_email must create pending teacher profile rows when no auth user exists'],
     [/insert\s+into\s+public\.teacher_invites/i, 'admin_add_teacher_by_email must create pending teacher invites when no auth user exists'],
-    [/on\s+conflict\s+\(organization_id,\s*email\)\s+where\s+email\s+is\s+not\s+null/i, 'admin_add_teacher_by_email must deduplicate teacher profiles by normalized email per organization'],
-    [/on\s+conflict\s+\(organization_id,\s*email\)\s+where\s+status\s*=\s*'pending'/i, 'admin_add_teacher_by_email must deduplicate pending teacher emails per organization'],
+    [/on\s+conflict\s+on\s+constraint\s+teacher_profiles_organization_id_email_key/i, 'admin_add_teacher_by_email must deduplicate teacher profiles by normalized email per organization using a named constraint'],
+    [/update\s+public\.teacher_invites\s+as\s+ti[\s\S]+ti\.status\s*=\s*'pending'[\s\S]+if\s+invite_row\.id\s+is\s+null[\s\S]+insert\s+into\s+public\.teacher_invites/i, 'admin_add_teacher_by_email must deduplicate pending teacher emails per organization without ambiguous ON CONFLICT columns'],
     [/public\.is_admin\(/i, 'admin_add_teacher_by_email must require an admin role'],
     [/insert\s+into\s+public\.user_roles/i, 'admin_add_teacher_by_email must activate a teacher role row'],
     [/insert\s+into\s+public\.teacher_profiles/i, 'admin_add_teacher_by_email must create or update a teacher profile'],
@@ -193,7 +267,7 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(addTeacherBody) && !pattern.test(sql)) fail(message);
   }
 
-  const activateTeacherStart = sql.search(/create\s+or\s+replace\s+function\s+public\.activate_pending_teacher_role_for_current_user\b/i);
+  const activateTeacherStart = findLatestFunctionStart(sql, 'activate_pending_teacher_role_for_current_user');
   const activateTeacherEnd = sql.indexOf('comment on function public.activate_pending_teacher_role_for_current_user', activateTeacherStart);
   if (activateTeacherStart === -1 || activateTeacherEnd === -1) fail('Missing documentation comment for public.activate_pending_teacher_role_for_current_user');
   const activateTeacherBody = sql.slice(activateTeacherStart, activateTeacherEnd);
@@ -216,7 +290,7 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(activateTeacherBody) && !pattern.test(sql)) fail(message);
   }
 
-  const ensureOperatorStart = sql.search(/create\s+or\s+replace\s+function\s+public\.ensure_admin_teacher_operator_profile_for_current_user\b/i);
+  const ensureOperatorStart = findLatestFunctionStart(sql, 'ensure_admin_teacher_operator_profile_for_current_user');
   const ensureOperatorEnd = sql.indexOf('comment on function public.ensure_admin_teacher_operator_profile_for_current_user', ensureOperatorStart);
   if (ensureOperatorStart === -1 || ensureOperatorEnd === -1) fail('Missing documentation comment for public.ensure_admin_teacher_operator_profile_for_current_user');
   const ensureOperatorBody = sql.slice(ensureOperatorStart, ensureOperatorEnd);
@@ -235,7 +309,7 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(ensureOperatorBody) && !pattern.test(sql)) fail(message);
   }
 
-  const createClassStart = sql.search(/create\s+or\s+replace\s+function\s+public\.create_class_with_region_access\b/i);
+  const createClassStart = findLatestFunctionStart(sql, 'create_class_with_region_access');
   const createClassEnd = sql.indexOf('comment on function public.create_class_with_region_access', createClassStart);
   if (createClassStart === -1 || createClassEnd === -1) fail('Missing documentation comment for public.create_class_with_region_access');
   const createClassBody = sql.slice(createClassStart, createClassEnd);
@@ -269,12 +343,17 @@ function assertHostedSetupWrites(sql) {
 
   for (const regionId of expectedRegionIds) {
     const regionInsertPattern = new RegExp(`\\(class_row\\.id,\\s*'${regionId}',\\s*'field_guide_only'`, 'i');
-    if (!regionInsertPattern.test(createClassBody)) {
+    const canonicalSeedPattern = new RegExp(`'${regionId}'`, 'i');
+    if (!regionInsertPattern.test(createClassBody) && !canonicalSeedPattern.test(createClassBody)) {
       fail(`create_class_with_region_access does not create locked access for ${regionId}`);
     }
   }
 
-  const addRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.add_class_roster_student\b/i);
+  if (!/insert\s+into\s+public\.class_region_access[\s\S]+field_guide_only[\s\S]+from\s+unnest\s*\(array\[[\s\S]+on\s+conflict\s+on\s+constraint\s+class_region_access_class_id_region_id_key/i.test(createClassBody)) {
+    fail('create_class_with_region_access must seed canonical region access idempotently with the named class/region constraint');
+  }
+
+  const addRosterStart = findLatestFunctionStart(sql, 'add_class_roster_student');
   const addRosterEnd = sql.indexOf('comment on function public.add_class_roster_student', addRosterStart);
   if (addRosterStart === -1 || addRosterEnd === -1) fail('Missing documentation comment for public.add_class_roster_student');
   const addRosterBody = sql.slice(addRosterStart, addRosterEnd);
@@ -293,7 +372,7 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(addRosterBody) && !pattern.test(sql)) fail(message);
   }
 
-  const archiveRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.archive_class_roster_student\b/i);
+  const archiveRosterStart = findLatestFunctionStart(sql, 'archive_class_roster_student');
   const archiveRosterEnd = sql.indexOf('comment on function public.archive_class_roster_student', archiveRosterStart);
   if (archiveRosterStart === -1 || archiveRosterEnd === -1) fail('Missing documentation comment for public.archive_class_roster_student');
   const archiveRosterBody = sql.slice(archiveRosterStart, archiveRosterEnd);
@@ -312,7 +391,7 @@ function assertHostedSetupWrites(sql) {
     if (!pattern.test(archiveRosterBody) && !pattern.test(sql)) fail(message);
   }
 
-  const resetRosterStart = sql.search(/create\s+or\s+replace\s+function\s+public\.reset_class_roster_claim\b/i);
+  const resetRosterStart = findLatestFunctionStart(sql, 'reset_class_roster_claim');
   const resetRosterEnd = sql.indexOf('comment on function public.reset_class_roster_claim', resetRosterStart);
   if (resetRosterStart === -1 || resetRosterEnd === -1) fail('Missing documentation comment for public.reset_class_roster_claim');
   const resetRosterBody = sql.slice(resetRosterStart, resetRosterEnd);
@@ -454,7 +533,7 @@ function assertHostedProgressEventContract(sql) {
     if (!sql.includes(term)) fail(`Hosted progress event SQL contract is missing ${term}`);
   }
 
-  const rpcStart = sql.search(/create\s+or\s+replace\s+function\s+public\.record_student_progress_event\b/i);
+  const rpcStart = findLatestFunctionStart(sql, 'record_student_progress_event');
   const rpcEnd = sql.indexOf('comment on function public.record_student_progress_event', rpcStart);
   if (rpcStart === -1 || rpcEnd === -1) fail('Missing documentation comment for public.record_student_progress_event');
   const rpcBody = sql.slice(rpcStart, rpcEnd);
@@ -500,7 +579,7 @@ function assertRosterClaimRpc(sql) {
     [/update\s+public\.class_memberships/i, 'RPC must update an existing roster membership'],
     [/update\s+public\.student_profiles/i, 'RPC must bind the existing student profile to the authenticated user'],
     [/insert\s+into\s+public\.user_roles/i, 'RPC must provision a student role after roster validation for first-time claimants'],
-    [/on\s+conflict\s*\(\s*user_id\s*,\s*organization_id\s*,\s*role\s*\)\s+do\s+nothing/i, 'RPC must use the existing user_roles uniqueness constraint safely'],
+    [/on\s+conflict\s+on\s+constraint\s+user_roles_user_id_organization_id_role_key\s+do\s+nothing/i, 'RPC must use the existing user_roles uniqueness constraint safely by name'],
     [/matching_count\s*>\s*1/i, 'RPC must detect duplicate roster-name ambiguity'],
     [/reserved_for_other_user/i, 'RPC must explicitly block roster rows reserved for another auth user'],
     [/staff_account_cannot_claim_student_slot/i, 'RPC must explicitly block staff accounts without an active student role'],

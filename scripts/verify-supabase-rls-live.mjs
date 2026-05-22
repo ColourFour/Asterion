@@ -170,17 +170,17 @@ function setRegionAccessRpcCountSql({ classId, regionId, accessStatus }) {
 
 function createClassWithRegionAccessCountSql({ teacherId, className, classCode }) {
   return `
-    with created as (
+    create temp table verify_created_class on commit drop as
       select id
       from public.create_class_with_region_access(
         '${teacherId}',
         '${sqlString(className)}',
         '2026 Verification',
         '${sqlString(classCode)}'
-      )
-    )
+      );
+
     select count(*)
-    from created c
+    from verify_created_class c
     join public.class_region_access cra on cra.class_id = c.id
     where cra.access_status = 'field_guide_only'
       and cra.region_id = any(array[${sqlList(expectedRegionIds)}]);
@@ -203,16 +203,16 @@ function addTeacherByEmailCountSql({ email, displayName }) {
 
 function pendingTeacherInviteCountSql({ email, displayName }) {
   return `
-    with teacher as (
+    create temp table verify_teacher_result on commit drop as
       select *
       from public.admin_add_teacher_by_email(
         '${sqlString(email)}',
         '${sqlString(displayName)}',
         '${demoIds.organization}'
-      )
-    )
+      );
+
     select count(*)
-    from teacher
+    from verify_teacher_result teacher
     where lower(email) = lower('${sqlString(email)}')
       and status = 'pending'
       and user_id is null
@@ -276,12 +276,13 @@ function setupPendingTeacherActivationSql({ email, displayName, status = 'pendin
 
 function activatePendingTeacherCountSql({ email }) {
   return `
-    with teacher as (
+    create temp table verify_teacher_activation on commit drop as
       select *
-      from public.activate_pending_teacher_role_for_current_user()
-    )
+      from public.activate_pending_teacher_role_for_current_user();
+
+    create temp table verify_teacher_activation_visible on commit drop as
     select count(*)
-    from teacher
+    from verify_teacher_activation teacher
     where user_id = '${demoIds.teacherPendingUser}'
       and lower(email) = lower('${sqlString(email)}')
       and status = 'active'
@@ -292,7 +293,13 @@ function activatePendingTeacherCountSql({ email }) {
           and ur.organization_id = '${demoIds.organization}'
           and ur.role = 'teacher'
           and ur.status = 'active'
-      )
+      );
+
+    reset role;
+
+    select count(*)
+    from verify_teacher_activation_visible visible
+    where visible.count = 1
       and exists (
         select 1
         from public.teacher_invites ti
@@ -457,10 +464,10 @@ function claimStatusCountSql({ classCode, rosterName, expectedStatus }) {
 
 function firstTimeClaimProvisioningCountSql() {
   return `
-    with claim_result as (
+    create temp table verify_claim_result on commit drop as
       select *
-      from public.claim_class_roster_slot('AST-P3A', 'Lyra C.')
-    )
+      from public.claim_class_roster_slot('AST-P3A', 'Lyra C.');
+
     select
       count(*) filter (
         where status = 'claimed'
@@ -488,7 +495,7 @@ function firstTimeClaimProvisioningCountSql() {
           )
       ) as matched_count,
       coalesce(string_agg(distinct status, ',' order by status), '[none]') as actual_statuses
-    from claim_result;
+    from verify_claim_result;
   `;
 }
 
@@ -962,6 +969,40 @@ export function buildLiveRlsChecks() {
         `select count(*) from public.student_progress_events where class_id = '${demoIds.classArchive}';`,
         demoIds.teacherHypatiaUser,
         `
+          insert into public.student_profiles (
+            id,
+            organization_id,
+            user_id,
+            display_name,
+            status
+          )
+          values (
+            '30000000-0000-0000-0000-000000000901',
+            '${demoIds.organization}',
+            '${demoIds.studentVegaUser}',
+            'Verifier Other Class Student',
+            'active'
+          );
+
+          insert into public.class_memberships (
+            id,
+            class_id,
+            student_profile_id,
+            roster_name,
+            roster_status,
+            claimed_by_user_id,
+            claimed_at
+          )
+          values (
+            '50000000-0000-0000-0000-000000000901',
+            '${demoIds.classArchive}',
+            '30000000-0000-0000-0000-000000000901',
+            'Verifier Other Class Student',
+            'claimed',
+            '${demoIds.studentVegaUser}',
+            now()
+          );
+
           insert into public.student_progress_events (
             organization_id,
             class_id,

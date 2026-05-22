@@ -102,6 +102,7 @@ describe('live Supabase RLS verifier definitions', () => {
     expect(teacherCreateCheck.sql).toContain('begin;');
     expect(teacherCreateCheck.sql).toContain('rollback;');
     expect(teacherCreateCheck.sql).toContain('public.create_class_with_region_access');
+    expect(teacherCreateCheck.sql).toContain('create temp table verify_created_class');
     expect(teacherCreateCheck.sql).toContain("cra.access_status = 'field_guide_only'");
     for (const regionId of expectedRegionIds) {
       expect(teacherCreateCheck.sql).toContain(regionId);
@@ -110,9 +111,13 @@ describe('live Supabase RLS verifier definitions', () => {
     expect(adminAttachCheck.sql).toContain('public.admin_add_teacher_by_email');
     expect(adminAttachCheck.sql).toContain('teacher-noether@asterion.invalid');
     expect(pendingAttachCheck.sql).toContain('public.admin_add_teacher_by_email');
+    expect(pendingAttachCheck.sql).toContain('create temp table verify_teacher_result');
     expect(pendingAttachCheck.sql).toContain('public.teacher_invites');
     expect(pendingAttachCheck.sql).toContain('pending-teacher@asterion.invalid');
     expect(activationCheck.sql).toContain('public.activate_pending_teacher_role_for_current_user');
+    expect(activationCheck.sql).toContain('create temp table verify_teacher_activation');
+    expect(activationCheck.sql).toContain('create temp table verify_teacher_activation_visible');
+    expect(activationCheck.sql).toContain('reset role;');
     expect(activationCheck.sql).toContain('insert into auth.users');
     expect(activationCheck.sql).toContain('insert into public.teacher_invites');
     expect(selfAssignCheck.kind).toBe('deny');
@@ -139,6 +144,7 @@ describe('live Supabase RLS verifier definitions', () => {
     expect(claimCheck.sql).toContain('begin;');
     expect(claimCheck.sql).toContain('insert into auth.users');
     expect(claimCheck.sql).toContain('delete from public.user_roles');
+    expect(claimCheck.sql).toContain('create temp table verify_claim_result');
     expect(claimCheck.sql).toContain(
       "'00000000-0000-0000-0000-000000000303'",
     );
