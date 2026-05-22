@@ -1041,7 +1041,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Apply chain, product, and quotient rules accurately",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation basics, algebraic simplification, and function notation support rule setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1100,7 +1100,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Differentiate implicit log or exponential relations",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, differentiation basics, and function notation support implicit derivative collection only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1156,7 +1156,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Name the differentiation method before differentiating",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation basics and function-structure recognition support choosing the derivative route only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1171,7 +1171,7 @@
       ],
       "region_id": "calculus-cliffs",
       "resolved_generator_families": [
-        "differentiation.chain_rule_basic"
+        "differentiation.chain_product_basic"
       ],
       "resolved_guardian_candidates": [
         "35summer25_q06"
@@ -1197,7 +1197,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -1269,7 +1269,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use derivatives for stationary points, tangents, and normals",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and basic differentiation support tangent, normal, and stationary-point follow-through only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

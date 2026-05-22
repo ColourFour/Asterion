@@ -122,6 +122,7 @@ def route_decision_index(data: Any) -> dict[str, dict[str, Any]]:
             "reviewed_status": reviewed_status,
             "question_asset_path": non_empty_string(evidence_basis.get("question_asset_path")) or "",
             "mark_scheme_asset_path": non_empty_string(evidence_basis.get("mark_scheme_asset_path")) or "",
+            "reviewed_source_skill_ids": set(string_list(decision.get("reviewed_source_skill_ids"))),
             "published_source_allowed": reviewed_status == "clean" and all(permissions.get(key) is True for key in SOURCE_PERMISSION_KEYS),
         }
     return index
@@ -304,6 +305,7 @@ def source_evidence_status(matrix_row: dict[str, Any], inventory_row: dict[str, 
 def source_backed_example_errors(
     *,
     owner: str,
+    target_skill_id: str,
     example: dict[str, Any],
     source_index: dict[str, dict[str, set[str]]],
     decisions: dict[str, dict[str, Any]],
@@ -338,6 +340,11 @@ def source_backed_example_errors(
         reviewed_status = str(decision.get("reviewed_status") or "missing")
         if decision.get("published_source_allowed") is not True:
             errors.append(f"{owner} source_question_id {question_id} has non-clean reviewed route evidence ({reviewed_status})")
+        reviewed_skill_ids = set(string_list(decision.get("reviewed_source_skill_ids")))
+        if target_skill_id not in reviewed_skill_ids:
+            errors.append(
+                f"{owner} source_question_id {question_id} is not reviewed for target skill {target_skill_id}"
+            )
         question_asset = non_empty_string(decision.get("question_asset_path"))
         mark_scheme_asset = non_empty_string(decision.get("mark_scheme_asset_path"))
         if question_asset and question_asset not in question_asset_ids:
@@ -430,6 +437,7 @@ def build_skill_row(
         owner = f"{snippet_id}.{example_id}"
         example_contract_errors.extend(source_backed_example_errors(
             owner=owner,
+            target_skill_id=skill_id,
             example=example,
             source_index=source_index,
             decisions=decisions,

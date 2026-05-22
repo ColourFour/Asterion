@@ -838,6 +838,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the derivative and then immediately connect it to the requested geometric feature.",
       "explanation": "Many P3 differentiation marks happen after the derivative. Keep the derivative attached to the question purpose rather than stopping too early.",
+      "mark_scheme_move_note": "Show the derivative first, state the condition it must satisfy for the requested feature, then use the correct tangent or normal gradient relationship before giving the final line or value.",
+      "misconception_repair_note": {
+        "wrong_move": "Finding $dy/dx$ and then using it as the final answer, or using the tangent gradient directly for a normal.",
+        "why_it_fails": "Tangent, normal, and stationary-point questions award later evidence for applying the derivative condition and forming the requested result.",
+        "safer_move": "After differentiating, write the target condition: $dy/dx=0$ for stationary points, tangent gradient for tangents, and negative reciprocal gradient for normals.",
+        "short_check": "Have you used the derivative to answer the actual geometry request, not just found $dy/dx$?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use differentiation results for tangents, normals, and stationary points.",
         "recommended_before_question_ids": [],
@@ -936,6 +943,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Choose the method that gives the cleanest derivative for the requested follow-up.",
       "explanation": "Most derivative errors start before the differentiating begins. Name the structure first, then choose the rule that matches the expression and the follow-up task.",
+      "mark_scheme_move_note": "Name the differentiation rule or simplification route, show the product, quotient, or chain-rule setup before simplifying, and keep enough derivative working for the requested follow-up.",
+      "misconception_repair_note": {
+        "wrong_move": "Starting algebraic simplification or a memorised rule before identifying whether the expression is a product, quotient, or composite function.",
+        "why_it_fails": "The wrong structure choice drops product-rule terms, misses inner derivatives, or creates unnecessary algebra before the derivative evidence is shown.",
+        "safer_move": "Label the structure first, choose the shortest valid route, then write the rule setup before simplifying.",
+        "short_check": "Can you point to the product, quotient, or inner function before differentiating?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions where the first decision is which differentiation route to take.",
         "recommended_before_question_ids": [],
@@ -1003,17 +1017,8 @@
             "Differentiate the outside: $4(2x+1)^3$.",
             "Multiply by the inner derivative, $2$."
           ],
-          "answer": "$\\frac{dy}{dx}=8(2x+1)^3$",
-          "teaching_note": "The inner derivative is the usual missing mark in chain-rule work.",
-          "source_question_ids": [
-            "31autumn23_q01"
-          ],
-          "source_question_asset_ids": [
-            "p3/31autumn23/questions/q01.png"
-          ],
-          "source_mark_scheme_asset_ids": [
-            "p3/31autumn23/mark_scheme/q01.png"
-          ]
+      "answer": "$\\frac{dy}{dx}=8(2x+1)^3$",
+      "teaching_note": "The inner derivative is the usual missing mark in chain-rule work."
         },
         {
           "id": "p3-differentiation-method-001-example-2",
@@ -1023,17 +1028,8 @@
             "$u'=2x$ and $v'=e^x$.",
             "Use $u'v+uv'$."
           ],
-          "answer": "$2xe^x+x^2e^x$",
-          "teaching_note": "Product rule keeps both differentiated pieces.",
-          "source_question_ids": [
-            "31autumn23_q01"
-          ],
-          "source_question_asset_ids": [
-            "p3/31autumn23/questions/q01.png"
-          ],
-          "source_mark_scheme_asset_ids": [
-            "p3/31autumn23/mark_scheme/q01.png"
-          ]
+      "answer": "$2xe^x+x^2e^x$",
+      "teaching_note": "Product rule keeps both differentiated pieces."
         },
         {
           "id": "p3-differentiation-method-001-example-3",
@@ -1043,17 +1039,8 @@
             "$\\frac{dy}{dx}=\\frac{(x-2)(1)-(x+1)(1)}{(x-2)^2}$.",
             "Simplify the numerator."
           ],
-          "answer": "$\\frac{dy}{dx}=-\\frac{3}{(x-2)^2}$",
-          "teaching_note": "Keep the numerator bracketed until the subtraction is complete.",
-          "source_question_ids": [
-            "31autumn23_q01"
-          ],
-          "source_question_asset_ids": [
-            "p3/31autumn23/questions/q01.png"
-          ],
-          "source_mark_scheme_asset_ids": [
-            "p3/31autumn23/mark_scheme/q01.png"
-          ]
+      "answer": "$\\frac{dy}{dx}=-\\frac{3}{(x-2)^2}$",
+      "teaching_note": "Keep the numerator bracketed until the subtraction is complete."
         }
       ],
       "legacy_skill_target_ids": [
@@ -3661,6 +3648,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
       "explanation": "Implicit log and exponential relations often mix product, chain, and implicit rules. The safest workflow is to keep $dy/dx$ visible until the final collection step.",
+      "mark_scheme_move_note": "Differentiate both sides term by term, attach $dy/dx$ to every differentiated $y$ expression, collect the $dy/dx$ terms, then factor and divide before substituting any point.",
+      "misconception_repair_note": {
+        "wrong_move": "Differentiating a $y$ term as though $y$ were a constant or substituting a point before isolating $dy/dx$.",
+        "why_it_fails": "Implicit differentiation depends on every $y$ term carrying a chain-rule $dy/dx$ factor until the derivative is solved.",
+        "safer_move": "Differentiate first with all $dy/dx$ factors visible, collect those terms on one side, factor $dy/dx$, and only then substitute values if needed.",
+        "short_check": "Does every differentiated $y$ expression still show a $dy/dx$ factor?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving implicit logarithmic or exponential relations.",
         "recommended_before_question_ids": [],
@@ -3732,6 +3726,23 @@
         "answer": "$\\frac{dy}{dx}=\\frac{2x-y/x}{\\ln x}$",
         "teaching_note": "The product rule and implicit chain rule happen in the same line."
       },
+      "worked_examples": [
+        {
+          "id": "p3-differentiation-implicit-log-exp-001-example-2",
+          "prompt": "For $e^y+x^2=5$, find $dy/dx$.",
+          "steps": [
+            "Differentiate both sides with respect to $x$.",
+            "The $e^y$ term gives $e^y\\frac{dy}{dx}$ by the chain rule.",
+            "The $x^2$ term gives $2x$, and the constant gives $0$.",
+            "So $e^y\\frac{dy}{dx}+2x=0$, hence $\\frac{dy}{dx}=-\\frac{2x}{e^y}$."
+          ],
+          "answer": "$\\frac{dy}{dx}=-\\frac{2x}{e^y}$",
+          "teaching_note": "Keep the implicit chain-rule factor attached until the derivative is isolated.",
+          "question_type": "Implicit exponential differentiation",
+          "key_method": "Differentiate implicit log or exponential relations without dropping $dy/dx$.",
+          "exam_move": "Differentiate term by term, collect $dy/dx$, then divide."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_differentiation"
       ],

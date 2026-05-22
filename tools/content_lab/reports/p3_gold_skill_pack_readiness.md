@@ -1,6 +1,6 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-22T09:13:37.697723+00:00`
+Generated at: `2026-05-22T11:36:07.515453+00:00`
 
 ## Summary
 
@@ -20,12 +20,12 @@ No readiness blockers.
 
 ## Warning Counts
 
-- `fewer_than_two_worked_examples`: 5
-- `missing_mark_scheme_move_note`: 17
-- `missing_misconception_repair_note`: 15
-- `missing_prerequisite_repair_note`: 17
-- `missing_some_warmup_sequence_roles`: 2
-- `source_backed_worked_examples_sparse`: 38
+- `fewer_than_two_worked_examples`: 4
+- `missing_mark_scheme_move_note`: 13
+- `missing_misconception_repair_note`: 11
+- `missing_prerequisite_repair_note`: 13
+- `missing_some_warmup_sequence_roles`: 1
+- `source_backed_worked_examples_sparse`: 40
 - `thin_evidence_resilience`: 1
 
 ## Thin Region Priority
@@ -43,7 +43,7 @@ No readiness blockers.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Algebra Vault | 7 | 0 | 0 | 7 | 1 | 0 | 1 | 3 |
 | Argand Atrium | 4 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
-| Calculus Cliffs | 5 | 0 | 0 | 5 | 0 | 2 | 2 | 5 |
+| Calculus Cliffs | 5 | 0 | 0 | 5 | 0 | 1 | 1 | 1 |
 | Differential Shrine | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Integral Terraces | 4 | 0 | 0 | 4 | 0 | 0 | 1 | 4 |
 | Iteration Forge | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
@@ -69,11 +69,11 @@ No readiness blockers.
 | p3_de_forming_context_model | Differential Shrine | Differential equations | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_de_initial_condition | Differential Shrine | Differential equations | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_de_separation_setup | Differential Shrine | Differential equations | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
-| p3_diff_chain_product_quotient | Calculus Cliffs | Differentiation | clean | 5 | available | 3 | 3 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_diff_implicit_log_exp | Calculus Cliffs | Differentiation | clean | 3 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_diff_method_selection | Calculus Cliffs | Differentiation | clean | 4 | available | 3 | 3 | available | complete_step, guardian_prep | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
+| p3_diff_chain_product_quotient | Calculus Cliffs | Differentiation | clean | 5 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_diff_implicit_log_exp | Calculus Cliffs | Differentiation | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_diff_method_selection | Calculus Cliffs | Differentiation | clean | 4 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_diff_parametric_gradients | Calculus Cliffs | Differentiation | clean | 4 | available | 1 | 0 | available | first_step, complete_step | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_diff_stationary_tangent_normal | Calculus Cliffs | Differentiation | clean | 3 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
+| p3_diff_stationary_tangent_normal | Calculus Cliffs | Differentiation | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_int_definite_improper_area | Integral Terraces | Integration | clean | 5 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
 | p3_int_method_choice | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_int_partial_fractions | Integral Terraces | Integration | clean | 3 | available | 4 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
