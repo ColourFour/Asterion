@@ -528,14 +528,14 @@
     "counts_by_status": {
       "ambiguous": 2,
       "blocked": 2,
-      "clean": 2,
+      "clean": 6,
       "deferred": 1,
       "fallback_only": 0,
       "review_needed": 1,
       "still_needs_review": 69,
       "thin": 2
     },
-    "decided_question_count": 10,
+    "decided_question_count": 14,
     "decision_source_schema": "asterion_p3_route_evidence_decisions",
     "decisions": [
       {
@@ -606,6 +606,72 @@
           "p3_int_definite_improper_area"
         ],
         "reviewed_status": "blocked"
+      },
+      {
+        "candidate_promotion_allowed": false,
+        "content_lab_generation_allowed": true,
+        "mastery_evidence_allowed": true,
+        "paper": "31autumn21",
+        "previous_route_status": "safe_p3_route",
+        "question_id": "31autumn21_q01",
+        "question_number": "1",
+        "reason": "Canonical question and mark scheme clearly support the exact exponential-equation skill. Candidate promotion remains blocked because this pass reviews source routing only, not generated practice or mark events.",
+        "reviewed_region_id": "logarithm-grove",
+        "reviewed_region_title": "Logarithm Observatory",
+        "reviewed_source_skill_ids": [
+          "p3_log_exponential_equations"
+        ],
+        "reviewed_status": "clean"
+      },
+      {
+        "candidate_promotion_allowed": false,
+        "content_lab_generation_allowed": true,
+        "mastery_evidence_allowed": true,
+        "paper": "31autumn21",
+        "previous_route_status": "safe_p3_route",
+        "question_id": "31autumn21_q02",
+        "question_number": "2",
+        "reason": "Canonical question and mark scheme narrowly support R-form compound-angle work without needing family-level or nearby-skill inference.",
+        "reviewed_region_id": "trig-observatory",
+        "reviewed_region_title": "Trigonometry Spire",
+        "reviewed_source_skill_ids": [
+          "p3_trig_r_form_compound_angles"
+        ],
+        "reviewed_status": "clean"
+      },
+      {
+        "candidate_promotion_allowed": false,
+        "content_lab_generation_allowed": true,
+        "mastery_evidence_allowed": true,
+        "paper": "31autumn21",
+        "previous_route_status": "safe_p3_route",
+        "question_id": "31autumn21_q04",
+        "question_number": "4",
+        "reason": "Both reviewed skills sit in the same integration region and are explicitly evidenced by the question and mark scheme. This is not used for broad integration method-choice support because the substitution is given.",
+        "reviewed_region_id": "integration-gardens",
+        "reviewed_region_title": "Integral Terraces",
+        "reviewed_source_skill_ids": [
+          "p3_int_parts_substitution",
+          "p3_int_definite_improper_area"
+        ],
+        "reviewed_status": "clean"
+      },
+      {
+        "candidate_promotion_allowed": false,
+        "content_lab_generation_allowed": true,
+        "mastery_evidence_allowed": true,
+        "paper": "31autumn21",
+        "previous_route_status": "safe_p3_route",
+        "question_id": "31autumn21_q05",
+        "question_number": "5",
+        "reason": "Canonical question and mark scheme support interval-equation and quadrant-solution skills exactly. The decision does not claim broader identity-selection or reciprocal/double-angle source backing.",
+        "reviewed_region_id": "trig-observatory",
+        "reviewed_region_title": "Trigonometry Spire",
+        "reviewed_source_skill_ids": [
+          "p3_trig_equation_interval",
+          "p3_trig_quadrant_solutions"
+        ],
+        "reviewed_status": "clean"
       },
       {
         "candidate_promotion_allowed": false,
@@ -704,8 +770,8 @@
         "reviewed_status": "thin"
       }
     ],
-    "review_label": "phase-1-route-and-evidence-cleanup-v1",
-    "reviewed_at": "2026-05-21",
+    "review_label": "phase-1-route-and-evidence-cleanup-v1-plus-phase-2b-clean-source-pool-v1",
+    "reviewed_at": "2026-05-22",
     "reviewer": "codex",
     "still_needs_review_count": 69,
     "still_needs_review_question_ids": [
@@ -779,7 +845,7 @@
       "33summer23_q05",
       "33summer24_q07"
     ],
-    "total_recorded_decision_count": 10
+    "total_recorded_decision_count": 14
   },
   "route_report_distribution": {
     "normalized_status_by_route_report_category": {

@@ -340,7 +340,12 @@ def source_backed_example_errors(
         reviewed_status = str(decision.get("reviewed_status") or "missing")
         if decision.get("published_source_allowed") is not True:
             errors.append(f"{owner} source_question_id {question_id} has non-clean reviewed route evidence ({reviewed_status})")
-        reviewed_skill_ids = set(string_list(decision.get("reviewed_source_skill_ids")))
+        reviewed_source_skill_ids = decision.get("reviewed_source_skill_ids")
+        reviewed_skill_ids = (
+            set(reviewed_source_skill_ids)
+            if isinstance(reviewed_source_skill_ids, set)
+            else set(string_list(reviewed_source_skill_ids))
+        )
         if target_skill_id not in reviewed_skill_ids:
             errors.append(
                 f"{owner} source_question_id {question_id} is not reviewed for target skill {target_skill_id}"

@@ -134,9 +134,9 @@
         "p3_trig_reciprocal_double_angle"
       ],
       "skill_count": 5,
-      "snippet_count": 5,
+      "snippet_count": 6,
       "warmup_support_count": 12,
-      "worked_example_count": 7
+      "worked_example_count": 10
     },
     {
       "active_by_default": false,
@@ -177,9 +177,9 @@
         "p3_diff_stationary_tangent_normal"
       ],
       "skill_count": 5,
-      "snippet_count": 4,
+      "snippet_count": 5,
       "warmup_support_count": 11,
-      "worked_example_count": 8
+      "worked_example_count": 13
     },
     {
       "active_by_default": false,
@@ -200,7 +200,7 @@
       "skill_count": 4,
       "snippet_count": 5,
       "warmup_support_count": 15,
-      "worked_example_count": 7
+      "worked_example_count": 8
     },
     {
       "active_by_default": false,
@@ -334,7 +334,7 @@
         "32autumn24_q01",
         "33summer21_q01"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -445,7 +445,7 @@
         "32autumn24_q01",
         "33summer21_q01"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -755,7 +755,7 @@
         "32summer21_q09",
         "35summer25_q09"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1885,9 +1885,10 @@
       "region_id": "calculus-cliffs",
       "risk_flags": [],
       "skill_ref": "p3_diff_chain_product_quotient",
-      "snippet_count": 1,
+      "snippet_count": 2,
       "snippet_ids": [
-        "p3-differentiation-method-001"
+        "p3-differentiation-method-001",
+        "p3-differentiation-chain-product-quotient-source-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
       "teacher_review_deferred_question_ids": [],
@@ -1906,8 +1907,10 @@
         "gen_differentiation_product_rule_basic_0001"
       ],
       "warmup_support_count": 4,
-      "worked_example_count": 3,
+      "worked_example_count": 5,
       "worked_example_ids": [
+        "p3-differentiation-chain-product-quotient-source-001-example-1",
+        "p3-differentiation-chain-product-quotient-source-001-example-2",
         "p3-differentiation-method-001-example-1",
         "p3-differentiation-method-001-example-2",
         "p3-differentiation-method-001-example-3"
@@ -2197,7 +2200,7 @@
         "33summer21_q03",
         "35summer25_q06"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and differentiation basics support parameter differentiation and line-gradient follow-through only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2234,9 +2237,10 @@
         "gen_parametric_derivative_ratio_basic_0001"
       ],
       "warmup_support_count": 1,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-parametric-derivative-001-example-1"
+        "p3-parametric-derivative-001-example-1",
+        "p3-parametric-derivative-001-example-2"
       ]
     },
     {
@@ -2343,10 +2347,12 @@
         "gen_differentiation_stationary_tangent_normal_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 2,
+      "worked_example_count": 4,
       "worked_example_ids": [
         "p3-differentiation-follow-through-001-example-1",
-        "p3-differentiation-follow-through-001-example-2"
+        "p3-differentiation-follow-through-001-example-2",
+        "p3-differentiation-follow-through-001-source-example-1",
+        "p3-differentiation-follow-through-001-source-example-2"
       ]
     },
     {
@@ -2419,7 +2425,7 @@
         "33summer21_q04",
         "33summer25_q03"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 functions/graphs and basic integration are support-only: they help evaluate bounds and signs, but do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2458,9 +2464,10 @@
         "gen_integration_definite_area_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-integration-definite-area-001-example-1"
+        "p3-integration-definite-area-001-example-1",
+        "p3-integration-definite-area-001-example-2"
       ]
     },
     {
@@ -2533,7 +2540,7 @@
         "32summer21_q04",
         "33autumn21_q04"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they help recognise structure and transform simple integrals, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2643,7 +2650,7 @@
         "32spring21_q06",
         "33summer21_q04"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, factorisation, simple simultaneous equations, coefficient comparison, excluded denominator values, and basic rational-term integration are support-only prerequisites: they prepare the partial-fraction setup and logarithmic follow-through, but they do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2767,7 +2774,7 @@
         "32summer21_q04",
         "33autumn21_q04"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they prepare substitution and parts setup, but only reviewed P3 evidence counts for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -3895,7 +3902,7 @@
         "33autumn21_q05",
         "35summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians, interval notation, and core trig identities are support-only: they help preserve branches and units, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -4017,7 +4024,7 @@
         "32summer21_q06",
         "33summer25_q08"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -4131,7 +4138,7 @@
         "33autumn21_q05",
         "35summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -4165,9 +4172,10 @@
         "gen_trig_solve_equation_interval_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-trig-quadrant-discipline-001-example-1"
+        "p3-trig-quadrant-discipline-001-example-1",
+        "p3-trig-quadrant-discipline-001-example-2"
       ]
     },
     {
@@ -4236,7 +4244,7 @@
         "32spring21_q05",
         "33autumn21_q06"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -4256,9 +4264,10 @@
       "region_id": "trig-observatory",
       "risk_flags": [],
       "skill_ref": "p3_trig_r_form_compound_angles",
-      "snippet_count": 1,
+      "snippet_count": 2,
       "snippet_ids": [
-        "p3-trig-reciprocal-rform-001"
+        "p3-trig-reciprocal-rform-001",
+        "p3-trig-r-form-source-001"
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
       "teacher_review_deferred_question_ids": [],
@@ -4275,8 +4284,10 @@
         "gen_trig_r_form_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 2,
+      "worked_example_count": 4,
       "worked_example_ids": [
+        "p3-trig-r-form-source-001-example-1",
+        "p3-trig-r-form-source-001-example-2",
         "p3-trig-reciprocal-rform-001-example-1",
         "p3-trig-reciprocal-rform-001-example-2"
       ]
@@ -4354,7 +4365,7 @@
         "33summer21_q05",
         "35summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 reciprocal, double-angle, and radian fluency are support-only: they prepare safe transformations, but only reviewed P3 evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

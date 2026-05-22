@@ -57,6 +57,7 @@ interface RegionCorrectionQueue {
       question_id: string;
       reviewed_status: string;
       reviewed_region_id: string;
+      reviewed_source_skill_ids?: string[];
       reason: string;
       mastery_evidence_allowed: boolean;
       content_lab_generation_allowed: boolean;
@@ -232,7 +233,7 @@ describe('P3 region-correction queue', () => {
     const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
 
     expect(queue.route_decision_summary.counts_by_status).toMatchObject({
-      clean: 2,
+      clean: 6,
       thin: 2,
       ambiguous: 2,
       blocked: 2,
@@ -240,8 +241,8 @@ describe('P3 region-correction queue', () => {
       review_needed: 1,
       fallback_only: 0,
     });
-    expect(queue.route_decision_summary.total_recorded_decision_count).toBe(10);
-    expect(queue.route_decision_summary.decided_question_count).toBe(10);
+    expect(queue.route_decision_summary.total_recorded_decision_count).toBe(14);
+    expect(queue.route_decision_summary.decided_question_count).toBe(14);
     expect(queue.route_decision_summary.still_needs_review_count).toBeGreaterThan(0);
 
     const q09 = queue.route_decision_summary.decisions.find((item) => item.question_id === '31autumn23_q09');
@@ -256,6 +257,29 @@ describe('P3 region-correction queue', () => {
       reviewed_region_id: 'calculus-cliffs',
       mastery_evidence_allowed: true,
     });
+
+    const expandedCleanPool = new Map(
+      ['31autumn21_q01', '31autumn21_q02', '31autumn21_q04', '31autumn21_q05'].map((questionId) => [
+        questionId,
+        queue.route_decision_summary.decisions.find((item) => item.question_id === questionId),
+      ]),
+    );
+    expect(expandedCleanPool.get('31autumn21_q01')).toMatchObject({
+      reviewed_status: 'clean',
+      reviewed_region_id: 'logarithm-grove',
+      mastery_evidence_allowed: true,
+      content_lab_generation_allowed: true,
+    });
+    expect(expandedCleanPool.get('31autumn21_q01')?.reviewed_source_skill_ids).toEqual(['p3_log_exponential_equations']);
+    expect(expandedCleanPool.get('31autumn21_q02')?.reviewed_source_skill_ids).toEqual(['p3_trig_r_form_compound_angles']);
+    expect(expandedCleanPool.get('31autumn21_q04')?.reviewed_source_skill_ids).toEqual([
+      'p3_int_parts_substitution',
+      'p3_int_definite_improper_area',
+    ]);
+    expect(expandedCleanPool.get('31autumn21_q05')?.reviewed_source_skill_ids).toEqual([
+      'p3_trig_equation_interval',
+      'p3_trig_quadrant_solutions',
+    ]);
   });
 
   it('reports no deferred mark-scheme evidence after audited cases are resolved', () => {

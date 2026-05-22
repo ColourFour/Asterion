@@ -175,7 +175,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -223,7 +223,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -363,7 +363,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -972,7 +972,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Differentiation",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and differentiation basics support parameter differentiation and line-gradient follow-through only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1068,7 +1068,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 functions/graphs and basic integration are support-only: they help evaluate bounds and signs, but do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1117,7 +1117,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they help recognise structure and transform simple integrals, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1164,7 +1164,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, factorisation, simple simultaneous equations, coefficient comparison, excluded denominator values, and basic rational-term integration are support-only prerequisites: they prepare the partial-fraction setup and logarithmic follow-through, but they do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1213,7 +1213,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Integration",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they prepare substitution and parts setup, but only reviewed P3 evidence counts for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1689,7 +1689,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians, interval notation, and core trig identities are support-only: they help preserve branches and units, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1738,7 +1738,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1787,7 +1787,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1830,7 +1830,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1879,7 +1879,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Trigonometry",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 reciprocal, double-angle, and radian fluency are support-only: they prepare safe transformations, but only reviewed P3 evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

@@ -25,7 +25,7 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-22T11:36:07.515453+00:00",
+  "generated_at": "2026-05-22T15:07:44.640005+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
@@ -55,15 +55,15 @@
     },
     {
       "blocked_skill_count": 0,
-      "missing_repair_note_skill_count": 1,
-      "mvp_gold_ready_count": 0,
+      "missing_repair_note_skill_count": 0,
+      "mvp_gold_ready_count": 2,
       "region": "Calculus Cliffs",
       "region_id": "calculus-cliffs",
       "skill_count": 5,
       "thin_evidence_skill_count": 0,
       "warmup_role_gap_skill_count": 1,
-      "warning_only_skill_count": 5,
-      "worked_example_gap_skill_count": 1
+      "warning_only_skill_count": 3,
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -79,7 +79,7 @@
     },
     {
       "blocked_skill_count": 0,
-      "missing_repair_note_skill_count": 4,
+      "missing_repair_note_skill_count": 0,
       "mvp_gold_ready_count": 0,
       "region": "Integral Terraces",
       "region_id": "integration-gardens",
@@ -87,7 +87,7 @@
       "thin_evidence_skill_count": 0,
       "warmup_role_gap_skill_count": 0,
       "warning_only_skill_count": 4,
-      "worked_example_gap_skill_count": 1
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -115,15 +115,15 @@
     },
     {
       "blocked_skill_count": 0,
-      "missing_repair_note_skill_count": 5,
-      "mvp_gold_ready_count": 0,
+      "missing_repair_note_skill_count": 0,
+      "mvp_gold_ready_count": 1,
       "region": "Trigonometry Spire",
       "region_id": "trig-observatory",
       "skill_count": 5,
       "thin_evidence_skill_count": 0,
       "warmup_role_gap_skill_count": 0,
-      "warning_only_skill_count": 5,
-      "worked_example_gap_skill_count": 1
+      "warning_only_skill_count": 4,
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -166,7 +166,7 @@
       "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-binomial-term-001-qc"
       ],
@@ -197,7 +197,6 @@
       "warnings": [
         "missing_mark_scheme_move_note",
         "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -232,7 +231,7 @@
       "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-binomial-validity-range-001-qc"
       ],
@@ -263,7 +262,6 @@
       "warnings": [
         "fewer_than_two_worked_examples",
         "missing_mark_scheme_move_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 1,
@@ -423,7 +421,7 @@
       "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-partial-fractions-form-001-qc",
         "p3-partial-fractions-repeated-linear-001-qc"
@@ -458,7 +456,6 @@
       "warnings": [
         "missing_mark_scheme_move_note",
         "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -1071,11 +1068,13 @@
       ],
       "evidence_status": "clean",
       "field_guide_ids": [
+        "p3-differentiation-chain-product-quotient-source-001",
         "p3-differentiation-method-001"
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
       "mark_scheme_move_note_ids": [
+        "p3-differentiation-chain-product-quotient-source-001",
         "p3-differentiation-method-001"
       ],
       "mark_scheme_move_note_status": "available",
@@ -1084,12 +1083,13 @@
         "p3-differentiation-method-001"
       ],
       "misconception_repair_status": "available",
-      "mvp_gold_ready": false,
-      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
+      "mvp_gold_ready": true,
+      "next_action": "MVP gold ready under the Phase 2A readiness contract.",
       "official_syllabus_section": "Differentiation",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
       "quick_check_ids": [
+        "p3-differentiation-chain-product-quotient-source-001-qc",
         "p3-differentiation-method-001-qc"
       ],
       "quick_check_status": "available",
@@ -1100,7 +1100,7 @@
       "skill_name": "Apply chain, product, and quotient rules accurately",
       "skill_title": "Apply chain, product, and quotient rules accurately",
       "source_backed_worked_example_contract_errors": [],
-      "source_backed_worked_example_count": 0,
+      "source_backed_worked_example_count": 2,
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
@@ -1117,11 +1117,11 @@
         "complete_step",
         "guardian_prep"
       ],
-      "warnings": [
-        "source_backed_worked_examples_sparse"
-      ],
-      "worked_example_count": 3,
+      "warnings": [],
+      "worked_example_count": 5,
       "worked_example_ids": [
+        "p3-differentiation-chain-product-quotient-source-001-example-1",
+        "p3-differentiation-chain-product-quotient-source-001-example-2",
         "p3-differentiation-method-001-example-1",
         "p3-differentiation-method-001-example-2",
         "p3-differentiation-method-001-example-3"
@@ -1273,16 +1273,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-parametric-derivative-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `missing_some_warmup_sequence_roles` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Differentiation",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-parametric-derivative-001-qc"
       ],
@@ -1310,16 +1314,13 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "missing_some_warmup_sequence_roles",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-parametric-derivative-001-example-1"
+        "p3-parametric-derivative-001-example-1",
+        "p3-parametric-derivative-001-example-2"
       ]
     },
     {
@@ -1345,8 +1346,8 @@
         "p3-differentiation-follow-through-001"
       ],
       "misconception_repair_status": "available",
-      "mvp_gold_ready": false,
-      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
+      "mvp_gold_ready": true,
+      "next_action": "MVP gold ready under the Phase 2A readiness contract.",
       "official_syllabus_section": "Differentiation",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -1361,7 +1362,7 @@
       "skill_name": "Use derivatives for stationary points, tangents, and normals",
       "skill_title": "Use derivatives for stationary points, tangents, and normals",
       "source_backed_worked_example_contract_errors": [],
-      "source_backed_worked_example_count": 0,
+      "source_backed_worked_example_count": 2,
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
@@ -1377,13 +1378,13 @@
         "complete_step",
         "guardian_prep"
       ],
-      "warnings": [
-        "source_backed_worked_examples_sparse"
-      ],
-      "worked_example_count": 2,
+      "warnings": [],
+      "worked_example_count": 4,
       "worked_example_ids": [
         "p3-differentiation-follow-through-001-example-1",
-        "p3-differentiation-follow-through-001-example-2"
+        "p3-differentiation-follow-through-001-example-2",
+        "p3-differentiation-follow-through-001-source-example-1",
+        "p3-differentiation-follow-through-001-source-example-2"
       ]
     },
     {
@@ -1402,16 +1403,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-integration-definite-area-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-integration-definite-area-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Integration",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-integration-definite-area-001-qc"
       ],
@@ -1440,15 +1445,12 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-integration-definite-area-001-example-1"
+        "p3-integration-definite-area-001-example-1",
+        "p3-integration-definite-area-001-example-2"
       ]
     },
     {
@@ -1467,16 +1469,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Integration",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-integration-method-choice-001-qc"
       ],
@@ -1505,9 +1511,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -1532,16 +1535,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-integration-method-choice-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Integration",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-integration-method-choice-001-qc",
         "p3-partial-fractions-form-001-qc"
@@ -1574,9 +1581,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 4,
@@ -1603,16 +1607,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-integration-parts-substitution-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Integration",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-integration-parts-substitution-001-qc"
       ],
@@ -1641,9 +1649,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2263,18 +2268,22 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-trig-interval-001",
+        "p3-trig-lost-solutions-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
       "misconception_repair_ids": [
+        "p3-trig-interval-001",
         "p3-trig-lost-solutions-001"
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Trigonometry",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-trig-interval-001-qc",
         "p3-trig-lost-solutions-001-qc"
@@ -2304,8 +2313,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2330,16 +2337,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-trig-identity-selection-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-trig-identity-selection-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Trigonometry",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-trig-identity-selection-001-qc"
       ],
@@ -2371,9 +2382,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2398,16 +2406,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-trig-quadrant-discipline-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Trigonometry",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-trig-quadrant-discipline-001-qc"
       ],
@@ -2436,15 +2448,12 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-trig-quadrant-discipline-001-example-1"
+        "p3-trig-quadrant-discipline-001-example-1",
+        "p3-trig-quadrant-discipline-001-example-2"
       ]
     },
     {
@@ -2458,20 +2467,26 @@
       ],
       "evidence_status": "clean",
       "field_guide_ids": [
+        "p3-trig-r-form-source-001",
         "p3-trig-reciprocal-rform-001"
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-trig-r-form-source-001",
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
-      "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "misconception_repair_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "misconception_repair_status": "available",
+      "mvp_gold_ready": true,
+      "next_action": "MVP gold ready under the Phase 2A readiness contract.",
       "official_syllabus_section": "Trigonometry",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-trig-reciprocal-rform-001-qc"
       ],
@@ -2483,7 +2498,7 @@
       "skill_name": "Rewrite a sin and cos combination in R-form",
       "skill_title": "Rewrite a sin and cos combination in R-form",
       "source_backed_worked_example_contract_errors": [],
-      "source_backed_worked_example_count": 0,
+      "source_backed_worked_example_count": 2,
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Trigonometry",
@@ -2499,14 +2514,11 @@
         "complete_step",
         "guardian_prep"
       ],
-      "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
-        "source_backed_worked_examples_sparse"
-      ],
-      "worked_example_count": 2,
+      "warnings": [],
+      "worked_example_count": 4,
       "worked_example_ids": [
+        "p3-trig-r-form-source-001-example-1",
+        "p3-trig-r-form-source-001-example-2",
         "p3-trig-reciprocal-rform-001-example-1",
         "p3-trig-reciprocal-rform-001-example-2"
       ]
@@ -2527,16 +2539,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-trig-reciprocal-rform-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Trigonometry",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-trig-reciprocal-rform-001-qc"
       ],
@@ -2568,9 +2584,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2790,19 +2803,18 @@
       "missing": 0,
       "thin": 1
     },
-    "mvp_gold_ready_count": 0,
+    "mvp_gold_ready_count": 3,
     "thin_resilience_risk_skill_count": 1,
     "total_reviewed_p3_skills": 40,
     "warning_counts": {
-      "fewer_than_two_worked_examples": 4,
-      "missing_mark_scheme_move_note": 13,
-      "missing_misconception_repair_note": 11,
-      "missing_prerequisite_repair_note": 13,
+      "fewer_than_two_worked_examples": 1,
+      "missing_mark_scheme_move_note": 3,
+      "missing_misconception_repair_note": 2,
       "missing_some_warmup_sequence_roles": 1,
-      "source_backed_worked_examples_sparse": 40,
+      "source_backed_worked_examples_sparse": 37,
       "thin_evidence_resilience": 1
     },
-    "warning_only_skill_count": 40
+    "warning_only_skill_count": 37
   },
   "thin_region_priority_summary": [
     {

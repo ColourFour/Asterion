@@ -169,7 +169,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Find binomial terms and coefficients efficiently",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -224,7 +224,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "State and use binomial expansion validity",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -279,7 +279,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Set up partial fractions from denominator structure",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -781,7 +781,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Choose trig identities for proof or simplification",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and core trigonometric identities are support-only: they prepare the identity choice, but only reviewed P3 Trigonometry evidence counts as P3 mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -837,7 +837,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Solve trig equations over a specified interval",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians, interval notation, and core trig identities are support-only: they help preserve branches and units, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -896,7 +896,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use quadrant discipline to find every trig solution",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and quadrant fluency are support-only: they help keep signs, units, and intervals consistent, without counting as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -947,7 +947,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Rewrite a sin and cos combination in R-form",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -982,7 +982,8 @@
         "p3-trig-reciprocal-rform-001-qc"
       ],
       "supported_by_snippet_ids": [
-        "p3-trig-reciprocal-rform-001"
+        "p3-trig-reciprocal-rform-001",
+        "p3-trig-r-form-source-001"
       ],
       "syllabus_topic": "Trigonometry"
     },
@@ -1003,7 +1004,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Transform reciprocal and double-angle equations safely",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 reciprocal, double-angle, and radian fluency are support-only: they prepare safe transformations, but only reviewed P3 evidence can count for mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -1153,7 +1154,8 @@
         "p3-differentiation-method-001-qc"
       ],
       "supported_by_snippet_ids": [
-        "p3-differentiation-method-001"
+        "p3-differentiation-method-001",
+        "p3-differentiation-chain-product-quotient-source-001"
       ],
       "syllabus_topic": "Differentiation"
     },
@@ -1229,7 +1231,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Differentiate parametric equations using the derivative ratio",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry and differentiation basics support parameter differentiation and line-gradient follow-through only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -1341,7 +1343,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Choose a direct rule, substitution, parts, or algebraic rewrite",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they help recognise structure and transform simple integrals, but do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -1398,7 +1400,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use integration by parts or substitution with correct setup",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and basic integration rules are support-only: they prepare substitution and parts setup, but only reviewed P3 evidence counts for mastery.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -1452,7 +1454,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Integrate rational functions using partial fractions",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, factorisation, simple simultaneous equations, coefficient comparison, excluded denominator values, and basic rational-term integration are support-only prerequisites: they prepare the partial-fraction setup and logarithmic follow-through, but they do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",
@@ -1513,7 +1515,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Evaluate definite and improper integrals exactly",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 functions/graphs and basic integration are support-only: they help evaluate bounds and signs, but do not count as P3 integration mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "syllabus_id": "caie_9709_p1_2026_2027",

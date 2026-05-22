@@ -925,6 +925,52 @@
           ],
           "answer": "Tangent gradient $4$, normal gradient $-\\frac14$",
           "teaching_note": "A normal uses the gradient after differentiation, not a new derivative rule."
+        },
+        {
+          "id": "p3-differentiation-follow-through-001-source-example-1",
+          "question_type": "Tangent-gradient condition",
+          "key_method": "Set the derivative equal to the required tangent gradient, then substitute back into the curve.",
+          "exam_move": "Show the derivative condition before finding the point coordinates.",
+          "prompt": "For $y=x^3-3x$, find the points where the tangent gradient is $9$.",
+          "steps": [
+            "Differentiate: $\\frac{dy}{dx}=3x^2-3$.",
+            "Set the derivative equal to the required tangent gradient: $3x^2-3=9$.",
+            "Solve for $x$, then substitute each value into the original curve."
+          ],
+          "answer": "$(2,2)$ and $(-2,-2)$",
+          "teaching_note": "The source task also rewards using a derivative condition before giving coordinates.",
+          "source_question_ids": [
+            "31autumn23_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn23/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn23/mark_scheme/q01.png"
+          ]
+        },
+        {
+          "id": "p3-differentiation-follow-through-001-source-example-2",
+          "question_type": "Tangent-gradient condition",
+          "key_method": "Set the derivative equal to the required tangent gradient, then substitute back into the curve.",
+          "exam_move": "Show the derivative condition before finding the point coordinates.",
+          "prompt": "For $y=x^2+1$, find the point where the tangent gradient is $6$.",
+          "steps": [
+            "Differentiate: $\\frac{dy}{dx}=2x$.",
+            "Set the derivative equal to the required gradient: $2x=6$, so $x=3$.",
+            "Substitute into the curve: $y=3^2+1=10$."
+          ],
+          "answer": "$(3,10)$",
+          "teaching_note": "Finding the gradient is not enough; the final point comes from substituting back into the curve.",
+          "source_question_ids": [
+            "31autumn23_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn23/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn23/mark_scheme/q01.png"
+          ]
         }
       ],
       "legacy_skill_target_ids": [
@@ -1049,6 +1095,116 @@
       "skill_target_resolution_status": "reviewed_p3_skill_map_id"
     },
     {
+      "body": "For products and quotients, write the rule setup before simplifying. Rational functions often need the quotient rule, or a product with a negative power when that is cleaner.",
+      "common_mistakes": [
+        "Differentiating only the numerator.",
+        "Dropping the minus sign in the quotient-rule numerator.",
+        "Rewriting a quotient as a negative power but forgetting the inner derivative."
+      ],
+      "common_trap": "Cancelling or simplifying a quotient before checking whether the step is algebraically valid.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Show the product or quotient-rule setup before simplifying the derivative.",
+      "explanation": "The source-backed move here is the derivative-rule setup for a rational expression. Keep both differentiated parts visible before using the derivative for any later condition.",
+      "mark_scheme_move_note": "State the product or quotient structure, write the derivative setup with both terms present, then simplify only after the rule evidence is clear.",
+      "paper_family": "p3",
+      "prerequisites": [
+        "Know basic derivatives of powers.",
+        "Keep brackets through quotient-rule subtraction."
+      ],
+      "quick_check": {
+        "id": "p3-differentiation-chain-product-quotient-source-001-qc",
+        "region_id": "calculus-cliffs",
+        "topic": "differentiation",
+        "skill_target_id": "p3_diff_chain_product_quotient",
+        "title": "Quotient-rule denominator",
+        "prompt": "For $y=\\frac{u}{v}$, what denominator appears in the quotient-rule derivative?",
+        "answer": "$v^2$",
+        "explanation": "The quotient-rule derivative has denominator $v^2$, with the numerator keeping both $vu'$ and $uv'$ terms visible.",
+        "micro_skill": "Recall the denominator in a quotient-rule setup.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "legacy_skill_target_id": "p3_differentiation",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "related_skill_targets": [
+        "p3_diff_chain_product_quotient"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-differentiation-chain-product-quotient-source-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_diff_chain_product_quotient"
+      ],
+      "steps": [
+        "Identify whether the expression is a product, quotient, or composite function.",
+        "Write the rule setup with both differentiated pieces visible.",
+        "Simplify after the derivative evidence is complete."
+      ],
+      "student_goal": "Show reliable product and quotient-rule evidence before using the derivative.",
+      "title": "Keep both derivative pieces visible",
+      "topic": "differentiation",
+      "topics": [
+        "differentiation"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-differentiation-chain-product-quotient-source-001-example-1",
+          "question_type": "Quotient-rule derivative setup",
+          "key_method": "Use the quotient rule with the denominator squared and both numerator terms shown.",
+          "exam_move": "Show the quotient-rule numerator before any simplification or follow-through condition.",
+          "prompt": "Differentiate $y=\\frac{x}{1+2x}$.",
+          "steps": [
+            "Let $u=x$ and $v=1+2x$.",
+            "Then $u'=1$ and $v'=2$.",
+            "Use $\\frac{dy}{dx}=\\frac{vu'-uv'}{v^2}=\\frac{(1+2x)(1)-x(2)}{(1+2x)^2}$."
+          ],
+          "answer": "$\\frac{dy}{dx}=\\frac{1}{(1+2x)^2}$",
+          "teaching_note": "The source question also needs a rational-function derivative before any tangent-gradient condition is used.",
+          "source_question_ids": [
+            "31autumn23_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn23/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn23/mark_scheme/q01.png"
+          ]
+        },
+        {
+          "id": "p3-differentiation-chain-product-quotient-source-001-example-2",
+          "question_type": "Product and chain-rule derivative setup",
+          "key_method": "Rewrite a quotient as a product with a negative power, then apply product and chain rules.",
+          "exam_move": "Show the product-rule split and the inner derivative from the negative-power factor.",
+          "prompt": "Differentiate $y=x^2(1+4x)^{-1}$.",
+          "steps": [
+            "Treat this as a product: $u=x^2$ and $v=(1+4x)^{-1}$.",
+            "$u'=2x$ and $v'=-4(1+4x)^{-2}$.",
+            "Use $u'v+uv'$ before simplifying."
+          ],
+          "answer": "$\\frac{dy}{dx}=2x(1+4x)^{-1}-4x^2(1+4x)^{-2}$",
+          "teaching_note": "This practises the alternative product-plus-chain route for the same kind of rational derivative evidence.",
+          "source_question_ids": [
+            "31autumn23_q01"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn23/questions/q01.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn23/mark_scheme/q01.png"
+          ]
+        }
+      ],
+      "legacy_skill_target_ids": [
+        "p3_differentiation"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
       "body": "For parametric equations, differentiate both coordinates with respect to the parameter, then use $dy/dx=(dy/dt)/(dx/dt)$ when $dx/dt$ is non-zero.",
       "common_mistakes": [
         "Using $dx/dt$ divided by $dy/dt$.",
@@ -1059,6 +1215,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use the ratio of parameter derivatives before finding tangents or normals.",
       "explanation": "The parameter controls both coordinates. The gradient with respect to x compares how y changes with the parameter against how x changes with the parameter.",
+      "mark_scheme_move_note": "Compute $dx/dt$ and $dy/dt$ separately, form $dy/dx=(dy/dt)/(dx/dt)$, then substitute the parameter value before using any tangent or normal gradient relationship.",
+      "misconception_repair_note": {
+        "wrong_move": "Differentiating $y$ directly with respect to $x$, or substituting the parameter value before forming $dy/dx$.",
+        "why_it_fails": "Parametric equations describe both coordinates through the parameter, so the gradient with respect to $x$ is a ratio of two parameter derivatives.",
+        "safer_move": "Find $dx/dt$ and $dy/dt$ first, divide to form $dy/dx$, then substitute the parameter value or convert to tangent/normal gradients.",
+        "short_check": "Have you divided by $dx/dt$ before using a tangent or normal condition?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on find $dy/dx$ from parametric equations without eliminating the parameter first.",
         "recommended_before_question_ids": [],
@@ -1129,6 +1292,23 @@
         "answer": "$\\frac{dy}{dx}=3$",
         "teaching_note": "Do not eliminate the parameter unless the question asks for a Cartesian equation."
       },
+      "worked_examples": [
+        {
+          "id": "p3-parametric-derivative-001-example-2",
+          "prompt": "For $x=2t+1$ and $y=t^2-3$, find the normal gradient at $t=2$.",
+          "steps": [
+            "$\\frac{dx}{dt}=2$ and $\\frac{dy}{dt}=2t$.",
+            "$\\frac{dy}{dx}=\\frac{2t}{2}=t$.",
+            "At $t=2$, the tangent gradient is $2$.",
+            "The normal gradient is the negative reciprocal, $-\\frac12$."
+          ],
+          "answer": "Normal gradient $-\\frac12$",
+          "teaching_note": "Find the parametric gradient before switching from tangent to normal gradient.",
+          "question_type": "Parametric tangent and normal gradient",
+          "key_method": "Find $dy/dx$ from parametric equations without eliminating the parameter first.",
+          "exam_move": "Form $dy/dx$ as a ratio before applying tangent or normal conditions."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_parametric_equations"
       ],
@@ -1589,6 +1769,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
       "explanation": "This snippet teaches method choice for integration without depending on a specific exam question.",
+      "mark_scheme_move_note": "State the chosen method from the integrand structure, show the transformed setup before integrating, and keep constants or changed limits consistent with the chosen method.",
+      "misconception_repair_note": {
+        "wrong_move": "Trying substitution, parts, or direct integration from habit before checking the structure of the integrand.",
+        "why_it_fails": "A mismatched method can leave an untransformed factor, miss a needed algebraic rewrite, or produce the wrong limits in a definite integral.",
+        "safer_move": "Classify the integrand first: hidden derivative for substitution, product that simplifies for parts, rational expression for algebra, then transform every part before integrating.",
+        "short_check": "Can you point to the structural cue that justifies the method?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
         "recommended_before_question_ids": [],
@@ -1690,6 +1877,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the method cue beside the integral before transforming it.",
       "explanation": "The first mark is often method choice. Name the structure before doing calculations so limits, constants, and algebra changes stay controlled.",
+      "mark_scheme_move_note": "Write the substitution or parts choice first, transform dx and the full integrand before integrating, and for parts show the uv term and remaining integral before simplifying.",
+      "misconception_repair_note": {
+        "wrong_move": "Choosing parts when a substitution removes the whole composite, or choosing substitution without transforming dx.",
+        "why_it_fails": "The integral is only equivalent after every factor and differential has been transformed; parts also needs the boundary term before the reduced integral.",
+        "safer_move": "For substitution, compute du and rewrite the complete integral; for parts, choose u and dv, find du and v, then apply uv minus the remaining integral.",
+        "short_check": "After the setup, is every piece written in the same variable or parts formula?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on pick an integration method from the integrand structure.",
         "recommended_before_question_ids": [],
@@ -2722,6 +2916,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
       "explanation": "Identity work is controlled simplification. The best identity is the one that makes the next equation easier, not the one that looks most familiar.",
+      "mark_scheme_move_note": "State the identity being used, show the substitution that moves toward the target form, and keep any restriction visible before cancelling a trig factor.",
+      "misconception_repair_note": {
+        "wrong_move": "Choosing a familiar identity or cancelling a trig factor before checking whether it matches the requested form.",
+        "why_it_fails": "Trig identities are not interchangeable decoration; the wrong identity can make the expression harder or lose cases when a factor may be zero.",
+        "safer_move": "Read the target form first, choose the identity that creates that form, then state any non-zero condition before simplifying.",
+        "short_check": "Does the identity you chose reduce the expression toward the requested form?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on select a trig identity because it moves the expression toward the needed form.",
         "recommended_before_question_ids": [],
@@ -2826,6 +3027,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
       "explanation": "A trig equation is not finished when the calculator gives one angle. Use the sign and interval to collect every angle that behaves the same way.",
+      "mark_scheme_move_note": "State the interval and unit before solving, identify the reference or principal angle, generate every equivalent solution in the interval, and check any case lost by division or added by squaring.",
+      "misconception_repair_note": {
+        "wrong_move": "Stopping at the principal calculator value, or applying a rearrangement that loses a zero-factor branch.",
+        "why_it_fails": "Trig equations repeat, so one value rarely covers the whole interval; division or squaring can also change the solution set.",
+        "safer_move": "Write the interval first, solve the basic angle, use signs or periodicity to list all interval solutions, then check any excluded or added cases.",
+        "short_check": "Have you checked every solution branch against the original interval and equation?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that require all trig solutions in a stated range.",
         "recommended_before_question_ids": [],
@@ -2915,6 +3123,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use product form to keep zero-factor solutions visible.",
       "explanation": "Squaring, dividing, or rearranging can change the solution set. Guardian-level trig often tests whether you keep all cases and then check the interval.",
+      "mark_scheme_move_note": "Show the factored or case-split equation before solving, solve each branch over the stated interval, and substitute back if any division or squaring step could alter the solution set.",
+      "misconception_repair_note": {
+        "wrong_move": "Dividing by a trig factor because it appears on both sides or looks inconvenient.",
+        "why_it_fails": "That factor may be zero, so dividing by it can erase a valid branch of the solution set.",
+        "safer_move": "Keep the equation factored, set each factor equal to zero, and solve every branch inside the stated interval.",
+        "short_check": "Did any divided factor have its own zero solutions?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on preserve trig solutions when rearranging equations.",
         "recommended_before_question_ids": [],
@@ -3005,6 +3220,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use a sketch or quadrant signs before writing the final solution set.",
       "explanation": "P3 trig equations usually expect all solutions in the interval. A quick quadrant check prevents missing the second angle or including one outside the range.",
+      "mark_scheme_move_note": "Find the reference angle, justify the permitted quadrants or signs, then list every solution that lies inside the stated interval.",
+      "misconception_repair_note": {
+        "wrong_move": "Using the calculator's principal value as the whole answer, or switching between degrees and radians while listing angles.",
+        "why_it_fails": "A principal value identifies only one branch; P3 interval questions need every angle with the correct sign and units.",
+        "safer_move": "Record the interval and unit first, find the reference angle, mark the valid quadrants, then test endpoints before writing the answer set.",
+        "short_check": "Have you listed every quadrant solution that is inside the interval?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use signs and intervals to list every trig solution.",
         "recommended_before_question_ids": [],
@@ -3079,6 +3301,22 @@
         "key_method": "Use signs and intervals to list every trig solution.",
         "exam_move": "Use a sketch or quadrant signs before writing the final solution set."
       },
+      "worked_examples": [
+        {
+          "id": "p3-trig-quadrant-discipline-001-example-2",
+          "prompt": "Solve $\\sin x=-\\frac{\\sqrt3}{2}$ for $0\\le x<2\\pi$.",
+          "steps": [
+            "The reference angle is $\\frac{\\pi}{3}$.",
+            "Sine is negative in quadrants III and IV.",
+            "The interval angles are $\\pi+\\frac{\\pi}{3}$ and $2\\pi-\\frac{\\pi}{3}$."
+          ],
+          "answer": "$x=\\frac{4\\pi}{3}$ or $x=\\frac{5\\pi}{3}$",
+          "teaching_note": "Keep the unit and interval fixed while converting the reference angle into all valid branches.",
+          "question_type": "Trigonometric quadrant discipline",
+          "key_method": "Use signs and intervals to list every trig solution.",
+          "exam_move": "Use a sketch or quadrant signs before writing the final solution set."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_trigonometry"
       ],
@@ -3095,6 +3333,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use R-form when one combined trig wave is easier than two separate terms.",
       "explanation": "Reciprocal rewrites reduce unfamiliar functions. R-form is useful when a sum of sine and cosine needs a maximum, minimum, or a single equation to solve.",
+      "mark_scheme_move_note": "Rewrite reciprocal functions into sine and cosine when useful, then for R-form show the compound-angle expansion and coefficient match before using the single-wave form.",
+      "misconception_repair_note": {
+        "wrong_move": "Matching R-form coefficients to the wrong expanded identity, or treating reciprocal functions as if they swap sine and cosine without denominators.",
+        "why_it_fails": "The sign and position of the phase angle come from the exact compound-angle expansion, and reciprocal identities depend on division by the original trig function.",
+        "safer_move": "Write the reciprocal definition or compound-angle expansion first, then match coefficients and carry restrictions before solving or finding a range.",
+        "short_check": "Have you expanded your chosen R-form and checked it returns the original coefficients?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use sec, cosec, cot, and r-form as deliberate rewrites.",
         "recommended_before_question_ids": [],
@@ -3185,6 +3430,120 @@
           "question_type": "Reciprocal identity or R-form route",
           "key_method": "Use sec, cosec, cot, and R-form as deliberate rewrites.",
           "exam_move": "Use R-form when one combined trig wave is easier than two separate terms."
+        }
+      ],
+      "legacy_skill_target_ids": [
+        "p3_trigonometry"
+      ],
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+    },
+    {
+      "body": "R-form rewrites a sine-cosine sum as one shifted wave. Expand the chosen compound-angle form first, then match coefficients so the sign and angle position are justified.",
+      "common_mistakes": [
+        "Using $R=|a|+|b|$ instead of $\\sqrt{a^2+b^2}$.",
+        "Putting the phase angle on the wrong side of the sign.",
+        "Finding the R-form but not using its range for the final move."
+      ],
+      "common_trap": "Choosing $R\\sin(x+\\alpha)$ or $R\\sin(x-\\alpha)$ by inspection without expanding it.",
+      "estimated_time_minutes": 4,
+      "exam_move": "Show the compound-angle expansion and coefficient match before using the single-wave range.",
+      "explanation": "The exact source-backed move is the coefficient match for $a\\sin x+b\\cos x$, followed by a range or extremum conclusion from the single-wave form.",
+      "mark_scheme_move_note": "State the chosen R-form, expand it, match sine and cosine coefficients, then use the amplitude to support the requested range or extremum.",
+      "paper_family": "p3",
+      "prerequisites": [
+        "Expand compound-angle identities.",
+        "Use amplitude to read a sine or cosine range."
+      ],
+      "quick_check": {
+        "id": "p3-trig-r-form-source-001-qc",
+        "region_id": "trig-observatory",
+        "topic": "trigonometry",
+        "skill_target_id": "p3_trig_r_form_compound_angles",
+        "title": "Choose R",
+        "prompt": "For $6\\sin x-8\\cos x$, what is the value of $R$ in R-form?",
+        "answer": "$R=10$",
+        "explanation": "$R=\\sqrt{6^2+(-8)^2}=10$ before matching the phase angle.",
+        "micro_skill": "Find the amplitude in R-form.",
+        "difficulty_band": "easy",
+        "estimated_time_minutes": 1,
+        "review_status": "teacher_reviewed",
+        "example_model_id": "p3-trig-r-form-source-001-example-1",
+        "legacy_skill_target_id": "p3_trigonometry",
+        "skill_target_resolution_status": "reviewed_p3_skill_map_id"
+      },
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "related_skill_targets": [
+        "p3_trig_r_form_compound_angles"
+      ],
+      "review_status": "teacher_reviewed",
+      "snippet_id": "p3-trig-r-form-source-001",
+      "snippet_type": "method",
+      "source": "teacher_authored",
+      "source_skill_target_ids": [
+        "p3_trig_r_form_compound_angles"
+      ],
+      "steps": [
+        "Choose a sine or cosine R-form.",
+        "Expand the compound-angle expression.",
+        "Match coefficients to find $R$ and the phase angle.",
+        "Use the single-wave amplitude for the range or extremum."
+      ],
+      "student_goal": "Use R-form coefficient matching as source-backed evidence for a range or extremum move.",
+      "title": "R-form needs the coefficient match",
+      "topic": "trigonometry",
+      "topics": [
+        "trigonometry"
+      ],
+      "worked_examples": [
+        {
+          "id": "p3-trig-r-form-source-001-example-1",
+          "question_type": "R-form rewrite with extremum",
+          "key_method": "Use $R=\\sqrt{a^2+b^2}$, expand the chosen R-form, and match coefficients before reading the range.",
+          "exam_move": "Show the R-form coefficient match before using the single-wave form for an extremum.",
+          "prompt": "Write $4\\sin x-3\\cos x$ as $R\\sin(x-\\alpha)$, where $\\alpha$ is acute, then state the least possible value of $(4\\sin x-3\\cos x)^2$.",
+          "steps": [
+            "$R=\\sqrt{4^2+(-3)^2}=5$.",
+            "$5\\sin(x-\\alpha)=5\\sin x\\cos\\alpha-5\\cos x\\sin\\alpha$.",
+            "Match coefficients: $5\\cos\\alpha=4$ and $5\\sin\\alpha=3$, so $\\alpha=\\tan^{-1}(3/4)$.",
+            "The expression ranges from $-5$ to $5$, so its square has least value $0$."
+          ],
+          "answer": "$5\\sin(x-\\tan^{-1}(3/4))$; least value $0$",
+          "teaching_note": "This mirrors the source skill: form one wave first, then use the amplitude rather than treating the two trig terms separately.",
+          "source_question_ids": [
+            "31autumn21_q02"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn21/questions/q02.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn21/mark_scheme/q02.png"
+          ]
+        },
+        {
+          "id": "p3-trig-r-form-source-001-example-2",
+          "question_type": "R-form rewrite with shifted cosine range",
+          "key_method": "Use a cosine R-form, match both coefficients, then apply the amplitude to the requested expression.",
+          "exam_move": "Expand $R\\cos(x-\\beta)$ and match coefficients before taking the maximum or minimum.",
+          "prompt": "Write $2\\cos x+\\sqrt3\\sin x$ as $R\\cos(x-\\beta)$, where $\\beta$ is acute, then find the maximum value of $7+2\\cos x+\\sqrt3\\sin x$.",
+          "steps": [
+            "$R=\\sqrt{2^2+(\\sqrt3)^2}=\\sqrt7$.",
+            "$R\\cos(x-\\beta)=R\\cos x\\cos\\beta+R\\sin x\\sin\\beta$.",
+            "Match coefficients: $\\sqrt7\\cos\\beta=2$ and $\\sqrt7\\sin\\beta=\\sqrt3$.",
+            "So $\\beta=\\tan^{-1}(\\sqrt3/2)$, and the maximum of the added wave is $\\sqrt7$."
+          ],
+          "answer": "$\\sqrt7\\cos(x-\\tan^{-1}(\\sqrt3/2))$; maximum value $7+\\sqrt7$",
+          "teaching_note": "The source question rewards the same R-form coefficient evidence before the final range conclusion.",
+          "source_question_ids": [
+            "31autumn21_q02"
+          ],
+          "source_question_asset_ids": [
+            "p3/31autumn21/questions/q02.png"
+          ],
+          "source_mark_scheme_asset_ids": [
+            "p3/31autumn21/mark_scheme/q02.png"
+          ]
         }
       ],
       "legacy_skill_target_ids": [
@@ -3759,6 +4118,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
       "explanation": "Exact definite-integral marks usually depend on disciplined substitution into the antiderivative. Area questions add one more check: whether the curve is above or below the axis.",
+      "mark_scheme_move_note": "Show the antiderivative, substitute upper minus lower with brackets, and for area or improper cases state the sign or limiting step before giving the exact value.",
+      "misconception_repair_note": {
+        "wrong_move": "Evaluating only the upper limit, leaving +C in a definite integral, or treating a signed integral as area without checking the curve.",
+        "why_it_fails": "A definite integral is a difference of antiderivative values; area may need sign correction or interval splitting if the curve changes side.",
+        "safer_move": "Write F(b)-F(a) explicitly, keep exact values until the final line, and check whether the question asks for signed integral or geometric area.",
+        "short_check": "Did you subtract the lower-limit value and check whether area needs an absolute value or split?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving exact definite integrals or bounded areas.",
         "recommended_before_question_ids": [],
@@ -3830,6 +4196,22 @@
         "answer": "$12$",
         "teaching_note": "No constant of integration is needed in a definite integral."
       },
+      "worked_examples": [
+        {
+          "id": "p3-integration-definite-area-001-example-2",
+          "prompt": "Find the area between $y=4-x^2$ and the $x$-axis for $0\\le x\\le2$.",
+          "steps": [
+            "The curve is non-negative on this interval, so area equals the definite integral.",
+            "An antiderivative of $4-x^2$ is $4x-\\frac{x^3}{3}$.",
+            "Evaluate $\\left[4x-\\frac{x^3}{3}\\right]_0^2=8-\\frac83$."
+          ],
+          "answer": "$\\frac{16}{3}$",
+          "teaching_note": "Check the sign of the curve before using a definite integral as area.",
+          "question_type": "Definite integral area",
+          "key_method": "Evaluate definite integrals and areas exactly.",
+          "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_integration"
       ],

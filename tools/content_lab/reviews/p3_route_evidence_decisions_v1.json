@@ -1,10 +1,10 @@
 {
   "schema_name": "asterion_p3_route_evidence_decisions",
   "schema_version": 1,
-  "review_label": "phase-1-route-and-evidence-cleanup-v1",
+  "review_label": "phase-1-route-and-evidence-cleanup-v1-plus-phase-2b-clean-source-pool-v1",
   "reviewer": "codex",
-  "reviewed_at": "2026-05-21",
-  "scope_note": "Phase 1 route and evidence cleanup decisions for a small audited batch from the P3 region-correction queue. These decisions are audit metadata; only clean reviewed routes with canonical question and mark-scheme evidence may feed mastery. Thin, ambiguous, fallback_only, blocked, deferred, and review_needed decisions remain non-generation and non-mastery unless a later reviewed artifact explicitly resolves them.",
+  "reviewed_at": "2026-05-22",
+  "scope_note": "Phase 1 route and evidence cleanup decisions for a small audited batch from the P3 region-correction queue, plus a narrow Phase 2B clean-route source-pool expansion for exact-skill source-backed worked-example readiness. These decisions are audit metadata; only clean reviewed routes with canonical question and mark-scheme evidence may feed mastery. Thin, ambiguous, fallback_only, blocked, deferred, and review_needed decisions remain non-generation and non-mastery unless a later reviewed artifact explicitly resolves them.",
   "policy": {
     "canonical_assets_required": true,
     "fallback_labels_are_display_only": true,
@@ -13,6 +13,164 @@
     "ambiguous_whole_question_routes_require_reviewed_part_mapping": true
   },
   "decisions": [
+    {
+      "question_id": "31autumn21_q01",
+      "paper": "31autumn21",
+      "paper_family": "p3",
+      "question_number": "1",
+      "previous_route_status": "safe_p3_route",
+      "previous_routing_source": "deepseek_topic_routing",
+      "previous_fallback_region_id": "",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_logarithmic_and_exponential_functions",
+      "reviewed_region_id": "logarithm-grove",
+      "reviewed_source_skill_ids": [
+        "p3_log_exponential_equations"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn21/questions/q01.png",
+        "mark_scheme_asset_path": "p3/31autumn21/mark_scheme/q01.png",
+        "question_summary": "Solve an exponential equation with a modulus expression by splitting the possible cases.",
+        "mark_scheme_summary": "Mark scheme rewards forming the valid exponential equations from the modulus cases and solving for x."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Canonical question and mark scheme clearly support the exact exponential-equation skill. Candidate promotion remains blocked because this pass reviews source routing only, not generated practice or mark events."
+    },
+    {
+      "question_id": "31autumn21_q02",
+      "paper": "31autumn21",
+      "paper_family": "p3",
+      "question_number": "2",
+      "previous_route_status": "safe_p3_route",
+      "previous_routing_source": "deepseek_topic_routing",
+      "previous_fallback_region_id": "",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_trigonometry",
+      "reviewed_region_id": "trig-observatory",
+      "reviewed_source_skill_ids": [
+        "p3_trig_r_form_compound_angles"
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn21/questions/q02.png",
+        "mark_scheme_asset_path": "p3/31autumn21/mark_scheme/q02.png",
+        "question_summary": "Express a linear sine-cosine combination in R sin(x - alpha) form and use it to find extreme values.",
+        "mark_scheme_summary": "Mark scheme rewards the R-form coefficient comparison and the consequent maximum and minimum values."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Canonical question and mark scheme narrowly support R-form compound-angle work without needing family-level or nearby-skill inference."
+    },
+    {
+      "question_id": "31autumn21_q04",
+      "paper": "31autumn21",
+      "paper_family": "p3",
+      "question_number": "4",
+      "previous_route_status": "safe_p3_route",
+      "previous_routing_source": "deepseek_topic_routing",
+      "previous_fallback_region_id": "",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_integration",
+      "reviewed_region_id": "integration-gardens",
+      "reviewed_source_skill_ids": [
+        "p3_int_parts_substitution",
+        "p3_int_definite_improper_area"
+      ],
+      "part_mappings": [
+        {
+          "label": "setup",
+          "subpart_id": "31autumn21_q04_substitution_setup",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_int_parts_substitution",
+          "reviewed_topic_id": "9709_p3_topic_integration",
+          "reviewed_region_id": "integration-gardens",
+          "evidence_summary": "The given substitution is applied by transforming dx, the integrand, and the bound expression before integration."
+        },
+        {
+          "label": "evaluation",
+          "subpart_id": "31autumn21_q04_improper_evaluation",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_int_definite_improper_area",
+          "reviewed_topic_id": "9709_p3_topic_integration",
+          "reviewed_region_id": "integration-gardens",
+          "evidence_summary": "The transformed improper integral is evaluated with the upper limiting value and the lower transformed bound."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn21/questions/q04.png",
+        "mark_scheme_asset_path": "p3/31autumn21/mark_scheme/q04.png",
+        "question_summary": "Use a given substitution to evaluate an improper definite integral exactly.",
+        "mark_scheme_summary": "Mark scheme rewards the substitution transformation, antiderivative, transformed bounds, and exact improper-integral value."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Both reviewed skills sit in the same integration region and are explicitly evidenced by the question and mark scheme. This is not used for broad integration method-choice support because the substitution is given."
+    },
+    {
+      "question_id": "31autumn21_q05",
+      "paper": "31autumn21",
+      "paper_family": "p3",
+      "question_number": "5",
+      "previous_route_status": "safe_p3_route",
+      "previous_routing_source": "deepseek_topic_routing",
+      "previous_fallback_region_id": "",
+      "reviewed_status": "clean",
+      "reviewed_primary_topic_id": "9709_p3_topic_trigonometry",
+      "reviewed_region_id": "trig-observatory",
+      "reviewed_source_skill_ids": [
+        "p3_trig_equation_interval",
+        "p3_trig_quadrant_solutions"
+      ],
+      "part_mappings": [
+        {
+          "label": "equation_transform",
+          "subpart_id": "31autumn21_q05_equation_interval",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_trig_equation_interval",
+          "reviewed_topic_id": "9709_p3_topic_trigonometry",
+          "reviewed_region_id": "trig-observatory",
+          "evidence_summary": "The trigonometric equation is transformed into a quadratic in tan theta before interval solving."
+        },
+        {
+          "label": "range_solutions",
+          "subpart_id": "31autumn21_q05_quadrant_solutions",
+          "reviewed_status": "clean",
+          "reviewed_source_skill_id": "p3_trig_quadrant_solutions",
+          "reviewed_topic_id": "9709_p3_topic_trigonometry",
+          "reviewed_region_id": "trig-observatory",
+          "evidence_summary": "The final solutions are selected in the stated interval, including the non-principal branch and excluding roots outside range."
+        }
+      ],
+      "evidence_basis": {
+        "question_asset_path": "p3/31autumn21/questions/q05.png",
+        "mark_scheme_asset_path": "p3/31autumn21/mark_scheme/q05.png",
+        "question_summary": "Transform a cotangent equation into a quadratic in tan theta and solve over a stated interval.",
+        "mark_scheme_summary": "Mark scheme rewards the identity transformation, quadratic solution, and all valid interval solutions."
+      },
+      "use_case_permissions": {
+        "mastery_evidence_allowed": true,
+        "guardian_evidence_allowed": true,
+        "teacher_export_mastery_allowed": true,
+        "content_lab_generation_allowed": true,
+        "candidate_promotion_allowed": false
+      },
+      "reason": "Canonical question and mark scheme support interval-equation and quadrant-solution skills exactly. The decision does not claim broader identity-selection or reciprocal/double-angle source backing."
+    },
     {
       "question_id": "31autumn23_q01",
       "paper": "31autumn23",

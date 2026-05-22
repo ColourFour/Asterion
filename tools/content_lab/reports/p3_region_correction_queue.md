@@ -34,14 +34,14 @@ This deterministic queue plans future content correction only. It does not corre
 
 ## Reviewed Route Decision Summary
 
-- review label: `phase-1-route-and-evidence-cleanup-v1`
-- recorded decisions: 10
-- decided questions: 10
+- review label: `phase-1-route-and-evidence-cleanup-v1-plus-phase-2b-clean-source-pool-v1`
+- recorded decisions: 14
+- decided questions: 14
 - still-needs-review route questions: 69
 
 - `ambiguous`: 2
 - `blocked`: 2
-- `clean`: 2
+- `clean`: 6
 - `deferred`: 1
 - `fallback_only`: 0
 - `review_needed`: 1
@@ -54,6 +54,10 @@ This deterministic queue plans future content correction only. It does not corre
 | 32spring21_q10 | missing_p3_route | ambiguous | Integral Terraces | False | False | Part-level evidence is reviewed but split across integration and differentiation, so the whole question remains mastery-ineligible. |
 | 31summer23_q02 | missing_p3_route | blocked | Algebra Vault | False | False | Canonical evidence shows the old fallback region is wrong, but the projected quality gate still has an unresolved question-crop confidence blocker. Leave blocked instead of converting it to clean mastery evidence. |
 | 33autumn24_q11 | missing_p3_route | blocked | Calculus Cliffs | False | False | Projected quality gate has validation failure, untrusted math text, low question crop confidence, and medium mark-scheme crop confidence. Keep blocked even though canonical images reveal the likely route. |
+| 31autumn21_q01 | safe_p3_route | clean | Logarithm Observatory | True | True | Canonical question and mark scheme clearly support the exact exponential-equation skill. Candidate promotion remains blocked because this pass reviews source routing only, not generated practice or mark events. |
+| 31autumn21_q02 | safe_p3_route | clean | Trigonometry Spire | True | True | Canonical question and mark scheme narrowly support R-form compound-angle work without needing family-level or nearby-skill inference. |
+| 31autumn21_q04 | safe_p3_route | clean | Integral Terraces | True | True | Both reviewed skills sit in the same integration region and are explicitly evidenced by the question and mark scheme. This is not used for broad integration method-choice support because the substitution is given. |
+| 31autumn21_q05 | safe_p3_route | clean | Trigonometry Spire | True | True | Canonical question and mark scheme support interval-equation and quadrant-solution skills exactly. The decision does not claim broader identity-selection or reciprocal/double-angle source backing. |
 | 31autumn23_q01 | missing_p3_route | clean | Calculus Cliffs | True | True | Canonical question and mark scheme support a clean differentiation route. Candidate promotion remains blocked because mark events are still machine candidates, not reviewed source-skill evidence. |
 | 31autumn23_q06 | missing_p3_route | clean | Calculus Cliffs | True | True | Both subparts resolve to the same reviewed P3 differentiation skill, so the multipart route can be clean without broad-route mastery inflation. |
 | 33autumn24_q07 | missing_p3_route | deferred | Calculus Cliffs | False | False | Defer route cleanup until the crop uncertainty and topic uncertainty are resolved with a dedicated image review. |

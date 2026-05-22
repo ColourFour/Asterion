@@ -17,7 +17,7 @@ Phase 1 verification artifact. This report does not mutate route metadata or beg
 - normalized status by route-report category: `{"ambiguous_multi_topic_route": {"ambiguous-route": 16}, "missing_p3_route": {"review-only": 47}, "review_needed_route": {"ambiguous-route": 5, "review-only": 9}, "safe_p3_route": {"clean": 319}}`
 - route-queue fallback display-only items: 47
 - queue items: 219
-- route decision counts: `{"ambiguous": 2, "blocked": 2, "clean": 2, "deferred": 1, "fallback_only": 0, "review_needed": 1, "still_needs_review": 69, "thin": 2}`
+- route decision counts: `{"ambiguous": 2, "blocked": 2, "clean": 6, "deferred": 1, "fallback_only": 0, "review_needed": 1, "still_needs_review": 69, "thin": 2}`
 - still-needs-review route questions: 69
 
 ## Count Differences

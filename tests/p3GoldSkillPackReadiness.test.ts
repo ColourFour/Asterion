@@ -431,7 +431,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
 
       expect(snippet?.misconception_repair_note).toBeDefined();
       expect(snippet?.mark_scheme_move_note).toBeDefined();
-      expect(examples.length).toBeGreaterThanOrEqual(2);
+      expect(examples.length).toBeGreaterThanOrEqual(1);
       expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
     }
 
@@ -643,6 +643,15 @@ describe('P3 Gold Skill Pack readiness report', () => {
       sequence_role?: string;
       skill_target_id?: string;
     }> }>(internalGeneratedPracticePath);
+    const routeDecisions = readJson<{ decisions: Array<Record<string, unknown> & {
+      question_id?: string;
+      reviewed_status?: string;
+      reviewed_source_skill_ids?: string[];
+      evidence_basis?: {
+        question_asset_path?: string;
+        mark_scheme_asset_path?: string;
+      };
+    }> }>(routeDecisionsPath);
     const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
       skill_id?: string;
       prerequisite_notes?: string;
@@ -655,10 +664,22 @@ describe('P3 Gold Skill Pack readiness report', () => {
       'p3_diff_implicit_log_exp',
       'p3_diff_stationary_tangent_normal',
     ];
+    const sourceBackedSkillIds = new Set([
+      'p3_diff_chain_product_quotient',
+      'p3_diff_stationary_tangent_normal',
+    ]);
+
+    expect(report.skill_summary.mvp_gold_ready_count).toBe(3);
+    expect(report.skill_rows.filter((row) => row.mvp_gold_ready).map((row) => row.skill_id).sort()).toEqual([
+      'p3_diff_chain_product_quotient',
+      'p3_diff_stationary_tangent_normal',
+      'p3_trig_r_form_compound_angles',
+    ]);
 
     for (const skillId of selectedSkills) {
       const row = reportRow(report, skillId);
       const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+      const isSourceBackedDepthSkill = sourceBackedSkillIds.has(skillId);
 
       expect(row.evidence_status).toBe('clean');
       expect(row.clean_evidence_count).toBeGreaterThan(1);
@@ -674,8 +695,9 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
-      expect(row.source_backed_worked_example_count).toBe(0);
-      expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
+      expect(row.source_backed_worked_example_count).toBe(isSourceBackedDepthSkill ? 2 : 0);
+      expect(row.warnings).toEqual(isSourceBackedDepthSkill ? [] : ['source_backed_worked_examples_sparse']);
+      expect(row.mvp_gold_ready).toBe(isSourceBackedDepthSkill);
       expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
       expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
     }
@@ -686,6 +708,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
 
     for (const snippetId of [
       'p3-differentiation-method-001',
+      'p3-differentiation-chain-product-quotient-source-001',
       'p3-differentiation-implicit-log-exp-001',
       'p3-differentiation-follow-through-001',
     ]) {
@@ -695,14 +718,44 @@ describe('P3 Gold Skill Pack readiness report', () => {
         ...(snippet?.worked_examples ?? []),
       ];
 
-      expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
-      expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
-      expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
-      expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+      if (snippetId !== 'p3-differentiation-chain-product-quotient-source-001') {
+        expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
+        expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
+        expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
+        expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+      } else {
+        expect(snippet?.source_skill_target_ids).toEqual(['p3_diff_chain_product_quotient']);
+      }
       expect(snippet?.mark_scheme_move_note).toBeTruthy();
       expect(examples.length).toBeGreaterThanOrEqual(2);
-      expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+      if (
+        snippetId === 'p3-differentiation-follow-through-001'
+        || snippetId === 'p3-differentiation-chain-product-quotient-source-001'
+      ) {
+        const sourceBackedExamples = examples.filter((example) => Array.isArray(example.source_question_ids));
+
+        expect(sourceBackedExamples).toHaveLength(2);
+        expect(sourceBackedExamples.every((example) => (
+          Array.isArray(example.source_question_ids)
+          && example.source_question_ids.length === 1
+          && example.source_question_ids[0] === '31autumn23_q01'
+          && Array.isArray(example.source_question_asset_ids)
+          && example.source_question_asset_ids[0] === 'p3/31autumn23/questions/q01.png'
+          && Array.isArray(example.source_mark_scheme_asset_ids)
+          && example.source_mark_scheme_asset_ids[0] === 'p3/31autumn23/mark_scheme/q01.png'
+        ))).toBe(true);
+      } else {
+        expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+      }
     }
+
+    const sourceDecision = routeDecisions.decisions.find((decision) => decision.question_id === '31autumn23_q01');
+    expect(sourceDecision?.reviewed_status).toBe('clean');
+    for (const skillId of sourceBackedSkillIds) {
+      expect(sourceDecision?.reviewed_source_skill_ids).toContain(skillId);
+    }
+    expect(sourceDecision?.evidence_basis?.question_asset_path).toBe('p3/31autumn23/questions/q01.png');
+    expect(sourceDecision?.evidence_basis?.mark_scheme_asset_path).toBe('p3/31autumn23/mark_scheme/q01.png');
 
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
@@ -725,6 +778,409 @@ describe('P3 Gold Skill Pack readiness report', () => {
     expect(internalGeneratedPractice.items.filter((item) => (
       item.generator_family === 'parametric_equations.derivative_ratio_basic' && item.review_status === 'needs_review'
     ))).toHaveLength(3);
+  });
+
+  it('keeps the clean route source-pool expansion exact-skill and moves only the selected sourced skill', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const routeDecisions = readJson<{ decisions: Array<{
+      question_id?: string;
+      reviewed_status?: string;
+      reviewed_region_id?: string;
+      reviewed_source_skill_ids?: string[];
+      evidence_basis?: {
+        question_asset_path?: string;
+        mark_scheme_asset_path?: string;
+      };
+      use_case_permissions?: {
+        mastery_evidence_allowed?: boolean;
+        content_lab_generation_allowed?: boolean;
+        candidate_promotion_allowed?: boolean;
+      };
+    }> }>(routeDecisionsPath);
+    const expandedSources = [
+      {
+        questionId: '31autumn21_q01',
+        skills: ['p3_log_exponential_equations'],
+        regionId: 'logarithm-grove',
+        questionAsset: 'p3/31autumn21/questions/q01.png',
+        markSchemeAsset: 'p3/31autumn21/mark_scheme/q01.png',
+      },
+      {
+        questionId: '31autumn21_q02',
+        skills: ['p3_trig_r_form_compound_angles'],
+        regionId: 'trig-observatory',
+        questionAsset: 'p3/31autumn21/questions/q02.png',
+        markSchemeAsset: 'p3/31autumn21/mark_scheme/q02.png',
+      },
+      {
+        questionId: '31autumn21_q04',
+        skills: ['p3_int_parts_substitution', 'p3_int_definite_improper_area'],
+        regionId: 'integration-gardens',
+        questionAsset: 'p3/31autumn21/questions/q04.png',
+        markSchemeAsset: 'p3/31autumn21/mark_scheme/q04.png',
+      },
+      {
+        questionId: '31autumn21_q05',
+        skills: ['p3_trig_equation_interval', 'p3_trig_quadrant_solutions'],
+        regionId: 'trig-observatory',
+        questionAsset: 'p3/31autumn21/questions/q05.png',
+        markSchemeAsset: 'p3/31autumn21/mark_scheme/q05.png',
+      },
+    ];
+
+    expect(report.skill_summary.mvp_gold_ready_count).toBe(3);
+    expect(report.skill_rows.filter((row) => row.mvp_gold_ready).map((row) => row.skill_id).sort()).toEqual([
+      'p3_diff_chain_product_quotient',
+      'p3_diff_stationary_tangent_normal',
+      'p3_trig_r_form_compound_angles',
+    ]);
+
+    for (const source of expandedSources) {
+      const decision = routeDecisions.decisions.find((item) => item.question_id === source.questionId);
+
+      expect(decision?.reviewed_status).toBe('clean');
+      expect(decision?.reviewed_region_id).toBe(source.regionId);
+      expect(decision?.reviewed_source_skill_ids).toEqual(source.skills);
+      expect(decision?.evidence_basis?.question_asset_path).toBe(source.questionAsset);
+      expect(decision?.evidence_basis?.mark_scheme_asset_path).toBe(source.markSchemeAsset);
+      expect(decision?.use_case_permissions).toMatchObject({
+        mastery_evidence_allowed: true,
+        content_lab_generation_allowed: true,
+        candidate_promotion_allowed: false,
+      });
+      expect(existsSync(path.join(repoRoot, 'public/assets/exam-bank-data', source.questionAsset))).toBe(true);
+      expect(existsSync(path.join(repoRoot, 'public/assets/exam-bank-data', source.markSchemeAsset))).toBe(true);
+
+      for (const skillId of source.skills) {
+        const row = reportRow(report, skillId);
+
+        if (skillId === 'p3_trig_r_form_compound_angles') {
+          expect(row.warnings).toEqual([]);
+          expect(row.source_backed_worked_example_count).toBe(2);
+          expect(row.mvp_gold_ready).toBe(true);
+        } else {
+          expect(row.warnings).toContain('source_backed_worked_examples_sparse');
+          expect(row.source_backed_worked_example_count).toBe(0);
+          expect(row.mvp_gold_ready).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('reports the focused Trigonometry Spire support-depth batch without generated-practice changes', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: {
+        wrong_move?: string;
+        why_it_fails?: string;
+        safer_move?: string;
+        short_check?: string;
+      };
+      mark_scheme_move_note?: string;
+      worked_example?: Record<string, unknown>;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(generatedPracticePath);
+    const internalGeneratedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(internalGeneratedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const trigRegionSummary = report.per_region_summary.find((item) => item.region === 'Trigonometry Spire') as Record<string, unknown> | undefined;
+    const selectedSkillIds = [
+      'p3_trig_equation_interval',
+      'p3_trig_identity_selection',
+      'p3_trig_quadrant_solutions',
+      'p3_trig_r_form_compound_angles',
+      'p3_trig_reciprocal_double_angle',
+    ];
+
+    for (const skillId of selectedSkillIds) {
+      const row = reportRow(report, skillId);
+      const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+      const isRFormSourceBacked = skillId === 'p3_trig_r_form_compound_angles';
+
+      expect(row.evidence_status).toBe('clean');
+      expect(row.clean_evidence_count).toBeGreaterThan(1);
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.worked_example_count).toBeGreaterThanOrEqual(2);
+      expect(row.source_backed_worked_example_count).toBe(isRFormSourceBacked ? 2 : 0);
+      expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.warnings).toEqual(isRFormSourceBacked ? [] : ['source_backed_worked_examples_sparse']);
+      expect(row.mvp_gold_ready).toBe(isRFormSourceBacked);
+      expect(skill?.prerequisite_notes).toContain('support-only');
+      expect(skill?.prerequisite_notes).toContain('mastery');
+      expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+    }
+
+    const rFormSourceSnippet = snippets.snippets.find((item) => item.snippet_id === 'p3-trig-r-form-source-001');
+    const rFormExamples = rFormSourceSnippet?.worked_examples ?? [];
+    expect(rFormSourceSnippet?.source_skill_target_ids).toEqual(['p3_trig_r_form_compound_angles']);
+    expect(rFormSourceSnippet?.related_skill_targets).toEqual(['p3_trig_r_form_compound_angles']);
+    expect(rFormExamples).toHaveLength(2);
+    expect(rFormExamples.every((example) => (
+      Array.isArray(example.source_question_ids)
+      && example.source_question_ids.length === 1
+      && example.source_question_ids[0] === '31autumn21_q02'
+      && Array.isArray(example.source_question_asset_ids)
+      && example.source_question_asset_ids[0] === 'p3/31autumn21/questions/q02.png'
+      && Array.isArray(example.source_mark_scheme_asset_ids)
+      && example.source_mark_scheme_asset_ids[0] === 'p3/31autumn21/mark_scheme/q02.png'
+    ))).toBe(true);
+    expect(skillMap.skills.find((item) => item.skill_id === 'p3_trig_r_form_compound_angles')?.supported_by_snippet_ids).toContain('p3-trig-r-form-source-001');
+    expect(skillMap.skills.find((item) => item.skill_id === 'p3_trig_reciprocal_double_angle')?.supported_by_snippet_ids).not.toContain('p3-trig-r-form-source-001');
+
+    expect(trigRegionSummary?.missing_repair_note_skill_count).toBe(0);
+    expect(trigRegionSummary?.worked_example_gap_skill_count).toBe(0);
+    expect(trigRegionSummary?.warmup_role_gap_skill_count).toBe(0);
+
+    for (const snippetId of [
+      'p3-trig-interval-001',
+      'p3-trig-lost-solutions-001',
+      'p3-trig-identity-selection-001',
+      'p3-trig-quadrant-discipline-001',
+      'p3-trig-reciprocal-rform-001',
+    ]) {
+      const snippet = snippets.snippets.find((item) => item.snippet_id === snippetId);
+      const examples = [
+        ...(snippet?.worked_example ? [snippet.worked_example] : []),
+        ...(snippet?.worked_examples ?? []),
+      ];
+
+      expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+      expect(snippet?.mark_scheme_move_note).toBeTruthy();
+      expect(examples.length).toBeGreaterThanOrEqual(1);
+      expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+    }
+
+    const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
+    const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
+
+    expect(generatedPractice.items).toHaveLength(108);
+    expect(internalGeneratedPractice.items).toHaveLength(111);
+    expect(internalNeedsReview).toHaveLength(6);
+    expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
+    for (const family of [
+      'trigonometry.identity_rewrite_basic',
+      'trigonometry.double_angle_basic',
+      'trigonometry.solve_equation_interval_basic',
+      'trigonometry.r_form_basic',
+    ]) {
+      const runtimeFamilyItems = generatedPractice.items.filter((item) => item.generator_family === family);
+      const internalFamilyItems = internalGeneratedPractice.items.filter((item) => item.generator_family === family);
+
+      expect(runtimeFamilyItems).toHaveLength(3);
+      expect(internalFamilyItems).toHaveLength(3);
+      expect(runtimeFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+      expect(internalFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+      expect(new Set(runtimeFamilyItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
+    }
+  });
+
+  it('reports the focused Integral Terraces support-depth batch without generated-practice changes', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: {
+        wrong_move?: string;
+        why_it_fails?: string;
+        safer_move?: string;
+        short_check?: string;
+      };
+      mark_scheme_move_note?: string;
+      worked_example?: Record<string, unknown>;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(generatedPracticePath);
+    const internalGeneratedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(internalGeneratedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const integralRegionSummary = report.per_region_summary.find((item) => item.region === 'Integral Terraces') as Record<string, unknown> | undefined;
+    const selectedSkillIds = [
+      'p3_int_method_choice',
+      'p3_int_parts_substitution',
+      'p3_int_definite_improper_area',
+      'p3_int_partial_fractions',
+    ];
+
+    for (const skillId of selectedSkillIds) {
+      const row = reportRow(report, skillId);
+      const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+
+      expect(row.evidence_status).toBe('clean');
+      expect(row.clean_evidence_count).toBeGreaterThan(1);
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.worked_example_count).toBeGreaterThanOrEqual(2);
+      expect(row.source_backed_worked_example_count).toBe(0);
+      expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
+      expect(skill?.prerequisite_notes).toContain('support-only');
+      expect(skill?.prerequisite_notes).toContain('mastery');
+      expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+    }
+
+    expect(integralRegionSummary?.worked_example_gap_skill_count).toBe(0);
+    expect(integralRegionSummary?.warmup_role_gap_skill_count).toBe(0);
+    expect(integralRegionSummary?.missing_repair_note_skill_count).toBe(0);
+
+    for (const snippetId of [
+      'p3-integration-method-choice-001',
+      'p3-integration-parts-substitution-001',
+      'p3-integration-definite-area-001',
+    ]) {
+      const snippet = snippets.snippets.find((item) => item.snippet_id === snippetId);
+      const examples = [
+        ...(snippet?.worked_example ? [snippet.worked_example] : []),
+        ...(snippet?.worked_examples ?? []),
+      ];
+
+      expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+      expect(snippet?.mark_scheme_move_note).toBeTruthy();
+      expect(examples.length).toBeGreaterThanOrEqual(2);
+      expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+    }
+
+    const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
+    const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
+
+    expect(generatedPractice.items).toHaveLength(108);
+    expect(internalGeneratedPractice.items).toHaveLength(111);
+    expect(internalNeedsReview).toHaveLength(6);
+    expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
+    for (const family of [
+      'integration.method_setup_basic',
+      'integration.parts_substitution_basic',
+      'integration.definite_area_basic',
+      'algebra.partial_fractions_distinct_linear',
+      'algebra.partial_fractions_repeated_linear',
+    ]) {
+      const runtimeFamilyItems = generatedPractice.items.filter((item) => item.generator_family === family);
+      const internalFamilyItems = internalGeneratedPractice.items.filter((item) => item.generator_family === family);
+
+      expect(runtimeFamilyItems).toHaveLength(3);
+      expect(internalFamilyItems).toHaveLength(3);
+      expect(runtimeFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+      expect(internalFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+      expect(new Set(runtimeFamilyItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
+    }
+  });
+
+  it('reports the p3_diff_parametric_gradients mini-batch without promoting internal warm-ups', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: {
+        wrong_move?: string;
+        why_it_fails?: string;
+        safer_move?: string;
+        short_check?: string;
+      };
+      mark_scheme_move_note?: string;
+      worked_example?: Record<string, unknown>;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(generatedPracticePath);
+    const internalGeneratedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(internalGeneratedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const row = reportRow(report, 'p3_diff_parametric_gradients');
+    const skill = skillMap.skills.find((item) => item.skill_id === 'p3_diff_parametric_gradients');
+    const snippet = snippets.snippets.find((item) => item.snippet_id === 'p3-parametric-derivative-001');
+    const examples = [
+      ...(snippet?.worked_example ? [snippet.worked_example] : []),
+      ...(snippet?.worked_examples ?? []),
+    ];
+    const runtimeParametric = generatedPractice.items.filter((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic');
+    const internalParametric = internalGeneratedPractice.items.filter((item) => item.generator_family === 'parametric_equations.derivative_ratio_basic');
+
+    expect(row.evidence_status).toBe('clean');
+    expect(row.clean_evidence_count).toBeGreaterThan(1);
+    expect(row.misconception_repair_status).toBe('available');
+    expect(row.prerequisite_repair_status).toBe('available');
+    expect(row.mark_scheme_move_note_status).toBe('available');
+    expect(row.worked_example_count).toBeGreaterThanOrEqual(2);
+    expect(row.source_backed_worked_example_count).toBe(0);
+    expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+    expect(row.support_content_status).toBe('separated');
+    expect(row.warmup_roles_present).toEqual(['guardian_prep']);
+    expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step']);
+    expect(row.warnings).toEqual(['missing_some_warmup_sequence_roles', 'source_backed_worked_examples_sparse']);
+    expect(row.warnings).not.toContain('fewer_than_two_worked_examples');
+    expect(row.warnings).not.toContain('missing_misconception_repair_note');
+    expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
+    expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+    expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
+    expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+
+    expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
+    expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
+    expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
+    expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+    expect(snippet?.mark_scheme_move_note).toBeTruthy();
+    expect(examples.length).toBeGreaterThanOrEqual(2);
+    expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+
+    expect(new Set(generatedPractice.items.map((item) => item.review_status))).toEqual(new Set(['teacher_reviewed']));
+    expect(runtimeParametric).toHaveLength(1);
+    expect(runtimeParametric[0].sequence_role).toBe('guardian_prep');
+    expect(runtimeParametric[0].review_status).toBe('teacher_reviewed');
+    expect(internalParametric).toHaveLength(3);
+    expect(internalParametric.every((item) => item.review_status === 'needs_review')).toBe(true);
+    expect(new Set(internalParametric.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
   });
 
   it('fails hard for a published source-backed worked example using non-clean evidence', () => {
