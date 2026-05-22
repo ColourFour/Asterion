@@ -38,6 +38,12 @@ describe('parseDashboardRoute', () => {
     expect(parseDashboardRoute('/dashboard/demo', '')).toEqual({ kind: 'dashboard' });
   });
 
+  it('parses the internal UI review route from hash paths', () => {
+    expect(parseDashboardRoute('/', '#/ui-review')).toEqual({ kind: 'uiReview', page: 'index' });
+    expect(parseDashboardRoute('/', '#/ui-review/student-entry')).toEqual({ kind: 'uiReview', page: 'student-entry' });
+    expect(parseDashboardRoute('/', '#/ui-review/world-map')).toEqual({ kind: 'uiReview', page: 'world-map' });
+  });
+
   it('falls back to the pathname when the hash belongs to student routing', () => {
     expect(parseDashboardRoute('/teacher/classes/class-p3-alpha', '#/regions/algebra')).toEqual({
       kind: 'teacher',
@@ -51,6 +57,7 @@ describe('parseDashboardRoute', () => {
     expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: false })).toBe(false);
     expect(dashboardRouteEnabled({ kind: 'admin' }, { dashboardRoutesEnabled: false })).toBe(false);
     expect(dashboardRouteEnabled({ kind: 'dashboard' }, { dashboardRoutesEnabled: false })).toBe(false);
+    expect(dashboardRouteEnabled({ kind: 'uiReview', page: 'index' }, { dashboardRoutesEnabled: false })).toBe(true);
     expect(dashboardRouteEnabled({ kind: 'teacher', page: 'home' }, { dashboardRoutesEnabled: true })).toBe(true);
     expect(dashboardRouteEnabled({ kind: 'dashboard' }, { dashboardRoutesEnabled: true })).toBe(false);
   });

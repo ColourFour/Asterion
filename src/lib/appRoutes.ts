@@ -7,16 +7,24 @@ export type TeacherDashboardRoute = {
   regionId?: string;
 };
 
-export type DashboardRoute = TeacherDashboardRoute | { kind: 'admin' } | { kind: 'dashboard' } | { kind: 'student' };
+export type UiReviewRoute = {
+  kind: 'uiReview';
+  page: string;
+};
+
+export type DashboardRoute = TeacherDashboardRoute | UiReviewRoute | { kind: 'admin' } | { kind: 'dashboard' } | { kind: 'student' };
 
 export function dashboardRouteEnabled(route: DashboardRoute, config: Pick<AsterionRuntimeConfig, 'dashboardRoutesEnabled'>): boolean {
   if (route.kind === 'dashboard') return false;
-  return route.kind === 'student' || config.dashboardRoutesEnabled;
+  return route.kind === 'student' || route.kind === 'uiReview' || config.dashboardRoutesEnabled;
 }
 
 export function parseDashboardRoute(pathname: string, hash: string): DashboardRoute {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
-  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') || hashPath.startsWith('/dashboard') ? hashPath : pathname;
+  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') || hashPath.startsWith('/dashboard') || hashPath.startsWith('/ui-review') ? hashPath : pathname;
+  if (routePath === '/ui-review') return { kind: 'uiReview', page: 'index' };
+  const uiReviewMatch = routePath.match(/^\/ui-review\/(.+)$/);
+  if (uiReviewMatch) return { kind: 'uiReview', page: uiReviewMatch[1].replace(/\/+$/, '') || 'index' };
   if (routePath === '/dashboard' || routePath.startsWith('/dashboard/')) return { kind: 'dashboard' };
   if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
   if (routePath === '/teacher') return { kind: 'teacher', page: 'home' };

@@ -6,6 +6,7 @@ import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
 import { StudentOnboarding } from './components/onboarding/StudentOnboarding';
 import { TwinklingStarfield } from './components/shared/TwinklingStarfield';
+import { UiReview } from './components/uiReview/UiReview';
 import { AstralRegionLedger, P3AstralAcademy } from './components/world/P3AstralAcademy';
 import { getRegionFieldGuide } from './data/regionFieldGuides';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
@@ -653,6 +654,10 @@ export default function App() {
     setTrainingIntent(undefined);
     setViewMode('map');
     persistProgressAfterMeaningfulEvent({ ...withAvatar, profile: withProfile.profile });
+  }
+
+  if (dashboardRoute.kind === 'uiReview') {
+    return <UiReview page={dashboardRoute.page} />;
   }
 
   if (runtimeConfig.configurationBlocked) {
