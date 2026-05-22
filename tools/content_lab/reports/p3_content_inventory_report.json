@@ -91,7 +91,7 @@
       "skill_count": 7,
       "snippet_count": 8,
       "warmup_support_count": 24,
-      "worked_example_count": 10
+      "worked_example_count": 13
     },
     {
       "active_by_default": true,
@@ -542,7 +542,7 @@
       "practice_allowed_question_ids": [
         "32autumn25_q05"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebra and functions/graphs support forming and interpreting the discriminant condition. This prerequisite repair is support-only; only reviewed clean P3 route evidence may count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -581,9 +581,10 @@
         "gen_quadratics_discriminant_root_condition_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-quadratics-discriminant-001-example-1"
+        "p3-quadratics-discriminant-001-example-1",
+        "p3-quadratics-discriminant-001-example-2"
       ]
     },
     {
@@ -648,7 +649,7 @@
         "32autumn25_q01",
         "33summer25_q01"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebra and functions/graphs support the distance and interval language used here. These notes are support-only and must not count as P3 mastery, Guardian clearance, export mastery, or candidate-promotion evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -865,7 +866,7 @@
         "33autumn21_q01",
         "33summer23_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation supports theorem substitution fluency only. Remainder and factor theorem mastery still requires reviewed P3 evidence with canonical question and mark-scheme assets.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -899,9 +900,10 @@
         "gen_polynomial_remainder_factor_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-polynomial-theorem-001-example-1"
+        "p3-polynomial-theorem-001-example-1",
+        "p3-polynomial-theorem-001-example-2"
       ]
     },
     {
@@ -960,7 +962,7 @@
         "31summer25_q05",
         "32summer22_q03"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation supports this repair step only. It helps students keep factors, cancellations, and excluded values visible, but it is not P3 mastery evidence or Guardian clearance evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -994,9 +996,10 @@
         "gen_algebra_structure_rearrangement_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-algebra-rearrangement-001-example-1"
+        "p3-algebra-rearrangement-001-example-1",
+        "p3-algebra-rearrangement-001-example-2"
       ]
     },
     {

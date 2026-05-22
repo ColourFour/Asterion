@@ -268,7 +268,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebra and functions/graphs support forming and interpreting the discriminant condition. This prerequisite repair is support-only; only reviewed clean P3 route evidence may count for mastery.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -315,7 +315,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebra and functions/graphs support the distance and interval language used here. These notes are support-only and must not count as P3 mastery, Guardian clearance, export mastery, or candidate-promotion evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -407,7 +407,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation supports theorem substitution fluency only. Remainder and factor theorem mastery still requires reviewed P3 evidence with canonical question and mark-scheme assets.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -449,7 +449,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation supports this repair step only. It helps students keep factors, cancellations, and excluded values visible, but it is not P3 mastery evidence or Guardian clearance evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

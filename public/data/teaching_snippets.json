@@ -13,6 +13,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
       "explanation": "Expansion is valid, but it is not always the cleanest first move. Look for a common expression or a factor that can be kept intact until the final simplification.",
+      "mark_scheme_move_note": "Show the factor or shared structure before cancelling or expanding, and state any denominator restrictions before simplifying rational expressions.",
+      "misconception_repair_note": {
+        "wrong_move": "Cancelling one term from a sum or expanding everything before checking for a common factor.",
+        "why_it_fails": "Cancellation only works on factors multiplying the whole expression; expanding first can hide restrictions and create avoidable sign errors.",
+        "safer_move": "Factor the repeated bracket or common factor first, then cancel only whole factors and keep excluded values visible.",
+        "quick_check": "In $\\frac{x(x+1)}{x+1}$, what value of $x$ must still be excluded after cancelling?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on choose algebraic simplification before opening every bracket.",
         "recommended_before_question_ids": [],
@@ -73,20 +80,36 @@
       "topics": [
         "algebra"
       ],
-      "worked_example": {
-        "id": "p3-algebra-rearrangement-001-example-1",
-        "prompt": "Simplify $(x+2)^2-(x+2)(x-5)$.",
-        "steps": [
-          "Both terms contain the factor $(x+2)$.",
-          "Factor it out: $(x+2)[(x+2)-(x-5)]$.",
-          "Simplify the bracket to get $(x+2)(7)$."
-        ],
-        "answer": "$7(x+2)$",
-        "teaching_note": "Factoring first keeps the cancellation and signs visible.",
-        "question_type": "Algebraic simplification",
-        "key_method": "Choose algebraic simplification before opening every bracket.",
-        "exam_move": "Pause before expansion and ask whether the expression has a shared structure."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-algebra-rearrangement-001-example-1",
+          "prompt": "Simplify $(x+2)^2-(x+2)(x-5)$.",
+          "steps": [
+            "Both terms contain the factor $(x+2)$.",
+            "Factor it out: $(x+2)[(x+2)-(x-5)]$.",
+            "Simplify the bracket to get $(x+2)(7)$."
+          ],
+          "answer": "$7(x+2)$",
+          "teaching_note": "Factoring first keeps the cancellation and signs visible.",
+          "question_type": "Algebraic simplification",
+          "key_method": "Choose algebraic simplification before opening every bracket.",
+          "exam_move": "Pause before expansion and ask whether the expression has a shared structure."
+        },
+        {
+          "id": "p3-algebra-rearrangement-001-example-2",
+          "prompt": "Simplify $\\frac{x^2-9}{x-3}$ and state the excluded value.",
+          "steps": [
+            "Factor the numerator as $(x-3)(x+3)$.",
+            "The original denominator means $x\\ne3$.",
+            "Cancel the common factor only after recording the restriction."
+          ],
+          "answer": "$x+3$, with $x\\ne3$",
+          "teaching_note": "Simplifying a rational expression does not remove restrictions from the original denominator.",
+          "question_type": "Algebraic simplification",
+          "key_method": "Choose algebraic simplification before opening every bracket.",
+          "exam_move": "Pause before expansion and ask whether the expression has a shared structure."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_algebra"
       ],
@@ -298,6 +321,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use distance language first, then convert to cases or an interval.",
       "explanation": "Do not simply remove modulus bars. The bars hide two possible signs, and inequalities need interval thinking rather than one isolated equation.",
+      "mark_scheme_move_note": "Write both modulus equation cases or the full interval inequality, then check candidate solutions against the original modulus statement and any case assumptions.",
+      "misconception_repair_note": {
+        "wrong_move": "Removing modulus bars and solving only the positive case.",
+        "why_it_fails": "A modulus value records distance, so the inside expression may be positive or negative.",
+        "safer_move": "For equations split into plus and minus cases; for less-than inequalities write the two-sided interval before simplifying.",
+        "quick_check": "What second case must accompany $x-2=5$ when solving $|x-2|=5$?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on solve modulus equations and inequalities without illegal sign moves.",
         "recommended_before_question_ids": [],
@@ -583,6 +613,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
       "explanation": "The theorem turns a division question into a substitution check. It also gives a quick way to test proposed factors before committing to a longer algebra route.",
+      "mark_scheme_move_note": "State the theorem substitution value from the divisor, evaluate the polynomial clearly, and distinguish a zero remainder from a non-zero remainder before claiming a factor.",
+      "misconception_repair_note": {
+        "wrong_move": "Substituting the visible constant from $x+a$ instead of the root of the divisor.",
+        "why_it_fails": "The remainder theorem uses the value that makes the divisor zero; using the wrong sign gives the wrong remainder and factor claim.",
+        "safer_move": "Rewrite the divisor as $x-a$, substitute $a$, and only call it a factor if the remainder is zero.",
+        "quick_check": "For divisor $x+3$, should you substitute $3$ or $-3$?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use factor and remainder theorem checks before polynomial division.",
         "recommended_before_question_ids": [],
@@ -643,20 +680,36 @@
       "topics": [
         "algebra"
       ],
-      "worked_example": {
-        "id": "p3-polynomial-theorem-001-example-1",
-        "prompt": "For $f(x)=x^3-4x+3$, decide whether $x-1$ is a factor.",
-        "steps": [
-          "For divisor $x-1$, substitute $x=1$.",
-          "$f(1)=1-4+3=0$.",
-          "A zero remainder means $x-1$ is a factor."
-        ],
-        "answer": "$x-1$ is a factor.",
-        "teaching_note": "For $x-a$, the value to substitute is $a$, not $-a$.",
-        "question_type": "Polynomial factor theorem",
-        "key_method": "Use factor and remainder theorem checks before polynomial division.",
-        "exam_move": "Use theorem checks to choose factors before division or coefficient comparison."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-polynomial-theorem-001-example-1",
+          "prompt": "For $f(x)=x^3-4x+3$, decide whether $x-1$ is a factor.",
+          "steps": [
+            "For divisor $x-1$, substitute $x=1$.",
+            "$f(1)=1-4+3=0$.",
+            "A zero remainder means $x-1$ is a factor."
+          ],
+          "answer": "$x-1$ is a factor.",
+          "teaching_note": "For $x-a$, the value to substitute is $a$, not $-a$.",
+          "question_type": "Polynomial factor theorem",
+          "key_method": "Use factor and remainder theorem checks before polynomial division.",
+          "exam_move": "Use theorem checks to choose factors before division or coefficient comparison."
+        },
+        {
+          "id": "p3-polynomial-theorem-001-example-2",
+          "prompt": "Find the remainder when $f(x)=x^3+2x-1$ is divided by $x+1$.",
+          "steps": [
+            "$x+1=0$ gives $x=-1$.",
+            "Evaluate $f(-1)=(-1)^3+2(-1)-1$.",
+            "This gives $-4$, so the remainder is $-4$."
+          ],
+          "answer": "$-4$",
+          "teaching_note": "The sign of the substitution comes from making the divisor zero.",
+          "question_type": "Polynomial remainder theorem",
+          "key_method": "Use factor and remainder theorem checks before polynomial division.",
+          "exam_move": "Use theorem checks to choose factors before division or coefficient comparison."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_algebra"
       ],
@@ -673,6 +726,13 @@
       "estimated_time_minutes": 3,
       "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
       "explanation": "The discriminant is quick evidence about a quadratic before solving it. Use it when the question asks what kind of roots or intersections are possible.",
+      "mark_scheme_move_note": "Form $b^2-4ac$ from the identified coefficients, set the correct equality or inequality for the requested root behavior, and interpret the sign before solving any parameter.",
+      "misconception_repair_note": {
+        "wrong_move": "Solving the quadratic or using the wrong discriminant inequality when only root behavior is requested.",
+        "why_it_fails": "The question often needs evidence about repeated, distinct, or no real roots rather than the roots themselves.",
+        "safer_move": "Use $b^2-4ac$ first: greater than zero for two real roots, equal to zero for repeated roots, less than zero for no real roots.",
+        "quick_check": "Which discriminant condition represents tangency or one repeated root?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions where a parameter controls intersections or tangency.",
         "recommended_before_question_ids": [],
@@ -732,20 +792,36 @@
       "source_skill_target_ids": [
         "p3_alg_discriminant_root_conditions"
       ],
-      "worked_example": {
-        "id": "p3-quadratics-discriminant-001-example-1",
-        "prompt": "Use the discriminant for $x^2+4x+4=0$.",
-        "steps": [
-          "Here $a=1$, $b=4$, and $c=4$.",
-          "$b^2-4ac=4^2-4(1)(4)=0$.",
-          "A zero discriminant means one repeated real root."
-        ],
-        "answer": "The equation has a repeated real root.",
-        "teaching_note": "The discriminant gives root information without solving the quadratic.",
-        "question_type": "Quadratic discriminant decision",
-        "key_method": "Use the discriminant as a root-counting shortcut.",
-        "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-quadratics-discriminant-001-example-1",
+          "prompt": "Use the discriminant for $x^2+4x+4=0$.",
+          "steps": [
+            "Here $a=1$, $b=4$, and $c=4$.",
+            "$b^2-4ac=4^2-4(1)(4)=0$.",
+            "A zero discriminant means one repeated real root."
+          ],
+          "answer": "The equation has a repeated real root.",
+          "teaching_note": "The discriminant gives root information without solving the quadratic.",
+          "question_type": "Quadratic discriminant decision",
+          "key_method": "Use the discriminant as a root-counting shortcut.",
+          "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts."
+        },
+        {
+          "id": "p3-quadratics-discriminant-001-example-2",
+          "prompt": "For $x^2+kx+9=0$ to have a repeated root, find the condition on $k$.",
+          "steps": [
+            "A repeated root means the discriminant is zero.",
+            "Here $b^2-4ac=k^2-4(1)(9)$.",
+            "Set $k^2-36=0$."
+          ],
+          "answer": "$k=6$ or $k=-6$",
+          "teaching_note": "Repeated-root questions usually need a discriminant equation before any solving.",
+          "question_type": "Quadratic discriminant condition",
+          "key_method": "Use the discriminant as a root-counting shortcut.",
+          "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_quadratics"
       ],
