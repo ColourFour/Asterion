@@ -12,3 +12,4 @@ vitest.config.d.ts
 public/assets/region-art1/
 __pycache__/
 *.pyc
+.env.live.local

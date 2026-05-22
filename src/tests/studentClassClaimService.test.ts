@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { claimStudentRosterSlot, normalizeRosterClaimRpcResult } from '../lib/studentClassClaimService';
 import type { AsterionRuntimeConfig } from '../lib/appConfig';
 import type { AsterionSupabaseClient } from '../lib/supabaseClient';
@@ -52,6 +52,10 @@ function mockRpcClient(row: unknown, error: unknown = null, session = true): Ast
         data: { session: session ? { user: { id: 'student-user-1', email: 'student@example.test' } } : null },
         error: null,
       }),
+      signInAnonymously: async () => ({
+        data: { session: { user: { id: 'anonymous-student-user-1' } } },
+        error: null,
+      }),
     },
     rpc: (functionName: string, params: Record<string, unknown>) => ({
       single: async () => ({
@@ -66,6 +70,10 @@ function capturingRpcClient(
   row: unknown,
   calls: Array<{ functionName: string; params: Record<string, unknown> }>,
   session = true,
+  signInAnonymously: () => Promise<unknown> = vi.fn(async () => ({
+    data: { session: { user: { id: 'anonymous-student-user-1' } } },
+    error: null,
+  })),
 ): AsterionSupabaseClient {
   return {
     auth: {
@@ -73,6 +81,7 @@ function capturingRpcClient(
         data: { session: session ? { user: { id: 'student-user-1', email: 'student@example.test' } } : null },
         error: null,
       }),
+      signInAnonymously,
     },
     rpc: (functionName: string, params: Record<string, unknown>) => {
       calls.push({ functionName, params });
@@ -183,17 +192,114 @@ describe('student class claim service', () => {
     expect(claim.rosterStudentId).toBeUndefined();
   });
 
-  it('requires a Supabase session before calling the hosted claim RPC', async () => {
+  it('silently creates an anonymous student session before hosted claim when no session exists', async () => {
+    const calls: Array<{ functionName: string; params: Record<string, unknown> }> = [];
+    const signInAnonymously = vi.fn(async () => ({
+      data: { session: { user: { id: 'anonymous-student-user-1' } } },
+      error: null,
+    }));
     const claim = await claimStudentRosterSlot(
       { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
       {
         runtimeConfig: runtimeConfig('supabase'),
-        createClient: async () => mockRpcClient({ status: 'claimed' }, null, false),
+        createClient: async () => capturingRpcClient({
+          status: 'claimed',
+          roster_membership_id: 'membership-id',
+          roster_name: 'Test Roster Student',
+        }, calls, false, signInAnonymously),
       },
     );
 
-    expect(claim.status).toBe('unauthenticated');
-    expect(claim.message).toBe('Sign in before claiming a roster slot.');
+    expect(signInAnonymously).toHaveBeenCalledTimes(1);
+    expect(calls).toHaveLength(1);
+    expect(claim).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: 'membership-id',
+      displayName: 'Test Roster Student',
+    });
+  });
+
+  it('does not create an anonymous session when a valid session already exists', async () => {
+    const calls: Array<{ functionName: string; params: Record<string, unknown> }> = [];
+    const signInAnonymously = vi.fn(async () => ({
+      data: { session: { user: { id: 'anonymous-student-user-1' } } },
+      error: null,
+    }));
+
+    await claimStudentRosterSlot(
+      { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => capturingRpcClient({ status: 'claimed' }, calls, true, signInAnonymously),
+      },
+    );
+
+    expect(signInAnonymously).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(1);
+  });
+
+  it('returns a student-friendly error when anonymous session creation fails', async () => {
+    const signInAnonymously = vi.fn(async () => ({
+      data: { session: null },
+      error: { message: 'anonymous sign-ins disabled' },
+    }));
+    const calls: Array<{ functionName: string; params: Record<string, unknown> }> = [];
+
+    const claim = await claimStudentRosterSlot(
+      { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => capturingRpcClient({ status: 'claimed' }, calls, false, signInAnonymously),
+      },
+    );
+
+    expect(claim).toMatchObject({
+      status: 'claim_unavailable',
+      message: 'Could not start your student session. Tell your teacher.',
+    });
+    expect(calls).toHaveLength(0);
+  });
+
+  it('maps staff-account claim blocks to a clean student route message', async () => {
+    const claim = await claimStudentRosterSlot(
+      { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => mockRpcClient({
+          status: 'staff_account_cannot_claim_student_slot',
+          message: 'This browser is signed in as staff. Use a private window for student testing.',
+        }),
+      },
+    );
+
+    expect(claim).toMatchObject({
+      status: 'staff_account_cannot_claim_student_slot',
+      message: 'This browser is signed in as staff. Use a private window for student testing.',
+    });
+  });
+
+  it('accepts code-and-name resume or rebind success from the hosted claim RPC', async () => {
+    const claim = await claimStudentRosterSlot(
+      { classCode: 'AST-P3A', displayName: 'Test Roster Student' },
+      {
+        runtimeConfig: runtimeConfig('supabase'),
+        createClient: async () => mockRpcClient({
+          status: 'claimed',
+          class_id: 'class-id',
+          class_name: 'P3 Alpha',
+          class_code: 'AST-P3A',
+          roster_membership_id: 'membership-id',
+          roster_name: 'Test Roster Student',
+          message: 'Class entry resumed on this browser. Student access is active.',
+        }),
+      },
+    );
+
+    expect(claim).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: 'membership-id',
+      message: 'Class entry resumed on this browser. Student access is active.',
+    });
   });
 
   it.each([

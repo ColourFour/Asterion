@@ -158,7 +158,7 @@ describe('Asterion intro page', () => {
 
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Join your teacher');
-    expect(container.textContent).toContain('Next you will name your character, then open the P3 world map.');
+    expect(container.textContent).toContain('Enter the class code your teacher gave you. Next you will name your character, then open the P3 world map.');
     expect(container.textContent).toContain('Use the class code and roster name provided by your teacher.');
     expect(container.textContent).toContain('Class code');
     expect(container.textContent).toContain('Roster name');
@@ -187,17 +187,20 @@ describe('Asterion intro page', () => {
     const container = await render(<App />);
     await openStudentEntry(container);
 
-    expect(container.textContent).toContain('This uses an existing hosted roster slot.');
-    expect(container.textContent).toContain('Teacher login');
-    expect(container.textContent).toContain('Admin login');
-    expect(container.textContent).toContain('Classroom pilot profile requires VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
-    expect(container.textContent).toContain('Supabase roster claiming is active, but Supabase browser configuration is incomplete.');
-    expect(container.textContent).toContain('Supabase config required');
+    expect(container.textContent).toContain('Enter the class code and roster name your teacher gave you.');
+    expect(container.textContent).toContain('Your teacher must add your roster name first. You cannot add yourself to a class.');
+    expect(container.textContent).not.toContain('Teacher login');
+    expect(container.textContent).not.toContain('Admin login');
+    expect(container.textContent).toContain('Classroom pilot profile requires hosted classroom browser configuration');
+    expect(container.textContent).toContain('Classroom roster entry is active, but the hosted classroom browser configuration is incomplete.');
+    expect(container.textContent).toContain('Classroom unavailable');
     expect(Array.from(container.querySelectorAll('button')).find((button) => (
-      button.textContent === 'Supabase config required'
+      button.textContent === 'Classroom unavailable'
     ))?.hasAttribute('disabled')).toBe(true);
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
     expect(container.textContent).not.toContain('Email, optional');
+    expect(container.textContent).not.toContain('Supabase Auth');
+    expect(container.textContent).not.toContain('magic link');
     expect(container.textContent).not.toContain('Progress is saved on this browser/device only.');
     expect(container.textContent).not.toContain('local-first classroom mode');
   });

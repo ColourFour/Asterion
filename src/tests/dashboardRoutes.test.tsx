@@ -163,7 +163,7 @@ describe('dashboard routes', () => {
 
     expect(window.location.hash).toBe('#/student');
     expect(container.textContent).toContain('Class access required');
-    expect(container.textContent).toMatch(/Claim roster slot|Sign in to claim roster slot/);
+    expect(container.textContent).toMatch(/Claim roster slot|Enter class/);
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
   });
 

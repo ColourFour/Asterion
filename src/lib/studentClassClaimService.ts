@@ -30,8 +30,8 @@ const claimStatusMessages: Record<StudentClaimStatus, string> = {
   already_claimed: 'This roster entry has already been claimed. Ask your teacher or admin for help.',
   archived: 'This roster entry is archived. Ask your teacher or admin for help.',
   reserved_for_other_user: 'This roster entry is reserved for another signed-in account.',
-  staff_account_cannot_claim_student_slot: 'This staff account is not a student account. Use a student sign-in to claim this roster slot.',
-  unauthenticated: 'Sign in before claiming a roster slot.',
+  staff_account_cannot_claim_student_slot: 'This browser is signed in as staff. Use a private window for student testing.',
+  unauthenticated: 'Could not start your student session. Tell your teacher.',
   unauthorized: 'This signed-in account is not authorized to claim that roster slot.',
   claim_unavailable: 'Hosted roster claiming is unavailable in this build. Ask your teacher or admin for help.',
 };
@@ -57,6 +57,21 @@ export function normalizeRosterClaimRpcResult(row: ClaimRosterSlotRpcRow | null 
   };
 }
 
+async function ensureStudentClaimSession(client: AsterionSupabaseClient): Promise<StudentClaimState | undefined> {
+  const sessionResult = await client.auth.getSession();
+  if (!sessionResult.error && sessionResult.data.session) return undefined;
+
+  const anonymousResult = await client.auth.signInAnonymously();
+  if (anonymousResult.error || !anonymousResult.data.session) {
+    return {
+      status: 'claim_unavailable',
+      message: 'Could not start your student session. Tell your teacher.',
+    };
+  }
+
+  return undefined;
+}
+
 async function claimViaSupabase(
   input: StudentClassClaimInput,
   createClient: () => Promise<AsterionSupabaseClient | undefined> = () => createSupabaseBrowserClient(undefined, {
@@ -75,13 +90,8 @@ async function claimViaSupabase(
     };
   }
 
-  const sessionResult = await client.auth.getSession();
-  if (sessionResult.error || !sessionResult.data.session) {
-    return {
-      status: 'unauthenticated',
-      message: claimStatusMessages.unauthenticated,
-    };
-  }
+  const sessionError = await ensureStudentClaimSession(client);
+  if (sessionError) return sessionError;
 
   const { data, error } = await client
     .rpc('claim_class_roster_slot', {

@@ -163,8 +163,8 @@ describe('runtime storage config', () => {
     expect(config.studentClassClaimSource).toBe('supabase');
     expect(config.supabaseConfigured).toBe(false);
     expect(config.profileNotice).toContain('Classroom pilot profile requires');
-    expect(config.studentClassClaimNotice).toContain('Supabase roster claiming is active');
-    expect(config.studentClassClaimNotice).toContain('Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY');
+    expect(config.studentClassClaimNotice).toContain('Classroom roster entry is active');
+    expect(config.studentClassClaimNotice).toContain('hosted classroom browser configuration is incomplete');
   });
 
   it('blocks classroom-pilot hosted claims when Supabase browser config is invalid', () => {

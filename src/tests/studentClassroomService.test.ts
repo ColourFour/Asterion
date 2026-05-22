@@ -107,7 +107,7 @@ function createFakeClient({
 }: {
   session?: boolean;
   userId?: string;
-  email?: string;
+  email?: string | null;
   rows?: FixtureRows;
 } = {}) {
   const tableReads: string[] = [];
@@ -163,7 +163,7 @@ function createFakeClient({
       getSession: vi.fn(async () => ({
         data: {
           session: session
-            ? { user: { id: userId, email } }
+            ? { user: { id: userId, ...(email === null ? {} : { email }) } }
             : null,
         },
         error: null,
@@ -211,6 +211,44 @@ describe('student classroom service', () => {
       'class_memberships.eq:roster_status',
       'class_region_access.eq:class_id',
     ]));
+  });
+
+  it('loads hosted student context after an anonymous code-name claim', async () => {
+    const fake = createFakeClient({
+      userId: 'anonymous-student-user-1',
+      email: null,
+      rows: {
+        ...fixtureRows,
+        user_roles: [{
+          ...fixtureRows.user_roles[0],
+          user_id: 'anonymous-student-user-1',
+        }],
+        student_profiles: [{
+          ...fixtureRows.student_profiles[0],
+          user_id: 'anonymous-student-user-1',
+        }],
+        class_memberships: [{
+          ...fixtureRows.class_memberships[0],
+          claimed_by_user_id: 'anonymous-student-user-1',
+          roster_status: 'claimed',
+        }],
+      },
+    });
+
+    const state = await getCurrentStudentClassroomContext({
+      config: validConfig,
+      createClient: async () => fake.client,
+    });
+
+    expect(state.status).toBe('ready');
+    if (state.status !== 'ready') throw new Error('expected ready state');
+    expect(state.context.accessMode).toBe('student');
+    expect(state.context.user).toEqual({ id: 'anonymous-student-user-1', email: undefined });
+    expect(state.context.claim).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: 'membership-1',
+      displayName: 'Ada S.',
+    });
   });
 
   it('returns staff-preview context for hosted admin without requiring a claimed roster slot', async () => {

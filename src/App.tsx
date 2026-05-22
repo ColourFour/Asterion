@@ -133,7 +133,7 @@ function HostedStudentGateMessage({
     return <div className="notice" role="status">Checking hosted classroom membership...</div>;
   }
   if (state.status === 'signed-out') {
-    return <div className="notice">Sign in and claim your hosted roster slot before entering the classroom pilot.</div>;
+    return <div className="notice">Enter the class code and roster name your teacher gave you.</div>;
   }
   if (state.status === 'missing-membership') {
     return <div className="notice">{state.message}</div>;
@@ -738,15 +738,15 @@ export default function App() {
           </div>
           <div className="onboarding-briefing">
             <strong>Hosted classroom access</strong>
-            <span>Class membership, teacher, and region access are checked through Supabase before the map opens.</span>
-            <span>Existing browser profiles cannot enter without a currently claimed hosted roster slot.</span>
+            <span>Class membership, teacher, and region access are checked before the map opens.</span>
+            <span>Existing browser profiles cannot enter without a current roster slot.</span>
             <span>{onboardingProgressMessage(runtimeConfig)}</span>
           </div>
         </section>
         <HostedStudentGateMessage state={hostedClassroomState} />
         {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
         {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
-        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} onNavigatePath={navigatePath} />
+        <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
       </main>
     );
   }
@@ -846,7 +846,7 @@ export default function App() {
             })}
           />
         ) : (
-          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} onNavigatePath={navigatePath} />
+          <ClassCodeClaimForm onClaimed={handleStudentClassClaim} />
         )}
       </main>
     );

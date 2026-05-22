@@ -1,16 +1,13 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
 import { resolveRuntimeConfig } from '../../lib/appConfig';
-import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import { claimStudentRosterSlot } from '../../lib/studentClassClaimService';
 import type { StudentClaimState } from '../../types';
 
 interface ClassCodeClaimFormProps {
   onClaimed: (claim: StudentClaimState) => void;
-  onNavigatePath?: (path: string) => void;
 }
 
-export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaimFormProps) {
+export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const hostedClaimMode = runtimeConfig.studentClassClaimSource === 'supabase';
   const hostedClaimConfigBlocked = hostedClaimMode && !runtimeConfig.supabaseConfigured;
@@ -19,21 +16,13 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
   const [optionalEmail, setOptionalEmail] = useState('');
   const [claimState, setClaimState] = useState<StudentClaimState>();
   const [submitting, setSubmitting] = useState(false);
-  const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(hostedClaimMode ? 'loading' : 'signed-out');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (hostedClaimConfigBlocked) {
       setClaimState({
         status: 'claim_unavailable',
-        message: runtimeConfig.studentClassClaimNotice ?? 'Hosted roster claiming is blocked until Supabase browser configuration is fixed.',
-      });
-      return;
-    }
-    if (hostedClaimMode && authStatus !== 'signed-in') {
-      setClaimState({
-        status: 'unauthenticated',
-        message: 'Sign in with Supabase before claiming a hosted roster slot.',
+        message: runtimeConfig.studentClassClaimNotice ?? 'Classroom entry is unavailable. Tell your teacher.',
       });
       return;
     }
@@ -50,36 +39,19 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
     }
   }
 
-  function navigateOperator(path: '/teacher' | '/admin') {
-    if (onNavigatePath) {
-      onNavigatePath(path);
-      return;
-    }
-    window.location.hash = `#${path}`;
-  }
-
   return (
     <form className="profile-form class-code-claim-form" onSubmit={handleSubmit} aria-label="Claim class roster slot">
       <div className="claim-form-heading">
         <span className="mode-pill">Class access required</span>
         <h2>Join your teacher's class</h2>
-        <p>{hostedClaimMode ? 'Sign in, then enter the class code your teacher gave you. Next you will name your character, then open the P3 world map.' : 'Enter the class code your teacher gave you. Next you will name your character, then open the P3 world map.'}</p>
-        <p className="claim-form-note">{hostedClaimMode ? 'This uses an existing hosted roster slot. It does not let students add themselves to a class.' : 'Use the class code and roster name provided by your teacher.'}</p>
+        <p>{hostedClaimMode ? 'Enter the class code and roster name your teacher gave you.' : 'Enter the class code your teacher gave you. Next you will name your character, then open the P3 world map.'}</p>
+        <p className="claim-form-note">{hostedClaimMode ? 'Your teacher must add your roster name first. You cannot add yourself to a class.' : 'Use the class code and roster name provided by your teacher.'}</p>
       </div>
 
       {hostedClaimConfigBlocked ? (
         <p className="form-error" role="alert">
-          {runtimeConfig.studentClassClaimNotice ?? 'Hosted roster claiming is blocked until Supabase browser configuration is fixed.'}
+          {runtimeConfig.studentClassClaimNotice ?? 'Classroom entry is unavailable. Tell your teacher.'}
         </p>
-      ) : null}
-
-      {hostedClaimMode && !hostedClaimConfigBlocked ? (
-        <SupabaseAuthPanel
-          className="class-code-auth-panel"
-          title="Sign in before hosted roster claim"
-          signedOutMessage="Hosted class claiming uses Supabase Auth. Request a magic link, then return here to claim your existing roster name."
-          onStatusChange={setAuthStatus}
-        />
       ) : null}
 
       {runtimeConfig.studentClassClaimNotice ? <p className="claim-state-message">{runtimeConfig.studentClassClaimNotice}</p> : null}
@@ -110,21 +82,8 @@ export function ClassCodeClaimForm({ onClaimed, onNavigatePath }: ClassCodeClaim
       )}
 
       <button className="primary-button" type="submit" disabled={submitting || hostedClaimConfigBlocked}>
-        {hostedClaimConfigBlocked ? 'Supabase config required' : submitting ? 'Checking roster...' : hostedClaimMode && authStatus !== 'signed-in' ? 'Sign in to claim roster slot' : 'Claim roster slot'}
+        {hostedClaimConfigBlocked ? 'Classroom unavailable' : submitting ? 'Checking roster...' : hostedClaimMode ? 'Enter class' : 'Claim roster slot'}
       </button>
-
-      {runtimeConfig.profile.name === 'classroom-pilot' ? (
-        <div className="operator-entry-points" aria-label="Staff login entry points">
-          <button className="operator-entry-card" type="button" onClick={() => navigateOperator('/teacher')}>
-            <strong>Teacher login</strong>
-            <span>Open the hosted teacher sign-in flow.</span>
-          </button>
-          <button className="operator-entry-card" type="button" onClick={() => navigateOperator('/admin')}>
-            <strong>Admin login</strong>
-            <span>Open the hosted admin sign-in flow.</span>
-          </button>
-        </div>
-      ) : null}
     </form>
   );
 }

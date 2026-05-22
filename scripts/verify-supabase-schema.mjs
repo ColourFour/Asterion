@@ -581,9 +581,9 @@ function assertRosterClaimRpc(sql) {
     [/insert\s+into\s+public\.user_roles/i, 'RPC must provision a student role after roster validation for first-time claimants'],
     [/on\s+conflict\s+on\s+constraint\s+user_roles_user_id_organization_id_role_key\s+do\s+nothing/i, 'RPC must use the existing user_roles uniqueness constraint safely by name'],
     [/matching_count\s*>\s*1/i, 'RPC must detect duplicate roster-name ambiguity'],
-    [/reserved_for_other_user/i, 'RPC must explicitly block roster rows reserved for another auth user'],
     [/staff_account_cannot_claim_student_slot/i, 'RPC must explicitly block staff accounts without an active student role'],
-    [/roster_status\s*=\s*'unclaimed'/i, 'RPC must only claim unclaimed roster slots'],
+    [/claimed_by_user_id\s*=\s*claim_user_id/i, 'RPC must bind or rebind claimed membership ownership to the current authenticated user'],
+    [/target_membership\.claimed_by_user_id\s+is\s+not\s+null/i, 'RPC must explicitly support code-and-name resume/rebind for previously claimed roster slots'],
     [/roster_status\s*=\s*'archived'/i, 'RPC must explicitly block archived roster slots'],
   ];
 

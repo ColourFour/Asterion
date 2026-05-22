@@ -582,6 +582,8 @@ Use `.env.classroom-pilot.example` or Vercel environment variables as the templa
 
 For pilot staff access, create admin/teacher Auth accounts manually in Supabase with a unique temporary password or invite/reset flow, then add the matching hosted Asterion role. Supabase Auth login by itself is not dashboard authorization. Teachers should change temporary passwords after first login, and no temporary passwords should be stored in the app.
 
+For pilot student access, do not create or expose a student email/password or magic-link sign-in flow. Students open `/#/student`, enter the class code and exact roster name from the teacher, and the app silently starts a Supabase anonymous session before claiming or resuming the existing roster slot. Enable Supabase Anonymous Sign-Ins in the project. Class code plus exact roster name is the student classroom credential for this pilot; keep roster names private enough for classroom use, and use teacher reset/change controls if a roster slot is claimed by the wrong browser.
+
 Hosted role hierarchy:
 
 - `admin` is the top classroom operations role. Admin can use admin tools, teacher tools, and the student-side preview flow.
