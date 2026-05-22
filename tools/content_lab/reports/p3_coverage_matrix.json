@@ -1262,7 +1262,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation basics and function notation support the log or exponential calculus setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1311,7 +1311,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function notation support the conversion step only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1359,7 +1359,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function-domain awareness support the original-argument checks only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1408,7 +1408,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, inverse-function awareness, and index laws support exponential-equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1457,7 +1457,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and index-law fluency support log-law equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1504,7 +1504,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Logarithmic and exponential functions",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and straight-line graph interpretation support the linearisation setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

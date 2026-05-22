@@ -1,6 +1,6 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-22T07:53:46.886140+00:00`
+Generated at: `2026-05-22T09:13:37.697723+00:00`
 
 ## Summary
 
@@ -20,10 +20,10 @@ No readiness blockers.
 
 ## Warning Counts
 
-- `fewer_than_two_worked_examples`: 8
-- `missing_mark_scheme_move_note`: 23
-- `missing_misconception_repair_note`: 19
-- `missing_prerequisite_repair_note`: 23
+- `fewer_than_two_worked_examples`: 5
+- `missing_mark_scheme_move_note`: 17
+- `missing_misconception_repair_note`: 15
+- `missing_prerequisite_repair_note`: 17
 - `missing_some_warmup_sequence_roles`: 2
 - `source_backed_worked_examples_sparse`: 38
 - `thin_evidence_resilience`: 1
@@ -47,7 +47,7 @@ No readiness blockers.
 | Differential Shrine | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Integral Terraces | 4 | 0 | 0 | 4 | 0 | 0 | 1 | 4 |
 | Iteration Forge | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
-| Logarithm Observatory | 6 | 0 | 0 | 6 | 0 | 0 | 3 | 6 |
+| Logarithm Observatory | 6 | 0 | 0 | 6 | 0 | 0 | 0 | 0 |
 | Trigonometry Spire | 5 | 0 | 0 | 5 | 0 | 0 | 1 | 5 |
 | Vectors Gate | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 
@@ -78,12 +78,12 @@ No readiness blockers.
 | p3_int_method_choice | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_int_partial_fractions | Integral Terraces | Integration | clean | 3 | available | 4 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_int_parts_substitution | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_log_calculus_contexts | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_log_convert_forms | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_log_domain_validation | Logarithm Observatory | Logarithmic and exponential functions | clean | 4 | available | 1 | 0 | available | none | misconception:available, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_log_exponential_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_log_laws_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_log_linearisation | Logarithm Observatory | Logarithmic and exponential functions | clean | 3 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
+| p3_log_calculus_contexts | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_convert_forms | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_domain_validation | Logarithm Observatory | Logarithmic and exponential functions | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_exponential_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_laws_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_linearisation | Logarithm Observatory | Logarithmic and exponential functions | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_num_accuracy_rounding | Iteration Forge | Numerical solution of equations | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_num_iteration_formula | Iteration Forge | Numerical solution of equations | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_num_sign_change_graph_evidence | Iteration Forge | Numerical solution of equations | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |

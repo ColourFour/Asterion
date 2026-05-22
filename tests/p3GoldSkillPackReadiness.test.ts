@@ -11,6 +11,7 @@ const inventoryPath = path.join(repoRoot, 'tools/content_lab/reports/p3_content_
 const matrixPath = path.join(repoRoot, 'tools/content_lab/reports/p3_coverage_matrix.json');
 const snippetsPath = path.join(repoRoot, 'public/data/teaching_snippets.json');
 const generatedPracticePath = path.join(repoRoot, 'public/data/generated_practice_bank.json');
+const internalGeneratedPracticePath = path.join(repoRoot, 'tools/content_lab/outputs/generated_practice_bank.json');
 const questionBankPath = path.join(repoRoot, 'public/assets/exam-bank-data/question_bank.json');
 const routeDecisionsPath = path.join(repoRoot, 'tools/content_lab/reviews/p3_route_evidence_decisions_v1.json');
 const reportJsonPath = path.join(repoRoot, 'tools/content_lab/reports/p3_gold_skill_pack_readiness.json');
@@ -437,6 +438,183 @@ describe('P3 Gold Skill Pack readiness report', () => {
     expect(generatedPractice.items.some((item) => (
       vectorSkills.includes(String(item.skill_target_id)) && ['candidate', 'needs_review', 'blocked'].includes(String(item.review_status))
     ))).toBe(false);
+  });
+
+  it('reports Phase 2B Logarithm Observatory support-depth repairs without source-backed or mastery inflation', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: unknown;
+      mark_scheme_move_note?: unknown;
+      worked_example?: Record<string, unknown>;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      review_status?: string;
+    }> }>(generatedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const selectedSkills = [
+      'p3_log_convert_forms',
+      'p3_log_domain_validation',
+      'p3_log_linearisation',
+      'p3_log_calculus_contexts',
+    ];
+    const selectedSnippetIds = [
+      'p3-log-exp-convert-001',
+      'p3-log-domain-001',
+      'p3-log-linearisation-001',
+      'p3-log-calculus-context-001',
+    ];
+    const selectedGeneratorFamilies = [
+      'logarithms_and_exponentials.log_equation_basic',
+      'logarithms_and_exponentials.domain_validation_basic',
+      'logarithms_and_exponentials.linearisation_basic',
+      'logarithms_and_exponentials.calculus_context_basic',
+    ];
+
+    for (const skillId of selectedSkills) {
+      const row = reportRow(report, skillId);
+      const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+
+      expect(row.evidence_status).toBe('clean');
+      expect(row.clean_evidence_count).toBeGreaterThan(1);
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.source_backed_worked_example_count).toBe(0);
+      expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+      expect(row.warnings).not.toContain('fewer_than_two_worked_examples');
+      expect(row.warnings).not.toContain('missing_misconception_repair_note');
+      expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
+      expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
+      expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
+      expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
+      expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+    }
+
+    for (const snippetId of selectedSnippetIds) {
+      const snippet = snippets.snippets.find((item) => item.snippet_id === snippetId);
+      const examples = [
+        ...(snippet?.worked_example ? [snippet.worked_example] : []),
+        ...(snippet?.worked_examples ?? []),
+      ];
+
+      expect(snippet?.misconception_repair_note).toBeDefined();
+      expect(snippet?.mark_scheme_move_note).toBeDefined();
+      expect(examples.length).toBeGreaterThanOrEqual(2);
+      expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+    }
+
+    expect(generatedPractice.items.some((item) => (
+      selectedGeneratorFamilies.includes(String(item.generator_family)) && ['candidate', 'needs_review', 'blocked'].includes(String(item.review_status))
+    ))).toBe(false);
+  });
+
+  it('reports remaining Logarithm Observatory repair-gap skills as support-depth repaired without generated-practice changes', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
+      snippet_id?: string;
+      misconception_repair_note?: {
+        wrong_move?: string;
+        why_it_fails?: string;
+        safer_move?: string;
+        short_check?: string;
+      };
+      mark_scheme_move_note?: string;
+      worked_example?: Record<string, unknown>;
+      worked_examples?: Array<Record<string, unknown>>;
+    }> }>(snippetsPath);
+    const generatedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      practice_id?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(generatedPracticePath);
+    const internalGeneratedPractice = readJson<{ items: Array<Record<string, unknown> & {
+      generator_family?: string;
+      practice_id?: string;
+      review_status?: string;
+      sequence_role?: string;
+      skill_target_id?: string;
+    }> }>(internalGeneratedPracticePath);
+    const skillMap = readJson<{ skills: Array<Record<string, unknown> & {
+      skill_id?: string;
+      prerequisite_notes?: string;
+      prerequisite_skill_refs?: Array<Record<string, unknown>>;
+    }> }>(skillMapPath);
+    const selectedSkills = [
+      'p3_log_exponential_equations',
+      'p3_log_laws_equations',
+    ];
+    const selectedSnippetIds = [
+      'p3-exp-equations-001',
+      'p3-log-invalid-operations-001',
+    ];
+
+    for (const skillId of selectedSkills) {
+      const row = reportRow(report, skillId);
+      const skill = skillMap.skills.find((item) => item.skill_id === skillId);
+
+      expect(row.evidence_status).toBe('clean');
+      expect(row.clean_evidence_count).toBeGreaterThan(1);
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.source_backed_worked_example_count).toBe(0);
+      expect(row.source_backed_worked_example_contract_errors).toEqual([]);
+      expect(row.warnings).not.toContain('fewer_than_two_worked_examples');
+      expect(row.warnings).not.toContain('missing_misconception_repair_note');
+      expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
+      expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
+      expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
+      expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
+      expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
+    }
+
+    for (const snippetId of selectedSnippetIds) {
+      const snippet = snippets.snippets.find((item) => item.snippet_id === snippetId);
+      const examples = [
+        ...(snippet?.worked_example ? [snippet.worked_example] : []),
+        ...(snippet?.worked_examples ?? []),
+      ];
+
+      expect(snippet?.misconception_repair_note?.wrong_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.why_it_fails).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.safer_move).toBeTruthy();
+      expect(snippet?.misconception_repair_note?.short_check).toBeTruthy();
+      expect(snippet?.mark_scheme_move_note).toBeTruthy();
+      expect(examples.length).toBeGreaterThanOrEqual(1);
+      expect(examples.every((example) => !Array.isArray(example.source_question_ids))).toBe(true);
+    }
+
+    const logFamily = 'logarithms_and_exponentials.log_equation_basic';
+    const runtimeLogItems = generatedPractice.items.filter((item) => item.generator_family === logFamily);
+    const internalLogItems = internalGeneratedPractice.items.filter((item) => item.generator_family === logFamily);
+    const runtimePracticeIds = new Set(runtimeLogItems.map((item) => item.practice_id));
+    const internalPracticeIds = new Set(internalLogItems.map((item) => item.practice_id));
+
+    expect(runtimeLogItems).toHaveLength(3);
+    expect(internalLogItems).toHaveLength(3);
+    expect(runtimeLogItems.every((item) => item.skill_target_id === 'p3_log_exponential_equations')).toBe(true);
+    expect(internalLogItems.every((item) => item.skill_target_id === 'p3_log_exponential_equations')).toBe(true);
+    expect(runtimeLogItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+    expect(internalLogItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
+    expect(new Set(runtimeLogItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
+    expect(runtimePracticeIds).toEqual(internalPracticeIds);
   });
 
   it('fails hard for a published source-backed worked example using non-clean evidence', () => {

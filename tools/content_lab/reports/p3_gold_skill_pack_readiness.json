@@ -25,7 +25,7 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-22T07:53:46.886140+00:00",
+  "generated_at": "2026-05-22T09:13:37.697723+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
@@ -103,7 +103,7 @@
     },
     {
       "blocked_skill_count": 0,
-      "missing_repair_note_skill_count": 6,
+      "missing_repair_note_skill_count": 0,
       "mvp_gold_ready_count": 0,
       "region": "Logarithm Observatory",
       "region_id": "logarithm-grove",
@@ -111,7 +111,7 @@
       "thin_evidence_skill_count": 0,
       "warmup_role_gap_skill_count": 0,
       "warning_only_skill_count": 6,
-      "worked_example_gap_skill_count": 3
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -1661,16 +1661,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-log-calculus-context-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-log-calculus-context-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-log-calculus-context-001-qc"
       ],
@@ -1699,15 +1703,12 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-calculus-context-001-example-1"
+        "p3-log-calculus-context-001-example-1",
+        "p3-log-calculus-context-001-example-2"
       ]
     },
     {
@@ -1726,16 +1727,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-log-exp-convert-001-qc"
       ],
@@ -1764,15 +1769,12 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-exp-convert-001-example-1"
+        "p3-log-exp-convert-001-example-1",
+        "p3-log-exp-convert-001-example-2"
       ]
     },
     {
@@ -1790,18 +1792,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-log-domain-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
       "misconception_repair_ids": [
         "p3-log-domain-001"
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-log-domain-001-qc"
       ],
@@ -1830,14 +1834,12 @@
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-domain-001-example-1"
+        "p3-log-domain-001-example-1",
+        "p3-log-domain-001-example-2"
       ]
     },
     {
@@ -1857,16 +1859,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-exp-equations-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-exp-equations-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-exp-equations-001-qc",
         "p3-ln-e-inverse-001-qc"
@@ -1896,9 +1902,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -1924,18 +1927,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-log-invalid-operations-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
       "misconception_repair_ids": [
         "p3-log-invalid-operations-001"
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-log-invalid-operations-001-qc",
         "p3-log-laws-001-qc"
@@ -1965,8 +1970,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -1989,16 +1992,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-log-linearisation-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-log-linearisation-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-log-linearisation-001-qc"
       ],
@@ -2027,9 +2034,6 @@
         "guardian_prep"
       ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2783,10 +2787,10 @@
     "thin_resilience_risk_skill_count": 1,
     "total_reviewed_p3_skills": 40,
     "warning_counts": {
-      "fewer_than_two_worked_examples": 8,
-      "missing_mark_scheme_move_note": 23,
-      "missing_misconception_repair_note": 19,
-      "missing_prerequisite_repair_note": 23,
+      "fewer_than_two_worked_examples": 5,
+      "missing_mark_scheme_move_note": 17,
+      "missing_misconception_repair_note": 15,
+      "missing_prerequisite_repair_note": 17,
       "missing_some_warmup_sequence_roles": 2,
       "source_backed_worked_examples_sparse": 38,
       "thin_evidence_resilience": 1

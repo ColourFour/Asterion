@@ -1559,7 +1559,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation basics and function notation support the log or exponential calculus setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1617,7 +1617,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Convert between logarithmic and exponential form",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function notation support the conversion step only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1675,7 +1675,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Reject invalid logarithmic roots using domain checks",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function-domain awareness support the original-argument checks only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1732,7 +1732,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Solve exponential equations using matching bases or natural logs",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, inverse-function awareness, and index laws support exponential-equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1792,7 +1792,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use log laws to solve logarithmic equations",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and index-law fluency support log-law equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1852,7 +1852,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Linearise logarithmic or exponential relationships",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and straight-line graph interpretation support the linearisation setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

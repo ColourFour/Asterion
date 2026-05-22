@@ -114,7 +114,7 @@
       "skill_count": 6,
       "snippet_count": 8,
       "warmup_support_count": 12,
-      "worked_example_count": 9
+      "worked_example_count": 12
     },
     {
       "active_by_default": true,
@@ -2885,7 +2885,7 @@
         "35autumn25_q04",
         "35summer25_q04"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation basics and function notation support the log or exponential calculus setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2924,9 +2924,10 @@
         "gen_log_calculus_context_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-calculus-context-001-example-1"
+        "p3-log-calculus-context-001-example-1",
+        "p3-log-calculus-context-001-example-2"
       ]
     },
     {
@@ -2999,7 +3000,7 @@
         "32spring23_q01",
         "33summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function notation support the conversion step only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -3038,9 +3039,10 @@
         "gen_log_equation_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-exp-convert-001-example-1"
+        "p3-log-exp-convert-001-example-1",
+        "p3-log-exp-convert-001-example-2"
       ]
     },
     {
@@ -3109,7 +3111,7 @@
         "33autumn22_q01",
         "33summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation and function-domain awareness support the original-argument checks only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -3148,9 +3150,10 @@
         "gen_log_domain_validation_basic_0003"
       ],
       "warmup_support_count": 3,
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-log-domain-001-example-1"
+        "p3-log-domain-001-example-1",
+        "p3-log-domain-001-example-2"
       ]
     },
     {
@@ -3223,7 +3226,7 @@
         "33summer23_q01",
         "35summer25_q01"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, inverse-function awareness, and index laws support exponential-equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -3340,7 +3343,7 @@
         "32summer23_q02",
         "33summer25_q02"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and index-law fluency support log-law equation rearrangement only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -3449,7 +3452,7 @@
         "32summer21_q03",
         "35autumn25_q03"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic manipulation, function notation, and straight-line graph interpretation support the linearisation setup only; these prerequisites do not count as P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

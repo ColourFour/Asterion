@@ -1801,6 +1801,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
       "explanation": "Exponential equations are easiest when the bases match. If they do not, take logs of both complete sides and keep the whole exponent bracketed until the last rearrangement.",
+      "mark_scheme_move_note": "Show either the common-base rewrite or the log-both-sides step, keep the whole exponent bracketed, and solve without changing the equation's solution set.",
+      "misconception_repair_note": {
+        "wrong_move": "Taking logs of only the exponential term or dropping brackets around an exponent such as $2x-1$.",
+        "why_it_fails": "Logging only part of a side changes the equation, and losing exponent brackets changes which terms are multiplied by the logarithm.",
+        "safer_move": "First isolate the exponential expression or rewrite both sides with a shared base, then apply logs to both complete sides and keep the exponent bracketed.",
+        "short_check": "After taking logs, is the entire exponent still inside one bracketed multiplier?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that mix exponential expressions and logarithmic rearrangement.",
         "recommended_before_question_ids": [],
@@ -1980,6 +1987,13 @@
       "estimated_time_minutes": 3,
       "exam_move": "Do the domain check at the end using the original equation, not a rearranged version.",
       "explanation": "Solving can create answers that look algebraically neat but break the original logarithms. The original log arguments are the final gate: every one must stay positive.",
+      "mark_scheme_move_note": "State the original log-argument restrictions, solve the transformed equation, then reject any root that makes an original argument non-positive.",
+      "misconception_repair_note": {
+        "wrong_move": "Checking only the simplified equation after the logs have been combined or cancelled.",
+        "why_it_fails": "The transformed equation can contain roots that were never allowed in the original logarithms.",
+        "safer_move": "Write the original argument inequalities first or return to them before accepting any root.",
+        "short_check": "Does every original log argument stay greater than zero for the proposed answer?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian attempts that involve logarithmic equations with more than one possible solution.",
         "recommended_before_question_ids": [],
@@ -2053,6 +2067,23 @@
         "key_method": "Reject invalid logarithmic solutions confidently.",
         "exam_move": "Do the domain check at the end using the original equation, not a rearranged version."
       },
+      "worked_examples": [
+        {
+          "id": "p3-log-domain-001-example-2",
+          "prompt": "Solve $\\ln x+\\ln(x-4)=\\ln12$, checking the domain.",
+          "steps": [
+            "The original logs require $x>0$ and $x-4>0$, so $x>4$.",
+            "Combine the logs: $\\ln(x(x-4))=\\ln12$.",
+            "This gives $x^2-4x=12$, so $x=6$ or $x=-2$.",
+            "Only $x=6$ satisfies the original domain."
+          ],
+          "answer": "$x=6$",
+          "teaching_note": "The rejected root is not a calculation error; it is outside the original logarithm domain.",
+          "question_type": "Logarithm domain check",
+          "key_method": "Reject invalid logarithmic solutions confidently.",
+          "exam_move": "State original domain restrictions before accepting transformed-equation roots."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_logarithms_and_exponentials"
       ],
@@ -2069,6 +2100,13 @@
       "estimated_time_minutes": 3,
       "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
       "explanation": "A logarithm is another way to name an exponent. Keep asking, \"what power of this base gives that argument?\" and the rearrangement becomes a direct rewrite, not a trick.",
+      "mark_scheme_move_note": "Identify the base, log value, and argument, rewrite the statement as base raised to the log value equals the argument, and keep any argument restriction visible when solving.",
+      "misconception_repair_note": {
+        "wrong_move": "Treating the base as a multiplier or moving it across the equation like a coefficient.",
+        "why_it_fails": "In a logarithm the log value is an exponent, so coefficient-style rearrangement changes the meaning of the statement.",
+        "safer_move": "Say 'base to this power equals the argument' before writing the exponential form.",
+        "short_check": "In $\\log_4 64=3$, which number is the base and which number is the exponent?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that ask students to isolate an unknown inside a logarithm.",
         "recommended_before_question_ids": [],
@@ -2142,6 +2180,23 @@
         "key_method": "Convert fluently between logarithmic and exponential form.",
         "exam_move": "Convert to exponential form when the unknown is inside the logarithm."
       },
+      "worked_examples": [
+        {
+          "id": "p3-log-exp-convert-001-example-2",
+          "prompt": "Solve $\\log_5(x-1)=2$ by converting form first.",
+          "steps": [
+            "The base is $5$ and the log value $2$ is the exponent.",
+            "Rewrite as $5^2=x-1$.",
+            "So $x-1=25$ and $x=26$.",
+            "Check the argument: $26-1>0$."
+          ],
+          "answer": "$x=26$",
+          "teaching_note": "Converting form is a direct role swap: base, exponent, argument.",
+          "question_type": "Logarithmic and exponential form conversion",
+          "key_method": "Convert fluently between logarithmic and exponential form.",
+          "exam_move": "Convert to exponential form, solve, then confirm the log argument is positive."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_logarithms_and_exponentials"
       ],
@@ -2158,6 +2213,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write one legal log law at a time and leave sums inside logs untouched.",
       "explanation": "Most false log solutions come from applying a real law to the wrong structure. Before using a law, name whether the inside is a product, quotient, power, or sum.",
+      "mark_scheme_move_note": "State any original argument restrictions, show the valid product, quotient, or power log-law step before removing logs, then check candidate solutions in the original equation.",
+      "misconception_repair_note": {
+        "wrong_move": "Splitting a sum inside a logarithm or combining logs with different bases.",
+        "why_it_fails": "Log laws only apply to products, quotients, powers, and matching bases; an illegal split can create solutions that do not satisfy the original equation.",
+        "safer_move": "Label the structure inside each log, combine only matching-base logs using a valid law, and keep original argument restrictions visible.",
+        "short_check": "Are all log bases matching, and did every original log argument stay positive?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on avoid illegal logarithm moves in equations.",
         "recommended_before_question_ids": [],
@@ -2334,6 +2396,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "After linearising, state what the gradient and intercept represent in the original model.",
       "explanation": "The log law for powers is what creates the straight-line structure. The transformed variables decide what the gradient and intercept mean.",
+      "mark_scheme_move_note": "Take logs of the whole relationship, match the result to straight-line form, state the transformed axes, and interpret gradient and intercept in the original model.",
+      "misconception_repair_note": {
+        "wrong_move": "Reading the intercept as the original constant or plotting the wrong transformed variables.",
+        "why_it_fails": "The straight-line intercept is often a logarithm of the original constant, and the chosen axes determine which coefficient is the gradient.",
+        "safer_move": "Write the linear form as $Y=mX+c$ and label $X$, $Y$, $m$, and $c$ before interpreting the graph.",
+        "short_check": "If the intercept is $\\ln A$, do you report $A$ as the intercept or as $e^{\\text{intercept}}$?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on connect log transformations to gradient and intercept.",
         "recommended_before_question_ids": [],
@@ -3766,6 +3835,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Name the calculus structure before using log or exponential facts.",
       "explanation": "The log or exponential expression is often the setting, not the whole method. The mark scheme still rewards derivative setup, product or chain rule use, and exact substitution.",
+      "mark_scheme_move_note": "State the calculus rule being used, show the derivative or integral setup for the log or exponential expression, then use the requested stationary, tangent, normal, or area condition.",
+      "misconception_repair_note": {
+        "wrong_move": "Using log laws or substituting the point before forming the required derivative.",
+        "why_it_fails": "The marks usually depend on product, chain, implicit, or exponential derivative evidence before any final condition can be applied.",
+        "safer_move": "Name the calculus structure first, write the derivative or integral line, then substitute or solve.",
+        "short_check": "Have you shown the derivative evidence before using a gradient or stationary condition?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that mix logarithmic or exponential functions with differentiation or integration.",
         "recommended_before_question_ids": [],
@@ -3841,6 +3917,23 @@
         "key_method": "Apply product, chain, and implicit differentiation before substituting values.",
         "exam_move": "Keep $dy/dx$ visible when differentiating logarithms containing $y$."
       },
+      "worked_examples": [
+        {
+          "id": "p3-log-calculus-context-001-example-2",
+          "prompt": "Differentiate $y=e^{2x}\\ln x$ for $x>0$.",
+          "steps": [
+            "This is a product with $u=e^{2x}$ and $v=\\ln x$.",
+            "$u'=2e^{2x}$ by the chain rule and $v'=1/x$.",
+            "Use $u'v+uv'$.",
+            "So $dy/dx=2e^{2x}\\ln x+e^{2x}/x$."
+          ],
+          "answer": "$\\frac{dy}{dx}=2e^{2x}\\ln x+\\frac{e^{2x}}{x}$",
+          "teaching_note": "The log expression still sits inside the normal product-rule structure.",
+          "question_type": "Logarithmic and exponential differentiation",
+          "key_method": "Apply product and chain rules before simplifying.",
+          "exam_move": "Show derivative evidence before applying any tangent or stationary condition."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_logarithms_and_exponentials"
       ],
