@@ -11,10 +11,13 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const hostedClaimMode = runtimeConfig.studentClassClaimSource === 'supabase';
   const hostedClaimConfigBlocked = hostedClaimMode && !runtimeConfig.supabaseConfigured;
+  const claimHelperId = 'class-code-claim-helper';
+  const claimStatusId = 'class-code-claim-status';
   const [classCode, setClassCode] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [claimState, setClaimState] = useState<StudentClaimState>();
   const [submitting, setSubmitting] = useState(false);
+  const describedBy = claimState ? claimStatusId : claimHelperId;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -56,20 +59,32 @@ export function ClassCodeClaimForm({ onClaimed }: ClassCodeClaimFormProps) {
 
       <label>
         Class code
-        <input value={classCode} onChange={(event) => setClassCode(event.target.value.toUpperCase())} placeholder="AST-P3A" required />
+        <input
+          aria-describedby={describedBy}
+          value={classCode}
+          onChange={(event) => setClassCode(event.target.value.toUpperCase())}
+          placeholder="AST-P3A"
+          required
+        />
       </label>
 
       <label>
         Roster name
-        <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} placeholder="Your name as your teacher entered it" required />
+        <input
+          aria-describedby={describedBy}
+          value={displayName}
+          onChange={(event) => setDisplayName(event.target.value)}
+          placeholder="Your name as your teacher entered it"
+          required
+        />
       </label>
 
       {claimState ? (
-        <p className={`claim-state-message claim-${claimState.status}`} role="status">
+        <p className={`claim-state-message claim-${claimState.status}`} id={claimStatusId} role="status">
           {claimState.message}
         </p>
       ) : (
-        <p className="claim-state-message">If your name is missing, ask your teacher. You cannot add yourself.</p>
+        <p className="claim-state-message" id={claimHelperId}>If your name is missing, ask your teacher. You cannot add yourself.</p>
       )}
 
       <button className="primary-button" type="submit" disabled={submitting || hostedClaimConfigBlocked}>

@@ -7,6 +7,7 @@ interface AsterionEntryShellProps {
   description: string;
   children: ReactNode;
   cardLabel: string;
+  className?: string;
   copyId?: string;
 }
 
@@ -16,10 +17,13 @@ export function AsterionEntryShell({
   description,
   children,
   cardLabel,
+  className,
   copyId = 'asterion-entry-title',
 }: AsterionEntryShellProps) {
+  const shellClassName = ['app-shell home-landing-shell asterion-entry-shell', className].filter(Boolean).join(' ');
+
   return (
-    <main className="app-shell home-landing-shell asterion-entry-shell">
+    <main className={shellClassName}>
       <section className="home-landing-panel" aria-labelledby={copyId}>
         <div className="home-landing-copy">
           <span className="mode-pill">{eyebrow}</span>

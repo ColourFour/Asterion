@@ -19,6 +19,7 @@ const onboardingSteps: { id: OnboardingStep; label: string }[] = [
 
 export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProps) {
   const initialAvatarId = profile.avatarId ?? ACADEMY_AVATAR_PRESETS[0].id;
+  const academyNameHelperId = 'academy-name-helper';
   const [activeStep, setActiveStep] = useState<OnboardingStep>('welcome');
   const [academyName, setAcademyName] = useState(profile.avatarName);
   const [avatarId, setAvatarId] = useState(initialAvatarId);
@@ -103,8 +104,14 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
             <section className="academy-step-panel" aria-labelledby="student-onboarding-title">
               <label>
                 Academy name
-                <input value={academyName} onChange={(event) => setAcademyName(event.target.value)} maxLength={40} />
+                <input
+                  aria-describedby={academyNameHelperId}
+                  value={academyName}
+                  onChange={(event) => setAcademyName(event.target.value)}
+                  maxLength={40}
+                />
               </label>
+              <p className="academy-field-helper" id={academyNameHelperId}>This is the name shown on your map and avatar card.</p>
               <div className="academy-avatar-preview" aria-label="Named academy profile">
                 <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
                 <div>

@@ -98,7 +98,7 @@
       "snippets_with_examples": 3
     },
     {
-      "generated_warmups": 12,
+      "generated_warmups": 9,
       "quick_checks": 3,
       "region_id": "differential-shrine",
       "region_name": "Differential Shrine",
@@ -138,7 +138,7 @@
       "snippets_with_examples": 5
     },
     {
-      "generated_warmups": 3,
+      "generated_warmups": 9,
       "quick_checks": 3,
       "region_id": "vector-workshop",
       "region_name": "Vectors Gate",
@@ -201,8 +201,8 @@
     "review_only": 1213
   },
   "content_review_status_counts": {
-    "generated_practice:needs_review": 15,
-    "generated_practice:teacher_reviewed": 87,
+    "generated_practice:needs_review": 9,
+    "generated_practice:teacher_reviewed": 96,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 36
   },
@@ -266,6 +266,7 @@
     },
     "vectors": {
       "vectors.line_intersection_basic": 3,
+      "vectors.line_relationship_basic": 3,
       "vectors.line_scalar_product_basic": 3
     }
   },
@@ -274,12 +275,12 @@
     "algebra-forge": 24,
     "calculus-cliffs": 12,
     "complex-harbor": 6,
-    "differential-shrine": 12,
+    "differential-shrine": 9,
     "integration-gardens": 15,
     "logarithm-grove": 12,
     "numerical-mines": 9,
     "trig-observatory": 12,
-    "vector-workshop": 3
+    "vector-workshop": 9
   },
   "generator_family_counts": {
     "algebra.binomial_validity_range": 3,
@@ -315,9 +316,74 @@
     "trigonometry.r_form_basic": 3,
     "trigonometry.solve_equation_interval_basic": 3,
     "vectors.line_intersection_basic": 3,
+    "vectors.line_relationship_basic": 3,
     "vectors.line_scalar_product_basic": 3
   },
-  "high_evidence_weak_teaching_support": [],
+  "high_evidence_weak_teaching_support": [
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_complex_numbers",
+      "snippet_count": 0,
+      "source_question_count": 45,
+      "topic": "complex_numbers",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_logarithms_and_exponentials",
+      "snippet_count": 0,
+      "source_question_count": 54,
+      "topic": "logarithms_and_exponentials",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_numerical_methods",
+      "snippet_count": 0,
+      "source_question_count": 32,
+      "topic": "numerical_methods",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_parametric_equations",
+      "snippet_count": 0,
+      "source_question_count": 88,
+      "topic": "parametric_equations",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_partial_fractions",
+      "snippet_count": 0,
+      "source_question_count": 27,
+      "topic": "partial_fractions",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_trigonometry",
+      "snippet_count": 0,
+      "source_question_count": 32,
+      "topic": "trigonometry",
+      "warmup_count": 0
+    },
+    {
+      "paper_family": "p3",
+      "quick_check_count": 0,
+      "skill_target_id": "p3_vectors",
+      "snippet_count": 0,
+      "source_question_count": 36,
+      "topic": "vectors",
+      "warmup_count": 0
+    }
+  ],
   "internal_generated_practice_summary": {
     "artifact_scope": "internal_planning",
     "blocked_candidate_count": 0,
@@ -355,18 +421,19 @@
       "trigonometry.r_form_basic": 3,
       "trigonometry.solve_equation_interval_basic": 3,
       "vectors.line_intersection_basic": 3,
+      "vectors.line_relationship_basic": 3,
       "vectors.line_scalar_product_basic": 3
     },
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
-    "needs_review_internal_count": 15,
+    "needs_review_internal_count": 9,
     "published_runtime_count": 0,
     "review_status_counts": {
-      "needs_review": 15,
-      "teacher_reviewed": 87
+      "needs_review": 9,
+      "teacher_reviewed": 96
     },
-    "runtime_reviewed_count": 87,
-    "total_count": 102,
+    "runtime_reviewed_count": 96,
+    "total_count": 105,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
@@ -378,7 +445,7 @@
     "logarithm-grove": 12,
     "numerical-mines": 9,
     "trig-observatory": 12,
-    "vector-workshop": 0
+    "vector-workshop": 9
   },
   "method_snippets_missing_examples": [],
   "missing_active_region_snippet_coverage": [],
@@ -449,9 +516,9 @@
       "complex_numbers.locus_basic": 1,
       "complex_numbers.modulus_argument_basic": 1,
       "complex_numbers.roots_basic": 1,
-      "differential_equations.context_model_basic": 4,
-      "differential_equations.initial_condition_basic": 4,
-      "differential_equations.separation_basic": 4,
+      "differential_equations.context_model_basic": 3,
+      "differential_equations.initial_condition_basic": 3,
+      "differential_equations.separation_basic": 3,
       "differentiation.chain_product_basic": 3,
       "differentiation.chain_rule_basic": 1,
       "differentiation.implicit_log_exp_basic": 3,
@@ -473,19 +540,19 @@
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
       "trigonometry.solve_equation_interval_basic": 3,
-      "vectors.line_intersection_basic": 1,
-      "vectors.line_relationship_basic": 1,
-      "vectors.line_scalar_product_basic": 1
+      "vectors.line_intersection_basic": 3,
+      "vectors.line_relationship_basic": 3,
+      "vectors.line_scalar_product_basic": 3
     },
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 99,
+    "published_runtime_count": 102,
     "review_status_counts": {
-      "teacher_reviewed": 99
+      "teacher_reviewed": 102
     },
-    "runtime_reviewed_count": 99,
-    "total_count": 99,
+    "runtime_reviewed_count": 102,
+    "total_count": 102,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -520,7 +587,36 @@
       "work_energy_power": 1
     }
   },
-  "skill_targets_per_topic": {},
+  "skill_targets_per_topic": {
+    "p1": {
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "quadratics": 1,
+      "series_and_sequences": 1,
+      "trigonometry": 1
+    },
+    "p3": {
+      "algebra": 1,
+      "binomial_expansion": 1,
+      "complex_numbers": 1,
+      "differential_equations": 1,
+      "differentiation": 1,
+      "integration": 1,
+      "logarithms_and_exponentials": 1,
+      "numerical_methods": 1,
+      "parametric_equations": 1,
+      "partial_fractions": 1,
+      "trigonometry": 1,
+      "vectors": 1
+    },
+    "p4": {
+      "kinematics_constant_acceleration": 1,
+      "momentum_impulse": 1,
+      "work_energy_power": 1
+    }
+  },
   "skill_targets_with_quick_checks_but_no_warmups": [],
   "skill_targets_with_snippets_but_no_quick_checks": [],
   "snippets_per_region": {
@@ -1386,6 +1482,24 @@
       "practice_id": "gen_vectors_line_intersection_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-vectors-lines-001"
+    },
+    {
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "practice_id": "gen_vectors_line_relationship_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-vectors-3d-geometry-001"
+    },
+    {
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "practice_id": "gen_vectors_line_relationship_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-vectors-3d-geometry-001"
+    },
+    {
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "practice_id": "gen_vectors_line_relationship_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-vectors-3d-geometry-001"
     },
     {
       "example_model_id": "p3-vectors-lines-001-example-1",

@@ -911,7 +911,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 4,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -969,7 +969,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 4,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -1026,7 +1026,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 4,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -2359,7 +2359,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Translate 3D geometric conditions into vector equations",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports point and component handling only; modelling 3D vector conditions remains P3-only mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2397,7 +2397,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -2412,7 +2412,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Form and compare vector equations of lines",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports component comparison and simultaneous-equation fluency only; it must not count as P3 vector-line mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2450,7 +2450,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     },
     {
@@ -2465,7 +2465,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Use scalar products for angles and perpendicular conditions",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports coordinate fluency and angle awareness only; P3 mastery still requires scalar-product evidence from reviewed P3 vector questions.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2503,7 +2503,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 3,
       "weak_support_reasons": []
     }
   ],

@@ -3057,6 +3057,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
       "explanation": "A vector line is a start point plus a direction. Two lines meet only if one value on each line gives the same three coordinates, so the final component check matters.",
+      "mark_scheme_move_note": "Define each line with its own scalar parameter, set up the vector equations before solving components, and check the final coordinate before stating the intersection or relationship.",
+      "misconception_repair_note": {
+        "wrong_move": "Using the same parameter for both vector lines.",
+        "why_it_fails": "Each line is travelled independently, so one parameter value on the first line does not automatically match the parameter value on the second line.",
+        "safer_move": "Use different parameters, equate matching components, solve two equations, then test the remaining component.",
+        "short_check": "Do the two lines have different parameter letters before you start solving?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving line intersections, skew lines, or vector line equations.",
         "recommended_before_question_ids": [],
@@ -3164,6 +3171,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use direction vectors for line angles and scalar product tests.",
       "explanation": "Before solving a full vector geometry problem, decide whether the scalar product is being used for an angle, a perpendicular condition, or a projection-like distance step.",
+      "mark_scheme_move_note": "Write the relevant direction vectors and the scalar-product setup before concluding an angle or perpendicular condition.",
+      "misconception_repair_note": {
+        "wrong_move": "Using two position vectors from the origin as though they are the line directions.",
+        "why_it_fails": "The angle between lines depends on their direction vectors, not on where particular points sit relative to the origin.",
+        "safer_move": "Extract or form the direction vectors first, then use $\\mathbf a\\cdot\\mathbf b=|\\mathbf a||\\mathbf b|\\cos\\theta$.",
+        "short_check": "Are the two vectors in the scalar product both directions for the objects being compared?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use the scalar product to test perpendicularity or find an angle.",
         "recommended_before_question_ids": [],
@@ -3223,17 +3237,36 @@
       "topics": [
         "vectors"
       ],
-      "worked_example": {
-        "id": "p3-vectors-scalar-product-001-example-1",
-        "prompt": "Find the angle between $\\mathbf a=(1,2,2)$ and $\\mathbf b=(2,0,1)$.",
-        "steps": [
-          "$\\mathbf a\\cdot\\mathbf b=1(2)+2(0)+2(1)=4$.",
-          "$|\\mathbf a|=3$ and $|\\mathbf b|=\\sqrt5$.",
-          "Use $\\cos\\theta=\\frac{\\mathbf a\\cdot\\mathbf b}{|\\mathbf a||\\mathbf b|}$."
-        ],
-        "answer": "$\\theta=\\cos^{-1}\\left(\\frac{4}{3\\sqrt5}\\right)$",
-        "teaching_note": "The scalar product connects component arithmetic to the angle."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-vectors-scalar-product-001-example-1",
+          "question_type": "Scalar product angle",
+          "key_method": "Use the scalar product after identifying direction vectors.",
+          "exam_move": "Write the scalar-product setup before giving the angle.",
+          "prompt": "Find the angle between $\\mathbf a=(1,2,2)$ and $\\mathbf b=(2,0,1)$.",
+          "steps": [
+            "$\\mathbf a\\cdot\\mathbf b=1(2)+2(0)+2(1)=4$.",
+            "$|\\mathbf a|=3$ and $|\\mathbf b|=\\sqrt5$.",
+            "Use $\\cos\\theta=\\frac{\\mathbf a\\cdot\\mathbf b}{|\\mathbf a||\\mathbf b|}$."
+          ],
+          "answer": "$\\theta=\\cos^{-1}\\left(\\frac{4}{3\\sqrt5}\\right)$",
+          "teaching_note": "The scalar product connects component arithmetic to the angle."
+        },
+        {
+          "id": "p3-vectors-scalar-product-001-example-2",
+          "question_type": "Perpendicularity check",
+          "key_method": "Use a zero scalar product for non-zero perpendicular vectors.",
+          "exam_move": "Show the scalar-product calculation before claiming perpendicularity.",
+          "prompt": "Decide whether $\\mathbf a=(2,-1,2)$ and $\\mathbf b=(1,2,0)$ are perpendicular.",
+          "steps": [
+            "Calculate the scalar product.",
+            "$\\mathbf a\\cdot\\mathbf b=2(1)+(-1)(2)+2(0)=0$.",
+            "For non-zero vectors, a zero scalar product means perpendicular."
+          ],
+          "answer": "The vectors are perpendicular.",
+          "teaching_note": "The conclusion follows from the displayed scalar product, not from visual inspection."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_vectors"
       ],
@@ -3715,6 +3748,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Turn each geometric condition into a vector equation, then solve component by component.",
       "explanation": "The geometry words tell you which vector tool to use: a line condition gives a parameter, a midpoint gives an average, and a perpendicular condition gives a scalar product.",
+      "mark_scheme_move_note": "Translate the stated geometry into a vector equation or scalar-product condition before solving components, then state the final coordinate or vector answer in the requested form.",
+      "misconception_repair_note": {
+        "wrong_move": "Starting from a diagram guess and treating a point vector as the direction of a line.",
+        "why_it_fails": "A position vector locates a point, while a direction vector describes movement; mixing them changes the geometry being modelled.",
+        "safer_move": "Name the condition first, then write the matching vector line, midpoint, ratio, or scalar-product equation.",
+        "short_check": "Can you say which geometry condition each vector equation represents?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions involving 3D geometry, points on lines, or vector modelling.",
         "recommended_before_question_ids": [],
@@ -3775,17 +3815,36 @@
       "topics": [
         "vectors"
       ],
-      "worked_example": {
-        "id": "p3-vectors-3d-geometry-001-example-1",
-        "prompt": "Point $P$ lies on $\\mathbf r=(1,2,0)+\\lambda(3,-1,2)$ and has $x=7$. Find its coordinates.",
-        "steps": [
-          "Use the $x$-component: $1+3\\lambda=7$.",
-          "So $\\lambda=2$.",
-          "Substitute into the $y$ and $z$ components."
-        ],
-        "answer": "$P=(7,0,4)$",
-        "teaching_note": "One coordinate can identify the parameter, but all coordinates define the point."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-vectors-3d-geometry-001-example-1",
+          "question_type": "Point on a vector line",
+          "key_method": "Use the condition to find the line parameter, then substitute into every component.",
+          "exam_move": "State the vector equation before extracting component equations.",
+          "prompt": "Point $P$ lies on $\\mathbf r=(1,2,0)+\\lambda(3,-1,2)$ and has $x=7$. Find its coordinates.",
+          "steps": [
+            "Use the $x$-component: $1+3\\lambda=7$.",
+            "So $\\lambda=2$.",
+            "Substitute into the $y$ and $z$ components."
+          ],
+          "answer": "$P=(7,0,4)$",
+          "teaching_note": "One coordinate can identify the parameter, but all coordinates define the point."
+        },
+        {
+          "id": "p3-vectors-3d-geometry-001-example-2",
+          "question_type": "Direction vector from points",
+          "key_method": "Translate two point coordinates into the movement vector between them.",
+          "exam_move": "Define the direction vector clearly before using it in a line equation.",
+          "prompt": "Find a direction vector for the line through $A(1,-2,0)$ and $B(4,1,2)$.",
+          "steps": [
+            "Use $\\overrightarrow{AB}=B-A$.",
+            "$\\overrightarrow{AB}=(4-1,1-(-2),2-0)$.",
+            "So a direction vector is $(3,3,2)$."
+          ],
+          "answer": "$(3,3,2)$",
+          "teaching_note": "The direction vector is the movement from one point to the other, not either point itself."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_vectors"
       ],

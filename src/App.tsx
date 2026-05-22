@@ -162,6 +162,7 @@ function StudentClaimEntryPage({
         ? 'Class membership, teacher, and region access are checked before the map opens.'
         : 'Claim your teacher-created roster slot, then name your character and enter the P3 world map.'}
       cardLabel="Student class-code roster claim"
+      className="entry-shell-claim"
       copyId="student-entry-title"
     >
       {hostedMode ? (
@@ -171,7 +172,7 @@ function StudentClaimEntryPage({
           <span>{onboardingProgressMessage(runtimeConfig)}</span>
         </div>
       ) : null}
-      {hostedState ? <HostedStudentGateMessage state={hostedState} /> : null}
+      {hostedState && hostedState.status !== 'signed-out' ? <HostedStudentGateMessage state={hostedState} /> : null}
       {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       <ClassCodeClaimForm onClaimed={onClaimed} />

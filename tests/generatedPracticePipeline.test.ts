@@ -897,8 +897,6 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'parametric_equations.derivative_ratio_basic',
         'complex_numbers.modulus_argument_basic',
         'complex_numbers.cartesian_locus_roots_basic',
-        'vectors.line_scalar_product_basic',
-        'vectors.line_intersection_basic',
       ];
 
       for (const family of families) {
@@ -932,6 +930,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         ['differential_equations.separation_basic', 'p3_de_separation_setup'],
         ['differential_equations.initial_condition_basic', 'p3_de_initial_condition'],
         ['differential_equations.context_model_basic', 'p3_de_forming_context_model'],
+        ['vectors.line_scalar_product_basic', 'p3_vec_scalar_product_angles'],
+        ['vectors.line_intersection_basic', 'p3_vec_line_equations_intersections'],
+        ['vectors.line_relationship_basic', 'p3_vec_3d_geometry_modelling'],
       ] as const;
       for (const [family, skillTargetId] of promotedFamilies) {
         const familyItems = items.filter((item) => item.generator_family === family);
@@ -955,6 +956,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
       expect(items.find((item) => item.generator_family === 'vectors.line_scalar_product_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('cos theta = 8/9');
+      expect(items.find((item) => item.generator_family === 'vectors.line_relationship_basic' && item.sequence_role === 'first_step')?.answer).toBe('<3, 3, 2>');
       expect(items.find((item) => item.generator_family === 'differential_equations.separation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y = 5');
       expect(items.find((item) => item.generator_family === 'differential_equations.initial_condition_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y = 5');
     } finally {
@@ -982,6 +984,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       ['build_complex_cartesian_conjugate_item', { item_type: 'unsupported_conjugate_case', sequence_role: 'guardian_prep' }],
       ['build_vectors_line_scalar_item', { item_type: 'angle_cosine', left_x: 1, left_y: 1, left_z: 0, right_x: 2, right_y: 1, right_z: 0, sequence_role: 'guardian_prep' }],
       ['build_vectors_line_intersection_item', { item_type: 'point_on_line_parameter', lambda_value: 3, sequence_role: 'guardian_prep' }],
+      ['build_vectors_line_relationship_item', { item_type: 'direction_from_points', ax: 1, ay: 2, az: 3, bx: 1, by: 2, bz: 3, sequence_role: 'first_step' }],
       ['build_numerical_sign_change_iteration_item', { item_type: 'endpoint_check', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
       ['build_numerical_iteration_formula_item', { item_type: 'perform_iterations', constant: 5, x0: 0, iterations: 2, sequence_role: 'complete_step' }],
       ['build_numerical_accuracy_rounding_item', { item_type: 'successive_bounds', lower_numerator: 1549, upper_numerator: 1551, sequence_role: 'guardian_prep' }],
@@ -1050,6 +1053,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'numerical_methods.sign_change_iteration_basic': 3,
         'parametric_equations.derivative_ratio_basic': 3,
         'vectors.line_intersection_basic': 3,
+        'vectors.line_relationship_basic': 3,
         'vectors.line_scalar_product_basic': 3,
       });
       expect(report.generated_warmups_per_region).toMatchObject({
@@ -1061,7 +1065,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'integration-gardens': 15,
         'numerical-mines': 9,
         'trig-observatory': 12,
-        'vector-workshop': 0,
+        'vector-workshop': 9,
       });
       expect(report.generated_families_by_topic).toHaveProperty('trigonometry');
       expect(report.generated_families_by_topic).toHaveProperty('parametric_equations');

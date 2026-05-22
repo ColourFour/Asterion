@@ -66,6 +66,7 @@ COMPLEX_CARTESIAN_CONJUGATE_FAMILY = "complex_numbers.cartesian_conjugate_basic"
 VECTORS_TOPIC = "vectors"
 VECTORS_LINE_SCALAR_FAMILY = "vectors.line_scalar_product_basic"
 VECTORS_LINE_INTERSECTION_FAMILY = "vectors.line_intersection_basic"
+VECTORS_LINE_RELATIONSHIP_FAMILY = "vectors.line_relationship_basic"
 NUMERICAL_TOPIC = "numerical_methods"
 NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY = "numerical_methods.sign_change_iteration_basic"
 NUMERICAL_ITERATION_FORMULA_FAMILY = "numerical_methods.iteration_formula_basic"
@@ -109,6 +110,7 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     COMPLEX_CARTESIAN_CONJUGATE_FAMILY: "p3_complex_cartesian_conjugate",
     VECTORS_LINE_SCALAR_FAMILY: "p3_vec_scalar_product_angles",
     VECTORS_LINE_INTERSECTION_FAMILY: "p3_vec_line_equations_intersections",
+    VECTORS_LINE_RELATIONSHIP_FAMILY: "p3_vec_3d_geometry_modelling",
     NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY: "p3_num_sign_change_graph_evidence",
     NUMERICAL_ITERATION_FORMULA_FAMILY: "p3_num_iteration_formula",
     NUMERICAL_ACCURACY_ROUNDING_FAMILY: "p3_num_accuracy_rounding",
@@ -138,6 +140,9 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY,
     DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY,
     DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY,
+    VECTORS_LINE_SCALAR_FAMILY,
+    VECTORS_LINE_INTERSECTION_FAMILY,
+    VECTORS_LINE_RELATIONSHIP_FAMILY,
 }
 
 
@@ -2186,7 +2191,7 @@ def build_complex_modulus_argument_items(context: dict[str, Any]) -> list[dict[s
 
 def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_vectors_line_scalar_product_basic_{index:04d}"
-    item_type = item_type_parameter(case, practice_id, {"line_identify", "dot_product", "angle_cosine"})
+    item_type = item_type_parameter(case, practice_id, {"dot_product", "perpendicular_check", "angle_cosine"})
     sequence_role = sequence_role_parameter(case, practice_id)
     difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
     parameters: dict[str, Any] = {
@@ -2194,38 +2199,25 @@ def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: di
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
     }
 
-    if item_type == "line_identify":
-        point = vector_from_case(case, "point", practice_id, allow_zero_vector=True)
-        direction = vector_from_case(case, "direction", practice_id)
-        prompt = f"For the line r = {vector_text(point)} + lambda{vector_text(direction)}, state one point on the line and its direction vector."
-        answer = f"point {vector_text(point)}, direction {vector_text(direction)}"
-        worked_solution = [
-            "In vector line form r = a + lambda d, a is a point on the line.",
-            "The vector multiplying the parameter is the direction vector.",
-            f"So the point is {vector_text(point)} and the direction is {vector_text(direction)}.",
-        ]
-        parameters.update({
-            "point_x": point[0],
-            "point_y": point[1],
-            "point_z": point[2],
-            "direction_x": direction[0],
-            "direction_y": direction[1],
-            "direction_z": direction[2],
-        })
-    elif item_type == "dot_product":
+    if item_type in {"dot_product", "perpendicular_check"}:
         left = vector_from_case(case, "left", practice_id)
         right = vector_from_case(case, "right", practice_id)
         dot = dot_product(left, right)
         require_safe(abs(dot) <= 120, practice_id, "dot product is too large")
         perpendicular_text = "perpendicular" if dot == 0 else "not perpendicular"
-        prompt = f"Find {vector_text(left)} . {vector_text(right)} and decide whether the vectors are perpendicular."
-        answer = f"dot product = {dot}; the vectors are {perpendicular_text}"
+        if item_type == "dot_product":
+            prompt = f"Find {vector_text(left)} . {vector_text(right)}."
+            answer = f"dot product = {dot}"
+        else:
+            prompt = f"Use a scalar product to decide whether {vector_text(left)} and {vector_text(right)} are perpendicular."
+            answer = f"dot product = {dot}; the vectors are {perpendicular_text}"
         worked_solution = [
             "Multiply matching components and add.",
             f"{vector_text(left)} . {vector_text(right)} = {left[0]}({right[0]}) + {left[1]}({right[1]}) + {left[2]}({right[2]}).",
             f"The dot product is {dot}.",
-            "A zero dot product means perpendicular; otherwise they are not perpendicular.",
         ]
+        if item_type == "perpendicular_check":
+            worked_solution.append("A zero dot product means perpendicular; otherwise they are not perpendicular.")
         parameters.update({
             "left_x": left[0],
             "left_y": left[1],
@@ -2284,24 +2276,24 @@ def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: di
 def build_vectors_line_scalar_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {
-            "item_type": "line_identify",
-            "point_x": 1,
-            "point_y": 2,
-            "point_z": -1,
-            "direction_x": 3,
-            "direction_y": -1,
-            "direction_z": 2,
+            "item_type": "dot_product",
+            "left_x": 1,
+            "left_y": 2,
+            "left_z": -1,
+            "right_x": 3,
+            "right_y": -1,
+            "right_z": 2,
             "sequence_role": "first_step",
             "difficulty_band": "easy",
         },
         {
-            "item_type": "dot_product",
+            "item_type": "perpendicular_check",
             "left_x": 2,
             "left_y": -1,
             "left_z": 2,
             "right_x": 1,
-            "right_y": 3,
-            "right_z": 4,
+            "right_y": 2,
+            "right_z": 0,
             "sequence_role": "complete_step",
             "difficulty_band": "easy",
         },
@@ -3129,6 +3121,125 @@ def build_vectors_line_intersection_items(context: dict[str, Any]) -> list[dict[
     return [build_vectors_line_intersection_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
+def build_vectors_line_relationship_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_vectors_line_relationship_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"direction_from_points", "point_from_parameter", "relationship_from_directions"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
+    }
+
+    if item_type == "direction_from_points":
+        ax = int_parameter(case, "ax", practice_id, min_value=-9, max_value=9)
+        ay = int_parameter(case, "ay", practice_id, min_value=-9, max_value=9)
+        az = int_parameter(case, "az", practice_id, min_value=-9, max_value=9)
+        bx = int_parameter(case, "bx", practice_id, min_value=-9, max_value=9)
+        by = int_parameter(case, "by", practice_id, min_value=-9, max_value=9)
+        bz = int_parameter(case, "bz", practice_id, min_value=-9, max_value=9)
+        direction = (bx - ax, by - ay, bz - az)
+        require_safe(any(component != 0 for component in direction), practice_id, "points must be distinct")
+        prompt = f"Find the direction vector from A({ax}, {ay}, {az}) to B({bx}, {by}, {bz})."
+        answer = vector_text(direction)
+        worked_solution = [
+            "Subtract A from B component by component.",
+            f"AB = {vector_text((bx, by, bz))} - {vector_text((ax, ay, az))}.",
+            f"So the direction vector is {vector_text(direction)}.",
+        ]
+        parameters.update({"ax": ax, "ay": ay, "az": az, "bx": bx, "by": by, "bz": bz})
+    elif item_type == "point_from_parameter":
+        point = vector_from_case(case, "point", practice_id, allow_zero_vector=True)
+        direction = vector_from_case(case, "direction", practice_id)
+        parameter_value = int_parameter(case, "parameter_value", practice_id, min_value=-3, max_value=3)
+        target = tuple(point[i] + parameter_value * direction[i] for i in range(3))
+        prompt = f"Point P lies on r = {vector_text(point)} + lambda{vector_text(direction)} with lambda = {parameter_value}. Find P."
+        answer = f"P = {vector_text(target)}"
+        worked_solution = [
+            f"Substitute lambda = {parameter_value} into the vector equation.",
+            f"P = {vector_text(point)} + {parameter_value}{vector_text(direction)}.",
+            f"So P = {vector_text(target)}.",
+        ]
+        parameters.update({
+            "point_x": point[0],
+            "point_y": point[1],
+            "point_z": point[2],
+            "direction_x": direction[0],
+            "direction_y": direction[1],
+            "direction_z": direction[2],
+            "parameter_value": parameter_value,
+        })
+    else:
+        first_direction = vector_from_case(case, "first_direction", practice_id)
+        scale_factor = int_parameter(case, "scale_factor", practice_id, min_value=-4, max_value=4, allow_zero=False)
+        second_direction = tuple(component * scale_factor for component in first_direction)
+        prompt = f"Lines have direction vectors {vector_text(first_direction)} and {vector_text(second_direction)}. What relationship is possible before checking positions?"
+        answer = "The lines are parallel or coincident, not skew"
+        worked_solution = [
+            f"{vector_text(second_direction)} = {scale_factor}{vector_text(first_direction)}, so the direction vectors are scalar multiples.",
+            "Scalar-multiple direction vectors mean the lines are parallel or coincident.",
+            "They cannot be skew because skew lines are not parallel.",
+        ]
+        parameters.update({
+            "first_direction_x": first_direction[0],
+            "first_direction_y": first_direction[1],
+            "first_direction_z": first_direction[2],
+            "scale_factor": scale_factor,
+        })
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=VECTORS_LINE_RELATIONSHIP_FAMILY,
+        topic=VECTORS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, VECTORS_TOPIC, ["p3-vectors-3d-geometry-001", "p3-vectors-lines-001"]),
+    )
+
+
+def build_vectors_line_relationship_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {
+            "item_type": "direction_from_points",
+            "ax": 1,
+            "ay": -2,
+            "az": 0,
+            "bx": 4,
+            "by": 1,
+            "bz": 2,
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "item_type": "point_from_parameter",
+            "point_x": 1,
+            "point_y": 2,
+            "point_z": 0,
+            "direction_x": 3,
+            "direction_y": -1,
+            "direction_z": 2,
+            "parameter_value": 2,
+            "sequence_role": "complete_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "item_type": "relationship_from_directions",
+            "first_direction_x": 1,
+            "first_direction_y": 2,
+            "first_direction_z": 3,
+            "scale_factor": 2,
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+        },
+    ]
+    return [build_vectors_line_relationship_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
 def build_differential_equations_context_model_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_differential_equations_context_model_basic_{index:04d}"
     item_type = item_type_parameter(case, practice_id, {"proportional_model", "find_rate_constant", "write_model_from_rate"})
@@ -3225,6 +3336,7 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_complex_modulus_argument_items(context)
         + build_complex_cartesian_conjugate_items(context)
         + build_vectors_line_scalar_items(context)
+        + build_vectors_line_relationship_items(context)
         + build_numerical_sign_change_iteration_items(context)
         + build_numerical_iteration_formula_items(context)
         + build_numerical_accuracy_rounding_items(context)
@@ -3356,7 +3468,13 @@ def runtime_payload(payload: dict[str, Any], existing_runtime: dict[str, Any] | 
     if existing_runtime:
         for item in existing_runtime.get("items", []):
             practice_id = non_empty_string(item.get("practice_id"))
-            if not practice_id or practice_id in emitted_ids or not runtime_ready_item(item):
+            generator_family = non_empty_string(item.get("generator_family"))
+            if (
+                not practice_id
+                or practice_id in emitted_ids
+                or generator_family in PROMOTED_RUNTIME_GENERATOR_FAMILIES
+                or not runtime_ready_item(item)
+            ):
                 continue
             runtime_items.append(item)
             emitted_ids.add(practice_id)

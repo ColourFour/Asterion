@@ -1928,7 +1928,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Vectors",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports point and component handling only; modelling 3D vector conditions remains P3-only mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1972,7 +1972,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Vectors",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports component comparison and simultaneous-equation fluency only; it must not count as P3 vector-line mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -2016,7 +2016,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Vectors",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 coordinate geometry supports coordinate fluency and angle awareness only; P3 mastery still requires scalar-product evidence from reviewed P3 vector questions.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

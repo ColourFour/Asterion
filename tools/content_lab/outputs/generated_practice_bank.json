@@ -2951,7 +2951,7 @@
       ]
     },
     {
-      "answer": "point <1, 2, -1>, direction <3, -1, 2>",
+      "answer": "dot product = -1",
       "difficulty_band": "easy",
       "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
       "example_model_id": "p3-vectors-lines-001-example-1",
@@ -2959,24 +2959,25 @@
       "key_method": "Keep parameters separate",
       "paper_family": "p3",
       "parameters": {
-        "direction_x": 3,
-        "direction_y": -1,
-        "direction_z": 2,
-        "item_type": "line_identify",
-        "point_x": 1,
-        "point_y": 2,
-        "point_z": -1,
+        "dot": -1,
+        "item_type": "dot_product",
+        "left_x": 1,
+        "left_y": 2,
+        "left_z": -1,
+        "right_x": 3,
+        "right_y": -1,
+        "right_z": 2,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
         "sequence_role": "first_step",
         "sequence_stage": "first_step"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0001",
-      "prompt": "For the line r = <1, 2, -1> + lambda<3, -1, 2>, state one point on the line and its direction vector.",
+      "prompt": "Find <1, 2, -1> . <3, -1, 2>.",
       "question_type": "vectors",
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
       "skill_target_id": "p3_vec_scalar_product_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -2992,13 +2993,13 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "In vector line form r = a + lambda d, a is a point on the line.",
-        "The vector multiplying the parameter is the direction vector.",
-        "So the point is <1, 2, -1> and the direction is <3, -1, 2>."
+        "Multiply matching components and add.",
+        "<1, 2, -1> . <3, -1, 2> = 1(3) + 2(-1) + -1(2).",
+        "The dot product is -1."
       ]
     },
     {
-      "answer": "dot product = 7; the vectors are not perpendicular",
+      "answer": "dot product = 0; the vectors are perpendicular",
       "difficulty_band": "easy",
       "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
       "example_model_id": "p3-vectors-lines-001-example-1",
@@ -3006,25 +3007,25 @@
       "key_method": "Keep parameters separate",
       "paper_family": "p3",
       "parameters": {
-        "dot": 7,
-        "item_type": "dot_product",
+        "dot": 0,
+        "item_type": "perpendicular_check",
         "left_x": 2,
         "left_y": -1,
         "left_z": 2,
         "right_x": 1,
-        "right_y": 3,
-        "right_z": 4,
+        "right_y": 2,
+        "right_z": 0,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0002",
-      "prompt": "Find <2, -1, 2> . <1, 3, 4> and decide whether the vectors are perpendicular.",
+      "prompt": "Use a scalar product to decide whether <2, -1, 2> and <1, 2, 0> are perpendicular.",
       "question_type": "vectors",
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
       "skill_target_id": "p3_vec_scalar_product_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -3041,8 +3042,8 @@
       },
       "worked_solution": [
         "Multiply matching components and add.",
-        "<2, -1, 2> . <1, 3, 4> = 2(1) + -1(3) + 2(4).",
-        "The dot product is 7.",
+        "<2, -1, 2> . <1, 2, 0> = 2(1) + -1(2) + 2(0).",
+        "The dot product is 0.",
         "A zero dot product means perpendicular; otherwise they are not perpendicular."
       ]
     },
@@ -3075,7 +3076,7 @@
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
       "skill_target_id": "p3_vec_scalar_product_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -3095,6 +3096,146 @@
         "The dot product is 8.",
         "The magnitudes are 3 and 3.",
         "So cos theta = 8/(3 x 3) = 8/9."
+      ]
+    },
+    {
+      "answer": "<3, 3, 2>",
+      "difficulty_band": "easy",
+      "exam_move": "State the vector equation before extracting component equations.",
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "generator_family": "vectors.line_relationship_basic",
+      "key_method": "Use the condition to find the line parameter, then substitute into every component.",
+      "paper_family": "p3",
+      "parameters": {
+        "ax": 1,
+        "ay": -2,
+        "az": 0,
+        "bx": 4,
+        "by": 1,
+        "bz": 2,
+        "item_type": "direction_from_points",
+        "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_vectors_line_relationship_basic_0001",
+      "prompt": "Find the direction vector from A(1, -2, 0) to B(4, 1, 2).",
+      "question_type": "Point on a vector line",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_vec_3d_geometry_modelling",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-vectors-3d-geometry-001",
+        "p3-vectors-lines-001"
+      ],
+      "source_snippet_id": "p3-vectors-3d-geometry-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Subtract A from B component by component.",
+        "AB = <4, 1, 2> - <1, -2, 0>.",
+        "So the direction vector is <3, 3, 2>."
+      ]
+    },
+    {
+      "answer": "P = <7, 0, 4>",
+      "difficulty_band": "easy",
+      "exam_move": "State the vector equation before extracting component equations.",
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "generator_family": "vectors.line_relationship_basic",
+      "key_method": "Use the condition to find the line parameter, then substitute into every component.",
+      "paper_family": "p3",
+      "parameters": {
+        "direction_x": 3,
+        "direction_y": -1,
+        "direction_z": 2,
+        "item_type": "point_from_parameter",
+        "parameter_value": 2,
+        "point_x": 1,
+        "point_y": 2,
+        "point_z": 0,
+        "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step"
+      },
+      "practice_id": "gen_vectors_line_relationship_basic_0002",
+      "prompt": "Point P lies on r = <1, 2, 0> + lambda<3, -1, 2> with lambda = 2. Find P.",
+      "question_type": "Point on a vector line",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_vec_3d_geometry_modelling",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-vectors-3d-geometry-001",
+        "p3-vectors-lines-001"
+      ],
+      "source_snippet_id": "p3-vectors-3d-geometry-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Substitute lambda = 2 into the vector equation.",
+        "P = <1, 2, 0> + 2<3, -1, 2>.",
+        "So P = <7, 0, 4>."
+      ]
+    },
+    {
+      "answer": "The lines are parallel or coincident, not skew",
+      "difficulty_band": "medium",
+      "exam_move": "State the vector equation before extracting component equations.",
+      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
+      "generator_family": "vectors.line_relationship_basic",
+      "key_method": "Use the condition to find the line parameter, then substitute into every component.",
+      "paper_family": "p3",
+      "parameters": {
+        "first_direction_x": 1,
+        "first_direction_y": 2,
+        "first_direction_z": 3,
+        "item_type": "relationship_from_directions",
+        "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
+        "scale_factor": 2,
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep"
+      },
+      "practice_id": "gen_vectors_line_relationship_basic_0003",
+      "prompt": "Lines have direction vectors <1, 2, 3> and <2, 4, 6>. What relationship is possible before checking positions?",
+      "question_type": "Point on a vector line",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_vec_3d_geometry_modelling",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-vectors-3d-geometry-001",
+        "p3-vectors-lines-001"
+      ],
+      "source_snippet_id": "p3-vectors-3d-geometry-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "<2, 4, 6> = 2<1, 2, 3>, so the direction vectors are scalar multiples.",
+        "Scalar-multiple direction vectors mean the lines are parallel or coincident.",
+        "They cannot be skew because skew lines are not parallel."
       ]
     },
     {
@@ -4161,7 +4302,7 @@
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
       "skill_target_id": "p3_vec_line_equations_intersections",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -4204,7 +4345,7 @@
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
       "skill_target_id": "p3_vec_line_equations_intersections",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -4247,7 +4388,7 @@
       "region_ids": [
         "vector-workshop"
       ],
-      "review_status": "needs_review",
+      "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
       "skill_target_id": "p3_vec_line_equations_intersections",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -4396,9 +4537,9 @@
     }
   ],
   "missing_example_model_id_count": 0,
-  "needs_review_internal_count": 15,
+  "needs_review_internal_count": 9,
   "published_runtime_count": 0,
-  "runtime_reviewed_count": 87,
+  "runtime_reviewed_count": 96,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",

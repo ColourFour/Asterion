@@ -1,6 +1,6 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-22T05:35:19.229358+00:00`
+Generated at: `2026-05-22T05:48:50.350637+00:00`
 
 ## Summary
 
@@ -20,11 +20,11 @@ No readiness blockers.
 
 ## Warning Counts
 
-- `fewer_than_two_worked_examples`: 14
-- `missing_mark_scheme_move_note`: 34
-- `missing_misconception_repair_note`: 29
-- `missing_prerequisite_repair_note`: 34
-- `missing_some_warmup_sequence_roles`: 8
+- `fewer_than_two_worked_examples`: 12
+- `missing_mark_scheme_move_note`: 31
+- `missing_misconception_repair_note`: 26
+- `missing_prerequisite_repair_note`: 31
+- `missing_some_warmup_sequence_roles`: 5
 - `source_backed_worked_examples_sparse`: 38
 - `thin_evidence_resilience`: 1
 
@@ -34,7 +34,7 @@ No readiness blockers.
 | ---: | --- | ---: | ---: | ---: | ---: | --- |
 | 1 | Differential Shrine | 3 | 0 | 0 | 3 | source-backed examples sparse |
 | 2 | Iteration Forge | 3 | 0 | 0 | 3 | source-backed examples sparse |
-| 3 | Vectors Gate | 3 | 0 | 0 | 3 | missing sequence-role breadth, fewer warm-ups, fewer worked examples, source-backed examples sparse, missing repair tags |
+| 3 | Vectors Gate | 3 | 0 | 0 | 3 | source-backed examples sparse |
 | 4 | Argand Atrium | 4 | 0 | 0 | 4 | missing sequence-role breadth, fewer warm-ups, fewer worked examples, source-backed examples sparse, missing repair tags |
 
 ## Per-Region Summary
@@ -49,7 +49,7 @@ No readiness blockers.
 | Iteration Forge | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Logarithm Observatory | 6 | 0 | 0 | 6 | 0 | 0 | 3 | 6 |
 | Trigonometry Spire | 5 | 0 | 0 | 5 | 0 | 0 | 1 | 5 |
-| Vectors Gate | 3 | 0 | 0 | 3 | 0 | 3 | 2 | 3 |
+| Vectors Gate | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 
 ## Skill Rows
 
@@ -92,9 +92,9 @@ No readiness blockers.
 | p3_trig_quadrant_solutions | Trigonometry Spire | Trigonometry | clean | 5 | available | 1 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
 | p3_trig_r_form_compound_angles | Trigonometry Spire | Trigonometry | clean | 4 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_trig_reciprocal_double_angle | Trigonometry Spire | Trigonometry | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_vec_3d_geometry_modelling | Vectors Gate | Vectors | clean | 5 | available | 1 | 0 | available | first_step, complete_step | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_vec_line_equations_intersections | Vectors Gate | Vectors | clean | 5 | available | 3 | 0 | available | complete_step, guardian_prep | misconception:missing, prerequisite:missing, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
-| p3_vec_scalar_product_angles | Vectors Gate | Vectors | clean | 5 | available | 1 | 0 | available | first_step, guardian_prep | misconception:missing, prerequisite:missing, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, missing_misconception_repair_note, missing_prerequisite_repair_note, missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
+| p3_vec_3d_geometry_modelling | Vectors Gate | Vectors | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_vec_line_equations_intersections | Vectors Gate | Vectors | clean | 5 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_vec_scalar_product_angles | Vectors Gate | Vectors | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 
 ## Contract Violations
 

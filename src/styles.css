@@ -332,37 +332,43 @@ h2 {
 
 .home-landing-shell {
   display: grid;
-  min-height: 100vh;
+  min-height: 100dvh;
   place-items: center;
-  padding: 24px;
+  padding: clamp(16px, 3vw, 28px);
 }
 
 .home-landing-panel {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(200px, 300px);
+  grid-template-columns: minmax(320px, 1fr) minmax(200px, 280px);
   grid-template-areas:
     "copy mark"
     "actions mark";
-  gap: clamp(22px, 4vw, 48px);
+  gap: clamp(22px, 3vw, 42px);
   align-items: center;
-  width: min(100%, 1080px);
+  width: min(100%, 1040px);
 }
 
 .home-landing-copy {
   grid-area: copy;
+  display: grid;
+  gap: 10px;
 }
 
 .home-landing-copy h1 {
+  margin: 0;
   color: #ffe39a;
+  font-size: 4.4rem;
+  line-height: 0.95;
   text-shadow: 0 3px 0 rgba(47, 26, 16, 0.72), 0 0 36px rgba(240, 182, 56, 0.2);
 }
 
 .home-landing-copy p {
-  max-width: 660px;
+  max-width: 620px;
   margin: 0;
   color: #f7e7bf;
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-size: 1.125rem;
   font-weight: 750;
+  line-height: 1.5;
 }
 
 .home-landing-panel .asterion-emblem {
@@ -372,9 +378,9 @@ h2 {
 .home-entry-card {
   grid-area: actions;
   display: grid;
-  gap: 12px;
+  gap: 14px;
   max-width: 560px;
-  padding: 18px;
+  padding: 20px;
   border: 2px solid rgba(240, 182, 56, 0.5);
   border-radius: var(--radius-panel);
   background: rgba(18, 19, 45, 0.88);
@@ -383,17 +389,19 @@ h2 {
 
 .home-primary-entry {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   justify-items: start;
-  min-height: 62px;
-  padding: 12px 14px;
+  min-height: 68px;
+  padding: 13px 15px;
   text-align: left;
+  line-height: 1.25;
 }
 
 .home-primary-entry span {
-  font-size: 0.86rem;
+  font-size: 0.95rem;
   font-weight: 750;
   opacity: 0.9;
+  line-height: 1.35;
 }
 
 .home-staff-entry-grid {
@@ -621,6 +629,11 @@ h2 {
   font-weight: 800;
 }
 
+.academy-avatar-preview .avatar-layer-contract-note,
+.avatar-preset-card .avatar-layer-contract-note {
+  display: none;
+}
+
 .academy-avatar-preview strong {
   display: block;
   color: var(--color-astral-dark);
@@ -745,13 +758,13 @@ nav button.active {
 .mode-pill {
   display: inline-flex;
   width: fit-content;
-  margin-bottom: 8px;
-  padding: 4px 9px;
+  margin-bottom: 6px;
+  padding: 5px 10px;
   border: 1px solid rgba(15, 118, 110, 0.18);
   border-radius: 999px;
   color: var(--color-astral-dark);
   background: #dff4ef;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -805,16 +818,22 @@ input,
 select,
 textarea {
   width: 100%;
-  min-height: 42px;
-  padding: 10px 12px;
+  min-height: 46px;
+  padding: 11px 12px;
   color: var(--color-ink);
   background: #fff;
   border: 1px solid #c9c1b3;
   border-radius: var(--radius-control);
+  line-height: 1.35;
 }
 
 textarea {
   resize: vertical;
+}
+
+::placeholder {
+  color: #697586;
+  opacity: 1;
 }
 
 .form-error {
@@ -836,7 +855,7 @@ textarea {
 .primary-button:disabled,
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.68;
 }
 
 .dashboard-band {
@@ -2300,6 +2319,14 @@ button:disabled {
 }
 
 @media (max-width: 1100px) {
+  .home-landing-copy h1 {
+    font-size: 4rem;
+  }
+
+  .home-landing-panel .asterion-emblem {
+    width: min(100%, 240px);
+  }
+
   .academy-map {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2357,12 +2384,47 @@ button:disabled {
       "copy"
       "mark"
       "actions";
+    gap: 18px;
     justify-items: center;
     text-align: center;
   }
 
+  .home-landing-copy {
+    justify-items: center;
+  }
+
+  .home-landing-copy h1 {
+    font-size: 3.4rem;
+  }
+
+  .home-landing-copy p {
+    max-width: 620px;
+    font-size: 1.05rem;
+  }
+
   .home-entry-card {
     width: 100%;
+  }
+
+  .entry-shell-claim .home-landing-panel {
+    grid-template-areas:
+      "copy"
+      "actions"
+      "mark";
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .entry-shell-claim .home-landing-copy {
+    align-self: auto;
+  }
+
+  .entry-shell-claim .home-landing-copy h1 {
+    font-size: 3.2rem;
+  }
+
+  .entry-shell-claim .asterion-emblem {
+    width: min(100%, 150px);
   }
 
   .intro-copy,
@@ -2468,6 +2530,49 @@ button:disabled {
   .academy-path-grid,
   .home-staff-entry-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-landing-shell {
+    align-items: start;
+    padding: 12px;
+  }
+
+  .home-landing-panel {
+    gap: 14px;
+  }
+
+  .home-landing-copy h1 {
+    font-size: 2.8rem;
+  }
+
+  .home-landing-copy p {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .home-landing-panel .asterion-emblem {
+    width: min(100%, 160px);
+  }
+
+  .entry-shell-claim .home-landing-copy h1 {
+    font-size: 2.65rem;
+  }
+
+  .entry-shell-claim .home-landing-copy p {
+    font-size: 0.98rem;
+  }
+
+  .entry-shell-claim .asterion-emblem {
+    width: min(100%, 120px);
+  }
+
+  .home-entry-card {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .home-primary-entry {
+    min-height: 0;
   }
 
   .academy-avatar-preview {
@@ -11751,7 +11856,34 @@ legend {
 
 .asterion-entry-shell .home-entry-card {
   align-self: center;
-  width: min(100%, 560px);
+  width: min(100%, 540px);
+}
+
+.entry-shell-claim .home-landing-panel {
+  grid-template-columns: minmax(280px, 0.9fr) minmax(420px, 540px);
+  grid-template-areas:
+    "copy actions"
+    "mark actions";
+  gap: clamp(18px, 3vw, 34px);
+  width: min(100%, 1040px);
+}
+
+.entry-shell-claim .home-landing-copy {
+  align-self: end;
+}
+
+.entry-shell-claim .home-landing-copy h1 {
+  font-size: 4rem;
+}
+
+.entry-shell-claim .home-landing-copy p {
+  max-width: 480px;
+  font-size: 1.05rem;
+}
+
+.entry-shell-claim .asterion-emblem {
+  align-self: start;
+  width: min(100%, 220px);
 }
 
 .home-entry-card .class-code-claim-form {
@@ -11767,6 +11899,8 @@ legend {
 
 .home-entry-card .class-code-claim-form label {
   color: #fff6ca;
+  font-size: 0.98rem;
+  line-height: 1.35;
 }
 
 .home-entry-card .class-code-claim-form input {
@@ -11776,12 +11910,25 @@ legend {
 
 .home-entry-card .claim-form-heading h2 {
   color: #ffe39a;
+  font-size: 1.4rem;
+  line-height: 1.15;
+}
+
+.home-entry-card .claim-form-heading {
+  gap: 6px;
+}
+
+.home-entry-card .claim-form-heading .mode-pill {
+  margin-bottom: 0;
 }
 
 .home-entry-card .claim-form-heading p,
 .home-entry-card .claim-form-note,
 .home-entry-card .claim-state-message {
   color: #f7e7bf;
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .home-entry-card .form-error,
@@ -11802,7 +11949,7 @@ legend {
   gap: 5px;
   max-width: none;
   margin: 0;
-  padding: 11px 12px;
+  padding: 10px 12px;
   border: 1px solid rgba(240, 182, 56, 0.38);
   border-image-source: none;
   border-radius: var(--radius-control);
@@ -11817,9 +11964,9 @@ legend {
 
 .entry-context-note span {
   color: #f7e7bf;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 750;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .student-onboarding-shell {
@@ -11836,9 +11983,9 @@ legend {
 .academy-onboarding-stepper {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 16px;
-  width: min(100%, 1040px);
-  min-height: min(760px, calc(100dvh - 48px));
+  gap: 18px;
+  width: min(100%, 980px);
+  min-height: min(720px, calc(100dvh - 48px));
   max-height: calc(100dvh - 48px);
   padding: clamp(16px, 3vw, 24px);
   border: 1px solid rgba(240, 182, 56, 0.5);
@@ -11852,14 +11999,14 @@ legend {
 
 .academy-stepper-header {
   display: grid;
-  gap: 10px;
+  gap: 11px;
 }
 
 .academy-stepper-header h1 {
   margin: 0;
   color: var(--color-astral-dark);
-  font-size: 2.35rem;
-  line-height: 1;
+  font-size: 2.25rem;
+  line-height: 1.08;
   text-shadow: none;
 }
 
@@ -11867,7 +12014,9 @@ legend {
   max-width: 720px;
   margin: 0;
   color: var(--color-text-muted);
+  font-size: 1rem;
   font-weight: 800;
+  line-height: 1.5;
 }
 
 .academy-step-list {
@@ -11884,12 +12033,13 @@ legend {
   gap: 8px;
   align-items: center;
   min-width: 0;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border: 1px solid rgba(15, 118, 110, 0.18);
   border-radius: var(--radius-control);
   color: #4f5a69;
   background: rgba(232, 241, 240, 0.64);
   font-weight: 900;
+  line-height: 1.2;
 }
 
 .academy-step-list li.active {
@@ -11906,7 +12056,7 @@ legend {
   place-items: center;
   border-radius: 999px;
   background: #fffdf8;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
 }
 
 .academy-step-list strong {
@@ -11920,19 +12070,27 @@ legend {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 2px;
+  padding-right: 4px;
 }
 
 .academy-step-panel {
   display: grid;
-  gap: 14px;
+  gap: 15px;
   min-width: 0;
+}
+
+.academy-field-helper {
+  margin: -7px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .academy-step-note {
   display: grid;
-  gap: 4px;
-  padding: 12px;
+  gap: 5px;
+  padding: 13px;
   border: 1px solid rgba(15, 118, 110, 0.18);
   border-radius: var(--radius-control);
   color: #344154;
@@ -11947,6 +12105,7 @@ legend {
 .academy-step-note span {
   color: var(--color-text-muted);
   font-weight: 750;
+  line-height: 1.45;
 }
 
 .student-onboarding-shell .avatar-preset-grid {
@@ -11954,35 +12113,49 @@ legend {
 }
 
 .student-onboarding-shell .avatar-preset-card .builder-avatar-stage {
-  min-height: 112px;
+  min-height: 104px;
   padding: 10px 6px 18px;
 }
 
 .student-onboarding-shell .avatar-preset-card .builder-avatar-stack {
-  width: min(100%, 96px);
-  max-height: 108px;
+  width: min(100%, 88px);
+  max-height: 100px;
+}
+
+.student-onboarding-shell .avatar-preset-card strong {
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.student-onboarding-shell .avatar-preset-card span {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.student-onboarding-shell .avatar-preset-card .selected-avatar-badge {
+  font-size: 0.76rem;
 }
 
 .academy-avatar-preview-large {
-  grid-template-columns: 128px minmax(0, 1fr);
+  grid-template-columns: 116px minmax(0, 1fr);
 }
 
 .academy-avatar-preview-large .builder-avatar-stage {
-  min-height: 144px;
+  min-height: 132px;
 }
 
 .academy-avatar-preview-large .builder-avatar-stack {
-  width: min(100%, 108px);
-  max-height: 124px;
+  width: min(100%, 98px);
+  max-height: 112px;
 }
 
 .academy-step-actions {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   border-top: 1px solid rgba(217, 210, 195, 0.8);
-  padding-top: 14px;
+  padding-top: 15px;
 }
 
 .academy-step-actions .quiet-button {
@@ -11990,7 +12163,7 @@ legend {
 }
 
 .academy-step-actions .primary-button {
-  min-width: 180px;
+  min-width: 190px;
 }
 
 .claim-form-heading {
@@ -12005,14 +12178,16 @@ legend {
 
 .claim-form-heading h2 {
   color: #172033;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  line-height: 1.2;
 }
 
 .claim-form-heading p,
 .claim-state-message {
   color: #3f5067;
-  font-size: 0.92rem;
+  font-size: 0.98rem;
   font-weight: 650;
+  line-height: 1.45;
 }
 
 .claim-state-message {
@@ -12193,10 +12368,23 @@ legend {
 @media (max-width: 560px) {
   .academy-stepper-header h1 {
     font-size: 1.85rem;
+    line-height: 1.12;
   }
 
   .academy-step-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .academy-step-list li {
+    display: grid;
+    justify-items: center;
+    gap: 5px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+
+  .academy-step-list strong {
+    white-space: normal;
   }
 
   .student-onboarding-shell .avatar-preset-grid,
@@ -12223,6 +12411,33 @@ legend {
   .academy-step-actions .primary-button {
     justify-self: stretch;
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .student-onboarding-shell {
+    padding: 10px;
+  }
+
+  .academy-onboarding-stepper {
+    gap: 12px;
+    min-height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
+    padding: 13px;
+  }
+
+  .academy-stepper-header {
+    gap: 8px;
+  }
+
+  .academy-stepper-header p,
+  .academy-field-helper,
+  .academy-step-note span {
+    font-size: 0.95rem;
+  }
+
+  .student-onboarding-shell .avatar-preset-card {
+    padding: 9px;
   }
 }
 
