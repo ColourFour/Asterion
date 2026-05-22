@@ -25,7 +25,7 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-22T15:07:44.640005+00:00",
+  "generated_at": "2026-05-22T15:08:36.439430+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
@@ -2488,6 +2488,7 @@
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
       "quick_check_ids": [
+        "p3-trig-r-form-source-001-qc",
         "p3-trig-reciprocal-rform-001-qc"
       ],
       "quick_check_status": "available",
