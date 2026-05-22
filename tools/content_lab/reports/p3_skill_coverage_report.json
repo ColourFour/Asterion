@@ -869,7 +869,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Form differential equations from rate contexts",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 proportionality language, derivative notation, and basic integration are repair support only: translate the rate statement into a derivative equation before any P3 mastery claim.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -911,7 +911,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 4,
       "weak_support_reasons": []
     },
     {
@@ -926,7 +926,7 @@
       "mastery_eligible": true,
       "micro_skill_name": "Apply initial conditions after integration",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic substitution and basic integration are repair support only: check that a constant of integration exists before substituting a given point.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -969,22 +969,22 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 4,
       "weak_support_reasons": []
     },
     {
-      "canonical_source_question_count": 5,
+      "canonical_source_question_count": 4,
       "curriculum_role": "p3_core",
       "has_generated_warm_up": true,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
-      "high_evidence": true,
+      "high_evidence": false,
       "high_evidence_weak_teaching_support": false,
       "mastery_eligible": true,
       "micro_skill_name": "Separate variables before integrating",
       "needs_teacher_review": false,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation notation and basic integration rules are repair support only: rehearse rearranging dy/dx equations and integrating simple powers before counting any P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1013,21 +1013,20 @@
       ],
       "resolved_trainable_canonical_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
       ],
       "skill_id": "p3_de_separation_setup",
       "syllabus_topic": "Differential equations",
-      "trainable_canonical_question_count": 5,
+      "trainable_canonical_question_count": 4,
       "unresolved_generator_families": [],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 1,
+      "warm_up_item_count": 4,
       "weak_support_reasons": []
     },
     {
@@ -2509,7 +2508,7 @@
     }
   ],
   "summary": {
-    "high_evidence_skills": 25,
+    "high_evidence_skills": 24,
     "high_evidence_weak_teaching_support": 0,
     "mastery_eligible_skills": 40,
     "ready_for_full_p3_learning": true,

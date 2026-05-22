@@ -244,7 +244,7 @@
     },
     {
       "active_by_default": false,
-      "canonical_question_count": 11,
+      "canonical_question_count": 10,
       "field_guide_count": 1,
       "guardian_candidate_count": 5,
       "instructional_status": "ready",
@@ -259,8 +259,8 @@
       ],
       "skill_count": 3,
       "snippet_count": 3,
-      "warmup_support_count": 3,
-      "worked_example_count": 5
+      "warmup_support_count": 12,
+      "worked_example_count": 6
     }
   ],
   "per_skill_inventory": [
@@ -1510,7 +1510,7 @@
         "33summer24_q09",
         "35autumn25_q11"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 proportionality language, derivative notation, and basic integration are repair support only: translate the rate statement into a derivative equation before any P3 mastery claim.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1544,12 +1544,16 @@
         "differential_equations.context_model_basic"
       ],
       "warmup_practice_ids": [
-        "gen_differential_context_model_basic_0001"
+        "gen_differential_context_model_basic_0001",
+        "gen_differential_equations_context_model_basic_0001",
+        "gen_differential_equations_context_model_basic_0002",
+        "gen_differential_equations_context_model_basic_0003"
       ],
-      "warmup_support_count": 1,
-      "worked_example_count": 1,
+      "warmup_support_count": 4,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-differential-context-model-001-example-1"
+        "p3-differential-context-model-001-example-1",
+        "p3-differential-context-model-001-example-2"
       ]
     },
     {
@@ -1622,7 +1626,7 @@
         "32summer25_q08",
         "35summer25_q11"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic substitution and basic integration are repair support only: check that a constant of integration exists before substituting a given point.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1656,9 +1660,12 @@
         "differential_equations.initial_condition_basic"
       ],
       "warmup_practice_ids": [
+        "gen_differential_equations_initial_condition_basic_0001",
+        "gen_differential_equations_initial_condition_basic_0002",
+        "gen_differential_equations_initial_condition_basic_0003",
         "gen_differential_initial_condition_basic_0001"
       ],
-      "warmup_support_count": 1,
+      "warmup_support_count": 4,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-differential-initial-condition-001-example-1",
@@ -1676,17 +1683,15 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 5,
+      "canonical_question_count": 4,
       "canonical_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
       ],
       "canonical_question_ids_routed_to_skill": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -1703,10 +1708,9 @@
       "instructional_status": "ready",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 5,
+      "mastery_evidence_question_count": 4,
       "mastery_evidence_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -1730,12 +1734,11 @@
       "practice_allowed_deferred_question_ids": [],
       "practice_allowed_question_ids": [
         "32autumn21_q07",
-        "32spring21_q04",
         "32summer21_q07",
         "33summer25_q10",
         "35summer25_q11"
       ],
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation notation and basic integration rules are repair support only: rehearse rearranging dy/dx equations and integrating simple powers before counting any P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -1769,9 +1772,12 @@
         "differential_equations.separation_basic"
       ],
       "warmup_practice_ids": [
+        "gen_differential_equations_separation_basic_0001",
+        "gen_differential_equations_separation_basic_0002",
+        "gen_differential_equations_separation_basic_0003",
         "gen_differential_separation_basic_0001"
       ],
-      "warmup_support_count": 1,
+      "warmup_support_count": 4,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-differential-separation-001-example-1",
@@ -4746,18 +4752,18 @@
       },
       {
         "app_routed_p3_question_count": 33,
-        "canonical_question_count": 11,
+        "canonical_question_count": 10,
         "region_id": "differential-shrine",
         "region_title": "Differential Shrine",
         "skill_count": 3
       }
     ],
     "p3_question_count": 396,
-    "referenced_canonical_question_count": 129,
-    "referenced_trainable_p3_question_count": 129,
+    "referenced_canonical_question_count": 128,
+    "referenced_trainable_p3_question_count": 128,
     "total_question_count": 1301,
     "trainable_p3_question_count": 396,
-    "unreferenced_trainable_p3_question_count": 267
+    "unreferenced_trainable_p3_question_count": 268
   },
   "region_summary": {
     "region_count": 9,

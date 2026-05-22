@@ -1286,6 +1286,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Leave the constant visible until the initial condition has been applied.",
       "explanation": "The constant belongs to the family of solutions after integration. Applying the condition too early removes the thing you need to determine.",
+      "mark_scheme_move_note": "Show the integrated general solution with a constant before substituting the given point.",
+      "misconception_repair_note": {
+        "wrong_move": "Substituting the initial condition into the differential equation.",
+        "why_it_fails": "The original rate equation does not contain the integration constant that the condition is meant to determine.",
+        "safer_move": "Integrate first, keep the constant visible, then substitute both coordinates into the integrated relation.",
+        "short_check": "Can you point to the constant before using the condition?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that depend on use an initial condition to find the constant in a differential-equation solution.",
         "recommended_before_question_ids": [],
@@ -1317,6 +1324,7 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
+        "example_model_id": "p3-differential-initial-condition-001-example-1",
         "legacy_skill_target_id": "p3_differential_equations",
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
@@ -1348,6 +1356,9 @@
       "worked_examples": [
         {
           "id": "p3-differential-initial-condition-001-example-1",
+          "question_type": "Initial condition in differential equations",
+          "key_method": "Use an initial condition after integration.",
+          "exam_move": "Leave the constant visible until the initial condition has been applied.",
           "prompt": "Use $y^2=x^2+C$ with $y=3$ when $x=1$.",
           "steps": [
             "Substitute the condition into the integrated relation.",
@@ -1359,6 +1370,9 @@
         },
         {
           "id": "p3-differential-initial-condition-001-example-2",
+          "question_type": "Initial condition in differential equations",
+          "key_method": "Use an initial condition after integration.",
+          "exam_move": "Leave the constant visible until the initial condition has been applied.",
           "prompt": "Solve $\\frac{dy}{dx}=2x$ with $y=5$ when $x=1$.",
           "steps": [
             "Integrate: $y=x^2+C$.",
@@ -1384,6 +1398,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
       "explanation": "This manual snippet focuses on separation of variables and the order of steps.",
+      "mark_scheme_move_note": "Show the separated-variable line before integrating both sides.",
+      "misconception_repair_note": {
+        "wrong_move": "Integrating while x and y terms are still mixed on the same side.",
+        "why_it_fails": "The integration step no longer matches a single-variable integral, so later constants and powers become unreliable.",
+        "safer_move": "Move y terms with dy and x terms with dx, then integrate each side separately.",
+        "short_check": "Before integrating, does each side contain only one variable family?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that ask for a particular solution from a first-order differential equation.",
         "recommended_before_question_ids": [],
@@ -1418,6 +1439,7 @@
         "difficulty_band": "easy",
         "estimated_time_minutes": 1,
         "review_status": "teacher_reviewed",
+        "example_model_id": "p3-differential-separation-001-example-1",
         "legacy_skill_target_id": "p3_differential_equations",
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
@@ -1448,6 +1470,9 @@
       "worked_examples": [
         {
           "id": "p3-differential-separation-001-example-1",
+          "question_type": "Separable differential equation",
+          "key_method": "Move y terms to one side and x terms to the other.",
+          "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
           "prompt": "Separate and integrate $\\frac{dy}{dx}=\\frac{2x}{y}$.",
           "steps": [
             "Separate variables: $y\\,dy=2x\\,dx$.",
@@ -1459,6 +1484,9 @@
         },
         {
           "id": "p3-differential-separation-001-example-2",
+          "question_type": "Differential equation model from proportionality",
+          "key_method": "Use a proportionality constant before separating variables.",
+          "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
           "prompt": "A rate is proportional to $\\frac{x}{y}$. Write a simple differential equation.",
           "steps": [
             "Use $\\frac{dy}{dx}$ for the rate of change of $y$ with respect to $x$.",
@@ -3256,6 +3284,13 @@
       "estimated_time_minutes": 4,
       "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
       "explanation": "Model formation is a translation step. The marks usually come from connecting words like proportional to, increasing, decreasing, remaining, or excess to a derivative.",
+      "mark_scheme_move_note": "State the proportional-rate model with variables and sign before solving or substituting values.",
+      "misconception_repair_note": {
+        "wrong_move": "Starting to integrate before the rate statement has been translated.",
+        "why_it_fails": "There is no reliable differential equation to solve, and the sign or proportional quantity can be wrong.",
+        "safer_move": "Name the changing quantity, identify what the rate is proportional to, add the constant, then choose the sign.",
+        "short_check": "Does the model show both the derivative and the quantity named in the words?"
+      },
       "guardian_readiness": {
         "readiness_note": "Use this before Guardian questions that begin with a rate context instead of a ready-made differential equation.",
         "recommended_before_question_ids": [],
@@ -3316,17 +3351,36 @@
       "topics": [
         "differential_equations"
       ],
-      "worked_example": {
-        "id": "p3-differential-context-model-001-example-1",
-        "prompt": "A population $P$ increases at a rate proportional to $P$. Write a model.",
-        "steps": [
-          "Use $dP/dt$ for the rate of change.",
-          "Proportional to $P$ means a constant multiple of $P$.",
-          "Since it increases, the sign is positive."
-        ],
-        "answer": "$\\frac{dP}{dt}=kP$",
-        "teaching_note": "The constant $k$ is found later from data or an initial condition."
-      },
+      "worked_examples": [
+        {
+          "id": "p3-differential-context-model-001-example-1",
+          "question_type": "Differential equation model from words",
+          "key_method": "Represent proportional rate statements with a constant of proportionality.",
+          "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+          "prompt": "A population $P$ increases at a rate proportional to $P$. Write a model.",
+          "steps": [
+            "Use $dP/dt$ for the rate of change.",
+            "Proportional to $P$ means a constant multiple of $P$.",
+            "Since it increases, the sign is positive."
+          ],
+          "answer": "$\\frac{dP}{dt}=kP$",
+          "teaching_note": "The constant $k$ is found later from data or an initial condition."
+        },
+        {
+          "id": "p3-differential-context-model-001-example-2",
+          "question_type": "Differential equation model from words",
+          "key_method": "Represent proportional rate statements with a constant of proportionality.",
+          "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+          "prompt": "A liquid volume $V$ decreases at a rate proportional to the volume remaining. Write a model.",
+          "steps": [
+            "Use $dV/dt$ for the rate of change of volume.",
+            "The quantity named is the volume remaining, so use $V$.",
+            "Decreases means the derivative is negative for positive $V$."
+          ],
+          "answer": "$\\frac{dV}{dt}=-kV$",
+          "teaching_note": "The sign comes from the direction of change, not from the letter chosen for the constant."
+        }
+      ],
       "legacy_skill_target_ids": [
         "p3_differential_equations"
       ],

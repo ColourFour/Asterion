@@ -2,7 +2,7 @@
   "clean_mastery_evidence_summary": {
     "skills_with_clean_mastery_evidence": 40,
     "skills_without_clean_mastery_evidence": 0,
-    "total_clean_mastery_evidence_links": 176
+    "total_clean_mastery_evidence_links": 175
   },
   "correction_priority_summary": {
     "priority_counts": {
@@ -683,7 +683,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Differential equations",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 proportionality language, derivative notation, and basic integration are repair support only: translate the rate statement into a derivative equation before any P3 mastery claim.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -732,7 +732,7 @@
       "needs_teacher_review": false,
       "official_syllabus_section": "Differential equations",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 algebraic substitution and basic integration are repair support only: check that a constant of integration exists before substituting a given point.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",
@@ -759,11 +759,10 @@
     },
     {
       "blocking_reasons": [],
-      "canonical_question_count": 5,
-      "clean_mastery_evidence_count": 5,
+      "canonical_question_count": 4,
+      "clean_mastery_evidence_count": 4,
       "clean_mastery_evidence_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -774,14 +773,14 @@
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
       "evidence_resilience_status": "healthy_evidence_count",
-      "export_allowed_evidence_count": 5,
+      "export_allowed_evidence_count": 4,
       "field_guide_status": "available",
       "guardian_candidate_count": 2,
       "mastery_eligible": true,
       "needs_teacher_review": false,
       "official_syllabus_section": "Differential equations",
       "practice_allowed_deferred_count": 0,
-      "prerequisite_notes": "",
+      "prerequisite_notes": "P1 differentiation notation and basic integration rules are repair support only: rehearse rearranging dy/dx equations and integrating simple powers before counting any P3 mastery evidence.",
       "prerequisite_skill_refs": [
         {
           "relationship": "supports",

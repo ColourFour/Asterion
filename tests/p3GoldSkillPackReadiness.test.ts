@@ -47,6 +47,7 @@ interface ReadinessReport {
     reasons: string[];
     warmup_role_gap_skill_count: number;
     worked_example_gap_skill_count: number;
+    source_backed_worked_example_gap_skill_count: number;
     missing_repair_note_skill_count: number;
   }>;
   skill_rows: Array<{
@@ -262,13 +263,47 @@ describe('P3 Gold Skill Pack readiness report', () => {
   });
 
   it('reports missing warm-up sequence roles without treating partial support as all missing', () => {
-    const report = readJson<ReadinessReport>(reportJsonPath);
-    const row = reportRow(report, 'p3_de_separation_setup');
+    withTempDir((dir) => {
+      const generatedPractice = readJson<{ items: Array<Record<string, unknown> & { skill_target_id?: string; sequence_role?: string }> }>(generatedPracticePath);
+      generatedPractice.items = generatedPractice.items.filter((item) => (
+        item.skill_target_id !== 'p3_de_separation_setup' || item.sequence_role === 'first_step'
+      ));
+      const generatedPracticeFixture = path.join(dir, 'generated-practice-partial-warmup.json');
+      writeJson(generatedPracticeFixture, generatedPractice);
 
-    expect(row.warmup_roles_present).toEqual(['first_step']);
-    expect(row.warmup_roles_missing).toEqual(['complete_step', 'guardian_prep']);
-    expect(row.blockers).not.toContain('missing_all_warmup_support');
-    expect(row.warnings).toContain('missing_some_warmup_sequence_roles');
+      const { report } = buildReadinessToTemp(dir, { generatedPractice: generatedPracticeFixture });
+      const row = reportRow(report, 'p3_de_separation_setup');
+
+      expect(row.warmup_roles_present).toEqual(['first_step']);
+      expect(row.warmup_roles_missing).toEqual(['complete_step', 'guardian_prep']);
+      expect(row.blockers).not.toContain('missing_all_warmup_support');
+      expect(row.warnings).toContain('missing_some_warmup_sequence_roles');
+    });
+  });
+
+  it('reports Phase 2B Differential Shrine repairs and full warm-up role breadth without promoting support to mastery', () => {
+    const report = readJson<ReadinessReport>(reportJsonPath);
+    const differentialSkills = [
+      'p3_de_separation_setup',
+      'p3_de_initial_condition',
+      'p3_de_forming_context_model',
+    ];
+
+    for (const skillId of differentialSkills) {
+      const row = reportRow(report, skillId);
+
+      expect(row.misconception_repair_status).toBe('available');
+      expect(row.prerequisite_repair_status).toBe('available');
+      expect(row.mark_scheme_move_note_status).toBe('available');
+      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.support_content_status).toBe('separated');
+      expect(row.source_backed_worked_example_count).toBe(0);
+      expect(row.warnings).not.toContain('missing_misconception_repair_note');
+      expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
+      expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
+    }
   });
 
   it('fails hard for a published source-backed worked example using non-clean evidence', () => {
@@ -366,6 +401,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(
         item.warmup_role_gap_skill_count
           + item.worked_example_gap_skill_count
+          + item.source_backed_worked_example_gap_skill_count
           + item.missing_repair_note_skill_count,
       ).toBeGreaterThan(0);
     }

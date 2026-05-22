@@ -2674,6 +2674,269 @@
       ]
     },
     {
+      "answer": "(1/y) dy = 3x^2 dx",
+      "difficulty_band": "easy",
+      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms to one side and x terms to the other.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "separate_first",
+        "k": 3,
+        "power": 2,
+        "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0001",
+      "prompt": "For dy/dx = 3x^2y, write a separated-variable first line.",
+      "question_type": "Separable differential equation",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001",
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Move every y expression to the dy side and every x expression to the dx side.",
+        "Divide by y before integrating.",
+        "The separated first line is (1/y) dy = 3x^2 dx."
+      ]
+    },
+    {
+      "answer": "y = 5e^(x^2)",
+      "difficulty_band": "medium",
+      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms to one side and x terms to the other.",
+      "paper_family": "p3",
+      "parameters": {
+        "exponent_coefficient": 1,
+        "item_type": "solve_exponential",
+        "k": 2,
+        "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "y0": 5
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0002",
+      "prompt": "Solve dy/dx = 2xy given y(0) = 5.",
+      "question_type": "Separable differential equation",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001",
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Separate variables: (1/y) dy = 2x dx.",
+        "Integrate to get ln y = x^2 + C.",
+        "Use y(0) = 5, so e^C = 5.",
+        "Therefore y = 5e^(x^2)."
+      ]
+    },
+    {
+      "answer": "y = 5",
+      "difficulty_band": "medium",
+      "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
+      "example_model_id": "p3-differential-separation-001-example-1",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms to one side and x terms to the other.",
+      "paper_family": "p3",
+      "parameters": {
+        "final_y": 5,
+        "item_type": "initial_condition_value",
+        "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "x_value": 4,
+        "y0": 3
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0003",
+      "prompt": "For dy/dx = x/y with y(0) = 3, find y when x = 4, taking the positive branch.",
+      "question_type": "Separable differential equation",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_separation_setup",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001",
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Separate variables: y dy = x dx.",
+        "Integrate to get y^2/2 = x^2/2 + C.",
+        "Using y(0) = 3 gives y^2 = x^2 + 9.",
+        "At x = 4, y^2 = 25, so the positive value is y = 5."
+      ]
+    },
+    {
+      "answer": "C = 8",
+      "difficulty_band": "easy",
+      "exam_move": "Leave the constant visible until the initial condition has been applied.",
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Use an initial condition after integration.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 8,
+        "item_type": "constant_from_relation",
+        "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "x0": 1,
+        "y0": 3
+      },
+      "practice_id": "gen_differential_equations_initial_condition_basic_0001",
+      "prompt": "Given the integrated relation y^2 = x^2 + C and y = 3 when x = 1, find C.",
+      "question_type": "Initial condition in differential equations",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_initial_condition",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use the condition in the integrated relation, not in the original differential equation.",
+        "Substitute y = 3 and x = 1: 9 = 1 + C.",
+        "So C = 8."
+      ]
+    },
+    {
+      "answer": "y = 4e^(2x^2)",
+      "difficulty_band": "medium",
+      "exam_move": "Leave the constant visible until the initial condition has been applied.",
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Use an initial condition after integration.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "item_type": "particular_exponential",
+        "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "y0": 4
+      },
+      "practice_id": "gen_differential_equations_initial_condition_basic_0002",
+      "prompt": "A general solution is y = Ae^(2x^2). If y = 4 when x = 0, write the particular solution.",
+      "question_type": "Initial condition in differential equations",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_initial_condition",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Substitute the given point after the general solution is known.",
+        "4 = Ae^0, so A = 4.",
+        "The particular solution is y = 4e^(2x^2)."
+      ]
+    },
+    {
+      "answer": "y = 5",
+      "difficulty_band": "medium",
+      "exam_move": "Leave the constant visible until the initial condition has been applied.",
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Use an initial condition after integration.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 9,
+        "final_y": 5,
+        "item_type": "value_from_relation",
+        "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "x0": 0,
+        "x_value": 4,
+        "y0": 3
+      },
+      "practice_id": "gen_differential_equations_initial_condition_basic_0003",
+      "prompt": "For y^2 = x^2 + C, y = 3 when x = 0. Find the positive y when x = 4.",
+      "question_type": "Initial condition in differential equations",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_initial_condition",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "First find C: 9 = 0 + C, so C = 9.",
+        "At x = 4, y^2 = 16 + 9 = 25.",
+        "The positive value is y = 5."
+      ]
+    },
+    {
       "answer": "2x + 2y dy/dx = 0",
       "difficulty_band": "easy",
       "exam_move": "Differentiate both sides, collect all $dy/dx$ terms, then factor and divide.",
@@ -2921,6 +3184,133 @@
         "Integrate 4x - x^2 to get 2x^2 - x^3/3.",
         "Substitute 4 and 0.",
         "The area is 32/3."
+      ]
+    },
+    {
+      "answer": "dy/dx = 3y",
+      "difficulty_band": "easy",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent proportional rate statements with a constant of proportionality.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "proportional_model",
+        "k": 3,
+        "safe_bounds": "positive context values with exact rational rate constants",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0001",
+      "prompt": "A quantity y grows at a rate proportional to y with constant 3. Write the differential equation.",
+      "question_type": "Differential equation model from words",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Rate proportional to y means derivative equals a constant times y.",
+        "The proportionality constant is 3.",
+        "So dy/dx = 3y."
+      ]
+    },
+    {
+      "answer": "k = 1/2",
+      "difficulty_band": "easy",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent proportional rate statements with a constant of proportionality.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "find_rate_constant",
+        "k": "1/2",
+        "rate": 5,
+        "safe_bounds": "positive context values with exact rational rate constants",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "value": 10
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0002",
+      "prompt": "If dy/dt = ky, y = 10, and dy/dt = 5, find k.",
+      "question_type": "Differential equation model from words",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Substitute the given values into dy/dt = ky: 5 = k(10).",
+        "Divide by 10.",
+        "So k = 1/2."
+      ]
+    },
+    {
+      "answer": "dP/dt = (1/5)P",
+      "difficulty_band": "medium",
+      "exam_move": "Define the changing quantity, then write the rate equation before separating variables.",
+      "example_model_id": "p3-differential-context-model-001-example-1",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent proportional rate statements with a constant of proportionality.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "write_model_from_rate",
+        "k": "1/5",
+        "rate": 4,
+        "safe_bounds": "positive context values with exact rational rate constants",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "value": 20
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0003",
+      "prompt": "A population P is 20 when its rate of increase is 4. If dP/dt = kP, write the model.",
+      "question_type": "Differential equation model from words",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_forming_context_model",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use dP/dt = kP with P = 20 and dP/dt = 4.",
+        "This gives 4 = 20k, so k = 1/5.",
+        "Therefore the model is dP/dt = (1/5)P."
       ]
     },
     {
@@ -3510,8 +3900,8 @@
   ],
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 0,
-  "published_runtime_count": 84,
-  "runtime_reviewed_count": 84,
+  "published_runtime_count": 93,
+  "runtime_reviewed_count": 93,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Runtime app-facing reviewed warm-up practice.",

@@ -70,6 +70,7 @@ NUMERICAL_TOPIC = "numerical_methods"
 NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY = "numerical_methods.sign_change_iteration_basic"
 DIFFERENTIAL_EQUATIONS_TOPIC = "differential_equations"
 DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY = "differential_equations.separation_basic"
+DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY = "differential_equations.initial_condition_basic"
 DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY = "differential_equations.context_model_basic"
 PAPER_FAMILY = "p3"
 SEQUENCE_ROLES = ("first_step", "complete_step", "guardian_prep")
@@ -108,6 +109,7 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     VECTORS_LINE_INTERSECTION_FAMILY: "p3_vec_line_equations_intersections",
     NUMERICAL_SIGN_CHANGE_ITERATION_FAMILY: "p3_num_sign_change_graph_evidence",
     DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY: "p3_de_separation_setup",
+    DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY: "p3_de_initial_condition",
     DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY: "p3_de_forming_context_model",
     DIFFERENTIATION_STATIONARY_TANGENT_FAMILY: "p3_diff_stationary_tangent_normal",
 }
@@ -126,6 +128,9 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     INTEGRATION_PARTS_SUBSTITUTION_FAMILY,
     COMPLEX_CARTESIAN_CONJUGATE_FAMILY,
     DIFFERENTIATION_STATIONARY_TANGENT_FAMILY,
+    DIFFERENTIAL_EQUATIONS_SEPARATION_FAMILY,
+    DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY,
+    DIFFERENTIAL_EQUATIONS_CONTEXT_MODEL_FAMILY,
 }
 
 
@@ -2474,6 +2479,78 @@ def build_differential_equations_items(context: dict[str, Any]) -> list[dict[str
     return [build_differential_equations_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
+def build_differential_initial_condition_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_differential_equations_initial_condition_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"constant_from_relation", "particular_exponential", "value_from_relation"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
+    }
+
+    if item_type == "constant_from_relation":
+        y0 = int_parameter(case, "y0", practice_id, min_value=1, max_value=9)
+        x0 = int_parameter(case, "x0", practice_id, min_value=0, max_value=6)
+        constant = y0 * y0 - x0 * x0
+        prompt = f"Given the integrated relation y^2 = x^2 + C and y = {y0} when x = {x0}, find C."
+        answer = f"C = {constant}"
+        worked_solution = [
+            "Use the condition in the integrated relation, not in the original differential equation.",
+            f"Substitute y = {y0} and x = {x0}: {y0 * y0} = {x0 * x0} + C.",
+            f"So C = {constant}.",
+        ]
+        parameters.update({"y0": y0, "x0": x0, "constant": constant})
+    elif item_type == "particular_exponential":
+        y0 = int_parameter(case, "y0", practice_id, min_value=1, max_value=9)
+        a = int_parameter(case, "a", practice_id, min_value=1, max_value=5)
+        prompt = f"A general solution is y = Ae^({a}x^2). If y = {y0} when x = 0, write the particular solution."
+        answer = f"y = {y0}e^({a}x^2)"
+        worked_solution = [
+            "Substitute the given point after the general solution is known.",
+            f"{y0} = Ae^0, so A = {y0}.",
+            f"The particular solution is {answer}.",
+        ]
+        parameters.update({"y0": y0, "a": a})
+    else:
+        y0 = int_parameter(case, "y0", practice_id, min_value=1, max_value=9)
+        x0 = int_parameter(case, "x0", practice_id, min_value=0, max_value=6)
+        x_value = int_parameter(case, "x_value", practice_id, min_value=1, max_value=12)
+        constant = y0 * y0 - x0 * x0
+        final_y = integer_square_root(x_value * x_value + constant, practice_id, "final y squared")
+        prompt = f"For y^2 = x^2 + C, y = {y0} when x = {x0}. Find the positive y when x = {x_value}."
+        answer = f"y = {final_y}"
+        worked_solution = [
+            f"First find C: {y0 * y0} = {x0 * x0} + C, so C = {constant}.",
+            f"At x = {x_value}, y^2 = {x_value * x_value} + {constant} = {final_y * final_y}.",
+            f"The positive value is y = {final_y}.",
+        ]
+        parameters.update({"y0": y0, "x0": x0, "x_value": x_value, "constant": constant, "final_y": final_y})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=DIFFERENTIAL_EQUATIONS_INITIAL_CONDITION_FAMILY,
+        topic=DIFFERENTIAL_EQUATIONS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, DIFFERENTIAL_EQUATIONS_TOPIC, ["p3-differential-initial-condition-001"]),
+    )
+
+
+def build_differential_initial_condition_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "constant_from_relation", "y0": 3, "x0": 1, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "particular_exponential", "y0": 4, "a": 2, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "value_from_relation", "y0": 3, "x0": 0, "x_value": 4, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_differential_initial_condition_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
 def build_differentiation_implicit_log_exp_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_differentiation_implicit_log_exp_basic_{index:04d}"
     item_type = item_type_parameter(case, practice_id, {"implicit_setup", "implicit_solve", "implicit_log_relation"})
@@ -2982,6 +3059,7 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_vectors_line_scalar_items(context)
         + build_numerical_sign_change_iteration_items(context)
         + build_differential_equations_items(context)
+        + build_differential_initial_condition_items(context)
         + build_differentiation_implicit_log_exp_items(context)
         + build_integration_definite_area_items(context)
         + build_complex_cartesian_locus_roots_items(context)

@@ -569,6 +569,8 @@ def thin_region_reasons(region_rows: list[dict[str, Any]]) -> list[str]:
         reasons.append("fewer warm-ups")
     if any(row["worked_example_count"] < 2 for row in region_rows):
         reasons.append("fewer worked examples")
+    if any(row["source_backed_worked_example_count"] < 2 for row in region_rows):
+        reasons.append("source-backed examples sparse")
     if any(row["clean_evidence_count"] <= 1 for row in region_rows):
         reasons.append("low clean evidence count")
     if any(
@@ -598,6 +600,7 @@ def thin_region_priority_summary(rows: list[dict[str, Any]]) -> list[dict[str, A
             "warning_only_skill_count": sum(1 for row in region_rows if not row["blockers"] and row["warnings"]),
             "warmup_role_gap_skill_count": sum(1 for row in region_rows if row["warmup_roles_missing"]),
             "worked_example_gap_skill_count": sum(1 for row in region_rows if row["worked_example_count"] < 2),
+            "source_backed_worked_example_gap_skill_count": sum(1 for row in region_rows if row["source_backed_worked_example_count"] < 2),
             "low_clean_evidence_skill_count": sum(1 for row in region_rows if row["clean_evidence_count"] <= 1),
             "missing_repair_note_skill_count": sum(
                 1

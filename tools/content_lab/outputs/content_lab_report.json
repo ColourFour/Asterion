@@ -98,7 +98,7 @@
       "snippets_with_examples": 3
     },
     {
-      "generated_warmups": 3,
+      "generated_warmups": 12,
       "quick_checks": 3,
       "region_id": "differential-shrine",
       "region_name": "Differential Shrine",
@@ -201,8 +201,8 @@
     "review_only": 1213
   },
   "content_review_status_counts": {
-    "generated_practice:needs_review": 24,
-    "generated_practice:teacher_reviewed": 69,
+    "generated_practice:needs_review": 18,
+    "generated_practice:teacher_reviewed": 78,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 36
   },
@@ -224,6 +224,7 @@
     },
     "differential_equations": {
       "differential_equations.context_model_basic": 3,
+      "differential_equations.initial_condition_basic": 3,
       "differential_equations.separation_basic": 3
     },
     "differentiation": {
@@ -271,7 +272,7 @@
     "algebra-forge": 24,
     "calculus-cliffs": 12,
     "complex-harbor": 6,
-    "differential-shrine": 3,
+    "differential-shrine": 12,
     "integration-gardens": 15,
     "logarithm-grove": 12,
     "numerical-mines": 3,
@@ -290,6 +291,7 @@
     "complex_numbers.cartesian_locus_roots_basic": 3,
     "complex_numbers.modulus_argument_basic": 3,
     "differential_equations.context_model_basic": 3,
+    "differential_equations.initial_condition_basic": 3,
     "differential_equations.separation_basic": 3,
     "differentiation.chain_product_basic": 3,
     "differentiation.implicit_log_exp_basic": 3,
@@ -391,6 +393,7 @@
       "complex_numbers.cartesian_locus_roots_basic": 3,
       "complex_numbers.modulus_argument_basic": 3,
       "differential_equations.context_model_basic": 3,
+      "differential_equations.initial_condition_basic": 3,
       "differential_equations.separation_basic": 3,
       "differentiation.chain_product_basic": 3,
       "differentiation.implicit_log_exp_basic": 3,
@@ -414,21 +417,21 @@
     },
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
-    "needs_review_internal_count": 24,
+    "needs_review_internal_count": 18,
     "published_runtime_count": 0,
     "review_status_counts": {
-      "needs_review": 24,
-      "teacher_reviewed": 69
+      "needs_review": 18,
+      "teacher_reviewed": 78
     },
-    "runtime_reviewed_count": 69,
-    "total_count": 93,
+    "runtime_reviewed_count": 78,
+    "total_count": 96,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
     "algebra-forge": 24,
     "calculus-cliffs": 9,
     "complex-harbor": 3,
-    "differential-shrine": 0,
+    "differential-shrine": 9,
     "integration-gardens": 15,
     "logarithm-grove": 12,
     "numerical-mines": 0,
@@ -504,9 +507,9 @@
       "complex_numbers.locus_basic": 1,
       "complex_numbers.modulus_argument_basic": 1,
       "complex_numbers.roots_basic": 1,
-      "differential_equations.context_model_basic": 1,
-      "differential_equations.initial_condition_basic": 1,
-      "differential_equations.separation_basic": 1,
+      "differential_equations.context_model_basic": 4,
+      "differential_equations.initial_condition_basic": 4,
+      "differential_equations.separation_basic": 4,
       "differentiation.chain_product_basic": 3,
       "differentiation.chain_rule_basic": 1,
       "differentiation.implicit_log_exp_basic": 3,
@@ -535,12 +538,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 84,
+    "published_runtime_count": 93,
     "review_status_counts": {
-      "teacher_reviewed": 84
+      "teacher_reviewed": 93
     },
-    "runtime_reviewed_count": 84,
-    "total_count": 84,
+    "runtime_reviewed_count": 93,
+    "total_count": 93,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -1002,6 +1005,24 @@
       "practice_id": "gen_differential_equations_context_model_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-differential-context-model-001"
+    },
+    {
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "practice_id": "gen_differential_equations_initial_condition_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-differential-initial-condition-001"
+    },
+    {
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "practice_id": "gen_differential_equations_initial_condition_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-differential-initial-condition-001"
+    },
+    {
+      "example_model_id": "p3-differential-initial-condition-001-example-1",
+      "practice_id": "gen_differential_equations_initial_condition_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-differential-initial-condition-001"
     },
     {
       "example_model_id": "p3-differential-separation-001-example-1",

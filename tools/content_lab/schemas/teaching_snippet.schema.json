@@ -68,6 +68,18 @@
             "type": "array",
             "items": { "type": "string", "minLength": 1 }
           },
+          "misconception_repair_note": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["wrong_move", "why_it_fails", "safer_move", "short_check"],
+            "properties": {
+              "wrong_move": { "type": "string", "minLength": 1 },
+              "why_it_fails": { "type": "string", "minLength": 1 },
+              "safer_move": { "type": "string", "minLength": 1 },
+              "short_check": { "type": "string", "minLength": 1 }
+            }
+          },
+          "mark_scheme_move_note": { "type": "string", "minLength": 1 },
           "worked_example": {
             "$ref": "#/$defs/workedExample"
           },

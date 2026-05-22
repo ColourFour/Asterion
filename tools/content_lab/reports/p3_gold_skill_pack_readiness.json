@@ -25,7 +25,7 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-22T04:50:39.423060+00:00",
+  "generated_at": "2026-05-22T05:14:44.131649+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
@@ -67,15 +67,15 @@
     },
     {
       "blocked_skill_count": 0,
-      "missing_repair_note_skill_count": 3,
+      "missing_repair_note_skill_count": 0,
       "mvp_gold_ready_count": 0,
       "region": "Differential Shrine",
       "region_id": "differential-shrine",
       "skill_count": 3,
       "thin_evidence_skill_count": 0,
-      "warmup_role_gap_skill_count": 3,
+      "warmup_role_gap_skill_count": 0,
       "warning_only_skill_count": 3,
-      "worked_example_gap_skill_count": 1
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -871,16 +871,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Differential equations",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-differential-context-model-001-qc"
       ],
@@ -896,28 +900,26 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 1,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
-        "gen_differential_context_model_basic_0001"
+        "gen_differential_context_model_basic_0001",
+        "gen_differential_equations_context_model_basic_0001",
+        "gen_differential_equations_context_model_basic_0002",
+        "gen_differential_equations_context_model_basic_0003"
       ],
-      "warmup_roles_missing": [
-        "first_step",
-        "complete_step"
-      ],
+      "warmup_roles_missing": [],
       "warmup_roles_present": [
+        "first_step",
+        "complete_step",
         "guardian_prep"
       ],
       "warnings": [
-        "fewer_than_two_worked_examples",
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
-        "missing_some_warmup_sequence_roles",
         "source_backed_worked_examples_sparse"
       ],
-      "worked_example_count": 1,
+      "worked_example_count": 2,
       "worked_example_ids": [
-        "p3-differential-context-model-001-example-1"
+        "p3-differential-context-model-001-example-1",
+        "p3-differential-context-model-001-example-2"
       ]
     },
     {
@@ -936,16 +938,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Differential equations",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-differential-initial-condition-001-qc"
       ],
@@ -961,22 +967,20 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 1,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
+        "gen_differential_equations_initial_condition_basic_0001",
+        "gen_differential_equations_initial_condition_basic_0002",
+        "gen_differential_equations_initial_condition_basic_0003",
         "gen_differential_initial_condition_basic_0001"
       ],
-      "warmup_roles_missing": [
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
         "first_step",
+        "complete_step",
         "guardian_prep"
       ],
-      "warmup_roles_present": [
-        "complete_step"
-      ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
-        "missing_some_warmup_sequence_roles",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -987,10 +991,9 @@
     },
     {
       "blockers": [],
-      "clean_evidence_count": 5,
+      "clean_evidence_count": 4,
       "clean_evidence_question_ids": [
         "32summer21_q07",
-        "32spring21_q04",
         "32autumn21_q07",
         "35summer25_q11",
         "33summer25_q10"
@@ -1001,16 +1004,20 @@
       ],
       "field_guide_status": "available",
       "future_enhancements": [],
-      "mark_scheme_move_note_ids": [],
-      "mark_scheme_move_note_status": "missing",
+      "mark_scheme_move_note_ids": [
+        "p3-differential-separation-001"
+      ],
+      "mark_scheme_move_note_status": "available",
       "mastery_policy_status": "available",
-      "misconception_repair_ids": [],
-      "misconception_repair_status": "missing",
+      "misconception_repair_ids": [
+        "p3-differential-separation-001"
+      ],
+      "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Differential equations",
       "prerequisite_ref_status": "support_only",
-      "prerequisite_repair_status": "missing",
+      "prerequisite_repair_status": "available",
       "quick_check_ids": [
         "p3-differential-separation-001-qc"
       ],
@@ -1026,22 +1033,20 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 1,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
+        "gen_differential_equations_separation_basic_0001",
+        "gen_differential_equations_separation_basic_0002",
+        "gen_differential_equations_separation_basic_0003",
         "gen_differential_separation_basic_0001"
       ],
-      "warmup_roles_missing": [
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
+        "first_step",
         "complete_step",
         "guardian_prep"
       ],
-      "warmup_roles_present": [
-        "first_step"
-      ],
       "warnings": [
-        "missing_mark_scheme_move_note",
-        "missing_misconception_repair_note",
-        "missing_prerequisite_repair_note",
-        "missing_some_warmup_sequence_roles",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -2768,11 +2773,11 @@
     "thin_resilience_risk_skill_count": 1,
     "total_reviewed_p3_skills": 40,
     "warning_counts": {
-      "fewer_than_two_worked_examples": 18,
-      "missing_mark_scheme_move_note": 40,
-      "missing_misconception_repair_note": 35,
-      "missing_prerequisite_repair_note": 40,
-      "missing_some_warmup_sequence_roles": 14,
+      "fewer_than_two_worked_examples": 17,
+      "missing_mark_scheme_move_note": 37,
+      "missing_misconception_repair_note": 32,
+      "missing_prerequisite_repair_note": 37,
+      "missing_some_warmup_sequence_roles": 11,
       "source_backed_worked_examples_sparse": 38,
       "thin_evidence_resilience": 1
     },
@@ -2782,21 +2787,19 @@
     {
       "blocked_skill_count": 0,
       "low_clean_evidence_skill_count": 0,
-      "missing_repair_note_skill_count": 3,
+      "missing_repair_note_skill_count": 0,
       "mvp_gold_ready_count": 0,
       "priority_rank": 1,
       "reasons": [
-        "missing sequence-role breadth",
-        "fewer warm-ups",
-        "fewer worked examples",
-        "missing repair tags"
+        "source-backed examples sparse"
       ],
       "region": "Differential Shrine",
       "region_id": "differential-shrine",
       "skill_count": 3,
-      "warmup_role_gap_skill_count": 3,
+      "source_backed_worked_example_gap_skill_count": 3,
+      "warmup_role_gap_skill_count": 0,
       "warning_only_skill_count": 3,
-      "worked_example_gap_skill_count": 1
+      "worked_example_gap_skill_count": 0
     },
     {
       "blocked_skill_count": 0,
@@ -2808,11 +2811,13 @@
         "missing sequence-role breadth",
         "fewer warm-ups",
         "fewer worked examples",
+        "source-backed examples sparse",
         "missing repair tags"
       ],
       "region": "Iteration Forge",
       "region_id": "numerical-mines",
       "skill_count": 3,
+      "source_backed_worked_example_gap_skill_count": 3,
       "warmup_role_gap_skill_count": 3,
       "warning_only_skill_count": 3,
       "worked_example_gap_skill_count": 3
@@ -2827,11 +2832,13 @@
         "missing sequence-role breadth",
         "fewer warm-ups",
         "fewer worked examples",
+        "source-backed examples sparse",
         "missing repair tags"
       ],
       "region": "Vectors Gate",
       "region_id": "vector-workshop",
       "skill_count": 3,
+      "source_backed_worked_example_gap_skill_count": 3,
       "warmup_role_gap_skill_count": 3,
       "warning_only_skill_count": 3,
       "worked_example_gap_skill_count": 2
@@ -2846,11 +2853,13 @@
         "missing sequence-role breadth",
         "fewer warm-ups",
         "fewer worked examples",
+        "source-backed examples sparse",
         "missing repair tags"
       ],
       "region": "Argand Atrium",
       "region_id": "complex-harbor",
       "skill_count": 4,
+      "source_backed_worked_example_gap_skill_count": 4,
       "warmup_role_gap_skill_count": 3,
       "warning_only_skill_count": 4,
       "worked_example_gap_skill_count": 1

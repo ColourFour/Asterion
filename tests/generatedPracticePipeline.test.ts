@@ -900,8 +900,6 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'vectors.line_scalar_product_basic',
         'vectors.line_intersection_basic',
         'numerical_methods.sign_change_iteration_basic',
-        'differential_equations.separation_basic',
-        'differential_equations.context_model_basic',
       ];
 
       for (const family of families) {
@@ -929,6 +927,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         ['integration.definite_area_basic', 'p3_int_definite_improper_area'],
         ['integration.parts_substitution_basic', 'p3_int_parts_substitution'],
         ['complex_numbers.cartesian_conjugate_basic', 'p3_complex_cartesian_conjugate'],
+        ['differential_equations.separation_basic', 'p3_de_separation_setup'],
+        ['differential_equations.initial_condition_basic', 'p3_de_initial_condition'],
+        ['differential_equations.context_model_basic', 'p3_de_forming_context_model'],
       ] as const;
       for (const [family, skillTargetId] of promotedFamilies) {
         const familyItems = items.filter((item) => item.generator_family === family);
@@ -950,6 +951,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(items.find((item) => item.generator_family === 'complex_numbers.cartesian_locus_roots_basic' && item.sequence_role === 'guardian_prep')?.answer).toContain('sqrt(3)i');
       expect(items.find((item) => item.generator_family === 'vectors.line_scalar_product_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('cos theta = 8/9');
       expect(items.find((item) => item.generator_family === 'differential_equations.separation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y = 5');
+      expect(items.find((item) => item.generator_family === 'differential_equations.initial_condition_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y = 5');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -977,6 +979,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       ['build_vectors_line_intersection_item', { item_type: 'point_on_line_parameter', lambda_value: 3, sequence_role: 'guardian_prep' }],
       ['build_numerical_sign_change_iteration_item', { item_type: 'sign_change', constant: 5, left: 3, right: 4, sequence_role: 'first_step' }],
       ['build_differential_equations_item', { item_type: 'initial_condition_value', y0: 2, x_value: 4, sequence_role: 'guardian_prep' }],
+      ['build_differential_initial_condition_item', { item_type: 'value_from_relation', y0: 2, x0: 0, x_value: 4, sequence_role: 'guardian_prep' }],
       ['build_differential_equations_context_model_item', { item_type: 'find_rate_constant', value: 0, rate: 5, sequence_role: 'complete_step' }],
     ];
 
@@ -1027,6 +1030,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'complex_numbers.cartesian_locus_roots_basic': 3,
         'complex_numbers.cartesian_conjugate_basic': 3,
         'differential_equations.context_model_basic': 3,
+        'differential_equations.initial_condition_basic': 3,
         'differential_equations.separation_basic': 3,
         'differentiation.chain_product_basic': 3,
         'differentiation.implicit_log_exp_basic': 3,
@@ -1044,7 +1048,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'algebra-forge': 24,
         'calculus-cliffs': 9,
         'complex-harbor': 3,
-        'differential-shrine': 0,
+        'differential-shrine': 9,
         'integration-gardens': 15,
         'numerical-mines': 0,
         'trig-observatory': 12,
