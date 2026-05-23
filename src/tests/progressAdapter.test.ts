@@ -86,10 +86,10 @@ describe('local progress adapter', () => {
 
     const withAvatar = localProgressAdapter.saveAvatarSettings({
       ...emptyProgress().avatar,
-      equipped: { ...DEFAULT_EQUIPPED_AVATAR_ITEMS, cloak: 'apprentice-cloak' },
+      equipped: { ...DEFAULT_EQUIPPED_AVATAR_ITEMS, hair: 'shoulder-length-straight' },
     });
 
-    expect(withAvatar.avatar.equipped?.cloak).toBe('apprentice-cloak');
+    expect(withAvatar.avatar.equipped?.hair).toBe('shoulder-length-straight');
 
     const withAttempt = localProgressAdapter.addAttempt({
       ...attempt,
@@ -189,9 +189,9 @@ describe('local progress adapter', () => {
 
     expect(loaded.schemaVersion).toBe(CURRENT_PROGRESS_SCHEMA_VERSION);
     expect(loaded.settings.activePaperFamily).toBe('p3');
-    expect(loaded.avatar.equipped?.base).toBe('academy-student-base');
-    expect(loaded.avatar.equipped?.outfit).toBe('academy-uniform');
-    expect(loaded.avatar.equipped?.cloak).toBe('apprentice-cloak');
+    expect(loaded.avatar.equipped?.base).toBe('student-body-a');
+    expect(loaded.avatar.equipped?.outfit).toBe('school-spirit-tracksuit');
+    expect(loaded.avatar.equipped?.cloak).toBe('no-cloak');
     expect(loaded.attempts).toHaveLength(1);
     expect(loaded.learningActivityAttempts).toHaveLength(1);
     expect(loaded.topicProfiles.Algebra.rank).toBe('none');
@@ -277,7 +277,7 @@ describe('local progress adapter', () => {
     localProgressAdapter.saveAvatarSettings({
       ...emptyProgress().avatar,
       crest: 'compass',
-      equipped: { ...DEFAULT_EQUIPPED_AVATAR_ITEMS, cloak: 'apprentice-cloak' },
+      equipped: { ...DEFAULT_EQUIPPED_AVATAR_ITEMS, hair: 'shoulder-length-straight' },
     });
     localProgressAdapter.completeRegionFieldGuide('logarithm-grove');
     localProgressAdapter.addLearningActivityAttempt({
@@ -321,7 +321,7 @@ describe('local progress adapter', () => {
       },
     });
     expect(reloaded.avatar.crest).toBe('compass');
-    expect(reloaded.avatar.equipped?.cloak).toBe('apprentice-cloak');
+    expect(reloaded.avatar.equipped?.hair).toBe('shoulder-length-straight');
     expect(reloaded.learningActivityAttempts).toHaveLength(1);
     expect(reloaded.attempts).toHaveLength(1);
     expect(reloaded.attempts[0]).toMatchObject({
@@ -454,7 +454,7 @@ describe('local progress adapter', () => {
 
     expect(loaded.avatar.palette).toBe('ember');
     expect(loaded.avatar.crest).toBe('star');
-    expect(loaded.avatar.equipped?.base).toBe('academy-student-base');
+    expect(loaded.avatar.equipped?.base).toBe('student-body-a');
     expect(loaded.avatar.equipped?.cloak).toBe('no-cloak');
   });
 

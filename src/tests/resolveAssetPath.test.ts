@@ -62,8 +62,8 @@ describe('resolveQuestionAssetPath', () => {
   });
 
   it('normalizes public avatar asset paths without component-specific path logic', () => {
-    expect(resolvePublicAssetPath('public/assets/avatar/base/academy-student-base.png')).toBe('/assets/avatar/base/academy-student-base.png');
-    expect(resolvePublicAssetPath('/assets/avatar/hair/practical-crop.png')).toBe('/assets/avatar/hair/practical-crop.png');
+    expect(resolvePublicAssetPath('public/assets/avatar-v0.2/base/student-body-a.png')).toBe('/assets/avatar-v0.2/base/student-body-a.png');
+    expect(resolvePublicAssetPath('/assets/avatar-v0.2/hair/tousled-short.png')).toBe('/assets/avatar-v0.2/hair/tousled-short.png');
     expect(resolvePublicAssetPath(undefined)).toBe('');
   });
 });

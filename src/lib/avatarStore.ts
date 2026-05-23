@@ -6,15 +6,15 @@ const palettes: AvatarSettings['palette'][] = ['ember', 'aqua', 'violet', 'leaf'
 const crests: AvatarSettings['crest'][] = ['star', 'bolt', 'compass', 'orb'];
 
 export const DEFAULT_EQUIPPED_AVATAR_ITEMS: Record<AvatarSlot, string> = {
-  base: 'academy-student-base',
-  hair: 'practical-crop',
-  face: 'focused-face',
-  outfit: 'academy-uniform',
+  base: 'student-body-a',
+  hair: 'tousled-short',
+  face: 'confident-smile',
+  outfit: 'school-spirit-tracksuit',
   cloak: 'no-cloak',
   accessory: 'no-accessory',
   aura: 'no-aura',
   companion: 'no-companion',
-  frame: 'plain-academy-frame',
+  frame: 'no-frame',
 };
 
 export const DEFAULT_AVATAR_SETTINGS: AvatarSettings = {

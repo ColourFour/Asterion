@@ -3,19 +3,17 @@ import { AVATAR_CATALOG, AVATAR_SLOTS } from '../data/avatarCatalog';
 import { isAvatarItemUnlocked } from '../lib/avatarUnlocks';
 
 const requiredStarterIds = [
-  'academy-student-base',
-  'practical-crop',
-  'focused-face',
-  'academy-uniform',
+  'student-body-a',
+  'tousled-short',
+  'confident-smile',
+  'school-spirit-tracksuit',
 ];
 
 const requiredLockedIds = [
-  'stargazer-sweep',
-  'apprentice-cloak',
-  'algebra-pin',
-  'starfield-spark',
-  'orbit-owl',
-  'bronze-academy-frame',
+  'shoulder-length-straight',
+  'determined',
+  'low-ponytail',
+  'focused-soft',
 ];
 
 describe('avatar catalog manifest', () => {
@@ -24,7 +22,7 @@ describe('avatar catalog manifest', () => {
 
     for (const item of AVATAR_CATALOG) {
       expect(validSlots.has(item.slot), item.id).toBe(true);
-      expect(item.assetPath, item.id).toMatch(/^\/assets\/avatar\/.+\.png$/);
+      expect(item.assetPath, item.id).toMatch(/^\/assets\/avatar-v0\.2\/.+\.png$/);
       expect(item.displayName.trim(), item.id).not.toBe('');
       expect(item.description.trim(), item.id).not.toBe('');
       expect(item.rarity.trim(), item.id).not.toBe('');

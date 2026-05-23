@@ -26,7 +26,7 @@ describe('deriveAvatarGear', () => {
 
     expect(gear.title).toBe('New Arrival');
     expect(gear.gear).toEqual([]);
-    expect(gear.nextUnlock).toBe('Stargazer Sweep');
+    expect(gear.nextUnlock).toBe('Shoulder-Length Straight');
     expect(gear.nextUnlockRequirement).toBe('Reach Bronze in any region.');
   });
 
@@ -37,12 +37,12 @@ describe('deriveAvatarGear', () => {
       progress('integration-gardens', 'Bronze', 18),
     ]);
 
-    expect(gear.gear).toEqual(['Stargazer Sweep', 'Apprentice Cloak', 'Bronze Academy Frame', 'Algebra Pin']);
+    expect(gear.gear).toEqual(['Shoulder-Length Straight', 'Determined', 'Low Ponytail']);
     expect(gear.title).toBe('Region Specialist');
     expect(gear.restoredRegions).toBe(3);
     expect(gear.strongestRegionName).toBe('Algebra Vault');
     expect(gear.strongestRegionRank).toBe('Silver');
-    expect(gear.nextUnlock).toBe('Orbit Owl');
+    expect(gear.nextUnlock).toBe('Focused Soft');
   });
 
   it('sets the next manifest reward from real gold-region count', () => {
@@ -52,10 +52,10 @@ describe('deriveAvatarGear', () => {
       progress('complex-harbor', 'Silver', 50),
     ]);
 
-    expect(gear.gear).toContain('Starfield Spark');
-    expect(gear.gear).not.toContain('Orbit Owl');
+    expect(gear.gear).toContain('Low Ponytail');
+    expect(gear.gear).not.toContain('Focused Soft');
     expect(gear.goldRegions).toBe(2);
-    expect(gear.nextUnlock).toBe('Orbit Owl');
+    expect(gear.nextUnlock).toBe('Focused Soft');
     expect(gear.nextUnlockRequirement).toBe('Reach Silver in Integral Terraces.');
   });
 

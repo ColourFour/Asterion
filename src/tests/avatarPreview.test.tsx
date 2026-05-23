@@ -43,7 +43,7 @@ describe('AvatarPreview layered rendering', () => {
   it('derives visible avatar layers in deterministic catalog order', () => {
     const avatar = emptyProgress().avatar;
     const slots = getVisibleAvatarLayers(avatar, []).map((layer) => layer.slot);
-    const expected = AVATAR_LAYER_ORDER.filter((slot) => ['base', 'outfit', 'face', 'hair', 'frame'].includes(slot));
+    const expected = AVATAR_LAYER_ORDER.filter((slot) => ['base', 'outfit', 'face', 'hair'].includes(slot));
 
     expect(slots).toEqual(expected);
   });
@@ -54,8 +54,8 @@ describe('AvatarPreview layered rendering', () => {
     const assetLayers = Array.from(container.querySelectorAll('[data-avatar-asset-slot]')).map((node) => node.getAttribute('data-avatar-asset-slot'));
     const fallbackLayers = Array.from(container.querySelectorAll('[data-avatar-fallback-slot]')).map((node) => node.getAttribute('data-avatar-fallback-slot'));
 
-    expect(assetLayers).toEqual(['base', 'outfit', 'face', 'hair', 'frame']);
-    expect(fallbackLayers).toEqual(['base', 'outfit', 'face', 'hair', 'frame']);
+    expect(assetLayers).toEqual(['base', 'outfit', 'face', 'hair']);
+    expect(fallbackLayers).toEqual(['base', 'outfit', 'face', 'hair']);
     expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Lyra academy character');
   });
 

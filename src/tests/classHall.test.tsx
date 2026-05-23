@@ -50,11 +50,9 @@ const baseSnapshot: ClassHallAvatarSnapshot = {
     palette: 'violet',
     crest: 'star',
     equipped: {
-      hair: 'stargazer-sweep',
-      outfit: 'academy-uniform',
-      cloak: 'apprentice-cloak',
-      accessory: 'algebra-pin',
-      frame: 'bronze-academy-frame',
+      hair: 'shoulder-length-straight',
+      face: 'determined',
+      outfit: 'school-spirit-tracksuit',
     },
   },
   titles: ['Class Hall Curator'],
@@ -129,10 +127,9 @@ describe('ClassHall', () => {
         ...emptyProgress().avatar,
         crest: 'compass',
         equipped: {
-          hair: 'stargazer-sweep',
-          outfit: 'academy-uniform',
-          accessory: 'algebra-pin',
-          frame: 'bronze-academy-frame',
+          hair: 'shoulder-length-straight',
+          face: 'determined',
+          outfit: 'school-spirit-tracksuit',
         },
       },
       avatarGear,
@@ -162,8 +159,8 @@ describe('ClassHall', () => {
     clickViewProfile(container);
     expect(container.textContent).toContain('Class Hall Curator');
     expect(container.textContent).toContain('Algebra Pin Bearer');
-    expect(container.textContent).toContain('Hair: Stargazer Sweep');
-    expect(container.textContent).toContain('Cloak: Apprentice Cloak');
+    expect(container.textContent).toContain('Hair: Shoulder-Length Straight');
+    expect(container.textContent).toContain('Outfit: School Spirit Tracksuit');
     expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Nova Class Hall avatar');
   });
 

@@ -32,36 +32,36 @@ describe('avatar customization state', () => {
   });
 
   it('makes starter items available without region progress', () => {
-    expect(isAvatarItemUnlocked(item('academy-student-base'), [])).toBe(true);
-    expect(isAvatarItemUnlocked(item('practical-crop'), [])).toBe(true);
-    expect(isAvatarItemUnlocked(item('focused-face'), [])).toBe(true);
-    expect(isAvatarItemUnlocked(item('academy-uniform'), [])).toBe(true);
+    expect(isAvatarItemUnlocked(item('student-body-a'), [])).toBe(true);
+    expect(isAvatarItemUnlocked(item('tousled-short'), [])).toBe(true);
+    expect(isAvatarItemUnlocked(item('confident-smile'), [])).toBe(true);
+    expect(isAvatarItemUnlocked(item('school-spirit-tracksuit'), [])).toBe(true);
   });
 
   it('does not equip locked items', () => {
     const avatar = emptyProgress().avatar;
-    const next = equipAvatarItem(avatar, item('apprentice-cloak'), []);
+    const next = equipAvatarItem(avatar, item('shoulder-length-straight'), []);
 
-    expect(normalizeEquippedItems(next.equipped).cloak).toBe('no-cloak');
+    expect(normalizeEquippedItems(next.equipped).hair).toBe('tousled-short');
   });
 
   it('equips unlocked items', () => {
     const avatar = emptyProgress().avatar;
-    const next = equipAvatarItem(avatar, item('apprentice-cloak'), [
+    const next = equipAvatarItem(avatar, item('shoulder-length-straight'), [
       progress('algebra-forge', 'Bronze', 16),
     ]);
 
-    expect(normalizeEquippedItems(next.equipped).cloak).toBe('apprentice-cloak');
+    expect(normalizeEquippedItems(next.equipped).hair).toBe('shoulder-length-straight');
   });
 
   it('persists equipped avatar choices in the existing progress store', () => {
-    const next = equipAvatarItem(emptyProgress().avatar, item('apprentice-cloak'), [
+    const next = equipAvatarItem(emptyProgress().avatar, item('shoulder-length-straight'), [
       progress('algebra-forge', 'Bronze', 16),
     ]);
 
     saveAvatar(next);
 
-    expect(loadProgress().avatar.equipped?.cloak).toBe('apprentice-cloak');
+    expect(loadProgress().avatar.equipped?.hair).toBe('shoulder-length-straight');
   });
 
   it('normalizes legacy equipped item IDs to the current manifest IDs', () => {
@@ -74,9 +74,9 @@ describe('avatar customization state', () => {
       progress('algebra-forge', 'Bronze', 16),
     ]);
 
-    expect(equipped.base).toBe('academy-student-base');
-    expect(equipped.outfit).toBe('academy-uniform');
-    expect(equipped.cloak).toBe('apprentice-cloak');
+    expect(equipped.base).toBe('student-body-a');
+    expect(equipped.outfit).toBe('school-spirit-tracksuit');
+    expect(equipped.cloak).toBe('no-cloak');
   });
 
   it('selects the next locked reward deterministically from catalog order', () => {
@@ -87,7 +87,7 @@ describe('avatar customization state', () => {
       progress('integration-gardens', 'Discovered'),
     ]);
 
-    expect(next?.item.id).toBe('orbit-owl');
+    expect(next?.item.id).toBe('focused-soft');
     expect(next?.progress.label).toBe('Discovered / Silver in Integral Terraces');
   });
 });
