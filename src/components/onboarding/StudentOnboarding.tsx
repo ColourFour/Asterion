@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { ACADEMY_AVATAR_PRESETS } from '../../lib/studentOnboarding';
-import type { AvatarSettings, StudentProfile } from '../../types';
+import { AVATAR_CATALOG, AVATAR_SLOT_LABELS, type AvatarItem } from '../../data/avatarCatalog';
+import { DEFAULT_AVATAR_SETTINGS, DEFAULT_EQUIPPED_AVATAR_ITEMS, normalizeAvatarSettings } from '../../lib/avatarStore';
+import type { AvatarSettings, AvatarSlot, StudentProfile } from '../../types';
 import { AvatarPreview } from '../profile/AvatarPreview';
 import { AsterionMark } from '../shared/AsterionMark';
 import { TwinklingStarfield } from '../shared/TwinklingStarfield';
@@ -19,17 +20,43 @@ const onboardingSteps: { id: OnboardingStep; label: string }[] = [
   { id: 'ready', label: 'Ready' },
 ];
 
+const starterAvatarSlots: AvatarSlot[] = ['base', 'hair', 'face', 'outfit'];
+const paletteOptions: Array<{ id: AvatarSettings['palette']; label: string }> = [
+  { id: 'ember', label: 'Ember' },
+  { id: 'aqua', label: 'Aqua' },
+  { id: 'violet', label: 'Violet' },
+  { id: 'leaf', label: 'Leaf' },
+];
+const crestOptions: Array<{ id: AvatarSettings['crest']; label: string }> = [
+  { id: 'star', label: 'Star' },
+  { id: 'bolt', label: 'Bolt' },
+  { id: 'compass', label: 'Compass' },
+  { id: 'orb', label: 'Orb' },
+];
+
+function starterItemsForSlot(slot: AvatarSlot): AvatarItem[] {
+  const starterItems = AVATAR_CATALOG.filter((item) => (
+    item.slot === slot
+    && item.unlockCondition.type === 'starter'
+    && !item.isEmpty
+  ));
+  return starterItems.length ? starterItems : AVATAR_CATALOG.filter((item) => item.id === DEFAULT_EQUIPPED_AVATAR_ITEMS[slot]);
+}
+
 export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProps) {
-  const initialAvatarId = profile.avatarId ?? ACADEMY_AVATAR_PRESETS[0].id;
   const academyNameHelperId = 'academy-name-helper';
   const [activeStep, setActiveStep] = useState<OnboardingStep>('welcome');
   const [academyName, setAcademyName] = useState(profile.avatarName);
-  const [avatarId, setAvatarId] = useState(initialAvatarId);
+  const [avatar, setAvatar] = useState<AvatarSettings>(() => normalizeAvatarSettings(DEFAULT_AVATAR_SETTINGS));
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
-  const selectedPreset = ACADEMY_AVATAR_PRESETS.find((preset) => preset.id === avatarId) ?? ACADEMY_AVATAR_PRESETS[0];
   const displayName = academyName.trim() || profile.avatarName.trim() || profile.realName.trim() || 'Asterion Student';
   const activeStepIndex = onboardingSteps.findIndex((step) => step.id === activeStep);
   const canGoBack = activeStepIndex > 0;
+  const selectedEquipped = normalizeAvatarSettings(avatar).equipped ?? DEFAULT_EQUIPPED_AVATAR_ITEMS;
+  const selectedBody = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.base)?.displayName ?? 'Starter body';
+  const selectedHair = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.hair)?.displayName ?? 'Starter hair';
+  const selectedFace = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.face)?.displayName ?? 'Starter face';
+  const selectedOutfit = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.outfit)?.displayName ?? 'Starter outfit';
 
   useEffect(() => {
     stepHeadingRef.current?.focus();
@@ -55,7 +82,25 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
       goNext();
       return;
     }
-    onComplete({ avatarName: displayName, avatarId: selectedPreset.id, avatar: selectedPreset.avatar });
+    onComplete({ avatarName: displayName, avatarId: 'custom-starter', avatar });
+  }
+
+  function updateEquipped(slot: AvatarSlot, itemId: string) {
+    setAvatar((current) => normalizeAvatarSettings({
+      ...current,
+      equipped: {
+        ...(current.equipped ?? DEFAULT_EQUIPPED_AVATAR_ITEMS),
+        [slot]: itemId,
+      },
+    }));
+  }
+
+  function updatePalette(palette: AvatarSettings['palette']) {
+    setAvatar((current) => normalizeAvatarSettings({ ...current, palette }));
+  }
+
+  function updateCrest(crest: AvatarSettings['crest']) {
+    setAvatar((current) => normalizeAvatarSettings({ ...current, crest }));
   }
 
   return (
@@ -152,11 +197,11 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
               </label>
               <p className="academy-field-helper" id={academyNameHelperId}>This is the name shown on your map and avatar card.</p>
               <div className="academy-avatar-preview" aria-label="Named academy profile">
-                <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
+                <AvatarPreview avatarName={displayName} avatar={avatar} regionProgress={[]} />
                 <div>
                   <span>Map name</span>
                   <strong>{displayName}</strong>
-                  <small>{selectedPreset.label}</small>
+                  <small>{selectedBody} · {selectedHair}</small>
                 </div>
               </div>
             </section>
@@ -164,36 +209,46 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
 
           {activeStep === 'avatar' ? (
             <section className="academy-step-panel" aria-labelledby="student-onboarding-title">
-              <fieldset className="avatar-preset-grid">
-                <legend>Choose a starter avatar</legend>
-                {ACADEMY_AVATAR_PRESETS.map((preset) => (
-                  <label
-                    aria-label={`${preset.label}${preset.id === selectedPreset.id ? ', selected' : ''}`}
-                    className={`avatar-preset-card${preset.id === selectedPreset.id ? ' selected' : ''}`}
-                    data-selected={preset.id === selectedPreset.id ? 'true' : undefined}
-                    key={preset.id}
-                  >
-                    <input
-                      checked={preset.id === selectedPreset.id}
-                      name="academy-avatar"
-                      onChange={() => setAvatarId(preset.id)}
-                      type="radio"
-                      value={preset.id}
-                    />
-                    <AvatarPreview avatarName={displayName} avatar={preset.avatar} regionProgress={[]} />
-                    <strong>{preset.label}</strong>
-                    {preset.id === selectedPreset.id ? <span className="selected-avatar-badge">Selected</span> : null}
-                    <span>{preset.description}</span>
-                  </label>
-                ))}
-              </fieldset>
+              <div className="academy-avatar-editor">
+                <div className="academy-avatar-preview academy-avatar-preview-large" aria-label="Selected academy profile">
+                  <AvatarPreview avatarName={displayName} avatar={avatar} regionProgress={[]} />
+                  <div>
+                    <span>Current avatar</span>
+                    <strong>{displayName}</strong>
+                    <small>{selectedBody} · {selectedHair} · {selectedFace}</small>
+                  </div>
+                </div>
 
-              <div className="academy-avatar-preview" aria-label="Selected academy profile">
-                <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
                 <div>
-                  <span>Ready for the map</span>
-                  <strong>{displayName}</strong>
-                  <small>{selectedPreset.label}</small>
+                  <div className="academy-avatar-control-grid">
+                    {starterAvatarSlots.map((slot) => (
+                      <label key={slot}>
+                        {slot === 'base' ? 'Body type' : AVATAR_SLOT_LABELS[slot]}
+                        <select value={selectedEquipped[slot]} onChange={(event) => updateEquipped(slot, event.target.value)}>
+                          {starterItemsForSlot(slot).map((item) => (
+                            <option key={item.id} value={item.id}>{item.displayName}</option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                    <label>
+                      House color
+                      <select value={avatar.palette} onChange={(event) => updatePalette(event.target.value as AvatarSettings['palette'])}>
+                        {paletteOptions.map((option) => (
+                          <option key={option.id} value={option.id}>{option.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Crest
+                      <select value={avatar.crest} onChange={(event) => updateCrest(event.target.value as AvatarSettings['crest'])}>
+                        {crestOptions.map((option) => (
+                          <option key={option.id} value={option.id}>{option.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <p className="academy-field-helper">Starter choices use safe placeholder layers when PNG assets are missing.</p>
                 </div>
               </div>
             </section>
@@ -202,11 +257,11 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
           {activeStep === 'ready' ? (
             <section className="academy-step-panel academy-ready-panel" aria-labelledby="student-onboarding-title">
               <div className="academy-avatar-preview academy-avatar-preview-large" aria-label="Ready academy profile">
-                <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
+                <AvatarPreview avatarName={displayName} avatar={avatar} regionProgress={[]} />
                 <div>
                   <span>Ready for the map</span>
                   <strong>{displayName}</strong>
-                  <small>{selectedPreset.label} · {profile.classGroup}</small>
+                  <small>{selectedHair} · {selectedOutfit} · {profile.classGroup}</small>
                 </div>
               </div>
               <div className="academy-ready-checklist" aria-label="Ready checklist">

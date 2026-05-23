@@ -94,6 +94,24 @@ function inputForLabel(container: HTMLElement, labelText: string): HTMLInputElem
   return input!;
 }
 
+function selectForLabel(container: HTMLElement, labelText: string): HTMLSelectElement {
+  const label = Array.from(container.querySelectorAll('label')).find((candidate) => (
+    candidate.textContent?.includes(labelText)
+  ));
+  expect(label).toBeTruthy();
+  const select = label?.querySelector('select');
+  expect(select).toBeTruthy();
+  return select!;
+}
+
+function setSelectValue(select: HTMLSelectElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')?.set;
+  act(() => {
+    setter?.call(select, value);
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
+
 async function openStudentEntry(container: HTMLElement): Promise<void> {
   await act(async () => {
     Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Student entry'))?.click();
@@ -338,6 +356,7 @@ describe('Asterion intro page', () => {
     ]);
     expect(container.textContent).not.toContain('Academy name');
     expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
+    expect(container.querySelectorAll('.academy-avatar-control-grid select')).toHaveLength(0);
     expect(container.querySelector('.academy-path-grid')).toBeNull();
     expect(container.textContent).not.toContain('World Map');
 
@@ -346,6 +365,7 @@ describe('Asterion intro page', () => {
     setInputValue(inputForLabel(container, 'Academy name'), 'Maya Prime');
     expect(container.textContent).toContain('Continue');
     expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
+    expect(container.querySelectorAll('.academy-avatar-control-grid select')).toHaveLength(0);
 
     await clickButtonContaining(container, 'Welcome');
     expect(container.textContent).toContain('Class slot ready');
@@ -360,24 +380,27 @@ describe('Asterion intro page', () => {
     const avatarForm = container.querySelector('form[aria-label="Create academy avatar"]');
     expect(avatarForm).toBeTruthy();
     expect(container.textContent).toContain('Back');
-    expect(avatarForm?.querySelectorAll('.avatar-preset-card')).toHaveLength(4);
-    expect(avatarForm?.querySelectorAll('.avatar-preset-card.selected')).toHaveLength(1);
-    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Selected');
-    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.getAttribute('data-selected')).toBe('true');
+    expect(container.textContent).toContain('Body type');
+    expect(container.textContent).toContain('Hair');
+    expect(container.textContent).toContain('Face');
+    expect(container.textContent).toContain('Outfit');
+    expect(container.textContent).toContain('House color');
+    expect(container.textContent).toContain('Crest');
+    expect(avatarForm?.querySelectorAll('.academy-avatar-control-grid select')).toHaveLength(6);
+    expect(selectForLabel(container, 'Body type').value).toBe('student-body-a');
+    expect(selectForLabel(container, 'Hair').value).toBe('tousled-short');
 
-    const aquaPreset = Array.from(avatarForm?.querySelectorAll('label') ?? []).find((label) => label.textContent?.includes('Aqua Analyst'));
-    expect(aquaPreset).toBeTruthy();
+    setSelectValue(selectForLabel(container, 'Body type'), 'student-body-b');
+    setSelectValue(selectForLabel(container, 'Hair'), 'bob-with-bangs');
+    setSelectValue(selectForLabel(container, 'Face'), 'calm-neutral');
+    setSelectValue(selectForLabel(container, 'House color'), 'aqua');
+    setSelectValue(selectForLabel(container, 'Crest'), 'compass');
 
-    await act(async () => {
-      aquaPreset?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await Promise.resolve();
-    });
-
-    expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Aqua Analyst');
+    expect(selectForLabel(container, 'Hair').value).toBe('bob-with-bangs');
 
     await clickButtonContaining(container, 'Continue');
     expect(container.textContent).toContain('Ready to enter the academy');
-    expect(container.textContent).toContain('Aqua Analyst');
+    expect(container.textContent).toContain('Bob with Bangs');
 
     await act(async () => {
       avatarForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -391,9 +414,19 @@ describe('Asterion intro page', () => {
       classGroup: 'P3 Alpha',
       teacherName: 'Ms Hypatia',
       avatarName: 'Maya Prime',
-      avatarId: 'aqua-analyst',
+      avatarId: 'custom-starter',
       onboardingCompleted: true,
       onboardingCompletedAt: expect.any(String),
+    });
+    expect(onboardedProgress.avatar).toMatchObject({
+      palette: 'aqua',
+      crest: 'compass',
+      equipped: expect.objectContaining({
+        base: 'student-body-b',
+        hair: 'bob-with-bangs',
+        face: 'calm-neutral',
+        outfit: 'school-spirit-tracksuit',
+      }),
     });
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).toContain('Maya Prime');
@@ -515,9 +548,15 @@ describe('Asterion intro page', () => {
     const onboardedProgress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
     expect(onboardedProgress.profile).toMatchObject({
       avatarName: 'Aster',
-      avatarId: 'star-apprentice',
+      avatarId: 'custom-starter',
       onboardingCompleted: true,
       onboardingCompletedAt: expect.any(String),
+    });
+    expect(onboardedProgress.avatar.equipped).toMatchObject({
+      base: 'student-body-a',
+      hair: 'tousled-short',
+      face: 'confident-smile',
+      outfit: 'school-spirit-tracksuit',
     });
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).toContain('Aster');

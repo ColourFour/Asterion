@@ -9595,6 +9595,14 @@ legend {
   opacity: 1;
 }
 
+.avatar-layer-hair img {
+  transform: translateY(-2.5%);
+}
+
+.avatar-layer-face img {
+  transform: translateY(5%);
+}
+
 .avatar-fallback-layer {
   overflow: visible;
 }
@@ -12406,32 +12414,23 @@ legend {
   background: #fff7df;
 }
 
-.student-onboarding-shell .avatar-preset-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.academy-avatar-editor {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: start;
 }
 
-.student-onboarding-shell .avatar-preset-card .builder-avatar-stage {
-  min-height: 104px;
-  padding: 10px 6px 18px;
+.academy-avatar-control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.student-onboarding-shell .avatar-preset-card .builder-avatar-stack {
-  width: min(100%, 88px);
-  max-height: 100px;
-}
-
-.student-onboarding-shell .avatar-preset-card strong {
-  font-size: 0.98rem;
-  line-height: 1.25;
-}
-
-.student-onboarding-shell .avatar-preset-card span {
-  font-size: 0.86rem;
-  line-height: 1.35;
-}
-
-.student-onboarding-shell .avatar-preset-card .selected-avatar-badge {
-  font-size: 0.76rem;
+.academy-avatar-control-grid select {
+  min-height: 42px;
+  padding: 9px 10px;
+  background: #fffdf8;
 }
 
 .academy-avatar-preview-large {
@@ -12658,7 +12657,7 @@ legend {
     max-height: calc(100dvh - 24px);
   }
 
-  .student-onboarding-shell .avatar-preset-grid {
+  .academy-avatar-editor {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -12689,13 +12688,14 @@ legend {
     white-space: normal;
   }
 
-  .student-onboarding-shell .avatar-preset-grid,
   .academy-avatar-preview,
   .academy-avatar-preview-large,
   .academy-stepper-title-row,
   .academy-welcome-grid,
   .academy-identity-summary,
-  .academy-ready-checklist {
+  .academy-ready-checklist,
+  .academy-avatar-editor,
+  .academy-avatar-control-grid {
     grid-template-columns: 1fr;
   }
 
@@ -12747,9 +12747,6 @@ legend {
     font-size: 0.95rem;
   }
 
-  .student-onboarding-shell .avatar-preset-card {
-    padding: 9px;
-  }
 }
 
 @media (max-height: 760px) and (min-width: 861px) {
@@ -12764,8 +12761,8 @@ legend {
     font-size: 2rem;
   }
 
-  .student-onboarding-shell .avatar-preset-card .builder-avatar-stage {
-    min-height: 96px;
+  .academy-avatar-control-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

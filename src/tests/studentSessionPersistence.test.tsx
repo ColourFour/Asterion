@@ -303,12 +303,18 @@ describe('hosted student session persistence', () => {
     expect(saved.profile).toMatchObject({
       id: 'profile-hosted-1',
       avatarName: 'Ada Prime',
-      avatarId: 'star-apprentice',
+      avatarId: 'custom-starter',
       onboardingCompleted: true,
       classClaim: expect.objectContaining({
         status: 'claimed',
         rosterStudentId: 'membership-1',
       }),
+    });
+    expect(saved.avatar.equipped).toMatchObject({
+      base: 'student-body-a',
+      hair: 'tousled-short',
+      face: 'confident-smile',
+      outfit: 'school-spirit-tracksuit',
     });
     expect(container.textContent).toContain('World Map');
 
