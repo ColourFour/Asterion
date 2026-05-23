@@ -20,6 +20,7 @@ import {
   listAdminTeacherRecords,
   listAdminTeachers,
   listTeacherClasses,
+  RESETTABLE_STUDENT_PILOT_CLAIM,
   resetRosterClaim,
   validatePendingClassClaim,
 } from '../lib/dashboardMockService';
@@ -153,6 +154,31 @@ describe('dashboard mock service', () => {
 
     const after = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
     expect(after?.students.find((student) => student.id === added!.id)?.status).toBe('archived');
+  });
+
+  it('provides a resettable mock pilot student claim for repeated manual smoke passes', async () => {
+    const firstClaim = await claimRosterSlotByClassCode(RESETTABLE_STUDENT_PILOT_CLAIM);
+    const secondClaim = await claimRosterSlotByClassCode(RESETTABLE_STUDENT_PILOT_CLAIM);
+
+    expect(firstClaim).toMatchObject({
+      status: 'claimed',
+      classCode: RESETTABLE_STUDENT_PILOT_CLAIM.classCode,
+      displayName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+      message: 'Reusable pilot roster slot claimed. Local progress still resets by clearing browser storage.',
+    });
+    expect(canStudentAccessApp(firstClaim)).toBe(true);
+    expect(secondClaim).toMatchObject({
+      status: 'claimed',
+      rosterStudentId: firstClaim.rosterStudentId,
+      displayName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+    });
+    expect(canStudentAccessApp(secondClaim)).toBe(true);
+
+    const roster = await getTeacherClassRoster('teacher-hypatia', 'class-p3-alpha');
+    expect(roster?.students.find((student) => student.id === firstClaim.rosterStudentId)).toMatchObject({
+      displayName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+      status: 'unclaimed',
+    });
   });
 
   it('blocks case-insensitive duplicate unclaimed roster names instead of picking a slot', async () => {

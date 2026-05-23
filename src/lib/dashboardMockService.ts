@@ -328,6 +328,11 @@ const gammaStudents: StudentSeed[] = [
 ];
 
 const studentSeeds = [...alphaStudents, ...betaStudents, ...gammaStudents];
+const resettablePilotRosterStudentId = 'roster-alpha-resettable-pilot';
+export const RESETTABLE_STUDENT_PILOT_CLAIM = {
+  classCode: 'AST-P3A',
+  displayName: 'Pilot Student',
+} as const;
 
 const rosterStudents: ClassRosterStudent[] = [
   ...studentSeeds.map((student) => ({
@@ -347,6 +352,14 @@ const rosterStudents: ClassRosterStudent[] = [
     status: 'unclaimed',
     createdAt: '2026-05-12T08:00:00.000Z',
     updatedAt: '2026-05-12T08:00:00.000Z',
+  },
+  {
+    id: resettablePilotRosterStudentId,
+    classId: 'class-p3-alpha',
+    displayName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+    status: 'unclaimed',
+    createdAt: '2026-05-23T00:00:00.000Z',
+    updatedAt: '2026-05-23T00:00:00.000Z',
   },
   {
     id: 'roster-beta-unclaimed-1',
@@ -1063,6 +1076,15 @@ export async function claimRosterSlotByClassCode(input: { classCode: string; dis
   if (!rosterStudent) return { status: 'roster_name_not_found', ...claimContext, message: 'Ask your teacher to add your name to the roster first.' };
   if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher or admin for help.' };
   if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed. Ask your teacher or admin for help.' };
+  if (rosterStudent.id === resettablePilotRosterStudentId) {
+    return {
+      status: 'claimed',
+      ...claimContext,
+      rosterStudentId: rosterStudent.id,
+      displayName: rosterStudent.displayName,
+      message: 'Reusable pilot roster slot claimed. Local progress still resets by clearing browser storage.',
+    };
+  }
   rosterStudent.status = 'claimed';
   rosterStudent.claimedAt = now;
   rosterStudent.optionalEmail = input.optionalEmail;
