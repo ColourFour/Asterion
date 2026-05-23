@@ -102,6 +102,15 @@ function regionProgress(overrides: Partial<RegionProgress> = {}): RegionProgress
 const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' };
 
 describe('ClassHall', () => {
+  function clickViewProfile(container: HTMLElement): void {
+    const button = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
+      .find((candidate) => candidate.textContent?.includes('View profile'));
+    expect(button).toBeTruthy();
+    act(() => {
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+  }
+
   it('renders demo avatars', () => {
     const container = render(<ClassHall />);
 
@@ -132,6 +141,8 @@ describe('ClassHall', () => {
 
     expect(container.textContent).toContain('Aster');
     expect(container.textContent).toContain('This browser');
+    expect(container.textContent).not.toContain('Region Specialist');
+    clickViewProfile(container);
     expect(container.textContent).toContain('Region Specialist');
     expect(container.textContent).toContain('Algebra Pin');
     expect(container.textContent).toContain('Favorite wing: Algebra Vault');
@@ -147,6 +158,8 @@ describe('ClassHall', () => {
 
     expect(container.textContent).toContain('Nova');
     expect(container.textContent).toContain('Star House');
+    expect(container.textContent).not.toContain('Class Hall Curator');
+    clickViewProfile(container);
     expect(container.textContent).toContain('Class Hall Curator');
     expect(container.textContent).toContain('Algebra Pin Bearer');
     expect(container.textContent).toContain('Hair: Stargazer Sweep');

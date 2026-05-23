@@ -1089,7 +1089,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('A guarded vault for expansions, factors, remainders, and locked algebraic forms.');
     expect(container.textContent).toContain('Learning loop');
     expect(container.textContent).toContain('Follow these steps in order the first time.');
-    expect(container.textContent).toContain('Progress comes from saved answers and exact self-marking against official mark schemes.');
+    expect(container.textContent).toContain('Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves canonical evidence.');
+    expect(container.textContent).toContain('Learn the idea / inspect the method');
+    expect(container.textContent).toContain('Try the smallest move');
+    expect(container.textContent).toContain('Rehearse the method safely');
+    expect(container.textContent).toContain('Attempt real canonical exam-style image practice');
 
     const stats = container.querySelector('.region-home-stats');
     expect(stats).toBeTruthy();
@@ -1149,13 +1153,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
     expect(container.querySelector('.region-home-primary-action')?.textContent).not.toContain('Quick Checks');
     expect(container.textContent).toContain('Quick Checks');
-    expect(container.textContent).toContain('Check one skill');
+    expect(container.textContent).toContain('Try the smallest move');
     expect(container.textContent).toContain('Warm-Up Practice');
-    expect(container.textContent).toContain('Build fluency');
+    expect(container.textContent).toContain('Rehearse safely');
     expect(container.textContent).toContain('Exam Training');
-    expect(container.textContent).toContain('Practice real questions');
+    expect(container.textContent).toContain('Use real exam images');
     expect(container.textContent).toContain('Guardian Challenge');
-    expect(container.textContent).toContain('Try a pilot boss problem');
+    expect(container.textContent).toContain('Check readiness');
     expect(container.textContent).toContain('Evidence needed');
     expect(container.textContent).toContain('Complete the Field Guide.');
 
@@ -1248,7 +1252,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.querySelector('.region-learning-navigation-block')).toBeFalsy();
     expect(fieldGuidePage.querySelector('.region-arc-timeline')).toBeFalsy();
     expect(fieldGuidePage.querySelector('.region-learning-nav')).toBeTruthy();
-    expect(fieldGuidePage.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
+    expect(fieldGuidePage.querySelector('.region-learning-nav button.active')?.textContent).toContain('Field Guide');
     expect(fieldGuidePage.textContent).toContain('Back to Region Hub');
     expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
     expect(fieldGuidePage.querySelector('.quick-check-card')).toBeFalsy();
@@ -1578,7 +1582,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
     expect(container.querySelector('.region-home-actions')).toBeFalsy();
     expect(container.querySelector('.region-learning-nav')).toBeTruthy();
-    expect(container.querySelector('.region-learning-nav button.active')?.textContent).toBe('Field Guide');
+    expect(container.querySelector('.region-learning-nav button.active')?.textContent).toContain('Field Guide');
     expect(container.textContent).not.toContain('Choose one focused step');
     expect(container.textContent).not.toContain('Skill and subtopic overview');
 
@@ -1676,7 +1680,7 @@ describe('FieldGuidePanel teaching snippets', () => {
   it('keeps region navigation destinations unique and stage indicators non-interactive', () => {
     const container = renderRegionHubPage({ activePage: 'quick-check' });
     const navButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-learning-nav button'));
-    const navLabels = navButtons.map((button) => button.textContent);
+    const navLabels = navButtons.map((button) => button.querySelector('span')?.textContent);
 
     expect(navLabels).toEqual([
       REGION_LEARNING_PAGE_LABELS.hub,

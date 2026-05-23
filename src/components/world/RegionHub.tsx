@@ -75,11 +75,19 @@ const hubActionLabels: Record<HubActionPageId, string> = {
 };
 
 const hubActionDescriptions: Record<HubActionPageId, string> = {
-  'field-guide': 'Learn the key ideas',
-  'quick-check': 'Check one skill',
-  'warm-up': 'Build fluency',
-  'exam-training': 'Practice real questions',
-  guardian: 'Try a pilot boss problem',
+  'field-guide': 'Learn the idea',
+  'quick-check': 'Try the smallest move',
+  'warm-up': 'Rehearse safely',
+  'exam-training': 'Use real exam images',
+  guardian: 'Check readiness',
+};
+
+const studentLoopExplanations: Record<HubActionPageId, string> = {
+  'field-guide': 'Learn the idea / inspect the method',
+  'quick-check': 'Try the smallest move',
+  'warm-up': 'Rehearse the method safely',
+  'exam-training': 'Attempt real canonical exam-style image practice',
+  guardian: 'View readiness status until evidence unlocks the challenge',
 };
 
 const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
@@ -322,7 +330,8 @@ function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProp
           aria-current={activePage === page ? 'page' : undefined}
           onClick={() => onNavigatePage?.(page)}
         >
-          {REGION_LEARNING_PAGE_LABELS[page]}
+          <span>{REGION_LEARNING_PAGE_LABELS[page]}</span>
+          {page !== 'hub' ? <small>{studentLoopExplanations[page]}</small> : null}
         </button>
       ))}
     </nav>
@@ -536,14 +545,15 @@ function RegionHubHome({
         <div>
           <span className="mode-pill">Learning loop</span>
           <strong>Follow these steps in order the first time.</strong>
-          <p>Progress comes from saved answers and exact self-marking against official mark schemes.</p>
+          <p>Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves canonical evidence.</p>
         </div>
         <ol>
           {steps.map((step) => (
             <li className={`is-${step.state}`} key={step.page}>
               <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
                 <span>{step.label}</span>
-                <small>{step.helper}</small>
+                <small>{studentLoopExplanations[step.page]}</small>
+                <em>{step.helper}</em>
               </button>
             </li>
           ))}

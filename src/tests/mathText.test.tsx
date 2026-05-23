@@ -105,4 +105,25 @@ describe('MathText', () => {
     expect(container.textContent).toContain('sin');
     expect(container.textContent).not.toContain('dy/dx');
   });
+
+  it('opens a glossary definition for known vocabulary terms', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    mounted.push({ root, container });
+
+    await act(async () => {
+      root.render(<MathText text="Use the factor theorem to find the remainder." />);
+    });
+
+    const factorButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button.glossary-term'))
+      .find((button) => button.textContent === 'factor');
+    expect(factorButton).toBeTruthy();
+
+    await act(async () => {
+      factorButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('A number or expression that multiplies with another to make a product.');
+  });
 });

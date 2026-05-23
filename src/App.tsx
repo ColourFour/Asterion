@@ -1093,6 +1093,7 @@ export default function App() {
               chooseNext(progress, selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
             }}
             continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
+            onOpenRegionTool={selectedRegion ? (page) => openRegionPage(selectedRegion, page) : undefined}
           />
         </Suspense>
       ) : null}

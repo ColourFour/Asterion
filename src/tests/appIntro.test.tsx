@@ -330,6 +330,11 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Choose your academy avatar');
     expect(container.textContent).toContain('Pick a starter look.');
     expect(container.textContent).toContain('Next step');
+    expect(Array.from(container.querySelectorAll('.academy-step-list button')).map((button) => button.textContent?.trim())).toEqual([
+      '1Welcome',
+      '2Name',
+      '3Avatar',
+    ]);
     expect(container.textContent).not.toContain('Academy name');
     expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
     expect(container.querySelector('.academy-path-grid')).toBeNull();
@@ -340,6 +345,14 @@ describe('Asterion intro page', () => {
     setInputValue(inputForLabel(container, 'Academy name'), 'Maya Prime');
     expect(container.textContent).toContain('Continue');
     expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
+
+    await clickButtonContaining(container, 'Welcome');
+    expect(container.textContent).toContain('Class slot ready');
+    expect(container.textContent).not.toContain('Academy name');
+
+    await clickButtonContaining(container, 'Name');
+    expect(container.textContent).toContain('Academy name');
+    expect(inputForLabel(container, 'Academy name').value).toBe('Maya Prime');
 
     await clickButtonContaining(container, 'Continue');
 

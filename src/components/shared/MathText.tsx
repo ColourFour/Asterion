@@ -14,6 +14,20 @@ const mathOperatorTokens = new Set(['+', '-', '−', '±']);
 const mathFunctionTokens = new Set(['sin', 'cos', 'tan', 'sec', 'cosec', 'cot', 'ln', 'log', 'arg', 'sqrt']);
 const greekTokens = new Set(['pi', 'theta', 'alpha', 'lambda', 'mu']);
 const variableTokens = new Set(['x', 'y', 'z', 't', 'u', 'v', 'n', 'a', 'b', 'c', 'r', 'R', 'A', 'B', 'C']);
+const glossaryDefinitions: Record<string, string> = {
+  factor: 'A number or expression that multiplies with another to make a product.',
+  remainder: 'What is left after division, often found by substituting into a polynomial.',
+  gradient: 'The steepness of a line or curve at a point.',
+  tangent: 'A line that touches a curve at one point and has the same gradient there.',
+  normal: 'A line perpendicular to the tangent at a point on a curve.',
+  modulus: 'The distance from zero, or the length of a complex number from the origin.',
+  argument: 'The angle a complex number makes with the positive real axis.',
+  derivative: 'The rate of change of a function.',
+  integral: 'An accumulated total, or the reverse process of differentiation.',
+  domain: 'The set of input values a function is allowed to use.',
+  interval: 'A continuous set of values between endpoints.',
+};
+const glossaryPattern = new RegExp(`\\b(${Object.keys(glossaryDefinitions).join('|')})\\b`, 'gi');
 
 type RenderedSegment =
   | { kind: 'text'; text: string }
@@ -193,6 +207,7 @@ function parseSegments(text: string): RenderedSegment[] {
 
 export function MathText({ text }: MathTextProps) {
   const [segments, setSegments] = useState<RenderedSegment[]>(() => parseSegments(text));
+  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState<string>();
 
   useEffect(() => {
     let isMounted = true;
@@ -222,10 +237,37 @@ export function MathText({ text }: MathTextProps) {
     };
   }, [text]);
 
+  function renderTextWithGlossary(segmentText: string, segmentKey: string): ReactNode[] {
+    return segmentText.split(glossaryPattern).filter((part) => part.length > 0).map((part, index) => {
+      const term = part.toLowerCase();
+      const definition = glossaryDefinitions[term];
+      if (!definition) return part;
+      const isOpen = activeGlossaryTerm === `${segmentKey}-${index}-${term}`;
+      return (
+        <span className="glossary-term-wrap" key={`${segmentKey}-${index}-${term}`}>
+          <button
+            type="button"
+            className="glossary-term"
+            aria-expanded={isOpen}
+            onClick={() => setActiveGlossaryTerm(isOpen ? undefined : `${segmentKey}-${index}-${term}`)}
+          >
+            {part}
+          </button>
+          {isOpen ? (
+            <span className="glossary-popover" role="status">
+              <strong>{part}</strong>
+              <span>{definition}</span>
+            </span>
+          ) : null}
+        </span>
+      );
+    });
+  }
+
   return (
     <>
       {segments.map((segment, index): ReactNode => {
-        if (segment.kind === 'text') return segment.text;
+        if (segment.kind === 'text') return renderTextWithGlossary(segment.text, `text-${index}`);
         if (!segment.html) return segment.source;
         return (
           <span

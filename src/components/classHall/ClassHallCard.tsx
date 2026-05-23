@@ -30,15 +30,19 @@ export function ClassHallCard({ avatar }: ClassHallCardProps) {
         </div>
       </div>
 
-      <div className="class-hall-achievements" aria-label={`${avatar.nickname} showcase badges`}>
-        {avatar.achievements.length
-          ? avatar.achievements.map((achievement) => <span key={achievement}>{achievement}</span>)
-          : <span>New Class Hall Visitor</span>}
-      </div>
+      {isProfileOpen ? (
+        <>
+          <div className="class-hall-achievements" aria-label={`${avatar.nickname} showcase badges`}>
+            {avatar.achievements.length
+              ? avatar.achievements.map((achievement) => <span key={achievement}>{achievement}</span>)
+              : <span>New Class Hall Visitor</span>}
+          </div>
 
-      <ul className="class-hall-cosmetics" aria-label={`${avatar.nickname} equipped cosmetics`}>
-        {visibleCosmetics.map((cosmetic) => <li key={cosmetic}>{cosmetic}</li>)}
-      </ul>
+          <ul className="class-hall-cosmetics" aria-label={`${avatar.nickname} equipped cosmetics`}>
+            {visibleCosmetics.map((cosmetic) => <li key={cosmetic}>{cosmetic}</li>)}
+          </ul>
+        </>
+      ) : null}
 
       <button
         type="button"

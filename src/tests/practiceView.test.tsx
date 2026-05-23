@@ -5,6 +5,7 @@ import { PracticeView } from '../components/practice/PracticeView';
 import { emptyProgress } from '../lib/progressStore';
 import type { AvatarLocation } from '../lib/avatarLocation';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import type { RegionLearningPageId } from '../lib/regionRoutes';
 import type { Attempt, IssueType, NormalizedQuestion, RegionDefinition, StoredProgress } from '../types';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
@@ -64,6 +65,7 @@ function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuesti
     displaySubtopic: 'polynomials',
     displayDifficulty: 'core',
     marksAvailable: 4,
+    markBreakdown: { m: 2, b: 1, a: 1 },
     deepseek: { hasError: false, topic: 'Algebra', subtopic: 'polynomials' },
     questionImageRawPaths: ['p3/31autumn21/questions/q01.png'],
     markSchemeImageRawPaths: ['p3/31autumn21/mark_scheme/q01.png'],
@@ -83,7 +85,7 @@ const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' }
 function renderPractice(
   testQuestion: NormalizedQuestion,
   onAttempt = vi.fn<(attempt: Attempt) => void>(),
-  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string } = {},
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string; onOpenRegionTool?: (page: RegionLearningPageId) => void } = {},
 ) {
   const onIssue = options.onIssue ?? vi.fn<(questionId: string, issueType: IssueType, note?: string) => void>();
   return {
@@ -103,6 +105,7 @@ function renderPractice(
         onIssue={onIssue}
         onContinuePractice={options.onContinuePractice}
         continuePracticeLabel={options.continuePracticeLabel}
+        onOpenRegionTool={options.onOpenRegionTool}
       />,
     ),
   };
@@ -237,7 +240,45 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.textContent).toContain('Use this image to decide every M, B, and A mark. Asterion does not auto-mark.');
     expect(container.textContent).toContain('Self-marking means you enter the exact marks you earned from the official mark scheme.');
     expect(container.textContent).toContain('Enter your mark from the official mark scheme above.');
+    expect(container.textContent).toContain('Each M, B, and A field is capped');
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
+  });
+
+  it('falls back to total marks when no reliable M/B/A caps are available', () => {
+    const { container, onAttempt } = renderPractice(question({ markBreakdown: undefined }));
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    expect(container.textContent).toContain('does not expose a reliable M/B/A breakdown');
+    expect(container.querySelectorAll<HTMLInputElement>('.mark-breakdown-grid input')).toHaveLength(1);
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')).toBeNull();
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="Total marks"]')!, '3');
+    clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
+    clickButton(container, 'Save Attempt');
+
+    expect(onAttempt).toHaveBeenCalledTimes(1);
+    expect(onAttempt.mock.calls[0][0]).toMatchObject({ marksEarned: 3 });
+    expect(onAttempt.mock.calls[0][0].markBreakdown).toBeUndefined();
+  });
+
+  it('does not allow M, B, or A inputs above the available category caps', () => {
+    const { container, onAttempt } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '4');
+    clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
+
+    expect(container.textContent).toContain('A marks cannot be higher than 1.');
+    expect(saveAttemptButton(container).disabled).toBe(true);
+
+    act(() => {
+      container.querySelector<HTMLFormElement>('.attempt-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    expect(onAttempt).not.toHaveBeenCalled();
   });
 
   it('renders duplicate question and mark-scheme image candidates only once', () => {
@@ -354,8 +395,8 @@ describe('PracticeView self-mark reflection', () => {
     const { container, onAttempt } = renderPractice(question({
       marksAvailable: 7,
       parts: [
-        { label: '(a)', marksAvailable: 6 },
-        { label: '(b)', marksAvailable: 1 },
+        { label: '(a)', marksAvailable: 6, markBreakdown: { m: 3, b: 0, a: 3 } },
+        { label: '(b)', marksAvailable: 1, markBreakdown: { m: 0, b: 1, a: 0 } },
       ],
     }));
 
@@ -424,6 +465,7 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.textContent).not.toContain('No issue');
     expect(container.textContent).toContain('Full score selected.');
     expect(saveAttemptButton(container).disabled).toBe(true);
+    expect(onAttempt).not.toHaveBeenCalled();
 
     clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
     expect(saveAttemptButton(container).disabled).toBe(true);
@@ -452,6 +494,8 @@ describe('PracticeView self-mark reflection', () => {
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+    expect(container.textContent).not.toContain('Next question');
+    expect(container.textContent).toContain('Save this attempt before the next question unlocks.');
     clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
     setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
     clickButton(container, 'Save Attempt');
@@ -459,5 +503,20 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.textContent).toContain('Next question');
     clickButton(container, 'Next question');
     expect(onContinuePractice).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps region tools reachable during exam training', () => {
+    const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
+    const onOpenRegionTool = vi.fn();
+    const { container } = renderPractice(question(), vi.fn(), {
+      selectedRegion: algebraRegion,
+      onOpenRegionTool,
+    });
+
+    expect(container.textContent).toContain('Region tools');
+    clickButton(container, 'Field Guide');
+    expect(onOpenRegionTool).toHaveBeenCalledWith('field-guide');
+    clickButton(container, 'Warm-Up');
+    expect(onOpenRegionTool).toHaveBeenCalledWith('warm-up');
   });
 });

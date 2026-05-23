@@ -39,7 +39,11 @@ export function parseAttemptScore(input: string, marksAvailable?: number): Attem
   };
 }
 
-export function parseAttemptMarkBreakdown(input: Record<keyof AttemptMarkBreakdown, string>, marksAvailable?: number): AttemptScoreValidation {
+export function parseAttemptMarkBreakdown(
+  input: Record<keyof AttemptMarkBreakdown, string>,
+  marksAvailable?: number,
+  categoryCaps?: AttemptMarkBreakdown,
+): AttemptScoreValidation {
   const hasEntry = markKeys.some((key) => input[key].trim() !== '');
 
   if (!hasEntry) return { isValid: false };
@@ -70,6 +74,13 @@ export function parseAttemptMarkBreakdown(input: Record<keyof AttemptMarkBreakdo
     return { isValid: false, error: 'M, B, and A marks cannot be negative.' };
   }
 
+  if (categoryCaps) {
+    const overCategory = markKeys.find((key) => markBreakdown[key] > categoryCaps[key]);
+    if (overCategory) {
+      return { isValid: false, error: `${overCategory.toUpperCase()} marks cannot be higher than ${categoryCaps[overCategory]}.` };
+    }
+  }
+
   const earned = markBreakdown.m + markBreakdown.b + markBreakdown.a;
   if (typeof marksAvailable === 'number' && marksAvailable >= 0 && earned > marksAvailable) {
     return { isValid: false, error: `M + B + A cannot be higher than ${marksAvailable}.` };
@@ -85,8 +96,13 @@ export function parseAttemptMarkBreakdown(input: Record<keyof AttemptMarkBreakdo
 
 type PartScoreInput = string | Record<keyof AttemptMarkBreakdown, string>;
 
-function parsePartMarkBreakdown(label: string, input: Record<keyof AttemptMarkBreakdown, string>, marksAvailable: number): AttemptScoreValidation {
-  const result = parseAttemptMarkBreakdown(input, marksAvailable);
+function parsePartMarkBreakdown(
+  label: string,
+  input: Record<keyof AttemptMarkBreakdown, string>,
+  marksAvailable: number,
+  categoryCaps?: AttemptMarkBreakdown,
+): AttemptScoreValidation {
+  const result = parseAttemptMarkBreakdown(input, marksAvailable, categoryCaps);
   if (!result.isValid) {
     if (!result.error) return { isValid: false, error: `Enter a mark for part ${label}.` };
     if (result.error === 'Enter valid M, B, and A marks.') return { isValid: false, error: `Enter valid M, B, and A marks for part ${label}.` };
@@ -94,6 +110,9 @@ function parsePartMarkBreakdown(label: string, input: Record<keyof AttemptMarkBr
     if (result.error === 'M, B, and A marks cannot be negative.') return { isValid: false, error: `M, B, and A marks for part ${label} cannot be negative.` };
     if (result.error === `M + B + A cannot be higher than ${marksAvailable}.`) {
       return { isValid: false, error: `M + B + A for part ${label} cannot be higher than ${marksAvailable}.` };
+    }
+    if (/^[MBA] marks cannot be higher than \d+\.$/.test(result.error)) {
+      return { isValid: false, error: `Part ${label} ${result.error}` };
     }
     return { isValid: false, error: result.error };
   }
@@ -130,7 +149,7 @@ export function parseAttemptPartScores(input: Record<string, PartScoreInput>, pa
     }
     if (!partInput) return { isValid: false, error: `Enter a mark for part ${part.label}.` };
 
-    const partResult = parsePartMarkBreakdown(part.label, partInput, part.marksAvailable);
+    const partResult = parsePartMarkBreakdown(part.label, partInput, part.marksAvailable, part.markBreakdown);
     const partBreakdown = partResult.markBreakdown;
     if (!partResult.isValid || typeof partResult.earned !== 'number' || !partBreakdown) return partResult;
     markKeys.forEach((key) => {

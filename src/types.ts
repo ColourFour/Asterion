@@ -34,6 +34,7 @@ export interface QuestionPartMark {
   subpartId?: string;
   label: string;
   marksAvailable: number;
+  markBreakdown?: AttemptMarkBreakdown;
   primaryTopicId?: string;
   skillRef?: string;
   mappedRegionId?: string;
@@ -566,6 +567,7 @@ export interface NormalizedQuestion {
   displaySubtopic?: string;
   displayDifficulty?: Difficulty;
   marksAvailable?: number;
+  markBreakdown?: AttemptMarkBreakdown;
   parts?: QuestionPartMark[];
   questionImageRawPaths: string[];
   markSchemeImageRawPaths: string[];

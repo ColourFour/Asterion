@@ -75,8 +75,14 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
           <ol className="academy-step-list" aria-label="Onboarding steps">
             {onboardingSteps.map((step, index) => (
               <li className={step.id === activeStep ? 'active' : ''} aria-current={step.id === activeStep ? 'step' : undefined} key={step.id}>
-                <span>{index + 1}</span>
-                <strong>{step.label}</strong>
+                <button
+                  type="button"
+                  aria-label={`Go to ${step.label} step`}
+                  onClick={() => goToStep(step.id)}
+                >
+                  <span>{index + 1}</span>
+                  <strong>{step.label}</strong>
+                </button>
               </li>
             ))}
           </ol>
