@@ -291,10 +291,11 @@ describe('hosted student session persistence', () => {
 
     let container = await render(<App />);
 
-    expect(container.textContent).toContain('Choose your academy avatar');
+    expect(container.textContent).toContain('Welcome to Asterion');
     expect(container.textContent).not.toContain('World Map');
 
     await clickButtonContaining(container, 'Next step');
+    await clickButtonContaining(container, 'Continue');
     await clickButtonContaining(container, 'Continue');
     await clickButtonContaining(container, 'Enter the P3 world map');
 

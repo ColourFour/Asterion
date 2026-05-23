@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ACADEMY_AVATAR_PRESETS } from '../../lib/studentOnboarding';
 import type { AvatarSettings, StudentProfile } from '../../types';
 import { AvatarPreview } from '../profile/AvatarPreview';
+import { AsterionMark } from '../shared/AsterionMark';
 import { TwinklingStarfield } from '../shared/TwinklingStarfield';
 
 interface StudentOnboardingProps {
@@ -9,12 +10,13 @@ interface StudentOnboardingProps {
   onComplete: (input: { avatarName: string; avatarId: string; avatar: AvatarSettings }) => void;
 }
 
-type OnboardingStep = 'welcome' | 'name' | 'avatar';
+type OnboardingStep = 'welcome' | 'identity' | 'avatar' | 'ready';
 
 const onboardingSteps: { id: OnboardingStep; label: string }[] = [
   { id: 'welcome', label: 'Welcome' },
-  { id: 'name', label: 'Name' },
+  { id: 'identity', label: 'Identity' },
   { id: 'avatar', label: 'Avatar' },
+  { id: 'ready', label: 'Ready' },
 ];
 
 export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProps) {
@@ -49,7 +51,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (activeStep !== 'avatar') {
+    if (activeStep !== 'ready') {
       goNext();
       return;
     }
@@ -61,17 +63,30 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
       <TwinklingStarfield />
       <form className="profile-form academy-avatar-form academy-onboarding-stepper" onSubmit={handleSubmit} aria-label="Create academy avatar">
         <div className="academy-stepper-header">
-          <span className="mode-pill">First day at Asterion Academy</span>
-          <h1 id="student-onboarding-title" ref={stepHeadingRef} tabIndex={-1}>
-            {activeStep === 'welcome' ? 'Choose your academy avatar' : activeStep === 'name' ? 'Name your academy profile' : 'Choose a starter avatar'}
-          </h1>
-          <p>
-            {activeStep === 'welcome'
-              ? 'Pick a starter look. Your class, roster name, and progress rules stay the same.'
-              : activeStep === 'name'
-                ? 'Use an academy name on the map. Leave it blank to keep your current character name.'
-                : 'Choose one avatar, then enter the P3 world map.'}
-          </p>
+          <div className="academy-stepper-title-row">
+            <div>
+              <span className="mode-pill">First day at Asterion Academy</span>
+              <h1 id="student-onboarding-title" ref={stepHeadingRef} tabIndex={-1}>
+                {activeStep === 'welcome'
+                  ? 'Welcome to Asterion'
+                  : activeStep === 'identity'
+                    ? 'Confirm your academy identity'
+                    : activeStep === 'avatar'
+                      ? 'Choose a starter avatar'
+                      : 'Ready to enter the academy'}
+              </h1>
+              <p>
+                {activeStep === 'welcome'
+                  ? 'This short setup keeps your class slot, map name, and avatar clear before Paper 3 practice starts.'
+                  : activeStep === 'identity'
+                    ? 'Check your class details and choose the name shown on your map and avatar card.'
+                    : activeStep === 'avatar'
+                      ? 'Choose one starter look. The avatar system can use placeholder layers now and production PNGs later.'
+                      : 'Review your setup, then enter the P3 Astral Academy world map.'}
+              </p>
+            </div>
+            <AsterionMark />
+          </div>
           <ol className="academy-step-list" aria-label="Onboarding steps">
             {onboardingSteps.map((step, index) => (
               <li className={step.id === activeStep ? 'active' : ''} aria-current={step.id === activeStep ? 'step' : undefined} key={step.id}>
@@ -91,23 +106,41 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
         <div className="academy-step-content">
           {activeStep === 'welcome' ? (
             <section className="academy-step-panel" aria-labelledby="student-onboarding-title">
-              <div className="academy-avatar-preview academy-avatar-preview-large" aria-label="Current academy profile">
-                <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
+              <div className="academy-welcome-grid">
                 <div>
-                  <span>Class slot ready</span>
+                  <span className="academy-panel-kicker">Class slot ready</span>
                   <strong>{profile.realName}</strong>
                   <small>{profile.classGroup} · {profile.teacherName}</small>
+                </div>
+                <div>
+                  <span className="academy-panel-kicker">Practice source</span>
+                  <strong>Paper 3 image questions</strong>
+                  <small>Question and mark-scheme images remain the source of truth.</small>
                 </div>
               </div>
               <div className="academy-step-note">
                 <strong>Your progress starts from real Paper 3 practice.</strong>
-                <span>Next you will set the map name students see, then choose the avatar look.</span>
+                <span>Next you will confirm your identity, choose an avatar, and enter the map.</span>
               </div>
             </section>
           ) : null}
 
-          {activeStep === 'name' ? (
+          {activeStep === 'identity' ? (
             <section className="academy-step-panel" aria-labelledby="student-onboarding-title">
+              <div className="academy-identity-summary" aria-label="Student class identity">
+                <div>
+                  <span>Roster name</span>
+                  <strong>{profile.realName}</strong>
+                </div>
+                <div>
+                  <span>Class</span>
+                  <strong>{profile.classGroup}</strong>
+                </div>
+                <div>
+                  <span>Teacher</span>
+                  <strong>{profile.teacherName}</strong>
+                </div>
+              </div>
               <label>
                 Academy name
                 <input
@@ -165,12 +198,30 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
               </div>
             </section>
           ) : null}
+
+          {activeStep === 'ready' ? (
+            <section className="academy-step-panel academy-ready-panel" aria-labelledby="student-onboarding-title">
+              <div className="academy-avatar-preview academy-avatar-preview-large" aria-label="Ready academy profile">
+                <AvatarPreview avatarName={displayName} avatar={selectedPreset.avatar} regionProgress={[]} />
+                <div>
+                  <span>Ready for the map</span>
+                  <strong>{displayName}</strong>
+                  <small>{selectedPreset.label} · {profile.classGroup}</small>
+                </div>
+              </div>
+              <div className="academy-ready-checklist" aria-label="Ready checklist">
+                <span>Class slot confirmed</span>
+                <span>Academy name set</span>
+                <span>Starter avatar selected</span>
+              </div>
+            </section>
+          ) : null}
         </div>
 
         <div className="academy-step-actions">
           {canGoBack ? <button className="quiet-button" type="button" onClick={goBack}>Back</button> : <span aria-hidden="true" />}
           <button className="primary-button" type="submit">
-            {activeStep === 'avatar' ? 'Enter the P3 world map' : activeStep === 'welcome' ? 'Next step' : 'Continue'}
+            {activeStep === 'ready' ? 'Enter the P3 world map' : activeStep === 'welcome' ? 'Next step' : 'Continue'}
           </button>
         </div>
       </form>

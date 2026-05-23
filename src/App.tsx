@@ -25,6 +25,7 @@ import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Qu
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import { validatePendingClassClaim } from './lib/dashboardMockService';
+import { prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
 import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
 import {
   getP3RegionById,
@@ -147,10 +148,12 @@ function HostedStudentGateMessage({
 function StudentClaimEntryPage({
   runtimeConfig,
   hostedState,
+  freshStartResetApplied = false,
   onClaimed,
 }: {
   runtimeConfig: AsterionRuntimeConfig;
   hostedState?: Exclude<ReturnType<typeof useStudentClassroomContext>[0], { status: 'ready' }>;
+  freshStartResetApplied?: boolean;
   onClaimed: (claim: StudentClaimState) => void;
 }) {
   const hostedMode = runtimeConfig.studentClassClaimSource === 'supabase';
@@ -175,6 +178,11 @@ function StudentClaimEntryPage({
       {hostedState && hostedState.status !== 'signed-out' ? <HostedStudentGateMessage state={hostedState} /> : null}
       {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
+      {freshStartResetApplied ? (
+        <div className="notice" role="status">
+          Fresh student-pilot preview reset local browser progress and any pending class-code claim for this device only.
+        </div>
+      ) : null}
       <ClassCodeClaimForm onClaimed={onClaimed} />
     </AsterionEntryShell>
   );
@@ -267,6 +275,13 @@ function isStudentEntryRoute(hash: string): boolean {
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
+  const [studentPilotFreshStart] = useState(() => prepareStudentPilotFreshStart({
+    pathname: window.location.pathname,
+    hash: window.location.hash,
+    search: window.location.search,
+    appProfile: runtimeConfig.profile.name,
+    claimSource: runtimeConfig.studentClassClaimSource,
+  }));
   const hostedStudentRequired = runtimeConfig.studentClassClaimSource === 'supabase';
   const [hostedClassroomReloadKey, setHostedClassroomReloadKey] = useState(0);
   const [hostedClassroomState, refreshHostedClassroomContext] = useStudentClassroomContext({
@@ -403,7 +418,8 @@ export default function App() {
   const hostedRosterContext = hostedClassroomContext?.accessMode === 'student' ? hostedClassroomContext : undefined;
   const staffPreviewContext = hostedClassroomContext?.accessMode === 'staff_preview' ? hostedClassroomContext : undefined;
   const staffPreviewProgressReady = !staffPreviewContext || progress.profile?.id === staffPreviewProfileId(staffPreviewContext);
-  const freshStudentPilotLoginRequested = runtimeConfig.profile.name === 'student-pilot' && isStudentEntryRoute(window.location.hash);
+  const freshStudentPilotLoginRequested = runtimeConfig.profile.name === 'student-pilot'
+    && (isStudentEntryRoute(window.location.hash) || studentPilotFreshStart.requested);
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -801,6 +817,7 @@ export default function App() {
     return (
       <StudentClaimEntryPage
         runtimeConfig={runtimeConfig}
+        freshStartResetApplied={studentPilotFreshStart.resetApplied}
         onClaimed={handleStudentClassClaim}
       />
     );
@@ -811,6 +828,7 @@ export default function App() {
       <StudentClaimEntryPage
         runtimeConfig={runtimeConfig}
         hostedState={hostedClassroomState}
+        freshStartResetApplied={studentPilotFreshStart.resetApplied}
         onClaimed={handleStudentClassClaim}
       />
     );
@@ -896,6 +914,7 @@ export default function App() {
     return (
       <StudentClaimEntryPage
         runtimeConfig={runtimeConfig}
+        freshStartResetApplied={studentPilotFreshStart.resetApplied}
         onClaimed={handleStudentClassClaim}
       />
     );

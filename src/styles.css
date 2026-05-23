@@ -12211,6 +12211,18 @@ legend {
   gap: 11px;
 }
 
+.academy-stepper-title-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px;
+  gap: clamp(14px, 3vw, 24px);
+  align-items: center;
+}
+
+.academy-stepper-title-row .asterion-emblem {
+  width: 112px;
+  justify-self: end;
+}
+
 .academy-stepper-header h1 {
   margin: 0;
   color: var(--color-astral-dark);
@@ -12230,7 +12242,7 @@ legend {
 
 .academy-step-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin: 4px 0 0;
   padding: 0;
@@ -12298,6 +12310,57 @@ legend {
   min-width: 0;
 }
 
+.academy-welcome-grid,
+.academy-identity-summary,
+.academy-ready-checklist {
+  display: grid;
+  gap: 10px;
+}
+
+.academy-welcome-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.academy-welcome-grid > div,
+.academy-identity-summary > div,
+.academy-ready-checklist span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: var(--radius-control);
+  background: #fffdf8;
+}
+
+.academy-panel-kicker,
+.academy-identity-summary span {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.academy-welcome-grid strong,
+.academy-identity-summary strong {
+  min-width: 0;
+  color: var(--color-astral-dark);
+  font-size: 1.08rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.academy-welcome-grid small {
+  color: var(--color-text-muted);
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.academy-identity-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .academy-field-helper {
   margin: -7px 0 0;
   color: var(--color-text-muted);
@@ -12325,6 +12388,22 @@ legend {
   color: var(--color-text-muted);
   font-weight: 750;
   line-height: 1.45;
+}
+
+.academy-ready-panel {
+  align-content: center;
+}
+
+.academy-ready-checklist {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.academy-ready-checklist span {
+  color: #344154;
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: center;
+  background: #fff7df;
 }
 
 .student-onboarding-shell .avatar-preset-grid {
@@ -12591,7 +12670,7 @@ legend {
   }
 
   .academy-step-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .academy-step-list li {
@@ -12612,8 +12691,17 @@ legend {
 
   .student-onboarding-shell .avatar-preset-grid,
   .academy-avatar-preview,
-  .academy-avatar-preview-large {
+  .academy-avatar-preview-large,
+  .academy-stepper-title-row,
+  .academy-welcome-grid,
+  .academy-identity-summary,
+  .academy-ready-checklist {
     grid-template-columns: 1fr;
+  }
+
+  .academy-stepper-title-row .asterion-emblem {
+    width: 88px;
+    justify-self: center;
   }
 
   .academy-avatar-preview,

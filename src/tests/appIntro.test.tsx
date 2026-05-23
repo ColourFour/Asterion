@@ -327,13 +327,14 @@ describe('Asterion intro page', () => {
     });
     expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
 
-    expect(container.textContent).toContain('Choose your academy avatar');
-    expect(container.textContent).toContain('Pick a starter look.');
+    expect(container.textContent).toContain('Welcome to Asterion');
+    expect(container.textContent).toContain('This short setup keeps your class slot');
     expect(container.textContent).toContain('Next step');
     expect(Array.from(container.querySelectorAll('.academy-step-list button')).map((button) => button.textContent?.trim())).toEqual([
       '1Welcome',
-      '2Name',
+      '2Identity',
       '3Avatar',
+      '4Ready',
     ]);
     expect(container.textContent).not.toContain('Academy name');
     expect(container.querySelectorAll('.avatar-preset-card')).toHaveLength(0);
@@ -350,7 +351,7 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Class slot ready');
     expect(container.textContent).not.toContain('Academy name');
 
-    await clickButtonContaining(container, 'Name');
+    await clickButtonContaining(container, 'Identity');
     expect(container.textContent).toContain('Academy name');
     expect(inputForLabel(container, 'Academy name').value).toBe('Maya Prime');
 
@@ -373,6 +374,10 @@ describe('Asterion intro page', () => {
     });
 
     expect(avatarForm?.querySelector('.avatar-preset-card.selected')?.textContent).toContain('Aqua Analyst');
+
+    await clickButtonContaining(container, 'Continue');
+    expect(container.textContent).toContain('Ready to enter the academy');
+    expect(container.textContent).toContain('Aqua Analyst');
 
     await act(async () => {
       avatarForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -468,7 +473,7 @@ describe('Asterion intro page', () => {
 
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('Choose your academy avatar');
+    expect(container.textContent).toContain('Welcome to Asterion');
     expect(container.textContent).not.toContain('World Map');
   });
 
@@ -499,6 +504,7 @@ describe('Asterion intro page', () => {
 
     setInputValue(academyName, '   ');
 
+    await clickButtonContaining(container, 'Continue');
     await clickButtonContaining(container, 'Continue');
 
     await act(async () => {
@@ -602,8 +608,84 @@ describe('Asterion intro page', () => {
     expect(freshProgress.profile.id).not.toBe('profile-previous-student');
     expect(freshProgress.profile.onboardingCompleted).toBeUndefined();
     expect(freshProgress.attempts).toEqual([]);
-    expect(container.textContent).toContain('Choose your academy avatar');
+    expect(container.textContent).toContain('Welcome to Asterion');
     expect(container.textContent).not.toContain('World Map');
+  });
+
+  it('resets only local student preview state for /student-pilot fresh mode before rendering', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-previous-student',
+        realName: 'Previous Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Old Aster',
+        avatarId: 'star-apprentice',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+    localStorage.setItem(PENDING_CLASS_CLAIM_STORAGE_KEY, JSON.stringify({
+      status: 'claimed',
+      classId: 'class-p3-alpha',
+      className: 'P3 Alpha',
+      classCode: 'AST-P3A',
+      teacherId: 'teacher-hypatia',
+      teacherName: 'Ms Hypatia',
+      rosterStudentId: 'roster-old',
+      displayName: 'Previous Student',
+      message: 'Old local pending claim',
+    }));
+    window.history.replaceState(null, '', '/student-pilot?fresh=1');
+
+    const container = await render(<App />);
+
+    expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
+    expect(container.textContent).toContain('Fresh student-pilot preview reset local browser progress');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
+    expect(container.textContent).not.toContain('Old Aster');
+  });
+
+  it('resumes a returning student on /student-pilot when fresh mode is not requested', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-returning-student',
+        realName: 'Returning Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Returning Aster',
+        avatarId: 'star-apprentice',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+    window.history.replaceState(null, '', '/student-pilot');
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('World Map');
+    expect(container.textContent).toContain('Returning Aster');
+    expect(container.textContent).not.toContain('Class access required');
+    expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeTruthy();
   });
 
   it('restores a revalidated pending claim after refresh without granting app access', async () => {

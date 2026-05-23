@@ -142,7 +142,7 @@ describe('UI review route', () => {
 
   it.each([
     ['student-entry', 'Student class-code / roster-name entry'],
-    ['student-onboarding', 'Choose your academy avatar'],
+    ['student-onboarding', 'Welcome to Asterion'],
     ['avatar', 'Avatar/profile setup'],
     ['world-map', 'Returning student map state'],
     ['system-loading', 'Loading classroom context...'],
