@@ -16,6 +16,8 @@ describe('avatar render modes', () => {
     expect(avatarModeUsesFullCustomization('map')).toBe(false);
     expect(avatarSlotsForRenderMode('builder')).toContain('frame');
     expect(avatarSlotsForRenderMode('map')).not.toContain('frame');
+    expect(avatarSlotsForRenderMode('builder').indexOf('face')).toBeGreaterThan(avatarSlotsForRenderMode('builder').indexOf('hair'));
+    expect(avatarSlotsForRenderMode('region').indexOf('face')).toBeGreaterThan(avatarSlotsForRenderMode('region').indexOf('hair'));
   });
 
   it('uses mode-specific asset candidates with safe generic fallbacks', () => {

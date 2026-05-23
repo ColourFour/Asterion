@@ -260,6 +260,10 @@ function isHomeEntryRoute(pathname: string, hash: string): boolean {
   return pathname === '/' && (hash === '' || hash === '#/' || hash === '#');
 }
 
+function isStudentEntryRoute(hash: string): boolean {
+  return hash === '#/student' || hash === '#/student/';
+}
+
 export default function App() {
   const runtimeConfig = useMemo(() => resolveRuntimeConfig(), []);
   const progressAdapter = useMemo(() => getProgressStorageAdapter(), []);
@@ -399,6 +403,7 @@ export default function App() {
   const hostedRosterContext = hostedClassroomContext?.accessMode === 'student' ? hostedClassroomContext : undefined;
   const staffPreviewContext = hostedClassroomContext?.accessMode === 'staff_preview' ? hostedClassroomContext : undefined;
   const staffPreviewProgressReady = !staffPreviewContext || progress.profile?.id === staffPreviewProfileId(staffPreviewContext);
+  const freshStudentPilotLoginRequested = runtimeConfig.profile.name === 'student-pilot' && isStudentEntryRoute(window.location.hash);
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -497,6 +502,12 @@ export default function App() {
     if (!window.location.hash.startsWith('#/regions/')) return;
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     setRegionRouteError(undefined);
+  }
+
+  function clearStudentEntryHash() {
+    if (!isStudentEntryRoute(window.location.hash)) return;
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    setDashboardLocation(`${window.location.pathname}${window.location.hash}`);
   }
 
   function startPractice() {
@@ -617,6 +628,14 @@ export default function App() {
       setStudentClassClaim(undefined);
       return;
     }
+    if (runtimeConfig.profile.name === 'student-pilot') {
+      setSelectedRegion(undefined);
+      setSelectedRegionPage('hub');
+      setCurrentQuestion(undefined);
+      setTrainingIntent(undefined);
+      setViewMode('map');
+      persistProgressAfterMeaningfulEvent(progressAdapter.clearLocalDemoProgress());
+    }
     setStudentClassClaim(savePendingClassClaim(validatedClaim));
   }
 
@@ -674,6 +693,7 @@ export default function App() {
     const nextProgress = progressAdapter.saveProfile(profile);
     clearPendingClassClaim();
     setStudentClassClaim(undefined);
+    clearStudentEntryHash();
     persistProgressAfterMeaningfulEvent(nextProgress);
   }
 
@@ -686,6 +706,7 @@ export default function App() {
     const withProfile = progressAdapter.saveProfile(nextProfile, progress.profile);
     const withAvatar = progressAdapter.saveAvatarSettings(input.avatar);
     clearRegionHash();
+    clearStudentEntryHash();
     setSelectedRegion(undefined);
     setSelectedRegionPage('hub');
     setCurrentQuestion(undefined);
@@ -766,6 +787,21 @@ export default function App() {
         onStudentEntry={enterStudentFlow}
         onTeacherEntry={() => navigatePath('/teacher')}
         onAdminEntry={() => navigatePath('/admin')}
+      />
+    );
+  }
+
+  if (
+    freshStudentPilotLoginRequested
+    && !studentClassClaim
+    && !hostedRosterContext
+    && !staffPreviewContext
+    && (!progress.profile || progress.profile.onboardingCompleted)
+  ) {
+    return (
+      <StudentClaimEntryPage
+        runtimeConfig={runtimeConfig}
+        onClaimed={handleStudentClassClaim}
       />
     );
   }

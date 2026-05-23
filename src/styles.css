@@ -9435,7 +9435,8 @@ legend {
 .avatar-showcase {
   position: relative;
   display: grid;
-  min-height: 460px;
+  grid-template-rows: minmax(430px, auto) auto;
+  min-height: 0;
   overflow: hidden;
   border: 3px solid var(--pixel-line);
   border-radius: 2px;
@@ -9449,7 +9450,14 @@ legend {
   box-shadow: var(--pixel-shadow);
 }
 
-.avatar-showcase::before {
+.avatar-showcase-stage {
+  position: relative;
+  display: grid;
+  min-height: 430px;
+  overflow: hidden;
+}
+
+.avatar-showcase-stage::before {
   content: "";
   position: absolute;
   inset: 28px 11% auto;
@@ -9465,7 +9473,7 @@ legend {
     0 0 34px rgba(149, 213, 208, 0.18);
 }
 
-.avatar-showcase::after {
+.avatar-showcase-stage::after {
   content: "";
   position: absolute;
   left: 9%;
@@ -9499,7 +9507,7 @@ legend {
   padding: 42px 20px 76px;
 }
 
-.avatar-showcase > .builder-avatar-stage {
+.avatar-showcase-stage > .builder-avatar-stage {
   height: clamp(360px, 34vw, 460px);
   min-height: 0;
 }
@@ -9765,6 +9773,33 @@ legend {
   border: 2px solid rgba(74, 42, 23, 0.82);
   background: rgba(244, 223, 185, 0.92);
   color: #2f1a10;
+}
+
+.avatar-showcase-dashboard {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(278px, 0.92fr) minmax(320px, 1.08fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 14px;
+  border-top: 3px solid rgba(74, 42, 23, 0.72);
+  color: #2f1a10;
+  background:
+    linear-gradient(180deg, rgba(244, 223, 185, 0.96), rgba(214, 179, 124, 0.94)),
+    repeating-linear-gradient(90deg, rgba(74, 42, 23, 0.08) 0 2px, transparent 2px 32px);
+}
+
+.avatar-showcase-reward-stack {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.avatar-showcase-dashboard .student-details-panel,
+.avatar-showcase-dashboard .avatar-evidence-strip,
+.avatar-showcase-dashboard .next-unlock-card {
+  box-shadow: none;
 }
 
 .equipped-slots-panel {
@@ -10866,18 +10901,17 @@ legend {
     grid-template-columns: 1fr;
   }
 
-  .avatar-showcase {
+  .avatar-showcase-stage {
     min-height: 430px;
   }
 
   .avatar-builder-sidebar {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 1fr;
     align-items: start;
   }
 
-  .avatar-evidence-strip,
-  .student-details-panel {
-    grid-column: 1 / -1;
+  .avatar-showcase-dashboard {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
@@ -10891,8 +10925,13 @@ legend {
     padding: 12px;
   }
 
-  .avatar-showcase {
+  .avatar-showcase-stage {
     min-height: 400px;
+  }
+
+  .avatar-showcase-dashboard {
+    grid-template-columns: 1fr;
+    padding: 12px;
   }
 
   .builder-avatar-stage {
@@ -10937,7 +10976,7 @@ legend {
   }
 
   .avatar-builder-sidebar,
-  .avatar-evidence-strip {
+  .avatar-showcase-reward-stack {
     grid-template-columns: 1fr;
   }
 

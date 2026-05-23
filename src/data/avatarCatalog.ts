@@ -50,8 +50,8 @@ export const AVATAR_LAYER_ORDER: AvatarSlot[] = [
   'base',
   'cloak',
   'outfit',
-  'face',
   'hair',
+  'face',
   'accessory',
   'frame',
 ];

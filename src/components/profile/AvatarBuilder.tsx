@@ -45,8 +45,6 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
   const recentReward = avatarGear.gear.length ? avatarGear.gear[avatarGear.gear.length - 1] : 'Starter crest';
   const earnedRewards = avatarGear.gear.length ? avatarGear.gear : ['Starter crest'];
   const equippedFrame = equippedLayers.find((layer) => layer.slot === 'frame')?.item.displayName ?? 'Starter frame';
-  const nextRewardName = nextUnlock?.item.displayName ?? avatarGear.nextUnlock ?? 'Reward path complete';
-  const nextRewardRequirement = nextUnlock?.progress.label ?? avatarGear.nextUnlockRequirement ?? 'All current academy rewards earned.';
   const strongestRegion = avatarGear.strongestRegionName
     ? `${avatarGear.strongestRegionName} (${avatarGear.strongestRegionRank})`
     : 'No restored region yet';
@@ -65,36 +63,94 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
 
       <section className="avatar-builder-hero">
         <div className="avatar-showcase">
-          <div className="avatar-showcase-arch" aria-hidden="true" />
-          <div className="equipped-slots-panel equipped-slots-left" aria-label="Equipped core avatar slots">
-            {leftStageSlots.map((slot) => {
-              const layer = equippedLayers.find((candidate) => candidate.slot === slot);
-              return (
-                <span key={slot}>
-                  <small>{AVATAR_SLOT_LABELS[slot]}</small>
-                  {layer?.item.displayName ?? 'Not set'}
-                </span>
-              );
-            })}
-          </div>
-          <AvatarPreview avatarName={profile.avatarName} avatar={avatarForProgress} regionProgress={regionProgress} />
-          <div className="equipped-slots-panel equipped-slots-right" aria-label="Equipped reward avatar slots">
-            {rightStageSlots.map((slot) => {
-              const layer = equippedLayers.find((candidate) => candidate.slot === slot);
-              return (
-                <span key={slot}>
-                  <small>{AVATAR_SLOT_LABELS[slot]}</small>
-                  {layer?.item.displayName ?? 'Not set'}
-                </span>
-              );
-            })}
-          </div>
-          <div className="avatar-showcase-meta">
-            <div>
-              <span>Character</span>
-              <h3>{profile.avatarName}</h3>
+          <div className="avatar-showcase-stage">
+            <div className="avatar-showcase-arch" aria-hidden="true" />
+            <div className="equipped-slots-panel equipped-slots-left" aria-label="Equipped core avatar slots">
+              {leftStageSlots.map((slot) => {
+                const layer = equippedLayers.find((candidate) => candidate.slot === slot);
+                return (
+                  <span key={slot}>
+                    <small>{AVATAR_SLOT_LABELS[slot]}</small>
+                    {layer?.item.displayName ?? 'Not set'}
+                  </span>
+                );
+              })}
             </div>
-            <strong>{avatarGear.title}</strong>
+            <AvatarPreview avatarName={profile.avatarName} avatar={avatarForProgress} regionProgress={regionProgress} />
+            <div className="equipped-slots-panel equipped-slots-right" aria-label="Equipped reward avatar slots">
+              {rightStageSlots.map((slot) => {
+                const layer = equippedLayers.find((candidate) => candidate.slot === slot);
+                return (
+                  <span key={slot}>
+                    <small>{AVATAR_SLOT_LABELS[slot]}</small>
+                    {layer?.item.displayName ?? 'Not set'}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="avatar-showcase-dashboard">
+            <section className="student-details-panel reward-identity-card" aria-labelledby="student-details-title">
+              <div className="student-identity-heading">
+                <span className={`student-crest student-crest-${avatarForProgress.crest}`} aria-hidden="true" />
+                <div>
+                  <span>Student Details</span>
+                  <h3 id="student-details-title">{profile.avatarName}</h3>
+                  <p>{avatarGear.title}</p>
+                </div>
+              </div>
+
+              <div className="student-reward-focus">
+                <span>Equipped crest</span>
+                <strong>{crestLabels[avatarForProgress.crest]}</strong>
+                <small>{equippedFrame}</small>
+              </div>
+
+              <dl className="student-reward-stats" aria-label="Student reward evidence">
+                <div><dt>Evidence XP</dt><dd>{summary.totalXp}</dd></div>
+                <div><dt>Attempts</dt><dd>{summary.attempts}</dd></div>
+                <div><dt>Restored</dt><dd>{avatarGear.restoredRegions}/{restoredTotal}</dd></div>
+                <div><dt>Gold</dt><dd>{avatarGear.goldRegions}</dd></div>
+              </dl>
+
+              <div className="student-reward-meter" aria-label={`${restoredPercent}% of active regions restored`}>
+                <span style={{ width: `${restoredPercent}%` }} />
+              </div>
+
+              <div className="student-reward-row">
+                <span>Recent reward</span>
+                <strong>{recentReward}</strong>
+                <small>{strongestRegion}</small>
+              </div>
+
+              <div className="earned-reward-list" aria-label="Earned pins, badges, and crests">
+                {earnedRewards.slice(0, 6).map((reward) => <span key={reward}>{reward}</span>)}
+              </div>
+            </section>
+
+            <div className="avatar-showcase-reward-stack">
+              <div className="avatar-evidence-strip">
+                <span>
+                  <span>Evidence XP</span>
+                  <strong>{summary.totalXp}</strong>
+                </span>
+                <span>
+                  <span>Restored</span>
+                  <strong>{avatarGear.restoredRegions}</strong>
+                </span>
+                <span>
+                  <span>Gold</span>
+                  <strong>{avatarGear.goldRegions}</strong>
+                </span>
+                <span>
+                  <span>Attempts</span>
+                  <strong>{summary.attempts}</strong>
+                </span>
+              </div>
+
+              <NextUnlockCard nextUnlock={nextUnlock} />
+            </div>
           </div>
         </div>
 
@@ -125,71 +181,6 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
               {(p3Readiness.concerns.length ? p3Readiness.concerns : p3Readiness.strengths).slice(0, 3).map((reason) => (
                 <span key={reason}>{reason}</span>
               ))}
-            </div>
-          </section>
-
-          <div className="avatar-evidence-strip">
-            <span>
-              <span>Evidence XP</span>
-              <strong>{summary.totalXp}</strong>
-            </span>
-            <span>
-              <span>Restored</span>
-              <strong>{avatarGear.restoredRegions}</strong>
-            </span>
-            <span>
-              <span>Gold</span>
-              <strong>{avatarGear.goldRegions}</strong>
-            </span>
-            <span>
-              <span>Attempts</span>
-              <strong>{summary.attempts}</strong>
-            </span>
-          </div>
-
-          <NextUnlockCard nextUnlock={nextUnlock} />
-
-          <section className="student-details-panel reward-identity-card" aria-labelledby="student-details-title">
-            <div className="student-identity-heading">
-              <span className={`student-crest student-crest-${avatarForProgress.crest}`} aria-hidden="true" />
-              <div>
-                <span>Student Details</span>
-                <h3 id="student-details-title">{profile.avatarName}</h3>
-                <p>{avatarGear.title}</p>
-              </div>
-            </div>
-
-            <div className="student-reward-focus">
-              <span>Equipped crest</span>
-              <strong>{crestLabels[avatarForProgress.crest]}</strong>
-              <small>{equippedFrame}</small>
-            </div>
-
-            <dl className="student-reward-stats" aria-label="Student reward evidence">
-              <div><dt>Evidence XP</dt><dd>{summary.totalXp}</dd></div>
-              <div><dt>Attempts</dt><dd>{summary.attempts}</dd></div>
-              <div><dt>Restored</dt><dd>{avatarGear.restoredRegions}/{restoredTotal}</dd></div>
-              <div><dt>Gold</dt><dd>{avatarGear.goldRegions}</dd></div>
-            </dl>
-
-            <div className="student-reward-meter" aria-label={`${restoredPercent}% of active regions restored`}>
-              <span style={{ width: `${restoredPercent}%` }} />
-            </div>
-
-            <div className="student-reward-row">
-              <span>Next unlock</span>
-              <strong>{nextRewardName}</strong>
-              <small>{nextRewardRequirement}</small>
-            </div>
-
-            <div className="student-reward-row">
-              <span>Recent reward</span>
-              <strong>{recentReward}</strong>
-              <small>{strongestRegion}</small>
-            </div>
-
-            <div className="earned-reward-list" aria-label="Earned pins, badges, and crests">
-              {earnedRewards.slice(0, 6).map((reward) => <span key={reward}>{reward}</span>)}
             </div>
           </section>
         </aside>

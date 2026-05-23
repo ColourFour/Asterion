@@ -6,7 +6,7 @@ export type AvatarRenderMode = 'builder' | 'map' | 'region' | 'portrait';
 const MODE_SLOT_ORDER: Record<AvatarRenderMode, AvatarSlot[]> = {
   builder: AVATAR_LAYER_ORDER,
   portrait: AVATAR_LAYER_ORDER,
-  region: ['aura', 'companion', 'base', 'cloak', 'outfit', 'face', 'hair', 'accessory'],
+  region: ['aura', 'companion', 'base', 'cloak', 'outfit', 'hair', 'face', 'accessory'],
   map: ['aura', 'base', 'cloak', 'outfit', 'hair', 'accessory'],
 };
 

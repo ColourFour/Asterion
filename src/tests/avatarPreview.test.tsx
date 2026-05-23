@@ -46,6 +46,7 @@ describe('AvatarPreview layered rendering', () => {
     const expected = AVATAR_LAYER_ORDER.filter((slot) => ['base', 'outfit', 'face', 'hair'].includes(slot));
 
     expect(slots).toEqual(expected);
+    expect(slots.indexOf('face')).toBeGreaterThan(slots.indexOf('hair'));
   });
 
   it('renders missing production assets with placeholder fallback layers', () => {
@@ -54,8 +55,8 @@ describe('AvatarPreview layered rendering', () => {
     const assetLayers = Array.from(container.querySelectorAll('[data-avatar-asset-slot]')).map((node) => node.getAttribute('data-avatar-asset-slot'));
     const fallbackLayers = Array.from(container.querySelectorAll('[data-avatar-fallback-slot]')).map((node) => node.getAttribute('data-avatar-fallback-slot'));
 
-    expect(assetLayers).toEqual(['base', 'outfit', 'face', 'hair']);
-    expect(fallbackLayers).toEqual(['base', 'outfit', 'face', 'hair']);
+    expect(assetLayers).toEqual(['base', 'outfit', 'hair', 'face']);
+    expect(fallbackLayers).toEqual(['base', 'outfit', 'hair', 'face']);
     expect(container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Lyra academy character');
   });
 

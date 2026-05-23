@@ -183,7 +183,7 @@ describe('UI review route', () => {
         updatedAt: '2026-05-22T00:00:00.000Z',
       },
     });
-    window.history.replaceState(null, '', '/#/student');
+    window.history.replaceState(null, '', '/');
     const container = await render(<App />);
 
     expect(container.textContent).toContain('World Map');

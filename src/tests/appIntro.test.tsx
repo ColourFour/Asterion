@@ -3,7 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
-import { addRosterStudent, archiveRosterStudent, claimRosterSlotByClassCode } from '../lib/dashboardMockService';
+import { addRosterStudent, archiveRosterStudent, claimRosterSlotByClassCode, RESETTABLE_STUDENT_PILOT_CLAIM } from '../lib/dashboardMockService';
 import { LOCAL_PROGRESS_STORAGE_KEY } from '../lib/progressStore';
 import { PENDING_CLASS_CLAIM_STORAGE_KEY } from '../lib/studentClassClaimStore';
 
@@ -527,6 +527,83 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('World Map');
     expect(container.textContent).toContain('Aster');
     expect(container.textContent).not.toContain('Welcome to Asterion Academy');
+  });
+
+  it('starts a fresh student-pilot account from the student login route even when old local progress exists', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-previous-student',
+        realName: 'Previous Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Old Aster',
+        avatarId: 'star-apprentice',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [{
+        id: 'attempt-old',
+        profileId: 'profile-previous-student',
+        questionId: 'old-question',
+        paperFamily: 'p3',
+        topicDisplayName: 'Algebra Vault',
+        marksEarned: 5,
+        marksAvailable: 6,
+        scoreRatio: 5 / 6,
+        mistakeTypes: ['algebra_error'],
+        timeSpentSeconds: 120,
+        markSchemeRevealed: true,
+        attemptedAt: '2026-05-20T00:00:00.000Z',
+      }],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+    window.history.replaceState(null, '', '/#/student');
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
+    expect(container.textContent).not.toContain('Old Aster');
+
+    setInputValue(inputForLabel(container, 'Class code'), RESETTABLE_STUDENT_PILOT_CLAIM.classCode);
+    setInputValue(inputForLabel(container, 'Roster name'), RESETTABLE_STUDENT_PILOT_CLAIM.displayName);
+
+    await act(async () => {
+      container.querySelector('form[aria-label="Claim class roster slot"]')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.textContent).toContain('Student real name');
+    expect(inputForLabel(container, 'Student real name').value).toBe(RESETTABLE_STUDENT_PILOT_CLAIM.displayName);
+    expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeNull();
+
+    setInputValue(inputForLabel(container, 'Character name'), 'Pilot Prime');
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('form')).find((candidate) => (
+        candidate.textContent?.includes('Continue to academy avatar')
+      ))?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await Promise.resolve();
+    });
+
+    const freshProgress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
+    expect(freshProgress.profile).toMatchObject({
+      realName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+      avatarName: 'Pilot Prime',
+    });
+    expect(freshProgress.profile.id).not.toBe('profile-previous-student');
+    expect(freshProgress.profile.onboardingCompleted).toBeUndefined();
+    expect(freshProgress.attempts).toEqual([]);
+    expect(container.textContent).toContain('Choose your academy avatar');
+    expect(container.textContent).not.toContain('World Map');
   });
 
   it('restores a revalidated pending claim after refresh without granting app access', async () => {
