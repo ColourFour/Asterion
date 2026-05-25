@@ -290,7 +290,7 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
           <strong className="node-popover-title">{region.name}</strong>
           <span className="node-popover-status">{accessLabel ?? (canTrain ? learningStatus : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing')}</span>
           <p className="node-popover-description">{region.description}</p>
-          <p className="node-popover-goal">{isFieldGuideOnly ? 'Field Guide is available. Quick Check, Warm-Up, Practice, Guardian, and mastery progression are locked for this class.' : regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
+          <p className="node-popover-goal">{isFieldGuideOnly ? 'Field Guide is available. Quick Check, Warm-Up, Practice, and Guardian are locked for this class.' : regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
         </div>,
         document.body,
       )}
@@ -473,7 +473,7 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, regionAc
               </div>
               <div className="region-goal">
                 <Target size={14} />
-                <span>{isFieldGuideOnly ? 'Field Guide is available. Practice, Guardian, and mastery progression are locked for this class.' : learningSummary?.nextAction.explanation ?? goal.label}</span>
+                <span>{isFieldGuideOnly ? 'Field Guide is available. Practice and Guardian are locked for this class.' : learningSummary?.nextAction.explanation ?? goal.label}</span>
               </div>
               <button type="button" disabled={!canTrain} onClick={() => onTrain(region)}>
                 {canTrain ? (learningSummary?.nextAction.kind === 'field_guide' ? 'Start region' : 'Open region hub') : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}

@@ -35,9 +35,9 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
     >
       {!profile ? (
         <div className="profile-form-heading">
-          <span className="mode-pill">{lockedClassFields ? 'Hosted classroom profile' : 'Local profile'}</span>
+          <span className="mode-pill">{lockedClassFields ? 'Class profile' : 'Academy profile'}</span>
           <h2>Name your academy character</h2>
-          <p>{lockedClassFields ? 'Your class details come from your teacher roster. Next you will create your academy avatar.' : 'After this, create your academy avatar and enter the P3 map.'}</p>
+          <p>{lockedClassFields ? 'Your class details are already set. Next you will create your academy avatar.' : 'After this, create your academy avatar and enter the P3 map.'}</p>
         </div>
       ) : null}
       <label>
@@ -54,7 +54,7 @@ export function ProfileForm({ profile, initialProfile, lockedClassFields = false
       </label>
       {lockedClassFields ? (
         <div className="pending-claim-summary">
-          <p className="claim-state-message">Class membership comes from the hosted roster. Your teacher will see supported classroom progress after you enter the academy.</p>
+          <p className="claim-state-message">Class membership is confirmed. Your practice progress can appear in class summaries after you enter the academy.</p>
           {onRestartClaim ? (
             <button type="button" className="quiet-button compact-button" onClick={onRestartClaim}>Use a different class code</button>
           ) : null}

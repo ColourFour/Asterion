@@ -172,15 +172,26 @@ describe('UI review route', () => {
       ...progress,
       profile: {
         id: 'student-1',
-        realName: 'Maya Q.',
+        realName: 'Pilot Student',
         classGroup: 'P3 Alpha',
-        teacherName: 'Dr. Vega',
+        teacherName: 'Ms Hypatia',
         avatarName: 'Maya',
         avatarId: 'star-apprentice',
         onboardingCompleted: true,
         onboardingCompletedAt: '2026-05-22T00:00:00.000Z',
         createdAt: '2026-05-22T00:00:00.000Z',
         updatedAt: '2026-05-22T00:00:00.000Z',
+        classClaim: {
+          status: 'claimed',
+          classCode: 'AST-P3A',
+          classId: 'class-p3-alpha',
+          className: 'P3 Alpha',
+          teacherId: 'teacher-hypatia',
+          teacherName: 'Ms Hypatia',
+          rosterStudentId: 'roster-alpha-resettable-pilot',
+          displayName: 'Pilot Student',
+          message: 'Reusable pilot roster slot claimed.',
+        },
       },
     });
     window.history.replaceState(null, '', '/');

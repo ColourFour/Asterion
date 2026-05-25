@@ -1089,11 +1089,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('A guarded vault for expansions, factors, remainders, and locked algebraic forms.');
     expect(container.textContent).toContain('Learning loop');
     expect(container.textContent).toContain('Follow these steps in order the first time.');
-    expect(container.textContent).toContain('Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves canonical evidence.');
+    expect(container.textContent).toContain('Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves Guardian evidence.');
     expect(container.textContent).toContain('Learn the idea / inspect the method');
     expect(container.textContent).toContain('Try the smallest move');
     expect(container.textContent).toContain('Rehearse the method safely');
-    expect(container.textContent).toContain('Attempt real canonical exam-style image practice');
+    expect(container.textContent).toContain('Attempt real exam image practice');
 
     const stats = container.querySelector('.region-home-stats');
     expect(stats).toBeTruthy();
@@ -1111,20 +1111,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(artworkImage?.getAttribute('src')).toBe(regionHubAssets['algebra-forge']);
     expect(artwork?.textContent).not.toContain('placeholder');
 
-    const primaryAction = container.querySelector<HTMLButtonElement>('.region-home-primary-action');
+    const currentStep = container.querySelector<HTMLElement>('.region-current-step-card');
+    expect(currentStep).toBeTruthy();
+    expect(currentStep?.textContent).toContain('Current step');
+    expect(currentStep?.textContent).toContain('Field Guide');
+    expect(currentStep?.textContent).toContain('Read the Field Guide');
+    expect(currentStep?.textContent).toContain('Start with the region guide');
+    expect(currentStep?.textContent).toContain('Ready');
+    const primaryAction = currentStep?.querySelector<HTMLButtonElement>('[data-region-page="field-guide"]');
     expect(primaryAction).toBeTruthy();
-    expect(primaryAction?.dataset.regionPage).toBe('field-guide');
-    expect(primaryAction?.textContent).toContain('Current step');
-    expect(primaryAction?.textContent).toContain('Field Guide');
-    expect(primaryAction?.textContent).toContain('Read the Field Guide');
-    expect(primaryAction?.textContent).toContain('Start with the region guide');
-    expect(primaryAction?.textContent).toContain('Ready');
 
-    const secondaryRoutes = container.querySelector<HTMLDetailsElement>('.region-home-secondary-routes');
+    const secondaryRoutes = container.querySelector<HTMLElement>('.region-home-secondary-routes');
     expect(secondaryRoutes).toBeTruthy();
-    expect(secondaryRoutes?.open).toBe(false);
-    expect(secondaryRoutes?.querySelector('summary')?.textContent).toContain('Other routes');
-    expect(secondaryRoutes?.querySelector('summary')?.textContent).toContain('Choose another path');
+    expect(secondaryRoutes?.textContent).toContain('Other routes');
+    expect(secondaryRoutes?.textContent).toContain('Choose another path');
 
     const secondaryActions = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-home-secondary-step'));
     expect(secondaryActions).toHaveLength(4);
@@ -1134,11 +1134,6 @@ describe('FieldGuidePanel teaching snippets', () => {
       'exam-training',
       'guardian',
     ]);
-    act(() => {
-      secondaryRoutes!.open = true;
-      secondaryRoutes!.dispatchEvent(new Event('toggle', { bubbles: true }));
-    });
-    expect(secondaryRoutes?.open).toBe(true);
     const allActionPages = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'))
       .map((button) => button.dataset.regionPage);
     expect(allActionPages).toEqual([
@@ -1150,8 +1145,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     ]);
     expect(new Set(allActionPages).size).toBe(allActionPages.length);
     expect(container.textContent).toContain('Field Guide');
-    expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
-    expect(container.querySelector('.region-home-primary-action')?.textContent).not.toContain('Quick Checks');
+    expect(container.querySelectorAll('.region-current-step-card')).toHaveLength(1);
+    expect(container.querySelector('.region-current-step-card')?.textContent).not.toContain('Quick Checks');
     expect(container.textContent).toContain('Quick Checks');
     expect(container.textContent).toContain('Try the smallest move');
     expect(container.textContent).toContain('Warm-Up Practice');
@@ -1217,13 +1212,9 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('[data-region-page]'));
     expect(actionButtons).toHaveLength(5);
-    expect(container.querySelectorAll('.region-home-primary-action')).toHaveLength(1);
-    const secondaryRoutes = container.querySelector<HTMLDetailsElement>('.region-home-secondary-routes');
-    expect(secondaryRoutes?.open).toBe(false);
-    act(() => {
-      secondaryRoutes!.open = true;
-      secondaryRoutes!.dispatchEvent(new Event('toggle', { bubbles: true }));
-    });
+    expect(container.querySelectorAll('.region-current-step-card')).toHaveLength(1);
+    const secondaryRoutes = container.querySelector<HTMLElement>('.region-home-secondary-routes');
+    expect(secondaryRoutes?.textContent).toContain('Other routes');
     expect(actionButtons.find((button) => button.dataset.regionPage === 'guardian')?.disabled).toBe(false);
 
     for (const page of ['field-guide', 'quick-check', 'warm-up', 'exam-training', 'guardian']) {
@@ -1309,7 +1300,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Challenge the Guardian'))).toBe(false);
   });
 
-  it('shows Guardian artwork, challenge question, and answer controls after unlock evidence is complete', () => {
+  it('shows Guardian artwork and actual question action after unlock evidence is complete', () => {
     const onChallengeGuardian = vi.fn();
     const regionAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
       questionId: 'q1',
@@ -1339,12 +1330,14 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).not.toContain('Guardian challenge locked');
-    expect(container.textContent).toContain(GUARDIAN_PLACEHOLDER_WARNING);
-    expect(container.textContent).toContain('Lantern Growth Gate');
-    expect(container.textContent).toContain('Solve \\log_2(x+3)');
+    expect(container.textContent).not.toContain(GUARDIAN_PLACEHOLDER_WARNING);
+    expect(container.textContent).not.toContain('Lantern Growth Gate');
+    expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
+    expect(container.textContent).toContain('Guardian challenge ready');
+    expect(container.textContent).toContain('Selected guardian question');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeTruthy();
-    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(true);
+    expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
 
     const challengeButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Challenge the Guardian'));
     expect(challengeButton).toBeTruthy();
@@ -1354,7 +1347,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(onChallengeGuardian).toHaveBeenCalledWith(expect.objectContaining({ id: 'q1' }));
   });
 
-  it('lets students draft and reveal Guardian placeholder guidance without official evidence actions', () => {
+  it('keeps unlocked Guardian page focused on the actual Guardian question action', () => {
     const onChallengeGuardian = vi.fn();
     const regionAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
       questionId: 'q1',
@@ -1378,29 +1371,17 @@ describe('FieldGuidePanel teaching snippets', () => {
       onChallengeGuardian,
     });
 
-    const textarea = container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea');
-    expect(textarea).toBeTruthy();
-    act(() => {
-      setTextareaValue(textarea!, 'I will combine logs, solve, then check the domain.');
-    });
-    expect(textarea?.value).toContain('combine logs');
-
-    expect(container.textContent).not.toContain('Placeholder guidance for the pilot version. Your teacher may discuss the official approach later.');
-    const reveal = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Reveal placeholder guidance'));
-    expect(reveal).toBeTruthy();
-    act(() => {
-      reveal!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-
-    expect(container.textContent).toContain('This is placeholder guidance for the pilot version. Your teacher may discuss the official approach later.');
-    expect(container.textContent).toContain('Revealing this does not save official P3 mastery evidence or clear the reviewed Guardian check.');
+    expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
+    expect(container.textContent).toContain('Use the Guardian evidence card below to open the actual question.');
+    expect(container.textContent).toContain('Selected guardian question');
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(onChallengeGuardian).not.toHaveBeenCalled();
     expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');
     expect(container.textContent?.toLowerCase()).not.toContain('admin');
     expect(container.textContent?.toLowerCase()).not.toContain('export');
   });
 
-  it('gracefully handles Guardian placeholder content without artwork', () => {
+  it('gracefully handles Guardian artwork content without artwork', () => {
     const challenge = {
       ...guardianChallenges[0],
       guardianAssetPath: undefined,
@@ -1446,7 +1427,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         studentRegionAccess: lockedStudentRegionAccess,
       });
       expect(container.textContent).toContain(lockedText);
-      expect(container.textContent).toContain('cannot save learning attempts, guardian clears, or mastery evidence');
+      expect(container.textContent).toContain('cannot save new attempts or clear the Guardian');
       expect(container.querySelector('.quick-check-card')).toBeFalsy();
       expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
       expect(container.querySelector('.training-card')).toBeFalsy();
@@ -1480,7 +1461,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     for (const page of ['quick-check', 'warm-up', 'exam-training', 'guardian']) {
       const button = actionButtons.find((candidate) => candidate.dataset.regionPage === page);
       expect(button?.disabled).toBe(true);
-      expect(button?.textContent).toContain('Field Guide only');
+      const actionSurface = button?.closest('.region-current-step-card, .region-home-secondary-step');
+      expect(actionSurface?.textContent).toContain('Field Guide only');
     }
     expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Needs evidence');
 
@@ -1558,10 +1540,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(lastIntent).not.toBe(summary.trainingSession.intent);
   });
 
-  it('renders Algebra Vault Field Guide as a one-snippet stepper using existing snippets', () => {
+  it('renders Algebra Vault Field Guide as topic choice before topic-specific teaching', () => {
     const snippets = realSnippetsForRegion('algebra-forge');
     expect(snippets.length).toBeGreaterThan(1);
-    expect(snippets[0].title).toBe('Rearrange before expanding');
 
     const onCompleteFieldGuide = vi.fn();
     const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
@@ -1586,45 +1567,55 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Choose one focused step');
     expect(container.textContent).not.toContain('Skill and subtopic overview');
 
-    let activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
-    expect(activeSnippet).toBeTruthy();
-    expect(container.querySelectorAll('.field-guide-snippet-card')).toHaveLength(1);
-    expect(activeSnippet?.textContent).toContain('Snippet 1 of');
-    expect(activeSnippet?.textContent).toContain('Rearrange before expanding');
-    expect(activeSnippet?.textContent).not.toContain(snippets[1].title);
-    expect(container.querySelector('.worked-example-method')).toBeFalsy();
+    expect(container.textContent).toContain('Field Guide / Algebra Vault');
+    expect(container.textContent).toContain('Choose a topic to learn.');
+    expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(4);
+    expect(container.textContent).toContain('Polynomial Division');
+    expect(container.textContent).toContain('Modulus / Remainders');
+    expect(container.textContent).toContain('Partial Fractions');
+    expect(container.textContent).toContain('Binomial Expansions');
+    expect(container.textContent).toContain('Each topic uses one worked example, one pattern, and one guided try.');
 
-    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Previous'))).toBe(false);
-    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Continue to Quick Checks'))).toBe(false);
-    const next = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
-    expect(next).toBeTruthy();
+    const backToHub = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Back to Region Hub'));
+    expect(backToHub).toBeTruthy();
+    act(() => {
+      backToHub!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).toHaveBeenCalledWith('hub');
+
+    const polynomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="polynomial-division"]');
+    expect(polynomialTopic).toBeTruthy();
 
     act(() => {
-      next!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      polynomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
-    expect(activeSnippet?.textContent).toContain(snippets[1].title);
-    expect(activeSnippet?.textContent).not.toContain('Rearrange before expanding');
+
+    expect(container.textContent).toContain('Topic 1 of 4');
+    expect(container.textContent).toContain('Current topic');
+    expect(container.textContent).toContain('Polynomial Division');
+    expect(container.textContent).toContain('Example 1');
+    expect(container.textContent).toContain('Divide by a linear factor');
+    expect(container.textContent).toContain('Visual pattern');
+    expect(container.textContent).toContain('Try one together');
+    expect(container.textContent).toContain('Key takeaway');
+    expect(container.textContent).toContain('Next Topic');
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
-    const previous = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Previous'));
-    expect(previous).toBeTruthy();
+    const backToTopics = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Back to Topics'));
+    expect(backToTopics).toBeTruthy();
     act(() => {
-      previous!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      backToTopics!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    activeSnippet = container.querySelector<HTMLElement>('.field-guide-snippet-card');
-    expect(activeSnippet?.textContent).toContain('Rearrange before expanding');
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(4);
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
-    for (let index = 1; index < snippets.length; index += 1) {
-      const nextButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
-      expect(nextButton).toBeTruthy();
-      act(() => {
-        nextButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-    }
+    const binomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="binomial-expansions"]');
+    expect(binomialTopic).toBeTruthy();
+    act(() => {
+      binomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
 
-    expect(container.querySelector<HTMLElement>('.field-guide-snippet-card')?.textContent).toContain(`Snippet ${snippets.length} of ${snippets.length}`);
     const continueButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Continue to Quick Checks'));
     expect(continueButton).toBeTruthy();
     act(() => {

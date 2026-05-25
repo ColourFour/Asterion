@@ -27,13 +27,13 @@ const claimStatusMessages: Record<StudentClaimStatus, string> = {
   invalid_class_code: 'Enter a valid active class code from your teacher.',
   roster_name_not_found: 'Ask your teacher to add your name to the roster first.',
   ambiguous_roster_name: 'More than one roster entry uses that name. Ask your teacher to make the roster name unique before claiming.',
-  already_claimed: 'This roster entry has already been claimed. Ask your teacher or admin for help.',
-  archived: 'This roster entry is archived. Ask your teacher or admin for help.',
+  already_claimed: 'This roster entry has already been claimed. Ask your teacher for help.',
+  archived: 'This roster entry is archived. Ask your teacher for help.',
   reserved_for_other_user: 'This roster entry is reserved for another signed-in account.',
   staff_account_cannot_claim_student_slot: 'This browser is signed in as staff. Use a private window for student testing.',
   unauthenticated: 'Could not start your student session. Tell your teacher.',
   unauthorized: 'This signed-in account is not authorized to claim that roster slot.',
-  claim_unavailable: 'Hosted roster claiming is unavailable in this build. Ask your teacher or admin for help.',
+  claim_unavailable: 'Classroom entry is unavailable right now. Ask your teacher for help.',
 };
 
 function isStudentClaimStatus(value: unknown): value is StudentClaimStatus {
@@ -103,7 +103,7 @@ async function claimViaSupabase(
   if (error) {
     return {
       status: 'claim_unavailable',
-      message: 'Hosted roster claiming failed without creating a local class claim. Ask your teacher or admin for help.',
+      message: 'Classroom entry failed without creating a class claim. Ask your teacher for help.',
     };
   }
 

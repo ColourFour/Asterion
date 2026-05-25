@@ -44,6 +44,17 @@ vi.mock('../lib/generatedPractice', () => ({
 const stylesCss = readFileSync(`${process.cwd()}/src/styles.css`, 'utf8');
 const mountedRoots: Root[] = [];
 const mountedContainers: HTMLElement[] = [];
+const validStudentClassClaim = {
+  status: 'claimed',
+  classId: 'class-p3-alpha',
+  className: 'P3 Alpha',
+  classCode: RESETTABLE_STUDENT_PILOT_CLAIM.classCode,
+  teacherId: 'teacher-hypatia',
+  teacherName: 'Ms Hypatia',
+  rosterStudentId: 'roster-alpha-resettable-pilot',
+  displayName: RESETTABLE_STUDENT_PILOT_CLAIM.displayName,
+  message: 'Reusable pilot roster slot claimed.',
+} as const;
 
 function setReducedMotion(matches: boolean): void {
   Object.defineProperty(window, 'matchMedia', {
@@ -166,8 +177,9 @@ describe('Asterion intro page', () => {
     expect(container.textContent).not.toContain('No AI marking');
     expect(container.textContent).not.toContain('generated exam clones');
     expect(container.textContent).toContain('Student entry');
-    expect(container.textContent).toContain('Teacher login');
-    expect(container.textContent).toContain('Admin login');
+    expect(container.textContent).toContain('Image-first Paper 3 practice starts by claiming your class roster slot.');
+    expect(container.textContent).not.toContain('Teacher login');
+    expect(container.textContent).not.toContain('Admin login');
 
     const emblem = container.querySelector('[data-testid="asterion-emblem"]');
     expect(emblem).toBeTruthy();
@@ -210,6 +222,18 @@ describe('Asterion intro page', () => {
     expect(container.textContent).not.toContain('Class access required');
   });
 
+  it('keeps explicit student-pilot home focused on student entry only', async () => {
+    vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'student-pilot');
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Student entry');
+    expect(container.textContent).toContain('Image-first Paper 3 practice starts by claiming your class roster slot.');
+    expect(container.textContent).not.toContain('Teacher login');
+    expect(container.textContent).not.toContain('Admin login');
+    expect(container.textContent).not.toContain('teacher progress views');
+  });
+
   it('uses hosted classroom copy in the classroom pilot profile without local-only classroom language', async () => {
     vi.stubEnv('VITE_ASTERION_APP_PROFILE', 'classroom-pilot');
     vi.stubEnv('VITE_SUPABASE_URL', undefined);
@@ -222,8 +246,8 @@ describe('Asterion intro page', () => {
     expect(container.textContent).toContain('Your teacher must add your roster name first. You cannot add yourself to a class.');
     expect(container.textContent).not.toContain('Teacher login');
     expect(container.textContent).not.toContain('Admin login');
-    expect(container.textContent).toContain('Classroom pilot profile requires hosted classroom browser configuration');
-    expect(container.textContent).toContain('Classroom roster entry is active, but the hosted classroom browser configuration is incomplete.');
+    expect(container.textContent).toContain('Classroom entry needs class connection settings before claims can be used.');
+    expect(container.textContent).toContain('Classroom entry is active, but the class connection settings are incomplete.');
     expect(container.textContent).toContain('Classroom unavailable');
     expect(Array.from(container.querySelectorAll('button')).find((button) => (
       button.textContent === 'Classroom unavailable'
@@ -274,7 +298,7 @@ describe('Asterion intro page', () => {
     await openStudentEntry(container);
 
     expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
-    expect(container.textContent).toContain('Hosted classroom access');
+    expect(container.textContent).toContain('Class access');
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).not.toContain('Local class');
     expect(container.textContent).not.toContain('This starts a local browser profile, not a cross-device gradebook.');
@@ -434,7 +458,7 @@ describe('Asterion intro page', () => {
     expect(container.textContent).not.toContain('Start here');
     expect(container.textContent).not.toContain('Choose a region to begin Paper 3 practice.');
     expect(container.textContent).not.toContain('Try Quick Check, Warm-Up, then real image questions.');
-    expect(container.textContent).toContain('Browser-local practice mode');
+    expect(container.textContent).toContain('Paper 3 practice');
     expect(container.textContent).not.toContain('Create your avatar');
     expect(container.textContent).not.toContain('magic link');
     expect(container.querySelector('input[type="email"]')).toBeNull();
@@ -453,6 +477,7 @@ describe('Asterion intro page', () => {
         avatarId: 'star-apprentice',
         onboardingCompleted: true,
         onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        classClaim: validStudentClassClaim,
         createdAt: '2026-05-20T00:00:00.000Z',
         updatedAt: '2026-05-20T00:00:00.000Z',
       },
@@ -494,6 +519,64 @@ describe('Asterion intro page', () => {
         classGroup: 'P3 Alpha',
         teacherName: 'Ms Hypatia',
         avatarName: 'Aster',
+        classClaim: validStudentClassClaim,
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Welcome to Asterion');
+    expect(container.textContent).not.toContain('World Map');
+  });
+
+  it('does not let a completed profile without a class claim bypass class-code entry', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-missing-claim',
+        realName: 'Stored Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Aster',
+        avatarId: 'star-apprentice',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        createdAt: '2026-05-20T00:00:00.000Z',
+        updatedAt: '2026-05-20T00:00:00.000Z',
+      },
+      attempts: [],
+      learningActivityAttempts: [],
+      issueReports: [],
+      regionLearning: {},
+      settings: { activePaperFamily: 'p3' },
+    }));
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
+  });
+
+  it('repairs a completed profile with missing avatar setup by returning to onboarding', async () => {
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      schemaVersion: 1,
+      profile: {
+        id: 'profile-missing-avatar',
+        realName: 'Stored Student',
+        classGroup: 'P3 Alpha',
+        teacherName: 'Ms Hypatia',
+        avatarName: 'Aster',
+        onboardingCompleted: true,
+        onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        classClaim: validStudentClassClaim,
         createdAt: '2026-05-20T00:00:00.000Z',
         updatedAt: '2026-05-20T00:00:00.000Z',
       },
@@ -519,6 +602,7 @@ describe('Asterion intro page', () => {
         classGroup: 'P3 Alpha',
         teacherName: 'Ms Hypatia',
         avatarName: 'Aster',
+        classClaim: validStudentClassClaim,
         createdAt: '2026-05-20T00:00:00.000Z',
         updatedAt: '2026-05-20T00:00:00.000Z',
       },
@@ -689,14 +773,14 @@ describe('Asterion intro page', () => {
 
     expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(PENDING_CLASS_CLAIM_STORAGE_KEY)).toBeNull();
-    expect(container.textContent).toContain('Fresh student-pilot preview reset local browser progress');
+    expect(container.textContent).toContain('This sign-in page is ready for a new student on this device.');
     expect(container.textContent).toContain('Class access required');
     expect(container.textContent).toContain('Claim roster slot');
     expect(container.textContent).not.toContain('World Map');
     expect(container.textContent).not.toContain('Old Aster');
   });
 
-  it('resumes a returning student on /student-pilot when fresh mode is not requested', async () => {
+  it('uses /student-pilot as a student login route instead of opening old completed progress', async () => {
     localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
       schemaVersion: 1,
       profile: {
@@ -708,6 +792,7 @@ describe('Asterion intro page', () => {
         avatarId: 'star-apprentice',
         onboardingCompleted: true,
         onboardingCompletedAt: '2026-05-20T00:00:00.000Z',
+        classClaim: validStudentClassClaim,
         createdAt: '2026-05-20T00:00:00.000Z',
         updatedAt: '2026-05-20T00:00:00.000Z',
       },
@@ -721,9 +806,10 @@ describe('Asterion intro page', () => {
 
     const container = await render(<App />);
 
-    expect(container.textContent).toContain('World Map');
-    expect(container.textContent).toContain('Returning Aster');
-    expect(container.textContent).not.toContain('Class access required');
+    expect(container.textContent).toContain('Class access required');
+    expect(container.textContent).toContain('Claim roster slot');
+    expect(container.textContent).not.toContain('World Map');
+    expect(container.textContent).not.toContain('Returning Aster');
     expect(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY)).toBeTruthy();
   });
 

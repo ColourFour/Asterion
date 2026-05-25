@@ -1074,8 +1074,8 @@ export async function claimRosterSlotByClassCode(input: { classCode: string; dis
   }
   const rosterStudent = matchingRosterStudents[0];
   if (!rosterStudent) return { status: 'roster_name_not_found', ...claimContext, message: 'Ask your teacher to add your name to the roster first.' };
-  if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher or admin for help.' };
-  if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed. Ask your teacher or admin for help.' };
+  if (rosterStudent.status === 'archived') return { status: 'archived', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry is archived. Ask your teacher for help.' };
+  if (rosterStudent.status === 'claimed' || rosterStudent.status === 'active') return { status: 'already_claimed', ...claimContext, rosterStudentId: rosterStudent.id, displayName: rosterStudent.displayName, message: 'This roster entry has already been claimed. Ask your teacher for help.' };
   if (rosterStudent.id === resettablePilotRosterStudentId) {
     return {
       status: 'claimed',

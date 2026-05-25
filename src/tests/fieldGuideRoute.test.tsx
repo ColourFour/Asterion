@@ -114,6 +114,19 @@ beforeEach(() => {
       onboardingCompletedAt: '2026-05-08T00:00:00.000Z',
       createdAt: '2026-05-08T00:00:00.000Z',
       updatedAt: '2026-05-08T00:00:00.000Z',
+      classClaim: {
+        status: 'claimed',
+        source: 'mock',
+        classCode: 'AST-P3A',
+        classId: 'class-p3-alpha',
+        className: 'P3 Alpha',
+        teacherId: 'teacher-hypatia',
+        teacherName: 'Ms Hypatia',
+        rosterStudentId: 'roster-alpha-resettable-pilot',
+        displayName: 'Pilot Student',
+        claimedAt: '2026-05-08T00:00:00.000Z',
+        message: 'Reusable pilot roster slot claimed.',
+      },
     },
   }));
   window.history.replaceState(null, '', '/#/regions/algebra-forge/field-guide');
@@ -137,7 +150,7 @@ afterEach(() => {
 describe('Field Guide app route', () => {
   it('keeps the global navigation visible above the focused Field Guide page', async () => {
     const container = await render(<App />);
-    await waitForText(container, 'Rearrange before expanding');
+    await waitForText(container, 'Choose the Topic');
 
     const topbar = container.querySelector<HTMLElement>('.topbar');
     const fieldGuideHeader = container.querySelector<HTMLElement>('.focused-region-page-header');
@@ -157,7 +170,9 @@ describe('Field Guide app route', () => {
     expect(fieldGuideHeader).toBeTruthy();
     expect(fieldGuideHeader?.textContent).toContain('Field Guide');
     expect(fieldGuideHeader?.textContent).toContain('Algebra Vault');
-    expect(container.textContent).toContain('Rearrange before expanding');
+    expect(container.textContent).toContain('Choose a topic to learn.');
+    expect(container.textContent).toContain('Polynomial Division');
+    expect(container.textContent).toContain('Binomial Expansions');
     expect(topbar!.compareDocumentPosition(fieldGuideHeader!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
   });

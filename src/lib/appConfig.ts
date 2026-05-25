@@ -124,7 +124,7 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       ? 'Student pilot profile is active; hosted storage, Supabase claim/dashboard modes, and dashboard demo routes are disabled for this build.'
       : undefined,
     classroomPilotProfileActive && !supabase.isConfigured
-      ? 'Classroom pilot profile requires hosted classroom browser configuration before classroom routes and claims can be used.'
+      ? 'Classroom entry needs class connection settings before claims can be used.'
       : undefined,
     !explicitProfile && supabaseDashboardRequested
       ? 'Supabase dashboard data is active without VITE_ASTERION_APP_PROFILE=classroom-pilot.'
@@ -170,8 +170,8 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     studentClassClaimSourceExplicit,
     studentClassClaimNotice: studentClassClaimSource === 'supabase' && !supabase.isConfigured
       ? supabase.invalid.length > 0
-        ? 'Classroom roster entry is active, but the hosted classroom browser configuration is invalid.'
-        : 'Classroom roster entry is active, but the hosted classroom browser configuration is incomplete.'
+        ? 'Classroom entry is active, but the class connection settings are invalid.'
+        : 'Classroom entry is active, but the class connection settings are incomplete.'
       : undefined,
     assetBaseUrl: envString(env.VITE_ASSET_BASE_URL),
     diagnostics: {

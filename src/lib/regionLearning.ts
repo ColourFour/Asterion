@@ -120,7 +120,7 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const nextActionHint = sorted.length === 0
     ? 'Try a Quick Check or warm-up before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Quick Check and warm-up records look ready. Move into canonical Exam Training next.'
+      ? 'Quick Check and warm-up records look ready. Move into Exam Training next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
         ? 'A recent support activity was missed or revealed early. Try another warm-up before exam training.'
         : 'Support activity records show partial readiness. Try one more warm-up or move carefully into training.';
@@ -268,7 +268,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'core_practice',
         label: TRAINING_SESSION_LABELS.core_practice,
-        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for canonical exam training.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for Exam Training.',
       };
     }
 
@@ -342,7 +342,7 @@ export function nextRecommendedRegionAction(input: {
     return {
       kind: 'locked',
       label: 'Waiting for trainable questions',
-      explanation: 'This region needs canonical question and mark-scheme assets before it can open.',
+      explanation: 'This region needs question and mark-scheme images before it can open.',
     };
   }
 

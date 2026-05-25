@@ -31,8 +31,8 @@ export const REGION_LEARNING_PAGE_DESCRIPTIONS: Record<RegionLearningPageId, str
   hub: 'Orient yourself, review progress, and choose the next learning step.',
   'field-guide': 'Study the existing region explanation, snippets, notes, and worked examples.',
   'quick-check': 'Try short answer-first checks matched to the region.',
-  'warm-up': 'Use reviewed warm-up practice before canonical exam questions.',
-  'exam-training': 'Train on canonical question images and mark schemes for this region.',
+  'warm-up': 'Use reviewed warm-up practice before exam questions.',
+  'exam-training': 'Train on real question images and mark schemes for this region.',
   guardian: 'Attempt the gated checkpoint after local evidence unlocks it.',
 };
 

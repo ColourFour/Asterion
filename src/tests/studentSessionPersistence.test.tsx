@@ -3,7 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { LOCAL_PROGRESS_STORAGE_KEY } from '../lib/progressStore';
-import type { StudentClaimState } from '../types';
+import type { StoredProgress, StudentClaimState } from '../types';
 
 type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
@@ -72,7 +72,7 @@ const hostedClaim: StudentClaimState = {
   teacherName: 'Ms Supabase',
   rosterStudentId: 'membership-1',
   displayName: 'Ada S.',
-  message: 'Hosted classroom membership verified through Supabase.',
+  message: 'Class membership verified.',
 };
 
 function hostedReadyState() {
@@ -142,7 +142,7 @@ function staffReadyState() {
   };
 }
 
-function storedProgress({ onboarded }: { onboarded: boolean }) {
+function storedProgress({ onboarded }: { onboarded: boolean }): StoredProgress {
   return {
     schemaVersion: 1,
     profile: {
@@ -161,6 +161,7 @@ function storedProgress({ onboarded }: { onboarded: boolean }) {
     avatar: { palette: 'ember', crest: 'star' },
     attempts: [],
     learningActivityAttempts: [],
+    topicProfiles: {},
     issueReports: [],
     regionLearning: {},
     settings: { activePaperFamily: 'p3' },
@@ -241,11 +242,47 @@ describe('hosted student session persistence', () => {
     const container = await render(<App />);
 
     expect(container.textContent).toContain('World Map');
-    expect(container.textContent).toContain('Classroom practice mode');
+    expect(container.textContent).toContain('Class practice');
     expect(container.textContent).toContain('Ada Prime');
     expect(container.textContent).not.toContain('Join your teacher');
     expect(container.textContent).not.toContain('Class access required');
     expect(claimServiceMock.claimStudentRosterSlot).not.toHaveBeenCalled();
+  });
+
+  it('does not let stale hosted local progress from another roster slot hijack the current student', async () => {
+    classroomMock.holder.state = hostedReadyState();
+    const stale = storedProgress({ onboarded: true });
+    const staleProfile = stale.profile!;
+    staleProfile.classClaim = {
+      ...hostedClaim,
+      rosterStudentId: 'membership-other',
+      displayName: 'Other Student',
+    };
+    staleProfile.realName = 'Other Student';
+    staleProfile.avatarName = 'Wrong Aster';
+    stale.attempts = [{
+      id: 'attempt-stale',
+      profileId: 'profile-hosted-1',
+      questionId: 'old-question',
+      paperFamily: 'p3',
+      topicDisplayName: 'Algebra Vault',
+      marksEarned: 4,
+      marksAvailable: 6,
+      scoreRatio: 4 / 6,
+      mistakeTypes: ['algebra_error'],
+      timeSpentSeconds: 90,
+      markSchemeRevealed: true,
+      attemptedAt: '2026-05-22T08:00:00.000Z',
+    }];
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify(stale));
+
+    const container = await render(<App />);
+
+    expect(container.textContent).toContain('Name your academy character');
+    expect((Array.from(container.querySelectorAll('input')).find((input) => input.value === 'Ada S.'))).toBeTruthy();
+    expect(container.textContent).not.toContain('World Map');
+    expect(container.textContent).not.toContain('Wrong Aster');
+    expect(JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}').attempts ?? []).toEqual([]);
   });
 
   it('loads hosted classroom context before profile setup instead of asking the student to claim again', async () => {
@@ -254,8 +291,8 @@ describe('hosted student session persistence', () => {
     const container = await render(<App />);
 
     expect(container.textContent).toContain('Name your academy character');
-    expect(container.textContent).toContain('Hosted classroom profile');
-    expect(container.textContent).toContain('Class membership comes from the hosted roster.');
+    expect(container.textContent).toContain('Class profile');
+    expect(container.textContent).toContain('Class membership is confirmed.');
     expect(container.textContent).not.toContain('Join your teacher');
     expect(container.textContent).not.toContain('Class access required');
     expect(claimServiceMock.claimStudentRosterSlot).not.toHaveBeenCalled();
@@ -275,12 +312,12 @@ describe('hosted student session persistence', () => {
     container = await remountApp();
     classroomMock.holder.state = {
       status: 'missing-membership',
-      message: 'Your hosted roster slot is not currently claimed. Ask your teacher if it was reset or archived.',
+      message: 'Your class slot is not currently claimed. Ask your teacher if it was reset or archived.',
     };
 
     container = await remountApp();
 
-    expect(container.textContent).toContain('Your hosted roster slot is not currently claimed.');
+    expect(container.textContent).toContain('Your class slot is not currently claimed.');
     expect(container.textContent).toContain('Join your teacher');
     expect(container.textContent).not.toContain('Supabase Auth');
   });

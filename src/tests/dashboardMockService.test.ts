@@ -131,14 +131,14 @@ describe('dashboard mock service', () => {
     const archivedDenied = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Archived Student' });
     expect(archivedDenied).toMatchObject({
       status: 'archived',
-      message: 'This roster entry is archived. Ask your teacher or admin for help.',
+      message: 'This roster entry is archived. Ask your teacher for help.',
     });
     expect(canStudentAccessApp(archivedDenied)).toBe(false);
 
     const alreadyClaimed = await claimRosterSlotByClassCode({ classCode: 'AST-P3A', displayName: 'Ada L.' });
     expect(alreadyClaimed).toMatchObject({
       status: 'already_claimed',
-      message: 'This roster entry has already been claimed. Ask your teacher or admin for help.',
+      message: 'This roster entry has already been claimed. Ask your teacher for help.',
     });
     expect(canStudentAccessApp(alreadyClaimed)).toBe(false);
 

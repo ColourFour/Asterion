@@ -20,6 +20,7 @@
     "supabase:verify": "node scripts/verify-supabase-schema.mjs",
     "supabase:verify:live": "node scripts/verify-supabase-rls-live.mjs",
     "test": "vitest run",
+    "test:student-readiness-browser": "node scripts/student-readiness-browser-smoke.mjs",
     "test:unit": "vitest run --exclude tests/contentLabPipeline.test.ts --exclude tests/generatedPracticePipeline.test.ts",
     "test:pipeline": "vitest run tests/contentLabPipeline.test.ts tests/generatedPracticePipeline.test.ts --pool=forks --maxWorkers=1 --minWorkers=1 --no-file-parallelism",
     "test:ci": "vitest run --pool=forks --maxWorkers=2 --minWorkers=1 --no-file-parallelism",
@@ -44,6 +45,7 @@
     "vite": "^6.0.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "jsdom": "^25.0.1",

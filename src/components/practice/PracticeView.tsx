@@ -330,7 +330,7 @@ export function PracticeView({
             <span>{regionLearningPhase === 'guardian' ? 'Why this Guardian check is showing' : 'Why this practice is showing'}</span>
             <strong>{sessionLabel ?? 'Region practice'}</strong>
           </div>
-          <p>{sessionReason ?? 'This question is selected from the current region using the local adaptive practice flow.'}</p>
+          <p>{sessionReason ?? 'This question is selected from your current region practice path.'}</p>
           {regionLearningPhase === 'guardian' && typeof guardianPassThreshold === 'number' ? (
             <small>Clear threshold: {Math.round(guardianPassThreshold * 100)}% or higher on this saved attempt.</small>
           ) : null}
@@ -362,14 +362,14 @@ export function PracticeView({
           <section className="practice-panel mark-scheme-panel">
             <div className="panel-title-bar">Mark Scheme</div>
             <div className="archive-heading">
-              <span>Official archive</span>
+              <span>Mark scheme image</span>
               <h3>Compare your working</h3>
               <p>Use this image to decide every M, B, and A mark. Asterion does not auto-mark.</p>
             </div>
             {questionParts?.length ? (
               <div className="mark-scheme-part-guide" aria-label="Mark scheme part guide">
                 <strong>Part-by-part marks</strong>
-                <p>{hasPartMarkCaps ? 'Use the official mark-scheme image, then enter each constrained part score below.' : 'Part totals are known, but M/B/A category counts are not reliable in the data. Enter a total mark below instead.'}</p>
+                <p>{hasPartMarkCaps ? 'Use the official mark-scheme image, then enter each part score below.' : 'Use the part totals shown here, then enter a total mark below.'}</p>
                 <div>
                   {questionParts.map((part) => (
                     <span key={part.label}>Part {part.label}: {part.marksAvailable} mark{part.marksAvailable === 1 ? '' : 's'}</span>
@@ -389,8 +389,8 @@ export function PracticeView({
                 <strong>{markSchemeNoticeTitle}</strong>
                 <p>{progressionBlockedReason ?? 'The official mark scheme is unavailable or this record is paused for scoring. Asterion will not save marks, XP, mastery, or avatar progress for this question.'}</p>
                 {progressionBlockedReason ? <small>Asterion will not save marks, XP, mastery, guardian clears, or avatar progress for this locked region.</small> : null}
-                {trainingBlockers.length ? <small>Teacher check: {trainingBlockers.join('; ')}</small> : null}
-                {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the canonical mark scheme. Saving unlocks only after it loads.</small> : null}
+                {trainingBlockers.length ? <small>This question is paused: {trainingBlockers.join('; ')}</small> : null}
+                {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the mark scheme. Saving unlocks only after it loads.</small> : null}
               </div>
             ) : null}
             <div className="practice-footer-actions">
@@ -459,7 +459,7 @@ export function PracticeView({
             {usesPartMarking && questionParts?.length ? (
               <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
                 <legend>Your Mark by Part</legend>
-                <p className="marking-helper">Enter M, B, and A marks for each question part using the official mark scheme above. Each box is capped by the available mark category where the data provides it.</p>
+                <p className="marking-helper">Enter M, B, and A marks for each question part using the official mark scheme above. Each box is capped by the available mark category when shown.</p>
                 <div className="part-mark-grid">
                   {questionParts.map((part, index) => (
                     <div key={part.label} className="part-mark-box">
@@ -547,7 +547,7 @@ export function PracticeView({
             ) : (
               <fieldset className={`mark-breakdown-fieldset total-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
                 <legend>Your Mark</legend>
-                <p className="marking-helper">The data for this question does not expose a reliable M/B/A breakdown. Enter the total mark from the official mark scheme instead.</p>
+                <p className="marking-helper">Enter the total mark from the official mark scheme.</p>
                 <div className="mark-breakdown-grid mark-total-entry-grid">
                   <div className="mark-breakdown-box">
                     <label className="mark-box-label" htmlFor={`${question.id}-total-marks`}>
@@ -663,7 +663,7 @@ export function PracticeView({
             {scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}.
             {' '}
             {regionLearningPhase === 'guardian'
-              ? guardianPassed ? 'The region reward placeholder is now unlocked locally.' : 'The guardian is recorded, but the region is not cleared yet.'
+              ? guardianPassed ? 'Your region reward is now unlocked.' : 'The Guardian is recorded, but the region is not cleared yet.'
               : 'Region progress increased only from saved evidence.'}
           </span>
           <details className="post-attempt-review-details">

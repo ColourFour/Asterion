@@ -433,7 +433,7 @@ describe('region learning loop logic', () => {
 
     expect(summary.trainingSession.intent).toBe('core_practice');
     expect(summary.nextAction.label).toBe('Start Core practice');
-    expect(summary.nextAction.explanation).toContain('Move into canonical Exam Training');
+    expect(summary.nextAction.explanation).toContain('Move into Exam Training');
   });
 
   it('does not select guardian questions missing question or mark-scheme image candidates', () => {

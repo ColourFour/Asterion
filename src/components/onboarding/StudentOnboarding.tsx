@@ -126,7 +126,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                   : activeStep === 'identity'
                     ? 'Check your class details and choose the name shown on your map and avatar card.'
                     : activeStep === 'avatar'
-                      ? 'Choose one starter look. The avatar system can use placeholder layers now and production PNGs later.'
+                      ? 'Choose one starter look for your map and region cards.'
                       : 'Review your setup, then enter the P3 Astral Academy world map.'}
               </p>
             </div>
@@ -160,7 +160,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                 <div>
                   <span className="academy-panel-kicker">Practice source</span>
                   <strong>Paper 3 image questions</strong>
-                  <small>Question and mark-scheme images remain the source of truth.</small>
+                  <small>Use the question image first, then the mark scheme for self-marking.</small>
                 </div>
               </div>
               <div className="academy-step-note">
@@ -248,7 +248,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                       </select>
                     </label>
                   </div>
-                  <p className="academy-field-helper">Starter choices use safe placeholder layers when PNG assets are missing.</p>
+                  <p className="academy-field-helper">You can change your look later from your profile.</p>
                 </div>
               </div>
             </section>

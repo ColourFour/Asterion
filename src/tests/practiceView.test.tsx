@@ -250,7 +250,7 @@ describe('PracticeView self-mark reflection', () => {
     clickButton(container, 'Reveal Mark Scheme');
     markSchemeLoaded(container);
 
-    expect(container.textContent).toContain('does not expose a reliable M/B/A breakdown');
+    expect(container.textContent).toContain('Enter the total mark from the official mark scheme.');
     expect(container.querySelectorAll<HTMLInputElement>('.mark-breakdown-grid input')).toHaveLength(1);
     expect(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')).toBeNull();
 

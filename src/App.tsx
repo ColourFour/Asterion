@@ -25,7 +25,8 @@ import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Qu
 import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import { validatePendingClassClaim } from './lib/dashboardMockService';
-import { prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
+import { isStudentPilotEntryPath, prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
+import { hasCompleteOnboardingProfile, profileMatchesClassClaim } from './lib/studentProfileReadiness';
 import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
 import {
   getP3RegionById,
@@ -62,13 +63,13 @@ function loadValidatedPendingClassClaim(runtimeConfig: AsterionRuntimeConfig): S
 }
 
 function studentPracticeModeLabel(config: AsterionRuntimeConfig): string {
-  return config.profile.name === 'classroom-pilot' ? 'Classroom practice mode' : 'Browser-local practice mode';
+  return config.profile.name === 'classroom-pilot' ? 'Class practice' : 'Paper 3 practice';
 }
 
 function onboardingProgressMessage(config: AsterionRuntimeConfig): string {
   return config.profile.name === 'classroom-pilot'
-    ? 'Your class membership and supported teacher summaries use the hosted classroom roster.'
-    : 'Progress is saved on this browser/device only. Clearing site data starts a fresh local profile.';
+    ? 'Your class slot is checked before the map opens.'
+    : 'This device keeps your progress for your next visit.';
 }
 
 function DisabledDashboardRoute({ routeKind, runtimeConfig, onNavigatePath }: { routeKind: 'teacher' | 'admin' | 'dashboard'; runtimeConfig: AsterionRuntimeConfig; onNavigatePath: (path: string) => void }) {
@@ -134,7 +135,7 @@ function HostedStudentGateMessage({
   state: Exclude<ReturnType<typeof useStudentClassroomContext>[0], { status: 'ready' }>;
 }) {
   if (state.status === 'loading') {
-    return <div className="notice" role="status">Checking hosted classroom membership...</div>;
+    return <div className="notice" role="status">Checking class membership...</div>;
   }
   if (state.status === 'signed-out') {
     return <div className="notice">Enter the class code and roster name your teacher gave you.</div>;
@@ -142,7 +143,7 @@ function HostedStudentGateMessage({
   if (state.status === 'missing-membership') {
     return <div className="notice">{state.message}</div>;
   }
-  return <div className="notice">{state.error}{state.detail ? ` ${state.detail}` : ''}</div>;
+  return <div className="notice">Classroom entry is not available right now. Tell your teacher.</div>;
 }
 
 function StudentClaimEntryPage({
@@ -170,8 +171,8 @@ function StudentClaimEntryPage({
     >
       {hostedMode ? (
         <div className="entry-context-note">
-          <strong>Hosted classroom access</strong>
-          <span>Existing browser profiles cannot enter without a current roster slot.</span>
+          <strong>Class access</strong>
+          <span>A saved profile cannot enter without a current class slot.</span>
           <span>{onboardingProgressMessage(runtimeConfig)}</span>
         </div>
       ) : null}
@@ -180,7 +181,7 @@ function StudentClaimEntryPage({
       {runtimeConfig.storageNotice ? <div className="notice">{runtimeConfig.storageNotice}</div> : null}
       {freshStartResetApplied ? (
         <div className="notice" role="status">
-          Fresh student-pilot preview reset local browser progress and any pending class-code claim for this device only.
+          This sign-in page is ready for a new student on this device.
         </div>
       ) : null}
       <ClassCodeClaimForm onClaimed={onClaimed} />
@@ -188,8 +189,8 @@ function StudentClaimEntryPage({
   );
 }
 
-function hostedSyncWarningText(error: string): string {
-  return `Classroom hosted activity could not sync to Supabase. Local practice is saved in this browser, but teachers will not see this unsynced activity. ${error}`;
+function hostedSyncWarningText(_error: string): string {
+  return 'Your work was saved on this device, but the class record did not update. Tell your teacher.';
 }
 
 function hostedInitialProfile(context: HostedRosterStudentClassroomContext, avatarName = ''): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
@@ -418,8 +419,19 @@ export default function App() {
   const hostedRosterContext = hostedClassroomContext?.accessMode === 'student' ? hostedClassroomContext : undefined;
   const staffPreviewContext = hostedClassroomContext?.accessMode === 'staff_preview' ? hostedClassroomContext : undefined;
   const staffPreviewProgressReady = !staffPreviewContext || progress.profile?.id === staffPreviewProfileId(staffPreviewContext);
-  const freshStudentPilotLoginRequested = runtimeConfig.profile.name === 'student-pilot'
-    && (isStudentEntryRoute(window.location.hash) || studentPilotFreshStart.requested);
+  const explicitStudentLoginRequested = runtimeConfig.profile.name === 'student-pilot'
+    && (isStudentEntryRoute(window.location.hash) || isStudentPilotEntryPath(window.location.pathname) || studentPilotFreshStart.requested);
+  const hostedProfileMismatch = Boolean(
+    hostedRosterContext
+    && progress.profile
+    && !profileMatchesClassClaim(progress.profile, hostedRosterContext.claim),
+  );
+  const profileHasCurrentClassClaim = useMemo(() => {
+    if (!progress.profile || staffPreviewContext) return true;
+    if (hostedRosterContext) return profileMatchesClassClaim(progress.profile, hostedRosterContext.claim);
+    if (hostedStudentRequired) return false;
+    return Boolean(validatePendingClassClaim(progress.profile.classClaim));
+  }, [hostedRosterContext, hostedStudentRequired, progress.profile, staffPreviewContext]);
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -452,10 +464,10 @@ export default function App() {
     const p3 = questions.filter(isP3Question);
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
     const imageMetadata = p3.filter((question) => question.questionImageRawPaths.length > 0).length;
-    if (questions.length === 0) return 'No questions loaded yet. Check public/assets/exam-bank-data/asterion_question_bank_v1.json and the raw-bank fallback.';
-    if (p3.length === 0) return 'Question bank loaded, but no P3 records were found. Check paper_family labels.';
-    if (regionMatches === 0) return 'P3 records loaded, but none matched the current regions. Check topic-routing data in Data Health.';
-    if (imageMetadata === 0) return 'Questions matched, but images are not loading. Check asset folder layout. Asterion supports /assets/<paper>/..., /assets/questions/p3/<paper>/..., and /assets/questions/<paper>/...';
+    if (questions.length === 0) return 'Practice questions are still loading. If this does not change, tell your teacher.';
+    if (p3.length === 0) return 'Paper 3 practice is not available right now. Tell your teacher.';
+    if (regionMatches === 0) return 'The P3 regions are not ready for practice right now. Tell your teacher.';
+    if (imageMetadata === 0) return 'Question images are not available right now. Tell your teacher.';
     return undefined;
   }, [questions, worldProgress]);
 
@@ -463,6 +475,16 @@ export default function App() {
     if (!staffPreviewContext) return;
     setProgress(createStaffPreviewProgress(staffPreviewContext));
   }, [staffPreviewContext]);
+
+  useEffect(() => {
+    if (!hostedProfileMismatch) return;
+    setSelectedRegion(undefined);
+    setSelectedRegionPage('hub');
+    setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
+    setViewMode('map');
+    persistProgressAfterMeaningfulEvent(progressAdapter.clearLocalDemoProgress());
+  }, [hostedProfileMismatch, progressAdapter]);
 
   const dashboardRoute = useMemo(
     () => parseDashboardRoute(window.location.pathname, window.location.hash),
@@ -803,16 +825,17 @@ export default function App() {
         onStudentEntry={enterStudentFlow}
         onTeacherEntry={() => navigatePath('/teacher')}
         onAdminEntry={() => navigatePath('/admin')}
+        showStaffEntries={runtimeConfig.profile.name !== 'student-pilot'}
       />
     );
   }
 
   if (
-    freshStudentPilotLoginRequested
+    explicitStudentLoginRequested
     && !studentClassClaim
     && !hostedRosterContext
     && !staffPreviewContext
-    && (!progress.profile || progress.profile.onboardingCompleted)
+    && (!progress.profile || hasCompleteOnboardingProfile(progress.profile))
   ) {
     return (
       <StudentClaimEntryPage
@@ -852,10 +875,29 @@ export default function App() {
     );
   }
 
+  if (hostedProfileMismatch) {
+    return (
+      <main className="app-shell onboarding-shell">
+        <TwinklingStarfield />
+        <section className="intro-panel academy-admission">
+          <div className="intro-copy">
+            <span className="mode-pill">Class profile</span>
+            <h1>Asterion</h1>
+          </div>
+          <AsterionMark />
+          <div className="onboarding-briefing">
+            <strong>Preparing your current class slot</strong>
+            <span>This device had a different saved student profile. Asterion is returning to your current class setup before the map opens.</span>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (!progress.profile && (staffPreviewContext || hostedRosterContext || studentClassClaim)) {
     const hostedInitial = hostedRosterContext ? hostedInitialProfile(hostedRosterContext, studentClassClaim?.displayName === hostedRosterContext.membership.rosterName ? '' : '') : undefined;
     return (
-      <main className="app-shell onboarding-shell">
+      <main className="app-shell onboarding-shell profile-setup-shell">
         <TwinklingStarfield />
         <section className="intro-panel academy-admission">
           <div className="intro-copy">
@@ -920,7 +962,17 @@ export default function App() {
     );
   }
 
-  if (!progress.profile.onboardingCompleted) {
+  if (!profileHasCurrentClassClaim) {
+    return (
+      <StudentClaimEntryPage
+        runtimeConfig={runtimeConfig}
+        freshStartResetApplied={studentPilotFreshStart.resetApplied}
+        onClaimed={handleStudentClassClaim}
+      />
+    );
+  }
+
+  if (!hasCompleteOnboardingProfile(progress.profile)) {
     return (
       <StudentOnboarding
         profile={progress.profile}
@@ -1065,7 +1117,7 @@ export default function App() {
             regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
             sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
             sessionReason={viewMode === 'guardian'
-              ? 'You are challenging the Region Guardian because your saved local evidence unlocked this check.'
+              ? 'You are challenging the Region Guardian because your saved practice evidence unlocked this check.'
               : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
             guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
             progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')

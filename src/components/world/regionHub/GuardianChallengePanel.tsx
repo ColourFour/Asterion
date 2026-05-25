@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { Eye, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import type { GuardianChallenge } from '../../../data/guardianChallenges';
-import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
 
 interface GuardianChallengePanelProps {
@@ -27,20 +25,17 @@ function GuardianArtwork({ challenge, regionName }: { challenge: GuardianChallen
 }
 
 export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: GuardianChallengePanelProps) {
-  const [draft, setDraft] = useState('');
-  const [guidanceRevealed, setGuidanceRevealed] = useState(false);
-
   if (!challenge) {
     return (
       <RegionActionCard
-        eyebrow="Step 5 · Pilot"
-        title="Stretch Guardian Challenge"
-        description="A boss-style placeholder challenge will appear here when this region has pilot content."
+        eyebrow="Step 5 · Guardian"
+        title="Guardian Challenge"
+        description="Guardian artwork will appear here when this region has artwork available."
         icon={<ShieldCheck size={22} />}
         className="guardian-card guardian-placeholder-card"
       >
         <p className="guardian-placeholder-warning">
-          Placeholder Guardian content is missing for this region. This does not affect official P3 practice or mastery evidence.
+          Guardian artwork is not available for this region yet. This does not affect practice.
         </p>
       </RegionActionCard>
     );
@@ -51,7 +46,7 @@ export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: Gu
       <RegionActionCard
         eyebrow="Step 5 · Guardian locked"
         title="Guardian Challenge"
-        description={`${regionName} Guardian check unlocks after the required saved local evidence is complete.`}
+        description={`${regionName} Guardian check unlocks after the required saved practice evidence is complete.`}
         icon={<ShieldCheck size={22} />}
         stateIcon={<Lock size={22} aria-label="Guardian locked" />}
         className="guardian-card guardian-placeholder-card guardian-locked-card"
@@ -68,66 +63,22 @@ export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: Gu
     );
   }
 
-  const guidanceId = `guardian-placeholder-guidance-${challenge.regionId}`;
-
   return (
     <RegionActionCard
-      eyebrow="Step 5 · Guardian challenge"
+      eyebrow="Step 5 · Guardian ready"
       title="Guardian Challenge"
-      description={`${regionName} pilot Guardian check.`}
+      description={`${regionName} Guardian check is ready.`}
       icon={<Sparkles size={22} />}
       className="guardian-card guardian-placeholder-card"
     >
-      <div className="guardian-placeholder-warning" role="note">
-        <strong>Placeholder challenge</strong>
-        <span>{challenge.studentFacingWarning}</span>
+      <GuardianArtwork challenge={challenge} regionName={regionName} />
+      <div className="guardian-locked-state" role="status">
+        <Sparkles size={20} aria-hidden="true" />
+        <div>
+          <strong>Guardian challenge ready</strong>
+          <span>Use the Guardian evidence card below to open the actual question.</span>
+        </div>
       </div>
-
-      <article className="guardian-placeholder-problem">
-        <div className="guardian-placeholder-heading">
-          <span>{challenge.topicLabel}</span>
-          <h4>{challenge.title}</h4>
-        </div>
-        <p className="guardian-placeholder-prompt">
-          <MathText text={challenge.prompt} />
-        </p>
-
-        <GuardianArtwork challenge={challenge} regionName={regionName} />
-      </article>
-
-      <label className="activity-response-field guardian-placeholder-response">
-        <span>Draft your answer or method</span>
-        <textarea
-          value={draft}
-          rows={5}
-          placeholder="Write your setup, key equations, checks, and final answer here."
-          onChange={(event) => setDraft(event.target.value)}
-        />
-      </label>
-
-      <button
-        className="activity-primary-action guardian-placeholder-reveal"
-        type="button"
-        aria-expanded={guidanceRevealed}
-        aria-controls={guidanceId}
-        onClick={() => setGuidanceRevealed(true)}
-      >
-        <Eye size={18} aria-hidden="true" />
-        Reveal placeholder guidance
-      </button>
-
-      {guidanceRevealed ? (
-        <div className="guardian-placeholder-guidance" id={guidanceId}>
-          <strong>Placeholder guidance</strong>
-          <p>This is placeholder guidance for the pilot version. Your teacher may discuss the official approach later.</p>
-          <ul>
-            {challenge.guidance.map((item) => (
-              <li key={item}><MathText text={item} /></li>
-            ))}
-          </ul>
-          <small>Revealing this does not save official P3 mastery evidence or clear the reviewed Guardian check.</small>
-        </div>
-      ) : null}
     </RegionActionCard>
   );
 }

@@ -162,9 +162,9 @@ describe('runtime storage config', () => {
     expect(config.dashboardRoutesEnabled).toBe(true);
     expect(config.studentClassClaimSource).toBe('supabase');
     expect(config.supabaseConfigured).toBe(false);
-    expect(config.profileNotice).toContain('Classroom pilot profile requires');
-    expect(config.studentClassClaimNotice).toContain('Classroom roster entry is active');
-    expect(config.studentClassClaimNotice).toContain('hosted classroom browser configuration is incomplete');
+    expect(config.profileNotice).toContain('Classroom entry needs class connection settings');
+    expect(config.studentClassClaimNotice).toContain('Classroom entry is active');
+    expect(config.studentClassClaimNotice).toContain('class connection settings are incomplete');
   });
 
   it('blocks classroom-pilot hosted claims when Supabase browser config is invalid', () => {
@@ -176,7 +176,7 @@ describe('runtime storage config', () => {
 
     expect(config.studentClassClaimSource).toBe('supabase');
     expect(config.supabaseConfigured).toBe(false);
-    expect(config.studentClassClaimNotice).toContain('configuration is invalid');
+    expect(config.studentClassClaimNotice).toContain('class connection settings are invalid');
   });
 
   it('requires an explicit demo flag for dashboard routes', () => {

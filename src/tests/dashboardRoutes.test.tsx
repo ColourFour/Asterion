@@ -142,8 +142,9 @@ describe('dashboard routes', () => {
 
     expect(container.textContent).toContain('Asterion');
     expect(container.textContent).toContain('Student entry');
-    expect(container.textContent).toContain('Teacher login');
-    expect(container.textContent).toContain('Admin login');
+    expect(container.textContent).toContain('Image-first Paper 3 practice starts by claiming your class roster slot.');
+    expect(container.textContent).not.toContain('Teacher login');
+    expect(container.textContent).not.toContain('Admin login');
     expect(container.querySelector('[data-testid="asterion-emblem"]')).toBeTruthy();
     expect(container.textContent).not.toContain('Class access required');
     expect(container.textContent).not.toContain('Teacher class dashboard');
@@ -681,7 +682,7 @@ describe('dashboard routes', () => {
       await Promise.resolve();
     });
 
-    expect(container.textContent).toContain('This roster entry has already been claimed. Ask your teacher or admin for help.');
+    expect(container.textContent).toContain('This roster entry has already been claimed. Ask your teacher for help.');
     expect(container.textContent).toContain('Claim roster slot');
 
     await resetRosterClaim({
@@ -698,7 +699,7 @@ describe('dashboard routes', () => {
     });
 
     expect(container.textContent).toContain('Student real name');
-    expect(container.textContent).toContain('Class membership comes from the hosted roster.');
+    expect(container.textContent).toContain('Class membership is confirmed.');
     expect(container.textContent).not.toContain('Teacher Tools');
     expect(container.textContent).not.toContain('Open Export');
   });

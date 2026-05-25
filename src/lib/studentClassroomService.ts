@@ -321,7 +321,7 @@ function buildClaim(classRow: ClassRow, teacher: TeacherProfileRow, membership: 
     teacherName: teacher.display_name,
     rosterStudentId: membership.id,
     displayName: membership.roster_name,
-    message: 'Hosted classroom membership verified through Supabase.',
+    message: 'Class membership verified.',
   };
 }
 
@@ -375,7 +375,7 @@ async function readContextForSession(client: SupabaseStudentClassroomClient, ses
     if (!membership?.claimed_by_user_id || !membership.claimed_at) {
       return {
         status: 'missing-membership',
-        message: 'Your hosted roster slot is not currently claimed. Ask your teacher if it was reset or archived.',
+        message: 'Your class slot is not currently claimed. Ask your teacher if it was reset or archived.',
       };
     }
 
@@ -414,7 +414,7 @@ async function readContextForSession(client: SupabaseStudentClassroomClient, ses
     if (!teacher) {
       return {
         status: 'missing-membership',
-        message: 'Your class teacher profile is not active. Ask your teacher or admin for help.',
+        message: 'Your class is not active right now. Ask your teacher for help.',
       };
     }
 

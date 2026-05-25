@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeft, BookOpenCheck, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
+import { ArrowLeft, BookOpenCheck, ChevronRight, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import { getGuardianChallengeForRegion } from '../../data/guardianChallenges';
@@ -86,7 +86,7 @@ const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Learn the idea / inspect the method',
   'quick-check': 'Try the smallest move',
   'warm-up': 'Rehearse the method safely',
-  'exam-training': 'Attempt real canonical exam-style image practice',
+  'exam-training': 'Attempt real exam image practice',
   guardian: 'View readiness status until evidence unlocks the challenge',
 };
 
@@ -94,8 +94,8 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'field-guide': 'Start with one guide step and worked example before practice.',
   'quick-check': 'Try one answer-first check before moving into longer practice.',
   'warm-up': 'Build fluency with one short support activity.',
-  'exam-training': 'Use canonical question images and save evidence for the Guardian.',
-  guardian: 'Try the stretch placeholder. It does not count as official mastery evidence yet.',
+  'exam-training': 'Use real Paper 3 question images and save evidence for the Guardian.',
+  guardian: 'Open this only after the evidence checklist unlocks the Guardian.',
 };
 
 function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSummary): string | undefined {
@@ -362,6 +362,14 @@ function hubActionIcon(page: HubActionPageId): ReactNode {
   return <ShieldCheck size={22} />;
 }
 
+function hubActionButtonLabel(page: HubActionPageId): string {
+  if (page === 'field-guide') return 'Open Field Guide';
+  if (page === 'quick-check') return 'Open Quick Checks';
+  if (page === 'warm-up') return 'Open Warm-Up';
+  if (page === 'exam-training') return 'Open Exam Training';
+  return 'Open Guardian';
+}
+
 function guardianStatus(summary: RegionLearningSummary, guardianCleared: boolean): string {
   if (guardianCleared) return 'Cleared';
   return summary.guardianEligibility.eligible ? 'Unlocked' : 'Locked';
@@ -536,63 +544,77 @@ function RegionHubHome({
           <Lock size={18} aria-hidden="true" />
           <div>
             <strong>Field Guide only</strong>
-            <span>{lockedRegionMessage(studentRegionAccess)} Existing progress stays visible, but this region will not add progress pressure while locked.</span>
+            <span>{lockedRegionMessage(studentRegionAccess)} Existing progress stays visible, but this region will not add new progress while locked.</span>
           </div>
         </div>
       ) : null}
 
-      <section className="region-first-run-loop" aria-label="Region learning loop">
-        <div>
-          <span className="mode-pill">Learning loop</span>
-          <strong>Follow these steps in order the first time.</strong>
-          <p>Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves canonical evidence.</p>
+      <div className="region-home-body">
+        <section className="region-first-run-loop region-home-rail" aria-label="Region learning loop">
+          <div className="region-rail-intro">
+            <span className="mode-pill">Learning loop</span>
+            <strong>Follow these steps in order the first time.</strong>
+            <p>Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves Guardian evidence.</p>
+          </div>
+          <ol>
+            {steps.map((step) => (
+              <li className={`is-${step.state}`} key={step.page}>
+                <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
+                  <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(step.page)}</span>
+                  <span className="region-home-action-copy">
+                    <strong>{step.label}</strong>
+                    <small>{studentLoopExplanations[step.page]}</small>
+                  </span>
+                  <span className="region-home-action-status">
+                    {step.state === 'locked' ? <Lock size={14} aria-hidden="true" /> : null}
+                    {step.helper}
+                  </span>
+                  <ChevronRight className="region-home-action-chevron" size={18} aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <div className="region-home-center">
+          <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
+
+          <section className={`region-current-step-card${primaryActionState.disabled ? ' is-locked' : ''}`} aria-label="Current region step">
+            <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(primaryPage)}</span>
+            <div className="region-home-primary-copy">
+              <small>Current step</small>
+              <strong>{hubActionLabels[primaryPage]}</strong>
+              <span>{summary.nextAction.label}</span>
+              <p>{summary.nextAction.explanation}</p>
+            </div>
+            <span className="region-home-action-status">
+              {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
+              {primaryActionState.disabled ? primaryActionState.status : 'Ready'}
+            </span>
+            <button
+              type="button"
+              className="region-current-step-button"
+              data-region-page={primaryPage}
+              disabled={primaryActionState.disabled}
+              onClick={() => onNavigatePage?.(primaryPage)}
+            >
+              {hubActionIcon(primaryPage)}
+              {hubActionButtonLabel(primaryPage)}
+            </button>
+            <p className="region-home-primary-detail">{hubActionPrimaryCopy[primaryPage]}</p>
+            {hubActionLockReason(primaryPage, summary) ? (
+              <p className="region-home-lock-reason">Locked: {hubActionLockReason(primaryPage, summary)}</p>
+            ) : null}
+          </section>
         </div>
-        <ol>
-          {steps.map((step) => (
-            <li className={`is-${step.state}`} key={step.page}>
-              <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
-                <span>{step.label}</span>
-                <small>{studentLoopExplanations[step.page]}</small>
-                <em>{step.helper}</em>
-              </button>
-            </li>
-          ))}
-        </ol>
-      </section>
 
-      <RegionArtwork regionId={regionProgress.region.id} theme={theme} />
-
-      <nav className="region-home-actions" aria-label="Region learning actions">
-        <button
-          type="button"
-          className={`region-home-primary-action${primaryActionState.disabled ? ' is-locked' : ''}`}
-          data-region-page={primaryPage}
-          disabled={primaryActionState.disabled}
-          onClick={() => onNavigatePage?.(primaryPage)}
-        >
-          <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(primaryPage)}</span>
-          <span className="region-home-primary-copy">
-            <small>Current step</small>
-            <strong>{hubActionLabels[primaryPage]}</strong>
-            <span>{summary.nextAction.label}</span>
-            <p>{summary.nextAction.explanation}</p>
-          </span>
-          <span className="region-home-primary-detail">{hubActionPrimaryCopy[primaryPage]}</span>
-          {hubActionLockReason(primaryPage, summary) ? (
-            <span className="region-home-lock-reason">Locked: {hubActionLockReason(primaryPage, summary)}</span>
-          ) : null}
-          <span className="region-home-action-status">
-            {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
-            {primaryActionState.status}
-          </span>
-        </button>
-
-        <details className="region-home-secondary-routes">
-          <summary>
-            <span>Other routes</span>
-            <small>Choose another path</small>
-          </summary>
-          <div className="region-home-secondary-steps" aria-label="Other region steps">
+        <aside className="region-home-secondary-routes region-home-rail" aria-label="Other region routes">
+          <div className="region-rail-intro">
+            <span className="mode-pill">Other routes</span>
+            <strong>Choose another path.</strong>
+            <p>Use these routes when the current step is not the one you need right now.</p>
+          </div>
+          <div className="region-home-secondary-steps">
             {secondaryPages.map((page) => {
               const actionState = hubActionState({
                 canTrain,
@@ -622,6 +644,7 @@ function RegionHubHome({
                     {actionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
                     {actionState.status}
                   </span>
+                  <ChevronRight className="region-home-action-chevron" size={18} aria-hidden="true" />
                   {hubActionLockReason(page, summary) ? (
                     <span className="region-home-action-reason">{hubActionLockReason(page, summary)}</span>
                   ) : null}
@@ -629,8 +652,8 @@ function RegionHubHome({
               );
             })}
           </div>
-        </details>
-      </nav>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -643,7 +666,7 @@ function LockedRegionActivityPanel({ activityLabel, studentRegionAccess }: { act
         <span className="mode-pill">Field Guide only</span>
         <h3>{activityLabel} is locked for this class</h3>
         <p>{lockedRegionMessage(studentRegionAccess)}</p>
-        <p>Existing progress remains visible, but locked-region activities cannot save learning attempts, guardian clears, or mastery evidence.</p>
+        <p>Existing progress remains visible, but locked-region activities cannot save new attempts or clear the Guardian.</p>
       </div>
     </section>
   );
