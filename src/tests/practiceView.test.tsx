@@ -85,7 +85,7 @@ const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' }
 function renderPractice(
   testQuestion: NormalizedQuestion,
   onAttempt = vi.fn<(attempt: Attempt) => void>(),
-  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string; onOpenRegionTool?: (page: RegionLearningPageId) => void } = {},
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string; onOpenRegionTool?: (page: RegionLearningPageId) => void; onOpenDashboard?: () => void; onSelectPracticeMode?: (mode: 'core' | 'weak' | 'stretch') => void; onOpenProfile?: () => void; sessionLabelOverride?: string; currentPracticeMode?: 'core' | 'weak' | 'stretch' } = {},
 ) {
   const onIssue = options.onIssue ?? vi.fn<(questionId: string, issueType: IssueType, note?: string) => void>();
   return {
@@ -101,11 +101,16 @@ function renderPractice(
         avatarLocation={avatarLocation}
         selectedRegion={options.selectedRegion}
         progressionBlockedReason={options.progressionBlockedReason}
+        sessionLabelOverride={options.sessionLabelOverride}
+        currentPracticeMode={options.currentPracticeMode}
         onAttempt={onAttempt}
         onIssue={onIssue}
         onContinuePractice={options.onContinuePractice}
         continuePracticeLabel={options.continuePracticeLabel}
         onOpenRegionTool={options.onOpenRegionTool}
+        onOpenDashboard={options.onOpenDashboard}
+        onSelectPracticeMode={options.onSelectPracticeMode}
+        onOpenProfile={options.onOpenProfile}
       />,
     ),
   };
@@ -204,44 +209,42 @@ describe('PracticeView mark-scheme availability', () => {
 });
 
 describe('PracticeView self-mark reflection', () => {
-  it('sets the practice title accent from the selected region theme', () => {
+  it('sets the practice title and accent from the Exam Training mode, not the selected region', () => {
     const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge');
     expect(algebraRegion).toBeTruthy();
 
-    const { container } = renderPractice(question(), vi.fn(), { selectedRegion: algebraRegion });
+    const { container } = renderPractice(question(), vi.fn(), { selectedRegion: algebraRegion, currentPracticeMode: 'weak' });
     const practiceCard = container.querySelector<HTMLElement>('.encounter-chamber');
 
-    expect(practiceCard?.style.getPropertyValue('--practice-region-accent')).toBe('#b8872d');
-    expect(container.querySelector('.question-header h2')?.textContent).toBe('Algebra Vault');
+    expect(practiceCard?.style.getPropertyValue('--practice-mode-accent')).toBe('#d99518');
+    expect(container.querySelector('.exam-practice-brand h2')?.textContent).toBe('Exam Training');
+    expect(container.textContent).toContain('RegionAlgebra Vault');
   });
 
   it('prompts students to enter a mark and shows zero placeholders', () => {
     const { container } = renderPractice(question());
 
-    const initialFooterButtons = Array.from(container.querySelectorAll('.practice-footer-actions button'))
+    const initialFooterButtons = Array.from(container.querySelectorAll('.exam-practice-bottom-bar button'))
       .map((button) => button.textContent?.trim());
-    expect(initialFooterButtons).toEqual(['Reveal Mark Scheme', 'Save Attempt']);
-    expect(container.querySelector('.question-header-actions')?.textContent).not.toContain('Report issue');
+    expect(initialFooterButtons).toEqual(['Dashboard', 'Ask Teacher', 'Reveal Mark Scheme', 'Save Attempt']);
     const revealButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
       .find((button) => button.textContent === 'Reveal Mark Scheme');
     const reportButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
       .find((button) => button.textContent === 'Report issue');
     expect(revealButton).toBeTruthy();
     expect(reportButton).toBeTruthy();
-    expect(Boolean(revealButton!.compareDocumentPosition(reportButton!) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
     expect(container.querySelector<HTMLDetailsElement>('.practice-support-details')?.open).toBe(false);
 
     clickButton(container, 'Reveal Mark Scheme');
     markSchemeLoaded(container);
 
     expect(container.querySelector('.mark-scheme-panel img')).toBeTruthy();
-    expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Compare mark scheme');
+    expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Compare with scheme');
     expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Save attempt');
-    expect(container.textContent).toContain('Use this image to decide every M, B, and A mark. Asterion does not auto-mark.');
-    expect(container.textContent).toContain('Self-marking means you enter the exact marks you earned from the official mark scheme.');
-    expect(container.textContent).toContain('Enter your mark from the official mark scheme above.');
-    expect(container.textContent).toContain('Each M, B, and A field is capped');
-    expect(Array.from(container.querySelectorAll<HTMLInputElement>('.mark-box-stepper input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
+    expect(container.textContent).toContain('Use this image to decide each mark. Asterion does not auto-mark exam work.');
+    expect(container.textContent).toContain('Use the official mark scheme image above.');
+    expect(container.textContent).toContain('Enter numeric M, B, and A totals from the official mark scheme.');
+    expect(Array.from(container.querySelectorAll<HTMLInputElement>('.exam-mark-row input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
   });
 
   it('falls back to total marks when no reliable M/B/A caps are available', () => {
@@ -250,7 +253,7 @@ describe('PracticeView self-mark reflection', () => {
     clickButton(container, 'Reveal Mark Scheme');
     markSchemeLoaded(container);
 
-    expect(container.textContent).toContain('Enter the total mark from the official mark scheme.');
+    expect(container.textContent).toContain('Enter the total marks you earned from the official mark scheme.');
     expect(container.querySelectorAll<HTMLInputElement>('.mark-breakdown-grid input')).toHaveLength(1);
     expect(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')).toBeNull();
 
@@ -263,7 +266,7 @@ describe('PracticeView self-mark reflection', () => {
     expect(onAttempt.mock.calls[0][0].markBreakdown).toBeUndefined();
   });
 
-  it('does not allow M, B, or A inputs above the available category caps', () => {
+  it('clamps M, B, and A inputs to the available category caps', () => {
     const { container, onAttempt } = renderPractice(question());
 
     clickButton(container, 'Reveal Mark Scheme');
@@ -272,13 +275,14 @@ describe('PracticeView self-mark reflection', () => {
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '4');
     clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
 
-    expect(container.textContent).toContain('A marks cannot be higher than 1.');
-    expect(saveAttemptButton(container).disabled).toBe(true);
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')?.value).toBe('1');
+    expect(container.textContent).toContain('Total: 1 / 4');
+    expect(saveAttemptButton(container).disabled).toBe(false);
 
     act(() => {
       container.querySelector<HTMLFormElement>('.attempt-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     });
-    expect(onAttempt).not.toHaveBeenCalled();
+    expect(onAttempt).toHaveBeenCalledWith(expect.objectContaining({ marksEarned: 1 }));
   });
 
   it('renders duplicate question and mark-scheme image candidates only once', () => {
@@ -403,10 +407,10 @@ describe('PracticeView self-mark reflection', () => {
     clickButton(container, 'Reveal Mark Scheme');
     markSchemeLoaded(container);
 
-    expect(container.textContent).toContain('Part-by-part marks');
+    expect(container.textContent).toContain('Part totals available');
     expect(container.textContent).toContain('Part (a): 6 marks');
-    expect(container.textContent).toContain('Your Mark by Part');
-    expect(container.textContent).toContain('Enter M, B, and A marks for each question part');
+    expect(container.textContent).toContain('Your marks by part');
+    expect(container.textContent).toContain('Enter numeric marks for each available M, B, and A total');
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.part-mark-grid input')).map((input) => input.placeholder)).toEqual(['0', '0', '0', '0', '0', '0']);
 
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="Part (a) M marks"]')!, '3');
@@ -505,18 +509,35 @@ describe('PracticeView self-mark reflection', () => {
     expect(onContinuePractice).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps region tools reachable during exam training', () => {
+  it('uses shared Exam Training mode navigation instead of region tools', () => {
     const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
-    const onOpenRegionTool = vi.fn();
+    const onOpenDashboard = vi.fn();
+    const onSelectPracticeMode = vi.fn();
+    const onOpenProfile = vi.fn();
     const { container } = renderPractice(question(), vi.fn(), {
       selectedRegion: algebraRegion,
-      onOpenRegionTool,
+      onOpenDashboard,
+      onSelectPracticeMode,
+      onOpenProfile,
     });
 
-    expect(container.textContent).toContain('Region tools');
-    clickButton(container, 'Field Guide');
-    expect(onOpenRegionTool).toHaveBeenCalledWith('field-guide');
-    clickButton(container, 'Skill Practice');
-    expect(onOpenRegionTool).toHaveBeenCalledWith('skill-practice');
+    expect(container.textContent).not.toContain('Region tools');
+    clickButton(container, 'Dashboard');
+    expect(onOpenDashboard).toHaveBeenCalled();
+    clickButton(container, 'Weak Area Review');
+    expect(onSelectPracticeMode).toHaveBeenCalledWith('weak');
+    clickButton(container, 'Profile');
+    expect(onOpenProfile).toHaveBeenCalled();
+  });
+
+  it('opens Ask Teacher as a safe placeholder without sending messages', () => {
+    const { container } = renderPractice(question());
+
+    expect(container.textContent).not.toContain('Teacher questions are coming soon.');
+    clickButton(container, 'Ask Teacher');
+
+    expect(container.textContent).toContain('Teacher questions are coming soon.');
+    expect(container.textContent).toContain('No message is sent.');
+    expect(Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find((button) => button.textContent === 'Send to teacher')?.disabled).toBe(true);
   });
 });

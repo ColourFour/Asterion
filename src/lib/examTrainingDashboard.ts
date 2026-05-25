@@ -140,6 +140,18 @@ function fallbackSkillName(skillId: string): string {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+export function examTrainingSkillName(skillId: string | undefined): string | undefined {
+  const normalized = normalizeSkillId(skillId);
+  if (!normalized) return undefined;
+  return studentFriendlySkillNames[normalized] ?? fallbackSkillName(normalized);
+}
+
+export function knownExamTrainingSkillName(skillId: string | undefined): string | undefined {
+  const normalized = normalizeSkillId(skillId);
+  if (!normalized) return undefined;
+  return studentFriendlySkillNames[normalized];
+}
+
 function addEvidence(stats: SkillEvidenceStats, input: {
   marksEarned: number;
   marksAvailable: number;

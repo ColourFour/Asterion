@@ -1226,6 +1226,7 @@ export default function App() {
             regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
             sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
             sessionLabelOverride={examTrainingPracticeMode ? EXAM_TRAINING_PRACTICE_LABELS[examTrainingPracticeMode] : undefined}
+            currentPracticeMode={examTrainingPracticeMode}
             sessionReason={viewMode === 'guardian'
               ? 'You are challenging the Region Guardian because your saved practice evidence unlocked this check.'
               : examTrainingPracticeMode
@@ -1315,6 +1316,9 @@ export default function App() {
             }}
             continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
             onOpenRegionTool={selectedRegion ? (page) => openRegionPage(selectedRegion, page) : undefined}
+            onOpenDashboard={() => openExamTrainingDashboard(selectedRegion)}
+            onSelectPracticeMode={(mode) => startDashboardPractice(mode)}
+            onOpenProfile={openProfile}
           />
         </Suspense>
       ) : null}

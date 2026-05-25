@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { BookOpenCheck, CheckCircle2, FileSearch, Map, RotateCcw } from 'lucide-react';
+import { ArrowLeft, BookOpenCheck, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, Map, MessageCircle, RotateCcw, User } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
 import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
+import { EXAM_TRAINING_PRACTICE_LABELS, knownExamTrainingSkillName, type ExamTrainingPracticeMode } from '../../lib/examTrainingDashboard';
 import { createId } from '../../lib/progressStore';
 import { TRAINING_SESSION_LABELS } from '../../lib/regionLearning';
 import type { RegionLearningPageId } from '../../lib/regionRoutes';
-import { getRegionTheme } from '../../lib/regionThemes';
 import { trainingBlockersForQuestion } from '../../lib/questionTraining';
 import { parseAttemptMarkBreakdown, parseAttemptPartScores, parseAttemptScore } from '../../lib/attemptScoring';
-import { RegionAvatarCameo } from '../avatar/RegionAvatarCameo';
 import { ImageStack, type ImageStackAvailability } from './ImageStack';
 import { IssueReportButton } from './IssueReportButton';
 
@@ -76,6 +75,7 @@ interface PracticeViewProps {
   sessionIntent?: TrainingSessionIntent;
   sessionLabelOverride?: string;
   sessionReason?: string;
+  currentPracticeMode?: ExamTrainingPracticeMode;
   guardianPassThreshold?: number;
   progressionBlockedReason?: string;
   onAttempt: (attempt: Attempt) => void;
@@ -85,6 +85,9 @@ interface PracticeViewProps {
   onContinuePractice?: () => void;
   continuePracticeLabel?: string;
   onOpenRegionTool?: (page: RegionLearningPageId) => void;
+  onOpenDashboard?: () => void;
+  onSelectPracticeMode?: (mode: ExamTrainingPracticeMode) => void;
+  onOpenProfile?: () => void;
 }
 
 export function PracticeView({
@@ -101,6 +104,7 @@ export function PracticeView({
   sessionIntent,
   sessionLabelOverride,
   sessionReason,
+  currentPracticeMode,
   guardianPassThreshold,
   progressionBlockedReason,
   onAttempt,
@@ -110,6 +114,9 @@ export function PracticeView({
   onContinuePractice,
   continuePracticeLabel,
   onOpenRegionTool,
+  onOpenDashboard,
+  onSelectPracticeMode,
+  onOpenProfile,
 }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [totalMarkInput, setTotalMarkInput] = useState('');
@@ -121,6 +128,9 @@ export function PracticeView({
   const [attemptSaved, setAttemptSaved] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
   const [markSchemeAvailability, setMarkSchemeAvailability] = useState<ImageStackAvailability>('pending');
+  const [askTeacherOpen, setAskTeacherOpen] = useState(false);
+  const [teacherQuestionDraft, setTeacherQuestionDraft] = useState('');
+  const [rationaleOpen, setRationaleOpen] = useState(false);
 
   useEffect(() => {
     setRevealed(false);
@@ -133,6 +143,9 @@ export function PracticeView({
     setAttemptSaved(false);
     setStartedAt(Date.now());
     setMarkSchemeAvailability(question?.markSchemeImageCandidates.length ? 'pending' : 'unavailable');
+    setAskTeacherOpen(false);
+    setTeacherQuestionDraft('');
+    setRationaleOpen(false);
   }, [question?.id, question?.markSchemeImageCandidates.length, question?.parts]);
 
   const maxMarks = question?.marksAvailable;
@@ -176,23 +189,29 @@ export function PracticeView({
     && typeof guardianPassThreshold === 'number'
     && typeof scoreValidation.scoreRatio === 'number'
     && scoreValidation.scoreRatio >= guardianPassThreshold;
+  const activePracticeMode: ExamTrainingPracticeMode = currentPracticeMode
+    ?? (sessionIntent === 'weak_area_review' ? 'weak' : sessionLabelOverride === EXAM_TRAINING_PRACTICE_LABELS.stretch ? 'stretch' : 'core');
+  const activePracticeLabel = EXAM_TRAINING_PRACTICE_LABELS[activePracticeMode];
+  const practiceModeCopy: Record<ExamTrainingPracticeMode, string> = {
+    core: 'Balanced exam-style practice.',
+    weak: 'Focus on improvement.',
+    stretch: 'Harder exam-style items.',
+  };
+  const practiceModeStyle = {
+    '--practice-mode-accent': activePracticeMode === 'weak' ? '#d99518' : activePracticeMode === 'stretch' ? '#6d55c8' : '#2f8752',
+    '--practice-mode-accent-strong': activePracticeMode === 'weak' ? '#a96708' : activePracticeMode === 'stretch' ? '#493384' : '#1d5d38',
+    '--practice-mode-accent-soft': activePracticeMode === 'weak' ? '#fff2cc' : activePracticeMode === 'stretch' ? '#eee9ff' : '#e3f5ea',
+  } as CSSProperties;
   const sessionLabel = regionLearningPhase === 'guardian'
     ? 'Region Guardian'
     : sessionLabelOverride
       ? sessionLabelOverride
       : sessionIntent
       ? TRAINING_SESSION_LABELS[sessionIntent]
-      : undefined;
+      : activePracticeLabel;
   const postAttemptContinueLabel = continuePracticeLabel ?? (isFullScore
     ? 'Next question'
     : selectedRegion ? 'Continue in this region' : 'Continue practice');
-  const practiceRegion = selectedRegion ?? avatarLocation.region;
-  const practiceRegionTheme = practiceRegion ? getRegionTheme(practiceRegion) : undefined;
-  const practiceThemeStyle = practiceRegionTheme ? {
-    '--practice-region-accent': practiceRegionTheme.colors.accent,
-    '--practice-region-accent-text': practiceRegionTheme.colors.accentText,
-    '--practice-region-accent-soft': practiceRegionTheme.colors.accentSoft,
-  } as CSSProperties : undefined;
   const maxMarkValue = typeof maxMarks === 'number' ? maxMarks : 10;
   const enteredMarkTotal = usesPartMarking ? Object.values(partMarkInputs).reduce((sum, partInput) => {
     return sum + markCategories.reduce((partSum, category) => {
@@ -208,16 +227,26 @@ export function PracticeView({
     if (!isFullScore) setFullScoreConfirmed(false);
   }, [isFullScore]);
 
+  function clampMarkValue(value: string, upperLimit: number): string {
+    if (value.trim() === '') return '';
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) return value;
+    return String(Math.min(upperLimit, Math.max(0, numericValue)));
+  }
+
   function updateMarkInput(key: keyof AttemptMarkBreakdown, value: string) {
-    setMarkInputs((current) => ({ ...current, [key]: value }));
+    const categoryCap = question?.markBreakdown?.[key] ?? maxMarkValue;
+    setMarkInputs((current) => ({ ...current, [key]: clampMarkValue(value, categoryCap) }));
   }
 
   function updatePartMarkInput(label: string, key: keyof AttemptMarkBreakdown, value: string) {
+    const part = questionParts?.find((item) => item.label === label);
+    const categoryCap = part?.markBreakdown?.[key] ?? part?.marksAvailable ?? maxMarkValue;
     setPartMarkInputs((current) => ({
       ...current,
       [label]: {
         ...(current[label] ?? emptyMarkInputs),
-        [key]: value,
+        [key]: clampMarkValue(value, categoryCap),
       },
     }));
   }
@@ -230,50 +259,6 @@ export function PracticeView({
     ));
   }
 
-  function nudgeMarkInput(key: keyof AttemptMarkBreakdown, delta: number) {
-    setMarkInputs((current) => {
-      const currentValue = Number.parseInt(current[key] || '0', 10);
-      const categoryCap = question?.markBreakdown?.[key] ?? maxMarkValue;
-      const otherTotal = markCategories.reduce((sum, category) => {
-        if (category.key === key) return sum;
-        const value = Number.parseInt(current[category.key] || '0', 10);
-        return Number.isFinite(value) ? sum + value : sum;
-      }, 0);
-      const upperLimit = Math.min(categoryCap, typeof maxMarks === 'number' ? Math.max(0, maxMarkValue - otherTotal) : maxMarkValue);
-      const next = Math.min(upperLimit, Math.max(0, (Number.isFinite(currentValue) ? currentValue : 0) + delta));
-      return { ...current, [key]: String(next) };
-    });
-  }
-
-  function nudgePartMarkInput(label: string, key: keyof AttemptMarkBreakdown, maxPartMarks: number, delta: number, categoryCap?: number) {
-    setPartMarkInputs((current) => {
-      const partInput = current[label] ?? emptyMarkInputs;
-      const currentValue = Number.parseInt(partInput[key] || '0', 10);
-      const otherTotal = markCategories.reduce((sum, category) => {
-        if (category.key === key) return sum;
-        const value = Number.parseInt(partInput[category.key] || '0', 10);
-        return Number.isFinite(value) ? sum + value : sum;
-      }, 0);
-      const upperLimit = Math.min(categoryCap ?? maxPartMarks, Math.max(0, maxPartMarks - otherTotal));
-      const next = Math.min(upperLimit, Math.max(0, (Number.isFinite(currentValue) ? currentValue : 0) + delta));
-      return {
-        ...current,
-        [label]: {
-          ...partInput,
-          [key]: String(next),
-        },
-      };
-    });
-  }
-
-  function nudgeTotalMark(delta: number) {
-    setTotalMarkInput((current) => {
-      const currentValue = Number.parseInt(current || '0', 10);
-      const next = Math.min(maxMarkValue, Math.max(0, (Number.isFinite(currentValue) ? currentValue : 0) + delta));
-      return String(next);
-    });
-  }
-
   function partMarkTotal(label: string): number {
     const partInput = partMarkInputs[label] ?? emptyMarkInputs;
     return markCategories.reduce((sum, category) => {
@@ -281,6 +266,14 @@ export function PracticeView({
       return Number.isFinite(value) ? sum + value : sum;
     }, 0);
   }
+
+  const scoreTotalLabel = `${typeof scoreValidation.earned === 'number' ? scoreValidation.earned : Number.isFinite(enteredMarkTotal) ? enteredMarkTotal : 0} / ${typeof maxMarks === 'number' ? maxMarks : '?'}`;
+  const safeSkillLabel = knownExamTrainingSkillName(
+    question?.routeEvidence?.primaryTopicId
+      ?? question?.topicRouting?.primaryTopicId
+      ?? question?.parts?.find((part) => part.skillRef)?.skillRef
+      ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
+  ) ?? 'Not enough evidence yet';
 
   if (!question) {
     return (
@@ -293,68 +286,109 @@ export function PracticeView({
   }
 
   return (
-    <section className="practice-card encounter-chamber" style={practiceThemeStyle}>
-      <header className="question-header">
-        <div>
-          <span className="mode-pill">{selectedRegion ? `${worldName} · ${selectedRegion.name}` : question.paperFamily.toUpperCase()}</span>
-          <h2>{selectedRegion?.name ?? question.displayTopic}</h2>
-          <p>{question.displaySubtopic ?? 'Mixed practice'} · {typeof maxMarks === 'number' ? `${maxMarks} marks` : 'marks unavailable'} · {question.paper ?? 'paper pending'} {question.questionNumber ? `Q${question.questionNumber}` : ''}</p>
-          {selectedRegionRank ? <span className="rank-chip">Region rank: {selectedRegionRank}</span> : null}
+    <section className={`practice-card encounter-chamber exam-practice-page mode-${activePracticeMode}${regionLearningPhase === 'guardian' ? ' guardian-practice-page' : ''}`} style={practiceModeStyle}>
+      <header className="exam-practice-header">
+        <div className="exam-practice-brand">
+          <span className="exam-practice-crest" aria-hidden="true"><FileSearch size={26} /></span>
+          <div>
+            <span className="mode-pill">Exam Training</span>
+            <h2>{regionLearningPhase === 'guardian' ? 'Guardian Practice' : 'Exam Training'}</h2>
+          </div>
         </div>
-        <div className="question-header-actions">
-          <RegionAvatarCameo avatarName={avatarName} avatar={avatar} regionProgress={regionProgress} location={avatarLocation} />
-        </div>
+        <nav className="exam-practice-mode-nav" aria-label="Exam Training navigation">
+          {onOpenDashboard ? (
+            <button type="button" onClick={onOpenDashboard}>
+              <LayoutDashboard size={18} aria-hidden="true" />
+              Dashboard
+            </button>
+          ) : null}
+          {(['core', 'weak', 'stretch'] as ExamTrainingPracticeMode[]).map((mode) => (
+            <button
+              type="button"
+              key={mode}
+              className={activePracticeMode === mode && regionLearningPhase !== 'guardian' ? 'active' : ''}
+              aria-current={activePracticeMode === mode && regionLearningPhase !== 'guardian' ? 'page' : undefined}
+              onClick={() => onSelectPracticeMode?.(mode)}
+              disabled={!onSelectPracticeMode || regionLearningPhase === 'guardian'}
+            >
+              <strong>{EXAM_TRAINING_PRACTICE_LABELS[mode]}</strong>
+              <small>{practiceModeCopy[mode]}</small>
+            </button>
+          ))}
+          {onOpenProfile ? (
+            <button type="button" onClick={onOpenProfile}>
+              <User size={18} aria-hidden="true" />
+              Profile
+            </button>
+          ) : onReturnToMap ? (
+            <button type="button" onClick={onReturnToMap}>
+              <ArrowLeft size={18} aria-hidden="true" />
+              Back
+            </button>
+          ) : null}
+        </nav>
       </header>
 
-      {selectedRegion && onOpenRegionTool ? (
-        <nav className="practice-region-tools" aria-label="Region tools">
-          <span>Region tools</span>
-          <button type="button" onClick={() => onOpenRegionTool('field-guide')}>Field Guide</button>
-          <button type="button" onClick={() => onOpenRegionTool('skill-practice')}>Skill Practice</button>
-          <button type="button" onClick={() => onOpenRegionTool('exam-training')}>Exam Training</button>
-        </nav>
-      ) : null}
-
-      <div className="encounter-panel">
+      <section className="exam-practice-meta-strip" aria-label="Question details">
         <div>
-          <strong>Encounter sequence</strong>
-          <span>Work from the question image first. The mark scheme is the official answer key for exact self-marking.</span>
+          <span>Question</span>
+          <strong>{question.questionNumber ? `Q${question.questionNumber}` : 'Current item'}</strong>
         </div>
-        <ol className="encounter-steps">
-          <li className="active"><FileSearch size={16} /> Solve</li>
-          <li className={revealed ? 'active' : ''}><BookOpenCheck size={16} /> Reveal</li>
-          <li className={attemptSaved ? 'active' : ''}><CheckCircle2 size={16} /> Record</li>
-        </ol>
-      </div>
+        <div>
+          <span>Exam</span>
+          <strong>{question.paper ? `CAIE 9709 Paper 3 · ${question.paper}` : 'CAIE 9709 Paper 3'}</strong>
+        </div>
+        <div>
+          <span>Target topic</span>
+          <strong>{question.displayTopic || 'Mixed exam practice'}</strong>
+        </div>
+        <div>
+          <span>Skill</span>
+          <strong>{safeSkillLabel}</strong>
+        </div>
+        <div>
+          <span>Region</span>
+          <strong>{selectedRegion?.name ?? question.routeEvidence?.displayRegionId ?? 'Supporting context'}</strong>
+        </div>
+        <button className="exam-practice-info-button" type="button" onClick={() => setRationaleOpen((open) => !open)} aria-expanded={rationaleOpen}>
+          <HelpCircle size={16} aria-hidden="true" />
+          Why this question?
+        </button>
+      </section>
 
       {sessionLabel || sessionReason ? (
-        <div className={`session-rationale-panel${regionLearningPhase === 'guardian' ? ' guardian-session' : ''}`}>
+        <details
+          className={`session-rationale-panel exam-practice-rationale${regionLearningPhase === 'guardian' ? ' guardian-session' : ''}`}
+          open={rationaleOpen}
+          onToggle={(event) => setRationaleOpen(event.currentTarget.open)}
+        >
+          <summary>
+            <HelpCircle size={16} aria-hidden="true" />
+            How this question was chosen
+          </summary>
           <div>
-            <span>{regionLearningPhase === 'guardian' ? 'Why this Guardian check is showing' : 'Why this practice is showing'}</span>
-            <strong>{sessionLabel ?? 'Region practice'}</strong>
+            <span>{regionLearningPhase === 'guardian' ? 'Guardian reason' : activePracticeLabel}</span>
+            <strong>{sessionLabel ?? activePracticeLabel}</strong>
           </div>
-          <p>{sessionReason ?? 'This question is selected from your current region practice path.'}</p>
+          <p>{sessionReason ?? practiceModeCopy[activePracticeMode]}</p>
           {regionLearningPhase === 'guardian' && typeof guardianPassThreshold === 'number' ? (
             <small>Clear threshold: {Math.round(guardianPassThreshold * 100)}% or higher on this saved attempt.</small>
           ) : null}
-        </div>
+        </details>
       ) : null}
 
-      <div className={`practice-workspace${revealed ? ' is-revealed' : ''}`}>
-        <section className="practice-panel question-panel">
-          <div className="panel-title-bar">Practice Session</div>
+      <div className={`practice-workspace exam-practice-workspace${revealed ? ' is-revealed' : ''}`}>
+        <section className="practice-panel question-panel exam-image-card">
+          <div className="exam-card-heading">
+            <div>
+              <span>Question</span>
+              <h3>Work from the question image</h3>
+            </div>
+            <small>{typeof maxMarks === 'number' ? `${maxMarks} marks` : 'Marks unavailable'}</small>
+          </div>
           <div className="paper-window">
-            <span className="paper-caption">{selectedRegion?.name ?? question.displayTopic} - Question {question.questionNumber ?? ''}</span>
             <ImageStack candidateGroups={question.questionImageCandidates} label="Question" />
           </div>
-          {!revealed ? (
-            <div className="practice-footer-actions">
-              <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
-                Reveal Mark Scheme
-              </button>
-              <button className="practice-save-placeholder" type="button" disabled title="Reveal the mark scheme, enter exact marks, and reflect before saving.">Save Attempt</button>
-            </div>
-          ) : null}
           <details className="practice-support-details">
             <summary>Question support</summary>
             <IssueReportButton onReport={(issueType, reportNote) => onIssue(question.id, issueType, reportNote)} />
@@ -362,17 +396,18 @@ export function PracticeView({
         </section>
 
         {revealed ? (
-          <section className="practice-panel mark-scheme-panel">
-            <div className="panel-title-bar">Mark Scheme</div>
-            <div className="archive-heading">
-              <span>Mark scheme image</span>
-              <h3>Compare your working</h3>
-              <p>Use this image to decide every M, B, and A mark. Asterion does not auto-mark.</p>
+          <section className="practice-panel mark-scheme-panel exam-image-card">
+            <div className="exam-card-heading">
+              <div>
+                <span>Mark Scheme</span>
+                <h3>Compare your working</h3>
+              </div>
+              <small>Use this image to decide each mark. Asterion does not auto-mark exam work.</small>
             </div>
             {questionParts?.length ? (
               <div className="mark-scheme-part-guide" aria-label="Mark scheme part guide">
-                <strong>Part-by-part marks</strong>
-                <p>{hasPartMarkCaps ? 'Use the official mark-scheme image, then enter each part score below.' : 'Use the part totals shown here, then enter a total mark below.'}</p>
+                <strong>Part totals available</strong>
+                <p>{hasPartMarkCaps ? 'Enter each part score below using the mark scheme.' : 'Enter the total mark below using the mark scheme.'}</p>
                 <div>
                   {questionParts.map((part) => (
                     <span key={part.label}>Part {part.label}: {part.marksAvailable} mark{part.marksAvailable === 1 ? '' : 's'}</span>
@@ -396,15 +431,13 @@ export function PracticeView({
                 {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the mark scheme. Saving unlocks only after it loads.</small> : null}
               </div>
             ) : null}
-            <div className="practice-footer-actions">
-              <button type="button" onClick={() => setRevealed(false)}>Back to Question</button>
-            </div>
           </section>
         ) : null}
 
         {revealed ? (
           <form
-            className="attempt-form self-mark-panel practice-panel"
+            id={`${question.id}-self-mark-form`}
+            className="attempt-form self-mark-panel practice-panel exam-self-mark-card"
             onSubmit={(event) => {
               event.preventDefault();
               if (!progress.profile) return;
@@ -449,135 +482,121 @@ export function PracticeView({
               setAttemptSaved(true);
             }}
           >
-            <div className="panel-title-bar">Self-Mark</div>
+            <div className="exam-card-heading self-mark-heading">
+              <div>
+                <span>Self-mark</span>
+                <h3>Enter marks from the mark scheme</h3>
+              </div>
+              <strong className="self-mark-total-pill">Total: {scoreTotalLabel}</strong>
+            </div>
             <div className="self-mark-task-flow" aria-label="Self-marking task flow">
-              <span>Compare mark scheme</span>
-              <span>Enter marks</span>
-              <span>Reflect</span>
-              <span>Save attempt</span>
+              <span className="active"><CheckCircle2 size={14} aria-hidden="true" /> Compare with scheme</span>
+              <span className={scoreValidation.isValid ? 'active' : ''}>Enter marks</span>
+              <span className={attemptReflectionIsReady ? 'active' : ''}>Reflect</span>
+              <span className={attemptSaved ? 'active' : ''}>Save attempt</span>
             </div>
             <p className="self-mark-helper">
-              Self-marking means you enter the exact marks you earned from the official mark scheme. Saved attempts become region and Guardian evidence.
+              Use the official mark scheme image above. Saved attempts can count as region and Guardian evidence when the question is eligible.
             </p>
             {usesPartMarking && questionParts?.length ? (
               <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
-                <legend>Your Mark by Part</legend>
-                <p className="marking-helper">Enter M, B, and A marks for each question part using the official mark scheme above. Each box is capped by the available mark category when shown.</p>
-                <div className="part-mark-grid">
+                <legend>Your marks by part</legend>
+                <p className="marking-helper">Enter numeric marks for each available M, B, and A total. Each input is capped by the mark total shown.</p>
+                <div className="part-mark-grid exam-mark-row-grid">
                   {questionParts.map((part, index) => (
                     <div key={part.label} className="part-mark-box">
-                      <div className="mark-box-label part-mark-box-header">
+                      <div className="part-mark-box-header">
                         <span className="mark-code">{part.label}</span>
                         <span className="mark-description">Part {part.label} · {part.marksAvailable} mark{part.marksAvailable === 1 ? '' : 's'}</span>
+                        <strong>{partMarkTotal(part.label)} / {part.marksAvailable}</strong>
                       </div>
                       <div className="part-mark-type-grid">
                         {markCategories.map((category) => (
-                          <div key={`${part.label}-${category.key}`} className="part-mark-type-box">
-                            <label className="mark-box-label" htmlFor={`${question.id}-part-${index}-${category.key}-marks`}>
-                              <span className="mark-code">{category.label}</span>
-                              <span className="mark-description">{category.description}</span>
-                            </label>
-                            <div className="mark-box-stepper">
-                              <button type="button" onClick={() => nudgePartMarkInput(part.label, category.key, part.marksAvailable, -1, part.markBreakdown?.[category.key])} aria-label={`Decrease part ${part.label} ${category.label} score`}>-</button>
-                              <input
-                                id={`${question.id}-part-${index}-${category.key}-marks`}
-                                type="number"
-                                min="0"
-                                max={part.markBreakdown?.[category.key] ?? part.marksAvailable}
-                                step="1"
-                                value={partMarkInputs[part.label]?.[category.key] ?? ''}
-                                placeholder="0"
-                                onChange={(event) => updatePartMarkInput(part.label, category.key, event.target.value)}
-                                aria-invalid={Boolean(scoreValidation.error)}
-                                aria-label={`Part ${part.label} ${category.label} marks`}
-                              />
-                              <button type="button" onClick={() => nudgePartMarkInput(part.label, category.key, part.marksAvailable, 1, part.markBreakdown?.[category.key])} aria-label={`Increase part ${part.label} ${category.label} score`}>+</button>
-                            </div>
-                            {part.markBreakdown ? <small className="mark-cap-note">Max {part.markBreakdown[category.key]}</small> : null}
-                          </div>
+                          <label key={`${part.label}-${category.key}`} className="exam-mark-row" htmlFor={`${question.id}-part-${index}-${category.key}-marks`}>
+                            <span className={`mark-code mark-code-${category.key}`}>{category.label}{part.markBreakdown?.[category.key] === 1 ? '1' : ''}</span>
+                            <span className="mark-description">{category.description} marks</span>
+                            <span className="mark-cap-note">Max {part.markBreakdown?.[category.key] ?? part.marksAvailable}</span>
+                            <input
+                              id={`${question.id}-part-${index}-${category.key}-marks`}
+                              type="number"
+                              min="0"
+                              max={part.markBreakdown?.[category.key] ?? part.marksAvailable}
+                              step="1"
+                              value={partMarkInputs[part.label]?.[category.key] ?? ''}
+                              placeholder="0"
+                              onChange={(event) => updatePartMarkInput(part.label, category.key, event.target.value)}
+                              aria-invalid={Boolean(scoreValidation.error)}
+                              aria-label={`Part ${part.label} ${category.label} marks`}
+                            />
+                          </label>
                         ))}
-                      </div>
-                      <div className="part-mark-subtotal">
-                        <span>Part {part.label} subtotal</span>
-                        <strong>{partMarkTotal(part.label)} / {part.marksAvailable}</strong>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="mark-total-row">
                   <span>Total</span>
-                  <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+                  <strong>{scoreTotalLabel}</strong>
                 </div>
                 {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
               </fieldset>
             ) : usesCategoryMarking ? (
               <fieldset className={`mark-breakdown-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
-                <legend>Your Mark</legend>
-                <p className="marking-helper">Enter your mark from the official mark scheme above. Each M, B, and A field is capped by the available mark category.</p>
-                <div className="mark-breakdown-grid">
+                <legend>Your marks</legend>
+                <p className="marking-helper">Enter numeric M, B, and A totals from the official mark scheme.</p>
+                <div className="mark-breakdown-grid exam-mark-row-grid">
                   {markCategories.map((category) => (
-                    <div key={category.key} className="mark-breakdown-box">
-                      <label className="mark-box-label" htmlFor={`${question.id}-${category.key}-marks`}>
-                        <span className="mark-code">{category.label}</span>
-                        <span className="mark-description">{category.description}</span>
-                      </label>
-                      <div className="mark-box-stepper">
-                        <button type="button" onClick={() => nudgeMarkInput(category.key, -1)} aria-label={`Decrease ${category.label} score`}>-</button>
-                        <input
-                          id={`${question.id}-${category.key}-marks`}
-                          type="number"
-                          min="0"
-                          max={question.markBreakdown?.[category.key] ?? maxMarks}
-                          step="1"
-                          value={markInputs[category.key]}
-                          placeholder="0"
-                          onChange={(event) => updateMarkInput(category.key, event.target.value)}
-                          aria-invalid={Boolean(scoreValidation.error)}
-                          aria-label={`${category.label} marks`}
-                        />
-                        <button type="button" onClick={() => nudgeMarkInput(category.key, 1)} aria-label={`Increase ${category.label} score`}>+</button>
-                      </div>
-                      {question.markBreakdown ? <small className="mark-cap-note">Max {question.markBreakdown[category.key]}</small> : null}
-                    </div>
+                    <label key={category.key} className="exam-mark-row" htmlFor={`${question.id}-${category.key}-marks`}>
+                      <span className={`mark-code mark-code-${category.key}`}>{category.label}{question.markBreakdown?.[category.key] === 1 ? '1' : ''}</span>
+                      <span className="mark-description">{category.description} marks</span>
+                      <span className="mark-cap-note">Max {question.markBreakdown?.[category.key] ?? maxMarks}</span>
+                      <input
+                        id={`${question.id}-${category.key}-marks`}
+                        type="number"
+                        min="0"
+                        max={question.markBreakdown?.[category.key] ?? maxMarks}
+                        step="1"
+                        value={markInputs[category.key]}
+                        placeholder="0"
+                        onChange={(event) => updateMarkInput(category.key, event.target.value)}
+                        aria-invalid={Boolean(scoreValidation.error)}
+                        aria-label={`${category.label} marks`}
+                      />
+                    </label>
                   ))}
                 </div>
                 <div className="mark-total-row">
                   <span>Total</span>
-                  <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : enteredMarkTotal} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+                  <strong>{scoreTotalLabel}</strong>
                 </div>
                 {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
               </fieldset>
             ) : (
               <fieldset className={`mark-breakdown-fieldset total-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
-                <legend>Your Mark</legend>
-                <p className="marking-helper">Enter the total mark from the official mark scheme.</p>
+                <legend>Your mark</legend>
+                <p className="marking-helper">Enter the total marks you earned from the official mark scheme.</p>
                 <div className="mark-breakdown-grid mark-total-entry-grid">
-                  <div className="mark-breakdown-box">
-                    <label className="mark-box-label" htmlFor={`${question.id}-total-marks`}>
-                      <span className="mark-code">Total</span>
-                      <span className="mark-description">Score from mark scheme</span>
-                    </label>
-                    <div className="mark-box-stepper">
-                      <button type="button" onClick={() => nudgeTotalMark(-1)} aria-label="Decrease total score">-</button>
-                      <input
-                        id={`${question.id}-total-marks`}
-                        type="number"
-                        min="0"
-                        max={maxMarks}
-                        step="1"
-                        value={totalMarkInput}
-                        placeholder="0"
-                        onChange={(event) => setTotalMarkInput(event.target.value)}
-                        aria-invalid={Boolean(scoreValidation.error)}
-                        aria-label="Total marks"
-                      />
-                      <button type="button" onClick={() => nudgeTotalMark(1)} aria-label="Increase total score">+</button>
-                    </div>
-                  </div>
+                  <label className="exam-mark-row total-mark-row" htmlFor={`${question.id}-total-marks`}>
+                    <span className="mark-code">Total</span>
+                    <span className="mark-description">Score from mark scheme</span>
+                    <span className="mark-cap-note">Max {maxMarks ?? '?'}</span>
+                    <input
+                      id={`${question.id}-total-marks`}
+                      type="number"
+                      min="0"
+                      max={maxMarks}
+                      step="1"
+                      value={totalMarkInput}
+                      placeholder="0"
+                      onChange={(event) => setTotalMarkInput(clampMarkValue(event.target.value, maxMarkValue))}
+                      aria-invalid={Boolean(scoreValidation.error)}
+                      aria-label="Total marks"
+                    />
+                  </label>
                 </div>
                 <div className="mark-total-row">
                   <span>Total</span>
-                  <strong>{typeof scoreValidation.earned === 'number' ? scoreValidation.earned : Number.isFinite(enteredMarkTotal) ? enteredMarkTotal : 0} / {typeof maxMarks === 'number' ? maxMarks : '?'}</strong>
+                  <strong>{scoreTotalLabel}</strong>
                 </div>
                 {scoreValidation.error ? <span className="form-error">{scoreValidation.error}</span> : null}
               </fieldset>
@@ -638,9 +657,6 @@ export function PracticeView({
                 placeholder={isFullScore ? 'Example: Matched M1 to log law, A1 to final value, and checked the domain.' : undefined}
               />
             </label>
-            <button className="primary-button" type="submit" disabled={!canSubmit || attemptSaved}>
-              Save Attempt {scorePreview != null ? `(${scorePreview}%)` : ''}
-            </button>
             {!attemptSaved && onContinuePractice ? (
               <p className="next-question-save-gate" role="status">Save this attempt before the next question unlocks.</p>
             ) : null}
@@ -648,9 +664,32 @@ export function PracticeView({
         ) : null}
       </div>
 
+      {askTeacherOpen ? (
+        <section className="ask-teacher-panel" aria-label="Ask Teacher">
+          <div>
+            <span className="mode-pill">Ask Teacher</span>
+            <h3>Teacher questions are coming soon.</h3>
+            <p>This draft stays on this page for now. No message is sent.</p>
+          </div>
+          <label>
+            What are you stuck on?
+            <textarea
+              value={teacherQuestionDraft}
+              onChange={(event) => setTeacherQuestionDraft(event.target.value)}
+              rows={3}
+              placeholder="Example: I am unsure which line earns the M1 mark."
+            />
+          </label>
+          <div className="ask-teacher-actions">
+            <button type="button" onClick={() => setAskTeacherOpen(false)}>Close</button>
+            <button type="button" disabled>Send to teacher</button>
+          </div>
+        </section>
+      ) : null}
+
       {attemptSaved ? (
         <div className="post-attempt-panel progress-updated-panel">
-          <div className="panel-title-bar">Progress Updated</div>
+          <div className="panel-title-bar">Attempt saved</div>
           <div className="progress-scene" aria-hidden="true">
             <img
               src={astralAssets.progressGarden}
@@ -661,13 +700,13 @@ export function PracticeView({
               decoding="async"
             />
           </div>
-          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `+${typeof scoreValidation.earned === 'number' ? scoreValidation.earned : 0} XP`}</strong>
+          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `Exam Training recorded (${scoreTotalLabel})`}</strong>
           <span>
-            {scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {selectedRegion?.name ?? question.displayTopic}.
+            {scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {question.displayTopic}.
             {' '}
             {regionLearningPhase === 'guardian'
               ? guardianPassed ? 'Your region reward is now unlocked.' : 'The Guardian is recorded, but the region is not cleared yet.'
-              : 'Region progress increased only from saved evidence.'}
+              : selectedRegion ? 'Saved eligible attempts can still support region and Guardian evidence.' : 'Saved eligible attempts update your local practice record.'}
           </span>
           <details className="post-attempt-review-details">
             <summary>Review saved details</summary>
@@ -680,6 +719,33 @@ export function PracticeView({
           </div>
         </div>
       ) : null}
+
+      <div className="exam-practice-bottom-bar" aria-label="Exam Training actions">
+        <button type="button" onClick={onOpenDashboard ?? onReturnToMap}>
+          <LayoutDashboard size={16} aria-hidden="true" />
+          Dashboard
+        </button>
+        <button type="button" onClick={() => setAskTeacherOpen((open) => !open)}>
+          <MessageCircle size={16} aria-hidden="true" />
+          Ask Teacher
+        </button>
+        {revealed ? (
+          <button type="button" onClick={() => setRevealed(false)}>Back to Question</button>
+        ) : (
+          <button className="primary-button reveal-button" type="button" onClick={() => setRevealed(true)}>
+            Reveal Mark Scheme
+          </button>
+        )}
+        <button
+          className="primary-button"
+          type="submit"
+          form={`${question.id}-self-mark-form`}
+          disabled={!revealed || !canSubmit || attemptSaved}
+          title={revealed ? undefined : 'Reveal the mark scheme, enter marks, and reflect before saving.'}
+        >
+          Save Attempt {scoreValidation.isValid ? `(${scoreTotalLabel})` : ''}
+        </button>
+      </div>
     </section>
   );
 }
