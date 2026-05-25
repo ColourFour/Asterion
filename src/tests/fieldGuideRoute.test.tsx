@@ -79,19 +79,30 @@ async function render(ui: ReactNode): Promise<HTMLElement> {
 
   await act(async () => {
     root.render(ui);
-    await Promise.resolve();
+    for (let index = 0; index < 5; index += 1) {
+      await Promise.resolve();
+    }
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
 
   return container;
 }
 
 async function waitForText(container: HTMLElement, text: string) {
-  for (let index = 0; index < 40; index += 1) {
+  for (let index = 0; index < 120; index += 1) {
     if (container.textContent?.includes(text)) return;
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
     });
   }
+  throw new Error(`Timed out waiting for text: ${text}`);
+}
+
+async function clickButton(container: HTMLElement, text: string) {
+  await act(async () => {
+    Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+  });
 }
 
 beforeEach(() => {
@@ -159,7 +170,7 @@ describe('Field Guide app route', () => {
     expect(topbar).toBeTruthy();
     expect(topbar?.textContent).toContain('World Map');
     expect(topbar?.textContent).toContain('Regions');
-    expect(topbar?.textContent).toContain('Start Practice');
+    expect(topbar?.textContent).toContain('Exam Training');
     expect(topbar?.textContent).not.toContain('Review Weak Areas');
     expect(topbar?.querySelector('nav')?.textContent).not.toContain('Teacher/Export');
     expect(topbar?.textContent).not.toContain('Teacher tools');
@@ -185,8 +196,13 @@ describe('Field Guide app route', () => {
 
     expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Start simple');
     expect(container.textContent).toContain('Start simple');
     expect(container.textContent).toContain('Build the method');
+    expect(container.querySelector('.quick-check-card')).toBeTruthy();
+    expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(container.textContent).not.toContain('Warm-Up Practice');
   });
 
   it('keeps the legacy Warm-Up hash route on the merged Skill Practice page', async () => {
@@ -196,8 +212,39 @@ describe('Field Guide app route', () => {
 
     expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Build the method');
     expect(container.textContent).toContain('Guided Practice');
     expect(container.textContent).toContain('Ready for exam practice');
+    expect(container.querySelector('.quick-check-card')).toBeFalsy();
+    expect(container.querySelector('.warm-up-card')).toBeTruthy();
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(container.textContent).not.toContain('Warm-Up Practice');
+    expect(container.textContent).not.toContain('answer-first set with worked solutions');
+  });
+
+  it('opens the Exam Training dashboard from the global student navigation', async () => {
+    const container = await render(<App />);
+    await waitForText(container, 'Choose the Topic');
+
+    await clickButton(container, 'Exam Training');
+    await waitForText(container, 'Your Topic Mastery');
+
+    expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
+    expect(container.textContent).toContain('Core Practice');
+    expect(container.textContent).toContain('Weak Area Review');
+    expect(container.textContent).toContain('Stretch Problems');
+    expect(container.querySelector('.encounter-chamber')).toBeFalsy();
+  });
+
+  it('opens the Exam Training dashboard for the region hash route', async () => {
+    window.history.replaceState(null, '', '/#/regions/algebra-forge/exam-training');
+    const container = await render(<App />);
+    await waitForText(container, 'Your Topic Mastery');
+
+    expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
+    expect(container.textContent).toContain('Focused on Algebra Vault');
+    expect(container.textContent).toContain('Balanced exam-style practice across your topics.');
+    expect(container.querySelector('.encounter-chamber')).toBeFalsy();
   });
 
   it('keeps locked legacy and merged Skill Practice hashes behind class access', async () => {

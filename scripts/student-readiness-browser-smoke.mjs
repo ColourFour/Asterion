@@ -276,7 +276,7 @@ async function runViewport(browser, width) {
   await capture(page, width, 'locked-region-quick-check-blocked', metrics);
 
   await page.goto(urlFor('#/regions/logarithm-grove/guardian'), { waitUntil: 'domcontentloaded' });
-  await waitForText(page, 'Guardian challenge locked');
+  await waitForText(page, 'Vault locked');
   await capture(page, width, 'guardian-locked-open-region', metrics);
 
   await page.addInitScript(({ attempts }) => {
@@ -306,7 +306,7 @@ async function runViewport(browser, width) {
   await capture(page, width, 'unlocked-region-hub', metrics);
 
   await page.goto(urlFor('#/regions/logarithm-grove/guardian'), { waitUntil: 'domcontentloaded' });
-  await waitForText(page, 'Guardian challenge ready');
+  await waitForText(page, 'Guardian ready');
   await capture(page, width, 'guardian-unlocked-ready', metrics);
 
   const bodyText = await page.locator('body').innerText();

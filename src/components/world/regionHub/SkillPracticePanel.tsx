@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ArrowRight, ListChecks } from 'lucide-react';
 import type { FieldGuideTopic } from '../../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, RegionDefinition } from '../../../types';
@@ -8,6 +8,7 @@ import { QuickChecksPanel } from './QuickChecksPanel';
 import { WarmUpPracticePanel } from './WarmUpPracticePanel';
 
 export type SkillPracticeFocus = 'quick-check' | 'warm-up' | 'overview';
+type SkillPracticeStepId = 'start-simple' | 'build-method' | 'ready-for-exam';
 
 interface SkillPracticePanelProps {
   teachingSnippets: TeachingSnippet[];
@@ -27,6 +28,62 @@ interface SkillPracticePanelProps {
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
+const skillPracticeSteps: Array<{
+  id: SkillPracticeStepId;
+  label: string;
+  heading: string;
+  description: string;
+}> = [
+  {
+    id: 'start-simple',
+    label: 'Start simple',
+    heading: 'Start simple',
+    description: 'Do one short check and get immediate feedback.',
+  },
+  {
+    id: 'build-method',
+    label: 'Build the method',
+    heading: 'Build the method',
+    description: 'Try a guided step, then compare with the worked route.',
+  },
+  {
+    id: 'ready-for-exam',
+    label: 'Ready for exam practice',
+    heading: 'Ready for exam practice',
+    description: 'Move to canonical exam questions and mark schemes when you are ready.',
+  },
+];
+
+function stepForFocus(focus: SkillPracticeFocus): SkillPracticeStepId | undefined {
+  if (focus === 'quick-check') return 'start-simple';
+  if (focus === 'warm-up') return 'build-method';
+  return undefined;
+}
+
+function hasCompletedActivity(activityAttempts: LearningActivityAttempt[], activityType: LearningActivityAttempt['activityType']): boolean {
+  return activityAttempts.some((attempt) => attempt.activityType === activityType);
+}
+
+function defaultStepFor(input: {
+  activityAttempts: LearningActivityAttempt[];
+  canUseQuickCheck: boolean;
+  canUseWarmUp: boolean;
+  canUseExamPractice: boolean;
+  focus: SkillPracticeFocus;
+}): SkillPracticeStepId {
+  const focusedStep = stepForFocus(input.focus);
+  if (focusedStep) return focusedStep;
+
+  const quickCheckComplete = hasCompletedActivity(input.activityAttempts, 'quick_check');
+  const warmUpComplete = hasCompletedActivity(input.activityAttempts, 'warm_up');
+
+  if (input.canUseQuickCheck && !quickCheckComplete) return 'start-simple';
+  if (input.canUseWarmUp && !warmUpComplete) return 'build-method';
+  if (input.canUseExamPractice) return 'ready-for-exam';
+  if (input.canUseWarmUp) return 'build-method';
+  return 'start-simple';
+}
+
 export function SkillPracticePanel({
   teachingSnippets,
   practiceItems,
@@ -44,86 +101,95 @@ export function SkillPracticePanel({
   onContinueToExamPractice,
   onLearningActivityAttempt,
 }: SkillPracticePanelProps) {
-  const [activeFocus, setActiveFocus] = useState<SkillPracticeFocus>(focus);
-  const quickCheckRef = useRef<HTMLElement>(null);
-  const warmUpRef = useRef<HTMLElement>(null);
-  const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
+  const [activeStep, setActiveStep] = useState<SkillPracticeStepId>(() => defaultStepFor({
+    activityAttempts,
+    canUseExamPractice,
+    canUseQuickCheck,
+    canUseWarmUp,
+    focus,
+  }));
+  const [localCompletedSteps, setLocalCompletedSteps] = useState<Set<SkillPracticeStepId>>(() => new Set());
   const topicMatchedPractice = orderGeneratedPracticeForFieldGuideTopic(practiceItems, currentFieldGuideTopic);
+  const quickCheckComplete = hasCompletedActivity(activityAttempts, 'quick_check') || localCompletedSteps.has('start-simple');
+  const warmUpComplete = hasCompletedActivity(activityAttempts, 'warm_up') || localCompletedSteps.has('build-method');
 
   useEffect(() => {
-    setActiveFocus(focus);
-  }, [focus]);
+    setActiveStep(defaultStepFor({
+      activityAttempts,
+      canUseExamPractice,
+      canUseQuickCheck,
+      canUseWarmUp,
+      focus,
+    }));
+  }, [canUseExamPractice, canUseQuickCheck, canUseWarmUp, focus, region?.id]);
 
-  useEffect(() => {
-    const target = activeFocus === 'quick-check'
-      ? quickCheckRef.current
-      : activeFocus === 'warm-up'
-        ? warmUpRef.current
-        : undefined;
-    target?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
-  }, [activeFocus]);
-
-  function focusWarmUp() {
-    setActiveFocus('warm-up');
+  function recordLearningActivityAttempt(attempt: LearningActivityAttempt) {
+    if (attempt.activityType === 'quick_check') {
+      setLocalCompletedSteps((current) => new Set([...current, 'start-simple']));
+    }
+    if (attempt.activityType === 'warm_up') {
+      setLocalCompletedSteps((current) => new Set([...current, 'build-method']));
+    }
+    onLearningActivityAttempt?.(attempt);
   }
 
-  return (
-    <section className="skill-practice-panel" aria-labelledby="skill-practice-title">
-      <header className="skill-practice-header">
-        <div>
-          <span className="mode-pill">Skill Practice</span>
-          <h3 id="skill-practice-title">Skill Practice</h3>
-          <p>Start simple, then build the method before Exam Training.</p>
-        </div>
-        <div className="skill-practice-summary" aria-label="Skill practice summary">
-          <span>{quickCheckCount} simple check{quickCheckCount === 1 ? '' : 's'}</span>
-          <span>{topicMatchedPractice.items.length} guided practice item{topicMatchedPractice.items.length === 1 ? '' : 's'}</span>
-        </div>
-      </header>
+  const stepStatus = (stepId: SkillPracticeStepId): 'Active' | 'Complete' | 'Locked' | 'Ready' => {
+    if (stepId === activeStep) return 'Active';
+    if (stepId === 'start-simple') return canUseQuickCheck ? quickCheckComplete ? 'Complete' : 'Ready' : 'Locked';
+    if (stepId === 'build-method') return canUseWarmUp ? warmUpComplete ? 'Complete' : 'Ready' : 'Locked';
+    return canUseExamPractice ? quickCheckComplete && warmUpComplete ? 'Complete' : 'Ready' : 'Locked';
+  };
 
-      <div className="skill-practice-steps" aria-label="Skill Practice sections">
-        <a href="#skill-practice-quick-checks" aria-current={activeFocus === 'quick-check' ? 'step' : undefined}>Start simple</a>
-        <a href="#skill-practice-warm-up" aria-current={activeFocus === 'warm-up' ? 'step' : undefined}>Build the method</a>
-        <a href="#skill-practice-ready">Ready for exam practice</a>
+  const activeStepMeta = skillPracticeSteps.find((step) => step.id === activeStep) ?? skillPracticeSteps[0];
+
+  return (
+    <section className="skill-practice-panel" aria-label="Skill Practice">
+      <p className="skill-practice-lede">Start simple, then build the method before Exam Training.</p>
+
+      <div className="skill-practice-steps" aria-label="Skill Practice steps">
+        {skillPracticeSteps.map((step) => {
+          const status = stepStatus(step.id);
+          return (
+            <button
+              type="button"
+              key={step.id}
+              aria-current={activeStep === step.id ? 'step' : undefined}
+              disabled={status === 'Locked'}
+              onClick={() => setActiveStep(step.id)}
+            >
+              <span>{step.label}</span>
+              <small>{status}</small>
+            </button>
+          );
+        })}
       </div>
 
       <section
-        className={`skill-practice-section${activeFocus === 'quick-check' ? ' is-focused' : ''}`}
-        id="skill-practice-quick-checks"
-        ref={quickCheckRef}
-        aria-labelledby="skill-practice-quick-title"
+        className="skill-practice-section is-focused"
+        id={`skill-practice-${activeStep}`}
+        aria-labelledby="skill-practice-active-step-title"
       >
         <div className="skill-practice-section-intro">
-          <span>Step 1</span>
-          <h4 id="skill-practice-quick-title">Start simple</h4>
-          <p>Answer one small deterministic check and get immediate feedback.</p>
+          <span>{activeStep === 'start-simple' ? 'Step 1' : activeStep === 'build-method' ? 'Step 2' : 'Step 3'}</span>
+          <h4 id="skill-practice-active-step-title">{activeStepMeta.heading}</h4>
+          <p>{activeStepMeta.description}</p>
         </div>
-        {canUseQuickCheck ? (
+
+        {activeStep === 'start-simple' && (canUseQuickCheck ? (
           <QuickChecksPanel
             teachingSnippets={teachingSnippets}
             region={region}
             profileId={profileId}
             activityAttempts={activityAttempts}
-            maxInitialItems={Math.max(2, quickCheckCount)}
-            onContinueToWarmUp={canUseWarmUp ? focusWarmUp : undefined}
-            onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
-            onLearningActivityAttempt={onLearningActivityAttempt}
+            maxInitialItems={1}
+            showNextCheck={false}
+            onContinueToWarmUp={canUseWarmUp ? () => setActiveStep('build-method') : undefined}
+            onContinueToExamPractice={canUseExamPractice ? () => setActiveStep('ready-for-exam') : undefined}
+            onLearningActivityAttempt={recordLearningActivityAttempt}
           />
-        ) : quickCheckLockedContent}
-      </section>
+        ) : quickCheckLockedContent)}
 
-      <section
-        className={`skill-practice-section${activeFocus === 'warm-up' ? ' is-focused' : ''}`}
-        id="skill-practice-warm-up"
-        ref={warmUpRef}
-        aria-labelledby="skill-practice-warm-title"
-      >
-        <div className="skill-practice-section-intro">
-          <span>Step 2</span>
-          <h4 id="skill-practice-warm-title">Build the method</h4>
-          <p>Write first, compare with a worked solution, then record confidence and errors. These support records stay separate from Guardian evidence.</p>
-        </div>
-        {canUseWarmUp ? (
+        {activeStep === 'build-method' && (canUseWarmUp ? (
           <WarmUpPracticePanel
             practiceItems={topicMatchedPractice.items}
             region={region}
@@ -133,27 +199,25 @@ export function SkillPracticePanel({
             fieldGuideTopicTitle={currentFieldGuideTopic?.title}
             topicMatchFallbackReason={topicMatchedPractice.fallbackReason}
             onContinueToFieldGuide={onContinueToFieldGuide}
-            onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
-            onLearningActivityAttempt={onLearningActivityAttempt}
+            onContinueToExamPractice={canUseExamPractice ? () => setActiveStep('ready-for-exam') : undefined}
+            onLearningActivityAttempt={recordLearningActivityAttempt}
           />
-        ) : warmUpLockedContent}
-      </section>
+        ) : warmUpLockedContent)}
 
-      <section className="skill-practice-exam-transition" id="skill-practice-ready" aria-labelledby="skill-practice-ready-title">
-        <div>
-          <span className="mode-pill">Step 3</span>
-          <h4 id="skill-practice-ready-title">Ready for exam practice</h4>
-          <p>Exam Training uses canonical question images and mark schemes. Saved attempts may help Guardian readiness when they meet the evidence rules.</p>
-        </div>
-        <button
-          type="button"
-          className="primary-button"
-          disabled={!canUseExamPractice}
-          onClick={onContinueToExamPractice}
-        >
-          Exam Training
-          <ArrowRight size={16} aria-hidden="true" />
-        </button>
+        {activeStep === 'ready-for-exam' ? (
+          <div className="skill-practice-exam-transition">
+            <p>Exam Training uses canonical question images and mark schemes.</p>
+            <button
+              type="button"
+              className="primary-button"
+              disabled={!canUseExamPractice}
+              onClick={onContinueToExamPractice}
+            >
+              Exam Training
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+          </div>
+        ) : null}
       </section>
 
       {!canUseQuickCheck && !canUseWarmUp ? (

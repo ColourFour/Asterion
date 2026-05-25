@@ -74,6 +74,7 @@ interface PracticeViewProps {
   selectedRegionRank?: RegionRank;
   regionLearningPhase?: 'training' | 'guardian';
   sessionIntent?: TrainingSessionIntent;
+  sessionLabelOverride?: string;
   sessionReason?: string;
   guardianPassThreshold?: number;
   progressionBlockedReason?: string;
@@ -98,6 +99,7 @@ export function PracticeView({
   selectedRegionRank,
   regionLearningPhase,
   sessionIntent,
+  sessionLabelOverride,
   sessionReason,
   guardianPassThreshold,
   progressionBlockedReason,
@@ -176,7 +178,9 @@ export function PracticeView({
     && scoreValidation.scoreRatio >= guardianPassThreshold;
   const sessionLabel = regionLearningPhase === 'guardian'
     ? 'Region Guardian'
-    : sessionIntent
+    : sessionLabelOverride
+      ? sessionLabelOverride
+      : sessionIntent
       ? TRAINING_SESSION_LABELS[sessionIntent]
       : undefined;
   const postAttemptContinueLabel = continuePracticeLabel ?? (isFullScore

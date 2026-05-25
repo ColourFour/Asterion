@@ -6037,6 +6037,119 @@ legend {
   background: var(--region-button-bg);
 }
 
+.guardian-boss-card {
+  color: #f8edff;
+  border-left-width: 0;
+  border-color: rgba(229, 177, 83, 0.58);
+  background:
+    radial-gradient(circle at 70% 28%, rgba(135, 91, 255, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(9, 11, 31, 0.98), rgba(26, 16, 48, 0.96) 55%, rgba(7, 10, 28, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(247, 211, 136, 0.12) inset,
+    0 22px 54px rgba(4, 7, 20, 0.38);
+}
+
+.guardian-boss-card .region-action-card-title h3,
+.guardian-boss-card .region-action-card-title p,
+.guardian-boss-card .region-action-card-title span {
+  color: #fff4d6;
+}
+
+.guardian-boss-card .region-action-card-body {
+  gap: 0;
+}
+
+.guardian-boss-hero {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.82fr) minmax(320px, 1.18fr);
+  gap: 18px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.guardian-boss-copy {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  min-width: 0;
+  padding: clamp(14px, 2.2vw, 24px);
+  border: 1px solid rgba(229, 177, 83, 0.24);
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 191, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+.guardian-boss-kicker {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #22172f;
+  background: linear-gradient(180deg, #ffe6a8, #d7a447);
+  border: 1px solid rgba(255, 234, 184, 0.62);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 1000;
+  line-height: 1.1;
+}
+
+.guardian-boss-copy h4 {
+  margin: 0;
+  color: #fff8e8;
+  font-size: clamp(1.85rem, 4vw, 3.7rem);
+  line-height: 0.98;
+  overflow-wrap: anywhere;
+}
+
+.guardian-boss-copy p {
+  margin: 0;
+  color: #f7dca4;
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  font-weight: 850;
+  line-height: 1.42;
+}
+
+.guardian-boss-art {
+  position: relative;
+  min-width: 0;
+}
+
+.guardian-boss-art .guardian-placeholder-figure {
+  height: 100%;
+  min-height: clamp(260px, 34vw, 470px);
+  max-height: none;
+  border-color: rgba(229, 177, 83, 0.46);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(159, 112, 255, 0.28), transparent 46%),
+    linear-gradient(180deg, rgba(11, 13, 34, 0.88), rgba(5, 8, 22, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 198, 0.1) inset,
+    0 18px 40px rgba(0, 0, 0, 0.34);
+}
+
+.guardian-boss-art .guardian-placeholder-figure img {
+  min-height: clamp(260px, 34vw, 470px);
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  background: transparent;
+}
+
+.guardian-boss-lock {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  color: #22172f;
+  background: radial-gradient(circle, #fff3c7 0 30%, #d7a447 72%);
+  border: 2px solid rgba(255, 242, 205, 0.72);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 5px rgba(6, 8, 24, 0.76),
+    0 0 28px rgba(229, 177, 83, 0.42);
+}
+
 .guardian-placeholder-card {
   overflow: hidden;
 }
@@ -6134,6 +6247,20 @@ legend {
   background: color-mix(in srgb, var(--region-panel, #fffdf8) 88%, #fff 12%);
 }
 
+.guardian-boss-card .guardian-locked-state {
+  color: #f8edff;
+  border-color: rgba(229, 177, 83, 0.28);
+  background: rgba(8, 10, 27, 0.62);
+}
+
+.guardian-boss-card .guardian-locked-state strong {
+  color: #fff8e8;
+}
+
+.guardian-boss-card .guardian-locked-state span {
+  color: #d9cae8;
+}
+
 .guardian-locked-state svg {
   flex: 0 0 auto;
   color: var(--region-accent-dark, var(--color-gold-dark));
@@ -6214,6 +6341,185 @@ legend {
   border: 1px solid color-mix(in srgb, var(--region-panel-border, #7d5129) 38%, transparent);
   border-radius: var(--radius-panel);
   font-weight: 900;
+}
+
+.guardian-readiness-card .region-action-card-body {
+  gap: 14px;
+}
+
+.guardian-ready-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  color: #fff8e8;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 228, 142, 0.22), transparent 38%),
+    linear-gradient(135deg, #18122e, #2a1744);
+  border: 1px solid rgba(229, 177, 83, 0.48);
+  border-radius: var(--radius-panel);
+}
+
+.guardian-ready-banner strong,
+.guardian-ready-banner span {
+  display: block;
+}
+
+.guardian-ready-banner strong {
+  font-size: 1.05rem;
+  font-weight: 1000;
+}
+
+.guardian-ready-banner span {
+  color: #f7dca4;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.guardian-primary-action {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 48px;
+}
+
+.guardian-requirement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 10px;
+}
+
+.guardian-requirement-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+  padding: 12px;
+  color: var(--region-body);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--region-panel) 92%, #fff 8%), var(--region-panel-strong));
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 34%, transparent);
+  border-radius: var(--radius-panel);
+}
+
+.guardian-requirement-card.is-locked {
+  border-style: dashed;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--region-panel-strong) 88%, #000 12%), var(--region-panel-strong));
+}
+
+.guardian-requirement-card.is-complete {
+  border-color: rgba(40, 122, 82, 0.3);
+  background:
+    linear-gradient(180deg, rgba(239, 248, 241, 0.88), rgba(226, 242, 233, 0.78));
+}
+
+.guardian-requirement-card > svg {
+  margin-top: 2px;
+  color: var(--color-danger);
+}
+
+.guardian-requirement-card.is-complete > svg {
+  color: var(--color-success);
+}
+
+.guardian-requirement-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  color: #8a5df2;
+  background: rgba(138, 93, 242, 0.12);
+  border: 1px solid rgba(138, 93, 242, 0.28);
+  border-radius: var(--radius-control);
+}
+
+.guardian-requirement-card strong,
+.guardian-requirement-card span,
+.guardian-requirement-card small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.guardian-requirement-card strong {
+  color: var(--region-heading);
+  font-weight: 1000;
+  line-height: 1.22;
+}
+
+.guardian-requirement-card span {
+  margin-top: 4px;
+  color: #b73a57;
+  font-weight: 1000;
+  line-height: 1.2;
+}
+
+.guardian-requirement-card.is-complete span {
+  color: #1f6b45;
+}
+
+.guardian-requirement-card small {
+  margin-top: 6px;
+  color: var(--region-muted);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.guardian-next-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  align-items: center;
+}
+
+.guardian-next-action strong,
+.guardian-next-action span {
+  display: block;
+}
+
+.guardian-next-action-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 13px;
+  color: var(--region-button-text);
+  background: var(--region-button-bg);
+  border: 1px solid var(--region-button-border);
+  border-radius: var(--radius-control);
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.guardian-next-action-button:disabled {
+  cursor: not-allowed;
+  color: var(--region-muted);
+  background: var(--region-panel-strong);
+  border-style: dashed;
+}
+
+.guardian-evidence-detail {
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 90%, #fff 10%);
+}
+
+.guardian-evidence-detail summary {
+  cursor: pointer;
+  color: var(--region-accent-dark);
+  font-size: 0.82rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+
+.guardian-evidence-detail[open] summary {
+  margin-bottom: 10px;
 }
 
 .guardian-next-unlock svg {
@@ -6608,6 +6914,13 @@ legend {
   gap: 14px;
 }
 
+.skill-practice-lede {
+  margin: 0;
+  color: var(--region-heading);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
 .skill-practice-header,
 .skill-practice-exam-transition {
   display: flex;
@@ -6637,7 +6950,6 @@ legend {
   font-weight: 700;
 }
 
-.skill-practice-summary,
 .skill-practice-steps {
   display: flex;
   flex-wrap: wrap;
@@ -6645,8 +6957,10 @@ legend {
   align-items: center;
 }
 
-.skill-practice-summary span,
-.skill-practice-steps a {
+.skill-practice-steps button {
+  display: inline-grid;
+  gap: 2px;
+  align-items: center;
   padding: 7px 10px;
   color: var(--region-accent-dark);
   border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
@@ -6654,13 +6968,29 @@ legend {
   background: var(--region-panel);
   font-size: 0.82rem;
   font-weight: 900;
+  font-family: inherit;
+  text-align: left;
   text-decoration: none;
+  box-shadow: none;
+  text-shadow: none;
 }
 
-.skill-practice-steps a[aria-current="step"] {
+.skill-practice-steps button small {
+  color: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  opacity: 0.72;
+}
+
+.skill-practice-steps button[aria-current="step"] {
   color: var(--region-button-text);
   background: var(--region-button-bg);
   border-color: var(--region-button-border);
+}
+
+.skill-practice-steps button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
 }
 
 .skill-practice-section {
@@ -6959,8 +7289,8 @@ legend {
   display: grid;
   grid-template-areas:
     "icon copy chevron"
-    "status status status";
-  grid-template-columns: auto minmax(0, 1fr) auto;
+    "icon status chevron";
+  grid-template-columns: auto minmax(0, 1fr) minmax(18px, auto);
   gap: 5px 10px;
   align-items: center;
   width: 100%;
@@ -7298,9 +7628,9 @@ legend {
   display: grid;
   grid-template-areas:
     "icon copy chevron"
-    "status status status"
+    "icon status chevron"
     "reason reason reason";
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 38px minmax(0, 1fr) 18px;
   gap: 5px 10px;
   align-items: center;
   align-content: start;
@@ -7315,6 +7645,13 @@ legend {
   font-family: inherit;
   text-align: left;
   text-shadow: none;
+}
+
+.region-home-action-card[data-region-page="guardian"] {
+  border-color: rgba(183, 121, 31, 0.44);
+  background:
+    radial-gradient(circle at 92% 18%, rgba(138, 93, 242, 0.12), transparent 36%),
+    linear-gradient(180deg, var(--region-panel), var(--region-panel-strong));
 }
 
 .region-home-secondary-step {
@@ -7391,6 +7728,7 @@ legend {
   display: grid;
   width: 42px;
   height: 42px;
+  align-self: start;
   place-items: center;
   color: var(--region-accent-dark);
   background: var(--region-accent-soft);
@@ -7400,6 +7738,9 @@ legend {
 
 .region-home-action-chevron {
   grid-area: chevron;
+  align-self: center;
+  justify-self: end;
+  flex: 0 0 auto;
   color: var(--region-accent-dark);
 }
 
@@ -7408,19 +7749,25 @@ legend {
   display: grid;
   gap: 3px;
   min-width: 0;
+  overflow: hidden;
 }
 
 .region-home-action-copy strong {
+  display: block;
+  min-width: 0;
   color: var(--region-heading);
   font-size: 1.02rem;
   line-height: 1.18;
+  overflow-wrap: anywhere;
 }
 
 .region-home-action-copy small {
+  min-width: 0;
   color: var(--region-muted);
   font-size: 0.86rem;
   font-weight: 850;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .region-home-action-status {
@@ -7430,6 +7777,7 @@ legend {
   align-items: center;
   width: fit-content;
   max-width: 100%;
+  min-width: 0;
   padding: 4px 8px;
   color: var(--region-badge-text);
   background: var(--region-badge-bg);
@@ -7827,7 +8175,7 @@ legend {
   border-radius: calc(var(--radius-panel) - 2px);
 }
 
-.field-guide-topic-example > span {
+.field-guide-topic-example > span:first-child {
   justify-self: start;
   color: var(--region-accent-dark);
   font-size: 0.7rem;
@@ -7842,6 +8190,27 @@ legend {
   padding-bottom: 2px;
   font-size: clamp(1rem, 2vw, 1.35rem);
   text-align: center;
+}
+
+.field-guide-topic-example-math {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  justify-self: stretch;
+  color: var(--region-heading);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.35;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.field-guide-topic-example-math .math-text {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.field-guide-topic-example-math .math-display {
+  display: block;
 }
 
 .field-guide-topic-affordance {
@@ -8335,6 +8704,41 @@ legend {
 
 .guardian-card {
   border-left-color: var(--region-accent);
+}
+
+.region-action-card.guardian-boss-card {
+  color: #f8edff;
+  border-color: rgba(229, 177, 83, 0.58);
+  border-left-color: rgba(229, 177, 83, 0.82);
+  background:
+    radial-gradient(circle at 70% 28%, rgba(135, 91, 255, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(9, 11, 31, 0.98), rgba(26, 16, 48, 0.96) 55%, rgba(7, 10, 28, 0.98));
+}
+
+.region-action-card.guardian-boss-card .region-action-card-title h3,
+.region-action-card.guardian-boss-card .region-action-card-title p,
+.region-action-card.guardian-boss-card .region-action-card-title span {
+  color: #fff4d6;
+}
+
+.region-action-card.guardian-boss-card .guardian-boss-art .guardian-artwork-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  background: transparent;
+}
+
+.region-action-card.guardian-boss-card .guardian-boss-art .guardian-artwork-frame {
+  position: relative;
+}
+
+.region-action-card.guardian-boss-card .guardian-boss-copy h4,
+.region-action-card.guardian-boss-card .guardian-boss-copy p {
+  color: #fff4d6;
 }
 
 .training-card {
@@ -9866,15 +10270,23 @@ legend {
     padding: 12px;
   }
 
-  .skill-practice-summary,
   .skill-practice-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
   }
 
-  .skill-practice-summary span,
-  .skill-practice-steps a,
+  .skill-practice-steps button,
   .skill-practice-exam-transition button {
     width: 100%;
+  }
+
+  .skill-practice-steps button {
+    min-width: 0;
+    padding: 7px 6px;
+    font-size: 0.72rem;
+    overflow-wrap: anywhere;
+    text-align: center;
   }
 
   .skill-practice-exam-transition button {
@@ -11941,6 +12353,21 @@ legend {
   }
 }
 
+@media (max-width: 900px) {
+  .guardian-boss-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .guardian-boss-copy {
+    align-content: start;
+  }
+
+  .guardian-boss-art .guardian-placeholder-figure,
+  .guardian-boss-art .guardian-placeholder-figure img {
+    min-height: clamp(220px, 48vw, 360px);
+  }
+}
+
 @media (max-width: 640px) {
   .region-arc-timeline {
     grid-template-columns: 1fr;
@@ -11978,6 +12405,36 @@ legend {
 
   .region-action-card-title {
     gap: 10px;
+  }
+
+  .guardian-boss-copy h4 {
+    font-size: clamp(1.7rem, 9vw, 2.35rem);
+  }
+
+  .guardian-boss-lock {
+    width: 56px;
+    height: 56px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .guardian-boss-lock svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .guardian-next-action {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .guardian-next-action-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    white-space: normal;
+  }
+
+  .guardian-primary-action {
+    width: 100%;
   }
 
   .region-action-icon {
@@ -12084,6 +12541,727 @@ legend {
 }
 
 /* Teacher/admin dashboard readability layer. Keep these selectors scoped so student UI stays isolated. */
+.exam-training-dashboard {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 1360px);
+  margin: 0 auto;
+  color: #172033;
+}
+
+.exam-training-dashboard-header,
+.exam-training-route-strip,
+.exam-training-mastery-panel,
+.exam-training-practice-panel,
+.exam-training-side-card {
+  border: 1px solid rgba(217, 210, 195, 0.92);
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 253, 248, 0.97)),
+    var(--color-surface);
+  box-shadow: 0 14px 34px rgba(3, 6, 22, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.exam-training-dashboard-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+.exam-training-crest {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  color: #f3d58a;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.28), transparent 24%),
+    linear-gradient(145deg, #11294a, #0b1930 70%);
+  border: 2px solid #b7791f;
+  border-radius: var(--radius-panel);
+  box-shadow: 0 4px 0 rgba(59, 32, 20, 0.62);
+}
+
+.exam-training-title-copy {
+  min-width: 0;
+}
+
+.exam-training-title-copy h2 {
+  margin: 4px 0 3px;
+  color: #123253;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.exam-training-title-copy p,
+.exam-training-title-copy small {
+  display: block;
+  margin: 0;
+  color: #405168;
+  font-weight: 850;
+}
+
+.exam-training-back-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: #fffdf8;
+  background: linear-gradient(180deg, #163a60, #102a4b);
+  border: 1px solid rgba(10, 30, 57, 0.92);
+  box-shadow: 0 3px 0 rgba(5, 14, 28, 0.82);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.exam-training-route-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+}
+
+.exam-training-route-strip button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  min-height: 72px;
+  padding: 11px 12px;
+  color: #123253;
+  background: #fffdf8;
+  border: 1px solid #d9d2c3;
+  border-radius: var(--radius-control);
+  box-shadow: 0 3px 0 rgba(90, 68, 39, 0.16);
+  text-align: left;
+}
+
+.exam-training-route-strip button.active {
+  color: #fffdf8;
+  background: linear-gradient(180deg, #2f6f44, #1e4d31);
+  border-color: rgba(27, 77, 46, 0.95);
+  box-shadow: 0 3px 0 rgba(16, 53, 31, 0.82);
+}
+
+.exam-training-route-strip button:disabled {
+  color: #7d8794;
+  background: #f5f1e8;
+  border-style: dashed;
+  opacity: 1;
+}
+
+.exam-training-route-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+}
+
+.exam-training-route-strip strong,
+.exam-training-route-strip small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.16;
+}
+
+.exam-training-route-strip strong {
+  font-weight: 950;
+}
+
+.exam-training-route-strip small {
+  margin-top: 3px;
+  color: inherit;
+  font-size: 0.76rem;
+  font-weight: 850;
+  opacity: 0.76;
+}
+
+.exam-training-dashboard-grid {
+  display: grid;
+  grid-template-areas:
+    "mastery side"
+    "practice side";
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 370px);
+  gap: 10px;
+  align-items: start;
+}
+
+.exam-training-section-heading {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.exam-training-section-heading.compact {
+  display: grid;
+  gap: 2px;
+}
+
+.exam-training-section-heading h3 {
+  margin: 0;
+  color: #123253;
+  font-size: 1.28rem;
+  line-height: 1.12;
+}
+
+.exam-training-section-heading p {
+  margin: 4px 0 0;
+  color: #546174;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.exam-training-practice-panel {
+  grid-area: practice;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.exam-training-practice-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.exam-training-practice-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+  min-height: 116px;
+  padding: 18px;
+  color: #fffdf8;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-panel);
+  box-shadow: 0 4px 0 rgba(33, 24, 13, 0.38), 0 12px 24px rgba(3, 6, 22, 0.18);
+  text-align: left;
+}
+
+.exam-training-practice-card.practice-core {
+  background: linear-gradient(145deg, #295c37, #173c27);
+}
+
+.exam-training-practice-card.practice-weak {
+  background: linear-gradient(145deg, #d29a16, #a86e0c);
+}
+
+.exam-training-practice-card.practice-stretch {
+  background: linear-gradient(145deg, #6654c7, #3f326f);
+}
+
+.exam-training-practice-card:disabled {
+  cursor: default;
+  filter: grayscale(0.25);
+  opacity: 0.68;
+}
+
+.exam-training-practice-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 50%;
+}
+
+.exam-training-practice-card strong,
+.exam-training-practice-card small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.exam-training-practice-card strong {
+  font-size: 1.08rem;
+  line-height: 1.18;
+}
+
+.exam-training-practice-card small {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.38;
+}
+
+.exam-training-safe-note,
+.exam-training-panel-footer {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 10px 12px;
+  color: #19324a;
+  background: #f8f1e5;
+  border: 1px solid #e3d5bd;
+  border-radius: var(--radius-control);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.exam-training-mastery-panel {
+  grid-area: mastery;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.mastery-heading {
+  align-items: center;
+}
+
+.exam-training-evidence-chip {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  color: #1c4f31;
+  background: #e6f4ea;
+  border: 1px solid rgba(40, 122, 82, 0.24);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.exam-training-mastery-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.mastery-legend-item {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: #465568;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.mastery-legend-item i,
+.mastery-status-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #aeb7c2;
+}
+
+.mastery-strong .mastery-status-dot,
+.mastery-strong.mastery-legend-item i {
+  background: #2f9b5b;
+}
+
+.mastery-secure .mastery-status-dot,
+.mastery-secure.mastery-legend-item i {
+  background: #e2aa17;
+}
+
+.mastery-developing .mastery-status-dot,
+.mastery-developing.mastery-legend-item i {
+  background: #e98232;
+}
+
+.mastery-needs_work .mastery-status-dot,
+.mastery-needs_work.mastery-legend-item i {
+  background: #b42318;
+}
+
+.mastery-not_tried .mastery-status-dot,
+.mastery-not_tried.mastery-legend-item i {
+  background: #b5bdc6;
+}
+
+.exam-training-topic-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  min-width: 0;
+}
+
+.exam-training-topic-row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 6px 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(217, 210, 195, 0.58);
+}
+
+.exam-training-topic-copy {
+  min-width: 0;
+}
+
+.exam-training-topic-copy strong,
+.exam-training-topic-copy small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+.exam-training-topic-copy strong {
+  color: #17324e;
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.exam-training-topic-copy small {
+  margin-top: 2px;
+  color: #697589;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.mastery-status-pill {
+  padding: 4px 7px;
+  color: #425166;
+  background: #eef1f3;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.mastery-strong .mastery-status-pill {
+  color: #185330;
+  background: #dcf3e4;
+}
+
+.mastery-secure .mastery-status-pill {
+  color: #6d4a07;
+  background: #fff0bf;
+}
+
+.mastery-developing .mastery-status-pill {
+  color: #813d0c;
+  background: #ffe2c8;
+}
+
+.mastery-needs_work .mastery-status-pill {
+  color: #812018;
+  background: #ffe2df;
+}
+
+.mastery-bar {
+  grid-column: 2;
+  height: 7px;
+  overflow: hidden;
+  background: #edf0f2;
+  border: 1px solid #dce2e7;
+  border-radius: 999px;
+}
+
+.mastery-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #aeb7c2;
+}
+
+.mastery-strong .mastery-bar span {
+  background: linear-gradient(90deg, #2f9b5b, #75bc82);
+}
+
+.mastery-secure .mastery-bar span {
+  background: linear-gradient(90deg, #e2aa17, #f2ce5f);
+}
+
+.mastery-developing .mastery-bar span {
+  background: linear-gradient(90deg, #e98232, #f2a36b);
+}
+
+.mastery-needs_work .mastery-bar span {
+  background: linear-gradient(90deg, #b42318, #dc625a);
+}
+
+.mastery-score {
+  grid-column: 3;
+  color: #26374d;
+  font-size: 0.75rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.exam-training-side-rail {
+  grid-area: side;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.exam-training-side-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.exam-training-avatar-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 132px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.exam-training-avatar-frame {
+  display: grid;
+  min-width: 0;
+  padding: 12px;
+  place-items: center;
+  background: radial-gradient(circle at 50% 34%, rgba(102, 84, 199, 0.14), transparent 52%), #f5f1e8;
+  border-radius: 50%;
+}
+
+.exam-training-avatar-frame .avatar-renderer-portrait {
+  width: min(120px, 100%);
+}
+
+.exam-training-avatar-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.exam-training-avatar-copy strong {
+  color: #123253;
+  font-size: 1.08rem;
+  font-weight: 950;
+  overflow-wrap: anywhere;
+}
+
+.exam-training-avatar-copy span,
+.exam-training-avatar-copy small {
+  color: #4e5c70;
+  font-weight: 850;
+}
+
+.exam-training-goal-list {
+  display: grid;
+  gap: 12px;
+}
+
+.exam-training-goal {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 11px;
+  align-items: center;
+  min-width: 0;
+}
+
+.exam-training-goal-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: #123253;
+  background: #f1ede6;
+  border: 1px solid #e2d9cc;
+  border-radius: var(--radius-panel);
+}
+
+.exam-training-goal strong,
+.exam-training-goal small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.exam-training-goal strong {
+  color: #123253;
+  font-size: 0.94rem;
+  font-weight: 950;
+}
+
+.exam-training-goal small {
+  color: #5b6879;
+  font-size: 0.78rem;
+  font-weight: 820;
+  line-height: 1.28;
+}
+
+.exam-training-goal b {
+  color: #123253;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.reward-progress-line {
+  height: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+  background: #edf0f2;
+  border: 1px solid #dce2e7;
+  border-radius: 999px;
+}
+
+.reward-progress-line span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #2f9b5b, #55b77b);
+}
+
+.class-competition-empty {
+  display: grid;
+  gap: 7px;
+  justify-items: start;
+  padding: 16px;
+  color: #405168;
+  background: #f8f1e5;
+  border: 1px solid #e3d5bd;
+  border-radius: var(--radius-panel);
+  font-weight: 850;
+}
+
+.class-competition-empty svg {
+  color: #b7791f;
+}
+
+.class-competition-empty strong {
+  color: #123253;
+}
+
+.class-competition-empty small,
+.class-competition-empty em {
+  color: #5b6879;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 1100px) {
+  .exam-training-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  }
+
+  .exam-training-practice-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-training-practice-card {
+    min-height: 96px;
+  }
+}
+
+@media (max-width: 960px) {
+  .exam-training-dashboard-grid {
+    grid-template-areas:
+      "practice"
+      "mastery"
+      "side";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .exam-training-topic-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 820px) {
+  .exam-training-dashboard {
+    gap: 8px;
+  }
+
+  .exam-training-route-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .exam-training-dashboard-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .exam-training-back-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .exam-training-section-heading,
+  .mastery-heading {
+    display: grid;
+    gap: 8px;
+  }
+
+  .exam-training-evidence-chip {
+    width: fit-content;
+  }
+}
+
+@media (max-width: 520px) {
+  .exam-training-dashboard-header,
+  .exam-training-mastery-panel,
+  .exam-training-practice-panel,
+  .exam-training-side-card {
+    padding: 14px;
+  }
+
+  .exam-training-dashboard-header {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-training-crest {
+    width: 52px;
+    height: 52px;
+  }
+
+  .exam-training-title-copy h2 {
+    font-size: 1.55rem;
+  }
+
+  .exam-training-route-strip {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .exam-training-route-strip button {
+    grid-template-columns: 1fr;
+    min-height: 78px;
+    padding: 9px;
+    text-align: center;
+  }
+
+  .exam-training-route-icon {
+    width: 100%;
+    height: 24px;
+  }
+
+  .exam-training-route-strip small {
+    display: none;
+  }
+
+  .exam-training-practice-card {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    padding: 15px;
+  }
+
+  .exam-training-topic-row {
+    grid-template-columns: 12px minmax(0, 1fr);
+  }
+
+  .mastery-status-pill,
+  .mastery-score {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .exam-training-avatar-row,
+  .exam-training-goal {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-training-goal b {
+    justify-self: start;
+  }
+}
+
 .app-view-dashboard {
   --dashboard-surface: #ffffff;
   --dashboard-surface-muted: #f7f9fc;

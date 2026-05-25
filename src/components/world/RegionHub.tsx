@@ -79,7 +79,7 @@ const hubActionDescriptions: Record<HubActionPageId, string> = {
   'field-guide': 'Learn the idea',
   'skill-practice': 'Start simple, then rehearse',
   'exam-training': 'Use real exam images',
-  guardian: 'Check readiness',
+  guardian: 'Unlock the final challenge',
 };
 
 const studentLoopExplanations: Record<HubActionPageId, string> = {
@@ -93,7 +93,7 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'field-guide': 'Start with one guide step and worked example before practice.',
   'skill-practice': 'Use short checks first, then guided practice with worked solution comparison.',
   'exam-training': 'Use real Paper 3 question images and save evidence for the Guardian.',
-  guardian: 'Open this only after the evidence checklist unlocks the Guardian.',
+  guardian: 'The challenge unlocks when your evidence is ready.',
 };
 
 function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSummary): string | undefined {
@@ -107,7 +107,7 @@ function skillPracticeFocusForPage(page: RegionLearningPageId, summary: RegionLe
   if (page === 'quick-check') return 'quick-check';
   if (page === 'warm-up') return 'warm-up';
   if (summary.learningActivityReadiness.quickCheckAttempts === 0) return 'quick-check';
-  if (summary.trainingSession.intent === 'warm_up' || summary.learningActivityReadiness.warmUpAttempts === 0) return 'warm-up';
+  if (summary.learningActivityReadiness.warmUpAttempts === 0) return 'warm-up';
   return 'overview';
 }
 
@@ -263,6 +263,7 @@ export function RegionHub({
                 <>
                   <GuardianChallengePanel
                     challenge={guardianChallenge}
+                    guardianCleared={guardianCleared}
                     isUnlocked={summary.guardianEligibility.eligible}
                     regionName={theme.title}
                   />
@@ -272,6 +273,7 @@ export function RegionHub({
                     regionName={theme.title}
                     summary={summary}
                     onChallengeGuardian={onChallengeGuardian}
+                    onNavigatePage={onNavigatePage}
                   />
                 </>
               ) : <LockedRegionActivityPanel activityLabel="Guardian Challenge" studentRegionAccess={studentRegionAccess} />
@@ -300,6 +302,7 @@ function FocusedRegionPageHeader({
   summary,
   theme,
 }: FocusedRegionPageHeaderProps) {
+  const isSkillPracticePage = displayedRegionPage(activePage) === 'skill-practice';
   return (
     <header className="focused-region-page-header">
       <div className="focused-region-page-title">
@@ -308,6 +311,8 @@ function FocusedRegionPageHeader({
         <p className="field-guide-page-region">{theme.title}</p>
         {fieldGuide ? (
           <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
+        ) : isSkillPracticePage ? (
+          <p className="field-guide-page-purpose">Start simple, then build the method before Exam Training.</p>
         ) : (
           <p className="field-guide-page-purpose">{summary.nextAction.label}</p>
         )}
@@ -319,7 +324,7 @@ function FocusedRegionPageHeader({
             {fieldGuideSnippetCount ? `Snippet 1 of ${fieldGuideSnippetCount}` : 'Field Guide'}
           </span>
         ) : null}
-        <span className="focused-region-next-step">{summary.nextAction.label}</span>
+        {!isSkillPracticePage ? <span className="focused-region-next-step">{summary.nextAction.label}</span> : null}
         <button className="region-home-return" type="button" onClick={onReturnToMap}>
           <ArrowLeft size={18} />
           Return to map
@@ -408,8 +413,8 @@ function hubActionButtonLabel(page: HubActionPageId): string {
 }
 
 function guardianStatus(summary: RegionLearningSummary, guardianCleared: boolean): string {
-  if (guardianCleared) return 'Cleared';
-  return summary.guardianEligibility.eligible ? 'Unlocked' : 'Locked';
+  if (guardianCleared) return 'Guardian cleared';
+  return summary.guardianEligibility.eligible ? 'Guardian ready' : 'Evidence needed';
 }
 
 function hubActionState(input: {
@@ -440,7 +445,7 @@ function hubActionState(input: {
     return { disabled: true, status: 'Field Guide only' };
   }
   if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
-  return { disabled: false, status: input.guardianCleared ? 'Cleared' : input.summary.guardianEligibility.eligible ? 'Unlocked' : 'Evidence needed' };
+  return { disabled: false, status: input.guardianCleared ? 'Guardian cleared' : input.summary.guardianEligibility.eligible ? 'Guardian ready' : 'Evidence needed' };
 }
 
 function recommendedHubPage(input: {
@@ -554,7 +559,7 @@ function RegionHubHome({
       page: 'guardian',
       label: 'Guardian',
       state: !canStudentUseRegionActivity(studentRegionAccess, 'guardian') || !summary.guardianEligibility.eligible ? 'locked' : guardianCleared ? 'done' : primaryPage === 'guardian' ? 'current' : 'available',
-      helper: guardianCleared ? 'Cleared' : summary.guardianEligibility.eligible ? 'Unlocked' : 'Needs evidence',
+      helper: guardianCleared ? 'Guardian cleared' : summary.guardianEligibility.eligible ? 'Guardian ready' : 'Evidence needed',
     },
   ];
 

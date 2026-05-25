@@ -18,6 +18,7 @@ import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig, type AsterionRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
 import { buildLocalClassHallSnapshot } from './lib/classHall';
+import { EXAM_TRAINING_PRACTICE_LABELS, type ExamTrainingPracticeMode } from './lib/examTrainingDashboard';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, emptyProgress, getProgressStorageAdapter } from './lib/progressStore';
@@ -42,12 +43,13 @@ import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippe
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'guardian' | 'profile' | 'class_hall';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'exam_training_dashboard' | 'guardian' | 'profile' | 'class_hall';
 
 const TeacherDashboard = lazy(() => import('./components/dashboard/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 const AdminDashboard = lazy(() => import('./components/dashboard/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
 const AvatarBuilder = lazy(() => import('./components/profile/AvatarBuilder').then((module) => ({ default: module.AvatarBuilder })));
 const ClassHall = lazy(() => import('./components/classHall/ClassHall').then((module) => ({ default: module.ClassHall })));
+const ExamTrainingDashboard = lazy(() => import('./components/world/regionHub/ExamTrainingDashboard').then((module) => ({ default: module.ExamTrainingDashboard })));
 const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
 const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
 
@@ -303,6 +305,7 @@ export default function App() {
   const [hostedSyncWarning, setHostedSyncWarning] = useState<string>();
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
   const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
+  const [examTrainingPracticeMode, setExamTrainingPracticeMode] = useState<ExamTrainingPracticeMode>();
 
   useEffect(() => {
     function syncPath() {
@@ -376,6 +379,7 @@ export default function App() {
         setSelectedRegionPage('hub');
         setCurrentQuestion(undefined);
         setTrainingIntent(undefined);
+        setExamTrainingPracticeMode(undefined);
         setRegionRouteError(`Unknown region "${route.regionId}". Choose a listed P3 region.`);
         setViewMode('regions');
         return;
@@ -385,8 +389,9 @@ export default function App() {
       setSelectedRegionPage(route.page);
       setCurrentQuestion(undefined);
       setTrainingIntent(undefined);
+      setExamTrainingPracticeMode(undefined);
       setRegionRouteError(undefined);
-      setViewMode('region_hub');
+      setViewMode(route.page === 'exam-training' ? 'exam_training_dashboard' : 'region_hub');
     }
 
     applyHashRoute();
@@ -482,6 +487,7 @@ export default function App() {
     setSelectedRegionPage('hub');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
     setViewMode('map');
     persistProgressAfterMeaningfulEvent(progressAdapter.clearLocalDemoProgress());
   }, [hostedProfileMismatch, progressAdapter]);
@@ -513,6 +519,24 @@ export default function App() {
 
   function practiceModeForTrainingIntent(intent: TrainingSessionIntent | undefined): PracticeMode {
     return intent === 'weak_area_review' ? 'weak_areas' : 'target_topic';
+  }
+
+  function practiceModeForDashboardMode(mode: ExamTrainingPracticeMode, hasSelectedRegion: boolean): PracticeMode {
+    if (mode === 'weak') return 'weak_areas';
+    return hasSelectedRegion ? 'target_topic' : 'start';
+  }
+
+  function trainingIntentForDashboardMode(mode: ExamTrainingPracticeMode): TrainingSessionIntent | undefined {
+    if (mode === 'core') return 'core_practice';
+    if (mode === 'weak') return 'weak_area_review';
+    return undefined;
+  }
+
+  function dashboardPracticeReason(mode: ExamTrainingPracticeMode, region?: RegionDefinition): string {
+    const scope = region ? ` in ${region.name}` : '';
+    if (mode === 'core') return `Balanced exam-style practice${scope}.`;
+    if (mode === 'weak') return `Extra exam-style practice where your current signal is weakest${scope}.`;
+    return `Stretch Problems uses the standard exam-style flow for now; tailored harder selection comes later${scope}.`;
   }
 
   function chooseNext(nextProgress = progress, mode: PracticeMode = activePracticeMode()) {
@@ -549,16 +573,61 @@ export default function App() {
   }
 
   function startPractice() {
+    openExamTrainingDashboard();
+  }
+
+  function startDashboardPractice(mode: ExamTrainingPracticeMode) {
+    const region = selectedRegion;
+    setExamTrainingPracticeMode(mode);
+
+    if (region) {
+      const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
+      if (!canStudentUseRegionActivity(access, 'exam_practice')) {
+        openExamTrainingDashboard(region);
+        return;
+      }
+      const selectionMode = practiceModeForDashboardMode(mode, true);
+      setSelectedRegion(region);
+      setSelectedRegionPage('exam-training');
+      setTrainingIntent(trainingIntentForDashboardMode(mode));
+      setViewMode('target_topic');
+      setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
+        mode: selectionMode,
+        attempts: progress.attempts,
+        topicProfiles: progress.topicProfiles,
+        currentQuestionId: currentQuestion?.id,
+      }));
+      return;
+    }
+
     clearRegionHash();
     setSelectedRegion(undefined);
     setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
-    setViewMode('start');
+    const selectionMode = practiceModeForDashboardMode(mode, false);
+    setViewMode(selectionMode === 'weak_areas' ? 'weak_areas' : 'start');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
-      mode: 'start',
+      mode: selectionMode,
       attempts: progress.attempts,
       topicProfiles: progress.topicProfiles,
     }));
+  }
+
+  function openExamTrainingDashboard(region?: RegionDefinition) {
+    if (region) {
+      setSelectedRegion(region);
+      setSelectedRegionPage('exam-training');
+      updateRegionHash(region.id, 'exam-training');
+    } else {
+      clearRegionHash();
+      setSelectedRegion(undefined);
+      setSelectedRegionPage('hub');
+    }
+    setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
+    setCurrentQuestion(undefined);
+    setRegionRouteError(undefined);
+    setViewMode('exam_training_dashboard');
   }
 
   function enterRegion(region: RegionDefinition) {
@@ -569,7 +638,8 @@ export default function App() {
     setSelectedRegion(region);
     setSelectedRegionPage(page);
     setTrainingIntent(undefined);
-    setViewMode('region_hub');
+    setExamTrainingPracticeMode(undefined);
+    setViewMode(page === 'exam-training' ? 'exam_training_dashboard' : 'region_hub');
     setCurrentQuestion(undefined);
     setRegionRouteError(undefined);
     updateRegionHash(region.id, page);
@@ -583,6 +653,7 @@ export default function App() {
     }
     setSelectedRegion(region);
     setTrainingIntent(intent);
+    setExamTrainingPracticeMode(undefined);
     setViewMode('target_topic');
     setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
       mode: practiceModeForTrainingIntent(intent),
@@ -600,6 +671,7 @@ export default function App() {
     }
     setSelectedRegion(region);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
     setViewMode('guardian');
     setCurrentQuestion(question);
   }
@@ -609,6 +681,7 @@ export default function App() {
     setViewMode('map');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
   }
 
   function openRegions() {
@@ -616,6 +689,7 @@ export default function App() {
     setViewMode('regions');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
   }
 
   function openProfile() {
@@ -623,6 +697,7 @@ export default function App() {
     setViewMode('profile');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
   }
 
   function openClassHall() {
@@ -632,6 +707,7 @@ export default function App() {
     setViewMode('class_hall');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
   }
 
   function reviewWeakAreas(nextProgress = progress) {
@@ -639,6 +715,7 @@ export default function App() {
     setSelectedRegion(undefined);
     setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode('weak');
     setViewMode('weak_areas');
     setCurrentQuestion(selectNextQuestion(p3Questions(), {
       mode: 'weak_areas',
@@ -671,6 +748,7 @@ export default function App() {
       setSelectedRegionPage('hub');
       setCurrentQuestion(undefined);
       setTrainingIntent(undefined);
+      setExamTrainingPracticeMode(undefined);
       setViewMode('map');
       persistProgressAfterMeaningfulEvent(progressAdapter.clearLocalDemoProgress());
     }
@@ -749,6 +827,7 @@ export default function App() {
     setSelectedRegionPage('hub');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
     setViewMode('map');
     persistProgressAfterMeaningfulEvent({ ...withAvatar, profile: withProfile.profile });
   }
@@ -981,6 +1060,16 @@ export default function App() {
     );
   }
 
+  const examTrainingPracticeDisabledReason = selectedRegion
+    ? !canStudentUseRegionActivity(selectedRegionAccess, 'exam_practice')
+      ? lockedRegionMessage(selectedRegionAccess)
+      : selectedRegionProgress && selectedRegionProgress.availableQuestions <= 0
+        ? 'No trainable question and mark-scheme image pairs are loaded for this region yet.'
+        : undefined
+    : p3Questions().length === 0
+      ? worldNotice ?? 'Exam Training questions are not available right now. Tell your teacher.'
+      : undefined;
+
   return (
     <main className={`app-shell app-view-${viewMode}`}>
       <TwinklingStarfield />
@@ -996,7 +1085,7 @@ export default function App() {
         <nav>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
           <button className={viewMode === 'regions' || viewMode === 'region_hub' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
-          <button className={viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'guardian' ? 'active' : ''} type="button" onClick={startPractice}>Start Practice</button>
+          <button className={viewMode === 'exam_training_dashboard' || viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={startPractice}>Exam Training</button>
           <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
         </nav>
@@ -1075,6 +1164,26 @@ export default function App() {
         </Suspense>
       ) : null}
 
+      {viewMode === 'exam_training_dashboard' ? (
+        <Suspense fallback={<StudentViewFallback label="Exam Training loading" />}>
+          <ExamTrainingDashboard
+            progress={progress}
+            questions={questions}
+            worldProgress={worldProgress}
+            avatarName={progress.profile.avatarName}
+            avatar={progress.avatar}
+            avatarGear={avatarGear}
+            selectedRegion={selectedRegion}
+            practiceDisabledReason={examTrainingPracticeDisabledReason}
+            isStaffPreview={Boolean(staffPreviewContext)}
+            onOpenRegions={openRegions}
+            onReturnToMap={returnToMap}
+            onNavigateRegionPage={selectedRegion ? (page) => openRegionPage(selectedRegion, page) : undefined}
+            onStartPractice={startDashboardPractice}
+          />
+        </Suspense>
+      ) : null}
+
       {viewMode === 'profile' ? (
         <Suspense fallback={<StudentViewFallback label="Profile loading" />}>
           <AvatarBuilder
@@ -1116,8 +1225,11 @@ export default function App() {
             selectedRegionRank={selectedRegionProgress?.rank}
             regionLearningPhase={viewMode === 'guardian' ? 'guardian' : selectedRegion ? 'training' : undefined}
             sessionIntent={selectedRegion && viewMode === 'target_topic' ? trainingIntent ?? selectedRegionLearningSummary?.trainingSession.intent : undefined}
+            sessionLabelOverride={examTrainingPracticeMode ? EXAM_TRAINING_PRACTICE_LABELS[examTrainingPracticeMode] : undefined}
             sessionReason={viewMode === 'guardian'
               ? 'You are challenging the Region Guardian because your saved practice evidence unlocked this check.'
+              : examTrainingPracticeMode
+                ? dashboardPracticeReason(examTrainingPracticeMode, selectedRegion)
               : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
             guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
             progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
@@ -1197,7 +1309,9 @@ export default function App() {
                 enterRegion(selectedRegion);
                 return;
               }
-              chooseNext(progress, selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
+              chooseNext(progress, examTrainingPracticeMode
+                ? practiceModeForDashboardMode(examTrainingPracticeMode, Boolean(selectedRegion))
+                : selectedRegion ? practiceModeForTrainingIntent(trainingIntent) : activePracticeMode());
             }}
             continuePracticeLabel={viewMode === 'guardian' ? 'Return to region hub' : undefined}
             onOpenRegionTool={selectedRegion ? (page) => openRegionPage(selectedRegion, page) : undefined}

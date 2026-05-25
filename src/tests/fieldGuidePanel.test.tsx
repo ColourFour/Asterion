@@ -948,7 +948,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Guided sequence complete');
-    const continueExam = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Continue to Exam Training');
+    const continueExam = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Ready for exam practice');
     expect(continueExam).toBeTruthy();
     act(() => {
       continueExam!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -1310,7 +1310,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(stats?.textContent).toContain('Attempts');
     expect(stats?.textContent).toContain('Average');
     expect(stats?.textContent).toContain('Guardian');
-    expect(stats?.textContent).toContain('Locked');
+    expect(stats?.textContent).toContain('Evidence needed');
 
     const artwork = container.querySelector('.region-home-artwork');
     expect(artwork).toBeTruthy();
@@ -1359,9 +1359,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Exam Training');
     expect(container.textContent).toContain('Use real exam images');
     expect(container.textContent).toContain('Guardian Challenge');
-    expect(container.textContent).toContain('Check readiness');
+    expect(container.textContent).toContain('Unlock the final challenge');
     expect(container.textContent).toContain('Evidence needed');
     expect(container.textContent).toContain('Complete the Field Guide.');
+    expect(container.textContent).not.toContain('Check readiness');
 
     expect(container.querySelector('.region-learning-nav')).toBeFalsy();
     expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
@@ -1466,6 +1467,52 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(warmUpCurrentStep?.textContent).not.toContain('Warm-Up');
   });
 
+  it('renders one active Skill Practice step body for normal and legacy routes', () => {
+    const defaultPage = renderRegionHubPage({ activePage: 'skill-practice' });
+    expect(defaultPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(defaultPage.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(defaultPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(defaultPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Start simple');
+    expect(defaultPage.textContent).not.toContain('Warm-Up Practice');
+
+    const buildMethodPage = renderRegionHubPage({
+      activePage: 'skill-practice',
+      learningActivityAttempts: [supportActivityAttempt('quick_check')],
+    });
+    expect(buildMethodPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
+    expect(buildMethodPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(buildMethodPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(buildMethodPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Build the method');
+
+    const readyPage = renderRegionHubPage({
+      activePage: 'skill-practice',
+      learningActivityAttempts: [
+        supportActivityAttempt('quick_check'),
+        supportActivityAttempt('warm_up'),
+      ],
+    });
+    expect(readyPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
+    expect(readyPage.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(readyPage.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(readyPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Ready for exam practice');
+
+    const legacyQuickCheckPage = renderRegionHubPage({
+      activePage: 'quick-check',
+      learningActivityAttempts: [
+        supportActivityAttempt('quick_check'),
+        supportActivityAttempt('warm_up'),
+      ],
+    });
+    expect(legacyQuickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(legacyQuickCheckPage.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(legacyQuickCheckPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Start simple');
+
+    const legacyWarmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
+    expect(legacyWarmUpPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
+    expect(legacyWarmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(legacyWarmUpPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Build the method');
+  });
+
   it('renders each focused region page with its preserved panel behavior', () => {
     const fieldGuidePage = renderRegionHubPage({ activePage: 'field-guide' });
     expect(fieldGuidePage.textContent).toContain('Field Guide');
@@ -1486,15 +1533,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
+    expect(quickCheckPage.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(quickCheckPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
     expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')).toBeFalsy();
     expect(quickCheckPage.querySelector('.quick-check-choice-grid')).toBeTruthy();
 
     const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
     expect(warmUpPage.textContent).toContain('Skill Practice');
     expect(warmUpPage.textContent).toContain('Guided Practice');
-    expect(warmUpPage.textContent).toContain('These support records stay separate from Guardian evidence');
+    expect(warmUpPage.textContent).toContain('Try a guided step, then compare with the worked route.');
+    expect(warmUpPage.textContent).not.toContain('Warm-Up Practice');
+    expect(warmUpPage.textContent).not.toContain('answer-first set with worked solutions');
     expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(warmUpPage.querySelector('.quick-check-card')).toBeFalsy();
     expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
 
     const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
@@ -1507,14 +1559,16 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const guardianPage = renderRegionHubPage({ activePage: 'guardian' });
     expect(guardianPage.textContent).toContain('Guardian Challenge');
-    expect(guardianPage.textContent).toContain('Guardian challenge locked');
+    expect(guardianPage.textContent).toContain('Vault locked');
+    expect(guardianPage.textContent).toContain('The Guardian is waiting.');
     expect(guardianPage.textContent).not.toContain(GUARDIAN_PLACEHOLDER_WARNING);
     expect(guardianPage.textContent).not.toContain('Lantern Growth Gate');
     expect(guardianPage.textContent).not.toContain('Solve \\log_2(x+3)');
     expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(guardianPage.textContent).toContain('Guardian not ready yet');
+    expect(guardianPage.textContent).toContain('The vault opens when your exam evidence is ready.');
+    expect(guardianPage.querySelectorAll('.guardian-requirement-card').length).toBeGreaterThanOrEqual(5);
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
   });
 
@@ -1525,15 +1579,66 @@ describe('FieldGuidePanel teaching snippets', () => {
       regionAttempts: [],
     });
 
-    expect(container.textContent).toContain('Guardian challenge locked');
-    expect(container.textContent).toContain('Complete the Step 4 prerequisites first');
+    expect(container.textContent).toContain('Vault locked');
+    expect(container.textContent).toContain('The challenge unlocks when your evidence is ready.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.textContent).not.toContain('Lantern Growth Gate');
     expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
-    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Challenge the Guardian'))).toBe(false);
+    expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Enter the Guardian Challenge'))).toBe(false);
+    expect(container.querySelectorAll('.guardian-requirement-card')).toHaveLength(5);
+    expect(container.textContent).toContain('Practice evidence saved');
+    expect(container.textContent).toContain('0 / 3');
+  });
+
+  it('chooses one locked Guardian next action from the first missing eligibility requirement', () => {
+    const guideNavigate = vi.fn<(page: RegionLearningPageId) => void>();
+    const guideMissing = renderRegionHubPage({
+      activePage: 'guardian',
+      onNavigatePage: guideNavigate,
+    });
+    const guideAction = guideMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="field-guide"]');
+    expect(guideAction?.textContent).toContain('Start with the Field Guide');
+    act(() => {
+      guideAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(guideNavigate).toHaveBeenCalledWith('field-guide');
+
+    const evidenceNavigate = vi.fn<(page: RegionLearningPageId) => void>();
+    const evidenceMissing = renderRegionHubPage({
+      activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      onNavigatePage: evidenceNavigate,
+    });
+    const evidenceAction = evidenceMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="exam-training"]');
+    expect(evidenceAction?.textContent).toContain('Build exam evidence');
+    act(() => {
+      evidenceAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(evidenceNavigate).toHaveBeenCalledWith('exam-training');
+
+    const lowScoreAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
+      questionId: 'q1',
+      topicDisplayName: 'Logarithms',
+      subtopic: index === 2 ? 'exponential equations' : 'logarithmic equations',
+      marksEarned: 4,
+      marksAvailable: 10,
+      scoreRatio: 0.4,
+      validatedRegionId: 'logarithm-grove',
+      displayRegionId: 'logarithm-grove',
+      worldName: 'P3 Astral Academy',
+      regionName: 'Logarithm Grove',
+      masteryEligible: true,
+    }));
+    const recentMissing = renderRegionHubPage({
+      activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      regionAttempts: lowScoreAttempts,
+    });
+    const recentAction = recentMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="exam-training"]');
+    expect(recentAction?.textContent).toContain('Try another Exam Training question');
   });
 
   it('shows Guardian artwork and actual question action after unlock evidence is complete', () => {
@@ -1565,17 +1670,17 @@ describe('FieldGuidePanel teaching snippets', () => {
       onChallengeGuardian,
     });
 
-    expect(container.textContent).not.toContain('Guardian challenge locked');
+    expect(container.textContent).not.toContain('Vault locked');
     expect(container.textContent).not.toContain(GUARDIAN_PLACEHOLDER_WARNING);
     expect(container.textContent).not.toContain('Lantern Growth Gate');
     expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
-    expect(container.textContent).toContain('Guardian challenge ready');
-    expect(container.textContent).toContain('Selected guardian question');
+    expect(container.textContent).toContain('Guardian ready');
+    expect(container.textContent).toContain('The vault opens now.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
 
-    const challengeButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Challenge the Guardian'));
+    const challengeButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Enter the Guardian Challenge'));
     expect(challengeButton).toBeTruthy();
     act(() => {
       challengeButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -1608,13 +1713,34 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
-    expect(container.textContent).toContain('Use the Guardian evidence card below to open the actual question.');
-    expect(container.textContent).toContain('Selected guardian question');
+    expect(container.textContent).toContain('The vault opens now.');
+    expect(container.textContent).toContain('Readiness evidence');
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(onChallengeGuardian).not.toHaveBeenCalled();
     expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');
     expect(container.textContent?.toLowerCase()).not.toContain('admin');
     expect(container.textContent?.toLowerCase()).not.toContain('export');
+  });
+
+  it('does not introduce fixed single-question Guardian structure copy', () => {
+    const guardianSource = [
+      readFileSync(`${process.cwd()}/src/components/world/regionHub/GuardianChallengePanel.tsx`, 'utf8'),
+      readFileSync(`${process.cwd()}/src/components/world/regionHub/GuardianEligibilityPanel.tsx`, 'utf8'),
+      readFileSync(`${process.cwd()}/src/components/world/RegionHub.tsx`, 'utf8'),
+    ].join('\n');
+
+    for (const forbidden of [
+      'One high-level exam-style question',
+      'one high-level exam-style question',
+      'One high-level question',
+      'one high-level question',
+      'One final question',
+      'one final question',
+      'Single boss question',
+      'single boss question',
+    ]) {
+      expect(guardianSource).not.toContain(forbidden);
+    }
   });
 
   it('gracefully handles Guardian artwork content without artwork', () => {
@@ -1701,7 +1827,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       const actionSurface = button?.closest('.region-current-step-card, .region-home-secondary-step');
       expect(actionSurface?.textContent).toContain('Field Guide only');
     }
-    expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Needs evidence');
+    expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Evidence needed');
 
     act(() => {
       actionButtons.find((button) => button.dataset.regionPage === 'skill-practice')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -1884,6 +2010,28 @@ describe('FieldGuidePanel teaching snippets', () => {
         expect(topicCard?.dataset.skillIds, `${regionId}/${topic.id}`).toBe(topic.skillIds.join(' '));
       }
     }
+  });
+
+  it('renders Argand topic-card previews as math without raw delimiters', async () => {
+    const container = renderRegionHubPage({
+      activePage: 'field-guide',
+      regionId: 'complex-harbor',
+    });
+
+    await waitForKatex(container, FIELD_GUIDE_TOPICS_BY_REGION['complex-harbor'].length);
+
+    const topicCards = Array.from(container.querySelectorAll<HTMLElement>('.field-guide-topic-card'));
+    expect(topicCards).toHaveLength(FIELD_GUIDE_TOPICS_BY_REGION['complex-harbor'].length);
+
+    for (const topicCard of topicCards) {
+      const example = topicCard.querySelector('.field-guide-topic-example');
+      expect(example, topicCard.dataset.topicId).toBeTruthy();
+      expect(example?.querySelector('.katex'), topicCard.dataset.topicId).toBeTruthy();
+      expect(example?.textContent, topicCard.dataset.topicId).not.toContain('$');
+      expect(example?.textContent, topicCard.dataset.topicId).not.toContain('I');
+    }
+
+    expect(container.textContent).not.toContain('$a+bi$');
   });
 
   it('keeps must-fix Field Guide topic patches P3-appropriate and support-labelled', () => {
@@ -2167,6 +2315,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(stylesCss).toMatch(/\.region-summary-band\s*>\s*\.region-next-action,\s*[\r\n\s]*\.region-summary-band\s*>\s*\.region-progress-strip\s*\{[\s\S]*?height:\s*100%;[\s\S]*?margin-bottom:\s*0;/);
     expect(stylesCss).toMatch(/\.focused-region-page-header\s*\{[\s\S]*?display:\s*flex;/);
     expect(stylesCss).toMatch(/\.focused-region-next-step\s*\{[\s\S]*?border-radius:\s*999px;/);
+    expect(stylesCss).toMatch(/\.region-home-action-card\s*\{[\s\S]*?"icon copy chevron"[\s\S]*?"icon status chevron"[\s\S]*?grid-template-columns:\s*38px minmax\(0,\s*1fr\) 18px;/);
+    expect(stylesCss).toMatch(/\.region-home-action-copy strong\s*\{[\s\S]*?overflow-wrap:\s*anywhere;/);
+    expect(stylesCss).toMatch(/\.region-home-action-chevron\s*\{[\s\S]*?justify-self:\s*end;/);
     expect(stylesCss).toContain('.arc-phase-1');
     expect(stylesCss).toContain('.arc-phase-5');
     expect(stylesCss).toMatch(/\.arc-phase-1\s*\{[\s\S]*?var\(--region-accent[^)]*\)\s*5%/);

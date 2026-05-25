@@ -133,7 +133,9 @@ function FieldGuideTopicCard({
       </span>
       <span className="field-guide-topic-example" aria-label={`${topic.title} example preview`}>
         <span>Example</span>
-        <MathText text={topic.preview} />
+        <span className="field-guide-topic-example-math">
+          <MathText text={topic.preview} />
+        </span>
       </span>
       <span className="field-guide-topic-affordance">
         Start topic

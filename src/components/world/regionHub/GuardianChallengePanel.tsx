@@ -4,6 +4,7 @@ import { RegionActionCard } from './RegionActionCard';
 
 interface GuardianChallengePanelProps {
   challenge?: GuardianChallenge;
+  guardianCleared?: boolean;
   isUnlocked: boolean;
   regionName: string;
 }
@@ -24,7 +25,7 @@ function GuardianArtwork({ challenge, regionName }: { challenge: GuardianChallen
   );
 }
 
-export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: GuardianChallengePanelProps) {
+export function GuardianChallengePanel({ challenge, guardianCleared = false, isUnlocked, regionName }: GuardianChallengePanelProps) {
   if (!challenge) {
     return (
       <RegionActionCard
@@ -41,44 +42,66 @@ export function GuardianChallengePanel({ challenge, isUnlocked, regionName }: Gu
     );
   }
 
-  if (!isUnlocked) {
-    return (
-      <RegionActionCard
-        eyebrow="Step 4 · Guardian locked"
-        title="Guardian Challenge"
-        description={`${regionName} Guardian challenge is short, special, and unlocks after the required saved practice evidence is complete.`}
-        icon={<ShieldCheck size={22} />}
-        stateIcon={<Lock size={22} aria-label="Guardian locked" />}
-        className="guardian-card guardian-placeholder-card guardian-locked-card"
-      >
-        <GuardianArtwork challenge={challenge} regionName={regionName} />
-        <div className="guardian-locked-state" role="status">
-          <Lock size={20} aria-hidden="true" />
-          <div>
-            <strong>Guardian challenge locked</strong>
-            <span>Complete the Step 4 prerequisites first. The challenge question and answer controls are hidden until the Guardian unlocks.</span>
-          </div>
-        </div>
-      </RegionActionCard>
-    );
-  }
+  const status = guardianCleared ? 'cleared' : isUnlocked ? 'ready' : 'locked';
+  const statusCopy = {
+    locked: {
+      eyebrow: 'Step 4 · Final gate locked',
+      description: `${regionName} is sealed. Build your evidence to unlock the Guardian trial.`,
+      label: 'Vault locked',
+      title: `${regionName} is sealed`,
+      body: 'The challenge unlocks when your evidence is ready.',
+      anticipation: 'The Guardian is waiting.',
+      icon: <Lock size={22} aria-label="Guardian locked" />,
+    },
+    ready: {
+      eyebrow: 'Step 4 · Guardian ready',
+      description: `${regionName} is open. Your evidence can launch the Guardian trial.`,
+      label: 'Guardian ready',
+      title: 'The gate is open',
+      body: 'Enter the final region challenge when you are ready.',
+      anticipation: 'Clear the region’s Guardian trial.',
+      icon: <Sparkles size={22} aria-label="Guardian ready" />,
+    },
+    cleared: {
+      eyebrow: 'Step 4 · Guardian cleared',
+      description: `${regionName} has been restored by saved Guardian evidence.`,
+      label: 'Region restored',
+      title: 'Guardian trial cleared',
+      body: 'The region is restored. Keep your evidence strong with later review.',
+      anticipation: 'Guardian crest earned.',
+      icon: <Sparkles size={22} aria-label="Guardian cleared" />,
+    },
+  }[status];
 
   return (
     <RegionActionCard
-      eyebrow="Step 4 · Guardian ready"
+      eyebrow={statusCopy.eyebrow}
       title="Guardian Challenge"
-      description={`${regionName} Guardian challenge is ready.`}
-      icon={<Sparkles size={22} />}
-      className="guardian-card guardian-placeholder-card"
+      description={statusCopy.description}
+      icon={<ShieldCheck size={22} />}
+      stateIcon={statusCopy.icon}
+      className={`guardian-card guardian-placeholder-card guardian-boss-card guardian-${status}-card`}
     >
-      <GuardianArtwork challenge={challenge} regionName={regionName} />
-      <div className="guardian-locked-state" role="status">
-        <Sparkles size={20} aria-hidden="true" />
-        <div>
-          <strong>Guardian challenge ready</strong>
-          <span>Use the Guardian evidence card below to open the actual question.</span>
+      <section className="guardian-boss-hero" aria-label={`${regionName} Guardian gate`}>
+        <div className="guardian-boss-copy">
+          <span className="guardian-boss-kicker">{statusCopy.label}</span>
+          <h4>{statusCopy.title}</h4>
+          <p>{statusCopy.body}</p>
+          <div className="guardian-locked-state" role="status">
+            {status === 'locked' ? <Lock size={20} aria-hidden="true" /> : <Sparkles size={20} aria-hidden="true" />}
+            <div>
+              <strong>{statusCopy.anticipation}</strong>
+              <span>{status === 'locked' ? 'No challenge prompt or answer controls appear until the evidence gate opens.' : 'Evidence details stay below so the unlock remains honest.'}</span>
+            </div>
+          </div>
         </div>
-      </div>
+        <div className="guardian-boss-art">
+          <GuardianArtwork challenge={challenge} regionName={regionName} />
+          <span className="guardian-boss-lock" aria-hidden="true">
+            {status === 'locked' ? <Lock size={38} /> : <ShieldCheck size={38} />}
+          </span>
+        </div>
+      </section>
     </RegionActionCard>
   );
 }

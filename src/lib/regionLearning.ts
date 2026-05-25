@@ -35,6 +35,11 @@ export interface GuardianRequirement {
   completed: boolean;
   detail: string;
   nextAction?: string;
+  progress?: {
+    current: number;
+    target: number;
+    label?: string;
+  };
 }
 
 export interface TrainingSessionRecommendation {
@@ -182,6 +187,7 @@ export function computeGuardianEligibility(input: {
         ? 'You have reviewed the key moves and traps for this region.'
         : 'Complete the Field Guide.',
       nextAction: 'Start with the Field Guide. You have not reviewed the key exam traps yet.',
+      progress: { current: fieldGuideCompleted ? 1 : 0, target: 1 },
     },
     {
       id: 'attempt_count',
@@ -191,6 +197,7 @@ export function computeGuardianEligibility(input: {
         ? `${attemptCountText(evidenceAttempts.length)} recorded in this region.`
         : `Save at least 3 attempts in this region (${evidenceAttempts.length}/3).`,
       nextAction: `Train in this region and save ${attemptsMissingText(attemptsMissing)} to build guardian evidence.`,
+      progress: { current: Math.min(evidenceAttempts.length, 3), target: 3 },
     },
     {
       id: 'recent_high_score',
@@ -200,6 +207,7 @@ export function computeGuardianEligibility(input: {
         ? 'At least one recent saved attempt is 70% or higher.'
         : 'Save at least 1 recent attempt at 70% or higher.',
       nextAction: 'You are close to the Guardian. Earn one recent saved attempt at 70% or higher.',
+      progress: { current: hasRecentHighScore ? 1 : 0, target: 1 },
     },
     {
       id: 'subtopic_spread',
@@ -211,6 +219,9 @@ export function computeGuardianEligibility(input: {
           : `Attempt at least ${requiredSubtopics} subtopics in this region (${attempted.size}/${requiredSubtopics}).`
         : 'Subtopic spread is skipped until this region has enough subtopic metadata.',
       nextAction: `Try a question from another subtopic before challenging the Guardian (${attempted.size}/${requiredSubtopics}).`,
+      progress: subtopicRequirementApplies
+        ? { current: Math.min(attempted.size, requiredSubtopics), target: requiredSubtopics }
+        : { current: 1, target: 1, label: 'Not required' },
     },
     {
       id: 'guardian_asset',
@@ -220,6 +231,7 @@ export function computeGuardianEligibility(input: {
         ? 'A trainable guardian question with mark-scheme images is available.'
         : 'Fix guardian question asset data: no trainable guardian question has both question and mark-scheme images.',
       nextAction: 'This region needs a trainable guardian question with both question and mark-scheme images.',
+      progress: { current: guardianQuestion ? 1 : 0, target: 1 },
     },
   ];
   const missingRequirements = requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.detail);

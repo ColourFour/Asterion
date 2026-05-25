@@ -275,7 +275,7 @@ function WarmUpPracticeCard({
               {!isLastItem ? (
                 <button type="button" onClick={onNextItem}>Next guided step</button>
               ) : onContinueToExamPractice ? (
-                <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button>
+                <button type="button" onClick={onContinueToExamPractice}>Ready for exam practice</button>
               ) : (
                 <p>Sequence complete. Move to exam practice, or review the Field Guide if any method still felt uncertain.</p>
               )}
@@ -326,7 +326,7 @@ export function WarmUpPracticePanel({
     <RegionActionCard
       eyebrow="Build the method"
       title="Guided Practice"
-      description="A small answer-first set with worked solutions."
+      description="Try a guided step, then compare with the worked route."
       icon={<Sparkles size={22} />}
       className="warm-up-card"
     >
@@ -375,7 +375,7 @@ export function WarmUpPracticePanel({
               <strong>Guided sequence complete</strong>
               <p>Use exam practice next, or return to the Field Guide for a quick method review.</p>
               <div className="warm-up-next-actions">
-                {onContinueToExamPractice ? <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button> : null}
+                {onContinueToExamPractice ? <button type="button" onClick={onContinueToExamPractice}>Ready for exam practice</button> : null}
                 {onContinueToFieldGuide ? <button type="button" onClick={onContinueToFieldGuide}>Review Field Guide</button> : null}
               </div>
             </div>

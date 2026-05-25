@@ -13,6 +13,7 @@ interface QuickChecksPanelProps {
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
+  showNextCheck?: boolean;
   onContinueToWarmUp?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
@@ -324,7 +325,7 @@ function QuickCheckCard({
             {hasNextCheck ? (
               <button type="button" onClick={onNextCheck}>Next check</button>
             ) : onContinueToWarmUp ? (
-              <button type="button" onClick={onContinueToWarmUp}>Continue to Guided Practice</button>
+              <button type="button" onClick={onContinueToWarmUp}>Build the method</button>
             ) : onContinueToExamPractice ? (
               <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Practice</button>
             ) : null}
@@ -342,6 +343,7 @@ export function QuickChecksPanel({
   profileId,
   activityAttempts = [],
   maxInitialItems = 1,
+  showNextCheck = true,
   onContinueToWarmUp,
   onContinueToExamPractice,
   onLearningActivityAttempt,
@@ -366,7 +368,7 @@ export function QuickChecksPanel({
       : []
   ));
   const [activeCheckIndex, setActiveCheckIndex] = useState(0);
-  const activeCheckLimit = Math.max(1, Math.min(maxInitialItems, 1));
+  const activeCheckLimit = Math.max(1, Math.min(maxInitialItems, Math.max(checks.length, 1)));
   const activeCheckIndexWithinRange = Math.min(activeCheckIndex, Math.max(0, checks.length - 1));
   const activeCheck = checks[activeCheckIndexWithinRange];
   const queuedCheckCount = Math.max(0, checks.length - activeCheckIndexWithinRange - activeCheckLimit);
@@ -381,7 +383,7 @@ export function QuickChecksPanel({
     <RegionActionCard
       eyebrow="Start simple"
       title="One small check"
-      description="One short answer-first check at a time before you move into practice."
+      description="Do one short check and get immediate feedback."
       icon={<Target size={22} />}
       stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} short checks available`} /> : undefined}
       className="quick-check-card"
@@ -393,7 +395,7 @@ export function QuickChecksPanel({
               check={activeCheck.check}
               checkCount={checks.length}
               checkPosition={activeCheckIndexWithinRange + 1}
-              hasNextCheck={activeCheckIndexWithinRange < checks.length - 1}
+              hasNextCheck={showNextCheck && activeCheckIndexWithinRange < checks.length - 1}
               key={activeCheck.check.id ?? activeCheck.snippetId}
               linkedExample={activeCheck.linkedExample}
               onContinueToExamPractice={onContinueToExamPractice}
