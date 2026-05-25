@@ -2,6 +2,11 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  FIELD_GUIDE_TOPICS_BY_REGION,
+  REQUIRED_FIELD_GUIDE_SKILL_IDS,
+  fieldGuideSkillCoverage,
+} from '../data/fieldGuideTopics';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
 import {
@@ -17,6 +22,7 @@ import { getRegionTheme } from '../lib/regionThemes';
 import type { StudentRegionAccess } from '../lib/classRegionAccess';
 import {
   REGION_LEARNING_PAGE_LABELS,
+  REGION_LEARNING_PAGE_DESCRIPTIONS,
   parseAsterionHashRoute,
   regionHashPath,
   type RegionLearningPageId,
@@ -72,6 +78,12 @@ function setTextareaValue(textarea: HTMLTextAreaElement, value: string): void {
   const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
   setter?.call(textarea, value);
   textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function setInputValue(input: HTMLInputElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+  setter?.call(input, value);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
 function workedExampleTextParts(example: ReturnType<typeof getRegionFieldGuide>['workedExamples'][number]): string[] {
@@ -360,6 +372,46 @@ const openStudentRegionAccess: StudentRegionAccess = {
 };
 
 describe('FieldGuidePanel teaching snippets', () => {
+  it('represents every required Field Guide skill exactly once in topic metadata', () => {
+    const coverage = fieldGuideSkillCoverage();
+    const expectedSkills = [...REQUIRED_FIELD_GUIDE_SKILL_IDS].sort();
+    const actualSkills = [...coverage.keys()].sort();
+
+    expect(actualSkills).toEqual(expectedSkills);
+    for (const skillId of REQUIRED_FIELD_GUIDE_SKILL_IDS) {
+      expect(coverage.get(skillId), skillId).toHaveLength(1);
+    }
+  });
+
+  it('keeps every topic card backed by required display fields, skill IDs, and lesson content', () => {
+    for (const [regionId, topics] of Object.entries(FIELD_GUIDE_TOPICS_BY_REGION)) {
+      expect(topics.length, regionId).toBeGreaterThan(0);
+      const topicIds = new Set<string>();
+      for (const topic of topics) {
+        expect(topic.id.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topicIds.has(topic.id), `${regionId}/${topic.id}`).toBe(false);
+        topicIds.add(topic.id);
+        expect(topic.marker.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topic.title.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topic.purpose.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topic.preview.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topic.description.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(topic.skillIds.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+        expect(topic.examples.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+
+        const example = topic.examples[0];
+        expect(example?.title.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(example?.prompt.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(example?.workedLines.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+        expect(example?.patternRows.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+        expect(example?.tryPrompt.trim(), `${regionId}/${topic.id}`).not.toBe('');
+        expect(example?.tryScaffold.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+        expect(example?.takeaway.length, `${regionId}/${topic.id}`).toBeGreaterThan(0);
+        expect(example?.result.trim(), `${regionId}/${topic.id}`).not.toBe('');
+      }
+    }
+  });
+
   it('keeps approved visual-support registry records complete and inspectable', () => {
     expect(visualSupportSources.length).toBeGreaterThan(0);
     for (const source of visualSupportSources) {
@@ -553,35 +605,28 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
     expect(revealButton).toBeTruthy();
-    expect(revealButton?.hasAttribute('disabled')).toBe(true);
-    expect(quickCheck?.textContent).not.toContain('Reveal answer');
-
-    const textarea = quickCheck!.querySelector<HTMLTextAreaElement>('textarea');
-    act(() => {
-      setTextareaValue(textarea!, '2^3 = 8');
-    });
     expect(revealButton?.hasAttribute('disabled')).toBe(false);
+    expect(quickCheck?.textContent).not.toContain('Reveal answer');
+    expect(quickCheck!.querySelector('textarea')).toBeFalsy();
+
+    act(() => {
+      revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(quickCheck?.textContent).toContain('Add an answer first');
+
+    const modelChoice = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent?.includes('Use the linked Field Guide move'));
+    expect(modelChoice).toBeTruthy();
+    act(() => {
+      modelChoice!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
 
     act(() => {
       revealButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(quickCheck?.textContent).toContain('Feedback');
+    expect(quickCheck?.textContent).toContain('Correct');
     expect(quickCheck?.textContent).toContain('Linked example');
-    expect(quickCheck?.textContent).toContain('Two cubed equals eight.');
-    expect(quickCheck?.textContent).toContain('Save check');
-    expect(quickCheck?.textContent).not.toContain('Next action');
-    expect(quickCheck?.textContent).not.toContain('Try again');
-
-    const gotIt = quickCheck!.querySelector<HTMLInputElement>('input[value="got_it"]');
-    act(() => {
-      gotIt!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-    const saveCheck = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Save check');
-    act(() => {
-      saveCheck!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-
+    expect(quickCheck?.textContent).not.toContain('Save check');
     expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
     expect(quickCheck?.textContent).toContain('Next action');
     expect(quickCheck?.textContent).toContain('Try again');
@@ -904,7 +949,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       .toBe('Include requested terms and validity, e.g. 1 - x, |x| < 1');
   });
 
-  it('uses method-steering placeholders for integration Quick Checks', () => {
+  it('uses a deterministic choice contract for unstructured integration Quick Checks', () => {
     const integrationRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'integration-gardens');
     expect(integrationRegion).toBeTruthy();
 
@@ -926,11 +971,12 @@ describe('FieldGuidePanel teaching snippets', () => {
       <QuickChecksPanel teachingSnippets={[integrationSnippet]} region={integrationRegion!} />,
     );
 
-    expect(container.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder)
-      .toBe('Show the method line, e.g. u = x^2 + 1, du = 2x dx');
+    expect(container.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')).toBeFalsy();
+    expect(container.querySelector('.quick-check-choice-grid')).toBeTruthy();
+    expect(container.textContent).toContain('Use the linked Field Guide move');
   });
 
-  it('advances Quick Checks one at a time after saving answer feedback', () => {
+  it('advances Quick Checks one at a time after a correct deterministic check', () => {
     const snippets = [snippetVariant(1), snippetVariant(2), snippetVariant(3)];
     const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
     const onLearningActivityAttempt = vi.fn();
@@ -950,36 +996,30 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const check = container.querySelector<HTMLElement>('.quick-check-reveal');
     const checkAnswerButton = Array.from(check!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
-    expect(checkAnswerButton?.hasAttribute('disabled')).toBe(true);
-
-    const textarea = check!.querySelector<HTMLTextAreaElement>('textarea');
-    act(() => {
-      setTextareaValue(textarea!, 'answer attempt');
-    });
     expect(checkAnswerButton?.hasAttribute('disabled')).toBe(false);
 
     act(() => {
       checkAnswerButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
+    expect(container.textContent).toContain('Add an answer first');
 
-    expect(container.textContent).toContain('Feedback');
-    expect(container.textContent).toContain('Quick answer 1');
-    expect(container.textContent).toContain('Save check');
-    expect(container.textContent).not.toContain('Next action');
-    expect(container.textContent).not.toContain('Next check');
-    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    const firstAnswer = Array.from(check!.querySelectorAll('button')).find((button) => button.textContent?.includes('Use the linked Field Guide move'));
+    expect(firstAnswer).toBeTruthy();
+    act(() => {
+      firstAnswer!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
 
-    const gotIt = container.querySelector<HTMLInputElement>('input[value="got_it"]');
     act(() => {
-      gotIt!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      checkAnswerButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    const saveCheck = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save check');
-    act(() => {
-      saveCheck!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
+
+    expect(container.textContent).toContain('Correct');
+    expect(container.textContent).toContain('Use the linked Field Guide move');
+    expect(container.textContent).not.toContain('Save check');
     expect(container.textContent).toContain('Next action');
     expect(container.textContent).toContain('Next check');
+    expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
+    expect(onLearningActivityAttempt).toHaveBeenCalledTimes(1);
 
     const nextCheckButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Next check');
     act(() => {
@@ -991,7 +1031,103 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Check 2 of 3');
     expect(container.textContent).not.toContain('Quick prompt 1');
     expect(container.textContent).not.toContain('Quick prompt 3');
-    expect(container.textContent).not.toContain('Feedback');
+    expect(container.textContent).not.toContain('Correct');
+  });
+
+  it('renders deterministic Quick Check answer types without a free-text answer box', () => {
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove');
+    const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge');
+    const onLearningActivityAttempt = vi.fn();
+
+    const singleValueContainer = render(
+      <QuickChecksPanel
+        teachingSnippets={[{
+          ...snippet,
+          snippetId: 'p3-exp-equations-001',
+          quickCheck: {
+            id: 'p3-exp-equations-001-qc',
+            prompt: 'Solve $2^{x-1}=8$.',
+            answer: '$x=4$',
+            explanation: '$8=2^3$.',
+          },
+        }]}
+        region={logRegion!}
+        onLearningActivityAttempt={onLearningActivityAttempt}
+      />,
+    );
+
+    expect(singleValueContainer.querySelector('textarea')).toBeFalsy();
+    expect(singleValueContainer.querySelector('.quick-check-single-value')).toBeTruthy();
+    const answerInput = singleValueContainer.querySelector<HTMLInputElement>('.quick-check-single-value input');
+    act(() => {
+      setInputValue(answerInput!, '4.0');
+      Array.from(singleValueContainer.querySelectorAll('button')).find((button) => button.textContent === 'Check answer')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(singleValueContainer.textContent).toContain('Correct');
+
+    const orderedContainer = render(
+      <QuickChecksPanel
+        teachingSnippets={[{
+          ...snippet,
+          snippetId: 'p3-algebra-rearrangement-001',
+          quickCheck: {
+            id: 'p3-algebra-rearrangement-001-qc',
+            prompt: 'Order the moves.',
+            answer: 'Factor first.',
+            explanation: 'Look for a shared factor.',
+          },
+        }]}
+        region={algebraRegion!}
+      />,
+    );
+
+    expect(orderedContainer.querySelector('textarea')).toBeFalsy();
+    expect(orderedContainer.querySelectorAll('.quick-check-order-list li')).toHaveLength(3);
+    act(() => {
+      Array.from(orderedContainer.querySelectorAll('button')).find((button) => button.getAttribute('aria-label')?.includes('Spot the shared factor') && button.getAttribute('aria-label')?.includes('up'))!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(orderedContainer.querySelectorAll('button')).find((button) => button.getAttribute('aria-label')?.includes('Spot the shared factor') && button.getAttribute('aria-label')?.includes('up'))!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(orderedContainer.querySelectorAll('button')).find((button) => button.textContent === 'Check answer')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(orderedContainer.textContent).toContain('Correct');
+
+    const multiChoiceContainer = render(
+      <QuickChecksPanel
+        teachingSnippets={[{
+          ...snippet,
+          snippetId: 'p3-log-laws-001',
+          quickCheck: {
+            id: 'p3-log-laws-001-qc',
+            prompt: 'Which expressions are equivalent?',
+            answer: '$\\ln(5x)$',
+            explanation: 'Use product law.',
+          },
+        }]}
+        region={logRegion!}
+      />,
+    );
+
+    expect(multiChoiceContainer.querySelector('textarea')).toBeFalsy();
+    act(() => {
+      Array.from(multiChoiceContainer.querySelectorAll('button')).find((button) => button.textContent?.includes('\\ln(5x)'))!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(multiChoiceContainer.querySelectorAll('button')).find((button) => button.textContent?.includes('\\ln(x\\cdot5)'))!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      Array.from(multiChoiceContainer.querySelectorAll('button')).find((button) => button.textContent === 'Check answer')!
+        .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(multiChoiceContainer.textContent).toContain('Correct');
   });
 
   it('keeps the focused region Quick Checks page from dumping multiple checks open', () => {
@@ -1253,7 +1389,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
-    expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
+    expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')).toBeFalsy();
+    expect(quickCheckPage.querySelector('.quick-check-choice-grid')).toBeTruthy();
 
     const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
     expect(warmUpPage.textContent).toContain('Warm-up Practice');
@@ -1626,15 +1763,86 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(onNavigatePage).toHaveBeenCalledWith('quick-check');
   });
 
+  it('renders a topic-choice Field Guide page for every registered P3 region', () => {
+    for (const [regionId, topics] of Object.entries(FIELD_GUIDE_TOPICS_BY_REGION)) {
+      const container = renderRegionHubPage({
+        activePage: 'field-guide',
+        regionId,
+      });
+      const region = P3_ASTRAL_ACADEMY.regions.find((candidate) => candidate.id === regionId);
+
+      expect(region, regionId).toBeTruthy();
+      expect(container.textContent, regionId).toContain(`Field Guide / ${region!.name}`);
+      expect(container.textContent, regionId).toContain('Choose the Topic');
+      expect(container.querySelectorAll('.field-guide-topic-card'), regionId).toHaveLength(topics.length);
+
+      for (const topic of topics) {
+        const topicCard = container.querySelector<HTMLButtonElement>(`[data-topic-id="${topic.id}"]`);
+        expect(topicCard, `${regionId}/${topic.id}`).toBeTruthy();
+        expect(topicCard?.textContent, `${regionId}/${topic.id}`).toContain(topic.title);
+        expect(topicCard?.textContent, `${regionId}/${topic.id}`).toContain(topic.purpose);
+        expect(topicCard?.dataset.skillIds, `${regionId}/${topic.id}`).toBe(topic.skillIds.join(' '));
+      }
+    }
+  });
+
+  it('opens a representative topic lesson for every registered P3 region', () => {
+    for (const [regionId, topics] of Object.entries(FIELD_GUIDE_TOPICS_BY_REGION)) {
+      const topic = topics[0];
+      expect(topic, regionId).toBeTruthy();
+      const container = renderRegionHubPage({
+        activePage: 'field-guide',
+        regionId,
+      });
+      const topicCard = container.querySelector<HTMLButtonElement>(`[data-topic-id="${topic!.id}"]`);
+      expect(topicCard, `${regionId}/${topic!.id}`).toBeTruthy();
+
+      act(() => {
+        topicCard!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain('Current topic');
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain(topic!.title);
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain(topic!.examples[0]!.title);
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain('Visual pattern');
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain('Try one together');
+      expect(container.textContent, `${regionId}/${topic!.id}`).toContain('Key takeaway');
+
+      const backToTopics = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Back to Topics'));
+      expect(backToTopics, `${regionId}/${topic!.id}`).toBeTruthy();
+      act(() => {
+        backToTopics!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(container.textContent, regionId).toContain('Choose the Topic');
+    }
+  });
+
+  it('does not reintroduce internal canonical wording into student route copy', () => {
+    expect(Object.values(REGION_LEARNING_PAGE_DESCRIPTIONS).join(' ')).not.toMatch(/\bcanonical\b/i);
+
+    for (const regionId of Object.keys(FIELD_GUIDE_TOPICS_BY_REGION)) {
+      const container = renderRegionHubPage({
+        activePage: 'field-guide',
+        regionId,
+      });
+      expect(container.textContent, regionId).not.toMatch(/\bcanonical\b/i);
+    }
+  });
+
   it('shows a safe Field Guide empty state without creating reading progress', () => {
     const onCompleteFieldGuide = vi.fn();
-    const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
-    const container = renderRegionHubPage({
-      activePage: 'field-guide',
-      snippets: [],
-      onCompleteFieldGuide,
-      onNavigatePage,
-    });
+    const onBackToRegionHub = vi.fn();
+    const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove')!;
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(logRegion)}
+        fieldGuideCompleted={false}
+        theme={getRegionTheme(logRegion)}
+        teachingSnippets={[]}
+        onBackToRegionHub={onBackToRegionHub}
+        onCompleteFieldGuide={onCompleteFieldGuide}
+      />,
+    );
 
     expect(container.textContent).toContain('Field Guide content for this region is still being prepared.');
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
@@ -1646,7 +1854,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       back!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(onNavigatePage).toHaveBeenCalledWith('hub');
+    expect(onBackToRegionHub).toHaveBeenCalledTimes(1);
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
   });
 
@@ -1660,7 +1868,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Warm-ups for this region are being prepared.');
-    const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Region Hub');
+    const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Region Hub'));
     expect(back).toBeTruthy();
     act(() => {
       back!.dispatchEvent(new MouseEvent('click', { bubbles: true }));

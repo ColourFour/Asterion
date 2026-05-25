@@ -1,4 +1,4 @@
-import type { PaperFamily, RegionDefinition } from '../types';
+import type { PaperFamily, QuickCheckAnswerType, QuickCheckOption, QuickCheckTwoValueField, RegionDefinition } from '../types';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
@@ -22,6 +22,18 @@ export interface TeachingSnippetQuickCheck {
   difficultyBand?: string;
   estimatedTimeMinutes?: number;
   reviewStatus?: string;
+  answerType?: QuickCheckAnswerType;
+  expectedAnswer?: string | string[];
+  expectedOrder?: string[];
+  expectedChoices?: string[];
+  options?: QuickCheckOption[];
+  orderedCards?: QuickCheckOption[];
+  fields?: QuickCheckTwoValueField[];
+  displayPrefix?: string;
+  displaySuffix?: string;
+  tolerance?: number;
+  hint?: string;
+  workedFirstStep?: string;
 }
 
 export interface TeachingSnippetGuardianReadiness {
@@ -94,8 +106,54 @@ function stringArray(value: unknown): string[] {
   return Array.from(new Set(value.map(stringValue).filter((item): item is string => Boolean(item))));
 }
 
+function optionArray(value: unknown): QuickCheckOption[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    const record = asRecord(item);
+    const id = stringValue(record?.id);
+    const label = stringValue(record?.label);
+    return id && label ? [{ id, label }] : [];
+  });
+}
+
+function twoValueFieldArray(value: unknown): QuickCheckTwoValueField[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    const record = asRecord(item);
+    const id = stringValue(record?.id);
+    const label = stringValue(record?.label);
+    const expectedAnswer = stringValue(record?.expected_answer) ?? stringArray(record?.expected_answers);
+    if (!id || !label || (Array.isArray(expectedAnswer) && expectedAnswer.length === 0)) return [];
+    return [{
+      id,
+      label,
+      expectedAnswer,
+      displayPrefix: stringValue(record?.display_prefix),
+      displaySuffix: stringValue(record?.display_suffix),
+      tolerance: positiveNumber(record?.tolerance),
+    }];
+  });
+}
+
 function positiveNumber(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : undefined;
+}
+
+function answerTypeValue(value: unknown): QuickCheckAnswerType | undefined {
+  if (
+    value === 'single_value'
+    || value === 'ordered_cards'
+    || value === 'choice'
+    || value === 'multi_choice'
+    || value === 'two_value'
+  ) {
+    return value;
+  }
+  return undefined;
+}
+
+function expectedAnswerValue(record: Record<string, unknown>): string | string[] | undefined {
+  return stringValue(record.expected_answer) ?? stringArray(record.expected_answers);
 }
 
 function quickCheckValue(value: unknown): TeachingSnippetQuickCheck | undefined {
@@ -121,12 +179,32 @@ function quickCheckValue(value: unknown): TeachingSnippetQuickCheck | undefined 
     ['difficultyBand', stringValue(record.difficulty_band)],
     ['estimatedTimeMinutes', positiveNumber(record.estimated_time_minutes)],
     ['reviewStatus', stringValue(record.review_status)],
+    ['displayPrefix', stringValue(record.display_prefix)],
+    ['displaySuffix', stringValue(record.display_suffix)],
+    ['hint', stringValue(record.hint)],
+    ['workedFirstStep', stringValue(record.worked_first_step)],
   ];
   for (const [key, value] of optionalValues) {
     if (value !== undefined) {
       (quickCheck as Partial<Record<keyof TeachingSnippetQuickCheck, string | number>>)[key] = value;
     }
   }
+  const answerType = answerTypeValue(record.answer_type);
+  const expectedAnswer = expectedAnswerValue(record);
+  const expectedOrder = stringArray(record.expected_order);
+  const expectedChoices = stringArray(record.expected_choices);
+  const options = optionArray(record.options);
+  const orderedCards = optionArray(record.ordered_cards);
+  const fields = twoValueFieldArray(record.fields);
+  const tolerance = positiveNumber(record.tolerance);
+  if (answerType) quickCheck.answerType = answerType;
+  if (typeof expectedAnswer === 'string' || (Array.isArray(expectedAnswer) && expectedAnswer.length > 0)) quickCheck.expectedAnswer = expectedAnswer;
+  if (expectedOrder.length > 0) quickCheck.expectedOrder = expectedOrder;
+  if (expectedChoices.length > 0) quickCheck.expectedChoices = expectedChoices;
+  if (options.length > 0) quickCheck.options = options;
+  if (orderedCards.length > 0) quickCheck.orderedCards = orderedCards;
+  if (fields.length > 0) quickCheck.fields = fields;
+  if (tolerance !== undefined) quickCheck.tolerance = tolerance;
   return quickCheck;
 }
 

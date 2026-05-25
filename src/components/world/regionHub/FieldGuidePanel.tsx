@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpenCheck, CheckCircle2, ChevronRight } from 'lucide-react';
+import { getFieldGuideTopicsForRegion, type FieldGuideTopic } from '../../../data/fieldGuideTopics';
 import type { RegionFieldGuide } from '../../../data/regionFieldGuides';
 import { findVisualSupportSource } from '../../../data/visualSupportSources';
 import type { RegionTheme } from '../../../lib/regionThemes';
@@ -22,173 +23,6 @@ interface FieldGuidePanelProps {
 }
 
 type WorkedExampleStage = 'setup' | 'method' | 'answer';
-
-interface AlgebraFieldGuideExample {
-  title: string;
-  prompt: string;
-  workedLines: string[];
-  patternTitle: string;
-  patternRows: { from: string; move: string; to: string }[];
-  tryPrompt: string;
-  tryScaffold: string[];
-  takeaway: string[];
-  result: string;
-}
-
-interface AlgebraFieldGuideTopic {
-  id: string;
-  marker: string;
-  title: string;
-  purpose: string;
-  preview: string;
-  description: string;
-  examples: AlgebraFieldGuideExample[];
-}
-
-const ALGEBRA_FIELD_GUIDE_TOPICS: AlgebraFieldGuideTopic[] = [
-  {
-    id: 'polynomial-division',
-    marker: '/',
-    title: 'Polynomial Division',
-    purpose: 'Divide a polynomial by a linear factor and read the quotient and remainder.',
-    preview: '$$ \\frac{2x^3+3x^2-x+5}{x-2} $$',
-    description: 'Use long division one leading term at a time.',
-    examples: [
-      {
-        title: 'Divide by a linear factor',
-        prompt: 'Divide $2x^3+3x^2-x+5$ by $x-2$.',
-        workedLines: [
-          '$2x^3 \\div x = 2x^2$, so subtract $2x^3-4x^2$.',
-          'Bring down to get $7x^2-x+5$.',
-          '$7x^2 \\div x = 7x$, so subtract $7x^2-14x$.',
-          'Bring down to get $13x+5$.',
-          '$13x \\div x = 13$, so subtract $13x-26$.',
-        ],
-        patternTitle: 'Leading term / leading term',
-        patternRows: [
-          { from: '$2x^3$', move: '$\\div x$', to: '$2x^2$' },
-          { from: '$7x^2$', move: '$\\div x$', to: '$7x$' },
-          { from: '$13x$', move: '$\\div x$', to: '$13$' },
-        ],
-        tryPrompt: 'Divide $x^3-4x^2+x-2$ by $x-1$.',
-        tryScaffold: ['First quotient term', 'Subtract', 'Bring down', 'Remainder'],
-        takeaway: [
-          'Keep dividing the leading terms.',
-          'Subtract the full multiplied divisor.',
-          'Stop when the degree is lower than the divisor.',
-        ],
-        result: '$$ 2x^2+7x+13+\\frac{31}{x-2} $$',
-      },
-    ],
-  },
-  {
-    id: 'modulus-remainders',
-    marker: 'mod',
-    title: 'Modulus / Remainders',
-    purpose: 'Find a remainder quickly using substitution or modulus language.',
-    preview: '$$ 17\\bmod 5=2 $$',
-    description: 'Use the value that makes the divisor zero.',
-    examples: [
-      {
-        title: 'Use the remainder theorem',
-        prompt: 'For $f(x)=x^3-4x+3$, find the remainder when divided by $x-1$.',
-        workedLines: [
-          'The divisor is $x-1$, so use $x=1$.',
-          'Compute $f(1)=1^3-4(1)+3$.',
-          'Simplify: $1-4+3=0$.',
-          'The remainder is $0$, so $x-1$ is a factor.',
-        ],
-        patternTitle: 'Divisor tells the input',
-        patternRows: [
-          { from: '$x-a$', move: 'use', to: '$f(a)$' },
-          { from: '$x+2$', move: 'use', to: '$f(-2)$' },
-          { from: 'remainder $0$', move: 'means', to: 'factor' },
-        ],
-        tryPrompt: 'For $g(x)=2x^3+x-5$, find the remainder on division by $x-2$.',
-        tryScaffold: ['Choose input', 'Substitute', 'Simplify', 'State remainder'],
-        takeaway: [
-          'For $x-a$, substitute $a$.',
-          'A zero remainder means the divisor is a factor.',
-          'Use the sign from the root, not from the printed term.',
-        ],
-        result: '$$ 0 $$',
-      },
-    ],
-  },
-  {
-    id: 'partial-fractions',
-    marker: 'f',
-    title: 'Partial Fractions',
-    purpose: 'Break a rational expression into simpler fractions.',
-    preview: '$$ \\frac{2x+3}{(x-1)(x+2)} $$',
-    description: 'Choose the form from the denominator, then solve the constants.',
-    examples: [
-      {
-        title: 'Set up distinct linear factors',
-        prompt: 'Decompose $\\frac{5x+1}{(x-1)(x+2)}$.',
-        workedLines: [
-          'Use $\\frac{5x+1}{(x-1)(x+2)}=\\frac{A}{x-1}+\\frac{B}{x+2}$.',
-          'Clear denominators: $5x+1=A(x+2)+B(x-1)$.',
-          'Set $x=1$: $6=3A$, so $A=2$.',
-          'Set $x=-2$: $-9=-3B$, so $B=3$.',
-        ],
-        patternTitle: 'Denominator shape',
-        patternRows: [
-          { from: '$(x-a)(x-b)$', move: 'becomes', to: '$\\frac{A}{x-a}+\\frac{B}{x-b}$' },
-          { from: 'clear denominators', move: 'then', to: 'substitute roots' },
-          { from: 'one root', move: 'finds', to: 'one constant' },
-        ],
-        tryPrompt: 'Decompose $\\frac{3x+5}{(x+1)(x+2)}$.',
-        tryScaffold: ['Write form', 'Clear denominators', 'Use x = -1', 'Use x = -2'],
-        takeaway: [
-          'Let the denominator choose the partial-fraction form.',
-          'Clear denominators before substituting.',
-          'Roots of factors isolate constants cleanly.',
-        ],
-        result: '$$ \\frac{2}{x-1}+\\frac{3}{x+2} $$',
-      },
-    ],
-  },
-  {
-    id: 'binomial-expansions',
-    marker: '(x)^n',
-    title: 'Binomial Expansions',
-    purpose: 'Expand expressions using binomial coefficients and state validity when needed.',
-    preview: '$$ (x+2)^3 $$',
-    description: 'Build the first terms in order and keep the validity condition visible.',
-    examples: [
-      {
-        title: 'First three terms with validity',
-        prompt: 'Write the first three terms of $(1+2x)^{-1/2}$ and state the validity range.',
-        workedLines: [
-          'Use $(1+u)^n=1+nu+\\frac{n(n-1)}{2}u^2+\\cdots$.',
-          'Here $u=2x$ and $n=-\\frac12$.',
-          'The linear term is $-\\frac12(2x)=-x$.',
-          'The quadratic term is $\\frac{(-\\frac12)(-\\frac32)}{2}(2x)^2=\\frac32x^2$.',
-          'Validity comes from $|2x|<1$, so $|x|<\\frac12$.',
-        ],
-        patternTitle: 'Term builder',
-        patternRows: [
-          { from: '$1$', move: 'constant', to: '$1$' },
-          { from: '$nu$', move: 'linear', to: '$-x$' },
-          { from: '$\\frac{n(n-1)}{2}u^2$', move: 'quadratic', to: '$\\frac32x^2$' },
-        ],
-        tryPrompt: 'Find the first three terms of $(1+3x)^2$.',
-        tryScaffold: ['Identify u', 'Constant term', 'Linear term', 'Quadratic term'],
-        takeaway: [
-          'Substitute $u$ before simplifying terms.',
-          'Write terms in increasing powers of $x$.',
-          'For rational powers, carry the validity condition.',
-        ],
-        result: '$$ 1-x+\\frac32x^2,\\quad |x|<\\frac12 $$',
-      },
-    ],
-  },
-];
-
-function isAlgebraFieldGuideRegion(region?: RegionDefinition): boolean {
-  return region?.id === 'algebra-forge';
-}
 
 function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample }) {
   const [stage, setStage] = useState<WorkedExampleStage>('setup');
@@ -278,7 +112,7 @@ function FieldGuideTopicCard({
   topic,
   onSelect,
 }: {
-  topic: AlgebraFieldGuideTopic;
+  topic: FieldGuideTopic;
   onSelect: (topicId: string) => void;
 }) {
   return (
@@ -286,6 +120,7 @@ function FieldGuideTopicCard({
       type="button"
       className="field-guide-topic-card"
       data-topic-id={topic.id}
+      data-skill-ids={topic.skillIds.join(' ')}
       onClick={() => onSelect(topic.id)}
     >
       <span className="field-guide-topic-card-heading">
@@ -314,7 +149,7 @@ function FieldGuideTopicChoice({
   onBackToRegionHub,
 }: {
   regionName: string;
-  topics: AlgebraFieldGuideTopic[];
+  topics: FieldGuideTopic[];
   onSelectTopic: (topicId: string) => void;
   onBackToRegionHub?: () => void;
 }) {
@@ -354,7 +189,7 @@ function FieldGuideTopicLesson({
   onBackToTopics,
   onNext,
 }: {
-  topic: AlgebraFieldGuideTopic;
+  topic: FieldGuideTopic;
   topicIndex: number;
   topicCount: number;
   exampleIndex: number;
@@ -477,13 +312,14 @@ export function FieldGuidePanel({
   onContinueToQuickChecks,
 }: FieldGuidePanelProps) {
   const [activeSnippetIndex, setActiveSnippetIndex] = useState(0);
-  const [selectedAlgebraTopicId, setSelectedAlgebraTopicId] = useState<string | undefined>();
-  const [activeAlgebraExampleIndex, setActiveAlgebraExampleIndex] = useState(0);
+  const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>();
+  const [activeTopicExampleIndex, setActiveTopicExampleIndex] = useState(0);
   const snippetCount = teachingSnippets.length;
   const snippetSequenceKey = teachingSnippets.map((snippet) => snippet.snippetId).join('|');
-  const algebraTopics = isAlgebraFieldGuideRegion(region) ? ALGEBRA_FIELD_GUIDE_TOPICS : undefined;
-  const selectedAlgebraTopicIndex = algebraTopics?.findIndex((topic) => topic.id === selectedAlgebraTopicId) ?? -1;
-  const selectedAlgebraTopic = selectedAlgebraTopicIndex >= 0 ? algebraTopics?.[selectedAlgebraTopicIndex] : undefined;
+  const topicFlowTopics = getFieldGuideTopicsForRegion(region?.id);
+  const hasTopicFlow = topicFlowTopics.length > 0;
+  const selectedTopicIndex = topicFlowTopics.findIndex((topic) => topic.id === selectedTopicId);
+  const selectedTopic = selectedTopicIndex >= 0 ? topicFlowTopics[selectedTopicIndex] : undefined;
   const regionName = region?.name ?? theme.title;
   const safeActiveSnippetIndex = snippetCount ? Math.min(activeSnippetIndex, snippetCount - 1) : 0;
   const activeSnippet = snippetCount ? teachingSnippets[safeActiveSnippetIndex] : undefined;
@@ -509,8 +345,8 @@ export function FieldGuidePanel({
   }, [snippetSequenceKey]);
 
   useEffect(() => {
-    setSelectedAlgebraTopicId(undefined);
-    setActiveAlgebraExampleIndex(0);
+    setSelectedTopicId(undefined);
+    setActiveTopicExampleIndex(0);
   }, [region?.id]);
 
   function goToPreviousSnippet() {
@@ -526,56 +362,56 @@ export function FieldGuidePanel({
     onContinueToQuickChecks?.();
   }
 
-  function selectAlgebraTopic(topicId: string) {
-    setSelectedAlgebraTopicId(topicId);
-    setActiveAlgebraExampleIndex(0);
+  function selectTopic(topicId: string) {
+    setSelectedTopicId(topicId);
+    setActiveTopicExampleIndex(0);
   }
 
-  function goBackToAlgebraTopics() {
-    setSelectedAlgebraTopicId(undefined);
-    setActiveAlgebraExampleIndex(0);
+  function goBackToTopics() {
+    setSelectedTopicId(undefined);
+    setActiveTopicExampleIndex(0);
   }
 
-  function goToNextAlgebraStep() {
-    if (!algebraTopics || !selectedAlgebraTopic) return;
-    if (activeAlgebraExampleIndex < selectedAlgebraTopic.examples.length - 1) {
-      setActiveAlgebraExampleIndex(activeAlgebraExampleIndex + 1);
+  function goToNextTopicStep() {
+    if (!hasTopicFlow || !selectedTopic) return;
+    if (activeTopicExampleIndex < selectedTopic.examples.length - 1) {
+      setActiveTopicExampleIndex(activeTopicExampleIndex + 1);
       return;
     }
 
-    if (selectedAlgebraTopicIndex < algebraTopics.length - 1) {
-      const nextTopic = algebraTopics[selectedAlgebraTopicIndex + 1];
-      if (nextTopic) selectAlgebraTopic(nextTopic.id);
+    if (selectedTopicIndex < topicFlowTopics.length - 1) {
+      const nextTopic = topicFlowTopics[selectedTopicIndex + 1];
+      if (nextTopic) selectTopic(nextTopic.id);
       return;
     }
 
     continueToQuickChecks();
   }
 
-  if (algebraTopics) {
+  if (hasTopicFlow) {
     return (
       <RegionActionCard
-        eyebrow={selectedAlgebraTopic ? `Topic ${selectedAlgebraTopicIndex + 1} of ${algebraTopics.length}` : 'Field Guide'}
+        eyebrow={selectedTopic ? `Topic ${selectedTopicIndex + 1} of ${topicFlowTopics.length}` : 'Field Guide'}
         title={`Field Guide / ${regionName}`}
-        description={selectedAlgebraTopic ? `Examples first: ${selectedAlgebraTopic.title}.` : 'Choose a topic to learn.'}
+        description={selectedTopic ? `Examples first: ${selectedTopic.title}.` : 'Choose a topic to learn.'}
         icon={<BookOpenCheck size={22} />}
         stateIcon={fieldGuideCompleted ? <CheckCircle2 size={22} aria-label="Field Guide complete" /> : undefined}
         className="field-guide-card field-guide-topic-flow-card"
       >
-        {selectedAlgebraTopic ? (
+        {selectedTopic ? (
           <FieldGuideTopicLesson
-            topic={selectedAlgebraTopic}
-            topicIndex={selectedAlgebraTopicIndex}
-            topicCount={algebraTopics.length}
-            exampleIndex={activeAlgebraExampleIndex}
-            onBackToTopics={goBackToAlgebraTopics}
-            onNext={goToNextAlgebraStep}
+            topic={selectedTopic}
+            topicIndex={selectedTopicIndex}
+            topicCount={topicFlowTopics.length}
+            exampleIndex={activeTopicExampleIndex}
+            onBackToTopics={goBackToTopics}
+            onNext={goToNextTopicStep}
           />
         ) : (
           <FieldGuideTopicChoice
             regionName={regionName}
-            topics={algebraTopics}
-            onSelectTopic={selectAlgebraTopic}
+            topics={topicFlowTopics}
+            onSelectTopic={selectTopic}
             onBackToRegionHub={onBackToRegionHub}
           />
         )}

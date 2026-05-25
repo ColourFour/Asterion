@@ -649,6 +649,60 @@ export interface Attempt {
 export type LearningActivityType = 'quick_check' | 'warm_up';
 export type LearningActivityOutcome = 'got_it' | 'partial' | 'missed';
 
+export type QuickCheckAnswerType =
+  | 'single_value'
+  | 'ordered_cards'
+  | 'choice'
+  | 'multi_choice'
+  | 'two_value';
+
+export interface QuickCheckOption {
+  id: string;
+  label: string;
+}
+
+export interface QuickCheckTwoValueField {
+  id: string;
+  label: string;
+  expectedAnswer: string | string[];
+  displayPrefix?: string;
+  displaySuffix?: string;
+  tolerance?: number;
+}
+
+export interface QuickCheckContract {
+  prompt: string;
+  answerType: QuickCheckAnswerType;
+  expectedAnswer?: string | string[];
+  expectedOrder?: string[];
+  expectedChoices?: string[];
+  options?: QuickCheckOption[];
+  orderedCards?: QuickCheckOption[];
+  fields?: QuickCheckTwoValueField[];
+  displayPrefix?: string;
+  displaySuffix?: string;
+  tolerance?: number;
+  hint?: string;
+  workedFirstStep?: string;
+  explanation?: string;
+}
+
+export interface QuickCheckResponse {
+  value?: string;
+  values?: Record<string, string>;
+  selectedChoiceId?: string;
+  selectedChoiceIds?: string[];
+  orderedIds?: string[];
+}
+
+export type QuickCheckCheckStatus = 'empty' | 'correct' | 'incorrect';
+
+export interface QuickCheckCheckResult {
+  status: QuickCheckCheckStatus;
+  message: string;
+  hint?: string;
+}
+
 export interface LearningActivityAttempt {
   id: string;
   profileId?: string;

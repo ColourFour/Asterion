@@ -151,6 +151,7 @@ export function RegionHub({
         <RegionLearningNav
           activePage={activePage}
           onNavigatePage={onNavigatePage}
+          studentRegionAccess={studentRegionAccess}
         />
 
         <div className="region-page-shell region-page-field-guide">
@@ -200,6 +201,7 @@ export function RegionHub({
           <RegionLearningNav
             activePage={activePage}
             onNavigatePage={onNavigatePage}
+            studentRegionAccess={studentRegionAccess}
           />
 
           <div className={`region-page-shell region-page-${activePage}`}>
@@ -317,23 +319,41 @@ function FocusedRegionPageHeader({
 interface RegionLearningNavProps {
   activePage: RegionLearningPageId;
   onNavigatePage?: (page: RegionLearningPageId) => void;
+  studentRegionAccess?: StudentRegionAccess;
 }
 
-function RegionLearningNav({ activePage, onNavigatePage }: RegionLearningNavProps) {
+function isRegionLearningNavLocked(page: RegionLearningPageId, studentRegionAccess?: StudentRegionAccess): boolean {
+  if (page === 'hub' || page === 'field-guide') return false;
+  const activity = page === 'exam-training'
+    ? 'exam_practice'
+    : page === 'quick-check'
+      ? 'quick_check'
+      : page === 'warm-up'
+        ? 'warm_up'
+        : 'guardian';
+  return !canStudentUseRegionActivity(studentRegionAccess, activity);
+}
+
+function RegionLearningNav({ activePage, onNavigatePage, studentRegionAccess }: RegionLearningNavProps) {
   return (
     <nav className="region-learning-nav" aria-label="Region learning pages">
-      {REGION_LEARNING_PAGE_ORDER.map((page) => (
-        <button
-          type="button"
-          key={page}
-          className={activePage === page ? 'active' : ''}
-          aria-current={activePage === page ? 'page' : undefined}
-          onClick={() => onNavigatePage?.(page)}
-        >
-          <span>{REGION_LEARNING_PAGE_LABELS[page]}</span>
-          {page !== 'hub' ? <small>{studentLoopExplanations[page]}</small> : null}
-        </button>
-      ))}
+      {REGION_LEARNING_PAGE_ORDER.map((page) => {
+        const locked = isRegionLearningNavLocked(page, studentRegionAccess);
+        return (
+          <button
+            type="button"
+            key={page}
+            className={activePage === page ? 'active' : ''}
+            data-page-state={locked ? 'locked' : activePage === page ? 'active' : 'available'}
+            aria-current={activePage === page ? 'page' : undefined}
+            disabled={locked}
+            onClick={() => onNavigatePage?.(page)}
+          >
+            <span>{REGION_LEARNING_PAGE_LABELS[page]}</span>
+            {page !== 'hub' ? <small>{studentLoopExplanations[page]}</small> : <small>Return to region overview</small>}
+          </button>
+        );
+      })}
     </nav>
   );
 }

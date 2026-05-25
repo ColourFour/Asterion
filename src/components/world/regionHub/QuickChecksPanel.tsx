@@ -1,37 +1,11 @@
 import { useState } from 'react';
-import { CheckCircle2, Target } from 'lucide-react';
-import type { LearningActivityAttempt, LearningActivityOutcome, MistakeType, RegionDefinition } from '../../../types';
+import { ArrowDown, ArrowUp, CheckCircle2, CircleAlert, CircleCheck, Target } from 'lucide-react';
+import type { LearningActivityAttempt, QuickCheckCheckResult, QuickCheckContract, QuickCheckResponse, RegionDefinition } from '../../../types';
 import { createId } from '../../../lib/progressStore';
+import { checkQuickCheckAnswer, quickCheckContractFor, quickCheckResponseSummary } from '../../../lib/quickCheckAnswer';
 import type { TeachingSnippet, TeachingSnippetQuickCheck } from '../../../lib/teachingSnippets';
 import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
-
-const activityOutcomes: Array<{ value: LearningActivityOutcome; label: string }> = [
-  { value: 'got_it', label: 'Got it' },
-  { value: 'partial', label: 'Partial' },
-  { value: 'missed', label: 'Missed' },
-];
-
-const errorTypes: Array<{ value: Exclude<MistakeType, 'no_issue'>; label: string }> = [
-  { value: 'did_not_know_method', label: 'Did not know method' },
-  { value: 'algebra_error', label: 'Algebra error' },
-  { value: 'formula_issue', label: 'Formula or identity issue' },
-  { value: 'misread_question', label: 'Misread prompt' },
-  { value: 'slow_method', label: 'Slow method' },
-  { value: 'lucky_or_unsure', label: 'Lucky or unsure' },
-  { value: 'other', label: 'Other' },
-];
-
-function answerPlaceholderForText(...parts: Array<string | undefined>): string {
-  const text = parts.filter(Boolean).join(' ').toLowerCase();
-  if (/\bintegration|integral|integrate|substitution|parts\b/.test(text)) return 'Show the method line, e.g. u = x^2 + 1, du = 2x dx';
-  if (/\bcoordinate|point|intersection\b/.test(text)) return 'Give the result with notation, e.g. (2, -1), after checking all coordinates';
-  if (/\bvector|column vector\b/.test(text)) return 'Use vector notation and name the point or direction used';
-  if (/\binterval|inequal|range|domain\b/.test(text)) return 'State the condition clearly, e.g. -1 < x < 1';
-  if (/\bequation|line|tangent|normal|solve|root\b/.test(text)) return 'Include the variable and final form, e.g. x = 2 or y = 2x + 1';
-  if (/\bexact|sqrt|surd|fraction|log|ln\b/.test(text)) return 'Use exact form and any condition, e.g. ln(5x), x > 0';
-  return 'Write the key method line and final answer, e.g. dy/dx = 0, then x = 2';
-}
 
 interface QuickChecksPanelProps {
   teachingSnippets: TeachingSnippet[];
@@ -42,6 +16,200 @@ interface QuickChecksPanelProps {
   onContinueToWarmUp?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
+}
+
+function initialResponseFor(contract: QuickCheckContract): QuickCheckResponse {
+  if (contract.answerType === 'ordered_cards') {
+    return { orderedIds: contract.orderedCards?.map((item) => item.id) ?? [] };
+  }
+  if (contract.answerType === 'multi_choice') return { selectedChoiceIds: [] };
+  if (contract.answerType === 'two_value') return { values: {} };
+  return {};
+}
+
+function swapOrderedIds(ids: string[], fromIndex: number, toIndex: number): string[] {
+  if (toIndex < 0 || toIndex >= ids.length) return ids;
+  const next = ids.slice();
+  [next[fromIndex], next[toIndex]] = [next[toIndex], next[fromIndex]];
+  return next;
+}
+
+function toggleSelectedId(ids: string[] = [], id: string): string[] {
+  return ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id];
+}
+
+function learningOutcomeLabel(outcome: LearningActivityAttempt['outcome']): string {
+  if (outcome === 'got_it') return 'Got it';
+  if (outcome === 'partial') return 'Partial';
+  return 'Missed';
+}
+
+function QuickCheckHelp({
+  check,
+  contract,
+  linkedExample,
+}: {
+  check: TeachingSnippetQuickCheck;
+  contract: QuickCheckContract;
+  linkedExample?: { example: { prompt: string } };
+}) {
+  return (
+    <details className="quick-check-help">
+      <summary>Need help?</summary>
+      <div>
+        {check.topic ? (
+          <p><b>Field Guide topic:</b> <MathText text={check.topic.replace(/_/g, ' ')} /></p>
+        ) : null}
+        {linkedExample ? (
+          <p><b>Linked example:</b> <MathText text={linkedExample.example.prompt} /></p>
+        ) : null}
+        {contract.hint ? <p><b>Hint:</b> <MathText text={contract.hint} /></p> : null}
+        {contract.workedFirstStep ? <p><b>First step:</b> <MathText text={contract.workedFirstStep} /></p> : null}
+      </div>
+    </details>
+  );
+}
+
+function QuickCheckInput({
+  contract,
+  response,
+  setResponse,
+}: {
+  contract: QuickCheckContract;
+  response: QuickCheckResponse;
+  setResponse: (response: QuickCheckResponse) => void;
+}) {
+  if (contract.answerType === 'single_value') {
+    return (
+      <label className="quick-check-single-value">
+        <span><MathText text={contract.displayPrefix ?? 'answer ='} /></span>
+        <input
+          aria-label="Quick Check answer"
+          inputMode="text"
+          value={response.value ?? ''}
+          onChange={(event) => setResponse({ value: event.target.value })}
+        />
+        {contract.displaySuffix ? <span><MathText text={contract.displaySuffix} /></span> : null}
+      </label>
+    );
+  }
+
+  if (contract.answerType === 'two_value') {
+    return (
+      <div className="quick-check-two-values" role="group" aria-label="Quick Check answer fields">
+        {(contract.fields ?? []).map((field) => (
+          <label className="quick-check-single-value" key={field.id}>
+            <span><MathText text={field.displayPrefix ?? `${field.label} =`} /></span>
+            <input
+              aria-label={`${field.label} value`}
+              inputMode="text"
+              value={response.values?.[field.id] ?? ''}
+              onChange={(event) => setResponse({
+                values: {
+                  ...(response.values ?? {}),
+                  [field.id]: event.target.value,
+                },
+              })}
+            />
+            {field.displaySuffix ? <span><MathText text={field.displaySuffix} /></span> : null}
+          </label>
+        ))}
+      </div>
+    );
+  }
+
+  if (contract.answerType === 'ordered_cards') {
+    const orderedIds = response.orderedIds ?? [];
+    const cardsById = new Map((contract.orderedCards ?? []).map((card) => [card.id, card]));
+    return (
+      <ol className="quick-check-order-list" aria-label="Ordered answer cards">
+        {orderedIds.map((id, index) => {
+          const card = cardsById.get(id);
+          if (!card) return null;
+          return (
+            <li key={id}>
+              <span className="quick-check-order-index">{index + 1}</span>
+              <span className="quick-check-order-label"><MathText text={card.label} /></span>
+              <span className="quick-check-order-controls">
+                <button
+                  type="button"
+                  aria-label={`Move ${card.label} up`}
+                  disabled={index === 0}
+                  onClick={() => setResponse({ orderedIds: swapOrderedIds(orderedIds, index, index - 1) })}
+                >
+                  <ArrowUp size={16} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Move ${card.label} down`}
+                  disabled={index === orderedIds.length - 1}
+                  onClick={() => setResponse({ orderedIds: swapOrderedIds(orderedIds, index, index + 1) })}
+                >
+                  <ArrowDown size={16} aria-hidden="true" />
+                </button>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    );
+  }
+
+  if (contract.answerType === 'choice') {
+    return (
+      <div className="quick-check-choice-grid" role="group" aria-label="Choose one answer">
+        {(contract.options ?? []).map((option) => (
+          <button
+            type="button"
+            className={response.selectedChoiceId === option.id ? 'is-selected' : ''}
+            aria-pressed={response.selectedChoiceId === option.id}
+            key={option.id}
+            onClick={() => setResponse({ selectedChoiceId: option.id })}
+          >
+            <MathText text={option.label} />
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="quick-check-choice-grid" role="group" aria-label="Choose all correct answers">
+      {(contract.options ?? []).map((option) => {
+        const selectedIds = response.selectedChoiceIds ?? [];
+        const selected = selectedIds.includes(option.id);
+        return (
+          <button
+            type="button"
+            className={selected ? 'is-selected' : ''}
+            aria-pressed={selected}
+            key={option.id}
+            onClick={() => setResponse({ selectedChoiceIds: toggleSelectedId(selectedIds, option.id) })}
+          >
+            <span className="quick-check-checkbox" aria-hidden="true">
+              {selected ? <CircleCheck size={14} /> : null}
+            </span>
+            <MathText text={option.label} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function QuickCheckFeedback({ result }: { result: QuickCheckCheckResult }) {
+  const isCorrect = result.status === 'correct';
+  const isEmpty = result.status === 'empty';
+  return (
+    <div className={`quick-check-feedback is-${result.status}`} role="status" aria-live="polite">
+      {isCorrect ? <CircleCheck size={18} aria-hidden="true" /> : <CircleAlert size={18} aria-hidden="true" />}
+      <div>
+        <strong>{isCorrect ? 'Correct' : isEmpty ? 'Add an answer first' : 'Not yet'}</strong>
+        <p><MathText text={result.status === 'empty' ? result.message : result.message} /></p>
+        {!isCorrect && result.hint ? <small><MathText text={result.hint} /></small> : null}
+      </div>
+    </div>
+  );
 }
 
 interface QuickCheckCardProps {
@@ -78,25 +246,14 @@ function QuickCheckCard({
   onLearningActivityAttempt,
 }: QuickCheckCardProps) {
   const activityId = check.id ?? snippetId;
-  const [learnerResponse, setLearnerResponse] = useState('');
-  const [answerVisible, setAnswerVisible] = useState(false);
-  const [revealedEarly, setRevealedEarly] = useState(false);
-  const [outcome, setOutcome] = useState<LearningActivityOutcome>();
-  const [confidence, setConfidence] = useState(3);
-  const [errorType, setErrorType] = useState('');
+  const contract = quickCheckContractFor(check);
+  const [response, setResponse] = useState<QuickCheckResponse>(() => initialResponseFor(contract));
+  const [feedback, setFeedback] = useState<QuickCheckCheckResult>();
   const [saved, setSaved] = useState(false);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
-  const responseReady = learnerResponse.trim().length > 0;
-  const canSave = Boolean(answerVisible && outcome && !saved && onLearningActivityAttempt && region);
 
-  function reveal(early: boolean) {
-    setAnswerVisible(true);
-    setRevealedEarly(early);
-    if (early) setOutcome('missed');
-  }
-
-  function saveAttempt() {
-    if (!canSave || !outcome || !region || !onLearningActivityAttempt) return;
+  function saveCorrectAttempt(result: QuickCheckCheckResult) {
+    if (result.status !== 'correct' || saved || !region || !onLearningActivityAttempt) return;
     onLearningActivityAttempt({
       id: createId('learning_activity'),
       profileId,
@@ -107,25 +264,26 @@ function QuickCheckCard({
       sourceId: snippetId,
       topic: check.topic,
       skillTargetId: check.skillTargetId,
-      prompt: check.prompt,
-      learnerResponse: learnerResponse.trim(),
-      revealedEarly,
-      outcome,
-      confidence,
-      errorType: errorType ? errorType as MistakeType : undefined,
+      prompt: contract.prompt,
+      learnerResponse: quickCheckResponseSummary(contract, response),
+      revealedEarly: false,
+      outcome: 'got_it',
+      confidence: 5,
       createdAt: startedAt,
       completedAt: new Date().toISOString(),
     });
     setSaved(true);
   }
 
+  function checkAnswer() {
+    const result = checkQuickCheckAnswer(contract, response);
+    setFeedback(result);
+    saveCorrectAttempt(result);
+  }
+
   function tryAgain() {
-    setLearnerResponse('');
-    setAnswerVisible(false);
-    setRevealedEarly(false);
-    setOutcome(undefined);
-    setConfidence(3);
-    setErrorType('');
+    setResponse(initialResponseFor(contract));
+    setFeedback(undefined);
     setSaved(false);
     setStartedAt(new Date().toISOString());
   }
@@ -136,7 +294,7 @@ function QuickCheckCard({
         <strong>Quick check: {title}</strong>
         <small>
           Check {checkPosition} of {checkCount}
-          {previousAttempt ? ` · Last: ${activityOutcomes.find((item) => item.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}` : ''}
+          {previousAttempt ? ` · Last: ${learningOutcomeLabel(previousAttempt.outcome)}` : ''}
         </small>
       </header>
       <p><MathText text={check.prompt} /></p>
@@ -145,71 +303,22 @@ function QuickCheckCard({
           Linked example: <MathText text={linkedExample.example.prompt} />
         </small>
       ) : null}
-      <label className="activity-response-field">
-        Answer or method note
-        <textarea
-          value={learnerResponse}
-          onChange={(event) => setLearnerResponse(event.target.value)}
-          rows={3}
-          disabled={answerVisible}
-          placeholder={answerPlaceholderForText(check.topic, check.prompt, linkedExample?.example.prompt)}
-        />
-      </label>
-      {!answerVisible ? (
+      <div className="quick-check-interaction" data-answer-type={contract.answerType}>
+        <QuickCheckInput contract={contract} response={response} setResponse={(next) => {
+          setResponse(next);
+          setFeedback(undefined);
+          setSaved(false);
+        }} />
         <div className="activity-reveal-actions">
-          <button className="activity-primary-action" type="button" disabled={!responseReady} onClick={() => reveal(false)}>Check answer</button>
-          <details className="activity-escape-detail">
-            <summary>Need help?</summary>
-            <button className="activity-tertiary-action" type="button" onClick={() => reveal(true)}>Reveal anyway</button>
-          </details>
+          <button className="activity-primary-action" type="button" onClick={checkAnswer}>Check answer</button>
+          <QuickCheckHelp check={check} contract={contract} linkedExample={linkedExample} />
         </div>
-      ) : (
-        <div className="quick-check-answer">
-          <strong>{revealedEarly ? 'Model answer' : 'Feedback'}</strong>
-          {!revealedEarly ? <small>Compare your response with the model answer before choosing an outcome.</small> : null}
-          <p><MathText text={check.answer} /></p>
-          <small><MathText text={check.explanation} /></small>
-          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this check.</small> : null}
-        </div>
-      )}
-      {answerVisible ? (
-        <div className="activity-reflection-panel">
-          <fieldset>
-            <legend>How did it go?</legend>
-            <div className="activity-outcome-options">
-              {activityOutcomes.map((item) => (
-                <label key={item.value}>
-                  <input
-                    type="radio"
-                    name={`${activityId}-quick-check-outcome`}
-                    value={item.value}
-                    checked={outcome === item.value}
-                    onChange={() => setOutcome(item.value)}
-                  />
-                  <span>{item.label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <label>
-            Confidence
-            <select value={confidence} onChange={(event) => setConfidence(Number(event.target.value))}>
-              {[1, 2, 3, 4, 5].map((value) => <option value={value} key={value}>{value}</option>)}
-            </select>
-          </label>
-          <label>
-            Error type
-            <select value={errorType} onChange={(event) => setErrorType(event.target.value)}>
-              <option value="">None selected</option>
-              {errorTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}
-            </select>
-          </label>
-          <button className="activity-primary-action" type="button" disabled={!canSave} onClick={saveAttempt}>{saved ? 'Saved' : 'Save check'}</button>
-        </div>
-      ) : null}
-      {answerVisible && saved ? (
+      </div>
+      {feedback ? <QuickCheckFeedback result={feedback} /> : null}
+      {feedback?.status === 'correct' ? (
         <div className="quick-check-next-actions" aria-label="Quick check next action">
           <strong>Next action</strong>
+          {contract.explanation ? <p><MathText text={contract.explanation} /></p> : null}
           <div>
             <button type="button" onClick={tryAgain}>Try again</button>
             {hasNextCheck ? (
@@ -220,6 +329,7 @@ function QuickCheckCard({
               <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Practice</button>
             ) : null}
           </div>
+          {saved ? <small className="region-card-note">Quick Check saved locally as a support activity.</small> : null}
         </div>
       ) : null}
     </article>
