@@ -1,36 +1,38 @@
 # Asterion
 
-Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, Quick Checks, deterministic warm-up practice, and evidence-gated Guardian checks.
+Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, merged Skill Practice support, image-first Exam Training, and evidence-gated Guardian checks.
 
 The question image and mark-scheme image are the student-facing source of truth. For P3 curriculum behavior, the reviewed P3 skill map is the authority. OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are advisory metadata only; they must not be treated as curriculum truth.
 
 ## Current Status
 
-Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, region hubs, Field Guides, Quick Checks, generated warm-ups, image-first exam practice, Guardian checks, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
+Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, region hubs, Field Guides, Skill Practice, image-first Exam Training, Guardian checks, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
 
 The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
 
-The main student-release blockers are not the core P3 loop. They are release hardening: phone-readable canonical image viewing, production-build browser smoke verification, final teacher-facing scope decisions, clearer support/reset instructions for browser-local progress, and privacy/auth decisions before any hosted classroom authority. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
+The Field Guide / Skill Practice shell is stabilized enough to hand off to Exam Training work. The main next student-facing blocker is Exam Training clarity: question rationale, mastery target/evidence messaging, and post-attempt next steps. Guardian Challenge also needs later presentation and reward polish. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
 
 Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work, and optional roster-claim RPC plumbing. It is explicitly not hosted progress sync, not learner-response storage, and not the academic source of truth. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
 ## Documentation Map
 
-- [Architecture](docs/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
-- [Backend Contract](docs/backend-contract.md): boundaries for hosted classroom data and future storage.
-- [Supabase Phase 1](docs/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, diagnostic RPC, and opt-in read-only/claim plumbing. Supabase is not hosted progress sync or production classroom authority yet.
-- [Hosted Supabase Setup](docs/supabase-hosted-setup.md): SQL Editor execution order and Vite/Vercel browser-safe env mapping.
-- [Teacher Dashboard V1](docs/teacher-dashboard-v1.md): current gated dashboard scope, mock/read-only boundaries, and export contract.
-- [Admin Teacher Roster V1](docs/admin-teacher-roster-v1.md): admin roster and class-region access direction.
+- [Docs Index](docs/README.md): current docs organization and where new docs should go.
+- [Current State](docs/CURRENT_STATE.md): current handoff state before Exam Training work.
+- [Architecture](docs/architecture/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
+- [Backend Contract](docs/architecture/backend-contract.md): boundaries for hosted classroom data and future storage.
+- [Supabase Phase 1](docs/classroom/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, diagnostic RPC, and opt-in read-only/claim plumbing. Supabase is not hosted progress sync or production classroom authority yet.
+- [Hosted Supabase Setup](docs/classroom/supabase-hosted-setup.md): SQL Editor execution order and Vite/Vercel browser-safe env mapping.
+- [Teacher Dashboard V1](docs/classroom/teacher-dashboard-v1.md): current gated dashboard scope, mock/read-only boundaries, and export contract.
+- [Admin Teacher Roster V1](docs/classroom/admin-teacher-roster-v1.md): admin roster and class-region access direction.
 - [Roadmap](docs/ROADMAP.md): product direction and longer-term boundaries.
-- [Project Review](docs/PROJECT_REVIEW.md): current review summary, strengths, weak spots, changes made, and remaining priorities.
-- [Deployment Readiness](docs/deployment-readiness.md): static deployment target, route behavior, payload findings, repo-cleanliness rules, and CSS split plan.
-- [Live Classroom Pilot Final Audit](docs/LIVE_CLASSROOM_PILOT_FINAL_AUDIT_2026_05_21.md): current live-classroom readiness verdict, launch checklist, and rollback conditions.
-- [Docs Review](docs/DOCS_REVIEW_2026_05_21.md): active documentation inventory, archived categories, and deletion candidates.
-- [Region Learning Loop Roadmap](docs/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
-- [P3 Curriculum Alignment Roadmap](docs/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
-- [Content Lab Architecture](docs/content-lab-architecture.md): repo-local teaching-content pipeline.
-- [Phase 2 Content Lab Gold Skill Packs](docs/phase-2-content-lab-gold-skill-packs.md): P3-only Gold Skill Pack Depth Pass for real-student readiness.
+- [Project Review](docs/audits/PROJECT_REVIEW.md): dated review summary, strengths, weak spots, changes made, and remaining priorities.
+- [Deployment Readiness](docs/launch/deployment-readiness.md): static deployment target, route behavior, payload findings, repo-cleanliness rules, and CSS split plan.
+- [Live Classroom Pilot Final Audit](docs/classroom/LIVE_CLASSROOM_PILOT_FINAL_AUDIT_2026_05_21.md): current live-classroom readiness verdict, launch checklist, and rollback conditions.
+- [Docs Review](docs/audits/DOCS_REVIEW_2026_05_21.md): active documentation inventory, archived categories, and deletion candidates.
+- [Region Learning Loop Roadmap](docs/student-loop/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
+- [P3 Curriculum Alignment Roadmap](docs/curriculum/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
+- [Content Lab Architecture](docs/content/content-lab-architecture.md): repo-local teaching-content pipeline.
+- [Phase 2 Content Lab Gold Skill Packs](docs/content/phase-2-content-lab-gold-skill-packs.md): P3-only Gold Skill Pack Depth Pass for real-student readiness.
 - [Cleanup Archive](docs/archive/cleanup-2026-05-19/README.md): historical May 2026 snapshots and superseded planning notes retained for continuity.
 - [Docs Review Archive](docs/archive/docs-review-2026-05-21/README.md): dated audits, reports, handoffs, smoke artifacts, and superseded review notes moved out of the active docs root.
 
@@ -94,25 +96,24 @@ All nine P3 regions are active when matching trainable questions exist. The map 
 
 **Region Learning Loop v1** turns each P3 region into a small academy journey instead of only a clickable topic island.
 
-The intended loop is:
+The current student-facing loop is:
 
 ```text
-Understand the idea -> try a small check -> practice safely -> face the Guardian
+Field Guide -> Skill Practice -> Exam Training -> Guardian Challenge
 ```
 
 - Field Guide: reviewed compact teaching snippets with student goals, explanations, prerequisites, micro-steps, common mistakes, and Guardian readiness notes.
-- Quick Checks: one-micro-skill checks with clear answer and short explanation.
-- Warm-up Practice: deterministic generated practice from reviewed repo-side generators. These are small original supports, not exam clones.
-- Training Grounds: the current image-first practice flow, labeled as warm-up, core practice, weak-area review, or challenge with a short local explanation.
-- Region Guardian: an evidence-gated mastery check selected from clean, mastery-eligible P3 canonical questions in the same region.
+- Skill Practice: one merged support mode that reads as Start simple, Build the method, then Ready for exam practice. Internal `quick_check` and `warm_up` activity records remain preserved.
+- Exam Training: canonical image-first practice using question and mark-scheme images as the student-facing source of truth.
+- Guardian Challenge: an evidence-gated mastery check selected from clean, mastery-eligible P3 canonical questions in the same region.
 
 Field Guide completion and guardian clear state are stored locally through the progress adapter. Field Guide completion does not award mastery, XP, avatar rewards, or restored-region state by itself. Region clearing and reward placeholders require saved attempts, marks, mark-scheme availability, and guardian evidence.
 
-The current implementation exposes the region hub for all active P3 regions. Every active region has reviewed Field Guide content and at least one Quick Check. Generated warm-up practice currently covers Algebra Vault, Logarithm Observatory, Trigonometry Spire, and partial-fractions support that also appears in Integral Terraces.
+The current implementation exposes the region hub for all active P3 regions. Every active region has reviewed Field Guide content and Skill Practice support. Legacy `quick-check` and `warm-up` route aliases remain compatibility-only aliases into Skill Practice.
 
 Class Hall / Academy Commons v0.1 is a local-only avatar showcase for the current demo build. It is separate from Content Lab Worked Examples v1 and does not affect teaching-content publishing gates, mastery, or academic attempt records.
 
-See `docs/region-learning-loop-roadmap.md` for current state and remaining roadmap.
+See `docs/student-loop/region-learning-loop-roadmap.md` for current state and remaining roadmap.
 
 ## Content Lab
 
@@ -193,7 +194,7 @@ python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 
 `public/assets/exam-bank-data/question_bank.json` must remain unchanged by Content Lab work. Legacy `public/data/question_bank*.json` files are not the active exam-bank runtime truth and must not be treated as curriculum authority.
 
-Phase 1 enforcement is intentionally narrow: every method, concept, and mistake-repair snippet in Logarithm Observatory, Algebra Vault, and Trigonometry Spire must have at least one reviewed, traceable worked example, and first-batch Quick Checks and warm-ups must resolve their `example_model_id` links. [Phase 2](docs/phase-2-content-lab-gold-skill-packs.md) expands the same rule to all P3 regions only after the first batch passes.
+Phase 1 enforcement is intentionally narrow: every method, concept, and mistake-repair snippet in Logarithm Observatory, Algebra Vault, and Trigonometry Spire must have at least one reviewed, traceable worked example, and first-batch Quick Checks and warm-ups must resolve their `example_model_id` links. [Phase 2](docs/content/phase-2-content-lab-gold-skill-packs.md) expands the same rule to all P3 regions only after the first batch passes.
 
 ## System Boundaries
 
@@ -611,7 +612,7 @@ Current behavior:
 - `VITE_ASTERION_STUDENT_CLAIM_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
 - Supabase service-role keys must never be exposed to the Vite client.
 
-See `docs/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/hosted-storage-design.md` remains the hosted storage design draft, and `docs/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
+See `docs/classroom/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/classroom/hosted-storage-design.md` remains the hosted storage design draft, and `docs/classroom/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
 
 ## GitHub Pages Deployment
 
@@ -625,7 +626,7 @@ Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSO
 
 Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled`, `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`, or `VITE_ASTERION_APP_PROFILE=classroom-pilot`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate. Generic dashboard aliases (`#/dashboard`, `/dashboard`, and nested dashboard paths) always show the disabled-dashboard quarantine state so they cannot be mistaken for a production classroom dashboard.
 
-See `docs/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
+See `docs/launch/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 
 ## Current Limitations
 
