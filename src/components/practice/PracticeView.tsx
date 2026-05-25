@@ -306,8 +306,7 @@ export function PracticeView({
         <nav className="practice-region-tools" aria-label="Region tools">
           <span>Region tools</span>
           <button type="button" onClick={() => onOpenRegionTool('field-guide')}>Field Guide</button>
-          <button type="button" onClick={() => onOpenRegionTool('quick-check')}>Quick Check</button>
-          <button type="button" onClick={() => onOpenRegionTool('warm-up')}>Warm-Up</button>
+          <button type="button" onClick={() => onOpenRegionTool('skill-practice')}>Skill Practice</button>
           <button type="button" onClick={() => onOpenRegionTool('exam-training')}>Exam Training</button>
         </nav>
       ) : null}

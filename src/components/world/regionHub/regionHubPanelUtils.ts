@@ -18,11 +18,11 @@ export function questionSummary(question: NormalizedQuestion): string {
 export function phaseStatus(
   summary: RegionLearningSummary,
   fieldGuideCompleted: boolean,
-  phase: 'guide' | 'quick_checks' | 'warm_up' | 'training' | 'guardian',
+  phase: 'guide' | 'skill_practice' | 'quick_checks' | 'warm_up' | 'training' | 'guardian',
 ): 'complete' | 'active' | 'ready' | 'locked' {
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   if (phase === 'guide') return fieldGuideCompleted ? 'complete' : 'active';
-  if (phase === 'quick_checks' || phase === 'warm_up') {
+  if (phase === 'skill_practice' || phase === 'quick_checks' || phase === 'warm_up') {
     if (guardianCleared || summary.guardianEligibility.eligible || summary.state === 'training_in_progress' || summary.state === 'guardian_attempted') {
       return 'complete';
     }

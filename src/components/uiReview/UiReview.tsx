@@ -169,17 +169,10 @@ const reviewSections: ReviewSection[] = [
         badges: ['Live route'],
       },
       {
-        title: 'Quick Check',
-        description: 'Live region Quick Check route.',
-        route: regionReviewRoute('Algebra Vault', 'quick-check'),
-        href: regionReviewHref('Algebra Vault', 'quick-check'),
-        badges: ['Live route'],
-      },
-      {
-        title: 'Warm-Up',
-        description: 'Live region Warm-Up route.',
-        route: regionReviewRoute('Algebra Vault', 'warm-up'),
-        href: regionReviewHref('Algebra Vault', 'warm-up'),
+        title: 'Skill Practice',
+        description: 'Live merged region Skill Practice route.',
+        route: regionReviewRoute('Algebra Vault', 'skill-practice'),
+        href: regionReviewHref('Algebra Vault', 'skill-practice'),
         badges: ['Live route'],
       },
       {

@@ -11,6 +11,7 @@ import {
   normalizeTeachingSnippetsData,
   reviewedTeachingSnippets,
 } from '../src/lib/teachingSnippets';
+import { quickCheckContractFor } from '../src/lib/quickCheckAnswer';
 import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
 
 const publicSnippetData = JSON.parse(readFileSync('public/data/teaching_snippets.json', 'utf8'));
@@ -333,5 +334,24 @@ describe('teaching snippets runtime loader', () => {
     expect(quickChecks.every(({ quickCheck }) => quickCheck.skillTargetId?.startsWith('p3_'))).toBe(true);
     expect(JSON.stringify(publicSnippetData)).not.toContain('momentum_impulse');
     expect(JSON.stringify(publicSnippetData)).not.toContain('p4-');
+  });
+
+  it('keeps visible public Quick Checks on mathematical answer contracts', () => {
+    const snippets = normalizeTeachingSnippetsData(publicSnippetData);
+    const fallbackLabels = [
+      'Use the linked Field Guide move',
+      'Not enough information',
+      'Use a different move',
+    ];
+    const contracts = snippets.map((snippet) => quickCheckContractFor(snippet.quickCheck!));
+    const genericFallbacks = contracts.filter((contract) => (
+      contract.answerType === 'choice'
+      && fallbackLabels.every((label) => contract.options?.some((option) => option.label === label))
+    ));
+
+    expect(contracts.length).toBeGreaterThanOrEqual(40);
+    expect(genericFallbacks).toEqual([]);
+    expect(contracts.filter((contract) => contract.answerType === 'single_value').length).toBeGreaterThanOrEqual(8);
+    expect(contracts.filter((contract) => contract.answerType === 'choice' || contract.answerType === 'multi_choice').length).toBeGreaterThanOrEqual(20);
   });
 });

@@ -53,6 +53,6 @@ export function isStudentRegionLocked(access: StudentRegionAccess | undefined): 
 
 export function lockedRegionMessage(access: StudentRegionAccess | undefined): string {
   return access?.classroomControlled
-    ? 'Your teacher has opened the Field Guide for this region. Quick Check, Warm-Up, Exam Practice, Guardian, and mastery progress are locked for now.'
+    ? 'Your teacher has opened the Field Guide for this region. Skill Practice, Exam Practice, Guardian, and mastery progress are locked for now.'
     : 'This region is open for local practice.';
 }

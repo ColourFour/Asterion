@@ -48,6 +48,8 @@ interface WarmUpPracticePanelProps {
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
+  fieldGuideTopicTitle?: string;
+  topicMatchFallbackReason?: string;
   onContinueToFieldGuide?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
@@ -93,7 +95,7 @@ function WarmUpPracticeCard({
   const solutionId = `warm-up-solution-${item.practiceId}`;
   const feedbackId = `warm-up-feedback-${item.practiceId}`;
   const familyParts = item.generatorFamily.split('.');
-  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Warm-up');
+  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Guided step');
   const responseReady = learnerResponse.trim().length > 0;
   const canComplete = Boolean(solutionVisible && outcome && !completed);
   const visualSupport = solutionVisible ? findVisualSupportSource({
@@ -224,7 +226,7 @@ function WarmUpPracticeCard({
             ))}
           </ol>
           {visualSupport ? <VisualSupportCard source={visualSupport} /> : null}
-          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this warm-up.</small> : null}
+          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this guided step.</small> : null}
         </div>
       )}
       {answerFeedback && !solutionVisible ? (
@@ -266,12 +268,12 @@ function WarmUpPracticeCard({
             </select>
           </label>
           <button type="button" disabled={!canComplete} onClick={completeAttempt}>
-            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save warm-up' : 'Mark complete'}
+            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save guided step' : 'Mark complete'}
           </button>
           {completed ? (
-            <div className="warm-up-next-actions" aria-label="Warm-up next action">
+            <div className="warm-up-next-actions" aria-label="Guided practice next action">
               {!isLastItem ? (
-                <button type="button" onClick={onNextItem}>Next warm-up</button>
+                <button type="button" onClick={onNextItem}>Next guided step</button>
               ) : onContinueToExamPractice ? (
                 <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button>
               ) : (
@@ -287,7 +289,7 @@ function WarmUpPracticeCard({
 
 function humanReadableLabel(value: string): string {
   const words = value.replace(/[_-]+/g, ' ').trim();
-  if (!words) return 'Warm-up';
+  if (!words) return 'Guided Step';
   return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -297,6 +299,8 @@ export function WarmUpPracticePanel({
   profileId,
   activityAttempts = [],
   maxInitialItems = 3,
+  fieldGuideTopicTitle,
+  topicMatchFallbackReason,
   onContinueToFieldGuide,
   onContinueToExamPractice,
   onLearningActivityAttempt,
@@ -320,8 +324,8 @@ export function WarmUpPracticePanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 3"
-      title="Warm-up Practice"
+      eyebrow="Build the method"
+      title="Guided Practice"
       description="A small answer-first set with worked solutions."
       icon={<Sparkles size={22} />}
       className="warm-up-card"
@@ -329,7 +333,13 @@ export function WarmUpPracticePanel({
       {visiblePractice.length ? (
         <>
           <p className="section-helper warm-up-set-note">Work through one prompt at a time. Write your answer first, then reveal the worked route and compare it yourself.</p>
-          <ol className="warm-up-sequence-list" aria-label="Warm-up sequence">
+          {fieldGuideTopicTitle && !topicMatchFallbackReason ? (
+            <p className="section-helper warm-up-set-note">Starting with reviewed guided practice for {fieldGuideTopicTitle}.</p>
+          ) : null}
+          {topicMatchFallbackReason ? (
+            <p className="section-helper warm-up-set-note" role="status">{topicMatchFallbackReason}</p>
+          ) : null}
+          <ol className="warm-up-sequence-list" aria-label="Guided practice sequence">
             {visiblePractice.map((item, index) => (
               <li
                 className={index === activeIndex ? 'is-active' : undefined}
@@ -362,7 +372,7 @@ export function WarmUpPracticePanel({
           </div>
           {visibleCompletedCount >= visiblePractice.length ? (
             <div className="warm-up-complete-panel">
-              <strong>Warm-up sequence complete</strong>
+              <strong>Guided sequence complete</strong>
               <p>Use exam practice next, or return to the Field Guide for a quick method review.</p>
               <div className="warm-up-next-actions">
                 {onContinueToExamPractice ? <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Training</button> : null}
@@ -370,10 +380,10 @@ export function WarmUpPracticePanel({
               </div>
             </div>
           ) : null}
-          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed warm-up{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
+          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed guided item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">Warm-ups for this region are being prepared. Start with the Field Guide or jump into Exam Training.</p>
+        <p className="region-empty-state">Guided practice for this region is being prepared. Start with the Field Guide or jump into Exam Training.</p>
       )}
     </RegionActionCard>
   );

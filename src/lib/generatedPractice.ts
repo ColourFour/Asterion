@@ -1,4 +1,5 @@
 import type { PaperFamily, RegionDefinition } from '../types';
+import type { FieldGuideTopic } from '../data/fieldGuideTopics';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { isValidP3RegionId, isValidP3SkillId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
@@ -40,6 +41,11 @@ export interface GeneratedPracticeItem {
 const GENERATED_PRACTICE_PATH = './data/generated_practice_bank.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
 const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'guardian_prep']);
+const SEQUENCE_ROLE_ORDER: Record<string, number> = {
+  first_step: 0,
+  complete_step: 1,
+  guardian_prep: 2,
+};
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
@@ -129,6 +135,59 @@ function selectedPractice(
     .filter((item) => matchesRegion(item, selection.regionId))
     .sort((a, b) => a.practiceId.localeCompare(b.practiceId));
   return typeof selection.limit === 'number' ? selected.slice(0, selection.limit) : selected;
+}
+
+function sequenceOrder(item: GeneratedPracticeItem): number {
+  return SEQUENCE_ROLE_ORDER[item.sequenceRole ?? ''] ?? 99;
+}
+
+function practiceTopicMatchKeys(item: GeneratedPracticeItem): string[] {
+  return [
+    item.generatorFamily,
+    item.skillTargetId,
+    item.sourceSnippetId,
+    item.exampleModelId,
+    item.topic,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map(normalizeLabel);
+}
+
+function fieldGuideTopicMatchesPractice(item: GeneratedPracticeItem, topic: FieldGuideTopic): boolean {
+  const acceptedSkillIds = new Set(topic.skillIds.map(normalizeLabel));
+  return practiceTopicMatchKeys(item).some((value) => acceptedSkillIds.has(value));
+}
+
+export interface TopicMatchedGeneratedPractice {
+  items: GeneratedPracticeItem[];
+  exactMatchCount: number;
+  fallbackReason?: string;
+}
+
+export function orderGeneratedPracticeForFieldGuideTopic(
+  items: GeneratedPracticeItem[],
+  topic?: FieldGuideTopic,
+): TopicMatchedGeneratedPractice {
+  // Guided practice is support-only. Keep the runtime review gate here as a backstop
+  // so topic ordering cannot accidentally surface unreviewed generated content.
+  const ordered = reviewedGeneratedPractice(items).sort((a, b) => (
+    sequenceOrder(a) - sequenceOrder(b)
+    || a.practiceId.localeCompare(b.practiceId)
+  ));
+  if (!topic) return { items: ordered, exactMatchCount: 0 };
+
+  const exact: GeneratedPracticeItem[] = [];
+  const nearby: GeneratedPracticeItem[] = [];
+  for (const item of ordered) {
+    (fieldGuideTopicMatchesPractice(item, topic) ? exact : nearby).push(item);
+  }
+  if (exact.length > 0) return { items: [...exact, ...nearby], exactMatchCount: exact.length };
+
+  return {
+    items: ordered,
+    exactMatchCount: 0,
+    fallbackReason: `We do not have a reviewed guided item for ${topic.title} yet, so this starts with a nearby skill from this region.`,
+  };
 }
 
 export function normalizeGeneratedPracticeData(data: unknown): GeneratedPracticeItem[] {

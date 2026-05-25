@@ -5,6 +5,13 @@ interface VisualSupportCardProps {
   source: VisualSupportSource;
 }
 
+function visualSupportKindLabel(source: VisualSupportSource): string {
+  if (source.visualKind === 'mini_diagram') return 'Mini-diagram';
+  if (source.visualKind === 'method_pattern') return 'Method pattern';
+  if (source.visualKind === 'needs_visual') return 'Needs visual';
+  return 'No visual';
+}
+
 export function VisualSupportCard({ source }: VisualSupportCardProps) {
   const [imageUnavailable, setImageUnavailable] = useState(false);
   const hasImage = Boolean(source.imageUrl.trim()) && !imageUnavailable;
@@ -13,6 +20,7 @@ export function VisualSupportCard({ source }: VisualSupportCardProps) {
   return (
     <aside className="visual-support-card" aria-label={`${source.title} visual support`}>
       <div className="visual-support-copy">
+        <span className="visual-support-kind">{visualSupportKindLabel(source)}</span>
         <strong>{source.title}</strong>
         <p>{source.purpose}</p>
       </div>

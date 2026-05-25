@@ -16,7 +16,7 @@ import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
 export const TRAINING_SESSION_LABELS: Record<TrainingSessionIntent, string> = {
-  warm_up: 'Warm-up',
+  warm_up: 'Guided review',
   core_practice: 'Core practice',
   weak_area_review: 'Weak-area review',
   challenge: 'Challenge',
@@ -118,12 +118,12 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const earlyReveals = sorted.filter((attempt) => attempt.revealedEarly).length;
   const latestOutcome = latest?.outcome;
   const nextActionHint = sorted.length === 0
-    ? 'Try a Quick Check or warm-up before moving into exam questions.'
+    ? 'Try Skill Practice before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Quick Check and warm-up records look ready. Move into Exam Training next.'
+      ? 'Skill Practice records look ready. Move into Exam Training next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
-        ? 'A recent support activity was missed or revealed early. Try another warm-up before exam training.'
-        : 'Support activity records show partial readiness. Try one more warm-up or move carefully into training.';
+        ? 'A recent support activity was missed or revealed early. Try guided Skill Practice before exam training.'
+        : 'Support activity records show partial readiness. Try one more guided practice item or move carefully into training.';
 
   return {
     attempts: sorted.length,
@@ -276,7 +276,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'warm_up',
         label: TRAINING_SESSION_LABELS.warm_up,
-        reason: learningActivityReadiness.nextActionHint ?? 'Warm-up is selected because support activity records show a recent miss or early reveal.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Guided review is selected because support activity records show a recent miss or early reveal.',
       };
     }
 
@@ -284,8 +284,8 @@ export function recommendTrainingSession(input: {
       intent: 'warm_up',
       label: TRAINING_SESSION_LABELS.warm_up,
       reason: fieldGuideCompleted
-        ? 'Warm-up is selected because you have completed the guide and have no saved attempts in this region yet.'
-        : 'Warm-up is available, but the Field Guide is still the recommended first step.',
+        ? 'Guided review is selected because you have completed the guide and have no saved attempts in this region yet.'
+        : 'Guided review is available, but the Field Guide is still the recommended first step.',
     };
   }
 

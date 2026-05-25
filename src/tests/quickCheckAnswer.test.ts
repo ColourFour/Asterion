@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { checkQuickCheckAnswer, quickCheckContractFor } from '../lib/quickCheckAnswer';
-import type { QuickCheckContract } from '../types';
+import type { QuickCheckContract, QuickCheckResponse } from '../types';
 
 describe('checkQuickCheckAnswer', () => {
   it('checks single values with safe numeric normalization', () => {
@@ -86,5 +86,88 @@ describe('checkQuickCheckAnswer', () => {
       status: 'incorrect',
       hint: 'Find both coordinates.',
     });
+  });
+
+  it('uses mathematical contracts for representative visible P3 checks', () => {
+    const cases = [
+      {
+        id: 'p3-binomial-term-001-qc',
+        correct: { value: '-6' },
+        incorrect: { value: '6' },
+      },
+      {
+        id: 'p3-complex-form-001-qc',
+        correct: { value: '5' },
+        incorrect: { value: '7' },
+      },
+      {
+        id: 'p3-integration-definite-area-001-qc',
+        correct: { value: '8' },
+        incorrect: { value: '4' },
+      },
+      {
+        id: 'p3-trig-r-form-source-001-qc',
+        correct: { value: '10' },
+        incorrect: { value: '14' },
+      },
+    ] as const;
+
+    for (const item of cases) {
+      const contract = quickCheckContractFor({
+        id: item.id,
+        prompt: 'Prompt.',
+        answer: 'Answer.',
+        explanation: 'Explanation.',
+      });
+      expect(contract.answerType, item.id).toBe('single_value');
+      expect(checkQuickCheckAnswer(contract, item.correct).status, item.id).toBe('correct');
+      expect(checkQuickCheckAnswer(contract, item.incorrect).status, item.id).toBe('incorrect');
+    }
+  });
+
+  it('uses constrained mathematical choices where broad symbolic parsing would be risky', () => {
+    const contractCases: Array<{
+      id: string;
+      answerType: QuickCheckContract['answerType'];
+      correct: QuickCheckResponse;
+      incorrect: QuickCheckResponse;
+    }> = [
+      {
+        id: 'p3-trig-interval-001-qc',
+        answerType: 'multi_choice',
+        correct: { selectedChoiceIds: ['150', '30'] },
+        incorrect: { selectedChoiceIds: ['30'] },
+      },
+      {
+        id: 'p3-parametric-derivative-001-qc',
+        answerType: 'choice',
+        correct: { selectedChoiceId: 'correct' },
+        incorrect: { selectedChoiceId: 'inverse' },
+      },
+      {
+        id: 'p3-differentiation-implicit-log-exp-001-qc',
+        answerType: 'choice',
+        correct: { selectedChoiceId: 'correct' },
+        incorrect: { selectedChoiceId: 'missing-chain' },
+      },
+      {
+        id: 'p3-vectors-lines-001-qc',
+        answerType: 'choice',
+        correct: { selectedChoiceId: 'point' },
+        incorrect: { selectedChoiceId: 'direction' },
+      },
+    ];
+
+    for (const item of contractCases) {
+      const contract = quickCheckContractFor({
+        id: item.id,
+        prompt: 'Prompt.',
+        answer: 'Answer.',
+        explanation: 'Explanation.',
+      });
+      expect(contract.answerType, item.id).toBe(item.answerType);
+      expect(checkQuickCheckAnswer(contract, item.correct).status, item.id).toBe('correct');
+      expect(checkQuickCheckAnswer(contract, item.incorrect).status, item.id).toBe('incorrect');
+    }
   });
 });

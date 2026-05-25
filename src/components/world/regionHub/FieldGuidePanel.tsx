@@ -19,7 +19,8 @@ interface FieldGuidePanelProps {
   maxInitialSnippets?: number;
   onCompleteFieldGuide: () => void;
   onBackToRegionHub?: () => void;
-  onContinueToQuickChecks?: () => void;
+  onContinueToQuickChecks?: (topic?: FieldGuideTopic) => void;
+  onCurrentTopicChange?: (topic?: FieldGuideTopic) => void;
 }
 
 type WorkedExampleStage = 'setup' | 'method' | 'answer';
@@ -97,7 +98,7 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
           </button>
         ) : null}
         {answerRevealed ? (
-          <p className="worked-example-next-action">Next action: try the linked Quick Check without looking back at the final answer.</p>
+          <p className="worked-example-next-action">Next action: try the linked short check in Skill Practice without looking back at the final answer.</p>
         ) : null}
       </div>
     </article>
@@ -198,7 +199,7 @@ function FieldGuideTopicLesson({
 }) {
   const example = topic.examples[exampleIndex] ?? topic.examples[0];
   const hasMoreExamples = exampleIndex < topic.examples.length - 1;
-  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Continue to Quick Checks';
+  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Continue to Skill Practice';
 
   if (!example) {
     return (
@@ -229,6 +230,9 @@ function FieldGuideTopicLesson({
           <span className="field-guide-topic-kicker">Current topic</span>
           <h3 id={`field-guide-topic-${topic.id}`}>{topic.title}</h3>
           <p>{topic.description}</p>
+          {topic.supportNote ? (
+            <p className="field-guide-support-note"><MathText text={topic.supportNote} /></p>
+          ) : null}
         </div>
         <span className="field-guide-topic-marker field-guide-topic-marker-large" aria-hidden="true">{topic.marker}</span>
       </section>
@@ -248,7 +252,7 @@ function FieldGuideTopicLesson({
         </article>
 
         <article className="field-guide-lesson-card field-guide-pattern-card">
-          <span className="field-guide-card-label">Visual pattern</span>
+          <span className="field-guide-card-label">Method pattern</span>
           <h4>{example.patternTitle}</h4>
           <div className="field-guide-pattern-stack">
             {example.patternRows.map((row, index) => (
@@ -310,6 +314,7 @@ export function FieldGuidePanel({
   onCompleteFieldGuide,
   onBackToRegionHub,
   onContinueToQuickChecks,
+  onCurrentTopicChange,
 }: FieldGuidePanelProps) {
   const [activeSnippetIndex, setActiveSnippetIndex] = useState(0);
   const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>();
@@ -330,7 +335,7 @@ export function FieldGuidePanel({
   const warning = activeSnippet ? firstAvailable(activeSnippet.commonMistakes) ?? activeSnippet.commonTrap : undefined;
   const nextAction = activeSnippet
     ? isLastSnippet
-      ? 'Continue to Quick Checks when this idea is clear.'
+      ? 'Continue to Skill Practice when this idea is clear.'
       : 'Use Next when this idea is clear.'
     : undefined;
   const visualSupport = activeSnippet ? findVisualSupportSource({
@@ -347,6 +352,7 @@ export function FieldGuidePanel({
   useEffect(() => {
     setSelectedTopicId(undefined);
     setActiveTopicExampleIndex(0);
+    onCurrentTopicChange?.(undefined);
   }, [region?.id]);
 
   function goToPreviousSnippet() {
@@ -359,17 +365,19 @@ export function FieldGuidePanel({
 
   function continueToQuickChecks() {
     if (!fieldGuideCompleted) onCompleteFieldGuide();
-    onContinueToQuickChecks?.();
+    onContinueToQuickChecks?.(selectedTopic);
   }
 
   function selectTopic(topicId: string) {
     setSelectedTopicId(topicId);
     setActiveTopicExampleIndex(0);
+    onCurrentTopicChange?.(topicFlowTopics.find((topic) => topic.id === topicId));
   }
 
   function goBackToTopics() {
     setSelectedTopicId(undefined);
     setActiveTopicExampleIndex(0);
+    onCurrentTopicChange?.(undefined);
   }
 
   function goToNextTopicStep() {
@@ -497,7 +505,7 @@ export function FieldGuidePanel({
         ) : null}
         {activeSnippet && isLastSnippet ? (
           <button className="primary-button" type="button" onClick={continueToQuickChecks}>
-            Continue to Quick Checks
+            Continue to Skill Practice
             <ArrowRight size={16} />
           </button>
         ) : null}

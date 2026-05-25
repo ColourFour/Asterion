@@ -52,6 +52,17 @@ async function clickByRole(page, name) {
   await button.click({ timeout: 15000 });
 }
 
+async function clickByAnyRole(page, names) {
+  for (const name of names) {
+    const button = page.getByRole('button', { name });
+    if (await button.count()) {
+      await button.first().click({ timeout: 15000 });
+      return;
+    }
+  }
+  throw new Error(`None of these buttons were found: ${names.join(', ')}`);
+}
+
 async function fillByLabel(page, label, value) {
   await page.getByLabel(label, { exact: true }).fill(value, { timeout: 15000 });
 }
@@ -221,12 +232,12 @@ async function runViewport(browser, width) {
   await capture(page, width, 'student-pilot-landing', metrics);
 
   await clickByRole(page, 'Student entry');
-  await waitForText(page, 'Claim roster slot');
+  await waitForText(page, "Join your teacher's class");
   await capture(page, width, 'class-code-roster-claim', metrics);
 
   await fillByLabel(page, 'Class code', 'AST-P3A');
   await fillByLabel(page, 'Roster name', 'Pilot Student');
-  await clickByRole(page, 'Claim roster slot');
+  await clickByAnyRole(page, ['Claim roster slot', 'Enter class']);
   await waitForText(page, 'Name your academy character');
   await capture(page, width, 'avatar-name-setup', metrics);
 
@@ -261,7 +272,7 @@ async function runViewport(browser, width) {
   await capture(page, width, 'locked-region-field-guide', metrics);
 
   await page.goto(urlFor('#/regions/integration-gardens/quick-check'), { waitUntil: 'domcontentloaded' });
-  await waitForText(page, 'Quick Checks is locked for this class');
+  await waitForText(page, 'Skill Practice is locked for this class');
   await capture(page, width, 'locked-region-quick-check-blocked', metrics);
 
   await page.goto(urlFor('#/regions/logarithm-grove/guardian'), { waitUntil: 'domcontentloaded' });

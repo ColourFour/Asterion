@@ -18,6 +18,7 @@ export interface FieldGuideTopic {
   skillIds: string[];
   preview: string;
   description: string;
+  supportNote?: string;
   examples: FieldGuideTopicExample[];
 }
 
@@ -107,11 +108,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
     {
       id: 'modulus-remainders',
       marker: 'mod',
-      title: 'Modulus / Remainders',
+      title: 'Modulus Equations',
       purpose: 'Split a modulus equation into simple cases.',
       skillIds: ['algebra.modulus_equation_basic'],
       preview: '$$ |2x-3|=5 $$',
       description: 'A modulus equation usually means two matching distance cases.',
+      supportNote: 'Support skill: this bridge uses P1 algebra and functions language. P3 mastery evidence still comes from reviewed exam-style P3 practice.',
       examples: [
         {
           title: 'Split into two cases',
@@ -205,8 +207,8 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
             { from: '$nu$', move: 'linear', to: '$-x$' },
             { from: '$\\frac{n(n-1)}{2}u^2$', move: 'quadratic', to: '$\\frac32x^2$' },
           ],
-          tryPrompt: 'Find the first three terms of $(1+3x)^2$.',
-          tryScaffold: ['Identify u', 'Constant term', 'Linear term', 'Quadratic term'],
+          tryPrompt: 'Find the first three terms of $(1-3x)^{-1/2}$ and state the validity range.',
+          tryScaffold: ['Identify u and n', 'Constant term', 'Linear and quadratic terms', 'Validity condition'],
           takeaway: [
             'Substitute $u$ before simplifying terms.',
             'Write terms in increasing powers of $x$.',
@@ -295,34 +297,34 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       id: 'exponential-calculus-context',
       marker: 'e',
       title: 'Exponential Contexts',
-      purpose: 'Use exponential and log forms inside calculus questions.',
+      purpose: 'Use exponential and log forms inside calculus and modelling questions.',
       skillIds: ['logarithms_and_exponentials.calculus_context_basic'],
-      preview: '$$ y=e^{2x} \\Rightarrow \\frac{dy}{dx}=2e^{2x} $$',
-      description: 'Differentiate or integrate exponentials after the structure is clear.',
+      preview: '$$ \\frac{dy}{dx}=2e^{2x},\\ y(0)=5 $$',
+      description: 'Exponential expressions often appear as rates, growth or decay models, and integrals, not only as derivative reminders.',
       examples: [
         {
-          title: 'Differentiate an exponential',
-          prompt: 'Find $\\frac{dy}{dx}$ when $y=3e^{2x}$.',
+          title: 'Recover a model from an exponential rate',
+          prompt: 'Given $\\frac{dy}{dx}=2e^{2x}$ and $y=5$ when $x=0$, find $y$.',
           workedLines: [
-            'The multiplier $3$ stays outside.',
-            'Differentiate $e^{2x}$ using the chain rule.',
-            'The derivative of $2x$ is $2$.',
-            'So $\\frac{dy}{dx}=6e^{2x}$.',
+            'Integrate the rate: $y=\\int 2e^{2x}\\,dx=e^{2x}+C$.',
+            'Use the condition $y=5$ when $x=0$.',
+            '$5=e^0+C=1+C$, so $C=4$.',
+            'Therefore $y=e^{2x}+4$.',
           ],
-          patternTitle: 'Exponential chain',
+          patternTitle: 'Rate to model',
           patternRows: [
-            { from: '$e^{u}$', move: 'derivative', to: '$u\\prime e^u$' },
-            { from: '$u=2x$', move: '$u\\prime$', to: '$2$' },
-            { from: '$3e^{2x}$', move: 'becomes', to: '$6e^{2x}$' },
+            { from: 'rate', move: 'integrate', to: 'general model' },
+            { from: '$e^{kx}$', move: 'integrates to', to: '$\\frac1k e^{kx}$' },
+            { from: 'condition', move: 'finds', to: '$C$' },
           ],
-          tryPrompt: 'Differentiate $5e^{-x}$.',
-          tryScaffold: ['Identify u', 'Find u prime', 'Keep multiplier', 'Write derivative'],
+          tryPrompt: 'Given $\\frac{dy}{dx}=3e^{3x}$ and $y(0)=2$, find $y$.',
+          tryScaffold: ['Integrate the rate', 'Add C', 'Use the condition', 'Write the model'],
           takeaway: [
-            'For $e^u$, multiply by $u\\prime$.',
-            'External constants stay attached.',
-            'A negative exponent gives a negative derivative factor.',
+            'Read exponential calculus in context: rate, model, condition.',
+            'Integration reverses the exponential chain factor.',
+            'Use a given value after the general model is formed.',
           ],
-          result: '$$ \\frac{dy}{dx}=6e^{2x} $$',
+          result: '$$ y=e^{2x}+4 $$',
         },
       ],
     },
@@ -336,6 +338,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['trigonometry.identity_rewrite_basic'],
       preview: '$$ 1-\\cos^2x=\\sin^2x $$',
       description: 'Rewrite the side with more structure first.',
+      supportNote: 'Support skill: this is an identity bridge before P3 trig solving. Mastery evidence comes from exam-style P3 trigonometry practice.',
       examples: [
         {
           title: 'Move toward one function',
@@ -476,6 +479,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['complex_numbers.cartesian_conjugate_basic'],
       preview: '$$ (3+2i)(3-2i)=13 $$',
       description: 'The conjugate changes the sign of the imaginary part.',
+      supportNote: 'Support skill: this rehearses complex-number algebra before P3 modulus, argument, loci, and roots. It is not Guardian evidence by itself.',
       examples: [
         {
           title: 'Use the conjugate',
@@ -643,14 +647,14 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
     {
       id: 'product-chain',
       marker: 'uv',
-      title: 'Product Rule',
-      purpose: 'Differentiate a product, including products with chain-rule factors.',
+      title: 'Product / Quotient Rule',
+      purpose: 'Differentiate products and quotients without dropping derivative terms.',
       skillIds: [
         'differentiation.product_rule_basic',
         'differentiation.chain_product_basic',
       ],
       preview: '$$ x^2(1+x)^5 $$',
-      description: 'Use $uv\\prime+vu\\prime$ and handle any inner chain separately.',
+      description: 'Use $uv\\prime+vu\\prime$ for products, $\\frac{vu\\prime-uv\\prime}{v^2}$ for quotients, and handle any inner chain separately.',
       examples: [
         {
           title: 'Product with a chain factor',
@@ -676,6 +680,30 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           result: '$$ 5x^2(1+x)^4+2x(1+x)^5 $$',
         },
+        {
+          title: 'Quotient rule denominator',
+          prompt: 'Differentiate $y=\\frac{x^2+1}{x-1}$.',
+          workedLines: [
+            'Let $u=x^2+1$ and $v=x-1$.',
+            '$u\\prime=2x$ and $v\\prime=1$.',
+            'Use $\\frac{vu\\prime-uv\\prime}{v^2}$.',
+            '$\\frac{dy}{dx}=\\frac{(x-1)(2x)-(x^2+1)}{(x-1)^2}$.',
+          ],
+          patternTitle: 'Quotient structure',
+          patternRows: [
+            { from: '$v u\\prime$', move: 'minus', to: '$u v\\prime$' },
+            { from: 'denominator', move: 'squared', to: '$v^2$' },
+            { from: 'simplify', move: 'after', to: 'rule setup' },
+          ],
+          tryPrompt: 'Set up the quotient rule for $y=\\frac{x+2}{x^2+1}$.',
+          tryScaffold: ['Choose u and v', 'Find derivatives', 'Write numerator', 'Square denominator'],
+          takeaway: [
+            'The quotient denominator is always squared.',
+            'Keep the numerator order as $v u\\prime-u v\\prime$.',
+            'Simplify only after the rule is correctly set up.',
+          ],
+          result: '$$ \\frac{(x-1)(2x)-(x^2+1)}{(x-1)^2} $$',
+        },
       ],
     },
     {
@@ -684,32 +712,32 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       title: 'Implicit Log/Exp',
       purpose: 'Differentiate equations where y is not isolated.',
       skillIds: ['differentiation.implicit_log_exp_basic'],
-      preview: '$$ x^2+y^2=25 $$',
-      description: 'Differentiate both sides and multiply y terms by $\\frac{dy}{dx}$.',
+      preview: '$$ e^y+\\ln x=x^2 $$',
+      description: 'Differentiate both sides and multiply every hidden y derivative by $\\frac{dy}{dx}$, including log and exponential terms.',
       examples: [
         {
-          title: 'Differentiate implicitly',
-          prompt: 'For $x^2+y^2=25$, find $\\frac{dy}{dx}$.',
+          title: 'Differentiate log and exponential terms implicitly',
+          prompt: 'For $e^y+\\ln x=x^2$, find $\\frac{dy}{dx}$.',
           workedLines: [
+            'Differentiate $e^y$ to get $e^y\\frac{dy}{dx}$.',
+            'Differentiate $\\ln x$ to get $\\frac{1}{x}$.',
             'Differentiate $x^2$ to get $2x$.',
-            'Differentiate $y^2$ to get $2y\\frac{dy}{dx}$.',
-            'Differentiate $25$ to get $0$.',
-            'So $2x+2y\\frac{dy}{dx}=0$ and $\\frac{dy}{dx}=-\\frac{x}{y}$.',
+            'So $e^y\\frac{dy}{dx}+\\frac1x=2x$, hence $\\frac{dy}{dx}=\\frac{2x-\\frac1x}{e^y}$.',
           ],
-          patternTitle: 'Y term rule',
+          patternTitle: 'Hidden y chain',
           patternRows: [
-            { from: '$y^2$', move: 'derivative', to: '$2y\\frac{dy}{dx}$' },
+            { from: '$e^y$', move: 'derivative', to: '$e^y\\frac{dy}{dx}$' },
+            { from: '$\\ln y$', move: 'derivative', to: '$\\frac1y\\frac{dy}{dx}$' },
             { from: 'collect', move: '$dy/dx$', to: 'solve' },
-            { from: 'final', move: 'may include', to: '$x,y$' },
           ],
-          tryPrompt: 'Differentiate $xy=4$ implicitly.',
-          tryScaffold: ['Differentiate x term', 'Differentiate y term', 'Collect dy/dx', 'Solve'],
+          tryPrompt: 'Differentiate $\\ln y+x^2=3$ implicitly.',
+          tryScaffold: ['Differentiate log y', 'Differentiate x term', 'Collect dy/dx', 'Solve'],
           takeaway: [
             'Every y derivative carries $\\frac{dy}{dx}$.',
-            'Use product rule for mixed $xy$ terms.',
+            'For $e^y$ and $\\ln y$, the hidden chain factor is still needed.',
             'Solve algebraically at the end.',
           ],
-          result: '$$ \\frac{dy}{dx}=-\\frac{x}{y} $$',
+          result: '$$ \\frac{dy}{dx}=\\frac{2x-\\frac1x}{e^y} $$',
         },
       ],
     },
@@ -1069,29 +1097,31 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       id: 'accuracy-rounding',
       marker: 'dp',
       title: 'Accuracy and Rounding',
-      purpose: 'Round only when the method has enough accuracy.',
+      purpose: 'Round iteration results only after the stopping criterion is secure.',
       skillIds: ['numerical_methods.accuracy_rounding_basic'],
-      preview: '$$ 1.41421356\\approx1.414 $$',
-      description: 'Final accuracy depends on carrying enough digits through the work.',
+      preview: '$$ x_4=1.41421,\\ x_5=1.41422 $$',
+      description: 'In numerical methods, rounding is part of the evidence that an iterative approximation has stabilised.',
+      supportNote: 'Support skill: rounding conventions support P3 numerical methods. Guardian evidence comes from reviewed numerical-method questions, not from generic rounding alone.',
       examples: [
         {
-          title: 'Round at the end',
-          prompt: 'Round $1.41421356$ to $3$ decimal places.',
+          title: 'Use stable iterates before rounding',
+          prompt: 'An iteration gives $x_4=1.41421$ and $x_5=1.41422$. What value is secure to $3$ decimal places?',
           workedLines: [
-            'Keep the first three decimal places: $1.414$.',
-            'Look at the next digit: $2$.',
-            'Since $2<5$, the third decimal place stays the same.',
+            'Round each iterate to $3$ decimal places.',
+            '$x_4=1.41421$ rounds to $1.414$.',
+            '$x_5=1.41422$ also rounds to $1.414$.',
+            'Since both agree at the requested accuracy, state $1.414$.',
           ],
-          patternTitle: 'Rounding decision',
+          patternTitle: 'Iteration accuracy check',
           patternRows: [
-            { from: 'kept digit', move: 'look next', to: 'decide' },
-            { from: 'next < 5', move: 'keep', to: 'same' },
-            { from: 'next >= 5', move: 'round', to: 'up' },
+            { from: 'two iterates', move: 'round both', to: 'same dp' },
+            { from: 'same result', move: 'supports', to: 'accuracy claim' },
+            { from: 'not same', move: 'continue', to: 'iteration' },
           ],
-          tryPrompt: 'Round $2.71828$ to $3$ significant figures.',
-          tryScaffold: ['Choose kept digits', 'Look next', 'Round', 'State accuracy'],
+          tryPrompt: 'If $x_3=2.23603$ and $x_4=2.23607$, decide the value to $3$ decimal places.',
+          tryScaffold: ['Round x3', 'Round x4', 'Compare', 'State or continue'],
           takeaway: [
-            'Do not round too early in iterations.',
+            'Use agreement between iterates as evidence for final accuracy.',
             'Know whether the question asks decimal places or significant figures.',
             'State final values to the requested accuracy.',
           ],

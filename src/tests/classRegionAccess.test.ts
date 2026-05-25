@@ -40,6 +40,16 @@ describe('student class region access', () => {
     expect(canStudentUseRegionActivity(lockedAccess, 'mastery_progression')).toBe(false);
   });
 
+  it('keeps Skill Practice gates aligned with classroom region access modes', () => {
+    const lockedAccess = getStudentRegionAccess(claimedAlphaProfile, 'complex-harbor');
+    const openAccess = getStudentRegionAccess(claimedAlphaProfile, 'algebra-forge');
+
+    expect(canStudentUseRegionActivity(lockedAccess, 'quick_check')).toBe(false);
+    expect(canStudentUseRegionActivity(lockedAccess, 'warm_up')).toBe(false);
+    expect(canStudentUseRegionActivity(openAccess, 'quick_check')).toBe(true);
+    expect(canStudentUseRegionActivity(openAccess, 'warm_up')).toBe(true);
+  });
+
   it('keeps missing class-claim context migration-tolerant', () => {
     const openAccess = getStudentRegionAccess(undefined, 'complex-harbor');
 

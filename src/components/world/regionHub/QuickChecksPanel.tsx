@@ -84,7 +84,7 @@ function QuickCheckInput({
       <label className="quick-check-single-value">
         <span><MathText text={contract.displayPrefix ?? 'answer ='} /></span>
         <input
-          aria-label="Quick Check answer"
+          aria-label="Short check answer"
           inputMode="text"
           value={response.value ?? ''}
           onChange={(event) => setResponse({ value: event.target.value })}
@@ -96,7 +96,7 @@ function QuickCheckInput({
 
   if (contract.answerType === 'two_value') {
     return (
-      <div className="quick-check-two-values" role="group" aria-label="Quick Check answer fields">
+      <div className="quick-check-two-values" role="group" aria-label="Short check answer fields">
         {(contract.fields ?? []).map((field) => (
           <label className="quick-check-single-value" key={field.id}>
             <span><MathText text={field.displayPrefix ?? `${field.label} =`} /></span>
@@ -291,7 +291,7 @@ function QuickCheckCard({
   return (
     <article className="quick-check-reveal" data-activity-id={activityId}>
       <header className="quick-check-heading">
-        <strong>Quick check: {title}</strong>
+        <strong>Short check: {title}</strong>
         <small>
           Check {checkPosition} of {checkCount}
           {previousAttempt ? ` · Last: ${learningOutcomeLabel(previousAttempt.outcome)}` : ''}
@@ -324,12 +324,12 @@ function QuickCheckCard({
             {hasNextCheck ? (
               <button type="button" onClick={onNextCheck}>Next check</button>
             ) : onContinueToWarmUp ? (
-              <button type="button" onClick={onContinueToWarmUp}>Continue to Warm-up</button>
+              <button type="button" onClick={onContinueToWarmUp}>Continue to Guided Practice</button>
             ) : onContinueToExamPractice ? (
               <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Practice</button>
             ) : null}
           </div>
-          {saved ? <small className="region-card-note">Quick Check saved locally as a support activity.</small> : null}
+          {saved ? <small className="region-card-note">Short check saved locally as a support activity.</small> : null}
         </div>
       ) : null}
     </article>
@@ -379,11 +379,11 @@ export function QuickChecksPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 2"
-      title="Quick Checks"
+      eyebrow="Start simple"
+      title="One small check"
       description="One short answer-first check at a time before you move into practice."
       icon={<Target size={22} />}
-      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} quick checks available`} /> : undefined}
+      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} short checks available`} /> : undefined}
       className="quick-check-card"
     >
       {activeCheck ? (
@@ -407,10 +407,10 @@ export function QuickChecksPanel({
               title={activeCheck.title}
             />
           </div>
-          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed quick check{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
+          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed short check{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">No reviewed quick checks are published for this region yet. Use the Field Guide and exam practice route.</p>
+        <p className="region-empty-state">No reviewed short checks are published for this region yet. Use the Field Guide and Exam Training route.</p>
       )}
     </RegionActionCard>
   );

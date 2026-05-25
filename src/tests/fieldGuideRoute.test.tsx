@@ -64,6 +64,7 @@ vi.mock('../lib/teachingSnippets', () => ({
 vi.mock('../lib/generatedPractice', () => ({
   getGeneratedPracticeForRegion: vi.fn(() => []),
   loadGeneratedPractice: vi.fn(() => Promise.resolve([])),
+  orderGeneratedPracticeForFieldGuideTopic: vi.fn((items) => ({ items, exactMatchCount: 0 })),
 }));
 
 const mountedRoots: Root[] = [];
@@ -175,5 +176,50 @@ describe('Field Guide app route', () => {
     expect(container.textContent).toContain('Binomial Expansions');
     expect(topbar!.compareDocumentPosition(fieldGuideHeader!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
+  });
+
+  it('keeps the legacy Quick Check hash route on the merged Skill Practice page', async () => {
+    window.history.replaceState(null, '', '/#/regions/algebra-forge/quick-check');
+    const container = await render(<App />);
+    await waitForText(container, 'Skill Practice');
+
+    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
+    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+    expect(container.textContent).toContain('Start simple');
+    expect(container.textContent).toContain('Build the method');
+  });
+
+  it('keeps the legacy Warm-Up hash route on the merged Skill Practice page', async () => {
+    window.history.replaceState(null, '', '/#/regions/algebra-forge/warm-up');
+    const container = await render(<App />);
+    await waitForText(container, 'Skill Practice');
+
+    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
+    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+    expect(container.textContent).toContain('Guided Practice');
+    expect(container.textContent).toContain('Ready for exam practice');
+  });
+
+  it('keeps locked legacy and merged Skill Practice hashes behind class access', async () => {
+    for (const page of ['quick-check', 'warm-up', 'skill-practice']) {
+      window.history.replaceState(null, '', `/#/regions/complex-harbor/${page}`);
+      const container = await render(<App />);
+      await waitForText(container, 'Skill Practice is locked for this class');
+
+      expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
+      expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+      expect(container.textContent).toContain('cannot save new attempts or clear the Guardian');
+      expect(container.querySelector('.quick-check-card')).toBeFalsy();
+      expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
+
+      for (const root of mountedRoots.splice(0)) {
+        act(() => {
+          root.unmount();
+        });
+      }
+      for (const mountedContainer of mountedContainers.splice(0)) {
+        mountedContainer.remove();
+      }
+    }
   });
 });

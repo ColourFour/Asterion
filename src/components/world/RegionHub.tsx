@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from 'react';
-import { ArrowLeft, BookOpenCheck, ChevronRight, CircleHelp, Dumbbell, Lock, ShieldCheck, Swords } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { ArrowLeft, BookOpenCheck, ChevronRight, ListChecks, Lock, ShieldCheck, Swords } from 'lucide-react';
+import type { FieldGuideTopic } from '../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import { getGuardianChallengeForRegion } from '../../data/guardianChallenges';
@@ -18,10 +19,9 @@ import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianChallengePanel } from './regionHub/GuardianChallengePanel';
 import { GuardianEligibilityPanel } from './regionHub/GuardianEligibilityPanel';
-import { QuickChecksPanel } from './regionHub/QuickChecksPanel';
 import { RegionLearningLayout } from './regionHub/RegionLearningLayout';
+import { SkillPracticePanel, type SkillPracticeFocus } from './regionHub/SkillPracticePanel';
 import { TrainingGroundsPanel } from './regionHub/TrainingGroundsPanel';
-import { WarmUpPracticePanel } from './regionHub/WarmUpPracticePanel';
 import { percent } from './regionHub/regionHubPanelUtils';
 
 interface RegionHubProps {
@@ -56,44 +56,42 @@ const stateLabels: Record<string, string> = {
   needs_review: 'Needs review',
 };
 
-type HubActionPageId = Exclude<RegionLearningPageId, 'hub'>;
+type HubActionPageId = Exclude<RegionLearningPageId, 'hub' | 'quick-check' | 'warm-up'>;
+type StudentNavPageId = Exclude<RegionLearningPageId, 'quick-check' | 'warm-up'>;
+
+const studentNavPages = REGION_LEARNING_PAGE_ORDER as StudentNavPageId[];
 
 const hubActionPages: HubActionPageId[] = [
   'field-guide',
-  'quick-check',
-  'warm-up',
+  'skill-practice',
   'exam-training',
   'guardian',
 ];
 
 const hubActionLabels: Record<HubActionPageId, string> = {
   'field-guide': 'Field Guide',
-  'quick-check': 'Quick Checks',
-  'warm-up': 'Warm-Up Practice',
+  'skill-practice': 'Skill Practice',
   'exam-training': 'Exam Training',
   guardian: 'Guardian Challenge',
 };
 
 const hubActionDescriptions: Record<HubActionPageId, string> = {
   'field-guide': 'Learn the idea',
-  'quick-check': 'Try the smallest move',
-  'warm-up': 'Rehearse safely',
+  'skill-practice': 'Start simple, then rehearse',
   'exam-training': 'Use real exam images',
   guardian: 'Check readiness',
 };
 
 const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Learn the idea / inspect the method',
-  'quick-check': 'Try the smallest move',
-  'warm-up': 'Rehearse the method safely',
+  'skill-practice': 'Start simple, then build the method',
   'exam-training': 'Attempt real exam image practice',
   guardian: 'View readiness status until evidence unlocks the challenge',
 };
 
 const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'field-guide': 'Start with one guide step and worked example before practice.',
-  'quick-check': 'Try one answer-first check before moving into longer practice.',
-  'warm-up': 'Build fluency with one short support activity.',
+  'skill-practice': 'Use short checks first, then guided practice with worked solution comparison.',
   'exam-training': 'Use real Paper 3 question images and save evidence for the Guardian.',
   guardian: 'Open this only after the evidence checklist unlocks the Guardian.',
 };
@@ -103,6 +101,18 @@ function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSumma
   if (summary.guardianEligibility.eligible) return undefined;
   const firstMissing = summary.guardianEligibility.requirements.find((requirement) => !requirement.completed);
   return firstMissing?.detail ?? 'Complete the listed Guardian evidence first.';
+}
+
+function skillPracticeFocusForPage(page: RegionLearningPageId, summary: RegionLearningSummary): SkillPracticeFocus {
+  if (page === 'quick-check') return 'quick-check';
+  if (page === 'warm-up') return 'warm-up';
+  if (summary.learningActivityReadiness.quickCheckAttempts === 0) return 'quick-check';
+  if (summary.trainingSession.intent === 'warm_up' || summary.learningActivityReadiness.warmUpAttempts === 0) return 'warm-up';
+  return 'overview';
+}
+
+function displayedRegionPage(page: RegionLearningPageId): RegionLearningPageId {
+  return page === 'quick-check' || page === 'warm-up' ? 'skill-practice' : page;
 }
 
 export function RegionHub({
@@ -130,11 +140,18 @@ export function RegionHub({
   const canUseWarmUp = canStudentUseRegionActivity(studentRegionAccess, 'warm_up');
   const canUseExamPractice = canStudentUseRegionActivity(studentRegionAccess, 'exam_practice');
   const canUseGuardian = canStudentUseRegionActivity(studentRegionAccess, 'guardian');
+  const canUseSkillPractice = canUseQuickCheck || canUseWarmUp;
   const accessLocked = !canUseExamPractice;
   const guardianQuestion = summary.guardianEligibility.guardianQuestion;
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
   const guardianChallenge = getGuardianChallengeForRegion(region.id);
+  const activeDisplayPage = displayedRegionPage(activePage);
+  const [currentFieldGuideTopic, setCurrentFieldGuideTopic] = useState<FieldGuideTopic | undefined>();
+
+  useEffect(() => {
+    setCurrentFieldGuideTopic(undefined);
+  }, [region.id]);
 
   if (activePage === 'field-guide') {
     return (
@@ -164,7 +181,11 @@ export function RegionHub({
             maxInitialSnippets={Math.max(2, teachingSnippets.length)}
             onCompleteFieldGuide={onCompleteFieldGuide}
             onBackToRegionHub={() => onNavigatePage?.('hub')}
-            onContinueToQuickChecks={canUseQuickCheck ? () => onNavigatePage?.('quick-check') : undefined}
+            onCurrentTopicChange={setCurrentFieldGuideTopic}
+            onContinueToQuickChecks={canUseSkillPractice ? (topic) => {
+              setCurrentFieldGuideTopic(topic);
+              onNavigatePage?.('skill-practice');
+            } : undefined}
           />
         </div>
       </RegionLearningLayout>
@@ -204,38 +225,30 @@ export function RegionHub({
             studentRegionAccess={studentRegionAccess}
           />
 
-          <div className={`region-page-shell region-page-${activePage}`}>
-            {activePage === 'quick-check' ? (
-              canUseQuickCheck ? (
-                <QuickChecksPanel
+          <div className={`region-page-shell region-page-${activeDisplayPage}`}>
+            {activeDisplayPage === 'skill-practice' ? (
+              canUseSkillPractice ? (
+                <SkillPracticePanel
                   teachingSnippets={teachingSnippets}
-                  region={region}
-                  profileId={profileId}
-                  activityAttempts={learningActivityAttempts}
-                  maxInitialItems={Math.max(2, quickCheckCount)}
-                  onContinueToWarmUp={canUseWarmUp ? () => onNavigatePage?.('warm-up') : undefined}
-                  onContinueToExamPractice={canUseExamPractice ? () => onNavigatePage?.('exam-training') : undefined}
-                  onLearningActivityAttempt={onLearningActivityAttempt}
-                />
-              ) : <LockedRegionActivityPanel activityLabel="Quick Checks" studentRegionAccess={studentRegionAccess} />
-            ) : null}
-
-            {activePage === 'warm-up' ? (
-              canUseWarmUp ? (
-                <WarmUpPracticePanel
                   practiceItems={generatedPractice}
                   region={region}
                   profileId={profileId}
                   activityAttempts={learningActivityAttempts}
-                  maxInitialItems={3}
+                  focus={skillPracticeFocusForPage(activePage, summary)}
+                  canUseQuickCheck={canUseQuickCheck}
+                  canUseWarmUp={canUseWarmUp}
+                  canUseExamPractice={canUseExamPractice}
+                  currentFieldGuideTopic={currentFieldGuideTopic}
+                  quickCheckLockedContent={<LockedRegionActivityPanel activityLabel="Short Checks" studentRegionAccess={studentRegionAccess} />}
+                  warmUpLockedContent={<LockedRegionActivityPanel activityLabel="Guided Practice" studentRegionAccess={studentRegionAccess} />}
                   onContinueToFieldGuide={() => onNavigatePage?.('field-guide')}
                   onContinueToExamPractice={canUseExamPractice ? () => onNavigatePage?.('exam-training') : undefined}
                   onLearningActivityAttempt={onLearningActivityAttempt}
                 />
-              ) : <LockedRegionActivityPanel activityLabel="Warm-Up Practice" studentRegionAccess={studentRegionAccess} />
+              ) : <LockedRegionActivityPanel activityLabel="Skill Practice" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
-            {activePage === 'exam-training' ? (
+            {activeDisplayPage === 'exam-training' ? (
               canUseExamPractice ? (
                 <TrainingGroundsPanel
                   canTrain={canTrain}
@@ -245,7 +258,7 @@ export function RegionHub({
               ) : <LockedRegionActivityPanel activityLabel="Exam Training" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
-            {activePage === 'guardian' ? (
+            {activeDisplayPage === 'guardian' ? (
               canUseGuardian ? (
                 <>
                   <GuardianChallengePanel
@@ -324,6 +337,10 @@ interface RegionLearningNavProps {
 
 function isRegionLearningNavLocked(page: RegionLearningPageId, studentRegionAccess?: StudentRegionAccess): boolean {
   if (page === 'hub' || page === 'field-guide') return false;
+  if (page === 'skill-practice') {
+    return !canStudentUseRegionActivity(studentRegionAccess, 'quick_check')
+      && !canStudentUseRegionActivity(studentRegionAccess, 'warm_up');
+  }
   const activity = page === 'exam-training'
     ? 'exam_practice'
     : page === 'quick-check'
@@ -335,17 +352,19 @@ function isRegionLearningNavLocked(page: RegionLearningPageId, studentRegionAcce
 }
 
 function RegionLearningNav({ activePage, onNavigatePage, studentRegionAccess }: RegionLearningNavProps) {
+  const activeDisplayPage = displayedRegionPage(activePage);
   return (
     <nav className="region-learning-nav" aria-label="Region learning pages">
-      {REGION_LEARNING_PAGE_ORDER.map((page) => {
+      {studentNavPages.map((page) => {
         const locked = isRegionLearningNavLocked(page, studentRegionAccess);
+        const active = activeDisplayPage === page;
         return (
           <button
             type="button"
             key={page}
-            className={activePage === page ? 'active' : ''}
-            data-page-state={locked ? 'locked' : activePage === page ? 'active' : 'available'}
-            aria-current={activePage === page ? 'page' : undefined}
+            className={active ? 'active' : ''}
+            data-page-state={locked ? 'locked' : active ? 'active' : 'available'}
+            aria-current={active ? 'page' : undefined}
             disabled={locked}
             onClick={() => onNavigatePage?.(page)}
           >
@@ -376,16 +395,14 @@ interface RegionHubHomeProps {
 
 function hubActionIcon(page: HubActionPageId): ReactNode {
   if (page === 'field-guide') return <BookOpenCheck size={22} />;
-  if (page === 'quick-check') return <CircleHelp size={22} />;
-  if (page === 'warm-up') return <Dumbbell size={22} />;
+  if (page === 'skill-practice') return <ListChecks size={22} />;
   if (page === 'exam-training') return <Swords size={22} />;
   return <ShieldCheck size={22} />;
 }
 
 function hubActionButtonLabel(page: HubActionPageId): string {
   if (page === 'field-guide') return 'Open Field Guide';
-  if (page === 'quick-check') return 'Open Quick Checks';
-  if (page === 'warm-up') return 'Open Warm-Up';
+  if (page === 'skill-practice') return 'Open Skill Practice';
   if (page === 'exam-training') return 'Open Exam Training';
   return 'Open Guardian';
 }
@@ -408,16 +425,20 @@ function hubActionState(input: {
   if (input.page === 'field-guide') return { disabled: false, status: input.fieldGuideCompleted ? 'Complete' : 'Ready' };
   const activity = input.page === 'exam-training'
     ? 'exam_practice'
-    : input.page === 'quick-check'
-      ? 'quick_check'
-      : input.page === 'warm-up'
-        ? 'warm_up'
-        : 'guardian';
-  if (!canStudentUseRegionActivity(input.studentRegionAccess, activity)) {
+    : input.page === 'guardian'
+      ? 'guardian'
+      : undefined;
+  if (input.page === 'skill-practice') {
+    const quickCheckOpen = canStudentUseRegionActivity(input.studentRegionAccess, 'quick_check');
+    const warmUpOpen = canStudentUseRegionActivity(input.studentRegionAccess, 'warm_up');
+    if (!quickCheckOpen && !warmUpOpen) return { disabled: true, status: 'Field Guide only' };
+    if (quickCheckOpen && !warmUpOpen) return { disabled: false, status: `${input.quickCheckCount} check${input.quickCheckCount === 1 ? '' : 's'} · guided locked` };
+    if (!quickCheckOpen && warmUpOpen) return { disabled: false, status: `${input.generatedPracticeCount} guided` };
+    return { disabled: false, status: `${input.quickCheckCount} check${input.quickCheckCount === 1 ? '' : 's'} · ${input.generatedPracticeCount} guided` };
+  }
+  if (activity && !canStudentUseRegionActivity(input.studentRegionAccess, activity)) {
     return { disabled: true, status: 'Field Guide only' };
   }
-  if (input.page === 'quick-check') return { disabled: false, status: input.quickCheckCount ? `${input.quickCheckCount} available` : 'No checks yet' };
-  if (input.page === 'warm-up') return { disabled: false, status: input.generatedPracticeCount ? `${input.generatedPracticeCount} available` : 'No warm-ups yet' };
   if (input.page === 'exam-training') return { disabled: false, status: input.canTrain ? 'Ready' : 'No trainable images' };
   return { disabled: false, status: input.guardianCleared ? 'Cleared' : input.summary.guardianEligibility.eligible ? 'Unlocked' : 'Evidence needed' };
 }
@@ -443,15 +464,15 @@ function recommendedHubPage(input: {
 
   if (summary.nextAction.kind === 'training') {
     if (input.fieldGuideCompleted && input.quickCheckCount > 0 && summary.learningActivityReadiness.quickCheckAttempts === 0) {
-      return 'quick-check';
+      return 'skill-practice';
     }
 
     if (input.generatedPracticeCount > 0 && summary.learningActivityReadiness.warmUpAttempts === 0) {
-      return 'warm-up';
+      return 'skill-practice';
     }
 
     if (summary.trainingSession.intent === 'warm_up' && input.generatedPracticeCount > 0) {
-      return 'warm-up';
+      return 'skill-practice';
     }
 
     return 'exam-training';
@@ -510,16 +531,18 @@ function RegionHubHome({
       helper: fieldGuideCompleted ? 'Read' : 'Read first',
     },
     {
-      page: 'quick-check',
-      label: 'Quick Check',
-      state: !canStudentUseRegionActivity(studentRegionAccess, 'quick_check') ? 'locked' : primaryPage === 'quick-check' ? 'current' : summary.learningActivityReadiness.quickCheckAttempts > 0 ? 'done' : 'available',
-      helper: summary.learningActivityReadiness.quickCheckAttempts > 0 ? `${summary.learningActivityReadiness.quickCheckAttempts} saved` : 'Short check',
-    },
-    {
-      page: 'warm-up',
-      label: 'Warm-Up',
-      state: !canStudentUseRegionActivity(studentRegionAccess, 'warm_up') ? 'locked' : primaryPage === 'warm-up' ? 'current' : summary.learningActivityReadiness.warmUpAttempts > 0 ? 'done' : 'available',
-      helper: summary.learningActivityReadiness.warmUpAttempts > 0 ? `${summary.learningActivityReadiness.warmUpAttempts} saved` : 'Fluency',
+      page: 'skill-practice',
+      label: 'Skill Practice',
+      state: !canStudentUseRegionActivity(studentRegionAccess, 'quick_check') && !canStudentUseRegionActivity(studentRegionAccess, 'warm_up')
+        ? 'locked'
+        : primaryPage === 'skill-practice'
+          ? 'current'
+          : summary.learningActivityReadiness.quickCheckAttempts + summary.learningActivityReadiness.warmUpAttempts > 0
+            ? 'done'
+            : 'available',
+      helper: summary.learningActivityReadiness.quickCheckAttempts + summary.learningActivityReadiness.warmUpAttempts > 0
+        ? `${summary.learningActivityReadiness.quickCheckAttempts + summary.learningActivityReadiness.warmUpAttempts} saved`
+        : 'Low-stakes prep',
     },
     {
       page: 'exam-training',
@@ -574,7 +597,7 @@ function RegionHubHome({
           <div className="region-rail-intro">
             <span className="mode-pill">Learning loop</span>
             <strong>Follow these steps in order the first time.</strong>
-            <p>Field Guide teaches, Quick Check tests one move, Warm-Up rehearses, and Exam Training saves Guardian evidence.</p>
+            <p>Field Guide teaches, Skill Practice builds confidence, and Exam Training saves Guardian evidence.</p>
           </div>
           <ol>
             {steps.map((step) => (

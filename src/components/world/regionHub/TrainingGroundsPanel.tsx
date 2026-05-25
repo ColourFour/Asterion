@@ -13,7 +13,7 @@ interface TrainingGroundsPanelProps {
 export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: TrainingGroundsPanelProps) {
   return (
     <RegionActionCard
-      eyebrow="Step 4"
+      eyebrow="Step 3"
       title="Exam Training"
       description="Use real question images and mark schemes to build Guardian evidence."
       icon={<Dumbbell size={22} />}
@@ -29,10 +29,11 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
       <details className="training-reason-detail">
         <summary>Why this session?</summary>
         <p>{summary.trainingSession.reason}</p>
+        <p>This practice supports the current region when clean route evidence links the question to it. A saved attempt may help Guardian readiness when it meets the evidence rules.</p>
         {summary.learningActivityReadiness.attempts > 0 ? (
           <small>
-            Support practice: {summary.learningActivityReadiness.quickCheckAttempts} quick check{summary.learningActivityReadiness.quickCheckAttempts === 1 ? '' : 's'}
-            {' '}and {summary.learningActivityReadiness.warmUpAttempts} warm-up{summary.learningActivityReadiness.warmUpAttempts === 1 ? '' : 's'} recorded.
+            Support practice: {summary.learningActivityReadiness.quickCheckAttempts} short check{summary.learningActivityReadiness.quickCheckAttempts === 1 ? '' : 's'}
+            {' '}and {summary.learningActivityReadiness.warmUpAttempts} guided step{summary.learningActivityReadiness.warmUpAttempts === 1 ? '' : 's'} recorded.
           </small>
         ) : null}
       </details>

@@ -516,7 +516,7 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.textContent).toContain('Region tools');
     clickButton(container, 'Field Guide');
     expect(onOpenRegionTool).toHaveBeenCalledWith('field-guide');
-    clickButton(container, 'Warm-Up');
-    expect(onOpenRegionTool).toHaveBeenCalledWith('warm-up');
+    clickButton(container, 'Skill Practice');
+    expect(onOpenRegionTool).toHaveBeenCalledWith('skill-practice');
   });
 });

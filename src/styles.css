@@ -5650,6 +5650,17 @@ legend {
   gap: 2px;
 }
 
+.visual-support-kind {
+  width: fit-content;
+  padding: 3px 7px;
+  color: var(--region-accent-dark, #4f46e5);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border, #d8d3f7) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--region-panel, #fff) 88%, transparent);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
 .visual-support-copy strong {
   color: var(--region-heading, #30286c);
   font-size: 0.88rem;
@@ -6521,7 +6532,7 @@ legend {
 
 .region-learning-nav {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
   align-items: stretch;
   overflow-x: hidden;
@@ -6590,6 +6601,109 @@ legend {
   display: grid;
   gap: 16px;
   align-items: start;
+}
+
+.skill-practice-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.skill-practice-header,
+.skill-practice-exam-transition {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  color: var(--region-body);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 24%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 96%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.skill-practice-header h3,
+.skill-practice-exam-transition h4,
+.skill-practice-section-intro h4 {
+  margin: 0;
+  color: var(--region-heading);
+}
+
+.skill-practice-header p,
+.skill-practice-exam-transition p,
+.skill-practice-section-intro p {
+  margin: 4px 0 0;
+  color: var(--region-muted);
+  font-weight: 700;
+}
+
+.skill-practice-summary,
+.skill-practice-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.skill-practice-summary span,
+.skill-practice-steps a {
+  padding: 7px 10px;
+  color: var(--region-accent-dark);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
+  border-radius: 999px;
+  background: var(--region-panel);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.skill-practice-steps a[aria-current="step"] {
+  color: var(--region-button-text);
+  background: var(--region-button-bg);
+  border-color: var(--region-button-border);
+}
+
+.skill-practice-section {
+  display: grid;
+  gap: 10px;
+  scroll-margin-top: 18px;
+}
+
+.skill-practice-section.is-focused {
+  padding: 10px;
+  border: 2px solid color-mix(in srgb, var(--region-accent) 46%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-wash) 44%, transparent);
+}
+
+.skill-practice-section-intro {
+  display: grid;
+  gap: 3px;
+  padding: 0 2px;
+}
+
+.skill-practice-section-intro span {
+  color: var(--region-accent-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.skill-practice-exam-transition button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.skill-practice-locked-note {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--region-muted);
+  font-weight: 800;
 }
 
 .focused-region-page-header {
@@ -9724,15 +9838,17 @@ legend {
   }
 
   .region-learning-nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding: 6px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 5px;
   }
 
   .region-learning-nav button {
     width: auto;
-    min-height: 48px;
-    padding: 7px 6px;
-    font-size: 0.72rem;
+    min-height: 42px;
+    padding: 6px 4px;
+    font-size: 0.64rem;
+    text-align: center;
   }
 
   .region-learning-nav button small {
@@ -9743,14 +9859,51 @@ legend {
     gap: 10px;
   }
 
-  .focused-region-page-header {
+  .skill-practice-header,
+  .skill-practice-exam-transition {
     display: grid;
     gap: 10px;
     padding: 12px;
   }
 
+  .skill-practice-summary,
+  .skill-practice-steps {
+    align-items: stretch;
+  }
+
+  .skill-practice-summary span,
+  .skill-practice-steps a,
+  .skill-practice-exam-transition button {
+    width: 100%;
+  }
+
+  .skill-practice-exam-transition button {
+    min-height: 44px;
+  }
+
+  .focused-region-page-header {
+    display: grid;
+    gap: 7px;
+    padding: 9px;
+  }
+
+  .focused-region-page-title {
+    gap: 3px;
+  }
+
+  .focused-region-page-title h2 {
+    font-size: 1.08rem;
+  }
+
   .focused-region-header-actions {
     justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .focused-region-next-step {
+    max-width: 100%;
+    padding: 5px 7px;
+    font-size: 0.7rem;
   }
 
   .region-page-toolbar {

@@ -24,7 +24,7 @@ export function GuardianEligibilityPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 5 · Guardian evidence"
+      eyebrow="Step 4 · Guardian evidence"
       title="Guardian Challenge"
       description="An exam-image challenge unlocked by saved practice evidence."
       icon={<ShieldCheck size={22} />}
