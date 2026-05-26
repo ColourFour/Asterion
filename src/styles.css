@@ -12369,6 +12369,34 @@ legend {
 }
 
 @media (max-width: 640px) {
+  .guardian-locked-card {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .guardian-locked-card .region-action-card-title {
+    display: none;
+  }
+
+  .guardian-locked-card .guardian-boss-hero {
+    gap: 10px;
+  }
+
+  .guardian-locked-card .guardian-boss-art {
+    order: -1;
+  }
+
+  .guardian-locked-card .guardian-boss-art .guardian-placeholder-figure,
+  .guardian-locked-card .guardian-boss-art .guardian-placeholder-figure img {
+    min-height: 180px;
+    max-height: 220px;
+  }
+
+  .guardian-locked-card .guardian-boss-copy {
+    gap: 8px;
+    padding: 12px;
+  }
+
   .region-arc-timeline {
     grid-template-columns: 1fr;
     overflow-x: visible;
@@ -13365,7 +13393,7 @@ legend {
 
 .exam-practice-meta-strip {
   display: grid;
-  grid-template-columns: 0.7fr 1.2fr 1fr 1fr 0.95fr auto;
+  grid-template-columns: 0.7fr 1.2fr 1.05fr 1fr auto;
   gap: 0;
   align-items: stretch;
   overflow: hidden;
@@ -13781,10 +13809,14 @@ legend {
 @media (max-width: 640px) {
   .exam-practice-page {
     width: min(100% - 12px, 1220px);
-    gap: 10px;
+    gap: 8px;
   }
 
-  .exam-practice-header,
+  .exam-practice-header {
+    gap: 8px;
+    padding: 10px;
+  }
+
   .exam-image-card,
   .exam-self-mark-card,
   .ask-teacher-panel,
@@ -13792,13 +13824,56 @@ legend {
     padding: 14px;
   }
 
-  .exam-practice-mode-nav,
+  .exam-practice-brand {
+    gap: 8px;
+  }
+
+  .exam-practice-crest {
+    width: 42px;
+    height: 42px;
+  }
+
+  .exam-practice-brand h2 {
+    margin-top: 2px;
+    font-size: 1.35rem;
+  }
+
+  .exam-practice-mode-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
   .exam-practice-meta-strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .exam-practice-mode-nav button {
-    min-height: 54px;
+    min-height: 42px;
+    justify-items: center;
+    padding: 7px 6px;
+    text-align: center;
+  }
+
+  .exam-practice-mode-nav button:first-child,
+  .exam-practice-mode-nav button:last-child {
+    display: none;
+  }
+
+  .exam-practice-mode-nav small {
+    display: none;
+  }
+
+  .exam-practice-meta-strip > div {
+    padding: 9px 10px;
+  }
+
+  .exam-practice-meta-strip > div:nth-child(2) {
+    display: none;
+  }
+
+  .exam-practice-info-button {
+    min-height: 40px;
+    margin: 6px;
   }
 
   .exam-card-heading,

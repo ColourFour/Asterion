@@ -33,6 +33,45 @@ function emptyPartMarkInputs(parts: NormalizedQuestion['parts']): PartMarkInputs
 const FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH = 8;
 type SelectableMistakeType = Exclude<MistakeType, 'no_issue'>;
 
+const studentTopicLabels: Record<string, string> = {
+  '9709_p3_topic_algebra': 'Algebra',
+  '9709_p3_topic_logarithmic_and_exponential_functions': 'Logarithms and exponentials',
+  '9709_p3_topic_trigonometry': 'Trigonometry',
+  '9709_p3_topic_complex_numbers': 'Complex numbers',
+  '9709_p3_topic_differentiation': 'Differentiation',
+  '9709_p3_topic_integration': 'Integration',
+  '9709_p3_topic_vectors': 'Vectors',
+  '9709_p3_topic_numerical_solution_of_equations': 'Numerical methods',
+  '9709_p3_topic_differential_equations': 'Differential equations',
+  algebra: 'Algebra',
+  logarithms_and_exponentials: 'Logarithms and exponentials',
+  logarithms: 'Logarithms',
+  trigonometry: 'Trigonometry',
+  complex_numbers: 'Complex numbers',
+  differentiation: 'Differentiation',
+  integration: 'Integration',
+  vectors: 'Vectors',
+  numerical_methods: 'Numerical methods',
+  differential_equations: 'Differential equations',
+};
+
+function studentTopicLabelFromRouteId(id: string | undefined): string | undefined {
+  if (!id) return undefined;
+  const normalized = id.trim();
+  if (!normalized) return undefined;
+  const exact = studentTopicLabels[normalized];
+  if (exact) return exact;
+  const [prefix, detail] = normalized.split('.');
+  const topicPrefix = studentTopicLabels[prefix];
+  if (detail) {
+    return detail
+      .replace(/_basic$/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+  return topicPrefix;
+}
+
 const selectableMistakeTypes: SelectableMistakeType[] = [
   'did_not_know_method',
   'could_not_start',
@@ -268,12 +307,44 @@ export function PracticeView({
   }
 
   const scoreTotalLabel = `${typeof scoreValidation.earned === 'number' ? scoreValidation.earned : Number.isFinite(enteredMarkTotal) ? enteredMarkTotal : 0} / ${typeof maxMarks === 'number' ? maxMarks : '?'}`;
+  const isGuardianPractice = regionLearningPhase === 'guardian';
+  const isRegionTrainingPractice = Boolean(selectedRegion && !isGuardianPractice);
   const safeSkillLabel = knownExamTrainingSkillName(
     question?.routeEvidence?.primaryTopicId
       ?? question?.topicRouting?.primaryTopicId
       ?? question?.parts?.find((part) => part.skillRef)?.skillRef
       ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
   ) ?? 'Not enough evidence yet';
+  const globalPracticeTopicLabel = studentTopicLabelFromRouteId(
+    question?.routeEvidence?.primaryTopicId
+      ?? question?.topicRouting?.primaryTopicId
+      ?? question?.parts?.find((part) => part.skillRef)?.skillRef
+      ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
+  ) ?? question?.localSubtopic ?? question?.displaySubtopic ?? question?.localTopic ?? 'Mixed Paper 3 practice';
+  const practiceFocusLabel = isGuardianPractice
+    ? selectedRegion?.name ?? question?.displayTopic ?? 'Guardian challenge'
+    : isRegionTrainingPractice
+      ? selectedRegion?.name
+      : globalPracticeTopicLabel;
+  const practiceContextLabel = isGuardianPractice ? 'Guardian focus' : isRegionTrainingPractice ? 'Focus' : 'Target topic';
+  const metaItems = [
+    {
+      label: 'Question',
+      value: question?.questionNumber ? `Q${question.questionNumber}` : 'Current item',
+    },
+    {
+      label: 'Exam',
+      value: question?.paper ? `CAIE 9709 Paper 3 · ${question.paper}` : 'CAIE 9709 Paper 3',
+    },
+    {
+      label: practiceContextLabel,
+      value: practiceFocusLabel,
+    },
+    {
+      label: 'Skill',
+      value: safeSkillLabel,
+    },
+  ];
 
   if (!question) {
     return (
@@ -330,26 +401,12 @@ export function PracticeView({
       </header>
 
       <section className="exam-practice-meta-strip" aria-label="Question details">
-        <div>
-          <span>Question</span>
-          <strong>{question.questionNumber ? `Q${question.questionNumber}` : 'Current item'}</strong>
-        </div>
-        <div>
-          <span>Exam</span>
-          <strong>{question.paper ? `CAIE 9709 Paper 3 · ${question.paper}` : 'CAIE 9709 Paper 3'}</strong>
-        </div>
-        <div>
-          <span>Target topic</span>
-          <strong>{question.displayTopic || 'Mixed exam practice'}</strong>
-        </div>
-        <div>
-          <span>Skill</span>
-          <strong>{safeSkillLabel}</strong>
-        </div>
-        <div>
-          <span>Region</span>
-          <strong>{selectedRegion?.name ?? question.routeEvidence?.displayRegionId ?? 'Supporting context'}</strong>
-        </div>
+        {metaItems.map((item) => (
+          <div key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
         <button className="exam-practice-info-button" type="button" onClick={() => setRationaleOpen((open) => !open)} aria-expanded={rationaleOpen}>
           <HelpCircle size={16} aria-hidden="true" />
           Why this question?

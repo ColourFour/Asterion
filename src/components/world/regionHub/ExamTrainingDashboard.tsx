@@ -183,7 +183,7 @@ function PracticeChoiceCards({
       ) : (
         <div className="exam-training-safe-note">
           <Info size={18} aria-hidden="true" />
-          <span>For now, each choice starts the same exam-style question flow. Tailored selection comes later.</span>
+          <span>Pick the kind of practice you need today. Your saved marks help shape what comes next.</span>
         </div>
       )}
     </section>

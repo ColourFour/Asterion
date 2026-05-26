@@ -218,7 +218,27 @@ describe('PracticeView self-mark reflection', () => {
 
     expect(practiceCard?.style.getPropertyValue('--practice-mode-accent')).toBe('#d99518');
     expect(container.querySelector('.exam-practice-brand h2')?.textContent).toBe('Exam Training');
-    expect(container.textContent).toContain('RegionAlgebra Vault');
+    expect(container.textContent).toContain('FocusAlgebra Vault');
+    expect(container.textContent).not.toContain('Regionalgebra-forge');
+  });
+
+  it('keeps global Exam Training metadata student-facing and hides raw route ids', () => {
+    const { container } = renderPractice(question({
+      displayTopic: 'Logarithms',
+      deepseek: { hasError: false, topic: 'Logarithms', subtopic: 'logarithmic equations' },
+      routeEvidence: {
+        status: 'clean',
+        source: 'topic-routing',
+        validatedRegionId: 'logarithm-grove',
+        displayRegionId: 'logarithm-grove',
+        primaryTopicId: 'logarithms.logarithmic_equations',
+        reasonCodes: [],
+      },
+    }));
+
+    expect(container.textContent).toContain('Target topicLogarithmic Equations');
+    expect(container.textContent).not.toContain('Regionlogarithm-grove');
+    expect(container.textContent).not.toContain('logarithm-grove');
   });
 
   it('prompts students to enter a mark and shows zero placeholders', () => {
