@@ -534,9 +534,9 @@ export default function App() {
 
   function dashboardPracticeReason(mode: ExamTrainingPracticeMode, region?: RegionDefinition): string {
     const scope = region ? ` in ${region.name}` : '';
-    if (mode === 'core') return `Balanced exam-style practice${scope}.`;
-    if (mode === 'weak') return `Extra exam-style practice where your current signal is weakest${scope}.`;
-    return `Stretch Problems uses the standard exam-style flow for now; tailored harder selection comes later${scope}.`;
+    if (mode === 'core') return `Balanced exam-style practice${scope}. This is a steady next question with no extra pressure.`;
+    if (mode === 'weak') return `Review practice${scope}. If you have saved mistake or score history, Asterion uses it; otherwise this starts as a gentle review question.`;
+    return `Challenge-style practice${scope}. Tailored harder selection comes later, so this still uses the standard exam-style question pool.`;
   }
 
   function chooseNext(nextProgress = progress, mode: PracticeMode = activePracticeMode()) {
@@ -1228,7 +1228,7 @@ export default function App() {
             sessionLabelOverride={examTrainingPracticeMode ? EXAM_TRAINING_PRACTICE_LABELS[examTrainingPracticeMode] : undefined}
             currentPracticeMode={examTrainingPracticeMode}
             sessionReason={viewMode === 'guardian'
-              ? 'You are challenging the Region Guardian because your saved practice evidence unlocked this check.'
+              ? 'You are challenging the Region Guardian because your saved practice opened this check.'
               : examTrainingPracticeMode
                 ? dashboardPracticeReason(examTrainingPracticeMode, selectedRegion)
               : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}

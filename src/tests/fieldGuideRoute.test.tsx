@@ -243,7 +243,7 @@ describe('Field Guide app route', () => {
 
     expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
     expect(container.textContent).toContain('Focused on Algebra Vault');
-    expect(container.textContent).toContain('Balanced exam-style practice across your topics.');
+    expect(container.textContent).toContain('Balanced exam-style practice. Start here when you want a steady next question.');
     expect(container.querySelector('.encounter-chamber')).toBeFalsy();
   });
 

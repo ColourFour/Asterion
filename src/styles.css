@@ -1823,6 +1823,52 @@ button:disabled {
   color: #345044;
 }
 
+.post-attempt-feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.post-attempt-feedback-grid div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(40, 122, 82, 0.22);
+  border-radius: var(--radius-control);
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.post-attempt-feedback-grid span,
+.post-attempt-feedback-grid strong {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.post-attempt-feedback-grid span {
+  color: #527060;
+  font-size: 0.74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.post-attempt-feedback-grid strong {
+  margin-top: 3px;
+  color: #19392b;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.post-attempt-next-step {
+  margin: 0;
+  padding: 10px 12px;
+  color: #19392b;
+  background: #ffffff;
+  border: 1px solid rgba(40, 122, 82, 0.22);
+  border-radius: var(--radius-control);
+  font-weight: 950;
+  line-height: 1.35;
+}
+
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -8800,6 +8846,49 @@ legend {
   border-left-color: var(--region-accent);
 }
 
+.training-mode-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.training-mode-preview-grid article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 28%, transparent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--region-panel) 88%, #ffffff 12%);
+}
+
+.training-mode-preview-grid article.is-recommended {
+  border-color: color-mix(in srgb, var(--region-accent) 56%, var(--region-panel-border));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--region-accent) 12%, transparent);
+}
+
+.training-mode-preview-grid strong,
+.training-mode-preview-grid span {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.training-mode-preview-grid strong {
+  color: var(--region-heading);
+  font-weight: 950;
+}
+
+.training-mode-preview-grid span {
+  margin-top: 3px;
+  color: var(--region-body);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .region-empty-state {
   margin: 0;
   padding: 12px;
@@ -12862,6 +12951,10 @@ legend {
   background: linear-gradient(145deg, #936007, #6f4404);
 }
 
+.exam-training-practice-card.practice-weak.needs-first-attempt {
+  background: linear-gradient(145deg, #7f641d, #55431a);
+}
+
 .exam-training-practice-card.practice-stretch {
   background: linear-gradient(145deg, #6654c7, #3f326f);
 }
@@ -12882,10 +12975,19 @@ legend {
 }
 
 .exam-training-practice-card strong,
-.exam-training-practice-card small {
+.exam-training-practice-card small,
+.exam-training-practice-card em {
   display: block;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.exam-training-practice-card em {
+  margin-top: 6px;
+  color: #fff5c4;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 950;
 }
 
 .exam-training-practice-card strong {
@@ -13604,6 +13706,50 @@ legend {
   color: #d6dfed;
 }
 
+.practice-mode-intro {
+  display: grid;
+  grid-template-columns: minmax(180px, auto) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  color: #fffdf8;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--practice-mode-accent) 34%, transparent), transparent 46%),
+    rgba(14, 23, 48, 0.86);
+  border: 1px solid color-mix(in srgb, var(--practice-mode-accent) 34%, rgba(214, 224, 244, 0.17));
+  border-left: 6px solid var(--practice-mode-accent);
+  border-radius: var(--radius-panel);
+}
+
+.practice-mode-intro div,
+.practice-mode-intro p {
+  min-width: 0;
+}
+
+.practice-mode-intro span {
+  display: block;
+  color: color-mix(in srgb, var(--practice-mode-accent-soft) 72%, #ffffff 28%);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.practice-mode-intro strong {
+  display: block;
+  margin-top: 3px;
+  color: #fff7de;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.practice-mode-intro p {
+  margin: 0;
+  color: #d6dfed;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
 .exam-practice-workspace,
 .exam-practice-workspace.is-revealed {
   display: grid;
@@ -13942,6 +14088,11 @@ legend {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .practice-mode-intro,
+  .training-mode-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
   .exam-practice-info-button {
     min-height: 48px;
     grid-column: 1 / -1;
@@ -13987,6 +14138,11 @@ legend {
 
   .exam-practice-meta-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .practice-mode-intro,
+  .post-attempt-feedback-grid {
+    grid-template-columns: 1fr;
   }
 
   .exam-practice-mode-nav button {

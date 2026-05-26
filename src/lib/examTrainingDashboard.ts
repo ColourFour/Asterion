@@ -19,7 +19,7 @@ export interface ExamTrainingTopicMasteryItem {
   statusLabel: string;
   scorePercent?: number;
   attempts: number;
-  evidenceLabel: 'Recent exam-practice signal' | 'Practice signal' | 'Not enough evidence yet';
+  evidenceLabel: 'Recent saved practice' | 'Saved practice' | 'Try a question first';
 }
 
 export interface ExamTrainingRewardGoal {
@@ -258,8 +258,8 @@ export function buildExamTrainingTopicMastery(input: {
       scorePercent: attempts > 0 && typeof projectedScore === 'number' ? Math.round(projectedScore * 100) : undefined,
       attempts,
       evidenceLabel: attempts > 0
-        ? stats ? 'Recent exam-practice signal' : 'Practice signal'
-        : 'Not enough evidence yet',
+        ? stats ? 'Recent saved practice' : 'Saved practice'
+        : 'Try a question first',
     };
   });
 }

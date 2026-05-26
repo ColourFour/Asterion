@@ -1549,7 +1549,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(guardianPage.textContent).toContain('The vault opens when your exam evidence is ready.');
+    expect(guardianPage.textContent).toContain('The vault opens after enough saved region practice.');
     expect(guardianPage.querySelectorAll('.guardian-requirement-card').length).toBeGreaterThanOrEqual(5);
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
   });
@@ -1562,7 +1562,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Vault locked');
-    expect(container.textContent).toContain('The challenge unlocks when your evidence is ready.');
+    expect(container.textContent).toContain('The challenge opens after the guide and enough scored practice.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.textContent).not.toContain('Lantern Growth Gate');
@@ -1571,7 +1571,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Enter the Guardian Challenge'))).toBe(false);
     expect(container.querySelectorAll('.guardian-requirement-card')).toHaveLength(5);
-    expect(container.textContent).toContain('Practice evidence saved');
+    expect(container.textContent).toContain('Saved practice attempts');
     expect(container.textContent).toContain('0 / 3');
   });
 
@@ -1595,7 +1595,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       onNavigatePage: evidenceNavigate,
     });
     const evidenceAction = evidenceMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="exam-training"]');
-    expect(evidenceAction?.textContent).toContain('Build exam evidence');
+    expect(evidenceAction?.textContent).toContain('Save one exam attempt');
     act(() => {
       evidenceAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -1696,7 +1696,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(container.textContent).toContain('The vault opens now.');
-    expect(container.textContent).toContain('Readiness evidence');
+    expect(container.textContent).toContain('What opened the Guardian?');
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(onChallengeGuardian).not.toHaveBeenCalled();
     expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');

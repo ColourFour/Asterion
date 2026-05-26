@@ -33,6 +33,15 @@ function emptyPartMarkInputs(parts: NormalizedQuestion['parts']): PartMarkInputs
 const FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH = 8;
 type SelectableMistakeType = Exclude<MistakeType, 'no_issue'>;
 
+interface SavedAttemptFeedback {
+  beforeRegionProgress?: RegionProgress;
+  mistakeLabels: string[];
+  savedAsFullScore: boolean;
+  scoreEarned: number;
+  scoreRatio?: number;
+  scoreTotalLabel: string;
+}
+
 const studentTopicLabels: Record<string, string> = {
   '9709_p3_topic_algebra': 'Algebra',
   '9709_p3_topic_logarithmic_and_exponential_functions': 'Logarithms and exponentials',
@@ -99,6 +108,10 @@ const mistakeLabels: Record<SelectableMistakeType, string> = {
   lucky_or_unsure: 'Lucky or unsure',
   other: 'Other',
 };
+
+function percentLabel(value: number | undefined): string | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value * 100)}%` : undefined;
+}
 
 interface PracticeViewProps {
   question?: NormalizedQuestion;
@@ -168,6 +181,7 @@ export function PracticeView({
   const [askTeacherOpen, setAskTeacherOpen] = useState(false);
   const [teacherQuestionDraft, setTeacherQuestionDraft] = useState('');
   const [rationaleOpen, setRationaleOpen] = useState(false);
+  const [savedAttemptFeedback, setSavedAttemptFeedback] = useState<SavedAttemptFeedback | null>(null);
 
   useEffect(() => {
     setRevealed(false);
@@ -183,6 +197,7 @@ export function PracticeView({
     setAskTeacherOpen(false);
     setTeacherQuestionDraft('');
     setRationaleOpen(false);
+    setSavedAttemptFeedback(null);
   }, [question?.id, question?.markSchemeImageCandidates.length, question?.parts]);
 
   const maxMarks = question?.marksAvailable;
@@ -218,10 +233,6 @@ export function PracticeView({
   const markSchemeNoticeTitle = progressionBlockedReason
     ? 'Region activity locked'
     : questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
-  const scorePreview = useMemo(() => {
-    if (typeof scoreValidation.scoreRatio !== 'number') return undefined;
-    return Math.round(scoreValidation.scoreRatio * 100);
-  }, [scoreValidation.scoreRatio]);
   const guardianPassed = regionLearningPhase === 'guardian'
     && typeof guardianPassThreshold === 'number'
     && typeof scoreValidation.scoreRatio === 'number'
@@ -231,8 +242,8 @@ export function PracticeView({
   const activePracticeLabel = EXAM_TRAINING_PRACTICE_LABELS[activePracticeMode];
   const practiceModeCopy: Record<ExamTrainingPracticeMode, string> = {
     core: 'Balanced exam-style practice.',
-    weak: 'Focus on improvement.',
-    stretch: 'Harder exam-style items.',
+    weak: 'Review from saved mistakes and lower scores.',
+    stretch: 'Challenge-style practice.',
   };
   const practiceModeStyle = {
     '--practice-mode-accent': activePracticeMode === 'weak' ? '#d99518' : activePracticeMode === 'stretch' ? '#6d55c8' : '#2f8752',
@@ -305,6 +316,7 @@ export function PracticeView({
     setStartedAt(Date.now());
     setAskTeacherOpen(false);
     setTeacherQuestionDraft('');
+    setSavedAttemptFeedback(null);
   }
 
   function partMarkTotal(label: string): number {
@@ -318,12 +330,27 @@ export function PracticeView({
   const scoreTotalLabel = `${typeof scoreValidation.earned === 'number' ? scoreValidation.earned : Number.isFinite(enteredMarkTotal) ? enteredMarkTotal : 0} / ${typeof maxMarks === 'number' ? maxMarks : '?'}`;
   const isGuardianPractice = regionLearningPhase === 'guardian';
   const isRegionTrainingPractice = Boolean(selectedRegion && !isGuardianPractice);
+  const selectedRegionProgressSnapshot = selectedRegion
+    ? regionProgress.find((item) => item.region.id === selectedRegion.id)
+    : undefined;
+  const hasSavedPracticeForCurrentScope = selectedRegion
+    ? Boolean(selectedRegionProgressSnapshot?.attempts)
+    : progress.attempts.length > 0;
+  const whyThisQuestionLine = isGuardianPractice
+    ? 'This is the Guardian check for this region, opened by your saved practice.'
+    : activePracticeMode === 'core'
+      ? 'Balanced exam practice: one steady question from the current Paper 3 pool.'
+      : activePracticeMode === 'weak'
+        ? hasSavedPracticeForCurrentScope
+          ? 'Review practice: Asterion uses your saved work where it can, then gives a focused exam question.'
+          : 'Starter review: save one attempt first, then Weak Area Review can use your mistake tags and marks.'
+        : 'Challenge-style practice: this uses the exam-style pool while precise stretch selection is still limited.';
   const safeSkillLabel = knownExamTrainingSkillName(
     question?.routeEvidence?.primaryTopicId
       ?? question?.topicRouting?.primaryTopicId
       ?? question?.parts?.find((part) => part.skillRef)?.skillRef
       ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
-  ) ?? 'Not enough evidence yet';
+  ) ?? (isGuardianPractice ? 'Final region check' : 'Mixed skill practice');
   const globalPracticeTopicLabel = studentTopicLabelFromRouteId(
     question?.routeEvidence?.primaryTopicId
       ?? question?.topicRouting?.primaryTopicId
@@ -350,10 +377,47 @@ export function PracticeView({
       value: practiceFocusLabel,
     },
     {
-      label: 'Skill',
+      label: isGuardianPractice ? 'Challenge' : 'Skill',
       value: safeSkillLabel,
     },
   ];
+  const beforeRegionProgress = savedAttemptFeedback?.beforeRegionProgress;
+  const afterRegionProgress = selectedRegionProgressSnapshot;
+  const regionAttemptChanged = Boolean(
+    beforeRegionProgress
+    && afterRegionProgress
+    && afterRegionProgress.attempts > beforeRegionProgress.attempts,
+  );
+  const regionRankChanged = Boolean(
+    beforeRegionProgress
+    && afterRegionProgress
+    && afterRegionProgress.rank !== beforeRegionProgress.rank,
+  );
+  const regionProgressMessage = isGuardianPractice
+    ? savedAttemptFeedback?.scoreRatio != null && typeof guardianPassThreshold === 'number' && savedAttemptFeedback.scoreRatio >= guardianPassThreshold
+      ? `Guardian cleared. This saved score restores ${selectedRegion?.name ?? 'the region'}.`
+      : `Guardian attempt saved. Score ${Math.round((guardianPassThreshold ?? 0.75) * 100)}% or higher next time to clear it.`
+    : selectedRegion
+      ? regionRankChanged
+        ? `${selectedRegion.name} progress changed from ${beforeRegionProgress?.rank} to ${afterRegionProgress?.rank}.`
+        : regionAttemptChanged
+          ? `This attempt now counts toward ${selectedRegion.name} progress.`
+          : 'Saved. This gives Asterion more information for your next recommendation.'
+      : 'Saved. This gives Asterion more information for your next recommendation.';
+  const guardianReadinessMessage = isGuardianPractice
+    ? regionProgressMessage
+    : selectedRegion
+      ? regionAttemptChanged
+        ? 'Guardian readiness will be checked again with this saved attempt.'
+        : 'Guardian readiness did not visibly change yet.'
+      : 'Guardian readiness is region-specific, so choose a region when you want to work toward a Guardian.';
+  const nextRecommendedAction = savedAttemptFeedback?.scoreRatio != null && savedAttemptFeedback.scoreRatio >= 0.75
+    ? activePracticeMode === 'stretch'
+      ? 'Next: try another challenge-style question or return to the dashboard.'
+      : 'Next: continue with another question, or try Stretch when you want a challenge.'
+    : savedAttemptFeedback?.mistakeLabels.length
+      ? 'Next: use Weak Area Review or try one guided Skill Practice step before Stretch.'
+      : 'Next: do one more Core Practice question.';
 
   if (!question) {
     return (
@@ -409,6 +473,14 @@ export function PracticeView({
         </nav>
       </header>
 
+      <section className={`practice-mode-intro practice-mode-${activePracticeMode}${isGuardianPractice ? ' guardian-mode-intro' : ''}`} aria-label="Current practice mode">
+        <div>
+          <span>{isGuardianPractice ? 'Guardian Challenge' : activePracticeLabel}</span>
+          <strong>{isGuardianPractice ? 'Final region check' : practiceModeCopy[activePracticeMode]}</strong>
+        </div>
+        <p>{whyThisQuestionLine}</p>
+      </section>
+
       <section className="exam-practice-meta-strip" aria-label="Question details">
         {metaItems.map((item) => (
           <div key={item.label}>
@@ -436,7 +508,7 @@ export function PracticeView({
             <span>{regionLearningPhase === 'guardian' ? 'Guardian reason' : activePracticeLabel}</span>
             <strong>{sessionLabel ?? activePracticeLabel}</strong>
           </div>
-          <p>{sessionReason ?? practiceModeCopy[activePracticeMode]}</p>
+          <p>{sessionReason ?? whyThisQuestionLine}</p>
           {regionLearningPhase === 'guardian' && typeof guardianPassThreshold === 'number' ? (
             <small>Clear threshold: {Math.round(guardianPassThreshold * 100)}% or higher on this saved attempt.</small>
           ) : null}
@@ -545,6 +617,14 @@ export function PracticeView({
                 regionName: selectedRegion?.name,
                 regionRankAtAttempt: selectedRegionRank,
               });
+              setSavedAttemptFeedback({
+                beforeRegionProgress: selectedRegionProgressSnapshot,
+                mistakeLabels: savedMistakeTypes.map((type) => mistakeLabels[type as SelectableMistakeType] ?? type),
+                savedAsFullScore: savedAsFullScore,
+                scoreEarned: score.earned,
+                scoreRatio: score.scoreRatio,
+                scoreTotalLabel: `${score.earned} / ${typeof maxMarks === 'number' ? maxMarks : '?'}`,
+              });
               setAttemptSaved(true);
             }}
           >
@@ -562,7 +642,7 @@ export function PracticeView({
               <span className={attemptSaved ? 'active' : ''}>Save attempt</span>
             </div>
             <p className="self-mark-helper">
-              Use the official mark scheme image above. Saved attempts can count as region and Guardian evidence when the question is eligible.
+              Compare your working with the mark scheme, enter the marks you think you earned, then tag what went wrong. Mistake tags help Asterion choose the next task.
             </p>
             {usesPartMarking && questionParts?.length ? (
               <fieldset className={`mark-breakdown-fieldset part-mark-fieldset${isFullScore ? ' full-score-marking' : ''}${fullScoreConfirmed ? ' is-confirmed' : ''}`}>
@@ -766,18 +846,26 @@ export function PracticeView({
               decoding="async"
             />
           </div>
-          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `Exam Training recorded (${scoreTotalLabel})`}</strong>
-          <span>
-            {scorePreview != null ? `${scorePreview}% recorded` : 'Marks recorded'} for {question.displayTopic}.
-            {' '}
-            {regionLearningPhase === 'guardian'
-              ? guardianPassed ? 'Your region reward is now unlocked.' : 'The Guardian is recorded, but the region is not cleared yet.'
-              : selectedRegion ? 'Saved eligible attempts can still support region and Guardian evidence.' : 'Saved eligible attempts update your local practice record.'}
-          </span>
-          <details className="post-attempt-review-details">
-            <summary>Review saved details</summary>
-            <span>{typeof scoreValidation.earned === 'number' ? `${scoreValidation.earned}/${maxMarks ?? '?'} marks` : 'Saved attempt'} · {isFullScore ? 'Full-score evidence checked' : selectedMistakeTypes.length ? selectedMistakeTypes.map((type) => mistakeLabels[type as SelectableMistakeType] ?? type).join(', ') : 'No mistake tag'}</span>
-          </details>
+          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `Saved: ${savedAttemptFeedback?.scoreTotalLabel ?? scoreTotalLabel}`}</strong>
+          <div className="post-attempt-feedback-grid" aria-label="Saved attempt feedback">
+            <div>
+              <span>Score</span>
+              <strong>{savedAttemptFeedback?.scoreTotalLabel ?? scoreTotalLabel}{percentLabel(savedAttemptFeedback?.scoreRatio) ? ` (${percentLabel(savedAttemptFeedback?.scoreRatio)})` : ''}</strong>
+            </div>
+            <div>
+              <span>Mistakes</span>
+              <strong>{savedAttemptFeedback?.savedAsFullScore ? 'No mistakes tagged' : savedAttemptFeedback?.mistakeLabels.length ? savedAttemptFeedback.mistakeLabels.join(', ') : 'No tag saved'}</strong>
+            </div>
+            <div>
+              <span>Progress</span>
+              <strong>{regionProgressMessage}</strong>
+            </div>
+            <div>
+              <span>Guardian</span>
+              <strong>{guardianReadinessMessage}</strong>
+            </div>
+          </div>
+          <p className="post-attempt-next-step">{nextRecommendedAction}</p>
           <div className="practice-actions">
             {onContinuePractice ? <button className="primary-button" type="button" onClick={onContinuePractice}><RotateCcw size={16} /> Next</button> : null}
             <button type="button" onClick={resetCurrentQuestionAttempt}>Try Again</button>

@@ -54,13 +54,6 @@ const hubActionPages: HubActionPageId[] = [
   'guardian',
 ];
 
-const hubActionLabels: Record<HubActionPageId, string> = {
-  'field-guide': 'Field Guide',
-  'skill-practice': 'Skill Practice',
-  'exam-training': 'Exam Training',
-  guardian: 'Guardian Challenge',
-};
-
 const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Read the guide',
   'skill-practice': 'Practice one step',
@@ -75,11 +68,66 @@ const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   guardian: 'Take the final region challenge when it is ready.',
 };
 
+function guardianNextStep(summary: RegionLearningSummary): string | undefined {
+  const firstMissing = summary.guardianEligibility.requirements.find((requirement) => !requirement.completed);
+  if (!firstMissing) return undefined;
+  if (firstMissing.id === 'field_guide') return 'Review the Field Guide first.';
+  if (firstMissing.id === 'attempt_count') return firstMissing.nextAction;
+  if (firstMissing.id === 'recent_high_score') return 'Save one stronger Exam Training attempt to open the Guardian.';
+  if (firstMissing.id === 'subtopic_spread') return 'Try one Exam Training question from another part of this region.';
+  return 'This Guardian question is still being prepared.';
+}
+
+function hubActionPrimaryStudentCopy(input: {
+  fieldGuideCompleted: boolean;
+  page: HubActionPageId;
+  regionName: string;
+  summary: RegionLearningSummary;
+}): { eyebrow: string; title: string; description: string; button: string } {
+  if (input.page === 'field-guide') {
+    return {
+      eyebrow: 'Current step · Do this next',
+      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : 'Start here: review one Field Guide step.',
+      description: input.fieldGuideCompleted
+        ? 'Use the guide as a quick reset before practice.'
+        : 'Read the next guide step before practice. This is the lowest-pressure first step before the exam question appears.',
+      button: input.fieldGuideCompleted ? 'Open Field Guide' : 'Start here',
+    };
+  }
+
+  if (input.page === 'skill-practice') {
+    const needsFirstCheck = input.summary.learningActivityReadiness.quickCheckAttempts === 0;
+    return {
+      eyebrow: 'Current step · Do this next',
+      title: needsFirstCheck ? 'Skill Practice: try one short skill check.' : 'Skill Practice: build the method with one guided step.',
+      description: needsFirstCheck
+        ? 'It is short and low-stakes, so you get a first win before full exam pressure.'
+        : 'Use one guided task to settle the method before the next exam question.',
+      button: needsFirstCheck ? 'Start short check' : 'Start guided practice',
+    };
+  }
+
+  if (input.page === 'guardian') {
+    return {
+      eyebrow: 'Current step · Do this next',
+      title: 'Guardian ready: enter the final check.',
+      description: `${input.regionName} is open. This is a scored challenge, not ordinary practice.`,
+      button: 'Enter Guardian',
+    };
+  }
+
+  return {
+    eyebrow: 'Current step · Do this next',
+    title: `Next: do one exam question for ${input.regionName}.`,
+    description: input.summary.trainingSession.reason || hubActionPrimaryCopy[input.page],
+    button: 'Start exam question',
+  };
+}
+
 function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSummary): string | undefined {
   if (page !== 'guardian') return undefined;
   if (summary.guardianEligibility.eligible) return undefined;
-  const firstMissing = summary.guardianEligibility.requirements.find((requirement) => !requirement.completed);
-  return firstMissing?.detail ?? 'Complete the listed Guardian evidence first.';
+  return guardianNextStep(summary) ?? 'Complete one more region step before challenging the Guardian.';
 }
 
 function skillPracticeFocusForPage(page: RegionLearningPageId, summary: RegionLearningSummary): SkillPracticeFocus {
@@ -382,13 +430,6 @@ function hubActionIcon(page: HubActionPageId): ReactNode {
   return <ShieldCheck size={22} />;
 }
 
-function hubActionButtonLabel(page: HubActionPageId): string {
-  if (page === 'field-guide') return 'Start Field Guide';
-  if (page === 'skill-practice') return 'Start Skill Practice';
-  if (page === 'exam-training') return 'Start Exam Training';
-  return 'Start Guardian';
-}
-
 function hubActionState(input: {
   canTrain: boolean;
   fieldGuideCompleted: boolean;
@@ -494,6 +535,12 @@ function RegionHubHome({
     summary,
     studentRegionAccess,
   });
+  const primaryCopy = hubActionPrimaryStudentCopy({
+    fieldGuideCompleted,
+    page: primaryPage,
+    regionName: theme.title,
+    summary,
+  });
   const steps: Array<{ page: HubActionPageId; label: string; state: 'complete' | 'in-progress' | 'ready' | 'locked' }> = [
     {
       page: 'field-guide',
@@ -582,9 +629,9 @@ function RegionHubHome({
           <section className={`region-current-step-card${primaryActionState.disabled ? ' is-locked' : ''}`} aria-label="Current region step">
             <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(primaryPage)}</span>
             <div className="region-home-primary-copy">
-              <small>Current step</small>
-              <strong>{hubActionLabels[primaryPage]}</strong>
-              <p>{hubActionPrimaryCopy[primaryPage]}</p>
+              <small>{primaryCopy.eyebrow}</small>
+              <strong>{primaryCopy.title}</strong>
+              <p>{primaryCopy.description}</p>
             </div>
             <span className="region-home-action-status">
               {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}
@@ -598,10 +645,10 @@ function RegionHubHome({
               onClick={() => onNavigatePage?.(primaryPage)}
             >
               {hubActionIcon(primaryPage)}
-              {hubActionButtonLabel(primaryPage)}
+              {primaryCopy.button}
             </button>
             {hubActionLockReason(primaryPage, summary) ? (
-              <p className="region-home-lock-reason">Locked: {hubActionLockReason(primaryPage, summary)}</p>
+              <p className="region-home-lock-reason">{hubActionLockReason(primaryPage, summary)}</p>
             ) : null}
           </section>
         </aside>

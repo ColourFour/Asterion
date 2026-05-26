@@ -76,7 +76,7 @@ describe('Exam Training dashboard data', () => {
     expect(topics.map((topic) => topic.name)).toContain('Binomial Validity Range');
     expect(topics.map((topic) => topic.name)).toContain('Vector Scalar Product');
     expect(topics.every((topic) => topic.status === 'not_tried')).toBe(true);
-    expect(topics.every((topic) => topic.evidenceLabel === 'Not enough evidence yet')).toBe(true);
+    expect(topics.every((topic) => topic.evidenceLabel === 'Try a question first')).toBe(true);
   });
 
   it('projects topic status only from clean exam-practice evidence', () => {
@@ -96,7 +96,7 @@ describe('Exam Training dashboard data', () => {
       name: 'Binomial Validity Range',
       status: 'strong',
       scorePercent: 80,
-      evidenceLabel: 'Recent exam-practice signal',
+      evidenceLabel: 'Recent saved practice',
     });
     expect(modulus).toMatchObject({
       status: 'not_tried',

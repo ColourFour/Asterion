@@ -262,7 +262,7 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Compare with scheme');
     expect(container.querySelector('.self-mark-task-flow')?.textContent).toContain('Save attempt');
     expect(container.textContent).toContain('Use this image to decide each mark. Asterion does not auto-mark exam work.');
-    expect(container.textContent).toContain('Use the official mark scheme image above.');
+    expect(container.textContent).toContain('Compare your working with the mark scheme');
     expect(container.textContent).toContain('Enter numeric M, B, and A totals from the official mark scheme.');
     expect(Array.from(container.querySelectorAll<HTMLInputElement>('.exam-mark-row input')).map((input) => input.placeholder)).toEqual(['0', '0', '0']);
   });

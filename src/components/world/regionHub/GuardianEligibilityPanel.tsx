@@ -51,7 +51,7 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
   if (summary.guardianEligibility.eligible && guardianQuestion) {
     return {
       label: 'Enter the Guardian Challenge',
-      helper: 'Your evidence is ready for the Guardian trial.',
+      helper: 'You have done enough region practice to try the Guardian trial.',
       launch: true,
     };
   }
@@ -72,7 +72,7 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     || firstMissing?.id === 'subtopic_spread'
   ) {
     return {
-      label: firstMissing.id === 'attempt_count' ? 'Build exam evidence' : 'Try another Exam Training question',
+      label: firstMissing.id === 'attempt_count' ? 'Save one exam attempt' : 'Try another Exam Training question',
       page: 'exam-training',
       helper: firstMissing.nextAction ?? firstMissing.detail,
     };
@@ -107,9 +107,9 @@ export function GuardianEligibilityPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 4 · Guardian evidence"
+      eyebrow="Step 4 · Guardian"
       title="Guardian Challenge"
-      description="A final region challenge unlocked by saved practice evidence."
+      description="A final region challenge that opens after enough saved practice."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card guardian-readiness-card"
@@ -120,7 +120,7 @@ export function GuardianEligibilityPanel({
             <Trophy size={22} />
             <div>
               <strong>Region restored</strong>
-              <span>Guardian cleared from saved practice evidence. {regionName} restoration sigil unlocked.</span>
+              <span>Guardian cleared from saved practice. {regionName} restoration sigil unlocked.</span>
             </div>
           </div>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
@@ -150,7 +150,7 @@ export function GuardianEligibilityPanel({
             {action.label}
           </button>
           <details className="guardian-evidence-detail">
-            <summary>Readiness evidence</summary>
+            <summary>What opened the Guardian?</summary>
             <div className="guardian-requirement-grid" aria-label="Guardian requirements">
               {summary.guardianEligibility.requirements.map((requirement) => (
                 <article className="guardian-requirement-card is-complete" key={requirement.id}>
@@ -172,7 +172,7 @@ export function GuardianEligibilityPanel({
         </>
       ) : (
         <>
-          <p className="guardian-encouragement">The vault opens when your exam evidence is ready.</p>
+          <p className="guardian-encouragement">The vault opens after enough saved region practice.</p>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
             {summary.guardianEligibility.requirements.map((requirement) => (
               <article className={`guardian-requirement-card${requirement.completed ? ' is-complete' : ' is-locked'}`} key={requirement.id}>
@@ -210,12 +210,12 @@ export function GuardianEligibilityPanel({
             </button>
           </div>
           <details className="guardian-evidence-detail">
-            <summary>Completed evidence</summary>
+            <summary>What is already done?</summary>
             <ul className="guardian-requirements completed-requirements">
               {completed.map((requirement) => (
                 <li key={requirement.id}><CheckCircle2 size={16} /> {requirement.detail}</li>
               ))}
-              {completed.length === 0 ? <li><Circle size={16} /> No guardian requirements completed yet.</li> : null}
+              {completed.length === 0 ? <li><Circle size={16} /> Start with the Field Guide, then save practice attempts.</li> : null}
             </ul>
             {missing.length ? (
               <ul className="guardian-requirements missing-requirements">

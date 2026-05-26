@@ -46,16 +46,16 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
   const statusCopy = {
     locked: {
       eyebrow: 'Step 4 · Final gate locked',
-      description: `${regionName} is sealed. Build your evidence to unlock the Guardian trial.`,
+      description: `${regionName} is sealed. Save enough region practice to unlock the Guardian trial.`,
       label: 'Vault locked',
       title: `${regionName} is sealed`,
-      body: 'The challenge unlocks when your evidence is ready.',
+      body: 'The challenge opens after the guide and enough scored practice.',
       anticipation: 'The Guardian is waiting.',
       icon: <Lock size={22} aria-label="Guardian locked" />,
     },
     ready: {
       eyebrow: 'Step 4 · Guardian ready',
-      description: `${regionName} is open. Your evidence can launch the Guardian trial.`,
+      description: `${regionName} is open. Your saved practice can launch the Guardian trial.`,
       label: 'Guardian ready',
       title: 'The gate is open',
       body: 'Enter the final region challenge when you are ready.',
@@ -64,7 +64,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
     },
     cleared: {
       eyebrow: 'Step 4 · Guardian cleared',
-      description: `${regionName} has been restored by saved Guardian evidence.`,
+      description: `${regionName} has been restored by a saved Guardian clear.`,
       label: 'Region restored',
       title: 'Guardian trial cleared',
       body: 'The region is restored. Keep your evidence strong with later review.',
@@ -91,7 +91,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
             {status === 'locked' ? <Lock size={20} aria-hidden="true" /> : <Sparkles size={20} aria-hidden="true" />}
             <div>
               <strong>{statusCopy.anticipation}</strong>
-              <span>{status === 'locked' ? 'No challenge prompt or answer controls appear until the evidence gate opens.' : 'Evidence details stay below so the unlock remains honest.'}</span>
+              <span>{status === 'locked' ? 'Do the next region task first; the challenge prompt stays hidden until then.' : 'The unlock details stay below so you know why this opened.'}</span>
             </div>
           </div>
         </div>

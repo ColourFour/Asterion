@@ -65,17 +65,17 @@ const practiceCards: Array<{
 }> = [
   {
     mode: 'core',
-    explanation: 'Balanced exam-style practice across your topics.',
+    explanation: 'Balanced exam-style practice. Start here when you want a steady next question.',
     icon: <Target size={30} />,
   },
   {
     mode: 'weak',
-    explanation: 'Extra practice where you need it most.',
+    explanation: 'Review based on saved mistakes and lower scores. If you have no saved attempt yet, start with Core.',
     icon: <BarChart3 size={30} />,
   },
   {
     mode: 'stretch',
-    explanation: 'Harder exam-style items to extend you.',
+    explanation: 'Challenge-style practice. Selection is still exam-style, not a precise difficulty engine.',
     icon: <Mountain size={30} />,
   },
 ];
@@ -205,9 +205,11 @@ function RouteStrip({
 
 function PracticeChoiceCards({
   disabledReason,
+  hasSavedAttempt,
   onStartPractice,
 }: {
   disabledReason?: string;
+  hasSavedAttempt: boolean;
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
 }) {
   return (
@@ -223,15 +225,16 @@ function PracticeChoiceCards({
         {practiceCards.map((card) => (
           <button
             type="button"
-            className={`exam-training-practice-card practice-${card.mode}`}
+            className={`exam-training-practice-card practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}`}
             key={card.mode}
             disabled={Boolean(disabledReason)}
-            onClick={() => onStartPractice(card.mode)}
+            onClick={() => onStartPractice(card.mode === 'weak' && !hasSavedAttempt ? 'core' : card.mode)}
           >
             <span className="exam-training-practice-icon" aria-hidden="true">{card.icon}</span>
             <span>
               <strong>{EXAM_TRAINING_PRACTICE_LABELS[card.mode]}</strong>
               <small>{card.explanation}</small>
+              {card.mode === 'weak' && !hasSavedAttempt ? <em>One saved attempt unlocks better review.</em> : null}
             </span>
           </button>
         ))}
@@ -244,7 +247,7 @@ function PracticeChoiceCards({
       ) : (
         <div className="exam-training-safe-note">
           <Info size={18} aria-hidden="true" />
-          <span>Pick the kind of practice you need today. Your saved marks help shape what comes next.</span>
+          <span>Pick the kind of practice you need today. Saved marks and mistake tags shape what comes next.</span>
         </div>
       )}
     </section>
@@ -259,9 +262,9 @@ function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] 
       <div className="exam-training-section-heading mastery-heading">
         <div>
           <h3 id="exam-training-mastery-title">Your Topic Mastery</h3>
-          <p>Mastery reflects clean exam-practice evidence. Empty topics need more attempts first.</p>
+          <p>Mastery reflects saved exam practice. Empty topics need a first attempt.</p>
         </div>
-        <span className="exam-training-evidence-chip">{attemptedCount} topic signal{attemptedCount === 1 ? '' : 's'}</span>
+        <span className="exam-training-evidence-chip">{attemptedCount} topic{attemptedCount === 1 ? '' : 's'} tried</span>
       </div>
       <div className="exam-training-mastery-legend" aria-label="Mastery status legend">
         {masteryLegend.map((item) => (
@@ -428,6 +431,10 @@ export function ExamTrainingDashboard({
 }: ExamTrainingDashboardProps) {
   const topicMastery = buildExamTrainingTopicMastery({ progress, questions });
   const goals = buildExamTrainingRewardGoals({ progress, topicMastery, worldProgress });
+  const selectedRegionProgress = selectedRegion
+    ? worldProgress.find((item) => item.region.id === selectedRegion.id)
+    : undefined;
+  const hasSavedAttempt = selectedRegion ? Boolean(selectedRegionProgress?.attempts) : progress.attempts.length > 0;
   return (
     <section className="exam-training-dashboard" aria-labelledby="exam-training-dashboard-title">
       <header className="exam-training-dashboard-header">
@@ -453,7 +460,7 @@ export function ExamTrainingDashboard({
       />
 
       <div className="exam-training-dashboard-grid">
-        <PracticeChoiceCards disabledReason={practiceDisabledReason} onStartPractice={onStartPractice} />
+        <PracticeChoiceCards disabledReason={practiceDisabledReason} hasSavedAttempt={hasSavedAttempt} onStartPractice={onStartPractice} />
         <TopicMasteryPanel topics={topicMastery} />
         <aside className="exam-training-side-rail" aria-label="Avatar goals and class motivation">
           <AvatarRewardsPanel

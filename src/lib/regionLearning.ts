@@ -17,9 +17,9 @@ export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
 export const TRAINING_SESSION_LABELS: Record<TrainingSessionIntent, string> = {
   warm_up: 'Guided review',
-  core_practice: 'Core practice',
-  weak_area_review: 'Weak-area review',
-  challenge: 'Challenge',
+  core_practice: 'Core Practice',
+  weak_area_review: 'Weak Area Review',
+  challenge: 'Stretch Problems',
 };
 
 export interface GuardianEligibility {
@@ -191,12 +191,12 @@ export function computeGuardianEligibility(input: {
     },
     {
       id: 'attempt_count',
-      label: 'Practice evidence saved',
+      label: 'Saved practice attempts',
       completed: attemptsMissing === 0,
       detail: attemptsMissing === 0
         ? `${attemptCountText(evidenceAttempts.length)} recorded in this region.`
         : `Save at least 3 attempts in this region (${evidenceAttempts.length}/3).`,
-      nextAction: `Train in this region and save ${attemptsMissingText(attemptsMissing)} to build guardian evidence.`,
+      nextAction: `Do one Exam Training question and save your marks. You need ${attemptsMissingText(attemptsMissing)} before the Guardian opens.`,
       progress: { current: Math.min(evidenceAttempts.length, 3), target: 3 },
     },
     {
@@ -305,7 +305,7 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'weak_area_review',
       label: TRAINING_SESSION_LABELS.weak_area_review,
-      reason: 'Weak-area review is selected because your latest local evidence is below 55%. This uses simple saved-score rules for now.',
+      reason: 'Weak Area Review is suggested because your latest saved score is below 55%.',
     };
   }
 
@@ -313,7 +313,7 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'core_practice',
       label: TRAINING_SESSION_LABELS.core_practice,
-      reason: 'Core practice is selected because the Field Guide is underway and the Guardian needs at least 3 saved attempts.',
+      reason: 'Core Practice is suggested because you are building your first saved attempts in this region.',
     };
   }
 
@@ -321,14 +321,14 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'challenge',
       label: TRAINING_SESSION_LABELS.challenge,
-      reason: 'Challenge is selected because your average and recent scores are both at least 70%, so you are near Guardian readiness.',
+      reason: 'Stretch Problems are suggested because your average and recent saved scores are both at least 70%.',
     };
   }
 
   return {
     intent: 'core_practice',
     label: TRAINING_SESSION_LABELS.core_practice,
-    reason: 'Core practice is selected because you are building stable region evidence before the Guardian unlocks.',
+    reason: 'Core Practice is suggested because it gives balanced exam-style practice before the Guardian opens.',
   };
 }
 
@@ -406,10 +406,10 @@ export function nextRecommendedRegionAction(input: {
   }
 
   return {
-    kind: 'training',
-    label: `Start ${trainingSession.label}`,
-    explanation: learningActivityReadiness?.attempts
-      ? trainingSession.reason
+      kind: 'training',
+      label: `Start ${trainingSession.label}`,
+      explanation: learningActivityReadiness?.attempts
+        ? trainingSession.reason
       : guardianEligibility.requirements.find((requirement) => !requirement.completed)?.nextAction ?? trainingSession.reason,
   };
 }
