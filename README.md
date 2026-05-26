@@ -32,7 +32,7 @@ Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work
 - [Region Learning Loop Roadmap](docs/student-loop/region-learning-loop-roadmap.md): detailed learning-loop state and guardrails.
 - [P3 Curriculum Alignment Roadmap](docs/curriculum/P3_CURRICULUM_ALIGNMENT_ROADMAP.md): CAIE 9709 P3 alignment plan with P1 prerequisite boundaries, coverage audit phases, and mastery-evidence rules.
 - [Content Lab Architecture](docs/content/content-lab-architecture.md): repo-local teaching-content pipeline.
-- [Phase 2 Content Lab Gold Skill Packs](docs/content/phase-2-content-lab-gold-skill-packs.md): P3-only Gold Skill Pack Depth Pass for real-student readiness.
+- [Phase 2 Content Lab Gold Skill Packs](docs/content/phase-2-content-lab-gold-skill-packs.md): P3-only Gold Skill Pack Depth Pass for real-student readiness. Compatibility path: [docs/phase-2-content-lab-gold-skill-packs.md](docs/phase-2-content-lab-gold-skill-packs.md).
 - [Cleanup Archive](docs/archive/cleanup-2026-05-19/README.md): historical May 2026 snapshots and superseded planning notes retained for continuity.
 - [Docs Review Archive](docs/archive/docs-review-2026-05-21/README.md): dated audits, reports, handoffs, smoke artifacts, and superseded review notes moved out of the active docs root.
 

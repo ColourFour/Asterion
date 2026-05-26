@@ -1,13 +1,10 @@
 import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile } from '../../types';
-import { AVATAR_SLOT_LABELS, AVATAR_SLOTS, type AvatarItem } from '../../data/avatarCatalog';
+import { AVATAR_SLOT_LABELS, AVATAR_SLOTS } from '../../data/avatarCatalog';
 import { calculateAcademySummary } from '../../lib/academyProgress';
 import { getAvatarLayers } from '../../lib/avatarLayers';
-import { equipAvatarItem, normalizeAvatarSettings } from '../../lib/avatarStore';
-import { selectNextAvatarUnlock } from '../../lib/avatarUnlocks';
+import { normalizeAvatarSettings } from '../../lib/avatarStore';
 import { calculateP3ReadinessIndex, type P3ReadinessIndex } from '../../lib/p3Readiness';
 import { AvatarPreview } from './AvatarPreview';
-import { GearInventory } from './GearInventory';
-import { NextUnlockCard } from './NextUnlockCard';
 
 interface AvatarBuilderProps {
   profile: StudentProfile;
@@ -38,7 +35,6 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
   const p3Readiness = calculateP3ReadinessIndex({ attempts, questions, regionLearning });
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
   const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
-  const nextUnlock = selectNextAvatarUnlock(regionProgress);
   const activeRegionCount = regionProgress.filter((progress) => progress.isActive).length;
   const restoredTotal = Math.max(activeRegionCount, avatarGear.restoredRegions, 1);
   const restoredPercent = Math.round((avatarGear.restoredRegions / restoredTotal) * 100);
@@ -49,16 +45,12 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
     ? `${avatarGear.strongestRegionName} (${avatarGear.strongestRegionRank})`
     : 'No restored region yet';
 
-  function handleEquip(item: AvatarItem) {
-    onAvatarChange(equipAvatarItem(avatarForProgress, item, regionProgress));
-  }
-
   return (
     <section className="avatar-builder-page" aria-labelledby="avatar-builder-title">
       <header className="avatar-builder-header">
         <span className="mode-pill">Character sheet</span>
         <h2 id="avatar-builder-title">Avatar Builder</h2>
-        <p>Equip local reward cosmetics earned from saved region evidence. This sheet is saved on this browser/device only.</p>
+        <p>Your fixed starter avatar is active for this pilot. Progress evidence is still tracked locally for future visible rewards.</p>
       </header>
 
       <section className="avatar-builder-hero">
@@ -149,7 +141,20 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
                 </span>
               </div>
 
-              <NextUnlockCard nextUnlock={nextUnlock} />
+              <article className="next-unlock-card avatar-starter-unlock-card">
+                <div className="next-unlock-preview" aria-hidden="true">
+                  <span>Later</span>
+                </div>
+                <div className="next-unlock-copy">
+                  <span>Future visible styles</span>
+                  <h3>More avatar styles unlock later</h3>
+                  <p>For this pilot, your saved academic evidence is tracked while visible hair, expression, and outfit choices stay hidden until their previews and layers are ready.</p>
+                  <div className="next-unlock-meter" aria-label="Starter avatar active">
+                    <span style={{ width: '25%' }} />
+                  </div>
+                  <strong>Starter avatar active</strong>
+                </div>
+              </article>
             </div>
           </div>
         </div>
@@ -186,7 +191,20 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
         </aside>
       </section>
 
-      <GearInventory avatar={avatarForProgress} regionProgress={regionProgress} onEquip={handleEquip} />
+      <section className="gear-inventory avatar-starter-honesty-panel" aria-labelledby="gear-inventory-title">
+        <div className="gear-inventory-heading">
+          <div>
+            <span className="mode-pill">Starter avatar active</span>
+            <h3 id="gear-inventory-title">Avatar Gear</h3>
+          </div>
+          <p>More avatar styles unlock later. Hair, expression, outfit, accessory, aura, companion, and frame choices stay hidden until their live layers and previews visibly change the avatar.</p>
+        </div>
+        <div className="avatar-honesty-grid" aria-label="Avatar customization status">
+          <span><strong>Visible now</strong><small>v0.3 starter avatar</small></span>
+          <span><strong>Coming soon</strong><small>Hair and expression choices</small></span>
+          <span><strong>Coming soon</strong><small>Outfit and reward cosmetics</small></span>
+        </div>
+      </section>
     </section>
   );
 }

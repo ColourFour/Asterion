@@ -209,7 +209,7 @@ export function SkillPracticePanel({
             <p>Exam Training uses canonical question images and mark schemes.</p>
             <button
               type="button"
-              className="primary-button"
+              className="primary-button next-step-glow"
               disabled={!canUseExamPractice}
               onClick={onContinueToExamPractice}
             >

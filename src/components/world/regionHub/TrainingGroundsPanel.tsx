@@ -43,21 +43,21 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
       </details>
 
       <div className="training-mode-preview-grid" aria-label="Exam Training modes">
-        <article className={summary.trainingSession.intent === 'core_practice' ? 'is-recommended' : undefined}>
+        <article className={summary.trainingSession.intent === 'core_practice' ? 'is-recommended next-step-glow' : undefined}>
           <Target size={20} aria-hidden="true" />
           <div>
             <strong>Core Practice</strong>
             <span>Balanced exam practice. Good when you want the next ordinary region question.</span>
           </div>
         </article>
-        <article className={summary.trainingSession.intent === 'weak_area_review' ? 'is-recommended' : undefined}>
+        <article className={summary.trainingSession.intent === 'weak_area_review' ? 'is-recommended next-step-glow' : undefined}>
           <BarChart3 size={20} aria-hidden="true" />
           <div>
             <strong>Weak Area Review</strong>
             <span>{hasSavedAttempt ? 'Uses your recent saved score to focus the next review.' : 'Needs one saved attempt first. Start with Core Practice or a short check.'}</span>
           </div>
         </article>
-        <article className={summary.trainingSession.intent === 'challenge' ? 'is-recommended' : undefined}>
+        <article className={summary.trainingSession.intent === 'challenge' ? 'is-recommended next-step-glow' : undefined}>
           <Mountain size={20} aria-hidden="true" />
           <div>
             <strong>Stretch Problems</strong>
@@ -67,7 +67,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
       </div>
 
       <button
-        className="training-primary-start"
+        className="training-primary-start next-step-glow"
         type="button"
         disabled={!canTrain}
         onClick={() => onStartTraining(summary.trainingSession.intent)}

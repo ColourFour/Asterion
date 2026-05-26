@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { AVATAR_CATALOG, AVATAR_SLOT_LABELS, type AvatarItem } from '../../data/avatarCatalog';
+import { AVATAR_CATALOG } from '../../data/avatarCatalog';
 import { DEFAULT_AVATAR_SETTINGS, DEFAULT_EQUIPPED_AVATAR_ITEMS, normalizeAvatarSettings } from '../../lib/avatarStore';
-import type { AvatarSettings, AvatarSlot, StudentProfile } from '../../types';
+import type { AvatarSettings, StudentProfile } from '../../types';
 import { AvatarPreview } from '../profile/AvatarPreview';
 import { AsterionMark } from '../shared/AsterionMark';
 import { TwinklingStarfield } from '../shared/TwinklingStarfield';
@@ -20,43 +20,17 @@ const onboardingSteps: { id: OnboardingStep; label: string }[] = [
   { id: 'ready', label: 'Ready' },
 ];
 
-const starterAvatarSlots: AvatarSlot[] = ['base', 'hair', 'face', 'outfit'];
-const paletteOptions: Array<{ id: AvatarSettings['palette']; label: string }> = [
-  { id: 'ember', label: 'Ember' },
-  { id: 'aqua', label: 'Aqua' },
-  { id: 'violet', label: 'Violet' },
-  { id: 'leaf', label: 'Leaf' },
-];
-const crestOptions: Array<{ id: AvatarSettings['crest']; label: string }> = [
-  { id: 'star', label: 'Star' },
-  { id: 'bolt', label: 'Bolt' },
-  { id: 'compass', label: 'Compass' },
-  { id: 'orb', label: 'Orb' },
-];
-
-function starterItemsForSlot(slot: AvatarSlot): AvatarItem[] {
-  const starterItems = AVATAR_CATALOG.filter((item) => (
-    item.slot === slot
-    && item.unlockCondition.type === 'starter'
-    && !item.isEmpty
-  ));
-  return starterItems.length ? starterItems : AVATAR_CATALOG.filter((item) => item.id === DEFAULT_EQUIPPED_AVATAR_ITEMS[slot]);
-}
-
 export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProps) {
   const academyNameHelperId = 'academy-name-helper';
   const [activeStep, setActiveStep] = useState<OnboardingStep>('welcome');
   const [academyName, setAcademyName] = useState(profile.avatarName);
-  const [avatar, setAvatar] = useState<AvatarSettings>(() => normalizeAvatarSettings(DEFAULT_AVATAR_SETTINGS));
+  const [avatar] = useState<AvatarSettings>(() => normalizeAvatarSettings(DEFAULT_AVATAR_SETTINGS));
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const displayName = academyName.trim() || profile.avatarName.trim() || profile.realName.trim() || 'Asterion Student';
   const activeStepIndex = onboardingSteps.findIndex((step) => step.id === activeStep);
   const canGoBack = activeStepIndex > 0;
   const selectedEquipped = normalizeAvatarSettings(avatar).equipped ?? DEFAULT_EQUIPPED_AVATAR_ITEMS;
   const selectedBody = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.base)?.displayName ?? 'Starter body';
-  const selectedHair = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.hair)?.displayName ?? 'Starter hair';
-  const selectedFace = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.face)?.displayName ?? 'Starter face';
-  const selectedOutfit = AVATAR_CATALOG.find((item) => item.id === selectedEquipped.outfit)?.displayName ?? 'Starter outfit';
 
   useEffect(() => {
     stepHeadingRef.current?.focus();
@@ -85,24 +59,6 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
     onComplete({ avatarName: displayName, avatarId: 'custom-starter', avatar });
   }
 
-  function updateEquipped(slot: AvatarSlot, itemId: string) {
-    setAvatar((current) => normalizeAvatarSettings({
-      ...current,
-      equipped: {
-        ...(current.equipped ?? DEFAULT_EQUIPPED_AVATAR_ITEMS),
-        [slot]: itemId,
-      },
-    }));
-  }
-
-  function updatePalette(palette: AvatarSettings['palette']) {
-    setAvatar((current) => normalizeAvatarSettings({ ...current, palette }));
-  }
-
-  function updateCrest(crest: AvatarSettings['crest']) {
-    setAvatar((current) => normalizeAvatarSettings({ ...current, crest }));
-  }
-
   return (
     <main className="app-shell onboarding-shell student-onboarding-shell">
       <TwinklingStarfield />
@@ -117,7 +73,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                   : activeStep === 'identity'
                     ? 'Confirm your academy identity'
                     : activeStep === 'avatar'
-                      ? 'Choose a starter avatar'
+                      ? 'Starter avatar active'
                       : 'Ready to enter the academy'}
               </h1>
               <p>
@@ -126,7 +82,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                   : activeStep === 'identity'
                     ? 'Check your class details and choose the name shown on your map and avatar card.'
                     : activeStep === 'avatar'
-                      ? 'Choose one starter look for your map and region cards.'
+                      ? 'Your fixed starter avatar is ready for the pilot. More visible styles unlock later.'
                       : 'Review your setup, then enter the P3 Astral Academy world map.'}
               </p>
             </div>
@@ -201,7 +157,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                 <div>
                   <span>Map name</span>
                   <strong>{displayName}</strong>
-                  <small>{selectedBody} · {selectedHair}</small>
+                  <small>{selectedBody} · starter avatar active</small>
                 </div>
               </div>
             </section>
@@ -215,40 +171,14 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                   <div>
                     <span>Current avatar</span>
                     <strong>{displayName}</strong>
-                    <small>{selectedBody} · {selectedHair} · {selectedFace}</small>
+                    <small>{selectedBody} · starter avatar active</small>
                   </div>
                 </div>
 
-                <div>
-                  <div className="academy-avatar-control-grid">
-                    {starterAvatarSlots.map((slot) => (
-                      <label key={slot}>
-                        {slot === 'base' ? 'Body type' : AVATAR_SLOT_LABELS[slot]}
-                        <select value={selectedEquipped[slot]} onChange={(event) => updateEquipped(slot, event.target.value)}>
-                          {starterItemsForSlot(slot).map((item) => (
-                            <option key={item.id} value={item.id}>{item.displayName}</option>
-                          ))}
-                        </select>
-                      </label>
-                    ))}
-                    <label>
-                      House color
-                      <select value={avatar.palette} onChange={(event) => updatePalette(event.target.value as AvatarSettings['palette'])}>
-                        {paletteOptions.map((option) => (
-                          <option key={option.id} value={option.id}>{option.label}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      Crest
-                      <select value={avatar.crest} onChange={(event) => updateCrest(event.target.value as AvatarSettings['crest'])}>
-                        {crestOptions.map((option) => (
-                          <option key={option.id} value={option.id}>{option.label}</option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                  <p className="academy-field-helper">You can change your look later from your profile.</p>
+                <div className="avatar-starter-honesty-panel">
+                  <span className="mode-pill">Starter avatar active</span>
+                  <h2>More avatar styles unlock later.</h2>
+                  <p>Hair, expression, outfit, and color choices are coming soon. For this pilot, the starter avatar shown here is the version used on the map and region cards.</p>
                 </div>
               </div>
             </section>
@@ -261,7 +191,7 @@ export function StudentOnboarding({ profile, onComplete }: StudentOnboardingProp
                 <div>
                   <span>Ready for the map</span>
                   <strong>{displayName}</strong>
-                  <small>{selectedHair} · {selectedOutfit} · {profile.classGroup}</small>
+                  <small>Starter avatar active · {profile.classGroup}</small>
                 </div>
               </div>
               <div className="academy-ready-checklist" aria-label="Ready checklist">

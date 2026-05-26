@@ -212,6 +212,7 @@ function PracticeChoiceCards({
   hasSavedAttempt: boolean;
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
 }) {
+  const recommendedMode: ExamTrainingPracticeMode = hasSavedAttempt ? 'weak' : 'core';
   return (
     <section className="exam-training-practice-panel" aria-labelledby="exam-training-practice-title">
       <div className="exam-training-section-heading">
@@ -225,7 +226,7 @@ function PracticeChoiceCards({
         {practiceCards.map((card) => (
           <button
             type="button"
-            className={`exam-training-practice-card practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}`}
+            className={`exam-training-practice-card practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}${card.mode === recommendedMode && !disabledReason ? ' next-step-glow' : ''}`}
             key={card.mode}
             disabled={Boolean(disabledReason)}
             onClick={() => onStartPractice(card.mode === 'weak' && !hasSavedAttempt ? 'core' : card.mode)}
@@ -351,7 +352,7 @@ function AvatarRewardsPanel({
           <div className="exam-training-avatar-copy">
             <strong>{avatarName}</strong>
             <span>{avatarGear.title}</span>
-            {avatarGear.nextUnlock ? <small>Next unlock: {avatarGear.nextUnlock}</small> : <small>Build evidence to unlock more gear.</small>}
+            <small>Starter avatar active. More visible styles unlock later.</small>
           </div>
         </div>
       </section>

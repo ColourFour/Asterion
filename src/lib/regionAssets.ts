@@ -1,5 +1,4 @@
 export const regionHubAssets = {
-  'algebra-forge': '/assets/region-art/optimized/algebra-region-hub-960.png',
   'calculus-cliffs': '/assets/region-art/optimized/calc-region-hub-960.png',
   'complex-harbor': '/assets/region-art/optimized/argand-region-hub-960.png',
   'differential-shrine': '/assets/region-art/optimized/differential-region-hub-960.png',
@@ -13,7 +12,6 @@ export const regionHubAssets = {
 export type RegionHubAssetId = keyof typeof regionHubAssets;
 
 export const regionHubAssetDimensions = {
-  'algebra-forge': { width: 960, height: 960 },
   'calculus-cliffs': { width: 960, height: 960 },
   'complex-harbor': { width: 960, height: 960 },
   'differential-shrine': { width: 960, height: 960 },

@@ -54,9 +54,9 @@ export function AvatarPanel({ avatarName = 'Explorer', avatar, topicProfiles, ge
         </div>
         {gear?.nextUnlock ? (
           <div className="avatar-next-unlock">
-            <span>Next character upgrade</span>
-            <strong>{gear.nextUnlock}</strong>
-            <p>{gear.nextUnlockRequirement}</p>
+            <span>Future visible styles</span>
+            <strong>More avatar styles unlock later</strong>
+            <p>Saved academic evidence is tracked now; selectable hair, expression, outfit, and reward cosmetics stay hidden until their previews and live layers are ready.</p>
           </div>
         ) : (
           <div className="avatar-next-unlock">

@@ -1310,8 +1310,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(artwork).toBeTruthy();
     expect(artwork?.getAttribute('aria-label')).toBe('Algebra Vault region artwork');
     const artworkImage = artwork?.querySelector<HTMLImageElement>('.region-home-artwork-image');
-    expect(artworkImage).toBeTruthy();
-    expect(artworkImage?.getAttribute('src')).toBe(regionHubAssets['algebra-forge']);
+    expect(artworkImage).toBeFalsy();
+    expect(artwork?.querySelector('.region-home-artwork-svg')).toBeTruthy();
     expect(artwork?.textContent).not.toContain('placeholder');
 
     const currentStep = container.querySelector<HTMLElement>('.region-current-step-card');

@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import { nextRegionGoal } from '../../lib/academyProgress';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import type { AvatarSettings, RegionProgress } from '../../types';
 import { AvatarRenderer } from './AvatarRenderer';
@@ -21,7 +20,6 @@ interface WorldMapAvatarMarkerProps {
   regionProgress: RegionProgress[];
   location: AvatarLocation;
   slot?: AvatarMapSlot;
-  onContinue: () => void;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -53,15 +51,12 @@ export function WorldMapAvatarMarker({
   regionProgress,
   location,
   slot,
-  onContinue,
 }: WorldMapAvatarMarkerProps) {
   if (!location.region || !location.regionProgress || !slot) return null;
 
   const offset = markerOffset(slot, location.source);
   const x = clamp(slot.x + offset.x, 6, 94);
   const y = clamp(slot.y + offset.y, 8, 92);
-  const canContinue = location.regionProgress.isActive && location.regionProgress.availableQuestions > 0;
-  const goal = nextRegionGoal(location.regionProgress);
   const rank = location.regionProgress.rank;
   const cardSideClass = x > 72 ? 'card-left' : 'card-right';
   const cardVerticalClass = y > 72 ? 'card-above' : 'card-middle';
@@ -76,12 +71,7 @@ export function WorldMapAvatarMarker({
       } as CSSProperties}
       aria-label={`${location.label}: ${location.region.name}`}
     >
-      <button
-        type="button"
-        disabled={!canContinue}
-        onClick={onContinue}
-        aria-label={`${location.label}: continue in ${location.region.name}. ${goal.label}`}
-      >
+      <div className="avatar-marker-visual" aria-hidden="true">
         <span className="avatar-marker-ring" aria-hidden="true" />
         <AvatarRenderer avatarName={avatarName} avatar={avatar} regionProgress={regionProgress} mode="map" />
         <span className="avatar-marker-badge" aria-hidden="true">{rankBadge(rank)}</span>
@@ -90,7 +80,7 @@ export function WorldMapAvatarMarker({
           <strong>Continue here</strong>
           <span>{location.region.name}</span>
         </span>
-      </button>
+      </div>
     </aside>
   );
 }

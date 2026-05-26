@@ -317,11 +317,11 @@ function QuickCheckCard({
           {contract.explanation ? <p><MathText text={contract.explanation} /></p> : null}
           <div>
             {hasNextCheck ? (
-              <button className="activity-primary-action" type="button" onClick={onNextCheck}>Next</button>
+              <button className="activity-primary-action next-step-glow" type="button" onClick={onNextCheck}>Next</button>
             ) : onContinueToWarmUp ? (
-              <button className="activity-primary-action" type="button" onClick={onContinueToWarmUp}>Next</button>
+              <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToWarmUp}>Next</button>
             ) : onContinueToExamPractice ? (
-              <button className="activity-primary-action" type="button" onClick={onContinueToExamPractice}>Next</button>
+              <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button>
             ) : null}
             <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
           </div>

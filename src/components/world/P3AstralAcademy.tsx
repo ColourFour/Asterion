@@ -388,9 +388,6 @@ export function P3AstralAcademy({
             regionProgress={progress}
             location={avatarLocation}
             slot={avatarLocation.region ? mapLayout[avatarLocation.region.id] : undefined}
-            onContinue={() => {
-              if (avatarLocation.region) onTrain(avatarLocation.region);
-            }}
           />
         </div>
 

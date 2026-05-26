@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { getRegionHubAsset, getRegionHubAssetDimensions, regionHubAssets } from '../src/lib/regionAssets';
 import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
 
+const sourceAssetFallbackRegionIds = new Set(['algebra-forge']);
+
 function publicPathExists(path: string): boolean {
   return existsSync(join(process.cwd(), 'public', path.replace(/^\/+/, '')));
 }
@@ -18,10 +20,19 @@ function directoryFiles(path: string): string[] {
 
 describe('region hub assets', () => {
   it('covers canonical P3 regions with optimized runtime art paths', () => {
-    expect(Object.keys(regionHubAssets).sort()).toEqual(P3_ASTRAL_ACADEMY.regions.map((region) => region.id).sort());
+    const regionsWithRuntimeArt = P3_ASTRAL_ACADEMY.regions
+      .map((region) => region.id)
+      .filter((regionId) => !sourceAssetFallbackRegionIds.has(regionId));
+
+    expect(Object.keys(regionHubAssets).sort()).toEqual(regionsWithRuntimeArt.sort());
 
     for (const region of P3_ASTRAL_ACADEMY.regions) {
       const assetPath = getRegionHubAsset(region.id);
+      if (sourceAssetFallbackRegionIds.has(region.id)) {
+        expect(assetPath).toBeUndefined();
+        expect(getRegionHubAssetDimensions(region.id)).toBeUndefined();
+        continue;
+      }
       expect(assetPath).toMatch(/^\/assets\/region-art\/optimized\/.+-960\.png$/);
       expect(publicPathExists(assetPath ?? '')).toBe(true);
       expect(getRegionHubAssetDimensions(region.id)).toBeTruthy();

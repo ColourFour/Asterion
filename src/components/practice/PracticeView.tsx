@@ -867,7 +867,7 @@ export function PracticeView({
           </div>
           <p className="post-attempt-next-step">{nextRecommendedAction}</p>
           <div className="practice-actions">
-            {onContinuePractice ? <button className="primary-button" type="button" onClick={onContinuePractice}><RotateCcw size={16} /> Next</button> : null}
+            {onContinuePractice ? <button className="primary-button next-step-glow" type="button" onClick={onContinuePractice}><RotateCcw size={16} /> Next</button> : null}
             <button type="button" onClick={resetCurrentQuestionAttempt}>Try Again</button>
             {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Dashboard</button> : null}
           </div>

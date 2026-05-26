@@ -404,27 +404,17 @@ describe('Asterion intro page', () => {
     const avatarForm = container.querySelector('form[aria-label="Create academy avatar"]');
     expect(avatarForm).toBeTruthy();
     expect(container.textContent).toContain('Back');
-    expect(container.textContent).toContain('Body type');
-    expect(container.textContent).toContain('Hair');
-    expect(container.textContent).toContain('Face');
-    expect(container.textContent).toContain('Outfit');
-    expect(container.textContent).toContain('House color');
-    expect(container.textContent).toContain('Crest');
-    expect(avatarForm?.querySelectorAll('.academy-avatar-control-grid select')).toHaveLength(6);
-    expect(selectForLabel(container, 'Body type').value).toBe('student-body-a');
-    expect(selectForLabel(container, 'Hair').value).toBe('tousled-short');
-
-    setSelectValue(selectForLabel(container, 'Body type'), 'student-body-b');
-    setSelectValue(selectForLabel(container, 'Hair'), 'bob-with-bangs');
-    setSelectValue(selectForLabel(container, 'Face'), 'calm-neutral');
-    setSelectValue(selectForLabel(container, 'House color'), 'aqua');
-    setSelectValue(selectForLabel(container, 'Crest'), 'compass');
-
-    expect(selectForLabel(container, 'Hair').value).toBe('bob-with-bangs');
+    expect(container.textContent).toContain('Starter avatar active');
+    expect(container.textContent).toContain('More avatar styles unlock later');
+    expect(container.textContent).toContain('Hair, expression, outfit, and color choices are coming soon');
+    expect(container.textContent).not.toContain('Body type');
+    expect(container.textContent).not.toContain('House color');
+    expect(container.textContent).not.toContain('Crest');
+    expect(avatarForm?.querySelectorAll('.academy-avatar-control-grid select')).toHaveLength(0);
 
     await clickButtonContaining(container, 'Continue');
     expect(container.textContent).toContain('Ready to enter the academy');
-    expect(container.textContent).toContain('Bob with Bangs');
+    expect(container.textContent).toContain('Starter avatar active');
 
     await act(async () => {
       avatarForm?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -443,12 +433,12 @@ describe('Asterion intro page', () => {
       onboardingCompletedAt: expect.any(String),
     });
     expect(onboardedProgress.avatar).toMatchObject({
-      palette: 'aqua',
-      crest: 'compass',
+      palette: 'ember',
+      crest: 'star',
       equipped: expect.objectContaining({
-        base: 'student-body-b',
-        hair: 'bob-with-bangs',
-        face: 'calm-neutral',
+        base: 'student-body-a',
+        hair: 'tousled-short',
+        face: 'confident-smile',
         outfit: 'school-spirit-tracksuit',
       }),
     });

@@ -603,7 +603,7 @@ function RegionHubHome({
           </div>
           <ol>
             {steps.map((step) => (
-              <li className={`is-${step.state}`} key={step.page}>
+              <li className={`is-${step.state}${step.page === primaryPage && step.state !== 'locked' ? ' is-recommended-step' : ''}`} key={step.page}>
                 <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
                   <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(step.page)}</span>
                   <span className="region-home-action-copy">
@@ -626,7 +626,7 @@ function RegionHubHome({
         </div>
 
         <aside className="region-home-current-step region-home-rail" aria-label="Current step">
-          <section className={`region-current-step-card${primaryActionState.disabled ? ' is-locked' : ''}`} aria-label="Current region step">
+          <section className={`region-current-step-card${primaryActionState.disabled ? ' is-locked' : ' next-step-glow'}`} aria-label="Current region step">
             <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(primaryPage)}</span>
             <div className="region-home-primary-copy">
               <small>{primaryCopy.eyebrow}</small>
@@ -639,7 +639,7 @@ function RegionHubHome({
             </span>
             <button
               type="button"
-              className="region-current-step-button"
+              className="region-current-step-button next-step-glow"
               data-region-page={primaryPage}
               disabled={primaryActionState.disabled}
               onClick={() => onNavigatePage?.(primaryPage)}
@@ -676,7 +676,7 @@ function RegionJourneyBar({
       {steps.map((step, index) => (
         <button
           type="button"
-          className={`journey-step is-${step.state}`}
+          className={`journey-step is-${step.state}${step.state === 'in-progress' ? ' next-step-glow' : ''}`}
           disabled={step.state === 'locked'}
           key={step.page}
           onClick={() => onNavigatePage?.(step.page)}
