@@ -196,9 +196,9 @@ describe('Field Guide app route', () => {
 
     expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Start simple');
-    expect(container.textContent).toContain('Start simple');
-    expect(container.textContent).toContain('Build the method');
+    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Quick Check');
+    expect(container.textContent).toContain('Quick Check');
+    expect(container.textContent).toContain('Guided Practice');
     expect(container.querySelector('.quick-check-card')).toBeTruthy();
     expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
     expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
@@ -212,7 +212,7 @@ describe('Field Guide app route', () => {
 
     expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Build the method');
+    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Guided Practice');
     expect(container.textContent).toContain('Guided Practice');
     expect(container.textContent).toContain('Ready for exam practice');
     expect(container.querySelector('.quick-check-card')).toBeFalsy();

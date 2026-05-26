@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { ArrowLeft, BookOpenCheck, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, Map, MessageCircle, RotateCcw, User } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, Map, MessageCircle, RotateCcw, User } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
 import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
@@ -149,9 +149,7 @@ export function PracticeView({
   onAttempt,
   onIssue,
   onReturnToMap,
-  onReviewWeak,
   onContinuePractice,
-  continuePracticeLabel,
   onOpenRegionTool,
   onOpenDashboard,
   onSelectPracticeMode,
@@ -248,9 +246,6 @@ export function PracticeView({
       : sessionIntent
       ? TRAINING_SESSION_LABELS[sessionIntent]
       : activePracticeLabel;
-  const postAttemptContinueLabel = continuePracticeLabel ?? (isFullScore
-    ? 'Next question'
-    : selectedRegion ? 'Continue in this region' : 'Continue practice');
   const maxMarkValue = typeof maxMarks === 'number' ? maxMarks : 10;
   const enteredMarkTotal = usesPartMarking ? Object.values(partMarkInputs).reduce((sum, partInput) => {
     return sum + markCategories.reduce((partSum, category) => {
@@ -296,6 +291,20 @@ export function PracticeView({
         ? current.filter((selected) => selected !== type)
         : [...current, type]
     ));
+  }
+
+  function resetCurrentQuestionAttempt() {
+    setRevealed(false);
+    setTotalMarkInput('');
+    setMarkInputs(emptyMarkInputs);
+    setPartMarkInputs(emptyPartMarkInputs(question?.parts));
+    setSelectedMistakeTypes([]);
+    setFullScoreConfirmed(false);
+    setNote('');
+    setAttemptSaved(false);
+    setStartedAt(Date.now());
+    setAskTeacherOpen(false);
+    setTeacherQuestionDraft('');
   }
 
   function partMarkTotal(label: string): number {
@@ -770,9 +779,9 @@ export function PracticeView({
             <span>{typeof scoreValidation.earned === 'number' ? `${scoreValidation.earned}/${maxMarks ?? '?'} marks` : 'Saved attempt'} · {isFullScore ? 'Full-score evidence checked' : selectedMistakeTypes.length ? selectedMistakeTypes.map((type) => mistakeLabels[type as SelectableMistakeType] ?? type).join(', ') : 'No mistake tag'}</span>
           </details>
           <div className="practice-actions">
-            {onContinuePractice ? <button className={isFullScore ? 'primary-button' : undefined} type="button" onClick={onContinuePractice}><RotateCcw size={16} /> {postAttemptContinueLabel}</button> : null}
-            {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Return to P3 Astral Academy</button> : null}
-            {onReviewWeak ? <button type="button" onClick={onReviewWeak}><BookOpenCheck size={16} /> Review weak areas</button> : null}
+            {onContinuePractice ? <button className="primary-button" type="button" onClick={onContinuePractice}><RotateCcw size={16} /> Next</button> : null}
+            <button type="button" onClick={resetCurrentQuestionAttempt}>Try Again</button>
+            {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Dashboard</button> : null}
           </div>
         </div>
       ) : null}

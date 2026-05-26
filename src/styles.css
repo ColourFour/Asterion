@@ -7111,7 +7111,7 @@ legend {
 .region-home-header {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(250px, 1fr) minmax(420px, 1.48fr) auto;
+  grid-template-columns: minmax(250px, 1fr) auto;
   gap: 18px;
   align-items: center;
   padding: clamp(14px, 1.7vw, 22px);
@@ -7222,9 +7222,9 @@ legend {
 
 .region-home-body {
   display: grid;
-  grid-template-columns: minmax(210px, 250px) minmax(0, 1fr) minmax(210px, 250px);
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(220px, 260px);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .region-home-center {
@@ -7235,7 +7235,7 @@ legend {
 
 .region-home-rail {
   min-width: 0;
-  min-height: clamp(520px, 48vw, 640px);
+  min-height: clamp(500px, 46vw, 620px);
 }
 
 .region-first-run-loop {
@@ -7317,26 +7317,26 @@ legend {
   border-top: 0;
 }
 
-.region-first-run-loop .is-current button {
+.region-first-run-loop .is-in-progress button {
   color: var(--region-button-text);
   background: var(--region-button-bg);
   border-color: var(--region-button-border);
 }
 
-.region-first-run-loop .is-current .region-home-action-copy strong,
-.region-first-run-loop .is-current .region-home-action-copy small,
-.region-first-run-loop .is-current .region-home-action-status,
-.region-first-run-loop .is-current .region-home-action-chevron {
+.region-first-run-loop .is-in-progress .region-home-action-copy strong,
+.region-first-run-loop .is-in-progress .region-home-action-copy small,
+.region-first-run-loop .is-in-progress .region-home-action-status,
+.region-first-run-loop .is-in-progress .region-home-action-chevron {
   color: #fff;
 }
 
-.region-first-run-loop .is-current .region-home-action-icon {
+.region-first-run-loop .is-in-progress .region-home-action-icon {
   color: #fff7d7;
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.28);
 }
 
-.region-first-run-loop .is-done button {
+.region-first-run-loop .is-complete button {
   border-color: color-mix(in srgb, var(--region-accent) 55%, transparent);
 }
 
@@ -7480,11 +7480,12 @@ legend {
   grid-template-areas:
     "icon copy badge"
     "icon copy button"
-    "detail detail button"
     "reason reason reason";
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px 14px;
   align-items: center;
+  align-content: start;
+  min-height: 100%;
   padding: 18px 20px;
   color: var(--region-body);
   background:
@@ -7539,15 +7540,6 @@ legend {
   line-height: 1.45;
 }
 
-.region-home-primary-detail {
-  grid-area: detail;
-  margin: 0;
-  color: var(--region-muted);
-  font-size: 0.9rem;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
 .region-home-lock-reason,
 .region-home-action-reason {
   display: block;
@@ -7574,9 +7566,9 @@ legend {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 10px 16px;
+  padding: 12px 18px;
   color: var(--region-button-text);
-  background: var(--region-button-bg);
+  background: linear-gradient(180deg, #1f6f45, #174c33);
   border: 1px solid var(--region-button-border);
   border-radius: var(--radius-control);
   box-shadow: 0 8px 20px rgba(23, 32, 51, 0.15);
@@ -7589,39 +7581,18 @@ legend {
 
 .region-current-step-button:not(:disabled):hover {
   transform: translateY(-1px);
-  background: color-mix(in srgb, var(--region-button-bg) 88%, #000 12%);
+  background: linear-gradient(180deg, #287f53, #174c33);
 }
 
-.region-home-secondary-steps {
+.region-current-step-button:focus-visible,
+.region-first-run-loop button:focus-visible,
+.region-journey-bar button:focus-visible {
+  outline: 3px solid #ffd76a;
+  outline-offset: 3px;
+}
+
+.region-home-current-step {
   display: grid;
-  gap: 8px;
-  align-content: start;
-  min-width: 0;
-}
-
-.region-home-secondary-routes {
-  display: grid;
-  gap: 18px;
-  align-content: start;
-  min-width: 0;
-  padding: 18px 14px;
-  color: #fff7d7;
-  border: 1px solid rgba(240, 182, 56, 0.72);
-  border-radius: var(--radius-panel);
-  background:
-    linear-gradient(180deg, rgba(18, 19, 45, 0.93), rgba(8, 12, 34, 0.96));
-  box-shadow: 0 3px 0 #3b2014, 0 16px 34px rgba(3, 6, 22, 0.36);
-}
-
-.region-home-secondary-routes strong {
-  color: #ffe39a;
-}
-
-.region-home-secondary-routes p {
-  margin: 0;
-  color: #f7e7bf;
-  font-weight: 800;
-  line-height: 1.4;
 }
 
 .region-home-action-card {
@@ -7788,6 +7759,90 @@ legend {
   line-height: 1.2;
   overflow-wrap: anywhere;
   text-transform: uppercase;
+}
+
+.region-journey-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+  color: var(--region-body);
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 32%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--region-panel) 94%, #fff 6%);
+  box-shadow: var(--shadow-soft);
+}
+
+.journey-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 58px;
+  padding: 8px;
+  color: var(--region-heading);
+  background: #fffdf8;
+  border: 1px solid color-mix(in srgb, var(--region-panel-border) 36%, transparent);
+  border-radius: var(--radius-control);
+  font-family: inherit;
+  text-align: left;
+}
+
+.journey-step-index {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: #fffdf8;
+  background: #4b5870;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.journey-step strong,
+.journey-step small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.12;
+}
+
+.journey-step strong {
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.journey-step small {
+  margin-top: 3px;
+  color: var(--region-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.journey-step.is-complete .journey-step-index {
+  background: #1f7a4f;
+}
+
+.journey-step.is-in-progress {
+  border-color: #1f7a4f;
+  box-shadow: inset 0 0 0 2px rgba(31, 122, 79, 0.16);
+}
+
+.journey-step.is-in-progress .journey-step-index {
+  background: #1f6f45;
+}
+
+.journey-step.is-locked {
+  cursor: not-allowed;
+  color: #596274;
+  background: #eee8de;
+  border-style: dashed;
+}
+
+.journey-step.is-locked .journey-step-index {
+  background: #737b89;
 }
 
 .region-first-run-loop .region-home-action-status,
@@ -10848,7 +10903,7 @@ legend {
 
 .avatar-layer img {
   object-fit: contain;
-  image-rendering: pixelated;
+  image-rendering: auto;
   opacity: 0;
   transition: opacity 160ms ease;
 }
@@ -12317,9 +12372,29 @@ legend {
 	    min-height: 0;
 	  }
 
-	  .region-home-secondary-routes {
-	    order: 3;
-	  }
+  .region-home-body {
+    align-items: stretch;
+  }
+
+  .region-home-center {
+    display: contents;
+  }
+
+  .region-home-current-step {
+    order: 1;
+  }
+
+  .region-journey-bar {
+    order: 2;
+  }
+
+  .region-first-run-loop {
+    order: 3;
+  }
+
+  .region-home-artwork {
+    order: 4;
+  }
 	}
 
 @media (min-width: 981px) and (max-width: 1120px) {
@@ -12336,7 +12411,6 @@ legend {
     grid-template-areas:
       "icon badge"
       "copy copy"
-      "detail detail"
       "reason reason"
       "button button";
     grid-template-columns: auto minmax(0, 1fr);
@@ -12494,7 +12568,6 @@ legend {
 	    grid-template-areas:
 	      "icon badge"
 	      "copy copy"
-	      "detail detail"
 	      "reason reason"
 	      "button button";
 	    grid-template-columns: auto minmax(0, 1fr);
@@ -12514,6 +12587,10 @@ legend {
   .region-home-artwork-scene,
   .region-home-artwork-image {
     min-height: 230px;
+  }
+
+  .region-journey-bar {
+    grid-template-columns: 1fr;
   }
 
   .region-home-artwork-svg {
@@ -12714,8 +12791,8 @@ legend {
 .exam-training-dashboard-grid {
   display: grid;
   grid-template-areas:
-    "mastery side"
-    "practice side";
+    "practice side"
+    "mastery side";
   grid-template-columns: minmax(0, 1fr) minmax(300px, 370px);
   gap: 10px;
   align-items: start;
@@ -12782,7 +12859,7 @@ legend {
 }
 
 .exam-training-practice-card.practice-weak {
-  background: linear-gradient(145deg, #d29a16, #a86e0c);
+  background: linear-gradient(145deg, #936007, #6f4404);
 }
 
 .exam-training-practice-card.practice-stretch {
@@ -12910,11 +12987,52 @@ legend {
   background: #b5bdc6;
 }
 
+.exam-training-broad-topic-list,
 .exam-training-topic-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 16px;
+  gap: 8px;
   min-width: 0;
+}
+
+.exam-training-broad-topic {
+  min-width: 0;
+  color: #172033;
+  background: #fffdf8;
+  border: 1px solid #ded5c6;
+  border-radius: var(--radius-control);
+}
+
+.exam-training-broad-topic summary {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto auto auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 10px 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.exam-training-broad-topic summary::-webkit-details-marker {
+  display: none;
+}
+
+.exam-training-broad-topic summary > svg {
+  color: #405168;
+  transition: transform 160ms ease;
+}
+
+.exam-training-broad-topic[open] summary > svg {
+  transform: rotate(180deg);
+}
+
+.exam-training-broad-topic summary .mastery-bar {
+  grid-column: 2 / -1;
+  width: 100%;
+}
+
+.exam-training-broad-topic .exam-training-topic-list {
+  padding: 0 12px 12px 32px;
 }
 
 .exam-training-topic-row {
@@ -13188,9 +13306,6 @@ legend {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .exam-training-topic-list {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 @media (max-width: 820px) {
@@ -13274,10 +13389,37 @@ legend {
     grid-template-columns: 12px minmax(0, 1fr);
   }
 
+  .exam-training-broad-topic summary {
+    grid-template-columns: 12px minmax(0, 1fr) auto;
+  }
+
+  .exam-training-broad-topic summary > .mastery-score,
+  .exam-training-broad-topic summary > svg {
+    grid-column: 3;
+  }
+
+  .exam-training-broad-topic summary > svg {
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .exam-training-broad-topic .exam-training-topic-list {
+    padding-left: 18px;
+  }
+
   .mastery-status-pill,
   .mastery-score {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .exam-training-broad-topic summary > .mastery-status-pill,
+  .exam-training-broad-topic summary > .mastery-score {
+    grid-column: 2;
+  }
+
+  .exam-training-broad-topic summary > svg {
+    grid-column: 3;
   }
 
   .exam-training-avatar-row,

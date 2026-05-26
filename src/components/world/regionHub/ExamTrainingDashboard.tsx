@@ -2,7 +2,7 @@ import {
   ArrowLeft,
   BarChart3,
   BookOpenCheck,
-  Dumbbell,
+  ChevronDown,
   Gem,
   GraduationCap,
   Info,
@@ -95,6 +95,67 @@ function percent(current: number, target: number): number {
 
 function scoreText(item: ExamTrainingTopicMasteryItem): string {
   return typeof item.scorePercent === 'number' ? `${item.scorePercent}%` : 'No signal';
+}
+
+const broadTopicOrder = [
+  'Algebra',
+  'Logarithms and Exponentials',
+  'Trigonometry',
+  'Complex Numbers',
+  'Differentiation',
+  'Integration',
+  'Vectors',
+  'Numerical Methods',
+  'Differential Equations',
+];
+
+function broadTopicForSkill(skillId: string): string {
+  if (skillId.startsWith('logarithms_and_exponentials.')) return 'Logarithms and Exponentials';
+  if (skillId.startsWith('complex_numbers.')) return 'Complex Numbers';
+  if (skillId.startsWith('numerical_methods.')) return 'Numerical Methods';
+  if (skillId.startsWith('differential_equations.')) return 'Differential Equations';
+  if (skillId.startsWith('binomial_expansion.') || skillId.startsWith('quadratics.') || skillId.startsWith('algebra.')) return 'Algebra';
+  if (skillId.startsWith('trigonometry.')) return 'Trigonometry';
+  if (skillId.startsWith('differentiation.') || skillId.startsWith('parametric_equations.')) return 'Differentiation';
+  if (skillId.startsWith('integration.')) return 'Integration';
+  if (skillId.startsWith('vectors.')) return 'Vectors';
+  return 'Algebra';
+}
+
+function broadStatusFor(scorePercent: number | undefined, attempts: number): Pick<ExamTrainingTopicMasteryItem, 'status' | 'statusLabel'> {
+  if (!attempts || typeof scorePercent !== 'number') return { status: 'not_tried', statusLabel: 'Not Tried' };
+  if (scorePercent >= 80) return { status: 'strong', statusLabel: 'Strong' };
+  if (scorePercent >= 65) return { status: 'secure', statusLabel: 'Secure' };
+  if (scorePercent >= 45) return { status: 'developing', statusLabel: 'Developing' };
+  return { status: 'needs_work', statusLabel: 'Needs Work' };
+}
+
+function groupedTopicMastery(topics: ExamTrainingTopicMasteryItem[]) {
+  const grouped = broadTopicOrder.map((name) => {
+    const subtopics = topics.filter((topic) => broadTopicForSkill(topic.skillId) === name);
+    const attempts = subtopics.reduce((sum, topic) => sum + topic.attempts, 0);
+    const scored = subtopics.filter((topic) => typeof topic.scorePercent === 'number' && topic.attempts > 0);
+    const weightedScore = scored.length
+      ? Math.round(scored.reduce((sum, topic) => sum + (topic.scorePercent ?? 0) * Math.max(1, topic.attempts), 0)
+        / scored.reduce((sum, topic) => sum + Math.max(1, topic.attempts), 0))
+      : undefined;
+    return {
+      name,
+      attempts,
+      scorePercent: weightedScore,
+      subtopics,
+      ...broadStatusFor(weightedScore, attempts),
+    };
+  });
+  const knownNames = new Set(broadTopicOrder);
+  const extras = topics.filter((topic) => !knownNames.has(broadTopicForSkill(topic.skillId)));
+  return extras.length ? [...grouped, {
+    name: 'Other',
+    attempts: extras.reduce((sum, topic) => sum + topic.attempts, 0),
+    scorePercent: undefined,
+    subtopics: extras,
+    ...broadStatusFor(undefined, 0),
+  }] : grouped;
 }
 
 function goalIcon(goal: ExamTrainingRewardGoal) {
@@ -192,6 +253,7 @@ function PracticeChoiceCards({
 
 function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] }) {
   const attemptedCount = topics.filter((item) => item.attempts > 0).length;
+  const broadTopics = groupedTopicMastery(topics);
   return (
     <section className="exam-training-mastery-panel" aria-labelledby="exam-training-mastery-title">
       <div className="exam-training-section-heading mastery-heading">
@@ -209,20 +271,39 @@ function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] 
           </span>
         ))}
       </div>
-      <div className="exam-training-topic-list">
-        {topics.map((topic) => (
-          <article className={`exam-training-topic-row mastery-${topic.status}`} key={topic.skillId}>
-            <span className="mastery-status-dot" aria-hidden="true" />
-            <div className="exam-training-topic-copy">
-              <strong>{topic.name}</strong>
-              <small>{topic.evidenceLabel}</small>
+      <div className="exam-training-broad-topic-list">
+        {broadTopics.map((topic) => (
+          <details className={`exam-training-broad-topic mastery-${topic.status}`} key={topic.name}>
+            <summary>
+              <span className="mastery-status-dot" aria-hidden="true" />
+              <span className="exam-training-topic-copy">
+                <strong>{topic.name}</strong>
+                <small>{topic.attempts ? `${topic.attempts} saved attempt${topic.attempts === 1 ? '' : 's'}` : 'Not tried yet'}</small>
+              </span>
+              <span className="mastery-status-pill">{topic.statusLabel}</span>
+              <span className="mastery-score">{typeof topic.scorePercent === 'number' ? `${topic.scorePercent}%` : 'No signal'}</span>
+              <ChevronDown size={18} aria-hidden="true" />
+              <span className="mastery-bar" aria-hidden="true">
+                <span style={{ width: `${topic.scorePercent ?? 0}%` }} />
+              </span>
+            </summary>
+            <div className="exam-training-topic-list">
+              {topic.subtopics.map((subtopic) => (
+                <article className={`exam-training-topic-row mastery-${subtopic.status}`} key={subtopic.skillId}>
+                  <span className="mastery-status-dot" aria-hidden="true" />
+                  <div className="exam-training-topic-copy">
+                    <strong>{subtopic.name}</strong>
+                    <small>{subtopic.evidenceLabel}</small>
+                  </div>
+                  <span className="mastery-status-pill">{subtopic.statusLabel}</span>
+                  <div className="mastery-bar" aria-hidden="true">
+                    <span style={{ width: `${subtopic.scorePercent ?? 0}%` }} />
+                  </div>
+                  <span className="mastery-score">{scoreText(subtopic)}</span>
+                </article>
+              ))}
             </div>
-            <span className="mastery-status-pill">{topic.statusLabel}</span>
-            <div className="mastery-bar" aria-hidden="true">
-              <span style={{ width: `${topic.scorePercent ?? 0}%` }} />
-            </div>
-            <span className="mastery-score">{scoreText(topic)}</span>
-          </article>
+          </details>
         ))}
       </div>
       <div className="exam-training-panel-footer">
@@ -306,6 +387,9 @@ function ClassCompetitionPanel({
   isStaffPreview?: boolean;
 }) {
   const p3Attempts = progress.attempts.filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3').length;
+  const examTrainingPoints = progress.attempts
+    .filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3')
+    .reduce((sum, attempt) => sum + Math.max(0, attempt.marksEarned), 0);
   return (
     <section className="exam-training-side-card class-competition-card" aria-labelledby="exam-training-class-title">
       <div className="exam-training-section-heading compact">
@@ -317,9 +401,10 @@ function ClassCompetitionPanel({
       </div>
       <div className="class-competition-empty">
         <UsersRound size={26} aria-hidden="true" />
-        <strong>You&apos;re building consistency.</strong>
-        <span>Class comparison will appear after more classmates complete Exam Training.</span>
-        {p3Attempts > 0 ? <small>Your saved Exam Training items: {p3Attempts}</small> : <small>Save your first item to start your weekly signal.</small>}
+        <strong>You&apos;re unranked</strong>
+        <span>Class rank appears after enough classmates have saved Exam Training attempts.</span>
+        <small>Exam Training points: {examTrainingPoints}</small>
+        {p3Attempts > 0 ? <small>Saved Exam Training items: {p3Attempts}</small> : <small>Save your first item to start your weekly signal.</small>}
         {isStaffPreview ? <em>Staff preview only: no sample classmates are shown as real students.</em> : null}
       </div>
     </section>

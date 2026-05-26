@@ -22,14 +22,14 @@ describe('avatar render modes', () => {
 
   it('uses mode-specific asset candidates with safe generic fallbacks', () => {
     expect(avatarLayerAssetCandidates(item('student-body-a'), 'map')).toEqual([
-      '/assets/avatar-v0.2/base/student-body-a.png',
+      '/assets/avatar-v0.3/base/student-body-a.png',
       '/assets/ui/astral/optimized/avatar-student-map-512.png',
     ]);
     expect(avatarLayerAssetCandidates(item('tousled-short'), 'map')).toEqual([
-      '/assets/avatar-v0.2/hair/tousled-short.png',
+      '/assets/avatar-v0.3/hair/tousled-short.png',
     ]);
     expect(avatarLayerAssetCandidates(item('student-body-a'), 'region')).toEqual([
-      '/assets/avatar-v0.2/base/student-body-a.png',
+      '/assets/avatar-v0.3/base/student-body-a.png',
       '/assets/ui/astral/optimized/avatar-student-front-512.png',
     ]);
   });

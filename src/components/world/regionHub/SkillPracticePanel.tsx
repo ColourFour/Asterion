@@ -36,14 +36,14 @@ const skillPracticeSteps: Array<{
 }> = [
   {
     id: 'start-simple',
-    label: 'Start simple',
-    heading: 'Start simple',
+    label: 'Quick Check',
+    heading: 'Quick Check',
     description: 'Do one short check and get immediate feedback.',
   },
   {
     id: 'build-method',
-    label: 'Build the method',
-    heading: 'Build the method',
+    label: 'Guided Practice',
+    heading: 'Guided Practice',
     description: 'Try a guided step, then compare with the worked route.',
   },
   {
@@ -144,7 +144,7 @@ export function SkillPracticePanel({
 
   return (
     <section className="skill-practice-panel" aria-label="Skill Practice">
-      <p className="skill-practice-lede">Start simple, then build the method before Exam Training.</p>
+      <p className="skill-practice-lede">Practice one step at a time before Exam Training.</p>
 
       <div className="skill-practice-steps" aria-label="Skill Practice steps">
         {skillPracticeSteps.map((step) => {
@@ -170,7 +170,7 @@ export function SkillPracticePanel({
         aria-labelledby="skill-practice-active-step-title"
       >
         <div className="skill-practice-section-intro">
-          <span>{activeStep === 'start-simple' ? 'Step 1' : activeStep === 'build-method' ? 'Step 2' : 'Step 3'}</span>
+          <span>Skill Practice</span>
           <h4 id="skill-practice-active-step-title">{activeStepMeta.heading}</h4>
           <p>{activeStepMeta.description}</p>
         </div>

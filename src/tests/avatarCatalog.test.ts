@@ -22,7 +22,7 @@ describe('avatar catalog manifest', () => {
 
     for (const item of AVATAR_CATALOG) {
       expect(validSlots.has(item.slot), item.id).toBe(true);
-      expect(item.assetPath, item.id).toMatch(/^\/assets\/avatar-v0\.2\/.+\.png$/);
+      expect(item.assetPath, item.id).toMatch(/^\/assets\/avatar-v0\.3\/.+\.png$/);
       expect(item.displayName.trim(), item.id).not.toBe('');
       expect(item.description.trim(), item.id).not.toBe('');
       expect(item.rarity.trim(), item.id).not.toBe('');

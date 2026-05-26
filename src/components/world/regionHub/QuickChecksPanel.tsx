@@ -62,7 +62,7 @@ function QuickCheckHelp({
           <p><b>Field Guide topic:</b> <MathText text={check.topic.replace(/_/g, ' ')} /></p>
         ) : null}
         {linkedExample ? (
-          <p><b>Linked example:</b> <MathText text={linkedExample.example.prompt} /></p>
+          <p><b>Show a similar example:</b> <MathText text={linkedExample.example.prompt} /></p>
         ) : null}
         {contract.hint ? <p><b>Hint:</b> <MathText text={contract.hint} /></p> : null}
         {contract.workedFirstStep ? <p><b>First step:</b> <MathText text={contract.workedFirstStep} /></p> : null}
@@ -299,11 +299,6 @@ function QuickCheckCard({
         </small>
       </header>
       <p><MathText text={check.prompt} /></p>
-      {linkedExample ? (
-        <small className="quick-check-example-link">
-          Linked example: <MathText text={linkedExample.example.prompt} />
-        </small>
-      ) : null}
       <div className="quick-check-interaction" data-answer-type={contract.answerType}>
         <QuickCheckInput contract={contract} response={response} setResponse={(next) => {
           setResponse(next);
@@ -321,14 +316,14 @@ function QuickCheckCard({
           <strong>Next action</strong>
           {contract.explanation ? <p><MathText text={contract.explanation} /></p> : null}
           <div>
-            <button type="button" onClick={tryAgain}>Try again</button>
             {hasNextCheck ? (
-              <button type="button" onClick={onNextCheck}>Next check</button>
+              <button className="activity-primary-action" type="button" onClick={onNextCheck}>Next</button>
             ) : onContinueToWarmUp ? (
-              <button type="button" onClick={onContinueToWarmUp}>Build the method</button>
+              <button className="activity-primary-action" type="button" onClick={onContinueToWarmUp}>Next</button>
             ) : onContinueToExamPractice ? (
-              <button type="button" onClick={onContinueToExamPractice}>Continue to Exam Practice</button>
+              <button className="activity-primary-action" type="button" onClick={onContinueToExamPractice}>Next</button>
             ) : null}
+            <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
           </div>
           {saved ? <small className="region-card-note">Short check saved locally as a support activity.</small> : null}
         </div>
@@ -381,7 +376,7 @@ export function QuickChecksPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Start simple"
+      eyebrow="Skill Practice"
       title="One small check"
       description="Do one short check and get immediate feedback."
       icon={<Target size={22} />}

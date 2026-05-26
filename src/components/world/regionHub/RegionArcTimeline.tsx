@@ -10,7 +10,7 @@ interface RegionArcTimelineProps {
 export function RegionArcTimeline({ fieldGuideCompleted, summary }: RegionArcTimelineProps) {
   const phases = [
     { id: 'guide' as const, label: 'Field Guide', detail: 'Know the moves' },
-    { id: 'skill_practice' as const, label: 'Skill Practice', detail: 'Start simple, then rehearse' },
+    { id: 'skill_practice' as const, label: 'Skill Practice', detail: 'Practice one step' },
     { id: 'training' as const, label: 'Exam Training', detail: 'Save evidence' },
     { id: 'guardian' as const, label: 'Guardian Challenge', detail: 'Clear the check' },
   ];

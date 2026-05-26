@@ -518,14 +518,15 @@ describe('PracticeView self-mark reflection', () => {
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
     setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
-    expect(container.textContent).not.toContain('Next question');
+    expect(container.textContent).not.toContain('Next');
     expect(container.textContent).toContain('Save this attempt before the next question unlocks.');
     clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
     setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
     clickButton(container, 'Save Attempt');
 
-    expect(container.textContent).toContain('Next question');
-    clickButton(container, 'Next question');
+    expect(container.textContent).toContain('Next');
+    expect(container.textContent).toContain('Try Again');
+    clickButton(container, 'Next');
     expect(onContinuePractice).toHaveBeenCalledTimes(1);
   });
 
