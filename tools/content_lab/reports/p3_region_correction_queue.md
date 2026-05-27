@@ -4,25 +4,25 @@ This deterministic queue plans future content correction only. It does not corre
 
 ## Source Route Summary
 
-- `ambiguous_multi_topic_route`: 16
-- `missing_p3_route`: 47
-- `review_needed_route`: 14
-- `safe_p3_route`: 319
+- `ambiguous_multi_topic_route`: 14
+- `missing_p3_route`: 53
+- `review_needed_route`: 12
+- `safe_p3_route`: 317
 - `total_p3_route_records`: 396
 
 ## Queue Counts
 
 ### route_correction
 
-- `ambiguous_multi_topic_routes`: 16
+- `ambiguous_multi_topic_routes`: 14
 - `audited_route_decisions`: 42
-- `fallback_display_only_region_placements`: 47
-- `missing_p3_routes`: 47
-- `review_needed_routes`: 14
+- `fallback_display_only_region_placements`: 53
+- `missing_p3_routes`: 53
+- `review_needed_routes`: 12
 
 ### text_review
 
-- `routing_text_or_visual_blockers`: 53
+- `routing_text_or_visual_blockers`: 59
 
 ### mark_scheme_subpart_review
 
@@ -30,7 +30,7 @@ This deterministic queue plans future content correction only. It does not corre
 
 ### support_content_gaps
 
-- `weak_or_missing_skill_support`: 2
+- `weak_or_missing_skill_support`: 3
 
 ## Reviewed Route Decision Summary
 
@@ -69,15 +69,15 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Region | Issues | Workstreams | Categories |
 | --- | ---: | --- | --- |
+| Calculus Cliffs | 55 | route_correction:41, text_review:14 | ambiguous_multi_topic_routes:2, audited_route_decisions:11, fallback_display_only_region_placements:14, missing_p3_routes:14, routing_text_or_visual_blockers:14 |
 | Algebra Vault | 44 | route_correction:30, support_content_gaps:2, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12, weak_or_missing_skill_support:2 |
-| Calculus Cliffs | 39 | route_correction:31, text_review:8 | ambiguous_multi_topic_routes:3, audited_route_decisions:11, fallback_display_only_region_placements:8, missing_p3_routes:8, review_needed_routes:1, routing_text_or_visual_blockers:8 |
-| Integral Terraces | 26 | route_correction:24, text_review:2 | ambiguous_multi_topic_routes:10, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
 | Iteration Forge | 26 | route_correction:18, text_review:8 | ambiguous_multi_topic_routes:2, audited_route_decisions:3, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:3, routing_text_or_visual_blockers:8 |
-| Logarithm Observatory | 24 | route_correction:18, text_review:6 | audited_route_decisions:6, fallback_display_only_region_placements:6, missing_p3_routes:6, routing_text_or_visual_blockers:6 |
+| Integral Terraces | 25 | route_correction:23, text_review:2 | ambiguous_multi_topic_routes:9, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
+| Logarithm Observatory | 25 | route_correction:18, support_content_gaps:1, text_review:6 | audited_route_decisions:6, fallback_display_only_region_placements:6, missing_p3_routes:6, routing_text_or_visual_blockers:6, weak_or_missing_skill_support:1 |
 | Trigonometry Spire | 22 | route_correction:17, text_review:5 | audited_route_decisions:6, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:1, routing_text_or_visual_blockers:5 |
 | Argand Atrium | 20 | route_correction:13, text_review:7 | fallback_display_only_region_placements:6, missing_p3_routes:6, review_needed_routes:1, routing_text_or_visual_blockers:7 |
 | Vectors Gate | 15 | route_correction:10, text_review:5 | fallback_display_only_region_placements:5, missing_p3_routes:5, routing_text_or_visual_blockers:5 |
-| Differential Shrine | 5 | route_correction:5 | ambiguous_multi_topic_routes:1, audited_route_decisions:2, review_needed_routes:2 |
+| Differential Shrine | 4 | route_correction:4 | ambiguous_multi_topic_routes:1, audited_route_decisions:2, review_needed_routes:1 |
 
 ## Route Correction
 
@@ -96,12 +96,18 @@ This deterministic queue plans future content correction only. It does not corre
 | 33autumn24_q05 | Algebra Vault | low | schema_validation_error |
 | 33autumn24_q08 | Algebra Vault | low | schema_validation_error |
 | 33autumn24_q09 | Algebra Vault | low | schema_validation_error |
+| 31autumn23_q01 | Calculus Cliffs | low | schema_validation_error |
+| 31autumn23_q06 | Calculus Cliffs | low | schema_validation_error |
 | 31autumn23_q07 | Calculus Cliffs | low | schema_validation_error |
+| 31autumn23_q09 | Calculus Cliffs | low | schema_validation_error |
 | 31summer23_q02 | Calculus Cliffs | low | schema_validation_error |
+| 31summer23_q05 | Calculus Cliffs | low | schema_validation_error |
 | 31summer23_q07 | Calculus Cliffs | low | schema_validation_error |
 | 32autumn22_q03 | Calculus Cliffs | low | schema_validation_error |
 | 32autumn22_q07 | Calculus Cliffs | low | schema_validation_error |
 | 32autumn22_q08 | Calculus Cliffs | low | schema_validation_error |
+| 32spring21_q04 | Calculus Cliffs | low | schema_validation_error |
+| 32spring21_q10 | Calculus Cliffs | low | schema_validation_error |
 | 33autumn24_q07 | Calculus Cliffs | low | schema_validation_error |
 | 33autumn24_q11 | Calculus Cliffs | low | schema_validation_error |
 | 31autumn23_q02 | Argand Atrium | low | schema_validation_error |
@@ -148,12 +154,18 @@ This deterministic queue plans future content correction only. It does not corre
 | 33autumn24_q05 | Algebra Vault | algebra | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q08 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q09 | Algebra Vault | polynomials | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 31autumn23_q01 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 31autumn23_q06 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 31autumn23_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 31autumn23_q09 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 31summer23_q02 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 31summer23_q05 | Calculus Cliffs | differentiation | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 31summer23_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 32autumn22_q03 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 32autumn22_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 32autumn22_q08 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 32spring21_q04 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
+| 32spring21_q10 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q11 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 31autumn23_q02 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
@@ -189,13 +201,11 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Question | Primary Region | Review Reasons | Why Risky |
 | --- | --- | --- | --- |
-| 31autumn23_q09 | Calculus Cliffs |  | A single whole-question route hides multiple P3 topic signals. |
 | 32autumn21_q11 | Calculus Cliffs |  | A single whole-question route hides multiple P3 topic signals. |
 | 32summer25_q11 | Calculus Cliffs |  | A single whole-question route hides multiple P3 topic signals. |
 | 33autumn21_q10 | Differential Shrine |  | A single whole-question route hides multiple P3 topic signals. |
 | 32autumn21_q06 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32autumn23_q09 | Integral Terraces | Question involves both differentiation and integration; primary topic set to integration based on final objective. | A single whole-question route hides multiple P3 topic signals. |
-| 32spring21_q10 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32spring23_q08 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32spring23_q11 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32summer25_q10 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
@@ -211,10 +221,8 @@ This deterministic queue plans future content correction only. It does not corre
 | Question | Primary Region | Confidence | Review Reasons |
 | --- | --- | --- | --- |
 | 32autumn25_q01 | Algebra Vault | low | Visual-dependent question without image; text insufficient for full routing. |
-| 31summer23_q05 | Calculus Cliffs | medium | phase1_thin_skill_fit_implicit_differentiation, reviewed_region_clear_but_source_skill_fit_requires_teacher_review |
 | 32summer23_q05 | Argand Atrium | medium | No OCR text provided, mark scheme only used |
 | 31summer25_q10 | Differential Shrine | medium | Spans algebra and differential equations; primary chosen as differential equations. |
-| 32spring21_q04 | Differential Shrine | medium | phase1_thin_whole_question_includes_visual_sketch_subpart, part_b_graph_sketch_not_mastery_evidence |
 | 31autumn24_q06 | Integral Terraces | medium | Visual dependence: diagram may affect identification of region R |
 | 31summer25_q09 | Integral Terraces | medium | Spans integration and numerical solution of equations; primary chosen as integration. |
 | 31summer25_q11 | Integral Terraces | medium | Spans differentiation and integration; primary chosen as integration. |
@@ -288,12 +296,18 @@ This deterministic queue plans future content correction only. It does not corre
 | 33autumn24_q05 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q08 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q09 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 31autumn23_q01 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 31autumn23_q06 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31autumn23_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 31autumn23_q09 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31summer23_q02 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 31summer23_q05 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31summer23_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32autumn22_q03 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32autumn22_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32autumn22_q08 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 32spring21_q04 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
+| 32spring21_q10 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q11 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31autumn23_q02 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
@@ -341,6 +355,7 @@ This deterministic queue plans future content correction only. It does not corre
 | --- | --- | --- | --- | --- |
 | Algebra Vault | p3_alg_discriminant_root_conditions | P2_missing_practice_support | missing_support | warm_up |
 | Algebra Vault | p3_alg_structure_rearrangement | P2_missing_practice_support | missing_support | warm_up |
+| Logarithm Observatory | p3_log_calculus_contexts | P2_missing_practice_support | missing_support | warm_up |
 
 ## Policy
 

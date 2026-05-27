@@ -3,17 +3,19 @@
     {
       "action_id": "fill_warm_up_gaps",
       "affected_region_ids": [
-        "algebra-forge"
+        "algebra-forge",
+        "logarithm-grove"
       ],
-      "affected_skill_count": 2,
-      "summary": "Add reviewed warm up support for 2 reviewed P3 skill(s)."
+      "affected_skill_count": 3,
+      "summary": "Add reviewed warm up support for 3 reviewed P3 skill(s)."
     },
     {
       "action_id": "prioritize_incomplete_regions",
       "affected_region_ids": [
-        "algebra-forge"
+        "algebra-forge",
+        "logarithm-grove"
       ],
-      "affected_skill_count": 7,
+      "affected_skill_count": 13,
       "summary": "Use the inventory to choose the next content-generation or page-redesign phase; this pass does not create new content."
     }
   ],
@@ -76,7 +78,7 @@
     "world_map": "src/lib/worldMap.ts"
   },
   "missing_support_summary": {
-    "ordinary_gap_skill_count": 2,
+    "ordinary_gap_skill_count": 3,
     "skills_missing_canonical_question": [],
     "skills_missing_field_guide": [],
     "skills_missing_guardian_candidate": [],
@@ -94,6 +96,12 @@
         "official_curriculum_section": "Algebra",
         "region_id": "algebra-forge",
         "skill_ref": "p3_alg_structure_rearrangement"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "official_curriculum_section": "Logarithmic and exponential functions",
+        "region_id": "logarithm-grove",
+        "skill_ref": "p3_log_calculus_contexts"
       }
     ],
     "skills_missing_worked_example": []
@@ -122,7 +130,7 @@
       ],
       "skill_count": 7,
       "snippet_count": 8,
-      "warmup_support_count": 27,
+      "warmup_support_count": 31,
       "worked_example_count": 13
     },
     {
@@ -130,8 +138,10 @@
       "canonical_question_count": 21,
       "field_guide_count": 1,
       "guardian_candidate_count": 11,
-      "instructional_status": "ready",
-      "missing_support_flags": [],
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_warm_up"
+      ],
       "quick_check_count": 8,
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
@@ -145,7 +155,7 @@
       ],
       "skill_count": 6,
       "snippet_count": 8,
-      "warmup_support_count": 12,
+      "warmup_support_count": 9,
       "worked_example_count": 12
     },
     {
@@ -231,7 +241,7 @@
       ],
       "skill_count": 4,
       "snippet_count": 5,
-      "warmup_support_count": 16,
+      "warmup_support_count": 35,
       "worked_example_count": 8
     },
     {
@@ -251,7 +261,7 @@
       ],
       "skill_count": 3,
       "snippet_count": 3,
-      "warmup_support_count": 9,
+      "warmup_support_count": 10,
       "worked_example_count": 7
     },
     {
@@ -271,7 +281,7 @@
       ],
       "skill_count": 3,
       "snippet_count": 2,
-      "warmup_support_count": 9,
+      "warmup_support_count": 15,
       "worked_example_count": 4
     },
     {
@@ -291,7 +301,7 @@
       ],
       "skill_count": 3,
       "snippet_count": 3,
-      "warmup_support_count": 9,
+      "warmup_support_count": 22,
       "worked_example_count": 6
     }
   ],
@@ -817,6 +827,10 @@
         "algebra.partial_fractions_repeated_linear"
       ],
       "warmup_practice_ids": [
+        "gen_integrals_partial_fractions_0001",
+        "gen_integrals_partial_fractions_0002",
+        "gen_integrals_partial_fractions_0003",
+        "gen_integrals_partial_fractions_0004",
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
@@ -825,7 +839,7 @@
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
       ],
-      "warmup_support_count": 7,
+      "warmup_support_count": 11,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-partial-fractions-form-001-example-1",
@@ -1591,9 +1605,15 @@
       "warmup_practice_ids": [
         "gen_differential_equations_context_model_basic_0001",
         "gen_differential_equations_context_model_basic_0002",
-        "gen_differential_equations_context_model_basic_0003"
+        "gen_differential_equations_context_model_basic_0003",
+        "gen_differential_equations_context_model_basic_0004",
+        "gen_differential_equations_context_model_basic_0005",
+        "gen_differential_equations_context_model_basic_0006",
+        "gen_differential_equations_context_model_basic_0007",
+        "gen_differential_equations_context_model_basic_0008",
+        "gen_differential_equations_context_model_basic_0009"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 9,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-differential-context-model-001-example-1",
@@ -1706,9 +1726,11 @@
       "warmup_practice_ids": [
         "gen_differential_equations_initial_condition_basic_0001",
         "gen_differential_equations_initial_condition_basic_0002",
-        "gen_differential_equations_initial_condition_basic_0003"
+        "gen_differential_equations_initial_condition_basic_0003",
+        "gen_differential_equations_initial_condition_basic_0004",
+        "gen_differential_equations_initial_condition_basic_0005"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 5,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-differential-initial-condition-001-example-1",
@@ -1817,9 +1839,14 @@
       "warmup_practice_ids": [
         "gen_differential_equations_separation_basic_0001",
         "gen_differential_equations_separation_basic_0002",
-        "gen_differential_equations_separation_basic_0003"
+        "gen_differential_equations_separation_basic_0003",
+        "gen_differential_equations_separation_basic_0004",
+        "gen_differential_equations_separation_basic_0005",
+        "gen_differential_equations_separation_basic_0006",
+        "gen_differential_equations_separation_basic_0007",
+        "gen_differential_equations_separation_basic_0008"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 8,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-differential-separation-001-example-1",
@@ -2391,7 +2418,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "32spring21_q10"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -2494,11 +2523,15 @@
         "integration.definite_area_basic"
       ],
       "warmup_practice_ids": [
-        "gen_integration_definite_area_basic_0001",
-        "gen_integration_definite_area_basic_0002",
-        "gen_integration_definite_area_basic_0003"
+        "gen_integrals_arctan_forms_0004",
+        "gen_integrals_basic_trig_0004",
+        "gen_integrals_exponential_logarithmic_0002",
+        "gen_integrals_exponential_logarithmic_0003",
+        "gen_integrals_exponential_logarithmic_0004",
+        "gen_integrals_substitution_0003",
+        "gen_integrals_trig_identities_0004"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 7,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-integration-definite-area-001-example-1",
@@ -2609,11 +2642,15 @@
         "integration.method_setup_basic"
       ],
       "warmup_practice_ids": [
-        "gen_integration_method_setup_basic_0001",
-        "gen_integration_method_setup_basic_0002",
-        "gen_integration_method_setup_basic_0003"
+        "gen_integrals_basic_trig_0001",
+        "gen_integrals_basic_trig_0002",
+        "gen_integrals_basic_trig_0003",
+        "gen_integrals_exponential_logarithmic_0001",
+        "gen_integrals_trig_identities_0001",
+        "gen_integrals_trig_identities_0002",
+        "gen_integrals_trig_identities_0003"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 7,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-integration-method-choice-001-example-1",
@@ -2723,6 +2760,10 @@
         "algebra.partial_fractions_repeated_linear"
       ],
       "warmup_practice_ids": [
+        "gen_integrals_partial_fractions_0001",
+        "gen_integrals_partial_fractions_0002",
+        "gen_integrals_partial_fractions_0003",
+        "gen_integrals_partial_fractions_0004",
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
@@ -2731,7 +2772,7 @@
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
       ],
-      "warmup_support_count": 7,
+      "warmup_support_count": 11,
       "worked_example_count": 4,
       "worked_example_ids": [
         "p3-integration-method-choice-001-example-1",
@@ -2844,11 +2885,18 @@
         "integration.parts_substitution_basic"
       ],
       "warmup_practice_ids": [
-        "gen_integration_parts_substitution_basic_0001",
-        "gen_integration_parts_substitution_basic_0002",
-        "gen_integration_parts_substitution_basic_0003"
+        "gen_integrals_arctan_forms_0001",
+        "gen_integrals_arctan_forms_0002",
+        "gen_integrals_arctan_forms_0003",
+        "gen_integrals_by_parts_0001",
+        "gen_integrals_by_parts_0002",
+        "gen_integrals_by_parts_0003",
+        "gen_integrals_substitution_0001",
+        "gen_integrals_substitution_0002",
+        "gen_integrals_substitution_0004",
+        "gen_integrals_substitution_0005"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 10,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-integration-parts-substitution-001-example-1",
@@ -2868,7 +2916,6 @@
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up",
         "canonical_question",
         "guardian_candidate"
       ],
@@ -2896,7 +2943,7 @@
         "31summer21_q09",
         "35summer25_q04"
       ],
-      "instructional_status": "ready",
+      "instructional_status": "partial",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
       "mastery_evidence_question_count": 5,
@@ -2908,7 +2955,9 @@
         "35autumn25_q04"
       ],
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
-      "missing_support_types": [],
+      "missing_support_types": [
+        "warm_up"
+      ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Logarithmic and exponential functions",
       "p1_prerequisite_refs": [
@@ -2957,19 +3006,15 @@
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
       "teacher_review_deferred_question_ids": [],
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "logarithms_and_exponentials.calculus_context_basic"
+      ],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "unreviewed_app_region_mismatch_question_ids": [],
-      "warmup_generator_families": [
-        "logarithms_and_exponentials.calculus_context_basic"
-      ],
-      "warmup_practice_ids": [
-        "gen_log_calculus_context_basic_0001",
-        "gen_log_calculus_context_basic_0002",
-        "gen_log_calculus_context_basic_0003"
-      ],
-      "warmup_support_count": 3,
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-log-calculus-context-001-example-1",
@@ -3750,11 +3795,14 @@
         "numerical_methods.iteration_formula_basic"
       ],
       "warmup_practice_ids": [
+        "gen_iteration_fixed_point_roots_0003",
+        "gen_iteration_fixed_point_roots_0004",
+        "gen_iteration_fixed_point_roots_0005",
         "gen_numerical_iteration_formula_basic_0001",
         "gen_numerical_iteration_formula_basic_0002",
         "gen_numerical_iteration_formula_basic_0003"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 6,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-iteration-formula-discipline-001-example-1",
@@ -3857,11 +3905,14 @@
         "numerical_methods.sign_change_iteration_basic"
       ],
       "warmup_practice_ids": [
+        "gen_iteration_change_of_sign_0004",
+        "gen_iteration_change_of_sign_0005",
+        "gen_iteration_change_of_sign_0006",
         "gen_numerical_sign_change_basic_0001",
         "gen_numerical_sign_change_basic_0002",
         "gen_numerical_sign_change_basic_0003"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 6,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-numerical-method-evidence-001-example-1",
@@ -4546,9 +4597,10 @@
       "warmup_practice_ids": [
         "gen_vectors_line_relationship_basic_0001",
         "gen_vectors_line_relationship_basic_0002",
-        "gen_vectors_line_relationship_basic_0003"
+        "gen_vectors_line_relationship_basic_0003",
+        "gen_vectors_line_relationship_basic_0004"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 4,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-vectors-3d-geometry-001-example-1",
@@ -4800,14 +4852,14 @@
         "skill_count": 4
       },
       {
-        "app_routed_p3_question_count": 50,
+        "app_routed_p3_question_count": 52,
         "canonical_question_count": 14,
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 50,
+        "app_routed_p3_question_count": 49,
         "canonical_question_count": 11,
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
@@ -4828,7 +4880,7 @@
         "skill_count": 3
       },
       {
-        "app_routed_p3_question_count": 33,
+        "app_routed_p3_question_count": 32,
         "canonical_question_count": 10,
         "region_id": "differential-shrine",
         "region_title": "Differential Shrine",
@@ -4849,8 +4901,8 @@
       "blocked": 0,
       "missing": 0,
       "needs_review": 0,
-      "partial": 1,
-      "ready": 8
+      "partial": 2,
+      "ready": 7
     }
   },
   "reviewed_skill_summary": {
@@ -4860,7 +4912,7 @@
       "guardian_candidate": 40,
       "quick_check": 40,
       "snippet": 40,
-      "warm_up": 38,
+      "warm_up": 37,
       "worked_example": 40
     },
     "ready_for_region_learning_loop": false,
@@ -4869,8 +4921,8 @@
       "blocked": 0,
       "missing": 0,
       "needs_review": 0,
-      "partial": 2,
-      "ready": 38
+      "partial": 3,
+      "ready": 37
     }
   },
   "risk_summary": [
@@ -4893,7 +4945,7 @@
       "status": "clear"
     },
     {
-      "count": 2,
+      "count": 3,
       "risk_id": "missing_warm_up",
       "risk_type": "ordinary_gap",
       "status": "open"
@@ -4941,7 +4993,7 @@
       "status": "clear"
     },
     {
-      "count": 35,
+      "count": 36,
       "risk_id": "resolved_app_region_mismatches",
       "risk_type": "audit_result",
       "status": "resolved"
@@ -4959,7 +5011,7 @@
       "status": "clear"
     },
     {
-      "count": 2,
+      "count": 3,
       "risk_id": "structural_warnings",
       "risk_type": "structural_warning",
       "status": "open"
@@ -4991,7 +5043,7 @@
     "inactive_teacher_review_entries": [],
     "inactive_teacher_review_entry_count": 0,
     "original_reviewed_mismatch_count": 42,
-    "resolved_mismatch_count": 35,
+    "resolved_mismatch_count": 36,
     "resolved_mismatches": [
       {
         "app_region_id": "integration-gardens",
@@ -5062,6 +5114,20 @@
         "reviewed_skill_map_region_id": "calculus-cliffs",
         "skill_ref": "p3_diff_stationary_tangent_normal",
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
+      },
+      {
+        "app_region_id": "calculus-cliffs",
+        "evidence_status": "clean_mastery_evidence",
+        "export_allowed": true,
+        "mastery_evidence_allowed": true,
+        "practice_allowed": true,
+        "question_id": "32spring21_q10",
+        "rationale": "Part (a) asks for the exact area under the curve, and the mark scheme rewards using the substitution, forming the definite integral, applying limits, and obtaining the exact area.",
+        "recommended_resolution": "Accept this as clean definite-area evidence from the area subpart.",
+        "resolution_status": "validated_skill_map_route",
+        "reviewed_skill_map_region_id": "integration-gardens",
+        "skill_ref": "p3_int_definite_improper_area",
+        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
       },
       {
         "app_region_id": "differential-shrine",
@@ -5484,7 +5550,7 @@
         "source_of_conflicting_label": "Local topic is parametric_equations and DeepSeek/app routing emphasize integration, while part (a) asks for points with a specified gradient."
       }
     ],
-    "resolved_skill_warning_count": 14,
+    "resolved_skill_warning_count": 15,
     "review_label": "phase-3-routing-audit-v1",
     "teacher_review_mismatch_count": 0,
     "teacher_review_mismatches": [],
@@ -5529,6 +5595,15 @@
       "skill_ref": "p3_alg_structure_rearrangement",
       "unresolved_generator_families": [
         "algebra.structure_rearrangement_basic"
+      ],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": []
+    },
+    {
+      "skill_ref": "p3_log_calculus_contexts",
+      "unresolved_generator_families": [
+        "logarithms_and_exponentials.calculus_context_basic"
       ],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],

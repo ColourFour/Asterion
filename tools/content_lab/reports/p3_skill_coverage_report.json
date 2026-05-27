@@ -51,8 +51,8 @@
     "coverage_by_curriculum_role": [
       {
         "curriculum_role": "p3_core",
-        "high_evidence_weak_teaching_support": 0,
-        "skills_with_generated_warm_up": 38,
+        "high_evidence_weak_teaching_support": 1,
+        "skills_with_generated_warm_up": 37,
         "skills_with_quick_check": 40,
         "skills_with_snippet": 40,
         "skills_with_trainable_canonical_question": 40,
@@ -106,9 +106,9 @@
         "total_skills": 4
       },
       {
-        "high_evidence_weak_teaching_support": 0,
+        "high_evidence_weak_teaching_support": 1,
         "region_id": "logarithm-grove",
-        "skills_with_generated_warm_up": 6,
+        "skills_with_generated_warm_up": 5,
         "skills_with_quick_check": 6,
         "skills_with_snippet": 6,
         "skills_with_trainable_canonical_question": 6,
@@ -189,8 +189,8 @@
         "total_skills": 4
       },
       {
-        "high_evidence_weak_teaching_support": 0,
-        "skills_with_generated_warm_up": 6,
+        "high_evidence_weak_teaching_support": 1,
+        "skills_with_generated_warm_up": 5,
         "skills_with_quick_check": 6,
         "skills_with_snippet": 6,
         "skills_with_trainable_canonical_question": 6,
@@ -229,7 +229,17 @@
     "ready_for_full_p3_learning": false
   },
   "gaps": {
-    "high_evidence_skills_with_weak_teaching_support": [],
+    "high_evidence_skills_with_weak_teaching_support": [
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "reasons": [
+          "no_reviewed_generated_warm_up"
+        ],
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
+      }
+    ],
     "skills_with_no_generated_warm_up": [
       {
         "micro_skill_name": "Use discriminant or root conditions as evidence",
@@ -242,6 +252,12 @@
         "region_id": "algebra-forge",
         "skill_id": "p3_alg_structure_rearrangement",
         "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Handle log and exponential functions inside calculus questions",
+        "region_id": "logarithm-grove",
+        "skill_id": "p3_log_calculus_contexts",
+        "syllabus_topic": "Logarithmic and exponential functions"
       }
     ],
     "skills_with_no_quick_check": [],
@@ -539,7 +555,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 7,
+      "warm_up_item_count": 11,
       "weak_support_reasons": []
     },
     {
@@ -928,7 +944,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 9,
       "weak_support_reasons": []
     },
     {
@@ -986,7 +1002,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 5,
       "weak_support_reasons": []
     },
     {
@@ -1043,7 +1059,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 8,
       "weak_support_reasons": []
     },
     {
@@ -1386,7 +1402,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 7,
       "weak_support_reasons": []
     },
     {
@@ -1444,7 +1460,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 7,
       "weak_support_reasons": []
     },
     {
@@ -1504,7 +1520,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 7,
+      "warm_up_item_count": 11,
       "weak_support_reasons": []
     },
     {
@@ -1562,18 +1578,18 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 10,
       "weak_support_reasons": []
     },
     {
       "canonical_source_question_count": 5,
       "curriculum_role": "p3_core",
-      "has_generated_warm_up": true,
+      "has_generated_warm_up": false,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
       "high_evidence": true,
-      "high_evidence_weak_teaching_support": false,
+      "high_evidence_weak_teaching_support": true,
       "mastery_eligible": true,
       "micro_skill_name": "Handle log and exponential functions inside calculus questions",
       "needs_teacher_review": false,
@@ -1591,9 +1607,7 @@
         }
       ],
       "region_id": "logarithm-grove",
-      "resolved_generator_families": [
-        "logarithms_and_exponentials.calculus_context_basic"
-      ],
+      "resolved_generator_families": [],
       "resolved_guardian_candidates": [
         "31summer21_q09",
         "35summer25_q04"
@@ -1614,14 +1628,18 @@
       "skill_id": "p3_log_calculus_contexts",
       "syllabus_topic": "Logarithmic and exponential functions",
       "trainable_canonical_question_count": 5,
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "logarithms_and_exponentials.calculus_context_basic"
+      ],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
-      "weak_support_reasons": []
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
     },
     {
       "canonical_source_question_count": 5,
@@ -2021,7 +2039,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 6,
       "weak_support_reasons": []
     },
     {
@@ -2074,7 +2092,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 6,
       "weak_support_reasons": []
     },
     {
@@ -2416,7 +2434,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 4,
       "weak_support_reasons": []
     },
     {
@@ -2528,7 +2546,7 @@
   ],
   "summary": {
     "high_evidence_skills": 24,
-    "high_evidence_weak_teaching_support": 0,
+    "high_evidence_weak_teaching_support": 1,
     "mastery_eligible_skills": 40,
     "ready_for_full_p3_learning": false,
     "skills_by_curriculum_role": {
@@ -2539,7 +2557,7 @@
       "p3_core": 40
     },
     "skills_needing_teacher_review": 0,
-    "skills_with_generated_warm_up": 38,
+    "skills_with_generated_warm_up": 37,
     "skills_with_prerequisite_refs": 40,
     "skills_with_quick_check": 40,
     "skills_with_snippet": 40,
@@ -2562,6 +2580,17 @@
       "skill_id": "p3_alg_structure_rearrangement",
       "unresolved_generator_families": [
         "algebra.structure_rearrangement_basic"
+      ],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": []
+    },
+    {
+      "skill_id": "p3_log_calculus_contexts",
+      "unresolved_generator_families": [
+        "logarithms_and_exponentials.calculus_context_basic"
       ],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],

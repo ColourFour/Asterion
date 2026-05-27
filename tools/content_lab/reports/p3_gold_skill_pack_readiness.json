@@ -25,7 +25,7 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-26T23:49:48.555765+00:00",
+  "generated_at": "2026-05-27T09:24:34.665812+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
@@ -61,7 +61,7 @@
       "region_id": "calculus-cliffs",
       "skill_count": 5,
       "thin_evidence_skill_count": 0,
-      "warmup_role_gap_skill_count": 1,
+      "warmup_role_gap_skill_count": 0,
       "warning_only_skill_count": 3,
       "worked_example_gap_skill_count": 0
     },
@@ -102,15 +102,15 @@
       "worked_example_gap_skill_count": 0
     },
     {
-      "blocked_skill_count": 0,
+      "blocked_skill_count": 1,
       "missing_repair_note_skill_count": 0,
       "mvp_gold_ready_count": 0,
       "region": "Logarithm Observatory",
       "region_id": "logarithm-grove",
       "skill_count": 6,
       "thin_evidence_skill_count": 0,
-      "warmup_role_gap_skill_count": 0,
-      "warning_only_skill_count": 6,
+      "warmup_role_gap_skill_count": 1,
+      "warning_only_skill_count": 5,
       "worked_example_gap_skill_count": 0
     },
     {
@@ -437,8 +437,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 7,
+      "warmup_practice_count": 11,
       "warmup_practice_ids": [
+        "gen_integrals_partial_fractions_0001",
+        "gen_integrals_partial_fractions_0002",
+        "gen_integrals_partial_fractions_0003",
+        "gen_integrals_partial_fractions_0004",
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
@@ -909,11 +913,17 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 9,
       "warmup_practice_ids": [
         "gen_differential_equations_context_model_basic_0001",
         "gen_differential_equations_context_model_basic_0002",
-        "gen_differential_equations_context_model_basic_0003"
+        "gen_differential_equations_context_model_basic_0003",
+        "gen_differential_equations_context_model_basic_0004",
+        "gen_differential_equations_context_model_basic_0005",
+        "gen_differential_equations_context_model_basic_0006",
+        "gen_differential_equations_context_model_basic_0007",
+        "gen_differential_equations_context_model_basic_0008",
+        "gen_differential_equations_context_model_basic_0009"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -975,11 +985,13 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 5,
       "warmup_practice_ids": [
         "gen_differential_equations_initial_condition_basic_0001",
         "gen_differential_equations_initial_condition_basic_0002",
-        "gen_differential_equations_initial_condition_basic_0003"
+        "gen_differential_equations_initial_condition_basic_0003",
+        "gen_differential_equations_initial_condition_basic_0004",
+        "gen_differential_equations_initial_condition_basic_0005"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1040,11 +1052,16 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differential equations",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 8,
       "warmup_practice_ids": [
         "gen_differential_equations_separation_basic_0001",
         "gen_differential_equations_separation_basic_0002",
-        "gen_differential_equations_separation_basic_0003"
+        "gen_differential_equations_separation_basic_0003",
+        "gen_differential_equations_separation_basic_0004",
+        "gen_differential_equations_separation_basic_0005",
+        "gen_differential_equations_separation_basic_0006",
+        "gen_differential_equations_separation_basic_0007",
+        "gen_differential_equations_separation_basic_0008"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1109,8 +1126,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
-      "warmup_practice_count": 4,
+      "warmup_practice_count": 10,
       "warmup_practice_ids": [
+        "gen_calculus_product_rule_0001",
+        "gen_calculus_product_rule_0002",
+        "gen_calculus_product_rule_0003",
+        "gen_calculus_quotient_rule_0001",
+        "gen_calculus_quotient_rule_0002",
+        "gen_calculus_quotient_rule_0003",
         "gen_differentiation_chain_product_basic_0001",
         "gen_differentiation_chain_product_basic_0002",
         "gen_differentiation_chain_product_basic_0003",
@@ -1175,8 +1198,11 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 6,
       "warmup_practice_ids": [
+        "gen_calculus_implicit_derivative_0001",
+        "gen_calculus_implicit_derivative_0002",
+        "gen_calculus_implicit_derivative_0003",
         "gen_differentiation_implicit_log_exp_basic_0001",
         "gen_differentiation_implicit_log_exp_basic_0002",
         "gen_differentiation_implicit_log_exp_basic_0003"
@@ -1240,8 +1266,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
-      "warmup_practice_count": 4,
+      "warmup_practice_count": 10,
       "warmup_practice_ids": [
+        "gen_calculus_exp_log_derivative_0001",
+        "gen_calculus_exp_log_derivative_0002",
+        "gen_calculus_exp_log_derivative_0003",
+        "gen_calculus_trig_derivative_0001",
+        "gen_calculus_trig_derivative_0002",
+        "gen_calculus_trig_derivative_0003",
         "gen_differentiation_chain_product_basic_0001",
         "gen_differentiation_chain_product_basic_0002",
         "gen_differentiation_chain_product_basic_0003",
@@ -1288,7 +1320,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `missing_some_warmup_sequence_roles` before marking this skill MVP gold ready.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Differentiation",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -1307,19 +1339,20 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Differentiation",
-      "warmup_practice_count": 1,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
+        "gen_calculus_parametric_derivative_0001",
+        "gen_calculus_parametric_derivative_0002",
+        "gen_calculus_parametric_derivative_0003",
         "gen_parametric_derivative_ratio_basic_0001"
       ],
-      "warmup_roles_missing": [
-        "first_step",
-        "complete_step"
-      ],
+      "warmup_roles_missing": [],
       "warmup_roles_present": [
+        "first_step",
+        "complete_step",
         "guardian_prep"
       ],
       "warnings": [
-        "missing_some_warmup_sequence_roles",
         "source_backed_worked_examples_sparse"
       ],
       "worked_example_count": 2,
@@ -1437,11 +1470,15 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 7,
       "warmup_practice_ids": [
-        "gen_integration_definite_area_basic_0001",
-        "gen_integration_definite_area_basic_0002",
-        "gen_integration_definite_area_basic_0003"
+        "gen_integrals_arctan_forms_0004",
+        "gen_integrals_basic_trig_0004",
+        "gen_integrals_exponential_logarithmic_0002",
+        "gen_integrals_exponential_logarithmic_0003",
+        "gen_integrals_exponential_logarithmic_0004",
+        "gen_integrals_substitution_0003",
+        "gen_integrals_trig_identities_0004"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1503,11 +1540,15 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 7,
       "warmup_practice_ids": [
-        "gen_integration_method_setup_basic_0001",
-        "gen_integration_method_setup_basic_0002",
-        "gen_integration_method_setup_basic_0003"
+        "gen_integrals_basic_trig_0001",
+        "gen_integrals_basic_trig_0002",
+        "gen_integrals_basic_trig_0003",
+        "gen_integrals_exponential_logarithmic_0001",
+        "gen_integrals_trig_identities_0001",
+        "gen_integrals_trig_identities_0002",
+        "gen_integrals_trig_identities_0003"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1570,8 +1611,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 7,
+      "warmup_practice_count": 11,
       "warmup_practice_ids": [
+        "gen_integrals_partial_fractions_0001",
+        "gen_integrals_partial_fractions_0002",
+        "gen_integrals_partial_fractions_0003",
+        "gen_integrals_partial_fractions_0004",
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
@@ -1642,11 +1687,18 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 10,
       "warmup_practice_ids": [
-        "gen_integration_parts_substitution_basic_0001",
-        "gen_integration_parts_substitution_basic_0002",
-        "gen_integration_parts_substitution_basic_0003"
+        "gen_integrals_arctan_forms_0001",
+        "gen_integrals_arctan_forms_0002",
+        "gen_integrals_arctan_forms_0003",
+        "gen_integrals_by_parts_0001",
+        "gen_integrals_by_parts_0002",
+        "gen_integrals_by_parts_0003",
+        "gen_integrals_substitution_0001",
+        "gen_integrals_substitution_0002",
+        "gen_integrals_substitution_0004",
+        "gen_integrals_substitution_0005"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1664,7 +1716,9 @@
       ]
     },
     {
-      "blockers": [],
+      "blockers": [
+        "missing_all_warmup_support"
+      ],
       "clean_evidence_count": 5,
       "clean_evidence_question_ids": [
         "31summer21_q09",
@@ -1689,7 +1743,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
+      "next_action": "Add reviewed deterministic warm-up support before claiming MVP gold.",
       "official_syllabus_section": "Logarithmic and exponential functions",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -1708,18 +1762,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Logarithmic and exponential functions",
-      "warmup_practice_count": 3,
-      "warmup_practice_ids": [
-        "gen_log_calculus_context_basic_0001",
-        "gen_log_calculus_context_basic_0002",
-        "gen_log_calculus_context_basic_0003"
-      ],
-      "warmup_roles_missing": [],
-      "warmup_roles_present": [
+      "warmup_practice_count": 0,
+      "warmup_practice_ids": [],
+      "warmup_roles_missing": [
         "first_step",
         "complete_step",
         "guardian_prep"
       ],
+      "warmup_roles_present": [],
       "warnings": [
         "source_backed_worked_examples_sparse"
       ],
@@ -1774,11 +1824,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Logarithmic and exponential functions",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 6,
       "warmup_practice_ids": [
         "gen_log_equation_basic_0001",
         "gen_log_equation_basic_0002",
-        "gen_log_equation_basic_0003"
+        "gen_log_equation_basic_0003",
+        "gen_log_graph_inverse_basic_0001",
+        "gen_log_graph_inverse_basic_0002",
+        "gen_log_graph_inverse_basic_0003"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1907,11 +1960,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Logarithmic and exponential functions",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 6,
       "warmup_practice_ids": [
         "gen_log_equation_basic_0001",
         "gen_log_equation_basic_0002",
-        "gen_log_equation_basic_0003"
+        "gen_log_equation_basic_0003",
+        "gen_log_exponential_inequality_basic_0001",
+        "gen_log_exponential_inequality_basic_0002",
+        "gen_log_exponential_inequality_basic_0003"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -1975,11 +2031,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Logarithmic and exponential functions",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 6,
       "warmup_practice_ids": [
         "gen_log_equation_basic_0001",
         "gen_log_equation_basic_0002",
-        "gen_log_equation_basic_0003"
+        "gen_log_equation_basic_0003",
+        "gen_log_laws_basic_0001",
+        "gen_log_laws_basic_0002",
+        "gen_log_laws_basic_0003"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -2170,8 +2229,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Numerical solution of equations",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 9,
       "warmup_practice_ids": [
+        "gen_iteration_convergence_0001",
+        "gen_iteration_convergence_0002",
+        "gen_iteration_convergence_0003",
+        "gen_iteration_fixed_point_roots_0003",
+        "gen_iteration_fixed_point_roots_0004",
+        "gen_iteration_fixed_point_roots_0005",
         "gen_numerical_iteration_formula_basic_0001",
         "gen_numerical_iteration_formula_basic_0002",
         "gen_numerical_iteration_formula_basic_0003"
@@ -2236,8 +2301,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Numerical solution of equations",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 9,
       "warmup_practice_ids": [
+        "gen_iteration_change_of_sign_0004",
+        "gen_iteration_change_of_sign_0005",
+        "gen_iteration_change_of_sign_0006",
+        "gen_iteration_graph_root_proof_0001",
+        "gen_iteration_graph_root_proof_0002",
+        "gen_iteration_graph_root_proof_0003",
         "gen_numerical_sign_change_basic_0001",
         "gen_numerical_sign_change_basic_0002",
         "gen_numerical_sign_change_basic_0003"
@@ -2509,8 +2580,11 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Trigonometry",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 6,
       "warmup_practice_ids": [
+        "gen_trig_addition_formulae_basic_0001",
+        "gen_trig_addition_formulae_basic_0002",
+        "gen_trig_addition_formulae_basic_0003",
         "gen_trig_r_form_basic_0001",
         "gen_trig_r_form_basic_0002",
         "gen_trig_r_form_basic_0003"
@@ -2644,11 +2718,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Vectors",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
         "gen_vectors_line_relationship_basic_0001",
         "gen_vectors_line_relationship_basic_0002",
-        "gen_vectors_line_relationship_basic_0003"
+        "gen_vectors_line_relationship_basic_0003",
+        "gen_vectors_line_relationship_basic_0004"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -2777,11 +2852,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Vectors",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
         "gen_vectors_line_scalar_product_basic_0001",
         "gen_vectors_line_scalar_product_basic_0002",
-        "gen_vectors_line_scalar_product_basic_0003"
+        "gen_vectors_line_scalar_product_basic_0003",
+        "gen_vectors_point_to_line_distance_0001"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -2800,9 +2876,9 @@
     }
   ],
   "skill_summary": {
-    "blocked_skill_count": 2,
+    "blocked_skill_count": 3,
     "blocker_counts": {
-      "missing_all_warmup_support": 2
+      "missing_all_warmup_support": 3
     },
     "evidence_status_counts": {
       "ambiguous": 0,
@@ -2819,11 +2895,10 @@
       "fewer_than_two_worked_examples": 1,
       "missing_mark_scheme_move_note": 3,
       "missing_misconception_repair_note": 2,
-      "missing_some_warmup_sequence_roles": 1,
       "source_backed_worked_examples_sparse": 37,
       "thin_evidence_resilience": 1
     },
-    "warning_only_skill_count": 35
+    "warning_only_skill_count": 34
   },
   "thin_region_priority_summary": [
     {

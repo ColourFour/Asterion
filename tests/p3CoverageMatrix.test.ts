@@ -153,6 +153,10 @@ const quarantinedAlgebraWarmupSkillRefs = [
   'p3_alg_discriminant_root_conditions',
   'p3_alg_structure_rearrangement',
 ];
+const knownWarmupSupportGapSkillRefs = [
+  ...quarantinedAlgebraWarmupSkillRefs,
+  'p3_log_calculus_contexts',
+];
 
 function runPython(args: string[]) {
   execFileSync('python3', args, {
@@ -541,18 +545,19 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('keeps p3_log_calculus_contexts clean and ready after image-backed audit', () => {
+  it('keeps p3_log_calculus_contexts clean while preserving its warm-up support gap', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
     const logCalculusRows = matrix.coverage_rows.filter((row) => row.skill_ref === 'p3_log_calculus_contexts');
     const logCalculus = logCalculusRows[0];
 
     expect(logCalculusRows).toHaveLength(1);
-    expect(logCalculus.coverage_status).toBe('ready_for_review');
-    expect(logCalculus.correction_priority).toBe('P4_polish_or_complete');
+    expect(logCalculus.coverage_status).toBe('missing_support');
+    expect(logCalculus.correction_priority).toBe('P2_missing_practice_support');
     expect(logCalculus.clean_mastery_evidence_count).toBe(5);
     expect(logCalculus.deferred_evidence_count).toBe(0);
     expect(logCalculus.blocking_reasons).toEqual([]);
-    expect(logCalculus.recommended_next_action).toContain('Teacher review can confirm');
+    expect(logCalculus.support_gaps).toEqual(['warm_up']);
+    expect(logCalculus.recommended_next_action).toContain('Add reviewed deterministic warm-up support');
     expect(logCalculus.recommended_next_action).not.toContain('random content');
     expect(matrix.risk_summary.blocked_mastery_skill_refs).not.toContain('p3_log_calculus_contexts');
   });
@@ -596,27 +601,27 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('keeps teaching support gaps limited to quarantined Algebra warm-ups', () => {
+  it('keeps teaching support gaps limited to known warm-up gaps', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
-    const quarantinedAlgebraWarmupSkills = new Set(quarantinedAlgebraWarmupSkillRefs);
+    const knownWarmupSupportGapSkills = new Set(knownWarmupSupportGapSkillRefs);
 
-    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBe(quarantinedAlgebraWarmupSkillRefs.length);
+    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBe(knownWarmupSupportGapSkillRefs.length);
     expect(matrix.teaching_support_summary.support_gap_counts).toMatchObject({
       field_guide: 0,
       quick_check: 0,
       snippet: 0,
-      warm_up: quarantinedAlgebraWarmupSkillRefs.length,
+      warm_up: knownWarmupSupportGapSkillRefs.length,
       worked_example: 0,
     });
     expect(matrix.teaching_support_summary.expected_support_types).toEqual(supportTypes);
-    expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual([]);
+    expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual(['warm_up']);
     expect(matrix.risk_summary.blocked_mastery_skill_refs).toEqual([]);
     expect(matrix.evidence_resilience_summary.thin_resilience_risk_skill_refs).toContain('p3_alg_discriminant_root_conditions');
     expect(matrix.evidence_resilience_summary.blocked_no_clean_mastery_evidence_skill_refs).toEqual([]);
 
     for (const row of matrix.coverage_rows) {
       expect(row.support_gaps, row.skill_ref).toEqual(
-        quarantinedAlgebraWarmupSkills.has(row.skill_ref) ? ['warm_up'] : [],
+        knownWarmupSupportGapSkills.has(row.skill_ref) ? ['warm_up'] : [],
       );
       expect(row.blocking_reasons, row.skill_ref).toEqual([]);
     }

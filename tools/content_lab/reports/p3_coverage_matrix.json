@@ -8,9 +8,9 @@
     "priority_counts": {
       "P0_blocked_mastery": 0,
       "P1_missing_core_support": 0,
-      "P2_missing_practice_support": 2,
+      "P2_missing_practice_support": 3,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 38
+      "P4_polish_or_complete": 37
     },
     "suggested_region_correction_order": [
       {
@@ -27,6 +27,21 @@
         "region_title": "Algebra Vault",
         "skill_count": 7,
         "support_gap_skill_count": 2
+      },
+      {
+        "blocked_mastery_skill_count": 0,
+        "highest_priority": "P2_missing_practice_support",
+        "priority_counts": {
+          "P0_blocked_mastery": 0,
+          "P1_missing_core_support": 0,
+          "P2_missing_practice_support": 1,
+          "P3_teacher_review_backlog": 0,
+          "P4_polish_or_complete": 5
+        },
+        "region_id": "logarithm-grove",
+        "region_title": "Logarithm Observatory",
+        "skill_count": 6,
+        "support_gap_skill_count": 1
       },
       {
         "blocked_mastery_skill_count": 0,
@@ -86,21 +101,6 @@
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
         "skill_count": 4,
-        "support_gap_skill_count": 0
-      },
-      {
-        "blocked_mastery_skill_count": 0,
-        "highest_priority": "P4_polish_or_complete",
-        "priority_counts": {
-          "P0_blocked_mastery": 0,
-          "P1_missing_core_support": 0,
-          "P2_missing_practice_support": 0,
-          "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 6
-        },
-        "region_id": "logarithm-grove",
-        "region_title": "Logarithm Observatory",
-        "skill_count": 6,
         "support_gap_skill_count": 0
       },
       {
@@ -1253,8 +1253,8 @@
         "35summer25_q04",
         "35autumn25_q04"
       ],
-      "correction_priority": "P4_polish_or_complete",
-      "coverage_status": "ready_for_review",
+      "correction_priority": "P2_missing_practice_support",
+      "coverage_status": "missing_support",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -1280,15 +1280,17 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
+      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_id": "p3_log_calculus_contexts",
       "skill_ref": "p3_log_calculus_contexts",
       "skill_title": "Handle log and exponential functions inside calculus questions",
       "snippet_status": "available",
-      "support_gaps": [],
-      "warmup_status": "available",
+      "support_gaps": [
+        "warm_up"
+      ],
+      "warmup_status": "missing",
       "worked_example_status": "available"
     },
     {
@@ -2183,7 +2185,7 @@
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 2,
+      "warm_up": 3,
       "worked_example": 0
     },
     "thin_mastery_evidence_skill_refs": [
@@ -2196,16 +2198,16 @@
     "correction_priority_counts": {
       "P0_blocked_mastery": 0,
       "P1_missing_core_support": 0,
-      "P2_missing_practice_support": 2,
+      "P2_missing_practice_support": 3,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 38
+      "P4_polish_or_complete": 37
     },
     "coverage_status_counts": {
       "blocked_for_mastery": 0,
-      "missing_support": 2,
+      "missing_support": 3,
       "needs_teacher_review": 0,
       "partial": 0,
-      "ready_for_review": 38
+      "ready_for_review": 37
     },
     "mastery_eligible_skill_count": 40,
     "reviewed_skill_count": 40,
@@ -2219,12 +2221,12 @@
       "quick_check",
       "warm_up"
     ],
-    "skills_with_any_support_gap": 2,
+    "skills_with_any_support_gap": 3,
     "support_gap_counts": {
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 2,
+      "warm_up": 3,
       "worked_example": 0
     }
   }

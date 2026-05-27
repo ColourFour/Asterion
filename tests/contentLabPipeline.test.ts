@@ -230,6 +230,12 @@ function writeValidVerifierOutputs(dir: string, snippetsPath: string, snippetOve
 }
 
 function runVerifier(outputDir: string, snippetsPath: string, extraArgs: string[] = []): string {
+  const candidatesPath = path.join(outputDir, 'content_lab_candidates.json');
+  writeFileSync(candidatesPath, JSON.stringify({
+    schema_name: 'asterion.content_lab_candidates',
+    schema_version: 1,
+    candidates: [],
+  }, null, 2));
   return readPython([
     verifyScript,
     '--outputs-dir',
@@ -238,6 +244,8 @@ function runVerifier(outputDir: string, snippetsPath: string, extraArgs: string[
     snippetsPath,
     '--runtime-generated-practice',
     path.join(outputDir, 'runtime_generated_practice_bank.json'),
+    '--content-lab-candidates',
+    candidatesPath,
     '--skip-question-bank-git-check',
     ...extraArgs,
   ]);

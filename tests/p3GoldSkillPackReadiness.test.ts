@@ -297,8 +297,13 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.misconception_repair_status).toBe('available');
       expect(row.prerequisite_repair_status).toBe('available');
       expect(row.mark_scheme_move_note_status).toBe('available');
-      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
-      expect(row.warmup_roles_missing).toEqual([]);
+      if (skillId === 'p3_log_calculus_contexts') {
+        expect(row.warmup_roles_present).toEqual([]);
+        expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      } else {
+        expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+        expect(row.warmup_roles_missing).toEqual([]);
+      }
       expect(row.support_content_status).toBe('separated');
       expect(row.source_backed_worked_example_count).toBe(0);
       expect(row.warnings).not.toContain('missing_misconception_repair_note');
@@ -345,8 +350,13 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.misconception_repair_status).toBe('available');
       expect(row.prerequisite_repair_status).toBe('available');
       expect(row.mark_scheme_move_note_status).toBe('available');
-      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
-      expect(row.warmup_roles_missing).toEqual([]);
+      if (skillId === 'p3_log_calculus_contexts') {
+        expect(row.warmup_roles_present).toEqual([]);
+        expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      } else {
+        expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+        expect(row.warmup_roles_missing).toEqual([]);
+      }
       expect(row.support_content_status).toBe('separated');
       expect(row.source_backed_worked_example_count).toBe(0);
       expect(row.source_backed_worked_example_contract_errors).toEqual([]);
@@ -409,8 +419,13 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.misconception_repair_status).toBe('available');
       expect(row.prerequisite_repair_status).toBe('available');
       expect(row.mark_scheme_move_note_status).toBe('available');
-      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
-      expect(row.warmup_roles_missing).toEqual([]);
+      if (skillId === 'p3_log_calculus_contexts') {
+        expect(row.warmup_roles_present).toEqual([]);
+        expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      } else {
+        expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+        expect(row.warmup_roles_missing).toEqual([]);
+      }
       expect(row.support_content_status).toBe('separated');
       expect(row.source_backed_worked_example_count).toBe(0);
       expect(row.source_backed_worked_example_contract_errors).toEqual([]);
@@ -418,7 +433,6 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_misconception_repair_note');
       expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
-      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
       expect(warmupItems).toHaveLength(
         skillId === 'p3_vec_3d_geometry_modelling' || skillId === 'p3_vec_scalar_product_angles' ? 4 : 3,
@@ -493,8 +507,13 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.misconception_repair_status).toBe('available');
       expect(row.prerequisite_repair_status).toBe('available');
       expect(row.mark_scheme_move_note_status).toBe('available');
-      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
-      expect(row.warmup_roles_missing).toEqual([]);
+      if (skillId === 'p3_log_calculus_contexts') {
+        expect(row.warmup_roles_present).toEqual([]);
+        expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+      } else {
+        expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+        expect(row.warmup_roles_missing).toEqual([]);
+      }
       expect(row.support_content_status).toBe('separated');
       expect(row.source_backed_worked_example_count).toBe(0);
       expect(row.source_backed_worked_example_contract_errors).toEqual([]);
@@ -502,7 +521,6 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_misconception_repair_note');
       expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
-      expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
       expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
       expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
@@ -1166,13 +1184,14 @@ describe('P3 Gold Skill Pack readiness report', () => {
     expect(row.source_backed_worked_example_count).toBe(0);
     expect(row.source_backed_worked_example_contract_errors).toEqual([]);
     expect(row.support_content_status).toBe('separated');
-    expect(row.warmup_roles_present).toEqual(['guardian_prep']);
-    expect(row.warmup_roles_missing).toEqual(['first_step', 'complete_step']);
-    expect(row.warnings).toEqual(['missing_some_warmup_sequence_roles', 'source_backed_worked_examples_sparse']);
+    expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
+    expect(row.warmup_roles_missing).toEqual([]);
+    expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
     expect(row.warnings).not.toContain('fewer_than_two_worked_examples');
     expect(row.warnings).not.toContain('missing_misconception_repair_note');
     expect(row.warnings).not.toContain('missing_prerequisite_repair_note');
     expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
+    expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
     expect(skill?.prerequisite_notes).toContain('do not count as P3 mastery evidence');
     expect(skill?.prerequisite_skill_refs?.every((ref) => ref.syllabus_id === 'caie_9709_p1_2026_2027' && ref.relationship === 'supports')).toBe(true);
 

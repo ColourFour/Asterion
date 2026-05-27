@@ -1,14 +1,14 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-26T23:49:48.555765+00:00`
+Generated at: `2026-05-27T09:24:34.665812+00:00`
 
 ## Summary
 
 - Artifact scope: `p3_gold_skill_pack_readiness`
 - Reviewed P3 skills evaluated: 40
 - MVP gold ready: 3
-- Blocked: 2
-- Warning-only / thin / resilience-risk: 35
+- Blocked: 3
+- Warning-only / thin / resilience-risk: 34
 - Thin evidence resilience risks: 1
 - Contract violations: 0
 
@@ -16,14 +16,13 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 
 ## Blocker Counts
 
-- `missing_all_warmup_support`: 2
+- `missing_all_warmup_support`: 3
 
 ## Warning Counts
 
 - `fewer_than_two_worked_examples`: 1
 - `missing_mark_scheme_move_note`: 3
 - `missing_misconception_repair_note`: 2
-- `missing_some_warmup_sequence_roles`: 1
 - `source_backed_worked_examples_sparse`: 37
 - `thin_evidence_resilience`: 1
 
@@ -42,11 +41,11 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Algebra Vault | 7 | 0 | 2 | 5 | 1 | 2 | 1 | 3 |
 | Argand Atrium | 4 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
-| Calculus Cliffs | 5 | 2 | 0 | 3 | 0 | 1 | 0 | 0 |
+| Calculus Cliffs | 5 | 2 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Differential Shrine | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Integral Terraces | 4 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
 | Iteration Forge | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
-| Logarithm Observatory | 6 | 0 | 0 | 6 | 0 | 0 | 0 | 0 |
+| Logarithm Observatory | 6 | 0 | 1 | 5 | 0 | 1 | 0 | 0 |
 | Trigonometry Spire | 5 | 1 | 0 | 4 | 0 | 0 | 0 | 0 |
 | Vectors Gate | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
 
@@ -71,13 +70,13 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 | p3_diff_chain_product_quotient | Calculus Cliffs | Differentiation | clean | 5 | available | 5 | 2 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | none | MVP gold ready under the Phase 2A readiness contract. |
 | p3_diff_implicit_log_exp | Calculus Cliffs | Differentiation | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_diff_method_selection | Calculus Cliffs | Differentiation | clean | 4 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
-| p3_diff_parametric_gradients | Calculus Cliffs | Differentiation | clean | 4 | available | 2 | 0 | available | first_step, complete_step | misconception:available, prerequisite:available, mark_scheme:available | none | missing_some_warmup_sequence_roles, source_backed_worked_examples_sparse | Resolve warning `missing_some_warmup_sequence_roles` before marking this skill MVP gold ready. |
+| p3_diff_parametric_gradients | Calculus Cliffs | Differentiation | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_diff_stationary_tangent_normal | Calculus Cliffs | Differentiation | clean | 3 | available | 4 | 2 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | none | MVP gold ready under the Phase 2A readiness contract. |
 | p3_int_definite_improper_area | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_int_method_choice | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_int_partial_fractions | Integral Terraces | Integration | clean | 3 | available | 4 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_int_parts_substitution | Integral Terraces | Integration | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
-| p3_log_calculus_contexts | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
+| p3_log_calculus_contexts | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | first_step, complete_step, guardian_prep | misconception:available, prerequisite:available, mark_scheme:available | missing_all_warmup_support | source_backed_worked_examples_sparse | Add reviewed deterministic warm-up support before claiming MVP gold. |
 | p3_log_convert_forms | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_log_domain_validation | Logarithm Observatory | Logarithmic and exponential functions | clean | 4 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_log_exponential_equations | Logarithm Observatory | Logarithmic and exponential functions | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |

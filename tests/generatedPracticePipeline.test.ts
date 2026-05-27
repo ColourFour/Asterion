@@ -1286,6 +1286,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         runtimePracticePath,
         '--content-lab-candidates',
         candidatesPath,
+        '--skip-question-bank-git-check',
       ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -1334,6 +1335,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         runtimePracticePath,
         '--content-lab-candidates',
         candidatesPath,
+        '--skip-question-bank-git-check',
       ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });

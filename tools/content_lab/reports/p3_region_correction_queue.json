@@ -9,7 +9,7 @@
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 2,
+      "warm_up": 3,
       "worked_example": 0
     }
   },
@@ -26,57 +26,6 @@
     },
     "route_correction": {
       "ambiguous_multi_topic_routes": [
-        {
-          "blocked_or_risky_reason": "A single whole-question route hides multiple P3 topic signals.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "guardian_evidence",
-            "content_generation",
-            "route_correction_without_review"
-          ],
-          "category": "ambiguous_multi_topic_routes",
-          "fallback_region_id": "calculus-cliffs",
-          "fallback_region_title": "Calculus Cliffs",
-          "local_subtopic": "general",
-          "local_topic": "parametric_equations",
-          "paper": "31autumn23",
-          "paper_family": "p3",
-          "primary_region_id": "calculus-cliffs",
-          "primary_region_title": "Calculus Cliffs",
-          "primary_topic_id": "9709_p3_topic_differentiation",
-          "quality_reason_codes": [
-            "text_only_blocked_status_review",
-            "text_only_blocked_trust_medium",
-            "text_only_blocked_visual_required"
-          ],
-          "question_id": "31autumn23_q09",
-          "question_number": "9",
-          "queue_id": "route:ambiguous_multi_topic_routes:31autumn23_q09",
-          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "review_reasons": [],
-          "review_required": false,
-          "route_confidence": "high",
-          "route_status": "ambiguous_multi_topic_route",
-          "text_only_display_allowed": false,
-          "topic_distribution": [
-            {
-              "fit_percent": 45,
-              "mapped_region_id": "calculus-cliffs",
-              "mapped_region_title": "Calculus Cliffs",
-              "topic_id": "9709_p3_topic_differentiation"
-            },
-            {
-              "fit_percent": 55,
-              "mapped_region_id": "integration-gardens",
-              "mapped_region_title": "Integral Terraces",
-              "topic_id": "9709_p3_topic_integration"
-            }
-          ],
-          "visual_required": true,
-          "workstream": "route_correction"
-        },
         {
           "blocked_or_risky_reason": "A single whole-question route hides multiple P3 topic signals.",
           "blocked_use_cases": [
@@ -344,57 +293,6 @@
               "mapped_region_id": "integration-gardens",
               "mapped_region_title": "Integral Terraces",
               "topic_id": "9709_p3_topic_integration"
-            }
-          ],
-          "visual_required": true,
-          "workstream": "route_correction"
-        },
-        {
-          "blocked_or_risky_reason": "A single whole-question route hides multiple P3 topic signals.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "guardian_evidence",
-            "content_generation",
-            "route_correction_without_review"
-          ],
-          "category": "ambiguous_multi_topic_routes",
-          "fallback_region_id": "calculus-cliffs",
-          "fallback_region_title": "Calculus Cliffs",
-          "local_subtopic": "general",
-          "local_topic": "parametric_equations",
-          "paper": "32spring21",
-          "paper_family": "p3",
-          "primary_region_id": "integration-gardens",
-          "primary_region_title": "Integral Terraces",
-          "primary_topic_id": "9709_p3_topic_integration",
-          "quality_reason_codes": [
-            "text_only_blocked_status_review",
-            "text_only_blocked_trust_medium",
-            "text_only_blocked_visual_required"
-          ],
-          "question_id": "32spring21_q10",
-          "question_number": "10",
-          "queue_id": "route:ambiguous_multi_topic_routes:32spring21_q10",
-          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
-          "region_id": "integration-gardens",
-          "region_title": "Integral Terraces",
-          "review_reasons": [],
-          "review_required": false,
-          "route_confidence": "high",
-          "route_status": "ambiguous_multi_topic_route",
-          "text_only_display_allowed": false,
-          "topic_distribution": [
-            {
-              "fit_percent": 50,
-              "mapped_region_id": "integration-gardens",
-              "mapped_region_title": "Integral Terraces",
-              "topic_id": "9709_p3_topic_integration"
-            },
-            {
-              "fit_percent": 50,
-              "mapped_region_id": "calculus-cliffs",
-              "mapped_region_title": "Calculus Cliffs",
-              "topic_id": "9709_p3_topic_differentiation"
             }
           ],
           "visual_required": true,
@@ -2297,9 +2195,129 @@
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
+          "question_id": "31autumn23_q01",
+          "question_number": "1",
+          "queue_id": "route:fallback_display_only_region_placements:31autumn23_q01",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q06",
+          "question_number": "6",
+          "queue_id": "route:fallback_display_only_region_placements:31autumn23_q06",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
           "question_id": "31autumn23_q07",
           "question_number": "7",
           "queue_id": "route:fallback_display_only_region_placements:31autumn23_q07",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q09",
+          "question_number": "9",
+          "queue_id": "route:fallback_display_only_region_placements:31autumn23_q09",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -2341,6 +2359,46 @@
           "question_id": "31summer23_q02",
           "question_number": "2",
           "queue_id": "route:fallback_display_only_region_placements:31summer23_q02",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "differentiation",
+          "paper": "31summer23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31summer23_q05",
+          "question_number": "5",
+          "queue_id": "route:fallback_display_only_region_placements:31summer23_q05",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -2509,6 +2567,86 @@
           "question_id": "32autumn22_q08",
           "question_number": "8",
           "queue_id": "route:fallback_display_only_region_placements:32autumn22_q08",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q04",
+          "question_number": "4",
+          "queue_id": "route:fallback_display_only_region_placements:32spring21_q04",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "fallback_display_only",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "fallback_display_only_region_placements",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q10",
+          "question_number": "10",
+          "queue_id": "route:fallback_display_only_region_placements:32spring21_q10",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -4292,9 +4430,129 @@
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
+          "question_id": "31autumn23_q01",
+          "question_number": "1",
+          "queue_id": "route:missing_p3_routes:31autumn23_q01",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q06",
+          "question_number": "6",
+          "queue_id": "route:missing_p3_routes:31autumn23_q06",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
           "question_id": "31autumn23_q07",
           "question_number": "7",
           "queue_id": "route:missing_p3_routes:31autumn23_q07",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q09",
+          "question_number": "9",
+          "queue_id": "route:missing_p3_routes:31autumn23_q09",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -4336,6 +4594,46 @@
           "question_id": "31summer23_q02",
           "question_number": "2",
           "queue_id": "route:missing_p3_routes:31summer23_q02",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "differentiation",
+          "paper": "31summer23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31summer23_q05",
+          "question_number": "5",
+          "queue_id": "route:missing_p3_routes:31summer23_q05",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -4504,6 +4802,86 @@
           "question_id": "32autumn22_q08",
           "question_number": "8",
           "queue_id": "route:missing_p3_routes:32autumn22_q08",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q04",
+          "question_number": "4",
+          "queue_id": "route:missing_p3_routes:32spring21_q04",
+          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "route_correction"
+        },
+        {
+          "blocked_or_risky_reason": "No mapped P3 primary topic exists in the topic-routing sidecar.",
+          "blocked_use_cases": [
+            "mastery_evidence",
+            "guardian_evidence",
+            "content_generation",
+            "route_correction_without_review"
+          ],
+          "category": "missing_p3_routes",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q10",
+          "question_number": "10",
+          "queue_id": "route:missing_p3_routes:32spring21_q10",
           "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -5858,54 +6236,6 @@
             "route_correction_without_review"
           ],
           "category": "review_needed_routes",
-          "fallback_region_id": "calculus-cliffs",
-          "fallback_region_title": "Calculus Cliffs",
-          "local_subtopic": "general",
-          "local_topic": "differentiation",
-          "paper": "31summer23",
-          "paper_family": "p3",
-          "primary_region_id": "calculus-cliffs",
-          "primary_region_title": "Calculus Cliffs",
-          "primary_topic_id": "9709_p3_topic_differentiation",
-          "quality_reason_codes": [
-            "text_only_blocked_status_review",
-            "text_only_blocked_trust_medium",
-            "text_only_blocked_visual_required"
-          ],
-          "question_id": "31summer23_q05",
-          "question_number": "5",
-          "queue_id": "route:review_needed_routes:31summer23_q05",
-          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
-          "region_id": "calculus-cliffs",
-          "region_title": "Calculus Cliffs",
-          "review_reasons": [
-            "phase1_thin_skill_fit_implicit_differentiation",
-            "reviewed_region_clear_but_source_skill_fit_requires_teacher_review"
-          ],
-          "review_required": true,
-          "route_confidence": "medium",
-          "route_status": "review_needed_route",
-          "text_only_display_allowed": false,
-          "topic_distribution": [
-            {
-              "fit_percent": 100,
-              "mapped_region_id": "calculus-cliffs",
-              "mapped_region_title": "Calculus Cliffs",
-              "topic_id": "9709_p3_topic_differentiation"
-            }
-          ],
-          "visual_required": true,
-          "workstream": "route_correction"
-        },
-        {
-          "blocked_or_risky_reason": "The topic-routing sidecar has a primary P3 route but marks the route as review-needed or evidence-limited.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "guardian_evidence",
-            "content_generation",
-            "route_correction_without_review"
-          ],
-          "category": "review_needed_routes",
           "fallback_region_id": "algebra-forge",
           "fallback_region_title": "Algebra Vault",
           "local_subtopic": "general",
@@ -5999,54 +6329,6 @@
               "mapped_region_id": "algebra-forge",
               "mapped_region_title": "Algebra Vault",
               "topic_id": "9709_p3_topic_algebra"
-            }
-          ],
-          "visual_required": true,
-          "workstream": "route_correction"
-        },
-        {
-          "blocked_or_risky_reason": "The topic-routing sidecar has a primary P3 route but marks the route as review-needed or evidence-limited.",
-          "blocked_use_cases": [
-            "mastery_evidence",
-            "guardian_evidence",
-            "content_generation",
-            "route_correction_without_review"
-          ],
-          "category": "review_needed_routes",
-          "fallback_region_id": "calculus-cliffs",
-          "fallback_region_title": "Calculus Cliffs",
-          "local_subtopic": "general",
-          "local_topic": "parametric_equations",
-          "paper": "32spring21",
-          "paper_family": "p3",
-          "primary_region_id": "differential-shrine",
-          "primary_region_title": "Differential Shrine",
-          "primary_topic_id": "9709_p3_topic_differential_equations",
-          "quality_reason_codes": [
-            "text_only_blocked_status_review",
-            "text_only_blocked_trust_medium",
-            "text_only_blocked_visual_required"
-          ],
-          "question_id": "32spring21_q04",
-          "question_number": "4",
-          "queue_id": "route:review_needed_routes:32spring21_q04",
-          "recommended_action": "Review the question image and mark scheme, then write a validated P3 route or explicitly leave the item display-only.",
-          "region_id": "differential-shrine",
-          "region_title": "Differential Shrine",
-          "review_reasons": [
-            "phase1_thin_whole_question_includes_visual_sketch_subpart",
-            "part_b_graph_sketch_not_mastery_evidence"
-          ],
-          "review_required": true,
-          "route_confidence": "medium",
-          "route_status": "review_needed_route",
-          "text_only_display_allowed": false,
-          "topic_distribution": [
-            {
-              "fit_percent": 100,
-              "mapped_region_id": "differential-shrine",
-              "mapped_region_title": "Differential Shrine",
-              "topic_id": "9709_p3_topic_differential_equations"
             }
           ],
           "visual_required": true,
@@ -6566,6 +6848,29 @@
           "region_title": "Algebra Vault",
           "skill_ref": "p3_alg_structure_rearrangement",
           "skill_title": "Choose algebraic structure before expanding",
+          "support_gaps": [
+            "warm_up"
+          ],
+          "workstream": "support_content_gaps"
+        },
+        {
+          "blocked_or_risky_reason": "missing support: warm_up",
+          "blocked_use_cases": [
+            "region_completion_claims",
+            "content_correction_signoff",
+            "mastery_evidence"
+          ],
+          "category": "weak_or_missing_skill_support",
+          "clean_mastery_evidence_count": 5,
+          "correction_priority": "P2_missing_practice_support",
+          "coverage_status": "missing_support",
+          "deferred_evidence_count": 0,
+          "queue_id": "support:weak_or_missing_skill_support:p3_log_calculus_contexts",
+          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+          "region_id": "logarithm-grove",
+          "region_title": "Logarithm Observatory",
+          "skill_ref": "p3_log_calculus_contexts",
+          "skill_title": "Handle log and exponential functions inside calculus questions",
           "support_gaps": [
             "warm_up"
           ],
@@ -7113,9 +7418,129 @@
             "text_only_blocked_trust_medium",
             "text_only_blocked_visual_required"
           ],
+          "question_id": "31autumn23_q01",
+          "question_number": "1",
+          "queue_id": "text:routing_text_or_visual_blockers:31autumn23_q01",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q06",
+          "question_number": "6",
+          "queue_id": "text:routing_text_or_visual_blockers:31autumn23_q06",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
           "question_id": "31autumn23_q07",
           "question_number": "7",
           "queue_id": "text:routing_text_or_visual_blockers:31autumn23_q07",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "31autumn23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31autumn23_q09",
+          "question_number": "9",
+          "queue_id": "text:routing_text_or_visual_blockers:31autumn23_q09",
           "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -7157,6 +7582,46 @@
           "question_id": "31summer23_q02",
           "question_number": "2",
           "queue_id": "text:routing_text_or_visual_blockers:31summer23_q02",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "differentiation",
+          "paper": "31summer23",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "31summer23_q05",
+          "question_number": "5",
+          "queue_id": "text:routing_text_or_visual_blockers:31summer23_q05",
           "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -7325,6 +7790,86 @@
           "question_id": "32autumn22_q08",
           "question_number": "8",
           "queue_id": "text:routing_text_or_visual_blockers:32autumn22_q08",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q04",
+          "question_number": "4",
+          "queue_id": "text:routing_text_or_visual_blockers:32spring21_q04",
+          "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
+          "region_id": "calculus-cliffs",
+          "region_title": "Calculus Cliffs",
+          "review_reasons": [
+            "schema_validation_error"
+          ],
+          "review_required": true,
+          "route_confidence": "low",
+          "route_status": "missing_p3_route",
+          "text_only_display_allowed": false,
+          "topic_distribution": [],
+          "visual_required": true,
+          "workstream": "text_review"
+        },
+        {
+          "blocked_or_risky_reason": "Route correction depends on weak, missing, or visual-dependent text evidence.",
+          "blocked_use_cases": [
+            "text_only_display",
+            "content_generation",
+            "route_correction_without_image_review",
+            "mastery_evidence"
+          ],
+          "category": "routing_text_or_visual_blockers",
+          "fallback_region_id": "calculus-cliffs",
+          "fallback_region_title": "Calculus Cliffs",
+          "local_subtopic": "general",
+          "local_topic": "parametric_equations",
+          "paper": "32spring21",
+          "paper_family": "p3",
+          "primary_region_id": "",
+          "primary_region_title": "Unmapped",
+          "primary_topic_id": "",
+          "quality_reason_codes": [
+            "text_only_blocked_status_review",
+            "text_only_blocked_trust_medium",
+            "text_only_blocked_visual_required"
+          ],
+          "question_id": "32spring21_q10",
+          "question_number": "10",
+          "queue_id": "text:routing_text_or_visual_blockers:32spring21_q10",
           "recommended_action": "Review against the canonical question image and mark-scheme image before trusting extracted text or route labels.",
           "region_id": "calculus-cliffs",
           "region_title": "Calculus Cliffs",
@@ -8882,24 +9427,45 @@
         "deferred_evidence_cases": 0
       },
       "route_correction": {
-        "ambiguous_multi_topic_routes": 16,
+        "ambiguous_multi_topic_routes": 14,
         "audited_route_decisions": 42,
-        "fallback_display_only_region_placements": 47,
-        "missing_p3_routes": 47,
-        "review_needed_routes": 14
+        "fallback_display_only_region_placements": 53,
+        "missing_p3_routes": 53,
+        "review_needed_routes": 12
       },
       "support_content_gaps": {
-        "weak_or_missing_skill_support": 2
+        "weak_or_missing_skill_support": 3
       },
       "text_review": {
-        "routing_text_or_visual_blockers": 53
+        "routing_text_or_visual_blockers": 59
       }
     },
-    "total_queue_item_count": 221,
-    "unique_question_count": 95,
+    "total_queue_item_count": 236,
+    "unique_question_count": 97,
     "unique_skill_count": 16
   },
   "region_summary": [
+    {
+      "categories": {
+        "ambiguous_multi_topic_routes": 2,
+        "audited_route_decisions": 11,
+        "fallback_display_only_region_placements": 14,
+        "missing_p3_routes": 14,
+        "routing_text_or_visual_blockers": 14
+      },
+      "issue_count": 55,
+      "region_id": "calculus-cliffs",
+      "region_title": "Calculus Cliffs",
+      "skill_refs": [
+        "p3_diff_chain_product_quotient",
+        "p3_diff_implicit_log_exp",
+        "p3_diff_stationary_tangent_normal"
+      ],
+      "workstreams": {
+        "route_correction": 41,
+        "text_review": 14
+      }
+    },
     {
       "categories": {
         "audited_route_decisions": 7,
@@ -8925,49 +9491,6 @@
     },
     {
       "categories": {
-        "ambiguous_multi_topic_routes": 3,
-        "audited_route_decisions": 11,
-        "fallback_display_only_region_placements": 8,
-        "missing_p3_routes": 8,
-        "review_needed_routes": 1,
-        "routing_text_or_visual_blockers": 8
-      },
-      "issue_count": 39,
-      "region_id": "calculus-cliffs",
-      "region_title": "Calculus Cliffs",
-      "skill_refs": [
-        "p3_diff_chain_product_quotient",
-        "p3_diff_implicit_log_exp",
-        "p3_diff_stationary_tangent_normal"
-      ],
-      "workstreams": {
-        "route_correction": 31,
-        "text_review": 8
-      }
-    },
-    {
-      "categories": {
-        "ambiguous_multi_topic_routes": 10,
-        "audited_route_decisions": 7,
-        "fallback_display_only_region_placements": 1,
-        "missing_p3_routes": 1,
-        "review_needed_routes": 5,
-        "routing_text_or_visual_blockers": 2
-      },
-      "issue_count": 26,
-      "region_id": "integration-gardens",
-      "region_title": "Integral Terraces",
-      "skill_refs": [
-        "p3_int_definite_improper_area",
-        "p3_int_partial_fractions"
-      ],
-      "workstreams": {
-        "route_correction": 24,
-        "text_review": 2
-      }
-    },
-    {
-      "categories": {
         "ambiguous_multi_topic_routes": 2,
         "audited_route_decisions": 3,
         "fallback_display_only_region_placements": 5,
@@ -8989,12 +9512,34 @@
     },
     {
       "categories": {
+        "ambiguous_multi_topic_routes": 9,
+        "audited_route_decisions": 7,
+        "fallback_display_only_region_placements": 1,
+        "missing_p3_routes": 1,
+        "review_needed_routes": 5,
+        "routing_text_or_visual_blockers": 2
+      },
+      "issue_count": 25,
+      "region_id": "integration-gardens",
+      "region_title": "Integral Terraces",
+      "skill_refs": [
+        "p3_int_definite_improper_area",
+        "p3_int_partial_fractions"
+      ],
+      "workstreams": {
+        "route_correction": 23,
+        "text_review": 2
+      }
+    },
+    {
+      "categories": {
         "audited_route_decisions": 6,
         "fallback_display_only_region_placements": 6,
         "missing_p3_routes": 6,
-        "routing_text_or_visual_blockers": 6
+        "routing_text_or_visual_blockers": 6,
+        "weak_or_missing_skill_support": 1
       },
-      "issue_count": 24,
+      "issue_count": 25,
       "region_id": "logarithm-grove",
       "region_title": "Logarithm Observatory",
       "skill_refs": [
@@ -9003,6 +9548,7 @@
       ],
       "workstreams": {
         "route_correction": 18,
+        "support_content_gaps": 1,
         "text_review": 6
       }
     },
@@ -9061,9 +9607,9 @@
       "categories": {
         "ambiguous_multi_topic_routes": 1,
         "audited_route_decisions": 2,
-        "review_needed_routes": 2
+        "review_needed_routes": 1
       },
-      "issue_count": 5,
+      "issue_count": 4,
       "region_id": "differential-shrine",
       "region_title": "Differential Shrine",
       "skill_refs": [
@@ -9071,7 +9617,7 @@
         "p3_de_separation_setup"
       ],
       "workstreams": {
-        "route_correction": 5
+        "route_correction": 4
       }
     }
   ],
@@ -9403,6 +9949,28 @@
   "skill_summary": [
     {
       "categories": {
+        "audited_route_decisions": 5,
+        "weak_or_missing_skill_support": 1
+      },
+      "issue_count": 6,
+      "question_ids": [
+        "31summer21_q09",
+        "32autumn21_q09",
+        "33autumn21_q07",
+        "35autumn25_q04",
+        "35summer25_q04"
+      ],
+      "region_id": "logarithm-grove",
+      "region_title": "Logarithm Observatory",
+      "skill_ref": "p3_log_calculus_contexts",
+      "skill_title": "Handle log and exponential functions inside calculus questions",
+      "workstreams": {
+        "route_correction": 5,
+        "support_content_gaps": 1
+      }
+    },
+    {
+      "categories": {
         "audited_route_decisions": 5
       },
       "issue_count": 5,
@@ -9417,26 +9985,6 @@
       "region_title": "Integral Terraces",
       "skill_ref": "p3_int_partial_fractions",
       "skill_title": "Integrate rational functions using partial fractions",
-      "workstreams": {
-        "route_correction": 5
-      }
-    },
-    {
-      "categories": {
-        "audited_route_decisions": 5
-      },
-      "issue_count": 5,
-      "question_ids": [
-        "31summer21_q09",
-        "32autumn21_q09",
-        "33autumn21_q07",
-        "35autumn25_q04",
-        "35summer25_q04"
-      ],
-      "region_id": "logarithm-grove",
-      "region_title": "Logarithm Observatory",
-      "skill_ref": "p3_log_calculus_contexts",
-      "skill_title": "Handle log and exponential functions inside calculus questions",
       "workstreams": {
         "route_correction": 5
       }
@@ -9708,10 +10256,10 @@
       "safe_p3_route": "P3 record has one mapped route and no route review reasons."
     },
     "counts": {
-      "ambiguous_multi_topic_route": 16,
-      "missing_p3_route": 47,
-      "review_needed_route": 14,
-      "safe_p3_route": 319,
+      "ambiguous_multi_topic_route": 14,
+      "missing_p3_route": 53,
+      "review_needed_route": 12,
+      "safe_p3_route": 317,
       "total_p3_route_records": 396
     },
     "labels": {

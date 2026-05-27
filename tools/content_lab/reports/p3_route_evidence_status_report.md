@@ -5,27 +5,27 @@ Phase 1 verification artifact. This report does not mutate route metadata or beg
 ## Normalized Runtime Distribution
 
 - Total P3 questions: 396
-- routeEvidence.status counts: `{"ambiguous-route": 21, "clean": 319, "review-only": 56}`
-- validatedRegionId count: 319
-- displayRegionId-only count: 30
+- routeEvidence.status counts: `{"ambiguous-route": 19, "clean": 317, "review-only": 60}`
+- validatedRegionId count: 317
+- displayRegionId-only count: 26
 - fallback-display-only count: 0
-- no displayRegionId count: 47
+- no displayRegionId count: 53
 
 ## Route Report Distribution
 
 - source route counts: `{"ambiguous_multi_topic_route": 16, "missing_p3_route": 47, "review_needed_route": 14, "safe_p3_route": 319, "total_p3_route_records": 396}`
-- normalized status by route-report category: `{"ambiguous_multi_topic_route": {"ambiguous-route": 16}, "missing_p3_route": {"review-only": 47}, "review_needed_route": {"ambiguous-route": 5, "review-only": 9}, "safe_p3_route": {"clean": 319}}`
+- normalized status by route-report category: `{"ambiguous_multi_topic_route": {"ambiguous-route": 14}, "missing_p3_route": {"review-only": 53}, "review_needed_route": {"ambiguous-route": 5, "review-only": 7}, "safe_p3_route": {"clean": 317}}`
 - route-queue fallback display-only items: 47
-- queue items: 219
+- queue items: 221
 - route decision counts: `{"ambiguous": 2, "blocked": 2, "clean": 6, "deferred": 1, "fallback_only": 0, "review_needed": 1, "still_needs_review": 69, "thin": 2}`
 - still-needs-review route questions: 69
 
 ## Count Differences
 
-- clean minus safe routes: 0
+- clean minus safe routes: -2
 - missing-route minus missing routes: -47
-- ambiguous-route minus ambiguous routes: 5
-- review-only minus review-needed routes: 42
+- ambiguous-route minus ambiguous routes: 3
+- review-only minus review-needed routes: 46
 
 ## Explanation
 
@@ -38,6 +38,6 @@ Phase 1 verification artifact. This report does not mutate route metadata or beg
 
 ## Display-Only Breakdown
 
-- displayRegionId-only by status: `{"ambiguous-route": 21, "review-only": 9}`
-- displayRegionId-only by region: `{"algebra-forge": 1, "calculus-cliffs": 4, "complex-harbor": 1, "differential-shrine": 3, "integration-gardens": 15, "numerical-mines": 5, "trig-observatory": 1}`
+- displayRegionId-only by status: `{"ambiguous-route": 19, "review-only": 7}`
+- displayRegionId-only by region: `{"algebra-forge": 1, "calculus-cliffs": 2, "complex-harbor": 1, "differential-shrine": 2, "integration-gardens": 14, "numerical-mines": 5, "trig-observatory": 1}`
 - fallback-display-only by region: `{}`

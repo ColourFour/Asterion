@@ -7,18 +7,18 @@ This deterministic matrix covers 40 reviewed CAIE 9709 Paper 3 skills. It separa
 Coverage status counts:
 
 - `blocked_for_mastery`: 0
-- `missing_support`: 2
+- `missing_support`: 3
 - `needs_teacher_review`: 0
 - `partial`: 0
-- `ready_for_review`: 38
+- `ready_for_review`: 37
 
 Correction priority counts:
 
 - `P0_blocked_mastery`: 0
 - `P1_missing_core_support`: 0
-- `P2_missing_practice_support`: 2
+- `P2_missing_practice_support`: 3
 - `P3_teacher_review_backlog`: 0
-- `P4_polish_or_complete`: 38
+- `P4_polish_or_complete`: 37
 
 ## Counts By Official Syllabus Section
 
@@ -56,7 +56,7 @@ none
 
 ### P2_missing_practice_support
 
-`p3_alg_discriminant_root_conditions`, `p3_alg_structure_rearrangement`
+`p3_alg_discriminant_root_conditions`, `p3_alg_structure_rearrangement`, `p3_log_calculus_contexts`
 
 ### P3_teacher_review_backlog
 
@@ -64,7 +64,7 @@ none
 
 ### P4_polish_or_complete
 
-`p3_alg_binomial_terms_coefficients`, `p3_alg_binomial_validity`, `p3_alg_modulus_cases`, `p3_alg_partial_fraction_form`, `p3_alg_polynomial_remainder_factor`, `p3_complex_argand_loci_regions`, `p3_complex_cartesian_conjugate`, `p3_complex_modulus_argument_form`, `p3_complex_roots_powers`, `p3_de_forming_context_model`, `p3_de_initial_condition`, `p3_de_separation_setup`, `p3_diff_chain_product_quotient`, `p3_diff_implicit_log_exp`, `p3_diff_method_selection`, `p3_diff_parametric_gradients`, `p3_diff_stationary_tangent_normal`, `p3_int_definite_improper_area`, `p3_int_method_choice`, `p3_int_partial_fractions`, `p3_int_parts_substitution`, `p3_log_calculus_contexts`, `p3_log_convert_forms`, `p3_log_domain_validation`, `p3_log_exponential_equations`, `p3_log_laws_equations`, `p3_log_linearisation`, `p3_num_accuracy_rounding`, `p3_num_iteration_formula`, `p3_num_sign_change_graph_evidence`, `p3_trig_equation_interval`, `p3_trig_identity_selection`, `p3_trig_quadrant_solutions`, `p3_trig_r_form_compound_angles`, `p3_trig_reciprocal_double_angle`, `p3_vec_3d_geometry_modelling`, `p3_vec_line_equations_intersections`, `p3_vec_scalar_product_angles`
+`p3_alg_binomial_terms_coefficients`, `p3_alg_binomial_validity`, `p3_alg_modulus_cases`, `p3_alg_partial_fraction_form`, `p3_alg_polynomial_remainder_factor`, `p3_complex_argand_loci_regions`, `p3_complex_cartesian_conjugate`, `p3_complex_modulus_argument_form`, `p3_complex_roots_powers`, `p3_de_forming_context_model`, `p3_de_initial_condition`, `p3_de_separation_setup`, `p3_diff_chain_product_quotient`, `p3_diff_implicit_log_exp`, `p3_diff_method_selection`, `p3_diff_parametric_gradients`, `p3_diff_stationary_tangent_normal`, `p3_int_definite_improper_area`, `p3_int_method_choice`, `p3_int_partial_fractions`, `p3_int_parts_substitution`, `p3_log_convert_forms`, `p3_log_domain_validation`, `p3_log_exponential_equations`, `p3_log_laws_equations`, `p3_log_linearisation`, `p3_num_accuracy_rounding`, `p3_num_iteration_formula`, `p3_num_sign_change_graph_evidence`, `p3_trig_equation_interval`, `p3_trig_identity_selection`, `p3_trig_quadrant_solutions`, `p3_trig_r_form_compound_angles`, `p3_trig_reciprocal_double_angle`, `p3_vec_3d_geometry_modelling`, `p3_vec_line_equations_intersections`, `p3_vec_scalar_product_angles`
 
 ## Compact Skill Matrix
 
@@ -93,7 +93,7 @@ none
 | p3_int_method_choice | Integration | Integral Terraces | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_int_partial_fractions | Integration | Integral Terraces | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_int_parts_substitution | Integration | Integral Terraces | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_log_calculus_contexts | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_log_calculus_contexts | Logarithmic and exponential functions | Logarithm Observatory | missing_support | 5 | healthy_evidence_count | 0 | warm_up | P2_missing_practice_support | Add reviewed deterministic warm-up support after core teaching support is safe. |
 | p3_log_convert_forms | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_log_domain_validation | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_log_exponential_equations | Logarithmic and exponential functions | Logarithm Observatory | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
@@ -143,7 +143,7 @@ No skills are currently blocked for mastery.
 - `field_guide`: 0
 - `quick_check`: 0
 - `snippet`: 0
-- `warm_up`: 2
+- `warm_up`: 3
 - `worked_example`: 0
 
 | Support Type | Skills |
@@ -152,18 +152,18 @@ No skills are currently blocked for mastery.
 | snippet | none |
 | worked_example | none |
 | quick_check | none |
-| warm_up | `p3_alg_discriminant_root_conditions`, `p3_alg_structure_rearrangement` |
+| warm_up | `p3_alg_discriminant_root_conditions`, `p3_alg_structure_rearrangement`, `p3_log_calculus_contexts` |
 
 ## Suggested Region-By-Region Correction Order
 
 | Order | Region | Highest Priority | Blocked Skills | Support Gap Skills |
 | ---: | --- | --- | ---: | ---: |
 | 1 | Algebra Vault | P2_missing_practice_support | 0 | 2 |
-| 2 | Calculus Cliffs | P4_polish_or_complete | 0 | 0 |
-| 3 | Argand Atrium | P4_polish_or_complete | 0 | 0 |
-| 4 | Differential Shrine | P4_polish_or_complete | 0 | 0 |
-| 5 | Integral Terraces | P4_polish_or_complete | 0 | 0 |
-| 6 | Logarithm Observatory | P4_polish_or_complete | 0 | 0 |
+| 2 | Logarithm Observatory | P2_missing_practice_support | 0 | 1 |
+| 3 | Calculus Cliffs | P4_polish_or_complete | 0 | 0 |
+| 4 | Argand Atrium | P4_polish_or_complete | 0 | 0 |
+| 5 | Differential Shrine | P4_polish_or_complete | 0 | 0 |
+| 6 | Integral Terraces | P4_polish_or_complete | 0 | 0 |
 | 7 | Iteration Forge | P4_polish_or_complete | 0 | 0 |
 | 8 | Trigonometry Spire | P4_polish_or_complete | 0 | 0 |
 | 9 | Vectors Gate | P4_polish_or_complete | 0 | 0 |

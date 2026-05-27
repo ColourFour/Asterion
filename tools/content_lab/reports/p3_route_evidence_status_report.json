@@ -1,9 +1,9 @@
 {
   "differences": {
-    "ambiguous_route_minus_ambiguous_routes": 5,
-    "clean_minus_safe_routes": 0,
+    "ambiguous_route_minus_ambiguous_routes": 3,
+    "clean_minus_safe_routes": -2,
     "missing_route_minus_missing_routes": -47,
-    "review_only_minus_review_needed_routes": 42
+    "review_only_minus_review_needed_routes": 46
   },
   "examples": {
     "ambiguous-route": [
@@ -23,26 +23,6 @@
           "OCR text ambiguous for part (a)"
         ],
         "route_report_category": "review_needed_route",
-        "source": "topic-routing",
-        "status": "ambiguous-route",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [
-          "calculus-cliffs",
-          "integration-gardens"
-        ],
-        "display_region_id": "calculus-cliffs",
-        "display_region_title": "Calculus Cliffs",
-        "fallback_region_id": "",
-        "primary_topic_id": "9709_p3_topic_differentiation",
-        "question_id": "31autumn23_q09",
-        "reason_codes": [
-          "multiple-p3-candidate-regions"
-        ],
-        "review_reasons": [],
-        "route_report_category": "ambiguous_multi_topic_route",
         "source": "topic-routing",
         "status": "ambiguous-route",
         "validated_region_id": "",
@@ -168,6 +148,27 @@
         "fallback_region_id": "",
         "primary_topic_id": "9709_p3_topic_integration",
         "question_id": "32autumn21_q06",
+        "reason_codes": [
+          "multiple-p3-candidate-regions"
+        ],
+        "review_reasons": [],
+        "route_report_category": "ambiguous_multi_topic_route",
+        "source": "topic-routing",
+        "status": "ambiguous-route",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "algebra-forge",
+          "calculus-cliffs",
+          "numerical-mines"
+        ],
+        "display_region_id": "calculus-cliffs",
+        "display_region_title": "Calculus Cliffs",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_differentiation",
+        "question_id": "32autumn21_q11",
         "reason_codes": [
           "multiple-p3-candidate-regions"
         ],
@@ -340,6 +341,25 @@
         "display_region_title": "",
         "fallback_region_id": "",
         "primary_topic_id": "",
+        "question_id": "31autumn23_q01",
+        "reason_codes": [
+          "topic-routing-review-required"
+        ],
+        "review_reasons": [
+          "schema_validation_error"
+        ],
+        "route_report_category": "missing_p3_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [],
+        "display_region_id": "",
+        "display_region_title": "",
+        "fallback_region_id": "",
+        "primary_topic_id": "",
         "question_id": "31autumn23_q02",
         "reason_codes": [
           "topic-routing-review-required"
@@ -416,6 +436,25 @@
         "display_region_title": "",
         "fallback_region_id": "",
         "primary_topic_id": "",
+        "question_id": "31autumn23_q06",
+        "reason_codes": [
+          "topic-routing-review-required"
+        ],
+        "review_reasons": [
+          "schema_validation_error"
+        ],
+        "route_report_category": "missing_p3_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [],
+        "display_region_id": "",
+        "display_region_title": "",
+        "fallback_region_id": "",
+        "primary_topic_id": "",
         "question_id": "31autumn23_q07",
         "reason_codes": [
           "topic-routing-review-required"
@@ -447,44 +486,6 @@
         "status": "review-only",
         "validated_region_id": "",
         "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q10",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q11",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
       }
     ]
   },
@@ -501,28 +502,28 @@
   "normalized_distribution": {
     "display_region_id_only_by_region": {
       "algebra-forge": 1,
-      "calculus-cliffs": 4,
+      "calculus-cliffs": 2,
       "complex-harbor": 1,
-      "differential-shrine": 3,
-      "integration-gardens": 15,
+      "differential-shrine": 2,
+      "integration-gardens": 14,
       "numerical-mines": 5,
       "trig-observatory": 1
     },
     "display_region_id_only_by_status": {
-      "ambiguous-route": 21,
-      "review-only": 9
+      "ambiguous-route": 19,
+      "review-only": 7
     },
-    "display_region_id_only_count": 30,
+    "display_region_id_only_count": 26,
     "fallback_display_only_by_region": {},
     "fallback_display_only_count": 0,
-    "no_display_region_id_count": 47,
+    "no_display_region_id_count": 53,
     "status_counts": {
-      "ambiguous-route": 21,
-      "clean": 319,
-      "review-only": 56
+      "ambiguous-route": 19,
+      "clean": 317,
+      "review-only": 60
     },
     "total_p3_questions": 396,
-    "validated_region_id_count": 319
+    "validated_region_id_count": 317
   },
   "route_decision_summary": {
     "counts_by_status": {
@@ -850,20 +851,20 @@
   "route_report_distribution": {
     "normalized_status_by_route_report_category": {
       "ambiguous_multi_topic_route": {
-        "ambiguous-route": 16
+        "ambiguous-route": 14
       },
       "missing_p3_route": {
-        "review-only": 47
+        "review-only": 53
       },
       "review_needed_route": {
         "ambiguous-route": 5,
-        "review-only": 9
+        "review-only": 7
       },
       "safe_p3_route": {
-        "clean": 319
+        "clean": 317
       }
     },
-    "queue_items": 219,
+    "queue_items": 221,
     "route_queue_fallback_display_only_items": 47,
     "source_route_counts": {
       "ambiguous_multi_topic_route": 16,
