@@ -23,6 +23,7 @@ import { REGION_LEARNING_PAGE_LABELS } from '../../../lib/regionRoutes';
 import {
   buildExamTrainingRewardGoals,
   buildExamTrainingTopicMastery,
+  EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS,
   EXAM_TRAINING_PRACTICE_LABELS,
   type ExamTrainingPracticeMode,
   type ExamTrainingRewardGoal,
@@ -80,6 +81,14 @@ const practiceCards: Array<{
   },
 ];
 
+interface PracticeEvidenceRecommendation {
+  recommendedMode: ExamTrainingPracticeMode;
+  weakEvidenceReady: boolean;
+  stretchEvidenceReady: boolean;
+  weakHint?: string;
+  stretchHint?: string;
+}
+
 const masteryLegend: Array<Pick<ExamTrainingTopicMasteryItem, 'status' | 'statusLabel'>> = [
   { status: 'strong', statusLabel: 'Strong' },
   { status: 'secure', statusLabel: 'Secure' },
@@ -110,6 +119,8 @@ const broadTopicOrder = [
 ];
 
 function broadTopicForSkill(skillId: string): string {
+  const contract = EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS.find((topic) => topic.skillId === skillId);
+  if (contract) return contract.broadTopic;
   if (skillId.startsWith('logarithms_and_exponentials.')) return 'Logarithms and Exponentials';
   if (skillId.startsWith('complex_numbers.')) return 'Complex Numbers';
   if (skillId.startsWith('numerical_methods.')) return 'Numerical Methods';
@@ -120,6 +131,38 @@ function broadTopicForSkill(skillId: string): string {
   if (skillId.startsWith('integration.')) return 'Integration';
   if (skillId.startsWith('vectors.')) return 'Vectors';
   return 'Algebra';
+}
+
+function practiceEvidenceRecommendation(input: {
+  progress: StoredProgress;
+  selectedRegionProgress?: RegionProgress;
+}): PracticeEvidenceRecommendation {
+  const attempts = input.selectedRegionProgress
+    ? input.progress.attempts.filter((attempt) => attempt.validatedRegionId === input.selectedRegionProgress?.region.id || attempt.displayRegionId === input.selectedRegionProgress?.region.id)
+    : input.progress.attempts.filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3');
+  const scoredAttempts = attempts.filter((attempt) => typeof attempt.scoreRatio === 'number');
+  const scopedAttemptCount = attempts.length || input.selectedRegionProgress?.attempts || 0;
+  const aggregateScore = input.selectedRegionProgress?.recentScoreRatio ?? input.selectedRegionProgress?.averageScoreRatio;
+  const weakEvidenceReady = attempts.some((attempt) => (
+    (typeof attempt.scoreRatio === 'number' && attempt.scoreRatio < 0.7)
+    || (attempt.mistakeTypes?.some((type) => type !== 'no_issue') ?? Boolean(attempt.mistakeType && attempt.mistakeType !== 'no_issue'))
+  )) || (scopedAttemptCount > 0 && typeof aggregateScore === 'number' && aggregateScore < 0.7);
+  const stretchEvidenceReady = (scoredAttempts.length >= 2
+    && scoredAttempts.slice(-3).every((attempt) => typeof attempt.scoreRatio === 'number' && attempt.scoreRatio >= 0.8))
+    || (scopedAttemptCount >= 2 && typeof aggregateScore === 'number' && aggregateScore >= 0.8);
+  const recommendedMode: ExamTrainingPracticeMode = weakEvidenceReady
+    ? 'weak'
+    : stretchEvidenceReady
+      ? 'stretch'
+      : 'core';
+
+  return {
+    recommendedMode,
+    weakEvidenceReady,
+    stretchEvidenceReady,
+    weakHint: weakEvidenceReady ? undefined : 'Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.',
+    stretchHint: stretchEvidenceReady ? undefined : 'Stretch unlocks as a recommendation after a short run of strong saved scores.',
+  };
 }
 
 function broadStatusFor(scorePercent: number | undefined, attempts: number): Pick<ExamTrainingTopicMasteryItem, 'status' | 'statusLabel'> {
@@ -205,14 +248,13 @@ function RouteStrip({
 
 function PracticeChoiceCards({
   disabledReason,
-  hasSavedAttempt,
+  recommendation,
   onStartPractice,
 }: {
   disabledReason?: string;
-  hasSavedAttempt: boolean;
+  recommendation: PracticeEvidenceRecommendation;
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
 }) {
-  const recommendedMode: ExamTrainingPracticeMode = hasSavedAttempt ? 'weak' : 'core';
   const [openInfoMode, setOpenInfoMode] = useState<ExamTrainingPracticeMode | undefined>();
   return (
     <section className="exam-training-practice-panel" aria-labelledby="exam-training-practice-title">
@@ -229,12 +271,14 @@ function PracticeChoiceCards({
           const isInfoOpen = openInfoMode === card.mode;
           const definitionId = `exam-training-practice-${card.mode}-definition`;
           const tooltipId = `exam-training-practice-${card.mode}-tooltip`;
-          const weakFirstAttemptNote = card.mode === 'weak' && !hasSavedAttempt
-            ? 'One saved attempt unlocks better review.'
-            : undefined;
+          const readinessNote = card.mode === 'weak'
+            ? recommendation.weakHint
+            : card.mode === 'stretch'
+              ? recommendation.stretchHint
+              : undefined;
           return (
             <article
-              className={`exam-training-practice-choice practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}${card.mode === recommendedMode && !disabledReason ? ' next-step-glow' : ''}${disabledReason ? ' is-disabled' : ''}`}
+              className={`exam-training-practice-choice practice-${card.mode}${readinessNote ? ' needs-more-evidence' : ''}${card.mode === recommendation.recommendedMode && !disabledReason ? ' next-step-glow' : ''}${disabledReason ? ' is-disabled' : ''}`}
               data-info-open={isInfoOpen ? 'true' : undefined}
               key={card.mode}
             >
@@ -263,11 +307,11 @@ function PracticeChoiceCards({
               </button>
               <span id={definitionId} className="sr-only">
                 {card.explanation}
-                {weakFirstAttemptNote ? ` ${weakFirstAttemptNote}` : ''}
+                {readinessNote ? ` ${readinessNote}` : ''}
               </span>
               <div className="exam-training-practice-tooltip" id={tooltipId} role="tooltip">
                 <span>{card.explanation}</span>
-                {weakFirstAttemptNote ? <em>{weakFirstAttemptNote}</em> : null}
+                {readinessNote ? <em>{readinessNote}</em> : null}
               </div>
             </article>
           );
@@ -468,7 +512,7 @@ export function ExamTrainingDashboard({
   const selectedRegionProgress = selectedRegion
     ? worldProgress.find((item) => item.region.id === selectedRegion.id)
     : undefined;
-  const hasSavedAttempt = selectedRegion ? Boolean(selectedRegionProgress?.attempts) : progress.attempts.length > 0;
+  const recommendation = practiceEvidenceRecommendation({ progress, selectedRegionProgress });
   return (
     <section className="exam-training-dashboard" aria-labelledby="exam-training-dashboard-title">
       <header className="exam-training-dashboard-header">
@@ -494,7 +538,7 @@ export function ExamTrainingDashboard({
       />
 
       <div className="exam-training-dashboard-grid">
-        <PracticeChoiceCards disabledReason={practiceDisabledReason} hasSavedAttempt={hasSavedAttempt} onStartPractice={onStartPractice} />
+        <PracticeChoiceCards disabledReason={practiceDisabledReason} recommendation={recommendation} onStartPractice={onStartPractice} />
         <TopicMasteryPanel topics={topicMastery} />
         <aside className="exam-training-side-rail" aria-label="Avatar goals and class motivation">
           <AvatarRewardsPanel

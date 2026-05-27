@@ -1,4 +1,4 @@
-import { REQUIRED_FIELD_GUIDE_SKILL_IDS } from '../data/fieldGuideTopics';
+import { FIELD_GUIDE_TOPICS_BY_REGION } from '../data/fieldGuideTopics';
 import type { NormalizedQuestion, RegionProgress, StoredProgress } from '../types';
 import { filterMasteryEvidence, type MasteryPartEvidence } from './masteryEvidence';
 
@@ -29,47 +29,6 @@ export interface ExamTrainingRewardGoal {
   current: number;
   target: number;
 }
-
-const examTrainingSkillOrder = [
-  'algebra.binomial_validity_range',
-  'algebra.modulus_equation_basic',
-  'algebra.partial_fractions_distinct_linear',
-  'algebra.partial_fractions_repeated_linear',
-  'algebra.polynomial_remainder_factor_basic',
-  'algebra.structure_rearrangement_basic',
-  'binomial_expansion.first_terms_and_coefficient',
-  'complex_numbers.cartesian_conjugate_basic',
-  'complex_numbers.locus_basic',
-  'complex_numbers.modulus_argument_basic',
-  'complex_numbers.roots_basic',
-  'differential_equations.context_model_basic',
-  'differential_equations.initial_condition_basic',
-  'differential_equations.separation_basic',
-  'differentiation.chain_rule_basic',
-  'differentiation.chain_product_basic',
-  'differentiation.implicit_log_exp_basic',
-  'differentiation.product_rule_basic',
-  'differentiation.stationary_tangent_normal_basic',
-  'integration.definite_area_basic',
-  'integration.method_setup_basic',
-  'integration.parts_substitution_basic',
-  'logarithms_and_exponentials.calculus_context_basic',
-  'logarithms_and_exponentials.domain_validation_basic',
-  'logarithms_and_exponentials.linearisation_basic',
-  'logarithms_and_exponentials.log_equation_basic',
-  'numerical_methods.accuracy_rounding_basic',
-  'numerical_methods.iteration_formula_basic',
-  'numerical_methods.sign_change_iteration_basic',
-  'parametric_equations.derivative_ratio_basic',
-  'quadratics.discriminant_root_condition_basic',
-  'trigonometry.identity_rewrite_basic',
-  'trigonometry.double_angle_basic',
-  'trigonometry.solve_equation_interval_basic',
-  'trigonometry.r_form_basic',
-  'vectors.line_intersection_basic',
-  'vectors.line_relationship_basic',
-  'vectors.line_scalar_product_basic',
-];
 
 const studentFriendlySkillNames: Record<string, string> = {
   'algebra.binomial_validity_range': 'Binomial Validity Range',
@@ -112,30 +71,104 @@ const studentFriendlySkillNames: Record<string, string> = {
   'vectors.line_scalar_product_basic': 'Vector Scalar Product',
 };
 
-const fieldGuideOnlySkillIds = new Set([
-  'algebra_modulus_graph_equations',
-  'algebra_polynomial_division',
-  'algebra_remainder_factor_theorem',
-  'algebra_partial_fractions',
-  'algebra_binomial_expansion',
-  'differential_first_order_model',
-  'differential_separable_variables',
-  'differential_particular_solutions',
-  'differential_modeling',
-  'trig_reciprocal_functions',
-  'trig_pythagorean_identities',
-  'trig_addition_formulae',
-  'trig_double_angle_formulae',
-  'trig_r_form_transformations',
-  'vectors_notation',
-  'vectors_magnitude_unit_parallel',
-  'vectors_geometric_add_subtract',
-  'vectors_line_equation',
-  'vectors_intersect_parallel_skew',
-  'vectors_scalar_product',
-  'vectors_angle_between_lines',
-  'vectors_point_to_line_distance',
-]);
+interface TopicMasteryContract {
+  skillId: string;
+  name: string;
+  broadTopic: string;
+  aliases: string[];
+}
+
+const regionBroadTopicLabels: Record<string, string> = {
+  'algebra-forge': 'Algebra',
+  'logarithm-grove': 'Logarithms and Exponentials',
+  'trig-observatory': 'Trigonometry',
+  'complex-harbor': 'Complex Numbers',
+  'calculus-cliffs': 'Differentiation',
+  'integration-gardens': 'Integration',
+  'vector-workshop': 'Vectors',
+  'numerical-mines': 'Numerical Methods',
+  'differential-shrine': 'Differential Equations',
+};
+
+const fieldGuideTopicAliases: Record<string, string[]> = {
+  algebra_modulus_graph_equations: ['algebra.modulus_equation_basic'],
+  algebra_polynomial_division: ['algebra.structure_rearrangement_basic'],
+  algebra_remainder_factor_theorem: ['algebra.polynomial_remainder_factor_basic'],
+  algebra_partial_fractions: [
+    'algebra.partial_fractions_distinct_linear',
+    'algebra.partial_fractions_repeated_linear',
+  ],
+  algebra_binomial_expansion: [
+    'algebra.binomial_validity_range',
+    'binomial_expansion.first_terms_and_coefficient',
+  ],
+  log_equations_inequalities: [
+    'logarithms_and_exponentials.log_equation_basic',
+    'logarithms_and_exponentials.domain_validation_basic',
+  ],
+  log_linearisation: ['logarithms_and_exponentials.linearisation_basic'],
+  trig_pythagorean_identities: [
+    'trigonometry.identity_rewrite_basic',
+    'trigonometry.solve_equation_interval_basic',
+  ],
+  trig_double_angle_formulae: ['trigonometry.double_angle_basic'],
+  trig_r_form_transformations: ['trigonometry.r_form_basic'],
+  complex_numbers_cartesian_conjugate_basic: ['complex_numbers.cartesian_conjugate_basic'],
+  complex_numbers_modulus_argument_basic: ['complex_numbers.modulus_argument_basic'],
+  complex_numbers_locus_basic: ['complex_numbers.locus_basic'],
+  complex_numbers_roots_basic: ['complex_numbers.roots_basic'],
+  derivatives_exponential_logarithmic: ['differentiation.implicit_log_exp_basic'],
+  derivatives_product_rule: ['differentiation.product_rule_basic', 'differentiation.chain_product_basic'],
+  derivatives_implicit: ['differentiation.stationary_tangent_normal_basic'],
+  derivatives_parametric: ['parametric_equations.derivative_ratio_basic'],
+  integrals_basic_trig: ['integration.method_setup_basic'],
+  integrals_substitution: ['integration.parts_substitution_basic'],
+  integrals_by_parts: ['integration.parts_substitution_basic'],
+  vectors_line_equation: ['vectors.line_relationship_basic'],
+  vectors_intersect_parallel_skew: [
+    'vectors.line_intersection_basic',
+    'vectors.line_relationship_basic',
+  ],
+  vectors_scalar_product: ['vectors.line_scalar_product_basic'],
+  vectors_angle_between_lines: ['vectors.line_scalar_product_basic'],
+  iteration_change_of_sign: [
+    'numerical_methods.sign_change_iteration_basic',
+    'numerical_methods.accuracy_rounding_basic',
+  ],
+  iteration_fixed_point_roots: ['numerical_methods.iteration_formula_basic'],
+  iteration_convergence: ['numerical_methods.accuracy_rounding_basic'],
+  differential_first_order_model: ['differential_equations.context_model_basic'],
+  differential_separable_variables: ['differential_equations.separation_basic'],
+  differential_particular_solutions: ['differential_equations.initial_condition_basic'],
+  differential_modeling: ['differential_equations.context_model_basic'],
+};
+
+function aliasKey(skillId: string): string {
+  return skillId.replace(/\./g, '_');
+}
+
+export const EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS: TopicMasteryContract[] = Object.entries(FIELD_GUIDE_TOPICS_BY_REGION)
+  .flatMap(([regionId, topics]) => topics.map((topic) => {
+    const skillId = topic.skillIds[0];
+    return {
+      skillId,
+      name: topic.title,
+      broadTopic: regionBroadTopicLabels[regionId] ?? topic.title,
+      aliases: Array.from(new Set([
+        ...topic.skillIds,
+        ...(fieldGuideTopicAliases[skillId] ?? []),
+        ...(fieldGuideTopicAliases[aliasKey(skillId)] ?? []),
+      ])),
+    };
+  }));
+
+const contractBySkillOrAlias = new Map<string, TopicMasteryContract>();
+for (const contract of EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS) {
+  contractBySkillOrAlias.set(contract.skillId, contract);
+  for (const alias of contract.aliases) {
+    contractBySkillOrAlias.set(alias, contract);
+  }
+}
 
 interface SkillEvidenceStats {
   marksEarned: number;
@@ -150,12 +183,16 @@ function normalizeSkillId(value: string | undefined): string | undefined {
 }
 
 function allExamTrainingSkillIds(): string[] {
-  const ids = new Set<string>();
-  for (const skillId of examTrainingSkillOrder) ids.add(skillId);
-  for (const skillId of REQUIRED_FIELD_GUIDE_SKILL_IDS) {
-    if (!fieldGuideOnlySkillIds.has(skillId)) ids.add(skillId);
-  }
-  return Array.from(ids);
+  return EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS.map((contract) => contract.skillId);
+}
+
+function contractForSkillId(skillId: string | undefined): TopicMasteryContract | undefined {
+  const normalized = normalizeSkillId(skillId);
+  return normalized ? contractBySkillOrAlias.get(normalized) : undefined;
+}
+
+function canonicalExamTrainingSkillId(skillId: string): string | undefined {
+  return contractForSkillId(skillId)?.skillId;
 }
 
 function fallbackSkillName(skillId: string): string {
@@ -170,13 +207,13 @@ function fallbackSkillName(skillId: string): string {
 export function examTrainingSkillName(skillId: string | undefined): string | undefined {
   const normalized = normalizeSkillId(skillId);
   if (!normalized) return undefined;
-  return studentFriendlySkillNames[normalized] ?? fallbackSkillName(normalized);
+  return contractForSkillId(normalized)?.name ?? studentFriendlySkillNames[normalized] ?? fallbackSkillName(normalized);
 }
 
 export function knownExamTrainingSkillName(skillId: string | undefined): string | undefined {
   const normalized = normalizeSkillId(skillId);
   if (!normalized) return undefined;
-  return studentFriendlySkillNames[normalized];
+  return contractForSkillId(normalized)?.name ?? studentFriendlySkillNames[normalized];
 }
 
 function addEvidence(stats: SkillEvidenceStats, input: {
@@ -223,10 +260,13 @@ export function buildExamTrainingTopicMastery(input: {
   questions: NormalizedQuestion[];
 }): ExamTrainingTopicMasteryItem[] {
   const skillIds = allExamTrainingSkillIds();
-  const knownSkillIds = new Set(skillIds.map(normalizeSkillId).filter((skillId): skillId is string => Boolean(skillId)));
+  const knownSkillIds = new Set([
+    ...skillIds,
+    ...EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS.flatMap((contract) => contract.aliases),
+  ].map(normalizeSkillId).filter((skillId): skillId is string => Boolean(skillId)));
   const statsBySkillId = new Map<string, SkillEvidenceStats>();
   const getStats = (skillId: string) => {
-    const normalized = normalizeSkillId(skillId)!;
+    const normalized = canonicalExamTrainingSkillId(skillId) ?? normalizeSkillId(skillId)!;
     let stats = statsBySkillId.get(normalized);
     if (!stats) {
       stats = { marksEarned: 0, marksAvailable: 0, ratios: [], questionIds: new Set<string>() };
@@ -267,9 +307,11 @@ export function buildExamTrainingTopicMastery(input: {
   }
 
   return skillIds.map((skillId) => {
-    const name = studentFriendlySkillNames[skillId] ?? fallbackSkillName(skillId);
+    const contract = contractForSkillId(skillId);
+    const name = contract?.name ?? studentFriendlySkillNames[skillId] ?? fallbackSkillName(skillId);
     const stats = statsBySkillId.get(normalizeSkillId(skillId)!);
-    const profileScore = topicProfileScore(input.progress, skillId, name);
+    const profileScore = topicProfileScore(input.progress, skillId, name)
+      ?? contract?.aliases.map((alias) => topicProfileScore(input.progress, alias, name)).find((score) => typeof score === 'number');
     const lifetimeScore = stats && stats.marksAvailable > 0 ? stats.marksEarned / stats.marksAvailable : undefined;
     const recentRatios = stats?.ratios.slice(-8) ?? [];
     const recentScore = recentRatios.length ? recentRatios.reduce((sum, value) => sum + value, 0) / recentRatios.length : undefined;

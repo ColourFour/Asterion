@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { buildExamTrainingRewardGoals, buildExamTrainingTopicMastery } from '../lib/examTrainingDashboard';
+import { FIELD_GUIDE_TOPICS_BY_REGION } from '../data/fieldGuideTopics';
+import { buildExamTrainingRewardGoals, buildExamTrainingTopicMastery, EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS } from '../lib/examTrainingDashboard';
 import { emptyProgress } from '../lib/progressStore';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 import type { Attempt, NormalizedQuestion, RegionProgress } from '../types';
@@ -73,10 +74,22 @@ describe('Exam Training dashboard data', () => {
       questions: [],
     });
 
-    expect(topics.map((topic) => topic.name)).toContain('Binomial Validity Range');
-    expect(topics.map((topic) => topic.name)).toContain('Vector Scalar Product');
+    expect(topics.map((topic) => topic.name)).toContain('Binomial Expansions');
+    expect(topics.map((topic) => topic.name)).toContain('Scalar Product');
     expect(topics.every((topic) => topic.status === 'not_tried')).toBe(true);
     expect(topics.every((topic) => topic.evidenceLabel === 'Try a question first')).toBe(true);
+  });
+
+  it('keeps Topic Mastery aligned to the approved Field Guide topic contracts', () => {
+    const topics = buildExamTrainingTopicMastery({
+      progress: emptyProgress(),
+      questions: [],
+    });
+    const fieldGuideTopicNames = Object.values(FIELD_GUIDE_TOPICS_BY_REGION)
+      .flatMap((regionTopics) => regionTopics.map((topic) => topic.title));
+
+    expect(topics.map((topic) => topic.name)).toEqual(fieldGuideTopicNames);
+    expect(topics.map((topic) => topic.skillId)).toEqual(EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS.map((topic) => topic.skillId));
   });
 
   it('projects topic status only from clean exam-practice evidence', () => {
@@ -89,11 +102,11 @@ describe('Exam Training dashboard data', () => {
       questions: [question('algebra.binomial_validity_range')],
     });
 
-    const binomialValidity = topics.find((topic) => topic.skillId === 'algebra.binomial_validity_range');
-    const modulus = topics.find((topic) => topic.skillId === 'algebra.modulus_equation_basic');
+    const binomialExpansion = topics.find((topic) => topic.skillId === 'algebra_binomial_expansion');
+    const modulus = topics.find((topic) => topic.skillId === 'algebra_modulus_graph_equations');
 
-    expect(binomialValidity).toMatchObject({
-      name: 'Binomial Validity Range',
+    expect(binomialExpansion).toMatchObject({
+      name: 'Binomial Expansions',
       status: 'strong',
       scorePercent: 80,
       evidenceLabel: 'Recent saved practice',

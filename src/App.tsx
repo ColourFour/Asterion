@@ -1,5 +1,4 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { UsersRound } from 'lucide-react';
 import { RoleGate } from './components/auth/RoleGate';
 import { AsterionHomeLanding } from './components/home/AsterionHomeLanding';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
@@ -17,18 +16,18 @@ import { determineAvatarLocation } from './lib/avatarLocation';
 import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig, type AsterionRuntimeConfig } from './lib/appConfig';
 import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
-import { buildLocalClassHallSnapshot } from './lib/classHall';
 import { EXAM_TRAINING_PRACTICE_LABELS, type ExamTrainingPracticeMode } from './lib/examTrainingDashboard';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
 import { createId, emptyProgress, getProgressStorageAdapter } from './lib/progressStore';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from './lib/questionTraining';
-import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO } from './lib/regionLearning';
+import { buildRegionLearningSummary, GUARDIAN_PASS_SCORE_RATIO, TRAINING_SESSION_LABELS } from './lib/regionLearning';
 import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/regionProgress';
 import { validatePendingClassClaim } from './lib/dashboardMockService';
 import { isStudentPilotEntryPath, prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
 import { hasCompleteOnboardingProfile, profileMatchesClassClaim } from './lib/studentProfileReadiness';
 import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
+import { submitTeacherQuestion } from './lib/teacherQuestionQueue';
 import {
   getP3RegionById,
   parseAsterionHashRoute,
@@ -43,12 +42,13 @@ import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippe
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
 
-type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'exam_training_dashboard' | 'guardian' | 'profile' | 'class_hall';
+type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'exam_training_dashboard' | 'guardian' | 'profile';
+
+const EXAM_TRAINING_DASHBOARD_HASH = '#/exam-training';
 
 const TeacherDashboard = lazy(() => import('./components/dashboard/TeacherDashboard').then((module) => ({ default: module.TeacherDashboard })));
 const AdminDashboard = lazy(() => import('./components/dashboard/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
 const AvatarBuilder = lazy(() => import('./components/profile/AvatarBuilder').then((module) => ({ default: module.AvatarBuilder })));
-const ClassHall = lazy(() => import('./components/classHall/ClassHall').then((module) => ({ default: module.ClassHall })));
 const ExamTrainingDashboard = lazy(() => import('./components/world/regionHub/ExamTrainingDashboard').then((module) => ({ default: module.ExamTrainingDashboard })));
 const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
 const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
@@ -117,6 +117,28 @@ function DashboardRouteFallback() {
           <h1>Asterion</h1>
           <p>Loading dashboard route...</p>
         </div>
+      </section>
+    </main>
+  );
+}
+
+function ClassHallUnavailableRoute({ onNavigatePath }: { onNavigatePath: (path: string) => void }) {
+  return (
+    <main className="app-shell onboarding-shell">
+      <TwinklingStarfield />
+      <section className="intro-panel academy-admission">
+        <div className="intro-copy">
+          <span className="mode-pill">Pilot prep</span>
+          <h1>Asterion</h1>
+          <p>Class Hall is unavailable during pilot prep.</p>
+        </div>
+        <div className="onboarding-briefing">
+          <strong>Student app active</strong>
+          <span>Normal Paper 3 practice remains available.</span>
+        </div>
+        <button className="primary-button" type="button" onClick={() => onNavigatePath('/')}>
+          Student app
+        </button>
       </section>
     </main>
   );
@@ -370,6 +392,17 @@ export default function App() {
 
   useEffect(() => {
     function applyHashRoute() {
+      if (window.location.hash === EXAM_TRAINING_DASHBOARD_HASH) {
+        setSelectedRegion(undefined);
+        setSelectedRegionPage('hub');
+        setCurrentQuestion(undefined);
+        setTrainingIntent(undefined);
+        setExamTrainingPracticeMode(undefined);
+        setRegionRouteError(undefined);
+        setViewMode('exam_training_dashboard');
+        return;
+      }
+
       const route = parseAsterionHashRoute(window.location.hash);
       if (route.kind !== 'region') return;
 
@@ -456,15 +489,6 @@ export default function App() {
     () => determineAvatarLocation({ progress: worldProgress, selectedRegion, currentQuestion }),
     [worldProgress, selectedRegion, currentQuestion],
   );
-  const localClassHallSnapshot = useMemo(() => (
-    progress.profile
-      ? buildLocalClassHallSnapshot({
-        profile: progress.profile,
-        avatar: progress.avatar,
-        avatarGear,
-      })
-      : undefined
-  ), [avatarGear, progress.avatar, progress.profile]);
   const worldNotice = useMemo(() => {
     const p3 = questions.filter(isP3Question);
     const regionMatches = worldProgress.reduce((sum, item) => sum + item.availableQuestions, 0);
@@ -561,7 +585,7 @@ export default function App() {
   }
 
   function clearRegionHash() {
-    if (!window.location.hash.startsWith('#/regions/')) return;
+    if (!window.location.hash.startsWith('#/regions/') && window.location.hash !== EXAM_TRAINING_DASHBOARD_HASH) return;
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     setRegionRouteError(undefined);
   }
@@ -619,7 +643,9 @@ export default function App() {
       setSelectedRegionPage('exam-training');
       updateRegionHash(region.id, 'exam-training');
     } else {
-      clearRegionHash();
+      if (window.location.hash !== EXAM_TRAINING_DASHBOARD_HASH) {
+        window.location.hash = EXAM_TRAINING_DASHBOARD_HASH;
+      }
       setSelectedRegion(undefined);
       setSelectedRegionPage('hub');
     }
@@ -695,16 +721,6 @@ export default function App() {
   function openProfile() {
     clearRegionHash();
     setViewMode('profile');
-    setCurrentQuestion(undefined);
-    setTrainingIntent(undefined);
-    setExamTrainingPracticeMode(undefined);
-  }
-
-  function openClassHall() {
-    clearRegionHash();
-    setSelectedRegion(undefined);
-    setSelectedRegionPage('hub');
-    setViewMode('class_hall');
     setCurrentQuestion(undefined);
     setTrainingIntent(undefined);
     setExamTrainingPracticeMode(undefined);
@@ -850,6 +866,10 @@ export default function App() {
 
   if (dashboardRoute.kind === 'dashboard') {
     return <DisabledDashboardRoute routeKind="dashboard" runtimeConfig={runtimeConfig} onNavigatePath={navigatePath} />;
+  }
+
+  if (dashboardRoute.kind === 'classHallUnavailable') {
+    return <ClassHallUnavailableRoute onNavigatePath={navigatePath} />;
   }
 
   if (dashboardRoute.kind === 'teacher') {
@@ -1086,7 +1106,6 @@ export default function App() {
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
           <button className={viewMode === 'regions' || viewMode === 'region_hub' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
           <button className={viewMode === 'exam_training_dashboard' || viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={startPractice}>Exam Training</button>
-          <button className={viewMode === 'class_hall' ? 'active' : ''} type="button" onClick={openClassHall}><UsersRound size={16} /> Class Hall</button>
           <button className={viewMode === 'profile' ? 'active' : ''} type="button" onClick={openProfile}>Profile</button>
         </nav>
       </header>
@@ -1205,12 +1224,6 @@ export default function App() {
         </Suspense>
       ) : null}
 
-      {viewMode === 'class_hall' ? (
-        <Suspense fallback={<StudentViewFallback label="Class Hall loading" />}>
-          <ClassHall currentStudentAvatar={localClassHallSnapshot} />
-        </Suspense>
-      ) : null}
-
       {viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' || viewMode === 'guardian' ? (
         <Suspense fallback={<StudentViewFallback label="Practice loading" />}>
           <PracticeView
@@ -1302,6 +1315,42 @@ export default function App() {
             onIssue={(questionId: string, issueType: IssueType, note?: string) => {
               if (staffPreviewContext) return;
               persistProgressAfterMeaningfulEvent(progressAdapter.addIssueReport({ id: createId('issue'), profileId: progress.profile?.id, questionId, issueType, note, createdAt: new Date().toISOString(), worldName: selectedRegion ? P3_WORLD_NAME : undefined, regionName: selectedRegion?.name }));
+            }}
+            onTeacherQuestionSubmit={({ message, solutionRevealed }) => {
+              if (!currentQuestion) throw new Error('No active question to send.');
+              if (!progress.profile) throw new Error('No active student profile to send.');
+              const profile = progress.profile;
+              const classClaim = profile.classClaim;
+              const practiceMode = examTrainingPracticeMode
+                ? EXAM_TRAINING_PRACTICE_LABELS[examTrainingPracticeMode]
+                : selectedRegion && trainingIntent
+                  ? TRAINING_SESSION_LABELS[trainingIntent]
+                  : viewMode === 'weak_areas'
+                    ? EXAM_TRAINING_PRACTICE_LABELS.weak
+                    : viewMode === 'guardian'
+                      ? 'Region Guardian'
+                      : EXAM_TRAINING_PRACTICE_LABELS.core;
+              submitTeacherQuestion({
+                message,
+                studentId: profile.id,
+                studentDisplayName: classClaim?.displayName ?? profile.realName ?? profile.avatarName,
+                classId: classClaim?.classId,
+                classCode: classClaim?.classCode,
+                questionId: currentQuestion.id,
+                questionLabel: currentQuestion.questionNumber ? `Question ${currentQuestion.questionNumber}` : currentQuestion.id,
+                paperFamily: currentQuestion.paperFamily,
+                paper: currentQuestion.paper,
+                questionNumber: currentQuestion.questionNumber,
+                regionId: selectedRegion?.id ?? currentQuestion.routeEvidence?.validatedRegionId ?? currentQuestion.routeEvidence?.displayRegionId,
+                regionName: selectedRegion?.name,
+                topic: currentQuestion.displayTopic,
+                subtopic: currentQuestion.displaySubtopic,
+                practiceMode,
+                sourceRoute: `${window.location.pathname}${window.location.hash}`,
+                questionImageRefs: currentQuestion.questionImageRawPaths.length ? currentQuestion.questionImageRawPaths : currentQuestion.questionImageUrls,
+                markSchemeImageRefs: currentQuestion.markSchemeImageRawPaths.length ? currentQuestion.markSchemeImageRawPaths : currentQuestion.markSchemeImageUrls,
+                solutionRevealed,
+              });
             }}
             onReturnToMap={returnToMap}
             onReviewWeak={() => reviewWeakAreas()}

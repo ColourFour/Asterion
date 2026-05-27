@@ -12,7 +12,7 @@ export type UiReviewRoute = {
   page: string;
 };
 
-export type DashboardRoute = TeacherDashboardRoute | UiReviewRoute | { kind: 'admin' } | { kind: 'dashboard' } | { kind: 'student' };
+export type DashboardRoute = TeacherDashboardRoute | UiReviewRoute | { kind: 'admin' } | { kind: 'dashboard' } | { kind: 'classHallUnavailable' } | { kind: 'student' };
 
 export function dashboardRouteEnabled(route: DashboardRoute, config: Pick<AsterionRuntimeConfig, 'dashboardRoutesEnabled'>): boolean {
   if (route.kind === 'dashboard') return false;
@@ -21,11 +21,19 @@ export function dashboardRouteEnabled(route: DashboardRoute, config: Pick<Asteri
 
 export function parseDashboardRoute(pathname: string, hash: string): DashboardRoute {
   const hashPath = hash.startsWith('#/') ? hash.slice(1) : '';
-  const routePath = hashPath.startsWith('/teacher') || hashPath.startsWith('/admin') || hashPath.startsWith('/dashboard') || hashPath.startsWith('/ui-review') ? hashPath : pathname;
+  const routePath = hashPath.startsWith('/teacher')
+    || hashPath.startsWith('/admin')
+    || hashPath.startsWith('/dashboard')
+    || hashPath.startsWith('/ui-review')
+    || hashPath.startsWith('/class-hall')
+    || hashPath.startsWith('/classHall')
+    ? hashPath
+    : pathname;
   if (routePath === '/ui-review') return { kind: 'uiReview', page: 'index' };
   const uiReviewMatch = routePath.match(/^\/ui-review\/(.+)$/);
   if (uiReviewMatch) return { kind: 'uiReview', page: uiReviewMatch[1].replace(/\/+$/, '') || 'index' };
   if (routePath === '/dashboard' || routePath.startsWith('/dashboard/')) return { kind: 'dashboard' };
+  if (routePath === '/class-hall' || routePath === '/classHall' || routePath.startsWith('/class-hall/') || routePath.startsWith('/classHall/')) return { kind: 'classHallUnavailable' };
   if (routePath === '/admin' || routePath.startsWith('/admin/')) return { kind: 'admin' };
   if (routePath === '/teacher') return { kind: 'teacher', page: 'home' };
 

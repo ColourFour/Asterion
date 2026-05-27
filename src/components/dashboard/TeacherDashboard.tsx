@@ -5,6 +5,7 @@ import { SupabaseAuthPanel } from '../auth/SupabaseAuthPanel';
 import { dashboardDataService, isDashboardDataServiceError, type DashboardServiceSource } from '../../lib/dashboardDataService';
 import type { SupabaseAuthStatus } from '../../lib/supabaseAuth';
 import { hasSupabaseRole, type SupabaseRoleContext } from '../../lib/supabaseRoleService';
+import { listTeacherQuestionsForClass, TEACHER_QUESTION_QUEUE_UPDATED_EVENT, type TeacherQuestion } from '../../lib/teacherQuestionQueue';
 import type { ClassRosterStudent, FocusThisWeekItem, StudentProgressRow, StudentRegionProgressCell, TeacherClass, TeacherClassDashboard } from '../../types';
 import { DashboardShell, type DashboardNavItem, type DashboardTabItem } from './DashboardShell';
 
@@ -433,6 +434,48 @@ function ClassRegionAccessSection({
   );
 }
 
+function StudentQuestionsPanel({ questions }: { questions: TeacherQuestion[] }) {
+  return (
+    <section className="dashboard-section teacher-question-queue" aria-label="Exam Training questions from students">
+      <div className="dashboard-section-heading">
+        <div>
+          <span className="dashboard-kicker">Exam Training</span>
+          <h2>Student Questions</h2>
+        </div>
+        <strong className="diagnostic-status diagnostic-idle">{questions.length} open</strong>
+      </div>
+      {questions.length ? (
+        <div className="teacher-question-list">
+          {questions.map((question) => {
+            const context = [
+              question.practiceMode,
+              question.regionName ?? question.regionId,
+              question.topic,
+              question.paper && question.questionNumber ? `${question.paper} Q${question.questionNumber}` : question.questionLabel,
+            ].filter(Boolean).join(' · ');
+            return (
+              <article className="teacher-question-card" key={question.id}>
+                <div className="teacher-question-card-header">
+                  <div>
+                    <strong>{question.studentDisplayName ?? question.studentId ?? 'Student'}</strong>
+                    <span>{formatTime(question.createdAt)}</span>
+                  </div>
+                  <span className="teacher-question-status">{question.status}</span>
+                </div>
+                <p>{question.message}</p>
+                <small>{context || question.questionId}</small>
+                {question.solutionRevealed ? <em>Solution had been revealed when sent.</em> : null}
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="dashboard-muted">No Exam Training questions have been sent for this class in this browser yet.</p>
+      )}
+    </section>
+  );
+}
+
 function ClassFirstDashboard({ dashboard, onOpenRegion }: { dashboard: TeacherClassDashboard; onOpenRegion: (regionId: string) => void }) {
   const summary = dashboard.progressSummary;
   return (
@@ -697,6 +740,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
   const [classForm, setClassForm] = useState({ name: '', academicYearTerm: '2026 Term 2', code: '' });
   const [actionIssue, setActionIssue] = useState<string>();
   const [authStatus, setAuthStatus] = useState<SupabaseAuthStatus>(source.kind === 'supabase' ? 'loading' : 'signed-out');
+  const [teacherQuestions, setTeacherQuestions] = useState<TeacherQuestion[]>([]);
   const activeHostedTeacherProfileId = hostedRoleContext?.teacherProfiles.find((profile) => profile.status === 'active')?.id;
   const teacherProfileId = activeHostedTeacherProfileId ?? (source.kind === 'mock' ? dashboard?.class.teacherId ?? classes[0]?.teacherId ?? '' : '');
   const adminOperatorProfileMissing = adminOperatorMode && !activeHostedTeacherProfileId;
@@ -706,6 +750,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
     try {
       const nextDashboard = await dashboardDataService.getTeacherClassDashboard(nextClassId);
       setDashboard(nextDashboard);
+      setTeacherQuestions(listTeacherQuestionsForClass(nextDashboard.class.id));
       setLoadIssue(undefined);
     } catch (error) {
       setLoadIssue(issueForDashboardError(error));
@@ -726,7 +771,10 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           return;
         }
         const nextDashboard = await dashboardDataService.getTeacherClassDashboard(selectedClassId);
-        if (!cancelled) setDashboard(nextDashboard);
+        if (!cancelled) {
+          setDashboard(nextDashboard);
+          setTeacherQuestions(listTeacherQuestionsForClass(nextDashboard.class.id));
+        }
       } catch (error) {
         if (!cancelled) setLoadIssue(issueForDashboardError(error));
       }
@@ -736,6 +784,20 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
       cancelled = true;
     };
   }, [classId, source.kind, authStatus]);
+
+  useEffect(() => {
+    function refreshTeacherQuestions() {
+      const activeClassId = dashboard?.class.id ?? classId ?? classes[0]?.id;
+      setTeacherQuestions(listTeacherQuestionsForClass(activeClassId));
+    }
+    refreshTeacherQuestions();
+    window.addEventListener(TEACHER_QUESTION_QUEUE_UPDATED_EVENT, refreshTeacherQuestions);
+    window.addEventListener('storage', refreshTeacherQuestions);
+    return () => {
+      window.removeEventListener(TEACHER_QUESTION_QUEUE_UPDATED_EVENT, refreshTeacherQuestions);
+      window.removeEventListener('storage', refreshTeacherQuestions);
+    };
+  }, [classId, classes, dashboard?.class.id]);
 
   const selectedClassId = dashboard?.class.id ?? classId ?? classes[0]?.id;
   const classRows = useMemo(() => dashboard?.studentRows ?? [], [dashboard]);
@@ -942,6 +1004,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
         {page === 'home' ? (
           <>
             <TeacherClassCards classes={classes} activeClassId={selectedClassId} dashboard={dashboard} onNavigatePath={onNavigatePath} />
+            <StudentQuestionsPanel questions={teacherQuestions} />
             <CreateTeacherClassSection
               classForm={classForm}
               onClassFormChange={setClassForm}
@@ -982,6 +1045,7 @@ export function TeacherDashboard({ classId, page = 'home', regionId, hostedRoleC
           <>
             <TeacherProgressScopeNote />
             <TeacherClassActions classes={classes} dashboard={dashboard} page={page} selectedClassId={selectedClassId} onNavigatePath={onNavigatePath} />
+            <StudentQuestionsPanel questions={teacherQuestions} />
             <ClassFirstDashboard dashboard={dashboard} onOpenRegion={openRegion} />
           </>
         ) : null}

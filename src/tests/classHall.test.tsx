@@ -211,7 +211,7 @@ describe('ClassHall', () => {
     expect(document.body.textContent).not.toContain('ALG');
   });
 
-  it('opens a region from the whole ledger card without double-firing the nested button', () => {
+  it('opens a region from the whole ledger tile button', () => {
     const onTrain = vi.fn();
     const progress = regionProgress();
     const container = render(
@@ -222,30 +222,49 @@ describe('ClassHall', () => {
       />,
     );
 
-    const card = container.querySelector<HTMLElement>('.region-card');
+    const card = container.querySelector<HTMLButtonElement>('.region-card');
     expect(card).toBeTruthy();
-    expect(card?.getAttribute('role')).toBe('link');
-    expect(card?.getAttribute('tabIndex')).toBe('0');
+    expect(card?.tagName).toBe('BUTTON');
+    expect(card?.disabled).toBe(false);
+    expect(card?.textContent).toContain('Algebra Vault');
+    expect(card?.textContent).toContain('Bronze');
+    expect(card?.textContent).toContain('70%');
+    expect(card?.textContent).not.toContain('Attempts');
+    expect(card?.textContent).not.toContain('Average');
+    expect(card?.textContent).not.toContain('Recent');
+    expect(card?.textContent).not.toContain('Start region');
 
     act(() => {
       card!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(onTrain).toHaveBeenCalledTimes(1);
     expect(onTrain).toHaveBeenLastCalledWith(progress.region);
-
-    const button = card!.querySelector<HTMLButtonElement>('button');
-    act(() => {
-      button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-    expect(onTrain).toHaveBeenCalledTimes(2);
-
-    act(() => {
-      card!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
-    });
-    expect(onTrain).toHaveBeenCalledTimes(3);
   });
 
-  it('renders the P3 restoration ledger in the requested vertical topic order', () => {
+  it('keeps locked ledger regions visible but disabled', () => {
+    const onTrain = vi.fn();
+    const progress = regionProgress({ availableQuestions: 0 });
+    const container = render(
+      <AstralRegionLedger
+        progress={[progress]}
+        regionLearningSummaries={{}}
+        onTrain={onTrain}
+      />,
+    );
+
+    const card = container.querySelector<HTMLButtonElement>('.region-card');
+    expect(card).toBeTruthy();
+    expect(card?.disabled).toBe(true);
+    expect(card?.textContent).toContain('Algebra Vault');
+    expect(card?.textContent).toContain('Locked');
+
+    act(() => {
+      card!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onTrain).not.toHaveBeenCalled();
+  });
+
+  it('renders the P3 restoration ledger in the compact grid topic order', () => {
     const progress = [...P3_ASTRAL_ACADEMY.regions]
       .reverse()
       .map((region) => regionProgress({ region }));
@@ -265,12 +284,12 @@ describe('ClassHall', () => {
       'Algebra Vault',
       'Logarithm Observatory',
       'Trigonometry Spire',
+      'Argand Atrium',
       'Calculus Cliffs',
       'Integral Terraces',
-      'Differential Shrine',
-      'Iteration Forge',
       'Vectors Gate',
-      'Argand Atrium',
+      'Iteration Forge',
+      'Differential Shrine',
     ]);
   });
 });

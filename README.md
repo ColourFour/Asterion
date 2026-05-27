@@ -1,23 +1,23 @@
 # Asterion
 
-Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with region learning, canonical question-image practice, reviewed Field Guide support, merged Skill Practice support, image-first Exam Training, and evidence-gated Guardian checks.
+Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with campaign regions, reviewed Field Guide support, under-construction Skill Practice support, evidence-gated Guardian Challenge bosses, and a separate image-first Exam Training endgame hub.
 
 The question image and mark-scheme image are the student-facing source of truth. For P3 curriculum behavior, the reviewed P3 skill map is the authority. OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are advisory metadata only; they must not be treated as curriculum truth.
 
 ## Current Status
 
-Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, region hubs, Field Guides, Skill Practice, image-first Exam Training, Guardian checks, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
+Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, campaign region hubs, Field Guides, Skill Practice, image-first Exam Training, Guardian Challenges, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
 
-The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 region learning flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
+The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 campaign-region flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
 
-The Field Guide / Skill Practice shell is stabilized enough to hand off to Exam Training work. The main next student-facing blocker is Exam Training clarity: question rationale, mastery target/evidence messaging, and post-attempt next steps. Guardian Challenge also needs later presentation and reward polish. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
+The current structural direction is now campaign regions plus an Exam Training endgame hub. Region pages should be treated as campaign arcs, while Exam Training should own mixed exam-readiness practice and endgame progress. Skill Practice remains under construction and needs a major future pass; Exam Training still needs clearer question rationale, mastery target/evidence messaging, and post-attempt next steps. Guardian Challenge also needs later boss/capstone presentation and reward polish. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
 
 Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work, and optional roster-claim RPC plumbing. It is explicitly not hosted progress sync, not learner-response storage, and not the academic source of truth. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
 
 ## Documentation Map
 
 - [Docs Index](docs/README.md): current docs organization and where new docs should go.
-- [Current State](docs/CURRENT_STATE.md): current handoff state before Exam Training work.
+- [Current State](docs/CURRENT_STATE.md): current campaign-region and Exam Training endgame handoff state.
 - [Architecture](docs/architecture/ARCHITECTURE.md): current app shape, data flow, dependencies, extension points, and risks.
 - [Backend Contract](docs/architecture/backend-contract.md): boundaries for hosted classroom data and future storage.
 - [Supabase Phase 1](docs/classroom/supabase-phase-1.md): classroom schema, RLS, seed data, verification commands, diagnostic RPC, and opt-in read-only/claim plumbing. Supabase is not hosted progress sync or production classroom authority yet.
@@ -92,24 +92,41 @@ Current P3 regions:
 
 All nine P3 regions are active when matching trainable questions exist. The map remains a polished academic dashboard, not a tile-walking game.
 
-## Region Learning Loop
+## Region Campaign Loop
 
-**Region Learning Loop v1** turns each P3 region into a small academy journey instead of only a clickable topic island.
+**Region Campaign Loop vNext** treats each P3 region as a campaign arc instead of a standard practice menu.
 
-The current student-facing loop is:
+The campaign structure for each region is:
 
 ```text
-Field Guide -> Skill Practice -> Exam Training -> Guardian Challenge
+Field Guide -> Skill Practice -> Guardian Challenge
 ```
 
 - Field Guide: reviewed compact teaching snippets with student goals, explanations, prerequisites, micro-steps, common mistakes, and Guardian readiness notes.
-- Skill Practice: one merged support mode that reads as Start simple, Build the method, then Ready for exam practice. Internal `quick_check` and `warm_up` activity records remain preserved.
-- Exam Training: canonical image-first practice using question and mark-scheme images as the student-facing source of truth.
-- Guardian Challenge: an evidence-gated mastery check selected from clean, mastery-eligible P3 canonical questions in the same region.
+- Skill Practice: the bridge between Field Guide learning and Guardian readiness. It is under construction and needs a major future pass powered by Content Lab outputs, curated documents used to build the Field Guides, the updated Asterion sidecar from `exam-bank-data`, and the finalized skills checklist / skill evidence model. Internal `quick_check` and `warm_up` activity records remain preserved for compatibility.
+- Guardian Challenge: the region boss/capstone. Guardian Challenges should eventually use a curated set of region-appropriate exam-style questions and should feel like a higher-stakes proof-of-readiness moment, not generic Exam Training.
+
+Exam Training is not a normal embedded region phase. It is a separate hub-level endgame mode for Core Practice, Weak Area Review, Stretch Practice, Topic Mastery, mixed exam-readiness practice, teacher question flow if preserved, and question history / progress evidence where applicable.
+
+The intended progression is:
+
+```text
+Field Guide -> Skill Practice -> Guardian Challenge -> related topics unlock, activate, or become promoted in the Exam Training Hub
+```
+
+The Exam Training Hub can exist before the whole campaign is complete. Campaign progress should drive which topics are available, emphasized, or promoted there.
+
+State ownership:
+
+- Regions own campaign progress: Field Guide progress, Skill Practice progress, Guardian readiness, and Guardian completion.
+- Exam Training owns endgame progress: exam attempts, weak-area evidence, stretch readiness, topic mastery, mixed-practice readiness, and question history.
+- Shared student progress / skill evidence connects the campaign and endgame systems without duplicating canonical Exam Training progress inside regions.
 
 Field Guide completion and guardian clear state are stored locally through the progress adapter. Field Guide completion does not award mastery, XP, avatar rewards, or restored-region state by itself. Region clearing and reward placeholders require saved attempts, marks, mark-scheme availability, and guardian evidence.
 
 The current implementation exposes the region hub for all active P3 regions. Every active region has reviewed Field Guide content and Skill Practice support. Legacy `quick-check` and `warm-up` route aliases remain compatibility-only aliases into Skill Practice.
+
+This section is structural direction only. Existing UI/runtime routes may still lag behind it until a dedicated implementation pass updates navigation and behavior.
 
 Class Hall / Academy Commons v0.1 is a local-only avatar showcase for the current demo build. It is separate from Content Lab Worked Examples v1 and does not affect teaching-content publishing gates, mastery, or academic attempt records.
 
@@ -548,9 +565,10 @@ Common path problems:
 
 - Class-claimed student profile with real name, class/group, teacher name, and avatar name, persisted through the progress storage adapter.
 - P3 Astral Academy world map with region cards, restoration ranks, active/dormant states, and region-filtered practice.
-- P3-focused student modes: World Map, Region Hub, Training Grounds, Region Guardian, Review Weak Areas, Profile, and Class Hall.
+- P3-focused student modes: World Map, campaign Region Hub, Field Guide, Skill Practice, Guardian Challenge, Exam Training Hub, Profile, and Class Hall.
 - Teacher/admin dashboard routes render only when `VITE_ASTERION_DASHBOARD_DEMO=enabled` for mock demo mode, `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase` for the read-only Supabase adapter, or `VITE_ASTERION_APP_PROFILE=classroom-pilot` for the hosted classroom pilot profile.
-- Region Learning Loop with Field Guide snippets, Quick Checks, generated warm-up practice, Guardian readiness, and evidence-gated Guardian challenges.
+- Region Campaign Loop with Field Guide snippets, under-construction Skill Practice support, Guardian readiness, and evidence-gated Guardian Challenge bosses.
+- Exam Training Hub as the endgame owner for Core Practice, Weak Area Review, Stretch Practice, Topic Mastery, mixed exam-readiness practice, teacher question flow if preserved, and question history / progress evidence.
 - Normalization layer that merges the projected/raw bank and topic-routing sidecar without crashing on malformed legacy enrichment.
 - Question and mark-scheme image rendering for single paths or arrays.
 - Required exact marks and mistake type after mark scheme reveal.
@@ -677,7 +695,7 @@ Manual pilot checks:
 
 - onboarding and class-code claim
 - world map and every active region hub
-- Field Guide, Quick Check, warm-up, Training Grounds, Guardian locked/unlocked states
+- Field Guide, Skill Practice, Guardian locked/unlocked states, and Exam Training Hub modes
 - question image and mark-scheme image readability on desktop and phone width
 - attempt save, reload persistence, profile/avatar progress, Class Hall
 - disabled dashboard routes in the normal student build

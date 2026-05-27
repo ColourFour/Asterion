@@ -9,6 +9,7 @@ import { WarmUpPracticePanel } from './WarmUpPracticePanel';
 
 export type SkillPracticeFocus = 'quick-check' | 'warm-up' | 'overview';
 type SkillPracticeStepId = 'start-simple' | 'build-method' | 'ready-for-exam';
+const underDevelopmentLabel = 'Under development';
 
 interface SkillPracticePanelProps {
   teachingSnippets: TeachingSnippet[];
@@ -157,7 +158,10 @@ export function SkillPracticePanel({
               disabled={status === 'Locked'}
               onClick={() => setActiveStep(step.id)}
             >
-              <span>{step.label}</span>
+              <span className="skill-practice-step-label">
+                {step.label}
+                {step.id === 'start-simple' ? <em>{underDevelopmentLabel}</em> : null}
+              </span>
               <small>{status}</small>
             </button>
           );
@@ -171,8 +175,14 @@ export function SkillPracticePanel({
       >
         <div className="skill-practice-section-intro">
           <span>Skill Practice</span>
-          <h4 id="skill-practice-active-step-title">{activeStepMeta.heading}</h4>
+          <h4 id="skill-practice-active-step-title">
+            {activeStepMeta.heading}
+            {activeStep === 'start-simple' ? <em>{underDevelopmentLabel}</em> : null}
+          </h4>
           <p>{activeStepMeta.description}</p>
+          {activeStep === 'start-simple' ? (
+            <p className="skill-practice-under-development-note">This activity is being improved for the pilot.</p>
+          ) : null}
         </div>
 
         {activeStep === 'start-simple' && (canUseQuickCheck ? (

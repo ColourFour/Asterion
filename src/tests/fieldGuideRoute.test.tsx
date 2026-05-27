@@ -171,6 +171,7 @@ describe('Field Guide app route', () => {
     expect(topbar?.textContent).toContain('World Map');
     expect(topbar?.textContent).toContain('Regions');
     expect(topbar?.textContent).toContain('Exam Training');
+    expect(topbar?.textContent).not.toContain('Class Hall');
     expect(topbar?.textContent).not.toContain('Review Weak Areas');
     expect(topbar?.querySelector('nav')?.textContent).not.toContain('Teacher/Export');
     expect(topbar?.textContent).not.toContain('Teacher tools');
@@ -189,6 +190,16 @@ describe('Field Guide app route', () => {
     expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
   });
 
+  it('shows a safe unavailable state for direct Class Hall routes', async () => {
+    window.history.replaceState(null, '', '/#/class-hall');
+    const container = await render(<App />);
+    await waitForText(container, 'Class Hall is unavailable during pilot prep.');
+
+    expect(container.textContent).toContain('Pilot prep');
+    expect(container.textContent).not.toContain('Class Hall avatar showcase');
+    expect(container.textContent).not.toContain('Class Hall Welcomer');
+  });
+
   it('keeps the legacy Quick Check hash route on the merged Skill Practice page', async () => {
     window.history.replaceState(null, '', '/#/regions/algebra-forge/quick-check');
     const container = await render(<App />);
@@ -197,6 +208,8 @@ describe('Field Guide app route', () => {
     expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
     expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Quick Check');
+    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Under development');
+    expect(container.textContent).toContain('This activity is being improved for the pilot.');
     expect(container.textContent).toContain('Quick Check');
     expect(container.textContent).toContain('Guided Practice');
     expect(container.querySelector('.quick-check-card')).toBeTruthy();
@@ -230,6 +243,7 @@ describe('Field Guide app route', () => {
     await waitForText(container, 'Your Topic Mastery');
 
     expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
+    expect(window.location.hash).toBe('#/exam-training');
     expect(container.textContent).toContain('Core Practice');
     expect(container.textContent).toContain('Weak Area Review');
     expect(container.textContent).toContain('Stretch Problems');
@@ -244,6 +258,16 @@ describe('Field Guide app route', () => {
     expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
     expect(container.textContent).toContain('Focused on Algebra Vault');
     expect(container.textContent).toContain('Balanced exam-style practice. Start here when you want a steady next question.');
+    expect(container.querySelector('.encounter-chamber')).toBeFalsy();
+  });
+
+  it('opens the global Exam Training dashboard for the stable dashboard hash route', async () => {
+    window.history.replaceState(null, '', '/#/exam-training');
+    const container = await render(<App />);
+    await waitForText(container, 'Your Topic Mastery');
+
+    expect(container.querySelector('.exam-training-dashboard')).toBeTruthy();
+    expect(container.textContent).toContain('Choose a practice route, then self-mark from the official mark scheme.');
     expect(container.querySelector('.encounter-chamber')).toBeFalsy();
   });
 

@@ -59,6 +59,18 @@ function savedAttempt(): Attempt {
   };
 }
 
+function weakAttempt(): Attempt {
+  return {
+    ...savedAttempt(),
+    id: 'attempt-exam-training-weak',
+    marksEarned: 2,
+    scoreRatio: 0.4,
+    mistakeTypes: ['algebra_error'],
+    validatedRegionId: 'algebra-forge',
+    displayRegionId: 'algebra-forge',
+  };
+}
+
 function worldProgress(): RegionProgress[] {
   return P3_ASTRAL_ACADEMY.regions.map((region) => ({
     region,
@@ -86,6 +98,48 @@ afterEach(() => {
 });
 
 describe('ExamTrainingDashboard practice choices', () => {
+  it('glows Core Practice until saved evidence can recommend a targeted mode', () => {
+    const container = render(
+      <ExamTrainingDashboard
+        progress={emptyProgress()}
+        questions={[]}
+        worldProgress={worldProgress()}
+        avatarName="Pilot Star"
+        avatar={DEFAULT_AVATAR_SETTINGS}
+        avatarGear={avatarGear}
+        onOpenRegions={vi.fn()}
+        onReturnToMap={vi.fn()}
+        onNavigateRegionPage={vi.fn()}
+        onStartPractice={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector('.exam-training-practice-choice.practice-core')?.classList.contains('next-step-glow')).toBe(true);
+    expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(false);
+    expect(container.querySelector('.exam-training-practice-choice.practice-stretch')?.classList.contains('next-step-glow')).toBe(false);
+    expect(container.textContent).toContain('Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.');
+  });
+
+  it('moves the recommendation glow to Weak Area Review when missed-mark evidence exists', () => {
+    const container = render(
+      <ExamTrainingDashboard
+        progress={{ ...emptyProgress(), attempts: [weakAttempt()] }}
+        questions={[]}
+        worldProgress={worldProgress()}
+        avatarName="Pilot Star"
+        avatar={DEFAULT_AVATAR_SETTINGS}
+        avatarGear={avatarGear}
+        onOpenRegions={vi.fn()}
+        onReturnToMap={vi.fn()}
+        onNavigateRegionPage={vi.fn()}
+        onStartPractice={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector('.exam-training-practice-choice.practice-core')?.classList.contains('next-step-glow')).toBe(false);
+    expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(true);
+  });
+
   it('keeps default practice choice buttons to titles while preserving accessible definitions and clicks', () => {
     const onStartPractice = vi.fn();
     const container = render(

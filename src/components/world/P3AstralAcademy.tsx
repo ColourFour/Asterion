@@ -77,12 +77,12 @@ const restorationLedgerOrder = [
   'algebra-forge',
   'logarithm-grove',
   'trig-observatory',
+  'complex-harbor',
   'calculus-cliffs',
   'integration-gardens',
-  'differential-shrine',
-  'numerical-mines',
   'vector-workshop',
-  'complex-harbor',
+  'numerical-mines',
+  'differential-shrine',
 ];
 
 function RegionIslandArt({ fallbackArt, regionId }: { fallbackArt: string; regionId: string }) {
@@ -411,71 +411,72 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, regionAc
     || a.region.name.localeCompare(b.region.name)
   ));
 
+  function tileProgress(regionProgress: RegionProgress) {
+    if (typeof regionProgress.averageScoreRatio === 'number') {
+      const percentValue = Math.min(100, Math.max(0, Math.round(regionProgress.averageScoreRatio * 100)));
+      return {
+        value: percentValue,
+        label: `${percentValue}%`,
+      };
+    }
+    const totalSubtopics = regionProgress.region.subtopics.length;
+    const coveredSubtopics = Math.min(totalSubtopics, Math.max(0, regionProgress.subtopicsTouched));
+    return {
+      value: totalSubtopics > 0 ? Math.round((coveredSubtopics / totalSubtopics) * 100) : 0,
+      label: `${coveredSubtopics}/${totalSubtopics}`,
+    };
+  }
+
+  function tileStatus(input: { canTrain: boolean; regionProgress: RegionProgress; access?: ClassRegionAccess; summary?: RegionLearningSummary }) {
+    if (input.access?.access === 'field_guide_only') return 'Field Guide only';
+    if (!input.canTrain) return input.regionProgress.isActive ? 'Locked' : 'Coming soon';
+    if (input.summary?.state === 'mastered') return 'Mastered';
+    if (input.summary?.state === 'guardian_cleared') return 'Guardian cleared';
+    if (input.regionProgress.rank !== 'Dormant') return input.regionProgress.rank;
+    return 'Open';
+  }
+
   return (
     <section className="region-ledger-screen">
       <header className="section-page-header">
         <span className="mode-pill">Region evidence</span>
         <h2>P3 Restoration Ledger</h2>
-        <p>Detailed region progress stays here so the world map remains playable and uncluttered.</p>
+        <p>Choose a Paper 3 region. Detailed evidence appears inside each region hub.</p>
       </header>
       <div className="region-ledger" aria-label="Region evidence ledger">
         {ledgerProgress.map((regionProgress) => {
           const { region } = regionProgress;
           const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;
-          const goal = nextRegionGoal(regionProgress);
           const learningSummary = regionLearningSummaries?.[region.id];
           const access = regionAccess?.find((item) => item.regionId === region.id);
-          const accessLabel = classAccessLabel(access);
           const isFieldGuideOnly = access?.access === 'field_guide_only';
           const theme = getRegionTheme(region);
+          const progressValue = tileProgress(regionProgress);
+          const status = tileStatus({ canTrain, regionProgress, access, summary: learningSummary });
           return (
-            <article
-              aria-disabled={!canTrain}
-              aria-label={`${region.name}: ${accessLabel ? `${accessLabel}, ` : ''}${canTrain ? 'open region hub' : regionProgress.isActive ? 'no questions loaded yet' : 'coming soon'}`}
-              className={`region-card ${canTrain ? 'is-clickable' : 'is-disabled'} ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}${isFieldGuideOnly ? ' field-guide-only-region' : ''}`}
+            <button
+              type="button"
+              aria-label={`${region.name}: ${status}${canTrain ? ', open region hub' : ''}, progress ${progressValue.label}`}
+              className={`region-card region-ledger-tile ${canTrain ? 'is-clickable' : 'is-disabled'} ${getRegionThemeClass(theme)} region-${region.id} rank-${regionProgress.rank.toLowerCase()} learning-${learningSummary?.visualTreatment ?? 'not_started'}${isFieldGuideOnly ? ' field-guide-only-region' : ''}`}
+              disabled={!canTrain}
               key={region.id}
-              onClick={(event) => {
+              onClick={() => {
                 if (!canTrain) return;
-                if (event.target instanceof Element && event.target.closest('button')) return;
                 onTrain(region);
               }}
-              onKeyDown={(event) => {
-                if (!canTrain) return;
-                if (event.key !== 'Enter' && event.key !== ' ') return;
-                event.preventDefault();
-                onTrain(region);
-              }}
-              role="link"
-              tabIndex={canTrain ? 0 : -1}
             >
               <div className="region-card-header">
-                <div>
-                  <span className="region-state">{accessLabel ?? (canTrain ? learningStateLabel(learningSummary) : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing')}</span>
-                  <h3>{region.name}</h3>
+                <span className="region-state">{status}</span>
+                <h3>{region.name}</h3>
+              </div>
+              <span className="region-ledger-micro-label">{canTrain ? 'Region hub' : regionProgress.isActive ? 'Locked' : 'Dormant'}</span>
+              <div className="region-ledger-progress" aria-hidden="true">
+                <span>{progressValue.label}</span>
+                <div className="region-meter">
+                  <span style={{ width: `${progressValue.value}%` }} />
                 </div>
-                <strong>{regionProgress.rank}</strong>
               </div>
-              <p>{region.description}</p>
-              <div className="region-meter">
-                <span style={{ width: `${Math.min(100, Math.round((regionProgress.averageScoreRatio ?? 0) * 100))}%` }} />
-              </div>
-              <dl className="region-stats">
-                <div><dt>Attempts</dt><dd>{regionProgress.attempts}</dd></div>
-                <div><dt>Average</dt><dd>{percent(regionProgress.averageScoreRatio)}</dd></div>
-                <div><dt>Recent</dt><dd>{percent(regionProgress.recentScoreRatio)}</dd></div>
-                <div><dt>Subtopics</dt><dd>{regionProgress.subtopicsTouched}/{region.subtopics.length}</dd></div>
-              </dl>
-              <div className="subtopic-list">
-                {region.subtopics.slice(0, 5).map((subtopic) => <span key={subtopic}>{subtopic}</span>)}
-              </div>
-              <div className="region-goal">
-                <Target size={14} />
-                <span>{isFieldGuideOnly ? 'Field Guide is available. Practice and Guardian are locked for this class.' : learningSummary?.nextAction.explanation ?? goal.label}</span>
-              </div>
-              <button type="button" disabled={!canTrain} onClick={() => onTrain(region)}>
-                {canTrain ? (learningSummary?.nextAction.kind === 'field_guide' ? 'Start region' : 'Open region hub') : regionProgress.isActive ? 'No questions loaded yet' : 'Coming soon'}
-              </button>
-            </article>
+            </button>
           );
         })}
       </div>

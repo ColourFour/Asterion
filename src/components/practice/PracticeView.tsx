@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { ArrowLeft, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, Map, MessageCircle, RotateCcw, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, MessageCircle, User } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
 import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
@@ -30,7 +30,6 @@ function emptyPartMarkInputs(parts: NormalizedQuestion['parts']): PartMarkInputs
   return Object.fromEntries((parts ?? []).map((part) => [part.label, { ...emptyMarkInputs }]));
 }
 
-const FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH = 8;
 type SelectableMistakeType = Exclude<MistakeType, 'no_issue'>;
 
 interface SavedAttemptFeedback {
@@ -40,6 +39,11 @@ interface SavedAttemptFeedback {
   scoreEarned: number;
   scoreRatio?: number;
   scoreTotalLabel: string;
+}
+
+export interface TeacherQuestionSubmitInput {
+  message: string;
+  solutionRevealed: boolean;
 }
 
 const studentTopicLabels: Record<string, string> = {
@@ -140,6 +144,7 @@ interface PracticeViewProps {
   onOpenDashboard?: () => void;
   onSelectPracticeMode?: (mode: ExamTrainingPracticeMode) => void;
   onOpenProfile?: () => void;
+  onTeacherQuestionSubmit?: (input: TeacherQuestionSubmitInput) => void | Promise<void>;
 }
 
 export function PracticeView({
@@ -167,6 +172,7 @@ export function PracticeView({
   onOpenDashboard,
   onSelectPracticeMode,
   onOpenProfile,
+  onTeacherQuestionSubmit,
 }: PracticeViewProps) {
   const [revealed, setRevealed] = useState(false);
   const [totalMarkInput, setTotalMarkInput] = useState('');
@@ -180,6 +186,8 @@ export function PracticeView({
   const [markSchemeAvailability, setMarkSchemeAvailability] = useState<ImageStackAvailability>('pending');
   const [askTeacherOpen, setAskTeacherOpen] = useState(false);
   const [teacherQuestionDraft, setTeacherQuestionDraft] = useState('');
+  const [teacherQuestionStatus, setTeacherQuestionStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [teacherQuestionError, setTeacherQuestionError] = useState<string>();
   const [rationaleOpen, setRationaleOpen] = useState(false);
   const [savedAttemptFeedback, setSavedAttemptFeedback] = useState<SavedAttemptFeedback | null>(null);
 
@@ -196,6 +204,8 @@ export function PracticeView({
     setMarkSchemeAvailability(question?.markSchemeImageCandidates.length ? 'pending' : 'unavailable');
     setAskTeacherOpen(false);
     setTeacherQuestionDraft('');
+    setTeacherQuestionStatus('idle');
+    setTeacherQuestionError(undefined);
     setRationaleOpen(false);
     setSavedAttemptFeedback(null);
   }, [question?.id, question?.markSchemeImageCandidates.length, question?.parts]);
@@ -225,9 +235,8 @@ export function PracticeView({
     && maxMarks > 0
     && scoreValidation.earned === maxMarks,
   );
-  const fullScoreEvidenceNoteIsReady = note.trim().length >= FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH;
   const attemptReflectionIsReady = isFullScore
-    ? fullScoreConfirmed && fullScoreEvidenceNoteIsReady
+    ? fullScoreConfirmed
     : selectedMistakeTypes.length > 0;
   const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && attemptReflectionIsReady);
   const markSchemeNoticeTitle = progressionBlockedReason
@@ -316,7 +325,34 @@ export function PracticeView({
     setStartedAt(Date.now());
     setAskTeacherOpen(false);
     setTeacherQuestionDraft('');
+    setTeacherQuestionStatus('idle');
+    setTeacherQuestionError(undefined);
     setSavedAttemptFeedback(null);
+  }
+
+  async function submitTeacherQuestion() {
+    const message = teacherQuestionDraft.trim();
+    if (!message) {
+      setTeacherQuestionStatus('error');
+      setTeacherQuestionError('Write a question before sending.');
+      return;
+    }
+    if (!onTeacherQuestionSubmit) {
+      setTeacherQuestionStatus('error');
+      setTeacherQuestionError('Teacher questions are not available in this build.');
+      return;
+    }
+
+    setTeacherQuestionStatus('sending');
+    setTeacherQuestionError(undefined);
+    try {
+      await onTeacherQuestionSubmit({ message, solutionRevealed: revealed });
+      setTeacherQuestionDraft('');
+      setTeacherQuestionStatus('sent');
+    } catch {
+      setTeacherQuestionStatus('error');
+      setTeacherQuestionError('Question could not be sent. Try again.');
+    }
   }
 
   function partMarkTotal(label: string): number {
@@ -588,7 +624,7 @@ export function PracticeView({
               if (!score.isValid || typeof score.earned !== 'number') return;
               const savedAsFullScore = typeof maxMarks === 'number' && maxMarks > 0 && score.earned === maxMarks;
               const savedMistakeTypes = savedAsFullScore ? [] : selectedMistakeTypes;
-              if (savedAsFullScore && (!fullScoreConfirmed || note.trim().length < FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH)) return;
+              if (savedAsFullScore && !fullScoreConfirmed) return;
               if (!savedAsFullScore && savedMistakeTypes.length === 0) return;
               onAttempt({
                 id: createId('attempt'),
@@ -755,7 +791,7 @@ export function PracticeView({
                   <CheckCircle2 size={18} />
                   <div>
                     <strong>Full score selected.</strong>
-                    <p>Reflection tags are skipped for perfect scores. To make this count for progress, confirm it against the official mark scheme and leave a short evidence note.</p>
+                    <p>Reflection tags are skipped for perfect scores. To make this count for progress, confirm it against the official mark scheme.</p>
                   </div>
                 </div>
                 <label className="full-score-check-label">
@@ -767,9 +803,6 @@ export function PracticeView({
                   />
                   <span>I checked each mark-scheme line and can explain where every mark was earned.</span>
                 </label>
-                {!fullScoreEvidenceNoteIsReady ? (
-                  <small className="form-hint">Add a short evidence note below before saving a full-score attempt.</small>
-                ) : null}
               </fieldset>
             ) : (
               <fieldset className="mistake-fieldset">
@@ -793,14 +826,12 @@ export function PracticeView({
             )}
 
             <label>
-              {isFullScore ? 'Full-score evidence note' : 'Optional note'}
+              {isFullScore ? 'Full-score note (optional)' : 'Optional note'}
               <textarea
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
                 rows={3}
-                required={isFullScore}
-                minLength={isFullScore ? FULL_SCORE_EVIDENCE_NOTE_MIN_LENGTH : undefined}
-                placeholder={isFullScore ? 'Example: Matched M1 to log law, A1 to final value, and checked the domain.' : undefined}
+                placeholder={isFullScore ? 'Optional: Matched M1 to log law, A1 to final value, and checked the domain.' : undefined}
               />
             </label>
             {!attemptSaved && onContinuePractice ? (
@@ -814,21 +845,40 @@ export function PracticeView({
         <section className="ask-teacher-panel" aria-label="Ask Teacher">
           <div>
             <span className="mode-pill">Ask Teacher</span>
-            <h3>Teacher questions are coming soon.</h3>
-            <p>This draft stays on this page for now. No message is sent.</p>
+            <h3>Ask about this question</h3>
+            <p>Send a short note with the current Exam Training question context.</p>
           </div>
           <label>
             What are you stuck on?
             <textarea
               value={teacherQuestionDraft}
-              onChange={(event) => setTeacherQuestionDraft(event.target.value)}
+              onChange={(event) => {
+                setTeacherQuestionDraft(event.target.value);
+                if (teacherQuestionStatus !== 'sending') {
+                  setTeacherQuestionStatus('idle');
+                  setTeacherQuestionError(undefined);
+                }
+              }}
               rows={3}
               placeholder="Example: I am unsure which line earns the M1 mark."
             />
           </label>
+          {teacherQuestionStatus === 'sent' ? (
+            <p className="ask-teacher-success" role="status">Question sent to your teacher.</p>
+          ) : null}
+          {teacherQuestionError ? (
+            <p className="ask-teacher-error" role="alert">{teacherQuestionError}</p>
+          ) : null}
           <div className="ask-teacher-actions">
             <button type="button" onClick={() => setAskTeacherOpen(false)}>Close</button>
-            <button type="button" disabled>Send to teacher</button>
+            <button
+              type="button"
+              className="primary-button"
+              disabled={teacherQuestionStatus === 'sending'}
+              onClick={submitTeacherQuestion}
+            >
+              {teacherQuestionStatus === 'sending' ? 'Sending...' : 'Send question'}
+            </button>
           </div>
         </section>
       ) : null}
@@ -867,9 +917,14 @@ export function PracticeView({
           </div>
           <p className="post-attempt-next-step">{nextRecommendedAction}</p>
           <div className="practice-actions">
-            {onContinuePractice ? <button className="primary-button next-step-glow" type="button" onClick={onContinuePractice}><RotateCcw size={16} /> Next</button> : null}
+            {onContinuePractice ? <button className="primary-button next-step-glow" type="button" onClick={onContinuePractice}>Next <ArrowRight size={16} aria-hidden="true" /></button> : null}
             <button type="button" onClick={resetCurrentQuestionAttempt}>Try Again</button>
-            {onReturnToMap ? <button type="button" onClick={onReturnToMap}><Map size={16} /> Dashboard</button> : null}
+            {onOpenDashboard || onReturnToMap ? (
+              <button type="button" onClick={onOpenDashboard ?? onReturnToMap}>
+                <LayoutDashboard size={16} aria-hidden="true" />
+                Dashboard
+              </button>
+            ) : null}
           </div>
         </div>
       ) : null}

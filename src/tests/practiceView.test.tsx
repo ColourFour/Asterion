@@ -85,7 +85,7 @@ const avatarLocation: AvatarLocation = { source: 'none', label: 'No open wing' }
 function renderPractice(
   testQuestion: NormalizedQuestion,
   onAttempt = vi.fn<(attempt: Attempt) => void>(),
-  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string; onOpenRegionTool?: (page: RegionLearningPageId) => void; onOpenDashboard?: () => void; onSelectPracticeMode?: (mode: 'core' | 'weak' | 'stretch') => void; onOpenProfile?: () => void; sessionLabelOverride?: string; currentPracticeMode?: 'core' | 'weak' | 'stretch' } = {},
+  options: { onContinuePractice?: () => void; continuePracticeLabel?: string; onIssue?: (questionId: string, issueType: IssueType, note?: string) => void; selectedRegion?: RegionDefinition; progressionBlockedReason?: string; onOpenRegionTool?: (page: RegionLearningPageId) => void; onOpenDashboard?: () => void; onSelectPracticeMode?: (mode: 'core' | 'weak' | 'stretch') => void; onOpenProfile?: () => void; sessionLabelOverride?: string; currentPracticeMode?: 'core' | 'weak' | 'stretch'; onTeacherQuestionSubmit?: (input: { message: string; solutionRevealed: boolean }) => void | Promise<void> } = {},
 ) {
   const onIssue = options.onIssue ?? vi.fn<(questionId: string, issueType: IssueType, note?: string) => void>();
   return {
@@ -111,6 +111,7 @@ function renderPractice(
         onOpenDashboard={options.onOpenDashboard}
         onSelectPracticeMode={options.onSelectPracticeMode}
         onOpenProfile={options.onOpenProfile}
+        onTeacherQuestionSubmit={options.onTeacherQuestionSubmit}
       />,
     ),
   };
@@ -476,7 +477,26 @@ describe('PracticeView self-mark reflection', () => {
     });
   });
 
-  it('requires a mark-scheme confirmation and evidence note for full-score attempts', () => {
+  it('keeps partial-score attempts blocked until a mistake tag is selected', () => {
+    const { container, onAttempt } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+
+    expect(saveAttemptButton(container).disabled).toBe(true);
+    act(() => {
+      container.querySelector<HTMLFormElement>('.attempt-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    expect(onAttempt).not.toHaveBeenCalled();
+
+    clickInput(container.querySelector<HTMLInputElement>('input[value="algebra_error"]'));
+    expect(saveAttemptButton(container).disabled).toBe(false);
+  });
+
+  it('requires only mark-scheme confirmation for full-score attempts', () => {
     const { container, onAttempt } = renderPractice(question());
 
     clickButton(container, 'Reveal Mark Scheme');
@@ -492,9 +512,6 @@ describe('PracticeView self-mark reflection', () => {
     expect(onAttempt).not.toHaveBeenCalled();
 
     clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
-    expect(saveAttemptButton(container).disabled).toBe(true);
-
-    setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
     expect(saveAttemptButton(container).disabled).toBe(false);
     clickButton(container, 'Save Attempt');
 
@@ -503,9 +520,26 @@ describe('PracticeView self-mark reflection', () => {
       marksEarned: 4,
       mistakeTypes: [],
       fullScoreConfirmed: true,
-      note: 'Checked every mark-scheme line.',
+      note: '',
     });
     expect(onAttempt.mock.calls[0][0].mistakeType).toBeUndefined();
+  });
+
+  it('blocks full-score save until the mark-scheme confirmation is checked', () => {
+    const { container, onAttempt } = renderPractice(question());
+
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+
+    expect(saveAttemptButton(container).disabled).toBe(true);
+    act(() => {
+      container.querySelector<HTMLFormElement>('.attempt-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    expect(onAttempt).not.toHaveBeenCalled();
   });
 
   it('shows an obvious next-question action after a full-score attempt is saved', () => {
@@ -521,11 +555,13 @@ describe('PracticeView self-mark reflection', () => {
     expect(container.textContent).not.toContain('Next');
     expect(container.textContent).toContain('Save this attempt before the next question unlocks.');
     clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
-    setInputValue(container.querySelector<HTMLTextAreaElement>('textarea')!, 'Checked every mark-scheme line.');
     clickButton(container, 'Save Attempt');
 
     expect(container.textContent).toContain('Next');
     expect(container.textContent).toContain('Try Again');
+    const nextButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button'))
+      .find((button) => button.textContent?.includes('Next'));
+    expect(nextButton?.innerHTML).toContain('lucide-arrow-right');
     clickButton(container, 'Next');
     expect(onContinuePractice).toHaveBeenCalledTimes(1);
   });
@@ -551,14 +587,65 @@ describe('PracticeView self-mark reflection', () => {
     expect(onOpenProfile).toHaveBeenCalled();
   });
 
-  it('opens Ask Teacher as a safe placeholder without sending messages', () => {
-    const { container } = renderPractice(question());
+  it('routes the post-attempt Dashboard action to the Exam Training dashboard callback', () => {
+    const onOpenDashboard = vi.fn();
+    const onReturnToMap = vi.fn();
+    const container = render(
+      <PracticeView
+        question={question()}
+        progress={progressWithProfile()}
+        avatarName="Aster"
+        avatar={emptyProgress().avatar}
+        regionProgress={[]}
+        avatarLocation={avatarLocation}
+        onAttempt={vi.fn()}
+        onIssue={vi.fn()}
+        onContinuePractice={vi.fn()}
+        onOpenDashboard={onOpenDashboard}
+        onReturnToMap={onReturnToMap}
+      />,
+    );
 
-    expect(container.textContent).not.toContain('Teacher questions are coming soon.');
+    clickButton(container, 'Reveal Mark Scheme');
+    markSchemeLoaded(container);
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="M marks"]')!, '2');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="B marks"]')!, '1');
+    setInputValue(container.querySelector<HTMLInputElement>('input[aria-label="A marks"]')!, '1');
+    clickInput(container.querySelector<HTMLInputElement>('.full-score-check-label input'));
+    clickButton(container, 'Save Attempt');
+    const postDashboardButton = Array.from(container.querySelectorAll<HTMLButtonElement>('.post-attempt-panel button'))
+      .find((button) => button.textContent?.includes('Dashboard'));
+    expect(postDashboardButton).toBeTruthy();
+    act(() => {
+      postDashboardButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onOpenDashboard).toHaveBeenCalledTimes(1);
+    expect(onReturnToMap).not.toHaveBeenCalled();
+  });
+
+  it('sends Ask Teacher messages and blocks empty submissions', async () => {
+    const onTeacherQuestionSubmit = vi.fn();
+    const { container } = renderPractice(question(), vi.fn(), { onTeacherQuestionSubmit });
+
+    expect(container.textContent).not.toContain('Ask about this question');
     clickButton(container, 'Ask Teacher');
 
-    expect(container.textContent).toContain('Teacher questions are coming soon.');
-    expect(container.textContent).toContain('No message is sent.');
-    expect(Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find((button) => button.textContent === 'Send to teacher')?.disabled).toBe(true);
+    expect(container.textContent).toContain('Ask about this question');
+    clickButton(container, 'Send question');
+    expect(container.textContent).toContain('Write a question before sending.');
+    expect(onTeacherQuestionSubmit).not.toHaveBeenCalled();
+
+    setInputValue(container.querySelector<HTMLTextAreaElement>('.ask-teacher-panel textarea')!, 'Please explain the M1 mark.');
+    clickButton(container, 'Send question');
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(onTeacherQuestionSubmit).toHaveBeenCalledWith({
+      message: 'Please explain the M1 mark.',
+      solutionRevealed: false,
+    });
+    expect(container.textContent).toContain('Question sent to your teacher.');
   });
 });
