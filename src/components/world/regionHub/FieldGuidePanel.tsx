@@ -270,11 +270,27 @@ function FieldGuideTopicLesson({
         <article className="field-guide-lesson-card field-guide-try-card">
           <span className="field-guide-card-label">Try one together</span>
           <p className="field-guide-example-prompt"><MathText text={example.tryPrompt} /></p>
-          <div className="field-guide-try-scaffold" aria-label="Guided work spaces">
-            {example.tryScaffold.map((slot) => (
-              <span key={`${topic.id}-try-${slot}`}>{slot}</span>
-            ))}
-          </div>
+          {example.tryWorkedLines?.length ? (
+            <ol className="field-guide-worked-lines field-guide-try-worked-lines" aria-label="Try one together worked route">
+              {example.tryWorkedLines.map((line, index) => (
+                <li key={`${topic.id}-try-worked-${index}`}>
+                  <MathText text={line} />
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="field-guide-try-scaffold" aria-label="Guided work spaces">
+              {example.tryScaffold.map((slot) => (
+                <span key={`${topic.id}-try-${slot}`}>{slot}</span>
+              ))}
+            </div>
+          )}
+          {example.tryResult ? (
+            <div className="field-guide-result-box field-guide-try-result-box">
+              <span>Answer</span>
+              <MathText text={example.tryResult} />
+            </div>
+          ) : null}
         </article>
 
         <article className="field-guide-lesson-card field-guide-takeaway-card">
@@ -286,10 +302,6 @@ function FieldGuideTopicLesson({
               </li>
             ))}
           </ul>
-          <div className="field-guide-result-box">
-            <span>Result</span>
-            <MathText text={example.result} />
-          </div>
         </article>
       </div>
 

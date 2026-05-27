@@ -1321,15 +1321,15 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(artwork).toBeTruthy();
     expect(artwork?.getAttribute('aria-label')).toBe('Algebra Vault region artwork');
     const artworkImage = artwork?.querySelector<HTMLImageElement>('.region-home-artwork-image');
-    expect(artworkImage).toBeFalsy();
-    expect(artwork?.querySelector('.region-home-artwork-svg')).toBeTruthy();
+    expect(artworkImage?.getAttribute('src')).toBe('/assets/region-art/optimized/algebra-region-hub-transparent.png');
+    expect(artwork?.querySelector('.region-home-artwork-svg')).toBeFalsy();
     expect(artwork?.textContent).not.toContain('placeholder');
 
     const currentStep = container.querySelector<HTMLElement>('.region-current-step-card');
     expect(currentStep).toBeTruthy();
     expect(currentStep?.textContent).toContain('Current step');
     expect(currentStep?.textContent).toContain('Field Guide');
-    expect(currentStep?.textContent).toContain('Read the next guide step before practice.');
+    expect(currentStep?.textContent).toContain('Start here: Field Guide. Learn about modulus graphs and equations, polynomial division, remainder and factor theorem, partial fractions, and binomial expansion.');
     expect(currentStep?.textContent).toContain('Ready');
     const primaryAction = currentStep?.querySelector<HTMLButtonElement>('[data-region-page="field-guide"]');
     expect(primaryAction).toBeTruthy();
@@ -1955,6 +1955,12 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Try one together');
     expect(container.textContent).toContain('Key takeaway');
     expect(container.textContent).toContain('Next Topic');
+    const tryCard = container.querySelector<HTMLElement>('.field-guide-try-card');
+    const takeawayCard = container.querySelector<HTMLElement>('.field-guide-takeaway-card');
+    expect(tryCard?.textContent).toContain('remainder 4');
+    expect(tryCard?.textContent).toContain('Answer');
+    expect(takeawayCard?.textContent).not.toContain('Answer');
+    expect(takeawayCard?.querySelector('.field-guide-result-box')).toBeFalsy();
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
     const backToTopics = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Back to Topics'));
@@ -2068,6 +2074,18 @@ describe('FieldGuidePanel teaching snippets', () => {
       .toContain('Support skill');
     expect(numericalTopics.find((topic) => topic.id === 'iteration_convergence')?.examples[0]?.takeaway.join('\n'))
       .toContain('Skill Practice compares rearrangements');
+  });
+
+  it('keeps every topic-flow Try one together prompt paired with worked process and answer', () => {
+    for (const [regionId, topics] of Object.entries(FIELD_GUIDE_TOPICS_BY_REGION)) {
+      for (const topic of topics) {
+        for (const [exampleIndex, example] of topic.examples.entries()) {
+          const label = `${regionId}/${topic.id}/${exampleIndex}`;
+          expect(example.tryWorkedLines?.length, label).toBeGreaterThanOrEqual(2);
+          expect(example.tryResult?.trim(), label).toBeTruthy();
+        }
+      }
+    }
   });
 
   it('opens a representative topic lesson for every registered P3 region', () => {

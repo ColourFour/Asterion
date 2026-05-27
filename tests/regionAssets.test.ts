@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { getRegionHubAsset, getRegionHubAssetDimensions, regionHubAssets } from '../src/lib/regionAssets';
 import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
 
-const sourceAssetFallbackRegionIds = new Set(['algebra-forge']);
+const sourceAssetFallbackRegionIds = new Set<string>();
 
 function publicPathExists(path: string): boolean {
   return existsSync(join(process.cwd(), 'public', path.replace(/^\/+/, '')));
@@ -33,7 +33,7 @@ describe('region hub assets', () => {
         expect(getRegionHubAssetDimensions(region.id)).toBeUndefined();
         continue;
       }
-      expect(assetPath).toMatch(/^\/assets\/region-art\/optimized\/.+-960\.png$/);
+      expect(assetPath).toMatch(/^\/assets\/region-art\/optimized\/.+(?:-960|-transparent)\.png$/);
       expect(publicPathExists(assetPath ?? '')).toBe(true);
       expect(getRegionHubAssetDimensions(region.id)).toBeTruthy();
     }

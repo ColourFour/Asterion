@@ -16,7 +16,7 @@ import {
   Trophy,
   UsersRound,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { AvatarGear, AvatarSettings, NormalizedQuestion, RegionDefinition, RegionProgress, StoredProgress } from '../../../types';
 import type { RegionLearningPageId } from '../../../lib/regionRoutes';
 import { REGION_LEARNING_PAGE_LABELS } from '../../../lib/regionRoutes';
@@ -213,6 +213,7 @@ function PracticeChoiceCards({
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
 }) {
   const recommendedMode: ExamTrainingPracticeMode = hasSavedAttempt ? 'weak' : 'core';
+  const [openInfoMode, setOpenInfoMode] = useState<ExamTrainingPracticeMode | undefined>();
   return (
     <section className="exam-training-practice-panel" aria-labelledby="exam-training-practice-title">
       <div className="exam-training-section-heading">
@@ -223,22 +224,54 @@ function PracticeChoiceCards({
         </div>
       </div>
       <div className="exam-training-practice-cards">
-        {practiceCards.map((card) => (
-          <button
-            type="button"
-            className={`exam-training-practice-card practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}${card.mode === recommendedMode && !disabledReason ? ' next-step-glow' : ''}`}
-            key={card.mode}
-            disabled={Boolean(disabledReason)}
-            onClick={() => onStartPractice(card.mode === 'weak' && !hasSavedAttempt ? 'core' : card.mode)}
-          >
-            <span className="exam-training-practice-icon" aria-hidden="true">{card.icon}</span>
-            <span>
-              <strong>{EXAM_TRAINING_PRACTICE_LABELS[card.mode]}</strong>
-              <small>{card.explanation}</small>
-              {card.mode === 'weak' && !hasSavedAttempt ? <em>One saved attempt unlocks better review.</em> : null}
-            </span>
-          </button>
-        ))}
+        {practiceCards.map((card) => {
+          const label = EXAM_TRAINING_PRACTICE_LABELS[card.mode];
+          const isInfoOpen = openInfoMode === card.mode;
+          const definitionId = `exam-training-practice-${card.mode}-definition`;
+          const tooltipId = `exam-training-practice-${card.mode}-tooltip`;
+          const weakFirstAttemptNote = card.mode === 'weak' && !hasSavedAttempt
+            ? 'One saved attempt unlocks better review.'
+            : undefined;
+          return (
+            <article
+              className={`exam-training-practice-choice practice-${card.mode}${card.mode === 'weak' && !hasSavedAttempt ? ' needs-first-attempt' : ''}${card.mode === recommendedMode && !disabledReason ? ' next-step-glow' : ''}${disabledReason ? ' is-disabled' : ''}`}
+              data-info-open={isInfoOpen ? 'true' : undefined}
+              key={card.mode}
+            >
+              <button
+                type="button"
+                className="exam-training-practice-card"
+                aria-describedby={definitionId}
+                disabled={Boolean(disabledReason)}
+                onClick={() => onStartPractice(card.mode)}
+              >
+                <span className="exam-training-practice-icon" aria-hidden="true">{card.icon}</span>
+                <span className="exam-training-practice-title">
+                  <strong>{label}</strong>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="exam-training-practice-info-button"
+                aria-label={`${isInfoOpen ? 'Hide' : 'Show'} ${label} definition`}
+                aria-describedby={definitionId}
+                aria-expanded={isInfoOpen}
+                aria-controls={tooltipId}
+                onClick={() => setOpenInfoMode((current) => (current === card.mode ? undefined : card.mode))}
+              >
+                <Info size={16} aria-hidden="true" />
+              </button>
+              <span id={definitionId} className="sr-only">
+                {card.explanation}
+                {weakFirstAttemptNote ? ` ${weakFirstAttemptNote}` : ''}
+              </span>
+              <div className="exam-training-practice-tooltip" id={tooltipId} role="tooltip">
+                <span>{card.explanation}</span>
+                {weakFirstAttemptNote ? <em>{weakFirstAttemptNote}</em> : null}
+              </div>
+            </article>
+          );
+        })}
       </div>
       {disabledReason ? (
         <div className="exam-training-safe-note" role="status">

@@ -15,6 +15,8 @@ export interface FieldGuideTopicExample {
   patternRows: { from: string; move: string; to: string }[];
   tryPrompt: string;
   tryScaffold: string[];
+  tryWorkedLines?: string[];
+  tryResult?: string;
   takeaway: string[];
   result: string;
 }
@@ -75,6 +77,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Use the two intersection points to solve $|x+2|<|3x|$.',
           tryScaffold: ['Find equality points', 'Split the number line', 'Test one interval', 'Read below/above on the graph'],
+          tryWorkedLines: [
+            'The equality points are $x=-\\frac12$ and $x=1$.',
+            'Test the intervals split by these values.',
+            'For $x=0$, $|x+2|<|3x|$ is false; for $x=-1$ and $x=2$, it is true.',
+          ],
+          tryResult: '$$ x<-\\frac12\\quad\\text{or}\\quad x>1 $$',
           takeaway: [
             'Modulus is distance from zero, so outputs are non-negative.',
             'For inequalities, state the interval where the required graph is below or above the other graph.',
@@ -111,6 +119,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Divide $2x^3-x^2+5x+7$ by $2x+1$, giving quotient and remainder.',
           tryScaffold: ['First quotient term', 'Multiply back', 'Subtract carefully', 'State quotient and remainder'],
+          tryWorkedLines: [
+            '$2x^3\\div2x=x^2$, then subtract $(2x^3+x^2)$ to get $-2x^2+5x+7$.',
+            '$-2x^2\\div2x=-x$, then subtract $(-2x^2-x)$ to get $6x+7$.',
+            '$6x\\div2x=3$, then subtract $(6x+3)$ to get remainder $4$.',
+          ],
+          tryResult: '$$ x^2-x+3\\quad\\text{remainder }4 $$',
           takeaway: [
             'Keep every power in order; write $0x^2$ if the $x^2$ term is missing.',
             'A non-monic divisor still starts with leading term divided by leading term.',
@@ -146,6 +160,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'If $x+1$ is a factor of $x^3+kx^2-x+5$, find $k$.',
           tryScaffold: ['Find substitution value', 'Set remainder to zero', 'Solve for k', 'State factor meaning'],
+          tryWorkedLines: [
+            '$x+1=0$ gives $x=-1$.',
+            'Use the factor theorem: $(-1)^3+k(-1)^2-(-1)+5=0$.',
+            'So $-1+k+1+5=0$, hence $k=-5$.',
+          ],
+          tryResult: '$$ k=-5 $$',
           takeaway: [
             'The sign comes from making the divisor equal zero.',
             'A zero remainder is the factor theorem.',
@@ -181,6 +201,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Write the correct form for $\\frac{3x^2+2}{x(x-1)^2}$ before finding constants.',
           tryScaffold: ['Classify factors', 'Write every repeated power', 'Clear denominators', 'Substitute or compare'],
+          tryWorkedLines: [
+            'The denominator has one factor $x$ and a repeated linear factor $(x-1)^2$.',
+            'Use one term for $x$, then one term for each power of $(x-1)$.',
+            'Do not skip the first power of the repeated factor.',
+          ],
+          tryResult: '$$ \\frac{A}{x}+\\frac{B}{x-1}+\\frac{C}{(x-1)^2} $$',
           takeaway: [
             'Let the denominator choose the form.',
             'Substitution is useful, but coefficient comparison is still needed when a constant is not isolated.',
@@ -216,6 +242,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Rewrite $\\sqrt{2-6x}$ into binomial form and expand up to $x^2$.',
           tryScaffold: ['Factor the constant', 'Identify n and u', 'Expand only needed terms', 'State validity'],
+          tryWorkedLines: [
+            '$\\sqrt{2-6x}=\\sqrt2(1-3x)^{1/2}$.',
+            'Use $n=\\frac12$ and $u=-3x$: $(1+u)^{1/2}=1+\\frac12u-\\frac18u^2+\\cdots$.',
+            'So $(1-3x)^{1/2}=1-\\frac32x-\\frac98x^2+\\cdots$.',
+          ],
+          tryResult: '$$ \\sqrt2\\left(1-\\frac32x-\\frac98x^2\\right),\\quad |x|<\\frac13 $$',
           takeaway: [
             'Rewrite awkward expressions as $a(1+kx)^n$ before expanding.',
             'Write terms in increasing powers of $x$.',
@@ -253,6 +285,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'If $(2,9)$ lies on $y=3^x$, state the matching point on $y=\\log_3x$.',
           tryScaffold: ['Name the inverse', 'Swap coordinates', 'State the log graph', 'Mention the reflection'],
+          tryWorkedLines: [
+            '$y=\\log_3x$ is the inverse of $y=3^x$.',
+            'Inverse points swap their coordinates.',
+            'So $(2,9)$ becomes $(9,2)$.',
+          ],
+          tryResult: '$$ (9,2) $$',
           takeaway: [
             'The base stays the same when moving between $a^x$ and $\\log_ax$.',
             'The logarithm graph has positive $x$-values only.',
@@ -288,6 +326,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Combine $\\ln(x+2)-3\\ln x$ into one logarithm and state the domain.',
           tryScaffold: ['Move the power', 'Use quotient law', 'State original-domain restrictions', 'Do not split sums'],
+          tryWorkedLines: [
+            '$3\\ln x=\\ln(x^3)$.',
+            'Then $\\ln(x+2)-\\ln(x^3)=\\ln\\left(\\frac{x+2}{x^3}\\right)$.',
+            'The original logs need $x+2>0$ and $x>0$, so $x>0$.',
+          ],
+          tryResult: '$$ \\ln\\left(\\frac{x+2}{x^3}\\right),\\quad x>0 $$',
           takeaway: [
             'Move coefficients into powers before combining.',
             'There is no law for splitting $\\log(a+b)$.',
@@ -323,6 +367,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Solve $2e^{x+1}=9$ exactly.',
           tryScaffold: ['Divide first', 'Take ln', 'Solve for x', 'Keep the answer exact'],
+          tryWorkedLines: [
+            'Divide by $2$: $e^{x+1}=\\frac92$.',
+            'Take natural logs: $x+1=\\ln\\left(\\frac92\\right)$.',
+            'Subtract $1$.',
+          ],
+          tryResult: '$$ x=\\ln\\left(\\frac92\\right)-1 $$',
           takeaway: [
             '$\\ln$ is the inverse function for $e^x$.',
             'Isolate the exponential expression before applying $\\ln$.',
@@ -359,6 +409,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Solve $\\ln(2x)-\\ln3=\\ln4$, checking the domain.',
           tryScaffold: ['State domain', 'Combine logs', 'Compare arguments', 'Reject if needed'],
+          tryWorkedLines: [
+            'The domain is $2x>0$, so $x>0$.',
+            'Combine: $\\ln\\left(\\frac{2x}{3}\\right)=\\ln4$.',
+            'Compare arguments: $\\frac{2x}{3}=4$, so $x=6$, which satisfies the domain.',
+          ],
+          tryResult: '$$ x=6 $$',
           takeaway: [
             'Keep all original log inputs positive.',
             'Solving after combining logs may create invalid candidate roots.',
@@ -393,6 +449,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Solve $3^x>27$, then solve $\\left(\\frac13\\right)^x>\\frac1{27}$.',
           tryScaffold: ['Rewrite with matching bases', 'Decide increasing or decreasing', 'Compare exponents', 'Reverse only for decreasing base'],
+          tryWorkedLines: [
+            '$27=3^3$, so $3^x>3^3$ gives $x>3$.',
+            '$\\frac1{27}=\\left(\\frac13\\right)^3$.',
+            'The base $\\frac13$ is decreasing, so $\\left(\\frac13\\right)^x>\\left(\\frac13\\right)^3$ gives $x<3$.',
+          ],
+          tryResult: '$$ x>3,\\quad x<3 $$',
           takeaway: [
             'Matching bases lets you compare exponents.',
             'A base between $0$ and $1$ reverses exponential inequalities.',
@@ -428,6 +490,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Linearise $y=5x^2$ and state the gradient and intercept for a graph of $\\ln y$ against $\\ln x$.',
           tryScaffold: ['Take logs', 'Split product', 'Move power', 'Name gradient and intercept'],
+          tryWorkedLines: [
+            'Take logs: $\\ln y=\\ln(5x^2)$.',
+            'Split and move the power: $\\ln y=\\ln5+2\\ln x$.',
+            'For $\\ln y$ against $\\ln x$, the gradient is $2$ and the intercept is $\\ln5$.',
+          ],
+          tryResult: '$$ \\ln y=\\ln5+2\\ln x,\\quad m=2,\\quad c=\\ln5 $$',
           takeaway: [
             'Choose the axes from the log form.',
             'Gradient is the coefficient of the new horizontal variable.',
@@ -466,6 +534,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Solve $\\operatorname{cosec}x=2$ for $0\\le x<2\\pi$, then name where $y=\\operatorname{cosec}x$ has asymptotes in that interval.',
           tryScaffold: ['Rewrite as $1/\\sin x$', 'Solve the sine equation', 'List every interval solution', 'State where $\\sin x=0$'],
+          tryWorkedLines: [
+            '$\\operatorname{cosec}x=2$ means $\\frac1{\\sin x}=2$, so $\\sin x=\\frac12$.',
+            'In $0\\le x<2\\pi$, this gives $x=\\frac{\\pi}{6}$ or $x=\\frac{5\\pi}{6}$.',
+            'The cosecant graph has asymptotes where $\\sin x=0$: $x=0,\\pi$ in the interval, with $2\\pi$ excluded.',
+          ],
+          tryResult: '$$ x=\\frac{\\pi}{6},\\ \\frac{5\\pi}{6};\\quad \\text{asymptotes }x=0,\\pi $$',
           takeaway: [
             'Secant, cosecant, and cotangent are reciprocal rewrites, not new solving rules.',
             'Graph asymptotes happen where the denominator trig function is zero.',
@@ -502,6 +576,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Use $1+\\cot^2\\theta=\\operatorname{cosec}^2\\theta$ to solve $\\operatorname{cosec}^2\\theta=2$ for $0\\le\\theta<\\pi$.',
           tryScaffold: ['Choose the expanded identity', 'Solve the squared trig equation', 'Use both signs if needed', 'Filter by interval'],
+          tryWorkedLines: [
+            '$1+\\cot^2\\theta=2$, so $\\cot^2\\theta=1$.',
+            'Hence $\\cot\\theta=\\pm1$, so $\\tan\\theta=\\pm1$.',
+            'In $0\\le\\theta<\\pi$, the solutions are $\\theta=\\frac{\\pi}{4}$ and $\\theta=\\frac{3\\pi}{4}$.',
+          ],
+          tryResult: '$$ \\theta=\\frac{\\pi}{4},\\ \\frac{3\\pi}{4} $$',
           takeaway: [
             'The expanded identities come from dividing the base Pythagorean identity.',
             'Identity proofs should move from a known identity toward the required form.',
@@ -538,6 +618,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\cos75^\\circ$, then solve $\\cos(x-\\frac{\\pi}{3})=\\frac12$ for $0\\le x<2\\pi$.',
           tryScaffold: ['Choose the addition formula', 'Use exact special-angle values', 'Shift the interval', 'Shift solutions back and check endpoints'],
+          tryWorkedLines: [
+            '$\\cos75^\\circ=\\cos(45^\\circ+30^\\circ)=\\frac{\\sqrt6-\\sqrt2}{4}$.',
+            'Let $u=x-\\frac{\\pi}{3}$, so $-\\frac{\\pi}{3}\\le u<\\frac{5\\pi}{3}$.',
+            '$\\cos u=\\frac12$ gives $u=-\\frac{\\pi}{3},\\frac{\\pi}{3}$ in that interval, so $x=0,\\frac{2\\pi}{3}$.',
+          ],
+          tryResult: '$$ \\cos75^\\circ=\\frac{\\sqrt6-\\sqrt2}{4},\\quad x=0,\\frac{2\\pi}{3} $$',
           takeaway: [
             'Use the plus/minus signs carefully: cosine changes the middle sign.',
             'A shifted equation needs the interval shifted before listing all solutions.',
@@ -573,6 +659,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Rewrite $1+\\cos2x$ using $\\cos x$, then solve $\\sin x(2\\cos x-1)=0$ for $0\\le x<2\\pi$.',
           tryScaffold: ['Choose the formula', 'Simplify brackets', 'Use each zero-product factor', 'List every interval solution'],
+          tryWorkedLines: [
+            'Use $\\cos2x=2\\cos^2x-1$, so $1+\\cos2x=2\\cos^2x$.',
+            '$\\sin x(2\\cos x-1)=0$ gives $\\sin x=0$ or $\\cos x=\\frac12$.',
+            'In $0\\le x<2\\pi$, this gives $x=0,\\pi,\\frac{\\pi}{3},\\frac{5\\pi}{3}$.',
+          ],
+          tryResult: '$$ 1+\\cos2x=2\\cos^2x;\\quad x=0,\\frac{\\pi}{3},\\pi,\\frac{5\\pi}{3} $$',
           takeaway: [
             'There are several double-angle forms.',
             'Choose the one closest to the target function or equation shape.',
@@ -608,6 +700,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Write $5\\sin x+12\\cos x$ in R-form.',
           tryScaffold: ['Expand form', 'Match coefficients', 'Find R', 'Find alpha'],
+          tryWorkedLines: [
+            'Use $R\\sin(x+\\alpha)=R\\sin x\\cos\\alpha+R\\cos x\\sin\\alpha$.',
+            'Match $R\\cos\\alpha=5$ and $R\\sin\\alpha=12$.',
+            'So $R=13$ and $\\tan\\alpha=\\frac{12}{5}$ with $\\alpha$ acute.',
+          ],
+          tryResult: '$$ 13\\sin(x+\\alpha),\\quad \\tan\\alpha=\\frac{12}{5} $$',
           takeaway: [
             'Expand the target form before matching.',
             'R is the hypotenuse from the two coefficients.',
@@ -645,6 +743,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Simplify $(4-i)(4+i)$.',
           tryScaffold: ['Identify conjugate', 'Multiply', 'Use i squared', 'Simplify'],
+          tryWorkedLines: [
+            'These are conjugates, so the imaginary middle terms cancel.',
+            '$(4-i)(4+i)=16+4i-4i-i^2$.',
+            'Since $i^2=-1$, this is $16+1=17$.',
+          ],
+          tryResult: '$$ 17 $$',
           takeaway: [
             'Conjugates have opposite imaginary signs.',
             'Their product is real.',
@@ -679,6 +783,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $|1-i|$ and its argument.',
           tryScaffold: ['Plot quadrant', 'Find modulus', 'Find angle', 'State sign'],
+          tryWorkedLines: [
+            '$1-i$ is in quadrant IV.',
+            '$|1-i|=\\sqrt{1^2+(-1)^2}=\\sqrt2$.',
+            'The principal argument is $-\\frac{\\pi}{4}$.',
+          ],
+          tryResult: '$$ |1-i|=\\sqrt2,\\quad \\arg(1-i)=-\\frac{\\pi}{4} $$',
           takeaway: [
             'Draw the quadrant first.',
             'Use Pythagoras for modulus.',
@@ -713,6 +823,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Describe $|z+1-i|=2$.',
           tryScaffold: ['Find centre', 'Find radius', 'Sketch', 'State locus'],
+          tryWorkedLines: [
+            '$z+1-i=z-(-1+i)$.',
+            'So the fixed point is $-1+i$, which has coordinates $(-1,1)$.',
+            'The distance from this point is always $2$.',
+          ],
+          tryResult: 'Circle centre $(-1,1)$, radius $2$.',
           takeaway: [
             'Convert the expression into a point first.',
             'A fixed distance from a point is a circle.',
@@ -747,6 +863,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find the arguments of the square roots of $9$.',
           tryScaffold: ['Modulus root', 'First argument', 'Spacing', 'List roots'],
+          tryWorkedLines: [
+            'Write $9=9e^{i2k\\pi}$.',
+            'Square roots have arguments $\\frac{2k\\pi}{2}=k\\pi$.',
+            'The two arguments can be listed as $0$ and $\\pi$.',
+          ],
+          tryResult: '$$ \\theta=0,\\ \\pi $$',
           takeaway: [
             'There are n roots for an nth-root question.',
             'Arguments are evenly spaced.',
@@ -785,6 +907,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Differentiate $3e^{2x+1}+\\ln(2x-3)$.',
           tryScaffold: ['Differentiate exponential', 'Differentiate log input', 'Use f\'/f', 'State in terms of x'],
+          tryWorkedLines: [
+            '$3e^{2x+1}$ differentiates to $6e^{2x+1}$.',
+            '$\\ln(2x-3)$ differentiates to $\\frac{2}{2x-3}$.',
+            'Add the two derivative terms.',
+          ],
+          tryResult: '$$ 6e^{2x+1}+\\frac{2}{2x-3} $$',
           takeaway: [
             'Constants outside exponentials stay as multipliers.',
             'Simplify logarithms first only when it makes the derivative cleaner.',
@@ -821,6 +949,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Differentiate $x(2x+1)^3$.',
           tryScaffold: ['Choose u', 'Choose v', 'Find derivatives', 'Apply product rule'],
+          tryWorkedLines: [
+            'Let $u=x$ and $v=(2x+1)^3$.',
+            '$u\\prime=1$ and $v\\prime=6(2x+1)^2$.',
+            '$\\frac{dy}{dx}=x\\cdot6(2x+1)^2+(2x+1)^3$.',
+          ],
+          tryResult: '$$ (2x+1)^2(8x+1) $$',
           takeaway: [
             'Products need two derivative terms.',
             'A bracket power inside the product still needs chain rule.',
@@ -857,6 +991,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Set up the quotient rule for $y=\\frac{x+2}{x^2+1}$.',
           tryScaffold: ['Choose u and v', 'Find derivatives', 'Write numerator', 'Square denominator'],
+          tryWorkedLines: [
+            'Choose $u=x+2$ and $v=x^2+1$.',
+            'Then $u\\prime=1$ and $v\\prime=2x$.',
+            'Use $\\frac{vu\\prime-uv\\prime}{v^2}$.',
+          ],
+          tryResult: '$$ \\frac{(x^2+1)-2x(x+2)}{(x^2+1)^2} $$',
           takeaway: [
             'The denominator is squared in the quotient rule.',
             'Most sign errors come from reversing the numerator order.',
@@ -893,6 +1033,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Differentiate $7\\tan(4x+\\frac{\\pi}{2})$.',
           tryScaffold: ['Base tan derivative', 'Inside derivative', 'Keep multiplier', 'Simplify'],
+          tryWorkedLines: [
+            '$\\frac{d}{dx}\\tan u=\\sec^2u\\cdot u\\prime$.',
+            'Here $u=4x+\\frac{\\pi}{2}$, so $u\\prime=4$.',
+            'Keep the multiplier $7$.',
+          ],
+          tryResult: '$$ 28\\sec^2\\left(4x+\\frac{\\pi}{2}\\right) $$',
           takeaway: [
             'The negative sign belongs to the derivative of cos.',
             '$\\sec^2$ appears when differentiating tan.',
@@ -928,6 +1074,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'For $x^2+y^2=25$, find $\\frac{dy}{dx}$.',
           tryScaffold: ['Differentiate x terms', 'Differentiate y terms', 'Collect dy/dx', 'Divide'],
+          tryWorkedLines: [
+            'Differentiate with respect to $x$: $2x+2y\\frac{dy}{dx}=0$.',
+            'Move the $x$ term: $2y\\frac{dy}{dx}=-2x$.',
+            'Divide by $2y$.',
+          ],
+          tryResult: '$$ \\frac{dy}{dx}=-\\frac{x}{y} $$',
           takeaway: [
             'Every y derivative must carry dy/dx.',
             'Products like xy still need the product rule.',
@@ -963,6 +1115,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'If $x=2t$ and $y=t^2+1$, find $\\frac{dy}{dx}$.',
           tryScaffold: ['Find dx/dt', 'Find dy/dt', 'Divide', 'Simplify'],
+          tryWorkedLines: [
+            '$\\frac{dx}{dt}=2$ and $\\frac{dy}{dt}=2t$.',
+            '$\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{2t}{2}$.',
+            'So $\\frac{dy}{dx}=t$.',
+          ],
+          tryResult: '$$ \\frac{dy}{dx}=t $$',
           takeaway: [
             'dy/dx is not dy/dt alone.',
             'Use one parameter consistently; this is not a vector line equation.',
@@ -1000,6 +1158,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Evaluate $\\int_0^1 e^{2x}\\,dx$ exactly.',
           tryScaffold: ['Find antiderivative', 'Substitute top limit', 'Substitute bottom limit', 'Subtract'],
+          tryWorkedLines: [
+            'An antiderivative is $\\frac12e^{2x}$.',
+            'Substitute the limits: $\\left[\\frac12e^{2x}\\right]_0^1$.',
+            'Subtract lower from upper: $\\frac12e^2-\\frac12$.',
+          ],
+          tryResult: '$$ \\frac{e^2-1}{2} $$',
           takeaway: [
             'Indefinite integrals need $+c$; definite integrals do not.',
             'Use absolute values for logarithmic antiderivatives when the sign of the denominator is not fixed.',
@@ -1035,6 +1199,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\int \\cos(2x)\\,dx$.',
           tryScaffold: ['Name the inner coefficient', 'Integrate cos', 'Divide by the coefficient', 'Add c'],
+          tryWorkedLines: [
+            'The inner coefficient is $2$.',
+            'The integral of $\\cos u$ is $\\sin u$.',
+            'Divide by $2$ and add the constant.',
+          ],
+          tryResult: '$$ \\frac12\\sin(2x)+c $$',
           takeaway: [
             'Integrating $\\sin$ gives negative $\\cos$.',
             'Always adjust for the coefficient of $x$ inside the trig function.',
@@ -1070,6 +1240,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\int \\tan^2x\\,dx$ using $\\tan^2x=\\sec^2x-1$.',
           tryScaffold: ['Rewrite with sec^2', 'Integrate sec^2', 'Integrate 1', 'Add c'],
+          tryWorkedLines: [
+            'Rewrite: $\\int\\tan^2x\\,dx=\\int(\\sec^2x-1)\\,dx$.',
+            '$\\int\\sec^2x\\,dx=\\tan x$ and $\\int1\\,dx=x$.',
+            'Add the constant of integration.',
+          ],
+          tryResult: '$$ \\tan x-x+c $$',
           takeaway: [
             'Use the identity from a "hence" part instead of starting over.',
             'For definite integrals, evaluate both limits after the rewrite.',
@@ -1106,6 +1282,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Given $\\frac{1}{x(x+1)}=\\frac1x-\\frac1{x+1}$, integrate it.',
           tryScaffold: ['Use decomposition', 'Integrate each linear term', 'Keep absolute values', 'Add c'],
+          tryWorkedLines: [
+            'Use the given decomposition before integrating.',
+            '$\\int\\frac1x\\,dx=\\ln|x|$.',
+            '$\\int\\frac1{x+1}\\,dx=\\ln|x+1|$.',
+          ],
+          tryResult: '$$ \\ln|x|-\\ln|x+1|+c $$',
           takeaway: [
             'Do not integrate the original rational expression before decomposing.',
             'For definite integrals, substitute limits after all terms are integrated.',
@@ -1141,6 +1323,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\int \\frac1{1+9x^2}\\,dx$.',
           tryScaffold: ['Factor into a square', 'Choose the scale', 'Write tan^{-1}', 'Add c'],
+          tryWorkedLines: [
+            '$1+9x^2=1+(3x)^2$.',
+            'Use the scaled form $\\int\\frac1{1+(ax)^2}\\,dx=\\frac1a\\tan^{-1}(ax)+c$.',
+            'Here $a=3$.',
+          ],
+          tryResult: '$$ \\frac13\\tan^{-1}(3x)+c $$',
           takeaway: [
             'Keep exact answers in $\\tan^{-1}$ form unless decimals are requested.',
             'Complete the square when the denominator is a shifted quadratic.',
@@ -1177,6 +1365,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Use $u=1+e^x$ to find $\\int \\frac{e^x}{1+e^x}\\,dx$.',
           tryScaffold: ['Find du', 'Rewrite the fraction', 'Integrate in u', 'Return to x'],
+          tryWorkedLines: [
+            'If $u=1+e^x$, then $du=e^x\\,dx$.',
+            'The integral becomes $\\int\\frac1u\\,du$.',
+            'Integrate and substitute back.',
+          ],
+          tryResult: '$$ \\ln|1+e^x|+c $$',
           takeaway: [
             'Substitution only works after every part of the integrand is rewritten.',
             'Changed limits prevent old-variable substitution errors in definite integrals.',
@@ -1213,6 +1407,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Set up parts for $\\int x\\sin x\\,dx$.',
           tryScaffold: ['Choose u', 'Choose dv', 'Find du', 'Find v'],
+          tryWorkedLines: [
+            'Choose $u=x$ and $dv=\\sin x\\,dx$.',
+            'Then $du=dx$ and $v=-\\cos x$.',
+            'Apply $\\int u\\,dv=uv-\\int v\\,du$.',
+          ],
+          tryResult: '$$ -x\\cos x+\\int\\cos x\\,dx $$',
           takeaway: [
             'Write the parts template before doing algebra.',
             'For definite integrals, evaluate the $uv$ term and the remaining integral at the limits.',
@@ -1250,6 +1450,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'C is $(-1,4)$ and D is $(5,2)$. Find $\\overrightarrow{CD}$ and $\\overrightarrow{DC}$.',
           tryScaffold: ['Subtract D - C', 'Write column vector', 'Reverse direction', 'Check signs'],
+          tryWorkedLines: [
+            '$\\overrightarrow{CD}=D-C=\\begin{pmatrix}5-(-1)\\\\2-4\\end{pmatrix}$.',
+            'So $\\overrightarrow{CD}=\\begin{pmatrix}6\\\\-2\\end{pmatrix}$.',
+            'The reverse vector is the negative of this.',
+          ],
+          tryResult: '$$ \\overrightarrow{CD}=\\begin{pmatrix}6\\\\-2\\end{pmatrix},\\quad \\overrightarrow{DC}=\\begin{pmatrix}-6\\\\2\\end{pmatrix} $$',
           takeaway: [
             'Scalars have magnitude only; vectors also have direction.',
             'Negative components mean movement in the negative coordinate direction.',
@@ -1285,6 +1491,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\left|\\begin{pmatrix}6\\\\2\\\\3\\end{pmatrix}\\right|$ and decide whether $\\begin{pmatrix}6\\\\2\\\\3\\end{pmatrix}$ is parallel to $\\begin{pmatrix}3\\\\1\\\\1.5\\end{pmatrix}$.',
           tryScaffold: ['Square-add-root', 'Compare ratios', 'State scalar multiple', 'Check all components'],
+          tryWorkedLines: [
+            'The magnitude is $\\sqrt{6^2+2^2+3^2}=\\sqrt{49}=7$.',
+            'Compare components: $(6,2,3)=2(3,1,1.5)$.',
+            'The same multiplier works in every component.',
+          ],
+          tryResult: '$$ 7;\\quad \\text{parallel} $$',
           takeaway: [
             'Equal vectors have equal corresponding components.',
             'A parallel-vector claim needs the same multiplier in every component.',
@@ -1320,6 +1532,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'If $\\mathbf p=\\begin{pmatrix}1\\\\3\\end{pmatrix}$ and $\\mathbf q=\\begin{pmatrix}7\\\\9\\end{pmatrix}$, find $\\overrightarrow{PQ}$ and the midpoint.',
           tryScaffold: ['Subtract positions', 'Average positions', 'State path', 'Check signs'],
+          tryWorkedLines: [
+            '$\\overrightarrow{PQ}=\\mathbf q-\\mathbf p=\\begin{pmatrix}7-1\\\\9-3\\end{pmatrix}$.',
+            'The midpoint is $\\frac12(\\mathbf p+\\mathbf q)$.',
+            'Average the coordinates: $\\left(\\frac{1+7}{2},\\frac{3+9}{2}\\right)$.',
+          ],
+          tryResult: '$$ \\overrightarrow{PQ}=\\begin{pmatrix}6\\\\6\\end{pmatrix},\\quad M=\\begin{pmatrix}4\\\\6\\end{pmatrix} $$',
           takeaway: [
             'Parallelogram questions use equal and parallel opposite sides.',
             'To prove collinearity, compare two displacement vectors.',
@@ -1355,6 +1573,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Write a vector equation for the line through $(0,1,3)$ and $(2,5,1)$.',
           tryScaffold: ['Choose point', 'Subtract for direction', 'Write equation', 'Check parameter'],
+          tryWorkedLines: [
+            'Use $(0,1,3)$ as a point on the line.',
+            'Direction vector: $\\begin{pmatrix}2-0\\\\5-1\\\\1-3\\end{pmatrix}=\\begin{pmatrix}2\\\\4\\\\-2\\end{pmatrix}$.',
+            'Write point plus parameter times direction.',
+          ],
+          tryResult: '$$ \\mathbf r=\\begin{pmatrix}0\\\\1\\\\3\\end{pmatrix}+\\lambda\\begin{pmatrix}2\\\\4\\\\-2\\end{pmatrix} $$',
           takeaway: [
             'Do not use a position vector as the direction unless it is actually a displacement.',
             'A point lies on the line only if one parameter value works in every component.',
@@ -1390,6 +1614,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Classify two 3D lines after solving gives $\\lambda=2$, $\\mu=1$, but the z-component does not match.',
           tryScaffold: ['Compare directions', 'Solve two components', 'Check third', 'Classify'],
+          tryWorkedLines: [
+            'If the directions are not scalar multiples, the lines are not parallel.',
+            'The first two component equations may give candidate parameter values.',
+            'If the third component fails with those same values, the lines do not meet.',
+          ],
+          tryResult: 'The lines are skew.',
           takeaway: [
             'Use different parameter names for different lines.',
             'Never state an intersection after checking only two components in 3D.',
@@ -1425,6 +1655,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\begin{pmatrix}2\\\\-1\\\\2\\end{pmatrix}\\cdot\\begin{pmatrix}1\\\\2\\\\0\\end{pmatrix}$ and interpret the result.',
           tryScaffold: ['Multiply matching', 'Add terms', 'State scalar', 'Check perpendicular'],
+          tryWorkedLines: [
+            'Multiply matching components: $2(1)+(-1)(2)+2(0)$.',
+            'Add: $2-2+0=0$.',
+            'For non-zero vectors, scalar product $0$ means perpendicular.',
+          ],
+          tryResult: '$$ 0;\\quad \\text{the vectors are perpendicular} $$',
           takeaway: [
             'The result of a scalar product is not another vector.',
             'For non-zero vectors, scalar product $0$ means perpendicular.',
@@ -1460,6 +1696,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Find $\\cos\\theta$ for directions $\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}$ and $\\begin{pmatrix}0\\\\1\\\\1\\end{pmatrix}$.',
           tryScaffold: ['Dot product', 'Two magnitudes', 'Cosine fraction', 'Angle convention'],
+          tryWorkedLines: [
+            'The dot product is $1(0)+1(1)+0(1)=1$.',
+            'Each magnitude is $\\sqrt2$.',
+            '$\\cos\\theta=\\frac{1}{\\sqrt2\\sqrt2}$.',
+          ],
+          tryResult: '$$ \\cos\\theta=\\frac12 $$',
           takeaway: [
             'Use the line directions even if the question gives full line equations.',
             'A zero scalar product gives a perpendicular angle immediately.',
@@ -1497,6 +1739,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'For P$(1,0,2)$ and $\\mathbf r=\\begin{pmatrix}0\\\\1\\\\0\\end{pmatrix}+\\lambda\\begin{pmatrix}1\\\\0\\\\1\\end{pmatrix}$, write Q and the perpendicular dot-product equation.',
           tryScaffold: ['General Q', 'Form PQ', 'Dot with direction', 'Then magnitude'],
+          tryWorkedLines: [
+            'A general point on the line is $Q=\\begin{pmatrix}\\lambda\\\\1\\\\\\lambda\\end{pmatrix}$.',
+            '$\\overrightarrow{PQ}=Q-P=\\begin{pmatrix}\\lambda-1\\\\1\\\\\\lambda-2\\end{pmatrix}$.',
+            'Perpendicularity gives $\\overrightarrow{PQ}\\cdot\\begin{pmatrix}1\\\\0\\\\1\\end{pmatrix}=0$.',
+          ],
+          tryResult: '$$ (\\lambda-1)+(\\lambda-2)=0 $$',
           takeaway: [
             'This is a scalar-product perpendicularity method, not a separate distance formula.',
             'Solve for the parameter before finding the distance.',
@@ -1523,8 +1771,8 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           workedLines: [
             '$f(1)=1-4+1=-2$ and $f(2)=8-8+1=1$, so there is a root between $1$ and $2$.',
             'Test values near the first decimal place: $f(1.8)=5.832-7.2+1=-0.368$.',
-            '$f(1.9)=6.859-7.6+1=0.259$.',
-            'The sign change is between $1.8$ and $1.9$, so the root is $1.9$ to $1$ decimal place.',
+            '$f(1.85)=6.331625-7.4+1=-0.068375$ and $f(1.9)=6.859-7.6+1=0.259$.',
+            'The root is between $1.85$ and $1.9$, so it rounds to $1.9$ to $1$ decimal place.',
           ],
           patternTitle: 'Bracket test',
           patternRows: [
@@ -1534,12 +1782,18 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'For $f(x)=x^3-x-2$, test $1$, $2$, then $1.5$ to narrow a root interval.',
           tryScaffold: ['Rewrite if needed', 'Evaluate endpoints', 'Test intermediate value', 'State the new interval'],
+          tryWorkedLines: [
+            '$f(1)=1-1-2=-2$ and $f(2)=8-2-2=4$, so a root lies between $1$ and $2$.',
+            '$f(1.5)=3.375-1.5-2=-0.125$.',
+            'The sign changes between $1.5$ and $2$.',
+          ],
+          tryResult: 'A root lies in $(1.5,2)$.',
           takeaway: [
             'Use values at both ends before claiming a root interval.',
             'For decimal-place accuracy, test values on either side of the rounded value.',
             'Skill Practice starts with sign-change checks, equation rewrites, value tables, and rounding warnings.',
           ],
-          result: 'A root lies in $(1.8,1.9)$, so $x=1.9$ to $1$ d.p.',
+          result: 'A root lies in $(1.85,1.9)$, so $x=1.9$ to $1$ d.p.',
         },
       ],
     },
@@ -1569,6 +1823,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'For $x^3+x-4=0$, describe two graphs whose intersections solve the equation.',
           tryScaffold: ['Rearrange', 'Name each graph', 'Explain intersection', 'Connect back to the equation'],
+          tryWorkedLines: [
+            'Rearrange as $x^3=4-x$.',
+            'Sketch or compare $y=x^3$ and $y=4-x$.',
+            'The $x$-coordinate of any intersection solves the original equation.',
+          ],
+          tryResult: 'Use the intersections of $y=x^3$ and $y=4-x$.',
           takeaway: [
             'The graph argument must name the two graphs being compared.',
             'An intersection is useful only if you connect it back to the original equation.',
@@ -1604,6 +1864,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Use $x_{n+1}=\\frac{5}{x_n-1}$ with $x_0=3$ to find $x_1$ and $x_2$.',
           tryScaffold: ['Check the rearrangement', 'Substitute starting value', 'Use previous value', 'Round final values'],
+          tryWorkedLines: [
+            '$x_1=\\frac{5}{3-1}=\\frac52=2.5$.',
+            '$x_2=\\frac{5}{2.5-1}=\\frac{5}{1.5}$.',
+            'So $x_2=\\frac{10}{3}\\approx3.333$.',
+          ],
+          tryResult: '$$ x_1=2.5,\\quad x_2=3.333\\ldots $$',
           takeaway: [
             'State whether the starting value is $x_0$ or $x_1$ and follow the question wording.',
             'Use the previous iterate each time; do not keep substituting the starting value.',
@@ -1639,6 +1905,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'A sequence is $1.2,0.7,0.9,0.78,0.83$. Does it appear to settle or move away?',
           tryScaffold: ['List values', 'Look for settling', 'Check formula domain', 'State the evidence'],
+          tryWorkedLines: [
+            'The values move around but the jumps get smaller: $1.2\\to0.7\\to0.9\\to0.78\\to0.83$.',
+            'They are not moving steadily farther away.',
+            'Without the formula, this is only visual evidence from the sequence.',
+          ],
+          tryResult: 'It appears to be settling, but more terms or a convergence check would be needed.',
           takeaway: [
             'Do not assume every rearrangement gives a useful iteration.',
             'Judge convergence from the generated sequence or approved reasoning.',
@@ -1676,6 +1948,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'A chemical amount $x$ forms at a rate proportional to the amount still unformed from a maximum of $40$. Write a model.',
           tryScaffold: ['Changing quantity', 'Rate derivative', 'Proportional quantity', 'Equation only'],
+          tryWorkedLines: [
+            'The changing quantity is $x$ and the independent variable can be time $t$.',
+            'The amount still unformed is $40-x$.',
+            'Use a positive proportionality constant $k$.',
+          ],
+          tryResult: '$$ \\frac{dx}{dt}=k(40-x),\\quad k>0 $$',
           takeaway: [
             'Rate of change usually means a derivative such as $dy/dx$, $dh/dt$, or $dT/dt$.',
             'Proportional to means multiply by a constant such as $k$.',
@@ -1711,6 +1989,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'Solve $\\frac{dy}{dx}=3y$ and give the general solution.',
           tryScaffold: ['Separate', 'Integrate both sides', 'Add constant', 'Absorb constant if exponentiating'],
+          tryWorkedLines: [
+            'Separate: $\\frac1y\\,dy=3\\,dx$.',
+            'Integrate: $\\ln|y|=3x+c$.',
+            'Exponentiate and absorb the constant.',
+          ],
+          tryResult: '$$ y=Ae^{3x} $$',
           takeaway: [
             'Separate before integrating.',
             'A solution may remain implicit unless the question asks for $y$ explicitly.',
@@ -1746,6 +2030,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'The general solution is $y=A(x^2+3)^2$. If $y=2$ when $x=0$, find $A$ and write the particular solution.',
           tryScaffold: ['Start from the solution', 'Substitute both coordinates', 'Solve for the constant', 'Rewrite without unknown C or A'],
+          tryWorkedLines: [
+            'Substitute $x=0$ and $y=2$: $2=A(0^2+3)^2$.',
+            'So $2=9A$, giving $A=\\frac29$.',
+            'Put this value back into the solution.',
+          ],
+          tryResult: '$$ A=\\frac29,\\quad y=\\frac29(x^2+3)^2 $$',
           takeaway: [
             'Use the initial condition after integrating.',
             'Substitute both coordinates carefully.',
@@ -1781,6 +2071,13 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           tryPrompt: 'A reaction forms amount $x$ toward a maximum of $50$ at rate $2(50-x)$. Given $x=0$ when $t=0$, solve for $x$.',
           tryScaffold: ['Form dx/dt', 'Separate', 'Integrate', 'Use initial condition'],
+          tryWorkedLines: [
+            '$\\frac{dx}{dt}=2(50-x)$.',
+            'Separate: $\\frac1{50-x}\\,dx=2\\,dt$.',
+            'Integrate: $-\\ln|50-x|=2t+c$, so $50-x=Ae^{-2t}$.',
+            'Use $x(0)=0$ to get $A=50$.',
+          ],
+          tryResult: '$$ x=50-50e^{-2t} $$',
           takeaway: [
             'Identify the dependent and independent variables before writing symbols.',
             'Use proportionality constants and signs to match the context.',

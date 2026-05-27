@@ -80,17 +80,21 @@ function guardianNextStep(summary: RegionLearningSummary): string | undefined {
 
 function hubActionPrimaryStudentCopy(input: {
   fieldGuideCompleted: boolean;
+  fieldGuideTopic: string;
   page: HubActionPageId;
   regionName: string;
   summary: RegionLearningSummary;
 }): { eyebrow: string; title: string; description: string; button: string } {
   if (input.page === 'field-guide') {
+    const guideTopic = input.fieldGuideTopic
+      .replace(new RegExp(`^${input.regionName}\\s+covers\\s+`, 'i'), '')
+      .replace(/\.$/, '');
     return {
       eyebrow: 'Current step · Do this next',
-      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : 'Start here: review one Field Guide step.',
+      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : `Start here: Field Guide. Learn about ${guideTopic || input.regionName}.`,
       description: input.fieldGuideCompleted
         ? 'Use the guide as a quick reset before practice.'
-        : 'Read the next guide step before practice. This is the lowest-pressure first step before the exam question appears.',
+        : 'Read the next guide step before practice.',
       button: input.fieldGuideCompleted ? 'Open Field Guide' : 'Start here',
     };
   }
@@ -225,6 +229,7 @@ export function RegionHub({
         <RegionHubHome
           canTrain={canTrain}
           accessLocked={accessLocked}
+          fieldGuide={fieldGuide}
           fieldGuideCompleted={fieldGuideCompleted}
           generatedPracticeCount={generatedPractice.length}
           guardianCleared={guardianCleared}
@@ -411,6 +416,7 @@ function RegionLearningNav({ activePage, onNavigatePage, studentRegionAccess }: 
 interface RegionHubHomeProps {
   canTrain: boolean;
   accessLocked: boolean;
+  fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
   generatedPracticeCount: number;
   guardianCleared: boolean;
@@ -506,6 +512,7 @@ function recommendedHubPage(input: {
 function RegionHubHome({
   canTrain,
   accessLocked,
+  fieldGuide,
   fieldGuideCompleted,
   generatedPracticeCount,
   guardianCleared,
@@ -537,6 +544,7 @@ function RegionHubHome({
   });
   const primaryCopy = hubActionPrimaryStudentCopy({
     fieldGuideCompleted,
+    fieldGuideTopic: fieldGuide.topic,
     page: primaryPage,
     regionName: theme.title,
     summary,
@@ -681,11 +689,13 @@ function RegionJourneyBar({
           key={step.page}
           onClick={() => onNavigatePage?.(step.page)}
         >
-          <span className="journey-step-index" aria-hidden="true">{index + 1}</span>
-          <span>
-            <strong>{step.label}</strong>
-            <small>{stateLabel[step.state]}</small>
+          <span className="journey-step-status">
+            {stateLabel[step.state]}
           </span>
+          <span className="journey-step-label">
+            <strong>{step.label}</strong>
+          </span>
+          <span className="journey-step-index" aria-hidden="true">{index + 1}</span>
         </button>
       ))}
     </section>
