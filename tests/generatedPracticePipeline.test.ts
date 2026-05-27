@@ -861,6 +861,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       const items = generatedItems(runGeneratedBuild(dir).output);
       const families = [
         'trigonometry.identity_rewrite_basic',
+        'trigonometry.addition_formulae_basic',
         'trigonometry.double_angle_basic',
         'trigonometry.solve_equation_interval_basic',
         'trigonometry.r_form_basic',
@@ -872,10 +873,12 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         expect(familyItems.every((item) => item.verification.status === 'pass')).toBe(true);
         expect(familyItems.every((item) => item.source_snippet_id && item.example_model_id)).toBe(true);
         expect(familyItems.every((item) => item.question_type && item.key_method && item.exam_move)).toBe(true);
+        expect(familyItems.every((item) => item.parameters.topic_contract_id)).toBe(true);
       }
 
       expect(items.find((item) => item.generator_family === 'trigonometry.r_form_basic' && item.sequence_role === 'first_step')?.answer).toBe('R = 5');
       expect(items.find((item) => item.generator_family === 'trigonometry.solve_equation_interval_basic' && item.sequence_role === 'guardian_prep')?.worked_solution.join(' ')).toContain('instead of dividing by sin x');
+      expect(items.find((item) => item.generator_family === 'trigonometry.addition_formulae_basic' && item.sequence_role === 'guardian_prep')?.worked_solution.join(' ')).toContain('shifted interval');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -1040,6 +1043,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'logarithms_and_exponentials.linearisation_basic': 3,
         'logarithms_and_exponentials.calculus_context_basic': 3,
         'trigonometry.identity_rewrite_basic': 3,
+        'trigonometry.addition_formulae_basic': 3,
         'trigonometry.double_angle_basic': 3,
         'trigonometry.solve_equation_interval_basic': 3,
         'trigonometry.r_form_basic': 3,
@@ -1073,7 +1077,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'differential-shrine': 9,
         'integration-gardens': 16,
         'numerical-mines': 9,
-        'trig-observatory': 12,
+        'trig-observatory': 15,
         'vector-workshop': 9,
       });
       expect(report.generated_families_by_topic).toHaveProperty('trigonometry');

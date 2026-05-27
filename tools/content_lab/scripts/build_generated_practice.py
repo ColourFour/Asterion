@@ -46,6 +46,7 @@ QUADRATICS_TOPIC = "quadratics"
 QUADRATICS_DISCRIMINANT_FAMILY = "quadratics.discriminant_root_condition_basic"
 TRIG_TOPIC = "trigonometry"
 TRIG_IDENTITY_FAMILY = "trigonometry.identity_rewrite_basic"
+TRIG_ADDITION_FORMULAE_FAMILY = "trigonometry.addition_formulae_basic"
 TRIG_DOUBLE_ANGLE_FAMILY = "trigonometry.double_angle_basic"
 TRIG_SOLVE_INTERVAL_FAMILY = "trigonometry.solve_equation_interval_basic"
 TRIG_R_FORM_FAMILY = "trigonometry.r_form_basic"
@@ -101,6 +102,7 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     PARTIAL_FRACTIONS_REPEATED_FAMILY: "p3_alg_partial_fraction_form",
     MODULUS_EQUATION_FAMILY: "p3_alg_modulus_cases",
     TRIG_IDENTITY_FAMILY: "p3_trig_identity_selection",
+    TRIG_ADDITION_FORMULAE_FAMILY: "p3_trig_r_form_compound_angles",
     TRIG_DOUBLE_ANGLE_FAMILY: "p3_trig_reciprocal_double_angle",
     TRIG_SOLVE_INTERVAL_FAMILY: "p3_trig_equation_interval",
     TRIG_R_FORM_FAMILY: "p3_trig_r_form_compound_angles",
@@ -1304,6 +1306,7 @@ def build_trig_identity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
                 "So sec x = 1/cos x.",
             ],
             "identity": "reciprocal_sec",
+            "topic_contract_id": "trig_reciprocal_functions",
             "sequence_role": "first_step",
             "difficulty_band": "easy",
         },
@@ -1316,6 +1319,7 @@ def build_trig_identity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
                 "This keeps the expression in a single trig function.",
             ],
             "identity": "pythagorean",
+            "topic_contract_id": "trig_pythagorean_identities",
             "sequence_role": "complete_step",
             "difficulty_band": "easy",
         },
@@ -1328,6 +1332,7 @@ def build_trig_identity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
                 "Cancel only when sin x != 0, giving 2sin x.",
             ],
             "identity": "double_angle_cancel",
+            "topic_contract_id": "trig_double_angle_formulae",
             "sequence_role": "guardian_prep",
             "difficulty_band": "medium",
         },
@@ -1341,7 +1346,10 @@ def build_trig_identity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
             prompt=str(case["prompt"]),
             answer=str(case["answer"]),
             worked_solution=[str(step) for step in case["worked_solution"]],
-            parameters={"identity": str(case["identity"])},
+            parameters={
+                "identity": str(case["identity"]),
+                "topic_contract_id": str(case["topic_contract_id"]),
+            },
             context=context,
             sequence_role=str(case["sequence_role"]),
             difficulty_band=str(case["difficulty_band"]),
@@ -1363,6 +1371,7 @@ def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any
                 "The identity is sin 2x = 2sin x cos x.",
             ],
             "identity": "sin_double",
+            "topic_contract_id": "trig_double_angle_formulae",
             "sequence_role": "first_step",
             "difficulty_band": "easy",
         },
@@ -1374,6 +1383,7 @@ def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any
                 "The form using sine only is cos 2x = 1 - 2sin^2 x.",
             ],
             "identity": "cos_double_sin",
+            "topic_contract_id": "trig_double_angle_formulae",
             "sequence_role": "complete_step",
             "difficulty_band": "easy",
         },
@@ -1386,6 +1396,7 @@ def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any
                 "This simplifies to 1 + 2cos 2x.",
             ],
             "identity": "convert_quadratic_sine",
+            "topic_contract_id": "trig_double_angle_formulae",
             "sequence_role": "guardian_prep",
             "difficulty_band": "medium",
         },
@@ -1399,7 +1410,10 @@ def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any
             prompt=str(case["prompt"]),
             answer=str(case["answer"]),
             worked_solution=[str(step) for step in case["worked_solution"]],
-            parameters={"identity": str(case["identity"])},
+            parameters={
+                "identity": str(case["identity"]),
+                "topic_contract_id": str(case["topic_contract_id"]),
+            },
             context=context,
             sequence_role=str(case["sequence_role"]),
             difficulty_band=str(case["difficulty_band"]),
@@ -1411,26 +1425,29 @@ def build_trig_double_angle_items(context: dict[str, Any]) -> list[dict[str, Any
 def build_trig_solve_interval_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
         {
-            "prompt": "Solve sin x = 1/2 for 0 <= x <= pi.",
-            "answer": "x = pi/6 or 5pi/6",
+            "prompt": "Solve sec x = 2 for 0 <= x < 2pi.",
+            "answer": "x = pi/3 or 5pi/3",
             "worked_solution": [
-                "The reference angle is pi/6.",
-                "Sine is positive in quadrants I and II.",
-                "Both pi/6 and 5pi/6 lie in the interval.",
+                "Rewrite sec x as 1/cos x.",
+                "Then cos x = 1/2.",
+                "Cosine is positive in quadrants I and IV, so x = pi/3 or 5pi/3.",
             ],
-            "equation": "sin_half",
+            "equation": "sec_two",
+            "topic_contract_id": "trig_reciprocal_functions",
             "sequence_role": "first_step",
             "difficulty_band": "easy",
         },
         {
-            "prompt": "Solve cos x = -1/2 for 0 <= x < 2pi.",
-            "answer": "x = 2pi/3 or 4pi/3",
+            "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
+            "answer": "x = 0 or 2pi/3",
             "worked_solution": [
-                "The reference angle is pi/3.",
-                "Cosine is negative in quadrants II and III.",
-                "So the interval solutions are 2pi/3 and 4pi/3.",
+                "Let u = x + pi/6, so pi/6 <= u < 13pi/6.",
+                "sin u = 1/2 gives u = pi/6, 5pi/6, or 13pi/6 in the shifted interval.",
+                "Subtract pi/6 to get x = 0, 2pi/3, or 2pi.",
+                "The original interval excludes 2pi, so x = 0 or 2pi/3.",
             ],
-            "equation": "cos_negative_half",
+            "equation": "shifted_sine_half",
+            "topic_contract_id": "trig_addition_formulae",
             "sequence_role": "complete_step",
             "difficulty_band": "easy",
         },
@@ -1444,6 +1461,7 @@ def build_trig_solve_interval_items(context: dict[str, Any]) -> list[dict[str, A
                 "All four values lie in the interval.",
             ],
             "equation": "product_zero",
+            "topic_contract_id": "trig_double_angle_formulae",
             "sequence_role": "guardian_prep",
             "difficulty_band": "medium",
         },
@@ -1457,13 +1475,82 @@ def build_trig_solve_interval_items(context: dict[str, Any]) -> list[dict[str, A
             prompt=str(case["prompt"]),
             answer=str(case["answer"]),
             worked_solution=[str(step) for step in case["worked_solution"]],
-            parameters={"equation": str(case["equation"])},
+            parameters={
+                "equation": str(case["equation"]),
+                "topic_contract_id": str(case["topic_contract_id"]),
+            },
             context=context,
             sequence_role=str(case["sequence_role"]),
             difficulty_band=str(case["difficulty_band"]),
             snippet_ids=preferred_snippet_ids(context, TRIG_TOPIC, [
                 "p3-trig-interval-001",
                 "p3-trig-lost-solutions-001",
+            ]),
+        ))
+    return items
+
+
+def build_trig_addition_formulae_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {
+            "prompt": "Use an addition formula to find sin(45 degrees + 30 degrees).",
+            "answer": "(sqrt(6) + sqrt(2))/4",
+            "worked_solution": [
+                "Use sin(A + B) = sin A cos B + cos A sin B.",
+                "Substitute A = 45 degrees and B = 30 degrees.",
+                "This gives (sqrt(2)/2)(sqrt(3)/2) + (sqrt(2)/2)(1/2).",
+                "So sin 75 degrees = (sqrt(6) + sqrt(2))/4.",
+            ],
+            "item_type": "exact_sine_sum",
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "prompt": "Use an addition formula to find tan(pi/4 + pi/6).",
+            "answer": "2 + sqrt(3)",
+            "worked_solution": [
+                "Use tan(A + B) = (tan A + tan B)/(1 - tan A tan B).",
+                "Substitute tan(pi/4) = 1 and tan(pi/6) = 1/sqrt(3).",
+                "This gives (1 + 1/sqrt(3))/(1 - 1/sqrt(3)).",
+                "Simplifying gives 2 + sqrt(3).",
+            ],
+            "item_type": "exact_tangent_sum",
+            "sequence_role": "complete_step",
+            "difficulty_band": "easy",
+        },
+        {
+            "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
+            "answer": "x = 0 or 2pi/3",
+            "worked_solution": [
+                "Let u = x + pi/6, so pi/6 <= u < 13pi/6.",
+                "sin u = 1/2 gives u = pi/6, 5pi/6, or 13pi/6 in that shifted interval.",
+                "Subtract pi/6 to get x = 0, 2pi/3, or 2pi.",
+                "The endpoint 2pi is not allowed, so x = 0 or 2pi/3.",
+            ],
+            "item_type": "shifted_angle_equation",
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+        },
+    ]
+    items: list[dict[str, Any]] = []
+    for index, case in enumerate(cases, start=1):
+        items.append(base_item(
+            practice_id=f"gen_trig_addition_formulae_basic_{index:04d}",
+            generator_family=TRIG_ADDITION_FORMULAE_FAMILY,
+            topic=TRIG_TOPIC,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
+            parameters={
+                "item_type": str(case["item_type"]),
+                "topic_contract_id": "trig_addition_formulae",
+            },
+            context=context,
+            sequence_role=str(case["sequence_role"]),
+            difficulty_band=str(case["difficulty_band"]),
+            snippet_ids=preferred_snippet_ids(context, TRIG_TOPIC, [
+                "p3-trig-identity-selection-001",
+                "p3-trig-interval-001",
             ]),
         ))
     return items
@@ -1483,7 +1570,7 @@ def build_trig_r_form_items(context: dict[str, Any]) -> list[dict[str, Any]]:
         r = int(r_squared ** 0.5)
         if r * r != r_squared:
             raise ValueError("R-form case did not produce an integer R")
-        parameters = {"a": a, "b": b, "r": r}
+        parameters = {"a": a, "b": b, "r": r, "topic_contract_id": "trig_r_form_transformations"}
         practice_id = f"gen_trig_r_form_basic_{index:04d}"
         if case["sequence_role"] == "first_step":
             prompt = f"Find R for {a}sin x + {b}cos x."
@@ -3791,6 +3878,7 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_trig_identity_items(context)
         + build_trig_double_angle_items(context)
         + build_trig_solve_interval_items(context)
+        + build_trig_addition_formulae_items(context)
         + build_trig_r_form_items(context)
         + build_differentiation_items(context)
         + build_differentiation_stationary_tangent_items(context)

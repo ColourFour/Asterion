@@ -8,6 +8,7 @@ import {
   fieldGuideSkillCoverage,
 } from '../data/fieldGuideTopics';
 import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from '../data/logarithmObservatoryContent';
+import { TRIGONOMETRY_SPIRE_TOPIC_ORDER } from '../data/trigonometrySpireContent';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
 import {
@@ -2043,7 +2044,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(calculusTopics.find((topic) => topic.id === 'product-chain')?.title).toBe('Product / Quotient Rule');
     expect(calculusTopics.find((topic) => topic.id === 'product-chain')?.examples[1]?.title)
       .toContain('Quotient');
-    expect(trigTopics.find((topic) => topic.id === 'identity-rewrite')?.supportNote)
+    expect(trigTopics.map((topic) => topic.id)).toEqual([...TRIGONOMETRY_SPIRE_TOPIC_ORDER]);
+    expect(trigTopics.find((topic) => topic.id === 'trig_reciprocal_functions')?.supportNote)
       .toContain('Support skill');
     expect(complexTopics.find((topic) => topic.id === 'cartesian-conjugate')?.supportNote)
       .toContain('Support skill');

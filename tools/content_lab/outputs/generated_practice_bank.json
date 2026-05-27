@@ -2068,7 +2068,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "reciprocal_sec",
-        "sequence_role": "first_step"
+        "sequence_role": "first_step",
+        "topic_contract_id": "trig_reciprocal_functions"
       },
       "practice_id": "gen_trig_identity_rewrite_basic_0001",
       "prompt": "Rewrite sec x using sine or cosine.",
@@ -2107,7 +2108,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "pythagorean",
-        "sequence_role": "complete_step"
+        "sequence_role": "complete_step",
+        "topic_contract_id": "trig_pythagorean_identities"
       },
       "practice_id": "gen_trig_identity_rewrite_basic_0002",
       "prompt": "Rewrite 1 - cos^2 x using a Pythagorean identity.",
@@ -2146,7 +2148,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "double_angle_cancel",
-        "sequence_role": "guardian_prep"
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_identity_rewrite_basic_0003",
       "prompt": "Rewrite (1 - cos 2x)/sin x as a simpler expression, stating the restriction.",
@@ -2185,7 +2188,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "sin_double",
-        "sequence_role": "first_step"
+        "sequence_role": "first_step",
+        "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_double_angle_basic_0001",
       "prompt": "Choose a double-angle identity for sin 2x.",
@@ -2222,7 +2226,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "cos_double_sin",
-        "sequence_role": "complete_step"
+        "sequence_role": "complete_step",
+        "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_double_angle_basic_0002",
       "prompt": "Rewrite cos 2x in terms of sin x only.",
@@ -2259,7 +2264,8 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "convert_quadratic_sine",
-        "sequence_role": "guardian_prep"
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_double_angle_basic_0003",
       "prompt": "Rewrite 3 - 4sin^2 x using cos 2x.",
@@ -2288,7 +2294,7 @@
       ]
     },
     {
-      "answer": "x = pi/6 or 5pi/6",
+      "answer": "x = pi/3 or 5pi/3",
       "difficulty_band": "easy",
       "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
       "example_model_id": "p3-trig-interval-001-example-1",
@@ -2296,11 +2302,12 @@
       "key_method": "Find all trig equation solutions in a restricted interval.",
       "paper_family": "p3",
       "parameters": {
-        "equation": "sin_half",
-        "sequence_role": "first_step"
+        "equation": "sec_two",
+        "sequence_role": "first_step",
+        "topic_contract_id": "trig_reciprocal_functions"
       },
       "practice_id": "gen_trig_solve_equation_interval_basic_0001",
-      "prompt": "Solve sin x = 1/2 for 0 <= x <= pi.",
+      "prompt": "Solve sec x = 2 for 0 <= x < 2pi.",
       "question_type": "Trigonometric equation in an interval",
       "region_ids": [
         "trig-observatory"
@@ -2321,13 +2328,13 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The reference angle is pi/6.",
-        "Sine is positive in quadrants I and II.",
-        "Both pi/6 and 5pi/6 lie in the interval."
+        "Rewrite sec x as 1/cos x.",
+        "Then cos x = 1/2.",
+        "Cosine is positive in quadrants I and IV, so x = pi/3 or 5pi/3."
       ]
     },
     {
-      "answer": "x = 2pi/3 or 4pi/3",
+      "answer": "x = 0 or 2pi/3",
       "difficulty_band": "easy",
       "exam_move": "Sketch or use quadrant signs to find all angles in the required range.",
       "example_model_id": "p3-trig-interval-001-example-1",
@@ -2335,11 +2342,12 @@
       "key_method": "Find all trig equation solutions in a restricted interval.",
       "paper_family": "p3",
       "parameters": {
-        "equation": "cos_negative_half",
-        "sequence_role": "complete_step"
+        "equation": "shifted_sine_half",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "trig_addition_formulae"
       },
       "practice_id": "gen_trig_solve_equation_interval_basic_0002",
-      "prompt": "Solve cos x = -1/2 for 0 <= x < 2pi.",
+      "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
       "question_type": "Trigonometric equation in an interval",
       "region_ids": [
         "trig-observatory"
@@ -2360,9 +2368,10 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The reference angle is pi/3.",
-        "Cosine is negative in quadrants II and III.",
-        "So the interval solutions are 2pi/3 and 4pi/3."
+        "Let u = x + pi/6, so pi/6 <= u < 13pi/6.",
+        "sin u = 1/2 gives u = pi/6, 5pi/6, or 13pi/6 in the shifted interval.",
+        "Subtract pi/6 to get x = 0, 2pi/3, or 2pi.",
+        "The original interval excludes 2pi, so x = 0 or 2pi/3."
       ]
     },
     {
@@ -2375,7 +2384,8 @@
       "paper_family": "p3",
       "parameters": {
         "equation": "product_zero",
-        "sequence_role": "guardian_prep"
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_solve_equation_interval_basic_0003",
       "prompt": "Solve sin x(2cos x - 1) = 0 for 0 <= x < 2pi.",
@@ -2406,6 +2416,129 @@
       ]
     },
     {
+      "answer": "(sqrt(6) + sqrt(2))/4",
+      "difficulty_band": "easy",
+      "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "generator_family": "trigonometry.addition_formulae_basic",
+      "key_method": "Select a trig identity because it moves the expression toward the needed form.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exact_sine_sum",
+        "sequence_role": "first_step",
+        "topic_contract_id": "trig_addition_formulae"
+      },
+      "practice_id": "gen_trig_addition_formulae_basic_0001",
+      "prompt": "Use an addition formula to find sin(45 degrees + 30 degrees).",
+      "question_type": "Trigonometric identity selection",
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-trig-identity-selection-001",
+        "p3-trig-interval-001"
+      ],
+      "source_snippet_id": "p3-trig-identity-selection-001",
+      "topic": "trigonometry",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use sin(A + B) = sin A cos B + cos A sin B.",
+        "Substitute A = 45 degrees and B = 30 degrees.",
+        "This gives (sqrt(2)/2)(sqrt(3)/2) + (sqrt(2)/2)(1/2).",
+        "So sin 75 degrees = (sqrt(6) + sqrt(2))/4."
+      ]
+    },
+    {
+      "answer": "2 + sqrt(3)",
+      "difficulty_band": "easy",
+      "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "generator_family": "trigonometry.addition_formulae_basic",
+      "key_method": "Select a trig identity because it moves the expression toward the needed form.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exact_tangent_sum",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "trig_addition_formulae"
+      },
+      "practice_id": "gen_trig_addition_formulae_basic_0002",
+      "prompt": "Use an addition formula to find tan(pi/4 + pi/6).",
+      "question_type": "Trigonometric identity selection",
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-trig-identity-selection-001",
+        "p3-trig-interval-001"
+      ],
+      "source_snippet_id": "p3-trig-identity-selection-001",
+      "topic": "trigonometry",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use tan(A + B) = (tan A + tan B)/(1 - tan A tan B).",
+        "Substitute tan(pi/4) = 1 and tan(pi/6) = 1/sqrt(3).",
+        "This gives (1 + 1/sqrt(3))/(1 - 1/sqrt(3)).",
+        "Simplifying gives 2 + sqrt(3)."
+      ]
+    },
+    {
+      "answer": "x = 0 or 2pi/3",
+      "difficulty_band": "medium",
+      "exam_move": "State or use the identity that creates the required form, then solve from that simpler line.",
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "generator_family": "trigonometry.addition_formulae_basic",
+      "key_method": "Select a trig identity because it moves the expression toward the needed form.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "shifted_angle_equation",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "trig_addition_formulae"
+      },
+      "practice_id": "gen_trig_addition_formulae_basic_0003",
+      "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
+      "question_type": "Trigonometric identity selection",
+      "region_ids": [
+        "trig-observatory"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_trig_r_form_compound_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-trig-identity-selection-001",
+        "p3-trig-interval-001"
+      ],
+      "source_snippet_id": "p3-trig-identity-selection-001",
+      "topic": "trigonometry",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Let u = x + pi/6, so pi/6 <= u < 13pi/6.",
+        "sin u = 1/2 gives u = pi/6, 5pi/6, or 13pi/6 in that shifted interval.",
+        "Subtract pi/6 to get x = 0, 2pi/3, or 2pi.",
+        "The endpoint 2pi is not allowed, so x = 0 or 2pi/3."
+      ]
+    },
+    {
       "answer": "R = 5",
       "difficulty_band": "easy",
       "exam_move": "Use R-form when one combined trig wave is easier than two separate terms.",
@@ -2417,7 +2550,8 @@
         "a": 3,
         "b": 4,
         "r": 5,
-        "sequence_role": "first_step"
+        "sequence_role": "first_step",
+        "topic_contract_id": "trig_r_form_transformations"
       },
       "practice_id": "gen_trig_r_form_basic_0001",
       "prompt": "Find R for 3sin x + 4cos x.",
@@ -2457,7 +2591,8 @@
         "a": 5,
         "b": 12,
         "r": 13,
-        "sequence_role": "complete_step"
+        "sequence_role": "complete_step",
+        "topic_contract_id": "trig_r_form_transformations"
       },
       "practice_id": "gen_trig_r_form_basic_0002",
       "prompt": "Write 5sin x + 12cos x in the form R sin(x + alpha), with alpha acute.",
@@ -2498,7 +2633,8 @@
         "a": 8,
         "b": -6,
         "r": 10,
-        "sequence_role": "guardian_prep"
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "trig_r_form_transformations"
       },
       "practice_id": "gen_trig_r_form_basic_0003",
       "prompt": "Find R and the maximum value of 8sin x - 6cos x.",
@@ -5312,7 +5448,7 @@
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 9,
   "published_runtime_count": 0,
-  "runtime_reviewed_count": 114,
+  "runtime_reviewed_count": 117,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",

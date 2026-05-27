@@ -130,7 +130,7 @@
       "snippets_with_examples": 2
     },
     {
-      "generated_warmups": 12,
+      "generated_warmups": 15,
       "quick_checks": 6,
       "region_id": "trig-observatory",
       "region_name": "Trigonometry Spire",
@@ -170,7 +170,7 @@
       },
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 12,
+        "generated_warmups": 15,
         "quick_checks": 6,
         "region_id": "trig-observatory",
         "region_name": "Trigonometry Spire",
@@ -202,7 +202,7 @@
   },
   "content_review_status_counts": {
     "generated_practice:needs_review": 9,
-    "generated_practice:teacher_reviewed": 114,
+    "generated_practice:teacher_reviewed": 117,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 38
   },
@@ -260,6 +260,7 @@
       "algebra.partial_fractions_repeated_linear": 3
     },
     "trigonometry": {
+      "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
@@ -280,7 +281,7 @@
     "integration-gardens": 16,
     "logarithm-grove": 18,
     "numerical-mines": 9,
-    "trig-observatory": 12,
+    "trig-observatory": 15,
     "vector-workshop": 9
   },
   "generator_family_counts": {
@@ -315,6 +316,7 @@
     "numerical_methods.iteration_formula_basic": 3,
     "numerical_methods.sign_change_iteration_basic": 3,
     "parametric_equations.derivative_ratio_basic": 3,
+    "trigonometry.addition_formulae_basic": 3,
     "trigonometry.double_angle_basic": 3,
     "trigonometry.identity_rewrite_basic": 3,
     "trigonometry.r_form_basic": 3,
@@ -423,6 +425,7 @@
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 3,
+      "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
@@ -437,10 +440,10 @@
     "published_runtime_count": 0,
     "review_status_counts": {
       "needs_review": 9,
-      "teacher_reviewed": 114
+      "teacher_reviewed": 117
     },
-    "runtime_reviewed_count": 114,
-    "total_count": 123,
+    "runtime_reviewed_count": 117,
+    "total_count": 126,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
@@ -451,7 +454,7 @@
     "integration-gardens": 16,
     "logarithm-grove": 18,
     "numerical-mines": 9,
-    "trig-observatory": 12,
+    "trig-observatory": 15,
     "vector-workshop": 9
   },
   "method_snippets_missing_examples": [],
@@ -479,7 +482,7 @@
       "region_name": "Trigonometry Spire",
       "snippets": 6,
       "snippets_with_examples": 6,
-      "warmups": 12
+      "warmups": 15
     }
   ],
   "quick_checks_per_region": {
@@ -543,6 +546,7 @@
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 1,
+      "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
@@ -554,12 +558,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 117,
+    "published_runtime_count": 120,
     "review_status_counts": {
-      "teacher_reviewed": 117
+      "teacher_reviewed": 120
     },
-    "runtime_reviewed_count": 117,
-    "total_count": 117,
+    "runtime_reviewed_count": 120,
+    "total_count": 120,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -1517,6 +1521,24 @@
       "practice_id": "gen_polynomial_remainder_factor_basic_0010",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_addition_formulae_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_addition_formulae_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-trig-identity-selection-001"
+    },
+    {
+      "example_model_id": "p3-trig-identity-selection-001-example-1",
+      "practice_id": "gen_trig_addition_formulae_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-trig-identity-selection-001"
     },
     {
       "example_model_id": "p3-trig-identity-selection-001-example-1",
