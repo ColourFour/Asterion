@@ -351,7 +351,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toContain('source_backed_worked_examples_sparse');
-      expect(warmupItems).toHaveLength(3);
+      expect(warmupItems).toHaveLength(skillId === 'p3_vec_3d_geometry_modelling' ? 4 : 3);
       expect(warmupItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(warmupItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
       expect(skill?.prerequisite_notes).toContain('support');
@@ -415,7 +415,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
-      expect(warmupItems).toHaveLength(3);
+      expect(warmupItems).toHaveLength(skillId === 'p3_vec_3d_geometry_modelling' ? 4 : 3);
       expect(warmupItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(warmupItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
       expect(skill?.prerequisite_notes).toContain('support');
@@ -976,8 +976,8 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(120);
-    expect(internalGeneratedPractice.items).toHaveLength(126);
+    expect(generatedPractice.items).toHaveLength(121);
+    expect(internalGeneratedPractice.items).toHaveLength(127);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     for (const family of [
@@ -1085,8 +1085,8 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(120);
-    expect(internalGeneratedPractice.items).toHaveLength(126);
+    expect(generatedPractice.items).toHaveLength(121);
+    expect(internalGeneratedPractice.items).toHaveLength(127);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     const expectedFamilyCounts = new Map([

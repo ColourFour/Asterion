@@ -39,11 +39,11 @@ export const VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT: VectorsGatePracticeAlignment
   },
   {
     topicId: 'vectors_geometric_add_subtract',
-    status: 'todo_teacher_review',
-    reviewedPracticeIds: [],
-    candidatePrompt: 'Points A and B have position vectors $\\mathbf a=\\begin{pmatrix}2\\\\-1\\end{pmatrix}$ and $\\mathbf b=\\begin{pmatrix}8\\\\5\\end{pmatrix}$. Find $\\overrightarrow{AB}$ and the midpoint of AB.',
-    expectedAnswer: '$$ \\overrightarrow{AB}=\\begin{pmatrix}6\\\\6\\end{pmatrix},\\quad \\text{midpoint}=\\begin{pmatrix}5\\\\2\\end{pmatrix} $$',
-    authoringNote: 'Needs a reviewed generated-practice family or teacher-authored item for midpoint, parallelogram, and collinearity reasoning.',
+    status: 'reviewed_runtime',
+    reviewedPracticeIds: ['gen_vectors_line_relationship_basic_0004'],
+    candidatePrompt: 'Points A(1, 2, -1), B(4, 0, 0), and C(6, 3, 3) have position vectors a, b, and c. Find AB, BC, and AB + BC. What single displacement does the sum equal?',
+    expectedAnswer: '$$ \\overrightarrow{AB}=\\begin{pmatrix}3\\\\-2\\\\1\\end{pmatrix},\\quad \\overrightarrow{BC}=\\begin{pmatrix}2\\\\3\\\\3\\end{pmatrix},\\quad \\overrightarrow{AB}+\\overrightarrow{BC}=\\overrightarrow{AC}=\\begin{pmatrix}5\\\\1\\\\4\\end{pmatrix} $$',
+    authoringNote: 'Runtime now has one reviewed geometric add/subtract item for head-to-tail position-vector reasoning. Midpoint, parallelogram, and collinearity variants remain future review work.',
   },
   {
     topicId: 'vectors_line_equation',

@@ -1182,7 +1182,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       id: 'vectors_line_equation',
       marker: 'r',
       title: 'Vector Equation of a Straight Line',
-      purpose: 'Build and read $\\mathbf r=\\mathbf a+\\lambda\\mathbf b$.',
+      purpose: 'Build and read vector line equations using a point, direction vector, and parameter.',
       skillIds: ['vectors_line_equation'],
       preview: '$$ \\mathbf r=\\mathbf a+\\lambda\\mathbf b $$',
       description: 'A vector line needs one point on the line and one direction vector.',

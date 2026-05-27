@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { FIELD_GUIDE_TOPICS_BY_REGION } from '../data/fieldGuideTopics';
 import {
   VECTORS_GATE_OUT_OF_SCOPE_TERMS,
   VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT,
   VECTORS_GATE_TOPIC_ORDER,
 } from '../data/vectorsGateContent';
+import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData } from '../lib/generatedPractice';
+
+const runtimePractice = normalizeGeneratedPracticeData(
+  JSON.parse(readFileSync(`${process.cwd()}/public/data/generated_practice_bank.json`, 'utf8')),
+);
 
 const expectedVectorTitles = [
   'Vector Notation',
@@ -58,6 +64,8 @@ describe('Vectors Gate content contract', () => {
   });
 
   it('documents Skill Practice coverage or TODOs for every approved Vectors Gate topic', () => {
+    const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
+
     expect(VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId)).toEqual([...VECTORS_GATE_TOPIC_ORDER]);
 
     for (const item of VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT) {
@@ -66,6 +74,9 @@ describe('Vectors Gate content contract', () => {
       expect(item.authoringNote.trim(), item.topicId).not.toBe('');
       if (item.status === 'reviewed_runtime') {
         expect(item.reviewedPracticeIds.length, item.topicId).toBeGreaterThan(0);
+        for (const practiceId of item.reviewedPracticeIds) {
+          expect(runtimeIds.has(practiceId), `${item.topicId}/${practiceId}`).toBe(true);
+        }
       }
       if (item.status === 'todo_teacher_review') {
         expect(item.reviewedPracticeIds, item.topicId).toEqual([]);
@@ -74,5 +85,15 @@ describe('Vectors Gate content contract', () => {
 
     expect(VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT.find((item) => item.topicId === 'vectors_point_to_line_distance')?.status)
       .toBe('todo_teacher_review');
+  });
+
+  it('has a reviewed runtime Skill Practice item for geometric addition/subtraction', () => {
+    const vectorPractice = getGeneratedPracticeForRegion(runtimePractice, 'vector-workshop', 'p3');
+    const geometricPractice = vectorPractice.find((item) => item.practiceId === 'gen_vectors_line_relationship_basic_0004');
+
+    expect(geometricPractice?.parameters.topic_contract_id).toBe('vectors_geometric_add_subtract');
+    expect(geometricPractice?.reviewStatus).toBe('teacher_reviewed');
+    expect(geometricPractice?.prompt.toLowerCase()).toContain('ab + bc');
+    expect(geometricPractice?.workedSolution.join('\n')).toContain('AC');
   });
 });
