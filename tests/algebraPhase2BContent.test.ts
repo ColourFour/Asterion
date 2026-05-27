@@ -15,12 +15,10 @@ const selectedSnippetIds = [
   'p3-quadratics-discriminant-001',
 ] as const;
 
-const expectedFamiliesBySkill: Record<string, string> = {
-  p3_alg_structure_rearrangement: 'algebra.structure_rearrangement_basic',
-  p3_alg_polynomial_remainder_factor: 'algebra.polynomial_remainder_factor_basic',
-  p3_alg_modulus_cases: 'algebra.modulus_equation_basic',
-  p3_alg_discriminant_root_conditions: 'quadratics.discriminant_root_condition_basic',
-};
+const quarantinedAlgebraWarmupSkills = new Set([
+  'p3_alg_structure_rearrangement',
+  'p3_alg_discriminant_root_conditions',
+]);
 
 function readJson(path: string) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -62,22 +60,33 @@ describe('Algebra Vault Phase 2B support-depth batch', () => {
 
   it('publishes deterministic runtime warm-up role breadth without candidate content', () => {
     const runtimePractice = readJson('public/data/generated_practice_bank.json').items;
+    const approvedContracts = new Set([
+      'algebra_modulus_graph_equations',
+      'algebra_polynomial_division',
+      'algebra_remainder_factor_theorem',
+      'algebra_partial_fractions',
+      'algebra_binomial_expansion',
+    ]);
 
     expect(runtimePractice.every((item: { review_status?: string; verification?: { status?: string } }) => (
       (item.review_status === 'teacher_reviewed' || item.review_status === 'published')
         && item.verification?.status === 'pass'
     ))).toBe(true);
 
-    for (const skillId of selectedAlgebraSkills) {
-      const family = expectedFamiliesBySkill[skillId];
-      const items = runtimePractice.filter((item: { generator_family?: string; skill_target_id?: string }) => (
-        item.generator_family === family && item.skill_target_id === skillId
+    const algebraItems = runtimePractice.filter((item: { region_ids?: string[] }) => (
+      item.region_ids?.includes('algebra-forge')
+    ));
+    expect(new Set(algebraItems.map((item: { parameters?: { topic_contract_id?: string } }) => item.parameters?.topic_contract_id)))
+      .toEqual(approvedContracts);
+    expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'algebra.structure_rearrangement_basic')).toBe(false);
+    expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'quadratics.discriminant_root_condition_basic')).toBe(false);
+
+    for (const topicId of approvedContracts) {
+      const items = algebraItems.filter((item: { parameters?: { topic_contract_id?: string } }) => (
+        item.parameters?.topic_contract_id === topicId
       ));
-      expect(items.map((item: { sequence_role?: string }) => item.sequence_role).sort()).toEqual([
-        'complete_step',
-        'first_step',
-        'guardian_prep',
-      ]);
+      expect(new Set(items.map((item: { sequence_role?: string }) => item.sequence_role)), topicId)
+        .toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
       expect(items.every((item: { source_snippet_id?: string; example_model_id?: string }) => (
         item.source_snippet_id && item.example_model_id
       ))).toBe(true);
@@ -95,8 +104,9 @@ describe('Algebra Vault Phase 2B support-depth batch', () => {
 
     for (const skillId of selectedAlgebraSkills) {
       const row = readiness.skill_rows.find((item: { skill_id?: string }) => item.skill_id === skillId);
+      const warmupQuarantined = quarantinedAlgebraWarmupSkills.has(skillId);
       expect(row).toMatchObject({
-        blockers: [],
+        blockers: warmupQuarantined ? ['missing_all_warmup_support'] : [],
         support_content_status: 'separated',
         misconception_repair_status: 'available',
         prerequisite_repair_status: 'available',
@@ -106,8 +116,12 @@ describe('Algebra Vault Phase 2B support-depth batch', () => {
         warnings: expectedWarnings[skillId],
       });
       expect(row.support_content_contaminating_ids).toEqual([]);
-      expect(row.warmup_roles_present).toEqual(['first_step', 'complete_step', 'guardian_prep']);
-      expect(row.warmup_roles_missing).toEqual([]);
+      expect(row.warmup_roles_present).toEqual(
+        warmupQuarantined ? [] : ['first_step', 'complete_step', 'guardian_prep'],
+      );
+      expect(row.warmup_roles_missing).toEqual(
+        warmupQuarantined ? ['first_step', 'complete_step', 'guardian_prep'] : [],
+      );
 
       const supportIds = new Set([
         ...row.field_guide_ids,

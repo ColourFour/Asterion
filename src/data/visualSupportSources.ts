@@ -207,7 +207,7 @@ export const visualSupportSources: VisualSupportSource[] = [
   {
     id: 'vector-workshop-vector-components',
     regionId: 'vector-workshop',
-    topicIds: ['9709_p3_topic_vectors', 'vectors'],
+    topicIds: ['9709_p3_topic_vectors', 'vectors', 'vectors_notation', 'vectors_magnitude_unit_parallel'],
     pageType: 'field-guide',
     visualKind: 'mini_diagram',
     title: 'Vector direction and components',
@@ -223,7 +223,7 @@ export const visualSupportSources: VisualSupportSource[] = [
   {
     id: 'vector-workshop-warm-up-3d-vector',
     regionId: 'vector-workshop',
-    topicIds: ['9709_p3_topic_vectors', 'vectors'],
+    topicIds: ['9709_p3_topic_vectors', 'vectors', 'vectors_line_equation', 'vectors_intersect_parallel_skew'],
     skillIds: ['p3_vec_line_equations_intersections', 'p3_vec_3d_geometry_modelling'],
     pageType: 'warm-up',
     visualKind: 'mini_diagram',
@@ -355,7 +355,7 @@ export const fieldGuideVisualSupportNeeds = [
   },
   {
     regionId: 'vector-workshop',
-    topicId: 'line-relationship',
+    topicId: 'vectors_intersect_parallel_skew',
     visualKind: 'needs_visual' as const,
     note: 'Vector line relationships need a mini-diagram distinguishing intersecting, parallel, and skew lines.',
   },

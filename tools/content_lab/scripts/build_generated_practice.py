@@ -125,9 +125,7 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
 }
 
 PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
-    ALGEBRA_STRUCTURE_FAMILY,
     POLYNOMIAL_REMAINDER_FAMILY,
-    QUADRATICS_DISCRIMINANT_FAMILY,
     LOG_DOMAIN_FAMILY,
     LOG_LINEARISATION_FAMILY,
     LOG_CALCULUS_CONTEXT_FAMILY,
@@ -150,6 +148,11 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     VECTORS_LINE_SCALAR_FAMILY,
     VECTORS_LINE_INTERSECTION_FAMILY,
     VECTORS_LINE_RELATIONSHIP_FAMILY,
+}
+
+QUARANTINED_RUNTIME_GENERATOR_FAMILIES = {
+    ALGEBRA_STRUCTURE_FAMILY,
+    QUADRATICS_DISCRIMINANT_FAMILY,
 }
 
 
@@ -648,123 +651,90 @@ def first_three_coefficients_general(a: int, n: Fraction) -> tuple[Fraction, Fra
 
 
 def build_binomial_items(context: dict[str, Any]) -> list[dict[str, Any]]:
-    expand_cases = [
-        {"a": 3, "n": Fraction(-1, 2), "max_power": 1, "sequence_stage": "first_step", "difficulty_band": "easy"},
-        {"a": -2, "n": Fraction(-3, 2), "max_power": 2, "sequence_stage": "complete_step", "difficulty_band": "easy"},
-    ]
-    product_cases = [
-        {"a": 2, "m": Fraction(-1, 1), "b": -1, "n": Fraction(-2, 1), "sequence_stage": "guardian_prep", "difficulty_band": "medium"},
-    ]
-
-    items: list[dict[str, Any]] = []
-    index = 1
-    for case in expand_cases:
-        a = int(case["a"])
-        n = case["n"]
-        if not isinstance(n, Fraction):
-            raise ValueError("Binomial expansion index must be a Fraction")
-        max_power = int(case["max_power"])
-        _, x_coefficient, x2_coefficient = first_three_coefficients_general(a, n)
-        if abs(x2_coefficient) > 120:
-            raise ValueError("Expansion coefficient is too large")
-        terms = [(1, 0), (x_coefficient, 1)]
-        if max_power >= 2:
-            terms.append((x2_coefficient, 2))
-        expansion = polynomial_text(terms)
-        expression = binomial_expression(a, n)
-        practice_id = f"gen_binomial_first_terms_and_coefficient_{index:04d}"
-        n_text = signed_fraction_text(n)
-        parameters = {
-            "a": a,
-            "item_type": "expand_first_terms",
-            "max_power": max_power,
-            "n": n_text,
-            "sequence_stage": str(case["sequence_stage"]),
-            "x_coefficient": signed_fraction_text(x_coefficient),
-            "x2_coefficient": signed_fraction_text(x2_coefficient),
-        }
-        if max_power == 1:
-            prompt = f"Write the constant and x term in the expansion of {expression}, and state the validity condition."
-            worked_solution = [
-                f"Use (1 + t)^n = 1 + nt + ... with t = {a}x and n = {n_text}.",
-                "For this first step, stop after the linear term.",
-                f"The x term is ({n_text})({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
-                f"The validity condition is |{a}x| < 1.",
-                f"So the requested start of the expansion is {expansion}, valid for |{a}x| < 1.",
-            ]
-            answer = f"{expansion}, valid for |{a}x| < 1"
-        else:
-            prompt = f"Expand {expression} up to and including the x^2 term, with the validity condition."
-            worked_solution = [
-                f"Use (1 + t)^n = 1 + nt + n(n - 1)t^2/2 + ... with t = {a}x and n = {n_text}.",
-                f"The x term is ({n_text})({a}x) = {polynomial_text([(x_coefficient, 1)])}.",
-                f"The x^2 term is n(n - 1)({a}x)^2/2 = {polynomial_text([(x2_coefficient, 2)])}.",
-                f"The validity condition is |{a}x| < 1.",
-                f"So the expansion up to x^2 is {expansion}, valid for |{a}x| < 1.",
-            ]
-            answer = f"{expansion}, valid for |{a}x| < 1"
-        items.append(base_item(
-            practice_id=practice_id,
-            generator_family=BINOMIAL_FAMILY,
-            topic=BINOMIAL_TOPIC,
-            prompt=prompt,
-            answer=answer,
-            worked_solution=worked_solution,
-            parameters=parameters,
-            context=context,
-            sequence_role=str(case["sequence_stage"]),
-            difficulty_band=str(case["difficulty_band"]),
-            snippet_ids=preferred_snippet_ids(context, BINOMIAL_TOPIC, ["p3-binomial-term-001"]),
-        ))
-        index += 1
-
-    for case in product_cases:
-        a = int(case["a"])
-        m = case["m"]
-        b = int(case["b"])
-        n = case["n"]
-        if not isinstance(m, Fraction) or not isinstance(n, Fraction):
-            raise ValueError("Binomial product indices must be Fractions")
-        _, left_x, left_x2 = first_three_coefficients_general(a, m)
-        _, right_x, right_x2 = first_three_coefficients_general(b, n)
-        coefficient = left_x2 + (left_x * right_x) + right_x2
-        if abs(coefficient) > 120:
-            raise ValueError("Product coefficient is too large")
-        left_expression = binomial_expression(a, m)
-        right_expression = binomial_expression(b, n)
-        left_terms = polynomial_text([(1, 0), (left_x, 1), (left_x2, 2)])
-        right_terms = polynomial_text([(1, 0), (right_x, 1), (right_x2, 2)])
-        practice_id = f"gen_binomial_first_terms_and_coefficient_{index:04d}"
-        m_text = signed_fraction_text(m)
-        n_text = signed_fraction_text(n)
-        parameters = {
-            "a": a,
-            "b": b,
-            "coefficient_x2": signed_fraction_text(coefficient),
-            "item_type": "coefficient_product",
-            "m": m_text,
-            "n": n_text,
-            "sequence_stage": str(case["sequence_stage"]),
-        }
-        items.append(base_item(
-            practice_id=practice_id,
-            generator_family=BINOMIAL_FAMILY,
-            topic=BINOMIAL_TOPIC,
-            prompt=f"Find the coefficient of x^2 in {left_expression}{right_expression}, using valid binomial expansions.",
-            answer=f"Coefficient of x^2 = {signed_fraction_text(coefficient)}",
-            worked_solution=[
-                f"First terms: {left_expression} = {left_terms} + ...",
-                f"First terms: {right_expression} = {right_terms} + ...",
-                "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
-                f"So the coefficient is {signed_fraction_text(left_x2)} + ({signed_fraction_text(left_x)})({signed_fraction_text(right_x)}) + {signed_fraction_text(right_x2)} = {signed_fraction_text(coefficient)}.",
+    cases = [
+        {
+            "item_type": "expand_to_cubic",
+            "sequence_stage": "first_step",
+            "difficulty_band": "easy",
+            "prompt": "Expand (1 - 2x)^-2 up to and including the x^3 term, and state the validity condition.",
+            "answer": "1 + 4x + 12x^2 + 32x^3, valid for |x| < 1/2",
+            "worked_solution": [
+                "Use (1 + u)^n with u = -2x and n = -2.",
+                "The linear term is (-2)(-2x) = 4x.",
+                "The x^2 term is (-2)(-3)(-2x)^2/2 = 12x^2.",
+                "The x^3 term is (-2)(-3)(-4)(-2x)^3/6 = 32x^3.",
+                "Validity is |-2x| < 1, so |x| < 1/2.",
             ],
+            "parameters": {
+                "n": "-2",
+                "k": -2,
+                "max_power": 3,
+                "x_coefficient": "4",
+                "x2_coefficient": "12",
+                "x3_coefficient": "32",
+            },
+        },
+        {
+            "item_type": "rewrite_then_expand",
+            "sequence_stage": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Rewrite sqrt(2 - 6x) in binomial form, then expand up to and including the x^2 term.",
+            "answer": "sqrt(2)(1 - (3/2)x - (9/8)x^2), valid for |x| < 1/3",
+            "worked_solution": [
+                "Factor out 2: sqrt(2 - 6x) = sqrt(2)(1 - 3x)^(1/2).",
+                "Use n = 1/2 and u = -3x.",
+                "The first terms are 1 - (3/2)x - (9/8)x^2.",
+                "So the expansion is sqrt(2)(1 - (3/2)x - (9/8)x^2), valid for |3x| < 1.",
+            ],
+            "parameters": {
+                "n": "1/2",
+                "k": -3,
+                "max_power": 2,
+                "validity": "|x| < 1/3",
+            },
+        },
+        {
+            "item_type": "coefficient_extraction",
+            "sequence_stage": "guardian_prep",
+            "difficulty_band": "medium",
+            "prompt": "Find the coefficient of x^3 in (3 + x)/(1 + 3x), using a binomial expansion.",
+            "answer": "coefficient of x^3 = -72",
+            "worked_solution": [
+                "Write (3 + x)/(1 + 3x) as (3 + x)(1 + 3x)^-1.",
+                "Expand (1 + 3x)^-1 = 1 - 3x + 9x^2 - 27x^3 + ...",
+                "The x^3 coefficient comes from 3(-27x^3) and x(9x^2).",
+                "So the coefficient is -81 + 9 = -72.",
+            ],
+            "parameters": {
+                "coefficient_x3": "-72",
+                "denominator_k": 3,
+                "numerator_constant": 3,
+                "numerator_x_coefficient": 1,
+            },
+        },
+    ]
+    items: list[dict[str, Any]] = []
+    for index, case in enumerate(cases, start=1):
+        practice_id = f"gen_binomial_first_terms_and_coefficient_{index:04d}"
+        parameters = {
+            **case["parameters"],
+            "item_type": str(case["item_type"]),
+            "sequence_stage": str(case["sequence_stage"]),
+            "topic_contract_id": "algebra_binomial_expansion",
+        }
+        items.append(base_item(
+            practice_id=practice_id,
+            generator_family=BINOMIAL_FAMILY,
+            topic=BINOMIAL_TOPIC,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
             parameters=parameters,
             context=context,
             sequence_role=str(case["sequence_stage"]),
             difficulty_band=str(case["difficulty_band"]),
             snippet_ids=preferred_snippet_ids(context, BINOMIAL_TOPIC, ["p3-binomial-term-001"]),
         ))
-        index += 1
 
     return items
 
@@ -812,60 +782,72 @@ def coefficient_symbol(index: int) -> str:
 
 def build_partial_fractions_distinct_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"item_type": "setup_form", "roots": [1, -2], "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"item_type": "decompose", "roots": [1, -2], "constants": [2, 1], "sequence_role": "complete_step", "difficulty_band": "easy"},
-        {"item_type": "decompose", "roots": [3, -1], "constants": [-1, 4], "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {
+            "item_type": "distinct_form",
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+            "prompt": "Write the partial-fraction form for \\frac{x + 3}{(x - 2)(x + 1)}. Do not solve for constants.",
+            "answer": "\\frac{A}{x - 2} + \\frac{B}{x + 1}",
+            "worked_solution": [
+                "The denominator has two distinct linear factors.",
+                "Each distinct linear factor gets one constant numerator.",
+                "Use A over x - 2 and B over x + 1.",
+            ],
+        },
+        {
+            "item_type": "distinct_decompose",
+            "sequence_role": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Decompose \\frac{x + 3}{(x - 2)(x + 1)} into partial fractions.",
+            "answer": "\\frac{5}{3(x - 2)} - \\frac{2}{3(x + 1)}",
+            "worked_solution": [
+                "Start with A/(x - 2) + B/(x + 1).",
+                "Multiplying through gives x + 3 = A(x + 1) + B(x - 2).",
+                "Set x = 2 to get A = 5/3.",
+                "Set x = -1 to get B = -2/3.",
+            ],
+        },
+        {
+            "item_type": "quadratic_form",
+            "sequence_role": "first_step",
+            "difficulty_band": "medium",
+            "prompt": "Write the partial-fraction form for \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)}. Do not solve for constants.",
+            "answer": "\\frac{A}{x + 1} + \\frac{Bx + C}{x^2 + 2}",
+            "worked_solution": [
+                "The factor x + 1 is linear, so it gets a constant numerator.",
+                "The irreducible quadratic x^2 + 2 gets a linear numerator.",
+                "The correct form is A/(x + 1) + (Bx + C)/(x^2 + 2).",
+            ],
+        },
+        {
+            "item_type": "quadratic_decompose",
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+            "prompt": "Decompose \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)} into partial fractions.",
+            "answer": "\\frac{3}{x + 1} - \\frac{x}{x^2 + 2}",
+            "worked_solution": [
+                "Start with A/(x + 1) + (Bx + C)/(x^2 + 2).",
+                "Multiplying through gives 2x^2 - x + 6 = A(x^2 + 2) + (Bx + C)(x + 1).",
+                "Set x = -1 to get A = 3.",
+                "Compare coefficients to get B = -1 and C = 0.",
+            ],
+        },
     ]
     items: list[dict[str, Any]] = []
     for index, case in enumerate(cases, start=1):
-        roots = [int(value) for value in case["roots"]]
-        factors = [linear_factor(root) for root in roots]
-        denominator = "".join(f"({factor})" for factor in factors)
-        form = " + ".join(fraction_term(coefficient_symbol(i), factor) for i, factor in enumerate(factors))
+        practice_id = f"gen_partial_fractions_distinct_linear_{index:04d}"
         parameters: dict[str, Any] = {
             "item_type": str(case["item_type"]),
-            "root_a": roots[0],
-            "root_b": roots[1],
+            "topic_contract_id": "algebra_partial_fractions",
         }
-        practice_id = f"gen_partial_fractions_distinct_linear_{index:04d}"
-
-        if case["item_type"] == "setup_form":
-            prompt = f"Write the partial-fraction form for \\frac{{3x+1}}{{{denominator}}}. Do not solve for the constants."
-            answer = form
-            worked_solution = [
-                "The denominator has two distinct linear factors.",
-                "Each distinct linear factor gets one constant numerator.",
-                f"So the setup is {form}.",
-            ]
-        else:
-            constants = [int(value) for value in case["constants"]]
-            a, b = roots
-            a_const, b_const = constants
-            x_coefficient = a_const + b_const
-            constant_term = -a_const * b - b_const * a
-            numerator = polynomial_text([(x_coefficient, 1), (constant_term, 0)])
-            parameters.update({
-                "constant_a": a_const,
-                "constant_b": b_const,
-                "numerator_constant": constant_term,
-                "numerator_x_coefficient": x_coefficient,
-            })
-            prompt = f"Decompose \\frac{{{numerator}}}{{{denominator}}} into partial fractions."
-            answer = signed_fraction_sum([(a_const, factors[0]), (b_const, factors[1])])
-            worked_solution = [
-                f"Start with {form}.",
-                f"Multiplying by {denominator} gives {numerator} = A({factors[1]}) + B({factors[0]}).",
-                f"Substituting x = {a} gives A = {a_const}; substituting x = {b} gives B = {b_const}.",
-                f"Therefore the decomposition is {answer}.",
-            ]
 
         items.append(base_item(
             practice_id=practice_id,
             generator_family=PARTIAL_FRACTIONS_DISTINCT_FAMILY,
             topic=PARTIAL_FRACTIONS_TOPIC,
-            prompt=prompt,
-            answer=answer,
-            worked_solution=worked_solution,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
             parameters=parameters,
             context=context,
             sequence_role=str(case["sequence_role"]),
@@ -880,83 +862,59 @@ def build_partial_fractions_distinct_items(context: dict[str, Any]) -> list[dict
 
 def build_partial_fractions_repeated_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"item_type": "setup_repeated", "root": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"item_type": "decompose_repeated", "root": 1, "constants": [3, 5], "sequence_role": "complete_step", "difficulty_band": "easy"},
         {
-            "item_type": "decompose_repeated_with_distinct",
-            "root": -2,
-            "distinct_root": 1,
-            "constants": [2, -3, 1],
+            "item_type": "repeated_form",
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+            "prompt": "Write the partial-fraction form for \\frac{3x^2 + 2}{x(x - 1)^2}. Do not solve for constants.",
+            "answer": "\\frac{A}{x} + \\frac{B}{x - 1} + \\frac{C}{(x - 1)^2}",
+            "worked_solution": [
+                "The factor x is a distinct linear factor, so it gets A/x.",
+                "The repeated factor (x - 1)^2 needs terms over x - 1 and (x - 1)^2.",
+                "The form is A/x + B/(x - 1) + C/(x - 1)^2.",
+            ],
+        },
+        {
+            "item_type": "repeated_decompose",
+            "sequence_role": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Decompose \\frac{3x^2 + 2}{x(x - 1)^2} into partial fractions.",
+            "answer": "\\frac{2}{x} + \\frac{1}{x - 1} + \\frac{5}{(x - 1)^2}",
+            "worked_solution": [
+                "Start with A/x + B/(x - 1) + C/(x - 1)^2.",
+                "Multiplying through gives 3x^2 + 2 = A(x - 1)^2 + Bx(x - 1) + Cx.",
+                "Set x = 0 to get A = 2 and x = 1 to get C = 5.",
+                "Compare coefficients to get B = 1.",
+            ],
+        },
+        {
+            "item_type": "mixed_form_review",
             "sequence_role": "guardian_prep",
             "difficulty_band": "medium",
+            "prompt": "For each denominator, name the partial-fraction form: (i) (x - 2)(x + 1), (ii) x(x - 1)^2, (iii) (x + 1)(x^2 + 2).",
+            "answer": "(i) A/(x - 2) + B/(x + 1); (ii) A/x + B/(x - 1) + C/(x - 1)^2; (iii) A/(x + 1) + (Bx + C)/(x^2 + 2)",
+            "worked_solution": [
+                "Distinct linear factors each get one constant numerator.",
+                "A repeated linear factor needs every power up to the repeated power.",
+                "An irreducible quadratic factor gets a linear numerator Bx + C.",
+            ],
         },
     ]
     items: list[dict[str, Any]] = []
     for index, case in enumerate(cases, start=1):
-        root = int(case["root"])
-        factor = linear_factor(root)
-        repeated_denominator = f"({factor})^2"
         practice_id = f"gen_partial_fractions_repeated_linear_{index:04d}"
-        parameters: dict[str, Any] = {"item_type": str(case["item_type"]), "root": root}
-
-        if case["item_type"] == "setup_repeated":
-            answer = f"{fraction_term('A', factor)} + {fraction_term('B', f'({factor})^2')}"
-            prompt = f"Write the partial-fraction form for \\frac{{2x+1}}{{{repeated_denominator}}}. Do not solve for the constants."
-            worked_solution = [
-                "A repeated linear factor needs one term for each power.",
-                f"Use one term over {factor} and one term over ({factor})^2.",
-                f"So the setup is {answer}.",
-            ]
-        elif case["item_type"] == "decompose_repeated":
-            a_const, b_const = [int(value) for value in case["constants"]]
-            x_coefficient = a_const
-            constant_term = -a_const * root + b_const
-            numerator = polynomial_text([(x_coefficient, 1), (constant_term, 0)])
-            answer = signed_fraction_sum([(a_const, factor), (b_const, f"({factor})^2")])
-            prompt = f"Decompose \\frac{{{numerator}}}{{{repeated_denominator}}} into partial fractions."
-            parameters.update({"constant_a": a_const, "constant_b": b_const})
-            worked_solution = [
-                f"Start with {fraction_term('A', factor)} + {fraction_term('B', f'({factor})^2')}.",
-                f"Multiplying through gives {numerator} = A({factor}) + B.",
-                f"Comparing coefficients gives A = {a_const} and B = {b_const}.",
-                f"So the decomposition is {answer}.",
-            ]
-        else:
-            distinct_root = int(case["distinct_root"])
-            a_const, b_const, c_const = [int(value) for value in case["constants"]]
-            distinct_factor = linear_factor(distinct_root)
-            denominator = f"({factor})^2({distinct_factor})"
-            # A/(x-r) + B/(x-r)^2 + C/(x-s)
-            x2_coefficient = a_const + c_const
-            x_coefficient = -a_const * (root + distinct_root) + b_const - 2 * c_const * root
-            constant_term = a_const * root * distinct_root - b_const * distinct_root + c_const * root * root
-            numerator = polynomial_text([(x2_coefficient, 2), (x_coefficient, 1), (constant_term, 0)])
-            answer = signed_fraction_sum([
-                (a_const, factor),
-                (b_const, f"({factor})^2"),
-                (c_const, distinct_factor),
-            ])
-            prompt = f"Decompose \\frac{{{numerator}}}{{{denominator}}} into partial fractions."
-            parameters.update({
-                "constant_a": a_const,
-                "constant_b": b_const,
-                "constant_c": c_const,
-                "distinct_root": distinct_root,
-            })
-            worked_solution = [
-                f"The repeated factor gives terms over {factor} and ({factor})^2; the distinct factor gives one term over {distinct_factor}.",
-                f"Start with {fraction_term('A', factor)} + {fraction_term('B', f'({factor})^2')} + {fraction_term('C', distinct_factor)}.",
-                "Multiply through and compare coefficients or substitute convenient roots.",
-                f"The constants are A = {a_const}, B = {b_const}, and C = {c_const}, so {answer}.",
-            ]
+        parameters: dict[str, Any] = {
+            "item_type": str(case["item_type"]),
+            "topic_contract_id": "algebra_partial_fractions",
+        }
 
         items.append(base_item(
             practice_id=practice_id,
             generator_family=PARTIAL_FRACTIONS_REPEATED_FAMILY,
             topic=PARTIAL_FRACTIONS_TOPIC,
-            prompt=prompt,
-            answer=answer,
-            worked_solution=worked_solution,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
             parameters=parameters,
             context=context,
             sequence_role=str(case["sequence_role"]),
@@ -971,51 +929,74 @@ def build_partial_fractions_repeated_items(context: dict[str, Any]) -> list[dict
 
 def build_modulus_equation_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"a": 4, "b": 7, "coefficient": 1, "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"a": 3, "b": 5, "coefficient": 1, "sequence_role": "complete_step", "difficulty_band": "easy"},
-        {"a": -1, "b": 5, "coefficient": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {
+            "item_type": "linear_equals_constant",
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+            "prompt": "Solve |3x + 1| = 7.",
+            "answer": "x = -8/3 or x = 2",
+            "worked_solution": [
+                "Split into 3x + 1 = 7 and 3x + 1 = -7.",
+                "The first equation gives x = 2.",
+                "The second equation gives x = -8/3.",
+                "Both values make the original modulus equal 7.",
+            ],
+        },
+        {
+            "item_type": "modulus_equals_modulus",
+            "sequence_role": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Solve |x + 2| = |3x|.",
+            "answer": "x = -1/2 or x = 1",
+            "worked_solution": [
+                "Use A = B or A = -B for |A| = |B|.",
+                "x + 2 = 3x gives x = 1.",
+                "x + 2 = -3x gives x = -1/2.",
+                "These are the two graph intersection x-values.",
+            ],
+        },
+        {
+            "item_type": "modulus_inequality",
+            "sequence_role": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Solve |x - 3| < 5.",
+            "answer": "-2 < x < 8",
+            "worked_solution": [
+                "The expression x - 3 is within distance 5 of zero.",
+                "Write -5 < x - 3 < 5.",
+                "Add 3 throughout.",
+                "The solution interval is -2 < x < 8.",
+            ],
+        },
+        {
+            "item_type": "graph_interval",
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+            "prompt": "The graphs y = |x + 2| and y = |3x| meet at x = -1/2 and x = 1. For which x-values is |x + 2| < |3x|?",
+            "answer": "x < -1/2 or x > 1",
+            "worked_solution": [
+                "The inequality asks where the graph y = |x + 2| is below y = |3x|.",
+                "The intersection points split the number line into three intervals.",
+                "Testing x = 0 gives |2| < |0|, which is false, so the middle interval is excluded.",
+                "The solution is outside the intersections: x < -1/2 or x > 1.",
+            ],
+        },
     ]
     items: list[dict[str, Any]] = []
     for index, case in enumerate(cases, start=1):
-        a = int(case["a"])
-        b = int(case["b"])
-        coefficient = int(case["coefficient"])
-        inner = linear_expression(coefficient, -a if coefficient == 1 else a)
         practice_id = f"gen_modulus_equation_basic_{index:04d}"
-        parameters = {"a": a, "b": b, "coefficient": coefficient}
-        if case["sequence_role"] == "first_step":
-            prompt = f"Write the two linear equations represented by |{inner}| = {b}."
-            answer = f"{inner} = {b} or {inner} = -{b}"
-            worked_solution = [
-                "A modulus equation says the inside expression has that distance from zero.",
-                "So the inside can equal the positive value or the negative value.",
-                f"The first step is {answer}.",
-            ]
-        else:
-            if coefficient == 1:
-                solutions = [a + b, a - b]
-            else:
-                solutions = [(b - a) // coefficient, (-b - a) // coefficient]
-                if any(coefficient * solution + a not in (b, -b) for solution in solutions):
-                    raise ValueError(f"{practice_id} generated a non-integer modulus solution")
-            solutions = sorted(solutions)
-            prompt = f"Solve |{inner}| = {b}."
-            answer = " or ".join(f"x = {solution}" for solution in solutions)
-            worked_solution = [
-                f"Split the modulus equation into {inner} = {b} and {inner} = -{b}.",
-                "Solve each linear equation separately.",
-                f"This gives {answer}.",
-                "Substitute both values into the original modulus equation to check the distance.",
-            ]
-            parameters["solutions"] = ",".join(str(solution) for solution in solutions)
+        parameters = {
+            "item_type": str(case["item_type"]),
+            "topic_contract_id": "algebra_modulus_graph_equations",
+        }
 
         items.append(base_item(
             practice_id=practice_id,
             generator_family=MODULUS_EQUATION_FAMILY,
             topic=ALGEBRA_TOPIC,
-            prompt=prompt,
-            answer=answer,
-            worked_solution=worked_solution,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
             parameters=parameters,
             context=context,
             sequence_role=str(case["sequence_role"]),
@@ -1027,56 +1008,60 @@ def build_modulus_equation_items(context: dict[str, Any]) -> list[dict[str, Any]
 
 def build_binomial_validity_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"form": "simple", "k": 3, "n": -2, "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"form": "simple_negative", "k": -2, "n": -1, "sequence_role": "complete_step", "difficulty_band": "easy"},
-        {"form": "factor_first", "constant": 2, "k": 1, "n": -3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {
+            "form": "validity_condition",
+            "sequence_role": "first_step",
+            "difficulty_band": "easy",
+            "prompt": "State the interval of validity for the expansion of (1 + 3x)^-2.",
+            "answer": "-1/3 < x < 1/3",
+            "worked_solution": [
+                "For (1 + u)^n with negative or fractional n, require |u| < 1.",
+                "Here u = 3x, so |3x| < 1.",
+                "Therefore -1/3 < x < 1/3.",
+            ],
+        },
+        {
+            "form": "rewrite_factor",
+            "sequence_role": "complete_step",
+            "difficulty_band": "medium",
+            "prompt": "Rewrite (5 - x)^-3 in the form a(1 + kx)^n and state the validity interval.",
+            "answer": "5^-3(1 - x/5)^-3, valid for -5 < x < 5",
+            "worked_solution": [
+                "Factor out 5 before applying the binomial expansion.",
+                "(5 - x)^-3 = 5^-3(1 - x/5)^-3.",
+                "The variable part is -x/5, so |-x/5| < 1.",
+                "Therefore -5 < x < 5.",
+            ],
+        },
+        {
+            "form": "estimate_value",
+            "sequence_role": "guardian_prep",
+            "difficulty_band": "medium",
+            "prompt": "Using sqrt(1 + x) = 1 + x/2 - x^2/8 + ..., estimate sqrt(1.04).",
+            "answer": "1.0198",
+            "worked_solution": [
+                "Use x = 0.04 in the expansion.",
+                "1 + x/2 - x^2/8 = 1 + 0.02 - 0.0016/8.",
+                "This gives 1.0198.",
+            ],
+        },
     ]
     items: list[dict[str, Any]] = []
     for index, case in enumerate(cases, start=1):
         practice_id = f"gen_binomial_validity_range_{index:04d}"
         sequence_role = str(case["sequence_role"])
-        parameters = {key: value for key, value in case.items() if key not in {"sequence_role", "difficulty_band"}}
-        if case["form"] == "simple":
-            k = int(case["k"])
-            expression = f"(1 + {k}x)^{{{int(case['n'])}}}"
-            prompt = f"For an expansion of {expression} in ascending powers of x, state the validity condition before simplifying it."
-            answer = f"|{k}x| < 1"
-            worked_solution = [
-                "The binomial expansion with a negative or fractional power needs the variable part to have modulus less than 1.",
-                f"Here the variable part is {k}x.",
-                f"So the first condition is {answer}.",
-            ]
-        elif case["form"] == "simple_negative":
-            k = abs(int(case["k"]))
-            expression = f"(1 - {k}x)^{{{int(case['n'])}}}"
-            prompt = f"State the interval of validity for the expansion of {expression}."
-            answer = f"-1/{k} < x < 1/{k}"
-            worked_solution = [
-                "The variable part is -2x, so |-2x| < 1.",
-                "This is the same as |2x| < 1.",
-                f"Therefore {answer}.",
-            ]
-        else:
-            constant = int(case["constant"])
-            k = int(case["k"])
-            expression = f"({constant} + x)^{{{int(case['n'])}}}"
-            prompt = f"Rewrite {expression} into binomial form and state the interval of validity."
-            answer = f"2^{{-3}}(1 + x/2)^{{-3}}, valid for -2 < x < 2"
-            worked_solution = [
-                "Factor out the constant before using the binomial expansion.",
-                f"{expression} = {constant}^{{-3}}(1 + x/{constant})^{{-3}}.",
-                "The variable part is x/2, so |x/2| < 1.",
-                "Therefore -2 < x < 2.",
-            ]
-            parameters.update({"variable_part_denominator": constant})
+        parameters = {
+            "form": str(case["form"]),
+            "topic_contract_id": "algebra_binomial_expansion",
+        }
 
         items.append(base_item(
             practice_id=practice_id,
             generator_family=BINOMIAL_VALIDITY_FAMILY,
             topic=BINOMIAL_TOPIC,
-            prompt=prompt,
-            answer=answer,
-            worked_solution=worked_solution,
+            prompt=str(case["prompt"]),
+            answer=str(case["answer"]),
+            worked_solution=[str(step) for step in case["worked_solution"]],
             parameters=parameters,
             context=context,
             sequence_role=sequence_role,
@@ -1437,55 +1422,128 @@ def build_algebra_structure_items(context: dict[str, Any]) -> list[dict[str, Any
 
 def build_polynomial_remainder_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_polynomial_remainder_factor_basic_{index:04d}"
-    item_type = item_type_parameter(case, practice_id, {"substitution_value", "remainder", "factor_parameter"})
+    item_type = item_type_parameter(case, practice_id, {
+        "division_no_remainder",
+        "division_remainder",
+        "division_missing_zero",
+        "division_non_monic",
+        "substitution_value",
+        "remainder_non_monic",
+        "show_factor",
+        "factor_parameter",
+        "two_condition_parameters",
+        "solve_by_factors",
+    })
     sequence_role = sequence_role_parameter(case, practice_id)
     difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    is_division_item = item_type.startswith("division_")
     parameters: dict[str, Any] = {
         "item_type": item_type,
-        "safe_bounds": "cubic coefficients and substitution values kept small; parameter cases checked exactly",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
+        "topic_contract_id": "algebra_polynomial_division" if is_division_item else "algebra_remainder_factor_theorem",
     }
 
-    if item_type == "substitution_value":
-        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
-        require_safe(root != 0, practice_id, "root substitution must be non-zero")
-        prompt = f"For f(x) = x^3 - 4x + 1, what value gives the remainder on division by {linear_factor(root)}?"
-        answer = f"evaluate f({root})"
+    if item_type == "division_no_remainder":
+        prompt = "Divide x^3 - 6x^2 + 11x - 6 by x - 1."
+        answer = "quotient = x^2 - 5x + 6, remainder = 0"
         worked_solution = [
-            "The remainder theorem says the remainder after division by x - a is f(a).",
+            "Divide the leading terms: x^3 divided by x is x^2.",
+            "Subtract x^3 - x^2 to get -5x^2 + 11x - 6.",
+            "Continue with -5x, then +6.",
+            "The quotient is x^2 - 5x + 6 and the remainder is 0.",
+        ]
+    elif item_type == "division_remainder":
+        prompt = "Divide x^3 + 3x^2 - x + 5 by x - 2, giving the quotient and remainder."
+        answer = "quotient = x^2 + 5x + 9, remainder = 23"
+        worked_solution = [
+            "x^3 divided by x gives x^2; subtract x^3 - 2x^2.",
+            "The next line is 5x^2 - x + 5; divide to get +5x.",
+            "The next line is 9x + 5; divide to get +9.",
+            "Subtract 9x - 18, leaving remainder 23.",
+        ]
+    elif item_type == "division_missing_zero":
+        prompt = "Divide 2x^3 - 5x + 4 by x + 1, writing the missing term first."
+        answer = "quotient = 2x^2 - 2x - 3, remainder = 7"
+        worked_solution = [
+            "Write the dividend as 2x^3 + 0x^2 - 5x + 4.",
+            "2x^3 divided by x gives 2x^2; subtract 2x^3 + 2x^2.",
+            "Continue with -2x, then -3.",
+            "The remainder is 7.",
+        ]
+    elif item_type == "division_non_monic":
+        prompt = "Divide 2x^3 - x^2 + 5x + 7 by 2x + 1, giving the quotient and remainder."
+        answer = "quotient = x^2 - x + 3, remainder = 4"
+        worked_solution = [
+            "2x^3 divided by 2x gives x^2.",
+            "Subtract (2x + 1)x^2 to get -2x^2 + 5x + 7.",
+            "Next terms are -x and +3.",
+            "Multiplying back gives 2x^3 - x^2 + 5x + 3, so the remainder is 4.",
+        ]
+    elif item_type == "substitution_value":
+        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
+        prompt = f"For f(x) = x^3 - 4x + 1, what substitution gives the remainder on division by {linear_factor(root)}?"
+        answer = f"x = {root}"
+        worked_solution = [
+            "The remainder theorem says the remainder after division by x - a is found by evaluating f(a).",
             f"Here the divisor is {linear_factor(root)}, so a = {root}.",
             f"The first move is to evaluate f({root}).",
         ]
         parameters.update({"root": root})
-    elif item_type == "remainder":
-        root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
-        a = int_parameter(case, "a", practice_id, min_value=-4, max_value=4, allow_zero=False)
-        b = int_parameter(case, "b", practice_id, min_value=-8, max_value=8)
-        c = int_parameter(case, "c", practice_id, min_value=-9, max_value=9)
-        remainder = root ** 3 + a * root * root + b * root + c
-        require_safe(abs(remainder) <= 120, practice_id, "remainder magnitude is too large")
-        expression = polynomial_text([(1, 3), (a, 2), (b, 1), (c, 0)])
-        prompt = f"Find the remainder when f(x) = {expression} is divided by {linear_factor(root)}."
-        answer = f"remainder = {remainder}"
+    elif item_type == "remainder_non_monic":
+        prompt = "Find the remainder when f(x) = 2x^3 - x + 4 is divided by 2x + 1."
+        answer = "remainder = 17/4"
         worked_solution = [
-            f"Use the remainder theorem with x = {root}.",
-            f"Calculate f({root}) = {root}^3 + ({a})({root})^2 + ({b})({root}) + {c}.",
-            f"So the remainder is {remainder}.",
+            "Set the divisor equal to zero: 2x + 1 = 0, so x = -1/2.",
+            "Evaluate f(-1/2).",
+            "2(-1/8) - (-1/2) + 4 = -1/4 + 1/2 + 4 = 17/4.",
         ]
-        parameters.update({"root": root, "a": a, "b": b, "c": c, "remainder": remainder})
-    else:
+        parameters.update({"root": "-1/2", "remainder": "17/4"})
+    elif item_type == "show_factor":
+        prompt = "Show that x - 2 is a factor of x^3 - 3x^2 - 4x + 12."
+        answer = "f(2) = 0, so x - 2 is a factor"
+        worked_solution = [
+            "For x - 2, use x = 2.",
+            "f(2) = 2^3 - 3(2^2) - 4(2) + 12.",
+            "This is 8 - 12 - 8 + 12 = 0.",
+            "A zero remainder means x - 2 is a factor.",
+        ]
+        parameters.update({"root": 2, "remainder": 0})
+    elif item_type == "factor_parameter":
         root = int_parameter(case, "root", practice_id, min_value=-5, max_value=5)
         constant = int_parameter(case, "constant", practice_id, min_value=-9, max_value=9)
         require_safe(root != 0, practice_id, "factor parameter root must be non-zero")
-        parameter = -(root ** 3 + constant) // root
-        require_safe(root ** 3 + parameter * root + constant == 0, practice_id, "parameter must make the divisor a factor")
-        prompt = f"Find k if {linear_factor(root)} is a factor of x^3 + kx + {constant}."
+        numerator = -(root ** 3 - root + constant)
+        require_safe(numerator % (root * root) == 0, practice_id, "parameter must be an integer")
+        parameter = numerator // (root * root)
+        require_safe(root ** 3 + parameter * root * root - root + constant == 0, practice_id, "parameter must make the divisor a factor")
+        prompt = f"Find k if {linear_factor(root)} is a factor of x^3 + kx^2 - x + {constant}."
         answer = f"k = {parameter}"
         worked_solution = [
-            f"If {linear_factor(root)} is a factor, then f({root}) = 0.",
-            f"So {root}^3 + k({root}) + {constant} = 0.",
+            f"If {linear_factor(root)} is a factor, use f({root}) = 0.",
+            f"Substitution gives {root}^3 + k({root})^2 - ({root}) + {constant} = 0.",
             f"Solving gives k = {parameter}.",
         ]
         parameters.update({"root": root, "constant": constant, "k": parameter})
+    elif item_type == "two_condition_parameters":
+        prompt = "For f(x) = x^3 + ax^2 + bx + 6, x - 1 is a factor and the remainder on division by x + 2 is 12. Find a and b."
+        answer = "a = 0, b = -7"
+        worked_solution = [
+            "Factor condition: f(1) = 0, so 1 + a + b + 6 = 0 and a + b = -7.",
+            "Remainder condition: f(-2) = 12.",
+            "-8 + 4a - 2b + 6 = 12, so 2a - b = 7.",
+            "Solving the simultaneous equations gives a = 0 and b = -7.",
+        ]
+        parameters.update({"factor_root": 1, "remainder_root": -2, "remainder": 12, "a": 0, "b": -7})
+    else:
+        prompt = "Solve x^3 - 4x^2 - x + 4 = 0, using simple factors."
+        answer = "x = -1, 1, or 4"
+        worked_solution = [
+            "Test simple roots: f(1) = 0, so x - 1 is a factor.",
+            "Factor by grouping: x^3 - 4x^2 - x + 4 = (x^2 - 1)(x - 4).",
+            "Then (x^2 - 1)(x - 4) = (x - 1)(x + 1)(x - 4).",
+            "So the solutions are x = -1, 1, and 4.",
+        ]
+        parameters.update({"roots": "-1,1,4"})
 
     return review_queue_item(
         practice_id=practice_id,
@@ -1504,9 +1562,16 @@ def build_polynomial_remainder_item(context: dict[str, Any], index: int, case: d
 
 def build_polynomial_remainder_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     cases = [
-        {"item_type": "substitution_value", "root": 2, "sequence_role": "first_step", "difficulty_band": "easy"},
-        {"item_type": "remainder", "root": 2, "a": -1, "b": -3, "c": 4, "sequence_role": "complete_step", "difficulty_band": "medium"},
-        {"item_type": "factor_parameter", "root": 1, "constant": 2, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {"item_type": "division_no_remainder", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "division_remainder", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "division_missing_zero", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "division_non_monic", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {"item_type": "substitution_value", "root": -2, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "remainder_non_monic", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "show_factor", "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "factor_parameter", "root": -1, "constant": 5, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+        {"item_type": "two_condition_parameters", "sequence_role": "guardian_prep", "difficulty_band": "hard"},
+        {"item_type": "solve_by_factors", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_polynomial_remainder_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
@@ -2377,9 +2442,11 @@ def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: di
         if item_type == "dot_product":
             prompt = f"Find {vector_text(left)} . {vector_text(right)}."
             answer = f"dot product = {dot}"
+            topic_contract_id = "vectors_scalar_product"
         else:
             prompt = f"Use a scalar product to decide whether {vector_text(left)} and {vector_text(right)} are perpendicular."
             answer = f"dot product = {dot}; the vectors are {perpendicular_text}"
+            topic_contract_id = "vectors_scalar_product"
         worked_solution = [
             "Multiply matching components and add.",
             f"{vector_text(left)} . {vector_text(right)} = {left[0]}({right[0]}) + {left[1]}({right[1]}) + {left[2]}({right[2]}).",
@@ -2395,6 +2462,7 @@ def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: di
             "right_y": right[1],
             "right_z": right[2],
             "dot": dot,
+            "topic_contract_id": topic_contract_id,
         })
     else:
         left = vector_from_case(case, "left", practice_id)
@@ -2422,6 +2490,7 @@ def build_vectors_line_scalar_item(context: dict[str, Any], index: int, case: di
             "dot": dot,
             "left_norm": left_norm,
             "right_norm": right_norm,
+            "topic_contract_id": "vectors_angle_between_lines",
         })
 
     return review_queue_item(
@@ -3250,7 +3319,7 @@ def build_vectors_line_intersection_item(context: dict[str, Any], index: int, ca
                 "The z-components also agree.",
                 "Substitute lambda = 1 into the first line to get (3, 1, 1).",
             ]
-        parameters.update({"lambda": 1, "mu": 0})
+        parameters.update({"lambda": 1, "mu": 0, "topic_contract_id": "vectors_intersect_parallel_skew"})
     else:
         lambda_value = int_parameter(case, "lambda_value", practice_id, min_value=-5, max_value=5)
         point = (1, 2, 0)
@@ -3264,7 +3333,7 @@ def build_vectors_line_intersection_item(context: dict[str, Any], index: int, ca
             "Check the z-coordinate: lambda = 2 gives z = 2.",
             f"Use the y-coordinate: k = 2 - 2 = {target[1]}.",
         ]
-        parameters.update({"lambda_value": lambda_value, "k": target[1]})
+        parameters.update({"lambda_value": lambda_value, "k": target[1], "topic_contract_id": "vectors_line_equation"})
 
     return review_queue_item(
         practice_id=practice_id,
@@ -3317,6 +3386,7 @@ def build_vectors_line_relationship_item(context: dict[str, Any], index: int, ca
             f"So the direction vector is {vector_text(direction)}.",
         ]
         parameters.update({"ax": ax, "ay": ay, "az": az, "bx": bx, "by": by, "bz": bz})
+        parameters["topic_contract_id"] = "vectors_notation"
     elif item_type == "point_from_parameter":
         point = vector_from_case(case, "point", practice_id, allow_zero_vector=True)
         direction = vector_from_case(case, "direction", practice_id)
@@ -3337,6 +3407,7 @@ def build_vectors_line_relationship_item(context: dict[str, Any], index: int, ca
             "direction_y": direction[1],
             "direction_z": direction[2],
             "parameter_value": parameter_value,
+            "topic_contract_id": "vectors_line_equation",
         })
     else:
         first_direction = vector_from_case(case, "first_direction", practice_id)
@@ -3354,6 +3425,7 @@ def build_vectors_line_relationship_item(context: dict[str, Any], index: int, ca
             "first_direction_y": first_direction[1],
             "first_direction_z": first_direction[2],
             "scale_factor": scale_factor,
+            "topic_contract_id": "vectors_magnitude_unit_parallel",
         })
 
     return review_queue_item(
@@ -3483,9 +3555,7 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
     items = (
         build_log_items(context)
         + build_binomial_items(context)
-        + build_algebra_structure_items(context)
         + build_polynomial_remainder_items(context)
-        + build_quadratics_discriminant_items(context)
         + build_log_domain_items(context)
         + build_log_linearisation_items(context)
         + build_log_calculus_context_items(context)
@@ -3631,6 +3701,7 @@ def runtime_payload(payload: dict[str, Any], existing_runtime: dict[str, Any] | 
     runtime_items = [
         item for item in payload.get("items", [])
         if runtime_ready_item(item)
+        and non_empty_string(item.get("generator_family")) not in QUARANTINED_RUNTIME_GENERATOR_FAMILIES
     ]
     emitted_ids = {
         item["practice_id"] for item in runtime_items
@@ -3643,6 +3714,7 @@ def runtime_payload(payload: dict[str, Any], existing_runtime: dict[str, Any] | 
             if (
                 not practice_id
                 or practice_id in emitted_ids
+                or generator_family in QUARANTINED_RUNTIME_GENERATOR_FAMILIES
                 or generator_family in PROMOTED_RUNTIME_GENERATOR_FAMILIES
                 or not runtime_ready_item(item)
             ):

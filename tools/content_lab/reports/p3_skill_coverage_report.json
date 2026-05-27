@@ -52,7 +52,7 @@
       {
         "curriculum_role": "p3_core",
         "high_evidence_weak_teaching_support": 0,
-        "skills_with_generated_warm_up": 40,
+        "skills_with_generated_warm_up": 38,
         "skills_with_quick_check": 40,
         "skills_with_snippet": 40,
         "skills_with_trainable_canonical_question": 40,
@@ -63,7 +63,7 @@
       {
         "high_evidence_weak_teaching_support": 0,
         "region_id": "algebra-forge",
-        "skills_with_generated_warm_up": 7,
+        "skills_with_generated_warm_up": 5,
         "skills_with_quick_check": 7,
         "skills_with_snippet": 7,
         "skills_with_trainable_canonical_question": 7,
@@ -145,7 +145,7 @@
     "coverage_by_syllabus_topic": [
       {
         "high_evidence_weak_teaching_support": 0,
-        "skills_with_generated_warm_up": 7,
+        "skills_with_generated_warm_up": 5,
         "skills_with_quick_check": 7,
         "skills_with_snippet": 7,
         "skills_with_trainable_canonical_question": 7,
@@ -225,12 +225,25 @@
         "total_skills": 3
       }
     ],
-    "readiness_label": "ready",
-    "ready_for_full_p3_learning": true
+    "readiness_label": "not_ready",
+    "ready_for_full_p3_learning": false
   },
   "gaps": {
     "high_evidence_skills_with_weak_teaching_support": [],
-    "skills_with_no_generated_warm_up": [],
+    "skills_with_no_generated_warm_up": [
+      {
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_discriminant_root_conditions",
+        "syllabus_topic": "Algebra"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "region_id": "algebra-forge",
+        "skill_id": "p3_alg_structure_rearrangement",
+        "syllabus_topic": "Algebra"
+      }
+    ],
     "skills_with_no_quick_check": [],
     "skills_with_no_snippet": [],
     "skills_with_no_trainable_canonical_question": []
@@ -366,7 +379,7 @@
     {
       "canonical_source_question_count": 1,
       "curriculum_role": "p3_core",
-      "has_generated_warm_up": true,
+      "has_generated_warm_up": false,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
@@ -389,9 +402,7 @@
         }
       ],
       "region_id": "algebra-forge",
-      "resolved_generator_families": [
-        "quadratics.discriminant_root_condition_basic"
-      ],
+      "resolved_generator_families": [],
       "resolved_guardian_candidates": [
         "32autumn25_q05"
       ],
@@ -407,14 +418,18 @@
       "skill_id": "p3_alg_discriminant_root_conditions",
       "syllabus_topic": "Algebra",
       "trainable_canonical_question_count": 1,
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "quadratics.discriminant_root_condition_basic"
+      ],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
-      "weak_support_reasons": []
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
     },
     {
       "canonical_source_question_count": 3,
@@ -469,7 +484,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 4,
       "weak_support_reasons": []
     },
     {
@@ -524,7 +539,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 6,
+      "warm_up_item_count": 7,
       "weak_support_reasons": []
     },
     {
@@ -577,13 +592,13 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
+      "warm_up_item_count": 10,
       "weak_support_reasons": []
     },
     {
       "canonical_source_question_count": 3,
       "curriculum_role": "p3_core",
-      "has_generated_warm_up": true,
+      "has_generated_warm_up": false,
       "has_quick_check": true,
       "has_snippet": true,
       "has_trainable_canonical_question": true,
@@ -601,9 +616,7 @@
         }
       ],
       "region_id": "algebra-forge",
-      "resolved_generator_families": [
-        "algebra.structure_rearrangement_basic"
-      ],
+      "resolved_generator_families": [],
       "resolved_guardian_candidates": [
         "32summer22_q03"
       ],
@@ -621,14 +634,18 @@
       "skill_id": "p3_alg_structure_rearrangement",
       "syllabus_topic": "Algebra",
       "trainable_canonical_question_count": 3,
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "algebra.structure_rearrangement_basic"
+      ],
       "unresolved_guardian_candidates": [],
       "unresolved_question_ids": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 3,
-      "weak_support_reasons": []
+      "warm_up_item_count": 0,
+      "weak_support_reasons": [
+        "no_reviewed_generated_warm_up"
+      ]
     },
     {
       "canonical_source_question_count": 5,
@@ -1487,7 +1504,7 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "untrainable_canonical_question_ids": [],
-      "warm_up_item_count": 6,
+      "warm_up_item_count": 7,
       "weak_support_reasons": []
     },
     {
@@ -2513,7 +2530,7 @@
     "high_evidence_skills": 24,
     "high_evidence_weak_teaching_support": 0,
     "mastery_eligible_skills": 40,
-    "ready_for_full_p3_learning": true,
+    "ready_for_full_p3_learning": false,
     "skills_by_curriculum_role": {
       "ambiguous": 0,
       "bridge": 0,
@@ -2522,12 +2539,35 @@
       "p3_core": 40
     },
     "skills_needing_teacher_review": 0,
-    "skills_with_generated_warm_up": 40,
+    "skills_with_generated_warm_up": 38,
     "skills_with_prerequisite_refs": 40,
     "skills_with_quick_check": 40,
     "skills_with_snippet": 40,
     "skills_with_trainable_canonical_question": 40,
     "total_skills": 40
   },
-  "unresolved_reference_warnings": []
+  "unresolved_reference_warnings": [
+    {
+      "skill_id": "p3_alg_discriminant_root_conditions",
+      "unresolved_generator_families": [
+        "quadratics.discriminant_root_condition_basic"
+      ],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": []
+    },
+    {
+      "skill_id": "p3_alg_structure_rearrangement",
+      "unresolved_generator_families": [
+        "algebra.structure_rearrangement_basic"
+      ],
+      "unresolved_guardian_candidates": [],
+      "unresolved_question_ids": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "untrainable_canonical_question_ids": []
+    }
+  ]
 }

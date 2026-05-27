@@ -549,7 +549,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuideVisualSupportNeeds.map((item) => `${item.regionId}/${item.topicId}`)).toEqual(expect.arrayContaining([
       'complex-harbor/locus',
       'complex-harbor/roots',
-      'vector-workshop/line-relationship',
+      'vector-workshop/vectors_intersect_parallel_skew',
       'numerical-mines/iteration-formula',
       'differential-shrine/context-model',
     ]));
@@ -1913,9 +1913,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Field Guide / Algebra Vault');
     expect(container.textContent).toContain('Choose a topic to learn.');
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
-    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(4);
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(5);
+    expect(container.textContent).toContain('Modulus Graphs and Equations');
     expect(container.textContent).toContain('Polynomial Division');
-    expect(container.textContent).toContain('Modulus Equations');
+    expect(container.textContent).toContain('Remainder and Factor Theorem');
     expect(container.textContent).toContain('Partial Fractions');
     expect(container.textContent).toContain('Binomial Expansions');
     expect(container.textContent).toContain('Each topic uses one worked example, one pattern, and one guided try.');
@@ -1927,18 +1928,18 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
     expect(onNavigatePage).toHaveBeenCalledWith('hub');
 
-    const polynomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="polynomial-division"]');
+    const polynomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="algebra_polynomial_division"]');
     expect(polynomialTopic).toBeTruthy();
 
     act(() => {
       polynomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container.textContent).toContain('Topic 1 of 4');
+    expect(container.textContent).toContain('Topic 2 of 5');
     expect(container.textContent).toContain('Current topic');
     expect(container.textContent).toContain('Polynomial Division');
     expect(container.textContent).toContain('Example 1');
-    expect(container.textContent).toContain('Divide by a linear factor');
+    expect(container.textContent).toContain('No-remainder long division');
     expect(container.textContent).toContain('Method pattern');
     expect(container.textContent).toContain('Try one together');
     expect(container.textContent).toContain('Key takeaway');
@@ -1950,10 +1951,10 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       backToTopics!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(4);
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(5);
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
-    const binomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="binomial-expansions"]');
+    const binomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="algebra_binomial_expansion"]');
     expect(binomialTopic).toBeTruthy();
     act(() => {
       binomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -2022,9 +2023,15 @@ describe('FieldGuidePanel teaching snippets', () => {
     const trigTopics = FIELD_GUIDE_TOPICS_BY_REGION['trig-observatory'];
     const complexTopics = FIELD_GUIDE_TOPICS_BY_REGION['complex-harbor'];
 
-    expect(algebraTopics.find((topic) => topic.id === 'modulus-remainders')?.title).toBe('Modulus Equations');
-    expect(algebraTopics.find((topic) => topic.id === 'binomial-expansions')?.examples[0]?.tryPrompt)
-      .toContain('^{-1/2}');
+    expect(algebraTopics.map((topic) => topic.id)).toEqual([
+      'algebra_modulus_graph_equations',
+      'algebra_polynomial_division',
+      'algebra_remainder_factor_theorem',
+      'algebra_partial_fractions',
+      'algebra_binomial_expansion',
+    ]);
+    expect(algebraTopics.find((topic) => topic.id === 'algebra_binomial_expansion')?.examples[0]?.tryPrompt)
+      .toContain('\\sqrt{2-6x}');
     expect(calculusTopics.find((topic) => topic.id === 'implicit-log-exp')?.examples[0]?.prompt)
       .toContain('e^y+\\ln x');
     expect(logTopics.find((topic) => topic.id === 'exponential-calculus-context')?.examples[0]?.prompt)

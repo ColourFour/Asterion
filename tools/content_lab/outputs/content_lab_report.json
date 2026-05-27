@@ -74,7 +74,7 @@
   },
   "active_regions": [
     {
-      "generated_warmups": 24,
+      "generated_warmups": 27,
       "quick_checks": 8,
       "region_id": "algebra-forge",
       "region_name": "Algebra Vault",
@@ -83,11 +83,11 @@
     },
     {
       "generated_warmups": 12,
-      "quick_checks": 4,
+      "quick_checks": 5,
       "region_id": "calculus-cliffs",
       "region_name": "Calculus Cliffs",
-      "snippets": 4,
-      "snippets_with_examples": 4
+      "snippets": 5,
+      "snippets_with_examples": 5
     },
     {
       "generated_warmups": 12,
@@ -106,7 +106,7 @@
       "snippets_with_examples": 3
     },
     {
-      "generated_warmups": 15,
+      "generated_warmups": 16,
       "quick_checks": 5,
       "region_id": "integration-gardens",
       "region_name": "Integral Terraces",
@@ -131,11 +131,11 @@
     },
     {
       "generated_warmups": 12,
-      "quick_checks": 5,
+      "quick_checks": 6,
       "region_id": "trig-observatory",
       "region_name": "Trigonometry Spire",
-      "snippets": 5,
-      "snippets_with_examples": 5
+      "snippets": 6,
+      "snippets_with_examples": 6
     },
     {
       "generated_warmups": 9,
@@ -152,7 +152,7 @@
     "priority_region_depth": [
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 24,
+        "generated_warmups": 27,
         "quick_checks": 8,
         "region_id": "algebra-forge",
         "region_name": "Algebra Vault",
@@ -171,11 +171,11 @@
       {
         "depth_status": "priority_deepened",
         "generated_warmups": 12,
-        "quick_checks": 5,
+        "quick_checks": 6,
         "region_id": "trig-observatory",
         "region_name": "Trigonometry Spire",
-        "snippets": 5,
-        "snippets_with_examples": 5
+        "snippets": 6,
+        "snippets_with_examples": 6
       }
     ],
     "regions_still_thin": [
@@ -202,16 +202,15 @@
   },
   "content_review_status_counts": {
     "generated_practice:needs_review": 6,
-    "generated_practice:teacher_reviewed": 105,
+    "generated_practice:teacher_reviewed": 108,
     "snippet:published": 3,
-    "snippet:teacher_reviewed": 36
+    "snippet:teacher_reviewed": 38
   },
   "generated_by": "tools/content_lab/scripts/build_skill_targets.py",
   "generated_families_by_topic": {
     "algebra": {
-      "algebra.modulus_equation_basic": 3,
-      "algebra.polynomial_remainder_factor_basic": 3,
-      "algebra.structure_rearrangement_basic": 3
+      "algebra.modulus_equation_basic": 4,
+      "algebra.polynomial_remainder_factor_basic": 10
     },
     "binomial_expansion": {
       "algebra.binomial_validity_range": 3,
@@ -254,11 +253,8 @@
       "parametric_equations.derivative_ratio_basic": 3
     },
     "partial_fractions": {
-      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3
-    },
-    "quadratics": {
-      "quadratics.discriminant_root_condition_basic": 3
     },
     "trigonometry": {
       "trigonometry.double_angle_basic": 3,
@@ -274,11 +270,11 @@
   },
   "generated_practice_scope_note": "Legacy generated_warmup coverage fields now report runtime-reviewed public warm-ups. Internal planning/candidate counts are separated under internal_generated_practice_summary.",
   "generated_warmups_per_region": {
-    "algebra-forge": 24,
+    "algebra-forge": 27,
     "calculus-cliffs": 12,
     "complex-harbor": 12,
     "differential-shrine": 9,
-    "integration-gardens": 15,
+    "integration-gardens": 16,
     "logarithm-grove": 12,
     "numerical-mines": 9,
     "trig-observatory": 12,
@@ -286,11 +282,10 @@
   },
   "generator_family_counts": {
     "algebra.binomial_validity_range": 3,
-    "algebra.modulus_equation_basic": 3,
-    "algebra.partial_fractions_distinct_linear": 3,
+    "algebra.modulus_equation_basic": 4,
+    "algebra.partial_fractions_distinct_linear": 4,
     "algebra.partial_fractions_repeated_linear": 3,
-    "algebra.polynomial_remainder_factor_basic": 3,
-    "algebra.structure_rearrangement_basic": 3,
+    "algebra.polynomial_remainder_factor_basic": 10,
     "binomial_expansion.first_terms_and_coefficient": 3,
     "complex_numbers.cartesian_conjugate_basic": 3,
     "complex_numbers.cartesian_locus_roots_basic": 3,
@@ -314,7 +309,6 @@
     "numerical_methods.iteration_formula_basic": 3,
     "numerical_methods.sign_change_iteration_basic": 3,
     "parametric_equations.derivative_ratio_basic": 3,
-    "quadratics.discriminant_root_condition_basic": 3,
     "trigonometry.double_angle_basic": 3,
     "trigonometry.identity_rewrite_basic": 3,
     "trigonometry.r_form_basic": 3,
@@ -393,11 +387,10 @@
     "blocked_candidate_count": 0,
     "generator_family_counts": {
       "algebra.binomial_validity_range": 3,
-      "algebra.modulus_equation_basic": 3,
-      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.modulus_equation_basic": 4,
+      "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3,
-      "algebra.polynomial_remainder_factor_basic": 3,
-      "algebra.structure_rearrangement_basic": 3,
+      "algebra.polynomial_remainder_factor_basic": 10,
       "binomial_expansion.first_terms_and_coefficient": 3,
       "complex_numbers.cartesian_conjugate_basic": 3,
       "complex_numbers.cartesian_locus_roots_basic": 3,
@@ -421,7 +414,6 @@
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 3,
-      "quadratics.discriminant_root_condition_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
@@ -436,18 +428,18 @@
     "published_runtime_count": 0,
     "review_status_counts": {
       "needs_review": 6,
-      "teacher_reviewed": 105
+      "teacher_reviewed": 108
     },
-    "runtime_reviewed_count": 105,
-    "total_count": 111,
+    "runtime_reviewed_count": 108,
+    "total_count": 114,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
-    "algebra-forge": 24,
+    "algebra-forge": 27,
     "calculus-cliffs": 9,
     "complex-harbor": 12,
     "differential-shrine": 9,
-    "integration-gardens": 15,
+    "integration-gardens": 16,
     "logarithm-grove": 12,
     "numerical-mines": 9,
     "trig-observatory": 12,
@@ -462,7 +454,7 @@
       "region_name": "Algebra Vault",
       "snippets": 8,
       "snippets_with_examples": 8,
-      "warmups": 24
+      "warmups": 27
     },
     {
       "method_snippets_missing_examples": [],
@@ -476,20 +468,20 @@
       "method_snippets_missing_examples": [],
       "region_id": "trig-observatory",
       "region_name": "Trigonometry Spire",
-      "snippets": 5,
-      "snippets_with_examples": 5,
+      "snippets": 6,
+      "snippets_with_examples": 6,
       "warmups": 12
     }
   ],
   "quick_checks_per_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 4,
+    "calculus-cliffs": 5,
     "complex-harbor": 3,
     "differential-shrine": 3,
     "integration-gardens": 5,
     "logarithm-grove": 8,
     "numerical-mines": 2,
-    "trig-observatory": 5,
+    "trig-observatory": 6,
     "vector-workshop": 3
   },
   "review_only": 1213,
@@ -512,11 +504,10 @@
     "blocked_candidate_count": 0,
     "generator_family_counts": {
       "algebra.binomial_validity_range": 3,
-      "algebra.modulus_equation_basic": 3,
-      "algebra.partial_fractions_distinct_linear": 3,
+      "algebra.modulus_equation_basic": 4,
+      "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3,
-      "algebra.polynomial_remainder_factor_basic": 3,
-      "algebra.structure_rearrangement_basic": 3,
+      "algebra.polynomial_remainder_factor_basic": 10,
       "binomial_expansion.first_terms_and_coefficient": 3,
       "complex_numbers.cartesian_conjugate_basic": 3,
       "complex_numbers.locus_basic": 3,
@@ -541,7 +532,6 @@
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 1,
-      "quadratics.discriminant_root_condition_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
       "trigonometry.r_form_basic": 3,
@@ -553,12 +543,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 108,
+    "published_runtime_count": 111,
     "review_status_counts": {
-      "teacher_reviewed": 108
+      "teacher_reviewed": 111
     },
-    "runtime_reviewed_count": 108,
-    "total_count": 108,
+    "runtime_reviewed_count": 111,
+    "total_count": 111,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -627,27 +617,32 @@
   "skill_targets_with_snippets_but_no_quick_checks": [],
   "snippets_per_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 4,
+    "calculus-cliffs": 5,
     "complex-harbor": 3,
     "differential-shrine": 3,
     "integration-gardens": 5,
     "logarithm-grove": 8,
     "numerical-mines": 2,
-    "trig-observatory": 5,
+    "trig-observatory": 6,
     "vector-workshop": 3
   },
   "snippets_with_examples_by_region": {
     "algebra-forge": 8,
-    "calculus-cliffs": 4,
+    "calculus-cliffs": 5,
     "complex-harbor": 3,
     "differential-shrine": 3,
     "integration-gardens": 5,
     "logarithm-grove": 8,
     "numerical-mines": 2,
-    "trig-observatory": 5,
+    "trig-observatory": 6,
     "vector-workshop": 3
   },
-  "topics_needing_deterministic_generators": [],
+  "topics_needing_deterministic_generators": [
+    {
+      "paper_family": "p3",
+      "topic": "quadratics"
+    }
+  ],
   "topics_with_no_snippets": [
     {
       "paper_family": "p1",
@@ -778,7 +773,12 @@
       "topic": "work_energy_power"
     }
   ],
-  "topics_with_snippets_but_no_warmups": [],
+  "topics_with_snippets_but_no_warmups": [
+    {
+      "paper_family": "p3",
+      "topic": "quadratics"
+    }
+  ],
   "topics_with_source_records_but_no_skill_targets": [
     {
       "paper_family": "p1",
@@ -895,24 +895,6 @@
   "total_records_read": 1301,
   "verification_failure_counts": {},
   "warmups_linked_to_examples": [
-    {
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0001",
-      "sequence_role": "first_step",
-      "source_snippet_id": "p3-algebra-rearrangement-001"
-    },
-    {
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0002",
-      "sequence_role": "complete_step",
-      "source_snippet_id": "p3-algebra-rearrangement-001"
-    },
-    {
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0003",
-      "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-algebra-rearrangement-001"
-    },
     {
       "example_model_id": "p3-binomial-term-001-example-1",
       "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
@@ -1288,6 +1270,12 @@
     {
       "example_model_id": "p3-modulus-cases-001-example-1",
       "practice_id": "gen_modulus_equation_basic_0003",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-modulus-cases-001"
+    },
+    {
+      "example_model_id": "p3-modulus-cases-001-example-1",
+      "practice_id": "gen_modulus_equation_basic_0004",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-modulus-cases-001"
     },
@@ -1378,6 +1366,12 @@
     {
       "example_model_id": "p3-partial-fractions-form-001-example-1",
       "practice_id": "gen_partial_fractions_distinct_linear_0003",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-partial-fractions-form-001"
+    },
+    {
+      "example_model_id": "p3-partial-fractions-form-001-example-1",
+      "practice_id": "gen_partial_fractions_distinct_linear_0004",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-partial-fractions-form-001"
     },
@@ -1414,26 +1408,50 @@
     {
       "example_model_id": "p3-polynomial-theorem-001-example-1",
       "practice_id": "gen_polynomial_remainder_factor_basic_0003",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0004",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-polynomial-theorem-001"
     },
     {
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0001",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0005",
       "sequence_role": "first_step",
-      "source_snippet_id": "p3-quadratics-discriminant-001"
+      "source_snippet_id": "p3-polynomial-theorem-001"
     },
     {
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0002",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0006",
       "sequence_role": "complete_step",
-      "source_snippet_id": "p3-quadratics-discriminant-001"
+      "source_snippet_id": "p3-polynomial-theorem-001"
     },
     {
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0003",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0007",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0008",
       "sequence_role": "guardian_prep",
-      "source_snippet_id": "p3-quadratics-discriminant-001"
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0009",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-polynomial-theorem-001"
+    },
+    {
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0010",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-polynomial-theorem-001"
     },
     {
       "example_model_id": "p3-trig-identity-selection-001-example-1",

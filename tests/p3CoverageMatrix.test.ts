@@ -149,6 +149,10 @@ const correctionPriorityLabels: CorrectionPriority[] = [
 
 const validCurriculumRoles = ['p3_core', 'bridge', 'p1_prerequisite', 'ambiguous', 'out_of_scope'];
 const supportTypes = ['field_guide', 'snippet', 'worked_example', 'quick_check', 'warm_up'];
+const quarantinedAlgebraWarmupSkillRefs = [
+  'p3_alg_discriminant_root_conditions',
+  'p3_alg_structure_rearrangement',
+];
 
 function runPython(args: string[]) {
   execFileSync('python3', args, {
@@ -592,15 +596,16 @@ describe('P3 coverage matrix', () => {
     }
   });
 
-  it('keeps teaching support complete without manufacturing mastery blockers', () => {
+  it('keeps teaching support gaps limited to quarantined Algebra warm-ups', () => {
     const matrix = readJson<CoverageMatrix>(matrixJsonPath);
+    const quarantinedAlgebraWarmupSkills = new Set(quarantinedAlgebraWarmupSkillRefs);
 
-    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBe(0);
+    expect(matrix.teaching_support_summary.skills_with_any_support_gap).toBe(quarantinedAlgebraWarmupSkillRefs.length);
     expect(matrix.teaching_support_summary.support_gap_counts).toMatchObject({
       field_guide: 0,
       quick_check: 0,
       snippet: 0,
-      warm_up: 0,
+      warm_up: quarantinedAlgebraWarmupSkillRefs.length,
       worked_example: 0,
     });
     expect(matrix.teaching_support_summary.expected_support_types).toEqual(supportTypes);
@@ -610,7 +615,9 @@ describe('P3 coverage matrix', () => {
     expect(matrix.evidence_resilience_summary.blocked_no_clean_mastery_evidence_skill_refs).toEqual([]);
 
     for (const row of matrix.coverage_rows) {
-      expect(row.support_gaps, row.skill_ref).toEqual([]);
+      expect(row.support_gaps, row.skill_ref).toEqual(
+        quarantinedAlgebraWarmupSkills.has(row.skill_ref) ? ['warm_up'] : [],
+      );
       expect(row.blocking_reasons, row.skill_ref).toEqual([]);
     }
   });

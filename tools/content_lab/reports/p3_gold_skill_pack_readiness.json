@@ -25,20 +25,20 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-22T23:13:49.319724+00:00",
+  "generated_at": "2026-05-26T23:49:48.555765+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
     {
-      "blocked_skill_count": 0,
+      "blocked_skill_count": 2,
       "missing_repair_note_skill_count": 3,
       "mvp_gold_ready_count": 0,
       "region": "Algebra Vault",
       "region_id": "algebra-forge",
       "skill_count": 7,
       "thin_evidence_skill_count": 1,
-      "warmup_role_gap_skill_count": 0,
-      "warning_only_skill_count": 7,
+      "warmup_role_gap_skill_count": 2,
+      "warning_only_skill_count": 5,
       "worked_example_gap_skill_count": 1
     },
     {
@@ -270,7 +270,9 @@
       ]
     },
     {
-      "blockers": [],
+      "blockers": [
+        "missing_all_warmup_support"
+      ],
       "clean_evidence_count": 1,
       "clean_evidence_question_ids": [
         "32autumn25_q05"
@@ -291,7 +293,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
+      "next_action": "Add reviewed deterministic warm-up support before claiming MVP gold.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -310,18 +312,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 3,
-      "warmup_practice_ids": [
-        "gen_quadratics_discriminant_root_condition_basic_0001",
-        "gen_quadratics_discriminant_root_condition_basic_0002",
-        "gen_quadratics_discriminant_root_condition_basic_0003"
-      ],
-      "warmup_roles_missing": [],
-      "warmup_roles_present": [
+      "warmup_practice_count": 0,
+      "warmup_practice_ids": [],
+      "warmup_roles_missing": [
         "first_step",
         "complete_step",
         "guardian_prep"
       ],
+      "warmup_roles_present": [],
       "warnings": [
         "source_backed_worked_examples_sparse",
         "thin_evidence_resilience"
@@ -375,11 +373,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 4,
       "warmup_practice_ids": [
         "gen_modulus_equation_basic_0001",
         "gen_modulus_equation_basic_0002",
-        "gen_modulus_equation_basic_0003"
+        "gen_modulus_equation_basic_0003",
+        "gen_modulus_equation_basic_0004"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -438,11 +437,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 6,
+      "warmup_practice_count": 7,
       "warmup_practice_ids": [
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_distinct_linear_0004",
         "gen_partial_fractions_repeated_linear_0001",
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
@@ -509,11 +509,18 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 3,
+      "warmup_practice_count": 10,
       "warmup_practice_ids": [
         "gen_polynomial_remainder_factor_basic_0001",
         "gen_polynomial_remainder_factor_basic_0002",
-        "gen_polynomial_remainder_factor_basic_0003"
+        "gen_polynomial_remainder_factor_basic_0003",
+        "gen_polynomial_remainder_factor_basic_0004",
+        "gen_polynomial_remainder_factor_basic_0005",
+        "gen_polynomial_remainder_factor_basic_0006",
+        "gen_polynomial_remainder_factor_basic_0007",
+        "gen_polynomial_remainder_factor_basic_0008",
+        "gen_polynomial_remainder_factor_basic_0009",
+        "gen_polynomial_remainder_factor_basic_0010"
       ],
       "warmup_roles_missing": [],
       "warmup_roles_present": [
@@ -531,7 +538,9 @@
       ]
     },
     {
-      "blockers": [],
+      "blockers": [
+        "missing_all_warmup_support"
+      ],
       "clean_evidence_count": 3,
       "clean_evidence_question_ids": [
         "32summer22_q03",
@@ -554,7 +563,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
+      "next_action": "Add reviewed deterministic warm-up support before claiming MVP gold.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -573,18 +582,14 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 3,
-      "warmup_practice_ids": [
-        "gen_algebra_structure_rearrangement_basic_0001",
-        "gen_algebra_structure_rearrangement_basic_0002",
-        "gen_algebra_structure_rearrangement_basic_0003"
-      ],
-      "warmup_roles_missing": [],
-      "warmup_roles_present": [
+      "warmup_practice_count": 0,
+      "warmup_practice_ids": [],
+      "warmup_roles_missing": [
         "first_step",
         "complete_step",
         "guardian_prep"
       ],
+      "warmup_roles_present": [],
       "warnings": [
         "source_backed_worked_examples_sparse"
       ],
@@ -1565,11 +1570,12 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 6,
+      "warmup_practice_count": 7,
       "warmup_practice_ids": [
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_distinct_linear_0004",
         "gen_partial_fractions_repeated_linear_0001",
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
@@ -2794,8 +2800,10 @@
     }
   ],
   "skill_summary": {
-    "blocked_skill_count": 0,
-    "blocker_counts": {},
+    "blocked_skill_count": 2,
+    "blocker_counts": {
+      "missing_all_warmup_support": 2
+    },
     "evidence_status_counts": {
       "ambiguous": 0,
       "blocked": 0,
@@ -2815,7 +2823,7 @@
       "source_backed_worked_examples_sparse": 37,
       "thin_evidence_resilience": 1
     },
-    "warning_only_skill_count": 37
+    "warning_only_skill_count": 35
   },
   "thin_region_priority_summary": [
     {

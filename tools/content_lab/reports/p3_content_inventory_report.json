@@ -1,5 +1,22 @@
 {
-  "actionable_next_step_summary": [],
+  "actionable_next_step_summary": [
+    {
+      "action_id": "fill_warm_up_gaps",
+      "affected_region_ids": [
+        "algebra-forge"
+      ],
+      "affected_skill_count": 2,
+      "summary": "Add reviewed warm up support for 2 reviewed P3 skill(s)."
+    },
+    {
+      "action_id": "prioritize_incomplete_regions",
+      "affected_region_ids": [
+        "algebra-forge"
+      ],
+      "affected_skill_count": 7,
+      "summary": "Use the inventory to choose the next content-generation or page-redesign phase; this pass does not create new content."
+    }
+  ],
   "curriculum_target_summary": {
     "mastery_policy": {
       "p1_prerequisite_use": "P1 prerequisite content may support readiness and recommendations, but is not proof of P3 mastery.",
@@ -59,13 +76,26 @@
     "world_map": "src/lib/worldMap.ts"
   },
   "missing_support_summary": {
-    "ordinary_gap_skill_count": 0,
+    "ordinary_gap_skill_count": 2,
     "skills_missing_canonical_question": [],
     "skills_missing_field_guide": [],
     "skills_missing_guardian_candidate": [],
     "skills_missing_quick_check": [],
     "skills_missing_snippet": [],
-    "skills_missing_warmup_support": [],
+    "skills_missing_warmup_support": [
+      {
+        "micro_skill_name": "Use discriminant or root conditions as evidence",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_discriminant_root_conditions"
+      },
+      {
+        "micro_skill_name": "Choose algebraic structure before expanding",
+        "official_curriculum_section": "Algebra",
+        "region_id": "algebra-forge",
+        "skill_ref": "p3_alg_structure_rearrangement"
+      }
+    ],
     "skills_missing_worked_example": []
   },
   "per_region_inventory": [
@@ -74,8 +104,10 @@
       "canonical_question_count": 22,
       "field_guide_count": 1,
       "guardian_candidate_count": 11,
-      "instructional_status": "ready",
-      "missing_support_flags": [],
+      "instructional_status": "partial",
+      "missing_support_flags": [
+        "missing_warm_up"
+      ],
       "quick_check_count": 8,
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
@@ -90,7 +122,7 @@
       ],
       "skill_count": 7,
       "snippet_count": 8,
-      "warmup_support_count": 24,
+      "warmup_support_count": 27,
       "worked_example_count": 13
     },
     {
@@ -199,7 +231,7 @@
       ],
       "skill_count": 4,
       "snippet_count": 5,
-      "warmup_support_count": 15,
+      "warmup_support_count": 16,
       "worked_example_count": 8
     },
     {
@@ -496,7 +528,6 @@
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up",
         "canonical_question",
         "guardian_candidate"
       ],
@@ -515,7 +546,7 @@
       "guardian_candidate_question_ids": [
         "32autumn25_q05"
       ],
-      "instructional_status": "ready",
+      "instructional_status": "partial",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
       "mastery_evidence_question_count": 1,
@@ -523,7 +554,9 @@
         "32autumn25_q05"
       ],
       "micro_skill_name": "Use discriminant or root conditions as evidence",
-      "missing_support_types": [],
+      "missing_support_types": [
+        "warm_up"
+      ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Algebra",
       "p1_prerequisite_refs": [
@@ -568,19 +601,15 @@
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
       "teacher_review_deferred_question_ids": [],
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "quadratics.discriminant_root_condition_basic"
+      ],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "unreviewed_app_region_mismatch_question_ids": [],
-      "warmup_generator_families": [
-        "quadratics.discriminant_root_condition_basic"
-      ],
-      "warmup_practice_ids": [
-        "gen_quadratics_discriminant_root_condition_basic_0001",
-        "gen_quadratics_discriminant_root_condition_basic_0002",
-        "gen_quadratics_discriminant_root_condition_basic_0003"
-      ],
-      "warmup_support_count": 3,
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-quadratics-discriminant-001-example-1",
@@ -685,9 +714,10 @@
       "warmup_practice_ids": [
         "gen_modulus_equation_basic_0001",
         "gen_modulus_equation_basic_0002",
-        "gen_modulus_equation_basic_0003"
+        "gen_modulus_equation_basic_0003",
+        "gen_modulus_equation_basic_0004"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 4,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-modulus-cases-001-example-1",
@@ -790,11 +820,12 @@
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_distinct_linear_0004",
         "gen_partial_fractions_repeated_linear_0001",
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
       ],
-      "warmup_support_count": 6,
+      "warmup_support_count": 7,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-partial-fractions-form-001-example-1",
@@ -897,9 +928,16 @@
       "warmup_practice_ids": [
         "gen_polynomial_remainder_factor_basic_0001",
         "gen_polynomial_remainder_factor_basic_0002",
-        "gen_polynomial_remainder_factor_basic_0003"
+        "gen_polynomial_remainder_factor_basic_0003",
+        "gen_polynomial_remainder_factor_basic_0004",
+        "gen_polynomial_remainder_factor_basic_0005",
+        "gen_polynomial_remainder_factor_basic_0006",
+        "gen_polynomial_remainder_factor_basic_0007",
+        "gen_polynomial_remainder_factor_basic_0008",
+        "gen_polynomial_remainder_factor_basic_0009",
+        "gen_polynomial_remainder_factor_basic_0010"
       ],
-      "warmup_support_count": 3,
+      "warmup_support_count": 10,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-polynomial-theorem-001-example-1",
@@ -913,7 +951,6 @@
         "snippet",
         "worked_example",
         "quick_check",
-        "warm_up",
         "canonical_question",
         "guardian_candidate"
       ],
@@ -936,7 +973,7 @@
       "guardian_candidate_question_ids": [
         "32summer22_q03"
       ],
-      "instructional_status": "ready",
+      "instructional_status": "partial",
       "mastery_eligible": true,
       "mastery_evidence_blocked_question_ids": [],
       "mastery_evidence_question_count": 3,
@@ -946,7 +983,9 @@
         "31summer25_q05"
       ],
       "micro_skill_name": "Choose algebraic structure before expanding",
-      "missing_support_types": [],
+      "missing_support_types": [
+        "warm_up"
+      ],
       "needs_teacher_review": false,
       "official_curriculum_section": "Algebra",
       "p1_prerequisite_refs": [
@@ -983,19 +1022,15 @@
       ],
       "teacher_review_app_region_mismatch_question_ids": [],
       "teacher_review_deferred_question_ids": [],
-      "unresolved_generator_families": [],
+      "unresolved_generator_families": [
+        "algebra.structure_rearrangement_basic"
+      ],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "unreviewed_app_region_mismatch_question_ids": [],
-      "warmup_generator_families": [
-        "algebra.structure_rearrangement_basic"
-      ],
-      "warmup_practice_ids": [
-        "gen_algebra_structure_rearrangement_basic_0001",
-        "gen_algebra_structure_rearrangement_basic_0002",
-        "gen_algebra_structure_rearrangement_basic_0003"
-      ],
-      "warmup_support_count": 3,
+      "warmup_generator_families": [],
+      "warmup_practice_ids": [],
+      "warmup_support_count": 0,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-algebra-rearrangement-001-example-1",
@@ -2691,11 +2726,12 @@
         "gen_partial_fractions_distinct_linear_0001",
         "gen_partial_fractions_distinct_linear_0002",
         "gen_partial_fractions_distinct_linear_0003",
+        "gen_partial_fractions_distinct_linear_0004",
         "gen_partial_fractions_repeated_linear_0001",
         "gen_partial_fractions_repeated_linear_0002",
         "gen_partial_fractions_repeated_linear_0003"
       ],
-      "warmup_support_count": 6,
+      "warmup_support_count": 7,
       "worked_example_count": 4,
       "worked_example_ids": [
         "p3-integration-method-choice-001-example-1",
@@ -4813,8 +4849,8 @@
       "blocked": 0,
       "missing": 0,
       "needs_review": 0,
-      "partial": 0,
-      "ready": 9
+      "partial": 1,
+      "ready": 8
     }
   },
   "reviewed_skill_summary": {
@@ -4824,17 +4860,17 @@
       "guardian_candidate": 40,
       "quick_check": 40,
       "snippet": 40,
-      "warm_up": 40,
+      "warm_up": 38,
       "worked_example": 40
     },
-    "ready_for_region_learning_loop": true,
+    "ready_for_region_learning_loop": false,
     "skill_count": 40,
     "status_counts": {
       "blocked": 0,
       "missing": 0,
       "needs_review": 0,
-      "partial": 0,
-      "ready": 40
+      "partial": 2,
+      "ready": 38
     }
   },
   "risk_summary": [
@@ -4857,10 +4893,10 @@
       "status": "clear"
     },
     {
-      "count": 0,
+      "count": 2,
       "risk_id": "missing_warm_up",
       "risk_type": "ordinary_gap",
-      "status": "clear"
+      "status": "open"
     },
     {
       "count": 0,
@@ -4923,10 +4959,10 @@
       "status": "clear"
     },
     {
-      "count": 0,
+      "count": 2,
       "risk_id": "structural_warnings",
       "risk_type": "structural_warning",
-      "status": "clear"
+      "status": "open"
     }
   ],
   "routing_audit_summary": {
@@ -5479,7 +5515,26 @@
     ],
     "unsafe_mastery_evidence_is_blocking": true
   },
-  "structural_reference_warnings": [],
+  "structural_reference_warnings": [
+    {
+      "skill_ref": "p3_alg_discriminant_root_conditions",
+      "unresolved_generator_families": [
+        "quadratics.discriminant_root_condition_basic"
+      ],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": []
+    },
+    {
+      "skill_ref": "p3_alg_structure_rearrangement",
+      "unresolved_generator_families": [
+        "algebra.structure_rearrangement_basic"
+      ],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": []
+    }
+  ],
   "teacher_review_export_tag_summary": {
     "available_export_tag_fields": [
       "skill_ref",

@@ -8,25 +8,25 @@
     "priority_counts": {
       "P0_blocked_mastery": 0,
       "P1_missing_core_support": 0,
-      "P2_missing_practice_support": 0,
+      "P2_missing_practice_support": 2,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 40
+      "P4_polish_or_complete": 38
     },
     "suggested_region_correction_order": [
       {
         "blocked_mastery_skill_count": 0,
-        "highest_priority": "P4_polish_or_complete",
+        "highest_priority": "P2_missing_practice_support",
         "priority_counts": {
           "P0_blocked_mastery": 0,
           "P1_missing_core_support": 0,
-          "P2_missing_practice_support": 0,
+          "P2_missing_practice_support": 2,
           "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 7
+          "P4_polish_or_complete": 5
         },
         "region_id": "algebra-forge",
         "region_title": "Algebra Vault",
         "skill_count": 7,
-        "support_gap_skill_count": 0
+        "support_gap_skill_count": 2
       },
       {
         "blocked_mastery_skill_count": 0,
@@ -255,8 +255,8 @@
       "clean_mastery_evidence_question_ids": [
         "32autumn25_q05"
       ],
-      "correction_priority": "P4_polish_or_complete",
-      "coverage_status": "ready_for_review",
+      "correction_priority": "P2_missing_practice_support",
+      "coverage_status": "missing_support",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -282,15 +282,17 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
+      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_discriminant_root_conditions",
       "skill_ref": "p3_alg_discriminant_root_conditions",
       "skill_title": "Use discriminant or root conditions as evidence",
       "snippet_status": "available",
-      "support_gaps": [],
-      "warmup_status": "available",
+      "support_gaps": [
+        "warm_up"
+      ],
+      "warmup_status": "missing",
       "worked_example_status": "available"
     },
     {
@@ -436,8 +438,8 @@
         "31autumn24_q01",
         "31summer25_q05"
       ],
-      "correction_priority": "P4_polish_or_complete",
-      "coverage_status": "ready_for_review",
+      "correction_priority": "P2_missing_practice_support",
+      "coverage_status": "missing_support",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
@@ -458,15 +460,17 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
+      "recommended_next_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_structure_rearrangement",
       "skill_ref": "p3_alg_structure_rearrangement",
       "skill_title": "Choose algebraic structure before expanding",
       "snippet_status": "available",
-      "support_gaps": [],
-      "warmup_status": "available",
+      "support_gaps": [
+        "warm_up"
+      ],
+      "warmup_status": "missing",
       "worked_example_status": "available"
     },
     {
@@ -2106,7 +2110,7 @@
         "clean_mastery_evidence_question_ids": [
           "32autumn25_q05"
         ],
-        "coverage_status": "ready_for_review",
+        "coverage_status": "missing_support",
         "evidence_resilience_status": "thin_resilience_risk",
         "recommended_next_action": "Add or review more canonical P3 evidence links before relying on this skill as resilient.",
         "region_id": "algebra-forge",
@@ -2128,7 +2132,7 @@
   "next_step_summary": {
     "highest_priority_skill_refs": [],
     "note": "Do not create learner content or resolve deferred cases in the matrix pass; use this report to choose the next correction sequence.",
-    "recommended_phase": "validation_test_hardening"
+    "recommended_phase": "region_by_region_correction"
   },
   "official_syllabus_section_summary": {
     "section_count": 9,
@@ -2179,7 +2183,7 @@
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 0,
+      "warm_up": 2,
       "worked_example": 0
     },
     "thin_mastery_evidence_skill_refs": [
@@ -2192,16 +2196,16 @@
     "correction_priority_counts": {
       "P0_blocked_mastery": 0,
       "P1_missing_core_support": 0,
-      "P2_missing_practice_support": 0,
+      "P2_missing_practice_support": 2,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 40
+      "P4_polish_or_complete": 38
     },
     "coverage_status_counts": {
       "blocked_for_mastery": 0,
-      "missing_support": 0,
+      "missing_support": 2,
       "needs_teacher_review": 0,
       "partial": 0,
-      "ready_for_review": 40
+      "ready_for_review": 38
     },
     "mastery_eligible_skill_count": 40,
     "reviewed_skill_count": 40,
@@ -2215,12 +2219,12 @@
       "quick_check",
       "warm_up"
     ],
-    "skills_with_any_support_gap": 0,
+    "skills_with_any_support_gap": 2,
     "support_gap_counts": {
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 0,
+      "warm_up": 2,
       "worked_example": 0
     }
   }

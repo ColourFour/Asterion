@@ -41,6 +41,10 @@ const topicRegionFixtures = [
 
 const officialQualificationUrl = 'https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/';
 const officialSyllabusUrl = 'https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf';
+const quarantinedAlgebraWarmupSkillRefs = [
+  'p3_alg_discriminant_root_conditions',
+  'p3_alg_structure_rearrangement',
+];
 
 interface InventoryReport {
   schema_name: string;
@@ -477,8 +481,8 @@ describe('P3 content inventory report', () => {
         blocked: 0,
         missing: 0,
         needs_review: 0,
-        partial: 0,
-        ready: 40,
+        partial: quarantinedAlgebraWarmupSkillRefs.length,
+        ready: 40 - quarantinedAlgebraWarmupSkillRefs.length,
       });
       expect(report.teacher_review_export_tag_summary.p1_prerequisite_ref_count).toBeGreaterThan(0);
       expect(report.teacher_review_export_tag_summary.skills_with_p1_prerequisite_refs).toBe(report.reviewed_skill_summary.skill_count);
@@ -504,13 +508,13 @@ describe('P3 content inventory report', () => {
       const canonicalRisk = report.risk_summary.find((risk) => risk.risk_id === 'missing_trainable_canonical_question');
       const guardianRisk = report.risk_summary.find((risk) => risk.risk_id === 'missing_guardian_candidate');
 
-      expect(report.reviewed_skill_summary.ready_for_region_learning_loop).toBe(true);
+      expect(report.reviewed_skill_summary.ready_for_region_learning_loop).toBe(false);
       expect(missingSnippets).toEqual([]);
       expect(missingQuickChecks).toEqual([]);
-      expect(missingWarmUps).toEqual([]);
+      expect(missingWarmUps).toEqual(quarantinedAlgebraWarmupSkillRefs);
       expect(missingCanonical).toEqual([]);
       expect(missingGuardian).toEqual([]);
-      expect(warmUpRisk).toMatchObject({ count: 0, status: 'clear' });
+      expect(warmUpRisk).toMatchObject({ count: quarantinedAlgebraWarmupSkillRefs.length, status: 'open' });
       expect(canonicalRisk).toMatchObject({ count: 0, status: 'clear' });
       expect(guardianRisk).toMatchObject({ count: 0, status: 'clear' });
       expectSupportCountsMatchDetails(report);

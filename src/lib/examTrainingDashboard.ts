@@ -112,6 +112,22 @@ const studentFriendlySkillNames: Record<string, string> = {
   'vectors.line_scalar_product_basic': 'Vector Scalar Product',
 };
 
+const fieldGuideOnlySkillIds = new Set([
+  'algebra_modulus_graph_equations',
+  'algebra_polynomial_division',
+  'algebra_remainder_factor_theorem',
+  'algebra_partial_fractions',
+  'algebra_binomial_expansion',
+  'vectors_notation',
+  'vectors_magnitude_unit_parallel',
+  'vectors_geometric_add_subtract',
+  'vectors_line_equation',
+  'vectors_intersect_parallel_skew',
+  'vectors_scalar_product',
+  'vectors_angle_between_lines',
+  'vectors_point_to_line_distance',
+]);
+
 interface SkillEvidenceStats {
   marksEarned: number;
   marksAvailable: number;
@@ -127,7 +143,9 @@ function normalizeSkillId(value: string | undefined): string | undefined {
 function allExamTrainingSkillIds(): string[] {
   const ids = new Set<string>();
   for (const skillId of examTrainingSkillOrder) ids.add(skillId);
-  for (const skillId of REQUIRED_FIELD_GUIDE_SKILL_IDS) ids.add(skillId);
+  for (const skillId of REQUIRED_FIELD_GUIDE_SKILL_IDS) {
+    if (!fieldGuideOnlySkillIds.has(skillId)) ids.add(skillId);
+  }
   return Array.from(ids);
 }
 

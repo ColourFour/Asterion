@@ -142,11 +142,13 @@ function sequenceOrder(item: GeneratedPracticeItem): number {
 }
 
 function practiceTopicMatchKeys(item: GeneratedPracticeItem): string[] {
+  const topicContractId = stringValue(item.parameters.topic_contract_id);
   return [
     item.generatorFamily,
     item.skillTargetId,
     item.sourceSnippetId,
     item.exampleModelId,
+    topicContractId,
     item.topic,
   ]
     .filter((value): value is string => Boolean(value))

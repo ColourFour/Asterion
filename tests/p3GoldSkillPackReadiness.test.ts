@@ -976,8 +976,8 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(108);
-    expect(internalGeneratedPractice.items).toHaveLength(111);
+    expect(generatedPractice.items).toHaveLength(111);
+    expect(internalGeneratedPractice.items).toHaveLength(114);
     expect(internalNeedsReview).toHaveLength(6);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     for (const family of [
@@ -1084,22 +1084,24 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(108);
-    expect(internalGeneratedPractice.items).toHaveLength(111);
+    expect(generatedPractice.items).toHaveLength(111);
+    expect(internalGeneratedPractice.items).toHaveLength(114);
     expect(internalNeedsReview).toHaveLength(6);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
-    for (const family of [
-      'integration.method_setup_basic',
-      'integration.parts_substitution_basic',
-      'integration.definite_area_basic',
-      'algebra.partial_fractions_distinct_linear',
-      'algebra.partial_fractions_repeated_linear',
-    ]) {
+    const expectedFamilyCounts = new Map([
+      ['integration.method_setup_basic', 3],
+      ['integration.parts_substitution_basic', 3],
+      ['integration.definite_area_basic', 3],
+      ['algebra.partial_fractions_distinct_linear', 4],
+      ['algebra.partial_fractions_repeated_linear', 3],
+    ]);
+
+    for (const [family, expectedCount] of expectedFamilyCounts) {
       const runtimeFamilyItems = generatedPractice.items.filter((item) => item.generator_family === family);
       const internalFamilyItems = internalGeneratedPractice.items.filter((item) => item.generator_family === family);
 
-      expect(runtimeFamilyItems).toHaveLength(3);
-      expect(internalFamilyItems).toHaveLength(3);
+      expect(runtimeFamilyItems).toHaveLength(expectedCount);
+      expect(internalFamilyItems).toHaveLength(expectedCount);
       expect(runtimeFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(internalFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(runtimeFamilyItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));

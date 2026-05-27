@@ -30,7 +30,7 @@ This deterministic queue plans future content correction only. It does not corre
 
 ### support_content_gaps
 
-- `weak_or_missing_skill_support`: 0
+- `weak_or_missing_skill_support`: 2
 
 ## Reviewed Route Decision Summary
 
@@ -69,7 +69,7 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Region | Issues | Workstreams | Categories |
 | --- | ---: | --- | --- |
-| Algebra Vault | 42 | route_correction:30, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12 |
+| Algebra Vault | 44 | route_correction:30, support_content_gaps:2, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12, weak_or_missing_skill_support:2 |
 | Calculus Cliffs | 39 | route_correction:31, text_review:8 | ambiguous_multi_topic_routes:3, audited_route_decisions:11, fallback_display_only_region_placements:8, missing_p3_routes:8, review_needed_routes:1, routing_text_or_visual_blockers:8 |
 | Integral Terraces | 26 | route_correction:24, text_review:2 | ambiguous_multi_topic_routes:10, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
 | Iteration Forge | 26 | route_correction:18, text_review:8 | ambiguous_multi_topic_routes:2, audited_route_decisions:3, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:3, routing_text_or_visual_blockers:8 |
@@ -339,6 +339,8 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Region | Skill | Priority | Status | Gaps / Blockers |
 | --- | --- | --- | --- | --- |
+| Algebra Vault | p3_alg_discriminant_root_conditions | P2_missing_practice_support | missing_support | warm_up |
+| Algebra Vault | p3_alg_structure_rearrangement | P2_missing_practice_support | missing_support | warm_up |
 
 ## Policy
 

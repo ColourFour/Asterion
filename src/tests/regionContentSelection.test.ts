@@ -170,7 +170,7 @@ describe('region content selection', () => {
   });
 
   it('orders guided practice by the current Field Guide topic when reviewed content exists', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'binomial-expansions')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'algebra_binomial_expansion')!;
     const selected = orderGeneratedPracticeForFieldGuideTopic([
       practice({
         practiceId: 'algebra-structure',
@@ -185,6 +185,7 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
         skillTargetId: 'p3_alg_binomial_terms_coefficients',
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
       }),
       practice({
         practiceId: 'binomial-validity',
@@ -192,6 +193,7 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
         skillTargetId: 'p3_alg_binomial_validity',
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
         sequenceRole: 'complete_step',
       }),
     ], topic);
@@ -205,8 +207,37 @@ describe('region content selection', () => {
     ]);
   });
 
+  it('orders Vectors Gate guided practice by stable topic contract IDs in reviewed parameters', () => {
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['vector-workshop'].find((item) => item.id === 'vectors_scalar_product')!;
+    const selected = orderGeneratedPracticeForFieldGuideTopic([
+      practice({
+        practiceId: 'vector-line',
+        generatorFamily: 'vectors.line_intersection_basic',
+        topic: 'vectors',
+        regionIds: ['vector-workshop'],
+        skillTargetId: 'p3_vec_line_equations_intersections',
+        parameters: { topic_contract_id: 'vectors_line_equation' },
+      }),
+      practice({
+        practiceId: 'vector-scalar',
+        generatorFamily: 'vectors.line_scalar_product_basic',
+        topic: 'vectors',
+        regionIds: ['vector-workshop'],
+        skillTargetId: 'p3_vec_scalar_product_angles',
+        parameters: { topic_contract_id: 'vectors_scalar_product' },
+      }),
+    ], topic);
+
+    expect(selected.fallbackReason).toBeUndefined();
+    expect(selected.exactMatchCount).toBe(1);
+    expect(selected.items.map((item) => item.practiceId)).toEqual([
+      'vector-scalar',
+      'vector-line',
+    ]);
+  });
+
   it('keeps region fallback and explains when the Field Guide topic has no guided match', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'binomial-expansions')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'algebra_binomial_expansion')!;
     const selected = orderGeneratedPracticeForFieldGuideTopic([
       practice({
         practiceId: 'algebra-structure-complete',
@@ -233,7 +264,7 @@ describe('region content selection', () => {
   });
 
   it('keeps topic ordering behind generated-practice runtime review gates', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'binomial-expansions')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['algebra-forge'].find((item) => item.id === 'algebra_binomial_expansion')!;
     const selected = orderGeneratedPracticeForFieldGuideTopic([
       practice({
         practiceId: 'candidate-binomial',
@@ -241,6 +272,7 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
         reviewStatus: 'candidate',
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
       }),
       practice({
         practiceId: 'failed-binomial',
@@ -248,6 +280,7 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
         verification: { status: 'fail', method: 'deterministic', verifier: 'content_lab_schema_v2' },
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
       }),
       practice({
         practiceId: 'unsafe-binomial',
@@ -255,12 +288,14 @@ describe('region content selection', () => {
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
         skillTargetId: 'unsafe_unmapped_skill',
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
       }),
       practice({
         practiceId: 'reviewed-binomial',
         generatorFamily: 'binomial_expansion.first_terms_and_coefficient',
         topic: 'binomial_expansion',
         regionIds: ['algebra-forge'],
+        parameters: { topic_contract_id: 'algebra_binomial_expansion' },
       }),
     ], topic);
 
@@ -364,10 +399,11 @@ describe('region content selection', () => {
     const cases = [
       {
         regionId: 'algebra-forge',
-        topicId: 'binomial-expansions',
+        topicId: 'algebra_binomial_expansion',
         generatorFamily: 'binomial_expansion.first_terms_and_coefficient',
         topic: 'binomial_expansion',
         skillTargetId: 'p3_alg_binomial_terms_coefficients',
+        topicContractId: 'algebra_binomial_expansion',
       },
       {
         regionId: 'logarithm-grove',
@@ -400,6 +436,7 @@ describe('region content selection', () => {
     ];
 
     for (const item of cases) {
+      const topicContractId = 'topicContractId' in item ? item.topicContractId : undefined;
       const topic = FIELD_GUIDE_TOPICS_BY_REGION[item.regionId].find((candidate) => candidate.id === item.topicId)!;
       const selected = orderGeneratedPracticeForFieldGuideTopic([
         practice({
@@ -415,6 +452,7 @@ describe('region content selection', () => {
           topic: item.topic,
           regionIds: [item.regionId],
           skillTargetId: item.skillTargetId,
+          parameters: topicContractId ? { topic_contract_id: topicContractId } : {},
         }),
       ], topic);
 

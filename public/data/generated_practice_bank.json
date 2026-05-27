@@ -134,7 +134,7 @@
       ]
     },
     {
-      "answer": "1 - (3/2)x, valid for |3x| < 1",
+      "answer": "1 + 4x + 12x^2 + 32x^3, valid for |x| < 1/2",
       "difficulty_band": "easy",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
@@ -142,17 +142,19 @@
       "key_method": "Find requested binomial terms without expanding everything.",
       "paper_family": "p3",
       "parameters": {
-        "a": 3,
-        "item_type": "expand_first_terms",
-        "max_power": 1,
-        "n": "-1/2",
+        "item_type": "expand_to_cubic",
+        "k": -2,
+        "max_power": 3,
+        "n": "-2",
         "sequence_role": "first_step",
         "sequence_stage": "first_step",
-        "x2_coefficient": "27/8",
-        "x_coefficient": "-3/2"
+        "topic_contract_id": "algebra_binomial_expansion",
+        "x2_coefficient": "12",
+        "x3_coefficient": "32",
+        "x_coefficient": "4"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0001",
-      "prompt": "Write the constant and x term in the expansion of (1 + 3x)^-1/2, and state the validity condition.",
+      "prompt": "Expand (1 - 2x)^-2 up to and including the x^3 term, and state the validity condition.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -172,33 +174,33 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use (1 + t)^n = 1 + nt + ... with t = 3x and n = -1/2.",
-        "For this first step, stop after the linear term.",
-        "The x term is (-1/2)(3x) = -(3/2)x.",
-        "The validity condition is |3x| < 1.",
-        "So the requested start of the expansion is 1 - (3/2)x, valid for |3x| < 1."
+        "Use (1 + u)^n with u = -2x and n = -2.",
+        "The linear term is (-2)(-2x) = 4x.",
+        "The x^2 term is (-2)(-3)(-2x)^2/2 = 12x^2.",
+        "The x^3 term is (-2)(-3)(-4)(-2x)^3/6 = 32x^3.",
+        "Validity is |-2x| < 1, so |x| < 1/2."
       ]
     },
     {
-      "answer": "1 + 3x + (15/2)x^2, valid for |-2x| < 1",
-      "difficulty_band": "easy",
+      "answer": "sqrt(2)(1 - (3/2)x - (9/8)x^2), valid for |x| < 1/3",
+      "difficulty_band": "medium",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
       "generator_family": "binomial_expansion.first_terms_and_coefficient",
       "key_method": "Find requested binomial terms without expanding everything.",
       "paper_family": "p3",
       "parameters": {
-        "a": -2,
-        "item_type": "expand_first_terms",
+        "item_type": "rewrite_then_expand",
+        "k": -3,
         "max_power": 2,
-        "n": "-3/2",
+        "n": "1/2",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
-        "x2_coefficient": "15/2",
-        "x_coefficient": "3"
+        "topic_contract_id": "algebra_binomial_expansion",
+        "validity": "|x| < 1/3"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0002",
-      "prompt": "Expand (1 - 2x)^-3/2 up to and including the x^2 term, with the validity condition.",
+      "prompt": "Rewrite sqrt(2 - 6x) in binomial form, then expand up to and including the x^2 term.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -218,15 +220,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use (1 + t)^n = 1 + nt + n(n - 1)t^2/2 + ... with t = -2x and n = -3/2.",
-        "The x term is (-3/2)(-2x) = 3x.",
-        "The x^2 term is n(n - 1)(-2x)^2/2 = (15/2)x^2.",
-        "The validity condition is |-2x| < 1.",
-        "So the expansion up to x^2 is 1 + 3x + (15/2)x^2, valid for |-2x| < 1."
+        "Factor out 2: sqrt(2 - 6x) = sqrt(2)(1 - 3x)^(1/2).",
+        "Use n = 1/2 and u = -3x.",
+        "The first terms are 1 - (3/2)x - (9/8)x^2.",
+        "So the expansion is sqrt(2)(1 - (3/2)x - (9/8)x^2), valid for |3x| < 1."
       ]
     },
     {
-      "answer": "Coefficient of x^2 = 3",
+      "answer": "coefficient of x^3 = -72",
       "difficulty_band": "medium",
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "example_model_id": "p3-binomial-term-001-example-1",
@@ -234,17 +235,17 @@
       "key_method": "Find requested binomial terms without expanding everything.",
       "paper_family": "p3",
       "parameters": {
-        "a": 2,
-        "b": -1,
-        "coefficient_x2": "3",
-        "item_type": "coefficient_product",
-        "m": "-1",
-        "n": "-2",
+        "coefficient_x3": "-72",
+        "denominator_k": 3,
+        "item_type": "coefficient_extraction",
+        "numerator_constant": 3,
+        "numerator_x_coefficient": 1,
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0003",
-      "prompt": "Find the coefficient of x^2 in (1 + 2x)^-1(1 - x)^-2, using valid binomial expansions.",
+      "prompt": "Find the coefficient of x^3 in (3 + x)/(1 + 3x), using a binomial expansion.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
         "algebra-forge"
@@ -264,41 +265,41 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "First terms: (1 + 2x)^-1 = 1 - 2x + 4x^2 + ...",
-        "First terms: (1 - x)^-2 = 1 + 2x + 3x^2 + ...",
-        "The x^2 coefficient comes from left x^2, left x times right x, and right x^2.",
-        "So the coefficient is 4 + (-2)(2) + 3 = 3."
+        "Write (3 + x)/(1 + 3x) as (3 + x)(1 + 3x)^-1.",
+        "Expand (1 + 3x)^-1 = 1 - 3x + 9x^2 - 27x^3 + ...",
+        "The x^3 coefficient comes from 3(-27x^3) and x(9x^2).",
+        "So the coefficient is -81 + 9 = -72."
       ]
     },
     {
-      "answer": "x(x + 5)",
+      "answer": "quotient = x^2 - 5x + 6, remainder = 0",
       "difficulty_band": "easy",
-      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "generator_family": "algebra.structure_rearrangement_basic",
-      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "constant": 5,
-        "item_type": "factor_common",
-        "safe_bounds": "small integer factors; denominator restrictions retained when cancelling",
+        "item_type": "division_no_remainder",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_polynomial_division"
       },
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0001",
-      "prompt": "Factor x^2 + 5x by taking out the shared factor first.",
-      "question_type": "Algebraic simplification",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0001",
+      "prompt": "Divide x^3 - 6x^2 + 11x - 6 by x - 1.",
+      "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
-      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-algebra-rearrangement-001"
+        "p3-polynomial-theorem-001"
       ],
-      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "source_snippet_id": "p3-polynomial-theorem-001",
       "topic": "algebra",
       "verification": {
         "method": "deterministic",
@@ -306,41 +307,41 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Both terms contain a factor of x.",
-        "Take out the shared factor before doing anything else.",
-        "x^2 + 5x = x(x + 5)."
+        "Divide the leading terms: x^3 divided by x is x^2.",
+        "Subtract x^3 - x^2 to get -5x^2 + 11x - 6.",
+        "Continue with -5x, then +6.",
+        "The quotient is x^2 - 5x + 6 and the remainder is 0."
       ]
     },
     {
-      "answer": "x + 2, with x != 3",
-      "difficulty_band": "easy",
-      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "generator_family": "algebra.structure_rearrangement_basic",
-      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "answer": "quotient = x^2 + 5x + 9, remainder = 23",
+      "difficulty_band": "medium",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "item_type": "cancel_factor",
-        "other_root": -2,
-        "root": 3,
-        "safe_bounds": "small integer factors; denominator restrictions retained when cancelling",
+        "item_type": "division_remainder",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_polynomial_division"
       },
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0002",
-      "prompt": "Simplify (x^2 - x - 6)/(x - 3), stating the restriction.",
-      "question_type": "Algebraic simplification",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0002",
+      "prompt": "Divide x^3 + 3x^2 - x + 5 by x - 2, giving the quotient and remainder.",
+      "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
-      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-algebra-rearrangement-001"
+        "p3-polynomial-theorem-001"
       ],
-      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "source_snippet_id": "p3-polynomial-theorem-001",
       "topic": "algebra",
       "verification": {
         "method": "deterministic",
@@ -348,43 +349,83 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Factor the numerator: x^2 - x - 6 = (x - 3)(x + 2).",
-        "Cancel the common factor x - 3.",
-        "The original denominator means x != 3.",
-        "So the simplified expression is x + 2, with x != 3."
+        "x^3 divided by x gives x^2; subtract x^3 - 2x^2.",
+        "The next line is 5x^2 - x + 5; divide to get +5x.",
+        "The next line is 9x + 5; divide to get +9.",
+        "Subtract 9x - 18, leaving remainder 23."
       ]
     },
     {
-      "answer": "x = -2 or x = 5",
+      "answer": "quotient = 2x^2 - 2x - 3, remainder = 7",
       "difficulty_band": "medium",
-      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
-      "example_model_id": "p3-algebra-rearrangement-001-example-1",
-      "generator_family": "algebra.structure_rearrangement_basic",
-      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "item_type": "zero_product",
-        "left_root": -2,
-        "right_root": 5,
-        "safe_bounds": "small integer factors; denominator restrictions retained when cancelling",
+        "item_type": "division_missing_zero",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_polynomial_division"
+      },
+      "practice_id": "gen_polynomial_remainder_factor_basic_0003",
+      "prompt": "Divide 2x^3 - 5x + 4 by x + 1, writing the missing term first.",
+      "question_type": "Polynomial factor theorem",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "source_snippet_id": "p3-polynomial-theorem-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Write the dividend as 2x^3 + 0x^2 - 5x + 4.",
+        "2x^3 divided by x gives 2x^2; subtract 2x^3 + 2x^2.",
+        "Continue with -2x, then -3.",
+        "The remainder is 7."
+      ]
+    },
+    {
+      "answer": "quotient = x^2 - x + 3, remainder = 4",
+      "difficulty_band": "medium",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "division_non_monic",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
-        "solutions": "-2,5"
+        "topic_contract_id": "algebra_polynomial_division"
       },
-      "practice_id": "gen_algebra_structure_rearrangement_basic_0003",
-      "prompt": "Solve (x + 2)(x - 5) = 0 without expanding.",
-      "question_type": "Algebraic simplification",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0004",
+      "prompt": "Divide 2x^3 - x^2 + 5x + 7 by 2x + 1, giving the quotient and remainder.",
+      "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-algebra-rearrangement-001"
+        "p3-polynomial-theorem-001"
       ],
-      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "source_snippet_id": "p3-polynomial-theorem-001",
       "topic": "algebra",
       "verification": {
         "method": "deterministic",
@@ -392,13 +433,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use the zero-product rule instead of expanding.",
-        "Set x + 2 = 0 or x - 5 = 0.",
-        "This gives x = -2 or x = 5."
+        "2x^3 divided by 2x gives x^2.",
+        "Subtract (2x + 1)x^2 to get -2x^2 + 5x + 7.",
+        "Next terms are -x and +3.",
+        "Multiplying back gives 2x^3 - x^2 + 5x + 3, so the remainder is 4."
       ]
     },
     {
-      "answer": "evaluate f(2)",
+      "answer": "x = -2",
       "difficulty_band": "easy",
       "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
       "example_model_id": "p3-polynomial-theorem-001-example-1",
@@ -407,13 +449,14 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "substitution_value",
-        "root": 2,
-        "safe_bounds": "cubic coefficients and substitution values kept small; parameter cases checked exactly",
+        "root": -2,
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
       },
-      "practice_id": "gen_polynomial_remainder_factor_basic_0001",
-      "prompt": "For f(x) = x^3 - 4x + 1, what value gives the remainder on division by x - 2?",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0005",
+      "prompt": "For f(x) = x^3 - 4x + 1, what substitution gives the remainder on division by x + 2?",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
@@ -433,13 +476,13 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The remainder theorem says the remainder after division by x - a is f(a).",
-        "Here the divisor is x - 2, so a = 2.",
-        "The first move is to evaluate f(2)."
+        "The remainder theorem says the remainder after division by x - a is found by evaluating f(a).",
+        "Here the divisor is x + 2, so a = -2.",
+        "The first move is to evaluate f(-2)."
       ]
     },
     {
-      "answer": "remainder = 2",
+      "answer": "remainder = 17/4",
       "difficulty_band": "medium",
       "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
       "example_model_id": "p3-polynomial-theorem-001-example-1",
@@ -447,18 +490,16 @@
       "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "a": -1,
-        "b": -3,
-        "c": 4,
-        "item_type": "remainder",
-        "remainder": 2,
-        "root": 2,
-        "safe_bounds": "cubic coefficients and substitution values kept small; parameter cases checked exactly",
+        "item_type": "remainder_non_monic",
+        "remainder": "17/4",
+        "root": "-1/2",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
       },
-      "practice_id": "gen_polynomial_remainder_factor_basic_0002",
-      "prompt": "Find the remainder when f(x) = x^3 - x^2 - 3x + 4 is divided by x - 2.",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0006",
+      "prompt": "Find the remainder when f(x) = 2x^3 - x + 4 is divided by 2x + 1.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
@@ -478,13 +519,13 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Use the remainder theorem with x = 2.",
-        "Calculate f(2) = 2^3 + (-1)(2)^2 + (-3)(2) + 4.",
-        "So the remainder is 2."
+        "Set the divisor equal to zero: 2x + 1 = 0, so x = -1/2.",
+        "Evaluate f(-1/2).",
+        "2(-1/8) - (-1/2) + 4 = -1/4 + 1/2 + 4 = 17/4."
       ]
     },
     {
-      "answer": "k = -3",
+      "answer": "f(2) = 0, so x - 2 is a factor",
       "difficulty_band": "medium",
       "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
       "example_model_id": "p3-polynomial-theorem-001-example-1",
@@ -492,16 +533,61 @@
       "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "constant": 2,
+        "item_type": "show_factor",
+        "remainder": 0,
+        "root": 2,
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
+      },
+      "practice_id": "gen_polynomial_remainder_factor_basic_0007",
+      "prompt": "Show that x - 2 is a factor of x^3 - 3x^2 - 4x + 12.",
+      "question_type": "Polynomial factor theorem",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "source_snippet_id": "p3-polynomial-theorem-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "For x - 2, use x = 2.",
+        "f(2) = 2^3 - 3(2^2) - 4(2) + 12.",
+        "This is 8 - 12 - 8 + 12 = 0.",
+        "A zero remainder means x - 2 is a factor."
+      ]
+    },
+    {
+      "answer": "k = -5",
+      "difficulty_band": "medium",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 5,
         "item_type": "factor_parameter",
-        "k": -3,
-        "root": 1,
-        "safe_bounds": "cubic coefficients and substitution values kept small; parameter cases checked exactly",
+        "k": -5,
+        "root": -1,
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
       },
-      "practice_id": "gen_polynomial_remainder_factor_basic_0003",
-      "prompt": "Find k if x - 1 is a factor of x^3 + kx + 2.",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0008",
+      "prompt": "Find k if x + 1 is a factor of x^3 + kx^2 - x + 5.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
@@ -521,142 +607,99 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "If x - 1 is a factor, then f(1) = 0.",
-        "So 1^3 + k(1) + 2 = 0.",
-        "Solving gives k = -3."
+        "If x + 1 is a factor, use f(-1) = 0.",
+        "Substitution gives -1^3 + k(-1)^2 - (-1) + 5 = 0.",
+        "Solving gives k = -5."
       ]
     },
     {
-      "answer": "D = 49",
-      "difficulty_band": "easy",
-      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "generator_family": "quadratics.discriminant_root_condition_basic",
-      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "answer": "a = 0, b = -7",
+      "difficulty_band": "hard",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
       "paper_family": "p3",
       "parameters": {
-        "a": 2,
-        "b": 5,
-        "c": -3,
-        "discriminant": 49,
-        "item_type": "discriminant_value",
-        "safe_bounds": "integer quadratic coefficients; discriminants checked within small exact bounds",
-        "sequence_role": "first_step",
-        "sequence_stage": "first_step"
-      },
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0001",
-      "prompt": "For 2x^2 + 5x - 3 = 0, calculate the discriminant.",
-      "question_type": "Quadratic discriminant decision",
-      "region_ids": [
-        "algebra-forge"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_alg_discriminant_root_conditions",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-quadratics-discriminant-001"
-      ],
-      "source_snippet_id": "p3-quadratics-discriminant-001",
-      "topic": "quadratics",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Use D = b^2 - 4ac.",
-        "Here a = 2, b = 5, and c = -3.",
-        "So D = 5^2 - 4(2)(-3) = 49."
-      ]
-    },
-    {
-      "answer": "no real roots",
-      "difficulty_band": "easy",
-      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "generator_family": "quadratics.discriminant_root_condition_basic",
-      "key_method": "Use the discriminant as a root-counting shortcut.",
-      "paper_family": "p3",
-      "parameters": {
-        "a": 1,
-        "b": 2,
-        "c": 5,
-        "discriminant": -16,
-        "item_type": "root_type",
-        "safe_bounds": "integer quadratic coefficients; discriminants checked within small exact bounds",
-        "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
-      },
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0002",
-      "prompt": "Use the discriminant to state the root type of x^2 + 2x + 5 = 0.",
-      "question_type": "Quadratic discriminant decision",
-      "region_ids": [
-        "algebra-forge"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "complete_step",
-      "skill_target_id": "p3_alg_discriminant_root_conditions",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-quadratics-discriminant-001"
-      ],
-      "source_snippet_id": "p3-quadratics-discriminant-001",
-      "topic": "quadratics",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Compute D = b^2 - 4ac = -16.",
-        "Positive D gives two distinct real roots; zero gives a repeated root; negative gives no real roots.",
-        "Therefore the equation has no real roots."
-      ]
-    },
-    {
-      "answer": "k = -6 or k = 6",
-      "difficulty_band": "medium",
-      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
-      "example_model_id": "p3-quadratics-discriminant-001-example-1",
-      "generator_family": "quadratics.discriminant_root_condition_basic",
-      "key_method": "Use the discriminant as a root-counting shortcut.",
-      "paper_family": "p3",
-      "parameters": {
-        "a": 1,
-        "b": 0,
-        "c": 9,
-        "discriminant": -36,
-        "item_type": "repeated_root_parameter",
-        "root": 3,
-        "safe_bounds": "integer quadratic coefficients; discriminants checked within small exact bounds",
+        "a": 0,
+        "b": -7,
+        "factor_root": 1,
+        "item_type": "two_condition_parameters",
+        "remainder": 12,
+        "remainder_root": -2,
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
       },
-      "practice_id": "gen_quadratics_discriminant_root_condition_basic_0003",
-      "prompt": "Find k if x^2 + kx + 9 = 0 has a repeated root.",
-      "question_type": "Quadratic discriminant decision",
+      "practice_id": "gen_polynomial_remainder_factor_basic_0009",
+      "prompt": "For f(x) = x^3 + ax^2 + bx + 6, x - 1 is a factor and the remainder on division by x + 2 is 12. Find a and b.",
+      "question_type": "Polynomial factor theorem",
       "region_ids": [
         "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
-        "p3-quadratics-discriminant-001"
+        "p3-polynomial-theorem-001"
       ],
-      "source_snippet_id": "p3-quadratics-discriminant-001",
-      "topic": "quadratics",
+      "source_snippet_id": "p3-polynomial-theorem-001",
+      "topic": "algebra",
       "verification": {
         "method": "deterministic",
         "status": "pass",
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "A repeated root means the discriminant is zero.",
-        "So k^2 - 4(1)(9) = 0.",
-        "k^2 = 36, giving k = -6 or k = 6."
+        "Factor condition: f(1) = 0, so 1 + a + b + 6 = 0 and a + b = -7.",
+        "Remainder condition: f(-2) = 12.",
+        "-8 + 4a - 2b + 6 = 12, so 2a - b = 7.",
+        "Solving the simultaneous equations gives a = 0 and b = -7."
+      ]
+    },
+    {
+      "answer": "x = -1, 1, or 4",
+      "difficulty_band": "medium",
+      "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
+      "example_model_id": "p3-polynomial-theorem-001-example-1",
+      "generator_family": "algebra.polynomial_remainder_factor_basic",
+      "key_method": "Use factor and remainder theorem checks before polynomial division.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "solve_by_factors",
+        "roots": "-1,1,4",
+        "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_remainder_factor_theorem"
+      },
+      "practice_id": "gen_polynomial_remainder_factor_basic_0010",
+      "prompt": "Solve x^3 - 4x^2 - x + 4 = 0, using simple factors.",
+      "question_type": "Polynomial factor theorem",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_polynomial_remainder_factor",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-polynomial-theorem-001"
+      ],
+      "source_snippet_id": "p3-polynomial-theorem-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Test simple roots: f(1) = 0, so x - 1 is a factor.",
+        "Factor by grouping: x^3 - 4x^2 - x + 4 = (x^2 - 1)(x - 4).",
+        "Then (x^2 - 1)(x - 4) = (x - 1)(x + 1)(x - 4).",
+        "So the solutions are x = -1, 1, and 4."
       ]
     },
     {
@@ -1041,7 +1084,7 @@
       ]
     },
     {
-      "answer": "\\frac{A}{x - 1} + \\frac{B}{x + 2}",
+      "answer": "\\frac{A}{x - 2} + \\frac{B}{x + 1}",
       "difficulty_band": "easy",
       "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
       "example_model_id": "p3-partial-fractions-form-001-example-1",
@@ -1049,13 +1092,12 @@
       "key_method": "Set up partial fractions with the correct numerator structure.",
       "paper_family": "p3",
       "parameters": {
-        "item_type": "setup_form",
-        "root_a": 1,
-        "root_b": -2,
-        "sequence_role": "first_step"
+        "item_type": "distinct_form",
+        "sequence_role": "first_step",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_distinct_linear_0001",
-      "prompt": "Write the partial-fraction form for \\frac{3x+1}{(x - 1)(x + 2)}. Do not solve for the constants.",
+      "prompt": "Write the partial-fraction form for \\frac{x + 3}{(x - 2)(x + 1)}. Do not solve for constants.",
       "question_type": "Partial fractions setup",
       "region_ids": [
         "algebra-forge",
@@ -1079,29 +1121,24 @@
       "worked_solution": [
         "The denominator has two distinct linear factors.",
         "Each distinct linear factor gets one constant numerator.",
-        "So the setup is \\frac{A}{x - 1} + \\frac{B}{x + 2}."
+        "Use A over x - 2 and B over x + 1."
       ]
     },
     {
-      "answer": "\\frac{2}{x - 1} + \\frac{1}{x + 2}",
-      "difficulty_band": "easy",
+      "answer": "\\frac{5}{3(x - 2)} - \\frac{2}{3(x + 1)}",
+      "difficulty_band": "medium",
       "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
       "example_model_id": "p3-partial-fractions-form-001-example-1",
       "generator_family": "algebra.partial_fractions_distinct_linear",
       "key_method": "Set up partial fractions with the correct numerator structure.",
       "paper_family": "p3",
       "parameters": {
-        "constant_a": 2,
-        "constant_b": 1,
-        "item_type": "decompose",
-        "numerator_constant": 3,
-        "numerator_x_coefficient": 3,
-        "root_a": 1,
-        "root_b": -2,
-        "sequence_role": "complete_step"
+        "item_type": "distinct_decompose",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_distinct_linear_0002",
-      "prompt": "Decompose \\frac{3x + 3}{(x - 1)(x + 2)} into partial fractions.",
+      "prompt": "Decompose \\frac{x + 3}{(x - 2)(x + 1)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
         "algebra-forge",
@@ -1123,14 +1160,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Start with \\frac{A}{x - 1} + \\frac{B}{x + 2}.",
-        "Multiplying by (x - 1)(x + 2) gives 3x + 3 = A(x + 2) + B(x - 1).",
-        "Substituting x = 1 gives A = 2; substituting x = -2 gives B = 1.",
-        "Therefore the decomposition is \\frac{2}{x - 1} + \\frac{1}{x + 2}."
+        "Start with A/(x - 2) + B/(x + 1).",
+        "Multiplying through gives x + 3 = A(x + 1) + B(x - 2).",
+        "Set x = 2 to get A = 5/3.",
+        "Set x = -1 to get B = -2/3."
       ]
     },
     {
-      "answer": "-\\frac{1}{x - 3} + \\frac{4}{x + 1}",
+      "answer": "\\frac{A}{x + 1} + \\frac{Bx + C}{x^2 + 2}",
       "difficulty_band": "medium",
       "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
       "example_model_id": "p3-partial-fractions-form-001-example-1",
@@ -1138,17 +1175,53 @@
       "key_method": "Set up partial fractions with the correct numerator structure.",
       "paper_family": "p3",
       "parameters": {
-        "constant_a": -1,
-        "constant_b": 4,
-        "item_type": "decompose",
-        "numerator_constant": -13,
-        "numerator_x_coefficient": 3,
-        "root_a": 3,
-        "root_b": -1,
-        "sequence_role": "guardian_prep"
+        "item_type": "quadratic_form",
+        "sequence_role": "first_step",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_distinct_linear_0003",
-      "prompt": "Decompose \\frac{3x - 13}{(x - 3)(x + 1)} into partial fractions.",
+      "prompt": "Write the partial-fraction form for \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)}. Do not solve for constants.",
+      "question_type": "Partial fractions setup",
+      "region_ids": [
+        "algebra-forge",
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_partial_fraction_form",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-partial-fractions-form-001",
+        "p3-partial-fractions-repeated-linear-001"
+      ],
+      "source_snippet_id": "p3-partial-fractions-form-001",
+      "topic": "partial_fractions",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The factor x + 1 is linear, so it gets a constant numerator.",
+        "The irreducible quadratic x^2 + 2 gets a linear numerator.",
+        "The correct form is A/(x + 1) + (Bx + C)/(x^2 + 2)."
+      ]
+    },
+    {
+      "answer": "\\frac{3}{x + 1} - \\frac{x}{x^2 + 2}",
+      "difficulty_band": "medium",
+      "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
+      "example_model_id": "p3-partial-fractions-form-001-example-1",
+      "generator_family": "algebra.partial_fractions_distinct_linear",
+      "key_method": "Set up partial fractions with the correct numerator structure.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "quadratic_decompose",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "algebra_partial_fractions"
+      },
+      "practice_id": "gen_partial_fractions_distinct_linear_0004",
+      "prompt": "Decompose \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
         "algebra-forge",
@@ -1170,14 +1243,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Start with \\frac{A}{x - 3} + \\frac{B}{x + 1}.",
-        "Multiplying by (x - 3)(x + 1) gives 3x - 13 = A(x + 1) + B(x - 3).",
-        "Substituting x = 3 gives A = -1; substituting x = -1 gives B = 4.",
-        "Therefore the decomposition is -\\frac{1}{x - 3} + \\frac{4}{x + 1}."
+        "Start with A/(x + 1) + (Bx + C)/(x^2 + 2).",
+        "Multiplying through gives 2x^2 - x + 6 = A(x^2 + 2) + (Bx + C)(x + 1).",
+        "Set x = -1 to get A = 3.",
+        "Compare coefficients to get B = -1 and C = 0."
       ]
     },
     {
-      "answer": "\\frac{A}{x - 2} + \\frac{B}{(x - 2)^2}",
+      "answer": "\\frac{A}{x} + \\frac{B}{x - 1} + \\frac{C}{(x - 1)^2}",
       "difficulty_band": "easy",
       "exam_move": "Use repeated-factor terms before integrating rational functions.",
       "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
@@ -1185,12 +1258,12 @@
       "key_method": "Set up partial fractions when a linear factor is repeated.",
       "paper_family": "p3",
       "parameters": {
-        "item_type": "setup_repeated",
-        "root": 2,
-        "sequence_role": "first_step"
+        "item_type": "repeated_form",
+        "sequence_role": "first_step",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_repeated_linear_0001",
-      "prompt": "Write the partial-fraction form for \\frac{2x+1}{(x - 2)^2}. Do not solve for the constants.",
+      "prompt": "Write the partial-fraction form for \\frac{3x^2 + 2}{x(x - 1)^2}. Do not solve for constants.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
         "algebra-forge",
@@ -1212,28 +1285,26 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "A repeated linear factor needs one term for each power.",
-        "Use one term over x - 2 and one term over (x - 2)^2.",
-        "So the setup is \\frac{A}{x - 2} + \\frac{B}{(x - 2)^2}."
+        "The factor x is a distinct linear factor, so it gets A/x.",
+        "The repeated factor (x - 1)^2 needs terms over x - 1 and (x - 1)^2.",
+        "The form is A/x + B/(x - 1) + C/(x - 1)^2."
       ]
     },
     {
-      "answer": "\\frac{3}{x - 1} + \\frac{5}{(x - 1)^2}",
-      "difficulty_band": "easy",
+      "answer": "\\frac{2}{x} + \\frac{1}{x - 1} + \\frac{5}{(x - 1)^2}",
+      "difficulty_band": "medium",
       "exam_move": "Use repeated-factor terms before integrating rational functions.",
       "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
       "generator_family": "algebra.partial_fractions_repeated_linear",
       "key_method": "Set up partial fractions when a linear factor is repeated.",
       "paper_family": "p3",
       "parameters": {
-        "constant_a": 3,
-        "constant_b": 5,
-        "item_type": "decompose_repeated",
-        "root": 1,
-        "sequence_role": "complete_step"
+        "item_type": "repeated_decompose",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_repeated_linear_0002",
-      "prompt": "Decompose \\frac{3x + 2}{(x - 1)^2} into partial fractions.",
+      "prompt": "Decompose \\frac{3x^2 + 2}{x(x - 1)^2} into partial fractions.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
         "algebra-forge",
@@ -1255,14 +1326,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Start with \\frac{A}{x - 1} + \\frac{B}{(x - 1)^2}.",
-        "Multiplying through gives 3x + 2 = A(x - 1) + B.",
-        "Comparing coefficients gives A = 3 and B = 5.",
-        "So the decomposition is \\frac{3}{x - 1} + \\frac{5}{(x - 1)^2}."
+        "Start with A/x + B/(x - 1) + C/(x - 1)^2.",
+        "Multiplying through gives 3x^2 + 2 = A(x - 1)^2 + Bx(x - 1) + Cx.",
+        "Set x = 0 to get A = 2 and x = 1 to get C = 5.",
+        "Compare coefficients to get B = 1."
       ]
     },
     {
-      "answer": "\\frac{2}{x + 2} - \\frac{3}{(x + 2)^2} + \\frac{1}{x - 1}",
+      "answer": "(i) A/(x - 2) + B/(x + 1); (ii) A/x + B/(x - 1) + C/(x - 1)^2; (iii) A/(x + 1) + (Bx + C)/(x^2 + 2)",
       "difficulty_band": "medium",
       "exam_move": "Use repeated-factor terms before integrating rational functions.",
       "example_model_id": "p3-partial-fractions-repeated-linear-001-example-1",
@@ -1270,16 +1341,12 @@
       "key_method": "Set up partial fractions when a linear factor is repeated.",
       "paper_family": "p3",
       "parameters": {
-        "constant_a": 2,
-        "constant_b": -3,
-        "constant_c": 1,
-        "distinct_root": 1,
-        "item_type": "decompose_repeated_with_distinct",
-        "root": -2,
-        "sequence_role": "guardian_prep"
+        "item_type": "mixed_form_review",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_repeated_linear_0003",
-      "prompt": "Decompose \\frac{3x^2 + 3x + 3}{(x + 2)^2(x - 1)} into partial fractions.",
+      "prompt": "For each denominator, name the partial-fraction form: (i) (x - 2)(x + 1), (ii) x(x - 1)^2, (iii) (x + 1)(x^2 + 2).",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
         "algebra-forge",
@@ -1301,14 +1368,13 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The repeated factor gives terms over x + 2 and (x + 2)^2; the distinct factor gives one term over x - 1.",
-        "Start with \\frac{A}{x + 2} + \\frac{B}{(x + 2)^2} + \\frac{C}{x - 1}.",
-        "Multiply through and compare coefficients or substitute convenient roots.",
-        "The constants are A = 2, B = -3, and C = 1, so \\frac{2}{x + 2} - \\frac{3}{(x + 2)^2} + \\frac{1}{x - 1}."
+        "Distinct linear factors each get one constant numerator.",
+        "A repeated linear factor needs every power up to the repeated power.",
+        "An irreducible quadratic factor gets a linear numerator Bx + C."
       ]
     },
     {
-      "answer": "x - 4 = 7 or x - 4 = -7",
+      "answer": "x = -8/3 or x = 2",
       "difficulty_band": "easy",
       "exam_move": "Use distance language first, then convert to cases or an interval.",
       "example_model_id": "p3-modulus-cases-001-example-1",
@@ -1316,13 +1382,12 @@
       "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
       "paper_family": "p3",
       "parameters": {
-        "a": 4,
-        "b": 7,
-        "coefficient": 1,
-        "sequence_role": "first_step"
+        "item_type": "linear_equals_constant",
+        "sequence_role": "first_step",
+        "topic_contract_id": "algebra_modulus_graph_equations"
       },
       "practice_id": "gen_modulus_equation_basic_0001",
-      "prompt": "Write the two linear equations represented by |x - 4| = 7.",
+      "prompt": "Solve |3x + 1| = 7.",
       "question_type": "Modulus equation cases",
       "region_ids": [
         "algebra-forge"
@@ -1342,28 +1407,27 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "A modulus equation says the inside expression has that distance from zero.",
-        "So the inside can equal the positive value or the negative value.",
-        "The first step is x - 4 = 7 or x - 4 = -7."
+        "Split into 3x + 1 = 7 and 3x + 1 = -7.",
+        "The first equation gives x = 2.",
+        "The second equation gives x = -8/3.",
+        "Both values make the original modulus equal 7."
       ]
     },
     {
-      "answer": "x = -2 or x = 8",
-      "difficulty_band": "easy",
+      "answer": "x = -1/2 or x = 1",
+      "difficulty_band": "medium",
       "exam_move": "Use distance language first, then convert to cases or an interval.",
       "example_model_id": "p3-modulus-cases-001-example-1",
       "generator_family": "algebra.modulus_equation_basic",
       "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
       "paper_family": "p3",
       "parameters": {
-        "a": 3,
-        "b": 5,
-        "coefficient": 1,
+        "item_type": "modulus_equals_modulus",
         "sequence_role": "complete_step",
-        "solutions": "-2,8"
+        "topic_contract_id": "algebra_modulus_graph_equations"
       },
       "practice_id": "gen_modulus_equation_basic_0002",
-      "prompt": "Solve |x - 3| = 5.",
+      "prompt": "Solve |x + 2| = |3x|.",
       "question_type": "Modulus equation cases",
       "region_ids": [
         "algebra-forge"
@@ -1383,14 +1447,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Split the modulus equation into x - 3 = 5 and x - 3 = -5.",
-        "Solve each linear equation separately.",
-        "This gives x = -2 or x = 8.",
-        "Substitute both values into the original modulus equation to check the distance."
+        "Use A = B or A = -B for |A| = |B|.",
+        "x + 2 = 3x gives x = 1.",
+        "x + 2 = -3x gives x = -1/2.",
+        "These are the two graph intersection x-values."
       ]
     },
     {
-      "answer": "x = -2 or x = 3",
+      "answer": "-2 < x < 8",
       "difficulty_band": "medium",
       "exam_move": "Use distance language first, then convert to cases or an interval.",
       "example_model_id": "p3-modulus-cases-001-example-1",
@@ -1398,14 +1462,52 @@
       "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
       "paper_family": "p3",
       "parameters": {
-        "a": -1,
-        "b": 5,
-        "coefficient": 2,
-        "sequence_role": "guardian_prep",
-        "solutions": "-2,3"
+        "item_type": "modulus_inequality",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "algebra_modulus_graph_equations"
       },
       "practice_id": "gen_modulus_equation_basic_0003",
-      "prompt": "Solve |2x - 1| = 5.",
+      "prompt": "Solve |x - 3| < 5.",
+      "question_type": "Modulus equation cases",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_modulus_cases",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-modulus-cases-001"
+      ],
+      "source_snippet_id": "p3-modulus-cases-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The expression x - 3 is within distance 5 of zero.",
+        "Write -5 < x - 3 < 5.",
+        "Add 3 throughout.",
+        "The solution interval is -2 < x < 8."
+      ]
+    },
+    {
+      "answer": "x < -1/2 or x > 1",
+      "difficulty_band": "medium",
+      "exam_move": "Use distance language first, then convert to cases or an interval.",
+      "example_model_id": "p3-modulus-cases-001-example-1",
+      "generator_family": "algebra.modulus_equation_basic",
+      "key_method": "Solve modulus equations and inequalities without illegal sign moves.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "graph_interval",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "algebra_modulus_graph_equations"
+      },
+      "practice_id": "gen_modulus_equation_basic_0004",
+      "prompt": "The graphs y = |x + 2| and y = |3x| meet at x = -1/2 and x = 1. For which x-values is |x + 2| < |3x|?",
       "question_type": "Modulus equation cases",
       "region_ids": [
         "algebra-forge"
@@ -1425,14 +1527,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Split the modulus equation into 2x - 1 = 5 and 2x - 1 = -5.",
-        "Solve each linear equation separately.",
-        "This gives x = -2 or x = 3.",
-        "Substitute both values into the original modulus equation to check the distance."
+        "The inequality asks where the graph y = |x + 2| is below y = |3x|.",
+        "The intersection points split the number line into three intervals.",
+        "Testing x = 0 gives |2| < |0|, which is false, so the middle interval is excluded.",
+        "The solution is outside the intersections: x < -1/2 or x > 1."
       ]
     },
     {
-      "answer": "|3x| < 1",
+      "answer": "-1/3 < x < 1/3",
       "difficulty_band": "easy",
       "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
       "example_model_id": "p3-binomial-validity-range-001-example-1",
@@ -1440,13 +1542,12 @@
       "key_method": "State the range where a binomial expansion is valid.",
       "paper_family": "p3",
       "parameters": {
-        "form": "simple",
-        "k": 3,
-        "n": -2,
-        "sequence_role": "first_step"
+        "form": "validity_condition",
+        "sequence_role": "first_step",
+        "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_validity_range_0001",
-      "prompt": "For an expansion of (1 + 3x)^{-2} in ascending powers of x, state the validity condition before simplifying it.",
+      "prompt": "State the interval of validity for the expansion of (1 + 3x)^-2.",
       "question_type": "Binomial validity range",
       "region_ids": [
         "algebra-forge"
@@ -1467,27 +1568,26 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The binomial expansion with a negative or fractional power needs the variable part to have modulus less than 1.",
-        "Here the variable part is 3x.",
-        "So the first condition is |3x| < 1."
+        "For (1 + u)^n with negative or fractional n, require |u| < 1.",
+        "Here u = 3x, so |3x| < 1.",
+        "Therefore -1/3 < x < 1/3."
       ]
     },
     {
-      "answer": "-1/2 < x < 1/2",
-      "difficulty_band": "easy",
+      "answer": "5^-3(1 - x/5)^-3, valid for -5 < x < 5",
+      "difficulty_band": "medium",
       "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
       "example_model_id": "p3-binomial-validity-range-001-example-1",
       "generator_family": "algebra.binomial_validity_range",
       "key_method": "State the range where a binomial expansion is valid.",
       "paper_family": "p3",
       "parameters": {
-        "form": "simple_negative",
-        "k": -2,
-        "n": -1,
-        "sequence_role": "complete_step"
+        "form": "rewrite_factor",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_validity_range_0002",
-      "prompt": "State the interval of validity for the expansion of (1 - 2x)^{-1}.",
+      "prompt": "Rewrite (5 - x)^-3 in the form a(1 + kx)^n and state the validity interval.",
       "question_type": "Binomial validity range",
       "region_ids": [
         "algebra-forge"
@@ -1508,13 +1608,14 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "The variable part is -2x, so |-2x| < 1.",
-        "This is the same as |2x| < 1.",
-        "Therefore -1/2 < x < 1/2."
+        "Factor out 5 before applying the binomial expansion.",
+        "(5 - x)^-3 = 5^-3(1 - x/5)^-3.",
+        "The variable part is -x/5, so |-x/5| < 1.",
+        "Therefore -5 < x < 5."
       ]
     },
     {
-      "answer": "2^{-3}(1 + x/2)^{-3}, valid for -2 < x < 2",
+      "answer": "1.0198",
       "difficulty_band": "medium",
       "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
       "example_model_id": "p3-binomial-validity-range-001-example-1",
@@ -1522,15 +1623,12 @@
       "key_method": "State the range where a binomial expansion is valid.",
       "paper_family": "p3",
       "parameters": {
-        "constant": 2,
-        "form": "factor_first",
-        "k": 1,
-        "n": -3,
+        "form": "estimate_value",
         "sequence_role": "guardian_prep",
-        "variable_part_denominator": 2
+        "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_validity_range_0003",
-      "prompt": "Rewrite (2 + x)^{-3} into binomial form and state the interval of validity.",
+      "prompt": "Using sqrt(1 + x) = 1 + x/2 - x^2/8 + ..., estimate sqrt(1.04).",
       "question_type": "Binomial validity range",
       "region_ids": [
         "algebra-forge"
@@ -1551,10 +1649,9 @@
         "verifier": "content_lab_schema_v2"
       },
       "worked_solution": [
-        "Factor out the constant before using the binomial expansion.",
-        "(2 + x)^{-3} = 2^{-3}(1 + x/2)^{-3}.",
-        "The variable part is x/2, so |x/2| < 1.",
-        "Therefore -2 < x < 2."
+        "Use x = 0.04 in the expansion.",
+        "1 + x/2 - x^2/8 = 1 + 0.02 - 0.0016/8.",
+        "This gives 1.0198."
       ]
     },
     {
@@ -3091,7 +3188,8 @@
         "right_z": 2,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "vectors_scalar_product"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0001",
       "prompt": "Find <1, 2, -1> . <3, -1, 2>.",
@@ -3139,7 +3237,8 @@
         "right_z": 0,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "vectors_scalar_product"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0002",
       "prompt": "Use a scalar product to decide whether <2, -1, 2> and <1, 2, 0> are perpendicular.",
@@ -3190,7 +3289,8 @@
         "right_z": 2,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "vectors_angle_between_lines"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0003",
       "prompt": "For direction vectors <1, 2, 2> and <2, 1, 2>, find cos theta for the angle between them.",
@@ -3238,7 +3338,8 @@
         "item_type": "direction_from_points",
         "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "vectors_notation"
       },
       "practice_id": "gen_vectors_line_relationship_basic_0001",
       "prompt": "Find the direction vector from A(1, -2, 0) to B(4, 1, 2).",
@@ -3286,7 +3387,8 @@
         "point_z": 0,
         "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "vectors_line_equation"
       },
       "practice_id": "gen_vectors_line_relationship_basic_0002",
       "prompt": "Point P lies on r = <1, 2, 0> + lambda<3, -1, 2> with lambda = 2. Find P.",
@@ -3331,7 +3433,8 @@
         "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
         "scale_factor": 2,
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "vectors_magnitude_unit_parallel"
       },
       "practice_id": "gen_vectors_line_relationship_basic_0003",
       "prompt": "Lines have direction vectors <1, 2, 3> and <2, 4, 6>. What relationship is possible before checking positions?",
@@ -4282,7 +4385,8 @@
         "mu": 0,
         "safe_bounds": "3D integer line components chosen to give exact parameter checks",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "vectors_intersect_parallel_skew"
       },
       "practice_id": "gen_vectors_line_intersection_basic_0001",
       "prompt": "Write the component equations for intersecting r = <1, 2, 0> + lambda<2, -1, 1> and r = <3, 1, 1> + mu<1, 0, 2>.",
@@ -4325,7 +4429,8 @@
         "mu": 0,
         "safe_bounds": "3D integer line components chosen to give exact parameter checks",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "vectors_intersect_parallel_skew"
       },
       "practice_id": "gen_vectors_line_intersection_basic_0002",
       "prompt": "Find the intersection point of r = <1, 2, 0> + lambda<2, -1, 1> and r = <3, 1, 1> + mu<1, 0, 2>.",
@@ -4368,7 +4473,8 @@
         "lambda_value": 2,
         "safe_bounds": "3D integer line components chosen to give exact parameter checks",
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "vectors_line_equation"
       },
       "practice_id": "gen_vectors_line_intersection_basic_0003",
       "prompt": "The point (5, k, 2) lies on r = <1, 2, 0> + lambda<2, -1, 1>. Find k.",
@@ -4644,8 +4750,8 @@
   ],
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 0,
-  "published_runtime_count": 108,
-  "runtime_reviewed_count": 108,
+  "published_runtime_count": 111,
+  "runtime_reviewed_count": 111,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Runtime app-facing reviewed warm-up practice.",

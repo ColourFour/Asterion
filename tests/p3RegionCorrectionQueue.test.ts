@@ -9,6 +9,10 @@ const scriptPath = path.join(repoRoot, 'tools/content_lab/scripts/build_p3_regio
 const reportJsonPath = path.join(repoRoot, 'tools/content_lab/reports/p3_region_correction_queue.json');
 const reportMarkdownPath = path.join(repoRoot, 'tools/content_lab/reports/p3_region_correction_queue.md');
 const pythonTimeoutMs = 10_000;
+const quarantinedAlgebraWarmupSkillRefs = [
+  'p3_alg_discriminant_root_conditions',
+  'p3_alg_structure_rearrangement',
+];
 
 interface QueueItem {
   queue_id: string;
@@ -290,7 +294,7 @@ describe('P3 region-correction queue', () => {
     expect(queue.inventory_bridge_summary.deferred_case_count).toBe(0);
   });
 
-  it('keeps support-gap queue empty after audited blockers are resolved', () => {
+  it('keeps support-gap queue limited to quarantined Algebra warm-ups after audited blockers are resolved', () => {
     const queue = readJson<RegionCorrectionQueue>(reportJsonPath);
     const support = queue.queue.support_content_gaps.weak_or_missing_skill_support;
 
@@ -298,10 +302,12 @@ describe('P3 region-correction queue', () => {
       field_guide: 0,
       quick_check: 0,
       snippet: 0,
-      warm_up: 0,
+      warm_up: quarantinedAlgebraWarmupSkillRefs.length,
       worked_example: 0,
     });
-    expect(support).toEqual([]);
+    expect(support.map((item) => item.skill_ref)).toEqual(quarantinedAlgebraWarmupSkillRefs);
+    expect(support.every((item) => item.region_id === 'algebra-forge')).toBe(true);
+    expect(support.every((item) => item.support_gaps?.includes('warm_up'))).toBe(true);
   });
 
   it('keeps summary totals aligned with detailed queue rows', () => {

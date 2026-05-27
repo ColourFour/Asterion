@@ -9,7 +9,7 @@
       "field_guide": 0,
       "quick_check": 0,
       "snippet": 0,
-      "warm_up": 0,
+      "warm_up": 2,
       "worked_example": 0
     }
   },
@@ -6524,7 +6524,54 @@
       ]
     },
     "support_content_gaps": {
-      "weak_or_missing_skill_support": []
+      "weak_or_missing_skill_support": [
+        {
+          "blocked_or_risky_reason": "missing support: warm_up",
+          "blocked_use_cases": [
+            "region_completion_claims",
+            "content_correction_signoff",
+            "mastery_evidence"
+          ],
+          "category": "weak_or_missing_skill_support",
+          "clean_mastery_evidence_count": 1,
+          "correction_priority": "P2_missing_practice_support",
+          "coverage_status": "missing_support",
+          "deferred_evidence_count": 0,
+          "queue_id": "support:weak_or_missing_skill_support:p3_alg_discriminant_root_conditions",
+          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+          "region_id": "algebra-forge",
+          "region_title": "Algebra Vault",
+          "skill_ref": "p3_alg_discriminant_root_conditions",
+          "skill_title": "Use discriminant or root conditions as evidence",
+          "support_gaps": [
+            "warm_up"
+          ],
+          "workstream": "support_content_gaps"
+        },
+        {
+          "blocked_or_risky_reason": "missing support: warm_up",
+          "blocked_use_cases": [
+            "region_completion_claims",
+            "content_correction_signoff",
+            "mastery_evidence"
+          ],
+          "category": "weak_or_missing_skill_support",
+          "clean_mastery_evidence_count": 3,
+          "correction_priority": "P2_missing_practice_support",
+          "coverage_status": "missing_support",
+          "deferred_evidence_count": 0,
+          "queue_id": "support:weak_or_missing_skill_support:p3_alg_structure_rearrangement",
+          "recommended_action": "Add reviewed deterministic warm-up support after core teaching support is safe.",
+          "region_id": "algebra-forge",
+          "region_title": "Algebra Vault",
+          "skill_ref": "p3_alg_structure_rearrangement",
+          "skill_title": "Choose algebraic structure before expanding",
+          "support_gaps": [
+            "warm_up"
+          ],
+          "workstream": "support_content_gaps"
+        }
+      ]
     },
     "text_review": {
       "routing_text_or_visual_blockers": [
@@ -8842,13 +8889,13 @@
         "review_needed_routes": 14
       },
       "support_content_gaps": {
-        "weak_or_missing_skill_support": 0
+        "weak_or_missing_skill_support": 2
       },
       "text_review": {
         "routing_text_or_visual_blockers": 53
       }
     },
-    "total_queue_item_count": 219,
+    "total_queue_item_count": 221,
     "unique_question_count": 95,
     "unique_skill_count": 16
   },
@@ -8859,9 +8906,10 @@
         "fallback_display_only_region_placements": 11,
         "missing_p3_routes": 11,
         "review_needed_routes": 1,
-        "routing_text_or_visual_blockers": 12
+        "routing_text_or_visual_blockers": 12,
+        "weak_or_missing_skill_support": 2
       },
-      "issue_count": 42,
+      "issue_count": 44,
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_refs": [
@@ -8871,6 +8919,7 @@
       ],
       "workstreams": {
         "route_correction": 30,
+        "support_content_gaps": 2,
         "text_review": 12
       }
     },
@@ -9394,6 +9443,26 @@
     },
     {
       "categories": {
+        "audited_route_decisions": 3,
+        "weak_or_missing_skill_support": 1
+      },
+      "issue_count": 4,
+      "question_ids": [
+        "33autumn21_q03",
+        "33summer22_q03",
+        "33summer24_q08"
+      ],
+      "region_id": "algebra-forge",
+      "region_title": "Algebra Vault",
+      "skill_ref": "p3_alg_structure_rearrangement",
+      "skill_title": "Choose algebraic structure before expanding",
+      "workstreams": {
+        "route_correction": 3,
+        "support_content_gaps": 1
+      }
+    },
+    {
+      "categories": {
         "audited_route_decisions": 4
       },
       "issue_count": 4,
@@ -9451,20 +9520,21 @@
     },
     {
       "categories": {
-        "audited_route_decisions": 3
+        "audited_route_decisions": 2,
+        "weak_or_missing_skill_support": 1
       },
       "issue_count": 3,
       "question_ids": [
-        "33autumn21_q03",
-        "33summer22_q03",
-        "33summer24_q08"
+        "31autumn25_q06",
+        "33summer22_q08"
       ],
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
-      "skill_ref": "p3_alg_structure_rearrangement",
-      "skill_title": "Choose algebraic structure before expanding",
+      "skill_ref": "p3_alg_discriminant_root_conditions",
+      "skill_title": "Use discriminant or root conditions as evidence",
       "workstreams": {
-        "route_correction": 3
+        "route_correction": 2,
+        "support_content_gaps": 1
       }
     },
     {
@@ -9483,23 +9553,6 @@
       "skill_title": "Differentiate implicit log or exponential relations",
       "workstreams": {
         "route_correction": 3
-      }
-    },
-    {
-      "categories": {
-        "audited_route_decisions": 2
-      },
-      "issue_count": 2,
-      "question_ids": [
-        "31autumn25_q06",
-        "33summer22_q08"
-      ],
-      "region_id": "algebra-forge",
-      "region_title": "Algebra Vault",
-      "skill_ref": "p3_alg_discriminant_root_conditions",
-      "skill_title": "Use discriminant or root conditions as evidence",
-      "workstreams": {
-        "route_correction": 2
       }
     },
     {
