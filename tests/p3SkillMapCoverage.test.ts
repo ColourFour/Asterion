@@ -48,9 +48,10 @@ const topicRegionFixtures = [
 ] as const;
 const officialQualificationUrl = 'https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/';
 const officialSyllabusUrl = 'https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf';
-const quarantinedAlgebraWarmupSkillRefs = [
+const quarantinedRuntimeWarmupSkillRefs = [
   'p3_alg_discriminant_root_conditions',
   'p3_alg_structure_rearrangement',
+  'p3_log_calculus_contexts',
 ];
 
 function runPython(args: string[]) {
@@ -313,14 +314,14 @@ describe('P3 skill map coverage report', () => {
       expect(report.summary.total_skills).toBeGreaterThanOrEqual(35);
       expect(report.summary.ready_for_full_p3_learning).toBe(false);
       expect(report.summary.skills_with_generated_warm_up).toBe(
-        report.summary.total_skills - quarantinedAlgebraWarmupSkillRefs.length,
+        report.summary.total_skills - quarantinedRuntimeWarmupSkillRefs.length,
       );
       expect(report.summary.skills_with_trainable_canonical_question).toBe(report.summary.total_skills);
       expect(report.summary.skills_by_curriculum_role.p3_core).toBe(report.summary.total_skills);
       expect(report.summary.mastery_eligible_skills).toBe(report.summary.total_skills);
       expect(report.summary.skills_with_prerequisite_refs).toBe(report.summary.total_skills);
       expect(report.summary.skills_needing_teacher_review).toBe(0);
-      expect(report.unresolved_reference_warnings.map((warning) => warning.skill_id)).toEqual(quarantinedAlgebraWarmupSkillRefs);
+      expect(report.unresolved_reference_warnings.map((warning) => warning.skill_id)).toEqual(quarantinedRuntimeWarmupSkillRefs);
       expect(report.dashboard.coverage_by_curriculum_role).toContainEqual(expect.objectContaining({
         curriculum_role: 'p3_core',
         total_skills: report.summary.total_skills,
@@ -329,8 +330,13 @@ describe('P3 skill map coverage report', () => {
       expect(report.gaps.skills_with_no_trainable_canonical_question).toEqual([]);
       expect(report.gaps.skills_with_no_snippet).toEqual([]);
       expect(report.gaps.skills_with_no_quick_check).toEqual([]);
-      expect(report.gaps.skills_with_no_generated_warm_up.map((gap) => gap.skill_id)).toEqual(quarantinedAlgebraWarmupSkillRefs);
-      expect(report.gaps.high_evidence_skills_with_weak_teaching_support).toEqual([]);
+      expect(report.gaps.skills_with_no_generated_warm_up.map((gap) => gap.skill_id)).toEqual(quarantinedRuntimeWarmupSkillRefs);
+      expect(report.gaps.high_evidence_skills_with_weak_teaching_support).toEqual([
+        expect.objectContaining({
+          skill_id: 'p3_log_calculus_contexts',
+          reasons: ['no_reviewed_generated_warm_up'],
+        }),
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

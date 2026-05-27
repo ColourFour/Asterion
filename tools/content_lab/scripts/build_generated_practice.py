@@ -29,6 +29,9 @@ REVIEW_QUEUE_STATUS = "needs_review"
 
 LOG_TOPIC = "logarithms_and_exponentials"
 LOG_FAMILY = "logarithms_and_exponentials.log_equation_basic"
+LOG_GRAPH_INVERSE_FAMILY = "logarithms_and_exponentials.graph_inverse_basic"
+LOG_LAWS_FAMILY = "logarithms_and_exponentials.laws_basic"
+LOG_EXPONENTIAL_INEQUALITY_FAMILY = "logarithms_and_exponentials.exponential_inequality_basic"
 BINOMIAL_TOPIC = "binomial_expansion"
 BINOMIAL_FAMILY = "binomial_expansion.first_terms_and_coefficient"
 BINOMIAL_VALIDITY_FAMILY = "algebra.binomial_validity_range"
@@ -89,6 +92,9 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     POLYNOMIAL_REMAINDER_FAMILY: "p3_alg_polynomial_remainder_factor",
     QUADRATICS_DISCRIMINANT_FAMILY: "p3_alg_discriminant_root_conditions",
     LOG_FAMILY: "p3_log_exponential_equations",
+    LOG_GRAPH_INVERSE_FAMILY: "p3_log_convert_forms",
+    LOG_LAWS_FAMILY: "p3_log_laws_equations",
+    LOG_EXPONENTIAL_INEQUALITY_FAMILY: "p3_log_exponential_equations",
     BINOMIAL_FAMILY: "p3_alg_binomial_terms_coefficients",
     BINOMIAL_VALIDITY_FAMILY: "p3_alg_binomial_validity",
     PARTIAL_FRACTIONS_DISTINCT_FAMILY: "p3_alg_partial_fraction_form",
@@ -126,9 +132,11 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
 
 PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
     POLYNOMIAL_REMAINDER_FAMILY,
+    LOG_GRAPH_INVERSE_FAMILY,
+    LOG_LAWS_FAMILY,
+    LOG_EXPONENTIAL_INEQUALITY_FAMILY,
     LOG_DOMAIN_FAMILY,
     LOG_LINEARISATION_FAMILY,
-    LOG_CALCULUS_CONTEXT_FAMILY,
     DIFFERENTIATION_CHAIN_PRODUCT_FAMILY,
     DIFFERENTIATION_IMPLICIT_LOG_EXP_FAMILY,
     INTEGRATION_METHOD_SETUP_FAMILY,
@@ -153,6 +161,7 @@ PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
 QUARANTINED_RUNTIME_GENERATOR_FAMILIES = {
     ALGEBRA_STRUCTURE_FAMILY,
     QUADRATICS_DISCRIMINANT_FAMILY,
+    LOG_CALCULUS_CONTEXT_FAMILY,
 }
 
 
@@ -534,7 +543,7 @@ def build_log_items(context: dict[str, Any]) -> list[dict[str, Any]]:
     for index, case in enumerate(cases, start=1):
         practice_id = f"gen_log_equation_basic_{index:04d}"
         form = str(case["form"])
-        parameters = {"form": form}
+        parameters = {"form": form, "topic_contract_id": "log_e_natural_logs"}
         sequence_role = str(case["sequence_stage"])
         difficulty_band = str(case["difficulty_band"])
         parameters["sequence_stage"] = sequence_role
@@ -598,6 +607,216 @@ def build_log_items(context: dict[str, Any]) -> list[dict[str, Any]]:
         ))
 
     return items
+
+
+def build_log_graph_inverse_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_graph_inverse_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"convert_to_exponential", "inverse_point", "domain_range"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "easy"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small positive bases and integer graph points",
+        "topic_contract_id": "log_graph_inverse",
+    }
+
+    if item_type == "convert_to_exponential":
+        base = int_parameter(case, "base", practice_id, min_value=2, max_value=9)
+        value = int_parameter(case, "value", practice_id, min_value=2, max_value=200)
+        exponent = int_parameter(case, "exponent", practice_id, min_value=1, max_value=6)
+        require_safe(base ** exponent == value, practice_id, "log conversion value must match base^exponent")
+        prompt = f"Rewrite log_{base} {value} = {exponent} in exponential form."
+        answer = f"{base}^{exponent} = {value}"
+        worked_solution = [
+            "Use log_a b = c means a^c = b.",
+            f"The base is {base}, the exponent is {exponent}, and the output value is {value}.",
+            f"So {answer}.",
+        ]
+        parameters.update({"base": base, "value": value, "exponent": exponent})
+    elif item_type == "inverse_point":
+        base = int_parameter(case, "base", practice_id, min_value=2, max_value=9)
+        exponent = int_parameter(case, "exponent", practice_id, min_value=1, max_value=6)
+        value = base ** exponent
+        prompt = f"The point ({exponent}, {value}) lies on y = {base}^x. State the matching point on y = log_{base} x."
+        answer = f"({value}, {exponent})"
+        worked_solution = [
+            "Inverse functions swap input and output coordinates.",
+            f"The inverse of y = {base}^x is y = log_{base} x.",
+            f"So ({exponent}, {value}) becomes {answer}.",
+        ]
+        parameters.update({"base": base, "exponent": exponent, "value": value})
+    else:
+        base = int_parameter(case, "base", practice_id, min_value=2, max_value=9)
+        prompt = f"State the domain and range of y = log_{base} x."
+        answer = "domain x > 0, range all real y"
+        worked_solution = [
+            f"y = log_{base} x is the inverse of y = {base}^x.",
+            "The exponential graph has range y > 0, so the logarithm graph has domain x > 0.",
+            "The exponential domain is all real x, so the logarithm range is all real y.",
+        ]
+        parameters.update({"base": base})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_GRAPH_INVERSE_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-log-exp-convert-001"]),
+    )
+
+
+def build_log_graph_inverse_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "convert_to_exponential", "base": 2, "value": 32, "exponent": 5, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "inverse_point", "base": 2, "exponent": 3, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "domain_range", "base": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_graph_inverse_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_log_laws_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_laws_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"product_law", "quotient_power_law", "invalid_sum_law"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "easy"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "same-base logarithms with positive-domain reminders",
+        "topic_contract_id": "log_laws",
+    }
+
+    if item_type == "product_law":
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=9)
+        prompt = f"Simplify ln x + ln {constant} into a single logarithm."
+        answer = f"ln({constant}x)"
+        worked_solution = [
+            "Use ln a + ln b = ln(ab).",
+            f"So ln x + ln {constant} = ln({constant}x).",
+            "The original domain includes x > 0.",
+        ]
+        parameters.update({"constant": constant})
+    elif item_type == "quotient_power_law":
+        power = int_parameter(case, "power", practice_id, min_value=2, max_value=5)
+        shift = int_parameter(case, "shift", practice_id, min_value=1, max_value=9)
+        prompt = f"Write {power}ln x - ln(x + {shift}) as a single logarithm."
+        answer = f"ln(x^{power}/(x + {shift}))"
+        worked_solution = [
+            f"Use the power law: {power}ln x = ln(x^{power}).",
+            "Subtraction of logs gives a quotient.",
+            f"So the expression is {answer}.",
+        ]
+        parameters.update({"power": power, "shift": shift})
+    else:
+        constant = int_parameter(case, "constant", practice_id, min_value=2, max_value=9)
+        prompt = f"Explain why ln(x + {constant}) is not equal to ln x + ln {constant}."
+        answer = "No valid log law splits a sum inside one logarithm."
+        worked_solution = [
+            "The product law works for products: ln(xc) = ln x + ln c.",
+            f"x + {constant} is a sum, not a product.",
+            "Therefore the proposed split is invalid.",
+        ]
+        parameters.update({"constant": constant})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_LAWS_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-log-laws-001", "p3-log-invalid-operations-001"]),
+    )
+
+
+def build_log_laws_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "product_law", "constant": 5, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "quotient_power_law", "power": 2, "shift": 1, "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "invalid_sum_law", "constant": 3, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_laws_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_log_exponential_inequality_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_log_exponential_inequality_basic_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"increasing_base", "decreasing_base", "isolated_e"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "medium"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "small exact exponent comparisons and isolated exponential inequalities",
+        "topic_contract_id": "exponential_equations_inequalities",
+    }
+
+    if item_type == "increasing_base":
+        base = int_parameter(case, "base", practice_id, min_value=2, max_value=9)
+        exponent = int_parameter(case, "exponent", practice_id, min_value=1, max_value=6)
+        rhs = base ** exponent
+        prompt = f"Solve {base}^x > {rhs}."
+        answer = f"x > {exponent}"
+        worked_solution = [
+            f"Rewrite {rhs} as {base}^{exponent}.",
+            f"Because {base} > 1, the function is increasing.",
+            f"So {answer}.",
+        ]
+        parameters.update({"base": base, "exponent": exponent, "rhs": rhs})
+    elif item_type == "decreasing_base":
+        denominator = int_parameter(case, "denominator", practice_id, min_value=2, max_value=9)
+        exponent = int_parameter(case, "exponent", practice_id, min_value=1, max_value=6)
+        prompt = f"Solve (1/{denominator})^x <= (1/{denominator})^{exponent}."
+        answer = f"x >= {exponent}"
+        worked_solution = [
+            f"The base 1/{denominator} is between 0 and 1, so the function is decreasing.",
+            "A smaller output comes from a larger exponent.",
+            f"Therefore {answer}.",
+        ]
+        parameters.update({"denominator": denominator, "exponent": exponent})
+    else:
+        scale = int_parameter(case, "scale", practice_id, min_value=1, max_value=9)
+        coefficient = int_parameter(case, "coefficient", practice_id, min_value=1, max_value=6)
+        rhs = int_parameter(case, "rhs", practice_id, min_value=2, max_value=50)
+        require_safe(rhs > scale, practice_id, "right side must leave a positive isolated bound above 1")
+        prompt = f"Solve {scale}e^({coefficient}x) < {rhs}."
+        answer = f"x < (1/{coefficient})ln({rhs}/{scale})"
+        worked_solution = [
+            f"Divide by {scale}: e^({coefficient}x) < {rhs}/{scale}.",
+            "The exponential base e is greater than 1, so the inequality direction stays the same.",
+            f"Take ln and divide by {coefficient}: {answer}.",
+        ]
+        parameters.update({"scale": scale, "coefficient": coefficient, "rhs": rhs})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=LOG_EXPONENTIAL_INEQUALITY_FAMILY,
+        topic=LOG_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, LOG_TOPIC, ["p3-exp-equations-001", "p3-ln-e-inverse-001"]),
+    )
+
+
+def build_log_exponential_inequality_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "increasing_base", "base": 3, "exponent": 3, "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "decreasing_base", "denominator": 2, "exponent": 3, "sequence_role": "complete_step", "difficulty_band": "medium"},
+        {"item_type": "isolated_e", "scale": 3, "coefficient": 2, "rhs": 12, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_log_exponential_inequality_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def binomial_expression(a: int, n: int | str) -> str:
@@ -1654,6 +1873,7 @@ def build_log_domain_item(context: dict[str, Any], index: int, case: dict[str, A
     parameters: dict[str, Any] = {
         "item_type": item_type,
         "safe_bounds": "linear log arguments with positive checked final roots",
+        "topic_contract_id": "log_equations_inequalities",
     }
 
     if item_type == "domain_first":
@@ -1700,6 +1920,7 @@ def build_log_domain_item(context: dict[str, Any], index: int, case: dict[str, A
             f"Combine the logs: ln(({left_arg})({right_arg})) = ln {rhs}.",
             f"So ({left_arg})({right_arg}) = {rhs}.",
             f"The algebra gives x = {valid_root} or x = {invalid_root}.",
+            f"Reject x = {invalid_root} because at least one original log argument is not positive.",
             "Check both original log arguments; only the valid root keeps both arguments positive.",
         ]
         parameters.update({"left_shift": left_shift, "right_shift": right_shift, "rhs": rhs, "valid_root": valid_root, "invalid_root": invalid_root})
@@ -1736,6 +1957,7 @@ def build_log_linearisation_item(context: dict[str, Any], index: int, case: dict
     parameters: dict[str, Any] = {
         "item_type": item_type,
         "safe_bounds": "positive coefficients and small gradients for log-linear forms",
+        "topic_contract_id": "log_linearisation",
     }
 
     if item_type == "linearise_form":
@@ -3554,6 +3776,9 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
     context = context_from_inputs(skill_targets, snippets)
     items = (
         build_log_items(context)
+        + build_log_graph_inverse_items(context)
+        + build_log_laws_items(context)
+        + build_log_exponential_inequality_items(context)
         + build_binomial_items(context)
         + build_polynomial_remainder_items(context)
         + build_log_domain_items(context)

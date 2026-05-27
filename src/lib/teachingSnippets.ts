@@ -1,4 +1,8 @@
 import type { PaperFamily, QuickCheckAnswerType, QuickCheckOption, QuickCheckTwoValueField, RegionDefinition } from '../types';
+import {
+  LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_SNIPPET_IDS,
+  LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS,
+} from '../data/logarithmObservatoryContent';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
@@ -92,6 +96,8 @@ interface TeachingSnippetSelection {
 
 const TEACHING_SNIPPETS_PATH = './data/teaching_snippets.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
+const QUARANTINED_RUNTIME_SNIPPET_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_SNIPPET_IDS);
+const QUARANTINED_SKILL_TARGET_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS);
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
@@ -346,7 +352,16 @@ export function normalizeTeachingSnippetsData(data: unknown): TeachingSnippet[] 
 }
 
 export function reviewedTeachingSnippets(snippets: TeachingSnippet[]): TeachingSnippet[] {
-  return snippets.filter((snippet) => RUNTIME_REVIEW_STATUSES.has(snippet.reviewStatus));
+  return snippets.filter((snippet) => (
+    RUNTIME_REVIEW_STATUSES.has(snippet.reviewStatus)
+    && !QUARANTINED_RUNTIME_SNIPPET_IDS.has(snippet.snippetId)
+    && !snippet.sourceSkillTargetIds.some((skillTargetId) => QUARANTINED_SKILL_TARGET_IDS.has(skillTargetId))
+    && !snippet.relatedSkillTargetIds.some((skillTargetId) => QUARANTINED_SKILL_TARGET_IDS.has(skillTargetId))
+    && !(
+      snippet.quickCheck?.skillTargetId
+      && QUARANTINED_SKILL_TARGET_IDS.has(snippet.quickCheck.skillTargetId)
+    )
+  ));
 }
 
 export function selectTeachingSnippets(snippets: TeachingSnippet[], selection: TeachingSnippetSelection = {}): TeachingSnippet[] {

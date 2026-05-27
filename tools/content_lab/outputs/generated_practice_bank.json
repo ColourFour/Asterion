@@ -17,7 +17,8 @@
         "form": "isolated_exp",
         "rhs": 7,
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "log_e_natural_logs"
       },
       "practice_id": "gen_log_equation_basic_0001",
       "prompt": "If e^(2x) = 7, write x exactly.",
@@ -61,7 +62,8 @@
         "rhs": 20,
         "scale": 5,
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "log_e_natural_logs"
       },
       "practice_id": "gen_log_equation_basic_0002",
       "prompt": "Solve 5e^(3x) = 20.",
@@ -104,7 +106,8 @@
         "scale": 2,
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
-        "shift": 1
+        "shift": 1,
+        "topic_contract_id": "log_e_natural_logs"
       },
       "practice_id": "gen_log_equation_basic_0003",
       "prompt": "Solve 2e^(x+1) = 9.",
@@ -131,6 +134,400 @@
         "Divide by 2: e^(x+1) = 9/2.",
         "Take ln of both sides: x + 1 = ln(9/2).",
         "Subtract 1: x = ln(9/2) - 1."
+      ]
+    },
+    {
+      "answer": "2^5 = 32",
+      "difficulty_band": "easy",
+      "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "generator_family": "logarithms_and_exponentials.graph_inverse_basic",
+      "key_method": "Convert fluently between logarithmic and exponential form.",
+      "paper_family": "p3",
+      "parameters": {
+        "base": 2,
+        "exponent": 5,
+        "item_type": "convert_to_exponential",
+        "safe_bounds": "small positive bases and integer graph points",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "log_graph_inverse",
+        "value": 32
+      },
+      "practice_id": "gen_log_graph_inverse_basic_0001",
+      "prompt": "Rewrite log_2 32 = 5 in exponential form.",
+      "question_type": "Logarithmic and exponential form conversion",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_log_convert_forms",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "source_snippet_id": "p3-log-exp-convert-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use log_a b = c means a^c = b.",
+        "The base is 2, the exponent is 5, and the output value is 32.",
+        "So 2^5 = 32."
+      ]
+    },
+    {
+      "answer": "(8, 3)",
+      "difficulty_band": "easy",
+      "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "generator_family": "logarithms_and_exponentials.graph_inverse_basic",
+      "key_method": "Convert fluently between logarithmic and exponential form.",
+      "paper_family": "p3",
+      "parameters": {
+        "base": 2,
+        "exponent": 3,
+        "item_type": "inverse_point",
+        "safe_bounds": "small positive bases and integer graph points",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "log_graph_inverse",
+        "value": 8
+      },
+      "practice_id": "gen_log_graph_inverse_basic_0002",
+      "prompt": "The point (3, 8) lies on y = 2^x. State the matching point on y = log_2 x.",
+      "question_type": "Logarithmic and exponential form conversion",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_log_convert_forms",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "source_snippet_id": "p3-log-exp-convert-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Inverse functions swap input and output coordinates.",
+        "The inverse of y = 2^x is y = log_2 x.",
+        "So (3, 8) becomes (8, 3)."
+      ]
+    },
+    {
+      "answer": "domain x > 0, range all real y",
+      "difficulty_band": "medium",
+      "exam_move": "Convert to exponential form when the unknown is inside the logarithm.",
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "generator_family": "logarithms_and_exponentials.graph_inverse_basic",
+      "key_method": "Convert fluently between logarithmic and exponential form.",
+      "paper_family": "p3",
+      "parameters": {
+        "base": 3,
+        "item_type": "domain_range",
+        "safe_bounds": "small positive bases and integer graph points",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "log_graph_inverse"
+      },
+      "practice_id": "gen_log_graph_inverse_basic_0003",
+      "prompt": "State the domain and range of y = log_3 x.",
+      "question_type": "Logarithmic and exponential form conversion",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_log_convert_forms",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-exp-convert-001"
+      ],
+      "source_snippet_id": "p3-log-exp-convert-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "y = log_3 x is the inverse of y = 3^x.",
+        "The exponential graph has range y > 0, so the logarithm graph has domain x > 0.",
+        "The exponential domain is all real x, so the logarithm range is all real y."
+      ]
+    },
+    {
+      "answer": "ln(5x)",
+      "difficulty_band": "easy",
+      "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+      "example_model_id": "p3-log-laws-001-example-1",
+      "generator_family": "logarithms_and_exponentials.laws_basic",
+      "key_method": "Use log laws without inventing invalid addition rules.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 5,
+        "item_type": "product_law",
+        "safe_bounds": "same-base logarithms with positive-domain reminders",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "log_laws"
+      },
+      "practice_id": "gen_log_laws_basic_0001",
+      "prompt": "Simplify ln x + ln 5 into a single logarithm.",
+      "question_type": "Logarithm laws",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_log_laws_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-invalid-operations-001",
+        "p3-log-laws-001"
+      ],
+      "source_snippet_id": "p3-log-laws-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use ln a + ln b = ln(ab).",
+        "So ln x + ln 5 = ln(5x).",
+        "The original domain includes x > 0."
+      ]
+    },
+    {
+      "answer": "ln(x^2/(x + 1))",
+      "difficulty_band": "easy",
+      "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+      "example_model_id": "p3-log-laws-001-example-1",
+      "generator_family": "logarithms_and_exponentials.laws_basic",
+      "key_method": "Use log laws without inventing invalid addition rules.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "quotient_power_law",
+        "power": 2,
+        "safe_bounds": "same-base logarithms with positive-domain reminders",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "shift": 1,
+        "topic_contract_id": "log_laws"
+      },
+      "practice_id": "gen_log_laws_basic_0002",
+      "prompt": "Write 2ln x - ln(x + 1) as a single logarithm.",
+      "question_type": "Logarithm laws",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_log_laws_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-invalid-operations-001",
+        "p3-log-laws-001"
+      ],
+      "source_snippet_id": "p3-log-laws-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use the power law: 2ln x = ln(x^2).",
+        "Subtraction of logs gives a quotient.",
+        "So the expression is ln(x^2/(x + 1))."
+      ]
+    },
+    {
+      "answer": "No valid log law splits a sum inside one logarithm.",
+      "difficulty_band": "medium",
+      "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
+      "example_model_id": "p3-log-laws-001-example-1",
+      "generator_family": "logarithms_and_exponentials.laws_basic",
+      "key_method": "Use log laws without inventing invalid addition rules.",
+      "paper_family": "p3",
+      "parameters": {
+        "constant": 3,
+        "item_type": "invalid_sum_law",
+        "safe_bounds": "same-base logarithms with positive-domain reminders",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "log_laws"
+      },
+      "practice_id": "gen_log_laws_basic_0003",
+      "prompt": "Explain why ln(x + 3) is not equal to ln x + ln 3.",
+      "question_type": "Logarithm laws",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_log_laws_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-log-invalid-operations-001",
+        "p3-log-laws-001"
+      ],
+      "source_snippet_id": "p3-log-laws-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The product law works for products: ln(xc) = ln x + ln c.",
+        "x + 3 is a sum, not a product.",
+        "Therefore the proposed split is invalid."
+      ]
+    },
+    {
+      "answer": "x > 3",
+      "difficulty_band": "easy",
+      "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "generator_family": "logarithms_and_exponentials.exponential_inequality_basic",
+      "key_method": "Choose an efficient route for exponential equations.",
+      "paper_family": "p3",
+      "parameters": {
+        "base": 3,
+        "exponent": 3,
+        "item_type": "increasing_base",
+        "rhs": 27,
+        "safe_bounds": "small exact exponent comparisons and isolated exponential inequalities",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "exponential_equations_inequalities"
+      },
+      "practice_id": "gen_log_exponential_inequality_basic_0001",
+      "prompt": "Solve 3^x > 27.",
+      "question_type": "Exponential equation",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "source_snippet_id": "p3-exp-equations-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Rewrite 27 as 3^3.",
+        "Because 3 > 1, the function is increasing.",
+        "So x > 3."
+      ]
+    },
+    {
+      "answer": "x >= 3",
+      "difficulty_band": "medium",
+      "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "generator_family": "logarithms_and_exponentials.exponential_inequality_basic",
+      "key_method": "Choose an efficient route for exponential equations.",
+      "paper_family": "p3",
+      "parameters": {
+        "denominator": 2,
+        "exponent": 3,
+        "item_type": "decreasing_base",
+        "safe_bounds": "small exact exponent comparisons and isolated exponential inequalities",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "exponential_equations_inequalities"
+      },
+      "practice_id": "gen_log_exponential_inequality_basic_0002",
+      "prompt": "Solve (1/2)^x <= (1/2)^3.",
+      "question_type": "Exponential equation",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "source_snippet_id": "p3-exp-equations-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The base 1/2 is between 0 and 1, so the function is decreasing.",
+        "A smaller output comes from a larger exponent.",
+        "Therefore x >= 3."
+      ]
+    },
+    {
+      "answer": "x < (1/2)ln(12/3)",
+      "difficulty_band": "medium",
+      "exam_move": "Use common bases for exact answers; use logs for equations that need numerical solutions.",
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "generator_family": "logarithms_and_exponentials.exponential_inequality_basic",
+      "key_method": "Choose an efficient route for exponential equations.",
+      "paper_family": "p3",
+      "parameters": {
+        "coefficient": 2,
+        "item_type": "isolated_e",
+        "rhs": 12,
+        "safe_bounds": "small exact exponent comparisons and isolated exponential inequalities",
+        "scale": 3,
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "exponential_equations_inequalities"
+      },
+      "practice_id": "gen_log_exponential_inequality_basic_0003",
+      "prompt": "Solve 3e^(2x) < 12.",
+      "question_type": "Exponential equation",
+      "region_ids": [
+        "logarithm-grove"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_log_exponential_equations",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-exp-equations-001",
+        "p3-ln-e-inverse-001"
+      ],
+      "source_snippet_id": "p3-exp-equations-001",
+      "topic": "logarithms_and_exponentials",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Divide by 3: e^(2x) < 12/3.",
+        "The exponential base e is greater than 1, so the inequality direction stays the same.",
+        "Take ln and divide by 2: x < (1/2)ln(12/3)."
       ]
     },
     {
@@ -715,7 +1112,8 @@
         "safe_bounds": "linear log arguments with positive checked final roots",
         "sequence_role": "first_step",
         "sequence_stage": "first_step",
-        "shift": 2
+        "shift": 2,
+        "topic_contract_id": "log_equations_inequalities"
       },
       "practice_id": "gen_log_domain_validation_basic_0001",
       "prompt": "State the domain restriction before working with ln(x - 2).",
@@ -759,7 +1157,8 @@
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
         "shift": 1,
-        "solution": 6
+        "solution": 6,
+        "topic_contract_id": "log_equations_inequalities"
       },
       "practice_id": "gen_log_domain_validation_basic_0002",
       "prompt": "Solve ln(x - 1) = ln 5, checking the domain.",
@@ -805,6 +1204,7 @@
         "safe_bounds": "linear log arguments with positive checked final roots",
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
+        "topic_contract_id": "log_equations_inequalities",
         "valid_root": 4
       },
       "practice_id": "gen_log_domain_validation_basic_0003",
@@ -832,6 +1232,7 @@
         "Combine the logs: ln((x - 2)(x + 1)) = ln 10.",
         "So (x - 2)(x + 1) = 10.",
         "The algebra gives x = 4 or x = -3.",
+        "Reject x = -3 because at least one original log argument is not positive.",
         "Check both original log arguments; only the valid root keeps both arguments positive."
       ]
     },
@@ -847,7 +1248,8 @@
         "item_type": "linearise_form",
         "safe_bounds": "positive coefficients and small gradients for log-linear forms",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "log_linearisation"
       },
       "practice_id": "gen_log_linearisation_basic_0001",
       "prompt": "For y = Ae^(kx), write a linear form suitable for plotting ln y against x.",
@@ -889,7 +1291,8 @@
         "item_type": "read_gradient_intercept",
         "safe_bounds": "positive coefficients and small gradients for log-linear forms",
         "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "log_linearisation"
       },
       "practice_id": "gen_log_linearisation_basic_0002",
       "prompt": "If ln y = 2 + 3x, state the gradient and intercept on a graph of ln y against x.",
@@ -931,7 +1334,8 @@
         "item_type": "specific_model",
         "safe_bounds": "positive coefficients and small gradients for log-linear forms",
         "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "log_linearisation"
       },
       "practice_id": "gen_log_linearisation_basic_0003",
       "prompt": "Linearise y = 4e^(2x) by taking natural logs.",
@@ -980,7 +1384,7 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "teacher_reviewed",
+      "review_status": "needs_review",
       "sequence_role": "first_step",
       "skill_target_id": "p3_log_calculus_contexts",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -1022,7 +1426,7 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "teacher_reviewed",
+      "review_status": "needs_review",
       "sequence_role": "complete_step",
       "skill_target_id": "p3_log_calculus_contexts",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -1062,7 +1466,7 @@
       "region_ids": [
         "logarithm-grove"
       ],
-      "review_status": "teacher_reviewed",
+      "review_status": "needs_review",
       "sequence_role": "guardian_prep",
       "skill_target_id": "p3_log_calculus_contexts",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -4906,9 +5310,9 @@
     }
   ],
   "missing_example_model_id_count": 0,
-  "needs_review_internal_count": 6,
+  "needs_review_internal_count": 9,
   "published_runtime_count": 0,
-  "runtime_reviewed_count": 108,
+  "runtime_reviewed_count": 114,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",

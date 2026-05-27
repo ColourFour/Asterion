@@ -7,6 +7,7 @@ import {
   REQUIRED_FIELD_GUIDE_SKILL_IDS,
   fieldGuideSkillCoverage,
 } from '../data/fieldGuideTopics';
+import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from '../data/logarithmObservatoryContent';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
 import {
@@ -2032,10 +2033,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     ]);
     expect(algebraTopics.find((topic) => topic.id === 'algebra_binomial_expansion')?.examples[0]?.tryPrompt)
       .toContain('\\sqrt{2-6x}');
+    expect(logTopics.map((topic) => topic.id)).toEqual([...LOGARITHM_OBSERVATORY_TOPIC_ORDER]);
     expect(calculusTopics.find((topic) => topic.id === 'implicit-log-exp')?.examples[0]?.prompt)
       .toContain('e^y+\\ln x');
-    expect(logTopics.find((topic) => topic.id === 'exponential-calculus-context')?.examples[0]?.prompt)
-      .toContain('\\frac{dy}{dx}=2e^{2x}');
+    expect(logTopics.find((topic) => topic.id === 'log_equations_inequalities')?.examples[0]?.workedLines.join('\n'))
+      .toContain('Reject $x=-3$');
     expect(numericalTopics.find((topic) => topic.id === 'accuracy-rounding')?.description)
       .toContain('iterative approximation');
     expect(calculusTopics.find((topic) => topic.id === 'product-chain')?.title).toBe('Product / Quotient Rule');

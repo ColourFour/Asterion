@@ -976,9 +976,9 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(111);
-    expect(internalGeneratedPractice.items).toHaveLength(114);
-    expect(internalNeedsReview).toHaveLength(6);
+    expect(generatedPractice.items).toHaveLength(117);
+    expect(internalGeneratedPractice.items).toHaveLength(123);
+    expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     for (const family of [
       'trigonometry.identity_rewrite_basic',
@@ -1084,9 +1084,9 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(111);
-    expect(internalGeneratedPractice.items).toHaveLength(114);
-    expect(internalNeedsReview).toHaveLength(6);
+    expect(generatedPractice.items).toHaveLength(117);
+    expect(internalGeneratedPractice.items).toHaveLength(123);
+    expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     const expectedFamilyCounts = new Map([
       ['integration.method_setup_basic', 3],

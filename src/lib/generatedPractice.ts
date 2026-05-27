@@ -1,5 +1,10 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
+import {
+  LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES,
+  LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS,
+  LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS,
+} from '../data/logarithmObservatoryContent';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { isValidP3RegionId, isValidP3SkillId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
@@ -41,6 +46,9 @@ export interface GeneratedPracticeItem {
 const GENERATED_PRACTICE_PATH = './data/generated_practice_bank.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
 const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'guardian_prep']);
+const QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS);
+const QUARANTINED_GENERATOR_FAMILIES = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES);
+const QUARANTINED_SKILL_TARGET_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS);
 const SEQUENCE_ROLE_ORDER: Record<string, number> = {
   first_step: 0,
   complete_step: 1,
@@ -89,6 +97,12 @@ function isRuntimeEligible(item: GeneratedPracticeItem): boolean {
       canonicalPaperFamily(String(item.paperFamily)) !== 'p3'
       || isValidP3SkillId(item.skillTargetId)
     );
+}
+
+function isRuntimeQuarantined(item: GeneratedPracticeItem): boolean {
+  return QUARANTINED_RUNTIME_PRACTICE_IDS.has(item.practiceId)
+    || QUARANTINED_GENERATOR_FAMILIES.has(item.generatorFamily)
+    || Boolean(item.skillTargetId && QUARANTINED_SKILL_TARGET_IDS.has(item.skillTargetId));
 }
 
 function matchesPaperFamily(item: GeneratedPracticeItem, paperFamily?: PaperFamily): boolean {
@@ -240,7 +254,7 @@ export function normalizeGeneratedPracticeData(data: unknown): GeneratedPractice
 }
 
 export function reviewedGeneratedPractice(items: GeneratedPracticeItem[]): GeneratedPracticeItem[] {
-  return items.filter(isRuntimeEligible);
+  return items.filter((item) => isRuntimeEligible(item) && !isRuntimeQuarantined(item));
 }
 
 export function getGeneratedPracticeByTopic(

@@ -114,7 +114,7 @@
       "snippets_with_examples": 5
     },
     {
-      "generated_warmups": 12,
+      "generated_warmups": 18,
       "quick_checks": 8,
       "region_id": "logarithm-grove",
       "region_name": "Logarithm Observatory",
@@ -161,7 +161,7 @@
       },
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 12,
+        "generated_warmups": 18,
         "quick_checks": 8,
         "region_id": "logarithm-grove",
         "region_name": "Logarithm Observatory",
@@ -201,8 +201,8 @@
     "review_only": 1213
   },
   "content_review_status_counts": {
-    "generated_practice:needs_review": 6,
-    "generated_practice:teacher_reviewed": 108,
+    "generated_practice:needs_review": 9,
+    "generated_practice:teacher_reviewed": 114,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 38
   },
@@ -241,6 +241,9 @@
     "logarithms_and_exponentials": {
       "logarithms_and_exponentials.calculus_context_basic": 3,
       "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.exponential_inequality_basic": 3,
+      "logarithms_and_exponentials.graph_inverse_basic": 3,
+      "logarithms_and_exponentials.laws_basic": 3,
       "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3
     },
@@ -275,7 +278,7 @@
     "complex-harbor": 12,
     "differential-shrine": 9,
     "integration-gardens": 16,
-    "logarithm-grove": 12,
+    "logarithm-grove": 18,
     "numerical-mines": 9,
     "trig-observatory": 12,
     "vector-workshop": 9
@@ -303,6 +306,9 @@
     "integration.parts_substitution_basic": 3,
     "logarithms_and_exponentials.calculus_context_basic": 3,
     "logarithms_and_exponentials.domain_validation_basic": 3,
+    "logarithms_and_exponentials.exponential_inequality_basic": 3,
+    "logarithms_and_exponentials.graph_inverse_basic": 3,
+    "logarithms_and_exponentials.laws_basic": 3,
     "logarithms_and_exponentials.linearisation_basic": 3,
     "logarithms_and_exponentials.log_equation_basic": 3,
     "numerical_methods.accuracy_rounding_basic": 3,
@@ -408,6 +414,9 @@
       "integration.parts_substitution_basic": 3,
       "logarithms_and_exponentials.calculus_context_basic": 3,
       "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.exponential_inequality_basic": 3,
+      "logarithms_and_exponentials.graph_inverse_basic": 3,
+      "logarithms_and_exponentials.laws_basic": 3,
       "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3,
       "numerical_methods.accuracy_rounding_basic": 3,
@@ -424,14 +433,14 @@
     },
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
-    "needs_review_internal_count": 6,
+    "needs_review_internal_count": 9,
     "published_runtime_count": 0,
     "review_status_counts": {
-      "needs_review": 6,
-      "teacher_reviewed": 108
+      "needs_review": 9,
+      "teacher_reviewed": 114
     },
-    "runtime_reviewed_count": 108,
-    "total_count": 114,
+    "runtime_reviewed_count": 114,
+    "total_count": 123,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
@@ -440,7 +449,7 @@
     "complex-harbor": 12,
     "differential-shrine": 9,
     "integration-gardens": 16,
-    "logarithm-grove": 12,
+    "logarithm-grove": 18,
     "numerical-mines": 9,
     "trig-observatory": 12,
     "vector-workshop": 9
@@ -462,7 +471,7 @@
       "region_name": "Logarithm Observatory",
       "snippets": 8,
       "snippets_with_examples": 8,
-      "warmups": 12
+      "warmups": 18
     },
     {
       "method_snippets_missing_examples": [],
@@ -524,8 +533,10 @@
       "integration.definite_area_basic": 3,
       "integration.method_setup_basic": 3,
       "integration.parts_substitution_basic": 3,
-      "logarithms_and_exponentials.calculus_context_basic": 3,
       "logarithms_and_exponentials.domain_validation_basic": 3,
+      "logarithms_and_exponentials.exponential_inequality_basic": 3,
+      "logarithms_and_exponentials.graph_inverse_basic": 3,
+      "logarithms_and_exponentials.laws_basic": 3,
       "logarithms_and_exponentials.linearisation_basic": 3,
       "logarithms_and_exponentials.log_equation_basic": 3,
       "numerical_methods.accuracy_rounding_basic": 3,
@@ -543,12 +554,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 111,
+    "published_runtime_count": 117,
     "review_status_counts": {
-      "teacher_reviewed": 111
+      "teacher_reviewed": 117
     },
-    "runtime_reviewed_count": 111,
-    "total_count": 111,
+    "runtime_reviewed_count": 117,
+    "total_count": 117,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -1236,6 +1247,60 @@
       "practice_id": "gen_log_equation_basic_0003",
       "sequence_role": "guardian_prep",
       "source_snippet_id": "p3-ln-e-inverse-001"
+    },
+    {
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "practice_id": "gen_log_exponential_inequality_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-exp-equations-001"
+    },
+    {
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "practice_id": "gen_log_exponential_inequality_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-exp-equations-001"
+    },
+    {
+      "example_model_id": "p3-exp-equations-001-example-1",
+      "practice_id": "gen_log_exponential_inequality_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-exp-equations-001"
+    },
+    {
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "practice_id": "gen_log_graph_inverse_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-log-exp-convert-001"
+    },
+    {
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "practice_id": "gen_log_graph_inverse_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-log-exp-convert-001"
+    },
+    {
+      "example_model_id": "p3-log-exp-convert-001-example-1",
+      "practice_id": "gen_log_graph_inverse_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-log-exp-convert-001"
+    },
+    {
+      "example_model_id": "p3-log-laws-001-example-1",
+      "practice_id": "gen_log_laws_basic_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-log-laws-001"
+    },
+    {
+      "example_model_id": "p3-log-laws-001-example-1",
+      "practice_id": "gen_log_laws_basic_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-log-laws-001"
+    },
+    {
+      "example_model_id": "p3-log-laws-001-example-1",
+      "practice_id": "gen_log_laws_basic_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-log-laws-001"
     },
     {
       "example_model_id": "p3-log-linearisation-001-example-1",

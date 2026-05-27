@@ -304,22 +304,25 @@ describe('region content selection', () => {
   });
 
   it('accepts both teacher-reviewed and published guided practice while excluding drafts', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['logarithm-grove'].find((item) => item.id === 'log-equations-domain')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['logarithm-grove'].find((item) => item.id === 'log_equations_inequalities')!;
     const selected = orderGeneratedPracticeForFieldGuideTopic([
       practice({
         practiceId: 'published-log',
         generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
         reviewStatus: 'published',
+        parameters: { topic_contract_id: 'log_equations_inequalities' },
       }),
       practice({
         practiceId: 'teacher-reviewed-log',
         generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
         reviewStatus: 'teacher_reviewed',
+        parameters: { topic_contract_id: 'log_equations_inequalities' },
       }),
       practice({
         practiceId: 'draft-log',
         generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
         reviewStatus: 'needs_review',
+        parameters: { topic_contract_id: 'log_equations_inequalities' },
       }),
     ], topic);
 
@@ -407,10 +410,11 @@ describe('region content selection', () => {
       },
       {
         regionId: 'logarithm-grove',
-        topicId: 'log-equations-domain',
-        generatorFamily: 'logarithms_and_exponentials.log_equation_basic',
+        topicId: 'log_equations_inequalities',
+        generatorFamily: 'logarithms_and_exponentials.domain_validation_basic',
         topic: 'logarithms_and_exponentials',
-        skillTargetId: 'p3_log_laws_equations',
+        skillTargetId: 'p3_log_domain_validation',
+        topicContractId: 'log_equations_inequalities',
       },
       {
         regionId: 'complex-harbor',

@@ -773,6 +773,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         expect(item.question_type).toBeTruthy();
         expect(item.key_method).toBeTruthy();
         expect(item.exam_move).toBeTruthy();
+        expect(parameters.topic_contract_id).toBe('log_e_natural_logs');
         expect(item.worked_solution.join(' ').toLowerCase()).toMatch(/divide|ln|exponent/);
 
         switch (parameters.form) {
@@ -889,6 +890,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       const families = [
         'parametric_equations.derivative_ratio_basic',
         'complex_numbers.cartesian_locus_roots_basic',
+        'logarithms_and_exponentials.calculus_context_basic',
       ];
 
       for (const family of families) {
@@ -904,9 +906,11 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(runtimeItems.some((item) => families.includes(item.generator_family))).toBe(false);
       const promotedFamilies = [
         ['algebra.polynomial_remainder_factor_basic', 'p3_alg_polynomial_remainder_factor', 10],
+        ['logarithms_and_exponentials.graph_inverse_basic', 'p3_log_convert_forms', 3],
+        ['logarithms_and_exponentials.laws_basic', 'p3_log_laws_equations', 3],
+        ['logarithms_and_exponentials.exponential_inequality_basic', 'p3_log_exponential_equations', 3],
         ['logarithms_and_exponentials.domain_validation_basic', 'p3_log_domain_validation', 3],
         ['logarithms_and_exponentials.linearisation_basic', 'p3_log_linearisation', 3],
-        ['logarithms_and_exponentials.calculus_context_basic', 'p3_log_calculus_contexts', 3],
         ['differentiation.chain_product_basic', 'p3_diff_chain_product_quotient', 3],
         ['differentiation.implicit_log_exp_basic', 'p3_diff_implicit_log_exp', 3],
         ['differentiation.stationary_tangent_normal_basic', 'p3_diff_stationary_tangent_normal', 3],
@@ -939,8 +943,11 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       }
       expect(runtimeItems.some((item) => item.generator_family === 'algebra.structure_rearrangement_basic')).toBe(false);
       expect(runtimeItems.some((item) => item.generator_family === 'quadratics.discriminant_root_condition_basic')).toBe(false);
+      expect(runtimeItems.some((item) => item.generator_family === 'logarithms_and_exponentials.calculus_context_basic')).toBe(false);
+      expect(runtimeItems.some((item) => item.skill_target_id === 'p3_log_calculus_contexts')).toBe(false);
       expect(items.find((item) => item.generator_family === 'algebra.polynomial_remainder_factor_basic' && item.parameters.item_type === 'solve_by_factors')?.answer).toBe('x = -1, 1, or 4');
       expect(items.find((item) => item.generator_family === 'logarithms_and_exponentials.domain_validation_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x = 4');
+      expect(items.find((item) => item.generator_family === 'logarithms_and_exponentials.exponential_inequality_basic' && item.parameters.item_type === 'decreasing_base')?.answer).toBe('x >= 3');
       expect(items.find((item) => item.generator_family === 'differentiation.stationary_tangent_normal_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('y - 4 = -1/4(x - 2)');
       expect(items.find((item) => item.generator_family === 'integration.parts_substitution_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('x e^x - e^x + C');
       expect(items.find((item) => item.generator_family === 'complex_numbers.modulus_argument_basic' && item.sequence_role === 'guardian_prep')?.answer).toBe('modulus = 8, argument = pi/2');
@@ -1020,6 +1027,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
 
       expect(report.generator_family_counts).toMatchObject({
         'logarithms_and_exponentials.log_equation_basic': 3,
+        'logarithms_and_exponentials.graph_inverse_basic': 3,
+        'logarithms_and_exponentials.laws_basic': 3,
+        'logarithms_and_exponentials.exponential_inequality_basic': 3,
         'binomial_expansion.first_terms_and_coefficient': 3,
         'algebra.binomial_validity_range': 3,
         'algebra.modulus_equation_basic': 4,
@@ -1056,7 +1066,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'vectors.line_scalar_product_basic': 3,
       });
       expect(report.generated_warmups_per_region).toMatchObject({
-        'logarithm-grove': 12,
+        'logarithm-grove': 18,
         'algebra-forge': 27,
         'calculus-cliffs': 9,
         'complex-harbor': 12,
@@ -1091,7 +1101,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
       expect(report.active_regions.find((region: { region_id: string }) => region.region_id === 'logarithm-grove')).toMatchObject({
         quick_checks: 1,
         snippets_with_examples: 1,
-        generated_warmups: 12,
+        generated_warmups: 18,
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });
