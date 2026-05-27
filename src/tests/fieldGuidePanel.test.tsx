@@ -7,6 +7,7 @@ import {
   REQUIRED_FIELD_GUIDE_SKILL_IDS,
   fieldGuideSkillCoverage,
 } from '../data/fieldGuideTopics';
+import { ITERATION_FORGE_TOPIC_ORDER } from '../data/iterationForgeContent';
 import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from '../data/logarithmObservatoryContent';
 import { TRIGONOMETRY_SPIRE_TOPIC_ORDER } from '../data/trigonometrySpireContent';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
@@ -493,6 +494,10 @@ describe('FieldGuidePanel teaching snippets', () => {
         && isDisplayableVisualSupportSource(source)
       ));
 
+      if (region.id === 'numerical-mines') {
+        expect(displayableRegionSources.length, region.name).toBe(0);
+        continue;
+      }
       expect(displayableRegionSources.length, region.name).toBeGreaterThanOrEqual(1);
       expect(displayableRegionSources.length, region.name).toBeLessThanOrEqual(4);
     }
@@ -504,6 +509,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       .map((source) => source.id);
 
     expect(reviewRequiredIds).toContain('numerical-mines-cobweb-iteration');
+    expect(reviewRequiredIds).toContain('numerical-mines-newton-iteration');
+    expect(reviewRequiredIds).toContain('numerical-mines-warm-up-newton-iteration');
 
     for (const source of visualSupportSources) {
       if (source.status === 'review-required') {
@@ -515,7 +522,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       pageType: 'field-guide',
       regionId: 'numerical-mines',
       topicIds: ['9709_p3_topic_numerical_solution_of_equations'],
-    })?.id).toBe('numerical-mines-newton-iteration');
+    })).toBeUndefined();
   });
 
   it('keeps approved visual supports sourced and non-empty for student display', () => {
@@ -542,6 +549,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       .toBe('mini_diagram');
     expect(fieldGuideSources.find((source) => source.id === 'numerical-mines-cobweb-iteration')?.visualKind)
       .toBe('needs_visual');
+    expect(fieldGuideSources.find((source) => source.id === 'numerical-mines-newton-iteration')?.status)
+      .toBe('review-required');
 
     for (const source of fieldGuideSources.filter(isDisplayableVisualSupportSource)) {
       expect(['mini_diagram', 'method_pattern'], source.id).toContain(source.visualKind);
@@ -552,8 +561,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       'complex-harbor/locus',
       'complex-harbor/roots',
       'vector-workshop/vectors_intersect_parallel_skew',
-      'numerical-mines/iteration-formula',
-      'differential-shrine/context-model',
+      'numerical-mines/iteration_fixed_point_roots',
+      'differential-shrine/differential_first_order_model',
     ]));
   });
 
@@ -2035,22 +2044,30 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(algebraTopics.find((topic) => topic.id === 'algebra_binomial_expansion')?.examples[0]?.tryPrompt)
       .toContain('\\sqrt{2-6x}');
     expect(logTopics.map((topic) => topic.id)).toEqual([...LOGARITHM_OBSERVATORY_TOPIC_ORDER]);
-    expect(calculusTopics.find((topic) => topic.id === 'implicit-log-exp')?.examples[0]?.prompt)
-      .toContain('e^y+\\ln x');
+    expect(calculusTopics.map((topic) => topic.id)).toEqual([
+      'derivatives_exponential_logarithmic',
+      'derivatives_product_rule',
+      'derivatives_quotient_rule',
+      'derivatives_trig_functions',
+      'derivatives_implicit',
+      'derivatives_parametric',
+    ]);
+    expect(calculusTopics.find((topic) => topic.id === 'derivatives_exponential_logarithmic')?.examples[0]?.prompt)
+      .toContain('4e^{3x-2}+\\ln(5x+1)');
     expect(logTopics.find((topic) => topic.id === 'log_equations_inequalities')?.examples[0]?.workedLines.join('\n'))
       .toContain('Reject $x=-3$');
-    expect(numericalTopics.find((topic) => topic.id === 'accuracy-rounding')?.description)
-      .toContain('iterative approximation');
-    expect(calculusTopics.find((topic) => topic.id === 'product-chain')?.title).toBe('Product / Quotient Rule');
-    expect(calculusTopics.find((topic) => topic.id === 'product-chain')?.examples[1]?.title)
-      .toContain('Quotient');
+    expect(numericalTopics.map((topic) => topic.id)).toEqual([...ITERATION_FORGE_TOPIC_ORDER]);
+    expect(numericalTopics.find((topic) => topic.id === 'iteration_change_of_sign')?.description)
+      .toContain('f(x)=0');
+    expect(calculusTopics.find((topic) => topic.id === 'derivatives_product_rule')?.title).toBe('Product Rule');
+    expect(calculusTopics.find((topic) => topic.id === 'derivatives_quotient_rule')?.title).toBe('Quotient Rule');
     expect(trigTopics.map((topic) => topic.id)).toEqual([...TRIGONOMETRY_SPIRE_TOPIC_ORDER]);
     expect(trigTopics.find((topic) => topic.id === 'trig_reciprocal_functions')?.supportNote)
       .toContain('Support skill');
     expect(complexTopics.find((topic) => topic.id === 'cartesian-conjugate')?.supportNote)
       .toContain('Support skill');
-    expect(numericalTopics.find((topic) => topic.id === 'accuracy-rounding')?.supportNote)
-      .toContain('Guardian evidence');
+    expect(numericalTopics.find((topic) => topic.id === 'iteration_convergence')?.examples[0]?.takeaway.join('\n'))
+      .toContain('Skill Practice compares rearrangements');
   });
 
   it('opens a representative topic lesson for every registered P3 region', () => {

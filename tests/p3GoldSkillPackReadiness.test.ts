@@ -331,6 +331,11 @@ describe('P3 Gold Skill Pack readiness report', () => {
       'p3_num_iteration_formula',
       'p3_num_sign_change_graph_evidence',
     ];
+    const expectedIterationWarmupCounts = new Map([
+      ['p3_num_accuracy_rounding', 3],
+      ['p3_num_iteration_formula', 9],
+      ['p3_num_sign_change_graph_evidence', 9],
+    ]);
 
     for (const skillId of iterationSkills) {
       const row = reportRow(report, skillId);
@@ -351,7 +356,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toContain('source_backed_worked_examples_sparse');
-      expect(warmupItems).toHaveLength(skillId === 'p3_vec_3d_geometry_modelling' ? 4 : 3);
+      expect(warmupItems).toHaveLength(expectedIterationWarmupCounts.get(skillId));
       expect(warmupItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(warmupItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
       expect(skill?.prerequisite_notes).toContain('support');
@@ -415,7 +420,9 @@ describe('P3 Gold Skill Pack readiness report', () => {
       expect(row.warnings).not.toContain('missing_mark_scheme_move_note');
       expect(row.warnings).not.toContain('missing_some_warmup_sequence_roles');
       expect(row.warnings).toEqual(['source_backed_worked_examples_sparse']);
-      expect(warmupItems).toHaveLength(skillId === 'p3_vec_3d_geometry_modelling' ? 4 : 3);
+      expect(warmupItems).toHaveLength(
+        skillId === 'p3_vec_3d_geometry_modelling' || skillId === 'p3_vec_scalar_product_angles' ? 4 : 3,
+      );
       expect(warmupItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(warmupItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));
       expect(skill?.prerequisite_notes).toContain('support');
@@ -867,7 +874,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
     }
   });
 
-  it('reports the focused Trigonometry Spire support-depth batch without generated-practice changes', () => {
+  it('reports the focused Trigonometry Spire support-depth batch after Integral runtime changes', () => {
     const report = readJson<ReadinessReport>(reportJsonPath);
     const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
       snippet_id?: string;
@@ -976,7 +983,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(121);
+    expect(generatedPractice.items).toHaveLength(184);
     expect(internalGeneratedPractice.items).toHaveLength(127);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
@@ -998,7 +1005,7 @@ describe('P3 Gold Skill Pack readiness report', () => {
     }
   });
 
-  it('reports the focused Integral Terraces support-depth batch without generated-practice changes', () => {
+  it('reports the focused Integral Terraces support-depth batch with aligned runtime integration practice', () => {
     const report = readJson<ReadinessReport>(reportJsonPath);
     const snippets = readJson<{ snippets: Array<Record<string, unknown> & {
       snippet_id?: string;
@@ -1085,24 +1092,24 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(121);
+    expect(generatedPractice.items).toHaveLength(184);
     expect(internalGeneratedPractice.items).toHaveLength(127);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
-    const expectedFamilyCounts = new Map([
-      ['integration.method_setup_basic', 3],
-      ['integration.parts_substitution_basic', 3],
-      ['integration.definite_area_basic', 3],
-      ['algebra.partial_fractions_distinct_linear', 4],
-      ['algebra.partial_fractions_repeated_linear', 3],
+    const expectedFamilyCounts = new Map<string, { runtime: number; internal: number }>([
+      ['integration.method_setup_basic', { runtime: 7, internal: 3 }],
+      ['integration.parts_substitution_basic', { runtime: 10, internal: 3 }],
+      ['integration.definite_area_basic', { runtime: 7, internal: 3 }],
+      ['algebra.partial_fractions_distinct_linear', { runtime: 7, internal: 4 }],
+      ['algebra.partial_fractions_repeated_linear', { runtime: 4, internal: 3 }],
     ]);
 
     for (const [family, expectedCount] of expectedFamilyCounts) {
       const runtimeFamilyItems = generatedPractice.items.filter((item) => item.generator_family === family);
       const internalFamilyItems = internalGeneratedPractice.items.filter((item) => item.generator_family === family);
 
-      expect(runtimeFamilyItems).toHaveLength(expectedCount);
-      expect(internalFamilyItems).toHaveLength(expectedCount);
+      expect(runtimeFamilyItems).toHaveLength(expectedCount.runtime);
+      expect(internalFamilyItems).toHaveLength(expectedCount.internal);
       expect(runtimeFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(internalFamilyItems.every((item) => item.review_status === 'teacher_reviewed')).toBe(true);
       expect(new Set(runtimeFamilyItems.map((item) => item.sequence_role))).toEqual(new Set(['first_step', 'complete_step', 'guardian_prep']));

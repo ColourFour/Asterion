@@ -1380,8 +1380,7 @@
       "prompt": "Write the partial-fraction form for \\frac{x + 3}{(x - 2)(x + 1)}. Do not solve for constants.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1421,8 +1420,7 @@
       "prompt": "Decompose \\frac{x + 3}{(x - 2)(x + 1)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1463,8 +1461,7 @@
       "prompt": "Write the partial-fraction form for \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)}. Do not solve for constants.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1504,8 +1501,7 @@
       "prompt": "Decompose \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
@@ -1546,8 +1542,7 @@
       "prompt": "Write the partial-fraction form for \\frac{3x^2 + 2}{x(x - 1)^2}. Do not solve for constants.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1587,8 +1582,7 @@
       "prompt": "Decompose \\frac{3x^2 + 2}{x(x - 1)^2} into partial fractions.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1629,8 +1623,7 @@
       "prompt": "For each denominator, name the partial-fraction form: (i) (x - 2)(x + 1), (ii) x(x - 1)^2, (iii) (x + 1)(x^2 + 2).",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra-forge"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "guardian_prep",
@@ -2805,259 +2798,6 @@
       ]
     },
     {
-      "answer": "u = x^2 + 5, du = 2x dx",
-      "difficulty_band": "easy",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
-      "generator_family": "integration.method_setup_basic",
-      "key_method": "Let the integrand choose the method",
-      "paper_family": "p3",
-      "parameters": {
-        "c": 5,
-        "item_type": "substitution_setup",
-        "n": 4,
-        "safe_bounds": "small positive powers and coefficients; hidden derivative checked explicitly",
-        "sequence_role": "first_step",
-        "sequence_stage": "first_step"
-      },
-      "practice_id": "gen_integration_method_setup_basic_0001",
-      "prompt": "Using u = x^2 + 5, transform the integral of 2x(x^2 + 5)^4 dx.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_int_method_choice",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-method-choice-001",
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-method-choice-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "The substitution is given as u = x^2 + 5.",
-        "The derivative of x^2 + 5 is 2x.",
-        "So du = 2x dx and the method line is u = x^2 + 5, du = 2x dx."
-      ]
-    },
-    {
-      "answer": "(x^2 + 3)^3/3 + C",
-      "difficulty_band": "medium",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
-      "generator_family": "integration.method_setup_basic",
-      "key_method": "Let the integrand choose the method",
-      "paper_family": "p3",
-      "parameters": {
-        "c": 3,
-        "item_type": "substitution_integrate",
-        "n": 2,
-        "result_power": 3,
-        "safe_bounds": "small positive powers and coefficients; hidden derivative checked explicitly",
-        "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
-      },
-      "practice_id": "gen_integration_method_setup_basic_0002",
-      "prompt": "Integrate 2x(x^2 + 3)^2 dx using u = x^2 + 3.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "complete_step",
-      "skill_target_id": "p3_int_method_choice",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-method-choice-001",
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-method-choice-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Use the given substitution u = x^2 + 3, so du = 2x dx.",
-        "The integral becomes integral of u^2 du.",
-        "Integrating gives u^3/3 + C.",
-        "Substitute back to get (x^2 + 3)^3/3 + C."
-      ]
-    },
-    {
-      "answer": "x e^(2x)/2 - e^(2x)/4 + C",
-      "difficulty_band": "medium",
-      "exam_move": "Write the chosen method beside the integral, then transform every part of the setup before evaluating.",
-      "example_model_id": "p3-integration-method-choice-001-example-1",
-      "generator_family": "integration.method_setup_basic",
-      "key_method": "Let the integrand choose the method",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "parts_exp",
-        "k": 2,
-        "safe_bounds": "small positive powers and coefficients; hidden derivative checked explicitly",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
-      },
-      "practice_id": "gen_integration_method_setup_basic_0003",
-      "prompt": "Integrate x e^(2x) dx using integration by parts.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_int_method_choice",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-method-choice-001",
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-method-choice-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Use parts with u = x and dv = e^(kx) dx.",
-        "Then du = dx and v = e^(2x)/2.",
-        "Apply integral u dv = uv - integral v du.",
-        "This gives x e^(2x)/2 - e^(2x)/4 + C."
-      ]
-    },
-    {
-      "answer": "u = x^2 + 1, du = 2x dx",
-      "difficulty_band": "easy",
-      "exam_move": "Write the method cue beside the integral before transforming it.",
-      "example_model_id": "p3-integration-parts-substitution-001-example-1",
-      "generator_family": "integration.parts_substitution_basic",
-      "key_method": "Choose substitution, parts, or algebra first",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "substitution_setup",
-        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
-        "sequence_role": "first_step",
-        "sequence_stage": "first_step"
-      },
-      "practice_id": "gen_integration_parts_substitution_basic_0001",
-      "prompt": "Using u = x^2 + 1, transform the integral of 2x(x^2 + 1)^4 dx.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_int_parts_substitution",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-parts-substitution-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "The substitution is given as u = x^2 + 1.",
-        "Its derivative is 2x, which appears outside the bracket.",
-        "So du = 2x dx and the method line is u = x^2 + 1, du = 2x dx."
-      ]
-    },
-    {
-      "answer": "(x^2 + 1)^5/5 + C",
-      "difficulty_band": "medium",
-      "exam_move": "Write the method cue beside the integral before transforming it.",
-      "example_model_id": "p3-integration-parts-substitution-001-example-1",
-      "generator_family": "integration.parts_substitution_basic",
-      "key_method": "Choose substitution, parts, or algebra first",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "substitution_integrate",
-        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
-        "sequence_role": "complete_step",
-        "sequence_stage": "complete_step"
-      },
-      "practice_id": "gen_integration_parts_substitution_basic_0002",
-      "prompt": "Integrate 2x(x^2 + 1)^4 dx using u = x^2 + 1.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "complete_step",
-      "skill_target_id": "p3_int_parts_substitution",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-parts-substitution-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Let u = x^2 + 1, so du = 2x dx.",
-        "The integral becomes integral of u^4 du.",
-        "Integrating gives u^5/5 + C.",
-        "Substitute back to get (x^2 + 1)^5/5 + C."
-      ]
-    },
-    {
-      "answer": "x e^x - e^x + C",
-      "difficulty_band": "medium",
-      "exam_move": "Write the method cue beside the integral before transforming it.",
-      "example_model_id": "p3-integration-parts-substitution-001-example-1",
-      "generator_family": "integration.parts_substitution_basic",
-      "key_method": "Choose substitution, parts, or algebra first",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "parts_linear_exp",
-        "safe_bounds": "single-substitution and one-step parts cases with exact symbolic answers",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
-      },
-      "practice_id": "gen_integration_parts_substitution_basic_0003",
-      "prompt": "Integrate x e^x dx using integration by parts.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_int_parts_substitution",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-parts-substitution-001"
-      ],
-      "source_snippet_id": "p3-integration-parts-substitution-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Use parts with u = x and dv = e^x dx.",
-        "Then du = dx and v = e^x.",
-        "Apply integral u dv = uv - integral v du.",
-        "This gives x e^x - e^x + C."
-      ]
-    },
-    {
       "answer": "|z| = 5",
       "difficulty_band": "easy",
       "exam_move": "Switch form when the operation changes from addition to powers or roots.",
@@ -3948,7 +3688,8 @@
         "right_value": 4,
         "safe_bounds": "small integer endpoint checks with explicit opposite signs",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "iteration_change_of_sign"
       },
       "practice_id": "gen_numerical_sign_change_basic_0001",
       "prompt": "For f(x) = x^2 - 5, check whether the interval (2, 3) contains a root.",
@@ -3994,6 +3735,7 @@
         "safe_bounds": "small integer endpoint checks with explicit opposite signs",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_change_of_sign",
         "values": {
           "2": -3,
           "3": 2,
@@ -4041,6 +3783,7 @@
         "safe_bounds": "small integer endpoint checks with explicit opposite signs",
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_change_of_sign",
         "upper": 2,
         "upper_value": 4
       },
@@ -4083,7 +3826,8 @@
         "item_type": "identify_formula",
         "safe_bounds": "small positive constants; iteration values checked positive and bounded",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "iteration_fixed_point_roots"
       },
       "practice_id": "gen_numerical_iteration_formula_basic_0001",
       "prompt": "For x^2 = 6, which recurrence keeps the fixed-point equation unchanged: x_(n+1) = sqrt(6) or x_(n+1) = 6/x_n?",
@@ -4126,6 +3870,7 @@
         "safe_bounds": "small positive constants; iteration values checked positive and bounded",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_fixed_point_roots",
         "x0": 2,
         "x1_3dp": "2.250",
         "x2_3dp": "2.236"
@@ -4327,6 +4072,501 @@
       ]
     },
     {
+      "answer": "Use f(x) = sqrt(x^3 + 3) + x - 2, then f(0) < 0 and f(1) > 0, so a root lies between 0 and 1",
+      "difficulty_band": "medium",
+      "exam_move": "Rewrite the equation into f(x) = 0 before applying the sign-change test.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-rewrite",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Move all terms to one side, then evaluate both endpoints.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "rewrite_then_sign_change",
+        "safe_bounds": "small integer endpoint checks with one square-root expression",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_change_of_sign"
+      },
+      "practice_id": "gen_iteration_change_of_sign_0004",
+      "prompt": "Rewrite sqrt(x^3 + 3) = 2 - x as f(x) = 0, then use f(0) and f(1) to justify a root interval.",
+      "question_type": "Change-of-sign interval",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Move all terms to one side: f(x) = sqrt(x^3 + 3) + x - 2.",
+        "f(1) = 2 + 1 - 2 = 1 and f(0) = sqrt(3) - 2 < 0, so a root is between 0 and 1.",
+        "Endpoint signs must be shown after the rewrite; the original equation is not yet in sign-change form."
+      ]
+    },
+    {
+      "answer": "The table shows f(1.5) < 0 and f(1.6) > 0, so the root is between 1.5 and 1.6",
+      "difficulty_band": "medium",
+      "exam_move": "Use a value table to narrow the sign-change interval.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-table",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Track the signs as the tested values get closer together.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "table_interval_narrowing",
+        "safe_bounds": "cubic values rounded consistently for sign comparison",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_change_of_sign"
+      },
+      "practice_id": "gen_iteration_change_of_sign_0005",
+      "prompt": "For f(x) = x^3 - x - 2, a table gives f(1.4) = -0.656, f(1.5) = -0.125, f(1.6) = 0.496. Which interval is now justified?",
+      "question_type": "Change-of-sign interval",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Read the signs in the table: f(1.5) is negative and f(1.6) is positive.",
+        "The sign change is between 1.5 and 1.6.",
+        "So the root interval has narrowed to (1.5, 1.6)."
+      ]
+    },
+    {
+      "answer": "Test f(1.55) and f(1.65); a sign change across these bounds justifies 1.6 to 1 decimal place",
+      "difficulty_band": "medium",
+      "exam_move": "Use the two bounding values around a rounded decimal-place answer.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-rounding",
+      "generator_family": "numerical_methods.sign_change_iteration_basic",
+      "key_method": "Decimal-place proof needs the correct values on either side of the rounded answer.",
+      "paper_family": "p3",
+      "parameters": {
+        "decimal_places": 1,
+        "item_type": "decimal_place_bounding",
+        "safe_bounds": "cubic values chosen to make rounding boundary explicit",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_change_of_sign"
+      },
+      "practice_id": "gen_iteration_change_of_sign_0006",
+      "prompt": "A student wants to prove a root is 1.6 to 1 d.p. Why is testing only f(1.5) and f(1.6) not enough, and which two bounds should be tested?",
+      "question_type": "Decimal-place sign-change proof",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "To prove 1.6 to 1 decimal place, the root must lie between 1.55 and 1.65.",
+        "Testing f(1.5) and f(1.6) only shows the root is below or above one rounded value; it does not prove the rounding boundary.",
+        "Use signs at 1.55 and 1.65, then state the decimal-place conclusion."
+      ]
+    },
+    {
+      "answer": "Use y = x^2 + 2 and y = 1/x; their intersection solves x^3 + 2x - 1 = 0",
+      "difficulty_band": "easy",
+      "exam_move": "Split the equation into two graph equations and connect the intersection back to the original equation.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-choice",
+      "generator_family": "numerical_methods.graph_root_proof",
+      "key_method": "Rearrange to f(x) = g(x), then name the two graphs.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "choose_graphs",
+        "safe_bounds": "simple cubic-to-intersection rearrangement",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "iteration_graph_root_proof"
+      },
+      "practice_id": "gen_iteration_graph_root_proof_0001",
+      "prompt": "For x^3 + 2x - 1 = 0, choose two graphs whose intersections give the roots.",
+      "question_type": "Graph root proof",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Rewrite x^3 + 2x - 1 = 0 as x^3 + 2x = 1.",
+        "For x not equal to 0, divide by x to get x^2 + 2 = 1/x.",
+        "So intersections of y = x^2 + 2 and y = 1/x give roots of the original equation."
+      ]
+    },
+    {
+      "answer": "At an intersection f(x) = g(x), so the x-coordinate satisfies the original equation",
+      "difficulty_band": "easy",
+      "exam_move": "Explain why graph intersection solves the equation instead of only naming the graphs.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-explain",
+      "generator_family": "numerical_methods.graph_root_proof",
+      "key_method": "Connect equal y-values to the original equation.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "intersection_explanation",
+        "safe_bounds": "conceptual intersection-to-equation explanation",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_graph_root_proof"
+      },
+      "practice_id": "gen_iteration_graph_root_proof_0002",
+      "prompt": "A sketch shows y = x^2 + 1 and y = 5 - x crossing once. Explain why the crossing gives one solution of x^2 + 1 = 5 - x.",
+      "question_type": "Graph root proof",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "At the crossing, the two y-values are equal.",
+        "That means x^2 + 1 = 5 - x for the x-coordinate of the crossing.",
+        "Because the sketch shows one crossing, the graph evidence supports one solution."
+      ]
+    },
+    {
+      "answer": "The graphs intersect once, so the original equation has one root according to the graph evidence",
+      "difficulty_band": "medium",
+      "exam_move": "Use exactly-one-intersection evidence to justify exactly one root.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-one-root",
+      "generator_family": "numerical_methods.graph_root_proof",
+      "key_method": "Tie the number of intersections to the number of roots.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "one_root_explanation",
+        "safe_bounds": "graph evidence with one stated intersection",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_graph_root_proof"
+      },
+      "practice_id": "gen_iteration_graph_root_proof_0003",
+      "prompt": "Sketch evidence for y = x^2 + 2 and y = 1/x shows exactly one intersection on x > 0. What does this prove about x^3 + 2x - 1 = 0 on x > 0?",
+      "question_type": "Graph root proof",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_sign_change_graph_evidence",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-numerical-method-evidence-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The equation is equivalent to x^2 + 2 = 1/x for x > 0.",
+        "Each intersection gives one x-value satisfying the original equation.",
+        "Exactly one intersection therefore supports exactly one positive root."
+      ]
+    },
+    {
+      "answer": "Both forms rearrange to x^2 - 3x - 5 = 0",
+      "difficulty_band": "easy",
+      "exam_move": "Verify a proposed iteration by rearranging it back to the original equation.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-verify",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Set x = g(x), then rearrange to f(x) = 0.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "verify_rearrangement",
+        "safe_bounds": "quadratic fixed-point forms with exact rearrangement",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "iteration_fixed_point_roots"
+      },
+      "practice_id": "gen_iteration_fixed_point_roots_0003",
+      "prompt": "Verify that x = sqrt(3x + 5) is an iterative form for the positive root of x^2 - 3x - 5 = 0.",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "At a fixed point, x = sqrt(3x + 5).",
+        "Squaring gives x^2 = 3x + 5.",
+        "Rearrange to x^2 - 3x - 5 = 0, so the formula matches the original equation for the positive branch."
+      ]
+    },
+    {
+      "answer": "x_1 = 3.742, x_2 = 4.028, x_3 = 4.133",
+      "difficulty_band": "medium",
+      "exam_move": "Generate each approximation from the previous value.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-table",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Substitute x_n into g(x_n), keeping guard digits until the final rounding.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "iteration_table",
+        "safe_bounds": "positive quadratic fixed-point sequence rounded to 3 d.p.",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_fixed_point_roots"
+      },
+      "practice_id": "gen_iteration_fixed_point_roots_0004",
+      "prompt": "Use x_(n+1) = sqrt(3x_n + 5), starting with x_0 = 3, to find x_1, x_2, and x_3 to 3 d.p.",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "x_1 = sqrt(3(3) + 5) = sqrt(14) = 3.742 to 3 d.p.",
+        "Use the unrounded value for the next input where possible: x_2 = 4.028 to 3 d.p.",
+        "Substitute again to get x_3 = 4.133 to 3 d.p."
+      ]
+    },
+    {
+      "answer": "The values settle near 4.19, so the positive root is about 4.19",
+      "difficulty_band": "medium",
+      "exam_move": "Use a converging iteration sequence to state the approximate root to the requested accuracy.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-root-accuracy",
+      "generator_family": "numerical_methods.iteration_formula_basic",
+      "key_method": "Continue until successive approximations support the requested accuracy.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "root_to_accuracy",
+        "safe_bounds": "positive quadratic fixed-point sequence rounded to 2 d.p.",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_fixed_point_roots"
+      },
+      "practice_id": "gen_iteration_fixed_point_roots_0005",
+      "prompt": "An iteration for x^2 - 3x - 5 = 0 gives x_4 = 4.171, x_5 = 4.184, and x_6 = 4.189. State the positive root to 2 d.p.",
+      "question_type": "Fixed-point iteration",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The successive values are settling upward toward about 4.19.",
+        "x_5 and x_6 both round to 4.19 to 2 d.p.",
+        "So the positive root is about 4.19 to 2 d.p."
+      ]
+    },
+    {
+      "answer": "The first sequence appears to converge; the second does not settle",
+      "difficulty_band": "medium",
+      "exam_move": "Judge convergence from the generated values, not from the formula appearance alone.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-values",
+      "generator_family": "numerical_methods.iteration_convergence",
+      "key_method": "Compare whether the sequence values settle toward a stable number.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "sequence_comparison",
+        "safe_bounds": "short decimal sequences with visible convergence/divergence behavior",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "iteration_convergence"
+      },
+      "practice_id": "gen_iteration_convergence_0001",
+      "prompt": "Sequence A is 0.600, 0.549, 0.578, 0.561, 0.570. Sequence B is 0.600, 0.511, 0.672, 0.398, 0.922. Which appears more useful for finding a root?",
+      "question_type": "Iteration convergence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Sequence A oscillates by smaller amounts and appears to settle near 0.57.",
+        "Sequence B moves more widely and is not settling in the displayed values.",
+        "So Sequence A is the more useful iteration evidence."
+      ]
+    },
+    {
+      "answer": "If an iterate is negative, the next value -ln(x_n) is undefined in real numbers",
+      "difficulty_band": "medium",
+      "exam_move": "Check the domain of the iteration formula before continuing.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-domain",
+      "generator_family": "numerical_methods.iteration_convergence",
+      "key_method": "A logarithmic iteration needs a positive input.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "domain_failure",
+        "safe_bounds": "logarithm iteration with explicit positive-domain restriction",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "iteration_convergence"
+      },
+      "practice_id": "gen_iteration_convergence_0002",
+      "prompt": "For x_(n+1) = -ln(x_n), explain why the iteration fails if one generated value is negative.",
+      "question_type": "Iteration convergence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The natural logarithm ln(x_n) is defined only for x_n > 0 in this real-number context.",
+        "If an iterate is negative, the next substitution asks for ln(negative).",
+        "So the iteration cannot continue as a real root-finding method."
+      ]
+    },
+    {
+      "answer": "Show a root between 0 and 1, then prefer x_(n+1) = e^(-x_n) because its values settle while -ln(x_n) can fail",
+      "difficulty_band": "medium",
+      "exam_move": "Compare two rearrangements for the same equation using sign-change evidence and generated values.",
+      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-rearrangements",
+      "generator_family": "numerical_methods.iteration_convergence",
+      "key_method": "Use sign change for existence, then generated sequence behavior for iteration usefulness.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "compare_rearrangements",
+        "safe_bounds": "xe^x = 1 comparison with short deterministic sequences",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "iteration_convergence"
+      },
+      "practice_id": "gen_iteration_convergence_0003",
+      "prompt": "For xe^x = 1, f(0) = -1 and f(1) = e - 1. Starting from x_1 = 0.6, compare x_(n+1) = e^(-x_n) with x_(n+1) = -ln(x_n).",
+      "question_type": "Iteration convergence",
+      "region_ids": [
+        "numerical-mines"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_num_iteration_formula",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-iteration-formula-discipline-001",
+        "p3-numerical-method-evidence-001"
+      ],
+      "source_snippet_id": "p3-iteration-formula-discipline-001",
+      "topic": "numerical_methods",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "f(0) and f(1) have opposite signs, so there is a root between 0 and 1.",
+        "The e^(-x_n) iteration gives values such as 0.600, 0.549, 0.578, 0.561, which appear to settle.",
+        "The -ln(x_n) iteration gives values that move more widely and can reach a value that makes the next logarithm invalid.",
+        "So the first rearrangement is more useful from these generated values."
+      ]
+    },
+    {
       "answer": "(1/y) dy = 3x^2 dx",
       "difficulty_band": "easy",
       "exam_move": "Write the separated line clearly, integrate both sides, then use the condition to find the constant.",
@@ -4340,7 +4580,8 @@
         "power": 2,
         "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "differential_separable_variables"
       },
       "practice_id": "gen_differential_equations_separation_basic_0001",
       "prompt": "For dy/dx = 3x^2y, write a separated-variable first line.",
@@ -4384,7 +4625,8 @@
         "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
-        "y0": 5
+        "y0": 5,
+        "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_separation_basic_0002",
       "prompt": "Solve dy/dx = 2xy given y(0) = 5.",
@@ -4429,7 +4671,8 @@
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
         "x_value": 4,
-        "y0": 3
+        "y0": 3,
+        "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_separation_basic_0003",
       "prompt": "For dy/dx = x/y with y(0) = 3, find y when x = 4, taking the positive branch.",
@@ -4474,7 +4717,8 @@
         "sequence_role": "first_step",
         "sequence_stage": "first_step",
         "x0": 1,
-        "y0": 3
+        "y0": 3,
+        "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_initial_condition_basic_0001",
       "prompt": "Given the integrated relation y^2 = x^2 + C and y = 3 when x = 1, find C.",
@@ -4516,7 +4760,8 @@
         "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
-        "y0": 4
+        "y0": 4,
+        "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_initial_condition_basic_0002",
       "prompt": "A general solution is y = Ae^(2x^2). If y = 4 when x = 0, write the particular solution.",
@@ -4561,7 +4806,8 @@
         "sequence_stage": "guardian_prep",
         "x0": 0,
         "x_value": 4,
-        "y0": 3
+        "y0": 3,
+        "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_initial_condition_basic_0003",
       "prompt": "For y^2 = x^2 + C, y = 3 when x = 0. Find the positive y when x = 4.",
@@ -4713,133 +4959,6 @@
       ]
     },
     {
-      "answer": "x^3 + x^2 + C",
-      "difficulty_band": "easy",
-      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
-      "example_model_id": "p3-integration-definite-area-001-example-1",
-      "generator_family": "integration.definite_area_basic",
-      "key_method": "Definite integrals are upper minus lower",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "antiderivative",
-        "safe_bounds": "low-degree polynomials with exact integer or simple fractional areas",
-        "sequence_role": "first_step",
-        "sequence_stage": "first_step"
-      },
-      "practice_id": "gen_integration_definite_area_basic_0001",
-      "prompt": "Find an antiderivative of 3x^2 + 2x.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_int_definite_improper_area",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-definite-area-001"
-      ],
-      "source_snippet_id": "p3-integration-definite-area-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "Increase each power by 1 and divide by the new power.",
-        "3x^2 integrates to x^3.",
-        "2x integrates to x^2.",
-        "Include + C for an indefinite integral."
-      ]
-    },
-    {
-      "answer": "12",
-      "difficulty_band": "easy",
-      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
-      "example_model_id": "p3-integration-definite-area-001-example-1",
-      "generator_family": "integration.definite_area_basic",
-      "key_method": "Definite integrals are upper minus lower",
-      "paper_family": "p3",
-      "parameters": {
-        "item_type": "definite_integral",
-        "safe_bounds": "low-degree polynomials with exact integer or simple fractional areas",
-        "sequence_role": "complete_step",
-        "sequence_stage": "complete_step",
-        "upper": 2,
-        "value": 12
-      },
-      "practice_id": "gen_integration_definite_area_basic_0002",
-      "prompt": "Evaluate the definite integral of 3x^2 + 2x from 0 to 2.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "complete_step",
-      "skill_target_id": "p3_int_definite_improper_area",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-definite-area-001"
-      ],
-      "source_snippet_id": "p3-integration-definite-area-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "An antiderivative is x^3 + x^2.",
-        "Evaluate at 2: 2^3 + 2^2 = 12.",
-        "Evaluate at 0 and subtract 0.",
-        "So the definite integral is 12."
-      ]
-    },
-    {
-      "answer": "32/3",
-      "difficulty_band": "medium",
-      "exam_move": "Write the antiderivative first, then substitute upper minus lower cleanly.",
-      "example_model_id": "p3-integration-definite-area-001-example-1",
-      "generator_family": "integration.definite_area_basic",
-      "key_method": "Definite integrals are upper minus lower",
-      "paper_family": "p3",
-      "parameters": {
-        "area": "32/3",
-        "item_type": "area_under_curve",
-        "safe_bounds": "low-degree polynomials with exact integer or simple fractional areas",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
-        "width": 4
-      },
-      "practice_id": "gen_integration_definite_area_basic_0003",
-      "prompt": "Find the area under y = 4x - x^2 from x = 0 to x = 4.",
-      "question_type": "integration",
-      "region_ids": [
-        "integration-gardens"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
-      "skill_target_id": "p3_int_definite_improper_area",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-integration-definite-area-001"
-      ],
-      "source_snippet_id": "p3-integration-definite-area-001",
-      "topic": "integration",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "The curve is non-negative between 0 and 4, so area is the definite integral.",
-        "Integrate 4x - x^2 to get 2x^2 - x^3/3.",
-        "Substitute 4 and 0.",
-        "The area is 32/3."
-      ]
-    },
-    {
       "answer": "1 + 2lambda = 3 + mu, 2 - lambda = 1, lambda = 1 + 2mu",
       "difficulty_band": "easy",
       "exam_move": "Use separate parameters, then compare components to solve simultaneous equations.",
@@ -4983,7 +5102,8 @@
         "k": 3,
         "safe_bounds": "positive context values with exact rational rate constants",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "differential_first_order_model"
       },
       "practice_id": "gen_differential_equations_context_model_basic_0001",
       "prompt": "A quantity y grows at a rate proportional to y with constant 3. Write the differential equation.",
@@ -5026,7 +5146,8 @@
         "safe_bounds": "positive context values with exact rational rate constants",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
-        "value": 10
+        "value": 10,
+        "topic_contract_id": "differential_first_order_model"
       },
       "practice_id": "gen_differential_equations_context_model_basic_0002",
       "prompt": "If dy/dt = ky, y = 10, and dy/dt = 5, find k.",
@@ -5069,7 +5190,8 @@
         "safe_bounds": "positive context values with exact rational rate constants",
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
-        "value": 20
+        "value": 20,
+        "topic_contract_id": "differential_first_order_model"
       },
       "practice_id": "gen_differential_equations_context_model_basic_0003",
       "prompt": "A population P is 20 when its rate of increase is 4. If dP/dt = kP, write the model.",
@@ -5214,12 +5336,2389 @@
         "Use dy/dx = (dy/dt)/(dx/dt).",
         "dy/dx = 3t^2/(2t) = 3t/2 for t != 0."
       ]
+    },
+    {
+      "answer": "dy/dx = 3e^(3x)",
+      "difficulty_band": "easy",
+      "exam_move": "Differentiate e^(f(x)) by multiplying by f'(x).",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-exp-log-1",
+      "generator_family": "calculus.differentiation_exponential_logarithmic",
+      "key_method": "Exponential derivative with inside multiplier.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exp_kx_intro",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_exponential_logarithmic"
+      },
+      "practice_id": "gen_calculus_exp_log_derivative_0001",
+      "prompt": "Differentiate y = e^(3x).",
+      "question_type": "Exponential derivative",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The inside expression is 3x.",
+        "Its derivative is 3.",
+        "So d/dx e^(3x) = 3e^(3x)."
+      ]
+    },
+    {
+      "answer": "dy/dx = 2/(2x + 1)",
+      "difficulty_band": "easy",
+      "exam_move": "Use d/dx ln(f(x)) = f'(x)/f(x).",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-exp-log-2",
+      "generator_family": "calculus.differentiation_exponential_logarithmic",
+      "key_method": "Log derivative as f'(x)/f(x).",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "ln_fx_intro",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_exponential_logarithmic"
+      },
+      "practice_id": "gen_calculus_exp_log_derivative_0002",
+      "prompt": "Differentiate y = ln(2x + 1).",
+      "question_type": "Logarithmic derivative",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Here f(x) = 2x + 1.",
+        "f'(x) = 2.",
+        "Use f'(x)/f(x) to get dy/dx = 2/(2x + 1)."
+      ]
+    },
+    {
+      "answer": "y - e = 2e(x - 1)",
+      "difficulty_band": "medium",
+      "exam_move": "Find the derivative first, then substitute the point for the tangent.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-exp-log-3",
+      "generator_family": "calculus.differentiation_exponential_logarithmic",
+      "key_method": "Exponential/log derivative applied to a tangent.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exp_log_tangent",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_exponential_logarithmic"
+      },
+      "practice_id": "gen_calculus_exp_log_derivative_0003",
+      "prompt": "For y = e^(2x - 1), find the tangent line at x = 1.",
+      "question_type": "Exponential tangent",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dy/dx = 2e^(2x - 1).",
+        "At x = 1, the gradient is 2e and the point is (1, e).",
+        "Use point-gradient form to get y - e = 2e(x - 1)."
+      ]
+    },
+    {
+      "answer": "dy/dx = e^x(x^2 + 2x)",
+      "difficulty_band": "easy",
+      "exam_move": "Use the product rule and factor the common exponential.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-product-1",
+      "generator_family": "calculus.differentiation_product_rule",
+      "key_method": "u v' + v u'.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "polynomial_exponential_product",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_product_rule"
+      },
+      "practice_id": "gen_calculus_product_rule_0001",
+      "prompt": "Differentiate y = x^2 e^x.",
+      "question_type": "Product rule",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x^2 and v = e^x.",
+        "Then u' = 2x and v' = e^x.",
+        "dy/dx = x^2 e^x + 2x e^x = e^x(x^2 + 2x)."
+      ]
+    },
+    {
+      "answer": "dy/dx = (2x + 1)^3(10x - 1)",
+      "difficulty_band": "medium",
+      "exam_move": "Keep a common bracket factor instead of expanding early.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-product-2",
+      "generator_family": "calculus.differentiation_product_rule",
+      "key_method": "Product rule with a composite factor.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "polynomial_composite_product",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_product_rule"
+      },
+      "practice_id": "gen_calculus_product_rule_0002",
+      "prompt": "Differentiate y = (x - 1)(2x + 1)^4.",
+      "question_type": "Product rule",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x - 1 and v = (2x + 1)^4.",
+        "Then u' = 1 and v' = 8(2x + 1)^3.",
+        "dy/dx = (x - 1)8(2x + 1)^3 + (2x + 1)^4.",
+        "Factor (2x + 1)^3 to get (2x + 1)^3(10x - 1)."
+      ]
+    },
+    {
+      "answer": "gradient = 2",
+      "difficulty_band": "medium",
+      "exam_move": "Use the product rule before evaluating the gradient.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-product-3",
+      "generator_family": "calculus.differentiation_product_rule",
+      "key_method": "Product rule applied to a gradient.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "product_gradient",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_product_rule"
+      },
+      "practice_id": "gen_calculus_product_rule_0003",
+      "prompt": "For y = x ln x, find the gradient at x = e.",
+      "question_type": "Product rule gradient",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the product rule: dy/dx = x(1/x) + ln x.",
+        "So dy/dx = 1 + ln x.",
+        "At x = e, the gradient is 1 + 1 = 2."
+      ]
+    },
+    {
+      "answer": "dy/dx = ((x - 1)2x - (x^2 + 1))/(x - 1)^2",
+      "difficulty_band": "easy",
+      "exam_move": "Set up v u' minus u v' before simplifying.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-quotient-1",
+      "generator_family": "calculus.differentiation_quotient_rule",
+      "key_method": "Quotient rule structure first.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "polynomial_quotient",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_quotient_rule"
+      },
+      "practice_id": "gen_calculus_quotient_rule_0001",
+      "prompt": "Differentiate y = (x^2 + 1)/(x - 1), leaving the quotient-rule structure clear.",
+      "question_type": "Quotient rule",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x^2 + 1 and v = x - 1.",
+        "Then u' = 2x and v' = 1.",
+        "Use (v u' - u v')/v^2 to get ((x - 1)2x - (x^2 + 1))/(x - 1)^2."
+      ]
+    },
+    {
+      "answer": "dy/dx = (2e^x - 2xe^x + 2)/(e^x + 1)^2",
+      "difficulty_band": "medium",
+      "exam_move": "Keep the quotient-rule sign order when exponentials appear.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-quotient-2",
+      "generator_family": "calculus.differentiation_quotient_rule",
+      "key_method": "Quotient rule with exponential denominator.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exponential_quotient",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_quotient_rule"
+      },
+      "practice_id": "gen_calculus_quotient_rule_0002",
+      "prompt": "Differentiate y = 2x/(e^x + 1).",
+      "question_type": "Quotient rule",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = 2x and v = e^x + 1.",
+        "Then u' = 2 and v' = e^x.",
+        "dy/dx = ((e^x + 1)2 - (2x)e^x)/(e^x + 1)^2.",
+        "This simplifies to (2e^x - 2xe^x + 2)/(e^x + 1)^2."
+      ]
+    },
+    {
+      "answer": "x = 1",
+      "difficulty_band": "medium",
+      "exam_move": "For a stationary point, set the numerator of dy/dx to zero after the quotient rule.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-quotient-3",
+      "generator_family": "calculus.differentiation_quotient_rule",
+      "key_method": "Quotient rule followed by dy/dx = 0.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "quotient_stationary",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_quotient_rule"
+      },
+      "practice_id": "gen_calculus_quotient_rule_0003",
+      "prompt": "For y = x/(x^2 + 1), find the positive x-value of the stationary point.",
+      "question_type": "Quotient stationary point",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_chain_product_quotient",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dy/dx = ((x^2 + 1)(1) - x(2x))/(x^2 + 1)^2.",
+        "The numerator simplifies to 1 - x^2.",
+        "Stationary means 1 - x^2 = 0.",
+        "The positive x-value is x = 1."
+      ]
+    },
+    {
+      "answer": "dy/dx = 5cos(5x)",
+      "difficulty_band": "easy",
+      "exam_move": "Use the base sine derivative and multiply by the inside derivative.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-trig-1",
+      "generator_family": "calculus.differentiation_trig_functions",
+      "key_method": "sin differentiates to cos.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "sin_intro",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_trig_functions"
+      },
+      "practice_id": "gen_calculus_trig_derivative_0001",
+      "prompt": "Differentiate y = sin(5x).",
+      "question_type": "Trig derivative",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The derivative of sin u is cos u times du/dx.",
+        "Here u = 5x and du/dx = 5.",
+        "So dy/dx = 5cos(5x)."
+      ]
+    },
+    {
+      "answer": "dy/dx = -2sin(x^2 + 2x)(x + 1)",
+      "difficulty_band": "medium",
+      "exam_move": "Watch the negative sign when differentiating cosine.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-trig-2",
+      "generator_family": "calculus.differentiation_trig_functions",
+      "key_method": "cos differentiates to negative sin with inside multiplier.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cos_composite",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_trig_functions"
+      },
+      "practice_id": "gen_calculus_trig_derivative_0002",
+      "prompt": "Differentiate y = cos(x^2 + 2x).",
+      "question_type": "Trig derivative",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The derivative of cos u is -sin u times du/dx.",
+        "Here u = x^2 + 2x and du/dx = 2x + 2.",
+        "So dy/dx = -(2x + 2)sin(x^2 + 2x), or -2(x + 1)sin(x^2 + 2x)."
+      ]
+    },
+    {
+      "answer": "dy/dx = 2tan x sec^2 x",
+      "difficulty_band": "medium",
+      "exam_move": "Treat tan^2 x as a power of tan x, then multiply by the derivative of tan x.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-trig-3",
+      "generator_family": "calculus.differentiation_trig_functions",
+      "key_method": "Power of a trig function.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "tan_power",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_trig_functions"
+      },
+      "practice_id": "gen_calculus_trig_derivative_0003",
+      "prompt": "Differentiate y = tan^2 x.",
+      "question_type": "Trig derivative",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_method_selection",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Write tan^2 x as (tan x)^2.",
+        "Differentiate the outside square to get 2tan x.",
+        "Multiply by d/dx tan x = sec^2 x.",
+        "So dy/dx = 2tan x sec^2 x."
+      ]
+    },
+    {
+      "answer": "dy/dx = -x/y",
+      "difficulty_band": "easy",
+      "exam_move": "Attach dy/dx to every differentiated y term.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-implicit-1",
+      "generator_family": "calculus.differentiation_implicit",
+      "key_method": "Differentiate y as a function of x.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "implicit_power_intro",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_implicit"
+      },
+      "practice_id": "gen_calculus_implicit_derivative_0001",
+      "prompt": "For x^2 + y^2 = 25, find dy/dx in terms of x and y.",
+      "question_type": "Implicit differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Differentiate with respect to x: 2x + 2y dy/dx = 0.",
+        "Move 2x to the other side.",
+        "Divide by 2y to get dy/dx = -x/y."
+      ]
+    },
+    {
+      "answer": "dy/dx = (3 - y)/(x + 3)",
+      "difficulty_band": "medium",
+      "exam_move": "Use the product rule when differentiating xy implicitly.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-implicit-2",
+      "generator_family": "calculus.differentiation_implicit",
+      "key_method": "Product rule inside implicit differentiation.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "implicit_product",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_implicit"
+      },
+      "practice_id": "gen_calculus_implicit_derivative_0002",
+      "prompt": "For xy + 3y = 3x, find dy/dx.",
+      "question_type": "Implicit differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Differentiate xy as x dy/dx + y.",
+        "Differentiate 3y as 3 dy/dx.",
+        "The differentiated equation is x dy/dx + y + 3 dy/dx = 3.",
+        "Collect and solve: (x + 3)dy/dx = 3 - y."
+      ]
+    },
+    {
+      "answer": "normal gradient = 4/3",
+      "difficulty_band": "medium",
+      "exam_move": "Find the tangent gradient from dy/dx, then use the negative reciprocal for the normal.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-implicit-3",
+      "generator_family": "calculus.differentiation_implicit",
+      "key_method": "Normal gradient from implicit derivative.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "implicit_normal_gradient",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_implicit"
+      },
+      "practice_id": "gen_calculus_implicit_derivative_0003",
+      "prompt": "For x^2 + y^2 = 25, find the gradient of the normal at the point (3, 4).",
+      "question_type": "Implicit normal",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_implicit_log_exp",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Implicit differentiation gives dy/dx = -x/y.",
+        "At (3, 4), the tangent gradient is -3/4.",
+        "The normal gradient is the negative reciprocal, 4/3."
+      ]
+    },
+    {
+      "answer": "dy/dx = 3t/2",
+      "difficulty_band": "easy",
+      "exam_move": "Use dy/dx = (dy/dt)/(dx/dt).",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-parametric-1",
+      "generator_family": "calculus.differentiation_parametric",
+      "key_method": "Derivative ratio.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "parametric_intro",
+        "sequence_role": "first_step",
+        "topic_contract_id": "derivatives_parametric"
+      },
+      "practice_id": "gen_calculus_parametric_derivative_0001",
+      "prompt": "For x = t^2 + 1 and y = t^3, find dy/dx in terms of t.",
+      "question_type": "Parametric differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dx/dt = 2t and dy/dt = 3t^2.",
+        "dy/dx = (dy/dt)/(dx/dt).",
+        "So dy/dx = 3t^2/(2t) = 3t/2 for t != 0."
+      ]
+    },
+    {
+      "answer": "dy/dx = -3",
+      "difficulty_band": "medium",
+      "exam_move": "Find the parameter first, then substitute into dy/dx.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-parametric-2",
+      "generator_family": "calculus.differentiation_parametric",
+      "key_method": "Substitute the parameter after forming dy/dx.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "parametric_x_given",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "derivatives_parametric"
+      },
+      "practice_id": "gen_calculus_parametric_derivative_0002",
+      "prompt": "For x = t^2 - 5 and y = 2 - t^3, find dy/dx when x = -1 and t > 0.",
+      "question_type": "Parametric differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dx/dt = 2t and dy/dt = -3t^2.",
+        "So dy/dx = -3t/2.",
+        "x = -1 gives t^2 - 5 = -1, so t = 2 because t > 0.",
+        "Therefore dy/dx = -3."
+      ]
+    },
+    {
+      "answer": "theta = pi/2",
+      "difficulty_band": "medium",
+      "exam_move": "For a tangent parallel to the x-axis, set dy/dx = 0 while dx/dtheta is not zero.",
+      "example_model_id": "calculus-differentiation-field-guide-2026-05-27-parametric-3",
+      "generator_family": "calculus.differentiation_parametric",
+      "key_method": "Tangent parallel to an axis.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "parametric_trig_horizontal_tangent",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "derivatives_parametric"
+      },
+      "practice_id": "gen_calculus_parametric_derivative_0003",
+      "prompt": "For x = 2cos theta and y = sin^2 theta, find theta in 0 < theta < pi where the tangent is parallel to the x-axis.",
+      "question_type": "Parametric differentiation",
+      "region_ids": [
+        "calculus-cliffs"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_diff_parametric_gradients",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "calculus-differentiation-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "calculus-differentiation-field-guide-2026-05-27",
+      "topic": "differentiation",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "dx/dtheta = -2sin theta.",
+        "dy/dtheta = 2sin theta cos theta.",
+        "dy/dx = (2sin theta cos theta)/(-2sin theta) = -cos theta when sin theta is not zero.",
+        "A horizontal tangent has dy/dx = 0, so cos theta = 0 and theta = pi/2."
+      ]
+    },
+    {
+      "answer": "lambda = 8/9, distance = sqrt(17)/3",
+      "difficulty_band": "medium",
+      "exam_move": "Use a perpendicular dot-product condition before measuring the shortest distance.",
+      "example_model_id": "vectors-gate-follow-up-2026-05-27-point-line-distance",
+      "generator_family": "vectors.point_to_line_distance_basic",
+      "key_method": "General point Q, perpendicular dot product, then magnitude.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "point_to_line_distance_projection",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "vectors_point_to_line_distance"
+      },
+      "practice_id": "gen_vectors_point_to_line_distance_0001",
+      "prompt": "Point P is (3, 3, 1). Line l is r = <1, 1, 0> + lambda<2, 1, 2>. Let Q be a general point on l. Use PQ . <2, 1, 2> = 0, then find the shortest distance from P to l.",
+      "question_type": "Point-to-line distance",
+      "region_ids": [
+        "vector-workshop"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_vec_scalar_product_angles",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-vectors-scalar-product-001"
+      ],
+      "source_snippet_id": "p3-vectors-scalar-product-001",
+      "topic": "vectors",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "A general point on the line is Q = <1 + 2lambda, 1 + lambda, 2lambda>.",
+        "PQ = Q - P = <2lambda - 2, lambda - 2, 2lambda - 1>.",
+        "Use perpendicularity: PQ . <2, 1, 2> = 0.",
+        "This gives 2(2lambda - 2) + (lambda - 2) + 2(2lambda - 1) = 0, so 9lambda - 8 = 0.",
+        "lambda = 8/9 and |PQ| = sqrt(17)/3."
+      ]
+    },
+    {
+      "answer": "(1/2)e^(2x + 3) + c",
+      "difficulty_band": "easy",
+      "exam_move": "Use the reverse of the chain rule for e^(kx + a).",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_exponential_logarithmic-exponential_indefinite_linear_inner",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Divide by the coefficient of x in the exponent.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exponential_indefinite_linear_inner",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_exponential_logarithmic"
+      },
+      "practice_id": "gen_integrals_exponential_logarithmic_0001",
+      "prompt": "Integrate e^(2x + 3) dx.",
+      "question_type": "Exponential integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The exponent is 2x + 3, whose x-coefficient is 2.",
+        "The antiderivative of e^(2x + 3) is e^(2x + 3) divided by 2.",
+        "So the integral is (1/2)e^(2x + 3) + c."
+      ]
+    },
+    {
+      "answer": "(e^2 - 1)/2",
+      "difficulty_band": "easy",
+      "exam_move": "Definite integrals do not include + c.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_exponential_logarithmic-exponential_definite",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Find the antiderivative, then use upper minus lower.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exponential_definite",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_exponential_logarithmic"
+      },
+      "practice_id": "gen_integrals_exponential_logarithmic_0002",
+      "prompt": "Evaluate the integral of e^(2x) from x = 0 to x = 1.",
+      "question_type": "Definite exponential integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative of e^(2x) is (1/2)e^(2x).",
+        "At x = 1 this is e^2/2.",
+        "At x = 0 this is 1/2.",
+        "Subtract to get (e^2 - 1)/2."
+      ]
+    },
+    {
+      "answer": "ln 5",
+      "difficulty_band": "medium",
+      "exam_move": "Keep the logarithm domain in mind before using ln form.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_exponential_logarithmic-logarithmic_definite_single_log",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Use f prime over f to get a logarithm, then simplify.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "logarithmic_definite_single_log",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_exponential_logarithmic"
+      },
+      "practice_id": "gen_integrals_exponential_logarithmic_0003",
+      "prompt": "Evaluate the integral of 2/(2x - 3) from x = 2 to x = 4 and simplify to a single logarithm.",
+      "question_type": "Logarithmic definite integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The denominator is 2x - 3 and its derivative is 2.",
+        "An antiderivative is ln|2x - 3|.",
+        "At x = 4 this is ln 5, and at x = 2 this is ln 1 = 0.",
+        "The definite integral is ln 5."
+      ]
+    },
+    {
+      "answer": "1/2",
+      "difficulty_band": "medium",
+      "exam_move": "Show the limiting step rather than substituting infinity directly.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_exponential_logarithmic-improper_exponential_limit_zero",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Use the limiting value of e^(-kx) as x tends to infinity.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "improper_exponential_limit_zero",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_exponential_logarithmic"
+      },
+      "practice_id": "gen_integrals_exponential_logarithmic_0004",
+      "prompt": "Evaluate the improper integral of e^(-2x) from x = 0 to infinity.",
+      "question_type": "Improper exponential integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative of e^(-2x) is -(1/2)e^(-2x).",
+        "As x tends to infinity, e^(-2x) tends to 0.",
+        "The upper limiting value is 0 and the lower value is -1/2.",
+        "So the integral is 1/2."
+      ]
+    },
+    {
+      "answer": "-(1/3)cos(3x + pi/4) + c",
+      "difficulty_band": "easy",
+      "exam_move": "Use radians unless the question states otherwise.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_basic_trig-sin_linear_inner",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Integrating sin gives negative cos, adjusted by the inner coefficient.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "sin_linear_inner",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_basic_trig"
+      },
+      "practice_id": "gen_integrals_basic_trig_0001",
+      "prompt": "Integrate sin(3x + pi/4) dx.",
+      "question_type": "Basic trigonometric integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The integral of sin u is -cos u.",
+        "The inner coefficient is 3, so divide by 3.",
+        "The answer is -(1/3)cos(3x + pi/4) + c."
+      ]
+    },
+    {
+      "answer": "(1/2)sin(2x) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Divide by the coefficient of x in the inner function.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_basic_trig-cos_linear_inner",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Integrating cos gives sin, adjusted by the inner coefficient.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cos_linear_inner",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_basic_trig"
+      },
+      "practice_id": "gen_integrals_basic_trig_0002",
+      "prompt": "Integrate cos(2x) dx.",
+      "question_type": "Basic trigonometric integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The integral of cos u is sin u.",
+        "The inner coefficient of 2x is 2.",
+        "Divide by 2 to get (1/2)sin(2x) + c."
+      ]
+    },
+    {
+      "answer": "(1/4)tan(4x) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Recognize the tan antiderivative pattern.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_basic_trig-sec_squared_linear_inner",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Integrating sec^2 gives tan, adjusted by the inner coefficient.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "sec_squared_linear_inner",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_basic_trig"
+      },
+      "practice_id": "gen_integrals_basic_trig_0003",
+      "prompt": "Integrate sec^2(4x) dx.",
+      "question_type": "Basic trigonometric integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The integral of sec^2 u is tan u.",
+        "The inner coefficient is 4.",
+        "So the integral is (1/4)tan(4x) + c."
+      ]
+    },
+    {
+      "answer": "1",
+      "difficulty_band": "medium",
+      "exam_move": "Do not add + c to a definite integral.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_basic_trig-basic_trig_definite_clean_limits",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Integrate first, then evaluate upper minus lower.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "basic_trig_definite_clean_limits",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_basic_trig"
+      },
+      "practice_id": "gen_integrals_basic_trig_0004",
+      "prompt": "Evaluate the integral of cos x from x = 0 to x = pi/2.",
+      "question_type": "Definite trigonometric integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative of cos x is sin x.",
+        "At x = pi/2, sin x = 1.",
+        "At x = 0, sin x = 0.",
+        "The integral is 1 - 0 = 1."
+      ]
+    },
+    {
+      "answer": "x/2 + sin(2x)/4 + c",
+      "difficulty_band": "easy",
+      "exam_move": "Identity work is the setup for the integral, not a separate trig-only task.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_trig_identities-cos_squared_double_angle",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Rewrite cos^2 x using a double-angle identity before integrating.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cos_squared_double_angle",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_trig_identities"
+      },
+      "practice_id": "gen_integrals_trig_identities_0001",
+      "prompt": "Use cos^2 x = (1 + cos 2x)/2 to integrate cos^2 x dx.",
+      "question_type": "Trig identity integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Rewrite cos^2 x as (1 + cos 2x)/2.",
+        "Integrate (1/2) with respect to x to get x/2.",
+        "Integrate (1/2)cos 2x to get sin(2x)/4.",
+        "The answer is x/2 + sin(2x)/4 + c."
+      ]
+    },
+    {
+      "answer": "tan x - x + c",
+      "difficulty_band": "medium",
+      "exam_move": "Choose the identity that produces a standard integral.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_trig_identities-tan_squared_sec_squared",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Use tan^2 x = sec^2 x - 1 before integrating.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "tan_squared_sec_squared",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_trig_identities"
+      },
+      "practice_id": "gen_integrals_trig_identities_0002",
+      "prompt": "Integrate tan^2 x dx.",
+      "question_type": "Trig identity integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use tan^2 x = sec^2 x - 1.",
+        "The integral becomes integral of sec^2 x dx minus integral of 1 dx.",
+        "This gives tan x - x + c."
+      ]
+    },
+    {
+      "answer": "-(1/2)cos(2x) + c",
+      "difficulty_band": "medium",
+      "exam_move": "In a hence question, carry the previous result into the integral.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_trig_identities-show_that_hence_integrate",
+      "generator_family": "integration.method_setup_basic",
+      "key_method": "Use the identity established in the first part.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "show_that_hence_integrate",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_trig_identities"
+      },
+      "practice_id": "gen_integrals_trig_identities_0003",
+      "prompt": "Given that 2sin x cos x = sin 2x, hence integrate 2sin x cos x dx.",
+      "question_type": "Hence integrate trig identity",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_method_choice",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the given identity to rewrite 2sin x cos x as sin 2x.",
+        "The integral becomes integral of sin 2x dx.",
+        "Integrating sin 2x gives -(1/2)cos 2x + c."
+      ]
+    },
+    {
+      "answer": "pi/4",
+      "difficulty_band": "medium",
+      "exam_move": "Evaluate both limits after rewriting the integrand.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_trig_identities-sin_squared_definite",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Use the double-angle identity before applying limits.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "sin_squared_definite",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_trig_identities"
+      },
+      "practice_id": "gen_integrals_trig_identities_0004",
+      "prompt": "Evaluate the integral of sin^2 x from x = 0 to x = pi/2.",
+      "question_type": "Definite trig identity integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use sin^2 x = (1 - cos 2x)/2.",
+        "An antiderivative is x/2 - sin(2x)/4.",
+        "At pi/2 this gives pi/4 because sin pi = 0.",
+        "At 0 this gives 0, so the result is pi/4."
+      ]
+    },
+    {
+      "answer": "ln|x - 1| + 2ln|x + 2| + c",
+      "difficulty_band": "easy",
+      "exam_move": "Algebra Vault handles decomposition; this item assesses the integration step.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_partial_fractions-distinct_linear_integral",
+      "generator_family": "algebra.partial_fractions_distinct_linear",
+      "key_method": "Integrate after the rational function is decomposed.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "distinct_linear_integral",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_partial_fractions"
+      },
+      "practice_id": "gen_integrals_partial_fractions_0001",
+      "prompt": "Given (3x + 1)/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2), integrate (3x + 1)/((x - 1)(x + 2)) dx.",
+      "question_type": "Partial-fraction integration",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_partial_fractions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the provided decomposition first.",
+        "Integrate 1/(x - 1) to get ln|x - 1|.",
+        "Integrate 2/(x + 2) to get 2ln|x + 2|.",
+        "The result is ln|x - 1| + 2ln|x + 2| + c."
+      ]
+    },
+    {
+      "answer": "ln|x| - ln|x + 1| + 1/(x + 1) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Keep the (x - a)^2 term separate after decomposition.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_partial_fractions-repeated_linear_integral",
+      "generator_family": "algebra.partial_fractions_repeated_linear",
+      "key_method": "Repeated-factor terms can integrate to reciprocal powers.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "repeated_linear_integral",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_partial_fractions"
+      },
+      "practice_id": "gen_integrals_partial_fractions_0002",
+      "prompt": "Given 1/(x(x + 1)^2) = 1/x - 1/(x + 1) - 1/(x + 1)^2, integrate 1/(x(x + 1)^2) dx.",
+      "question_type": "Partial-fraction integration",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_partial_fractions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the provided repeated-factor decomposition.",
+        "The first two terms integrate to ln|x| and -ln|x + 1|.",
+        "The integral of -1/(x + 1)^2 is 1/(x + 1).",
+        "Combine the terms and add c."
+      ]
+    },
+    {
+      "answer": "x^2/2 + 2x - ln|x + 1| + c",
+      "difficulty_band": "medium",
+      "exam_move": "Do polynomial division before decomposing the proper remainder.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_partial_fractions-improper_fraction_division_first",
+      "generator_family": "algebra.partial_fractions_distinct_linear",
+      "key_method": "Divide first when the rational fraction is improper.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "improper_fraction_division_first",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_partial_fractions"
+      },
+      "practice_id": "gen_integrals_partial_fractions_0003",
+      "prompt": "Given (x^2 + 3x + 1)/(x + 1) = x + 2 - 1/(x + 1), integrate (x^2 + 3x + 1)/(x + 1) dx.",
+      "question_type": "Improper partial-fraction integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_partial_fractions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Use the division result before integrating.",
+        "Integrate x to get x^2/2 and integrate 2 to get 2x.",
+        "Integrate -1/(x + 1) to get -ln|x + 1|.",
+        "The result is x^2/2 + 2x - ln|x + 1| + c."
+      ]
+    },
+    {
+      "answer": "ln(4/3)",
+      "difficulty_band": "medium",
+      "exam_move": "Simplify the logarithmic answer exactly after substituting limits.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_partial_fractions-definite_partial_fraction_integral",
+      "generator_family": "algebra.partial_fractions_distinct_linear",
+      "key_method": "Use the decomposition and then evaluate limits.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "definite_partial_fraction_integral",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_partial_fractions"
+      },
+      "practice_id": "gen_integrals_partial_fractions_0004",
+      "prompt": "Given 1/(x(x + 1)) = 1/x - 1/(x + 1), evaluate the integral of 1/(x(x + 1)) from x = 1 to x = 2.",
+      "question_type": "Definite partial-fraction integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_partial_fractions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative is ln x - ln(x + 1) on this interval.",
+        "At x = 2 this is ln 2 - ln 3.",
+        "At x = 1 this is ln 1 - ln 2 = -ln 2.",
+        "Subtract to get 2ln 2 - ln 3 = ln(4/3)."
+      ]
+    },
+    {
+      "answer": "tan^-1 x + c",
+      "difficulty_band": "easy",
+      "exam_move": "Keep exact answers in tan^-1 form.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_arctan_forms-standard_arctan",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Recognize the standard 1/(1 + x^2) form.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "standard_arctan",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_arctan_forms"
+      },
+      "practice_id": "gen_integrals_arctan_forms_0001",
+      "prompt": "Integrate 1/(1 + x^2) dx.",
+      "question_type": "Arctan-form integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "The standard result is integral of 1/(1 + x^2) dx = tan^-1 x + c.",
+        "No scaling is needed in this item.",
+        "So the answer is tan^-1 x + c."
+      ]
+    },
+    {
+      "answer": "(1/5)tan^-1(x/5) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Factor the scale carefully before writing tan^-1.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_arctan_forms-scaled_a_squared_plus_x_squared",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Match x^2 + a^2 to the standard arctan integral.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "scaled_a_squared_plus_x_squared",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_arctan_forms"
+      },
+      "practice_id": "gen_integrals_arctan_forms_0002",
+      "prompt": "Integrate 1/(x^2 + 25) dx.",
+      "question_type": "Scaled arctan-form integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Write x^2 + 25 as x^2 + 5^2.",
+        "Use integral of 1/(x^2 + a^2) dx = (1/a)tan^-1(x/a) + c.",
+        "Here a = 5, so the result is (1/5)tan^-1(x/5) + c."
+      ]
+    },
+    {
+      "answer": "3tan^-1(x - 4) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Rewrite the quadratic denominator into (x - h)^2 + a^2.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_arctan_forms-complete_square_arctan",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Complete the square before matching the arctan form.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "complete_square_arctan",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_arctan_forms"
+      },
+      "practice_id": "gen_integrals_arctan_forms_0003",
+      "prompt": "Integrate 3/(x^2 - 8x + 17) dx.",
+      "question_type": "Completing-the-square arctan integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Complete the square: x^2 - 8x + 17 = (x - 4)^2 + 1.",
+        "The integral becomes 3 times integral of 1/((x - 4)^2 + 1) dx.",
+        "This gives 3tan^-1(x - 4) + c."
+      ]
+    },
+    {
+      "answer": "pi/4",
+      "difficulty_band": "medium",
+      "exam_move": "Leave the exact answer in tan^-1 form unless a special angle is clear.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_arctan_forms-definite_arctan_integral",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Use the arctan antiderivative before evaluating limits.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "definite_arctan_integral",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_arctan_forms"
+      },
+      "practice_id": "gen_integrals_arctan_forms_0004",
+      "prompt": "Evaluate the integral of 1/(1 + x^2) from x = 0 to x = 1.",
+      "question_type": "Definite arctan-form integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative is tan^-1 x.",
+        "At x = 1, tan^-1 1 = pi/4.",
+        "At x = 0, tan^-1 0 = 0.",
+        "The definite integral is pi/4."
+      ]
+    },
+    {
+      "answer": "ln(x^2 + 2) + c",
+      "difficulty_band": "easy",
+      "exam_move": "Return to x for an indefinite integral.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_substitution-reverse_chain_log_form",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose u so du appears elsewhere in the integrand.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "reverse_chain_log_form",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_substitution"
+      },
+      "practice_id": "gen_integrals_substitution_0001",
+      "prompt": "Use u = x^2 + 2 to integrate 2x/(x^2 + 2) dx.",
+      "question_type": "Substitution integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x^2 + 2.",
+        "Then du = 2x dx.",
+        "The integral becomes integral of 1/u du = ln|u| + c.",
+        "Since x^2 + 2 is positive, the answer is ln(x^2 + 2) + c."
+      ]
+    },
+    {
+      "answer": "(1 + 3x)^6/18 + c",
+      "difficulty_band": "medium",
+      "exam_move": "Do not leave a mix of x and u in the integral.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_substitution-formal_power_substitution",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Rewrite dx and the full integrand in terms of u.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "formal_power_substitution",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_substitution"
+      },
+      "practice_id": "gen_integrals_substitution_0002",
+      "prompt": "Use u = 1 + 3x to integrate (1 + 3x)^5 dx.",
+      "question_type": "Formal u-substitution integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = 1 + 3x, so du = 3 dx and dx = du/3.",
+        "The integral becomes (1/3) integral of u^5 du.",
+        "This gives u^6/18 + c.",
+        "Substitute back to get (1 + 3x)^6/18 + c."
+      ]
+    },
+    {
+      "answer": "15/4",
+      "difficulty_band": "medium",
+      "exam_move": "After changing limits, evaluate in u without returning to x.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_substitution-definite_changed_limits",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Change the limits when changing variables.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "definite_changed_limits",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_substitution"
+      },
+      "practice_id": "gen_integrals_substitution_0003",
+      "prompt": "Use u = x^2 + 1 to evaluate the integral of 2x(x^2 + 1)^3 from x = 0 to x = 1, changing the limits.",
+      "question_type": "Definite substitution with changed limits",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = x^2 + 1, so du = 2x dx.",
+        "When x = 0, u = 1. When x = 1, u = 2.",
+        "The integral becomes integral of u^3 du from 1 to 2.",
+        "This is [u^4/4] from 1 to 2 = (16 - 1)/4 = 15/4."
+      ]
+    },
+    {
+      "answer": "ln(1 + e^x) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Choose u so that e^x dx becomes du.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_substitution-exponential_log_substitution",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Use the numerator as du for a logarithmic result.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "exponential_log_substitution",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_substitution"
+      },
+      "practice_id": "gen_integrals_substitution_0004",
+      "prompt": "Use u = 1 + e^x to integrate e^x/(1 + e^x) dx.",
+      "question_type": "Exponential/log substitution integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Let u = 1 + e^x.",
+        "Then du = e^x dx.",
+        "The integral becomes integral of 1/u du.",
+        "So the answer is ln(1 + e^x) + c."
+      ]
+    },
+    {
+      "answer": "integral of 1 dtheta",
+      "difficulty_band": "medium",
+      "exam_move": "Treat trig substitution as a given method, not as a trig equation topic.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_substitution-trig_substitution_seed",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Use the stated trigonometric substitution and rewrite dx.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "trig_substitution_seed",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_substitution"
+      },
+      "practice_id": "gen_integrals_substitution_0005",
+      "prompt": "Using x = 2sin theta, rewrite the integral of 1/sqrt(4 - x^2) dx in terms of theta.",
+      "question_type": "Trig substitution integral",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "With x = 2sin theta, dx = 2cos theta dtheta.",
+        "Also sqrt(4 - x^2) = sqrt(4 - 4sin^2 theta) = 2cos theta for the chosen range.",
+        "The integrand becomes (1/(2cos theta))(2cos theta dtheta).",
+        "So the transformed integral is integral of 1 dtheta."
+      ]
+    },
+    {
+      "answer": "x e^x - e^x + c",
+      "difficulty_band": "easy",
+      "exam_move": "Use integral u dv = uv - integral v du.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_by_parts-linear_times_exponential",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose u = x and dv = e^x dx.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "linear_times_exponential",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_by_parts"
+      },
+      "practice_id": "gen_integrals_by_parts_0001",
+      "prompt": "Integrate x e^x dx using integration by parts.",
+      "question_type": "Integration by parts",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Choose u = x and dv = e^x dx.",
+        "Then du = dx and v = e^x.",
+        "Apply integral u dv = uv - integral v du.",
+        "This gives x e^x - integral e^x dx = x e^x - e^x + c."
+      ]
+    },
+    {
+      "answer": "-x cos x + sin x + c",
+      "difficulty_band": "medium",
+      "exam_move": "Track the sign when integrating sin x.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_by_parts-linear_times_sine",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Choose the algebraic factor for u.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "linear_times_sine",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_by_parts"
+      },
+      "practice_id": "gen_integrals_by_parts_0002",
+      "prompt": "Integrate x sin x dx using integration by parts.",
+      "question_type": "Integration by parts",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Choose u = x and dv = sin x dx.",
+        "Then du = dx and v = -cos x.",
+        "Apply integral u dv = uv - integral v du.",
+        "This gives -x cos x + integral cos x dx = -x cos x + sin x + c."
+      ]
+    },
+    {
+      "answer": "(x^2/2)ln x - x^2/4 + c",
+      "difficulty_band": "medium",
+      "exam_move": "Use dv = x dx for x ln x.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_by_parts-x_ln_x",
+      "generator_family": "integration.parts_substitution_basic",
+      "key_method": "Let u = ln x so it becomes simpler.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "x_ln_x",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_by_parts"
+      },
+      "practice_id": "gen_integrals_by_parts_0003",
+      "prompt": "Integrate x ln x dx for x > 0 using integration by parts.",
+      "question_type": "Integration by parts",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_parts_substitution",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Choose u = ln x and dv = x dx.",
+        "Then du = (1/x)dx and v = x^2/2.",
+        "Apply integral u dv = uv - integral v du.",
+        "This gives (x^2/2)ln x - integral (x/2) dx = (x^2/2)ln x - x^2/4 + c."
+      ]
+    },
+    {
+      "answer": "dh/dt = 4 - k sqrt(h)",
+      "difficulty_band": "medium",
+      "exam_move": "Translate the rate statement before deciding whether solving is required.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0004",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "tank_inflow_leak_setup",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_first_order_model"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0004",
+      "prompt": "Water enters a tank so that depth h rises at 4 cm/min. Water leaks out so that the depth falls at a rate proportional to sqrt(h). Write a differential equation for h.",
+      "question_type": "First-order differential equation setup",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "Use dh/dt for the rate of change of depth with respect to time.",
+        "The inflow contributes +4.",
+        "The leak is proportional to sqrt(h), so subtract k sqrt(h).",
+        "The setup is dh/dt = 4 - k sqrt(h), where k > 0."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "dT/dt = -k(T - 18)",
+      "difficulty_band": "medium",
+      "exam_move": "Translate the rate statement before deciding whether solving is required.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0005",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "cooling_setup",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "differential_first_order_model"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0005",
+      "prompt": "A body with temperature T cools in a room at 18 degrees C. Its rate of cooling is proportional to T - 18. Write the first-order differential equation.",
+      "question_type": "First-order differential equation setup",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "Use dT/dt for the rate of change of temperature with respect to time.",
+        "The excess above room temperature is T - 18.",
+        "Cooling means the derivative is negative.",
+        "The model is dT/dt = -k(T - 18), where k > 0."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "dh/dt = 3 - kh",
+      "difficulty_band": "easy",
+      "exam_move": "Translate the rate statement before deciding whether solving is required.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0006",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "model_formation_only",
+        "sequence_role": "first_step",
+        "topic_contract_id": "differential_modeling"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0006",
+      "prompt": "A tank depth h increases at 3 cm/min from inflow and decreases at a rate proportional to h. Form the differential equation only.",
+      "question_type": "Differential equation model and solve",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "The changing quantity is h and the independent variable is t.",
+        "Inflow adds +3 to dh/dt.",
+        "The outflow is proportional to h, so it is kh and must be subtracted.",
+        "The model-only answer is dh/dt = 3 - kh."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "T = 20 + 60e^(-kt)",
+      "difficulty_band": "medium",
+      "exam_move": "Form the model, separate it, then use the initial condition to fix the constant.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0007",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "cooling_model_solve",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_modeling"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0007",
+      "prompt": "A cup has temperature T in a room at 20 degrees C. It cools so that dT/dt = -k(T - 20), and T = 80 when t = 0. Solve for T in terms of t and k.",
+      "question_type": "Differential equation model and solve",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "Separate variables: (1/(T - 20)) dT = -k dt.",
+        "Integrate to get ln|T - 20| = -kt + c.",
+        "So T - 20 = Ae^(-kt).",
+        "Use T(0) = 80 to get A = 60, hence T = 20 + 60e^(-kt)."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "x = 50(1 - e^(-2t))",
+      "difficulty_band": "medium",
+      "exam_move": "Use the initial amount after solving the differential equation.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0008",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "reaction_initial_condition",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_modeling"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0008",
+      "prompt": "A reaction forms amount x toward a maximum of 50 units at rate dx/dt = 2(50 - x). Given x = 0 when t = 0, solve for x.",
+      "question_type": "Differential equation model and solve",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "Separate variables: (1/(50 - x)) dx = 2 dt.",
+        "Integrate: -ln|50 - x| = 2t + c.",
+        "So 50 - x = Ae^(-2t).",
+        "Use x(0) = 0 to get A = 50, hence x = 50(1 - e^(-2t))."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "dP/dt = 0.03P, so the population increases at 3% of its current size per unit time.",
+      "difficulty_band": "medium",
+      "exam_move": "Interpret the derivative and proportionality constant in context.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0009",
+      "generator_family": "differential_equations.context_model_basic",
+      "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
+      "parameters": {
+        "item_type": "model_interpretation",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "differential_modeling"
+      },
+      "practice_id": "gen_differential_equations_context_model_basic_0009",
+      "prompt": "A population model is P = 120e^(0.03t). What does the differential equation say about the rate of increase at any time?",
+      "question_type": "Differential equation model and solve",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_forming_context_model",
+      "snippet_ids": [
+        "p3-differential-context-model-001"
+      ],
+      "source_snippet_id": "p3-differential-context-model-001",
+      "worked_solution": [
+        "Differentiate the model: dP/dt = 120(0.03)e^(0.03t).",
+        "Since P = 120e^(0.03t), rewrite this as dP/dt = 0.03P.",
+        "The derivative is proportional to the current population.",
+        "The constant 0.03 means 3% of the current size per unit time."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = Ae^(2x)",
+      "difficulty_band": "easy",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0004",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms with dy and x terms with dx before integrating.",
+      "parameters": {
+        "item_type": "dy_dx_ky_general",
+        "sequence_role": "first_step",
+        "topic_contract_id": "differential_separable_variables"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0004",
+      "prompt": "Solve dy/dx = 2y and give the general solution.",
+      "question_type": "Separable differential equation general solution",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "worked_solution": [
+        "Separate: (1/y) dy = 2 dx.",
+        "Integrate: ln|y| = 2x + c.",
+        "Exponentiate and absorb the constant: y = Ae^(2x)."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = Ae^(x^2)",
+      "difficulty_band": "medium",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0005",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms with dy and x terms with dx before integrating.",
+      "parameters": {
+        "item_type": "f_x_y_general",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_separable_variables"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0005",
+      "prompt": "Solve dy/dx = 2xy and give the general solution.",
+      "question_type": "Separable differential equation general solution",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "worked_solution": [
+        "Separate: (1/y) dy = 2x dx.",
+        "Integrate both sides: ln|y| = x^2 + c.",
+        "Absorb e^c into A to get y = Ae^(x^2)."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "tan(y) = sin(x) + c",
+      "difficulty_band": "medium",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0006",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms with dy and x terms with dx before integrating.",
+      "parameters": {
+        "item_type": "trig_separable_general",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_separable_variables"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0006",
+      "prompt": "Solve dy/dx = cos(x) cos^2(y), leaving the answer implicit if needed.",
+      "question_type": "Separable differential equation general solution",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "worked_solution": [
+        "Separate by dividing by cos^2(y): sec^2(y) dy = cos(x) dx.",
+        "Integrate both sides.",
+        "The result is tan(y) = sin(x) + c."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = A(x + 1)/(x + 2)",
+      "difficulty_band": "medium",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0007",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms with dy and x terms with dx before integrating.",
+      "parameters": {
+        "item_type": "partial_fraction_general",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "differential_separable_variables"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0007",
+      "prompt": "Solve dy/dx = y/((x + 1)(x + 2)) for the general solution.",
+      "question_type": "Separable differential equation general solution",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "worked_solution": [
+        "Separate: (1/y) dy = 1/((x + 1)(x + 2)) dx.",
+        "Use partial fractions: 1/((x + 1)(x + 2)) = 1/(x + 1) - 1/(x + 2).",
+        "Integrate: ln|y| = ln|x + 1| - ln|x + 2| + c.",
+        "Combine logs and exponentiate: y = A(x + 1)/(x + 2)."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = Ae^(e^x(x - 1))",
+      "difficulty_band": "medium",
+      "exam_move": "Separate variables before integrating either side.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0008",
+      "generator_family": "differential_equations.separation_basic",
+      "key_method": "Move y terms with dy and x terms with dx before integrating.",
+      "parameters": {
+        "item_type": "by_parts_after_separation",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "differential_separable_variables"
+      },
+      "practice_id": "gen_differential_equations_separation_basic_0008",
+      "prompt": "Solve dy/dx = x e^x y for the general solution.",
+      "question_type": "Separable differential equation general solution",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_separation_setup",
+      "snippet_ids": [
+        "p3-differential-separation-001"
+      ],
+      "source_snippet_id": "p3-differential-separation-001",
+      "worked_solution": [
+        "Separate: (1/y) dy = x e^x dx.",
+        "The right side now needs integration by parts.",
+        "Integral of x e^x dx is e^x(x - 1) + c.",
+        "So ln|y| = e^x(x - 1) + c and y = Ae^(e^x(x - 1))."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = 12(x + 1)/(x + 2)",
+      "difficulty_band": "medium",
+      "exam_move": "Use the initial condition after the general solution is found.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0004",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Find the arbitrary constant from the given point or initial value.",
+      "parameters": {
+        "item_type": "partial_fraction_particular",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "differential_particular_solutions"
+      },
+      "practice_id": "gen_differential_equations_initial_condition_basic_0004",
+      "prompt": "The general solution of a differential equation is y = A(x + 1)/(x + 2). If y = 6 when x = 0, find the particular solution.",
+      "question_type": "Particular solution of a first-order differential equation",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_de_initial_condition",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "worked_solution": [
+        "Use the condition x = 0, y = 6 in the general solution.",
+        "6 = A(1)/(2), so A = 12.",
+        "The particular solution is y = 12(x + 1)/(x + 2)."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
+    },
+    {
+      "answer": "y = 2(x^2 + 3)^2/9",
+      "difficulty_band": "medium",
+      "exam_move": "Use the initial condition after the general solution is found.",
+      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0005",
+      "generator_family": "differential_equations.initial_condition_basic",
+      "key_method": "Find the arbitrary constant from the given point or initial value.",
+      "parameters": {
+        "item_type": "separable_power_particular",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "differential_particular_solutions"
+      },
+      "practice_id": "gen_differential_equations_initial_condition_basic_0005",
+      "prompt": "Solve dy/dx = 4xy/(x^2 + 3), given y = 2 when x = 0.",
+      "question_type": "Particular solution of a first-order differential equation",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_de_initial_condition",
+      "snippet_ids": [
+        "p3-differential-initial-condition-001"
+      ],
+      "source_snippet_id": "p3-differential-initial-condition-001",
+      "worked_solution": [
+        "Separate: (1/y) dy = 4x/(x^2 + 3) dx.",
+        "Integrate: ln|y| = 2ln(x^2 + 3) + c.",
+        "So y = A(x^2 + 3)^2.",
+        "Use y(0) = 2: 2 = 9A, so A = 2/9."
+      ],
+      "paper_family": "p3",
+      "region_ids": [
+        "differential-shrine"
+      ],
+      "review_status": "teacher_reviewed",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "topic": "differential_equations",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      }
     }
   ],
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 0,
-  "published_runtime_count": 120,
-  "runtime_reviewed_count": 120,
+  "published_runtime_count": 159,
+  "runtime_reviewed_count": 159,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Runtime app-facing reviewed warm-up practice.",

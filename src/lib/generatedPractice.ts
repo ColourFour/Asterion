@@ -1,10 +1,22 @@
 import type { PaperFamily, RegionDefinition } from '../types';
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
 import {
+  CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS,
+  CALCULUS_CLIFFS_TOPIC_ORDER,
+} from '../data/calculusCliffsContent';
+import {
   LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES,
   LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS,
   LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS,
 } from '../data/logarithmObservatoryContent';
+import {
+  INTEGRAL_TERRACES_MOVED_TO_ALGEBRA_PRACTICE_IDS,
+  INTEGRAL_TERRACES_QUARANTINED_RUNTIME_PRACTICE_IDS,
+} from '../data/integralTerracesContent';
+import {
+  ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS,
+  ITERATION_FORGE_TOPIC_ORDER,
+} from '../data/iterationForgeContent';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { isValidP3RegionId, isValidP3SkillId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
@@ -47,8 +59,18 @@ const GENERATED_PRACTICE_PATH = './data/generated_practice_bank.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
 const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'guardian_prep']);
 const QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS);
+for (const practiceId of INTEGRAL_TERRACES_QUARANTINED_RUNTIME_PRACTICE_IDS) {
+  QUARANTINED_RUNTIME_PRACTICE_IDS.add(practiceId);
+}
+for (const practiceId of ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS) {
+  QUARANTINED_RUNTIME_PRACTICE_IDS.add(practiceId);
+}
 const QUARANTINED_GENERATOR_FAMILIES = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES);
 const QUARANTINED_SKILL_TARGET_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS);
+const CALCULUS_FIELD_GUIDE_TOPIC_IDS = new Set<string>(CALCULUS_CLIFFS_TOPIC_ORDER);
+const ITERATION_FIELD_GUIDE_TOPIC_IDS = new Set<string>(ITERATION_FORGE_TOPIC_ORDER);
+const CALCULUS_TOPIC_QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS);
+const INTEGRAL_PRACTICE_MOVED_TO_ALGEBRA_IDS = new Set<string>(INTEGRAL_TERRACES_MOVED_TO_ALGEBRA_PRACTICE_IDS);
 const SEQUENCE_ROLE_ORDER: Record<string, number> = {
   first_step: 0,
   complete_step: 1,
@@ -147,6 +169,7 @@ function selectedPractice(
     .filter((item) => matchesTopic(item, selection.topic))
     .filter((item) => !selection.skillTargetId || item.skillTargetId === selection.skillTargetId)
     .filter((item) => matchesRegion(item, selection.regionId))
+    .filter((item) => selection.regionId !== 'integration-gardens' || !INTEGRAL_PRACTICE_MOVED_TO_ALGEBRA_IDS.has(item.practiceId))
     .sort((a, b) => a.practiceId.localeCompare(b.practiceId));
   return typeof selection.limit === 'number' ? selected.slice(0, selection.limit) : selected;
 }
@@ -186,10 +209,13 @@ export function orderGeneratedPracticeForFieldGuideTopic(
 ): TopicMatchedGeneratedPractice {
   // Guided practice is support-only. Keep the runtime review gate here as a backstop
   // so topic ordering cannot accidentally surface unreviewed generated content.
-  const ordered = reviewedGeneratedPractice(items).sort((a, b) => (
-    sequenceOrder(a) - sequenceOrder(b)
-    || a.practiceId.localeCompare(b.practiceId)
-  ));
+  const ordered = reviewedGeneratedPractice(items)
+    .filter((item) => !topic || !CALCULUS_FIELD_GUIDE_TOPIC_IDS.has(topic.id) || !CALCULUS_TOPIC_QUARANTINED_RUNTIME_PRACTICE_IDS.has(item.practiceId))
+    .filter((item) => !topic || !ITERATION_FIELD_GUIDE_TOPIC_IDS.has(topic.id) || item.parameters.topic_contract_id === topic.id)
+    .sort((a, b) => (
+      sequenceOrder(a) - sequenceOrder(b)
+      || a.practiceId.localeCompare(b.practiceId)
+    ));
   if (!topic) return { items: ordered, exactMatchCount: 0 };
 
   const exact: GeneratedPracticeItem[] = [];

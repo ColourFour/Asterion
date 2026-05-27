@@ -334,7 +334,7 @@ describe('region content selection', () => {
   });
 
   it('uses same-region fallback items after region filtering when no exact topic match exists', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['integration-gardens'].find((item) => item.id === 'method-setup')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['integration-gardens'].find((item) => item.id === 'integrals_basic_trig')!;
     const sameRegionItems = getGeneratedPracticeForRegion([
       practice({
         practiceId: 'integral-area-fallback',
@@ -354,12 +354,12 @@ describe('region content selection', () => {
     const selected = orderGeneratedPracticeForFieldGuideTopic(sameRegionItems, topic);
 
     expect(selected.exactMatchCount).toBe(0);
-    expect(selected.fallbackReason).toContain('Method Setup');
+    expect(selected.fallbackReason).toContain('Integrals of sin, cos, and sec^2');
     expect(selected.items.map((item) => item.practiceId)).toEqual(['integral-area-fallback']);
   });
 
   it('keeps generated-practice ordering deterministic and ignores deprecated difficulty bands', () => {
-    const topic = FIELD_GUIDE_TOPICS_BY_REGION['numerical-mines'].find((item) => item.id === 'iteration-formula')!;
+    const topic = FIELD_GUIDE_TOPICS_BY_REGION['numerical-mines'].find((item) => item.id === 'iteration_fixed_point_roots')!;
     const selected = orderGeneratedPracticeForFieldGuideTopic([
       practice({
         practiceId: 'z-complete-hard',
@@ -369,6 +369,7 @@ describe('region content selection', () => {
         skillTargetId: 'p3_num_iteration_formula',
         sequenceRole: 'complete_step',
         difficultyBand: 'easy',
+        parameters: { topic_contract_id: 'iteration_fixed_point_roots' },
       }),
       practice({
         practiceId: 'b-first-hard',
@@ -378,6 +379,7 @@ describe('region content selection', () => {
         skillTargetId: 'p3_num_iteration_formula',
         sequenceRole: 'first_step',
         difficultyBand: 'hard',
+        parameters: { topic_contract_id: 'iteration_fixed_point_roots' },
       }),
       practice({
         practiceId: 'a-first-easy',
@@ -387,6 +389,7 @@ describe('region content selection', () => {
         skillTargetId: 'p3_num_iteration_formula',
         sequenceRole: 'first_step',
         difficultyBand: 'easy',
+        parameters: { topic_contract_id: 'iteration_fixed_point_roots' },
       }),
     ], topic);
 
@@ -425,17 +428,27 @@ describe('region content selection', () => {
       },
       {
         regionId: 'integration-gardens',
-        topicId: 'method-setup',
-        generatorFamily: 'integration.method_setup_basic',
+        topicId: 'integrals_substitution',
+        generatorFamily: 'integration.integrals_substitution',
         topic: 'integration',
-        skillTargetId: 'p3_int_method_choice',
+        skillTargetId: 'p3_int_parts_substitution',
+        topicContractId: 'integrals_substitution',
+      },
+      {
+        regionId: 'differential-shrine',
+        topicId: 'differential_separable_variables',
+        generatorFamily: 'differential_equations.separation_basic',
+        topic: 'differential_equations',
+        skillTargetId: 'p3_de_separation_setup',
+        topicContractId: 'differential_separable_variables',
       },
       {
         regionId: 'numerical-mines',
-        topicId: 'iteration-formula',
+        topicId: 'iteration_fixed_point_roots',
         generatorFamily: 'numerical_methods.iteration_formula_basic',
         topic: 'numerical_methods',
         skillTargetId: 'p3_num_iteration_formula',
+        topicContractId: 'iteration_fixed_point_roots',
       },
     ];
 

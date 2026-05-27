@@ -79,11 +79,11 @@ export const VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT: VectorsGatePracticeAlignment
   },
   {
     topicId: 'vectors_point_to_line_distance',
-    status: 'todo_teacher_review',
-    reviewedPracticeIds: [],
+    status: 'reviewed_runtime',
+    reviewedPracticeIds: ['gen_vectors_point_to_line_distance_0001'],
     candidatePrompt: 'Point P is (3, 3, 1). Line l has $\\mathbf r=\\begin{pmatrix}1\\\\1\\\\0\\end{pmatrix}+\\lambda\\begin{pmatrix}2\\\\1\\\\2\\end{pmatrix}$. Let Q be a general point on l, use $\\overrightarrow{PQ}\\cdot\\begin{pmatrix}2\\\\1\\\\2\\end{pmatrix}=0$, then find PQ.',
     expectedAnswer: '$$ \\lambda=\\frac89,\\quad |\\overrightarrow{PQ}|=\\frac{\\sqrt{17}}3 $$',
-    authoringNote: 'Left as stretch/TODO because the current reviewed runtime families do not cover multi-step point-to-line distance safely.',
+    authoringNote: 'One reviewed runtime item now covers the approved projection method. Broader variants still need teacher review before promotion.',
   },
 ];
 

@@ -84,7 +84,7 @@ describe('Vectors Gate content contract', () => {
     }
 
     expect(VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT.find((item) => item.topicId === 'vectors_point_to_line_distance')?.status)
-      .toBe('todo_teacher_review');
+      .toBe('reviewed_runtime');
   });
 
   it('has a reviewed runtime Skill Practice item for geometric addition/subtraction', () => {
@@ -95,5 +95,16 @@ describe('Vectors Gate content contract', () => {
     expect(geometricPractice?.reviewStatus).toBe('teacher_reviewed');
     expect(geometricPractice?.prompt.toLowerCase()).toContain('ab + bc');
     expect(geometricPractice?.workedSolution.join('\n')).toContain('AC');
+  });
+
+  it('has a reviewed runtime Skill Practice item for point-to-line distance', () => {
+    const vectorPractice = getGeneratedPracticeForRegion(runtimePractice, 'vector-workshop', 'p3');
+    const pointLinePractice = vectorPractice.find((item) => item.practiceId === 'gen_vectors_point_to_line_distance_0001');
+
+    expect(pointLinePractice?.parameters.topic_contract_id).toBe('vectors_point_to_line_distance');
+    expect(pointLinePractice?.reviewStatus).toBe('teacher_reviewed');
+    expect(pointLinePractice?.prompt).toContain('Let Q be a general point');
+    expect(pointLinePractice?.workedSolution.join('\n')).toContain('lambda = 8/9');
+    expect(pointLinePractice?.workedSolution.join('\n')).toContain('sqrt(17)/3');
   });
 });

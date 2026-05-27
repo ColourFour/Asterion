@@ -9,6 +9,7 @@ import {
   normalizeGeneratedPracticeData,
   reviewedGeneratedPractice,
 } from '../src/lib/generatedPractice';
+import { ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS } from '../src/data/iterationForgeContent';
 import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
 
 const publicGeneratedPracticeData = JSON.parse(readFileSync('public/data/generated_practice_bank.json', 'utf8'));
@@ -159,9 +160,13 @@ describe('generated practice runtime loader', () => {
 
   it('covers every current P3 region with reviewed warm-up practice', () => {
     const normalized = normalizeGeneratedPracticeData(publicGeneratedPracticeData);
+    const reviewed = reviewedGeneratedPractice(normalized);
+    const quarantineCount = ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS.length;
 
     expect(normalized.length).toBeGreaterThan(0);
-    expect(reviewedGeneratedPractice(normalized)).toHaveLength(normalized.length);
+    expect(reviewed).toHaveLength(normalized.length - quarantineCount);
+    expect(reviewed.map((practice) => practice.practiceId))
+      .not.toEqual(expect.arrayContaining([...ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS]));
     expect(normalized.every((practice) => (
       practice.prompt.trim()
       && practice.answer.trim()
@@ -191,8 +196,8 @@ describe('generated practice runtime loader', () => {
 
     expect(byId.get('gen_binomial_first_terms_and_coefficient_0001')?.prompt).toContain('validity condition');
     expect(byId.get('gen_binomial_first_terms_and_coefficient_0002')?.answer).toContain('valid for');
-    expect(byId.get('gen_integration_method_setup_basic_0001')?.prompt).toContain('Using u = x^2 + 5');
-    expect(byId.get('gen_integration_parts_substitution_basic_0001')?.prompt).toContain('Using u = x^2 + 1');
+    expect(byId.get('gen_integrals_substitution_0003')?.prompt).toContain('changing the limits');
+    expect(byId.get('gen_integrals_by_parts_0001')?.prompt).toContain('x e^x');
     expect(byId.get('gen_complex_roots_basic_0001')?.keyMethod).toBe('Roots need every argument branch');
   });
 });
