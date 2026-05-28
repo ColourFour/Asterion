@@ -15,7 +15,14 @@ import { getRegionTheme, type RegionTheme } from '../../lib/regionThemes';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
 import { getRegionHubAsset, getRegionHubAssetDimensions } from '../../lib/regionAssets';
 import type { TeachingSnippet } from '../../lib/teachingSnippets';
-import { canStudentUseRegionActivity, lockedActivityMessage, lockedRegionMessage, type StudentRegionAccess } from '../../lib/classRegionAccess';
+import {
+  canStudentUseRegionActivity,
+  evaluateExamTrainingGate,
+  evaluateGuardianChallengeGate,
+  lockedActivityMessage,
+  lockedRegionMessage,
+  type StudentRegionAccess,
+} from '../../lib/classRegionAccess';
 import { MathText } from '../shared/MathText';
 import { FieldGuidePanel } from './regionHub/FieldGuidePanel';
 import { GuardianChallengePanel } from './regionHub/GuardianChallengePanel';
@@ -215,8 +222,6 @@ export function RegionHub({
   const canUseGuardian = canStudentUseRegionActivity(studentRegionAccess, 'guardian');
   const canUseSkillPractice = canUseQuickCheck || canUseWarmUp;
   const accessLocked = !canUseExamPractice;
-  const examPracticeLockedReason = canUseExamPractice ? undefined : lockedActivityMessage(studentRegionAccess, 'exam_practice');
-  const guardianAccessLockedReason = canUseGuardian ? undefined : lockedActivityMessage(studentRegionAccess, 'guardian');
   const guardianQuestion = summary.guardianEligibility.guardianQuestion;
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
@@ -224,6 +229,16 @@ export function RegionHub({
   const guardianChallengeItems = useMemo(() => getGuardianChallengeItemsForRegion(region.id), [region.id]);
   const activeDisplayPage = displayedRegionPage(activePage);
   const [currentFieldGuideTopic, setCurrentFieldGuideTopic] = useState<FieldGuideTopic | undefined>();
+  const guardianGate = evaluateGuardianChallengeGate({
+    access: studentRegionAccess,
+    studentReady: summary.guardianEligibility.eligible,
+    studentReadinessReason: guardianNextStep(summary),
+  });
+  const examTrainingGate = evaluateExamTrainingGate({
+    access: studentRegionAccess,
+    hasTrainableQuestions: canTrain,
+  });
+  const guardianAccessLockedReason = canUseGuardian ? undefined : lockedActivityMessage(studentRegionAccess, 'guardian');
 
   useEffect(() => {
     setCurrentFieldGuideTopic(undefined);
@@ -336,7 +351,7 @@ export function RegionHub({
             {activeDisplayPage === 'exam-training' ? (
               <TrainingGroundsPanel
                 canTrain={canTrain}
-                lockedReason={examPracticeLockedReason}
+                lockedReason={examTrainingGate.canStart ? undefined : examTrainingGate.reason}
                 summary={summary}
                 onStartTraining={onStartTraining}
               />
@@ -348,8 +363,8 @@ export function RegionHub({
                   challenge={guardianChallenge}
                   challengeItems={guardianChallengeItems}
                   guardianCleared={guardianCleared}
-                  isUnlocked={summary.guardianEligibility.eligible && canUseGuardian}
-                  lockedReason={guardianAccessLockedReason}
+                  isUnlocked={guardianGate.canStart}
+                  lockedReason={guardianGate.reason}
                   regionName={theme.title}
                   onSaveGuardianClear={onCompleteGuardianChallenge}
                 />
@@ -357,6 +372,7 @@ export function RegionHub({
                   guardianCleared={guardianCleared}
                   guardianQuestion={guardianQuestion}
                   guardianAccessLockedReason={guardianAccessLockedReason}
+                  guardianStartLockedReason={guardianGate.reason}
                   regionName={theme.title}
                   summary={summary}
                   onChallengeGuardian={onChallengeGuardian}

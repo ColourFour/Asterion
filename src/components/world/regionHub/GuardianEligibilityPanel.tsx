@@ -19,6 +19,7 @@ interface GuardianEligibilityPanelProps {
   guardianCleared: boolean;
   guardianQuestion?: NormalizedQuestion;
   guardianAccessLockedReason?: string;
+  guardianStartLockedReason?: string;
   regionName: string;
   summary: RegionLearningSummary;
   onChallengeGuardian: (question: NormalizedQuestion) => void;
@@ -113,6 +114,7 @@ export function GuardianEligibilityPanel({
   guardianCleared,
   guardianQuestion,
   guardianAccessLockedReason,
+  guardianStartLockedReason,
   regionName,
   summary,
   onChallengeGuardian,
@@ -124,7 +126,7 @@ export function GuardianEligibilityPanel({
     ? {
       label: 'Guardian locked by class settings',
       disabled: true,
-      helper: guardianAccessLockedReason,
+      helper: guardianStartLockedReason ?? guardianAccessLockedReason,
     }
     : nextGuardianAction(summary, guardianQuestion);
   const readyButClassLocked = Boolean(guardianAccessLockedReason && summary.guardianEligibility.eligible);
@@ -217,6 +219,15 @@ export function GuardianEligibilityPanel({
           <p className="guardian-encouragement">
             The Guardian opens when Field Guide and Skill Check are complete.
           </p>
+          {guardianAccessLockedReason ? (
+            <div className="guardian-ready-banner is-locked">
+              <Lock size={22} aria-hidden="true" />
+              <div>
+                <strong>Guardian also locked by class settings</strong>
+                <span>{guardianAccessLockedReason}</span>
+              </div>
+            </div>
+          ) : null}
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
             {summary.guardianEligibility.requirements.map((requirement) => (
               <article className={`guardian-requirement-card${requirement.completed ? ' is-complete' : ' is-locked'}`} key={requirement.id}>

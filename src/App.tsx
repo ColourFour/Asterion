@@ -16,7 +16,7 @@ import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
 import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig, type AsterionRuntimeConfig } from './lib/appConfig';
-import { canStudentUseRegionActivity, getStudentRegionAccess, lockedActivityMessage } from './lib/classRegionAccess';
+import { canStudentUseRegionActivity, evaluateExamTrainingGate, evaluateGuardianChallengeGate, getStudentRegionAccess, lockedActivityMessage } from './lib/classRegionAccess';
 import { EXAM_TRAINING_PRACTICE_LABELS, type ExamTrainingPracticeMode } from './lib/examTrainingDashboard';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
@@ -718,12 +718,12 @@ export default function App() {
 
     if (region) {
       const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
-      if (!canStudentUseRegionActivity(access, 'exam_practice')) {
-        openExamTrainingDashboard(region);
-        return;
-      }
       const candidateQuestions = filterTrainableQuestionsForRegion(trainableQuestions, region);
-      if (!candidateQuestions.length) {
+      const gate = evaluateExamTrainingGate({
+        access,
+        hasTrainableQuestions: candidateQuestions.length > 0,
+      });
+      if (!gate.canStart) {
         openExamTrainingDashboard(region);
         return;
       }
@@ -795,12 +795,12 @@ export default function App() {
 
   function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
     const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
-    if (!canStudentUseRegionActivity(access, 'exam_practice')) {
-      openExamTrainingDashboard(region);
-      return;
-    }
     const candidateQuestions = filterTrainableQuestionsForRegion(trainableQuestions, region);
-    if (!candidateQuestions.length) {
+    const gate = evaluateExamTrainingGate({
+      access,
+      hasTrainableQuestions: candidateQuestions.length > 0,
+    });
+    if (!gate.canStart) {
       openExamTrainingDashboard(region);
       return;
     }
@@ -818,7 +818,13 @@ export default function App() {
 
   function challengeGuardian(region: RegionDefinition, question: NormalizedQuestion) {
     const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
-    if (!canStudentUseRegionActivity(access, 'guardian')) {
+    const guardianSummary = regionLearningSummaries[region.id];
+    const gate = evaluateGuardianChallengeGate({
+      access,
+      studentReady: Boolean(guardianSummary?.guardianEligibility.eligible),
+      studentReadinessReason: guardianSummary?.guardianEligibility.missingRequirements[0],
+    });
+    if (!gate.canStart) {
       openRegionPage(region, 'guardian');
       return;
     }
@@ -1230,11 +1236,10 @@ export default function App() {
   }
 
   const examTrainingPracticeDisabledReason = selectedRegion
-    ? !canStudentUseRegionActivity(selectedRegionAccess, 'exam_practice')
-      ? lockedActivityMessage(selectedRegionAccess, 'exam_practice')
-      : selectedRegionProgress && selectedRegionProgress.availableQuestions <= 0
-        ? 'No trainable question and mark-scheme image pairs are loaded for this region yet.'
-        : undefined
+    ? evaluateExamTrainingGate({
+      access: selectedRegionAccess,
+      hasTrainableQuestions: Boolean(selectedRegionProgress && selectedRegionProgress.availableQuestions > 0),
+    }).reason
     : hasClassroomPracticeGates() && openExamTrainingRegions().length === 0
       ? globalExamTrainingClassLockedReason()
       : globalExamTrainingQuestions().length === 0

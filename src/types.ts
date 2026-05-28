@@ -85,6 +85,7 @@ export type AdminTeacherStatus = 'active' | 'inactive' | 'pending' | 'archived' 
 export type AdminClassStatus = 'active' | 'archived';
 export type RosterStudentStatus = 'active' | 'claimed' | 'unclaimed' | 'archived';
 export type ClassRegionAccessMode = 'open' | 'field_guide_only';
+export type ClassActivityAccessMode = 'open' | 'locked';
 export type StudentClaimStatus =
   | 'unclaimed'
   | 'claimed'
@@ -113,6 +114,15 @@ export interface ClassRegionAccess {
   regionId: string;
   regionName: string;
   access: ClassRegionAccessMode;
+  // TODO: persist these per-activity teacher controls once classroom storage supports them.
+  // Until then, runtime falls back to the region-level open/field-guide-only gate.
+  activityAccess?: {
+    quickCheck?: ClassActivityAccessMode;
+    warmUp?: ClassActivityAccessMode;
+    examTraining?: ClassActivityAccessMode;
+    guardian?: ClassActivityAccessMode;
+    masteryProgression?: ClassActivityAccessMode;
+  };
   openedAt?: string;
   lockedAt?: string;
   updatedByRole: Extract<AsterionRole, 'admin' | 'teacher'>;

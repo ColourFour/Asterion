@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { canStudentUseRegionActivity, getStudentRegionAccess, lockedActivityMessage } from '../lib/classRegionAccess';
+import {
+  canStudentUseRegionActivity,
+  evaluateExamTrainingGate,
+  evaluateGuardianChallengeGate,
+  getStudentRegionAccess,
+  lockedActivityMessage,
+  type StudentRegionAccess,
+} from '../lib/classRegionAccess';
 import type { StudentProfile } from '../types';
 
 const claimedAlphaProfile: StudentProfile = {
@@ -89,5 +96,99 @@ describe('student class region access', () => {
     });
     expect(canStudentUseRegionActivity(hostedLockedAccess, 'field_guide')).toBe(true);
     expect(canStudentUseRegionActivity(hostedLockedAccess, 'mastery_progression')).toBe(false);
+  });
+
+  it('supports future per-activity teacher gates while falling back to region access', () => {
+    const access: StudentRegionAccess = {
+      regionId: 'algebra-forge',
+      access: 'open',
+      classroomControlled: true,
+      accessRecord: {
+        regionId: 'algebra-forge',
+        regionName: 'Algebra Vault',
+        access: 'open',
+        activityAccess: {
+          examTraining: 'locked',
+          guardian: 'locked',
+        },
+        updatedByRole: 'teacher',
+        updatedAt: '2026-05-28T00:00:00.000Z',
+      },
+    };
+
+    expect(canStudentUseRegionActivity(access, 'field_guide')).toBe(true);
+    expect(canStudentUseRegionActivity(access, 'quick_check')).toBe(true);
+    expect(canStudentUseRegionActivity(access, 'exam_practice')).toBe(false);
+    expect(canStudentUseRegionActivity(access, 'guardian')).toBe(false);
+  });
+
+  it('keeps Guardian visible but blocks start unless readiness and class settings both allow it', () => {
+    const classLocked = getStudentRegionAccess(claimedAlphaProfile, 'complex-harbor');
+    const classOpen = getStudentRegionAccess(claimedAlphaProfile, 'algebra-forge');
+
+    expect(evaluateGuardianChallengeGate({
+      access: classOpen,
+      studentReady: false,
+      studentReadinessReason: 'Complete each Skill Check topic (3/5).',
+    })).toMatchObject({
+      canStart: false,
+      blocker: 'student_readiness',
+      reason: 'Complete each Skill Check topic (3/5).',
+    });
+
+    expect(evaluateGuardianChallengeGate({
+      access: classLocked,
+      studentReady: true,
+    })).toMatchObject({
+      canStart: false,
+      blocker: 'class_settings',
+    });
+
+    expect(evaluateGuardianChallengeGate({
+      access: classLocked,
+      studentReady: false,
+      studentReadinessReason: 'Complete the Field Guide topics (2/5).',
+    })).toMatchObject({
+      canStart: false,
+      blocker: 'student_readiness_and_class_settings',
+    });
+
+    expect(evaluateGuardianChallengeGate({
+      access: classOpen,
+      studentReady: true,
+    })).toMatchObject({
+      canStart: true,
+      blocker: 'none',
+    });
+  });
+
+  it('keeps Exam Training dashboards visible but blocks real-question starts by class gate or missing content', () => {
+    const classLocked = getStudentRegionAccess(claimedAlphaProfile, 'complex-harbor');
+    const classOpen = getStudentRegionAccess(claimedAlphaProfile, 'algebra-forge');
+
+    expect(evaluateExamTrainingGate({
+      access: classLocked,
+      hasTrainableQuestions: true,
+    })).toMatchObject({
+      canStart: false,
+      blocker: 'class_settings',
+    });
+
+    expect(evaluateExamTrainingGate({
+      access: classOpen,
+      hasTrainableQuestions: false,
+    })).toMatchObject({
+      canStart: false,
+      blocker: 'content_unavailable',
+      reason: 'No trainable question and mark-scheme image pairs are loaded for this region yet.',
+    });
+
+    expect(evaluateExamTrainingGate({
+      access: classOpen,
+      hasTrainableQuestions: true,
+    })).toMatchObject({
+      canStart: true,
+      blocker: 'none',
+    });
   });
 });

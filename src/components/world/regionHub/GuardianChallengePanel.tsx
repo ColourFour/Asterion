@@ -125,13 +125,16 @@ export function GuardianChallengePanel({
   const clearedItemCount = challengeItems.filter((item) => results[item.itemId]?.status === 'correct').length;
   const allItemsCleared = hasChallengeSet && clearedItemCount === challengeItems.length;
   const guardianClearSaved = guardianCleared || saveRequested;
+  const lockedBody = lockedReason
+    ? `${lockedReason} The challenge opens when Field Guide and Skill Check are complete.`
+    : 'The challenge opens when Field Guide and Skill Check are complete.';
   const statusCopy = {
     locked: {
       eyebrow: 'Step 3 · Final gate locked',
       description: lockedReason ?? `${regionName} is sealed. Complete the Field Guide and Skill Check to open the Guardian trial.`,
       label: 'Vault locked',
       title: `${regionName} is sealed`,
-      body: lockedReason ?? 'The challenge opens when Field Guide and Skill Check are complete.',
+      body: lockedBody,
       anticipation: 'The Guardian is waiting.',
       icon: <Lock size={22} aria-label="Guardian locked" />,
     },
