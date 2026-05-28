@@ -1,10 +1,9 @@
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
+import { AUTHORED_SKILL_CHECK_ITEMS, type SkillCheckComplexity, type SkillCheckItem } from '../data/skillCheckItems';
 import type { GeneratedPracticeItem } from './generatedPractice';
 import { orderGeneratedPracticeForFieldGuideTopic } from './generatedPractice';
 import type { TeachingSnippet } from './teachingSnippets';
 import { normalizeLabel } from './worldMap';
-
-export type SkillCheckComplexity = 'foundation' | 'core' | 'challenge';
 
 export interface SkillCheckComplexityMeta {
   id: SkillCheckComplexity;
@@ -32,6 +31,7 @@ export const SKILL_CHECK_COMPLEXITIES: Record<SkillCheckComplexity, SkillCheckCo
 
 export interface SkillChecklistTopicGroup {
   topic: FieldGuideTopic;
+  authoredItems: SkillCheckItem[];
   quickCheckSnippets: TeachingSnippet[];
   guidedPracticeItems: GeneratedPracticeItem[];
   complexityCounts: Record<SkillCheckComplexity, number>;
@@ -89,8 +89,16 @@ export function buildSkillChecklistTopicGroups(input: {
   fieldGuideTopics: FieldGuideTopic[];
   teachingSnippets: TeachingSnippet[];
   practiceItems: GeneratedPracticeItem[];
+  skillCheckItems?: SkillCheckItem[];
 }): SkillChecklistTopicGroup[] {
+  const skillCheckItems = input.skillCheckItems ?? AUTHORED_SKILL_CHECK_ITEMS;
   return input.fieldGuideTopics.map((topic) => {
+    const authoredItems = skillCheckItems
+      .filter((item) => item.fieldGuideTopicId === topic.id)
+      .sort((a, b) => (
+        Object.keys(SKILL_CHECK_COMPLEXITIES).indexOf(a.complexity) - Object.keys(SKILL_CHECK_COMPLEXITIES).indexOf(b.complexity)
+        || a.itemId.localeCompare(b.itemId)
+      ));
     const quickCheckSnippets = input.teachingSnippets.filter((snippet) => (
       Boolean(snippet.quickCheck) && teachingSnippetMatchesFieldGuideTopic(snippet, topic)
     ));
@@ -100,6 +108,9 @@ export function buildSkillChecklistTopicGroups(input: {
       : [];
     const complexityCounts = emptyComplexityCounts();
 
+    for (const item of authoredItems) {
+      complexityCounts[item.complexity] += 1;
+    }
     for (const snippet of quickCheckSnippets) {
       complexityCounts[quickCheckComplexityForSnippet(snippet)] += 1;
     }
@@ -109,6 +120,7 @@ export function buildSkillChecklistTopicGroups(input: {
 
     return {
       topic,
+      authoredItems,
       quickCheckSnippets,
       guidedPracticeItems,
       complexityCounts,
@@ -118,5 +130,5 @@ export function buildSkillChecklistTopicGroups(input: {
 }
 
 export function totalSkillChecklistItems(group: SkillChecklistTopicGroup): number {
-  return group.quickCheckSnippets.length + group.guidedPracticeItems.length;
+  return group.authoredItems.length + group.quickCheckSnippets.length + group.guidedPracticeItems.length;
 }

@@ -125,10 +125,10 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const nextActionHint = sorted.length === 0
     ? 'Try Skill Check before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Skill Check records look ready. Move into Exam Training next.'
+      ? 'Skill Check records look ready. Move into exam practice next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
-        ? 'A recent support activity was missed or revealed early. Try Skill Check before exam training.'
-        : 'Support activity records show partial readiness. Try one more guided practice item or move carefully into training.';
+      ? 'A recent support activity was missed or revealed early. Try Skill Check before exam practice.'
+      : 'Support activity records show partial readiness. Try one more guided practice item or move carefully into training.';
 
   return {
     attempts: sorted.length,
@@ -196,7 +196,7 @@ export function computeGuardianEligibility(input: {
       detail: attemptsMissing === 0
         ? `${attemptCountText(evidenceAttempts.length)} recorded in this region.`
         : `Save at least 3 attempts in this region (${evidenceAttempts.length}/3).`,
-      nextAction: `Do one Exam Training question and save your marks. You need ${attemptsMissingText(attemptsMissing)} before the Guardian opens.`,
+      nextAction: `Do one exam practice question and save your marks. You need ${attemptsMissingText(attemptsMissing)} before the Guardian opens.`,
       progress: { current: Math.min(evidenceAttempts.length, 3), target: 3 },
     },
     {
@@ -280,7 +280,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'core_practice',
         label: TRAINING_SESSION_LABELS.core_practice,
-        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for Exam Training.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for exam practice.',
       };
     }
 

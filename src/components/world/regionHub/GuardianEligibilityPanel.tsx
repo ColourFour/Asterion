@@ -72,7 +72,7 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     || firstMissing?.id === 'subtopic_spread'
   ) {
     return {
-      label: firstMissing.id === 'attempt_count' ? 'Save one exam attempt' : 'Try another Exam Training question',
+      label: firstMissing.id === 'attempt_count' ? 'Save one exam attempt' : 'Review saved exam practice',
       page: 'exam-training',
       helper: firstMissing.nextAction ?? firstMissing.detail,
     };
@@ -107,7 +107,7 @@ export function GuardianEligibilityPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Step 4 · Guardian"
+      eyebrow="Step 3 · Guardian"
       title="Guardian Challenge"
       description="A final region challenge that opens after enough saved practice."
       icon={<ShieldCheck size={22} />}

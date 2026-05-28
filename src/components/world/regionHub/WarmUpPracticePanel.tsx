@@ -277,7 +277,7 @@ function WarmUpPracticeCard({
               ) : onContinueToExamPractice ? (
                 <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button>
               ) : (
-                <p>Sequence complete. Move to exam practice, or review the Field Guide if any method still felt uncertain.</p>
+                <p>Sequence complete. Review the Field Guide if any method still felt uncertain.</p>
               )}
             </div>
           ) : null}
@@ -373,7 +373,7 @@ export function WarmUpPracticePanel({
           {visibleCompletedCount >= visiblePractice.length ? (
             <div className="warm-up-complete-panel">
               <strong>Skill Check sequence complete</strong>
-              <p>Use exam practice next, or return to the Field Guide for a quick method review.</p>
+              <p>Return to the Field Guide for a quick method review if anything still felt uncertain.</p>
               <div className="warm-up-next-actions">
                 {onContinueToExamPractice ? <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button> : null}
                 {onContinueToFieldGuide ? <button type="button" onClick={onContinueToFieldGuide}>Review Field Guide</button> : null}
@@ -383,7 +383,7 @@ export function WarmUpPracticePanel({
           {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed Skill Check item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">Worked-route Skill Check items for this topic are being prepared. Start with the Field Guide or jump into Exam Training.</p>
+        <p className="region-empty-state">Worked-route Skill Check items for this topic are being prepared. Start with the Field Guide.</p>
       )}
     </RegionActionCard>
   );

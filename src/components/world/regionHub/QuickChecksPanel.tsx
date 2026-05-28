@@ -19,7 +19,7 @@ interface QuickChecksPanelProps {
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
-function initialResponseFor(contract: QuickCheckContract): QuickCheckResponse {
+export function initialResponseFor(contract: QuickCheckContract): QuickCheckResponse {
   if (contract.answerType === 'ordered_cards') {
     return { orderedIds: contract.orderedCards?.map((item) => item.id) ?? [] };
   }
@@ -71,7 +71,7 @@ function QuickCheckHelp({
   );
 }
 
-function QuickCheckInput({
+export function QuickCheckInput({
   contract,
   response,
   setResponse,
@@ -167,7 +167,7 @@ function QuickCheckInput({
             key={option.id}
             onClick={() => setResponse({ selectedChoiceId: option.id })}
           >
-            <MathText text={option.label} />
+            <MathText text={option.label} interactiveGlossary={false} />
           </button>
         ))}
       </div>
@@ -190,7 +190,7 @@ function QuickCheckInput({
             <span className="quick-check-checkbox" aria-hidden="true">
               {selected ? <CircleCheck size={14} /> : null}
             </span>
-            <MathText text={option.label} />
+            <MathText text={option.label} interactiveGlossary={false} />
           </button>
         );
       })}
@@ -198,7 +198,7 @@ function QuickCheckInput({
   );
 }
 
-function QuickCheckFeedback({ result }: { result: QuickCheckCheckResult }) {
+export function QuickCheckFeedback({ result }: { result: QuickCheckCheckResult }) {
   const isCorrect = result.status === 'correct';
   const isEmpty = result.status === 'empty';
   return (
@@ -407,7 +407,7 @@ export function QuickChecksPanel({
           {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed Skill Check item{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">No reviewed deterministic Skill Check items are published for this topic yet. Use a worked-route item, the Field Guide, or Exam Training.</p>
+        <p className="region-empty-state">No reviewed deterministic Skill Check items are published for this topic yet. Use a worked-route item or the Field Guide.</p>
       )}
     </RegionActionCard>
   );

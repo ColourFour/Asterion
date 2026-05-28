@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowLeft, BookOpenCheck, ChevronRight, ListChecks, Lock, ShieldCheck, Swords } from 'lucide-react';
+import { ArrowLeft, BookOpenCheck, ChevronRight, ListChecks, Lock, ShieldCheck } from 'lucide-react';
 import type { FieldGuideTopic } from '../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
@@ -42,29 +42,20 @@ interface RegionHubProps {
   onReturnToMap: () => void;
 }
 
-type HubActionPageId = Exclude<RegionLearningPageId, 'hub' | 'quick-check' | 'warm-up'>;
-type StudentNavPageId = Exclude<RegionLearningPageId, 'quick-check' | 'warm-up'>;
+type HubActionPageId = Exclude<RegionLearningPageId, 'hub' | 'quick-check' | 'warm-up' | 'exam-training'>;
+type StudentNavPageId = Exclude<RegionLearningPageId, 'quick-check' | 'warm-up' | 'exam-training'>;
 
 const studentNavPages = REGION_LEARNING_PAGE_ORDER as StudentNavPageId[];
-
-const hubActionPages: HubActionPageId[] = [
-  'field-guide',
-  'skill-practice',
-  'exam-training',
-  'guardian',
-];
 
 const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Read the guide',
   'skill-practice': 'Check one skill',
-  'exam-training': 'Try real exam questions',
   guardian: 'Final challenge',
 };
 
 const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'field-guide': 'Read the next guide step before practice.',
   'skill-practice': 'Do one low-stakes Skill Check item.',
-  'exam-training': 'Work from a real Paper 3 question image.',
   guardian: 'Take the final region challenge when it is ready.',
 };
 
@@ -73,8 +64,8 @@ function guardianNextStep(summary: RegionLearningSummary): string | undefined {
   if (!firstMissing) return undefined;
   if (firstMissing.id === 'field_guide') return 'Review the Field Guide first.';
   if (firstMissing.id === 'attempt_count') return firstMissing.nextAction;
-  if (firstMissing.id === 'recent_high_score') return 'Save one stronger Exam Training attempt to open the Guardian.';
-  if (firstMissing.id === 'subtopic_spread') return 'Try one Exam Training question from another part of this region.';
+  if (firstMissing.id === 'recent_high_score') return 'Save one stronger exam practice attempt to open the Guardian.';
+  if (firstMissing.id === 'subtopic_spread') return 'Try one exam practice question from another part of this region.';
   return 'This Guardian question is still being prepared.';
 }
 
@@ -145,9 +136,9 @@ function hubActionPrimaryStudentCopy(input: {
 
   return {
     eyebrow: 'Current step · Do this next',
-    title: `Next: do one exam question for ${input.regionName}.`,
-    description: input.summary.trainingSession.reason || hubActionPrimaryCopy[input.page],
-    button: 'Start exam question',
+    title: `Next: continue ${input.regionName}.`,
+    description: hubActionPrimaryCopy[input.page],
+    button: 'Continue',
   };
 }
 
@@ -366,7 +357,7 @@ function FocusedRegionPageHeader({
         {fieldGuide ? (
           <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
         ) : isSkillPracticePage ? (
-          <p className="field-guide-page-purpose">Practice one Field Guide skill at a time before Exam Training.</p>
+          <p className="field-guide-page-purpose">Practice one Field Guide skill at a time before the Guardian.</p>
         ) : (
           <p className="field-guide-page-purpose">{summary.nextAction.label}</p>
         )}
@@ -400,9 +391,7 @@ function isRegionLearningNavLocked(page: RegionLearningPageId, studentRegionAcce
     return !canStudentUseRegionActivity(studentRegionAccess, 'quick_check')
       && !canStudentUseRegionActivity(studentRegionAccess, 'warm_up');
   }
-  const activity = page === 'exam-training'
-    ? 'exam_practice'
-    : page === 'quick-check'
+  const activity = page === 'quick-check'
       ? 'quick_check'
       : page === 'warm-up'
         ? 'warm_up'
@@ -455,7 +444,6 @@ interface RegionHubHomeProps {
 function hubActionIcon(page: HubActionPageId): ReactNode {
   if (page === 'field-guide') return <BookOpenCheck size={22} />;
   if (page === 'skill-practice') return <ListChecks size={22} />;
-  if (page === 'exam-training') return <Swords size={22} />;
   return <ShieldCheck size={22} />;
 }
 
@@ -470,9 +458,7 @@ function hubActionState(input: {
   studentRegionAccess?: StudentRegionAccess;
 }): { disabled: boolean; status: 'Locked' | 'Ready' | 'In progress' | 'Complete'; helper?: string } {
   if (input.page === 'field-guide') return { disabled: false, status: input.fieldGuideCompleted ? 'Complete' : 'Ready' };
-  const activity = input.page === 'exam-training'
-    ? 'exam_practice'
-    : input.page === 'guardian'
+  const activity = input.page === 'guardian'
       ? 'guardian'
       : undefined;
   if (input.page === 'skill-practice') {
@@ -485,10 +471,6 @@ function hubActionState(input: {
   }
   if (activity && !canStudentUseRegionActivity(input.studentRegionAccess, activity)) {
     return { disabled: true, status: 'Locked' };
-  }
-  if (input.page === 'exam-training') {
-    if (!input.canTrain) return { disabled: true, status: 'Locked' };
-    return { disabled: false, status: input.summary.state === 'training_in_progress' ? 'In progress' : 'Ready' };
   }
   return { disabled: !input.summary.guardianEligibility.eligible, status: input.guardianCleared ? 'Complete' : input.summary.guardianEligibility.eligible ? 'Ready' : 'Locked' };
 }
@@ -507,10 +489,10 @@ function recommendedHubPage(input: {
   if (summary.nextAction.kind === 'guardian') return 'guardian';
 
   if (summary.nextAction.kind === 'complete') {
-    return input.guardianCleared ? 'exam-training' : 'guardian';
+    return input.guardianCleared ? 'guardian' : 'guardian';
   }
 
-  if (summary.nextAction.kind === 'review') return 'exam-training';
+  if (summary.nextAction.kind === 'review') return 'skill-practice';
 
   if (summary.nextAction.kind === 'training') {
     if (input.fieldGuideCompleted && input.quickCheckCount > 0 && summary.learningActivityReadiness.quickCheckAttempts === 0) {
@@ -525,10 +507,10 @@ function recommendedHubPage(input: {
       return 'skill-practice';
     }
 
-    return 'exam-training';
+    return summary.guardianEligibility.eligible ? 'guardian' : 'skill-practice';
   }
 
-  if (input.fieldGuideCompleted && input.canTrain) return 'exam-training';
+  if (input.fieldGuideCompleted && input.canTrain) return 'skill-practice';
   return 'field-guide';
 }
 
@@ -588,11 +570,6 @@ function RegionHubHome({
           : summary.learningActivityReadiness.quickCheckAttempts + summary.learningActivityReadiness.warmUpAttempts > 0
             ? 'complete'
             : 'ready',
-    },
-    {
-      page: 'exam-training',
-      label: 'Exam Training',
-      state: !canStudentUseRegionActivity(studentRegionAccess, 'exam_practice') ? 'locked' : primaryPage === 'exam-training' ? 'in-progress' : regionProgress.attempts > 0 ? 'complete' : 'ready',
     },
     {
       page: 'guardian',

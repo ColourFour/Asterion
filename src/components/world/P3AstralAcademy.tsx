@@ -290,7 +290,7 @@ function RegionMapNode({ canTrain, fallbackArt, isRecommended, priority, regionP
           <strong className="node-popover-title">{region.name}</strong>
           <span className="node-popover-status">{accessLabel ?? (canTrain ? learningStatus : regionProgress.isActive ? 'No questions loaded yet' : 'Dormant wing')}</span>
           <p className="node-popover-description">{region.description}</p>
-          <p className="node-popover-goal">{isFieldGuideOnly ? 'Field Guide is available. Skill Check, Exam Training, and Guardian are locked for this class.' : regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
+          <p className="node-popover-goal">{isFieldGuideOnly ? 'Field Guide is available. Skill Check and Guardian are locked for this class.' : regionLearningSummary?.nextAction.explanation ?? goal.label}</p>
         </div>,
         document.body,
       )}

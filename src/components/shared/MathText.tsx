@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 interface MathTextProps {
   text: string;
+  interactiveGlossary?: boolean;
 }
 
 const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\$(?!\$)[\s\S]+?\$)/g;
@@ -205,7 +206,7 @@ function parseSegments(text: string): RenderedSegment[] {
   });
 }
 
-export function MathText({ text }: MathTextProps) {
+export function MathText({ text, interactiveGlossary = true }: MathTextProps) {
   const [segments, setSegments] = useState<RenderedSegment[]>(() => parseSegments(text));
   const [activeGlossaryTerm, setActiveGlossaryTerm] = useState<string>();
 
@@ -241,7 +242,7 @@ export function MathText({ text }: MathTextProps) {
     return segmentText.split(glossaryPattern).filter((part) => part.length > 0).map((part, index) => {
       const term = part.toLowerCase();
       const definition = glossaryDefinitions[term];
-      if (!definition) return part;
+      if (!definition || !interactiveGlossary) return part;
       const isOpen = activeGlossaryTerm === `${segmentKey}-${index}-${term}`;
       return (
         <span className="glossary-term-wrap" key={`${segmentKey}-${index}-${term}`}>

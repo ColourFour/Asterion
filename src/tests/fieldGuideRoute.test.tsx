@@ -211,7 +211,7 @@ describe('Field Guide app route', () => {
     expect(container.textContent).toContain('Field Guide topic');
     expect(container.textContent).not.toContain('Quick Check');
     expect(container.textContent).toContain('Worked-route item');
-    expect(container.querySelector('.quick-check-card')).toBeTruthy();
+    expect(container.querySelector('.skill-check-authored-card')).toBeTruthy();
     expect(container.querySelector('.skill-practice-exam-transition')).toBeTruthy();
     expect(container.textContent).not.toContain('Warm-Up');
   });

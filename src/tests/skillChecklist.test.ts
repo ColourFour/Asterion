@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
+import { AUTHORED_SKILL_CHECK_ITEMS, skillCheckContractForItem, validateSkillCheckItemContract } from '../data/skillCheckItems';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import {
   buildSkillChecklistTopicGroups,
   totalSkillChecklistItems,
 } from '../lib/skillChecklist';
+import { isValidP3RegionId, isValidP3SkillId } from '../lib/p3SkillContract';
+import { checkQuickCheckAnswer } from '../lib/quickCheckAnswer';
+import type { QuickCheckResponse } from '../types';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
 
 const logLawsTopic: FieldGuideTopic = {
@@ -111,6 +116,7 @@ describe('Skill Checklist grouping', () => {
         practice('core-item', 'complete_step', 'log_laws'),
         practice('challenge-item', 'guardian_prep', 'log_equations_inequalities'),
       ],
+      skillCheckItems: [],
     });
 
     const logLaws = groups.find((group) => group.topic.id === 'log_laws')!;
@@ -132,10 +138,77 @@ describe('Skill Checklist grouping', () => {
       fieldGuideTopics: [logLawsTopic],
       teachingSnippets: [],
       practiceItems: [practice('unmapped-item', 'first_step', 'different_topic')],
+      skillCheckItems: [],
     });
 
     expect(groups[0].guidedPracticeItems).toEqual([]);
     expect(groups[0].fallbackReason).toContain('We do not have a reviewed guided item for Laws of Logarithms yet');
     expect(groups[0].complexityCounts).toEqual({ foundation: 0, core: 0, challenge: 0 });
+  });
+
+  it('covers every Algebra Vault and Logarithm Observatory Field Guide subtopic with at least 3 authored items', () => {
+    for (const regionId of ['algebra-forge', 'logarithm-grove']) {
+      const groups = buildSkillChecklistTopicGroups({
+        fieldGuideTopics: getFieldGuideTopicsForRegion(regionId),
+        teachingSnippets: [],
+        practiceItems: [],
+      });
+
+      expect(groups.length, regionId).toBeGreaterThan(0);
+      for (const group of groups) {
+        expect(group.authoredItems.length, `${regionId}:${group.topic.id}`).toBeGreaterThanOrEqual(3);
+        expect(group.authoredItems.map((item) => item.complexity).sort()).toEqual(['challenge', 'core', 'foundation']);
+      }
+    }
+  });
+
+  it('keeps authored item mappings on the Field Guide topic taxonomy', () => {
+    const allowedTopics = new Set([
+      ...getFieldGuideTopicsForRegion('algebra-forge').map((topic) => topic.id),
+      ...getFieldGuideTopicsForRegion('logarithm-grove').map((topic) => topic.id),
+    ]);
+
+    for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
+      expect(item.fieldGuideSubtopicId).toBe(item.fieldGuideTopicId);
+      expect(allowedTopics.has(item.fieldGuideTopicId), item.itemId).toBe(true);
+      expect(isValidP3RegionId(item.regionId), item.itemId).toBe(true);
+      expect(isValidP3SkillId(item.skillId), item.itemId).toBe(true);
+      expect(item.validationMode, item.itemId).toBe('deterministic');
+      expect(item.review.affectsMastery, item.itemId).toBe(false);
+    }
+  });
+
+  it('passes the authored Skill Check item contract validator with unique stable IDs', () => {
+    const ids = new Set<string>();
+
+    for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
+      expect(ids.has(item.itemId), item.itemId).toBe(false);
+      ids.add(item.itemId);
+      expect(validateSkillCheckItemContract(item), item.itemId).toEqual([]);
+    }
+  });
+
+  it('validates deterministic authored input types with explicit answers', () => {
+    const representativeResponses: Record<string, QuickCheckResponse> = {
+      'sc-alg-modulus-foundation-001': { selectedChoiceId: 'both-roots' },
+      'sc-alg-modulus-core-001': { selectedChoiceIds: ['one', 'minus-half'] },
+      'sc-alg-polynomial-division-challenge-001': { values: { quotient: 'x^2-x+3', remainder: '4' } },
+      'sc-log-natural-challenge-001': { orderedIds: ['divide-two', 'take-ln', 'subtract-one'] },
+      'sc-log-linearisation-core-001': { values: { gradient: '3', intercept: '2' } },
+    };
+
+    for (const [itemId, response] of Object.entries(representativeResponses)) {
+      const item = AUTHORED_SKILL_CHECK_ITEMS.find((candidate) => candidate.itemId === itemId);
+      expect(item, itemId).toBeTruthy();
+      const contract = skillCheckContractForItem(item!);
+      expect(checkQuickCheckAnswer(contract, response).status, itemId).toBe('correct');
+    }
+  });
+
+  it('does not leak raw Content Lab candidates into authored student-runtime Skill Check items', () => {
+    for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
+      expect(item.sourceTypes, item.itemId).not.toContain('runtime-safe candidate');
+      expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
+    }
   });
 });

@@ -11,7 +11,6 @@ export function RegionArcTimeline({ fieldGuideCompleted, summary }: RegionArcTim
   const phases = [
     { id: 'guide' as const, label: 'Field Guide', detail: 'Know the moves' },
     { id: 'skill_practice' as const, label: 'Skill Check', detail: 'Check one skill' },
-    { id: 'training' as const, label: 'Exam Training', detail: 'Save evidence' },
     { id: 'guardian' as const, label: 'Guardian Challenge', detail: 'Clear the check' },
   ];
 

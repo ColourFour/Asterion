@@ -308,12 +308,12 @@ function FieldGuideTopicLesson({
       </div>
 
       <div className="region-action-footer field-guide-step-actions">
-        <button className="secondary-button" type="button" onClick={onBackToTopics}>
-          Back to Topics
-        </button>
-        <button className="secondary-button" type="button" onClick={onPracticeTopic}>
+        <button className="primary-button field-guide-practice-cta" type="button" onClick={onPracticeTopic}>
           Practice this skill
           <ArrowRight size={16} aria-hidden="true" />
+        </button>
+        <button className="secondary-button" type="button" onClick={onBackToTopics}>
+          Back to Topics
         </button>
         <button className="primary-button" type="button" onClick={onNext}>
           {nextLabel}

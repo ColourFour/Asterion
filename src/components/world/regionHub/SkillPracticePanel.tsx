@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ArrowRight, ListChecks } from 'lucide-react';
+import { ListChecks } from 'lucide-react';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic } from '../../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, RegionDefinition } from '../../../types';
 import type { GeneratedPracticeItem } from '../../../lib/generatedPractice';
@@ -11,6 +11,7 @@ import {
 } from '../../../lib/skillChecklist';
 import type { TeachingSnippet } from '../../../lib/teachingSnippets';
 import { QuickChecksPanel } from './QuickChecksPanel';
+import { SkillCheckItemsPanel } from './SkillCheckItemsPanel';
 import { WarmUpPracticePanel } from './WarmUpPracticePanel';
 
 export type SkillPracticeFocus = 'quick-check' | 'warm-up' | 'overview';
@@ -65,10 +66,8 @@ export function SkillPracticePanel({
   warmUpLockedContent,
   canUseQuickCheck,
   canUseWarmUp,
-  canUseExamPractice,
   currentFieldGuideTopic,
   onContinueToFieldGuide,
-  onContinueToExamPractice,
   onLearningActivityAttempt,
 }: SkillPracticePanelProps) {
   const groups = useMemo(() => buildSkillChecklistTopicGroups({
@@ -154,6 +153,16 @@ export function SkillPracticePanel({
         {activeGroup ? (
           <div className="skill-check-item-stack">
             {canUseQuickCheck ? (
+              <SkillCheckItemsPanel
+                items={activeGroup.authoredItems}
+                region={region}
+                profileId={profileId}
+                activityAttempts={activityAttempts}
+                onLearningActivityAttempt={recordLearningActivityAttempt}
+              />
+            ) : quickCheckLockedContent}
+
+            {canUseQuickCheck && activeGroup.quickCheckSnippets.length ? (
               <QuickChecksPanel
                 teachingSnippets={activeGroup.quickCheckSnippets}
                 region={region}
@@ -161,10 +170,9 @@ export function SkillPracticePanel({
                 activityAttempts={activityAttempts}
                 maxInitialItems={1}
                 showNextCheck
-                onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
                 onLearningActivityAttempt={recordLearningActivityAttempt}
               />
-            ) : quickCheckLockedContent}
+            ) : null}
 
             {canUseWarmUp ? (
               <WarmUpPracticePanel
@@ -176,24 +184,14 @@ export function SkillPracticePanel({
                 fieldGuideTopicTitle={activeGroup.topic.title}
                 topicMatchFallbackReason={activeGroup.fallbackReason}
                 onContinueToFieldGuide={onContinueToFieldGuide}
-                onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
                 onLearningActivityAttempt={recordLearningActivityAttempt}
               />
             ) : warmUpLockedContent}
           </div>
         ) : null}
 
-        <div className="skill-practice-exam-transition">
-          <p>Exam Training uses canonical question images and mark schemes. Skill Check records stay support-only.</p>
-          <button
-            type="button"
-            className="primary-button next-step-glow"
-            disabled={!canUseExamPractice}
-            onClick={onContinueToExamPractice}
-          >
-            Go to Exam Training
-            <ArrowRight size={16} aria-hidden="true" />
-          </button>
+        <div className="skill-practice-support-note">
+          <p>Skill Check records stay support-only. They do not change mastery, rank, Guardian unlocks, or exam-score evidence.</p>
         </div>
       </section>
 

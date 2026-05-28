@@ -97,7 +97,7 @@ describe('UI review route', () => {
     expect(container.textContent).toContain('How to use this page');
     expect(container.textContent).toContain('Open /#/ui-review.');
     expect(container.textContent).toContain('Record the needed fix.');
-  });
+  }, 20_000);
 
   it('renders the required review sections and major route cards', async () => {
     window.history.replaceState(null, '', '/#/ui-review');

@@ -7055,7 +7055,7 @@ legend {
 
 .region-learning-nav {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   align-items: stretch;
   overflow-x: hidden;
@@ -7194,7 +7194,8 @@ legend {
 }
 
 .skill-practice-header,
-.skill-practice-exam-transition {
+.skill-practice-exam-transition,
+.skill-practice-support-note {
   display: flex;
   gap: 14px;
   align-items: center;
@@ -7216,6 +7217,7 @@ legend {
 
 .skill-practice-header p,
 .skill-practice-exam-transition p,
+.skill-practice-support-note p,
 .skill-practice-section-intro p {
   margin: 4px 0 0;
   color: var(--region-body);
@@ -7353,6 +7355,66 @@ legend {
 .skill-check-item-stack {
   display: grid;
   gap: 10px;
+}
+
+.skill-check-authored-list {
+  display: grid;
+  gap: 10px;
+}
+
+.authored-skill-check-item .quick-check-heading strong {
+  display: grid;
+  gap: 6px;
+}
+
+.skill-check-complexity-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 3px 7px;
+  color: var(--region-button-text);
+  background: var(--region-button-bg);
+  border: 1px solid var(--region-button-border);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+.skill-check-complexity-badge.is-core {
+  color: var(--region-heading);
+  background: color-mix(in srgb, var(--region-panel-strong) 88%, #fff 12%);
+}
+
+.skill-check-complexity-badge.is-challenge {
+  color: #4f3811;
+  background: #fff1c2;
+  border-color: #d8ae48;
+}
+
+.skill-check-worked-route {
+  margin-top: 10px;
+  color: var(--region-body);
+}
+
+.skill-check-worked-route summary {
+  width: fit-content;
+  min-height: 34px;
+  padding: 7px 10px;
+  color: var(--region-accent-dark);
+  background: color-mix(in srgb, var(--region-panel) 88%, #fff 12%);
+  border: 1px solid color-mix(in srgb, var(--region-accent) 30%, transparent);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  font-weight: 950;
+}
+
+.skill-check-worked-route ol,
+.quick-check-next-actions ol {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 20px;
 }
 
 .skill-practice-exam-transition button {
@@ -8464,6 +8526,12 @@ legend {
   align-items: center;
   justify-content: center;
   min-height: 42px;
+}
+
+.field-guide-step-actions .field-guide-practice-cta {
+  flex: 1 1 260px;
+  min-height: 50px;
+  font-size: 0.96rem;
 }
 
 .field-guide-topic-flow-card {

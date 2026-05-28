@@ -29,7 +29,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
   if (!challenge) {
     return (
       <RegionActionCard
-        eyebrow="Step 4 · Guardian"
+        eyebrow="Step 3 · Guardian"
         title="Guardian Challenge"
         description="Guardian artwork will appear here when this region has artwork available."
         icon={<ShieldCheck size={22} />}
@@ -45,7 +45,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
   const status = guardianCleared ? 'cleared' : isUnlocked ? 'ready' : 'locked';
   const statusCopy = {
     locked: {
-      eyebrow: 'Step 4 · Final gate locked',
+      eyebrow: 'Step 3 · Final gate locked',
       description: `${regionName} is sealed. Save enough region practice to unlock the Guardian trial.`,
       label: 'Vault locked',
       title: `${regionName} is sealed`,
@@ -54,7 +54,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
       icon: <Lock size={22} aria-label="Guardian locked" />,
     },
     ready: {
-      eyebrow: 'Step 4 · Guardian ready',
+      eyebrow: 'Step 3 · Guardian ready',
       description: `${regionName} is open. Your saved practice can launch the Guardian trial.`,
       label: 'Guardian ready',
       title: 'The gate is open',
@@ -63,7 +63,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
       icon: <Sparkles size={22} aria-label="Guardian ready" />,
     },
     cleared: {
-      eyebrow: 'Step 4 · Guardian cleared',
+      eyebrow: 'Step 3 · Guardian cleared',
       description: `${regionName} has been restored by a saved Guardian clear.`,
       label: 'Region restored',
       title: 'Guardian trial cleared',
