@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { NormalizedQuestion } from '../types';
-import { filterQuestionsForRegion, inferQuestionRouteEvidence, isP3Question, matchRegionForLabels, matchRegionForQuestion, P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import { filterQuestionsForRegion, inferQuestionRouteEvidence, isP3Question, matchDisplayRegionForQuestion, matchRegionForLabels, matchRegionForQuestion, P3_ASTRAL_ACADEMY } from '../lib/worldMap';
 
 function question(id: string, topic: string, subtopic?: string): NormalizedQuestion {
   return {
@@ -23,6 +23,25 @@ function question(id: string, topic: string, subtopic?: string): NormalizedQuest
   };
 }
 
+function cleanQuestion(id: string, regionId: string, topic = 'Algebra', subtopic?: string): NormalizedQuestion {
+  const base = question(id, topic, subtopic);
+  const region = P3_ASTRAL_ACADEMY.regions.find((item) => item.id === regionId)!;
+  return {
+    ...base,
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: region.id,
+      regionName: region.name,
+      validatedRegionId: region.id,
+      validatedRegionName: region.name,
+      displayRegionId: region.id,
+      displayRegionName: region.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+  };
+}
+
 describe('worldMap region matching', () => {
   it('matches forgiving topic and subtopic labels', () => {
     expect(matchRegionForLabels(['partial_fractions'])?.name).toBe('Algebra Vault');
@@ -41,15 +60,17 @@ describe('worldMap region matching', () => {
   it('filters selected-region practice questions without crashing on empty regions', () => {
     const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Algebra Vault')!;
     const vector = P3_ASTRAL_ACADEMY.regions.find((region) => region.name === 'Vectors Gate')!;
-    const questions = [question('a', 'Algebra', 'binomial_expansion'), question('b', 'Trigonometry')];
+    const questions = [cleanQuestion('a', algebra.id, 'Algebra', 'binomial_expansion'), question('b', 'Trigonometry')];
 
     expect(filterQuestionsForRegion(questions, algebra).map((item) => item.id)).toEqual(['a']);
     expect(filterQuestionsForRegion(questions, vector)).toEqual([]);
   });
 
-  it('matches from DeepSeek and local labels on normalized questions', () => {
-    expect(matchRegionForQuestion(question('d', 'Unclassified', 'trigonometric identities'))?.name).toBe('Trigonometry Spire');
-    expect(matchRegionForQuestion({ ...question('e', 'Unclassified'), localTopic: 'logarithmic_functions', deepseek: { hasError: true } })?.name).toBe('Logarithm Observatory');
+  it('keeps advisory DeepSeek and local labels display-only on normalized questions', () => {
+    expect(matchRegionForQuestion(question('d', 'Unclassified', 'trigonometric identities'))).toBeUndefined();
+    expect(matchDisplayRegionForQuestion(question('d', 'Unclassified', 'trigonometric identities'))?.name).toBe('Trigonometry Spire');
+    expect(matchRegionForQuestion({ ...question('e', 'Unclassified'), localTopic: 'logarithmic_functions', deepseek: { hasError: true } })).toBeUndefined();
+    expect(matchDisplayRegionForQuestion({ ...question('e', 'Unclassified'), localTopic: 'logarithmic_functions', deepseek: { hasError: true } })?.name).toBe('Logarithm Observatory');
   });
 
   it('filters P3 case-insensitively without including other paper families', () => {
@@ -58,7 +79,8 @@ describe('worldMap region matching', () => {
   });
 
   it('keeps region routing stable when only difficulty metadata changes', () => {
-    const base = question('d', 'Unclassified', 'trigonometric identities');
+    const trig = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'trig-observatory')!;
+    const base = cleanQuestion('d', trig.id, 'Unclassified', 'trigonometric identities');
     const changedDifficulty = {
       ...base,
       displayDifficulty: 'challenge',
@@ -66,7 +88,6 @@ describe('worldMap region matching', () => {
       deepseek: { ...base.deepseek, difficulty: 'challenge', normalizedDifficulty: 'challenge' },
       raw: { ...base.raw, local: { difficulty: 'challenge' } },
     };
-    const trig = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'trig-observatory')!;
 
     expect(matchRegionForQuestion(base)?.id).toBe('trig-observatory');
     expect(matchRegionForQuestion(changedDifficulty)?.id).toBe('trig-observatory');
@@ -89,7 +110,8 @@ describe('worldMap region matching', () => {
       reasonCodes: ['unmapped-topic-routing-id'],
       displayRegionId: 'algebra-forge',
     });
-    expect(matchRegionForQuestion(invalid)?.id).toBe('algebra-forge');
-    expect(filterQuestionsForRegion([invalid], P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!)).toEqual([invalid]);
+    expect(matchRegionForQuestion(invalid)).toBeUndefined();
+    expect(matchDisplayRegionForQuestion(invalid)?.id).toBe('algebra-forge');
+    expect(filterQuestionsForRegion([invalid], P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!)).toEqual([]);
   });
 });

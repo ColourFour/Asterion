@@ -1,12 +1,9 @@
 import {
   ArrowLeft,
   BarChart3,
-  BookOpenCheck,
   ChevronDown,
   Gem,
-  GraduationCap,
   Info,
-  Map,
   Medal,
   Mountain,
   ShieldCheck,
@@ -19,7 +16,6 @@ import {
 import { useState, type ReactNode } from 'react';
 import type { AvatarGear, AvatarSettings, NormalizedQuestion, RegionDefinition, RegionProgress, StoredProgress } from '../../../types';
 import type { RegionLearningPageId } from '../../../lib/regionRoutes';
-import { REGION_LEARNING_PAGE_LABELS } from '../../../lib/regionRoutes';
 import {
   buildExamTrainingRewardGoals,
   buildExamTrainingTopicMastery,
@@ -30,6 +26,7 @@ import {
   type ExamTrainingTopicMasteryItem,
 } from '../../../lib/examTrainingDashboard';
 import { AvatarRenderer } from '../../avatar/AvatarRenderer';
+import { MathText } from '../../shared/MathText';
 
 interface ExamTrainingDashboardProps {
   progress: StoredProgress;
@@ -46,18 +43,6 @@ interface ExamTrainingDashboardProps {
   onNavigateRegionPage?: (page: RegionLearningPageId) => void;
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
 }
-
-const routeCards: Array<{
-  page: RegionLearningPageId;
-  description: string;
-  icon: ReactNode;
-}> = [
-  { page: 'hub', description: 'Choose your region', icon: <Map size={22} /> },
-  { page: 'field-guide', description: 'Learn the ideas', icon: <BookOpenCheck size={22} /> },
-  { page: 'skill-practice', description: 'Small checks', icon: <Target size={22} /> },
-  { page: 'exam-training', description: 'Exam-style practice', icon: <ShieldCheck size={22} /> },
-  { page: 'guardian', description: 'Prove readiness', icon: <GraduationCap size={22} /> },
-];
 
 const practiceCards: Array<{
   mode: ExamTrainingPracticeMode;
@@ -138,7 +123,7 @@ function practiceEvidenceRecommendation(input: {
   selectedRegionProgress?: RegionProgress;
 }): PracticeEvidenceRecommendation {
   const attempts = input.selectedRegionProgress
-    ? input.progress.attempts.filter((attempt) => attempt.validatedRegionId === input.selectedRegionProgress?.region.id || attempt.displayRegionId === input.selectedRegionProgress?.region.id)
+    ? input.progress.attempts.filter((attempt) => attempt.validatedRegionId === input.selectedRegionProgress?.region.id)
     : input.progress.attempts.filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3');
   const scoredAttempts = attempts.filter((attempt) => typeof attempt.scoreRatio === 'number');
   const scopedAttemptCount = attempts.length || input.selectedRegionProgress?.attempts || 0;
@@ -205,45 +190,6 @@ function goalIcon(goal: ExamTrainingRewardGoal) {
   if (goal.id === 'smurf-hat') return <Sparkles size={22} />;
   if (goal.id === 'golden-notes') return <Medal size={22} />;
   return <Gem size={22} />;
-}
-
-function RouteStrip({
-  selectedRegion,
-  onOpenRegions,
-  onNavigateRegionPage,
-}: Pick<ExamTrainingDashboardProps, 'selectedRegion' | 'onOpenRegions' | 'onNavigateRegionPage'>) {
-  return (
-    <nav className="exam-training-route-strip" aria-label="Learning loop">
-      {routeCards.map((route) => {
-        const active = route.page === 'exam-training';
-        const disabled = route.page !== 'exam-training' && route.page !== 'hub' && !selectedRegion;
-        const label = route.page === 'hub' && !selectedRegion ? 'Region Hub' : REGION_LEARNING_PAGE_LABELS[route.page];
-        const description = disabled ? 'Choose a region first' : route.description;
-        return (
-          <button
-            type="button"
-            key={route.page}
-            className={active ? 'active' : ''}
-            aria-current={active ? 'page' : undefined}
-            disabled={disabled}
-            onClick={() => {
-              if (route.page === 'hub' && !selectedRegion) {
-                onOpenRegions();
-                return;
-              }
-              onNavigateRegionPage?.(route.page);
-            }}
-          >
-            <span className="exam-training-route-icon" aria-hidden="true">{route.icon}</span>
-            <span>
-              <strong>{label}</strong>
-              <small>{description}</small>
-            </span>
-          </button>
-        );
-      })}
-    </nav>
-  );
 }
 
 function PracticeChoiceCards({
@@ -358,7 +304,7 @@ function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] 
             <summary>
               <span className="mastery-status-dot" aria-hidden="true" />
               <span className="exam-training-topic-copy">
-                <strong>{topic.name}</strong>
+                <strong><MathText text={topic.name} /></strong>
                 <small>{topic.attempts ? `${topic.attempts} saved attempt${topic.attempts === 1 ? '' : 's'}` : 'Not tried yet'}</small>
               </span>
               <span className="mastery-status-pill">{topic.statusLabel}</span>
@@ -373,7 +319,7 @@ function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] 
                 <article className={`exam-training-topic-row mastery-${subtopic.status}`} key={subtopic.skillId}>
                   <span className="mastery-status-dot" aria-hidden="true" />
                   <div className="exam-training-topic-copy">
-                    <strong>{subtopic.name}</strong>
+                    <strong><MathText text={subtopic.name} /></strong>
                     <small>{subtopic.evidenceLabel}</small>
                   </div>
                   <span className="mastery-status-pill">{subtopic.statusLabel}</span>
@@ -502,9 +448,7 @@ export function ExamTrainingDashboard({
   selectedRegion,
   practiceDisabledReason,
   isStaffPreview,
-  onOpenRegions,
   onReturnToMap,
-  onNavigateRegionPage,
   onStartPractice,
 }: ExamTrainingDashboardProps) {
   const topicMastery = buildExamTrainingTopicMastery({ progress, questions });
@@ -530,12 +474,6 @@ export function ExamTrainingDashboard({
           Back to map
         </button>
       </header>
-
-      <RouteStrip
-        selectedRegion={selectedRegion}
-        onOpenRegions={onOpenRegions}
-        onNavigateRegionPage={onNavigateRegionPage}
-      />
 
       <div className="exam-training-dashboard-grid">
         <PracticeChoiceCards disabledReason={practiceDisabledReason} recommendation={recommendation} onStartPractice={onStartPractice} />

@@ -40,6 +40,25 @@ function question(topic: string, subtopic?: string): NormalizedQuestion {
   };
 }
 
+function routedQuestion(regionId: string, topic: string, subtopic?: string): NormalizedQuestion {
+  const base = question(topic, subtopic);
+  const region = P3_ASTRAL_ACADEMY.regions.find((candidate) => candidate.id === regionId)!;
+  return {
+    ...base,
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: region.id,
+      regionName: region.name,
+      validatedRegionId: region.id,
+      validatedRegionName: region.name,
+      displayRegionId: region.id,
+      displayRegionName: region.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+  };
+}
+
 describe('avatar location helper', () => {
   it('prefers the selected region over the recommended region', () => {
     const progress = [
@@ -60,7 +79,7 @@ describe('avatar location helper', () => {
     ];
     const location = determineAvatarLocation({
       progress,
-      currentQuestion: question('Unclassified', 'trigonometric identities'),
+      currentQuestion: routedQuestion('trig-observatory', 'Unclassified', 'trigonometric identities'),
     });
 
     expect(location.source).toBe('adaptive-question');

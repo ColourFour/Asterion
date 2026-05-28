@@ -5,7 +5,7 @@ import { evaluateMasteryCoverage } from './masteryAntiFarming';
 import { filterMasteryEvidence } from './masteryEvidence';
 import { isQuestionTrainable } from './questionTraining';
 import { filterMasteryEvidenceQuestionsForRegion, filterPracticeDisplayQuestionsForRegion } from './questionEligibility';
-import { filterQuestionsForRegion, matchRegionForLabels, P3_ASTRAL_ACADEMY } from './worldMap';
+import { filterQuestionsForRegion, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export const REGION_RANK_THRESHOLDS = {
   bronze: { attempts: 3, ratio: 0.5 },
@@ -182,9 +182,9 @@ export function filterAttemptsForRegion(
   const regionQuestions = filterQuestionsForRegion(questions.filter(isQuestionTrainable), region);
   const regionQuestionIds = new Set(regionQuestions.map((question) => question.id));
   return attempts.filter((attempt) => {
-    if (attempt.regionName === region.name) return true;
+    if (attempt.validatedRegionId === region.id) return true;
     if (regionQuestionIds.has(attempt.questionId)) return true;
-    return matchRegionForLabels([attempt.topicDisplayName, attempt.subtopic, attempt.localTopic, attempt.deepseekTopic])?.id === region.id;
+    return false;
   });
 }
 

@@ -172,4 +172,27 @@ describe('P3 readiness index', () => {
     expect(readiness.evidence.canonicalAttempts).toBe(0);
     expect(readiness.label).toBe('Needs timed practice');
   });
+
+  it('does not use advisory attempt labels as region or subtopic readiness coverage', () => {
+    const readiness = calculateP3ReadinessIndex({
+      attempts: [
+        attempt({
+          id: 'legacy-label-only',
+          questionId: 'legacy-q1',
+          attemptedAt: isoDay(1),
+          regionName: 'Algebra Vault',
+          topicDisplayName: 'Algebra',
+          localTopic: 'partial_fractions',
+          deepseekTopic: 'Algebra',
+          subtopic: 'partial fractions',
+          validatedRegionId: undefined,
+          displayRegionId: 'algebra-forge',
+        }),
+      ],
+    });
+
+    expect(readiness.evidence.canonicalAttempts).toBe(0);
+    expect(readiness.evidence.distinctRegions).toBe(0);
+    expect(readiness.evidence.distinctSubtopics).toBe(0);
+  });
 });

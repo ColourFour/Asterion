@@ -1329,7 +1329,15 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(currentStep).toBeTruthy();
     expect(currentStep?.textContent).toContain('Current step');
     expect(currentStep?.textContent).toContain('Field Guide');
-    expect(currentStep?.textContent).toContain('Start here: Field Guide. Learn about modulus graphs and equations, polynomial division, remainder and factor theorem, partial fractions, and binomial expansion.');
+    expect(currentStep?.textContent).toContain('Start here: Field Guide.');
+    expect(currentStep?.textContent).toContain('Learn about:');
+    expect(Array.from(currentStep?.querySelectorAll('.region-home-primary-list li') ?? []).map((item) => item.textContent)).toEqual([
+      'Modulus graphs and equations',
+      'Polynomial division',
+      'Remainder and factor theorem',
+      'Partial fractions',
+      'Binomial expansion',
+    ]);
     expect(currentStep?.textContent).toContain('Ready');
     const primaryAction = currentStep?.querySelector<HTMLButtonElement>('[data-region-page="field-guide"]');
     expect(primaryAction).toBeTruthy();

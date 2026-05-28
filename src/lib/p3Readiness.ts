@@ -1,6 +1,6 @@
 import type { Attempt, NormalizedQuestion, RegionLearningRecord } from '../types';
 import { filterMasteryEvidence } from './masteryEvidence';
-import { matchRegionForLabels, matchRegionForQuestion, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
+import { matchRegionForQuestion, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
 
 export type P3ReadinessLabel =
   | 'Strong evidence'
@@ -144,9 +144,10 @@ function questionIndex(questions: NormalizedQuestion[]): Map<string, NormalizedQ
 function regionIdForAttempt(attempt: Attempt, questionsById: Map<string, NormalizedQuestion>): string | undefined {
   const question = questionsById.get(attempt.questionId);
   if (question) return matchRegionForQuestion(question)?.id;
-  const regionByName = P3_ASTRAL_ACADEMY.regions.find((region) => normalizeLabel(region.name) === normalizeLabel(attempt.regionName));
-  if (regionByName) return regionByName.id;
-  return matchRegionForLabels([attempt.topicDisplayName, attempt.localTopic, attempt.deepseekTopic, attempt.subtopic])?.id;
+  const validatedRegionId = attempt.validatedRegionId;
+  return P3_ASTRAL_ACADEMY.regions.some((region) => region.id === validatedRegionId)
+    ? validatedRegionId
+    : undefined;
 }
 
 function subtopicForAttempt(attempt: Attempt, questionsById: Map<string, NormalizedQuestion>): string | undefined {
@@ -162,6 +163,7 @@ function subtopicForAttempt(attempt: Attempt, questionsById: Map<string, Normali
 
 function groupKeyForAttempt(attempt: Attempt, questionsById: Map<string, NormalizedQuestion>): string {
   const regionId = regionIdForAttempt(attempt, questionsById);
+  if (!regionId) return attempt.questionId;
   const subtopic = subtopicForAttempt(attempt, questionsById);
   return [regionId, subtopic, normalizeLabel(attempt.topicDisplayName)].filter(Boolean).join(':') || attempt.questionId;
 }
@@ -300,7 +302,9 @@ export function calculateP3ReadinessIndex(input: {
   const marksPerMinute = minutes > 0 ? canonicalAttempts.reduce((sum, attempt) => sum + attempt.marksEarned, 0) / minutes : undefined;
   const regionIds = canonicalAttempts.map((attempt) => regionIdForAttempt(attempt, questionsById)).filter((value): value is string => Boolean(value));
   const distinctRegions = new Set(regionIds);
-  const subtopics = canonicalAttempts.map((attempt) => subtopicForAttempt(attempt, questionsById)).filter((value): value is string => Boolean(value));
+  const subtopics = canonicalAttempts.map((attempt) => (
+    regionIdForAttempt(attempt, questionsById) ? subtopicForAttempt(attempt, questionsById) : undefined
+  )).filter((value): value is string => Boolean(value));
   const regionCounts = regionIds.reduce<Record<string, number>>((counts, regionId) => {
     counts[regionId] = (counts[regionId] ?? 0) + 1;
     return counts;

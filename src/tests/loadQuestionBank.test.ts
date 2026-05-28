@@ -46,7 +46,7 @@ describe('loadQuestionBankWithDiagnostics', () => {
     expect(fetchedUrls).not.toContain('./assets/exam-bank-data/question_bank.json');
   });
 
-  it('marks raw fallback records as display/practice limited when the projected bank fails', async () => {
+  it('fails closed instead of falling back to raw records when the projected bank fails', async () => {
     const rawFallback = {
       schema_name: 'exam_bank.question_bank',
       schema_version: 2,
@@ -69,7 +69,7 @@ describe('loadQuestionBankWithDiagnostics', () => {
       record_count: 1,
       records: { raw_q1: { primary_topic_id: '9709_p3_topic_algebra', confidence: 'high', paper_family: 'p3' } },
     };
-    vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       const value = String(url);
       if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response(routing));
       if (value.includes('asterion_question_bank_v1.json')) return Promise.resolve(response({}, false));
@@ -77,30 +77,8 @@ describe('loadQuestionBankWithDiagnostics', () => {
       return Promise.resolve(response({}, false));
     });
 
-    const loaded = await loadQuestionBankWithDiagnostics();
-    const fallbackQuestion = loaded.questions[0];
-
-    expect(loaded.diagnostics.mainUrl).toBe('./assets/exam-bank-data/question_bank.json');
-    expect(loaded.diagnostics.mainContentSource).toBe('raw-bank-fallback');
-    expect(fallbackQuestion.contentSource).toMatchObject({
-      kind: 'raw-bank-fallback',
-      unsafeForMastery: true,
-      unsafeForGuardian: true,
-      unsafeForGeneration: true,
-      reasonCodes: ['unsafe-raw-bank-fallback'],
-    });
-    expect(fallbackQuestion.routeEvidence?.status).toBe('clean');
-    expect(fallbackQuestion.eligibility?.regionDisplayEligible.eligible).toBe(true);
-    expect(fallbackQuestion.eligibility?.practiceEligible.eligible).toBe(true);
-    expect(fallbackQuestion.eligibility?.masteryEligible).toMatchObject({
-      eligible: false,
-      reasonCodes: ['validated-topic-routing', 'unsafe-raw-bank-fallback'],
-    });
-    expect(fallbackQuestion.eligibility?.guardianEligible.eligible).toBe(false);
-    expect(fallbackQuestion.eligibility?.generationEligible).toMatchObject({
-      eligible: false,
-      reasonCodes: ['validated-topic-routing', 'unsafe-raw-bank-fallback'],
-    });
+    await expect(loadQuestionBankWithDiagnostics()).rejects.toThrow('Student-safe question bank unavailable');
+    expect(fetchMock.mock.calls.map(([url]) => String(url))).not.toContain('./assets/exam-bank-data/question_bank.json');
   });
 
   it('continues without routing metadata when the topic-routing file is missing', async () => {
@@ -145,15 +123,35 @@ describe('loadQuestionBankWithDiagnostics', () => {
     expect(loaded.questions.map((question) => question.paperFamily)).toEqual(['p3', 'p1']);
   });
 
-  it('reports placeholder main bank diagnostics', async () => {
+  it('fails closed when the projected bank normalizes to no P3 records', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
       if (String(url).includes('topic_routing')) return Promise.resolve(response({}));
-      return Promise.resolve(response({ questions: [] }));
+      return Promise.resolve(response({ record_count: 1, questions: [{ question_id: 'p1_q1', paper_family: 'p1' }] }));
     });
 
-    const loaded = await loadQuestionBankWithDiagnostics();
-    expect(loaded.diagnostics.mainAppearsPlaceholder).toBe(true);
-    expect(loaded.diagnostics.mainQuestionsLength).toBe(0);
+    await expect(loadQuestionBankWithDiagnostics()).rejects.toThrow('projected bank produced no normalized P3 questions');
+  });
+
+  it('never fetches raw Content Lab candidates during the default student runtime load', async () => {
+    const projectedMain = {
+      schema_name: 'asterion_question_bank_projection',
+      schema_version: 2,
+      record_count: 1,
+      questions: [{ question_id: 'q1', paper_family: 'p3', canonical_question_artifact: 'p3/a/questions/q1.png', canonical_mark_scheme_artifact: 'p3/a/mark_scheme/q1.png' }],
+    };
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
+      const value = String(url);
+      if (value.includes('asterion_content_lab_candidates_v1.json')) {
+        throw new Error('Content Lab candidates must not be fetched by student runtime.');
+      }
+      if (value.includes('question_bank.topic_routing.v1.json')) return Promise.resolve(response({}));
+      if (value.includes('asterion_question_bank_v1.json')) return Promise.resolve(response(projectedMain));
+      return Promise.resolve(response({}, false));
+    });
+
+    await loadQuestionBankWithDiagnostics();
+
+    expect(fetchMock.mock.calls.map(([url]) => String(url)).join('\n')).not.toContain('asterion_content_lab_candidates_v1.json');
   });
 
   it('uses no-store for local/test data loads and default cache for production static JSON', () => {

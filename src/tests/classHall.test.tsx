@@ -229,6 +229,8 @@ describe('ClassHall', () => {
     expect(card?.textContent).toContain('Algebra Vault');
     expect(card?.textContent).toContain('Bronze');
     expect(card?.textContent).toContain('70%');
+    expect(container.textContent).not.toContain('Restoration Ledger');
+    expect(container.querySelector('.section-page-header')).toBeNull();
     expect(card?.textContent).not.toContain('Attempts');
     expect(card?.textContent).not.toContain('Average');
     expect(card?.textContent).not.toContain('Recent');
@@ -264,7 +266,7 @@ describe('ClassHall', () => {
     expect(onTrain).not.toHaveBeenCalled();
   });
 
-  it('renders the P3 restoration ledger in the compact grid topic order', () => {
+  it('renders only the 9 region cards in the compact grid topic order', () => {
     const progress = [...P3_ASTRAL_ACADEMY.regions]
       .reverse()
       .map((region) => regionProgress({ region }));
@@ -280,6 +282,10 @@ describe('ClassHall', () => {
     const renderedRegionNames = Array.from(container.querySelectorAll('.region-card h3'))
       .map((heading) => heading.textContent);
 
+    expect(container.textContent).not.toContain('Restoration Ledger');
+    expect(container.textContent).not.toContain('Choose a Paper 3 region');
+    expect(container.querySelector('.section-page-header')).toBeNull();
+    expect(container.querySelectorAll('.region-card')).toHaveLength(9);
     expect(renderedRegionNames).toEqual([
       'Algebra Vault',
       'Logarithm Observatory',

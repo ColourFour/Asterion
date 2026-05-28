@@ -143,6 +143,11 @@ function fallbackDisplayRegion(question: NormalizedQuestion, world: WorldDefinit
   return matchRegionForLabels(fallbackLabelsForQuestion(question), world);
 }
 
+function regionById(regionId: string | undefined, world: WorldDefinition): RegionDefinition | undefined {
+  if (!regionId) return undefined;
+  return world.regions.find((region) => region.id === regionId);
+}
+
 function nonCleanStatus(status: QuestionRouteEvidenceStatus | undefined): QuestionRouteEvidenceStatus | undefined {
   return status && status !== 'clean' ? status : undefined;
 }
@@ -247,6 +252,16 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
 
 export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
+  const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
+  if (routeEvidence.status !== 'clean') return undefined;
+  return regionById(routeEvidence.validatedRegionId, world);
+}
+
+export function matchDisplayRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
+  if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
+  const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
+  const displayRegion = regionById(routeEvidence.displayRegionId, world);
+  if (displayRegion) return displayRegion;
   const routedRegion = regionForTopicRouting(question.topicRouting, world.regions);
   if (routedRegion) return routedRegion;
   return matchRegionForLabels(labelsForQuestion(question), world);

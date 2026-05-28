@@ -437,13 +437,8 @@ export function AstralRegionLedger({ progress, regionLearningSummaries, regionAc
   }
 
   return (
-    <section className="region-ledger-screen">
-      <header className="section-page-header">
-        <span className="mode-pill">Region evidence</span>
-        <h2>P3 Restoration Ledger</h2>
-        <p>Choose a Paper 3 region. Detailed evidence appears inside each region hub.</p>
-      </header>
-      <div className="region-ledger" aria-label="Region evidence ledger">
+    <section className="region-ledger-screen" aria-label="P3 regions">
+      <div className="region-ledger" aria-label="P3 region entry points">
         {ledgerProgress.map((regionProgress) => {
           const { region } = regionProgress;
           const canTrain = regionProgress.isActive && regionProgress.availableQuestions > 0;

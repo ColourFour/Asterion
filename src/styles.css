@@ -3231,9 +3231,9 @@ nav button.active,
 .region-ledger {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-  max-width: 780px;
+  gap: 14px;
+  margin-top: 0;
+  max-width: 1280px;
 }
 
 .region-card {
@@ -3292,7 +3292,14 @@ nav button.active,
 }
 
 .region-ledger-tile h3 {
+  width: fit-content;
+  max-width: 100%;
   margin: 5px 0 0;
+  padding: 4px 7px;
+  border: 1px solid var(--card-panel-border);
+  border-radius: 8px;
+  color: var(--card-text);
+  background: color-mix(in srgb, var(--card-panel), transparent 8%);
   font-size: clamp(1rem, 1.7vw, 1.3rem);
   line-height: 1.05;
 }
@@ -3317,9 +3324,9 @@ nav button.active,
   max-width: 100%;
   min-height: 22px;
   padding: 3px 7px;
-  color: #2f1a10;
-  background: rgba(255, 244, 209, 0.74);
-  border: 1px solid rgba(84, 50, 24, 0.38);
+  color: var(--card-text);
+  background: color-mix(in srgb, var(--card-panel), transparent 4%);
+  border: 1px solid var(--card-panel-border);
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 950;
@@ -3329,7 +3336,13 @@ nav button.active,
 
 .region-ledger-micro-label {
   align-self: start;
-  color: #543218;
+  width: fit-content;
+  max-width: 100%;
+  padding: 3px 6px;
+  color: var(--card-text);
+  background: color-mix(in srgb, var(--card-panel), transparent 10%);
+  border: 1px solid var(--card-panel-border);
+  border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 850;
   line-height: 1.2;
@@ -3343,7 +3356,11 @@ nav button.active,
 
 .region-ledger-progress > span {
   justify-self: end;
-  color: #3b2014;
+  padding: 3px 6px;
+  color: var(--card-text);
+  background: color-mix(in srgb, var(--card-panel), transparent 10%);
+  border: 1px solid var(--card-panel-border);
+  border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 950;
   line-height: 1;
@@ -3351,6 +3368,9 @@ nav button.active,
 
 .region-ledger-tile .region-meter {
   height: 9px;
+  min-height: 9px;
+  max-height: 9px;
+  box-sizing: border-box;
   overflow: hidden;
   background: rgba(72, 43, 22, 0.22);
   border: 1px solid rgba(59, 32, 20, 0.55);
@@ -4316,7 +4336,8 @@ legend {
 }
 
 .region-ledger-screen {
-  max-width: 860px;
+  max-width: 1536px;
+  padding-inline: 10px;
 }
 
 .app-view-map .region-ledger {
@@ -4501,7 +4522,7 @@ legend {
 
   .region-ledger-tile {
     min-height: 0;
-    height: 128px;
+    height: 132px;
     padding: 10px;
   }
 
@@ -4842,6 +4863,18 @@ legend {
   color: color-mix(in srgb, var(--card-text), #111827 34%);
   background: color-mix(in srgb, var(--card-panel), #ffffff 10%);
   border-color: var(--card-panel-border);
+}
+
+.region-ledger-tile .region-state,
+.region-ledger-micro-label,
+.region-ledger-progress > span {
+  color: var(--card-text);
+}
+
+.region-ledger-tile .region-meter {
+  height: 9px;
+  min-height: 9px;
+  max-height: 9px;
 }
 
 .region-card.field-guide-only-region {
@@ -7552,9 +7585,12 @@ legend {
 
 .region-first-run-loop .is-in-progress .region-home-action-copy strong,
 .region-first-run-loop .is-in-progress .region-home-action-copy small,
-.region-first-run-loop .is-in-progress .region-home-action-status,
 .region-first-run-loop .is-in-progress .region-home-action-chevron {
   color: #fff;
+}
+
+.region-first-run-loop .is-in-progress .region-home-action-status {
+  color: var(--region-badge-text);
 }
 
 .region-first-run-loop .is-in-progress .region-home-action-icon {
@@ -7769,6 +7805,22 @@ legend {
   line-height: 1.45;
   overflow-wrap: normal;
   word-break: normal;
+}
+
+.region-home-primary-list {
+  display: grid;
+  gap: 6px;
+  margin: 2px 0 0;
+  padding-left: 1.45rem;
+  color: var(--region-body);
+  font-size: 0.98rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.region-home-primary-list li {
+  padding-left: 2px;
+  overflow-wrap: anywhere;
 }
 
 .region-home-lock-reason,
@@ -13548,6 +13600,17 @@ legend {
   color: #17324e;
   font-size: 0.86rem;
   font-weight: 950;
+}
+
+.exam-training-topic-copy .math-text {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align: baseline;
+}
+
+.exam-training-topic-copy .math-text .katex {
+  max-width: 100%;
 }
 
 .exam-training-topic-copy small {

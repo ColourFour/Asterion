@@ -224,6 +224,14 @@ async function runViewport(browser, width) {
     isMobile: width <= 430,
   });
   const page = await context.newPage();
+  const consoleErrors = [];
+  const pageErrors = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('pageerror', (error) => {
+    pageErrors.push(error.message);
+  });
   const metrics = [];
 
   await page.goto(urlFor('/student-pilot?fresh=1'), { waitUntil: 'domcontentloaded' });
@@ -251,7 +259,7 @@ async function runViewport(browser, width) {
   await capture(page, width, 'onboarding-name-step', metrics);
 
   await clickByRole(page, 'Continue');
-  await waitForText(page, 'Choose a starter avatar');
+  await waitForText(page, 'Starter avatar active');
   await capture(page, width, 'onboarding-avatar-step', metrics);
 
   await clickByRole(page, 'Continue');
@@ -262,6 +270,21 @@ async function runViewport(browser, width) {
   await waitForText(page, 'World Map');
   await page.waitForTimeout(1200);
   await capture(page, width, 'world-map', metrics);
+
+  await clickByRole(page, 'Regions');
+  await page.waitForFunction(() => document.querySelectorAll('.region-card').length > 0, undefined, { timeout: 15000 });
+  const regionLedgerState = await page.evaluate(() => ({
+    cardCount: document.querySelectorAll('.region-ledger .region-card').length,
+    allRegionCardCount: document.querySelectorAll('.region-card').length,
+    pageText: document.body.innerText.replace(/\s+/g, ' ').slice(0, 500),
+    regionNames: Array.from(document.querySelectorAll('.region-ledger .region-card h3')).map((heading) => heading.textContent),
+    hasRestorationLedger: document.body.innerText.includes('Restoration Ledger'),
+    hasLedgerHeader: Boolean(document.querySelector('.region-ledger-screen .section-page-header')),
+  }));
+  if (regionLedgerState.cardCount !== 9 || regionLedgerState.hasRestorationLedger || regionLedgerState.hasLedgerHeader) {
+    throw new Error(`Unexpected region ledger state: ${JSON.stringify(regionLedgerState)}`);
+  }
+  await capture(page, width, 'regions-card-grid', metrics);
 
   await page.goto(urlFor('#/regions/integration-gardens'), { waitUntil: 'domcontentloaded' });
   await waitForText(page, 'Integral Terraces');
@@ -274,6 +297,10 @@ async function runViewport(browser, width) {
   await page.goto(urlFor('#/regions/integration-gardens/quick-check'), { waitUntil: 'domcontentloaded' });
   await waitForText(page, 'Skill Practice is locked for this class');
   await capture(page, width, 'locked-region-quick-check-blocked', metrics);
+
+  await page.goto(urlFor('#/class-hall'), { waitUntil: 'domcontentloaded' });
+  await waitForText(page, 'Class Hall is unavailable during pilot prep');
+  await capture(page, width, 'class-hall-unavailable', metrics);
 
   await page.goto(urlFor('#/regions/logarithm-grove/guardian'), { waitUntil: 'domcontentloaded' });
   await waitForText(page, 'Vault locked');
@@ -312,6 +339,50 @@ async function runViewport(browser, width) {
   const bodyText = await page.locator('body').innerText();
   if (bodyText.includes('Lantern Growth Gate') || bodyText.includes('Reveal placeholder guidance')) {
     throw new Error('Guardian unlocked state exposed placeholder challenge content.');
+  }
+
+  await page.goto(urlFor('#/exam-training'), { waitUntil: 'domcontentloaded' });
+  await waitForText(page, "Choose today's exam practice");
+  if (await page.locator('.exam-training-route-strip').count()) {
+    throw new Error('Exam Training route strip is still visible.');
+  }
+  await capture(page, width, 'exam-training-dashboard', metrics);
+
+  await page.getByRole('button', { name: 'Core Practice', exact: true }).click({ timeout: 15000 });
+  await waitForText(page, 'Work from the question image');
+  await page.waitForFunction(() => Array.from(document.images).some((image) => image.complete && image.naturalWidth > 0), { timeout: 15000 });
+  await capture(page, width, 'exam-training-question', metrics);
+
+  await clickByRole(page, 'Reveal Mark Scheme');
+  await waitForText(page, 'Enter marks from the mark scheme');
+  await page.waitForFunction(() => Array.from(document.images).some((image) => image.alt.toLowerCase().includes('mark scheme') && image.complete && image.naturalWidth > 0), { timeout: 15000 });
+  await capture(page, width, 'exam-training-mark-scheme', metrics);
+
+  const totalMarksInput = page.getByLabel('Total marks');
+  const maxMarks = await totalMarksInput.getAttribute('max');
+  await totalMarksInput.fill(maxMarks || '1');
+  await page.getByLabel('I checked each mark-scheme line and can explain where every mark was earned.').check({ timeout: 15000 });
+  await page.getByRole('button', { name: /Save Attempt/ }).click({ timeout: 15000 });
+  await waitForText(page, 'ATTEMPT SAVED');
+  await waitForText(page, 'Next');
+  await capture(page, width, 'exam-training-full-score-saved', metrics);
+
+  await clickByRole(page, 'Ask Teacher');
+  await waitForText(page, 'Ask about this question');
+  await page.locator('textarea').last().fill('I am unsure which line earns the M1 mark.');
+  await clickByRole(page, 'Send question');
+  await waitForText(page, 'Question sent to your teacher.');
+  const teacherQuestionQueueLength = await page.evaluate(() => {
+    const raw = localStorage.getItem('asterion.teacherQuestions.v1');
+    return raw ? JSON.parse(raw).length : 0;
+  });
+  if (teacherQuestionQueueLength < 1) {
+    throw new Error('Ask Teacher did not write to the teacher question queue.');
+  }
+  await capture(page, width, 'exam-training-ask-teacher-sent', metrics);
+
+  if (consoleErrors.length || pageErrors.length) {
+    throw new Error(JSON.stringify({ width, consoleErrors, pageErrors }, null, 2));
   }
 
   await context.close();

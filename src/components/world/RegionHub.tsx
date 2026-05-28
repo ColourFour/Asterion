@@ -78,24 +78,47 @@ function guardianNextStep(summary: RegionLearningSummary): string | undefined {
   return 'This Guardian question is still being prepared.';
 }
 
+interface HubActionPrimaryCopy {
+  eyebrow: string;
+  title: string;
+  description: string;
+  button: string;
+  listItems?: string[];
+}
+
+function sentenceCaseTopic(value: string): string {
+  const trimmed = value.trim();
+  return trimmed ? trimmed[0].toUpperCase() + trimmed.slice(1) : '';
+}
+
+function fieldGuideTopicItems(fieldGuideTopic: string, regionName: string): string[] {
+  const guideTopic = fieldGuideTopic
+    .replace(new RegExp(`^${regionName}\\s+covers\\s+`, 'i'), '')
+    .replace(/\.$/, '');
+  return guideTopic
+    .replace(/,\s+and\s+/g, ', ')
+    .split(',')
+    .map((item) => sentenceCaseTopic(item.replace(/^and\s+/i, '')))
+    .filter(Boolean);
+}
+
 function hubActionPrimaryStudentCopy(input: {
   fieldGuideCompleted: boolean;
   fieldGuideTopic: string;
   page: HubActionPageId;
   regionName: string;
   summary: RegionLearningSummary;
-}): { eyebrow: string; title: string; description: string; button: string } {
+}): HubActionPrimaryCopy {
   if (input.page === 'field-guide') {
-    const guideTopic = input.fieldGuideTopic
-      .replace(new RegExp(`^${input.regionName}\\s+covers\\s+`, 'i'), '')
-      .replace(/\.$/, '');
+    const listItems = fieldGuideTopicItems(input.fieldGuideTopic, input.regionName);
     return {
       eyebrow: 'Current step · Do this next',
-      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : `Start here: Field Guide. Learn about ${guideTopic || input.regionName}.`,
+      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : 'Start here: Field Guide.',
       description: input.fieldGuideCompleted
         ? 'Use the guide as a quick reset before practice.'
-        : 'Read the next guide step before practice.',
+        : 'Learn about:',
       button: input.fieldGuideCompleted ? 'Open Field Guide' : 'Start here',
+      listItems: input.fieldGuideCompleted ? undefined : listItems.length ? listItems : [input.regionName],
     };
   }
 
@@ -640,6 +663,11 @@ function RegionHubHome({
               <small>{primaryCopy.eyebrow}</small>
               <strong>{primaryCopy.title}</strong>
               <p>{primaryCopy.description}</p>
+              {primaryCopy.listItems?.length ? (
+                <ol className="region-home-primary-list">
+                  {primaryCopy.listItems.map((item) => <li key={item}>{item}</li>)}
+                </ol>
+              ) : null}
             </div>
             <span className="region-home-action-status">
               {primaryActionState.disabled ? <Lock size={14} aria-hidden="true" /> : null}

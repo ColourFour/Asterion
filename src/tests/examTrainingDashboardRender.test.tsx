@@ -43,6 +43,12 @@ function render(ui: ReactNode): HTMLElement {
   return container;
 }
 
+async function flushMathText(): Promise<void> {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  });
+}
+
 function savedAttempt(): Attempt {
   return {
     id: 'attempt-exam-training-render',
@@ -98,7 +104,32 @@ afterEach(() => {
 });
 
 describe('ExamTrainingDashboard practice choices', () => {
-  it('glows Core Practice until saved evidence can recommend a targeted mode', () => {
+  it('glows Core Practice until saved evidence can recommend a targeted mode', async () => {
+    const container = render(
+      <ExamTrainingDashboard
+        progress={emptyProgress()}
+        questions={[]}
+        worldProgress={worldProgress()}
+        avatarName="Pilot Star"
+        avatar={DEFAULT_AVATAR_SETTINGS}
+        avatarGear={avatarGear}
+        onOpenRegions={vi.fn()}
+        onReturnToMap={vi.fn()}
+        onNavigateRegionPage={vi.fn()}
+        onStartPractice={vi.fn()}
+      />,
+    );
+    await flushMathText();
+
+    expect(container.querySelector('.exam-training-practice-choice.practice-core')?.classList.contains('next-step-glow')).toBe(true);
+    expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(false);
+    expect(container.querySelector('.exam-training-practice-choice.practice-stretch')?.classList.contains('next-step-glow')).toBe(false);
+    expect(container.querySelector('.exam-training-route-strip')).toBeNull();
+    expect(container.textContent).not.toContain('Region HubField GuideSkill Practice');
+    expect(container.textContent).toContain('Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.');
+  });
+
+  it('renders equation-bearing topic labels with MathText instead of plain broken text', async () => {
     const container = render(
       <ExamTrainingDashboard
         progress={emptyProgress()}
@@ -114,13 +145,13 @@ describe('ExamTrainingDashboard practice choices', () => {
       />,
     );
 
-    expect(container.querySelector('.exam-training-practice-choice.practice-core')?.classList.contains('next-step-glow')).toBe(true);
-    expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(false);
-    expect(container.querySelector('.exam-training-practice-choice.practice-stretch')?.classList.contains('next-step-glow')).toBe(false);
-    expect(container.textContent).toContain('Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.');
+    await flushMathText();
+
+    expect(container.textContent).toContain('Natural Logarithms');
+    expect(container.querySelector('.exam-training-topic-copy strong .math-text .katex')).toBeTruthy();
   });
 
-  it('moves the recommendation glow to Weak Area Review when missed-mark evidence exists', () => {
+  it('moves the recommendation glow to Weak Area Review when missed-mark evidence exists', async () => {
     const container = render(
       <ExamTrainingDashboard
         progress={{ ...emptyProgress(), attempts: [weakAttempt()] }}
@@ -135,12 +166,13 @@ describe('ExamTrainingDashboard practice choices', () => {
         onStartPractice={vi.fn()}
       />,
     );
+    await flushMathText();
 
     expect(container.querySelector('.exam-training-practice-choice.practice-core')?.classList.contains('next-step-glow')).toBe(false);
     expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(true);
   });
 
-  it('keeps default practice choice buttons to titles while preserving accessible definitions and clicks', () => {
+  it('keeps default practice choice buttons to titles while preserving accessible definitions and clicks', async () => {
     const onStartPractice = vi.fn();
     const container = render(
       <ExamTrainingDashboard
@@ -156,6 +188,7 @@ describe('ExamTrainingDashboard practice choices', () => {
         onStartPractice={onStartPractice}
       />,
     );
+    await flushMathText();
 
     const choiceButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.exam-training-practice-card'));
     expect(choiceButtons.map((button) => button.textContent?.trim())).toEqual([

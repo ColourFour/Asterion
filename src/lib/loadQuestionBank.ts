@@ -53,6 +53,9 @@ export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankO
   const result = normalizeQuestionBankWithDiagnostics(localResult.data, {}, routingResult.data, {
     contentSourceKind: localResult.contentSourceKind,
   });
+  if (scope === 'p3' && result.questions.filter(isP3Question).length === 0) {
+    throw new Error('Student-safe question bank unavailable: projected bank produced no normalized P3 questions.');
+  }
   result.diagnostics = {
     ...result.diagnostics,
     mainContentSource: localResult.contentSourceKind,
@@ -80,14 +83,19 @@ export async function loadFullQuestionBankWithDiagnostics(): Promise<{
 async function loadMainBankWithFallback(scope: QuestionBankLoadScope): Promise<LoadedJson> {
   if (scope === 'full') return { ...(await fetchJson(DATA_PATHS.rawQuestionBank)), contentSourceKind: 'raw-bank-debug' };
 
-  const projected = await Promise.resolve()
-    .then(() => fetchJson(DATA_PATHS.asterionQuestionBank))
-    .catch(() => undefined);
-  if (projected && getQuestionRecordCount(projected.data) > 0) {
-    return { ...projected, contentSourceKind: 'projected-bank' };
+  let projected: LoadedJson;
+  try {
+    projected = await fetchJson(DATA_PATHS.asterionQuestionBank);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'unknown error';
+    throw new Error(`Student-safe question bank unavailable: ${message}`);
   }
 
-  return { ...(await fetchJson(DATA_PATHS.rawQuestionBank)), contentSourceKind: 'raw-bank-fallback' };
+  if (getQuestionRecordCount(projected.data) <= 0) {
+    throw new Error('Student-safe question bank unavailable: projected bank is empty or invalid.');
+  }
+
+  return { ...projected, contentSourceKind: 'projected-bank' };
 }
 
 async function loadTopicRoutingWithFallback(): Promise<LoadedJson> {

@@ -163,11 +163,11 @@ describe('region progress and gear', () => {
       attempt(1, { questionId: 'q1', scoreRatio: 1, subtopic: 'polynomials', methodFamily: 'factor theorem' }),
     ]);
 
-    expect(progress.availableQuestions).toBe(1);
+    expect(progress.availableQuestions).toBe(0);
     expect(progress.attempts).toBe(0);
     expect(progress.totalMarksEarned).toBe(0);
     expect(progress.averageScoreRatio).toBeUndefined();
-    expect(progress.rank).toBe('Discovered');
+    expect(progress.rank).toBe('Dormant');
   });
 
   it('blocks known unsafe attempts and missing-route historical attempts', () => {
