@@ -14,6 +14,9 @@ interface QuickChecksPanelProps {
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
   showNextCheck?: boolean;
+  progressOffset?: number;
+  progressTotal?: number;
+  onSequenceComplete?: () => void;
   onContinueToWarmUp?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
@@ -225,6 +228,7 @@ interface QuickCheckCardProps {
   checkCount: number;
   hasNextCheck: boolean;
   onNextCheck?: () => void;
+  onSequenceComplete?: () => void;
   onContinueToWarmUp?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
@@ -242,6 +246,7 @@ function QuickCheckCard({
   checkCount,
   hasNextCheck,
   onNextCheck,
+  onSequenceComplete,
   onContinueToWarmUp,
   onContinueToExamPractice,
   onLearningActivityAttempt,
@@ -294,7 +299,7 @@ function QuickCheckCard({
       <header className="quick-check-heading">
         <strong>Skill check: {title}</strong>
         <small>
-          Check {checkPosition} of {checkCount}
+          Question {checkPosition} of {checkCount}
           {previousAttempt ? ` · Last: ${learningOutcomeLabel(previousAttempt.outcome)}` : ''}
         </small>
       </header>
@@ -318,6 +323,8 @@ function QuickCheckCard({
           <div>
             {hasNextCheck ? (
               <button className="activity-primary-action next-step-glow" type="button" onClick={onNextCheck}>Next</button>
+            ) : onSequenceComplete ? (
+              <button className="activity-primary-action next-step-glow" type="button" onClick={onSequenceComplete}>Next</button>
             ) : onContinueToWarmUp ? (
               <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToWarmUp}>Next</button>
             ) : onContinueToExamPractice ? (
@@ -325,7 +332,6 @@ function QuickCheckCard({
             ) : null}
             <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
           </div>
-          {saved ? <small className="region-card-note">Skill Check saved locally as a support activity.</small> : null}
         </div>
       ) : null}
     </article>
@@ -339,6 +345,9 @@ export function QuickChecksPanel({
   activityAttempts = [],
   maxInitialItems = 1,
   showNextCheck = true,
+  progressOffset = 0,
+  progressTotal,
+  onSequenceComplete,
   onContinueToWarmUp,
   onContinueToExamPractice,
   onLearningActivityAttempt,
@@ -367,6 +376,8 @@ export function QuickChecksPanel({
   const activeCheckIndexWithinRange = Math.min(activeCheckIndex, Math.max(0, checks.length - 1));
   const activeCheck = checks[activeCheckIndexWithinRange];
   const queuedCheckCount = Math.max(0, checks.length - activeCheckIndexWithinRange - activeCheckLimit);
+  const totalQuestions = progressTotal ?? checks.length;
+  const questionPosition = progressOffset + activeCheckIndexWithinRange + 1;
   const previousAttempts = new Map(
     activityAttempts
       .filter((attempt) => attempt.activityType === 'quick_check')
@@ -388,8 +399,8 @@ export function QuickChecksPanel({
           <div className="quick-check-list">
             <QuickCheckCard
               check={activeCheck.check}
-              checkCount={checks.length}
-              checkPosition={activeCheckIndexWithinRange + 1}
+              checkCount={totalQuestions}
+              checkPosition={questionPosition}
               hasNextCheck={showNextCheck && activeCheckIndexWithinRange < checks.length - 1}
               key={activeCheck.check.id ?? activeCheck.snippetId}
               linkedExample={activeCheck.linkedExample}
@@ -397,6 +408,7 @@ export function QuickChecksPanel({
               onContinueToWarmUp={onContinueToWarmUp}
               onLearningActivityAttempt={onLearningActivityAttempt}
               onNextCheck={() => setActiveCheckIndex((index) => Math.min(index + 1, checks.length - 1))}
+              onSequenceComplete={onSequenceComplete}
               previousAttempt={previousAttempts.get(activeCheck.check.id ?? activeCheck.snippetId)}
               profileId={profileId}
               region={region}

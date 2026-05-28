@@ -129,10 +129,10 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const nextActionHint = sorted.length === 0
     ? 'Try Skill Check before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Skill Check records look ready. Move into exam practice next.'
+      ? 'Skill Check is looking steady. Move into exam practice next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
-      ? 'A recent support activity was missed or revealed early. Try Skill Check before exam practice.'
-      : 'Support activity records show partial readiness. Try one more guided practice item or move carefully into training.';
+      ? 'A recent Skill Check item was missed or revealed early. Try Skill Check before exam practice.'
+      : 'Your Skill Check work shows partial readiness. Try one more guided practice item or move carefully into training.';
 
   return {
     attempts: sorted.length,
@@ -182,7 +182,7 @@ export function computeGuardianEligibility(input: {
         detail: skillChecklistCompletion.completed
           ? `All ${skillChecklistCompletion.requiredCount} required Skill Check subtopics are complete.`
           : `Complete each required Skill Check subtopic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
-        nextAction: 'Use Skill Check until every Field Guide subtopic has a completed support item.',
+        nextAction: 'Use Skill Check until every Field Guide subtopic has a completed item.',
         progress: {
           current: skillChecklistCompletion.completedCount,
           target: skillChecklistCompletion.requiredCount,
@@ -194,7 +194,7 @@ export function computeGuardianEligibility(input: {
         completed: guardianChallengeAvailable,
         detail: guardianChallengeAvailable
           ? 'A text-based Guardian item is ready for every Field Guide subtopic.'
-          : 'This region needs one runtime-safe Guardian item for every Field Guide subtopic.',
+          : 'This region needs one Guardian item for every Field Guide subtopic.',
         nextAction: 'This region needs a complete Guardian challenge set before the trial can open.',
         progress: {
           current: Math.min(getGuardianChallengeItemsForRegion(input.region.id).length, skillChecklistCompletion.requiredCount),
@@ -331,7 +331,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'core_practice',
         label: TRAINING_SESSION_LABELS.core_practice,
-        reason: learningActivityReadiness.nextActionHint ?? 'Support activity records show readiness for exam practice.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check work shows readiness for exam practice.',
       };
     }
 
@@ -339,7 +339,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'warm_up',
         label: TRAINING_SESSION_LABELS.warm_up,
-        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check review is selected because support activity records show a recent miss or early reveal.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check review is selected because a recent item was missed or revealed early.',
       };
     }
 

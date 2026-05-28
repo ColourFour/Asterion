@@ -12,6 +12,7 @@ import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from '../data/logarithmObservatoryC
 import { TRIGONOMETRY_SPIRE_TOPIC_ORDER } from '../data/trigonometrySpireContent';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
+import type { GuardianChallengeItem } from '../data/guardianChallengeItems';
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import {
   findVisualSupportSource,
@@ -689,7 +690,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
     expect(quickCheck).toBeTruthy();
     expect(quickCheck?.textContent).toContain('Skill check');
-    expect(quickCheck?.textContent).toContain('Check 1 of 1');
+    expect(quickCheck?.textContent).toContain('Question 1 of 1');
     expect(quickCheck?.textContent).not.toContain('Next action');
 
     const revealButton = Array.from(quickCheck!.querySelectorAll('button')).find((button) => button.textContent === 'Check answer');
@@ -733,7 +734,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Worked-route item');
     expect(container.textContent).toContain('Work through one prompt at a time.');
-    expect(container.textContent).toContain('Item 1 of 1');
+    expect(container.textContent).toContain('Question 1 of 1');
     expect(container.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(container.textContent).toContain('Question type');
     expect(container.textContent).toContain('Logarithm equation');
@@ -864,6 +865,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(emptyState).toBeTruthy();
     expect(container.textContent).toContain('Worked-route Skill Check items for this topic are being prepared.');
+    expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
     expect(container.textContent).toContain('Field Guide');
     expect(container.textContent).not.toContain('Exam Training');
   });
@@ -894,7 +896,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuideSnippet?.textContent).not.toContain('Log snippet 2');
     expect(fieldGuideSnippet?.textContent).toContain('Use Next when this idea is clear.');
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
-    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).toContain('Question 1 of 3');
     expect(container.textContent).toContain('Quick prompt 1');
     expect(container.textContent).not.toContain('Quick prompt 2');
     expect(container.textContent).not.toContain('Quick prompt 3');
@@ -1102,7 +1104,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
     expect(container.textContent).toContain('Quick prompt 1');
-    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).toContain('Question 1 of 3');
     expect(container.textContent).not.toContain('Quick prompt 2');
     expect(container.textContent).not.toContain('Quick prompt 3');
 
@@ -1140,7 +1142,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
     expect(container.textContent).toContain('Quick prompt 2');
-    expect(container.textContent).toContain('Check 2 of 3');
+    expect(container.textContent).toContain('Question 2 of 3');
     expect(container.textContent).not.toContain('Quick prompt 1');
     expect(container.textContent).not.toContain('Quick prompt 3');
     expect(container.textContent).not.toContain('Correct');
@@ -1252,7 +1254,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Skill Check item');
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
     expect(container.textContent).toContain('Quick prompt 1');
-    expect(container.textContent).toContain('Check 1 of 3');
+    expect(container.textContent).toContain('Question 1 of 7');
     expect(container.textContent).not.toContain('Quick prompt 2');
     expect(container.textContent).not.toContain('Quick prompt 3');
   });
@@ -1377,6 +1379,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       expect.stringContaining('Guardian'),
     ]);
     expect(container.querySelectorAll('.region-journey-bar .journey-step')).toHaveLength(3);
+    expect(container.querySelector('.region-journey-bar')?.textContent).toContain('0/1');
     expect(container.textContent).toContain('Field Guide');
     expect(container.querySelectorAll('.region-current-step-card')).toHaveLength(1);
     expect(container.querySelector('.region-current-step-card')?.textContent).not.toContain('Quick Checks');
@@ -1387,7 +1390,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Locked');
     expect(container.textContent).not.toContain('Check readiness');
 
-    expect(container.querySelector('.region-learning-nav')).toBeFalsy();
+    expect(container.querySelector('.region-learning-nav')).toBeTruthy();
     expect(container.querySelector('.region-arc-timeline')).toBeFalsy();
     expect(container.querySelector('.region-summary-band')).toBeFalsy();
     expect(container.querySelector('.region-hub-overview-card')).toBeFalsy();
@@ -1402,11 +1405,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
 
     const guardianCard = loopButtons.find((button) => button.textContent?.includes('Guardian'));
-    expect(guardianCard?.disabled).toBe(true);
+    expect(guardianCard?.disabled).toBe(false);
     act(() => {
       guardianCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(onNavigatePage).not.toHaveBeenCalledWith('guardian');
+    expect(onNavigatePage).toHaveBeenCalledWith('guardian');
   });
 
   it('wires available region hub art files with the established naming convention', () => {
@@ -1493,23 +1496,83 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(warmUpCurrentStep?.textContent).not.toContain('Warm-Up');
   });
 
+  it('prioritizes the hub next action by Field Guide, Skill Check, Guardian, then Exam Training', () => {
+    const fieldGuideMissing = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge'),
+    });
+    expect(fieldGuideMissing.querySelector<HTMLButtonElement>('.region-current-step-button')?.dataset.regionPage)
+      .toBe('field-guide');
+
+    const skillCheckMissing = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      fieldGuideCompleted: true,
+      learningRecord: {
+        regionId: 'algebra-forge',
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        updatedAt: '2026-05-08T00:00:00.000Z',
+      },
+      learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge').slice(0, 1),
+    });
+    expect(skillCheckMissing.querySelector<HTMLButtonElement>('.region-current-step-button')?.dataset.regionPage)
+      .toBe('skill-practice');
+    expect(skillCheckMissing.querySelector('.region-journey-bar')?.textContent).toContain('1/5');
+
+    const guardianMissing = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      fieldGuideCompleted: true,
+      learningRecord: {
+        regionId: 'algebra-forge',
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        updatedAt: '2026-05-08T00:00:00.000Z',
+      },
+      learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge'),
+    });
+    expect(guardianMissing.querySelector<HTMLButtonElement>('.region-current-step-button')?.dataset.regionPage)
+      .toBe('guardian');
+    expect(guardianMissing.querySelector('.region-journey-bar')?.textContent).toContain('5/5');
+    expect(guardianMissing.querySelector('.region-journey-bar')?.textContent).toContain('0/1');
+
+    const examTrainingFallback = renderRegionHubPage({
+      regionId: 'algebra-forge',
+      fieldGuideCompleted: true,
+      learningRecord: {
+        regionId: 'algebra-forge',
+        fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
+        guardianClearedAt: '2026-05-08T00:10:00.000Z',
+        updatedAt: '2026-05-08T00:10:00.000Z',
+      },
+      learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge'),
+    });
+    expect(examTrainingFallback.querySelector<HTMLButtonElement>('.region-current-step-button')?.dataset.regionPage)
+      .toBe('exam-training');
+    expect(examTrainingFallback.querySelector('.region-home.is-region-complete')).toBeTruthy();
+    expect(examTrainingFallback.querySelector('.region-journey-bar')?.textContent).toContain('1/1');
+  });
+
   it('renders one unified Skill Check body for normal and legacy routes', () => {
     const defaultPage = renderRegionHubPage({ activePage: 'skill-practice' });
-    expect(defaultPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
+    expect(defaultPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(defaultPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeFalsy();
+    expect(defaultPage.querySelector('.warm-up-practice-card')).toBeFalsy();
     expect(defaultPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(defaultPage.querySelector('.skill-practice-support-note')).toBeTruthy();
+    expect(defaultPage.querySelector('.skill-practice-support-note')).toBeFalsy();
     expect(defaultPage.querySelector('.skill-practice-topic-grid')).toBeTruthy();
     expect(defaultPage.textContent).toContain('Foundation');
     expect(defaultPage.textContent).toContain('Core');
     expect(defaultPage.textContent).toContain('Challenge');
+    expect(defaultPage.textContent).toContain('Question 1 of');
     expect(defaultPage.textContent).not.toContain('Quick Check');
     expect(defaultPage.textContent).not.toContain('Warm-Up');
+    expect(defaultPage.textContent).not.toContain('support-only');
+    expect(defaultPage.textContent).not.toContain('support progress');
 
     const buildMethodPage = renderRegionHubPage({
       activePage: 'skill-practice',
       learningActivityAttempts: [supportActivityAttempt('quick_check')],
     });
-    expect(buildMethodPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
+    expect(buildMethodPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(buildMethodPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
     expect(buildMethodPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
 
     const readyPage = renderRegionHubPage({
@@ -1520,8 +1583,9 @@ describe('FieldGuidePanel teaching snippets', () => {
       ],
     });
     expect(readyPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
-    expect(readyPage.querySelector('.skill-practice-support-note')).toBeTruthy();
-    expect(readyPage.textContent).toContain('support progress is saved locally and does not change rank or Guardian access');
+    expect(readyPage.querySelector('.skill-practice-support-note')).toBeFalsy();
+    expect(readyPage.textContent).toContain('Skill Check progress saved locally.');
+    expect(readyPage.textContent).not.toContain('Guardian access');
 
     const legacyQuickCheckPage = renderRegionHubPage({
       activePage: 'quick-check',
@@ -1530,11 +1594,13 @@ describe('FieldGuidePanel teaching snippets', () => {
         supportActivityAttempt('warm_up'),
       ],
     });
-    expect(legacyQuickCheckPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
+    expect(legacyQuickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(legacyQuickCheckPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeFalsy();
     expect(legacyQuickCheckPage.textContent).not.toContain('Quick Check');
 
     const legacyWarmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
-    expect(legacyWarmUpPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
+    expect(legacyWarmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(legacyWarmUpPage.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeFalsy();
     expect(legacyWarmUpPage.textContent).not.toContain('Warm-Up');
   });
 
@@ -1620,9 +1686,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
-    expect(quickCheckPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(quickCheckPage.querySelector('.warm-up-practice-card')).toBeFalsy();
     expect(quickCheckPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(quickCheckPage.querySelector('.skill-practice-support-note')).toBeTruthy();
+    expect(quickCheckPage.querySelector('.skill-practice-support-note')).toBeFalsy();
     expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')).toBeFalsy();
     expect(quickCheckPage.querySelector('.quick-check-choice-grid')).toBeTruthy();
 
@@ -1634,7 +1700,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(warmUpPage.textContent).not.toContain('answer-first set with worked solutions');
     expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
-    expect(warmUpPage.querySelector('.quick-check-card')).toBeTruthy();
+    expect(warmUpPage.querySelector('.quick-check-card')).toBeFalsy();
     expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
 
     const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
@@ -1655,7 +1721,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(guardianPage.textContent).toContain('The vault opens after every required Skill Check subtopic is complete.');
+    expect(guardianPage.textContent).toContain('The Guardian opens when the region checklist is ready.');
     expect(guardianPage.textContent).not.toContain('Exam Training');
     expect(guardianPage.querySelectorAll('.guardian-requirement-card')).toHaveLength(2);
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
@@ -1669,7 +1735,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Vault locked');
-    expect(container.textContent).toContain('The challenge opens after the Skill Checklist is complete.');
+    expect(container.textContent).toContain('The challenge opens when the region checklist is ready.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.textContent).not.toContain('Lantern Growth Gate');
@@ -1767,7 +1833,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Lantern Growth Gate');
     expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
     expect(container.textContent).toContain('Guardian ready');
-    expect(container.textContent).toContain('The Skill Checklist is complete.');
+    expect(container.textContent).toContain('The region checklist is ready.');
     expect(container.textContent).toContain('Text Guardian Trial');
     expect(container.textContent).toContain('Observatory Mirror Star');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
@@ -1816,6 +1882,67 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');
     expect(container.textContent?.toLowerCase()).not.toContain('admin');
     expect(container.textContent?.toLowerCase()).not.toContain('export');
+  });
+
+  it('lets students save progress after clearing every text Guardian item', () => {
+    const onSaveGuardianClear = vi.fn();
+    const challenge = guardianChallenges.find((item) => item.regionId === 'logarithm-grove')!;
+    const challengeItems: GuardianChallengeItem[] = [{
+      itemId: 'guardian-test-save-001',
+      paperFamily: 'p3',
+      regionId: 'logarithm-grove',
+      fieldGuideTopicId: 'log_laws',
+      fieldGuideSubtopicId: 'log_laws',
+      skillId: 'p3_log_laws_equations',
+      title: 'Save Progress Check',
+      prompt: 'Choose the compressed logarithm.',
+      inputType: 'multiple_choice',
+      validationMode: 'deterministic',
+      expectedOptionIds: ['correct'],
+      options: [
+        { id: 'correct', label: '$\\ln(5x^2)$' },
+        { id: 'wrong', label: '$5\\ln(x^2)$' },
+      ],
+      complexity: 'core',
+      sourceTypes: ['authored'],
+      sourceRefs: {
+        skillMapSource: 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json',
+        teachingSnippetIds: ['p3-log-laws-001'],
+      },
+      explanation: ['Use the log laws.'],
+      review: {
+        status: 'teacher_reviewed',
+        sourceSkillReviewed: true,
+        runtimeSafe: true,
+        affectsMastery: false,
+      },
+    }];
+    const container = render(
+      <GuardianChallengePanel
+        challenge={challenge}
+        challengeItems={challengeItems}
+        isUnlocked
+        regionName="Logarithm Observatory"
+        onSaveGuardianClear={onSaveGuardianClear}
+      />,
+    );
+
+    act(() => {
+      container.querySelector<HTMLButtonElement>('.quick-check-choice-grid button')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    act(() => {
+      container.querySelector<HTMLButtonElement>('.guardian-check-button')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Guardian trial complete');
+    const save = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Save Guardian progress'));
+    expect(save).toBeTruthy();
+    act(() => {
+      save?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onSaveGuardianClear).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toContain('Guardian progress saved');
   });
 
   it('does not introduce fixed single-question Guardian structure copy', () => {
@@ -2273,7 +2400,9 @@ describe('FieldGuidePanel teaching snippets', () => {
       onNavigatePage,
     });
 
-    expect(container.textContent).toContain('Worked-route Skill Check items for this topic are being prepared.');
+    expect(container.textContent).toContain('Targeted items');
+    expect(container.querySelector('.skill-check-authored-card .authored-skill-check-item')).toBeTruthy();
+    expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
     const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Region Hub'));
     expect(back).toBeTruthy();
     act(() => {

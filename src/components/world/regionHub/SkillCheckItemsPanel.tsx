@@ -14,6 +14,9 @@ interface SkillCheckItemsPanelProps {
   region?: RegionDefinition;
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
+  progressOffset?: number;
+  progressTotal?: number;
+  onSequenceComplete?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
@@ -22,6 +25,10 @@ interface SkillCheckItemCardProps {
   region?: RegionDefinition;
   profileId?: string;
   previousAttempt?: LearningActivityAttempt;
+  questionPosition: number;
+  questionCount: number;
+  hasNextItem: boolean;
+  onNextItem?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
@@ -78,6 +85,10 @@ function SkillCheckItemCard({
   region,
   profileId,
   previousAttempt,
+  questionPosition,
+  questionCount,
+  hasNextItem,
+  onNextItem,
   onLearningActivityAttempt,
 }: SkillCheckItemCardProps) {
   const contract = useMemo(() => skillCheckContractForItem(item), [item]);
@@ -122,6 +133,8 @@ function SkillCheckItemCard({
     setStartedAt(new Date().toISOString());
   }
 
+  const answered = Boolean(feedback && feedback.status !== 'empty');
+
   return (
     <article className="quick-check-reveal authored-skill-check-item" data-skill-check-item-id={item.itemId}>
       <header className="quick-check-heading">
@@ -132,6 +145,7 @@ function SkillCheckItemCard({
           <MathText text={item.prompt} />
         </strong>
         <small>
+          Question {questionPosition} of {questionCount} ·{' '}
           {INPUT_TYPE_LABELS[item.inputType]}
           {previousAttempt ? ` · Last: ${outcomeLabel(previousAttempt.outcome)}` : ''}
         </small>
@@ -164,11 +178,24 @@ function SkillCheckItemCard({
               </li>
             ))}
           </ol>
-          {saved ? <small className="region-card-note">Saved as support-only Skill Check progress. It does not change mastery, rank, or Guardian access.</small> : null}
+          <div>
+            {hasNextItem ? <button className="activity-primary-action next-step-glow" type="button" onClick={onNextItem}>Next</button> : null}
+            <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
+          </div>
         </div>
       ) : (
         <SkillCheckWorkedRoute item={item} />
       )}
+      {answered && feedback?.status !== 'correct' ? (
+        <div className="quick-check-next-actions" aria-label="Skill Check next action">
+          <strong>Next step</strong>
+          <p>Review the hint or worked route, then move on when you are ready.</p>
+          <div>
+            {hasNextItem ? <button className="activity-primary-action next-step-glow" type="button" onClick={onNextItem}>Next</button> : null}
+            <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
+          </div>
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -178,36 +205,54 @@ export function SkillCheckItemsPanel({
   region,
   profileId,
   activityAttempts = [],
+  progressOffset = 0,
+  progressTotal,
+  onSequenceComplete,
   onLearningActivityAttempt,
 }: SkillCheckItemsPanelProps) {
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
   const previousAttempts = new Map(
     activityAttempts
       .filter((attempt) => attempt.activityType === 'quick_check')
       .sort((a, b) => a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id))
       .map((attempt) => [attempt.activityId, attempt]),
   );
+  const activeIndex = Math.min(activeItemIndex, Math.max(0, items.length - 1));
+  const activeItem = items[activeIndex];
+  const totalQuestions = progressTotal ?? items.length;
+  const questionPosition = progressOffset + activeIndex + 1;
+
+  function nextItem() {
+    if (activeIndex < items.length - 1) {
+      setActiveItemIndex(activeIndex + 1);
+      return;
+    }
+    onSequenceComplete?.();
+  }
 
   return (
     <RegionActionCard
       eyebrow="Skill Check"
       title="Targeted items"
-      description="Complete short deterministic checks for this Field Guide topic. These records are support-only."
+      description="Answer one focused question at a time."
       icon={<ListChecks size={22} />}
       stateIcon={items.length ? <CheckCircle2 size={22} aria-label={`${items.length} authored Skill Check items available`} /> : <CircleAlert size={22} aria-label="No authored Skill Check items available" />}
       className="skill-check-authored-card"
     >
-      {items.length ? (
+      {activeItem ? (
         <div className="skill-check-authored-list">
-          {items.map((item) => (
-            <SkillCheckItemCard
-              key={item.itemId}
-              item={item}
-              region={region}
-              profileId={profileId}
-              previousAttempt={previousAttempts.get(item.itemId)}
-              onLearningActivityAttempt={onLearningActivityAttempt}
-            />
-          ))}
+          <SkillCheckItemCard
+            key={activeItem.itemId}
+            item={activeItem}
+            region={region}
+            profileId={profileId}
+            previousAttempt={previousAttempts.get(activeItem.itemId)}
+            questionPosition={questionPosition}
+            questionCount={totalQuestions}
+            hasNextItem={activeIndex < items.length - 1 || Boolean(onSequenceComplete)}
+            onNextItem={nextItem}
+            onLearningActivityAttempt={onLearningActivityAttempt}
+          />
         </div>
       ) : (
         <p className="region-empty-state">No authored Skill Check items are published for this Field Guide topic yet.</p>

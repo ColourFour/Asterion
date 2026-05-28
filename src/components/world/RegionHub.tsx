@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ArrowLeft, BookOpenCheck, ChevronRight, ListChecks, Lock, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, BookOpenCheck, ChevronRight, Dumbbell, ListChecks, Lock, ShieldCheck } from 'lucide-react';
 import type { FieldGuideTopic } from '../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
@@ -35,6 +35,7 @@ interface RegionHubProps {
   summary: RegionLearningSummary;
   studentRegionAccess?: StudentRegionAccess;
   onCompleteFieldGuide: () => void;
+  onCompleteGuardianChallenge?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
   onStartTraining: (intent: TrainingSessionIntent) => void;
   onChallengeGuardian: (question: NormalizedQuestion) => void;
@@ -44,20 +45,34 @@ interface RegionHubProps {
 }
 
 type HubActionPageId = Exclude<RegionLearningPageId, 'hub' | 'quick-check' | 'warm-up' | 'exam-training'>;
+type PrimaryHubPageId = HubActionPageId | 'exam-training';
 type StudentNavPageId = Exclude<RegionLearningPageId, 'quick-check' | 'warm-up' | 'exam-training'>;
+type HubStepState = 'complete' | 'in-progress' | 'ready' | 'locked';
+
+interface HubStep {
+  page: HubActionPageId;
+  label: string;
+  state: HubStepState;
+  progress: {
+    current: number;
+    target: number;
+  };
+  disabled?: boolean;
+}
 
 const studentNavPages = REGION_LEARNING_PAGE_ORDER as StudentNavPageId[];
 
 const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Read the guide',
   'skill-practice': 'Check one skill',
-  guardian: 'Final challenge',
+  guardian: 'Later challenge',
 };
 
-const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
+const hubActionPrimaryCopy: Record<PrimaryHubPageId, string> = {
   'field-guide': 'Read the next guide step before practice.',
   'skill-practice': 'Do one low-stakes Skill Check item.',
   guardian: 'Take the final region challenge when it is ready.',
+  'exam-training': 'Train on real exam images and save your marks.',
 };
 
 function guardianNextStep(summary: RegionLearningSummary): string | undefined {
@@ -97,7 +112,7 @@ function fieldGuideTopicItems(fieldGuideTopic: string, regionName: string): stri
 function hubActionPrimaryStudentCopy(input: {
   fieldGuideCompleted: boolean;
   fieldGuideTopic: string;
-  page: HubActionPageId;
+  page: PrimaryHubPageId;
   regionName: string;
   summary: RegionLearningSummary;
 }): HubActionPrimaryCopy {
@@ -105,7 +120,7 @@ function hubActionPrimaryStudentCopy(input: {
     const listItems = fieldGuideTopicItems(input.fieldGuideTopic, input.regionName);
     return {
       eyebrow: 'Current step · Do this next',
-      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try Skill Check.' : 'Start here: Field Guide.',
+      title: input.fieldGuideCompleted ? 'Review the Field Guide or try Skill Check.' : 'Start here: Field Guide.',
       description: input.fieldGuideCompleted
         ? 'Use the guide as a quick reset before practice.'
         : 'Learn about:',
@@ -135,6 +150,15 @@ function hubActionPrimaryStudentCopy(input: {
     };
   }
 
+  if (input.page === 'exam-training') {
+    return {
+      eyebrow: 'Current step · Do this next',
+      title: 'Exam Training: practise with real question images.',
+      description: 'Use this once the guide and Skill Checks are covered, or when Guardian evidence needs exam-style attempts.',
+      button: 'Start Exam Training',
+    };
+  }
+
   return {
     eyebrow: 'Current step · Do this next',
     title: `Next: continue ${input.regionName}.`,
@@ -143,7 +167,7 @@ function hubActionPrimaryStudentCopy(input: {
   };
 }
 
-function hubActionLockReason(page: HubActionPageId, summary: RegionLearningSummary): string | undefined {
+function hubActionLockReason(page: PrimaryHubPageId, summary: RegionLearningSummary): string | undefined {
   if (page !== 'guardian') return undefined;
   if (summary.guardianEligibility.eligible) return undefined;
   return guardianNextStep(summary) ?? 'Complete one more region step before challenging the Guardian.';
@@ -172,6 +196,7 @@ export function RegionHub({
   summary,
   studentRegionAccess,
   onCompleteFieldGuide,
+  onCompleteGuardianChallenge,
   onLearningActivityAttempt,
   onStartTraining,
   onChallengeGuardian,
@@ -242,21 +267,28 @@ export function RegionHub({
   return (
     <RegionLearningLayout theme={theme} summary={summary}>
       {activePage === 'hub' ? (
-        <RegionHubHome
-          canTrain={canTrain}
-          accessLocked={accessLocked}
-          fieldGuide={fieldGuide}
-          fieldGuideCompleted={fieldGuideCompleted}
-          generatedPracticeCount={generatedPractice.length}
-          guardianCleared={guardianCleared}
-          quickCheckCount={quickCheckCount}
-          regionProgress={regionProgress}
-          summary={summary}
-          studentRegionAccess={studentRegionAccess}
-          theme={theme}
-          onNavigatePage={onNavigatePage}
-          onReturnToMap={onReturnToMap}
-        />
+        <>
+          <RegionLearningNav
+            activePage={activePage}
+            onNavigatePage={onNavigatePage}
+            studentRegionAccess={studentRegionAccess}
+          />
+          <RegionHubHome
+            canTrain={canTrain}
+            accessLocked={accessLocked}
+            fieldGuide={fieldGuide}
+            fieldGuideCompleted={fieldGuideCompleted}
+            generatedPracticeCount={generatedPractice.length}
+            guardianCleared={guardianCleared}
+            quickCheckCount={quickCheckCount}
+            regionProgress={regionProgress}
+            summary={summary}
+            studentRegionAccess={studentRegionAccess}
+            theme={theme}
+            onNavigatePage={onNavigatePage}
+            onReturnToMap={onReturnToMap}
+          />
+        </>
       ) : (
         <>
           <FocusedRegionPageHeader
@@ -314,6 +346,7 @@ export function RegionHub({
                     guardianCleared={guardianCleared}
                     isUnlocked={summary.guardianEligibility.eligible}
                     regionName={theme.title}
+                    onSaveGuardianClear={onCompleteGuardianChallenge}
                   />
                   <GuardianEligibilityPanel
                     guardianCleared={guardianCleared}
@@ -360,7 +393,7 @@ function FocusedRegionPageHeader({
         {fieldGuide ? (
           <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
         ) : isSkillPracticePage ? (
-          <p className="field-guide-page-purpose">Practice one Field Guide skill at a time before the Guardian.</p>
+          <p className="field-guide-page-purpose">Practice one Field Guide skill at a time.</p>
         ) : (
           <p className="field-guide-page-purpose">{summary.nextAction.label}</p>
         )}
@@ -444,9 +477,10 @@ interface RegionHubHomeProps {
   onReturnToMap: () => void;
 }
 
-function hubActionIcon(page: HubActionPageId): ReactNode {
+function hubActionIcon(page: PrimaryHubPageId): ReactNode {
   if (page === 'field-guide') return <BookOpenCheck size={22} />;
   if (page === 'skill-practice') return <ListChecks size={22} />;
+  if (page === 'exam-training') return <Dumbbell size={22} />;
   return <ShieldCheck size={22} />;
 }
 
@@ -455,12 +489,20 @@ function hubActionState(input: {
   fieldGuideCompleted: boolean;
   generatedPracticeCount: number;
   guardianCleared: boolean;
-  page: HubActionPageId;
+  page: PrimaryHubPageId;
   quickCheckCount: number;
   summary: RegionLearningSummary;
   studentRegionAccess?: StudentRegionAccess;
 }): { disabled: boolean; status: 'Locked' | 'Ready' | 'In progress' | 'Complete'; helper?: string } {
   if (input.page === 'field-guide') return { disabled: false, status: input.fieldGuideCompleted ? 'Complete' : 'Ready' };
+  if (input.page === 'exam-training') {
+    const examTrainingOpen = input.canTrain && canStudentUseRegionActivity(input.studentRegionAccess, 'exam_practice');
+    return {
+      disabled: !examTrainingOpen,
+      status: examTrainingOpen ? 'Ready' : 'Locked',
+      helper: input.canTrain ? undefined : 'No trainable questions',
+    };
+  }
   const activity = input.page === 'guardian'
       ? 'guardian'
       : undefined;
@@ -485,36 +527,58 @@ function recommendedHubPage(input: {
   guardianCleared: boolean;
   quickCheckCount: number;
   summary: RegionLearningSummary;
-}): HubActionPageId {
+}): PrimaryHubPageId {
   const { summary } = input;
 
-  if (summary.nextAction.kind === 'field_guide') return 'field-guide';
-  if (summary.nextAction.kind === 'guardian') return 'guardian';
-
-  if (summary.nextAction.kind === 'complete') {
-    return input.guardianCleared ? 'guardian' : 'guardian';
+  if (!input.canTrain && summary.nextAction.kind === 'locked') {
+    return 'field-guide';
   }
 
-  if (summary.nextAction.kind === 'review') return 'skill-practice';
-
-  if (summary.nextAction.kind === 'training') {
-    if (input.fieldGuideCompleted && input.quickCheckCount > 0 && summary.learningActivityReadiness.quickCheckAttempts === 0) {
-      return 'skill-practice';
-    }
-
-    if (input.generatedPracticeCount > 0 && summary.learningActivityReadiness.warmUpAttempts === 0) {
-      return 'skill-practice';
-    }
-
-    if (summary.trainingSession.intent === 'warm_up' && input.generatedPracticeCount > 0) {
-      return 'skill-practice';
-    }
-
-    return summary.guardianEligibility.eligible ? 'guardian' : 'skill-practice';
+  if (!input.fieldGuideCompleted) {
+    return 'field-guide';
   }
 
-  if (input.fieldGuideCompleted && input.canTrain) return 'skill-practice';
-  return 'field-guide';
+  const skillChecklistCompletion = summary.guardianEligibility.skillChecklistCompletion;
+  const missingSkillChecklist = skillChecklistCompletion ? !skillChecklistCompletion.completed : false;
+  const missingSupportSkillCheck = !skillChecklistCompletion
+    && (
+      (input.quickCheckCount > 0 && summary.learningActivityReadiness.quickCheckAttempts === 0)
+      || (input.generatedPracticeCount > 0 && summary.learningActivityReadiness.warmUpAttempts === 0)
+      || summary.trainingSession.intent === 'warm_up'
+      || summary.nextAction.kind === 'review'
+    );
+
+  if (missingSkillChecklist || missingSupportSkillCheck) {
+    return 'skill-practice';
+  }
+
+  if (summary.guardianEligibility.eligible && !input.guardianCleared) {
+    return 'guardian';
+  }
+
+  return 'exam-training';
+}
+
+function skillCheckStepProgress(input: {
+  generatedPracticeCount: number;
+  quickCheckCount: number;
+  summary: RegionLearningSummary;
+}): { current: number; target: number } {
+  const checklist = input.summary.guardianEligibility.skillChecklistCompletion;
+  if (checklist) {
+    return {
+      current: checklist.completedCount,
+      target: Math.max(1, checklist.requiredCount),
+    };
+  }
+
+  const savedSkillChecks = input.summary.learningActivityReadiness.quickCheckAttempts
+    + input.summary.learningActivityReadiness.warmUpAttempts;
+  const expectedSupportSteps = Math.max(1, Math.min(2, Number(input.quickCheckCount > 0) + Number(input.generatedPracticeCount > 0)));
+  return {
+    current: Math.min(savedSkillChecks, expectedSupportSteps),
+    target: expectedSupportSteps,
+  };
 }
 
 function RegionHubHome({
@@ -557,11 +621,15 @@ function RegionHubHome({
     regionName: theme.title,
     summary,
   });
-  const steps: Array<{ page: HubActionPageId; label: string; state: 'complete' | 'in-progress' | 'ready' | 'locked' }> = [
+  const skillProgress = skillCheckStepProgress({ generatedPracticeCount, quickCheckCount, summary });
+  const skillComplete = skillProgress.current >= skillProgress.target;
+  const guardianAccessLocked = !canStudentUseRegionActivity(studentRegionAccess, 'guardian');
+  const steps: HubStep[] = [
     {
       page: 'field-guide',
       label: 'Field Guide',
       state: fieldGuideCompleted ? 'complete' : primaryPage === 'field-guide' ? 'in-progress' : 'ready',
+      progress: { current: fieldGuideCompleted ? 1 : 0, target: 1 },
     },
     {
       page: 'skill-practice',
@@ -570,19 +638,23 @@ function RegionHubHome({
         ? 'locked'
         : primaryPage === 'skill-practice'
           ? 'in-progress'
-          : summary.learningActivityReadiness.quickCheckAttempts + summary.learningActivityReadiness.warmUpAttempts > 0
+          : skillComplete
             ? 'complete'
             : 'ready',
+      progress: skillProgress,
+      disabled: !canStudentUseRegionActivity(studentRegionAccess, 'quick_check') && !canStudentUseRegionActivity(studentRegionAccess, 'warm_up'),
     },
     {
       page: 'guardian',
       label: 'Guardian',
-      state: !canStudentUseRegionActivity(studentRegionAccess, 'guardian') || !summary.guardianEligibility.eligible ? 'locked' : guardianCleared ? 'complete' : primaryPage === 'guardian' ? 'in-progress' : 'ready',
+      state: guardianCleared ? 'complete' : !summary.guardianEligibility.eligible ? 'locked' : primaryPage === 'guardian' ? 'in-progress' : 'ready',
+      progress: { current: guardianCleared ? 1 : 0, target: 1 },
+      disabled: guardianAccessLocked,
     },
   ];
 
   return (
-    <div className="region-home">
+    <div className={`region-home${guardianCleared ? ' is-region-complete' : ''}`}>
       <header className="region-home-header">
         <div className="region-home-heading">
           <span className="mode-pill">P3 Region</span>
@@ -615,10 +687,11 @@ function RegionHubHome({
           <ol>
             {steps.map((step) => (
               <li className={`is-${step.state}${step.page === primaryPage && step.state !== 'locked' ? ' is-recommended-step' : ''}`} key={step.page}>
-                <button type="button" disabled={step.state === 'locked'} onClick={() => onNavigatePage?.(step.page)}>
+                <button type="button" disabled={step.disabled} onClick={() => onNavigatePage?.(step.page)}>
                   <span className="region-home-action-icon" aria-hidden="true">{hubActionIcon(step.page)}</span>
                   <span className="region-home-action-copy">
                     <strong>{step.label}</strong>
+                    <small>{step.progress.current}/{step.progress.target} complete</small>
                   </span>
                   <span className="region-home-action-status">
                     {step.state === 'locked' ? <Lock size={14} aria-hidden="true" /> : null}
@@ -677,7 +750,7 @@ function RegionJourneyBar({
   steps,
   onNavigatePage,
 }: {
-  steps: Array<{ page: HubActionPageId; label: string; state: 'complete' | 'in-progress' | 'ready' | 'locked' }>;
+  steps: HubStep[];
   onNavigatePage?: (page: RegionLearningPageId) => void;
 }) {
   const stateLabel = {
@@ -693,7 +766,7 @@ function RegionJourneyBar({
         <button
           type="button"
           className={`journey-step is-${step.state}${step.state === 'in-progress' ? ' next-step-glow' : ''}`}
-          disabled={step.state === 'locked'}
+          disabled={step.disabled}
           key={step.page}
           onClick={() => onNavigatePage?.(step.page)}
         >
@@ -702,6 +775,7 @@ function RegionJourneyBar({
           </span>
           <span className="journey-step-label">
             <strong>{step.label}</strong>
+            <small>{step.progress.current}/{step.progress.target}</small>
           </span>
           <span className="journey-step-index" aria-hidden="true">{index + 1}</span>
         </button>

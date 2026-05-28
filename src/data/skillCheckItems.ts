@@ -1,4 +1,6 @@
 import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } from '../types';
+import type { P3RegionId } from '../lib/p3SkillContract';
+import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
 
 export type SkillCheckInputType =
   | 'numeric'
@@ -31,7 +33,7 @@ export interface SkillCheckSourceRefs {
 export interface SkillCheckItem {
   itemId: string;
   paperFamily: 'p3';
-  regionId: 'algebra-forge' | 'logarithm-grove';
+  regionId: P3RegionId;
   fieldGuideTopicId: string;
   fieldGuideSubtopicId: string;
   skillId: string;
@@ -1150,6 +1152,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     sourceRefs: sourceRefs({ generatedPracticeIds: ['gen_log_linearisation_basic_0003'] }),
     review: review(),
   },
+  ...REMAINING_REGION_SKILL_CHECK_ITEMS,
 ];
 
 export function skillCheckContractForItem(item: SkillCheckItem): QuickCheckContract {

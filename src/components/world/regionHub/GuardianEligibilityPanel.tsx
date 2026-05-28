@@ -60,7 +60,7 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
   if (summary.guardianEligibility.eligible && summary.guardianEligibility.guardianChallengeAvailable) {
     return {
       label: 'Guardian challenge is open',
-      helper: 'The Skill Checklist is complete, so the text Guardian trial is open above.',
+      helper: 'The region checklist is ready. The Guardian trial is open above.',
       disabled: true,
     };
   }
@@ -126,7 +126,7 @@ export function GuardianEligibilityPanel({
     <RegionActionCard
       eyebrow="Step 3 · Guardian"
       title="Guardian Challenge"
-      description="A final region challenge that opens after the region checklist is ready."
+      description="A later region challenge that opens when the region checklist is ready."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card guardian-readiness-card"
@@ -161,7 +161,7 @@ export function GuardianEligibilityPanel({
               <strong>Guardian ready</strong>
               <span>
                 {summary.guardianEligibility.guardianChallengeAvailable
-                  ? 'The Skill Checklist is complete. The Guardian trial is open above.'
+                  ? 'The region checklist is ready. The Guardian trial is open above.'
                   : 'The vault opens now. Enter the difficult exam-style challenge when you are ready.'}
               </span>
             </div>
@@ -199,8 +199,8 @@ export function GuardianEligibilityPanel({
         <>
           <p className="guardian-encouragement">
             {summary.guardianEligibility.skillChecklistCompletion
-              ? 'The vault opens after every required Skill Check subtopic is complete.'
-              : 'The vault opens after enough saved region practice.'}
+              ? 'The Guardian opens when the region checklist is ready.'
+              : 'The Guardian opens after enough saved region practice.'}
           </p>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
             {summary.guardianEligibility.requirements.map((requirement) => (

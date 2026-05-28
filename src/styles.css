@@ -7096,6 +7096,41 @@ legend {
   border-radius: var(--radius-panel);
 }
 
+.guardian-save-clear-panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  color: #1f4a31;
+  background:
+    radial-gradient(circle at 96% 16%, rgba(255, 215, 106, 0.28), transparent 34%),
+    linear-gradient(180deg, rgba(235, 250, 241, 0.94), rgba(218, 244, 229, 0.88));
+  border: 1px solid rgba(40, 122, 82, 0.28);
+  border-radius: var(--radius-panel);
+  box-shadow: 0 0 22px rgba(40, 122, 82, 0.14);
+}
+
+.guardian-save-clear-panel strong,
+.guardian-save-clear-panel span {
+  display: block;
+  min-width: 0;
+}
+
+.guardian-save-clear-panel span {
+  color: #28583d;
+  font-weight: 850;
+}
+
+.guardian-save-clear-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
 .guardian-cleared-banner strong,
 .guardian-cleared-banner span {
   display: block;
@@ -7654,7 +7689,7 @@ legend {
   padding: 10px;
   border: 2px solid color-mix(in srgb, var(--region-accent) 46%, transparent);
   border-radius: var(--radius-panel);
-  background: color-mix(in srgb, var(--region-wash) 44%, transparent);
+  background: color-mix(in srgb, var(--region-panel) 96%, #fff 4%);
 }
 
 .skill-practice-section-intro {
@@ -7664,7 +7699,7 @@ legend {
 }
 
 .skill-practice-section-intro > span {
-  color: var(--region-accent-dark);
+  color: var(--region-accent-dark, #173653);
   font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -8097,6 +8132,26 @@ legend {
 .region-first-run-loop .is-locked button {
   cursor: not-allowed;
   background: linear-gradient(180deg, #ede5d8, #ddd2be);
+}
+
+.region-first-run-loop .is-locked button:not(:disabled) {
+  cursor: pointer;
+}
+
+.region-first-run-loop .is-locked button:not(:disabled):hover {
+  transform: translateX(2px);
+  box-shadow: inset 4px 0 0 #737b89;
+}
+
+.region-home.is-region-complete .region-home-header,
+.region-home.is-region-complete .region-current-step-card,
+.region-home.is-region-complete .region-home-artwork,
+.region-home.is-region-complete .region-journey-bar {
+  border-color: rgba(55, 157, 99, 0.58);
+  box-shadow:
+    0 0 0 2px rgba(221, 255, 235, 0.42),
+    0 0 28px rgba(55, 157, 99, 0.24),
+    var(--shadow-lift);
 }
 
 .region-home-artwork {
@@ -8542,8 +8597,9 @@ legend {
 
 .region-journey-bar {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  justify-content: center;
   padding: 10px;
   color: var(--region-body);
   border: 1px solid color-mix(in srgb, var(--region-panel-border) 32%, transparent);
@@ -8601,6 +8657,15 @@ legend {
   font-weight: 950;
 }
 
+.journey-step small {
+  display: block;
+  margin-top: 5px;
+  color: var(--region-muted);
+  font-size: 0.76rem;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
 .journey-step-status {
   display: inline-flex;
   align-items: center;
@@ -8626,6 +8691,11 @@ legend {
   background: #1f7a4f;
 }
 
+.journey-step.is-complete {
+  border-color: rgba(31, 122, 79, 0.42);
+  box-shadow: inset 0 0 0 2px rgba(31, 122, 79, 0.12), 0 0 18px rgba(31, 122, 79, 0.14);
+}
+
 .journey-step.is-in-progress {
   border-color: #1f7a4f;
   box-shadow: inset 0 0 0 2px rgba(31, 122, 79, 0.16);
@@ -8640,6 +8710,10 @@ legend {
   color: #596274;
   background: #eee8de;
   border-style: dashed;
+}
+
+.journey-step.is-locked:not(:disabled) {
+  cursor: pointer;
 }
 
 .journey-step.is-locked .journey-step-index {
@@ -11625,9 +11699,20 @@ legend {
 
 .avatar-builder-hero {
   display: grid;
-  grid-template-columns: minmax(520px, 1.35fr) minmax(300px, 0.65fr);
   gap: 16px;
   align-items: start;
+}
+
+.avatar-builder-top-row {
+  display: grid;
+  grid-template-columns: minmax(520px, 1.35fr) minmax(300px, 0.65fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.avatar-builder-top-row > .avatar-showcase,
+.avatar-builder-top-row > .avatar-starter-honesty-panel {
+  height: 100%;
 }
 
 .avatar-showcase {
@@ -12620,6 +12705,7 @@ legend {
 .profile-topic-status-grid {
   display: grid;
   gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .profile-region-row,
@@ -12698,7 +12784,6 @@ legend {
 }
 
 .profile-topic-status-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   max-height: 520px;
   overflow: auto;
   padding-right: 2px;
@@ -13320,7 +13405,7 @@ legend {
 }
 
 @media (max-width: 1080px) {
-  .avatar-builder-hero {
+  .avatar-builder-top-row {
     grid-template-columns: 1fr;
   }
 
@@ -13403,6 +13488,7 @@ legend {
     grid-template-columns: 1fr;
   }
 
+  .profile-region-list,
   .profile-topic-status-grid {
     grid-template-columns: 1fr;
     max-height: none;

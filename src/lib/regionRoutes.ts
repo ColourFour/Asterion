@@ -38,7 +38,7 @@ export const REGION_LEARNING_PAGE_LABELS: Record<RegionLearningPageId, string> =
 export const REGION_LEARNING_PAGE_DESCRIPTIONS: Record<RegionLearningPageId, string> = {
   hub: 'Orient yourself, review progress, and choose the next learning step.',
   'field-guide': 'Study the existing region explanation, snippets, notes, and worked examples.',
-  'skill-practice': 'Practice by Field Guide topic and solving complexity before the Guardian.',
+  'skill-practice': 'Practice by Field Guide topic and solving complexity.',
   'quick-check': 'Compatibility route for the unified Skill Check page.',
   'warm-up': 'Compatibility route for the unified Skill Check page.',
   'exam-training': 'Train on real question images and mark schemes for this region.',

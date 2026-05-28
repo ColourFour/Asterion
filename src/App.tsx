@@ -1284,6 +1284,27 @@ export default function App() {
             }}
             onStartTraining={(intent) => startRegionTraining(selectedRegion, intent)}
             onChallengeGuardian={(question) => challengeGuardian(selectedRegion, question)}
+            onCompleteGuardianChallenge={() => {
+              if (!canStudentUseRegionActivity(selectedRegionAccess, 'guardian')) return;
+              if (staffPreviewContext) return;
+              const attemptedAt = new Date().toISOString();
+              persistProgressAfterMeaningfulEvent(progressAdapter.recordRegionGuardianAttempt({
+                regionId: selectedRegion.id,
+                questionId: `${selectedRegion.id}-text-guardian`,
+                attemptId: createId('guardian'),
+                passed: true,
+                attemptedAt,
+              }));
+              recordHostedClassroomActivity({
+                regionId: selectedRegion.id,
+                activityType: 'guardian',
+                eventType: 'guardian_completed',
+                contentId: `${selectedRegion.id}-text-guardian`,
+                eventPayload: {
+                  passed: true,
+                },
+              });
+            }}
             activePage={selectedRegionPage}
             onNavigatePage={(page) => openRegionPage(selectedRegion, page)}
             onReturnToMap={returnToMap}

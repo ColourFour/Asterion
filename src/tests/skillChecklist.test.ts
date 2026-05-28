@@ -7,10 +7,11 @@ import {
   buildSkillChecklistTopicGroups,
   totalSkillChecklistItems,
 } from '../lib/skillChecklist';
-import { isValidP3RegionId, isValidP3SkillId } from '../lib/p3SkillContract';
+import { isValidP3RegionId, isValidP3SkillId, P3_ALLOWED_REGION_IDS } from '../lib/p3SkillContract';
 import { checkQuickCheckAnswer } from '../lib/quickCheckAnswer';
 import type { QuickCheckResponse } from '../types';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
+import { computeSkillChecklistCompletion, isSkillChecklistGuardianRegion } from '../lib/skillChecklistProgress';
 
 const logLawsTopic: FieldGuideTopic = {
   id: 'log_laws',
@@ -146,8 +147,8 @@ describe('Skill Checklist grouping', () => {
     expect(groups[0].complexityCounts).toEqual({ foundation: 0, core: 0, challenge: 0 });
   });
 
-  it('covers every Algebra Vault and Logarithm Observatory Field Guide subtopic with at least 3 authored items', () => {
-    for (const regionId of ['algebra-forge', 'logarithm-grove']) {
+  it('covers every P3 Field Guide subtopic with exactly 3 authored items', () => {
+    for (const regionId of P3_ALLOWED_REGION_IDS) {
       const groups = buildSkillChecklistTopicGroups({
         fieldGuideTopics: getFieldGuideTopicsForRegion(regionId),
         teachingSnippets: [],
@@ -156,17 +157,16 @@ describe('Skill Checklist grouping', () => {
 
       expect(groups.length, regionId).toBeGreaterThan(0);
       for (const group of groups) {
-        expect(group.authoredItems.length, `${regionId}:${group.topic.id}`).toBeGreaterThanOrEqual(3);
+        expect(group.authoredItems.length, `${regionId}:${group.topic.id}`).toBe(3);
         expect(group.authoredItems.map((item) => item.complexity).sort()).toEqual(['challenge', 'core', 'foundation']);
       }
     }
   });
 
   it('keeps authored item mappings on the Field Guide topic taxonomy', () => {
-    const allowedTopics = new Set([
-      ...getFieldGuideTopicsForRegion('algebra-forge').map((topic) => topic.id),
-      ...getFieldGuideTopicsForRegion('logarithm-grove').map((topic) => topic.id),
-    ]);
+    const allowedTopics = new Set(P3_ALLOWED_REGION_IDS.flatMap((regionId) => (
+      getFieldGuideTopicsForRegion(regionId).map((topic) => topic.id)
+    )));
 
     for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
       expect(item.fieldGuideSubtopicId).toBe(item.fieldGuideTopicId);
@@ -189,19 +189,44 @@ describe('Skill Checklist grouping', () => {
   });
 
   it('validates deterministic authored input types with explicit answers', () => {
-    const representativeResponses: Record<string, QuickCheckResponse> = {
-      'sc-alg-modulus-foundation-001': { selectedChoiceId: 'both-roots' },
-      'sc-alg-modulus-core-001': { selectedChoiceIds: ['one', 'minus-half'] },
-      'sc-alg-polynomial-division-challenge-001': { values: { quotient: 'x^2-x+3', remainder: '4' } },
-      'sc-log-natural-challenge-001': { orderedIds: ['divide-two', 'take-ln', 'subtract-one'] },
-      'sc-log-linearisation-core-001': { values: { gradient: '3', intercept: '2' } },
-    };
+    const rendererTypes = new Set(['single_value', 'choice', 'multi_choice', 'ordered_cards', 'two_value']);
 
-    for (const [itemId, response] of Object.entries(representativeResponses)) {
-      const item = AUTHORED_SKILL_CHECK_ITEMS.find((candidate) => candidate.itemId === itemId);
-      expect(item, itemId).toBeTruthy();
-      const contract = skillCheckContractForItem(item!);
-      expect(checkQuickCheckAnswer(contract, response).status, itemId).toBe('correct');
+    for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
+      const contract = skillCheckContractForItem(item);
+      let response: QuickCheckResponse;
+
+      if (contract.answerType === 'single_value') {
+        response = { value: Array.isArray(contract.expectedAnswer) ? contract.expectedAnswer[0] : contract.expectedAnswer };
+      } else if (contract.answerType === 'two_value') {
+        response = {
+          values: Object.fromEntries((contract.fields ?? []).map((field) => [
+            field.id,
+            Array.isArray(field.expectedAnswer) ? field.expectedAnswer[0] : field.expectedAnswer,
+          ])),
+        };
+      } else if (contract.answerType === 'ordered_cards') {
+        response = { orderedIds: contract.expectedOrder };
+      } else if (contract.answerType === 'multi_choice') {
+        response = { selectedChoiceIds: contract.expectedChoices };
+      } else {
+        response = { selectedChoiceId: contract.expectedChoices?.[0] };
+      }
+
+      expect(rendererTypes.has(contract.answerType), item.itemId).toBe(true);
+      expect(checkQuickCheckAnswer(contract, response).status, item.itemId).toBe('correct');
+    }
+  });
+
+  it('keeps new authored Skill Check regions support-only instead of extending Guardian checklist unlock logic', () => {
+    const newRegionIds = P3_ALLOWED_REGION_IDS.filter((regionId) => !['algebra-forge', 'logarithm-grove'].includes(regionId));
+
+    for (const regionId of newRegionIds) {
+      expect(isSkillChecklistGuardianRegion(regionId), regionId).toBe(false);
+      expect(computeSkillChecklistCompletion({ regionId, learningActivityAttempts: [] })).toMatchObject({
+        applies: false,
+        completed: false,
+        requiredCount: 0,
+      });
     }
   });
 

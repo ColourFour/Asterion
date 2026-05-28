@@ -48,8 +48,11 @@ interface WarmUpPracticePanelProps {
   profileId?: string;
   activityAttempts?: LearningActivityAttempt[];
   maxInitialItems?: number;
+  progressOffset?: number;
+  progressTotal?: number;
   fieldGuideTopicTitle?: string;
   topicMatchFallbackReason?: string;
+  onSequenceComplete?: () => void;
   onContinueToFieldGuide?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
@@ -57,28 +60,30 @@ interface WarmUpPracticePanelProps {
 
 interface WarmUpPracticeCardProps {
   item: GeneratedPracticeItem;
-  position: number;
-  total: number;
   isLastItem: boolean;
   region?: RegionDefinition;
   profileId?: string;
   previousAttempt?: LearningActivityAttempt;
+  questionPosition: number;
+  questionCount: number;
   onComplete: (practiceId: string) => void;
   onNextItem: () => void;
+  onSequenceComplete?: () => void;
   onContinueToExamPractice?: () => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
 function WarmUpPracticeCard({
   item,
-  position,
-  total,
   isLastItem,
   region,
   profileId,
   previousAttempt,
+  questionPosition,
+  questionCount,
   onComplete,
   onNextItem,
+  onSequenceComplete,
   onContinueToExamPractice,
   onLearningActivityAttempt,
 }: WarmUpPracticeCardProps) {
@@ -150,7 +155,7 @@ function WarmUpPracticeCard({
     <article className="warm-up-practice-card" data-activity-id={item.practiceId}>
       <div className="warm-up-practice-heading">
         <strong>{practiceLabel}</strong>
-        <span>Item {position} of {total}</span>
+        <span>Question {questionPosition} of {questionCount}</span>
         {item.sequenceRole ? <span>{item.sequenceRole.replace(/_/g, ' ')}</span> : null}
       </div>
       {previousAttempt ? <small className="region-card-note">Last: {activityOutcomes.find((entry) => entry.value === previousAttempt.outcome)?.label ?? previousAttempt.outcome}</small> : null}
@@ -226,7 +231,7 @@ function WarmUpPracticeCard({
             ))}
           </ol>
           {visualSupport ? <VisualSupportCard source={visualSupport} /> : null}
-          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this Skill Check item.</small> : null}
+          {revealedEarly ? <small className="region-card-note">Use the route to find the blocking step before moving on.</small> : null}
         </div>
       )}
       {answerFeedback && !solutionVisible ? (
@@ -274,6 +279,8 @@ function WarmUpPracticeCard({
             <div className="warm-up-next-actions" aria-label="Skill Check next action">
               {!isLastItem ? (
                 <button className="activity-primary-action next-step-glow" type="button" onClick={onNextItem}>Next</button>
+              ) : onSequenceComplete ? (
+                <button className="activity-primary-action next-step-glow" type="button" onClick={onSequenceComplete}>Next</button>
               ) : onContinueToExamPractice ? (
                 <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button>
               ) : (
@@ -299,8 +306,11 @@ export function WarmUpPracticePanel({
   profileId,
   activityAttempts = [],
   maxInitialItems = 3,
+  progressOffset = 0,
+  progressTotal,
   fieldGuideTopicTitle,
   topicMatchFallbackReason,
+  onSequenceComplete,
   onContinueToFieldGuide,
   onContinueToExamPractice,
   onLearningActivityAttempt,
@@ -316,6 +326,8 @@ export function WarmUpPracticePanel({
   ));
   const activePractice = visiblePractice[Math.min(activeIndex, Math.max(0, visiblePractice.length - 1))];
   const visibleCompletedCount = visiblePractice.filter((item) => completedPracticeIds.has(item.practiceId)).length;
+  const totalQuestions = progressTotal ?? visiblePractice.length;
+  const questionPosition = progressOffset + activeIndex + 1;
   const previousAttempts = new Map(
     previousWarmUpAttempts
       .sort((a, b) => a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id))
@@ -355,14 +367,15 @@ export function WarmUpPracticePanel({
               <WarmUpPracticeCard
                 item={activePractice}
                 key={activePractice.practiceId}
-                position={activeIndex + 1}
-                total={visiblePractice.length}
                 isLastItem={activeIndex >= visiblePractice.length - 1}
+                questionPosition={questionPosition}
+                questionCount={totalQuestions}
                 onLearningActivityAttempt={onLearningActivityAttempt}
                 onComplete={(practiceId) => {
                   setCompletedPracticeIds((current) => new Set([...current, practiceId]));
                 }}
                 onNextItem={() => setActiveIndex((current) => Math.min(current + 1, visiblePractice.length - 1))}
+                onSequenceComplete={onSequenceComplete}
                 onContinueToExamPractice={onContinueToExamPractice}
                 previousAttempt={previousAttempts.get(activePractice.practiceId)}
                 profileId={profileId}
