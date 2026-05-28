@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { RoleGate } from './components/auth/RoleGate';
+import { AvatarRenderer } from './components/avatar/AvatarRenderer';
 import { AsterionHomeLanding } from './components/home/AsterionHomeLanding';
 import { ClassCodeClaimForm } from './components/onboarding/ClassCodeClaimForm';
 import { ProfileForm } from './components/onboarding/ProfileForm';
@@ -26,6 +27,7 @@ import { calculateWorldProgress, filterMasteryAttemptsForRegion } from './lib/re
 import { validatePendingClassClaim } from './lib/dashboardMockService';
 import { isStudentPilotEntryPath, prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
 import { hasCompleteOnboardingProfile, profileMatchesClassClaim } from './lib/studentProfileReadiness';
+import { resolveSuggestedNextStep } from './lib/suggestedNextStep';
 import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
 import { submitTeacherQuestion } from './lib/teacherQuestionQueue';
 import {
@@ -40,7 +42,7 @@ import { completeStudentOnboarding } from './lib/studentOnboarding';
 import { recoverSupabaseAuthRedirect } from './lib/supabaseAuthRedirect';
 import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippet } from './lib/teachingSnippets';
 import { isP3Question, P3_ASTRAL_ACADEMY, P3_WORLD_NAME } from './lib/worldMap';
-import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentProfile, TrainingSessionIntent } from './types';
+import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentClaimState, StudentLevelUpRecord, StudentProfile, TrainingSessionIntent } from './types';
 
 type ViewMode = PracticeMode | 'map' | 'regions' | 'region_hub' | 'exam_training_dashboard' | 'guardian' | 'profile';
 
@@ -52,6 +54,8 @@ const AvatarBuilder = lazy(() => import('./components/profile/AvatarBuilder').th
 const ExamTrainingDashboard = lazy(() => import('./components/world/regionHub/ExamTrainingDashboard').then((module) => ({ default: module.ExamTrainingDashboard })));
 const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
 const RegionHub = lazy(() => import('./components/world/RegionHub').then((module) => ({ default: module.RegionHub })));
+
+type LevelUpModalStage = 'level' | 'crate' | 'opened';
 
 function loadValidatedPendingClassClaim(runtimeConfig: AsterionRuntimeConfig): StudentClaimState | undefined {
   if (runtimeConfig.studentClassClaimSource === 'supabase') {
@@ -119,6 +123,80 @@ function DashboardRouteFallback() {
         </div>
       </section>
     </main>
+  );
+}
+
+function FirstWinLevelUpModal({
+  avatar,
+  avatarName,
+  levelUp,
+  onDismiss,
+}: {
+  avatar: StoredProgress['avatar'];
+  avatarName: string;
+  levelUp: StudentLevelUpRecord;
+  onDismiss: () => void;
+}) {
+  const [stage, setStage] = useState<LevelUpModalStage>('level');
+
+  return (
+    <div className="level-up-backdrop" role="presentation">
+      <section
+        className="first-win-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="first-win-level-title"
+      >
+        <div className="first-win-avatar-wrap">
+          <AvatarRenderer
+            avatar={avatar}
+            avatarName={avatarName}
+            mode="portrait"
+            className="first-win-avatar"
+          />
+        </div>
+
+        {stage === 'level' ? (
+          <div className="first-win-modal-copy">
+            <span className="mode-pill">First win</span>
+            <h2 id="first-win-level-title">Level up</h2>
+            <div className="level-up-meter" aria-label={`Level ${levelUp.fromLevel} to Level ${levelUp.toLevel}`}>
+              <span>Level {levelUp.fromLevel}</span>
+              <strong>{'->'}</strong>
+              <span>Level {levelUp.toLevel}</span>
+            </div>
+            <p>You finished the first topic path. That counts.</p>
+            <button className="primary-button" type="button" onClick={() => setStage('crate')}>
+              Continue
+            </button>
+          </div>
+        ) : null}
+
+        {stage === 'crate' ? (
+          <div className="first-win-modal-copy">
+            <span className="mode-pill">Reward box</span>
+            <h2 id="first-win-level-title">Open the box</h2>
+            <button className="reward-crate-button" type="button" onClick={() => setStage('opened')} aria-label="Open reward box">
+              <span className="reward-crate-lid" />
+              <span className="reward-crate-body" />
+              <span className="reward-crate-label">Open reward box</span>
+            </button>
+            <p>Tap the box. Surely this contains something incredible.</p>
+          </div>
+        ) : null}
+
+        {stage === 'opened' ? (
+          <div className="first-win-modal-copy">
+            <span className="mode-pill">Reward found</span>
+            <h2 id="first-win-level-title">You found...</h2>
+            <p>You found... absolutely nothing. Blake has not put rewards in these boxes yet. Incredible discipline. Future you will be rich.</p>
+            <button className="primary-button" type="button" onClick={onDismiss}>
+              Back to training
+            </button>
+          </div>
+        ) : null}
+      </section>
+    </div>
   );
 }
 
@@ -328,6 +406,7 @@ export default function App() {
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
   const [trainingIntent, setTrainingIntent] = useState<TrainingSessionIntent>();
   const [examTrainingPracticeMode, setExamTrainingPracticeMode] = useState<ExamTrainingPracticeMode>();
+  const [pendingLevelUp, setPendingLevelUp] = useState<StudentLevelUpRecord>();
 
   useEffect(() => {
     function syncPath() {
@@ -779,6 +858,17 @@ export default function App() {
 
   function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
     if (staffPreviewContext) return;
+    const levelUp = nextProgress.xp?.lastLevelUp;
+    if (
+      levelUp
+      && levelUp.fromLevel < levelUp.toLevel
+      && levelUp.fromLevel === 1
+      && levelUp.toLevel >= 2
+      && levelUp.eventId.startsWith('first-topic-complete-bonus:')
+      && (progress.xp?.level ?? 1) < 2
+    ) {
+      setPendingLevelUp(levelUp);
+    }
     setProgress(nextProgress);
   }
 
@@ -1089,6 +1179,20 @@ export default function App() {
     : p3Questions().length === 0
       ? worldNotice ?? 'Exam Training questions are not available right now. Tell your teacher.'
       : undefined;
+  const suggestedNextStep = resolveSuggestedNextStep({
+    progress,
+    worldProgress,
+    currentRegionId: selectedRegion?.id,
+  });
+
+  function doSuggestedNextStep() {
+    const region = suggestedNextStep.regionId ? getP3RegionById(suggestedNextStep.regionId) : undefined;
+    if (region && suggestedNextStep.page) {
+      openRegionPage(region, suggestedNextStep.page);
+      return;
+    }
+    window.location.hash = suggestedNextStep.destinationHash;
+  }
 
   return (
     <main className={`app-shell app-view-${viewMode}`}>
@@ -1101,8 +1205,12 @@ export default function App() {
         <div className="student-profile-chip" aria-label="Academy profile">
           <span>{progress.profile.avatarId ? 'Academy avatar' : 'Academy profile'}</span>
           <strong>{progress.profile.avatarName}</strong>
+          <small>Level {progress.xp?.level ?? 1} · {progress.xp?.totalXp ?? 0} XP</small>
         </div>
         <nav>
+          <button className="do-this-next-button" type="button" onClick={doSuggestedNextStep} aria-label={`Do this next: ${suggestedNextStep.label}`}>
+            Do This Next
+          </button>
           <button className={viewMode === 'map' ? 'active' : ''} type="button" onClick={returnToMap}>World Map</button>
           <button className={viewMode === 'regions' || viewMode === 'region_hub' ? 'active' : ''} type="button" onClick={openRegions}>Regions</button>
           <button className={viewMode === 'exam_training_dashboard' || viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={startPractice}>Exam Training</button>
@@ -1370,6 +1478,15 @@ export default function App() {
             onOpenProfile={openProfile}
           />
         </Suspense>
+      ) : null}
+
+      {pendingLevelUp ? (
+        <FirstWinLevelUpModal
+          avatar={progress.avatar}
+          avatarName={progress.profile.avatarName}
+          levelUp={pendingLevelUp}
+          onDismiss={() => setPendingLevelUp(undefined)}
+        />
       ) : null}
 
     </main>

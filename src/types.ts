@@ -723,6 +723,37 @@ export interface LearningActivityAttempt {
   completedAt: string;
 }
 
+export type StudentXpEventType =
+  | 'field_guide_topic_complete'
+  | 'skill_practice_check_complete'
+  | 'exam_training_attempt_saved'
+  | 'first_topic_complete_bonus';
+
+export interface StudentXpLedgerEntry {
+  eventId: string;
+  type: StudentXpEventType;
+  xp: number;
+  createdAt: string;
+  regionId?: string;
+  activityId?: string;
+  attemptId?: string;
+  description?: string;
+}
+
+export interface StudentLevelUpRecord {
+  fromLevel: number;
+  toLevel: number;
+  eventId: string;
+  createdAt: string;
+}
+
+export interface StudentXpProgress {
+  totalXp: number;
+  level: number;
+  ledger: StudentXpLedgerEntry[];
+  lastLevelUp?: StudentLevelUpRecord;
+}
+
 export interface IssueReport {
   id: string;
   profileId?: string;
@@ -840,5 +871,6 @@ export interface StoredProgress {
   topicProfiles: Record<string, TopicProfile>;
   issueReports: IssueReport[];
   regionLearning?: Record<string, RegionLearningRecord>;
+  xp?: StudentXpProgress;
   settings: AppSettings;
 }

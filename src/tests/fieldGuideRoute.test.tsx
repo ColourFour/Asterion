@@ -168,6 +168,8 @@ describe('Field Guide app route', () => {
     const fieldGuideHeader = container.querySelector<HTMLElement>('.focused-region-page-header');
 
     expect(topbar).toBeTruthy();
+    expect(topbar?.textContent).toContain('Do This Next');
+    expect(topbar?.querySelector('.do-this-next-button')).toBeTruthy();
     expect(topbar?.textContent).toContain('World Map');
     expect(topbar?.textContent).toContain('Regions');
     expect(topbar?.textContent).toContain('Exam Training');
@@ -188,6 +190,26 @@ describe('Field Guide app route', () => {
     expect(container.textContent).toContain('Binomial Expansions');
     expect(topbar!.compareDocumentPosition(fieldGuideHeader!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
+  });
+
+  it('shows the first Level 2 reward-box placeholder after the first topic path', async () => {
+    const container = await render(<App />);
+    await waitForText(container, 'Choose the Topic');
+
+    await clickButton(container, 'Polynomial Division');
+    await waitForText(container, 'Practice this skill');
+    await clickButton(container, 'Practice this skill');
+    await waitForText(container, 'Level up');
+
+    expect(container.textContent).toContain('Level 1');
+    expect(container.textContent).toContain('Level 2');
+    expect(container.querySelector('.first-win-modal')).toBeTruthy();
+
+    await clickButton(container, 'Continue');
+    await waitForText(container, 'Open the box');
+    await clickButton(container, 'Open reward box');
+    await waitForText(container, 'You found... absolutely nothing.');
+    expect(container.textContent).toContain('Future you will be rich.');
   });
 
   it('shows a safe unavailable state for direct Class Hall routes', async () => {
@@ -212,8 +234,10 @@ describe('Field Guide app route', () => {
     expect(container.textContent).not.toContain('Quick Check');
     expect(container.textContent).toContain('Worked-route item');
     expect(container.querySelector('.skill-check-authored-card')).toBeTruthy();
-    expect(container.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(container.querySelector('.skill-practice-support-note')).toBeTruthy();
     expect(container.textContent).not.toContain('Warm-Up');
+    expect(container.querySelector('.region-learning-nav')?.textContent).not.toContain('Exam Training');
   });
 
   it('keeps the legacy Warm-Up hash route on the merged Skill Check page', async () => {
@@ -226,9 +250,11 @@ describe('Field Guide app route', () => {
     expect(container.querySelector('.skill-practice-topic-grid')).toBeTruthy();
     expect(container.textContent).toContain('Worked-route item');
     expect(container.querySelector('.warm-up-card')).toBeTruthy();
-    expect(container.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(container.querySelector('.skill-practice-support-note')).toBeTruthy();
     expect(container.textContent).not.toContain('Warm-Up');
     expect(container.textContent).not.toContain('answer-first set with worked solutions');
+    expect(container.querySelector('.region-learning-nav')?.textContent).not.toContain('Exam Training');
   });
 
   it('opens the Exam Training dashboard from the global student navigation', async () => {

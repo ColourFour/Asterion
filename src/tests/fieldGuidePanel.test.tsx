@@ -844,7 +844,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(emptyState).toBeTruthy();
     expect(container.textContent).toContain('Worked-route Skill Check items for this topic are being prepared.');
     expect(container.textContent).toContain('Field Guide');
-    expect(container.textContent).toContain('Exam Training');
+    expect(container.textContent).not.toContain('Exam Training');
   });
 
   it('limits snippets, quick checks, and warm-ups by default', () => {
@@ -1537,6 +1537,45 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(focusedSection).toBeTruthy();
     expect(focusedSection.querySelector('[data-skill-check-item-id="sc-log-linearisation-foundation-001"]')).toBeTruthy();
     expect(focusedSection.querySelector('[data-skill-check-item-id="sc-log-laws-foundation-001"]')).toBeFalsy();
+  });
+
+  it('sends the Field Guide topic CTA to Skill Check with the selected subtopic', () => {
+    const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
+    const onCompleteFieldGuide = vi.fn();
+    const onContinueToQuickChecks = vi.fn();
+    const container = render(
+      <FieldGuidePanel
+        fieldGuide={getRegionFieldGuide(algebraRegion)}
+        fieldGuideCompleted={false}
+        region={algebraRegion}
+        theme={getRegionTheme(algebraRegion)}
+        teachingSnippets={[]}
+        onCompleteFieldGuide={onCompleteFieldGuide}
+        onContinueToQuickChecks={onContinueToQuickChecks}
+      />,
+    );
+
+    act(() => {
+      container.querySelector<HTMLButtonElement>('[data-topic-id="algebra_modulus_graph_equations"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    const footerButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.field-guide-step-actions button'));
+    expect(footerButtons.map((button) => button.textContent)).toEqual([
+      expect.stringContaining('Practice this skill'),
+      expect.stringContaining('Back to Topics'),
+      expect.stringContaining('Next Topic'),
+    ]);
+    expect(footerButtons[0].classList.contains('field-guide-practice-cta')).toBe(true);
+
+    act(() => {
+      footerButtons[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onCompleteFieldGuide).toHaveBeenCalledTimes(1);
+    expect(onContinueToQuickChecks).toHaveBeenCalledWith(expect.objectContaining({
+      id: 'algebra_modulus_graph_equations',
+      title: 'Modulus Graphs and Equations',
+    }));
   });
 
   it('renders each focused region page with its preserved panel behavior', () => {

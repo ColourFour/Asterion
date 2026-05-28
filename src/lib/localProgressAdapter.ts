@@ -23,6 +23,13 @@ import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore'
 import { updateTopicProfile } from './mastery';
 import { filterMasteryEvidence } from './masteryEvidence';
 import type { ProgressStorageAdapter, RegionGuardianAttemptRecordInput } from './progressAdapter';
+import {
+  awardXpEvents,
+  examTrainingAttemptXpEvent,
+  fieldGuideCompletionXpEvents,
+  normalizeStudentXpProgress,
+  skillPracticeCompletionXpEvent,
+} from './studentProgression';
 
 export const CURRENT_PROGRESS_SCHEMA_VERSION = 1;
 export const LOCAL_PROGRESS_STORAGE_KEY = 'asterion.progress.v1';
@@ -413,6 +420,7 @@ export function emptyProgress(): StoredProgress {
     topicProfiles: {},
     issueReports: [],
     regionLearning: {},
+    xp: normalizeStudentXpProgress(undefined),
     settings: defaultSettings,
   };
 }
@@ -449,6 +457,7 @@ export function normalizeStoredProgress(value: unknown): StoredProgress {
     topicProfiles: rebuildTopicProfiles(attempts),
     issueReports,
     regionLearning: normalizeRegionLearningMap(value.regionLearning),
+    xp: normalizeStudentXpProgress(value.xp),
     settings: normalizeSettings(value.settings),
   };
 }
@@ -517,18 +526,18 @@ export const localProgressAdapter: ProgressStorageAdapter = {
 
   addAttempt(attempt: Attempt): StoredProgress {
     const progress = loadLocalProgress();
-    return saveLocalProgress({
+    return saveLocalProgress(awardXpEvents({
       ...progress,
       attempts: [...progress.attempts, attempt],
-    });
+    }, [examTrainingAttemptXpEvent(attempt)]));
   },
 
   addLearningActivityAttempt(attempt: LearningActivityAttempt): StoredProgress {
     const progress = loadLocalProgress();
-    return saveLocalProgress({
+    return saveLocalProgress(awardXpEvents({
       ...progress,
       learningActivityAttempts: [...progress.learningActivityAttempts, attempt],
-    });
+    }, [skillPracticeCompletionXpEvent(attempt)]));
   },
 
   addIssueReport(issueReport: IssueReport): StoredProgress {
@@ -549,13 +558,23 @@ export const localProgressAdapter: ProgressStorageAdapter = {
   },
 
   completeRegionFieldGuide(regionId: string): StoredProgress {
-    return updateRegionLearningRecord(regionId, (current, now) => ({
-      ...current,
-      regionId,
-      fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
-      fieldGuideCompletedAt: current?.fieldGuideCompletedAt ?? now,
-      updatedAt: now,
-    }));
+    const progress = loadLocalProgress();
+    const now = new Date().toISOString();
+    const current = progress.regionLearning?.[regionId];
+    const completedAt = current?.fieldGuideCompletedAt ?? now;
+    return saveLocalProgress(awardXpEvents({
+      ...progress,
+      regionLearning: {
+        ...(progress.regionLearning ?? {}),
+        [regionId]: {
+          ...current,
+          regionId,
+          fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
+          fieldGuideCompletedAt: completedAt,
+          updatedAt: now,
+        },
+      },
+    }, fieldGuideCompletionXpEvents(regionId, completedAt)));
   },
 
   recordRegionGuardianAttempt(input: RegionGuardianAttemptRecordInput): StoredProgress {

@@ -147,7 +147,7 @@ describe('region learning loop logic', () => {
     expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'field_guide')?.completed).toBe(true);
     expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'attempt_count')?.completed).toBe(false);
     expect(summary.nextAction.kind).toBe('training');
-    expect(summary.nextAction.explanation).toBe('Do one Exam Training question and save your marks. You need 3 more saved attempts before the Guardian opens.');
+    expect(summary.nextAction.explanation).toBe('Do one exam practice question and save your marks. You need 3 more saved attempts before the Guardian opens.');
   });
 
   it('unlocks the guardian from local evidence and selects a trainable higher-mark question', () => {
@@ -404,7 +404,7 @@ describe('region learning loop logic', () => {
 
     expect(summary.guardianEligibility.requirements.filter((requirement) => requirement.completed).map((requirement) => requirement.id)).toContain('field_guide');
     expect(summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.id)).toEqual(['attempt_count', 'recent_high_score', 'subtopic_spread']);
-    expect(summary.nextAction.explanation).toBe('Do one Exam Training question and save your marks. You need 1 more saved attempt before the Guardian opens.');
+    expect(summary.nextAction.explanation).toBe('Do one exam practice question and save your marks. You need 1 more saved attempt before the Guardian opens.');
   });
 
   it('recommends weak-area review after a low recent attempt and challenge after stable 70% evidence', () => {
@@ -433,7 +433,7 @@ describe('region learning loop logic', () => {
 
     expect(summary.trainingSession.intent).toBe('core_practice');
     expect(summary.nextAction.label).toBe('Start Core Practice');
-    expect(summary.nextAction.explanation).toContain('Move into Exam Training');
+    expect(summary.nextAction.explanation).toContain('Move into exam practice');
   });
 
   it('does not select guardian questions missing question or mark-scheme image candidates', () => {
