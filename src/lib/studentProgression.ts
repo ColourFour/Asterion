@@ -15,13 +15,73 @@ export const STUDENT_LEVEL_THRESHOLDS = [
   { level: 3, xp: 220 },
   { level: 4, xp: 360 },
   { level: 5, xp: 530 },
+  { level: 6, xp: 730 },
+  { level: 7, xp: 960 },
+  { level: 8, xp: 1220 },
+  { level: 9, xp: 1510 },
+  { level: 10, xp: 1830 },
+  { level: 11, xp: 2180 },
+  { level: 12, xp: 2560 },
 ] as const;
+
+export interface PlaceholderRewardDefinition {
+  level: number;
+  title: string;
+  subtitle: string;
+  imageLabel: string;
+}
+
+export const PLACEHOLDER_REWARD_DEFINITIONS: PlaceholderRewardDefinition[] = [
+  {
+    level: 2,
+    title: 'Dormant Starcore',
+    subtitle: 'You found something powerful. I am still forging this part of the game.',
+    imageLabel: 'Starcore',
+  },
+  {
+    level: 5,
+    title: 'Astral Cloak Pattern',
+    subtitle: 'This will become a real reward soon. For now, it is a very dramatic promise.',
+    imageLabel: 'Cloak',
+  },
+  {
+    level: 8,
+    title: 'Guardian Compass Shard',
+    subtitle: 'You found something powerful. The reward forge needs a little more hammering.',
+    imageLabel: 'Shard',
+  },
+  {
+    level: 12,
+    title: 'Academy Relic Blueprint',
+    subtitle: 'This will become a real reward soon. The academy archivists are pretending this was planned.',
+    imageLabel: 'Relic',
+  },
+];
 
 export function levelForXp(totalXp: number): number {
   const safeXp = Number.isFinite(totalXp) ? Math.max(0, totalXp) : 0;
   return STUDENT_LEVEL_THRESHOLDS.reduce((level, threshold) => (
     safeXp >= threshold.xp ? threshold.level : level
   ), 1);
+}
+
+export function xpForCurrentLevel(totalXp: number): number {
+  const level = levelForXp(totalXp);
+  return STUDENT_LEVEL_THRESHOLDS.find((threshold) => threshold.level === level)?.xp ?? 0;
+}
+
+export function xpForNextLevel(totalXp: number): number {
+  const level = levelForXp(totalXp);
+  const nextThreshold = STUDENT_LEVEL_THRESHOLDS.find((threshold) => threshold.level > level);
+  if (nextThreshold) return nextThreshold.xp;
+  const last = STUDENT_LEVEL_THRESHOLDS[STUDENT_LEVEL_THRESHOLDS.length - 1];
+  return last.xp + Math.max(250, (level - last.level + 1) * 420);
+}
+
+export function placeholderRewardForLevelUp(levelUp: StudentLevelUpRecord): PlaceholderRewardDefinition | undefined {
+  return PLACEHOLDER_REWARD_DEFINITIONS
+    .filter((reward) => reward.level > levelUp.fromLevel && reward.level <= levelUp.toLevel)
+    .sort((a, b) => b.level - a.level)[0];
 }
 
 function isXpEventType(value: unknown): value is StudentXpEventType {

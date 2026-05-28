@@ -1,10 +1,10 @@
-import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile, StoredProgress } from '../../types';
+import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile, StudentXpLedgerEntry, StudentXpProgress, StoredProgress } from '../../types';
 import { AVATAR_SLOT_LABELS, AVATAR_SLOTS } from '../../data/avatarCatalog';
-import { calculateAcademySummary } from '../../lib/academyProgress';
 import { getAvatarLayers } from '../../lib/avatarLayers';
 import { normalizeAvatarSettings } from '../../lib/avatarStore';
 import { buildExamTrainingTopicMastery, type ExamTrainingMasteryStatus, type ExamTrainingTopicMasteryItem } from '../../lib/examTrainingDashboard';
 import type { RegionLearningSummary } from '../../lib/regionLearning';
+import { xpForCurrentLevel, xpForNextLevel } from '../../lib/studentProgression';
 import { MathText } from '../shared/MathText';
 import { AvatarPreview } from './AvatarPreview';
 
@@ -18,6 +18,7 @@ interface AvatarBuilderProps {
   regionLearning?: Record<string, RegionLearningRecord>;
   regionLearningSummaries?: Record<string, RegionLearningSummary>;
   regionProgress: RegionProgress[];
+  xp?: StudentXpProgress;
   onAvatarChange: (avatar: AvatarSettings) => void;
 }
 
@@ -106,6 +107,19 @@ function topicStatus(item: ExamTrainingTopicMasteryItem) {
   return topicStatusLabels[item.status];
 }
 
+const xpEventLabels: Record<StudentXpLedgerEntry['type'], string> = {
+  field_guide_topic_complete: 'Field Guide complete',
+  skill_practice_check_complete: 'Skill Check saved',
+  exam_training_attempt_saved: 'Exam Training saved',
+  first_topic_complete_bonus: 'First topic bonus',
+};
+
+function formatXpEventDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Saved';
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
 export function AvatarBuilder({
   profile,
   avatar,
@@ -116,9 +130,9 @@ export function AvatarBuilder({
   regionLearning,
   regionLearningSummaries,
   regionProgress,
+  xp,
   onAvatarChange,
 }: AvatarBuilderProps) {
-  const summary = calculateAcademySummary(regionProgress);
   const topicMastery = buildExamTrainingTopicMastery({
     progress: {
       schemaVersion: 1,
@@ -135,9 +149,14 @@ export function AvatarBuilder({
   });
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
   const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
-  const activeRegionCount = regionProgress.filter((progress) => progress.isActive).length;
-  const restoredTotal = Math.max(activeRegionCount, avatarGear.restoredRegions, 1);
-  const restoredPercent = Math.round((avatarGear.restoredRegions / restoredTotal) * 100);
+  const xpProgress = xp ?? { totalXp: 0, level: 1, ledger: [] };
+  const currentLevelXp = xpForCurrentLevel(xpProgress.totalXp);
+  const nextLevelXp = xpForNextLevel(xpProgress.totalXp);
+  const xpIntoLevel = Math.max(0, xpProgress.totalXp - currentLevelXp);
+  const xpNeededForLevel = Math.max(1, nextLevelXp - currentLevelXp);
+  const xpPercent = Math.min(100, Math.round((xpIntoLevel / xpNeededForLevel) * 100));
+  const xpToNext = Math.max(0, nextLevelXp - xpProgress.totalXp);
+  const recentXpEvents = xpProgress.ledger.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5);
   const recentReward = avatarGear.gear.length ? avatarGear.gear[avatarGear.gear.length - 1] : 'Starter crest';
   const earnedRewards = avatarGear.gear.length ? avatarGear.gear : ['Starter crest'];
   const equippedFrame = equippedLayers.find((layer) => layer.slot === 'frame')?.item.displayName ?? 'Starter frame';
@@ -201,20 +220,39 @@ export function AvatarBuilder({
                 </div>
 
                 <dl className="student-reward-stats" aria-label="Student reward evidence">
-                  <div><dt>Evidence XP</dt><dd>{summary.totalXp}</dd></div>
-                  <div><dt>Attempts</dt><dd>{summary.attempts}</dd></div>
-                  <div><dt>Restored</dt><dd>{avatarGear.restoredRegions}/{restoredTotal}</dd></div>
-                  <div><dt>Gold</dt><dd>{avatarGear.goldRegions}</dd></div>
+                  <div><dt>Level</dt><dd>{xpProgress.level}</dd></div>
+                  <div><dt>XP</dt><dd>{xpProgress.totalXp}</dd></div>
+                  <div><dt>Next</dt><dd>{xpToNext} XP</dd></div>
                 </dl>
 
-                <div className="student-reward-meter" aria-label={`${restoredPercent}% of active regions restored`}>
-                  <span style={{ width: `${restoredPercent}%` }} />
+                <div className="student-reward-meter" aria-label={`Level ${xpProgress.level} to Level ${xpProgress.level + 1}: ${xpPercent}%`}>
+                  <span style={{ width: `${xpPercent}%` }} />
+                </div>
+
+                <div className="student-level-row">
+                  <span>Level {xpProgress.level}</span>
+                  <strong>{xpToNext} XP to next level</strong>
+                  <span>Level {xpProgress.level + 1}</span>
                 </div>
 
                 <div className="student-reward-row">
                   <span>Recent reward</span>
                   <strong>{recentReward}</strong>
                   <small>{strongestRegion}</small>
+                </div>
+
+                <div className="xp-history-list" aria-label="Recent XP history">
+                  {recentXpEvents.length ? recentXpEvents.map((event) => (
+                    <span key={event.eventId}>
+                      <strong>{xpEventLabels[event.type]}</strong>
+                      <small>+{event.xp} XP · {formatXpEventDate(event.createdAt)}</small>
+                    </span>
+                  )) : (
+                    <span>
+                      <strong>No XP yet</strong>
+                      <small>Start a Field Guide to begin the record.</small>
+                    </span>
+                  )}
                 </div>
 
                 <div className="earned-reward-list" aria-label="Earned pins, badges, and crests">
@@ -225,20 +263,20 @@ export function AvatarBuilder({
               <div className="avatar-showcase-reward-stack">
                 <div className="avatar-evidence-strip">
                   <span>
-                    <span>Evidence XP</span>
-                    <strong>{summary.totalXp}</strong>
+                    <span>Level</span>
+                    <strong>{xpProgress.level}</strong>
                   </span>
                   <span>
-                    <span>Restored</span>
-                    <strong>{avatarGear.restoredRegions}</strong>
+                    <span>Total XP</span>
+                    <strong>{xpProgress.totalXp}</strong>
                   </span>
                   <span>
-                    <span>Gold</span>
-                    <strong>{avatarGear.goldRegions}</strong>
+                    <span>Next level</span>
+                    <strong>{xpToNext}</strong>
                   </span>
                   <span>
-                    <span>Attempts</span>
-                    <strong>{summary.attempts}</strong>
+                    <span>XP events</span>
+                    <strong>{xpProgress.ledger.length}</strong>
                   </span>
                 </div>
 

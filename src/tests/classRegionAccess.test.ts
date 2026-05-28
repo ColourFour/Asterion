@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canStudentUseRegionActivity, getStudentRegionAccess } from '../lib/classRegionAccess';
+import { canStudentUseRegionActivity, getStudentRegionAccess, lockedActivityMessage } from '../lib/classRegionAccess';
 import type { StudentProfile } from '../types';
 
 const claimedAlphaProfile: StudentProfile = {
@@ -48,6 +48,15 @@ describe('student class region access', () => {
     expect(canStudentUseRegionActivity(lockedAccess, 'warm_up')).toBe(false);
     expect(canStudentUseRegionActivity(openAccess, 'quick_check')).toBe(true);
     expect(canStudentUseRegionActivity(openAccess, 'warm_up')).toBe(true);
+  });
+
+  it('explains Guardian and Exam Training gates as class settings, not student failure', () => {
+    const lockedAccess = getStudentRegionAccess(claimedAlphaProfile, 'complex-harbor');
+
+    expect(lockedActivityMessage(lockedAccess, 'guardian')).toContain('not opened the Guardian Challenge');
+    expect(lockedActivityMessage(lockedAccess, 'guardian')).toContain('class settings');
+    expect(lockedActivityMessage(lockedAccess, 'exam_practice')).toContain('not opened Exam Training');
+    expect(lockedActivityMessage(lockedAccess, 'exam_practice')).toContain('topic status stay visible');
   });
 
   it('keeps missing class-claim context migration-tolerant', () => {

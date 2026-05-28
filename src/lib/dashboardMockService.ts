@@ -30,6 +30,7 @@ import type {
   TeacherRegionStatus,
   WeeklyClassSummary,
 } from '../types';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 
 const now = '2026-05-15T09:20:00.000Z';
 const inactiveAfterDays = 7;
@@ -452,6 +453,26 @@ function warningForCell(cell: StudentRegionProgressCell): string | undefined {
   return undefined;
 }
 
+function checklistForSeed(regionId: string, regionName: string, seed: StudentRegionSeed | undefined) {
+  const topicTotal = Math.max(1, getFieldGuideTopicsForRegion(regionId).length);
+  const progress = seed?.progress ?? 0;
+  const fieldGuideCompleted = seed
+    ? progress >= 55 ? topicTotal : Math.min(topicTotal, Math.floor((progress / 55) * topicTotal))
+    : 0;
+  const skillCheckCompleted = seed
+    ? progress >= 85 ? topicTotal : Math.min(topicTotal, Math.floor(Math.max(0, progress - 30) / 55 * topicTotal))
+    : 0;
+  return {
+    regionId,
+    regionName,
+    fieldGuideCompleted,
+    fieldGuideTotal: topicTotal,
+    skillCheckCompleted,
+    skillCheckTotal: topicTotal,
+    guardianStatus: seed?.guardian ? 'completed' as const : fieldGuideCompleted === topicTotal && skillCheckCompleted === topicTotal ? 'unlocked' as const : 'locked' as const,
+  };
+}
+
 function latestIso(values: Array<string | undefined>): string | undefined {
   const sorted = values
     .filter((value): value is string => Boolean(value))
@@ -484,6 +505,7 @@ function buildStudentRows(classId: string): StudentProgressRow[] {
           attemptsCount: seed?.attempts ?? 0,
           averageSelfMarkPercent: seed?.selfMark,
           guardianEligible: Boolean(seed?.guardian),
+          checklist: checklistForSeed(regionId, regionNameById[regionId], seed),
           lastEvidenceAt: seed?.lastEvidenceAt,
         };
         return { ...cell, warning: warningForCell(cell) };
@@ -764,6 +786,11 @@ function buildExportRows(classRecord: AdminClassRecord, rows: StudentProgressRow
       base[`${cell.regionName} progress`] = `${cell.progressPercent}%`;
       base[`${cell.regionName} status`] = labelForTeacherRegionStatus(cell.status);
       base[`${cell.regionName} access`] = cell.access === 'open' ? 'open' : 'Field Guide only';
+      if (cell.checklist) {
+        base[`${cell.regionName} Field Guide topics`] = `${cell.checklist.fieldGuideCompleted}/${cell.checklist.fieldGuideTotal}`;
+        base[`${cell.regionName} Skill Check topics`] = `${cell.checklist.skillCheckCompleted}/${cell.checklist.skillCheckTotal}`;
+        base[`${cell.regionName} Guardian status`] = cell.checklist.guardianStatus;
+      }
       base[`${cell.regionName} excluded from class progress`] = cell.excludedFromClassProgress ? 'yes' : 'no';
       if (cell.excludedFromClassProgress) {
         base[`${cell.regionName} status`] = cell.attemptsCount > 0

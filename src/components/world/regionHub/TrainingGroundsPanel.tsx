@@ -6,20 +6,18 @@ import { trainingIntents } from './regionHubPanelUtils';
 
 interface TrainingGroundsPanelProps {
   canTrain: boolean;
+  lockedReason?: string;
   summary: RegionLearningSummary;
   onStartTraining: (intent: TrainingSessionIntent) => void;
 }
 
-export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: TrainingGroundsPanelProps) {
-  const hasSavedAttempt = summary.guardianEligibility.requirements
-    .find((requirement) => requirement.id === 'attempt_count')?.progress?.current
-    ? true
-    : false;
+export function TrainingGroundsPanel({ canTrain, lockedReason, summary, onStartTraining }: TrainingGroundsPanelProps) {
+  const canStart = canTrain && !lockedReason;
   return (
     <RegionActionCard
       eyebrow="Step 3"
       title="Exam Training"
-      description="Use real question images and mark schemes to build toward the Guardian."
+      description="Use real question images and mark schemes to build exam confidence."
       icon={<Dumbbell size={22} />}
       className="training-card"
     >
@@ -33,7 +31,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
       <details className="training-reason-detail">
         <summary>Why this session?</summary>
         <p>{summary.trainingSession.reason}</p>
-        <p>A saved attempt from this region can move your progress and may bring the Guardian closer.</p>
+        <p>Saved attempts still update mastery and future recommendations.</p>
         {summary.learningActivityReadiness.attempts > 0 ? (
           <small>
             Skill Check support: {summary.learningActivityReadiness.attempts} item{summary.learningActivityReadiness.attempts === 1 ? '' : 's'} recorded.
@@ -53,7 +51,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
           <BarChart3 size={20} aria-hidden="true" />
           <div>
             <strong>Weak Area Review</strong>
-            <span>{hasSavedAttempt ? 'Uses your recent saved score to focus the next review.' : 'Needs one saved attempt first. Start with Core Practice or Skill Check.'}</span>
+            <span>Uses saved scores and mistake tags when they are available.</span>
           </div>
         </article>
         <article className={summary.trainingSession.intent === 'challenge' ? 'is-recommended next-step-glow' : undefined}>
@@ -68,7 +66,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
       <button
         className="training-primary-start next-step-glow"
         type="button"
-        disabled={!canTrain}
+        disabled={!canStart}
         onClick={() => onStartTraining(summary.trainingSession.intent)}
       >
         Start recommended session: {summary.trainingSession.label}
@@ -81,7 +79,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
             <button
               key={intent}
               type="button"
-              disabled={!canTrain}
+              disabled={!canStart}
               onClick={() => onStartTraining(intent)}
             >
               {TRAINING_SESSION_LABELS[intent]}
@@ -90,7 +88,12 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
         </div>
       </details>
 
-      {!canTrain ? (
+      {lockedReason ? (
+        <div className="guardian-missing-list" role="status">
+          <AlertTriangle size={18} />
+          <span>{lockedReason}</span>
+        </div>
+      ) : !canTrain ? (
         <div className="guardian-missing-list" role="status">
           <AlertTriangle size={18} />
           <span>No trainable question and mark-scheme image pairs are loaded for this region yet.</span>

@@ -47,6 +47,10 @@ export function startRegionFieldGuide(regionId: string): StoredProgress {
   return getProgressStorageAdapter().startRegionFieldGuide(regionId);
 }
 
+export function completeRegionFieldGuideTopic(regionId: string, topicId: string): StoredProgress {
+  return getProgressStorageAdapter().completeRegionFieldGuideTopic(regionId, topicId);
+}
+
 export function completeRegionFieldGuide(regionId: string): StoredProgress {
   return getProgressStorageAdapter().completeRegionFieldGuide(regionId);
 }

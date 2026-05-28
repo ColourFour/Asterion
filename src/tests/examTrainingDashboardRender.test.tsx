@@ -230,4 +230,36 @@ describe('ExamTrainingDashboard practice choices', () => {
     expect(onStartPractice).toHaveBeenNthCalledWith(2, 'weak');
     expect(onStartPractice).toHaveBeenNthCalledWith(3, 'stretch');
   });
+
+  it('keeps the dashboard visible while disabling real practice when class settings lock Exam Training', async () => {
+    const onStartPractice = vi.fn();
+    const container = render(
+      <ExamTrainingDashboard
+        progress={emptyProgress()}
+        questions={[]}
+        worldProgress={worldProgress()}
+        avatarName="Pilot Star"
+        avatar={DEFAULT_AVATAR_SETTINGS}
+        avatarGear={avatarGear}
+        practiceDisabledReason="Your teacher has not opened Exam Training for this region yet. Your dashboard and topic status stay visible, but real question practice is locked by class settings right now."
+        onOpenRegions={vi.fn()}
+        onReturnToMap={vi.fn()}
+        onNavigateRegionPage={vi.fn()}
+        onStartPractice={onStartPractice}
+      />,
+    );
+    await flushMathText();
+
+    expect(container.textContent).toContain('Exam Training');
+    expect(container.textContent).toContain('Your Topic Mastery');
+    expect(container.textContent).toContain('locked by class settings');
+    const choiceButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.exam-training-practice-card'));
+    expect(choiceButtons).toHaveLength(3);
+    expect(choiceButtons.every((button) => button.disabled)).toBe(true);
+
+    act(() => {
+      choiceButtons[0]?.click();
+    });
+    expect(onStartPractice).not.toHaveBeenCalled();
+  });
 });

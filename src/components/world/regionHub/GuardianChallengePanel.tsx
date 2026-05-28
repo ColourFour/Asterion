@@ -14,6 +14,7 @@ interface GuardianChallengePanelProps {
   challengeItems?: GuardianChallengeItem[];
   guardianCleared?: boolean;
   isUnlocked: boolean;
+  lockedReason?: string;
   onSaveGuardianClear?: () => void;
   regionName: string;
 }
@@ -88,6 +89,7 @@ export function GuardianChallengePanel({
   challengeItems = EMPTY_GUARDIAN_ITEMS,
   guardianCleared = false,
   isUnlocked,
+  lockedReason,
   onSaveGuardianClear,
   regionName,
 }: GuardianChallengePanelProps) {
@@ -126,18 +128,16 @@ export function GuardianChallengePanel({
   const statusCopy = {
     locked: {
       eyebrow: 'Step 3 · Final gate locked',
-      description: hasChallengeSet
-        ? `${regionName} is sealed. Keep working through the region checklist to open the Guardian trial.`
-        : `${regionName} is sealed. Save enough region practice to unlock the Guardian trial.`,
+      description: lockedReason ?? `${regionName} is sealed. Complete the Field Guide and Skill Check to open the Guardian trial.`,
       label: 'Vault locked',
       title: `${regionName} is sealed`,
-      body: hasChallengeSet ? 'The challenge opens when the region checklist is ready.' : 'The challenge opens after the guide and enough scored practice.',
+      body: lockedReason ?? 'The challenge opens when Field Guide and Skill Check are complete.',
       anticipation: 'The Guardian is waiting.',
       icon: <Lock size={22} aria-label="Guardian locked" />,
     },
     ready: {
       eyebrow: 'Step 3 · Guardian ready',
-      description: hasChallengeSet ? `${regionName} is open. Clear one Guardian item for each Field Guide subtopic.` : `${regionName} is open. Your saved practice can launch the Guardian trial.`,
+      description: hasChallengeSet ? `${regionName} is open. Clear one Guardian item for each Skill Check topic.` : `${regionName} is open. The Guardian trial is ready.`,
       label: 'Guardian ready',
       title: 'The gate is open',
       body: hasChallengeSet ? 'Answer each bounded final-answer check to clear the first Guardian slice.' : 'Enter the final region challenge when you are ready.',
@@ -173,7 +173,7 @@ export function GuardianChallengePanel({
             {status === 'locked' ? <Lock size={20} aria-hidden="true" /> : <Sparkles size={20} aria-hidden="true" />}
             <div>
               <strong>{statusCopy.anticipation}</strong>
-              <span>{status === 'locked' ? 'Do the next region task first; the challenge prompt stays hidden until then.' : hasChallengeSet ? `${clearedItemCount}/${challengeItems.length} Guardian seals cleared.` : 'The unlock details stay below so you know why this opened.'}</span>
+              <span>{status === 'locked' ? lockedReason ?? 'Finish the Field Guide and Skill Check first; the challenge prompt stays hidden until then.' : hasChallengeSet ? `${clearedItemCount}/${challengeItems.length} Guardian seals cleared.` : 'The unlock details stay below so you know why this opened.'}</span>
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ export function GuardianChallengePanel({
           <header className="guardian-item-set-header">
             <div>
               <span className="guardian-boss-kicker">Text Guardian Trial</span>
-              <h4>{allItemsCleared ? 'Guardian cleared' : 'Clear every subtopic seal'}</h4>
+              <h4>{allItemsCleared ? 'Guardian cleared' : 'Clear every topic seal'}</h4>
               <p>{allItemsCleared ? `${regionName} is cleared for this attempt. Retry any item whenever you want to practise.` : 'Each item asks for a bounded final answer. Clear each one when you are ready.'}</p>
             </div>
             <button

@@ -23,6 +23,7 @@ import type {
   TeacherRegionStatus,
   WeeklyClassSummary,
 } from '../types';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import type { DashboardDataService } from './dashboardDataService';
 import {
   canUseRegionActivity,
@@ -357,6 +358,30 @@ function lastActivityLabel(lastActivityAt?: string): string {
   return `Last hosted activity ${lastActivityAt.slice(0, 10)}`;
 }
 
+function checklistForHostedRegion(regionAccess: ClassRegionAccess, events: StudentProgressEventRow[]) {
+  const topicTotal = Math.max(1, getFieldGuideTopicsForRegion(regionAccess.regionId).length);
+  const fieldGuideIds = new Set(events
+    .filter((event) => event.event_type === 'field_guide_completed')
+    .map((event) => event.content_id)
+    .filter((id): id is string => Boolean(id)));
+  const skillCheckIds = new Set(events
+    .filter((event) => event.event_type === 'quick_check_completed' || event.event_type === 'warm_up_completed')
+    .map((event) => event.skill_id ?? event.content_id)
+    .filter((id): id is string => Boolean(id)));
+  const guardianCompleted = events.some((event) => event.event_type === 'guardian_completed');
+  const fieldGuideCompleted = Math.min(topicTotal, fieldGuideIds.size || (events.some((event) => event.event_type === 'field_guide_completed') ? 1 : 0));
+  const skillCheckCompleted = Math.min(topicTotal, skillCheckIds.size);
+  return {
+    regionId: regionAccess.regionId,
+    regionName: regionAccess.regionName,
+    fieldGuideCompleted,
+    fieldGuideTotal: topicTotal,
+    skillCheckCompleted,
+    skillCheckTotal: topicTotal,
+    guardianStatus: guardianCompleted ? 'completed' as const : fieldGuideCompleted === topicTotal && skillCheckCompleted === topicTotal ? 'unlocked' as const : 'locked' as const,
+  };
+}
+
 function studentRowsForRoster(roster: TeacherClassRoster, access: ClassRegionAccess[], events: StudentProgressEventRow[]): StudentProgressRow[] {
   const visibleStudents = roster.students.filter((student) => student.status === 'claimed' || student.status === 'active');
   const eventsByStudent = eventsByMembership(events);
@@ -392,6 +417,7 @@ function studentRowsForRoster(roster: TeacherClassRoster, access: ClassRegionAcc
         attemptsCount: activityAttempts.length,
         averageSelfMarkPercent: typeof scoreRatio === 'number' ? percent(scoreRatio) : undefined,
         guardianEligible,
+        checklist: checklistForHostedRegion(regionAccess, regionEvents),
         lastEvidenceAt: lastRegionEvent?.created_at,
         warning: excluded && regionEvents.some((event) => event.activity_type !== 'field_guide')
           ? 'Hosted activity exists in a currently Field Guide only region; verify region access history.'
@@ -580,6 +606,11 @@ function exportRowsFor(classRow: ClassRow, teacher: TeacherProfileRow | undefine
       base[`${cell.regionName} progress`] = `${cell.progressPercent}%`;
       base[`${cell.regionName} status`] = cell.status.replace(/_/g, ' ');
       base[`${cell.regionName} access`] = cell.access === 'open' ? 'open' : 'Field Guide only';
+      if (cell.checklist) {
+        base[`${cell.regionName} Field Guide topics`] = `${cell.checklist.fieldGuideCompleted}/${cell.checklist.fieldGuideTotal}`;
+        base[`${cell.regionName} Skill Check topics`] = `${cell.checklist.skillCheckCompleted}/${cell.checklist.skillCheckTotal}`;
+        base[`${cell.regionName} Guardian status`] = cell.checklist.guardianStatus;
+      }
       base[`${cell.regionName} excluded from class progress`] = cell.excludedFromClassProgress ? 'yes' : 'no';
     }
 

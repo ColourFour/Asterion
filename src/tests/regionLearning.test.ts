@@ -190,7 +190,7 @@ describe('region learning loop logic', () => {
     expect(computeRegionVisualTreatment(state)).toBe('available');
   });
 
-  it('keeps the guardian locked after Field Guide completion until practice evidence exists', () => {
+  it('keeps the guardian locked after Field Guide completion until Skill Check topics are complete', () => {
     const regionProgress = progressForRegion(trigonometry);
     const summary = buildRegionLearningSummary({
       regionProgress,
@@ -201,17 +201,18 @@ describe('region learning loop logic', () => {
 
     expect(summary.state).toBe('field_guide_completed');
     expect(summary.guardianEligibility.eligible).toBe(false);
-    expect(summary.guardianEligibility.missingRequirements).toContain('Save at least 3 attempts in this region (0/3).');
+    expect(summary.guardianEligibility.missingRequirements).toContain('Complete each Skill Check topic (0/5).');
     expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'field_guide')?.completed).toBe(true);
-    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'attempt_count')?.completed).toBe(false);
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'skill_checklist')?.completed).toBe(false);
     expect(summary.nextAction.kind).toBe('training');
-    expect(summary.nextAction.explanation).toBe('Do one exam practice question and save your marks. You need 3 more saved attempts before the Guardian opens.');
+    expect(summary.nextAction.explanation).toBe('Use Skill Check until every authored topic has a completed item.');
   });
 
-  it('unlocks Algebra Guardian from completed Skill Checklist without Exam Training evidence', () => {
+  it('unlocks Algebra Guardian from completed Field Guide and Skill Check without Exam Training evidence', () => {
     const regionProgress = progressForRegion(algebra);
     const summary = buildRegionLearningSummary({
       regionProgress,
+      learningRecord: learning({ regionId: algebra.id, fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: [],
       regionAttempts: [],
       learningActivityAttempts: completedSkillChecklistAttempts(algebra),
@@ -219,12 +220,12 @@ describe('region learning loop logic', () => {
 
     expect(summary.guardianEligibility.eligible).toBe(true);
     expect(summary.guardianEligibility.guardianQuestion).toBeUndefined();
-    expect(summary.guardianEligibility.requirements.map((requirement) => requirement.id)).toEqual(['skill_checklist', 'guardian_challenge_set']);
+    expect(summary.guardianEligibility.requirements.map((requirement) => requirement.id)).toEqual(['field_guide', 'skill_checklist']);
     expect(summary.guardianEligibility.skillChecklistCompletion?.completed).toBe(true);
     expect(summary.state).toBe('guardian_unlocked');
   });
 
-  it('keeps Algebra Guardian locked when Exam Training exists but Skill Checklist is incomplete', () => {
+  it('keeps Algebra Guardian locked when Exam Training exists but Skill Check is incomplete', () => {
     const regionProgress = progressForRegion(algebra, {
       attempts: 3,
       averageScoreRatio: 0.82,
@@ -246,14 +247,15 @@ describe('region learning loop logic', () => {
 
     expect(summary.guardianEligibility.eligible).toBe(false);
     expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'skill_checklist')?.completed).toBe(false);
-    expect(summary.guardianEligibility.missingRequirements[0]).toContain('Complete each required Skill Check subtopic');
+    expect(summary.guardianEligibility.missingRequirements[0]).toContain('Complete each Skill Check topic');
     expect(summary.state).not.toBe('guardian_unlocked');
   });
 
-  it('unlocks Logarithm Guardian from completed Skill Checklist without Exam Training evidence', () => {
+  it('unlocks Logarithm Guardian from completed Field Guide and Skill Check without Exam Training evidence', () => {
     const regionProgress = progressForRegion(logarithms);
     const summary = buildRegionLearningSummary({
       regionProgress,
+      learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: [],
       regionAttempts: [],
       learningActivityAttempts: completedSkillChecklistAttempts(logarithms),
@@ -265,32 +267,20 @@ describe('region learning loop logic', () => {
     expect(summary.state).toBe('guardian_unlocked');
   });
 
-  it('unlocks the guardian from local evidence and selects a trainable higher-mark question', () => {
-    const attempts = [
-      attemptForRegion(trigonometry, '1', 0.62, 'identities'),
-      attemptForRegion(trigonometry, '2', 0.72, 'equations'),
-      attemptForRegion(trigonometry, '3', 0.81, 'identities'),
-    ];
+  it('unlocks the guardian from Field Guide and Skill Check while selecting a trainable higher-mark question', () => {
     const questions = [
       questionForRegion(trigonometry, { id: 'missing-ms', markSchemeImageCandidates: [], marksAvailable: 12 }),
       questionForRegion(trigonometry, { id: 'core', displaySubtopic: 'equations', marksAvailable: 6 }),
       questionForRegion(trigonometry, { id: 'stretch', marksAvailable: 8 }),
     ];
-    const regionProgress = progressForRegion(trigonometry, {
-      attempts: attempts.length,
-      averageScoreRatio: 0.72,
-      recentScoreRatio: 0.72,
-      subtopicsTouched: 2,
-      totalMarksEarned: 21.5,
-      totalMarksAvailable: 30,
-      rank: 'Bronze',
-    });
+    const regionProgress = progressForRegion(trigonometry);
 
     const summary = buildRegionLearningSummary({
       regionProgress,
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: questions,
-      regionAttempts: attempts,
+      regionAttempts: [],
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(summary.guardianEligibility.eligible).toBe(true);
@@ -335,6 +325,7 @@ describe('region learning loop logic', () => {
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: baseQuestions,
       regionAttempts: attempts,
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
     const changedDifficulty = computeGuardianEligibility({
       region: trigonometry,
@@ -342,6 +333,7 @@ describe('region learning loop logic', () => {
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: changedDifficultyQuestions,
       regionAttempts: attempts,
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(base.eligible).toBe(true);
@@ -353,7 +345,7 @@ describe('region learning loop logic', () => {
     );
   });
 
-  it('does not unlock or select a guardian from trainable records without guardian eligibility', () => {
+  it('does not select a guardian question from records without guardian eligibility', () => {
     const attempts = [
       attemptForRegion(trigonometry, '1', 0.72, 'identities'),
       attemptForRegion(trigonometry, '2', 0.76, 'equations'),
@@ -392,13 +384,13 @@ describe('region learning loop logic', () => {
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: [unsafeQuestion],
       regionAttempts: attempts,
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(selectGuardianQuestion([unsafeQuestion])).toBeUndefined();
-    expect(summary.guardianEligibility.eligible).toBe(false);
+    expect(summary.guardianEligibility.eligible).toBe(true);
     expect(summary.guardianEligibility.guardianQuestion).toBeUndefined();
-    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'guardian_asset')?.completed).toBe(false);
-    expect(summary.state).toBe('training_in_progress');
+    expect(summary.guardianEligibility.requirements.map((requirement) => requirement.id)).toEqual(['field_guide', 'skill_checklist']);
   });
 
   it('rejects guardian candidates without a validated region even when guardianEligible is true', () => {
@@ -438,6 +430,7 @@ describe('region learning loop logic', () => {
         attemptForRegion(trigonometry, '2', 0.76),
         attemptForRegion(trigonometry, '3', 0.81),
       ],
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(computeRegionLearningState({
@@ -489,6 +482,7 @@ describe('region learning loop logic', () => {
         attemptForRegion(trigonometry, '2', 0.76),
         attemptForRegion(trigonometry, '3', 0.81),
       ],
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(summary.state).toBe('guardian_cleared');
@@ -511,6 +505,7 @@ describe('region learning loop logic', () => {
         attemptForRegion(trigonometry, '2', 0.4),
         attemptForRegion(trigonometry, '3', 0.4),
       ],
+      learningActivityAttempts: completedSkillChecklistAttempts(trigonometry),
     });
 
     expect(summary.state).toBe('needs_review');
@@ -532,9 +527,9 @@ describe('region learning loop logic', () => {
       ],
     });
 
-    expect(summary.guardianEligibility.requirements.filter((requirement) => requirement.completed).map((requirement) => requirement.id)).toContain('field_guide');
-    expect(summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.id)).toEqual(['attempt_count', 'recent_high_score', 'subtopic_spread']);
-    expect(summary.nextAction.explanation).toBe('Do one exam practice question and save your marks. You need 1 more saved attempt before the Guardian opens.');
+    expect(summary.guardianEligibility.requirements.filter((requirement) => requirement.completed).map((requirement) => requirement.id)).toEqual(['field_guide']);
+    expect(summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.id)).toEqual(['skill_checklist']);
+    expect(summary.nextAction.explanation).toBe('Use Skill Check until every authored topic has a completed item.');
   });
 
   it('recommends weak-area review after a low recent attempt and challenge after stable 70% evidence', () => {

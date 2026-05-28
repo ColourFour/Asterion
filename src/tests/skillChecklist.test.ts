@@ -9,7 +9,7 @@ import {
 } from '../lib/skillChecklist';
 import { isValidP3RegionId, isValidP3SkillId, P3_ALLOWED_REGION_IDS } from '../lib/p3SkillContract';
 import { checkQuickCheckAnswer } from '../lib/quickCheckAnswer';
-import type { QuickCheckResponse } from '../types';
+import type { LearningActivityAttempt, QuickCheckResponse } from '../types';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
 import { computeSkillChecklistCompletion, isSkillChecklistGuardianRegion } from '../lib/skillChecklistProgress';
 
@@ -89,6 +89,25 @@ function practice(practiceId: string, sequenceRole: GeneratedPracticeItem['seque
     sequenceRole,
     verification: { status: 'pass', method: 'deterministic', verifier: 'test' },
     reviewStatus: 'teacher_reviewed',
+  };
+}
+
+function learningAttempt(overrides: Partial<LearningActivityAttempt>): LearningActivityAttempt {
+  return {
+    id: 'learning-test',
+    regionId: 'complex-harbor',
+    regionName: 'Argand Atrium',
+    activityType: 'quick_check',
+    activityId: 'activity-test',
+    topic: 'topic-test',
+    prompt: 'Prompt',
+    learnerResponse: 'Response',
+    revealedEarly: false,
+    outcome: 'got_it',
+    confidence: 5,
+    createdAt: '2026-05-28T00:00:00.000Z',
+    completedAt: '2026-05-28T00:00:00.000Z',
+    ...overrides,
   };
 }
 
@@ -217,17 +236,101 @@ describe('Skill Checklist grouping', () => {
     }
   });
 
-  it('keeps new authored Skill Check regions support-only instead of extending Guardian checklist unlock logic', () => {
-    const newRegionIds = P3_ALLOWED_REGION_IDS.filter((regionId) => !['algebra-forge', 'logarithm-grove'].includes(regionId));
+  it('pins the first content-quality pass fixes to existing Skill Check renderers', () => {
+    const itemById = new Map(AUTHORED_SKILL_CHECK_ITEMS.map((item) => [item.itemId, item]));
 
-    for (const regionId of newRegionIds) {
-      expect(isSkillChecklistGuardianRegion(regionId), regionId).toBe(false);
-      expect(computeSkillChecklistCompletion({ regionId, learningActivityAttempts: [] })).toMatchObject({
-        applies: false,
-        completed: false,
-        requiredCount: 0,
-      });
+    expect(itemById.get('sc-diff-product-rule-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: '$-1',
+      review: expect.objectContaining({ affectsMastery: false }),
+    });
+    expect(itemById.get('sc-diff-product-rule-challenge-001')?.prompt).toContain('stationary $x$ value');
+
+    expect(itemById.get('sc-iteration-convergence-core-001')).toMatchObject({
+      inputType: 'multiple_choice',
+      prompt: 'The iterates are $1.4, 1.41, 1.414, 1.4142$. Which description is safest?',
+      review: expect.objectContaining({ affectsMastery: false }),
+    });
+
+    expect(itemById.get('sc-log-laws-core-001')).toMatchObject({
+      inputType: 'checkbox',
+      expectedOptionIds: ['power-law', 'quotient-law'],
+    });
+    expect(itemById.get('sc-iteration-change-sign-core-001')).toMatchObject({
+      inputType: 'checkbox',
+      expectedOptionIds: ['negative-positive', 'positive-negative'],
+    });
+
+    for (const itemId of [
+      'sc-trig-r-form-transformations-foundation-001',
+      'sc-complex-modulus-argument-foundation-001',
+      'sc-vectors-scalar-product-foundation-001',
+      'sc-de-particular-solutions-core-001',
+    ]) {
+      expect(itemById.get(itemId), itemId).toMatchObject({ inputType: 'numeric' });
     }
+
+    expect(itemById.get('sc-log-linearisation-foundation-001')).toMatchObject({
+      inputType: 'ordered_cards',
+      expectedOrder: ['take-logs', 'split-product', 'simplify-exponential', 'read-line'],
+    });
+  });
+
+  it('uses authored Skill Check coverage as the Guardian Skill Check denominator in every P3 region', () => {
+    for (const regionId of P3_ALLOWED_REGION_IDS) {
+      const fieldGuideTopicCount = getFieldGuideTopicsForRegion(regionId).length;
+      const authoredTopicCount = new Set(
+        AUTHORED_SKILL_CHECK_ITEMS
+          .filter((item) => item.regionId === regionId)
+          .map((item) => item.fieldGuideTopicId),
+      ).size;
+      const completion = computeSkillChecklistCompletion({ regionId, learningActivityAttempts: [] });
+
+      expect(isSkillChecklistGuardianRegion(regionId), regionId).toBe(true);
+      expect(completion.applies, regionId).toBe(true);
+      expect(completion.requiredCount, regionId).toBe(authoredTopicCount);
+      expect(completion.requiredCount, regionId).toBe(fieldGuideTopicCount);
+      expect(completion.requiredCount, regionId).toBeGreaterThan(1);
+      expect(completion.authoredItemCount, regionId).toBe(fieldGuideTopicCount * 3);
+      expect(completion.completedCount, regionId).toBe(0);
+    }
+  });
+
+  it('counts only authored Skill Check quick-check evidence toward Guardian Skill Check completion', () => {
+    const regionId = 'complex-harbor';
+    const [firstTopic] = getFieldGuideTopicsForRegion(regionId);
+    const authoredItem = AUTHORED_SKILL_CHECK_ITEMS.find((item) => item.regionId === regionId && item.fieldGuideTopicId === firstTopic.id)!;
+
+    const supportOnly = computeSkillChecklistCompletion({
+      regionId,
+      learningActivityAttempts: [
+        learningAttempt({
+          activityType: 'warm_up',
+          activityId: `warm-up-${firstTopic.id}`,
+          topic: firstTopic.id,
+        }),
+        learningAttempt({
+          activityId: 'p3-complex-locus-argument-001-qc',
+          topic: 'complex_numbers',
+          skillTargetId: 'p3_complex_argand_loci_regions',
+        }),
+      ],
+    });
+    const authored = computeSkillChecklistCompletion({
+      regionId,
+      learningActivityAttempts: [
+        learningAttempt({
+          activityId: authoredItem.itemId,
+          topic: firstTopic.id,
+          skillTargetId: authoredItem.skillId,
+        }),
+      ],
+    });
+
+    expect(supportOnly.topicProgress.find((topic) => topic.topicId === firstTopic.id)?.completed).toBe(false);
+    expect(supportOnly.completedCount).toBe(0);
+    expect(authored.topicProgress.find((topic) => topic.topicId === firstTopic.id)?.completed).toBe(true);
+    expect(authored.completedCount).toBe(1);
   });
 
   it('does not leak raw Content Lab candidates into authored student-runtime Skill Check items', () => {

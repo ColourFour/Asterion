@@ -373,7 +373,7 @@ export function PracticeView({
     ? Boolean(selectedRegionProgressSnapshot?.attempts)
     : progress.attempts.length > 0;
   const whyThisQuestionLine = isGuardianPractice
-    ? 'This is the Guardian check for this region, opened by your saved practice.'
+    ? 'This is the Guardian check for this region, opened by Field Guide and Skill Check completion.'
     : activePracticeMode === 'core'
       ? 'Balanced exam practice: one steady question from the current Paper 3 pool.'
       : activePracticeMode === 'weak'
@@ -444,8 +444,8 @@ export function PracticeView({
     ? regionProgressMessage
     : selectedRegion
       ? regionAttemptChanged
-        ? 'Guardian readiness will be checked again with this saved attempt.'
-        : 'Guardian readiness did not visibly change yet.'
+        ? 'This saved attempt updated exam-training progress.'
+        : 'Exam-training progress did not visibly change yet.'
       : 'Guardian readiness is region-specific, so choose a region when you want to work toward a Guardian.';
   const nextRecommendedAction = savedAttemptFeedback?.scoreRatio != null && savedAttemptFeedback.scoreRatio >= 0.75
     ? activePracticeMode === 'stretch'

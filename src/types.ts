@@ -275,8 +275,19 @@ export interface StudentRegionProgressCell {
   attemptsCount: number;
   averageSelfMarkPercent?: number;
   guardianEligible: boolean;
+  checklist?: RegionChecklistProgressSummary;
   lastEvidenceAt?: string;
   warning?: string;
+}
+
+export interface RegionChecklistProgressSummary {
+  regionId: string;
+  regionName: string;
+  fieldGuideCompleted: number;
+  fieldGuideTotal: number;
+  skillCheckCompleted: number;
+  skillCheckTotal: number;
+  guardianStatus: 'locked' | 'unlocked' | 'completed';
 }
 
 export interface StudentProgressRow {
@@ -811,11 +822,24 @@ export interface RegionLearningRecord {
   regionId: string;
   fieldGuideStartedAt?: string;
   fieldGuideCompletedAt?: string;
+  fieldGuideTopicCompletions?: Record<string, TopicCompletionRecord>;
   guardianQuestionId?: string;
   guardianAttemptId?: string;
   guardianAttemptedAt?: string;
   guardianClearedAt?: string;
   updatedAt: string;
+}
+
+export type TopicCompletionSource = 'field_guide' | 'quick_check' | 'warm_up' | 'legacy_region_completion';
+
+export interface TopicCompletionRecord {
+  topicId: string;
+  subtopicId?: string;
+  title?: string;
+  completedAt: string;
+  source: TopicCompletionSource;
+  activityId?: string;
+  attemptId?: string;
 }
 
 export interface WorldDefinition {

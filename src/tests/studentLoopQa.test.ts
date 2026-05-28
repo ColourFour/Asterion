@@ -7,6 +7,7 @@ import { buildRegionLearningSummary } from '../lib/regionLearning';
 import { calculateRegionProgress, calculateWorldProgress } from '../lib/regionProgress';
 import { emptyProgress, localProgressAdapter } from '../lib/progressStore';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 
 const logRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove')!;
 const complexRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'complex-harbor')!;
@@ -120,6 +121,17 @@ function supportAttempt(
   };
 }
 
+function completedSkillCheckAttempts(region: RegionDefinition): LearningActivityAttempt[] {
+  return getFieldGuideTopicsForRegion(region.id).map((topic, index) => ({
+    ...supportAttempt(`skill-check-${index + 1}`, 'quick_check', 'got_it', false, region),
+    activityId: `skill-check-${topic.id}`,
+    sourceId: `skill-check-${topic.id}`,
+    topic: topic.id,
+    skillTargetId: topic.skillIds[0],
+    prompt: `Skill Check for ${topic.title}`,
+  }));
+}
+
 function regionProgress(region: RegionDefinition, overrides = {}) {
   return {
     region,
@@ -213,12 +225,12 @@ describe('student loop QA boundaries', () => {
     expect(summary.guardianEligibility.eligible).toBe(false);
     expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'skill_checklist')).toMatchObject({
       completed: false,
-      detail: 'Complete each required Skill Check subtopic (0/6).',
+      detail: 'Complete each Skill Check topic (0/6).',
     });
     expect(summary.state).toBe('field_guide_completed');
   });
 
-  it('keeps legacy Guardian unlocks on clean canonical attempt evidence, not generated warm-ups', () => {
+  it('unlocks the Guardian from Field Guide and Skill Check completion, not canonical attempts or generated warm-ups', () => {
     const questions = [
       question('q1', complexRegion, 'modulus and argument'),
       question('q2', complexRegion, 'loci'),
@@ -245,7 +257,7 @@ describe('student loop QA boundaries', () => {
         supportAttempt('support-3', 'warm_up', 'got_it', false, complexRegion),
       ],
     });
-    const canonicalSummary = buildRegionLearningSummary({
+    const canonicalOnlySummary = buildRegionLearningSummary({
       regionProgress: regionProgress(complexRegion, {
         attempts: canonicalAttempts.length,
         totalMarksEarned: 15.12,
@@ -264,12 +276,33 @@ describe('student loop QA boundaries', () => {
       regionAttempts: canonicalAttempts,
       learningActivityAttempts: [supportAttempt('support-4', 'warm_up', 'got_it', false, complexRegion)],
     });
+    const skillCheckSummary = buildRegionLearningSummary({
+      regionProgress: regionProgress(complexRegion, {
+        attempts: canonicalAttempts.length,
+        totalMarksEarned: 15.12,
+        totalMarksAvailable: 20,
+        averageScoreRatio: 0.756,
+        recentScoreRatio: 0.756,
+        subtopicsTouched: 2,
+        rank: 'Bronze',
+      }),
+      learningRecord: {
+        regionId: complexRegion.id,
+        fieldGuideCompletedAt: '2026-05-23T00:00:00.000Z',
+        updatedAt: '2026-05-23T00:00:00.000Z',
+      },
+      regionQuestions: questions,
+      regionAttempts: canonicalAttempts,
+      learningActivityAttempts: completedSkillCheckAttempts(complexRegion),
+    });
 
     expect(supportOnlySummary.guardianEligibility.eligible).toBe(false);
     expect(supportOnlySummary.guardianEligibility.guardianQuestion?.id).toBe('q3');
-    expect(canonicalSummary.guardianEligibility.eligible).toBe(true);
-    expect(canonicalSummary.guardianEligibility.guardianQuestion?.id).toBe('q3');
-    expect(canonicalSummary.state).toBe('guardian_unlocked');
+    expect(canonicalOnlySummary.guardianEligibility.eligible).toBe(false);
+    expect(canonicalOnlySummary.guardianEligibility.guardianQuestion?.id).toBe('q3');
+    expect(skillCheckSummary.guardianEligibility.eligible).toBe(true);
+    expect(skillCheckSummary.guardianEligibility.guardianQuestion?.id).toBe('q3');
+    expect(skillCheckSummary.state).toBe('guardian_unlocked');
   });
 
   it('keeps needs_review, candidate, blocked, and failed generated practice out of runtime student practice', () => {

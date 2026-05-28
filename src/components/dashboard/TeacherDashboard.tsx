@@ -137,11 +137,16 @@ function DashboardBlockedState({
 
 function RegionStatusCell({ cell }: { cell: StudentRegionProgressCell }) {
   const locked = cell.excludedFromClassProgress;
+  const checklist = cell.checklist;
   return (
     <td className={`teacher-register-region status-${cell.status}${locked ? ' region-locked-cell' : ''}`}>
       <strong>{cell.progressPercent}%</strong>
       <span>{locked ? 'Not opened for class' : dashboardDataService.labelForTeacherRegionStatus(cell.status)}</span>
-      {locked && cell.attemptsCount > 0 ? <small>existing progress visible</small> : cell.warning ? <small>{cell.warning}</small> : <small>{cell.attemptsCount} attempts</small>}
+      {checklist ? (
+        <small>
+          FG {checklist.fieldGuideCompleted}/{checklist.fieldGuideTotal} · SC {checklist.skillCheckCompleted}/{checklist.skillCheckTotal} · Guardian {checklist.guardianStatus}
+        </small>
+      ) : locked && cell.attemptsCount > 0 ? <small>existing progress visible</small> : cell.warning ? <small>{cell.warning}</small> : <small>{cell.attemptsCount} attempts</small>}
     </td>
   );
 }
@@ -703,6 +708,7 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
               <th scope="col">Progress</th>
               <th scope="col">Mastery</th>
               <th scope="col">Status</th>
+              <th scope="col">Checklist</th>
               <th scope="col">Evidence</th>
               <th scope="col">Last activity</th>
             </tr>
@@ -717,6 +723,17 @@ function RegionProgressPage({ dashboard, regionId }: { dashboard: TeacherClassDa
                 <td className="teacher-register-overall"><strong>{cell.progressPercent}%</strong></td>
                 <td className="teacher-register-overall"><strong>{cell.masteryPercent}%</strong></td>
                 <td>{cell.excludedFromClassProgress ? 'Not opened for class' : dashboardDataService.labelForTeacherRegionStatus(cell.status)}</td>
+                <td>
+                  {cell.checklist ? (
+                    <>
+                      Field Guide {cell.checklist.fieldGuideCompleted}/{cell.checklist.fieldGuideTotal}
+                      {' · '}
+                      Skill Check {cell.checklist.skillCheckCompleted}/{cell.checklist.skillCheckTotal}
+                      {' · '}
+                      Guardian {cell.checklist.guardianStatus}
+                    </>
+                  ) : 'No checklist data'}
+                </td>
                 <td>{cell.attemptsCount} attempts{typeof cell.averageSelfMarkPercent === 'number' ? ` · ${cell.averageSelfMarkPercent}% self-mark` : ''}</td>
                 <td>{formatDate(cell.lastEvidenceAt ?? row.lastActivityAt)}</td>
               </tr>

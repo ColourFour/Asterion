@@ -367,6 +367,7 @@ function completedSkillChecklistAttempts(regionId = 'logarithm-grove'): Learning
 function renderRegionHubPage(options: {
   activePage?: RegionLearningPageId;
   fieldGuideCompleted?: boolean;
+  fieldGuideCompletedTopicIds?: string[];
   learningRecord?: RegionLearningRecord;
   progressOverrides?: Partial<RegionProgress>;
   regionAttempts?: Attempt[];
@@ -376,6 +377,7 @@ function renderRegionHubPage(options: {
   practiceItems?: GeneratedPracticeItem[];
   learningActivityAttempts?: LearningActivityAttempt[];
   onCompleteFieldGuide?: () => void;
+  onCompleteFieldGuideTopic?: (topicId: string) => void;
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
   onStartTraining?: (intent: TrainingSessionIntent) => void;
   onChallengeGuardian?: (question: NormalizedQuestion) => void;
@@ -396,6 +398,7 @@ function renderRegionHubPage(options: {
       regionProgress={progress}
       fieldGuide={getRegionFieldGuide(progress.region)}
       fieldGuideCompleted={options.fieldGuideCompleted ?? Boolean(options.learningRecord?.fieldGuideCompletedAt)}
+      fieldGuideCompletedTopicIds={options.fieldGuideCompletedTopicIds ?? Object.keys(options.learningRecord?.fieldGuideTopicCompletions ?? {})}
       teachingSnippets={options.snippets ?? [snippet]}
       generatedPractice={options.practiceItems ?? [generatedPractice]}
       learningActivityAttempts={options.learningActivityAttempts ?? []}
@@ -403,6 +406,7 @@ function renderRegionHubPage(options: {
       studentRegionAccess={options.studentRegionAccess}
       activePage={options.activePage}
       onCompleteFieldGuide={options.onCompleteFieldGuide ?? vi.fn()}
+      onCompleteFieldGuideTopic={options.onCompleteFieldGuideTopic ?? vi.fn()}
       onLearningActivityAttempt={options.onLearningActivityAttempt ?? vi.fn()}
       onStartTraining={options.onStartTraining ?? vi.fn()}
       onChallengeGuardian={options.onChallengeGuardian ?? vi.fn()}
@@ -1497,6 +1501,14 @@ describe('FieldGuidePanel teaching snippets', () => {
   });
 
   it('prioritizes the hub next action by Field Guide, Skill Check, Guardian, then Exam Training', () => {
+    const argandHub = renderRegionHubPage({
+      regionId: 'complex-harbor',
+    });
+    const argandActionButtons = Array.from(argandHub.querySelectorAll<HTMLButtonElement>('.region-first-run-loop button'));
+    expect(argandActionButtons.find((button) => button.textContent?.includes('Field Guide'))?.textContent).toContain('0/4 complete');
+    expect(argandActionButtons.find((button) => button.textContent?.includes('Skill Check'))?.textContent).toContain('0/4 complete');
+    expect(argandHub.querySelector('.region-current-step-card')?.textContent).toContain('0/4 complete');
+
     const fieldGuideMissing = renderRegionHubPage({
       regionId: 'algebra-forge',
       learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge'),
@@ -1630,6 +1642,7 @@ describe('FieldGuidePanel teaching snippets', () => {
   it('sends the Field Guide topic CTA to Skill Check with the selected subtopic', () => {
     const algebraRegion = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
     const onCompleteFieldGuide = vi.fn();
+    const onCompleteFieldGuideTopic = vi.fn();
     const onContinueToQuickChecks = vi.fn();
     const container = render(
       <FieldGuidePanel
@@ -1639,6 +1652,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         theme={getRegionTheme(algebraRegion)}
         teachingSnippets={[]}
         onCompleteFieldGuide={onCompleteFieldGuide}
+        onCompleteFieldGuideTopic={onCompleteFieldGuideTopic}
         onContinueToQuickChecks={onContinueToQuickChecks}
       />,
     );
@@ -1659,7 +1673,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       footerButtons[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(onCompleteFieldGuide).toHaveBeenCalledTimes(1);
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+    expect(onCompleteFieldGuideTopic).toHaveBeenCalledWith('algebra_modulus_graph_equations');
     expect(onContinueToQuickChecks).toHaveBeenCalledWith(expect.objectContaining({
       id: 'algebra_modulus_graph_equations',
       title: 'Modulus Graphs and Equations',
@@ -1721,7 +1736,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(guardianPage.textContent).toContain('The Guardian opens when the region checklist is ready.');
+    expect(guardianPage.textContent).toContain('The Guardian opens when Field Guide and Skill Check are complete.');
     expect(guardianPage.textContent).not.toContain('Exam Training');
     expect(guardianPage.querySelectorAll('.guardian-requirement-card')).toHaveLength(2);
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
@@ -1735,7 +1750,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Vault locked');
-    expect(container.textContent).toContain('The challenge opens when the region checklist is ready.');
+    expect(container.textContent).toContain('The challenge opens when Field Guide and Skill Check are complete.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.textContent).not.toContain('Lantern Growth Gate');
@@ -1744,7 +1759,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Enter the Guardian Challenge'))).toBe(false);
     expect(container.querySelectorAll('.guardian-requirement-card')).toHaveLength(2);
-    expect(container.textContent).toContain('Skill Checklist complete');
+    expect(container.textContent).toContain('Skill Check complete');
     expect(container.textContent).toContain('0 / 6');
     expect(container.textContent).not.toContain('Saved practice attempts');
     expect(container.textContent).not.toContain('Exam Training');
@@ -1756,12 +1771,12 @@ describe('FieldGuidePanel teaching snippets', () => {
       activePage: 'guardian',
       onNavigatePage: guideNavigate,
     });
-    const guideAction = guideMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="skill-practice"]');
-    expect(guideAction?.textContent).toContain('Open Skill Check');
+    const guideAction = guideMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="field-guide"]');
+    expect(guideAction?.textContent).toContain('Start with the Field Guide');
     act(() => {
       guideAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(guideNavigate).toHaveBeenCalledWith('skill-practice');
+    expect(guideNavigate).toHaveBeenCalledWith('field-guide');
 
     const evidenceNavigate = vi.fn<(page: RegionLearningPageId) => void>();
     const evidenceMissing = renderRegionHubPage({
@@ -1798,7 +1813,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(recentAction?.textContent).toContain('Open Skill Check');
   });
 
-  it('shows Guardian artwork and actual question action after unlock evidence is complete', () => {
+  it('shows Guardian artwork and text trial after Field Guide and Skill Check are complete', () => {
     const onChallengeGuardian = vi.fn();
     const regionAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
       questionId: 'q1',
@@ -1833,7 +1848,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Lantern Growth Gate');
     expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
     expect(container.textContent).toContain('Guardian ready');
-    expect(container.textContent).toContain('The region checklist is ready.');
+    expect(container.textContent).toContain('Field Guide and Skill Check are complete.');
     expect(container.textContent).toContain('Text Guardian Trial');
     expect(container.textContent).toContain('Observatory Mirror Star');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
@@ -1875,8 +1890,8 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
-    expect(container.textContent).toContain('Clear every subtopic seal');
-    expect(container.textContent).toContain('What opened the Guardian?');
+    expect(container.textContent).toContain('Clear every topic seal');
+    expect(container.textContent).toContain('What counts?');
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(onChallengeGuardian).not.toHaveBeenCalled();
     expect(container.textContent?.toLowerCase()).not.toContain('teacher dashboard');
@@ -1999,15 +2014,13 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.querySelector('.field-guide-card')).toBeTruthy();
     expect(fieldGuidePage.querySelector('.region-activity-locked-panel')).toBeFalsy();
 
-    const lockedPages: Array<[RegionLearningPageId, string]> = [
+    const lockedSkillPages: Array<[RegionLearningPageId, string]> = [
       ['quick-check', 'Skill Check is locked for this class'],
       ['warm-up', 'Skill Check is locked for this class'],
       ['skill-practice', 'Skill Check is locked for this class'],
-      ['exam-training', 'Exam Training is locked for this class'],
-      ['guardian', 'Guardian Challenge is locked for this class'],
     ];
 
-    for (const [activePage, lockedText] of lockedPages) {
+    for (const [activePage, lockedText] of lockedSkillPages) {
       const container = renderRegionHubPage({
         activePage,
         studentRegionAccess: lockedStudentRegionAccess,
@@ -2019,9 +2032,32 @@ describe('FieldGuidePanel teaching snippets', () => {
       expect(container.querySelector('.training-card')).toBeFalsy();
       expect(container.querySelector('.guardian-card')).toBeFalsy();
     }
+
+    const examTraining = renderRegionHubPage({
+      activePage: 'exam-training',
+      studentRegionAccess: lockedStudentRegionAccess,
+    });
+    expect(examTraining.textContent).toContain('Your teacher has not opened Exam Training');
+    expect(examTraining.querySelector('.training-card')).toBeTruthy();
+    expect(examTraining.querySelector<HTMLButtonElement>('.training-primary-start')?.disabled).toBe(true);
+    expect(examTraining.querySelector('.region-activity-locked-panel')).toBeFalsy();
+
+    const guardian = renderRegionHubPage({
+      activePage: 'guardian',
+      learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
+      learningActivityAttempts: completedSkillChecklistAttempts(),
+      studentRegionAccess: lockedStudentRegionAccess,
+    });
+    expect(guardian.textContent).toContain('Guardian Challenge');
+    expect(guardian.textContent).toContain('Guardian ready, locked by class settings');
+    expect(guardian.textContent).toContain('Your teacher has not opened the Guardian Challenge');
+    expect(guardian.querySelector('.guardian-card')).toBeTruthy();
+    expect(guardian.querySelector('.guardian-item-set')).toBeFalsy();
+    expect(guardian.querySelector('.guardian-check-button')).toBeFalsy();
+    expect(guardian.querySelector('.region-activity-locked-panel')).toBeFalsy();
   });
 
-  it('keeps existing locked-region progress visible without opening progress routes', () => {
+  it('keeps existing locked-region progress visible while only blocking start actions', () => {
     const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
     const container = renderRegionHubPage({
       fieldGuideCompleted: true,
@@ -2043,11 +2079,12 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-first-run-loop button'));
     expect(actionButtons.find((button) => button.textContent?.includes('Field Guide'))?.disabled).toBe(false);
-    for (const label of ['Skill Check', 'Guardian']) {
-      const button = actionButtons.find((candidate) => candidate.textContent?.includes(label));
-      expect(button?.disabled).toBe(true);
-      expect(button?.textContent).toContain('Locked');
-    }
+    const skillCheckButton = actionButtons.find((candidate) => candidate.textContent?.includes('Skill Check'));
+    expect(skillCheckButton?.disabled).toBe(true);
+    expect(skillCheckButton?.textContent).toContain('Locked');
+    const guardianButton = actionButtons.find((candidate) => candidate.textContent?.includes('Guardian'));
+    expect(guardianButton?.disabled).toBe(false);
+    expect(guardianButton?.textContent).toContain('Locked');
     expect(container.querySelector('.region-first-run-loop')?.textContent).not.toContain('Exam Training');
     expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Locked');
 
@@ -2055,6 +2092,10 @@ describe('FieldGuidePanel teaching snippets', () => {
       actionButtons.find((button) => button.textContent?.includes('Skill Check'))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(onNavigatePage).not.toHaveBeenCalledWith('skill-practice');
+    act(() => {
+      guardianButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+    expect(onNavigatePage).toHaveBeenCalledWith('guardian');
   });
 
   it('leaves unlocked classroom regions on the normal learning path', () => {
@@ -2130,12 +2171,14 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(snippets.length).toBeGreaterThan(1);
 
     const onCompleteFieldGuide = vi.fn();
+    const onCompleteFieldGuideTopic = vi.fn();
     const onNavigatePage = vi.fn<(page: RegionLearningPageId) => void>();
     const container = renderRegionHubPage({
       activePage: 'field-guide',
       regionId: 'algebra-forge',
       snippets,
       onCompleteFieldGuide,
+      onCompleteFieldGuideTopic,
       onNavigatePage,
     });
 
@@ -2214,7 +2257,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       continueButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(onCompleteFieldGuide).toHaveBeenCalledTimes(1);
+    expect(onCompleteFieldGuide).not.toHaveBeenCalled();
+    expect(onCompleteFieldGuideTopic).toHaveBeenCalledWith('algebra_binomial_expansion');
     expect(onNavigatePage).toHaveBeenCalledWith('skill-practice');
   });
 

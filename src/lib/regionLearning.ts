@@ -10,10 +10,10 @@ import type {
   RegionVisualTreatment,
   TrainingSessionIntent,
 } from '../types';
-import { filterMasteryEvidence } from './masteryEvidence';
 import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion } from './questionEligibility';
 import { getGuardianChallengeItemsForRegion } from '../data/guardianChallengeItems';
-import { computeSkillChecklistCompletion, isSkillChecklistGuardianRegion, type SkillChecklistCompletion } from './skillChecklistProgress';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
+import { computeSkillChecklistCompletion, type SkillChecklistCompletion } from './skillChecklistProgress';
 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
@@ -34,7 +34,7 @@ export interface GuardianEligibility {
 }
 
 export interface GuardianRequirement {
-  id: 'field_guide' | 'skill_checklist' | 'attempt_count' | 'recent_high_score' | 'subtopic_spread' | 'guardian_asset' | 'guardian_challenge_set';
+  id: 'field_guide' | 'skill_checklist';
   label: string;
   completed: boolean;
   detail: string;
@@ -85,27 +85,8 @@ function ratio(attempt: Attempt): number | undefined {
   return undefined;
 }
 
-function attemptedSubtopics(attempts: Attempt[]): Set<string> {
-  return new Set(attempts.map((attempt) => attempt.subtopic).filter((value): value is string => Boolean(value)));
-}
-
-function possibleSubtopics(questions: NormalizedQuestion[]): Set<string> {
-  const fromQuestions = questions
-    .map((question) => question.displaySubtopic ?? question.localSubtopic ?? question.deepseek.subtopic)
-    .filter((value): value is string => Boolean(value));
-  return new Set(fromQuestions);
-}
-
 function hasQuestionAndMarkScheme(question: NormalizedQuestion): boolean {
   return question.questionImageCandidates.length > 0 && question.markSchemeImageCandidates.length > 0;
-}
-
-function attemptCountText(count: number): string {
-  return `${count} saved attempt${count === 1 ? '' : 's'}`;
-}
-
-function attemptsMissingText(count: number): string {
-  return `${count} more saved attempt${count === 1 ? '' : 's'}`;
 }
 
 function compareLearningActivityAttempts(a: LearningActivityAttempt, b: LearningActivityAttempt): number {
@@ -167,122 +148,43 @@ export function computeGuardianEligibility(input: {
   regionAttempts: Attempt[];
   learningActivityAttempts?: LearningActivityAttempt[];
 }): GuardianEligibility {
-  if (isSkillChecklistGuardianRegion(input.region.id)) {
-    const skillChecklistCompletion = computeSkillChecklistCompletion({
-      regionId: input.region.id,
-      learningActivityAttempts: input.learningActivityAttempts,
-    });
-    const guardianChallengeAvailable = getGuardianChallengeItemsForRegion(input.region.id).length === skillChecklistCompletion.requiredCount
-      && skillChecklistCompletion.requiredCount > 0;
-    const requirements: GuardianRequirement[] = [
-      {
-        id: 'skill_checklist',
-        label: 'Skill Checklist complete',
-        completed: skillChecklistCompletion.completed,
-        detail: skillChecklistCompletion.completed
-          ? `All ${skillChecklistCompletion.requiredCount} required Skill Check subtopics are complete.`
-          : `Complete each required Skill Check subtopic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
-        nextAction: 'Use Skill Check until every Field Guide subtopic has a completed item.',
-        progress: {
-          current: skillChecklistCompletion.completedCount,
-          target: skillChecklistCompletion.requiredCount,
-        },
-      },
-      {
-        id: 'guardian_challenge_set',
-        label: 'Guardian challenge set ready',
-        completed: guardianChallengeAvailable,
-        detail: guardianChallengeAvailable
-          ? 'A text-based Guardian item is ready for every Field Guide subtopic.'
-          : 'This region needs one Guardian item for every Field Guide subtopic.',
-        nextAction: 'This region needs a complete Guardian challenge set before the trial can open.',
-        progress: {
-          current: Math.min(getGuardianChallengeItemsForRegion(input.region.id).length, skillChecklistCompletion.requiredCount),
-          target: skillChecklistCompletion.requiredCount,
-        },
-      },
-    ];
-    const missingRequirements = requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.detail);
-
-    return {
-      eligible: missingRequirements.length === 0,
-      requirements,
-      missingRequirements,
-      guardianChallengeAvailable,
-      skillChecklistCompletion,
-    };
-  }
-
   const fieldGuideCompleted = Boolean(input.learningRecord?.fieldGuideCompletedAt);
+  const fieldGuideTopicCount = getFieldGuideTopicsForRegion(input.region.id).length;
+  const fieldGuideTarget = Math.max(1, fieldGuideTopicCount);
+  const fieldGuideCompletedCount = fieldGuideTopicCount
+    ? Math.min(fieldGuideTopicCount, Object.keys(input.learningRecord?.fieldGuideTopicCompletions ?? {}).length)
+    : fieldGuideCompleted ? 1 : 0;
+  const skillChecklistCompletion = computeSkillChecklistCompletion({
+    regionId: input.region.id,
+    learningActivityAttempts: input.learningActivityAttempts,
+  });
   const guardianQuestions = filterGuardianCandidateQuestionsForRegion(input.regionQuestions, input.region);
   const guardianQuestion = selectGuardianQuestion(guardianQuestions);
-  const evidenceAttempts = filterMasteryEvidence({
-    attempts: input.regionAttempts,
-    questions: input.regionQuestions,
-    region: input.region,
-  }).map((evidence) => evidence.attempt);
-  const recentAttempts = evidenceAttempts.slice(-5);
-  const hasRecentHighScore = recentAttempts.some((attempt) => (ratio(attempt) ?? 0) >= 0.7);
-  const possible = possibleSubtopics(guardianQuestions);
-  const attempted = attemptedSubtopics(evidenceAttempts);
-  const requiredSubtopics = possible.size >= 2 ? 2 : Math.min(1, possible.size);
-  const attemptsMissing = Math.max(0, 3 - evidenceAttempts.length);
-  const subtopicRequirementApplies = requiredSubtopics >= 2;
+  const guardianChallengeAvailable = getGuardianChallengeItemsForRegion(input.region.id).length > 0;
 
   const requirements: GuardianRequirement[] = [
     {
       id: 'field_guide',
-      label: 'Field Guide reviewed',
+      label: 'Field Guide complete',
       completed: fieldGuideCompleted,
       detail: fieldGuideCompleted
-        ? 'You have reviewed the key moves and traps for this region.'
-        : 'Complete the Field Guide.',
-      nextAction: 'Start with the Field Guide. You have not reviewed the key exam traps yet.',
-      progress: { current: fieldGuideCompleted ? 1 : 0, target: 1 },
+        ? `All ${fieldGuideTarget} Field Guide topic${fieldGuideTarget === 1 ? '' : 's'} are complete.`
+        : `Complete the Field Guide topics (${fieldGuideCompletedCount}/${fieldGuideTarget}).`,
+      nextAction: 'Start with the Field Guide before the Skill Check.',
+      progress: { current: fieldGuideCompleted ? fieldGuideTarget : fieldGuideCompletedCount, target: fieldGuideTarget },
     },
     {
-      id: 'attempt_count',
-      label: 'Saved practice attempts',
-      completed: attemptsMissing === 0,
-      detail: attemptsMissing === 0
-        ? `${attemptCountText(evidenceAttempts.length)} recorded in this region.`
-        : `Save at least 3 attempts in this region (${evidenceAttempts.length}/3).`,
-      nextAction: `Do one exam practice question and save your marks. You need ${attemptsMissingText(attemptsMissing)} before the Guardian opens.`,
-      progress: { current: Math.min(evidenceAttempts.length, 3), target: 3 },
-    },
-    {
-      id: 'recent_high_score',
-      label: 'Recent 70%+ attempt',
-      completed: hasRecentHighScore,
-      detail: hasRecentHighScore
-        ? 'At least one recent saved attempt is 70% or higher.'
-        : 'Save at least 1 recent attempt at 70% or higher.',
-      nextAction: 'You are close to the Guardian. Earn one recent saved attempt at 70% or higher.',
-      progress: { current: hasRecentHighScore ? 1 : 0, target: 1 },
-    },
-    {
-      id: 'subtopic_spread',
-      label: 'Subtopic spread',
-      completed: !subtopicRequirementApplies || attempted.size >= requiredSubtopics,
-      detail: subtopicRequirementApplies
-        ? attempted.size >= requiredSubtopics
-          ? `You have attempted ${attempted.size}/${requiredSubtopics} required subtopics.`
-          : `Attempt at least ${requiredSubtopics} subtopics in this region (${attempted.size}/${requiredSubtopics}).`
-        : 'Subtopic spread is skipped until this region has enough subtopic metadata.',
-      nextAction: `Try a question from another subtopic before challenging the Guardian (${attempted.size}/${requiredSubtopics}).`,
-      progress: subtopicRequirementApplies
-        ? { current: Math.min(attempted.size, requiredSubtopics), target: requiredSubtopics }
-        : { current: 1, target: 1, label: 'Not required' },
-    },
-    {
-      id: 'guardian_asset',
-      label: 'Guardian question ready',
-      completed: Boolean(guardianQuestion),
-      detail: guardianQuestion
-        ? 'A trainable guardian question with mark-scheme images is available.'
-        : 'Fix guardian question asset data: no trainable guardian question has both question and mark-scheme images.',
-      nextAction: 'This region needs a trainable guardian question with both question and mark-scheme images.',
-      progress: { current: guardianQuestion ? 1 : 0, target: 1 },
+      id: 'skill_checklist',
+      label: 'Skill Check complete',
+      completed: skillChecklistCompletion.completed,
+      detail: skillChecklistCompletion.completed
+        ? `All ${skillChecklistCompletion.requiredCount} Skill Check topic${skillChecklistCompletion.requiredCount === 1 ? '' : 's'} are complete.`
+        : `Complete each Skill Check topic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
+      nextAction: 'Use Skill Check until every authored topic has a completed item.',
+      progress: {
+        current: skillChecklistCompletion.completedCount,
+        target: skillChecklistCompletion.requiredCount,
+      },
     },
   ];
   const missingRequirements = requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.detail);
@@ -292,6 +194,8 @@ export function computeGuardianEligibility(input: {
     requirements,
     missingRequirements,
     guardianQuestion,
+    guardianChallengeAvailable,
+    skillChecklistCompletion,
   };
 }
 

@@ -19,6 +19,7 @@ export interface ProgressStorageAdapter {
   addLearningActivityAttempt(attempt: LearningActivityAttempt): StoredProgress;
   addIssueReport(issueReport: IssueReport): StoredProgress;
   startRegionFieldGuide(regionId: string): StoredProgress;
+  completeRegionFieldGuideTopic(regionId: string, topicId: string): StoredProgress;
   completeRegionFieldGuide(regionId: string): StoredProgress;
   recordRegionGuardianAttempt(input: RegionGuardianAttemptRecordInput): StoredProgress;
   clearLocalDemoProgress(): StoredProgress;

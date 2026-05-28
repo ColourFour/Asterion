@@ -4,12 +4,9 @@ import {
   CheckCircle2,
   Circle,
   Clock3,
-  Images,
-  Layers3,
   Lock,
   ShieldCheck,
   Sparkles,
-  Target,
   Trophy,
 } from 'lucide-react';
 import type { NormalizedQuestion } from '../../../types';
@@ -21,6 +18,7 @@ import { questionSummary } from './regionHubPanelUtils';
 interface GuardianEligibilityPanelProps {
   guardianCleared: boolean;
   guardianQuestion?: NormalizedQuestion;
+  guardianAccessLockedReason?: string;
   regionName: string;
   summary: RegionLearningSummary;
   onChallengeGuardian: (question: NormalizedQuestion) => void;
@@ -30,9 +28,6 @@ interface GuardianEligibilityPanelProps {
 function requirementIcon(requirement: GuardianRequirement) {
   if (requirement.id === 'field_guide') return <BookOpenCheck size={20} aria-hidden="true" />;
   if (requirement.id === 'skill_checklist') return <CheckCircle2 size={20} aria-hidden="true" />;
-  if (requirement.id === 'attempt_count') return <Images size={20} aria-hidden="true" />;
-  if (requirement.id === 'recent_high_score') return <Target size={20} aria-hidden="true" />;
-  if (requirement.id === 'subtopic_spread') return <Layers3 size={20} aria-hidden="true" />;
   return <ShieldCheck size={20} aria-hidden="true" />;
 }
 
@@ -49,19 +44,19 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
   helper: string;
   launch?: boolean;
 } {
-  if (summary.guardianEligibility.eligible && guardianQuestion) {
-    return {
-      label: 'Enter the Guardian Challenge',
-      helper: 'You have done enough region practice to try the Guardian trial.',
-      launch: true,
-    };
-  }
-
   if (summary.guardianEligibility.eligible && summary.guardianEligibility.guardianChallengeAvailable) {
     return {
       label: 'Guardian challenge is open',
-      helper: 'The region checklist is ready. The Guardian trial is open above.',
+      helper: 'The Field Guide and Skill Check are complete. The Guardian trial is open above.',
       disabled: true,
+    };
+  }
+
+  if (summary.guardianEligibility.eligible && guardianQuestion) {
+    return {
+      label: 'Enter the Guardian Challenge',
+      helper: 'The Field Guide and Skill Check are complete.',
+      launch: true,
     };
   }
 
@@ -75,18 +70,6 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     };
   }
 
-  if (
-    firstMissing?.id === 'attempt_count'
-    || firstMissing?.id === 'recent_high_score'
-    || firstMissing?.id === 'subtopic_spread'
-  ) {
-    return {
-      label: firstMissing.id === 'attempt_count' ? 'Save one exam attempt' : 'Review saved exam practice',
-      page: 'exam-training',
-      helper: firstMissing.nextAction ?? firstMissing.detail,
-    };
-  }
-
   if (firstMissing?.id === 'skill_checklist') {
     return {
       label: 'Open Skill Check',
@@ -95,11 +78,11 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     };
   }
 
-  if (firstMissing?.id === 'guardian_asset' || firstMissing?.id === 'guardian_challenge_set') {
+  if (summary.guardianEligibility.eligible) {
     return {
-      label: 'Guardian assets pending',
+      label: 'Guardian content pending',
       disabled: true,
-      helper: firstMissing.detail,
+      helper: 'Unlock requirements are complete. Guardian challenge content is still being prepared for this region.',
     };
   }
 
@@ -110,9 +93,26 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
   };
 }
 
+function SkillCheckTopicBreakdown({ summary }: { summary: RegionLearningSummary }) {
+  const completion = summary.guardianEligibility.skillChecklistCompletion;
+  if (!completion?.topicProgress.length) return null;
+
+  return (
+    <div className="guardian-topic-breakdown" aria-label="Skill Check topic completion">
+      {completion.topicProgress.map((topic) => (
+        <span className={topic.completed ? 'is-complete' : 'is-pending'} key={topic.topicId}>
+          <CheckCircle2 size={14} aria-hidden="true" />
+          {topic.title}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function GuardianEligibilityPanel({
   guardianCleared,
   guardianQuestion,
+  guardianAccessLockedReason,
   regionName,
   summary,
   onChallengeGuardian,
@@ -120,13 +120,20 @@ export function GuardianEligibilityPanel({
 }: GuardianEligibilityPanelProps) {
   const completed = summary.guardianEligibility.requirements.filter((requirement) => requirement.completed);
   const missing = summary.guardianEligibility.requirements.filter((requirement) => !requirement.completed);
-  const action = nextGuardianAction(summary, guardianQuestion);
+  const action = guardianAccessLockedReason && summary.guardianEligibility.eligible
+    ? {
+      label: 'Guardian locked by class settings',
+      disabled: true,
+      helper: guardianAccessLockedReason,
+    }
+    : nextGuardianAction(summary, guardianQuestion);
+  const readyButClassLocked = Boolean(guardianAccessLockedReason && summary.guardianEligibility.eligible);
 
   return (
     <RegionActionCard
       eyebrow="Step 3 · Guardian"
       title="Guardian Challenge"
-      description="A later region challenge that opens when the region checklist is ready."
+      description="A later region challenge that opens when Field Guide and Skill Check are complete."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card guardian-readiness-card"
@@ -137,7 +144,7 @@ export function GuardianEligibilityPanel({
             <Trophy size={22} />
             <div>
               <strong>Region restored</strong>
-              <span>Guardian cleared from saved practice. {regionName} restoration sigil unlocked.</span>
+              <span>Guardian cleared. {regionName} restoration sigil unlocked.</span>
             </div>
           </div>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
@@ -153,27 +160,36 @@ export function GuardianEligibilityPanel({
             ))}
           </div>
         </>
-      ) : summary.guardianEligibility.eligible && (guardianQuestion || summary.guardianEligibility.guardianChallengeAvailable) ? (
+      ) : summary.guardianEligibility.eligible && (guardianQuestion || summary.guardianEligibility.guardianChallengeAvailable || guardianAccessLockedReason) ? (
         <>
-          <div className="guardian-ready-banner">
-            <Sparkles size={22} aria-hidden="true" />
+          <div className={readyButClassLocked ? 'guardian-ready-banner is-locked' : 'guardian-ready-banner'}>
+            {readyButClassLocked ? <Lock size={22} aria-hidden="true" /> : <Sparkles size={22} aria-hidden="true" />}
             <div>
-              <strong>Guardian ready</strong>
+              <strong>{readyButClassLocked ? 'Guardian ready, locked by class settings' : 'Guardian ready'}</strong>
               <span>
-                {summary.guardianEligibility.guardianChallengeAvailable
-                  ? 'The region checklist is ready. The Guardian trial is open above.'
+                {guardianAccessLockedReason
+                  ? guardianAccessLockedReason
+                  : summary.guardianEligibility.guardianChallengeAvailable
+                  ? 'Field Guide and Skill Check are complete. The Guardian trial is open above.'
                   : 'The vault opens now. Enter the difficult exam-style challenge when you are ready.'}
               </span>
             </div>
           </div>
-          {guardianQuestion ? (
-            <button className="primary-button guardian-primary-action" type="button" onClick={() => onChallengeGuardian(guardianQuestion)}>
+          {guardianQuestion && !summary.guardianEligibility.guardianChallengeAvailable ? (
+            <button
+              className="primary-button guardian-primary-action"
+              type="button"
+              disabled={Boolean(guardianAccessLockedReason)}
+              onClick={() => {
+                if (!guardianAccessLockedReason) onChallengeGuardian(guardianQuestion);
+              }}
+            >
               <Sparkles size={18} aria-hidden="true" />
-              {action.label}
+              {guardianAccessLockedReason ? 'Guardian locked by class settings' : action.label}
             </button>
           ) : null}
           <details className="guardian-evidence-detail">
-            <summary>What opened the Guardian?</summary>
+            <summary>What counts?</summary>
             <div className="guardian-requirement-grid" aria-label="Guardian requirements">
               {summary.guardianEligibility.requirements.map((requirement) => (
                 <article className="guardian-requirement-card is-complete" key={requirement.id}>
@@ -187,20 +203,19 @@ export function GuardianEligibilityPanel({
                 </article>
               ))}
             </div>
-            {guardianQuestion ? (
+            {guardianQuestion && !summary.guardianEligibility.guardianChallengeAvailable ? (
               <div className="guardian-question-preview">
                 <span>Launch target</span>
                 <strong>{questionSummary(guardianQuestion)}</strong>
               </div>
             ) : null}
+            <SkillCheckTopicBreakdown summary={summary} />
           </details>
         </>
       ) : (
         <>
           <p className="guardian-encouragement">
-            {summary.guardianEligibility.skillChecklistCompletion
-              ? 'The Guardian opens when the region checklist is ready.'
-              : 'The Guardian opens after enough saved region practice.'}
+            The Guardian opens when Field Guide and Skill Check are complete.
           </p>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
             {summary.guardianEligibility.requirements.map((requirement) => (
@@ -239,12 +254,12 @@ export function GuardianEligibilityPanel({
             </button>
           </div>
           <details className="guardian-evidence-detail">
-            <summary>What is already done?</summary>
+            <summary>What counts?</summary>
             <ul className="guardian-requirements completed-requirements">
               {completed.map((requirement) => (
                 <li key={requirement.id}><CheckCircle2 size={16} /> {requirement.detail}</li>
               ))}
-              {completed.length === 0 ? <li><Circle size={16} /> Start with the Field Guide, then save practice attempts.</li> : null}
+              {completed.length === 0 ? <li><Circle size={16} /> Start with the Field Guide, then complete Skill Check topics.</li> : null}
             </ul>
             {missing.length ? (
               <ul className="guardian-requirements missing-requirements">
@@ -253,6 +268,7 @@ export function GuardianEligibilityPanel({
                 ))}
               </ul>
             ) : null}
+            <SkillCheckTopicBreakdown summary={summary} />
           </details>
         </>
       )}

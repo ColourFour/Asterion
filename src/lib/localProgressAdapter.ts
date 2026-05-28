@@ -16,8 +16,10 @@ import type {
   StoredProgress,
   StudentClaimState,
   StudentProfile,
+  TopicCompletionRecord,
   TopicProfile,
 } from '../types';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import type { MasteryEvidenceReadinessStatus } from '../types';
 import { DEFAULT_AVATAR_SETTINGS, normalizeAvatarSettings } from './avatarStore';
 import { updateTopicProfile } from './mastery';
@@ -376,18 +378,72 @@ function normalizeLearningActivityAttempt(value: unknown): LearningActivityAttem
   };
 }
 
+function topicCompletionFromRecord(value: unknown): TopicCompletionRecord | undefined {
+  if (!isRecord(value)) return undefined;
+  const topicId = optionalString(value.topicId);
+  const completedAt = optionalString(value.completedAt);
+  const source = optionalString(value.source);
+  if (!topicId || !completedAt || !source) return undefined;
+  if (!['field_guide', 'quick_check', 'warm_up', 'legacy_region_completion'].includes(source)) return undefined;
+  return {
+    topicId,
+    subtopicId: optionalString(value.subtopicId),
+    title: optionalString(value.title),
+    completedAt,
+    source: source as TopicCompletionRecord['source'],
+    activityId: optionalString(value.activityId),
+    attemptId: optionalString(value.attemptId),
+  };
+}
+
+function normalizeFieldGuideTopicCompletions(
+  regionId: string,
+  value: unknown,
+  legacyRegionCompletedAt?: string,
+): Record<string, TopicCompletionRecord> | undefined {
+  const records: Record<string, TopicCompletionRecord> = {};
+  if (isRecord(value)) {
+    for (const [topicId, raw] of Object.entries(value)) {
+      const normalized = topicCompletionFromRecord(raw);
+      if (normalized && normalized.topicId === topicId) {
+        records[topicId] = normalized;
+      }
+    }
+  }
+
+  if (Object.keys(records).length === 0 && legacyRegionCompletedAt) {
+    for (const topic of getFieldGuideTopicsForRegion(regionId)) {
+      records[topic.id] = {
+        topicId: topic.id,
+        subtopicId: topic.id,
+        title: topic.title,
+        completedAt: legacyRegionCompletedAt,
+        source: 'legacy_region_completion',
+      };
+    }
+  }
+
+  return Object.keys(records).length ? records : undefined;
+}
+
 function normalizeRegionLearningRecord(regionId: string, value: unknown): RegionLearningRecord | undefined {
   if (!isRecord(value)) return undefined;
   if (!regionId) return undefined;
+  const fieldGuideCompletedAt = optionalString(value.fieldGuideCompletedAt);
   return {
     regionId,
     fieldGuideStartedAt: optionalString(value.fieldGuideStartedAt),
-    fieldGuideCompletedAt: optionalString(value.fieldGuideCompletedAt),
+    fieldGuideCompletedAt,
+    fieldGuideTopicCompletions: normalizeFieldGuideTopicCompletions(
+      regionId,
+      value.fieldGuideTopicCompletions,
+      fieldGuideCompletedAt,
+    ),
     guardianQuestionId: optionalString(value.guardianQuestionId),
     guardianAttemptId: optionalString(value.guardianAttemptId),
     guardianAttemptedAt: optionalString(value.guardianAttemptedAt),
     guardianClearedAt: optionalString(value.guardianClearedAt),
-    updatedAt: optionalString(value.updatedAt) ?? optionalString(value.fieldGuideCompletedAt) ?? optionalString(value.guardianAttemptedAt) ?? new Date(0).toISOString(),
+    updatedAt: optionalString(value.updatedAt) ?? fieldGuideCompletedAt ?? optionalString(value.guardianAttemptedAt) ?? new Date(0).toISOString(),
   };
 }
 
@@ -495,6 +551,30 @@ function updateRegionLearningRecord(
   });
 }
 
+function allFieldGuideTopicCompletions(regionId: string, completedAt: string): Record<string, TopicCompletionRecord> | undefined {
+  const topics = getFieldGuideTopicsForRegion(regionId);
+  if (!topics.length) return undefined;
+  return Object.fromEntries(topics.map((topic) => [topic.id, {
+    topicId: topic.id,
+    subtopicId: topic.id,
+    title: topic.title,
+    completedAt,
+    source: 'field_guide' as const,
+  }]));
+}
+
+function regionFieldGuideCompleteAt(
+  regionId: string,
+  current: RegionLearningRecord | undefined,
+  completions: Record<string, TopicCompletionRecord> | undefined,
+  now: string,
+): string | undefined {
+  const topics = getFieldGuideTopicsForRegion(regionId);
+  if (!topics.length) return current?.fieldGuideCompletedAt ?? now;
+  const allComplete = topics.every((topic) => Boolean(completions?.[topic.id]));
+  return allComplete ? current?.fieldGuideCompletedAt ?? now : current?.fieldGuideCompletedAt;
+}
+
 export const localProgressAdapter: ProgressStorageAdapter = {
   mode: 'local',
 
@@ -557,6 +637,42 @@ export const localProgressAdapter: ProgressStorageAdapter = {
     }));
   },
 
+  completeRegionFieldGuideTopic(regionId: string, topicId: string): StoredProgress {
+    const topic = getFieldGuideTopicsForRegion(regionId).find((candidate) => candidate.id === topicId);
+    const progress = loadLocalProgress();
+    const now = new Date().toISOString();
+    const current = progress.regionLearning?.[regionId];
+    const completions = {
+      ...(current?.fieldGuideTopicCompletions ?? {}),
+      [topicId]: {
+        topicId,
+        subtopicId: topicId,
+        title: topic?.title,
+        completedAt: current?.fieldGuideTopicCompletions?.[topicId]?.completedAt ?? now,
+        source: 'field_guide' as const,
+      },
+    };
+    const fieldGuideCompletedAt = regionFieldGuideCompleteAt(regionId, current, completions, now);
+    const nextProgress: StoredProgress = {
+      ...progress,
+      regionLearning: {
+        ...(progress.regionLearning ?? {}),
+        [regionId]: {
+          ...current,
+          regionId,
+          fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
+          fieldGuideCompletedAt,
+          fieldGuideTopicCompletions: completions,
+          updatedAt: now,
+        },
+      },
+    };
+
+    return saveLocalProgress(fieldGuideCompletedAt && !current?.fieldGuideCompletedAt
+      ? awardXpEvents(nextProgress, fieldGuideCompletionXpEvents(regionId, fieldGuideCompletedAt))
+      : nextProgress);
+  },
+
   completeRegionFieldGuide(regionId: string): StoredProgress {
     const progress = loadLocalProgress();
     const now = new Date().toISOString();
@@ -571,6 +687,7 @@ export const localProgressAdapter: ProgressStorageAdapter = {
           regionId,
           fieldGuideStartedAt: current?.fieldGuideStartedAt ?? now,
           fieldGuideCompletedAt: completedAt,
+          fieldGuideTopicCompletions: current?.fieldGuideTopicCompletions ?? allFieldGuideTopicCompletions(regionId, completedAt),
           updatedAt: now,
         },
       },

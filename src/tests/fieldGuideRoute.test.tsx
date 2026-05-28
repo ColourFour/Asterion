@@ -2,6 +2,7 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import { emptyProgress, LOCAL_PROGRESS_STORAGE_KEY } from '../lib/progressStore';
 import type { TeachingSnippet } from '../lib/teachingSnippets';
 
@@ -100,7 +101,9 @@ async function waitForText(container: HTMLElement, text: string) {
 
 async function clickButton(container: HTMLElement, text: string) {
   await act(async () => {
-    Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    Array.from(container.querySelectorAll('button'))
+      .find((button) => button.textContent?.includes(text) || button.getAttribute('aria-label')?.includes(text))
+      ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await Promise.resolve();
   });
 }
@@ -192,7 +195,33 @@ describe('Field Guide app route', () => {
     expect(topbar?.querySelector('.teacher-access-menu')).toBeNull();
   });
 
-  it('shows the first Level 2 reward-box placeholder after the first topic path', async () => {
+  it('shows the first Level 2 reward-box placeholder after the final Field Guide topic path', async () => {
+    const progress = JSON.parse(localStorage.getItem(LOCAL_PROGRESS_STORAGE_KEY) ?? '{}');
+    const completedAt = '2026-05-28T00:00:00.000Z';
+    const topicCompletions = Object.fromEntries(
+      getFieldGuideTopicsForRegion('algebra-forge')
+        .filter((topic) => topic.id !== 'algebra_polynomial_division')
+        .map((topic) => [topic.id, {
+          topicId: topic.id,
+          subtopicId: topic.id,
+          title: topic.title,
+          completedAt,
+          source: 'field_guide',
+        }]),
+    );
+    localStorage.setItem(LOCAL_PROGRESS_STORAGE_KEY, JSON.stringify({
+      ...progress,
+      regionLearning: {
+        ...(progress.regionLearning ?? {}),
+        'algebra-forge': {
+          regionId: 'algebra-forge',
+          fieldGuideStartedAt: completedAt,
+          fieldGuideTopicCompletions: topicCompletions,
+          updatedAt: completedAt,
+        },
+      },
+    }));
+
     const container = await render(<App />);
     await waitForText(container, 'Choose the Topic');
 
@@ -208,8 +237,9 @@ describe('Field Guide app route', () => {
     await clickButton(container, 'Continue');
     await waitForText(container, 'Open the box');
     await clickButton(container, 'Open reward box');
-    await waitForText(container, 'You found... absolutely nothing.');
-    expect(container.textContent).toContain('Future you will be rich.');
+    await waitForText(container, 'Dormant Starcore');
+    expect(container.textContent).toContain('This will become a real reward soon.');
+    expect(container.textContent).toContain('I am still forging this part of the game.');
   });
 
   it('shows a safe unavailable state for direct Class Hall routes', async () => {

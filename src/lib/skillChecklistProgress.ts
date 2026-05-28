@@ -1,10 +1,11 @@
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic } from '../data/fieldGuideTopics';
 import { getSkillCheckItemsForRegion } from '../data/skillCheckItems';
 import type { LearningActivityAttempt } from '../types';
+import { P3_ALLOWED_REGION_IDS, type P3RegionId } from './p3SkillContract';
 
-export const SKILL_CHECKLIST_GUARDIAN_REGION_IDS = ['algebra-forge', 'logarithm-grove'] as const;
+export const SKILL_CHECKLIST_GUARDIAN_REGION_IDS = P3_ALLOWED_REGION_IDS;
 
-export type SkillChecklistGuardianRegionId = typeof SKILL_CHECKLIST_GUARDIAN_REGION_IDS[number];
+export type SkillChecklistGuardianRegionId = P3RegionId;
 
 export interface SkillChecklistTopicProgress {
   topicId: string;
@@ -20,26 +21,24 @@ export interface SkillChecklistCompletion {
   completedCount: number;
   requiredCount: number;
   requiredTopicIds: string[];
+  authoredItemCount: number;
   topicProgress: SkillChecklistTopicProgress[];
 }
 
 export function isSkillChecklistGuardianRegion(regionId: string | undefined): regionId is SkillChecklistGuardianRegionId {
-  return Boolean(regionId && SKILL_CHECKLIST_GUARDIAN_REGION_IDS.includes(regionId as SkillChecklistGuardianRegionId));
+  return Boolean(
+    regionId
+    && SKILL_CHECKLIST_GUARDIAN_REGION_IDS.includes(regionId as SkillChecklistGuardianRegionId)
+    && getFieldGuideTopicsForRegion(regionId).length > 0
+    && getSkillCheckItemsForRegion(regionId).length > 0,
+  );
 }
 
 function activityCompletesTopic(attempt: LearningActivityAttempt, topic: FieldGuideTopic, itemIdsByTopic: Map<string, Set<string>>): boolean {
+  if (attempt.activityType !== 'quick_check') return false;
   if (attempt.outcome !== 'got_it') return false;
-  if (attempt.regionId && attempt.regionId !== topicRegionLookup.get(topic.id)) return false;
   if (attempt.topic === topic.id) return true;
-  if (attempt.skillTargetId && topic.skillIds.includes(attempt.skillTargetId)) return true;
   return Boolean(itemIdsByTopic.get(topic.id)?.has(attempt.activityId));
-}
-
-const topicRegionLookup = new Map<string, string>();
-for (const regionId of SKILL_CHECKLIST_GUARDIAN_REGION_IDS) {
-  for (const topic of getFieldGuideTopicsForRegion(regionId)) {
-    topicRegionLookup.set(topic.id, regionId);
-  }
 }
 
 export function computeSkillChecklistCompletion(input: {
@@ -47,9 +46,9 @@ export function computeSkillChecklistCompletion(input: {
   learningActivityAttempts?: LearningActivityAttempt[];
 }): SkillChecklistCompletion {
   const regionId = input.regionId ?? '';
-  const applies = isSkillChecklistGuardianRegion(regionId);
-  const fieldGuideTopics = applies ? getFieldGuideTopicsForRegion(regionId) : [];
   const skillCheckItems = getSkillCheckItemsForRegion(regionId);
+  const fieldGuideTopics = getFieldGuideTopicsForRegion(regionId);
+  const applies = fieldGuideTopics.length > 0;
   const itemIdsByTopic = new Map<string, Set<string>>();
 
   for (const item of skillCheckItems) {
@@ -58,8 +57,10 @@ export function computeSkillChecklistCompletion(input: {
     itemIdsByTopic.set(item.fieldGuideTopicId, ids);
   }
 
-  const topicProgress = fieldGuideTopics.map((topic) => {
-    const matchedAttempt = (input.learningActivityAttempts ?? []).find((attempt) => activityCompletesTopic(attempt, topic, itemIdsByTopic));
+  const topicProgress = (applies ? fieldGuideTopics : []).map((topic) => {
+    const matchedAttempt = (input.learningActivityAttempts ?? [])
+      .filter((attempt) => attempt.regionId === regionId)
+      .find((attempt) => activityCompletesTopic(attempt, topic, itemIdsByTopic));
     return {
       topicId: topic.id,
       title: topic.title,
@@ -76,6 +77,7 @@ export function computeSkillChecklistCompletion(input: {
     completedCount,
     requiredCount: fieldGuideTopics.length,
     requiredTopicIds: fieldGuideTopics.map((topic) => topic.id),
+    authoredItemCount: skillCheckItems.length,
     topicProgress,
   };
 }

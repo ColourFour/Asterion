@@ -13,11 +13,13 @@ import { VisualSupportCard } from './VisualSupportCard';
 interface FieldGuidePanelProps {
   fieldGuide: RegionFieldGuide;
   fieldGuideCompleted: boolean;
+  fieldGuideCompletedTopicIds?: string[];
   region?: RegionDefinition;
   theme: RegionTheme;
   teachingSnippets: TeachingSnippet[];
   maxInitialSnippets?: number;
   onCompleteFieldGuide: () => void;
+  onCompleteFieldGuideTopic?: (topicId: string) => void;
   onBackToRegionHub?: () => void;
   onContinueToQuickChecks?: (topic?: FieldGuideTopic) => void;
   onCurrentTopicChange?: (topic?: FieldGuideTopic) => void;
@@ -111,9 +113,11 @@ function firstAvailable(items: string[]): string | undefined {
 
 function FieldGuideTopicCard({
   topic,
+  completed,
   onSelect,
 }: {
   topic: FieldGuideTopic;
+  completed?: boolean;
   onSelect: (topicId: string) => void;
 }) {
   return (
@@ -138,7 +142,7 @@ function FieldGuideTopicCard({
         </span>
       </span>
       <span className="field-guide-topic-affordance">
-        Start topic
+        {completed ? 'Completed' : 'Start topic'}
         <ChevronRight size={17} aria-hidden="true" />
       </span>
     </button>
@@ -148,11 +152,13 @@ function FieldGuideTopicCard({
 function FieldGuideTopicChoice({
   regionName,
   topics,
+  completedTopicIds,
   onSelectTopic,
   onBackToRegionHub,
 }: {
   regionName: string;
   topics: FieldGuideTopic[];
+  completedTopicIds: Set<string>;
   onSelectTopic: (topicId: string) => void;
   onBackToRegionHub?: () => void;
 }) {
@@ -172,7 +178,7 @@ function FieldGuideTopicChoice({
 
       <div className="field-guide-topic-grid" aria-label={`${regionName} Field Guide topics`}>
         {topics.map((topic) => (
-          <FieldGuideTopicCard key={topic.id} topic={topic} onSelect={onSelectTopic} />
+          <FieldGuideTopicCard key={topic.id} topic={topic} completed={completedTopicIds.has(topic.id)} onSelect={onSelectTopic} />
         ))}
       </div>
 
@@ -327,11 +333,13 @@ function FieldGuideTopicLesson({
 export function FieldGuidePanel({
   fieldGuide: _fieldGuide,
   fieldGuideCompleted,
+  fieldGuideCompletedTopicIds = [],
   region,
   theme,
   teachingSnippets,
   maxInitialSnippets: _maxInitialSnippets = 2,
   onCompleteFieldGuide,
+  onCompleteFieldGuideTopic,
   onBackToRegionHub,
   onContinueToQuickChecks,
   onCurrentTopicChange,
@@ -339,12 +347,14 @@ export function FieldGuidePanel({
   const [activeSnippetIndex, setActiveSnippetIndex] = useState(0);
   const [selectedTopicId, setSelectedTopicId] = useState<string | undefined>();
   const [activeTopicExampleIndex, setActiveTopicExampleIndex] = useState(0);
+  const [localCompletedTopicIds, setLocalCompletedTopicIds] = useState<Set<string>>(() => new Set());
   const snippetCount = teachingSnippets.length;
   const snippetSequenceKey = teachingSnippets.map((snippet) => snippet.snippetId).join('|');
   const topicFlowTopics = getFieldGuideTopicsForRegion(region?.id);
   const hasTopicFlow = topicFlowTopics.length > 0;
   const selectedTopicIndex = topicFlowTopics.findIndex((topic) => topic.id === selectedTopicId);
   const selectedTopic = selectedTopicIndex >= 0 ? topicFlowTopics[selectedTopicIndex] : undefined;
+  const completedTopicIds = new Set([...fieldGuideCompletedTopicIds, ...localCompletedTopicIds]);
   const regionName = region?.name ?? theme.title;
   const safeActiveSnippetIndex = snippetCount ? Math.min(activeSnippetIndex, snippetCount - 1) : 0;
   const activeSnippet = snippetCount ? teachingSnippets[safeActiveSnippetIndex] : undefined;
@@ -372,6 +382,7 @@ export function FieldGuidePanel({
   useEffect(() => {
     setSelectedTopicId(undefined);
     setActiveTopicExampleIndex(0);
+    setLocalCompletedTopicIds(new Set());
     onCurrentTopicChange?.(undefined);
   }, [region?.id]);
 
@@ -384,8 +395,18 @@ export function FieldGuidePanel({
   }
 
   function continueToQuickChecks() {
-    if (!fieldGuideCompleted) onCompleteFieldGuide();
+    if (hasTopicFlow && selectedTopic) {
+      completeTopic(selectedTopic.id);
+    } else if (!fieldGuideCompleted) {
+      onCompleteFieldGuide();
+    }
     onContinueToQuickChecks?.(selectedTopic);
+  }
+
+  function completeTopic(topicId: string) {
+    if (completedTopicIds.has(topicId)) return;
+    setLocalCompletedTopicIds((current) => new Set([...current, topicId]));
+    onCompleteFieldGuideTopic?.(topicId);
   }
 
   function selectTopic(topicId: string) {
@@ -406,6 +427,8 @@ export function FieldGuidePanel({
       setActiveTopicExampleIndex(activeTopicExampleIndex + 1);
       return;
     }
+
+    completeTopic(selectedTopic.id);
 
     if (selectedTopicIndex < topicFlowTopics.length - 1) {
       const nextTopic = topicFlowTopics[selectedTopicIndex + 1];
@@ -440,6 +463,7 @@ export function FieldGuidePanel({
           <FieldGuideTopicChoice
             regionName={regionName}
             topics={topicFlowTopics}
+            completedTopicIds={completedTopicIds}
             onSelectTopic={selectTopic}
             onBackToRegionHub={onBackToRegionHub}
           />

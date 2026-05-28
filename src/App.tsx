@@ -16,7 +16,7 @@ import { deriveAvatarGear } from './lib/avatarGear';
 import { determineAvatarLocation } from './lib/avatarLocation';
 import { dashboardRouteEnabled, parseDashboardRoute } from './lib/appRoutes';
 import { resolveRuntimeConfig, type AsterionRuntimeConfig } from './lib/appConfig';
-import { canStudentUseRegionActivity, getStudentRegionAccess, lockedRegionMessage } from './lib/classRegionAccess';
+import { canStudentUseRegionActivity, getStudentRegionAccess, lockedActivityMessage } from './lib/classRegionAccess';
 import { EXAM_TRAINING_PRACTICE_LABELS, type ExamTrainingPracticeMode } from './lib/examTrainingDashboard';
 import { getGeneratedPracticeForRegion, loadGeneratedPractice, type GeneratedPracticeItem } from './lib/generatedPractice';
 import { loadQuestionBankWithDiagnostics } from './lib/loadQuestionBank';
@@ -28,6 +28,7 @@ import { validatePendingClassClaim } from './lib/dashboardMockService';
 import { isStudentPilotEntryPath, prepareStudentPilotFreshStart } from './lib/studentPilotFreshStart';
 import { hasCompleteOnboardingProfile, profileMatchesClassClaim } from './lib/studentProfileReadiness';
 import { resolveSuggestedNextStep } from './lib/suggestedNextStep';
+import { placeholderRewardForLevelUp, type PlaceholderRewardDefinition } from './lib/studentProgression';
 import { recordHostedProgressEvent, type HostedProgressActivityType, type HostedProgressEventPayload, type HostedProgressEventType } from './lib/supabaseProgressEventService';
 import { submitTeacherQuestion } from './lib/teacherQuestionQueue';
 import {
@@ -130,11 +131,13 @@ function FirstWinLevelUpModal({
   avatar,
   avatarName,
   levelUp,
+  reward,
   onDismiss,
 }: {
   avatar: StoredProgress['avatar'];
   avatarName: string;
   levelUp: StudentLevelUpRecord;
+  reward: PlaceholderRewardDefinition;
   onDismiss: () => void;
 }) {
   const [stage, setStage] = useState<LevelUpModalStage>('level');
@@ -165,7 +168,7 @@ function FirstWinLevelUpModal({
               <strong>{'->'}</strong>
               <span>Level {levelUp.toLevel}</span>
             </div>
-            <p>You finished the first topic path. That counts.</p>
+            <p>Your training pushed the academy forge to a new level.</p>
             <button className="primary-button" type="button" onClick={() => setStage('crate')}>
               Continue
             </button>
@@ -179,17 +182,21 @@ function FirstWinLevelUpModal({
             <button className="reward-crate-button" type="button" onClick={() => setStage('opened')} aria-label="Open reward box">
               <span className="reward-crate-lid" />
               <span className="reward-crate-body" />
-              <span className="reward-crate-label">Open reward box</span>
+              <span className="reward-crate-label">{reward.imageLabel}</span>
             </button>
-            <p>Tap the box. Surely this contains something incredible.</p>
+            <p>Tap the box. The reward forge is making important clanging noises.</p>
           </div>
         ) : null}
 
         {stage === 'opened' ? (
           <div className="first-win-modal-copy">
             <span className="mode-pill">Reward found</span>
-            <h2 id="first-win-level-title">You found...</h2>
-            <p>You found... absolutely nothing. Blake has not put rewards in these boxes yet. Incredible discipline. Future you will be rich.</p>
+            <h2 id="first-win-level-title">{reward.title}</h2>
+            <div className="future-reward-art" aria-hidden="true">
+              <span>{reward.imageLabel}</span>
+            </div>
+            <p>{reward.subtitle}</p>
+            <p>This will become a real reward soon.</p>
             <button className="primary-button" type="button" onClick={onDismiss}>
               Back to training
             </button>
@@ -643,7 +650,7 @@ export default function App() {
   }
 
   function chooseNext(nextProgress = progress, mode: PracticeMode = activePracticeMode()) {
-    const candidateQuestions = selectedRegion ? filterTrainableQuestionsForRegion(trainableQuestions, selectedRegion) : p3Questions();
+    const candidateQuestions = selectedRegion ? filterTrainableQuestionsForRegion(trainableQuestions, selectedRegion) : globalExamTrainingQuestions();
     setCurrentQuestion(selectNextQuestion(candidateQuestions, {
       mode,
       attempts: nextProgress.attempts,
@@ -654,6 +661,32 @@ export default function App() {
 
   function p3Questions() {
     return trainableQuestions.filter(isTrainableP3Question);
+  }
+
+  function hasClassroomPracticeGates(): boolean {
+    return !staffPreviewContext && Boolean(hostedRegionAccess || progress.profile?.classClaim?.status === 'claimed');
+  }
+
+  function openExamTrainingRegions(): RegionDefinition[] {
+    if (!hasClassroomPracticeGates()) return P3_ASTRAL_ACADEMY.regions;
+    return P3_ASTRAL_ACADEMY.regions.filter((region) => (
+      canStudentUseRegionActivity(getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess), 'exam_practice')
+    ));
+  }
+
+  function globalExamTrainingQuestions(): NormalizedQuestion[] {
+    if (!hasClassroomPracticeGates()) return p3Questions();
+    const seen = new Set<string>();
+    return openExamTrainingRegions().flatMap((region) => filterTrainableQuestionsForRegion(trainableQuestions, region))
+      .filter((question) => {
+        if (seen.has(question.id)) return false;
+        seen.add(question.id);
+        return true;
+      });
+  }
+
+  function globalExamTrainingClassLockedReason(): string {
+    return 'Your teacher has not opened Exam Training for any region yet. Your dashboard and topic status stay visible, but real question practice is locked by class settings right now.';
   }
 
   function updateRegionHash(regionId: string, page: RegionLearningPageId) {
@@ -689,12 +722,17 @@ export default function App() {
         openExamTrainingDashboard(region);
         return;
       }
+      const candidateQuestions = filterTrainableQuestionsForRegion(trainableQuestions, region);
+      if (!candidateQuestions.length) {
+        openExamTrainingDashboard(region);
+        return;
+      }
       const selectionMode = practiceModeForDashboardMode(mode, true);
       setSelectedRegion(region);
       setSelectedRegionPage('exam-training');
       setTrainingIntent(trainingIntentForDashboardMode(mode));
       setViewMode('target_topic');
-      setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
+      setCurrentQuestion(selectNextQuestion(candidateQuestions, {
         mode: selectionMode,
         attempts: progress.attempts,
         topicProfiles: progress.topicProfiles,
@@ -708,8 +746,13 @@ export default function App() {
     setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
     const selectionMode = practiceModeForDashboardMode(mode, false);
+    const candidateQuestions = globalExamTrainingQuestions();
+    if (!candidateQuestions.length) {
+      openExamTrainingDashboard();
+      return;
+    }
     setViewMode(selectionMode === 'weak_areas' ? 'weak_areas' : 'start');
-    setCurrentQuestion(selectNextQuestion(p3Questions(), {
+    setCurrentQuestion(selectNextQuestion(candidateQuestions, {
       mode: selectionMode,
       attempts: progress.attempts,
       topicProfiles: progress.topicProfiles,
@@ -753,14 +796,19 @@ export default function App() {
   function startRegionTraining(region: RegionDefinition, intent: TrainingSessionIntent) {
     const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
     if (!canStudentUseRegionActivity(access, 'exam_practice')) {
-      openRegionPage(region, 'hub');
+      openExamTrainingDashboard(region);
+      return;
+    }
+    const candidateQuestions = filterTrainableQuestionsForRegion(trainableQuestions, region);
+    if (!candidateQuestions.length) {
+      openExamTrainingDashboard(region);
       return;
     }
     setSelectedRegion(region);
     setTrainingIntent(intent);
     setExamTrainingPracticeMode(undefined);
     setViewMode('target_topic');
-    setCurrentQuestion(selectNextQuestion(filterTrainableQuestionsForRegion(trainableQuestions, region), {
+    setCurrentQuestion(selectNextQuestion(candidateQuestions, {
       mode: practiceModeForTrainingIntent(intent),
       attempts: progress.attempts,
       topicProfiles: progress.topicProfiles,
@@ -771,7 +819,7 @@ export default function App() {
   function challengeGuardian(region: RegionDefinition, question: NormalizedQuestion) {
     const access = getStudentRegionAccess(progress.profile, region.id, hostedRegionAccess);
     if (!canStudentUseRegionActivity(access, 'guardian')) {
-      openRegionPage(region, 'hub');
+      openRegionPage(region, 'guardian');
       return;
     }
     setSelectedRegion(region);
@@ -806,13 +854,18 @@ export default function App() {
   }
 
   function reviewWeakAreas(nextProgress = progress) {
+    const candidateQuestions = globalExamTrainingQuestions();
+    if (!candidateQuestions.length) {
+      openExamTrainingDashboard();
+      return;
+    }
     clearRegionHash();
     setSelectedRegion(undefined);
     setSelectedRegionPage('hub');
     setTrainingIntent(undefined);
     setExamTrainingPracticeMode('weak');
     setViewMode('weak_areas');
-    setCurrentQuestion(selectNextQuestion(p3Questions(), {
+    setCurrentQuestion(selectNextQuestion(candidateQuestions, {
       mode: 'weak_areas',
       attempts: nextProgress.attempts,
       topicProfiles: nextProgress.topicProfiles,
@@ -859,13 +912,19 @@ export default function App() {
   function persistProgressAfterMeaningfulEvent(nextProgress: StoredProgress) {
     if (staffPreviewContext) return;
     const levelUp = nextProgress.xp?.lastLevelUp;
+    const reward = levelUp ? placeholderRewardForLevelUp(levelUp) : undefined;
     if (
       levelUp
       && levelUp.fromLevel < levelUp.toLevel
-      && levelUp.fromLevel === 1
-      && levelUp.toLevel >= 2
-      && levelUp.eventId.startsWith('first-topic-complete-bonus:')
+      && reward
       && (progress.xp?.level ?? 1) < 2
+    ) {
+      setPendingLevelUp(levelUp);
+    } else if (
+      levelUp
+      && levelUp.fromLevel < levelUp.toLevel
+      && reward
+      && (progress.xp?.level ?? 1) < reward.level
     ) {
       setPendingLevelUp(levelUp);
     }
@@ -1172,11 +1231,13 @@ export default function App() {
 
   const examTrainingPracticeDisabledReason = selectedRegion
     ? !canStudentUseRegionActivity(selectedRegionAccess, 'exam_practice')
-      ? lockedRegionMessage(selectedRegionAccess)
+      ? lockedActivityMessage(selectedRegionAccess, 'exam_practice')
       : selectedRegionProgress && selectedRegionProgress.availableQuestions <= 0
         ? 'No trainable question and mark-scheme image pairs are loaded for this region yet.'
         : undefined
-    : p3Questions().length === 0
+    : hasClassroomPracticeGates() && openExamTrainingRegions().length === 0
+      ? globalExamTrainingClassLockedReason()
+      : globalExamTrainingQuestions().length === 0
       ? worldNotice ?? 'Exam Training questions are not available right now. Tell your teacher.'
       : undefined;
   const suggestedNextStep = resolveSuggestedNextStep({
@@ -1249,6 +1310,7 @@ export default function App() {
             regionProgress={selectedRegionProgress}
             fieldGuide={getRegionFieldGuide(selectedRegion)}
             fieldGuideCompleted={selectedRegionFieldGuideCompleted}
+            fieldGuideCompletedTopicIds={Object.keys(progress.regionLearning?.[selectedRegion.id]?.fieldGuideTopicCompletions ?? {})}
             teachingSnippets={selectedRegionTeachingSnippets}
             generatedPractice={selectedRegionGeneratedPractice}
             learningActivityAttempts={progress.learningActivityAttempts.filter((attempt) => attempt.regionId === selectedRegion.id)}
@@ -1262,6 +1324,17 @@ export default function App() {
                 regionId: selectedRegion.id,
                 activityType: 'field_guide',
                 eventType: 'field_guide_completed',
+                eventPayload: { completed: true },
+              });
+            }}
+            onCompleteFieldGuideTopic={(topicId) => {
+              if (staffPreviewContext) return;
+              persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuideTopic(selectedRegion.id, topicId));
+              recordHostedClassroomActivity({
+                regionId: selectedRegion.id,
+                activityType: 'field_guide',
+                eventType: 'field_guide_completed',
+                contentId: topicId,
                 eventPayload: { completed: true },
               });
             }}
@@ -1344,6 +1417,7 @@ export default function App() {
             regionLearning={progress.regionLearning}
             regionLearningSummaries={regionLearningSummaries}
             regionProgress={worldProgress}
+            xp={progress.xp}
             onAvatarChange={(avatar) => {
               if (staffPreviewContext) {
                 setProgress((current) => ({ ...current, avatar }));
@@ -1372,13 +1446,13 @@ export default function App() {
             sessionLabelOverride={examTrainingPracticeMode ? EXAM_TRAINING_PRACTICE_LABELS[examTrainingPracticeMode] : undefined}
             currentPracticeMode={examTrainingPracticeMode}
             sessionReason={viewMode === 'guardian'
-              ? 'You are challenging the Region Guardian because your saved practice opened this check.'
+              ? 'You are challenging the Region Guardian because Field Guide and Skill Check are complete.'
               : examTrainingPracticeMode
                 ? dashboardPracticeReason(examTrainingPracticeMode, selectedRegion)
               : selectedRegion ? selectedRegionLearningSummary?.trainingSession.reason : undefined}
             guardianPassThreshold={viewMode === 'guardian' ? GUARDIAN_PASS_SCORE_RATIO : undefined}
             progressionBlockedReason={selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
-              ? lockedRegionMessage(selectedRegionAccess)
+              ? lockedActivityMessage(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')
               : undefined}
             onAttempt={(attempt: Attempt) => {
               if (selectedRegion && !canStudentUseRegionActivity(selectedRegionAccess, viewMode === 'guardian' ? 'guardian' : 'exam_practice')) return;
@@ -1503,11 +1577,12 @@ export default function App() {
         </Suspense>
       ) : null}
 
-      {pendingLevelUp ? (
+      {pendingLevelUp && placeholderRewardForLevelUp(pendingLevelUp) ? (
         <FirstWinLevelUpModal
           avatar={progress.avatar}
           avatarName={progress.profile.avatarName}
           levelUp={pendingLevelUp}
+          reward={placeholderRewardForLevelUp(pendingLevelUp)!}
           onDismiss={() => setPendingLevelUp(undefined)}
         />
       ) : null}

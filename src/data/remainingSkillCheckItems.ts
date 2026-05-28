@@ -1,6 +1,6 @@
 import type { QuickCheckOption } from '../types';
 import type { P3RegionId, P3SkillId } from '../lib/p3SkillContract';
-import type { SkillCheckComplexity, SkillCheckItem } from './skillCheckItems';
+import type { SkillCheckComplexity, SkillCheckInputType, SkillCheckItem } from './skillCheckItems';
 
 const SKILL_MAP_SOURCE = 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json' as const;
 
@@ -9,6 +9,15 @@ interface ChoiceSpec {
   prompt: string;
   correct: string;
   distractors: [string, string, string];
+  inputType?: Extract<SkillCheckInputType, 'multiple_choice' | 'checkbox' | 'numeric' | 'ordered_cards'>;
+  expectedAnswer?: string | string[];
+  expectedOptionIds?: string[];
+  options?: QuickCheckOption[];
+  expectedOrder?: string[];
+  cards?: QuickCheckOption[];
+  displayPrefix?: string;
+  displaySuffix?: string;
+  tolerance?: number;
   nudge: string;
   methodCue?: string;
   firstStep?: string;
@@ -31,6 +40,8 @@ function option(label: string, index: number): QuickCheckOption {
 }
 
 function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
+  const inputType = spec.inputType ?? 'multiple_choice';
+  const choiceOptions = spec.options ?? [spec.correct, ...spec.distractors].map(option);
   return {
     itemId: `sc-${topic.slug}-${spec.complexity}-001`,
     paperFamily: 'p3',
@@ -39,10 +50,18 @@ function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
     fieldGuideSubtopicId: topic.topicId,
     skillId: topic.skillId,
     prompt: spec.prompt,
-    inputType: 'multiple_choice',
+    inputType,
     validationMode: 'deterministic',
-    expectedOptionIds: ['correct'],
-    options: [spec.correct, ...spec.distractors].map(option),
+    expectedAnswer: inputType === 'numeric' ? spec.expectedAnswer ?? spec.correct : undefined,
+    expectedOptionIds: inputType === 'multiple_choice' || inputType === 'checkbox'
+      ? spec.expectedOptionIds ?? ['correct']
+      : undefined,
+    expectedOrder: inputType === 'ordered_cards' ? spec.expectedOrder : undefined,
+    options: inputType === 'multiple_choice' || inputType === 'checkbox' ? choiceOptions : undefined,
+    cards: inputType === 'ordered_cards' ? spec.cards : undefined,
+    displayPrefix: spec.displayPrefix,
+    displaySuffix: spec.displaySuffix,
+    tolerance: spec.tolerance,
     complexity: spec.complexity,
     hints: {
       nudge: spec.nudge,
@@ -229,6 +248,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'For $3\\cos x+4\\sin x=R\\cos(x-\\alpha)$, what is $R$?',
         correct: '$5$',
         distractors: ['$7$', '$1$', '$\\sqrt7$'],
+        inputType: 'numeric',
+        expectedAnswer: '$5',
         nudge: 'The amplitude is found from the two coefficients.',
         methodCue: '$R=\\sqrt{3^2+4^2}$.',
         firstStep: 'Square and add the coefficients.',
@@ -305,6 +326,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'What is the modulus of $3+4i$?',
         correct: '$5$',
         distractors: ['$7$', '$\\sqrt7$', '$1$'],
+        inputType: 'numeric',
+        expectedAnswer: '$5',
         nudge: 'Use the distance from the origin.',
         methodCue: '$|a+bi|=\\sqrt{a^2+b^2}$.',
         firstStep: '$|3+4i|=\\sqrt{3^2+4^2}$.',
@@ -361,12 +384,12 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       {
         complexity: 'challenge',
         prompt: 'What is the shape of $\\arg(z-1)=\\frac{\\pi}{4}$?',
-        correct: 'A half-line from $1+0i$ at angle $\\frac{\\pi}{4}$',
+        correct: 'A half-line from $1+0i$ at angle $\\frac{\\pi}{4}$, excluding $1+0i$',
         distractors: ['A full line through $1+0i$', 'A circle centred at $1+0i$', 'The horizontal half-line to the right of $1+0i$'],
-        nudge: 'An argument condition fixes direction, not distance.',
+        nudge: 'An argument condition fixes direction, not distance, and the argument of zero is undefined.',
         methodCue: '$z-1$ is the vector from $1+0i$ to $z$.',
-        firstStep: 'Start at the point $1+0i$.',
-        workedRoute: ['$z-1$ measures position relative to $1+0i$.', 'The argument fixes the direction at $\\frac{\\pi}{4}$.', 'Distance can vary, so the locus is a half-line.'],
+        firstStep: 'Use $1+0i$ as the starting point, but do not include it.',
+        workedRoute: ['$z-1$ measures position relative to $1+0i$.', 'The argument fixes the direction at $\\frac{\\pi}{4}$, but $z=1$ makes $z-1=0$ and $\\arg(0)$ is undefined.', 'Distance can vary positively, so the locus is a half-line excluding the endpoint.'],
       },
     ],
   },
@@ -474,13 +497,15 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'challenge',
-        prompt: 'For $y=xe^x$, which equation gives stationary points?',
-        correct: '$e^x(1+x)=0$',
-        distractors: ['$xe^x=0$', '$e^x=0$', '$1+x=0$ is the derivative before multiplying by $e^x$'],
+        prompt: 'For $y=xe^x$, what is the stationary $x$ value?',
+        correct: '$-1$',
+        distractors: ['$0$', '$1$', '$e^{-1}$'],
+        inputType: 'numeric',
+        expectedAnswer: '$-1',
         nudge: 'Differentiate first, then set $\\frac{dy}{dx}=0$.',
         methodCue: '$\\frac{d}{dx}(xe^x)=e^x+xe^x$.',
         firstStep: 'Factor the derivative.',
-        workedRoute: ['Product rule gives $e^x+xe^x$.', 'Factor to get $e^x(1+x)$.', 'Stationary points satisfy $e^x(1+x)=0$.'],
+        workedRoute: ['Product rule gives $e^x+xe^x$.', 'Factor to get $e^x(1+x)$, and $e^x$ is never zero.', 'So $1+x=0$ and the stationary value is $x=-1$.'],
       },
     ],
   },
@@ -1103,6 +1128,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'Compute $\\begin{pmatrix}1\\\\2\\\\3\\end{pmatrix}\\cdot\\begin{pmatrix}4\\\\0\\\\-1\\end{pmatrix}$.',
         correct: '$1$',
         distractors: ['$3$', '$5$', '$-1$'],
+        inputType: 'numeric',
+        expectedAnswer: '$1',
         nudge: 'Multiply matching components, then add.',
         methodCue: '$1\\cdot4+2\\cdot0+3\\cdot(-1)$.',
         firstStep: 'Compute $4+0-3$.',
@@ -1158,13 +1185,13 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'challenge',
-        prompt: 'When the scalar product formula gives $\\cos\\theta=-\\frac12$, what acute angle between two lines is usually reported?',
+        prompt: 'When the scalar product formula gives $\\cos\\theta=-\\frac12$, what smaller angle between the two lines is reported?',
         correct: '$60^\\circ$',
         distractors: ['$120^\\circ$', '$30^\\circ$', '$90^\\circ$'],
-        nudge: 'The angle between lines is commonly taken as the acute angle.',
+        nudge: 'The angle between two lines is taken as the smaller angle.',
         methodCue: '$\\cos^{-1}(-\\frac12)=120^\\circ$, then take the supplement.',
         firstStep: 'Find the obtuse angle first.',
-        workedRoute: ['The vector angle from cosine is $120^\\circ$.', 'For the angle between lines, use the acute angle unless the question asks otherwise.', 'The supplement is $60^\\circ$.'],
+        workedRoute: ['The vector angle from cosine is $120^\\circ$.', 'For the angle between lines, use the smaller angle unless the question asks otherwise.', 'The supplement is $60^\\circ$.'],
       },
     ],
   },
@@ -1227,10 +1254,18 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'Which pair proves a root lies in $(2,3)$ by sign change?',
         correct: '$f(2)=-0.4$, $f(3)=1.2$',
         distractors: ['$f(2)=0.4$, $f(3)=1.2$', '$f(2)=-0.4$, $f(3)=-1.2$', '$f(2)=0$, $f(3)=1.2$ as a sign-change interval'],
+        inputType: 'checkbox',
+        expectedOptionIds: ['negative-positive', 'positive-negative'],
+        options: [
+          { id: 'negative-positive', label: '$f(2)=-0.4$, $f(3)=1.2$' },
+          { id: 'positive-negative', label: '$f(2)=0.8$, $f(3)=-0.2$' },
+          { id: 'both-positive', label: '$f(2)=0.4$, $f(3)=1.2$' },
+          { id: 'endpoint-zero', label: '$f(2)=0$, $f(3)=1.2$ as a sign-change interval' },
+        ],
         nudge: 'Look for one negative value and one positive value.',
         methodCue: 'Product $f(2)f(3)$ should be negative.',
         firstStep: 'Check the signs of the endpoint values.',
-        workedRoute: ['A sign-change interval needs opposite signs.', '$-0.4$ and $1.2$ have opposite signs.', 'So this pair proves a root in $(2,3)$.'],
+        workedRoute: ['A sign-change interval needs opposite signs at the two endpoints.', '$-0.4$ with $1.2$ and $0.8$ with $-0.2$ both have opposite signs.', 'Those pairs support a root in $(2,3)$ for a continuous function.'],
       },
       {
         complexity: 'challenge',
@@ -1300,13 +1335,13 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'core',
-        prompt: 'Which equation has fixed-point form $x=\\sqrt{2x+3}$?',
+        prompt: 'Which equation is suggested by the fixed-point form $x=\\sqrt{2x+3}$ before branch/domain checks?',
         correct: '$x^2=2x+3$',
         distractors: ['$x=2x+3$', '$x^2=\\sqrt{2x+3}$', '$x^2+2x+3=0$'],
-        nudge: 'Square both sides of the fixed-point equation.',
+        nudge: 'Square both sides, but remember that square-root forms can impose branch or domain restrictions.',
         methodCue: 'If $x=\\sqrt{2x+3}$, then $x^2=2x+3$.',
         firstStep: 'Remove the square root by squaring.',
-        workedRoute: ['Start from $x=\\sqrt{2x+3}$.', 'Squaring gives $x^2=2x+3$.', 'That is the equation represented by the fixed point.'],
+        workedRoute: ['Start from $x=\\sqrt{2x+3}$.', 'Squaring gives $x^2=2x+3$, while the original fixed-point form also requires the square-root side to be defined and non-negative.', 'That is the equation suggested before checking branch/domain restrictions.'],
       },
       {
         complexity: 'challenge',
@@ -1338,13 +1373,13 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'core',
-        prompt: 'A fixed-point iteration uses $x_{n+1}=g(x_n)$. Which local check suggests convergence near a root $\\alpha$?',
-        correct: "$|g'(\\alpha)|<1$",
-        distractors: ["$|g'(\\alpha)|>1$", "$g(\\alpha)=0$ only", "$g'(\\alpha)=\\alpha$"],
-        nudge: 'The gradient magnitude of the iteration function matters.',
-        methodCue: 'A small gradient near the fixed point supports convergence.',
-        firstStep: 'Evaluate the magnitude of $g^{\\prime}$ near the fixed point.',
-        workedRoute: ['For fixed-point iteration, the local gradient controls convergence.', 'If $|g^{\\prime}(\\alpha)|<1$, the iteration is locally attracted to the fixed point.', 'That is the useful convergence check.'],
+        prompt: 'The iterates are $1.4, 1.41, 1.414, 1.4142$. Which description is safest?',
+        correct: 'The values appear to be converging',
+        distractors: ['The values are diverging', 'The iteration is undefined', 'The values prove the exact root is $1.4142$'],
+        nudge: 'Look for successive values settling down.',
+        methodCue: 'Convergence means the sequence approaches a stable value.',
+        firstStep: 'Compare how much the values change from one step to the next.',
+        workedRoute: ['The values are getting closer to a stable number.', 'This is evidence of convergence, not proof of an exact root value.', 'So the safest description is that the values appear to be converging.'],
       },
       {
         complexity: 'challenge',
@@ -1424,13 +1459,13 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'challenge',
-        prompt: 'Solve $\\frac{dy}{dx}=xy$ to the general implicit form.',
+        prompt: 'For the non-zero branch, solve $\\frac{dy}{dx}=xy$ to the general implicit form.',
         correct: '$\\ln|y|=\\frac{x^2}{2}+C$',
         distractors: ['$y=\\frac{x^2}{2}+C$', '$\\ln|x|=\\frac{y^2}{2}+C$', '$\\frac1y=\\frac{x^2}{2}+C$'],
-        nudge: 'Separate first, then integrate both sides.',
+        nudge: 'Separate first, noting that division by $y$ works on the non-zero branch.',
         methodCue: '$\\int \\frac1y\\,dy=\\int x\\,dx$.',
-        firstStep: 'Use $\\frac1y\\,dy=x\\,dx$.',
-        workedRoute: ['Separate to get $\\frac1y\\,dy=x\\,dx$.', 'Integrate both sides.', 'This gives $\\ln|y|=\\frac{x^2}{2}+C$.'],
+        firstStep: 'For $y\\ne0$, use $\\frac1y\\,dy=x\\,dx$.',
+        workedRoute: ['For $y\\ne0$, separate to get $\\frac1y\\,dy=x\\,dx$; the singular solution $y=0$ should be considered separately when required.', 'Integrate both sides.', 'This gives $\\ln|y|=\\frac{x^2}{2}+C$ on the non-zero branch.'],
       },
     ],
   },
@@ -1455,6 +1490,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'A general solution is $y=x^2+C$ and $y=5$ when $x=2$. What is $C$?',
         correct: '$1$',
         distractors: ['$5$', '$9$', '$-1$'],
+        inputType: 'numeric',
+        expectedAnswer: '$1',
         nudge: 'Substitute $x=2$ and $y=5$.',
         methodCue: '$5=2^2+C$.',
         firstStep: '$5=4+C$.',
