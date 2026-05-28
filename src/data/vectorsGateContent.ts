@@ -27,7 +27,7 @@ export const VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT: VectorsGatePracticeAlignment
     reviewedPracticeIds: ['gen_vectors_line_relationship_basic_0001'],
     candidatePrompt: 'Write the displacement from A(1, -2, 0) to B(4, 1, 2) as a column vector and in i, j, k form.',
     expectedAnswer: '$$ \\begin{pmatrix}3\\\\3\\\\2\\end{pmatrix}=3\\mathbf i+3\\mathbf j+2\\mathbf k $$',
-    authoringNote: 'Runtime has a reviewed displacement-vector item; add a notation-only Quick Check when the authoring pipeline supports more vector micro-skills.',
+    authoringNote: 'Runtime has a reviewed displacement-vector item; add a notation-only Skill Check when the authoring pipeline supports more vector micro-skills.',
   },
   {
     topicId: 'vectors_magnitude_unit_parallel',

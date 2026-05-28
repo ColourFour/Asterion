@@ -70,7 +70,7 @@ describe('Differential Shrine first-order DE content contract', () => {
       expect(topic.examples.length, topic.id).toBe(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -91,7 +91,7 @@ describe('Differential Shrine first-order DE content contract', () => {
     expect(DIFFERENTIAL_SHRINE_TOPIC_ORDER).not.toEqual(expect.arrayContaining([...ALGEBRA_VAULT_TOPIC_ORDER]));
   });
 
-  it('documents reviewed Skill Practice coverage for every approved Differential Shrine topic', () => {
+  it('documents reviewed Skill Check coverage for every approved Differential Shrine topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(DIFFERENTIAL_SHRINE_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId))
@@ -121,7 +121,7 @@ describe('Differential Shrine first-order DE content contract', () => {
     }
   });
 
-  it('keeps Differential Shrine Skill Practice on first-order DE topics only', () => {
+  it('keeps Differential Shrine Skill Check on first-order DE topics only', () => {
     const contractedPractice = contractedDifferentialPractice();
     const approvedTopicIds = new Set<string>(DIFFERENTIAL_SHRINE_TOPIC_ORDER);
     const text = contractedPractice.flatMap((item) => [

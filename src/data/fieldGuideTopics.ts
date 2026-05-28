@@ -86,7 +86,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Modulus is distance from zero, so outputs are non-negative.',
             'For inequalities, state the interval where the required graph is below or above the other graph.',
-            'Skill Practice starts with simple $|\\text{linear}|=k$ before moving to graph descriptions and inequalities.',
+            'Skill Check starts with simple $|\\text{linear}|=k$ before moving to graph descriptions and inequalities.',
           ],
           result: '$$ x=1\\quad\\text{or}\\quad x=-\\frac12 $$',
         },
@@ -128,7 +128,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Keep every power in order; write $0x^2$ if the $x^2$ term is missing.',
             'A non-monic divisor still starts with leading term divided by leading term.',
-            'Skill Practice separates long division from the remainder theorem so you know which method is being trained.',
+            'Skill Check separates long division from the remainder theorem so you know which method is being trained.',
           ],
           result: '$$ x^2-5x+6\\quad\\text{remainder }0 $$',
         },
@@ -169,7 +169,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The sign comes from making the divisor equal zero.',
             'A zero remainder is the factor theorem.',
-            'Skill Practice then uses one or two conditions to find unknown coefficients and solve cubics by factors.',
+            'Skill Check then uses one or two conditions to find unknown coefficients and solve cubics by factors.',
           ],
           result: '$$ \\frac{17}{4} $$',
         },
@@ -210,7 +210,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Let the denominator choose the form.',
             'Substitution is useful, but coefficient comparison is still needed when a constant is not isolated.',
-            'Skill Practice covers distinct linear, repeated linear, quadratic-factor, and mixed form-identification prompts.',
+            'Skill Check covers distinct linear, repeated linear, quadratic-factor, and mixed form-identification prompts.',
           ],
           result: '$$ \\frac{3}{x+1}-\\frac{x}{x^2+2} $$',
         },
@@ -251,7 +251,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Rewrite awkward expressions as $a(1+kx)^n$ before expanding.',
             'Write terms in increasing powers of $x$.',
-            'Skill Practice includes validity, coefficient extraction, rewrite-then-expand, and estimate questions.',
+            'Skill Check includes validity, coefficient extraction, rewrite-then-expand, and estimate questions.',
           ],
           result: '$$ 1+4x+12x^2+32x^3,\\quad |x|<\\frac12 $$',
         },
@@ -294,7 +294,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The base stays the same when moving between $a^x$ and $\\log_ax$.',
             'The logarithm graph has positive $x$-values only.',
-            'Skill Practice starts with form conversion and point-swapping before graph recognition.',
+            'Skill Check starts with form conversion and point-swapping before graph recognition.',
           ],
           result: '$$ (8,3) $$',
         },
@@ -335,7 +335,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Move coefficients into powers before combining.',
             'There is no law for splitting $\\log(a+b)$.',
-            'Skill Practice includes invalid-law spotting as well as valid simplification.',
+            'Skill Check includes invalid-law spotting as well as valid simplification.',
           ],
           result: '$$ \\ln\\left(\\frac{5x^2}{x-1}\\right),\\quad x>1 $$',
         },
@@ -376,7 +376,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             '$\\ln$ is the inverse function for $e^x$.',
             'Isolate the exponential expression before applying $\\ln$.',
-            'Skill Practice keeps these inverse steps separate from exponential inequalities.',
+            'Skill Check keeps these inverse steps separate from exponential inequalities.',
           ],
           result: '$$ x=\\frac13\\ln4 $$',
         },
@@ -418,7 +418,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Keep all original log inputs positive.',
             'Solving after combining logs may create invalid candidate roots.',
-            'Skill Practice includes explicit invalid-root rejection guidance before exam image practice.',
+            'Skill Check includes explicit invalid-root rejection guidance before exam image practice.',
           ],
           result: '$$ x=4 $$',
         },
@@ -458,7 +458,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Matching bases lets you compare exponents.',
             'A base between $0$ and $1$ reverses exponential inequalities.',
-            'Skill Practice includes both increasing-base and decreasing-base inequalities.',
+            'Skill Check includes both increasing-base and decreasing-base inequalities.',
           ],
           result: '$$ x\\ge3 $$',
         },
@@ -499,7 +499,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Choose the axes from the log form.',
             'Gradient is the coefficient of the new horizontal variable.',
-            'Skill Practice asks for gradient, intercept, and new-variable interpretation.',
+            'Skill Check asks for gradient, intercept, and new-variable interpretation.',
           ],
           result: '$$ \\ln y=\\ln2+3\\ln x $$',
         },
@@ -543,7 +543,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Secant, cosecant, and cotangent are reciprocal rewrites, not new solving rules.',
             'Graph asymptotes happen where the denominator trig function is zero.',
-            'Skill Practice starts with reciprocal definitions and simple interval equations before exam-image practice.',
+            'Skill Check starts with reciprocal definitions and simple interval equations before exam-image practice.',
           ],
           result: '$$ x=\\frac{\\pi}{3},\\ \\frac{5\\pi}{3} $$',
         },
@@ -585,7 +585,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The expanded identities come from dividing the base Pythagorean identity.',
             'Identity proofs should move from a known identity toward the required form.',
-            'Skill Practice includes identity proof and equation-solving uses of the expanded identities.',
+            'Skill Check includes identity proof and equation-solving uses of the expanded identities.',
           ],
           result: '$$ \\theta=\\frac{\\pi}{3},\\ \\frac{2\\pi}{3} $$',
         },
@@ -627,7 +627,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use the plus/minus signs carefully: cosine changes the middle sign.',
             'A shifted equation needs the interval shifted before listing all solutions.',
-            'Skill Practice covers exact values and shifted-angle equation feedback.',
+            'Skill Check covers exact values and shifted-angle equation feedback.',
           ],
           result: '$$ \\sin75^\\circ=\\frac{\\sqrt6+\\sqrt2}{4},\\quad x=0,\\frac{2\\pi}{3} $$',
         },
@@ -668,7 +668,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'There are several double-angle forms.',
             'Choose the one closest to the target function or equation shape.',
-            'Skill Practice keeps old interval-solving content here as support for complete solution lists.',
+            'Skill Check keeps old interval-solving content here as support for complete solution lists.',
           ],
           result: '$$ 2\\sin^2x $$',
         },
@@ -709,7 +709,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Expand the target form before matching.',
             'R is the hypotenuse from the two coefficients.',
-            'Skill Practice uses R-form transformations for combining sine and cosine, ranges, and simple solving.',
+            'Skill Check uses R-form transformations for combining sine and cosine, ranges, and simple solving.',
           ],
           result: '$$ 5\\sin(x+\\alpha),\\quad \\tan\\alpha=\\frac43 $$',
         },
@@ -916,7 +916,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Constants outside exponentials stay as multipliers.',
             'Simplify logarithms first only when it makes the derivative cleaner.',
-            'Skill Practice keeps differentiating logs here; log graphs and log-law-only questions remain in Logarithm Observatory.',
+            'Skill Check keeps differentiating logs here; log graphs and log-law-only questions remain in Logarithm Observatory.',
           ],
           result: '$$ \\frac{dy}{dx}=12e^{3x-2}+\\frac{5}{5x+1} $$',
         },
@@ -958,7 +958,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Products need two derivative terms.',
             'A bracket power inside the product still needs chain rule.',
-            'Skill Practice warns you not to multiply everything out when factorised form is cleaner.',
+            'Skill Check warns you not to multiply everything out when factorised form is cleaner.',
           ],
           result: '$$ \\frac{dy}{dx}=e^{2x}(2x^3+3x^2-6) $$',
         },
@@ -1000,7 +1000,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The denominator is squared in the quotient rule.',
             'Most sign errors come from reversing the numerator order.',
-            'Skill Practice emphasizes quotient-rule sign and order before stationary or tangent follow-ups.',
+            'Skill Check emphasizes quotient-rule sign and order before stationary or tangent follow-ups.',
           ],
           result: '$$ \\frac{dy}{dx}=\\frac{x^4+3x^2}{(x^2+1)^2} $$',
         },
@@ -1042,7 +1042,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The negative sign belongs to the derivative of cos.',
             '$\\sec^2$ appears when differentiating tan.',
-            'Skill Practice keeps trig identities out unless they support a derivative step.',
+            'Skill Check keeps trig identities out unless they support a derivative step.',
           ],
           result: '$$ \\frac{dy}{dx}=30x\\cos(3x^2) $$',
         },
@@ -1083,7 +1083,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Every y derivative must carry dy/dx.',
             'Products like xy still need the product rule.',
-            'Skill Practice includes tangent and normal prompts only when dy/dx is the assessed move.',
+            'Skill Check includes tangent and normal prompts only when dy/dx is the assessed move.',
           ],
           result: '$$ \\frac{dy}{dx}=\\frac{2x}{9y^2+8y} $$',
         },
@@ -1124,7 +1124,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'dy/dx is not dy/dt alone.',
             'Use one parameter consistently; this is not a vector line equation.',
-            'Skill Practice includes parameter substitution and tangent-parallel checks.',
+            'Skill Check includes parameter substitution and tangent-parallel checks.',
           ],
           result: '$$ \\frac{dy}{dx}=\\frac{5}{3t} $$',
         },
@@ -1167,7 +1167,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Indefinite integrals need $+c$; definite integrals do not.',
             'Use absolute values for logarithmic antiderivatives when the sign of the denominator is not fixed.',
-            'Skill Practice starts with exponential and $f\'(x)/f(x)$ logarithmic integral forms.',
+            'Skill Check starts with exponential and $f\'(x)/f(x)$ logarithmic integral forms.',
           ],
           result: '$$ \\frac12e^{2x+3}+c $$',
         },
@@ -1208,7 +1208,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Integrating $\\sin$ gives negative $\\cos$.',
             'Always adjust for the coefficient of $x$ inside the trig function.',
-            'Skill Practice starts with sin, cos, and sec^2 linear-inner-function integrals.',
+            'Skill Check starts with sin, cos, and sec^2 linear-inner-function integrals.',
           ],
           result: '$$ -\\frac13\\cos(3x+\\pi/4)+c $$',
         },
@@ -1249,7 +1249,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use the identity from a "hence" part instead of starting over.',
             'For definite integrals, evaluate both limits after the rewrite.',
-            'Skill Practice uses identity rewrites only when they support integration.',
+            'Skill Check uses identity rewrites only when they support integration.',
           ],
           result: '$$ \\frac{x}{2}+\\frac14\\sin2x+c $$',
         },
@@ -1291,7 +1291,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Do not integrate the original rational expression before decomposing.',
             'For definite integrals, substitute limits after all terms are integrated.',
-            'Skill Practice uses partial fractions only when the task continues into integration.',
+            'Skill Check uses partial fractions only when the task continues into integration.',
           ],
           result: '$$ \\ln|x-1|+2\\ln|x+2|+c $$',
         },
@@ -1332,7 +1332,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Keep exact answers in $\\tan^{-1}$ form unless decimals are requested.',
             'Complete the square when the denominator is a shifted quadratic.',
-            'Skill Practice separates arctan-form integration from inverse-trig derivative work.',
+            'Skill Check separates arctan-form integration from inverse-trig derivative work.',
           ],
           result: '$$ \\frac15\\tan^{-1}(x/5)+c $$',
         },
@@ -1374,7 +1374,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Substitution only works after every part of the integrand is rewritten.',
             'Changed limits prevent old-variable substitution errors in definite integrals.',
-            'Skill Practice includes reverse-chain-rule, formal substitution, and a changed-limits item.',
+            'Skill Check includes reverse-chain-rule, formal substitution, and a changed-limits item.',
           ],
           result: '$$ \\ln(x^2+2)+c $$',
         },
@@ -1416,7 +1416,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Write the parts template before doing algebra.',
             'For definite integrals, evaluate the $uv$ term and the remaining integral at the limits.',
-            'Skill Practice uses reviewed by-parts content; the source PDF gap is documented for teacher audit.',
+            'Skill Check uses reviewed by-parts content; the source PDF gap is documented for teacher audit.',
           ],
           result: '$$ xe^x-e^x+c $$',
         },
@@ -1459,7 +1459,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Scalars have magnitude only; vectors also have direction.',
             'Negative components mean movement in the negative coordinate direction.',
-            'Skill Practice: convert notation and form displacement vectors before using line methods.',
+            'Skill Check: convert notation and form displacement vectors before using line methods.',
           ],
           result: '$$ \\overrightarrow{AB}=\\begin{pmatrix}3\\\\3\\\\2\\end{pmatrix}=3\\mathbf i+3\\mathbf j+2\\mathbf k $$',
         },
@@ -1500,7 +1500,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Equal vectors have equal corresponding components.',
             'A parallel-vector claim needs the same multiplier in every component.',
-            'Skill Practice: use magnitude, unit-vector, equality, and parallel checks before line classification.',
+            'Skill Check: use magnitude, unit-vector, equality, and parallel checks before line classification.',
           ],
           result: '$$ |\\mathbf v|=13,\\quad \\widehat{\\mathbf v}=\\frac1{13}\\begin{pmatrix}3\\\\4\\\\12\\end{pmatrix} $$',
         },
@@ -1541,7 +1541,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Parallelogram questions use equal and parallel opposite sides.',
             'To prove collinearity, compare two displacement vectors.',
-            'Skill Practice: choose the vector path yourself before calculating.',
+            'Skill Check: choose the vector path yourself before calculating.',
           ],
           result: '$$ \\overrightarrow{AB}=\\begin{pmatrix}6\\\\6\\end{pmatrix},\\quad M=\\begin{pmatrix}5\\\\2\\end{pmatrix} $$',
         },
@@ -1582,7 +1582,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Do not use a position vector as the direction unless it is actually a displacement.',
             'A point lies on the line only if one parameter value works in every component.',
-            'Skill Practice: form lines and test points using the same parameter throughout one line.',
+            'Skill Check: form lines and test points using the same parameter throughout one line.',
           ],
           result: '$$ \\mathbf r=\\begin{pmatrix}1\\\\2\\\\0\\end{pmatrix}+\\lambda\\begin{pmatrix}3\\\\-1\\\\2\\end{pmatrix} $$',
         },
@@ -1623,7 +1623,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use different parameter names for different lines.',
             'Never state an intersection after checking only two components in 3D.',
-            'Skill Practice: solve, check, then classify as intersecting, parallel, or skew.',
+            'Skill Check: solve, check, then classify as intersecting, parallel, or skew.',
           ],
           result: 'The lines intersect at $(3,1,1)$.',
         },
@@ -1664,7 +1664,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The result of a scalar product is not another vector.',
             'For non-zero vectors, scalar product $0$ means perpendicular.',
-            'Skill Practice: compute the dot product before using it for angle or distance work.',
+            'Skill Check: compute the dot product before using it for angle or distance work.',
           ],
           result: '$$ -1 $$',
         },
@@ -1705,7 +1705,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use the line directions even if the question gives full line equations.',
             'A zero scalar product gives a perpendicular angle immediately.',
-            'Skill Practice: distinguish point vectors from direction vectors before calculating an angle.',
+            'Skill Check: distinguish point vectors from direction vectors before calculating an angle.',
           ],
           result: '$$ \\theta=\\cos^{-1}\\left(\\frac89\\right) $$',
         },
@@ -1748,7 +1748,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'This is a scalar-product perpendicularity method, not a separate distance formula.',
             'Solve for the parameter before finding the distance.',
-            'Skill Practice: one reviewed projection item now rehearses the full point-to-line distance method.',
+            'Skill Check: one reviewed projection item now rehearses the full point-to-line distance method.',
           ],
           result: '$$ \\lambda=\\frac89,\\quad \\text{distance}=\\frac{\\sqrt{17}}3 $$',
         },
@@ -1791,7 +1791,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use values at both ends before claiming a root interval.',
             'For decimal-place accuracy, test values on either side of the rounded value.',
-            'Skill Practice starts with sign-change checks, equation rewrites, value tables, and rounding warnings.',
+            'Skill Check starts with sign-change checks, equation rewrites, value tables, and rounding warnings.',
           ],
           result: 'A root lies in $(1.85,1.9)$, so $x=1.9$ to $1$ d.p.',
         },
@@ -1832,7 +1832,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'The graph argument must name the two graphs being compared.',
             'An intersection is useful only if you connect it back to the original equation.',
-            'Skill Practice asks for graph choices, intersection explanations, and one-root conclusions.',
+            'Skill Check asks for graph choices, intersection explanations, and one-root conclusions.',
           ],
           result: 'The positive intersection gives the positive root of $x^3+2x-1=0$.',
         },
@@ -1873,7 +1873,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'State whether the starting value is $x_0$ or $x_1$ and follow the question wording.',
             'Use the previous iterate each time; do not keep substituting the starting value.',
-            'Skill Practice includes rearrangement checks, iteration tables, and root-to-accuracy questions.',
+            'Skill Check includes rearrangement checks, iteration tables, and root-to-accuracy questions.',
           ],
           result: '$$ x_1=3.742,\\quad x_2=4.028,\\quad x_3=4.133 $$',
         },
@@ -1914,7 +1914,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Do not assume every rearrangement gives a useful iteration.',
             'Judge convergence from the generated sequence or approved reasoning.',
-            'Skill Practice compares rearrangements, sequence behavior, and failed log-domain iterations.',
+            'Skill Check compares rearrangements, sequence behavior, and failed log-domain iterations.',
           ],
           result: '$x_{n+1}=e^{-x_n}$ is useful here; $x_{n+1}=-\\ln(x_n)$ may fail.',
         },
@@ -1957,7 +1957,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Rate of change usually means a derivative such as $dy/dx$, $dh/dt$, or $dT/dt$.',
             'Proportional to means multiply by a constant such as $k$.',
-            'Skill Practice starts with forming the differential equation, not solving it.',
+            'Skill Check starts with forming the differential equation, not solving it.',
           ],
           result: '$$ \\frac{dh}{dt}=4-k\\sqrt h $$',
         },
@@ -1998,7 +1998,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Separate before integrating.',
             'A solution may remain implicit unless the question asks for $y$ explicitly.',
-            'Skill Practice includes general solutions, trig forms, log/partial-fraction forms, and a stretch by-parts-after-separation item.',
+            'Skill Check includes general solutions, trig forms, log/partial-fraction forms, and a stretch by-parts-after-separation item.',
           ],
           result: '$$ y=Ae^{x^2} $$',
         },
@@ -2039,7 +2039,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Use the initial condition after integrating.',
             'Substitute both coordinates carefully.',
-            'Skill Practice warns you not to stop at the general solution when a point is given.',
+            'Skill Check warns you not to stop at the general solution when a point is given.',
           ],
           result: '$$ y=3e^{2x} $$',
         },
@@ -2081,7 +2081,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Identify the dependent and independent variables before writing symbols.',
             'Use proportionality constants and signs to match the context.',
-            'Skill Practice includes formation-only, model-and-solve, initial-condition, and interpretation questions.',
+            'Skill Check includes formation-only, model-and-solve, initial-condition, and interpretation questions.',
           ],
           result: '$$ T=20+60e^{-kt} $$',
         },

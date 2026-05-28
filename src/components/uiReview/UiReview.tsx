@@ -169,8 +169,8 @@ const reviewSections: ReviewSection[] = [
         badges: ['Live route'],
       },
       {
-        title: 'Skill Practice',
-        description: 'Live merged region Skill Practice route.',
+        title: 'Skill Check',
+        description: 'Live merged region Skill Check route.',
         route: regionReviewRoute('Algebra Vault', 'skill-practice'),
         href: regionReviewHref('Algebra Vault', 'skill-practice'),
         badges: ['Live route'],

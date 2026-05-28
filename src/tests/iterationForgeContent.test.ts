@@ -71,7 +71,7 @@ describe('Iteration Forge root approximation and iteration content contract', ()
       expect(topic.examples.length, topic.id).toBe(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -100,7 +100,7 @@ describe('Iteration Forge root approximation and iteration content contract', ()
     expect(ITERATION_FORGE_TOPIC_ORDER).not.toEqual(expect.arrayContaining([...ALGEBRA_VAULT_TOPIC_ORDER]));
   });
 
-  it('documents reviewed Skill Practice coverage for every approved Iteration Forge topic', () => {
+  it('documents reviewed Skill Check coverage for every approved Iteration Forge topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(ITERATION_FORGE_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId))
@@ -131,7 +131,7 @@ describe('Iteration Forge root approximation and iteration content contract', ()
     }
   });
 
-  it('keeps Iteration Skill Practice on the four approved root and iteration topics', () => {
+  it('keeps Iteration Skill Check on the four approved root and iteration topics', () => {
     const contractedPractice = contractedIterationPractice();
     const approvedTopicIds = new Set<string>(ITERATION_FORGE_TOPIC_ORDER);
     const text = contractedPractice.flatMap((item) => [

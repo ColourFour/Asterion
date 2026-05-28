@@ -28,9 +28,9 @@ export const LEGACY_REGION_LEARNING_PAGE_SEGMENTS: RegionLearningPageId[] = [
 export const REGION_LEARNING_PAGE_LABELS: Record<RegionLearningPageId, string> = {
   hub: 'Region Hub',
   'field-guide': 'Field Guide',
-  'skill-practice': 'Skill Practice',
-  'quick-check': 'Skill Practice',
-  'warm-up': 'Skill Practice',
+  'skill-practice': 'Skill Check',
+  'quick-check': 'Skill Check',
+  'warm-up': 'Skill Check',
   'exam-training': 'Exam Training',
   guardian: 'Guardian Challenge',
 };
@@ -38,9 +38,9 @@ export const REGION_LEARNING_PAGE_LABELS: Record<RegionLearningPageId, string> =
 export const REGION_LEARNING_PAGE_DESCRIPTIONS: Record<RegionLearningPageId, string> = {
   hub: 'Orient yourself, review progress, and choose the next learning step.',
   'field-guide': 'Study the existing region explanation, snippets, notes, and worked examples.',
-  'skill-practice': 'Start with short checks, then rehearse the method with guided practice.',
-  'quick-check': 'Open Skill Practice focused on the simplest checks.',
-  'warm-up': 'Open Skill Practice focused on guided practice.',
+  'skill-practice': 'Practice by Field Guide topic and solving complexity before Exam Training.',
+  'quick-check': 'Compatibility route for the unified Skill Check page.',
+  'warm-up': 'Compatibility route for the unified Skill Check page.',
   'exam-training': 'Train on real question images and mark schemes for this region.',
   guardian: 'Attempt the gated checkpoint after local evidence unlocks it.',
 };

@@ -42,7 +42,7 @@ export const ACADEMY_AVATAR_PRESETS: AcademyAvatarPreset[] = [
   {
     id: 'leaf-strategist',
     label: 'Leaf Strategist',
-    description: 'Methodical planner for warm-ups and exam training.',
+    description: 'Methodical planner for Skill Check and Exam Training.',
     avatar: normalizeAvatarSettings({
       palette: 'leaf',
       crest: 'bolt',

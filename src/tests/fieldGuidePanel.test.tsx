@@ -154,6 +154,8 @@ const snippet: TeachingSnippet = {
     answer: 'Two cubed equals eight.',
     explanation: 'The log value is the exponent.',
     exampleModelId: 'p3-log-check-example-1',
+    topic: 'log_laws',
+    skillTargetId: 'log_laws',
   },
   guardianReadiness: {
     supportsTopics: ['logarithms_and_exponentials'],
@@ -181,7 +183,7 @@ const generatedPractice: GeneratedPracticeItem = {
     'The domain requires x > 0.',
     'Use the product law.',
   ],
-  parameters: { a: 3, b: 12, solution: 4 },
+  parameters: { a: 3, b: 12, solution: 4, topic_contract_id: 'log_laws' },
   sourceSnippetId: 'p3-log-laws-001',
   exampleModelId: 'p3-log-laws-001-example-1',
   questionType: 'Logarithm equation',
@@ -202,6 +204,8 @@ function snippetVariant(index: number): TeachingSnippet {
       prompt: `Quick prompt ${index}`,
       answer: `Quick answer ${index}`,
       explanation: `Quick explanation ${index}`,
+      topic: 'log_laws',
+      skillTargetId: 'log_laws',
     },
   };
 }
@@ -658,11 +662,11 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Final answer');
     expect(container.textContent).toContain('Two cubed equals eight.');
-    expect(container.textContent).toContain('Next action: try the linked short check in Skill Practice without looking back at the final answer.');
+    expect(container.textContent).toContain('Next action: try the linked Skill Check item without looking back at the final answer.');
 
     const quickCheck = container.querySelector<HTMLElement>('.quick-check-card .quick-check-reveal');
     expect(quickCheck).toBeTruthy();
-    expect(quickCheck?.textContent).toContain('Short check');
+    expect(quickCheck?.textContent).toContain('Skill check');
     expect(quickCheck?.textContent).toContain('Check 1 of 1');
     expect(quickCheck?.textContent).not.toContain('Next action');
 
@@ -705,7 +709,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       <WarmUpPracticePanel practiceItems={[generatedPractice]} region={logRegion!} />,
     );
 
-    expect(container.textContent).toContain('Guided Practice');
+    expect(container.textContent).toContain('Worked-route item');
     expect(container.textContent).toContain('Work through one prompt at a time.');
     expect(container.textContent).toContain('Item 1 of 1');
     expect(container.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
@@ -813,7 +817,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       error!.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
-    const save = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save guided step');
+    const save = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save Skill Check');
     act(() => {
       save!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -837,7 +841,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     const emptyState = container.querySelector('.region-empty-state');
 
     expect(emptyState).toBeTruthy();
-    expect(container.textContent).toContain('Guided practice for this region is being prepared.');
+    expect(container.textContent).toContain('Worked-route Skill Check items for this topic are being prepared.');
     expect(container.textContent).toContain('Field Guide');
     expect(container.textContent).toContain('Exam Training');
   });
@@ -876,7 +880,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.warm-up-practice-card')?.textContent).toContain('Warm-up prompt 1');
     expect(container.querySelector('.warm-up-practice-card')?.textContent).not.toContain('Warm-up prompt 2');
     expect(container.querySelectorAll('.warm-up-sequence-list li')).toHaveLength(3);
-    expect(container.textContent).toContain('2 more reviewed short checks queued after this one.');
+    expect(container.textContent).toContain('2 more reviewed Skill Check items queued after this one.');
     expect(container.textContent).not.toContain('Showing 2 of 3 reviewed warm-ups.');
 
     const nextSnippet = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Next'));
@@ -925,7 +929,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       gotItFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    const saveFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save guided step');
+    const saveFirst = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save Skill Check');
     act(() => {
       saveFirst!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
@@ -956,11 +960,11 @@ describe('FieldGuidePanel teaching snippets', () => {
       gotItSecond!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     act(() => {
-      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save guided step')!
+      Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Save Skill Check')!
         .dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container.textContent).toContain('Guided sequence complete');
+    expect(container.textContent).toContain('Skill Check sequence complete');
     const continueExam = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Next');
     expect(continueExam).toBeTruthy();
     act(() => {
@@ -1031,7 +1035,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       />,
     );
 
-    expect(container.textContent).toContain('Guided Practice');
+    expect(container.textContent).toContain('Worked-route item');
     expect(container.textContent).toContain('We do not have a reviewed guided item for Binomial Expansions yet');
   });
 
@@ -1216,14 +1220,14 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(multiChoiceContainer.textContent).toContain('Correct');
   });
 
-  it('keeps the legacy quick-check route focused on one short check inside Skill Practice', () => {
+  it('keeps the legacy quick-check route focused on one Skill Check item inside Skill Check', () => {
     const container = renderRegionHubPage({
       activePage: 'quick-check',
       snippets: [snippetVariant(1), snippetVariant(2), snippetVariant(3)],
     });
 
-    expect(container.textContent).toContain('Skill Practice');
-    expect(container.textContent).toContain('One small check');
+    expect(container.textContent).toContain('Skill Check');
+    expect(container.textContent).toContain('Skill Check item');
     expect(container.querySelectorAll('.quick-check-card .quick-check-reveal')).toHaveLength(1);
     expect(container.textContent).toContain('Quick prompt 1');
     expect(container.textContent).toContain('Check 1 of 3');
@@ -1347,7 +1351,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(loopButtons).toHaveLength(4);
     expect(loopButtons.map((button) => button.textContent)).toEqual([
       expect.stringContaining('Field Guide'),
-      expect.stringContaining('Skill Practice'),
+      expect.stringContaining('Skill Check'),
       expect.stringContaining('Exam Training'),
       expect.stringContaining('Guardian'),
     ]);
@@ -1355,7 +1359,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Field Guide');
     expect(container.querySelectorAll('.region-current-step-card')).toHaveLength(1);
     expect(container.querySelector('.region-current-step-card')?.textContent).not.toContain('Quick Checks');
-    expect(container.textContent).toContain('Skill Practice');
+    expect(container.textContent).toContain('Skill Check');
     expect(container.textContent).toContain('Exam Training');
     expect(container.textContent).toContain('Guardian');
     expect(container.textContent).toContain('Locked');
@@ -1421,7 +1425,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     for (const [label, page] of [
       ['Field Guide', 'field-guide'],
-      ['Skill Practice', 'skill-practice'],
+      ['Skill Check', 'skill-practice'],
       ['Exam Training', 'exam-training'],
       ['Guardian', 'guardian'],
     ] as const) {
@@ -1440,7 +1444,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     ]);
   });
 
-  it('aggregates internal Quick Check and Warm-Up recommendations into Skill Practice', () => {
+  it('aggregates internal Quick Check and Warm-Up recommendations into Skill Check', () => {
     const learningRecord: RegionLearningRecord = {
       regionId: 'logarithm-grove',
       fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
@@ -1452,7 +1456,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
     const quickCheckCurrentStep = quickCheckRecommended.querySelector<HTMLElement>('.region-current-step-card');
 
-    expect(quickCheckCurrentStep?.textContent).toContain('Skill Practice');
+    expect(quickCheckCurrentStep?.textContent).toContain('Skill Check');
     expect(quickCheckCurrentStep?.querySelector<HTMLButtonElement>('[data-region-page="skill-practice"]')).toBeTruthy();
     expect(quickCheckCurrentStep?.textContent).not.toContain('Quick Checks');
 
@@ -1463,27 +1467,30 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
     const warmUpCurrentStep = warmUpRecommended.querySelector<HTMLElement>('.region-current-step-card');
 
-    expect(warmUpCurrentStep?.textContent).toContain('Skill Practice');
+    expect(warmUpCurrentStep?.textContent).toContain('Skill Check');
     expect(warmUpCurrentStep?.querySelector<HTMLButtonElement>('[data-region-page="skill-practice"]')).toBeTruthy();
     expect(warmUpCurrentStep?.textContent).not.toContain('Warm-Up');
   });
 
-  it('renders one active Skill Practice step body for normal and legacy routes', () => {
+  it('renders one unified Skill Check body for normal and legacy routes', () => {
     const defaultPage = renderRegionHubPage({ activePage: 'skill-practice' });
     expect(defaultPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
-    expect(defaultPage.querySelector('.warm-up-practice-card')).toBeFalsy();
-    expect(defaultPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(defaultPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Quick Check');
-    expect(defaultPage.textContent).not.toContain('Warm-Up Practice');
+    expect(defaultPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(defaultPage.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(defaultPage.querySelector('.skill-practice-topic-grid')).toBeTruthy();
+    expect(defaultPage.textContent).toContain('Foundation');
+    expect(defaultPage.textContent).toContain('Core');
+    expect(defaultPage.textContent).toContain('Challenge');
+    expect(defaultPage.textContent).not.toContain('Quick Check');
+    expect(defaultPage.textContent).not.toContain('Warm-Up');
 
     const buildMethodPage = renderRegionHubPage({
       activePage: 'skill-practice',
       learningActivityAttempts: [supportActivityAttempt('quick_check')],
     });
-    expect(buildMethodPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
+    expect(buildMethodPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(buildMethodPage.querySelector('.warm-up-practice-card')).toBeTruthy();
-    expect(buildMethodPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(buildMethodPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Guided Practice');
+    expect(buildMethodPage.querySelector('.skill-practice-exam-transition')).toBeTruthy();
 
     const readyPage = renderRegionHubPage({
       activePage: 'skill-practice',
@@ -1492,10 +1499,10 @@ describe('FieldGuidePanel teaching snippets', () => {
         supportActivityAttempt('warm_up'),
       ],
     });
-    expect(readyPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
-    expect(readyPage.querySelector('.warm-up-practice-card')).toBeFalsy();
+    expect(readyPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
+    expect(readyPage.querySelector('.warm-up-practice-card')).toBeTruthy();
     expect(readyPage.querySelector('.skill-practice-exam-transition')).toBeTruthy();
-    expect(readyPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Ready for exam practice');
+    expect(readyPage.textContent).toContain('support progress is saved locally and does not change rank or Guardian access');
 
     const legacyQuickCheckPage = renderRegionHubPage({
       activePage: 'quick-check',
@@ -1505,13 +1512,13 @@ describe('FieldGuidePanel teaching snippets', () => {
       ],
     });
     expect(legacyQuickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
-    expect(legacyQuickCheckPage.querySelector('.warm-up-practice-card')).toBeFalsy();
-    expect(legacyQuickCheckPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Quick Check');
+    expect(legacyQuickCheckPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(legacyQuickCheckPage.textContent).not.toContain('Quick Check');
 
     const legacyWarmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
-    expect(legacyWarmUpPage.querySelector('.quick-check-card .quick-check-reveal')).toBeFalsy();
+    expect(legacyWarmUpPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(legacyWarmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
-    expect(legacyWarmUpPage.querySelector('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Guided Practice');
+    expect(legacyWarmUpPage.textContent).not.toContain('Warm-Up');
   });
 
   it('renders each focused region page with its preserved panel behavior', () => {
@@ -1529,25 +1536,25 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.querySelector('.quick-check-card')).toBeFalsy();
 
     const quickCheckPage = renderRegionHubPage({ activePage: 'quick-check' });
-    expect(quickCheckPage.textContent).toContain('Skill Practice');
-    expect(quickCheckPage.textContent).toContain('One small check');
+    expect(quickCheckPage.textContent).toContain('Skill Check');
+    expect(quickCheckPage.textContent).toContain('Skill Check item');
     expect(quickCheckPage.textContent).toContain('Rewrite \\log base two of eight equals three.');
     expect(quickCheckPage.querySelector('.quick-check-card .quick-check-reveal')).toBeTruthy();
     expect(quickCheckPage.querySelector('.field-guide-card')).toBeFalsy();
-    expect(quickCheckPage.querySelector('.warm-up-practice-card')).toBeFalsy();
-    expect(quickCheckPage.querySelector('.skill-practice-exam-transition')).toBeFalsy();
+    expect(quickCheckPage.querySelector('.warm-up-practice-card')).toBeTruthy();
+    expect(quickCheckPage.querySelector('.skill-practice-exam-transition')).toBeTruthy();
     expect(quickCheckPage.querySelector<HTMLTextAreaElement>('.quick-check-card textarea')).toBeFalsy();
     expect(quickCheckPage.querySelector('.quick-check-choice-grid')).toBeTruthy();
 
     const warmUpPage = renderRegionHubPage({ activePage: 'warm-up' });
-    expect(warmUpPage.textContent).toContain('Skill Practice');
-    expect(warmUpPage.textContent).toContain('Guided Practice');
-    expect(warmUpPage.textContent).toContain('Try a guided step, then compare with the worked route.');
+    expect(warmUpPage.textContent).toContain('Skill Check');
+    expect(warmUpPage.textContent).toContain('Worked-route item');
+    expect(warmUpPage.textContent).toContain('Write first, then compare with the worked route.');
     expect(warmUpPage.textContent).not.toContain('Warm-Up Practice');
     expect(warmUpPage.textContent).not.toContain('answer-first set with worked solutions');
     expect(warmUpPage.textContent).toContain('Solve ln(x) + ln(3) = ln(12).');
     expect(warmUpPage.querySelector('.warm-up-practice-card')).toBeTruthy();
-    expect(warmUpPage.querySelector('.quick-check-card')).toBeFalsy();
+    expect(warmUpPage.querySelector('.quick-check-card')).toBeTruthy();
     expect(warmUpPage.querySelector<HTMLTextAreaElement>('.warm-up-practice-card textarea')?.placeholder).toBe('Use exact form and any condition, e.g. ln(5x), x > 0');
 
     const examTrainingPage = renderRegionHubPage({ activePage: 'exam-training' });
@@ -1778,9 +1785,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuidePage.querySelector('.region-activity-locked-panel')).toBeFalsy();
 
     const lockedPages: Array<[RegionLearningPageId, string]> = [
-      ['quick-check', 'Skill Practice is locked for this class'],
-      ['warm-up', 'Skill Practice is locked for this class'],
-      ['skill-practice', 'Skill Practice is locked for this class'],
+      ['quick-check', 'Skill Check is locked for this class'],
+      ['warm-up', 'Skill Check is locked for this class'],
+      ['skill-practice', 'Skill Check is locked for this class'],
       ['exam-training', 'Exam Training is locked for this class'],
       ['guardian', 'Guardian Challenge is locked for this class'],
     ];
@@ -1821,7 +1828,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     const actionButtons = Array.from(container.querySelectorAll<HTMLButtonElement>('.region-first-run-loop button'));
     expect(actionButtons.find((button) => button.textContent?.includes('Field Guide'))?.disabled).toBe(false);
-    for (const label of ['Skill Practice', 'Exam Training', 'Guardian']) {
+    for (const label of ['Skill Check', 'Exam Training', 'Guardian']) {
       const button = actionButtons.find((candidate) => candidate.textContent?.includes(label));
       expect(button?.disabled).toBe(true);
       expect(button?.textContent).toContain('Locked');
@@ -1829,7 +1836,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector('.region-first-run-loop')?.textContent).toContain('Locked');
 
     act(() => {
-      actionButtons.find((button) => button.textContent?.includes('Skill Practice'))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      actionButtons.find((button) => button.textContent?.includes('Skill Check'))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(onNavigatePage).not.toHaveBeenCalledWith('skill-practice');
   });
@@ -1985,7 +1992,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       binomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    const continueButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Continue to Skill Practice'));
+    const continueButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Go to Skill Check'));
     expect(continueButton).toBeTruthy();
     act(() => {
       continueButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -2081,7 +2088,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(complexTopics.find((topic) => topic.id === 'cartesian-conjugate')?.supportNote)
       .toContain('Support skill');
     expect(numericalTopics.find((topic) => topic.id === 'iteration_convergence')?.examples[0]?.takeaway.join('\n'))
-      .toContain('Skill Practice compares rearrangements');
+      .toContain('Skill Check compares rearrangements');
   });
 
   it('keeps every topic-flow Try one together prompt paired with worked process and answer', () => {
@@ -2156,7 +2163,7 @@ describe('FieldGuidePanel teaching snippets', () => {
 
     expect(container.textContent).toContain('Field Guide content for this region is still being prepared.');
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
-    expect(container.textContent).not.toContain('Continue to Skill Practice');
+    expect(container.textContent).not.toContain('Go to Skill Check');
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
     const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'Back to Region Hub');
@@ -2177,7 +2184,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       onNavigatePage,
     });
 
-    expect(container.textContent).toContain('Guided practice for this region is being prepared.');
+    expect(container.textContent).toContain('Worked-route Skill Check items for this topic are being prepared.');
     const back = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Region Hub'));
     expect(back).toBeTruthy();
     act(() => {

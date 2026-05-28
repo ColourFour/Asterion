@@ -95,7 +95,7 @@ function WarmUpPracticeCard({
   const solutionId = `warm-up-solution-${item.practiceId}`;
   const feedbackId = `warm-up-feedback-${item.practiceId}`;
   const familyParts = item.generatorFamily.split('.');
-  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Guided step');
+  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Skill Check item');
   const responseReady = learnerResponse.trim().length > 0;
   const canComplete = Boolean(solutionVisible && outcome && !completed);
   const visualSupport = solutionVisible ? findVisualSupportSource({
@@ -108,7 +108,7 @@ function WarmUpPracticeCard({
   function prepareComparison() {
     if (!responseReady) return;
     setAnswerChecked(true);
-    setAnswerFeedback('No automatic marking here. Reveal the worked solution, compare your answer and method, then self-record how it went.');
+    setAnswerFeedback('No automatic marking here. Reveal the worked solution, compare your answer and method, then record how it went.');
   }
 
   function reveal(early: boolean) {
@@ -226,7 +226,7 @@ function WarmUpPracticeCard({
             ))}
           </ol>
           {visualSupport ? <VisualSupportCard source={visualSupport} /> : null}
-          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this guided step.</small> : null}
+          {revealedEarly ? <small className="region-card-note">Early reveal recorded when you save this Skill Check item.</small> : null}
         </div>
       )}
       {answerFeedback && !solutionVisible ? (
@@ -268,10 +268,10 @@ function WarmUpPracticeCard({
             </select>
           </label>
           <button type="button" disabled={!canComplete} onClick={completeAttempt}>
-            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save guided step' : 'Mark complete'}
+            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save Skill Check' : 'Mark complete'}
           </button>
           {completed ? (
-            <div className="warm-up-next-actions" aria-label="Guided practice next action">
+            <div className="warm-up-next-actions" aria-label="Skill Check next action">
               {!isLastItem ? (
                 <button className="activity-primary-action next-step-glow" type="button" onClick={onNextItem}>Next</button>
               ) : onContinueToExamPractice ? (
@@ -289,7 +289,7 @@ function WarmUpPracticeCard({
 
 function humanReadableLabel(value: string): string {
   const words = value.replace(/[_-]+/g, ' ').trim();
-  if (!words) return 'Guided Step';
+  if (!words) return 'Skill Check Item';
   return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -324,9 +324,9 @@ export function WarmUpPracticePanel({
 
   return (
     <RegionActionCard
-      eyebrow="Skill Practice"
-      title="Guided Practice"
-      description="Try a guided step, then compare with the worked route."
+      eyebrow="Skill Check"
+      title="Worked-route item"
+      description="Write first, then compare with the worked route."
       icon={<Sparkles size={22} />}
       className="warm-up-card"
     >
@@ -334,12 +334,12 @@ export function WarmUpPracticePanel({
         <>
           <p className="section-helper warm-up-set-note">Work through one prompt at a time. Write your answer first, then reveal the worked route and compare it yourself.</p>
           {fieldGuideTopicTitle && !topicMatchFallbackReason ? (
-            <p className="section-helper warm-up-set-note">Starting with reviewed guided practice for {fieldGuideTopicTitle}.</p>
+            <p className="section-helper warm-up-set-note">Starting with reviewed Skill Check practice for {fieldGuideTopicTitle}.</p>
           ) : null}
           {topicMatchFallbackReason ? (
             <p className="section-helper warm-up-set-note" role="status">{topicMatchFallbackReason}</p>
           ) : null}
-          <ol className="warm-up-sequence-list" aria-label="Guided practice sequence">
+          <ol className="warm-up-sequence-list" aria-label="Skill Check sequence">
             {visiblePractice.map((item, index) => (
               <li
                 className={index === activeIndex ? 'is-active' : undefined}
@@ -372,7 +372,7 @@ export function WarmUpPracticePanel({
           </div>
           {visibleCompletedCount >= visiblePractice.length ? (
             <div className="warm-up-complete-panel">
-              <strong>Guided sequence complete</strong>
+              <strong>Skill Check sequence complete</strong>
               <p>Use exam practice next, or return to the Field Guide for a quick method review.</p>
               <div className="warm-up-next-actions">
                 {onContinueToExamPractice ? <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button> : null}
@@ -380,10 +380,10 @@ export function WarmUpPracticePanel({
               </div>
             </div>
           ) : null}
-          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed guided item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
+          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed Skill Check item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">Guided practice for this region is being prepared. Start with the Field Guide or jump into Exam Training.</p>
+        <p className="region-empty-state">Worked-route Skill Check items for this topic are being prepared. Start with the Field Guide or jump into Exam Training.</p>
       )}
     </RegionActionCard>
   );

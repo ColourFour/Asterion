@@ -36,8 +36,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
         <p>A saved attempt from this region can move your progress and may bring the Guardian closer.</p>
         {summary.learningActivityReadiness.attempts > 0 ? (
           <small>
-            Support practice: {summary.learningActivityReadiness.quickCheckAttempts} short check{summary.learningActivityReadiness.quickCheckAttempts === 1 ? '' : 's'}
-            {' '}and {summary.learningActivityReadiness.warmUpAttempts} guided step{summary.learningActivityReadiness.warmUpAttempts === 1 ? '' : 's'} recorded.
+            Skill Check support: {summary.learningActivityReadiness.attempts} item{summary.learningActivityReadiness.attempts === 1 ? '' : 's'} recorded.
           </small>
         ) : null}
       </details>
@@ -54,7 +53,7 @@ export function TrainingGroundsPanel({ canTrain, summary, onStartTraining }: Tra
           <BarChart3 size={20} aria-hidden="true" />
           <div>
             <strong>Weak Area Review</strong>
-            <span>{hasSavedAttempt ? 'Uses your recent saved score to focus the next review.' : 'Needs one saved attempt first. Start with Core Practice or a short check.'}</span>
+            <span>{hasSavedAttempt ? 'Uses your recent saved score to focus the next review.' : 'Needs one saved attempt first. Start with Core Practice or Skill Check.'}</span>
           </div>
         </article>
         <article className={summary.trainingSession.intent === 'challenge' ? 'is-recommended next-step-glow' : undefined}>

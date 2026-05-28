@@ -292,7 +292,7 @@ function QuickCheckCard({
   return (
     <article className="quick-check-reveal" data-activity-id={activityId}>
       <header className="quick-check-heading">
-        <strong>Short check: {title}</strong>
+        <strong>Skill check: {title}</strong>
         <small>
           Check {checkPosition} of {checkCount}
           {previousAttempt ? ` · Last: ${learningOutcomeLabel(previousAttempt.outcome)}` : ''}
@@ -312,7 +312,7 @@ function QuickCheckCard({
       </div>
       {feedback ? <QuickCheckFeedback result={feedback} /> : null}
       {feedback?.status === 'correct' ? (
-        <div className="quick-check-next-actions" aria-label="Quick check next action">
+        <div className="quick-check-next-actions" aria-label="Skill Check next action">
           <strong>Next action</strong>
           {contract.explanation ? <p><MathText text={contract.explanation} /></p> : null}
           <div>
@@ -325,7 +325,7 @@ function QuickCheckCard({
             ) : null}
             <button className="activity-secondary-action" type="button" onClick={tryAgain}>Try Again</button>
           </div>
-          {saved ? <small className="region-card-note">Short check saved locally as a support activity.</small> : null}
+          {saved ? <small className="region-card-note">Skill Check saved locally as a support activity.</small> : null}
         </div>
       ) : null}
     </article>
@@ -376,11 +376,11 @@ export function QuickChecksPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Skill Practice"
-      title="One small check"
-      description="Do one short check and get immediate feedback."
+      eyebrow="Skill Check"
+      title="Skill Check item"
+      description="Answer one focused prompt and get feedback when validation is safe."
       icon={<Target size={22} />}
-      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} short checks available`} /> : undefined}
+      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} Skill Check items available`} /> : undefined}
       className="quick-check-card"
     >
       {activeCheck ? (
@@ -404,10 +404,10 @@ export function QuickChecksPanel({
               title={activeCheck.title}
             />
           </div>
-          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed short check{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
+          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed Skill Check item{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">No reviewed short checks are published for this region yet. Use the Field Guide and Exam Training route.</p>
+        <p className="region-empty-state">No reviewed deterministic Skill Check items are published for this topic yet. Use a worked-route item, the Field Guide, or Exam Training.</p>
       )}
     </RegionActionCard>
   );

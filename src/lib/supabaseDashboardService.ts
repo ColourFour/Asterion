@@ -487,7 +487,7 @@ function focusItemsFor(rows: StudentProgressRow[], roster: TeacherClassRoster): 
       title: 'No hosted activity yet',
       summary: `${unsynced.length} claimed student${unsynced.length === 1 ? ' has' : 's have'} not recorded teacher-visible hosted activity yet.`,
       studentIds: unsynced.map((row) => row.id),
-      suggestedAction: 'Ask students to complete a Field Guide, Quick Check, Warm-Up, or save an attempt.',
+      suggestedAction: 'Ask students to complete a Field Guide, Skill Check, or save an attempt.',
       priority: 2,
     });
   }

@@ -613,7 +613,7 @@ function buildFocusThisWeek(rows: StudentProgressRow[], regions: RegionProgressS
       regionId: weakestRegion.regionId,
       regionName: weakestRegion.regionName,
       studentIds: rows.filter((row) => row.regionCells.some((cell) => cell.regionId === weakestRegion.regionId && ['needs_help', 'in_progress'].includes(cell.status))).map((row) => row.id),
-      suggestedAction: 'Start the week with one worked example, then assign a short image-first Warm-Up in this region.',
+      suggestedAction: 'Start the week with one worked example, then assign a short Skill Check in this region.',
       priority: 1,
     },
     {
@@ -633,7 +633,7 @@ function buildFocusThisWeek(rows: StudentProgressRow[], regions: RegionProgressS
       title: 'Check students with no recent activity',
       summary: `${inactiveStudents.length} students have no recent evidence in the last ${inactiveAfterDays} days.`,
       studentIds: inactiveStudents.map((row) => row.id),
-      suggestedAction: 'Ask these students to complete one Warm-Up or bring their latest written work for review.',
+      suggestedAction: 'Ask these students to complete one Skill Check item or bring their latest written work for review.',
       priority: 3,
     },
     {

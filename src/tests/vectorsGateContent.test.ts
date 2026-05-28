@@ -63,7 +63,7 @@ describe('Vectors Gate content contract', () => {
     }
   });
 
-  it('documents Skill Practice coverage or TODOs for every approved Vectors Gate topic', () => {
+  it('documents Skill Check coverage or TODOs for every approved Vectors Gate topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(VECTORS_GATE_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId)).toEqual([...VECTORS_GATE_TOPIC_ORDER]);
@@ -87,7 +87,7 @@ describe('Vectors Gate content contract', () => {
       .toBe('reviewed_runtime');
   });
 
-  it('has a reviewed runtime Skill Practice item for geometric addition/subtraction', () => {
+  it('has a reviewed runtime Skill Check item for geometric addition/subtraction', () => {
     const vectorPractice = getGeneratedPracticeForRegion(runtimePractice, 'vector-workshop', 'p3');
     const geometricPractice = vectorPractice.find((item) => item.practiceId === 'gen_vectors_line_relationship_basic_0004');
 
@@ -97,7 +97,7 @@ describe('Vectors Gate content contract', () => {
     expect(geometricPractice?.workedSolution.join('\n')).toContain('AC');
   });
 
-  it('has a reviewed runtime Skill Practice item for point-to-line distance', () => {
+  it('has a reviewed runtime Skill Check item for point-to-line distance', () => {
     const vectorPractice = getGeneratedPracticeForRegion(runtimePractice, 'vector-workshop', 'p3');
     const pointLinePractice = vectorPractice.find((item) => item.practiceId === 'gen_vectors_point_to_line_distance_0001');
 

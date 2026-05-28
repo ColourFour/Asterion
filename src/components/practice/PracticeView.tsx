@@ -452,7 +452,7 @@ export function PracticeView({
       ? 'Next: try another challenge-style question or return to the dashboard.'
       : 'Next: continue with another question, or try Stretch when you want a challenge.'
     : savedAttemptFeedback?.mistakeLabels.length
-      ? 'Next: use Weak Area Review or try one guided Skill Practice step before Stretch.'
+      ? 'Next: use Weak Area Review or try one Skill Check item before Stretch.'
       : 'Next: do one more Core Practice question.';
 
   if (!question) {

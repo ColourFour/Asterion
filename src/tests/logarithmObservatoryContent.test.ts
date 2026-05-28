@@ -49,7 +49,7 @@ describe('Logarithm Observatory content contract', () => {
       expect(topic.examples.length, topic.id).toBeGreaterThanOrEqual(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -62,7 +62,7 @@ describe('Logarithm Observatory content contract', () => {
     expect(logPractice.every((item) => approvedTopicIds.has(String(item.parameters.topic_contract_id)))).toBe(true);
   });
 
-  it('blocks quarantined calculus content from Log Field Guide, Quick Check, and Skill Practice runtime selection', () => {
+  it('blocks quarantined calculus content from Log Field Guide, Quick Check, and Skill Check runtime selection', () => {
     const logTopics = FIELD_GUIDE_TOPICS_BY_REGION['logarithm-grove'];
     const logPractice = getGeneratedPracticeForRegion(runtimePractice, 'logarithm-grove', 'p3');
     const logSnippets = getTeachingSnippetsForRegion(runtimeSnippets, 'p3', logRegion);
@@ -76,7 +76,7 @@ describe('Logarithm Observatory content contract', () => {
       .not.toEqual(expect.arrayContaining([...LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS]));
   });
 
-  it('does not surface calculus wording in Log Field Guide or generated Skill Practice', () => {
+  it('does not surface calculus wording in Log Field Guide or generated Skill Check', () => {
     const fieldGuideText = FIELD_GUIDE_TOPICS_BY_REGION['logarithm-grove']
       .flatMap((topic) => [
         topic.id,

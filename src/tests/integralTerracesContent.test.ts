@@ -72,7 +72,7 @@ describe('Integral Terraces integration content contract', () => {
       expect(topic.examples.length, topic.id).toBe(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -101,7 +101,7 @@ describe('Integral Terraces integration content contract', () => {
     }
   });
 
-  it('documents reviewed Skill Practice coverage for every approved integration topic', () => {
+  it('documents reviewed Skill Check coverage for every approved integration topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(INTEGRAL_TERRACES_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId))
@@ -133,7 +133,7 @@ describe('Integral Terraces integration content contract', () => {
     }
   });
 
-  it('keeps Integral Skill Practice on approved integration topics with no derivative-only or differential-equation runtime leak', () => {
+  it('keeps Integral Skill Check on approved integration topics with no derivative-only or differential-equation runtime leak', () => {
     const contractedPractice = contractedIntegralPractice();
     const approvedTopicIds = new Set<string>(INTEGRAL_TERRACES_TOPIC_ORDER);
     const text = contractedPractice.flatMap((item) => [

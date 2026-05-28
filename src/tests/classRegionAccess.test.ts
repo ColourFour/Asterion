@@ -40,7 +40,7 @@ describe('student class region access', () => {
     expect(canStudentUseRegionActivity(lockedAccess, 'mastery_progression')).toBe(false);
   });
 
-  it('keeps Skill Practice gates aligned with classroom region access modes', () => {
+  it('keeps Skill Check gates aligned with classroom region access modes', () => {
     const lockedAccess = getStudentRegionAccess(claimedAlphaProfile, 'complex-harbor');
     const openAccess = getStudentRegionAccess(claimedAlphaProfile, 'algebra-forge');
 

@@ -16,7 +16,7 @@ import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
 export const TRAINING_SESSION_LABELS: Record<TrainingSessionIntent, string> = {
-  warm_up: 'Guided review',
+  warm_up: 'Skill Check review',
   core_practice: 'Core Practice',
   weak_area_review: 'Weak Area Review',
   challenge: 'Stretch Problems',
@@ -123,11 +123,11 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const earlyReveals = sorted.filter((attempt) => attempt.revealedEarly).length;
   const latestOutcome = latest?.outcome;
   const nextActionHint = sorted.length === 0
-    ? 'Try Skill Practice before moving into exam questions.'
+    ? 'Try Skill Check before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Skill Practice records look ready. Move into Exam Training next.'
+      ? 'Skill Check records look ready. Move into Exam Training next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
-        ? 'A recent support activity was missed or revealed early. Try guided Skill Practice before exam training.'
+        ? 'A recent support activity was missed or revealed early. Try Skill Check before exam training.'
         : 'Support activity records show partial readiness. Try one more guided practice item or move carefully into training.';
 
   return {
@@ -288,7 +288,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'warm_up',
         label: TRAINING_SESSION_LABELS.warm_up,
-        reason: learningActivityReadiness.nextActionHint ?? 'Guided review is selected because support activity records show a recent miss or early reveal.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check review is selected because support activity records show a recent miss or early reveal.',
       };
     }
 
@@ -296,8 +296,8 @@ export function recommendTrainingSession(input: {
       intent: 'warm_up',
       label: TRAINING_SESSION_LABELS.warm_up,
       reason: fieldGuideCompleted
-        ? 'Guided review is selected because you have completed the guide and have no saved attempts in this region yet.'
-        : 'Guided review is available, but the Field Guide is still the recommended first step.',
+        ? 'Skill Check review is selected because you have completed the guide and have no saved attempts in this region yet.'
+        : 'Skill Check review is available, but the Field Guide is still the recommended first step.',
     };
   }
 

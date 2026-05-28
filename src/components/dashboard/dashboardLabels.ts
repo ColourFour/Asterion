@@ -2,8 +2,8 @@ import type { EvidenceActivityType, EvidenceAction, EvidenceOutcome, Recommended
 
 export const nextStepLabels: Record<RecommendedNextStep, string> = {
   needs_field_guide: 'Needs Field Guide',
-  needs_quick_check: 'Needs Quick Check',
-  needs_warm_up: 'Needs Warm-Up',
+  needs_quick_check: 'Needs Skill Check',
+  needs_warm_up: 'Needs Skill Check',
   ready_for_exam_training: 'Ready for Exam Training',
   needs_teacher_review: 'Needs Teacher Review',
   ready_for_guardian: 'Ready for Guardian',
@@ -11,8 +11,8 @@ export const nextStepLabels: Record<RecommendedNextStep, string> = {
 
 export const readinessLabels: Record<RegionReadinessState, string> = {
   needs_field_guide: 'Field Guide first',
-  needs_quick_check: 'Quick Check next',
-  needs_warm_up: 'Warm-Up next',
+  needs_quick_check: 'Skill Check next',
+  needs_warm_up: 'Skill Check next',
   ready_for_exam_training: 'Exam Training ready',
   needs_teacher_review: 'Teacher review',
   ready_for_guardian: 'Guardian ready',
@@ -29,8 +29,8 @@ export const actionTypeLabels: Record<TeacherActionCardType, string> = {
 
 export const activityLabels: Record<EvidenceActivityType, string> = {
   field_guide: 'Field Guide',
-  quick_check: 'Quick Check',
-  warm_up: 'Warm-Up',
+  quick_check: 'Skill Check',
+  warm_up: 'Skill Check',
   exam_training: 'Exam Training',
   guardian: 'Guardian',
 };

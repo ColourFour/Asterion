@@ -33,7 +33,7 @@ export const CLASS_HALL_DEMO_AVATARS: ClassHallAvatarSnapshot[] = [
         outfit: 'school-spirit-tracksuit',
       },
     },
-    achievements: ['Archive Helper', 'Warm-Up Streak'],
+    achievements: ['Archive Helper', 'Skill Check Streak'],
     motto: 'Check the route, then move.',
     favoriteRegion: 'Integral Terraces',
   },

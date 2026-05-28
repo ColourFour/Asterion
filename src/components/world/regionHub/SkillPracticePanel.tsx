@@ -1,15 +1,19 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowRight, ListChecks } from 'lucide-react';
-import type { FieldGuideTopic } from '../../../data/fieldGuideTopics';
+import { getFieldGuideTopicsForRegion, type FieldGuideTopic } from '../../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, RegionDefinition } from '../../../types';
-import { orderGeneratedPracticeForFieldGuideTopic, type GeneratedPracticeItem } from '../../../lib/generatedPractice';
+import type { GeneratedPracticeItem } from '../../../lib/generatedPractice';
+import {
+  SKILL_CHECK_COMPLEXITIES,
+  buildSkillChecklistTopicGroups,
+  totalSkillChecklistItems,
+  type SkillChecklistTopicGroup,
+} from '../../../lib/skillChecklist';
 import type { TeachingSnippet } from '../../../lib/teachingSnippets';
 import { QuickChecksPanel } from './QuickChecksPanel';
 import { WarmUpPracticePanel } from './WarmUpPracticePanel';
 
 export type SkillPracticeFocus = 'quick-check' | 'warm-up' | 'overview';
-type SkillPracticeStepId = 'start-simple' | 'build-method' | 'ready-for-exam';
-const underDevelopmentLabel = 'Under development';
 
 interface SkillPracticePanelProps {
   teachingSnippets: TeachingSnippet[];
@@ -29,60 +33,25 @@ interface SkillPracticePanelProps {
   onLearningActivityAttempt?: (attempt: LearningActivityAttempt) => void;
 }
 
-const skillPracticeSteps: Array<{
-  id: SkillPracticeStepId;
-  label: string;
-  heading: string;
-  description: string;
-}> = [
-  {
-    id: 'start-simple',
-    label: 'Quick Check',
-    heading: 'Quick Check',
-    description: 'Do one short check and get immediate feedback.',
-  },
-  {
-    id: 'build-method',
-    label: 'Guided Practice',
-    heading: 'Guided Practice',
-    description: 'Try a guided step, then compare with the worked route.',
-  },
-  {
-    id: 'ready-for-exam',
-    label: 'Ready for exam practice',
-    heading: 'Ready for exam practice',
-    description: 'Move to canonical exam questions and mark schemes when you are ready.',
-  },
-];
-
-function stepForFocus(focus: SkillPracticeFocus): SkillPracticeStepId | undefined {
-  if (focus === 'quick-check') return 'start-simple';
-  if (focus === 'warm-up') return 'build-method';
-  return undefined;
-}
-
 function hasCompletedActivity(activityAttempts: LearningActivityAttempt[], activityType: LearningActivityAttempt['activityType']): boolean {
   return activityAttempts.some((attempt) => attempt.activityType === activityType);
 }
 
-function defaultStepFor(input: {
-  activityAttempts: LearningActivityAttempt[];
-  canUseQuickCheck: boolean;
-  canUseWarmUp: boolean;
-  canUseExamPractice: boolean;
+function groupCountLabel(group: SkillChecklistTopicGroup): string {
+  const count = totalSkillChecklistItems(group);
+  return `${count} item${count === 1 ? '' : 's'}`;
+}
+
+function preferredTopicId(input: {
+  currentFieldGuideTopic?: FieldGuideTopic;
   focus: SkillPracticeFocus;
-}): SkillPracticeStepId {
-  const focusedStep = stepForFocus(input.focus);
-  if (focusedStep) return focusedStep;
-
-  const quickCheckComplete = hasCompletedActivity(input.activityAttempts, 'quick_check');
-  const warmUpComplete = hasCompletedActivity(input.activityAttempts, 'warm_up');
-
-  if (input.canUseQuickCheck && !quickCheckComplete) return 'start-simple';
-  if (input.canUseWarmUp && !warmUpComplete) return 'build-method';
-  if (input.canUseExamPractice) return 'ready-for-exam';
-  if (input.canUseWarmUp) return 'build-method';
-  return 'start-simple';
+  groups: SkillChecklistTopicGroup[];
+}): string | undefined {
+  if (input.currentFieldGuideTopic) return input.currentFieldGuideTopic.id;
+  const withContent = input.groups.filter((group) => totalSkillChecklistItems(group) > 0);
+  if (input.focus === 'quick-check') return withContent.find((group) => group.quickCheckSnippets.length > 0)?.topic.id ?? withContent[0]?.topic.id;
+  if (input.focus === 'warm-up') return withContent.find((group) => group.guidedPracticeItems.length > 0)?.topic.id ?? withContent[0]?.topic.id;
+  return withContent[0]?.topic.id ?? input.groups[0]?.topic.id;
 }
 
 export function SkillPracticePanel({
@@ -102,138 +71,141 @@ export function SkillPracticePanel({
   onContinueToExamPractice,
   onLearningActivityAttempt,
 }: SkillPracticePanelProps) {
-  const [activeStep, setActiveStep] = useState<SkillPracticeStepId>(() => defaultStepFor({
-    activityAttempts,
-    canUseExamPractice,
-    canUseQuickCheck,
-    canUseWarmUp,
+  const groups = useMemo(() => buildSkillChecklistTopicGroups({
+    fieldGuideTopics: getFieldGuideTopicsForRegion(region?.id),
+    teachingSnippets,
+    practiceItems,
+  }), [region?.id, teachingSnippets, practiceItems]);
+  const [activeTopicId, setActiveTopicId] = useState<string | undefined>(() => preferredTopicId({
+    currentFieldGuideTopic,
     focus,
+    groups,
   }));
-  const [localCompletedSteps, setLocalCompletedSteps] = useState<Set<SkillPracticeStepId>>(() => new Set());
-  const topicMatchedPractice = orderGeneratedPracticeForFieldGuideTopic(practiceItems, currentFieldGuideTopic);
-  const quickCheckComplete = hasCompletedActivity(activityAttempts, 'quick_check') || localCompletedSteps.has('start-simple');
-  const warmUpComplete = hasCompletedActivity(activityAttempts, 'warm_up') || localCompletedSteps.has('build-method');
+  const [localCompletedTypes, setLocalCompletedTypes] = useState<Set<LearningActivityAttempt['activityType']>>(() => new Set());
+  const activeGroup = groups.find((group) => group.topic.id === activeTopicId) ?? groups[0];
+  const quickCheckComplete = hasCompletedActivity(activityAttempts, 'quick_check') || localCompletedTypes.has('quick_check');
+  const warmUpComplete = hasCompletedActivity(activityAttempts, 'warm_up') || localCompletedTypes.has('warm_up');
+  const supportAttemptCount = activityAttempts.length + localCompletedTypes.size;
 
   useEffect(() => {
-    setActiveStep(defaultStepFor({
-      activityAttempts,
-      canUseExamPractice,
-      canUseQuickCheck,
-      canUseWarmUp,
+    setActiveTopicId(preferredTopicId({
+      currentFieldGuideTopic,
       focus,
+      groups,
     }));
-  }, [canUseExamPractice, canUseQuickCheck, canUseWarmUp, focus, region?.id]);
+  }, [currentFieldGuideTopic?.id, focus, groups, region?.id]);
 
   function recordLearningActivityAttempt(attempt: LearningActivityAttempt) {
-    if (attempt.activityType === 'quick_check') {
-      setLocalCompletedSteps((current) => new Set([...current, 'start-simple']));
-    }
-    if (attempt.activityType === 'warm_up') {
-      setLocalCompletedSteps((current) => new Set([...current, 'build-method']));
-    }
+    setLocalCompletedTypes((current) => new Set([...current, attempt.activityType]));
     onLearningActivityAttempt?.(attempt);
   }
 
-  const stepStatus = (stepId: SkillPracticeStepId): 'Active' | 'Complete' | 'Locked' | 'Ready' => {
-    if (stepId === activeStep) return 'Active';
-    if (stepId === 'start-simple') return canUseQuickCheck ? quickCheckComplete ? 'Complete' : 'Ready' : 'Locked';
-    if (stepId === 'build-method') return canUseWarmUp ? warmUpComplete ? 'Complete' : 'Ready' : 'Locked';
-    return canUseExamPractice ? quickCheckComplete && warmUpComplete ? 'Complete' : 'Ready' : 'Locked';
-  };
-
-  const activeStepMeta = skillPracticeSteps.find((step) => step.id === activeStep) ?? skillPracticeSteps[0];
-
   return (
-    <section className="skill-practice-panel" aria-label="Skill Practice">
-      <p className="skill-practice-lede">Practice one step at a time before Exam Training.</p>
+    <section className="skill-practice-panel" aria-label="Skill Check">
+      <p className="skill-practice-lede">Skill Check is grouped by Field Guide topic. Complexity describes solving steps, not grades, mastery, or legacy difficulty metadata.</p>
 
-      <div className="skill-practice-steps" aria-label="Skill Practice steps">
-        {skillPracticeSteps.map((step) => {
-          const status = stepStatus(step.id);
-          return (
-            <button
-              type="button"
-              key={step.id}
-              aria-current={activeStep === step.id ? 'step' : undefined}
-              disabled={status === 'Locked'}
-              onClick={() => setActiveStep(step.id)}
-            >
-              <span className="skill-practice-step-label">
-                {step.label}
-                {step.id === 'start-simple' ? <em>{underDevelopmentLabel}</em> : null}
-              </span>
-              <small>{status}</small>
-            </button>
-          );
-        })}
-      </div>
+      {groups.length ? (
+        <div className="skill-practice-topic-grid" aria-label="Field Guide Skill Check topics">
+          {groups.map((group) => {
+            const active = group.topic.id === activeGroup?.topic.id;
+            return (
+              <button
+                type="button"
+                key={group.topic.id}
+                aria-current={active ? 'true' : undefined}
+                className={active ? 'active' : ''}
+                onClick={() => setActiveTopicId(group.topic.id)}
+              >
+                <span className="skill-practice-topic-title">{group.topic.title}</span>
+                <small>{groupCountLabel(group)}</small>
+                <span className="skill-practice-complexity-row" aria-label={`${group.topic.title} complexity mix`}>
+                  {Object.values(SKILL_CHECK_COMPLEXITIES).map((complexity) => (
+                    <span key={complexity.id}>{complexity.label}: {group.complexityCounts[complexity.id]}</span>
+                  ))}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       <section
         className="skill-practice-section is-focused"
-        id={`skill-practice-${activeStep}`}
+        id={activeGroup ? `skill-check-${activeGroup.topic.id}` : 'skill-check-empty'}
         aria-labelledby="skill-practice-active-step-title"
       >
         <div className="skill-practice-section-intro">
-          <span>Skill Practice</span>
+          <span>Skill Check</span>
           <h4 id="skill-practice-active-step-title">
-            {activeStepMeta.heading}
-            {activeStep === 'start-simple' ? <em>{underDevelopmentLabel}</em> : null}
+            {activeGroup?.topic.title ?? 'Skill Check'}
           </h4>
-          <p>{activeStepMeta.description}</p>
-          {activeStep === 'start-simple' ? (
-            <p className="skill-practice-under-development-note">This activity is being improved for the pilot.</p>
-          ) : null}
+          <p>{activeGroup?.topic.purpose ?? 'Field Guide topic mapping is being prepared for this region.'}</p>
+          {activeGroup?.fallbackReason ? <p className="skill-practice-under-development-note">{activeGroup.fallbackReason}</p> : null}
+          <div className="skill-practice-complexity-legend" aria-label="Solving complexity">
+            {Object.values(SKILL_CHECK_COMPLEXITIES).map((complexity) => (
+              <span key={complexity.id}>
+                <strong>{complexity.label}</strong>
+                {complexity.description}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {activeStep === 'start-simple' && (canUseQuickCheck ? (
-          <QuickChecksPanel
-            teachingSnippets={teachingSnippets}
-            region={region}
-            profileId={profileId}
-            activityAttempts={activityAttempts}
-            maxInitialItems={1}
-            showNextCheck={false}
-            onContinueToWarmUp={canUseWarmUp ? () => setActiveStep('build-method') : undefined}
-            onContinueToExamPractice={canUseExamPractice ? () => setActiveStep('ready-for-exam') : undefined}
-            onLearningActivityAttempt={recordLearningActivityAttempt}
-          />
-        ) : quickCheckLockedContent)}
+        {activeGroup ? (
+          <div className="skill-check-item-stack">
+            {canUseQuickCheck ? (
+              <QuickChecksPanel
+                teachingSnippets={activeGroup.quickCheckSnippets}
+                region={region}
+                profileId={profileId}
+                activityAttempts={activityAttempts}
+                maxInitialItems={1}
+                showNextCheck
+                onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
+                onLearningActivityAttempt={recordLearningActivityAttempt}
+              />
+            ) : quickCheckLockedContent}
 
-        {activeStep === 'build-method' && (canUseWarmUp ? (
-          <WarmUpPracticePanel
-            practiceItems={topicMatchedPractice.items}
-            region={region}
-            profileId={profileId}
-            activityAttempts={activityAttempts}
-            maxInitialItems={3}
-            fieldGuideTopicTitle={currentFieldGuideTopic?.title}
-            topicMatchFallbackReason={topicMatchedPractice.fallbackReason}
-            onContinueToFieldGuide={onContinueToFieldGuide}
-            onContinueToExamPractice={canUseExamPractice ? () => setActiveStep('ready-for-exam') : undefined}
-            onLearningActivityAttempt={recordLearningActivityAttempt}
-          />
-        ) : warmUpLockedContent)}
-
-        {activeStep === 'ready-for-exam' ? (
-          <div className="skill-practice-exam-transition">
-            <p>Exam Training uses canonical question images and mark schemes.</p>
-            <button
-              type="button"
-              className="primary-button next-step-glow"
-              disabled={!canUseExamPractice}
-              onClick={onContinueToExamPractice}
-            >
-              Exam Training
-              <ArrowRight size={16} aria-hidden="true" />
-            </button>
+            {canUseWarmUp ? (
+              <WarmUpPracticePanel
+                practiceItems={activeGroup.guidedPracticeItems}
+                region={region}
+                profileId={profileId}
+                activityAttempts={activityAttempts}
+                maxInitialItems={3}
+                fieldGuideTopicTitle={activeGroup.topic.title}
+                topicMatchFallbackReason={activeGroup.fallbackReason}
+                onContinueToFieldGuide={onContinueToFieldGuide}
+                onContinueToExamPractice={canUseExamPractice ? onContinueToExamPractice : undefined}
+                onLearningActivityAttempt={recordLearningActivityAttempt}
+              />
+            ) : warmUpLockedContent}
           </div>
         ) : null}
+
+        <div className="skill-practice-exam-transition">
+          <p>Exam Training uses canonical question images and mark schemes. Skill Check records stay support-only.</p>
+          <button
+            type="button"
+            className="primary-button next-step-glow"
+            disabled={!canUseExamPractice}
+            onClick={onContinueToExamPractice}
+          >
+            Go to Exam Training
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
       </section>
 
       {!canUseQuickCheck && !canUseWarmUp ? (
         <div className="skill-practice-locked-note" role="status">
           <ListChecks size={18} aria-hidden="true" />
-          <span>Skill Practice is locked while this class is Field Guide only.</span>
+          <span>Skill Check is locked while this class is Field Guide only.</span>
+        </div>
+      ) : supportAttemptCount ? (
+        <div className="skill-practice-locked-note" role="status">
+          <ListChecks size={18} aria-hidden="true" />
+          <span>{quickCheckComplete || warmUpComplete ? 'Skill Check support progress is saved locally and does not change rank or Guardian access.' : 'Skill Check support progress is saved locally.'}</span>
         </div>
       ) : null}
     </section>

@@ -68,7 +68,7 @@ describe('Calculus Cliffs differentiation content contract', () => {
       expect(topic.examples.length, topic.id).toBe(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -89,7 +89,7 @@ describe('Calculus Cliffs differentiation content contract', () => {
     }
   });
 
-  it('documents reviewed Skill Practice coverage for each approved differentiation topic', () => {
+  it('documents reviewed Skill Check coverage for each approved differentiation topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(CALCULUS_CLIFFS_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId))
@@ -118,7 +118,7 @@ describe('Calculus Cliffs differentiation content contract', () => {
     }
   });
 
-  it('keeps contracted Calculus Skill Practice on the six approved differentiation topics', () => {
+  it('keeps contracted Calculus Skill Check on the six approved differentiation topics', () => {
     const contractedPractice = contractedCalculusPractice();
     const approvedTopicIds = new Set<string>(CALCULUS_CLIFFS_TOPIC_ORDER);
 

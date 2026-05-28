@@ -61,7 +61,7 @@ describe('Trigonometry Spire content contract', () => {
       expect(topic.examples.length, topic.id).toBeGreaterThanOrEqual(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
     }
   });
 
@@ -106,7 +106,7 @@ describe('Trigonometry Spire content contract', () => {
     expect(runtimeText).not.toContain('complex');
   });
 
-  it('blocks calculus, vector, and complex-number leakage from Trig Field Guide and Skill Practice', () => {
+  it('blocks calculus, vector, and complex-number leakage from Trig Field Guide and Skill Check', () => {
     const runtimeText = `${trigFieldGuideText()}\n${trigRuntimePracticeText()}`;
 
     for (const term of TRIGONOMETRY_SPIRE_OUT_OF_SCOPE_TERMS) {
@@ -114,7 +114,7 @@ describe('Trigonometry Spire content contract', () => {
     }
   });
 
-  it('documents reviewed Skill Practice coverage for each approved topic', () => {
+  it('documents reviewed Skill Check coverage for each approved topic', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
 
     expect(TRIGONOMETRY_SPIRE_SKILL_PRACTICE_ALIGNMENT.map((item) => item.topicId))

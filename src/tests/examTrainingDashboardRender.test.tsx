@@ -125,7 +125,7 @@ describe('ExamTrainingDashboard practice choices', () => {
     expect(container.querySelector('.exam-training-practice-choice.practice-weak')?.classList.contains('next-step-glow')).toBe(false);
     expect(container.querySelector('.exam-training-practice-choice.practice-stretch')?.classList.contains('next-step-glow')).toBe(false);
     expect(container.querySelector('.exam-training-route-strip')).toBeNull();
-    expect(container.textContent).not.toContain('Region HubField GuideSkill Practice');
+    expect(container.textContent).not.toContain('Region HubField GuideSkill Check');
     expect(container.textContent).toContain('Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.');
   });
 

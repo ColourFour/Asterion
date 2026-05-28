@@ -200,38 +200,34 @@ describe('Field Guide app route', () => {
     expect(container.textContent).not.toContain('Class Hall Welcomer');
   });
 
-  it('keeps the legacy Quick Check hash route on the merged Skill Practice page', async () => {
+  it('keeps the legacy Quick Check hash route on the merged Skill Check page', async () => {
     window.history.replaceState(null, '', '/#/regions/algebra-forge/quick-check');
     const container = await render(<App />);
-    await waitForText(container, 'Skill Practice');
+    await waitForText(container, 'Skill Check');
 
-    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Quick Check');
-    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Under development');
-    expect(container.textContent).toContain('This activity is being improved for the pilot.');
-    expect(container.textContent).toContain('Quick Check');
-    expect(container.textContent).toContain('Guided Practice');
+    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Check');
+    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Check');
+    expect(container.querySelector('.skill-practice-topic-grid')).toBeTruthy();
+    expect(container.textContent).toContain('Field Guide topic');
+    expect(container.textContent).not.toContain('Quick Check');
+    expect(container.textContent).toContain('Worked-route item');
     expect(container.querySelector('.quick-check-card')).toBeTruthy();
-    expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();
-    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(container.textContent).not.toContain('Warm-Up Practice');
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(container.textContent).not.toContain('Warm-Up');
   });
 
-  it('keeps the legacy Warm-Up hash route on the merged Skill Practice page', async () => {
+  it('keeps the legacy Warm-Up hash route on the merged Skill Check page', async () => {
     window.history.replaceState(null, '', '/#/regions/algebra-forge/warm-up');
     const container = await render(<App />);
-    await waitForText(container, 'Skill Practice');
+    await waitForText(container, 'Skill Check');
 
-    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
-    expect(container.querySelector<HTMLElement>('.skill-practice-steps button[aria-current="step"]')?.textContent).toContain('Guided Practice');
-    expect(container.textContent).toContain('Guided Practice');
-    expect(container.textContent).toContain('Ready for exam practice');
-    expect(container.querySelector('.quick-check-card')).toBeFalsy();
+    expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Check');
+    expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Check');
+    expect(container.querySelector('.skill-practice-topic-grid')).toBeTruthy();
+    expect(container.textContent).toContain('Worked-route item');
     expect(container.querySelector('.warm-up-card')).toBeTruthy();
-    expect(container.querySelector('.skill-practice-exam-transition')).toBeFalsy();
-    expect(container.textContent).not.toContain('Warm-Up Practice');
+    expect(container.querySelector('.skill-practice-exam-transition')).toBeTruthy();
+    expect(container.textContent).not.toContain('Warm-Up');
     expect(container.textContent).not.toContain('answer-first set with worked solutions');
   });
 
@@ -271,14 +267,14 @@ describe('Field Guide app route', () => {
     expect(container.querySelector('.encounter-chamber')).toBeFalsy();
   });
 
-  it('keeps locked legacy and merged Skill Practice hashes behind class access', async () => {
+  it('keeps locked legacy and merged Skill Check hashes behind class access', async () => {
     for (const page of ['quick-check', 'warm-up', 'skill-practice']) {
       window.history.replaceState(null, '', `/#/regions/complex-harbor/${page}`);
       const container = await render(<App />);
-      await waitForText(container, 'Skill Practice is locked for this class');
+      await waitForText(container, 'Skill Check is locked for this class');
 
-      expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Practice');
-      expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Practice');
+      expect(container.querySelector<HTMLElement>('.focused-region-page-header')?.textContent).toContain('Skill Check');
+      expect(container.querySelector<HTMLElement>('.region-learning-nav button.active')?.textContent).toContain('Skill Check');
       expect(container.textContent).toContain('cannot save new attempts or clear the Guardian');
       expect(container.querySelector('.quick-check-card')).toBeFalsy();
       expect(container.querySelector('.warm-up-practice-card')).toBeFalsy();

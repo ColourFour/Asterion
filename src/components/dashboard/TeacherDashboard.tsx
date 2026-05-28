@@ -426,7 +426,7 @@ function ClassRegionAccessSection({
           <label key={access.regionId} className={access.access === 'open' ? 'access-open' : 'access-locked'}>
             <input type="checkbox" checked={access.access === 'open'} disabled={readOnly} onChange={(event) => onRegionAccessChange(access.regionId, event.target.checked)} />
             <span>{access.regionName}</span>
-            <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Skill Practice, Exam Practice, Guardian, and mastery blocked'}{readOnly ? ' · read-only' : ''}</small>
+            <small>{dashboardDataService.labelForClassRegionAccess(access.access)}{dashboardDataService.canUseRegionActivity(access.access, 'quick_check') ? '' : ' · Skill Check, Exam Practice, Guardian, and mastery blocked'}{readOnly ? ' · read-only' : ''}</small>
           </label>
         ))}
       </div>

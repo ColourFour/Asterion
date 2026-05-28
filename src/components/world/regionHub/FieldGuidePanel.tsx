@@ -98,7 +98,7 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
           </button>
         ) : null}
         {answerRevealed ? (
-          <p className="worked-example-next-action">Next action: try the linked short check in Skill Practice without looking back at the final answer.</p>
+          <p className="worked-example-next-action">Next action: try the linked Skill Check item without looking back at the final answer.</p>
         ) : null}
       </div>
     </article>
@@ -191,6 +191,7 @@ function FieldGuideTopicLesson({
   exampleIndex,
   onBackToTopics,
   onNext,
+  onPracticeTopic,
 }: {
   topic: FieldGuideTopic;
   topicIndex: number;
@@ -198,10 +199,11 @@ function FieldGuideTopicLesson({
   exampleIndex: number;
   onBackToTopics: () => void;
   onNext: () => void;
+  onPracticeTopic: () => void;
 }) {
   const example = topic.examples[exampleIndex] ?? topic.examples[0];
   const hasMoreExamples = exampleIndex < topic.examples.length - 1;
-  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Continue to Skill Practice';
+  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Go to Skill Check';
 
   if (!example) {
     return (
@@ -309,6 +311,10 @@ function FieldGuideTopicLesson({
         <button className="secondary-button" type="button" onClick={onBackToTopics}>
           Back to Topics
         </button>
+        <button className="secondary-button" type="button" onClick={onPracticeTopic}>
+          Practice this skill
+          <ArrowRight size={16} aria-hidden="true" />
+        </button>
         <button className="primary-button" type="button" onClick={onNext}>
           {nextLabel}
           <ArrowRight size={16} aria-hidden="true" />
@@ -349,7 +355,7 @@ export function FieldGuidePanel({
   const warning = activeSnippet ? firstAvailable(activeSnippet.commonMistakes) ?? activeSnippet.commonTrap : undefined;
   const nextAction = activeSnippet
     ? isLastSnippet
-      ? 'Continue to Skill Practice when this idea is clear.'
+      ? 'Go to Skill Check when this idea is clear.'
       : 'Use Next when this idea is clear.'
     : undefined;
   const visualSupport = activeSnippet ? findVisualSupportSource({
@@ -428,6 +434,7 @@ export function FieldGuidePanel({
             exampleIndex={activeTopicExampleIndex}
             onBackToTopics={goBackToTopics}
             onNext={goToNextTopicStep}
+            onPracticeTopic={continueToQuickChecks}
           />
         ) : (
           <FieldGuideTopicChoice
@@ -519,7 +526,7 @@ export function FieldGuidePanel({
         ) : null}
         {activeSnippet && isLastSnippet ? (
           <button className="primary-button" type="button" onClick={continueToQuickChecks}>
-            Continue to Skill Practice
+            Go to Skill Check
             <ArrowRight size={16} />
           </button>
         ) : null}

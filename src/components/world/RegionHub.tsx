@@ -56,14 +56,14 @@ const hubActionPages: HubActionPageId[] = [
 
 const studentLoopExplanations: Record<HubActionPageId, string> = {
   'field-guide': 'Read the guide',
-  'skill-practice': 'Practice one step',
+  'skill-practice': 'Check one skill',
   'exam-training': 'Try real exam questions',
   guardian: 'Final challenge',
 };
 
 const hubActionPrimaryCopy: Record<HubActionPageId, string> = {
   'field-guide': 'Read the next guide step before practice.',
-  'skill-practice': 'Do one low-stakes practice task.',
+  'skill-practice': 'Do one low-stakes Skill Check item.',
   'exam-training': 'Work from a real Paper 3 question image.',
   guardian: 'Take the final region challenge when it is ready.',
 };
@@ -113,7 +113,7 @@ function hubActionPrimaryStudentCopy(input: {
     const listItems = fieldGuideTopicItems(input.fieldGuideTopic, input.regionName);
     return {
       eyebrow: 'Current step · Do this next',
-      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try a short check.' : 'Start here: Field Guide.',
+      title: input.fieldGuideCompleted ? 'Review the Field Guide, then try Skill Check.' : 'Start here: Field Guide.',
       description: input.fieldGuideCompleted
         ? 'Use the guide as a quick reset before practice.'
         : 'Learn about:',
@@ -123,14 +123,14 @@ function hubActionPrimaryStudentCopy(input: {
   }
 
   if (input.page === 'skill-practice') {
-    const needsFirstCheck = input.summary.learningActivityReadiness.quickCheckAttempts === 0;
+    const needsSkillCheck = input.summary.learningActivityReadiness.attempts === 0;
     return {
       eyebrow: 'Current step · Do this next',
-      title: needsFirstCheck ? 'Skill Practice: try one short skill check.' : 'Skill Practice: build the method with one guided step.',
-      description: needsFirstCheck
-        ? 'It is short and low-stakes, so you get a first win before full exam pressure.'
-        : 'Use one guided task to settle the method before the next exam question.',
-      button: needsFirstCheck ? 'Start short check' : 'Start guided practice',
+      title: needsSkillCheck ? 'Skill Check: practice one Field Guide skill.' : 'Skill Check: continue by topic or move on.',
+      description: needsSkillCheck
+        ? 'It is short and low-stakes, with complexity shown by solving steps.'
+        : 'Use the Field Guide topic list to settle the method before the next exam question.',
+      button: 'Go to Skill Check',
     };
   }
 
@@ -293,13 +293,13 @@ export function RegionHub({
                   canUseWarmUp={canUseWarmUp}
                   canUseExamPractice={canUseExamPractice}
                   currentFieldGuideTopic={currentFieldGuideTopic}
-                  quickCheckLockedContent={<LockedRegionActivityPanel activityLabel="Short Checks" studentRegionAccess={studentRegionAccess} />}
-                  warmUpLockedContent={<LockedRegionActivityPanel activityLabel="Guided Practice" studentRegionAccess={studentRegionAccess} />}
+                  quickCheckLockedContent={<LockedRegionActivityPanel activityLabel="Skill Check" studentRegionAccess={studentRegionAccess} />}
+                  warmUpLockedContent={<LockedRegionActivityPanel activityLabel="Skill Check" studentRegionAccess={studentRegionAccess} />}
                   onContinueToFieldGuide={() => onNavigatePage?.('field-guide')}
                   onContinueToExamPractice={canUseExamPractice ? () => onNavigatePage?.('exam-training') : undefined}
                   onLearningActivityAttempt={onLearningActivityAttempt}
                 />
-              ) : <LockedRegionActivityPanel activityLabel="Skill Practice" studentRegionAccess={studentRegionAccess} />
+              ) : <LockedRegionActivityPanel activityLabel="Skill Check" studentRegionAccess={studentRegionAccess} />
             ) : null}
 
             {activeDisplayPage === 'exam-training' ? (
@@ -366,7 +366,7 @@ function FocusedRegionPageHeader({
         {fieldGuide ? (
           <p className="field-guide-page-purpose"><MathText text={fieldGuide.topic} /></p>
         ) : isSkillPracticePage ? (
-          <p className="field-guide-page-purpose">Practice one step at a time before Exam Training.</p>
+          <p className="field-guide-page-purpose">Practice one Field Guide skill at a time before Exam Training.</p>
         ) : (
           <p className="field-guide-page-purpose">{summary.nextAction.label}</p>
         )}
@@ -580,7 +580,7 @@ function RegionHubHome({
     },
     {
       page: 'skill-practice',
-      label: 'Skill Practice',
+      label: 'Skill Check',
       state: !canStudentUseRegionActivity(studentRegionAccess, 'quick_check') && !canStudentUseRegionActivity(studentRegionAccess, 'warm_up')
         ? 'locked'
         : primaryPage === 'skill-practice'

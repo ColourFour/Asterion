@@ -2,7 +2,7 @@ import { quickCheckContractSeeds } from '../data/quickCheckContracts';
 import type { TeachingSnippetQuickCheck } from './teachingSnippets';
 import type { QuickCheckCheckResult, QuickCheckContract, QuickCheckResponse } from '../types';
 
-const CORRECT_MESSAGE = 'Correct. That matches this Quick Check.';
+const CORRECT_MESSAGE = 'Correct. That matches this Skill Check.';
 const INCORRECT_MESSAGE = 'Not yet. Try the hint and adjust your answer.';
 const EMPTY_MESSAGE = 'Add an answer first.';
 
