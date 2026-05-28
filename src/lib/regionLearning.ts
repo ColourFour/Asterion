@@ -12,6 +12,8 @@ import type {
 } from '../types';
 import { filterMasteryEvidence } from './masteryEvidence';
 import { filterGuardianCandidateQuestionsForRegion, isGuardianCandidateQuestion } from './questionEligibility';
+import { getGuardianChallengeItemsForRegion } from '../data/guardianChallengeItems';
+import { computeSkillChecklistCompletion, isSkillChecklistGuardianRegion, type SkillChecklistCompletion } from './skillChecklistProgress';
 
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
@@ -27,10 +29,12 @@ export interface GuardianEligibility {
   requirements: GuardianRequirement[];
   missingRequirements: string[];
   guardianQuestion?: NormalizedQuestion;
+  guardianChallengeAvailable?: boolean;
+  skillChecklistCompletion?: SkillChecklistCompletion;
 }
 
 export interface GuardianRequirement {
-  id: 'field_guide' | 'attempt_count' | 'recent_high_score' | 'subtopic_spread' | 'guardian_asset';
+  id: 'field_guide' | 'skill_checklist' | 'attempt_count' | 'recent_high_score' | 'subtopic_spread' | 'guardian_asset' | 'guardian_challenge_set';
   label: string;
   completed: boolean;
   detail: string;
@@ -161,7 +165,54 @@ export function computeGuardianEligibility(input: {
   learningRecord?: RegionLearningRecord;
   regionQuestions: NormalizedQuestion[];
   regionAttempts: Attempt[];
+  learningActivityAttempts?: LearningActivityAttempt[];
 }): GuardianEligibility {
+  if (isSkillChecklistGuardianRegion(input.region.id)) {
+    const skillChecklistCompletion = computeSkillChecklistCompletion({
+      regionId: input.region.id,
+      learningActivityAttempts: input.learningActivityAttempts,
+    });
+    const guardianChallengeAvailable = getGuardianChallengeItemsForRegion(input.region.id).length === skillChecklistCompletion.requiredCount
+      && skillChecklistCompletion.requiredCount > 0;
+    const requirements: GuardianRequirement[] = [
+      {
+        id: 'skill_checklist',
+        label: 'Skill Checklist complete',
+        completed: skillChecklistCompletion.completed,
+        detail: skillChecklistCompletion.completed
+          ? `All ${skillChecklistCompletion.requiredCount} required Skill Check subtopics are complete.`
+          : `Complete each required Skill Check subtopic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
+        nextAction: 'Use Skill Check until every Field Guide subtopic has a completed support item.',
+        progress: {
+          current: skillChecklistCompletion.completedCount,
+          target: skillChecklistCompletion.requiredCount,
+        },
+      },
+      {
+        id: 'guardian_challenge_set',
+        label: 'Guardian challenge set ready',
+        completed: guardianChallengeAvailable,
+        detail: guardianChallengeAvailable
+          ? 'A text-based Guardian item is ready for every Field Guide subtopic.'
+          : 'This region needs one runtime-safe Guardian item for every Field Guide subtopic.',
+        nextAction: 'This region needs a complete Guardian challenge set before the trial can open.',
+        progress: {
+          current: Math.min(getGuardianChallengeItemsForRegion(input.region.id).length, skillChecklistCompletion.requiredCount),
+          target: skillChecklistCompletion.requiredCount,
+        },
+      },
+    ];
+    const missingRequirements = requirements.filter((requirement) => !requirement.completed).map((requirement) => requirement.detail);
+
+    return {
+      eligible: missingRequirements.length === 0,
+      requirements,
+      missingRequirements,
+      guardianChallengeAvailable,
+      skillChecklistCompletion,
+    };
+  }
+
   const fieldGuideCompleted = Boolean(input.learningRecord?.fieldGuideCompletedAt);
   const guardianQuestions = filterGuardianCandidateQuestionsForRegion(input.regionQuestions, input.region);
   const guardianQuestion = selectGuardianQuestion(guardianQuestions);
@@ -428,6 +479,7 @@ export function buildRegionLearningSummary(input: {
     learningRecord: input.learningRecord,
     regionQuestions: input.regionQuestions,
     regionAttempts: input.regionAttempts,
+    learningActivityAttempts: input.learningActivityAttempts,
   });
   const trainingSession = recommendTrainingSession({
     regionProgress: input.regionProgress,

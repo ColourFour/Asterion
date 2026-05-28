@@ -1,9 +1,11 @@
-import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile } from '../../types';
+import type { Attempt, AvatarSettings, AvatarGear, NormalizedQuestion, RegionLearningRecord, RegionProgress, StudentProfile, StoredProgress } from '../../types';
 import { AVATAR_SLOT_LABELS, AVATAR_SLOTS } from '../../data/avatarCatalog';
 import { calculateAcademySummary } from '../../lib/academyProgress';
 import { getAvatarLayers } from '../../lib/avatarLayers';
 import { normalizeAvatarSettings } from '../../lib/avatarStore';
-import { calculateP3ReadinessIndex, type P3ReadinessIndex } from '../../lib/p3Readiness';
+import { buildExamTrainingTopicMastery, type ExamTrainingMasteryStatus, type ExamTrainingTopicMasteryItem } from '../../lib/examTrainingDashboard';
+import type { RegionLearningSummary } from '../../lib/regionLearning';
+import { MathText } from '../shared/MathText';
 import { AvatarPreview } from './AvatarPreview';
 
 interface AvatarBuilderProps {
@@ -12,7 +14,9 @@ interface AvatarBuilderProps {
   avatarGear: AvatarGear;
   attempts: Attempt[];
   questions: NormalizedQuestion[];
+  topicProfiles?: StoredProgress['topicProfiles'];
   regionLearning?: Record<string, RegionLearningRecord>;
+  regionLearningSummaries?: Record<string, RegionLearningSummary>;
   regionProgress: RegionProgress[];
   onAvatarChange: (avatar: AvatarSettings) => void;
 }
@@ -26,13 +30,109 @@ const crestLabels: Record<AvatarSettings['crest'], string> = {
   orb: 'Orb crest',
 };
 
-function readinessClass(readiness: P3ReadinessIndex): string {
-  return readiness.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+type ProfileRegionPhase = 'locked' | 'field-guide' | 'skill-check' | 'guardian' | 'complete' | 'needs-practice';
+
+interface ProfileRegionStatus {
+  phase: ProfileRegionPhase;
+  label: string;
+  detail: string;
+  percent: number;
 }
 
-export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions, regionLearning, regionProgress, onAvatarChange }: AvatarBuilderProps) {
+const topicStatusLabels: Record<ExamTrainingMasteryStatus, { label: string; className: string }> = {
+  strong: { label: 'Secure', className: 'secure' },
+  secure: { label: 'Ready', className: 'ready' },
+  developing: { label: 'In progress', className: 'in-progress' },
+  needs_work: { label: 'Needs practice', className: 'needs-practice' },
+  not_tried: { label: 'Not started', className: 'not-started' },
+};
+
+function regionStatusFromProgress(
+  progress: RegionProgress,
+  summary?: RegionLearningSummary,
+  learningRecord?: RegionLearningRecord,
+): ProfileRegionStatus {
+  if (summary?.state === 'locked' || !progress.isActive) {
+    return { phase: 'locked', label: 'Locked', detail: 'Opens later in the academy map.', percent: 0 };
+  }
+
+  if (summary?.state === 'mastered' || summary?.state === 'guardian_cleared' || progress.rank === 'Mastered' || learningRecord?.guardianClearedAt) {
+    return { phase: 'complete', label: 'Complete', detail: 'Guardian cleared for this region.', percent: 100 };
+  }
+
+  if (summary?.state === 'needs_review') {
+    return { phase: 'needs-practice', label: 'Needs practice', detail: 'Return to Skill Check before another Guardian run.', percent: 70 };
+  }
+
+  if (summary?.state === 'guardian_attempted') {
+    return { phase: 'guardian', label: 'Guardian', detail: 'Guardian attempted. Retry is available.', percent: 86 };
+  }
+
+  if (summary?.state === 'guardian_unlocked' || learningRecord?.guardianAttemptedAt) {
+    return { phase: 'guardian', label: 'Guardian', detail: 'Guardian challenge is open.', percent: 80 };
+  }
+
+  const skillCheckAttempts = summary?.learningActivityReadiness.attempts ?? 0;
+  if (summary?.state === 'training_in_progress' || skillCheckAttempts > 0) {
+    return {
+      phase: 'skill-check',
+      label: 'Skill Check',
+      detail: `${skillCheckAttempts || progress.attempts} support ${skillCheckAttempts === 1 ? 'attempt' : 'attempts'} saved.`,
+      percent: 62,
+    };
+  }
+
+  if (summary?.state === 'field_guide_completed' || learningRecord?.fieldGuideCompletedAt) {
+    return { phase: 'skill-check', label: 'Skill Check', detail: 'Field Guide complete. Skill Check is next.', percent: 45 };
+  }
+
+  if (summary?.state === 'field_guide_started' || learningRecord?.fieldGuideStartedAt) {
+    return { phase: 'field-guide', label: 'Field Guide', detail: 'Field Guide is underway.', percent: 24 };
+  }
+
+  if (progress.attempts > 0) {
+    return {
+      phase: 'skill-check',
+      label: 'Skill Check',
+      detail: `${progress.attempts} saved practice ${progress.attempts === 1 ? 'attempt' : 'attempts'}.`,
+      percent: 56,
+    };
+  }
+
+  return { phase: 'field-guide', label: 'Field Guide', detail: 'Start with the region Field Guide.', percent: 12 };
+}
+
+function topicStatus(item: ExamTrainingTopicMasteryItem) {
+  return topicStatusLabels[item.status];
+}
+
+export function AvatarBuilder({
+  profile,
+  avatar,
+  avatarGear,
+  attempts,
+  questions,
+  topicProfiles,
+  regionLearning,
+  regionLearningSummaries,
+  regionProgress,
+  onAvatarChange,
+}: AvatarBuilderProps) {
   const summary = calculateAcademySummary(regionProgress);
-  const p3Readiness = calculateP3ReadinessIndex({ attempts, questions, regionLearning });
+  const topicMastery = buildExamTrainingTopicMastery({
+    progress: {
+      schemaVersion: 1,
+      profile,
+      avatar,
+      attempts,
+      learningActivityAttempts: [],
+      topicProfiles: topicProfiles ?? {},
+      issueReports: [],
+      regionLearning,
+      settings: { activePaperFamily: 'p3' },
+    },
+    questions,
+  });
   const avatarForProgress = normalizeAvatarSettings(avatar, regionProgress);
   const equippedLayers = getAvatarLayers(avatarForProgress, regionProgress);
   const activeRegionCount = regionProgress.filter((progress) => progress.isActive).length;
@@ -159,33 +259,64 @@ export function AvatarBuilder({ profile, avatar, avatarGear, attempts, questions
           </div>
         </div>
 
-        <aside className="avatar-builder-sidebar" aria-label="Avatar progression summary">
-          <section className={`p3-readiness-card readiness-${readinessClass(p3Readiness)}`} aria-labelledby="p3-readiness-title">
-            <div className="p3-readiness-heading">
+        <aside className="avatar-builder-sidebar profile-progress-sidebar" aria-label="Student progress dashboard">
+          <section className="profile-region-progress-card" aria-labelledby="profile-region-progress-title">
+            <div className="profile-progress-heading">
               <div>
-                <span>Local evidence index</span>
-                <h3 id="p3-readiness-title">P3 Evidence Readiness</h3>
-                <small>Informal local signal, not an official grade.</small>
+                <span>Region Completion Status</span>
+                <h3 id="profile-region-progress-title">Field Guide → Skill Check → Guardian</h3>
               </div>
-              <strong>{p3Readiness.score}/100</strong>
+              <small>{regionProgress.length} regions</small>
             </div>
-            <div className="p3-readiness-status">
-              <span>{p3Readiness.label}</span>
-              <p>{p3Readiness.explanation}</p>
+
+            <div className="profile-region-list">
+              {regionProgress.map((progress) => {
+                const status = regionStatusFromProgress(
+                  progress,
+                  regionLearningSummaries?.[progress.region.id],
+                  regionLearning?.[progress.region.id],
+                );
+                return (
+                  <article key={progress.region.id} className={`profile-region-row profile-region-${status.phase}`}>
+                    <div className="profile-region-row-main">
+                      <strong>{progress.region.name}</strong>
+                      <span>{status.label}</span>
+                    </div>
+                    <div className="profile-region-meter" aria-label={`${progress.region.name} ${status.percent}% complete`}>
+                      <span style={{ width: `${status.percent}%` }} />
+                    </div>
+                    <small>{status.detail}</small>
+                  </article>
+                );
+              })}
             </div>
-            <dl className="p3-readiness-metrics" aria-label="P3 readiness evidence">
-              {p3Readiness.metrics.map((metric) => (
-                <div key={metric.label} className={metric.met ? 'metric-met' : 'metric-gap'}>
-                  <dt>{metric.label}</dt>
-                  <dd>{metric.value}</dd>
-                  {metric.target ? <small>{metric.target}</small> : null}
-                </div>
-              ))}
-            </dl>
-            <div className="p3-readiness-reasons">
-              {(p3Readiness.concerns.length ? p3Readiness.concerns : p3Readiness.strengths).slice(0, 3).map((reason) => (
-                <span key={reason}>{reason}</span>
-              ))}
+          </section>
+
+          <section className="profile-topic-status-card" aria-labelledby="profile-topic-status-title">
+            <div className="profile-progress-heading">
+              <div>
+                <span>Topic Mastery Status</span>
+                <h3 id="profile-topic-status-title">Practice progress by subtopic</h3>
+              </div>
+              <small>{topicMastery.length} skills</small>
+            </div>
+            <p className="profile-topic-status-note">Based on saved mastery-eligible practice. Skill Check is support practice and does not by itself prove exam mastery.</p>
+            <div className="profile-topic-status-grid">
+              {topicMastery.map((item) => {
+                const status = topicStatus(item);
+                return (
+                  <article key={item.skillId} className={`profile-topic-status-item topic-status-${status.className}`}>
+                    <div>
+                      <strong><MathText text={item.name} /></strong>
+                      <span>{item.evidenceLabel}</span>
+                    </div>
+                    <small>{status.label}</small>
+                    <div className="profile-topic-meter" aria-label={`${item.name} ${status.label}`}>
+                      <span style={{ width: `${item.scorePercent ?? 0}%` }} />
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
         </aside>

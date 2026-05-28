@@ -1319,7 +1319,9 @@ export default function App() {
             avatarGear={avatarGear}
             attempts={progress.attempts}
             questions={trainableQuestions}
+            topicProfiles={progress.topicProfiles}
             regionLearning={progress.regionLearning}
+            regionLearningSummaries={regionLearningSummaries}
             regionProgress={worldProgress}
             onAvatarChange={(avatar) => {
               if (staffPreviewContext) {

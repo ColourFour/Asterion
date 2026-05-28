@@ -12,6 +12,7 @@ import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from '../data/logarithmObservatoryC
 import { TRIGONOMETRY_SPIRE_TOPIC_ORDER } from '../data/trigonometrySpireContent';
 import { getRegionFieldGuide } from '../data/regionFieldGuides';
 import { GUARDIAN_PLACEHOLDER_WARNING, guardianChallenges } from '../data/guardianChallenges';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import {
   findVisualSupportSource,
   fieldGuideVisualSupportNeeds,
@@ -340,6 +341,26 @@ function supportActivityAttempt(activityType: LearningActivityAttempt['activityT
     createdAt: '2026-05-08T00:00:00.000Z',
     completedAt: '2026-05-08T00:01:00.000Z',
   };
+}
+
+function completedSkillChecklistAttempts(regionId = 'logarithm-grove'): LearningActivityAttempt[] {
+  return getFieldGuideTopicsForRegion(regionId).map((topic, index) => ({
+    id: `skill-check-${regionId}-${index + 1}`,
+    profileId: 'profile-1',
+    regionId,
+    regionName: regionId === 'algebra-forge' ? 'Algebra Vault' : 'Logarithm Observatory',
+    activityType: 'quick_check',
+    activityId: `guardian-unlock-${topic.id}`,
+    topic: topic.id,
+    skillTargetId: topic.skillIds[0],
+    prompt: `Skill Check for ${topic.title}`,
+    learnerResponse: 'completed',
+    revealedEarly: false,
+    outcome: 'got_it',
+    confidence: 5,
+    createdAt: `2026-05-08T00:0${index}:00.000Z`,
+    completedAt: `2026-05-08T00:0${index}:30.000Z`,
+  }));
 }
 
 function renderRegionHubPage(options: {
@@ -1415,6 +1436,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         rank: 'Bronze',
       },
       regionAttempts: [regionAttempt(1), regionAttempt(2), regionAttempt(3)],
+      learningActivityAttempts: completedSkillChecklistAttempts('algebra-forge'),
       onNavigatePage,
     });
 
@@ -1633,8 +1655,9 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(guardianPage.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(guardianPage.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(guardianPage.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
-    expect(guardianPage.textContent).toContain('The vault opens after enough saved region practice.');
-    expect(guardianPage.querySelectorAll('.guardian-requirement-card').length).toBeGreaterThanOrEqual(5);
+    expect(guardianPage.textContent).toContain('The vault opens after every required Skill Check subtopic is complete.');
+    expect(guardianPage.textContent).not.toContain('Exam Training');
+    expect(guardianPage.querySelectorAll('.guardian-requirement-card')).toHaveLength(2);
     expect(guardianPage.querySelector('.guardian-card')).toBeTruthy();
   });
 
@@ -1646,7 +1669,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
 
     expect(container.textContent).toContain('Vault locked');
-    expect(container.textContent).toContain('The challenge opens after the guide and enough scored practice.');
+    expect(container.textContent).toContain('The challenge opens after the Skill Checklist is complete.');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('src')).toContain('/assets/guardian-art/optimized/logarithm-grove-guardian-960.png');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.textContent).not.toContain('Lantern Growth Gate');
@@ -1654,9 +1677,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Enter the Guardian Challenge'))).toBe(false);
-    expect(container.querySelectorAll('.guardian-requirement-card')).toHaveLength(5);
-    expect(container.textContent).toContain('Saved practice attempts');
-    expect(container.textContent).toContain('0 / 3');
+    expect(container.querySelectorAll('.guardian-requirement-card')).toHaveLength(2);
+    expect(container.textContent).toContain('Skill Checklist complete');
+    expect(container.textContent).toContain('0 / 6');
+    expect(container.textContent).not.toContain('Saved practice attempts');
+    expect(container.textContent).not.toContain('Exam Training');
   });
 
   it('chooses one locked Guardian next action from the first missing eligibility requirement', () => {
@@ -1665,12 +1690,12 @@ describe('FieldGuidePanel teaching snippets', () => {
       activePage: 'guardian',
       onNavigatePage: guideNavigate,
     });
-    const guideAction = guideMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="field-guide"]');
-    expect(guideAction?.textContent).toContain('Start with the Field Guide');
+    const guideAction = guideMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="skill-practice"]');
+    expect(guideAction?.textContent).toContain('Open Skill Check');
     act(() => {
       guideAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(guideNavigate).toHaveBeenCalledWith('field-guide');
+    expect(guideNavigate).toHaveBeenCalledWith('skill-practice');
 
     const evidenceNavigate = vi.fn<(page: RegionLearningPageId) => void>();
     const evidenceMissing = renderRegionHubPage({
@@ -1678,12 +1703,12 @@ describe('FieldGuidePanel teaching snippets', () => {
       learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
       onNavigatePage: evidenceNavigate,
     });
-    const evidenceAction = evidenceMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="exam-training"]');
-    expect(evidenceAction?.textContent).toContain('Save one exam attempt');
+    const evidenceAction = evidenceMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="skill-practice"]');
+    expect(evidenceAction?.textContent).toContain('Open Skill Check');
     act(() => {
       evidenceAction?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(evidenceNavigate).toHaveBeenCalledWith('exam-training');
+    expect(evidenceNavigate).toHaveBeenCalledWith('skill-practice');
 
     const lowScoreAttempts = [1, 2, 3].map((index) => regionAttempt(index, {
       questionId: 'q1',
@@ -1703,8 +1728,8 @@ describe('FieldGuidePanel teaching snippets', () => {
       learningRecord: { regionId: 'logarithm-grove', fieldGuideCompletedAt: '2026-05-20T00:00:00.000Z', updatedAt: '2026-05-20T00:00:00.000Z' },
       regionAttempts: lowScoreAttempts,
     });
-    const recentAction = recentMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="exam-training"]');
-    expect(recentAction?.textContent).toContain('Review saved exam practice');
+    const recentAction = recentMissing.querySelector<HTMLButtonElement>('[data-guardian-next-action="skill-practice"]');
+    expect(recentAction?.textContent).toContain('Open Skill Check');
   });
 
   it('shows Guardian artwork and actual question action after unlock evidence is complete', () => {
@@ -1733,6 +1758,7 @@ describe('FieldGuidePanel teaching snippets', () => {
         subtopicsTouched: 1,
       },
       regionAttempts,
+      learningActivityAttempts: completedSkillChecklistAttempts(),
       onChallengeGuardian,
     });
 
@@ -1741,17 +1767,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).not.toContain('Lantern Growth Gate');
     expect(container.textContent).not.toContain('Solve \\log_2(x+3)');
     expect(container.textContent).toContain('Guardian ready');
-    expect(container.textContent).toContain('The vault opens now.');
+    expect(container.textContent).toContain('The Skill Checklist is complete.');
+    expect(container.textContent).toContain('Text Guardian Trial');
+    expect(container.textContent).toContain('Observatory Mirror Star');
     expect(container.querySelector<HTMLImageElement>('.guardian-placeholder-figure img')?.getAttribute('alt')).toBe('Logarithm Observatory Guardian artwork');
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
 
     const challengeButton = Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes('Enter the Guardian Challenge'));
-    expect(challengeButton).toBeTruthy();
+    expect(challengeButton).toBeFalsy();
     act(() => {
-      challengeButton!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      container.querySelector<HTMLButtonElement>('.guardian-check-button')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(onChallengeGuardian).toHaveBeenCalledWith(expect.objectContaining({ id: 'q1' }));
+    expect(container.textContent).toContain('Add an answer first');
+    expect(onChallengeGuardian).not.toHaveBeenCalled();
   });
 
   it('keeps unlocked Guardian page focused on the actual Guardian question action', () => {
@@ -1775,11 +1804,12 @@ describe('FieldGuidePanel teaching snippets', () => {
         rank: 'Bronze',
       },
       regionAttempts,
+      learningActivityAttempts: completedSkillChecklistAttempts(),
       onChallengeGuardian,
     });
 
     expect(container.querySelector<HTMLTextAreaElement>('.guardian-placeholder-card textarea')).toBeFalsy();
-    expect(container.textContent).toContain('The vault opens now.');
+    expect(container.textContent).toContain('Clear every subtopic seal');
     expect(container.textContent).toContain('What opened the Guardian?');
     expect(Array.from(container.querySelectorAll('button')).some((button) => button.textContent?.includes('Reveal placeholder guidance'))).toBe(false);
     expect(onChallengeGuardian).not.toHaveBeenCalled();

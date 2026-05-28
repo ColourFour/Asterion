@@ -1,13 +1,23 @@
-import { Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { CheckCircle2, Lock, RotateCcw, ShieldCheck, Sparkles } from 'lucide-react';
+import type { GuardianChallengeItem } from '../../../data/guardianChallengeItems';
+import { guardianChallengeContractForItem } from '../../../data/guardianChallengeItems';
 import type { GuardianChallenge } from '../../../data/guardianChallenges';
+import { checkGuardianChallengeAnswer } from '../../../lib/guardianChallengeValidation';
+import type { QuickCheckCheckResult, QuickCheckResponse } from '../../../types';
+import { MathText } from '../../shared/MathText';
 import { RegionActionCard } from './RegionActionCard';
+import { initialResponseFor, QuickCheckFeedback, QuickCheckInput } from './QuickChecksPanel';
 
 interface GuardianChallengePanelProps {
   challenge?: GuardianChallenge;
+  challengeItems?: GuardianChallengeItem[];
   guardianCleared?: boolean;
   isUnlocked: boolean;
   regionName: string;
 }
+
+const EMPTY_GUARDIAN_ITEMS: GuardianChallengeItem[] = [];
 
 function GuardianArtwork({ challenge, regionName }: { challenge: GuardianChallenge; regionName: string }) {
   if (challenge.guardianAssetPath) {
@@ -25,7 +35,64 @@ function GuardianArtwork({ challenge, regionName }: { challenge: GuardianChallen
   );
 }
 
-export function GuardianChallengePanel({ challenge, guardianCleared = false, isUnlocked, regionName }: GuardianChallengePanelProps) {
+function initialResponsesForItems(items: GuardianChallengeItem[]): Record<string, QuickCheckResponse> {
+  return Object.fromEntries(items.map((item) => [item.itemId, initialResponseFor(guardianChallengeContractForItem(item))]));
+}
+
+function GuardianItemCard({
+  item,
+  result,
+  response,
+  setResponse,
+  onCheck,
+}: {
+  item: GuardianChallengeItem;
+  result?: QuickCheckCheckResult;
+  response: QuickCheckResponse;
+  setResponse: (response: QuickCheckResponse) => void;
+  onCheck: () => void;
+}) {
+  const contract = guardianChallengeContractForItem(item);
+  const correct = result?.status === 'correct';
+
+  return (
+    <article className={`guardian-item-card${correct ? ' is-cleared' : ''}`}>
+      <header>
+        <span className="guardian-item-topic">{item.fieldGuideTopicId.replace(/_/g, ' ')}</span>
+        <h5>{item.title}</h5>
+      </header>
+      <p><MathText text={item.prompt} interactiveGlossary={false} /></p>
+      <QuickCheckInput contract={contract} response={response} setResponse={setResponse} />
+      <div className="guardian-item-actions">
+        <button className="primary-button guardian-check-button" type="button" onClick={onCheck}>
+          {correct ? <CheckCircle2 size={18} aria-hidden="true" /> : <Sparkles size={18} aria-hidden="true" />}
+          {correct ? 'Cleared' : 'Check answer'}
+        </button>
+      </div>
+      {result ? <QuickCheckFeedback result={result} /> : null}
+      {result && result.status !== 'empty' ? (
+        <details className="guardian-item-explanation" open={result.status === 'correct'}>
+          <summary>{result.status === 'correct' ? 'Final route' : 'Review the route'}</summary>
+          <ol>
+            {item.explanation.map((line) => <li key={line}><MathText text={line} interactiveGlossary={false} /></li>)}
+          </ol>
+        </details>
+      ) : null}
+    </article>
+  );
+}
+
+export function GuardianChallengePanel({ challenge, challengeItems = EMPTY_GUARDIAN_ITEMS, guardianCleared = false, isUnlocked, regionName }: GuardianChallengePanelProps) {
+  const hasChallengeSet = challengeItems.length > 0;
+  const initialResponses = useMemo(() => initialResponsesForItems(challengeItems), [challengeItems]);
+  const [responses, setResponses] = useState<Record<string, QuickCheckResponse>>(() => initialResponses);
+  const [results, setResults] = useState<Record<string, QuickCheckCheckResult | undefined>>({});
+
+  useEffect(() => {
+    setResponses(initialResponses);
+    setResults({});
+  }, [initialResponses]);
+
   if (!challenge) {
     return (
       <RegionActionCard
@@ -43,22 +110,26 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
   }
 
   const status = guardianCleared ? 'cleared' : isUnlocked ? 'ready' : 'locked';
+  const clearedItemCount = challengeItems.filter((item) => results[item.itemId]?.status === 'correct').length;
+  const allItemsCleared = hasChallengeSet && clearedItemCount === challengeItems.length;
   const statusCopy = {
     locked: {
       eyebrow: 'Step 3 · Final gate locked',
-      description: `${regionName} is sealed. Save enough region practice to unlock the Guardian trial.`,
+      description: hasChallengeSet
+        ? `${regionName} is sealed. Complete the Skill Checklist to unlock the Guardian trial.`
+        : `${regionName} is sealed. Save enough region practice to unlock the Guardian trial.`,
       label: 'Vault locked',
       title: `${regionName} is sealed`,
-      body: 'The challenge opens after the guide and enough scored practice.',
+      body: hasChallengeSet ? 'The challenge opens after the Skill Checklist is complete.' : 'The challenge opens after the guide and enough scored practice.',
       anticipation: 'The Guardian is waiting.',
       icon: <Lock size={22} aria-label="Guardian locked" />,
     },
     ready: {
       eyebrow: 'Step 3 · Guardian ready',
-      description: `${regionName} is open. Your saved practice can launch the Guardian trial.`,
+      description: hasChallengeSet ? `${regionName} is open. Clear one Guardian item for each Field Guide subtopic.` : `${regionName} is open. Your saved practice can launch the Guardian trial.`,
       label: 'Guardian ready',
       title: 'The gate is open',
-      body: 'Enter the final region challenge when you are ready.',
+      body: hasChallengeSet ? 'Answer each bounded final-answer check to clear the first Guardian slice.' : 'Enter the final region challenge when you are ready.',
       anticipation: 'Clear the region’s Guardian trial.',
       icon: <Sparkles size={22} aria-label="Guardian ready" />,
     },
@@ -91,7 +162,7 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
             {status === 'locked' ? <Lock size={20} aria-hidden="true" /> : <Sparkles size={20} aria-hidden="true" />}
             <div>
               <strong>{statusCopy.anticipation}</strong>
-              <span>{status === 'locked' ? 'Do the next region task first; the challenge prompt stays hidden until then.' : 'The unlock details stay below so you know why this opened.'}</span>
+              <span>{status === 'locked' ? 'Do the next region task first; the challenge prompt stays hidden until then.' : hasChallengeSet ? `${clearedItemCount}/${challengeItems.length} Guardian seals cleared.` : 'The unlock details stay below so you know why this opened.'}</span>
             </div>
           </div>
         </div>
@@ -102,6 +173,54 @@ export function GuardianChallengePanel({ challenge, guardianCleared = false, isU
           </span>
         </div>
       </section>
+      {hasChallengeSet && isUnlocked ? (
+        <section className="guardian-item-set" aria-label={`${regionName} Guardian challenge items`}>
+          <header className="guardian-item-set-header">
+            <div>
+              <span className="guardian-boss-kicker">Text Guardian Trial</span>
+              <h4>{allItemsCleared ? 'Guardian cleared' : 'Clear every subtopic seal'}</h4>
+              <p>{allItemsCleared ? `${regionName} is cleared for this attempt. Retry any item whenever you want to practise.` : 'Each item asks for a bounded final answer. These checks are support-only and do not change mastery or rank.'}</p>
+            </div>
+            <button
+              className="secondary-button guardian-reset-button"
+              type="button"
+              onClick={() => {
+                setResponses(initialResponsesForItems(challengeItems));
+                setResults({});
+              }}
+            >
+              <RotateCcw size={16} aria-hidden="true" />
+              Retry set
+            </button>
+          </header>
+          <div className="guardian-item-progress" role="status" aria-live="polite">
+            <span>{clearedItemCount} / {challengeItems.length} cleared</span>
+            <div aria-hidden="true">
+              {challengeItems.map((item) => (
+                <i className={results[item.itemId]?.status === 'correct' ? 'is-cleared' : ''} key={item.itemId} />
+              ))}
+            </div>
+          </div>
+          <div className="guardian-item-grid">
+            {challengeItems.map((item) => (
+              <GuardianItemCard
+                item={item}
+                key={item.itemId}
+                response={responses[item.itemId] ?? initialResponseFor(guardianChallengeContractForItem(item))}
+                result={results[item.itemId]}
+                setResponse={(response) => {
+                  setResponses((current) => ({ ...current, [item.itemId]: response }));
+                  setResults((current) => ({ ...current, [item.itemId]: undefined }));
+                }}
+                onCheck={() => {
+                  const result = checkGuardianChallengeAnswer(item, responses[item.itemId] ?? initialResponseFor(guardianChallengeContractForItem(item)));
+                  setResults((current) => ({ ...current, [item.itemId]: result }));
+                }}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
     </RegionActionCard>
   );
 }

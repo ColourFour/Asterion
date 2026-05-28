@@ -9,8 +9,11 @@ import {
   selectGuardianQuestion,
 } from '../lib/regionLearning';
 import { P3_ASTRAL_ACADEMY } from '../lib/worldMap';
+import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 
 const logarithms = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'logarithm-grove')!;
+const algebra = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'algebra-forge')!;
+const trigonometry = P3_ASTRAL_ACADEMY.regions.find((region) => region.id === 'trig-observatory')!;
 
 function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuestion {
   return {
@@ -54,6 +57,24 @@ function question(overrides: Partial<NormalizedQuestion> = {}): NormalizedQuesti
   };
 }
 
+function questionForRegion(region: typeof logarithms, overrides: Partial<NormalizedQuestion> = {}): NormalizedQuestion {
+  return question({
+    displayTopic: region.name,
+    routeEvidence: {
+      status: 'clean',
+      source: 'topic-routing',
+      regionId: region.id,
+      regionName: region.name,
+      validatedRegionId: region.id,
+      validatedRegionName: region.name,
+      displayRegionId: region.id,
+      displayRegionName: region.name,
+      reasonCodes: ['validated-topic-routing'],
+    },
+    ...overrides,
+  });
+}
+
 function attempt(id: string, scoreRatio: number, subtopic = 'logarithmic equations'): Attempt {
   return {
     id,
@@ -77,6 +98,16 @@ function attempt(id: string, scoreRatio: number, subtopic = 'logarithmic equatio
   };
 }
 
+function attemptForRegion(region: typeof logarithms, id: string, scoreRatio: number, subtopic = 'equations'): Attempt {
+  return {
+    ...attempt(id, scoreRatio, subtopic),
+    topicDisplayName: region.name,
+    validatedRegionId: region.id,
+    displayRegionId: region.id,
+    regionName: region.name,
+  };
+}
+
 function progress(overrides: Partial<RegionProgress> = {}): RegionProgress {
   return {
     region: logarithms,
@@ -88,6 +119,13 @@ function progress(overrides: Partial<RegionProgress> = {}): RegionProgress {
     rank: 'Discovered',
     isActive: true,
     ...overrides,
+  };
+}
+
+function progressForRegion(region: RegionProgress['region'], overrides: Partial<RegionProgress> = {}): RegionProgress {
+  return {
+    ...progress(overrides),
+    region,
   };
 }
 
@@ -117,6 +155,26 @@ function learningActivityAttempt(id: string, outcome: LearningActivityAttempt['o
   };
 }
 
+function completedSkillChecklistAttempts(region: RegionProgress['region']): LearningActivityAttempt[] {
+  return getFieldGuideTopicsForRegion(region.id).map((topic, index) => ({
+    id: `skill-check-${region.id}-${index + 1}`,
+    profileId: 'profile_1',
+    regionId: region.id,
+    regionName: region.name,
+    activityType: 'quick_check',
+    activityId: `guardian-unlock-${topic.id}`,
+    topic: topic.id,
+    skillTargetId: topic.skillIds[0],
+    prompt: `Skill Check for ${topic.title}`,
+    learnerResponse: 'completed',
+    revealedEarly: false,
+    outcome: 'got_it',
+    confidence: 5,
+    createdAt: `2026-05-08T00:0${index}:00.000Z`,
+    completedAt: `2026-05-08T00:0${index}:30.000Z`,
+  }));
+}
+
 describe('region learning loop logic', () => {
   it('starts an active region at Field Guide availability with an available visual treatment', () => {
     const regionProgress = progress();
@@ -133,11 +191,11 @@ describe('region learning loop logic', () => {
   });
 
   it('keeps the guardian locked after Field Guide completion until practice evidence exists', () => {
-    const regionProgress = progress();
+    const regionProgress = progressForRegion(trigonometry);
     const summary = buildRegionLearningSummary({
       regionProgress,
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
-      regionQuestions: [question()],
+      regionQuestions: [questionForRegion(trigonometry)],
       regionAttempts: [],
     });
 
@@ -150,18 +208,75 @@ describe('region learning loop logic', () => {
     expect(summary.nextAction.explanation).toBe('Do one exam practice question and save your marks. You need 3 more saved attempts before the Guardian opens.');
   });
 
+  it('unlocks Algebra Guardian from completed Skill Checklist without Exam Training evidence', () => {
+    const regionProgress = progressForRegion(algebra);
+    const summary = buildRegionLearningSummary({
+      regionProgress,
+      regionQuestions: [],
+      regionAttempts: [],
+      learningActivityAttempts: completedSkillChecklistAttempts(algebra),
+    });
+
+    expect(summary.guardianEligibility.eligible).toBe(true);
+    expect(summary.guardianEligibility.guardianQuestion).toBeUndefined();
+    expect(summary.guardianEligibility.requirements.map((requirement) => requirement.id)).toEqual(['skill_checklist', 'guardian_challenge_set']);
+    expect(summary.guardianEligibility.skillChecklistCompletion?.completed).toBe(true);
+    expect(summary.state).toBe('guardian_unlocked');
+  });
+
+  it('keeps Algebra Guardian locked when Exam Training exists but Skill Checklist is incomplete', () => {
+    const regionProgress = progressForRegion(algebra, {
+      attempts: 3,
+      averageScoreRatio: 0.82,
+      recentScoreRatio: 0.82,
+      subtopicsTouched: 3,
+      rank: 'Bronze',
+    });
+    const summary = buildRegionLearningSummary({
+      regionProgress,
+      learningRecord: { regionId: algebra.id, fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z', updatedAt: '2026-05-08T00:00:00.000Z' },
+      regionQuestions: [questionForRegion(algebra)],
+      regionAttempts: [
+        attempt('1', 0.9, 'polynomials'),
+        attempt('2', 0.8, 'partial fractions'),
+        attempt('3', 0.85, 'binomial expansion'),
+      ],
+      learningActivityAttempts: completedSkillChecklistAttempts(algebra).slice(0, 1),
+    });
+
+    expect(summary.guardianEligibility.eligible).toBe(false);
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'skill_checklist')?.completed).toBe(false);
+    expect(summary.guardianEligibility.missingRequirements[0]).toContain('Complete each required Skill Check subtopic');
+    expect(summary.state).not.toBe('guardian_unlocked');
+  });
+
+  it('unlocks Logarithm Guardian from completed Skill Checklist without Exam Training evidence', () => {
+    const regionProgress = progressForRegion(logarithms);
+    const summary = buildRegionLearningSummary({
+      regionProgress,
+      regionQuestions: [],
+      regionAttempts: [],
+      learningActivityAttempts: completedSkillChecklistAttempts(logarithms),
+    });
+
+    expect(summary.guardianEligibility.eligible).toBe(true);
+    expect(summary.guardianEligibility.skillChecklistCompletion?.requiredCount).toBe(getFieldGuideTopicsForRegion(logarithms.id).length);
+    expect(summary.guardianEligibility.guardianQuestion).toBeUndefined();
+    expect(summary.state).toBe('guardian_unlocked');
+  });
+
   it('unlocks the guardian from local evidence and selects a trainable higher-mark question', () => {
     const attempts = [
-      attempt('1', 0.62, 'logarithmic equations'),
-      attempt('2', 0.72, 'exponential equations'),
-      attempt('3', 0.81, 'logarithmic equations'),
+      attemptForRegion(trigonometry, '1', 0.62, 'identities'),
+      attemptForRegion(trigonometry, '2', 0.72, 'equations'),
+      attemptForRegion(trigonometry, '3', 0.81, 'identities'),
     ];
     const questions = [
-      question({ id: 'missing-ms', markSchemeImageCandidates: [], marksAvailable: 12 }),
-      question({ id: 'core', displaySubtopic: 'exponential equations', marksAvailable: 6 }),
-      question({ id: 'stretch', marksAvailable: 8 }),
+      questionForRegion(trigonometry, { id: 'missing-ms', markSchemeImageCandidates: [], marksAvailable: 12 }),
+      questionForRegion(trigonometry, { id: 'core', displaySubtopic: 'equations', marksAvailable: 6 }),
+      questionForRegion(trigonometry, { id: 'stretch', marksAvailable: 8 }),
     ];
-    const regionProgress = progress({
+    const regionProgress = progressForRegion(trigonometry, {
       attempts: attempts.length,
       averageScoreRatio: 0.72,
       recentScoreRatio: 0.72,
@@ -187,11 +302,11 @@ describe('region learning loop logic', () => {
 
   it('keeps guardian eligibility and selection stable when only difficulty metadata changes', () => {
     const attempts = [
-      attempt('1', 0.72, 'logarithmic equations'),
-      attempt('2', 0.76, 'exponential equations'),
-      attempt('3', 0.81, 'logarithmic equations'),
+      attemptForRegion(trigonometry, '1', 0.72, 'identities'),
+      attemptForRegion(trigonometry, '2', 0.76, 'equations'),
+      attemptForRegion(trigonometry, '3', 0.81, 'identities'),
     ];
-    const regionProgress = progress({
+    const regionProgress = progressForRegion(trigonometry, {
       attempts: attempts.length,
       averageScoreRatio: 0.76,
       recentScoreRatio: 0.76,
@@ -201,8 +316,8 @@ describe('region learning loop logic', () => {
       rank: 'Bronze',
     });
     const baseQuestions = [
-      question({ id: 'q-easy', displaySubtopic: 'logarithmic equations', marksAvailable: 8, displayDifficulty: 'foundation', localDifficulty: 'foundation' }),
-      question({ id: 'q-hard', displaySubtopic: 'exponential equations', marksAvailable: 6, displayDifficulty: 'challenge', localDifficulty: 'challenge' }),
+      questionForRegion(trigonometry, { id: 'q-easy', displaySubtopic: 'identities', marksAvailable: 8, displayDifficulty: 'foundation', localDifficulty: 'foundation' }),
+      questionForRegion(trigonometry, { id: 'q-hard', displaySubtopic: 'equations', marksAvailable: 6, displayDifficulty: 'challenge', localDifficulty: 'challenge' }),
     ];
     const changedDifficultyQuestions = baseQuestions.map((item) => ({
       ...item,
@@ -215,14 +330,14 @@ describe('region learning loop logic', () => {
       },
     }));
     const base = computeGuardianEligibility({
-      region: logarithms,
+      region: trigonometry,
       regionProgress,
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: baseQuestions,
       regionAttempts: attempts,
     });
     const changedDifficulty = computeGuardianEligibility({
-      region: logarithms,
+      region: trigonometry,
       regionProgress,
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: changedDifficultyQuestions,
@@ -240,19 +355,19 @@ describe('region learning loop logic', () => {
 
   it('does not unlock or select a guardian from trainable records without guardian eligibility', () => {
     const attempts = [
-      attempt('1', 0.72, 'logarithmic equations'),
-      attempt('2', 0.76, 'exponential equations'),
-      attempt('3', 0.81, 'logarithmic equations'),
+      attemptForRegion(trigonometry, '1', 0.72, 'identities'),
+      attemptForRegion(trigonometry, '2', 0.76, 'equations'),
+      attemptForRegion(trigonometry, '3', 0.81, 'identities'),
     ];
-    const unsafeQuestion = question({
+    const unsafeQuestion = questionForRegion(trigonometry, {
       id: 'fallback-display-only',
       routeEvidence: {
         status: 'fallback-display-only',
         source: 'fallback-label',
-        regionId: logarithms.id,
-        regionName: logarithms.name,
-        displayRegionId: logarithms.id,
-        displayRegionName: logarithms.name,
+        regionId: trigonometry.id,
+        regionName: trigonometry.name,
+        displayRegionId: trigonometry.id,
+        displayRegionName: trigonometry.name,
         reasonCodes: ['fallback-label-match'],
       },
       eligibility: {
@@ -264,7 +379,7 @@ describe('region learning loop logic', () => {
         textOnlyEligible: { eligible: false, reasonCodes: ['blocked-fallback-display-only'] },
       },
     });
-    const regionProgress = progress({
+    const regionProgress = progressForRegion(trigonometry, {
       attempts: attempts.length,
       averageScoreRatio: 0.76,
       recentScoreRatio: 0.76,
@@ -312,13 +427,17 @@ describe('region learning loop logic', () => {
   });
 
   it('marks a failed saved guardian as attempted and a passed saved guardian as cleared', () => {
-    const regionProgress = progress({ attempts: 4, recentScoreRatio: 0.76 });
+    const regionProgress = progressForRegion(trigonometry, { attempts: 4, recentScoreRatio: 0.76 });
     const eligibility = computeGuardianEligibility({
-      region: logarithms,
+      region: trigonometry,
       regionProgress,
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
-      regionQuestions: [question()],
-      regionAttempts: [attempt('1', 0.72), attempt('2', 0.76), attempt('3', 0.81)],
+      regionQuestions: [questionForRegion(trigonometry)],
+      regionAttempts: [
+        attemptForRegion(trigonometry, '1', 0.72),
+        attemptForRegion(trigonometry, '2', 0.76),
+        attemptForRegion(trigonometry, '3', 0.81),
+      ],
     });
 
     expect(computeRegionLearningState({
@@ -358,14 +477,18 @@ describe('region learning loop logic', () => {
 
   it('returns a restored-region next action after guardian clear', () => {
     const summary = buildRegionLearningSummary({
-      regionProgress: progress({ attempts: 4, recentScoreRatio: 0.8 }),
+      regionProgress: progressForRegion(trigonometry, { attempts: 4, recentScoreRatio: 0.8 }),
       learningRecord: learning({
         fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
         guardianAttemptedAt: '2026-05-08T00:04:00.000Z',
         guardianClearedAt: '2026-05-08T00:04:00.000Z',
       }),
-      regionQuestions: [question()],
-      regionAttempts: [attempt('1', 0.72), attempt('2', 0.76), attempt('3', 0.81)],
+      regionQuestions: [questionForRegion(trigonometry)],
+      regionAttempts: [
+        attemptForRegion(trigonometry, '1', 0.72),
+        attemptForRegion(trigonometry, '2', 0.76),
+        attemptForRegion(trigonometry, '3', 0.81),
+      ],
     });
 
     expect(summary.state).toBe('guardian_cleared');
@@ -376,14 +499,18 @@ describe('region learning loop logic', () => {
 
   it('keeps a cleared guardian in needs-review when recent evidence drops', () => {
     const summary = buildRegionLearningSummary({
-      regionProgress: progress({ attempts: 5, recentScoreRatio: 0.4, rank: 'Gold' }),
+      regionProgress: progressForRegion(trigonometry, { attempts: 5, recentScoreRatio: 0.4, rank: 'Gold' }),
       learningRecord: learning({
         fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z',
         guardianAttemptedAt: '2026-05-08T00:04:00.000Z',
         guardianClearedAt: '2026-05-08T00:04:00.000Z',
       }),
-      regionQuestions: [question()],
-      regionAttempts: [attempt('1', 0.72), attempt('2', 0.4), attempt('3', 0.4)],
+      regionQuestions: [questionForRegion(trigonometry)],
+      regionAttempts: [
+        attemptForRegion(trigonometry, '1', 0.72),
+        attemptForRegion(trigonometry, '2', 0.4),
+        attemptForRegion(trigonometry, '3', 0.4),
+      ],
     });
 
     expect(summary.state).toBe('needs_review');
@@ -393,13 +520,16 @@ describe('region learning loop logic', () => {
 
   it('reports completed and missing guardian requirements with exact next action', () => {
     const summary = buildRegionLearningSummary({
-      regionProgress: progress({ attempts: 2, averageScoreRatio: 0.62, recentScoreRatio: 0.66, subtopicsTouched: 1 }),
+      regionProgress: progressForRegion(trigonometry, { attempts: 2, averageScoreRatio: 0.62, recentScoreRatio: 0.66, subtopicsTouched: 1 }),
       learningRecord: learning({ fieldGuideCompletedAt: '2026-05-08T00:00:00.000Z' }),
       regionQuestions: [
-        question({ id: 'q1', displaySubtopic: 'logarithmic equations' }),
-        question({ id: 'q2', displaySubtopic: 'exponential equations' }),
+        questionForRegion(trigonometry, { id: 'q1', displaySubtopic: 'identities' }),
+        questionForRegion(trigonometry, { id: 'q2', displaySubtopic: 'equations' }),
       ],
-      regionAttempts: [attempt('1', 0.62, 'logarithmic equations'), attempt('2', 0.66, 'logarithmic equations')],
+      regionAttempts: [
+        attemptForRegion(trigonometry, '1', 0.62, 'identities'),
+        attemptForRegion(trigonometry, '2', 0.66, 'identities'),
+      ],
     });
 
     expect(summary.guardianEligibility.requirements.filter((requirement) => requirement.completed).map((requirement) => requirement.id)).toContain('field_guide');

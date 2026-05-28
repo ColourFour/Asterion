@@ -29,6 +29,7 @@ interface GuardianEligibilityPanelProps {
 
 function requirementIcon(requirement: GuardianRequirement) {
   if (requirement.id === 'field_guide') return <BookOpenCheck size={20} aria-hidden="true" />;
+  if (requirement.id === 'skill_checklist') return <CheckCircle2 size={20} aria-hidden="true" />;
   if (requirement.id === 'attempt_count') return <Images size={20} aria-hidden="true" />;
   if (requirement.id === 'recent_high_score') return <Target size={20} aria-hidden="true" />;
   if (requirement.id === 'subtopic_spread') return <Layers3 size={20} aria-hidden="true" />;
@@ -56,6 +57,14 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     };
   }
 
+  if (summary.guardianEligibility.eligible && summary.guardianEligibility.guardianChallengeAvailable) {
+    return {
+      label: 'Guardian challenge is open',
+      helper: 'The Skill Checklist is complete, so the text Guardian trial is open above.',
+      disabled: true,
+    };
+  }
+
   const firstMissing = summary.guardianEligibility.requirements.find((requirement) => !requirement.completed);
 
   if (firstMissing?.id === 'field_guide') {
@@ -78,7 +87,15 @@ function nextGuardianAction(summary: RegionLearningSummary, guardianQuestion?: N
     };
   }
 
-  if (firstMissing?.id === 'guardian_asset') {
+  if (firstMissing?.id === 'skill_checklist') {
+    return {
+      label: 'Open Skill Check',
+      page: 'skill-practice',
+      helper: firstMissing.nextAction ?? firstMissing.detail,
+    };
+  }
+
+  if (firstMissing?.id === 'guardian_asset' || firstMissing?.id === 'guardian_challenge_set') {
     return {
       label: 'Guardian assets pending',
       disabled: true,
@@ -109,7 +126,7 @@ export function GuardianEligibilityPanel({
     <RegionActionCard
       eyebrow="Step 3 · Guardian"
       title="Guardian Challenge"
-      description="A final region challenge that opens after enough saved practice."
+      description="A final region challenge that opens after the region checklist is ready."
       icon={<ShieldCheck size={22} />}
       stateIcon={summary.guardianEligibility.eligible ? <Sparkles size={22} aria-label="Guardian unlocked" /> : <Lock size={22} aria-label="Guardian locked" />}
       className="guardian-card guardian-readiness-card"
@@ -136,19 +153,25 @@ export function GuardianEligibilityPanel({
             ))}
           </div>
         </>
-      ) : summary.guardianEligibility.eligible && guardianQuestion ? (
+      ) : summary.guardianEligibility.eligible && (guardianQuestion || summary.guardianEligibility.guardianChallengeAvailable) ? (
         <>
           <div className="guardian-ready-banner">
             <Sparkles size={22} aria-hidden="true" />
             <div>
               <strong>Guardian ready</strong>
-              <span>The vault opens now. Enter the difficult exam-style challenge when you are ready.</span>
+              <span>
+                {summary.guardianEligibility.guardianChallengeAvailable
+                  ? 'The Skill Checklist is complete. The Guardian trial is open above.'
+                  : 'The vault opens now. Enter the difficult exam-style challenge when you are ready.'}
+              </span>
             </div>
           </div>
-          <button className="primary-button guardian-primary-action" type="button" onClick={() => onChallengeGuardian(guardianQuestion)}>
-            <Sparkles size={18} aria-hidden="true" />
-            {action.label}
-          </button>
+          {guardianQuestion ? (
+            <button className="primary-button guardian-primary-action" type="button" onClick={() => onChallengeGuardian(guardianQuestion)}>
+              <Sparkles size={18} aria-hidden="true" />
+              {action.label}
+            </button>
+          ) : null}
           <details className="guardian-evidence-detail">
             <summary>What opened the Guardian?</summary>
             <div className="guardian-requirement-grid" aria-label="Guardian requirements">
@@ -164,15 +187,21 @@ export function GuardianEligibilityPanel({
                 </article>
               ))}
             </div>
-            <div className="guardian-question-preview">
-              <span>Launch target</span>
-              <strong>{questionSummary(guardianQuestion)}</strong>
-            </div>
+            {guardianQuestion ? (
+              <div className="guardian-question-preview">
+                <span>Launch target</span>
+                <strong>{questionSummary(guardianQuestion)}</strong>
+              </div>
+            ) : null}
           </details>
         </>
       ) : (
         <>
-          <p className="guardian-encouragement">The vault opens after enough saved region practice.</p>
+          <p className="guardian-encouragement">
+            {summary.guardianEligibility.skillChecklistCompletion
+              ? 'The vault opens after every required Skill Check subtopic is complete.'
+              : 'The vault opens after enough saved region practice.'}
+          </p>
           <div className="guardian-requirement-grid" aria-label="Guardian requirements">
             {summary.guardianEligibility.requirements.map((requirement) => (
               <article className={`guardian-requirement-card${requirement.completed ? ' is-complete' : ' is-locked'}`} key={requirement.id}>

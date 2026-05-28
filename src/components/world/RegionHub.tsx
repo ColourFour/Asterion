@@ -1,9 +1,10 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, BookOpenCheck, ChevronRight, ListChecks, Lock, ShieldCheck } from 'lucide-react';
 import type { FieldGuideTopic } from '../../data/fieldGuideTopics';
 import type { LearningActivityAttempt, NormalizedQuestion, RegionProgress, TrainingSessionIntent } from '../../types';
 import type { RegionFieldGuide } from '../../data/regionFieldGuides';
 import { getGuardianChallengeForRegion } from '../../data/guardianChallenges';
+import { getGuardianChallengeItemsForRegion } from '../../data/guardianChallengeItems';
 import type { GeneratedPracticeItem } from '../../lib/generatedPractice';
 import {
   REGION_LEARNING_PAGE_LABELS,
@@ -191,6 +192,7 @@ export function RegionHub({
   const guardianCleared = summary.state === 'guardian_cleared' || summary.state === 'mastered';
   const quickCheckCount = teachingSnippets.filter((snippet) => snippet.quickCheck).length;
   const guardianChallenge = getGuardianChallengeForRegion(region.id);
+  const guardianChallengeItems = useMemo(() => getGuardianChallengeItemsForRegion(region.id), [region.id]);
   const activeDisplayPage = displayedRegionPage(activePage);
   const [currentFieldGuideTopic, setCurrentFieldGuideTopic] = useState<FieldGuideTopic | undefined>();
 
@@ -308,6 +310,7 @@ export function RegionHub({
                 <>
                   <GuardianChallengePanel
                     challenge={guardianChallenge}
+                    challengeItems={guardianChallengeItems}
                     guardianCleared={guardianCleared}
                     isUnlocked={summary.guardianEligibility.eligible}
                     regionName={theme.title}

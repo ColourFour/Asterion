@@ -98,12 +98,13 @@ function supportAttempt(
   activityType: LearningActivityAttempt['activityType'],
   outcome: LearningActivityAttempt['outcome'] = 'got_it',
   revealedEarly = false,
+  region: RegionDefinition = logRegion,
 ): LearningActivityAttempt {
   return {
     id,
     profileId: 'profile-student-loop',
-    regionId: logRegion.id,
-    regionName: logRegion.name,
+    regionId: region.id,
+    regionName: region.name,
     activityType,
     activityId: activityType === 'warm_up' ? 'gen_log_guardian_prep_0001' : 'p3-log-laws-qc-001',
     sourceId: activityType === 'warm_up' ? 'p3-log-laws-001' : 'p3-log-laws-qc-001',
@@ -210,42 +211,42 @@ describe('student loop QA boundaries', () => {
     });
     expect(summary.trainingSession.intent).toBe('core_practice');
     expect(summary.guardianEligibility.eligible).toBe(false);
-    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'attempt_count')).toMatchObject({
+    expect(summary.guardianEligibility.requirements.find((requirement) => requirement.id === 'skill_checklist')).toMatchObject({
       completed: false,
-      detail: 'Save at least 3 attempts in this region (0/3).',
+      detail: 'Complete each required Skill Check subtopic (0/6).',
     });
     expect(summary.state).toBe('field_guide_completed');
   });
 
-  it('unlocks Guardian only from clean canonical attempt evidence, not generated warm-ups', () => {
+  it('keeps legacy Guardian unlocks on clean canonical attempt evidence, not generated warm-ups', () => {
     const questions = [
-      question('q1', logRegion, 'logarithmic equations'),
-      question('q2', logRegion, 'exponential equations'),
-      question('q3', logRegion, 'logarithmic equations', { marksAvailable: 8 }),
+      question('q1', complexRegion, 'modulus and argument'),
+      question('q2', complexRegion, 'loci'),
+      question('q3', complexRegion, 'modulus and argument', { marksAvailable: 8 }),
     ];
     const canonicalAttempts = [
-      attempt('attempt-1', questions[0], 0.72, 'logarithmic equations'),
-      attempt('attempt-2', questions[1], 0.76, 'exponential equations'),
-      attempt('attempt-3', questions[2], 0.82, 'logarithmic equations'),
+      attempt('attempt-1', questions[0], 0.72, 'modulus and argument'),
+      attempt('attempt-2', questions[1], 0.76, 'loci'),
+      attempt('attempt-3', questions[2], 0.82, 'modulus and argument'),
     ];
 
     const supportOnlySummary = buildRegionLearningSummary({
-      regionProgress: regionProgress(logRegion),
+      regionProgress: regionProgress(complexRegion),
       learningRecord: {
-        regionId: logRegion.id,
+        regionId: complexRegion.id,
         fieldGuideCompletedAt: '2026-05-23T00:00:00.000Z',
         updatedAt: '2026-05-23T00:00:00.000Z',
       },
       regionQuestions: questions,
       regionAttempts: [],
       learningActivityAttempts: [
-        supportAttempt('support-1', 'warm_up'),
-        supportAttempt('support-2', 'warm_up'),
-        supportAttempt('support-3', 'warm_up'),
+        supportAttempt('support-1', 'warm_up', 'got_it', false, complexRegion),
+        supportAttempt('support-2', 'warm_up', 'got_it', false, complexRegion),
+        supportAttempt('support-3', 'warm_up', 'got_it', false, complexRegion),
       ],
     });
     const canonicalSummary = buildRegionLearningSummary({
-      regionProgress: regionProgress(logRegion, {
+      regionProgress: regionProgress(complexRegion, {
         attempts: canonicalAttempts.length,
         totalMarksEarned: 15.12,
         totalMarksAvailable: 20,
@@ -255,13 +256,13 @@ describe('student loop QA boundaries', () => {
         rank: 'Bronze',
       }),
       learningRecord: {
-        regionId: logRegion.id,
+        regionId: complexRegion.id,
         fieldGuideCompletedAt: '2026-05-23T00:00:00.000Z',
         updatedAt: '2026-05-23T00:00:00.000Z',
       },
       regionQuestions: questions,
       regionAttempts: canonicalAttempts,
-      learningActivityAttempts: [supportAttempt('support-4', 'warm_up')],
+      learningActivityAttempts: [supportAttempt('support-4', 'warm_up', 'got_it', false, complexRegion)],
     });
 
     expect(supportOnlySummary.guardianEligibility.eligible).toBe(false);
