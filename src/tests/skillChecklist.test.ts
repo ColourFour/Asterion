@@ -263,6 +263,7 @@ describe('Skill Checklist grouping', () => {
 
     for (const itemId of [
       'sc-trig-r-form-transformations-foundation-001',
+      'sc-trig-r-form-transformations-challenge-001',
       'sc-complex-modulus-argument-foundation-001',
       'sc-vectors-scalar-product-foundation-001',
       'sc-de-particular-solutions-core-001',
@@ -270,9 +271,54 @@ describe('Skill Checklist grouping', () => {
       expect(itemById.get(itemId), itemId).toMatchObject({ inputType: 'numeric' });
     }
 
+    expect(itemById.get('sc-trig-r-form-transformations-core-001')).toMatchObject({
+      inputType: 'two_value',
+      fields: [
+        expect.objectContaining({ id: 'cos-alpha', expectedAnswer: ['3/5', '\\frac{3}{5}'] }),
+        expect.objectContaining({ id: 'sin-alpha', expectedAnswer: ['4/5', '\\frac{4}{5}'] }),
+      ],
+    });
+
     expect(itemById.get('sc-log-linearisation-foundation-001')).toMatchObject({
       inputType: 'ordered_cards',
       expectedOrder: ['take-logs', 'split-product', 'simplify-exponential', 'read-line'],
+    });
+
+    expect(itemById.get('sc-alg-binomial-foundation-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['4', '$4'],
+      sourceTypes: expect.arrayContaining(['exam-bank reference']),
+    });
+    expect(itemById.get('sc-alg-binomial-foundation-001')?.prompt).toContain('(1-2x)^{-2}');
+
+    expect(itemById.get('sc-alg-polynomial-division-foundation-001')).toMatchObject({
+      inputType: 'ordered_cards',
+      expectedOrder: ['divide-leading', 'multiply-back', 'subtract', 'continue'],
+    });
+
+    expect(itemById.get('sc-log-linearisation-challenge-001')).toMatchObject({
+      inputType: 'ordered_cards',
+      expectedOrder: ['take-logs', 'split-product', 'simplify-exponential', 'read-line'],
+    });
+
+    expect(itemById.get('sc-trig-reciprocal-functions-core-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['5', '$5'],
+    });
+
+    expect(itemById.get('sc-complex-roots-foundation-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['3', '$3'],
+    });
+
+    expect(itemById.get('sc-vectors-angle-between-lines-core-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['90', '$90^\\circ$', '90^\\circ'],
+    });
+
+    expect(itemById.get('sc-iteration-fixed-point-roots-foundation-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['3', '$3'],
     });
   });
 

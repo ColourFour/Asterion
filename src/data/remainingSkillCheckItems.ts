@@ -1,4 +1,4 @@
-import type { QuickCheckOption } from '../types';
+import type { QuickCheckOption, QuickCheckTwoValueField } from '../types';
 import type { P3RegionId, P3SkillId } from '../lib/p3SkillContract';
 import type { SkillCheckComplexity, SkillCheckInputType, SkillCheckItem } from './skillCheckItems';
 
@@ -9,12 +9,13 @@ interface ChoiceSpec {
   prompt: string;
   correct: string;
   distractors: [string, string, string];
-  inputType?: Extract<SkillCheckInputType, 'multiple_choice' | 'checkbox' | 'numeric' | 'ordered_cards'>;
+  inputType?: Extract<SkillCheckInputType, 'multiple_choice' | 'checkbox' | 'numeric' | 'ordered_cards' | 'two_value'>;
   expectedAnswer?: string | string[];
   expectedOptionIds?: string[];
   options?: QuickCheckOption[];
   expectedOrder?: string[];
   cards?: QuickCheckOption[];
+  fields?: QuickCheckTwoValueField[];
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
@@ -59,6 +60,7 @@ function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
     expectedOrder: inputType === 'ordered_cards' ? spec.expectedOrder : undefined,
     options: inputType === 'multiple_choice' || inputType === 'checkbox' ? choiceOptions : undefined,
     cards: inputType === 'ordered_cards' ? spec.cards : undefined,
+    fields: inputType === 'two_value' ? spec.fields : undefined,
     displayPrefix: spec.displayPrefix,
     displaySuffix: spec.displaySuffix,
     tolerance: spec.tolerance,
@@ -106,6 +108,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'Use $1+\\tan^2\\theta=\\sec^2\\theta$. If $\\tan\\theta=2$, what is $\\sec^2\\theta$?',
         correct: '$5$',
         distractors: ['$3$', '$4$', '$\\sqrt5$'],
+        inputType: 'numeric',
+        expectedAnswer: ['5', '$5'],
         nudge: 'Square the tangent value before adding 1.',
         methodCue: '$1+2^2=\\sec^2\\theta$.',
         firstStep: 'Substitute $\\tan\\theta=2$ into the identity.',
@@ -257,19 +261,26 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
       },
       {
         complexity: 'core',
-        prompt: 'For $3\\cos x+4\\sin x=5\\cos(x-\\alpha)$, which equation determines $\\alpha$?',
-        correct: '$\\tan\\alpha=\\frac43$',
+        prompt: 'For $3\\cos x+4\\sin x=5\\cos(x-\\alpha)$, enter the two coefficient matches.',
+        correct: '$\\cos\\alpha=\\frac35$, $\\sin\\alpha=\\frac45$',
         distractors: ['$\\tan\\alpha=\\frac34$', '$\\tan\\alpha=\\frac53$', '$\\tan\\alpha=\\frac35$'],
-        nudge: 'Expand $5\\cos(x-\\alpha)$ and match coefficients.',
+        inputType: 'two_value',
+        fields: [
+          { id: 'cos-alpha', label: 'cos alpha', expectedAnswer: ['3/5', '\\frac{3}{5}'], displayPrefix: '$\\cos\\alpha=$' },
+          { id: 'sin-alpha', label: 'sin alpha', expectedAnswer: ['4/5', '\\frac{4}{5}'], displayPrefix: '$\\sin\\alpha=$' },
+        ],
+        nudge: 'Expand $5\\cos(x-\\alpha)$ and match the coefficient of each trig term.',
         methodCue: '$5\\cos(x-\\alpha)=5\\cos x\\cos\\alpha+5\\sin x\\sin\\alpha$.',
         firstStep: 'Match $5\\cos\\alpha=3$ and $5\\sin\\alpha=4$.',
-        workedRoute: ['Compare coefficients after expansion.', '$\\cos x$ gives $5\\cos\\alpha=3$ and $\\sin x$ gives $5\\sin\\alpha=4$.', 'So $\\tan\\alpha=\\frac{4}{3}$.'],
+        workedRoute: ['Compare coefficients after expansion.', '$\\cos x$ gives $5\\cos\\alpha=3$ and $\\sin x$ gives $5\\sin\\alpha=4$.', 'So $\\cos\\alpha=\\frac35$ and $\\sin\\alpha=\\frac45$.'],
       },
       {
         complexity: 'challenge',
         prompt: 'What is the maximum value of $3\\cos x+4\\sin x$?',
         correct: '$5$',
         distractors: ['$4$', '$7$', '$25$'],
+        inputType: 'numeric',
+        expectedAnswer: ['5', '$5'],
         nudge: 'Use the R-form amplitude rather than differentiating.',
         methodCue: '$3\\cos x+4\\sin x=5\\cos(x-\\alpha)$.',
         firstStep: 'Find $R=\\sqrt{3^2+4^2}$.',
@@ -404,6 +415,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'How many distinct cube roots does a non-zero complex number have?',
         correct: '$3$',
         distractors: ['$1$', '$2$', '$6$'],
+        inputType: 'numeric',
+        expectedAnswer: ['3', '$3'],
         nudge: 'An $n$th root problem has $n$ roots when the number is non-zero.',
         methodCue: 'The arguments are spaced by $\\frac{2\\pi}{n}$.',
         firstStep: 'For cube roots, $n=3$.',
@@ -1178,6 +1191,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'Direction vectors are $\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}$ and $\\begin{pmatrix}0\\\\1\\\\0\\end{pmatrix}$. What is the angle between the lines?',
         correct: '$90^\\circ$',
         distractors: ['$0^\\circ$', '$45^\\circ$', '$180^\\circ$'],
+        inputType: 'numeric',
+        expectedAnswer: ['90', '$90^\\circ$', '90^\\circ'],
         nudge: 'Their scalar product is zero.',
         methodCue: '$1\\cdot0+0\\cdot1+0\\cdot0=0$.',
         firstStep: 'A zero scalar product means perpendicular directions.',
@@ -1328,6 +1343,8 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'For the iteration $x_{n+1}=\\sqrt{2x_n+3}$, what is $x_2$ if $x_1=3$?',
         correct: '$3$',
         distractors: ['$\\sqrt3$', '$9$', '$\\sqrt{11}$'],
+        inputType: 'numeric',
+        expectedAnswer: ['3', '$3'],
         nudge: 'Substitute $x_1$ into the right-hand side.',
         methodCue: '$x_2=\\sqrt{2(3)+3}$.',
         firstStep: 'Compute $2(3)+3=9$.',
