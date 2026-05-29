@@ -320,6 +320,42 @@ describe('Skill Checklist grouping', () => {
       inputType: 'numeric',
       expectedAnswer: ['3', '$3'],
     });
+
+    expect(itemById.get('sc-trig-addition-formulae-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['7', '$7'],
+    });
+
+    expect(itemById.get('sc-complex-cartesian-conjugate-core-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['5', '$5'],
+    });
+
+    expect(itemById.get('sc-vectors-angle-between-lines-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['60', '$60^\\circ$', '60^\\circ'],
+    });
+
+    expect(itemById.get('sc-iteration-fixed-point-roots-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['1.732', '$1.732'],
+      tolerance: 0.0005,
+    });
+
+    expect(itemById.get('sc-trig-pythagorean-identities-core-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['4/5', '\\frac{4}{5}', '$\\frac45$', '$\\frac{4}{5}$'],
+    });
+
+    expect(itemById.get('sc-complex-cartesian-conjugate-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['3', '$3'],
+    });
+
+    expect(itemById.get('sc-vectors-scalar-product-challenge-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['0', '$0^\\circ$', '0^\\circ'],
+    });
   });
 
   it('uses authored Skill Check coverage as the Guardian Skill Check denominator in every P3 region', () => {
