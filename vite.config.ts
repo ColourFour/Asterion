@@ -1,7 +1,15 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
-export default defineConfig({
-  plugins: [react()],
-  base: './',
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
+export default defineConfig(() => {
+  const isVercelBuild = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+
+  return {
+    plugins: [react()],
+    base: isVercelBuild ? '/' : './',
+  };
 });
