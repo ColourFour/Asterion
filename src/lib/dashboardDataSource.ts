@@ -1,6 +1,8 @@
+import { isChinaStaticPilotMode, type StaticPilotRuntimeEnv } from './staticPilotMode';
+
 export type DashboardDataSourceKind = 'mock' | 'supabase';
 
-export interface DashboardDataSourceRuntimeEnv {
+export interface DashboardDataSourceRuntimeEnv extends StaticPilotRuntimeEnv {
   VITE_ASTERION_APP_PROFILE?: string | boolean;
   VITE_ASTERION_DASHBOARD_DATA_SOURCE?: string | boolean;
 }
@@ -21,6 +23,17 @@ function envString(value: string | boolean | undefined): string | undefined {
 
 export function resolveDashboardDataSource(env: DashboardDataSourceRuntimeEnv = import.meta.env): DashboardDataSourceSelection {
   const rawValue = envString(env.VITE_ASTERION_DASHBOARD_DATA_SOURCE);
+  if (isChinaStaticPilotMode(env)) {
+    return {
+      requested: rawValue?.toLowerCase() === 'supabase' ? 'supabase' : 'mock',
+      effective: 'mock',
+      explicit: Boolean(rawValue),
+      fallbackReason: rawValue
+        ? 'China static pilot mode disables hosted dashboard data; using mock/local mode.'
+        : undefined,
+    };
+  }
+
   const appProfile = envString(env.VITE_ASTERION_APP_PROFILE)?.toLowerCase();
   if (appProfile === 'classroom-pilot') {
     const fallbackReason = rawValue && rawValue.toLowerCase() !== 'supabase'

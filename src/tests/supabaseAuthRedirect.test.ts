@@ -93,6 +93,7 @@ describe('Supabase auth redirect handling', () => {
         url: 'https://asterion-example.supabase.co',
         publishableKey: 'sb_publishable_example',
         isConfigured: true,
+        runtimeDisabled: false,
         missing: [],
         invalid: [],
       },

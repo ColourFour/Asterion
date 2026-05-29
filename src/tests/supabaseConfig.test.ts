@@ -47,6 +47,19 @@ describe('Supabase browser config smoke check', () => {
     await expect(createSupabaseBrowserClient(config)).resolves.toBeUndefined();
   });
 
+  it('does not create a client in China static pilot mode even when Supabase env vars are present', async () => {
+    const config = resolveSupabaseConfig({
+      VITE_CHINA_STATIC_PILOT: 'true',
+      VITE_SUPABASE_URL: 'https://asterion-example.supabase.co',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example',
+    });
+
+    expect(config.isConfigured).toBe(false);
+    expect(config.runtimeDisabled).toBe(true);
+    expect(config.disabledReason).toContain('China static pilot mode');
+    await expect(createSupabaseBrowserClient(config)).resolves.toBeUndefined();
+  });
+
   it('ignores privileged server credential env names', async () => {
     const serverRoleName = ['SUPABASE', 'SERVICE', 'ROLE', 'KEY'].join('_');
     const viteServerRoleName = ['VITE', serverRoleName].join('_');

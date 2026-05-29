@@ -1,5 +1,6 @@
 import type { ProgressStorageMode } from './progressAdapter';
 import { resolveDashboardDataSource, type DashboardDataSourceKind } from './dashboardDataSource';
+import { isChinaStaticPilotMode, type StaticPilotRuntimeEnv } from './staticPilotMode';
 import { resolveSupabaseConfig } from './supabaseConfig';
 
 export type AsterionAppProfile = 'student-pilot' | 'classroom-pilot' | 'custom';
@@ -19,6 +20,7 @@ export interface AsterionRuntimeProfile {
 export interface AsterionRuntimeConfig {
   profile: AsterionRuntimeProfile;
   profileNotice?: string;
+  chinaStaticPilot: boolean;
   configurationBlocked: boolean;
   configurationBlockReason?: string;
   requestedStorageMode: ProgressStorageMode;
@@ -34,6 +36,7 @@ export interface AsterionRuntimeConfig {
   supabaseUrl?: string;
   supabasePublishableKey?: string;
   supabaseConfigured: boolean;
+  supabaseRuntimeDisabled: boolean;
   studentClassClaimSource: 'mock' | 'supabase';
   studentClassClaimSourceExplicit: boolean;
   studentClassClaimNotice?: string;
@@ -42,6 +45,7 @@ export interface AsterionRuntimeConfig {
     profileName: AsterionAppProfile;
     profileExplicit: boolean;
     supabaseConfigured: boolean;
+    supabaseRuntimeDisabled: boolean;
     supabaseRequired: boolean;
     dashboardDataSource: DashboardDataSourceKind;
     dashboardRoutesEnabled: boolean;
@@ -51,7 +55,7 @@ export interface AsterionRuntimeConfig {
   };
 }
 
-type RuntimeEnv = Partial<Record<string, string | boolean | undefined>>;
+type RuntimeEnv = Partial<Record<string, string | boolean | undefined>> & StaticPilotRuntimeEnv;
 
 function envString(value: string | boolean | undefined): string | undefined {
   return typeof value === 'string' ? value : undefined;
@@ -92,9 +96,12 @@ function hasNonPilotRuntimeOverride(env: RuntimeEnv): boolean {
 }
 
 export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): AsterionRuntimeConfig {
+  const chinaStaticPilot = isChinaStaticPilotMode(env);
   const configuredProfile = configuredAppProfile(env.VITE_ASTERION_APP_PROFILE);
-  const explicitProfile = configuredProfile !== undefined;
-  const profileName: AsterionAppProfile = configuredProfile ?? (hasNonPilotRuntimeOverride(env) ? 'custom' : 'student-pilot');
+  const explicitProfile = configuredProfile !== undefined || chinaStaticPilot;
+  const profileName: AsterionAppProfile = chinaStaticPilot
+    ? 'student-pilot'
+    : configuredProfile ?? (hasNonPilotRuntimeOverride(env) ? 'custom' : 'student-pilot');
   const studentPilotProfileActive = profileName === 'student-pilot';
   const classroomPilotProfileActive = profileName === 'classroom-pilot';
   const requestedStorageMode = studentPilotProfileActive || classroomPilotProfileActive ? 'local' : configuredStorageMode(env.VITE_ASTERION_STORAGE_MODE);
@@ -120,6 +127,9 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     ? 'Supabase classroom sources are active without VITE_ASTERION_APP_PROFILE=classroom-pilot. This build is blocked to avoid mixing hosted authority with a custom/local profile.'
     : undefined;
   const profileNotices = [
+    chinaStaticPilot
+      ? 'China static pilot mode is active; Supabase, hosted class membership, dashboard routes, and external visual-support images are disabled.'
+      : undefined,
     studentPilotProfileActive && hasNonPilotRuntimeOverride(env)
       ? 'Student pilot profile is active; hosted storage, Supabase claim/dashboard modes, and dashboard demo routes are disabled for this build.'
       : undefined,
@@ -149,6 +159,7 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       dashboardDemoBehaviorEnabled: dashboardDemoEnabled,
     },
     profileNotice,
+    chinaStaticPilot,
     configurationBlocked: Boolean(configurationBlockReason),
     configurationBlockReason,
     requestedStorageMode,
@@ -166,6 +177,7 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
     supabaseUrl: supabase.url,
     supabasePublishableKey: supabase.publishableKey,
     supabaseConfigured: supabase.isConfigured,
+    supabaseRuntimeDisabled: supabase.runtimeDisabled,
     studentClassClaimSource,
     studentClassClaimSourceExplicit,
     studentClassClaimNotice: studentClassClaimSource === 'supabase' && !supabase.isConfigured
@@ -178,6 +190,7 @@ export function resolveRuntimeConfig(env: RuntimeEnv = import.meta.env): Asterio
       profileName,
       profileExplicit: explicitProfile,
       supabaseConfigured: supabase.isConfigured,
+      supabaseRuntimeDisabled: supabase.runtimeDisabled,
       supabaseRequired: classroomPilotProfileActive || supabaseDashboardRequested || studentClassClaimSource === 'supabase',
       dashboardDataSource: effectiveDashboardDataSource,
       dashboardRoutesEnabled,

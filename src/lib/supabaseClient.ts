@@ -33,6 +33,7 @@ export async function createSupabaseBrowserClient(
   config: SupabaseConfig = supabaseConfig,
   options: SupabaseBrowserClientOptions = {},
 ): Promise<AsterionSupabaseClient | undefined> {
+  if (config.runtimeDisabled) return undefined;
   if (!config.isConfigured || !config.url || !config.publishableKey) return undefined;
 
   const cacheKey = browserClientCacheKey(config, options);

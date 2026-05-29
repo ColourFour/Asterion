@@ -28,6 +28,38 @@ describe('runtime storage config', () => {
     expect(config.studentClassClaimSourceExplicit).toBe(false);
   });
 
+  it('forces static local behavior when the China static pilot flag is active', () => {
+    const config = resolveRuntimeConfig({
+      VITE_CHINA_STATIC_PILOT: 'true',
+      VITE_ASTERION_APP_PROFILE: 'classroom-pilot',
+      VITE_ASTERION_STORAGE_MODE: 'hosted',
+      VITE_ASTERION_DASHBOARD_DEMO: 'enabled',
+      VITE_ASTERION_DASHBOARD_DATA_SOURCE: 'supabase',
+      VITE_ASTERION_STUDENT_CLAIM_SOURCE: 'supabase',
+      VITE_SUPABASE_URL: 'not-a-url',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'invalid-for-this-pilot',
+    });
+
+    expect(config.chinaStaticPilot).toBe(true);
+    expect(config.profile).toMatchObject({
+      name: 'student-pilot',
+      explicit: true,
+      staticHostingCompatible: true,
+      browserLocalProgress: true,
+      supabaseRequired: false,
+      hostedProgressSyncEnabled: false,
+      productionDashboardAuthority: false,
+      dashboardDemoBehaviorEnabled: false,
+    });
+    expect(config.dashboardDataSource).toBe('mock');
+    expect(config.dashboardRoutesEnabled).toBe(false);
+    expect(config.studentClassClaimSource).toBe('mock');
+    expect(config.supabaseConfigured).toBe(false);
+    expect(config.supabaseRuntimeDisabled).toBe(true);
+    expect(config.configurationBlocked).toBe(false);
+    expect(config.profileNotice).toContain('China static pilot mode is active');
+  });
+
   it('makes the explicit student pilot profile inspectable and blocks non-pilot runtime flags', () => {
     const config = resolveRuntimeConfig({
       VITE_ASTERION_APP_PROFILE: 'student-pilot',

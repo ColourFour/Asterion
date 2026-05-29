@@ -1,3 +1,5 @@
+import { isChinaStaticPilotMode } from '../lib/staticPilotMode';
+
 export type VisualSupportPageType = 'field-guide' | 'warm-up';
 
 export type VisualSupportStatus = 'approved' | 'temporary-online-source' | 'review-required';
@@ -383,7 +385,14 @@ function hasText(value: string | undefined): boolean {
   return Boolean(value?.trim());
 }
 
-export function isDisplayableVisualSupportSource(source: VisualSupportSource): boolean {
+function isExternalUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value.trim());
+}
+
+export function isDisplayableVisualSupportSource(source: VisualSupportSource, options: { chinaStaticPilot?: boolean } = {}): boolean {
+  const chinaStaticPilot = options.chinaStaticPilot ?? isChinaStaticPilotMode();
+  if (chinaStaticPilot && (isExternalUrl(source.imageUrl) || isExternalUrl(source.sourceUrl))) return false;
+
   return (
     (source.status === 'approved' || source.status === 'temporary-online-source')
     && hasText(source.id)
@@ -405,9 +414,10 @@ export function findVisualSupportSource(input: {
   regionId?: string;
   topicIds?: Array<string | undefined>;
   skillIds?: Array<string | undefined>;
+  chinaStaticPilot?: boolean;
 }): VisualSupportSource | undefined {
   return visualSupportSources.find((source) => (
-    isDisplayableVisualSupportSource(source)
+    isDisplayableVisualSupportSource(source, { chinaStaticPilot: input.chinaStaticPilot })
     && source.pageType === input.pageType
     && (
       (input.regionId && source.regionId === input.regionId)

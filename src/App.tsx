@@ -298,6 +298,35 @@ function StudentClaimEntryPage({
   );
 }
 
+function StaticPilotProfileEntryPage({
+  runtimeConfig,
+  onSave,
+}: {
+  runtimeConfig: AsterionRuntimeConfig;
+  onSave: (profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) => void;
+}) {
+  return (
+    <AsterionEntryShell
+      eyebrow="CAIE 9709 · Paper 3 Astral Academy"
+      description="Create a local profile for this device, then enter the P3 world map."
+      cardLabel="Static pilot profile"
+      className="entry-shell-claim"
+      copyId="student-entry-title"
+    >
+      {runtimeConfig.profileNotice ? <div className="notice">{runtimeConfig.profileNotice}</div> : null}
+      <ProfileForm
+        initialProfile={{
+          realName: '',
+          classGroup: 'China static pilot',
+          teacherName: 'Local pilot',
+          avatarName: '',
+        }}
+        onSave={onSave}
+      />
+    </AsterionEntryShell>
+  );
+}
+
 function hostedSyncWarningText(_error: string): string {
   return 'Your work was saved on this device, but the class record did not update. Tell your teacher.';
 }
@@ -393,6 +422,7 @@ export default function App() {
     claimSource: runtimeConfig.studentClassClaimSource,
   }));
   const hostedStudentRequired = runtimeConfig.studentClassClaimSource === 'supabase';
+  const classClaimRequired = !runtimeConfig.chinaStaticPilot;
   const [hostedClassroomReloadKey, setHostedClassroomReloadKey] = useState(0);
   const [hostedClassroomState, refreshHostedClassroomContext] = useStudentClassroomContext({
     enabled: hostedStudentRequired,
@@ -428,6 +458,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (runtimeConfig.chinaStaticPilot) return undefined;
     let cancelled = false;
     void recoverSupabaseAuthRedirect().then((intendedRoute) => {
       if (!cancelled && intendedRoute) {
@@ -437,7 +468,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [runtimeConfig.chinaStaticPilot]);
 
   useEffect(() => {
     loadQuestionBankWithDiagnostics()
@@ -553,9 +584,10 @@ export default function App() {
   const profileHasCurrentClassClaim = useMemo(() => {
     if (!progress.profile || staffPreviewContext) return true;
     if (hostedRosterContext) return profileMatchesClassClaim(progress.profile, hostedRosterContext.claim);
+    if (!classClaimRequired) return true;
     if (hostedStudentRequired) return false;
     return Boolean(validatePendingClassClaim(progress.profile.classClaim));
-  }, [hostedRosterContext, hostedStudentRequired, progress.profile, staffPreviewContext]);
+  }, [classClaimRequired, hostedRosterContext, hostedStudentRequired, progress.profile, staffPreviewContext]);
   const hostedRegionAccess = hostedClassroomContext?.regionAccess;
   const selectedRegionAccess = useMemo(() => (
     selectedRegion ? getStudentRegionAccess(progress.profile, selectedRegion.id, hostedRegionAccess) : undefined
@@ -984,6 +1016,17 @@ export default function App() {
     persistProgressAfterMeaningfulEvent(nextProgress);
   }
 
+  function saveStaticPilotProfile(profile: Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'>) {
+    const nextProgress = progressAdapter.saveProfile({
+      ...profile,
+      classClaim: undefined,
+    });
+    clearPendingClassClaim();
+    setStudentClassClaim(undefined);
+    clearStudentEntryHash();
+    persistProgressAfterMeaningfulEvent(nextProgress);
+  }
+
   function completeOnboarding(input: { avatarName: string; avatarId: string; avatar: StoredProgress['avatar'] }) {
     if (!progress.profile) return;
     const nextProfile = completeStudentOnboarding(progress.profile, {
@@ -1085,7 +1128,8 @@ export default function App() {
   }
 
   if (
-    explicitStudentLoginRequested
+    !runtimeConfig.chinaStaticPilot
+    && explicitStudentLoginRequested
     && !studentClassClaim
     && !hostedRosterContext
     && !staffPreviewContext
@@ -1096,6 +1140,22 @@ export default function App() {
         runtimeConfig={runtimeConfig}
         freshStartResetApplied={studentPilotFreshStart.resetApplied}
         onClaimed={handleStudentClassClaim}
+      />
+    );
+  }
+
+  if (
+    runtimeConfig.chinaStaticPilot
+    && explicitStudentLoginRequested
+    && !studentClassClaim
+    && !hostedRosterContext
+    && !staffPreviewContext
+    && (!progress.profile || hasCompleteOnboardingProfile(progress.profile))
+  ) {
+    return (
+      <StaticPilotProfileEntryPage
+        runtimeConfig={runtimeConfig}
+        onSave={saveStaticPilotProfile}
       />
     );
   }
@@ -1203,6 +1263,15 @@ export default function App() {
           />
         ) : null}
       </main>
+    );
+  }
+
+  if (!progress.profile && runtimeConfig.chinaStaticPilot) {
+    return (
+      <StaticPilotProfileEntryPage
+        runtimeConfig={runtimeConfig}
+        onSave={saveStaticPilotProfile}
+      />
     );
   }
 

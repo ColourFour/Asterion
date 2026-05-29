@@ -517,6 +517,20 @@ describe('FieldGuidePanel teaching snippets', () => {
     })?.status).toBe('approved');
   });
 
+  it('hides external visual-support records in China static pilot mode', () => {
+    const source = visualSupportSources.find((item) => item.status === 'approved');
+
+    expect(source).toBeTruthy();
+    expect(isDisplayableVisualSupportSource(source!, { chinaStaticPilot: true })).toBe(false);
+    expect(findVisualSupportSource({
+      pageType: source!.pageType,
+      regionId: source!.regionId,
+      topicIds: source!.topicIds,
+      skillIds: source!.skillIds,
+      chinaStaticPilot: true,
+    })).toBeUndefined();
+  });
+
   it('keeps every P3 region covered by at least one approved displayable visual support', () => {
     for (const region of P3_ASTRAL_ACADEMY.regions) {
       const displayableRegionSources = visualSupportSources.filter((source) => (
@@ -583,7 +597,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(fieldGuideSources.find((source) => source.id === 'numerical-mines-newton-iteration')?.status)
       .toBe('review-required');
 
-    for (const source of fieldGuideSources.filter(isDisplayableVisualSupportSource)) {
+    for (const source of fieldGuideSources.filter((item) => isDisplayableVisualSupportSource(item))) {
       expect(['mini_diagram', 'method_pattern'], source.id).toContain(source.visualKind);
       expect(source.purpose.toLowerCase(), source.id).not.toContain('decorative');
     }

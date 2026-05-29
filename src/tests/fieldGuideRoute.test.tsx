@@ -101,7 +101,11 @@ async function waitForText(container: HTMLElement, text: string) {
 
 async function clickButton(container: HTMLElement, text: string) {
   await act(async () => {
-    Array.from(container.querySelectorAll('button'))
+    const buttons = [
+      ...Array.from(container.querySelectorAll('.first-win-modal button')),
+      ...Array.from(container.querySelectorAll('button')),
+    ];
+    buttons
       .find((button) => button.textContent?.includes(text) || button.getAttribute('aria-label')?.includes(text))
       ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await Promise.resolve();
