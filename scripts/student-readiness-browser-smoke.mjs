@@ -8,7 +8,7 @@ const args = new Map(process.argv.slice(2).map((arg) => {
 }));
 
 const baseUrl = args.get('url') ?? 'http://127.0.0.1:5174/';
-const outputDir = args.get('out') ?? 'docs/student_readiness_screenshots/2026-05-24';
+const outputDir = args.get('out') ?? 'reports/student_readiness_screenshots/2026-05-24';
 const widths = (args.get('widths') ?? '390,768,1024,1366')
   .split(',')
   .map((value) => Number.parseInt(value.trim(), 10))

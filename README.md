@@ -9,25 +9,25 @@ The question image and mark-scheme image remain the student-facing source of tru
 The production site is a static multi-page website:
 
 ```text
-dist/index.html
-dist/regions/index.html
-dist/topics/algebra/index.html
-dist/topics/algebra/field-guide/index.html
-dist/topics/algebra/practice/index.html
-dist/topics/logarithms/index.html
-dist/topics/trigonometry/index.html
-dist/topics/argand/index.html
-dist/topics/calculus/index.html
-dist/topics/integration/index.html
-dist/topics/vectors/index.html
-dist/topics/iteration/index.html
-dist/topics/differential-equations/index.html
-dist/exam-training/index.html
+docs/index.html
+docs/regions/index.html
+docs/topics/algebra/index.html
+docs/topics/algebra/field-guide/index.html
+docs/topics/algebra/practice/index.html
+docs/topics/logarithms/index.html
+docs/topics/trigonometry/index.html
+docs/topics/argand/index.html
+docs/topics/calculus/index.html
+docs/topics/integration/index.html
+docs/topics/vectors/index.html
+docs/topics/iteration/index.html
+docs/topics/differential-equations/index.html
+docs/exam-training/index.html
 ```
 
 Each topic also gets `field-guide/index.html` and `practice/index.html`. The build writes 30 HTML pages in total.
 
-The site does not require a backend, authentication, Supabase, a React router, an app shell, `/docs` deployment, or a GitHub Pages 404 restore script.
+The site does not require a backend, authentication, Supabase, a React router, an app shell, GitHub Actions deployment, or a GitHub Pages 404 restore script.
 
 ## Build
 
@@ -49,7 +49,15 @@ Check the generated artifact:
 npm run static:check
 ```
 
-The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final site to `dist/`.
+The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages site to `docs/`.
+
+`docs/` is generated output and is committed intentionally because GitHub Pages is configured to deploy directly from the `main` branch `/docs` folder. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
+
+For local experiments that need a disposable `dist/` artifact:
+
+```bash
+npm run build:dist
+```
 
 ## Local Preview
 
@@ -71,17 +79,15 @@ Open the Vite preview URL and test direct URLs such as:
 
 ## GitHub Pages
 
-GitHub Pages should deploy from the generated `dist/` artifact. The workflow in `.github/workflows/pages.yml` runs:
+GitHub Pages should deploy directly from the committed generated site in `docs/`. Use these repository settings:
 
-```bash
-npm ci
-npm run build
-npm run static:check
+```text
+Source: Deploy from a branch
+Branch: main
+Folder: /docs
 ```
 
-Then it uploads `dist/` with `actions/upload-pages-artifact` and deploys it with `actions/deploy-pages`.
-
-Set the repository Pages source to GitHub Actions. Do not point Pages at `/docs`.
+No GitHub Actions workflow is required to build, upload, or deploy the site. After `npm run build` has regenerated `docs/` and those files are committed, pushing `main` is enough for GitHub Pages to serve the latest static site.
 
 ### Base Path
 
@@ -101,7 +107,7 @@ because the matching `index.html` file exists and asset links resolve relative t
 
 ## Local Progress
 
-Progress is browser-local. The static pages use a small script at `dist/assets/static-study.js` to read and write `localStorage` under:
+Progress is browser-local. The static pages use a small script at `docs/assets/static-study.js` to read and write `localStorage` under:
 
 ```text
 asterion.progress.v1
@@ -128,7 +134,7 @@ public/data/generated_practice_bank.json
 
 The static generator reuses existing normalizers and selection helpers rather than duplicating routing or image path logic in page templates.
 
-Historical Content Lab planning remains in `docs/phase-2-content-lab-gold-skill-packs.md`. That roadmap is content tooling context only; it is not a second paper-family expansion plan and does not change the static Paper 3 site surface.
+Historical Content Lab planning should not be stored in `docs/`, because that folder is now the committed GitHub Pages artifact.
 
 ## Validation
 
@@ -139,8 +145,8 @@ npm run build
 npm run static:check
 npm test -- src/tests/staticStudyRoutes.test.ts
 git diff --check
-rg -n "id=\"root\"|src/main\\.tsx|asterion\\.spa\\.redirect|404\\.html" dist
-rg -n "Guardian Challenge|Guardian|\\bXP\\b|\\blevels?\\b|\\bgold\\b|avatars?|ranks?|rewards?|fantasy|world map|academy|teacher dashboard|admin|classroom" dist --glob "*.html"
+rg -n "id=\"root\"|src/main\\.tsx|asterion\\.spa\\.redirect|404\\.html" docs
+rg -n "Guardian Challenge|Guardian|\\bXP\\b|\\blevels?\\b|\\bgold\\b|avatars?|ranks?|rewards?|fantasy|world map|academy|teacher dashboard|admin|classroom" docs --glob "*.html"
 ```
 
 The last two searches should return no matches for the generated student-facing HTML.

@@ -15,9 +15,14 @@ import { P3_ASTRAL_ACADEMY } from '../src/lib/worldMap';
 import type { NormalizedQuestion, RegionDefinition } from '../src/types';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const distRoot = path.join(repoRoot, 'dist');
+const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
+const outputRoot = path.resolve(repoRoot, outputDirName);
 const publicRoot = path.join(repoRoot, 'public');
 const staticStudyRoot = path.join(repoRoot, 'src/static-study');
+
+if (!['docs', 'dist'].includes(path.relative(repoRoot, outputRoot))) {
+  throw new Error('STATIC_SITE_OUTPUT_DIR must be either docs or dist.');
+}
 
 interface StaticSiteData {
   questions: NormalizedQuestion[];
@@ -889,8 +894,8 @@ async function ensureParent(filePath: string): Promise<void> {
   await mkdir(path.dirname(filePath), { recursive: true });
 }
 
-async function writeDistPage(pagePath: string, html: string): Promise<void> {
-  const destination = path.join(distRoot, pagePath);
+async function writeStaticPage(pagePath: string, html: string): Promise<void> {
+  const destination = path.join(outputRoot, pagePath);
   await ensureParent(destination);
   await writeFile(destination, html, 'utf8');
 }
@@ -919,12 +924,12 @@ async function copyPublicDirectory(source: string, destination: string, relative
 }
 
 async function copyStaticAssets(): Promise<void> {
-  await copyPublicDirectory(publicRoot, distRoot);
-  await mkdir(path.join(distRoot, 'assets'), { recursive: true });
-  await cp(path.join(staticStudyRoot, 'static-study.css'), path.join(distRoot, 'assets/static-study.css'));
-  await cp(path.join(staticStudyRoot, 'static-study.js'), path.join(distRoot, 'assets/static-study.js'));
-  await cp(path.join(repoRoot, 'node_modules/katex/dist/katex.min.css'), path.join(distRoot, 'assets/katex.min.css'));
-  await cp(path.join(repoRoot, 'node_modules/katex/dist/fonts'), path.join(distRoot, 'assets/fonts'), { recursive: true });
+  await copyPublicDirectory(publicRoot, outputRoot);
+  await mkdir(path.join(outputRoot, 'assets'), { recursive: true });
+  await cp(path.join(staticStudyRoot, 'static-study.css'), path.join(outputRoot, 'assets/static-study.css'));
+  await cp(path.join(staticStudyRoot, 'static-study.js'), path.join(outputRoot, 'assets/static-study.js'));
+  await cp(path.join(repoRoot, 'node_modules/katex/dist/katex.min.css'), path.join(outputRoot, 'assets/katex.min.css'));
+  await cp(path.join(repoRoot, 'node_modules/katex/dist/fonts'), path.join(outputRoot, 'assets/fonts'), { recursive: true });
 }
 
 async function loadStaticSiteData(): Promise<StaticSiteData> {
@@ -962,8 +967,8 @@ function validateNoVisibleGameTerms(htmlByPath: Map<string, string>): void {
 }
 
 async function generate(): Promise<void> {
-  await rm(distRoot, { recursive: true, force: true });
-  await mkdir(distRoot, { recursive: true });
+  await rm(outputRoot, { recursive: true, force: true });
+  await mkdir(outputRoot, { recursive: true });
   await copyStaticAssets();
 
   const data = await loadStaticSiteData();
@@ -983,19 +988,19 @@ async function generate(): Promise<void> {
   validateNoVisibleGameTerms(htmlByPath);
 
   for (const [pagePath, html] of htmlByPath) {
-    await writeDistPage(pagePath, html);
+    await writeStaticPage(pagePath, html);
   }
 
   const missing = REQUIRED_STATIC_STUDY_PAGE_PATHS.filter((pagePath) => !htmlByPath.has(pagePath));
   if (missing.length) throw new Error(`Missing generated static pages: ${missing.join(', ')}`);
 
-  await writeFile(path.join(distRoot, 'static-pages.json'), `${JSON.stringify({
-    generatedAt: new Date().toISOString(),
+  await writeFile(path.join(outputRoot, 'static-pages.json'), `${JSON.stringify({
+    generatedBy: 'scripts/build-static-site.ts',
     pages: STATIC_STUDY_PAGE_ROUTES,
     questionCount: data.questions.length,
   }, null, 2)}\n`, 'utf8');
 
-  console.log(`Generated ${htmlByPath.size} static HTML pages in ${toPosix(path.relative(repoRoot, distRoot))}/`);
+  console.log(`Generated ${htmlByPath.size} static HTML pages in ${toPosix(path.relative(repoRoot, outputRoot))}/`);
 }
 
 generate().catch((error: Error) => {

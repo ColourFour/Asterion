@@ -1378,15 +1378,15 @@ describe('P3 Gold Skill Pack readiness report', () => {
     });
   });
 
-  it('keeps Phase 2 documented as the P3 Gold Skill Pack roadmap, not Paper 2 expansion', () => {
-    const contentRoadmap = readFileSync(path.join(repoRoot, 'docs/content-lab-roadmap.md'), 'utf8');
-    const phase2Roadmap = readFileSync(path.join(repoRoot, 'docs/phase-2-content-lab-gold-skill-packs.md'), 'utf8');
+  it('keeps docs reserved for the generated GitHub Pages artifact', () => {
     const readme = readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 
+    expect(existsSync(path.join(repoRoot, 'docs/content-lab-roadmap.md'))).toBe(false);
+    expect(existsSync(path.join(repoRoot, 'docs/phase-2-content-lab-gold-skill-packs.md'))).toBe(false);
     expect(existsSync(path.join(repoRoot, 'docs/p2-content-lab-roadmap.md'))).toBe(false);
-    expect(contentRoadmap).toContain('Phase 2 in this roadmap means the P3 Gold Skill Pack Depth Pass');
-    expect(phase2Roadmap).toContain('It does not mean CAIE Paper 2');
-    expect(readme).toContain('docs/phase-2-content-lab-gold-skill-packs.md');
+    expect(readme).toContain('`docs/` is generated output and is committed intentionally');
+    expect(readme).toContain('Source: Deploy from a branch');
+    expect(readme).toContain('Folder: /docs');
     expect(readme).not.toContain('p2-content-lab-roadmap');
   });
 });

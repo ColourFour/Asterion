@@ -1,8 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const distRoot = path.join(repoRoot, 'dist');
+const siteRoot = path.join(repoRoot, 'docs');
 
 const requiredPages = [
   'index.html',
@@ -37,29 +37,54 @@ const requiredPages = [
   'exam-training/index.html',
 ];
 
-const missing = requiredPages.filter((page) => !existsSync(path.join(distRoot, page)));
+function collectFiles(directory, root = directory) {
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory).flatMap((entry) => {
+    const fullPath = path.join(directory, entry);
+    const info = statSync(fullPath);
+    if (info.isDirectory()) return collectFiles(fullPath, root);
+    return [path.relative(root, fullPath).split(path.sep).join('/')];
+  });
+}
+
+const missing = requiredPages.filter((page) => !existsSync(path.join(siteRoot, page)));
 if (missing.length) {
   console.error(`Missing static pages:\n${missing.join('\n')}`);
   process.exit(1);
 }
 
-if (existsSync(path.join(distRoot, '404.html'))) {
-  console.error('dist/404.html exists, but this branch must not ship an SPA fallback.');
+if (existsSync(path.join(siteRoot, '404.html'))) {
+  console.error('docs/404.html exists, but this branch must not ship an SPA fallback.');
   process.exit(1);
 }
 
-const indexHtml = readFileSync(path.join(distRoot, 'index.html'), 'utf8');
+const indexHtml = readFileSync(path.join(siteRoot, 'index.html'), 'utf8');
 if (indexHtml.includes('id="root"') || indexHtml.includes('/src/main.tsx') || indexHtml.includes('asterion.spa.redirect')) {
-  console.error('dist/index.html still looks like a React SPA entrypoint.');
+  console.error('docs/index.html still looks like a React SPA entrypoint.');
   process.exit(1);
 }
 
 for (const page of requiredPages) {
-  const html = readFileSync(path.join(distRoot, page), 'utf8');
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
   if (!html.includes('<main>') || !html.includes('</main>')) {
     console.error(`${page} is missing meaningful document content.`);
     process.exit(1);
   }
 }
 
-console.log(`Static dist check passed for ${requiredPages.length} HTML pages.`);
+const forbiddenSourceFiles = collectFiles(siteRoot).filter((file) => (
+  /\.md$/i.test(file)
+  || /\.tsx?$/i.test(file)
+  || file === 'package.json'
+  || file === 'package-lock.json'
+  || /^scripts\//.test(file)
+  || /^src\//.test(file)
+  || /^\.github\//.test(file)
+));
+
+if (forbiddenSourceFiles.length) {
+  console.error(`docs/ must contain only generated static site output. Remove source files:\n${forbiddenSourceFiles.join('\n')}`);
+  process.exit(1);
+}
+
+console.log(`Static site check passed for ${requiredPages.length} HTML pages in docs/.`);
