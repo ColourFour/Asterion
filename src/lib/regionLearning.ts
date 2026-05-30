@@ -18,10 +18,10 @@ import { computeSkillChecklistCompletion, type SkillChecklistCompletion } from '
 export const GUARDIAN_PASS_SCORE_RATIO = 0.75;
 
 export const TRAINING_SESSION_LABELS: Record<TrainingSessionIntent, string> = {
-  warm_up: 'Skill Check review',
+  warm_up: 'Skill Practice review',
   core_practice: 'Core Practice',
   weak_area_review: 'Weak Area Review',
-  challenge: 'Stretch Problems',
+  challenge: 'Stretch Practice',
 };
 
 export interface GuardianEligibility {
@@ -108,12 +108,12 @@ export function summarizeLearningActivityReadiness(attempts: LearningActivityAtt
   const earlyReveals = sorted.filter((attempt) => attempt.revealedEarly).length;
   const latestOutcome = latest?.outcome;
   const nextActionHint = sorted.length === 0
-    ? 'Try Skill Check before moving into exam questions.'
+    ? 'Try Skill Practice before moving into exam questions.'
     : latest?.outcome === 'got_it' && gotIt >= 2
-      ? 'Skill Check is looking steady. Move into exam practice next.'
+      ? 'Skill Practice is looking steady. Move into exam practice next.'
       : latest?.outcome === 'missed' || latest?.revealedEarly
-      ? 'A recent Skill Check item was missed or revealed early. Try Skill Check before exam practice.'
-      : 'Your Skill Check work shows partial readiness. Try one more guided practice item or move carefully into training.';
+      ? 'A recent Skill Practice item was missed or revealed early. Try Skill Practice before exam practice.'
+      : 'Your Skill Practice work shows partial readiness. Try one more guided practice item or move carefully into training.';
 
   return {
     attempts: sorted.length,
@@ -170,17 +170,17 @@ export function computeGuardianEligibility(input: {
       detail: fieldGuideCompleted
         ? `All ${fieldGuideTarget} Field Guide topic${fieldGuideTarget === 1 ? '' : 's'} are complete.`
         : `Complete the Field Guide topics (${fieldGuideCompletedCount}/${fieldGuideTarget}).`,
-      nextAction: 'Start with the Field Guide before the Skill Check.',
+      nextAction: 'Start with the Field Guide before the Skill Practice.',
       progress: { current: fieldGuideCompleted ? fieldGuideTarget : fieldGuideCompletedCount, target: fieldGuideTarget },
     },
     {
       id: 'skill_checklist',
-      label: 'Skill Check complete',
+      label: 'Skill Practice complete',
       completed: skillChecklistCompletion.completed,
       detail: skillChecklistCompletion.completed
-        ? `All ${skillChecklistCompletion.requiredCount} Skill Check topic${skillChecklistCompletion.requiredCount === 1 ? '' : 's'} are complete.`
-        : `Complete each Skill Check topic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
-      nextAction: 'Use Skill Check until every authored topic has a completed item.',
+        ? `All ${skillChecklistCompletion.requiredCount} Skill Practice topic${skillChecklistCompletion.requiredCount === 1 ? '' : 's'} are complete.`
+        : `Complete each Skill Practice topic (${skillChecklistCompletion.completedCount}/${skillChecklistCompletion.requiredCount}).`,
+      nextAction: 'Use Skill Practice until every authored topic has a completed item.',
       progress: {
         current: skillChecklistCompletion.completedCount,
         target: skillChecklistCompletion.requiredCount,
@@ -235,7 +235,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'core_practice',
         label: TRAINING_SESSION_LABELS.core_practice,
-        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check work shows readiness for exam practice.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Skill Practice work shows readiness for exam practice.',
       };
     }
 
@@ -243,7 +243,7 @@ export function recommendTrainingSession(input: {
       return {
         intent: 'warm_up',
         label: TRAINING_SESSION_LABELS.warm_up,
-        reason: learningActivityReadiness.nextActionHint ?? 'Skill Check review is selected because a recent item was missed or revealed early.',
+        reason: learningActivityReadiness.nextActionHint ?? 'Skill Practice review is selected because a recent item was missed or revealed early.',
       };
     }
 
@@ -251,8 +251,8 @@ export function recommendTrainingSession(input: {
       intent: 'warm_up',
       label: TRAINING_SESSION_LABELS.warm_up,
       reason: fieldGuideCompleted
-        ? 'Skill Check review is selected because you have completed the guide and have no saved attempts in this region yet.'
-        : 'Skill Check review is available, but the Field Guide is still the recommended first step.',
+        ? 'Skill Practice review is selected because you have completed the guide and have no saved attempts in this topic yet.'
+        : 'Skill Practice review is available, but the Field Guide is still the recommended first step.',
     };
   }
 
@@ -268,7 +268,7 @@ export function recommendTrainingSession(input: {
     return {
       intent: 'core_practice',
       label: TRAINING_SESSION_LABELS.core_practice,
-      reason: 'Core Practice is suggested because you are building your first saved attempts in this region.',
+      reason: 'Core Practice is suggested because you are building your first saved attempts in this topic.',
     };
   }
 
@@ -283,7 +283,7 @@ export function recommendTrainingSession(input: {
   return {
     intent: 'core_practice',
     label: TRAINING_SESSION_LABELS.core_practice,
-    reason: 'Core Practice is suggested because it gives balanced exam-style practice before the Guardian opens.',
+    reason: 'Core Practice is suggested because it gives balanced exam-style practice after the topic practice steps.',
   };
 }
 
@@ -309,7 +309,7 @@ export function nextRecommendedRegionAction(input: {
     return {
       kind: 'locked',
       label: 'Waiting for trainable questions',
-      explanation: 'This region needs question and mark-scheme images before it can open.',
+      explanation: 'This topic needs question and mark-scheme images before practice can open.',
     };
   }
 
@@ -317,15 +317,15 @@ export function nextRecommendedRegionAction(input: {
     return {
       kind: 'field_guide',
       label: 'Read the Field Guide',
-      explanation: 'Start with the region guide so the first practice attempt has a clear target.',
+      explanation: 'Start with the topic guide so the first practice attempt has a clear target.',
     };
   }
 
   if (state === 'guardian_unlocked') {
     return {
       kind: 'guardian',
-      label: 'Challenge the Guardian',
-      explanation: 'The Guardian is ready. Challenge it to clear the region.',
+      label: 'Move to exam practice',
+      explanation: 'The topic learning steps are complete. Move into exam-style practice.',
     };
   }
 
@@ -333,30 +333,30 @@ export function nextRecommendedRegionAction(input: {
     if (guardianEligibility.eligible) {
       return {
         kind: 'guardian',
-        label: 'Retry the Guardian',
-        explanation: 'A guardian attempt is already saved. Your evidence still allows another challenge.',
+        label: 'Continue exam practice',
+        explanation: 'A saved topic attempt is already available. Continue with another exam-style question.',
       };
     }
     return {
       kind: 'review',
       label: 'Rebuild evidence',
-      explanation: guardianEligibility.missingRequirements[0] ?? 'Review training evidence before retrying the guardian.',
+      explanation: guardianEligibility.missingRequirements[0] ?? 'Review topic evidence before continuing exam-style practice.',
     };
   }
 
   if (state === 'guardian_cleared' || state === 'mastered') {
     return {
       kind: 'complete',
-      label: 'Region restored',
-      explanation: 'The Guardian is cleared. Maintain mastery here or choose another region.',
+      label: 'Topic practice complete',
+      explanation: 'Maintain exam practice here or choose another topic.',
     };
   }
 
   if (state === 'needs_review') {
     return {
       kind: 'review',
-      label: 'Review this region',
-      explanation: 'The guardian was cleared earlier, but recent evidence has dropped below the review threshold.',
+      label: 'Review this topic',
+      explanation: 'Recent evidence has dropped below the review threshold.',
     };
   }
 

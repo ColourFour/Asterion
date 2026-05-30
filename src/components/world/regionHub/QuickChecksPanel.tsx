@@ -297,7 +297,7 @@ function QuickCheckCard({
   return (
     <article className="quick-check-reveal" data-activity-id={activityId}>
       <header className="quick-check-heading">
-        <strong>Skill check: {title}</strong>
+        <strong>Practice question: {title}</strong>
         <small>
           Question {checkPosition} of {checkCount}
           {previousAttempt ? ` · Last: ${learningOutcomeLabel(previousAttempt.outcome)}` : ''}
@@ -317,7 +317,7 @@ function QuickCheckCard({
       </div>
       {feedback ? <QuickCheckFeedback result={feedback} /> : null}
       {feedback?.status === 'correct' ? (
-        <div className="quick-check-next-actions" aria-label="Skill Check next action">
+        <div className="quick-check-next-actions" aria-label="Skill Practice next action">
           <strong>Next action</strong>
           {contract.explanation ? <p><MathText text={contract.explanation} /></p> : null}
           <div>
@@ -387,11 +387,11 @@ export function QuickChecksPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Skill Check"
-      title="Skill Check item"
+      eyebrow="Skill Practice"
+      title="Practice question"
       description="Answer one focused prompt and get feedback when validation is safe."
       icon={<Target size={22} />}
-      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} Skill Check items available`} /> : undefined}
+      stateIcon={checks.length ? <CheckCircle2 size={22} aria-label={`${checks.length} Skill Practice items available`} /> : undefined}
       className="quick-check-card"
     >
       {activeCheck ? (
@@ -416,10 +416,10 @@ export function QuickChecksPanel({
               title={activeCheck.title}
             />
           </div>
-          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed Skill Check item{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
+          {queuedCheckCount ? <small className="region-card-note">{queuedCheckCount} more reviewed Skill Practice item{queuedCheckCount === 1 ? '' : 's'} queued after this one.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">No reviewed deterministic Skill Check items are published for this topic yet. Use a worked-route item or the Field Guide.</p>
+        <p className="region-empty-state">No reviewed deterministic Skill Practice items are published for this topic yet. Use a worked-route item or the Field Guide.</p>
       )}
     </RegionActionCard>
   );

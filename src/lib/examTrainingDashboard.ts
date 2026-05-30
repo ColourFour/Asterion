@@ -7,7 +7,7 @@ export type ExamTrainingPracticeMode = 'core' | 'weak' | 'stretch';
 export const EXAM_TRAINING_PRACTICE_LABELS: Record<ExamTrainingPracticeMode, string> = {
   core: 'Core Practice',
   weak: 'Weak Area Review',
-  stretch: 'Stretch Problems',
+  stretch: 'Stretch Practice',
 };
 
 export type ExamTrainingMasteryStatus = 'strong' | 'secure' | 'developing' | 'needs_work' | 'not_tried';
@@ -344,22 +344,22 @@ export function buildExamTrainingRewardGoals(input: {
 
   return [
     {
-      id: 'smurf-hat',
-      title: 'Smurf Hat',
+      id: 'algebra-practice',
+      title: 'Algebra Practice',
       description: 'Complete 40 Algebra exam-training items.',
       current: algebraAttempts,
       target: 40,
     },
     {
-      id: 'golden-notes',
-      title: 'Golden Notes',
+      id: 'topic-confidence',
+      title: 'Topic Confidence',
       description: 'Score 80%+ on 5 topics.',
       current: strongTopics,
       target: 5,
     },
     {
-      id: 'asterion-gem',
-      title: 'Asterion Gem',
+      id: 'p3-practice',
+      title: 'Exam Practice',
       description: 'Complete 100 Exam Training items.',
       current: p3SavedAttempts,
       target: 100,

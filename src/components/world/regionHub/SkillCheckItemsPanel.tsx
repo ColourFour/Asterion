@@ -52,7 +52,7 @@ function outcomeLabel(outcome: LearningActivityAttempt['outcome']): string {
   return 'Missed';
 }
 
-function SkillCheckHintLadder({ item }: { item: SkillCheckItem }) {
+function SkillPracticeHintLadder({ item }: { item: SkillCheckItem }) {
   return (
     <details className="quick-check-help">
       <summary>Need help?</summary>
@@ -65,7 +65,7 @@ function SkillCheckHintLadder({ item }: { item: SkillCheckItem }) {
   );
 }
 
-function SkillCheckWorkedRoute({ item }: { item: SkillCheckItem }) {
+function SkillPracticeWorkedRoute({ item }: { item: SkillCheckItem }) {
   return (
     <details className="skill-check-worked-route">
       <summary>Worked route</summary>
@@ -159,7 +159,7 @@ function SkillCheckItemCard({
         }} />
         <div className="activity-reveal-actions">
           <button className="activity-primary-action" type="button" onClick={checkAnswer}>Check answer</button>
-          <SkillCheckHintLadder item={item} />
+          <SkillPracticeHintLadder item={item} />
           <button className="activity-secondary-action" type="button" onClick={tryAgain}>
             <RotateCcw size={15} aria-hidden="true" />
             Reset
@@ -169,7 +169,7 @@ function SkillCheckItemCard({
 
       {feedback ? <QuickCheckFeedback result={feedback} /> : null}
       {feedback?.status === 'correct' ? (
-        <div className="quick-check-next-actions" aria-label="Skill Check explanation">
+        <div className="quick-check-next-actions" aria-label="Skill Practice explanation">
           <strong>Worked route</strong>
           <ol>
             {item.workedRoute.map((line, index) => (
@@ -184,10 +184,10 @@ function SkillCheckItemCard({
           </div>
         </div>
       ) : (
-        <SkillCheckWorkedRoute item={item} />
+        <SkillPracticeWorkedRoute item={item} />
       )}
       {answered && feedback?.status !== 'correct' ? (
-        <div className="quick-check-next-actions" aria-label="Skill Check next action">
+        <div className="quick-check-next-actions" aria-label="Skill Practice next action">
           <strong>Next step</strong>
           <p>Review the hint or worked route, then move on when you are ready.</p>
           <div>
@@ -232,11 +232,11 @@ export function SkillCheckItemsPanel({
 
   return (
     <RegionActionCard
-      eyebrow="Skill Check"
+      eyebrow="Skill Practice"
       title="Targeted items"
       description="Answer one focused question at a time."
       icon={<ListChecks size={22} />}
-      stateIcon={items.length ? <CheckCircle2 size={22} aria-label={`${items.length} authored Skill Check items available`} /> : <CircleAlert size={22} aria-label="No authored Skill Check items available" />}
+      stateIcon={items.length ? <CheckCircle2 size={22} aria-label={`${items.length} authored Skill Practice items available`} /> : <CircleAlert size={22} aria-label="No authored Skill Practice items available" />}
       className="skill-check-authored-card"
     >
       {activeItem ? (
@@ -255,7 +255,7 @@ export function SkillCheckItemsPanel({
           />
         </div>
       ) : (
-        <p className="region-empty-state">No authored Skill Check items are published for this Field Guide topic yet.</p>
+        <p className="region-empty-state">No authored Skill Practice items are published for this Field Guide topic yet.</p>
       )}
     </RegionActionCard>
   );

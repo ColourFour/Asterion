@@ -156,9 +156,9 @@ export function SkillPracticePanel({
   }
 
   return (
-    <section className="skill-practice-panel" aria-label="Skill Check">
+    <section className="skill-practice-panel" aria-label="Skill Practice">
       {groups.length ? (
-        <div className="skill-practice-topic-grid" aria-label="Field Guide Skill Check topics">
+        <div className="skill-practice-topic-grid" aria-label="Field Guide Skill Practice topics">
           {groups.map((group) => {
             const active = group.topic.id === activeGroup?.topic.id;
             return (
@@ -191,11 +191,11 @@ export function SkillPracticePanel({
         aria-labelledby="skill-practice-active-step-title"
       >
         <div className="skill-practice-section-intro">
-          <span>Skill Check</span>
+          <span>Skill Practice</span>
           <h4 id="skill-practice-active-step-title">
-            <MathText text={activeGroup?.topic.title ?? 'Skill Check'} interactiveGlossary={false} />
+            <MathText text={activeGroup?.topic.title ?? 'Skill Practice'} interactiveGlossary={false} />
           </h4>
-          <p><MathText text={activeGroup?.topic.purpose ?? 'Field Guide topic mapping is being prepared for this region.'} /></p>
+          <p><MathText text={activeGroup?.topic.purpose ?? 'Field Guide topic mapping is being prepared for this topic.'} /></p>
           {activeGroup?.fallbackReason ? <p className="skill-practice-under-development-note">{activeGroup.fallbackReason}</p> : null}
         </div>
 
@@ -248,19 +248,19 @@ export function SkillPracticePanel({
             ) : null}
           </div>
         ) : activeGroup ? (
-          <p className="region-empty-state">Skill Check items for this topic are being prepared. Start with the Field Guide if you need a method reset.</p>
+          <p className="region-empty-state">Skill Practice items for this topic are being prepared. Start with the Field Guide if you need a method reset.</p>
         ) : null}
       </section>
 
       {!canUseQuickCheck && !canUseWarmUp ? (
         <div className="skill-practice-locked-note" role="status">
           <ListChecks size={18} aria-hidden="true" />
-          <span>Skill Check is locked while this class is Field Guide only.</span>
+          <span>Skill Practice is unavailable while this class is Field Guide only.</span>
         </div>
       ) : supportAttemptCount ? (
         <div className="skill-practice-locked-note" role="status">
           <ListChecks size={18} aria-hidden="true" />
-          <span>{quickCheckComplete || warmUpComplete ? 'Skill Check progress saved locally.' : 'Skill Check progress started.'}</span>
+          <span>{quickCheckComplete || warmUpComplete ? 'Skill Practice progress saved locally.' : 'Skill Practice progress started.'}</span>
         </div>
       ) : null}
     </section>

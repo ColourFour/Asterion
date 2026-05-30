@@ -80,7 +80,7 @@ export function resolveSuggestedNextStep(input: {
   }
 
   if (!regionHasSkillPracticeAttempt(input.progress.learningActivityAttempts, currentRegionId)) {
-    return buildStep('skill_practice', currentRegionId, 'skill-practice', 'Try one Skill Check');
+    return buildStep('skill_practice', currentRegionId, 'skill-practice', 'Try one Skill Practice');
   }
 
   if (currentRegionProgress && currentRegionProgress.availableQuestions > 0) {

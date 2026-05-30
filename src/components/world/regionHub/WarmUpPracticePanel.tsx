@@ -100,7 +100,7 @@ function WarmUpPracticeCard({
   const solutionId = `warm-up-solution-${item.practiceId}`;
   const feedbackId = `warm-up-feedback-${item.practiceId}`;
   const familyParts = item.generatorFamily.split('.');
-  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Skill Check item');
+  const practiceLabel = humanReadableLabel(item.questionType ?? familyParts[familyParts.length - 1] ?? 'Skill Practice item');
   const responseReady = learnerResponse.trim().length > 0;
   const canComplete = Boolean(solutionVisible && outcome && !completed);
   const visualSupport = solutionVisible ? findVisualSupportSource({
@@ -273,10 +273,10 @@ function WarmUpPracticeCard({
             </select>
           </label>
           <button type="button" disabled={!canComplete} onClick={completeAttempt}>
-            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save Skill Check' : 'Mark complete'}
+            {completed ? 'Completed' : onLearningActivityAttempt && region ? 'Save Skill Practice' : 'Mark complete'}
           </button>
           {completed ? (
-            <div className="warm-up-next-actions" aria-label="Skill Check next action">
+            <div className="warm-up-next-actions" aria-label="Skill Practice next action">
               {!isLastItem ? (
                 <button className="activity-primary-action next-step-glow" type="button" onClick={onNextItem}>Next</button>
               ) : onSequenceComplete ? (
@@ -296,7 +296,7 @@ function WarmUpPracticeCard({
 
 function humanReadableLabel(value: string): string {
   const words = value.replace(/[_-]+/g, ' ').trim();
-  if (!words) return 'Skill Check Item';
+  if (!words) return 'Skill Practice Item';
   return words.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -336,7 +336,7 @@ export function WarmUpPracticePanel({
 
   return (
     <RegionActionCard
-      eyebrow="Skill Check"
+      eyebrow="Skill Practice"
       title="Worked-route item"
       description="Write first, then compare with the worked route."
       icon={<Sparkles size={22} />}
@@ -346,12 +346,12 @@ export function WarmUpPracticePanel({
         <>
           <p className="section-helper warm-up-set-note">Work through one prompt at a time. Write your answer first, then reveal the worked route and compare it yourself.</p>
           {fieldGuideTopicTitle && !topicMatchFallbackReason ? (
-            <p className="section-helper warm-up-set-note">Starting with reviewed Skill Check practice for {fieldGuideTopicTitle}.</p>
+            <p className="section-helper warm-up-set-note">Starting with reviewed Skill Practice for {fieldGuideTopicTitle}.</p>
           ) : null}
           {topicMatchFallbackReason ? (
             <p className="section-helper warm-up-set-note" role="status">{topicMatchFallbackReason}</p>
           ) : null}
-          <ol className="warm-up-sequence-list" aria-label="Skill Check sequence">
+          <ol className="warm-up-sequence-list" aria-label="Skill Practice sequence">
             {visiblePractice.map((item, index) => (
               <li
                 className={index === activeIndex ? 'is-active' : undefined}
@@ -385,7 +385,7 @@ export function WarmUpPracticePanel({
           </div>
           {visibleCompletedCount >= visiblePractice.length ? (
             <div className="warm-up-complete-panel">
-              <strong>Skill Check sequence complete</strong>
+              <strong>Skill Practice sequence complete</strong>
               <p>Return to the Field Guide for a quick method review if anything still felt uncertain.</p>
               <div className="warm-up-next-actions">
                 {onContinueToExamPractice ? <button className="activity-primary-action next-step-glow" type="button" onClick={onContinueToExamPractice}>Next</button> : null}
@@ -393,10 +393,10 @@ export function WarmUpPracticePanel({
               </div>
             </div>
           ) : null}
-          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed Skill Check item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
+          {hiddenPracticeCount ? <small className="region-card-note">{hiddenPracticeCount} more reviewed Skill Practice item{hiddenPracticeCount === 1 ? '' : 's'} held back for later.</small> : null}
         </>
       ) : (
-        <p className="region-empty-state">Worked-route Skill Check items for this topic are being prepared. Start with the Field Guide.</p>
+        <p className="region-empty-state">Worked-route Skill Practice items for this topic are being prepared. Start with the Field Guide.</p>
       )}
     </RegionActionCard>
   );

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, MessageCircle, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, FileSearch, HelpCircle, LayoutDashboard, MessageCircle } from 'lucide-react';
 import type { Attempt, AttemptMarkBreakdown, AvatarSettings, IssueType, MistakeType, NormalizedQuestion, RegionDefinition, RegionProgress, RegionRank, StoredProgress, TrainingSessionIntent } from '../../types';
-import { astralAssetDimensions, astralAssets } from '../../lib/astralAssets';
 import type { AvatarLocation } from '../../lib/avatarLocation';
 import { EXAM_TRAINING_PRACTICE_LABELS, knownExamTrainingSkillName, type ExamTrainingPracticeMode } from '../../lib/examTrainingDashboard';
 import { createId } from '../../lib/progressStore';
@@ -240,7 +239,7 @@ export function PracticeView({
     : selectedMistakeTypes.length > 0;
   const canSubmit = Boolean(question && revealed && canSaveScoredAttempt && scoreValidation.isValid && attemptReflectionIsReady);
   const markSchemeNoticeTitle = progressionBlockedReason
-    ? 'Region activity locked'
+    ? 'Scoring unavailable'
     : questionIsTrainable && markSchemeAvailability === 'pending' ? 'Mark scheme loading' : 'Mark scheme unavailable';
   const guardianPassed = regionLearningPhase === 'guardian'
     && typeof guardianPassThreshold === 'number'
@@ -260,7 +259,7 @@ export function PracticeView({
     '--practice-mode-accent-soft': activePracticeMode === 'weak' ? '#fff2cc' : activePracticeMode === 'stretch' ? '#eee9ff' : '#e3f5ea',
   } as CSSProperties;
   const sessionLabel = regionLearningPhase === 'guardian'
-    ? 'Region Guardian'
+    ? 'Topic review'
     : sessionLabelOverride
       ? sessionLabelOverride
       : sessionIntent
@@ -373,7 +372,7 @@ export function PracticeView({
     ? Boolean(selectedRegionProgressSnapshot?.attempts)
     : progress.attempts.length > 0;
   const whyThisQuestionLine = isGuardianPractice
-    ? 'This is the Guardian check for this region, opened by Field Guide and Skill Check completion.'
+    ? 'This question is selected for a focused topic review.'
     : activePracticeMode === 'core'
       ? 'Balanced exam practice: one steady question from the current Paper 3 pool.'
       : activePracticeMode === 'weak'
@@ -386,7 +385,7 @@ export function PracticeView({
       ?? question?.topicRouting?.primaryTopicId
       ?? question?.parts?.find((part) => part.skillRef)?.skillRef
       ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
-  ) ?? (isGuardianPractice ? 'Final region check' : 'Mixed skill practice');
+  ) ?? 'Mixed skill practice';
   const globalPracticeTopicLabel = studentTopicLabelFromRouteId(
     question?.routeEvidence?.primaryTopicId
       ?? question?.topicRouting?.primaryTopicId
@@ -394,11 +393,11 @@ export function PracticeView({
       ?? question?.parts?.find((part) => part.primaryTopicId)?.primaryTopicId,
   ) ?? question?.localSubtopic ?? question?.displaySubtopic ?? question?.localTopic ?? 'Mixed Paper 3 practice';
   const practiceFocusLabel = isGuardianPractice
-    ? selectedRegion?.name ?? question?.displayTopic ?? 'Guardian challenge'
+    ? selectedRegion?.name ?? question?.displayTopic ?? 'Topic practice'
     : isRegionTrainingPractice
       ? selectedRegion?.name
       : globalPracticeTopicLabel;
-  const practiceContextLabel = isGuardianPractice ? 'Guardian focus' : isRegionTrainingPractice ? 'Focus' : 'Target topic';
+  const practiceContextLabel = isRegionTrainingPractice || isGuardianPractice ? 'Focus' : 'Target topic';
   const metaItems = [
     {
       label: 'Question',
@@ -413,7 +412,7 @@ export function PracticeView({
       value: practiceFocusLabel,
     },
     {
-      label: isGuardianPractice ? 'Challenge' : 'Skill',
+      label: 'Skill',
       value: safeSkillLabel,
     },
   ];
@@ -429,38 +428,30 @@ export function PracticeView({
     && afterRegionProgress
     && afterRegionProgress.rank !== beforeRegionProgress.rank,
   );
-  const regionProgressMessage = isGuardianPractice
-    ? savedAttemptFeedback?.scoreRatio != null && typeof guardianPassThreshold === 'number' && savedAttemptFeedback.scoreRatio >= guardianPassThreshold
-      ? `Guardian cleared. This saved score restores ${selectedRegion?.name ?? 'the region'}.`
-      : `Guardian attempt saved. Score ${Math.round((guardianPassThreshold ?? 0.75) * 100)}% or higher next time to clear it.`
-    : selectedRegion
-      ? regionRankChanged
-        ? `${selectedRegion.name} progress changed from ${beforeRegionProgress?.rank} to ${afterRegionProgress?.rank}.`
-        : regionAttemptChanged
-          ? `This attempt now counts toward ${selectedRegion.name} progress.`
-          : 'Saved. This gives Asterion more information for your next recommendation.'
-      : 'Saved. This gives Asterion more information for your next recommendation.';
-  const guardianReadinessMessage = isGuardianPractice
-    ? regionProgressMessage
-    : selectedRegion
-      ? regionAttemptChanged
-        ? 'This saved attempt updated exam-training progress.'
-        : 'Exam-training progress did not visibly change yet.'
-      : 'Guardian readiness is region-specific, so choose a region when you want to work toward a Guardian.';
+  const regionProgressMessage = selectedRegion
+    ? regionAttemptChanged || regionRankChanged
+      ? `This attempt now counts toward ${selectedRegion.name} progress.`
+      : 'Saved. This gives the app more information for your next recommendation.'
+    : 'Saved. This gives the app more information for your next recommendation.';
+  const progressSummaryMessage = selectedRegion
+    ? regionAttemptChanged || regionRankChanged
+      ? 'This saved attempt updated topic exam-practice progress.'
+      : 'Topic progress did not visibly change yet.'
+    : 'This saved attempt updated your Paper 3 practice history.';
   const nextRecommendedAction = savedAttemptFeedback?.scoreRatio != null && savedAttemptFeedback.scoreRatio >= 0.75
     ? activePracticeMode === 'stretch'
       ? 'Next: try another challenge-style question or return to the dashboard.'
       : 'Next: continue with another question, or try Stretch when you want a challenge.'
     : savedAttemptFeedback?.mistakeLabels.length
-      ? 'Next: use Weak Area Review or try one Skill Check item before Stretch.'
+      ? 'Next: use Weak Area Review or try one Skill Practice item before Stretch.'
       : 'Next: do one more Core Practice question.';
 
   if (!question) {
     return (
       <section className="practice-card empty-state empty-wing">
-        <strong>Closed academy wing</strong>
-        <p>No questions are available for this region yet.</p>
-        {onReturnToMap ? <button className="primary-button" type="button" onClick={onReturnToMap}>Return to P3 Astral Academy</button> : null}
+        <strong>No question available</strong>
+        <p>No questions are available for this topic yet.</p>
+        {onReturnToMap ? <button className="primary-button" type="button" onClick={onReturnToMap}>Back to topics</button> : null}
       </section>
     );
   }
@@ -472,7 +463,7 @@ export function PracticeView({
           <span className="exam-practice-crest" aria-hidden="true"><FileSearch size={26} /></span>
           <div>
             <span className="mode-pill">Exam Training</span>
-            <h2>{regionLearningPhase === 'guardian' ? 'Guardian Practice' : 'Exam Training'}</h2>
+            <h2>Exam Training</h2>
           </div>
         </div>
         <nav className="exam-practice-mode-nav" aria-label="Exam Training navigation">
@@ -495,12 +486,7 @@ export function PracticeView({
               <small>{practiceModeCopy[mode]}</small>
             </button>
           ))}
-          {onOpenProfile ? (
-            <button type="button" onClick={onOpenProfile}>
-              <User size={18} aria-hidden="true" />
-              Profile
-            </button>
-          ) : onReturnToMap ? (
+          {onReturnToMap ? (
             <button type="button" onClick={onReturnToMap}>
               <ArrowLeft size={18} aria-hidden="true" />
               Back
@@ -511,8 +497,8 @@ export function PracticeView({
 
       <section className={`practice-mode-intro practice-mode-${activePracticeMode}${isGuardianPractice ? ' guardian-mode-intro' : ''}`} aria-label="Current practice mode">
         <div>
-          <span>{isGuardianPractice ? 'Guardian Challenge' : activePracticeLabel}</span>
-          <strong>{isGuardianPractice ? 'Final region check' : practiceModeCopy[activePracticeMode]}</strong>
+          <span>{activePracticeLabel}</span>
+          <strong>{practiceModeCopy[activePracticeMode]}</strong>
         </div>
         <p>{whyThisQuestionLine}</p>
       </section>
@@ -541,13 +527,10 @@ export function PracticeView({
             How this question was chosen
           </summary>
           <div>
-            <span>{regionLearningPhase === 'guardian' ? 'Guardian reason' : activePracticeLabel}</span>
+            <span>{activePracticeLabel}</span>
             <strong>{sessionLabel ?? activePracticeLabel}</strong>
           </div>
           <p>{sessionReason ?? whyThisQuestionLine}</p>
-          {regionLearningPhase === 'guardian' && typeof guardianPassThreshold === 'number' ? (
-            <small>Clear threshold: {Math.round(guardianPassThreshold * 100)}% or higher on this saved attempt.</small>
-          ) : null}
         </details>
       ) : null}
 
@@ -599,10 +582,10 @@ export function PracticeView({
             {!canSaveScoredAttempt ? (
               <div className="mark-scheme-unavailable" role="status">
                 <strong>{markSchemeNoticeTitle}</strong>
-                <p>{progressionBlockedReason ?? 'The official mark scheme is unavailable or this record is paused for scoring. Asterion will not save marks, XP, mastery, or avatar progress for this question.'}</p>
-                {progressionBlockedReason ? <small>Asterion will not save marks, XP, mastery, guardian clears, or avatar progress for this locked region.</small> : null}
+                <p>{progressionBlockedReason ?? 'The official mark scheme is unavailable or this record is paused for scoring. The app will not save marks for this question.'}</p>
+                {progressionBlockedReason ? <small>The app will not save marks for this topic right now.</small> : null}
                 {trainingBlockers.length ? <small>This question is paused: {trainingBlockers.join('; ')}</small> : null}
-                {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the mark scheme. Saving unlocks only after it loads.</small> : null}
+                {markSchemeAvailability === 'pending' && questionIsTrainable ? <small>Loading the mark scheme. Saving is available after it loads.</small> : null}
               </div>
             ) : null}
           </section>
@@ -835,18 +818,18 @@ export function PracticeView({
               />
             </label>
             {!attemptSaved && onContinuePractice ? (
-              <p className="next-question-save-gate" role="status">Save this attempt before the next question unlocks.</p>
+              <p className="next-question-save-gate" role="status">Save this attempt before moving to the next question.</p>
             ) : null}
           </form>
         ) : null}
       </div>
 
-      {askTeacherOpen ? (
-        <section className="ask-teacher-panel" aria-label="Ask Teacher">
+      {askTeacherOpen && onTeacherQuestionSubmit ? (
+        <section className="ask-teacher-panel" aria-label="Question help">
           <div>
-            <span className="mode-pill">Ask Teacher</span>
+            <span className="mode-pill">Question help</span>
             <h3>Ask about this question</h3>
-            <p>Send a short note with the current Exam Training question context.</p>
+            <p>Send a short note with the current Exam Training question context when this feature is enabled.</p>
           </div>
           <label>
             What are you stuck on?
@@ -886,17 +869,7 @@ export function PracticeView({
       {attemptSaved ? (
         <div className="post-attempt-panel progress-updated-panel">
           <div className="panel-title-bar">Attempt saved</div>
-          <div className="progress-scene" aria-hidden="true">
-            <img
-              src={astralAssets.progressGarden}
-              alt=""
-              width={astralAssetDimensions.progressGarden.width}
-              height={astralAssetDimensions.progressGarden.height}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <strong>{regionLearningPhase === 'guardian' ? (guardianPassed ? 'Guardian cleared' : 'Guardian attempt saved') : `Saved: ${savedAttemptFeedback?.scoreTotalLabel ?? scoreTotalLabel}`}</strong>
+          <strong>Saved: {savedAttemptFeedback?.scoreTotalLabel ?? scoreTotalLabel}</strong>
           <div className="post-attempt-feedback-grid" aria-label="Saved attempt feedback">
             <div>
               <span>Score</span>
@@ -911,8 +884,8 @@ export function PracticeView({
               <strong>{regionProgressMessage}</strong>
             </div>
             <div>
-              <span>Guardian</span>
-              <strong>{guardianReadinessMessage}</strong>
+              <span>Topic history</span>
+              <strong>{progressSummaryMessage}</strong>
             </div>
           </div>
           <p className="post-attempt-next-step">{nextRecommendedAction}</p>
@@ -934,10 +907,12 @@ export function PracticeView({
           <LayoutDashboard size={16} aria-hidden="true" />
           Dashboard
         </button>
+        {onTeacherQuestionSubmit ? (
         <button type="button" onClick={() => setAskTeacherOpen((open) => !open)}>
-          <MessageCircle size={16} aria-hidden="true" />
-          Ask Teacher
-        </button>
+            <MessageCircle size={16} aria-hidden="true" />
+            Question help
+          </button>
+        ) : null}
         {revealed ? (
           <button type="button" onClick={() => setRevealed(false)}>Back to Question</button>
         ) : (

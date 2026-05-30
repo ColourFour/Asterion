@@ -100,7 +100,7 @@ function WorkedExampleCard({ example }: { example: TeachingSnippetWorkedExample 
           </button>
         ) : null}
         {answerRevealed ? (
-          <p className="worked-example-next-action">Next action: try the linked Skill Check item without looking back at the final answer.</p>
+          <p className="worked-example-next-action">Next action: try the linked Skill Practice item without looking back at the final answer.</p>
         ) : null}
       </div>
     </article>
@@ -172,7 +172,7 @@ function FieldGuideTopicChoice({
         </div>
         <button className="secondary-button field-guide-back-button" type="button" onClick={onBackToRegionHub}>
           <ArrowLeft size={16} aria-hidden="true" />
-          Back to Region Hub
+          Back to Topic
         </button>
       </header>
 
@@ -209,7 +209,7 @@ function FieldGuideTopicLesson({
 }) {
   const example = topic.examples[exampleIndex] ?? topic.examples[0];
   const hasMoreExamples = exampleIndex < topic.examples.length - 1;
-  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Go to Skill Check';
+  const nextLabel = hasMoreExamples ? 'Next Example' : topicIndex < topicCount - 1 ? 'Next Topic' : 'Go to Skill Practice';
 
   if (!example) {
     return (
@@ -365,7 +365,7 @@ export function FieldGuidePanel({
   const warning = activeSnippet ? firstAvailable(activeSnippet.commonMistakes) ?? activeSnippet.commonTrap : undefined;
   const nextAction = activeSnippet
     ? isLastSnippet
-      ? 'Go to Skill Check when this idea is clear.'
+      ? 'Go to Skill Practice when this idea is clear.'
       : 'Use Next when this idea is clear.'
     : undefined;
   const visualSupport = activeSnippet ? findVisualSupportSource({
@@ -476,7 +476,7 @@ export function FieldGuidePanel({
     <RegionActionCard
       eyebrow={activeSnippet ? `Snippet ${safeActiveSnippetIndex + 1} of ${snippetCount}` : 'Field Guide'}
       title={activeSnippet ? 'Teaching snippet' : 'Field Guide unavailable'}
-      description={activeSnippet ? 'Study one teaching snippet, then move to the next.' : 'Field Guide content for this region is still being prepared.'}
+        description={activeSnippet ? 'Study one teaching snippet, then move to the next.' : 'Field Guide content for this topic is still being prepared.'}
       icon={<BookOpenCheck size={22} />}
       stateIcon={fieldGuideCompleted ? <CheckCircle2 size={22} aria-label="Field Guide complete" /> : undefined}
       className="field-guide-card"
@@ -529,12 +529,12 @@ export function FieldGuidePanel({
           </section>
         </article>
       ) : (
-        <p className="region-empty-state">Field Guide content for this region is still being prepared.</p>
+        <p className="region-empty-state">Field Guide content for this topic is still being prepared.</p>
       )}
 
       <div className="region-action-footer field-guide-step-actions">
         <button className="secondary-button" type="button" onClick={onBackToRegionHub}>
-          Back to Region Hub
+          Back to Topic
         </button>
         {activeSnippet && !isFirstSnippet ? (
           <button className="secondary-button" type="button" onClick={goToPreviousSnippet}>
@@ -550,7 +550,7 @@ export function FieldGuidePanel({
         ) : null}
         {activeSnippet && isLastSnippet ? (
           <button className="primary-button" type="button" onClick={continueToQuickChecks}>
-            Go to Skill Check
+            Go to Skill Practice
             <ArrowRight size={16} />
           </button>
         ) : null}

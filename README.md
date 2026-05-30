@@ -1,18 +1,28 @@
 # Asterion
 
-Asterion is an image-first, RPG-style adaptive trainer for CAIE 9709 Mathematics. The current MVP focuses on **Classroom practice mode** for the Paper 3 Astral Academy: a Pure Mathematics 3 world map with campaign regions, reviewed Field Guide support, under-construction Skill Practice support, evidence-gated Guardian Challenge bosses, and a separate image-first Exam Training endgame hub.
+Asterion is a static, image-first study portal for CAIE 9709 Mathematics. The current student surface focuses on Paper 3 topic practice through a professional topic index, reviewed Field Guide lessons, Skill Practice, and a separate Exam Training area for image-first exam-style questions.
 
 The question image and mark-scheme image are the student-facing source of truth. For P3 curriculum behavior, the reviewed P3 skill map is the authority. OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are advisory metadata only; they must not be treated as curriculum truth.
 
 ## Current Status
 
-Asterion is in active MVP development. The current product surface is a static-hosting-compatible **Classroom practice mode** for P3 Astral Academy. Student onboarding, class claiming, world map navigation, campaign region hubs, Field Guides, Skill Practice, image-first Exam Training, Guardian Challenges, avatar progress, and Class Hall all run from committed assets plus browser-local progress storage.
+Asterion is in active MVP development. The current product surface is a static-hosting-compatible **CAIE 9709 Paper 3 study portal**. The homepage is the topic index; topic hubs provide Field Guide and Skill Practice entry points; Exam Training is a separate final study area. Browser-local progress storage remains the source for Field Guide completion, Skill Practice attempts, and Exam Training attempts.
 
-The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 campaign-region flow, local progress adapter, Content Lab verification, avatar reward catalog, route-level bundle splitting, and the dashboard service boundary. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 126 mastery/Guardian-eligible P3 records, 40 reviewed P3 skills ready for region learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
+The strongest current areas are the image-first practice loop, normalized question-bank loading, reviewed P3 topic flow, local progress adapter, Content Lab verification, and route-level bundle splitting. Current validation reports show 396 P3 questions, 385 practice-eligible P3 records, 40 reviewed P3 skills ready for topic learning, 40 reviewed teaching snippets, 40 Quick Checks, 84 reviewed generated warm-ups, and 38 generator families.
 
-The current structural direction is now campaign regions plus an Exam Training endgame hub. Region pages should be treated as campaign arcs, while Exam Training should own mixed exam-readiness practice and endgame progress. Skill Practice remains under construction and needs a major future pass; Exam Training still needs clearer question rationale, mastery target/evidence messaging, and post-attempt next steps. Guardian Challenge also needs later boss/capstone presentation and reward polish. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
+The current structural direction is topic study plus Exam Training. Topic pages own Field Guide and Skill Practice. Exam Training owns mixed exam-readiness practice, topic progress, and self-marked exam question history. The `33autumn25` P3 paper is no longer quarantined; its canonical question and mark-scheme image links are covered by asset integrity tests.
 
-Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work, and optional roster-claim RPC plumbing. It is explicitly not hosted progress sync, not learner-response storage, and not the academic source of truth. A browser "Connected" diagnostic only proves the optional health RPC is reachable with browser-safe config.
+## Static Deployment
+
+Build with:
+
+```bash
+npm run build
+```
+
+The Vite build is static and uses `base: './'` outside Vercel, so committed assets work on GitHub Pages project sites. Clean routes such as `/topics/algebra` are handled in-app and `public/404.html` stores the attempted URL, redirects to the site root, then `App.tsx` restores the route with the History API. For GitHub Pages, publish the `dist/` output from the Pages workflow or configure Pages to serve the generated static artifact.
+
+This branch does not require Supabase, authentication, teacher/admin dashboards, or any backend service. Browser-local storage is used for student progress.
 
 ## Documentation Map
 
@@ -38,7 +48,7 @@ Supabase Phase 1 is schema, seed, verification, read-only dashboard adapter work
 
 ## Core Principles
 
-Asterion is an educational mastery system first and a game second.
+Asterion is an educational study system. The current branch deliberately avoids game mechanics and classroom-backend requirements.
 
 The system must preserve:
 - image-first academic fidelity
@@ -619,18 +629,14 @@ Browser-local progress storage is the active default. The app uses a progress ad
 
 Current behavior:
 
-- `VITE_ASTERION_APP_PROFILE=student-pilot` selects the supervised student pilot profile. Omitted profile values use `student-pilot` unless non-pilot dashboard/Supabase/storage flags are explicitly set for a local custom test build.
-- `VITE_ASTERION_APP_PROFILE=classroom-pilot` selects the hosted Vercel + Supabase classroom pilot profile. Missing Supabase URL/key values are reported clearly, and mock dashboard/claim sources are not fallback authority.
-- `VITE_ASTERION_STORAGE_MODE` defaults to `local`.
-- `VITE_ASTERION_STORAGE_MODE=hosted` is recognized but not implemented; the app stays on browser-local progress storage and shows a notice.
-- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` support the optional health check, read-only Supabase dashboard adapter, and Supabase roster-claim source when those modes are explicitly selected or when `classroom-pilot` is active. They do not enable learner-response writes.
-- `VITE_ASSET_BASE_URL` is a documented future hosted-asset input only.
-- `VITE_ASTERION_DASHBOARD_DEMO=enabled` exposes private mock teacher/admin dashboard routes for intentional demos only.
-- `VITE_ASTERION_DASHBOARD_DATA_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
-- `VITE_ASTERION_STUDENT_CLAIM_SOURCE=mock|supabase` defaults to mock; invalid values fall back to mock.
+- `/` is the main Paper 3 topic index.
+- `/regions` is retained as a compatibility route and renders the same topic index.
+- `/topics/<topic-slug>` opens a topic hub with Field Guide and Skill Practice entry points.
+- `/topics/<topic-slug>/field-guide` opens topic learning.
+- `/topics/<topic-slug>/skill-practice` opens focused practice questions.
+- `/exam-training` opens the final exam-prep area.
+- Progress is stored in browser-local storage for Field Guide completion, Skill Practice attempts, and Exam Training attempts.
 - Supabase service-role keys must never be exposed to the Vite client.
-
-See `docs/classroom/supabase-hosted-setup.md` for the active hosted-dashboard setup path. `docs/classroom/hosted-storage-design.md` remains the hosted storage design draft, and `docs/classroom/sql/hosted-storage-draft.sql` remains a non-wired schema sketch.
 
 ## GitHub Pages Deployment
 
@@ -642,21 +648,16 @@ npm run build
 
 Publish the `dist/` folder through your preferred GitHub Pages workflow. The JSON files and image assets must be committed under `public/` before building, or copied into the deployed static output.
 
-Student routes are hash-compatible for GitHub Pages. Teacher/admin dashboard routes are hash-compatible gated routes (`#/teacher`, `#/teacher/classes/<class-id>`, and `#/admin`) but are disabled unless `VITE_ASTERION_DASHBOARD_DEMO=enabled`, `VITE_ASTERION_DASHBOARD_DATA_SOURCE=supabase`, or `VITE_ASTERION_APP_PROFILE=classroom-pilot`. Direct `/teacher` and `/admin` paths are retained only for hosts that provide an SPA fallback and follow the same gate. Generic dashboard aliases (`#/dashboard`, `/dashboard`, and nested dashboard paths) always show the disabled-dashboard quarantine state so they cannot be mistaken for a production classroom dashboard.
+Clean topic routes use a static SPA fallback. `public/404.html` is copied to `dist/404.html`; on GitHub Pages it captures direct route refreshes such as `/topics/algebra`, returns to the project root, and lets `App.tsx` restore the requested route. Hash routes are also tolerated for old links where practical.
 
 See `docs/launch/deployment-readiness.md` for current payload findings, route expectations, repo-cleanliness rules, and the planned CSS split boundaries.
 
 ## Current Limitations
 
-- Hosted classroom identity and read-only dashboard setup are present only when the Supabase-backed classroom pilot profile is configured.
-- No raw learner-response writes or full cross-device attempt recovery.
-- Bounded hosted progress snapshot sync is profile-enabled for classroom pilot readiness, but browser insert/read wiring is still a follow-up phase.
-- Supabase diagnostic "Connected" state is not backend readiness.
-- Teacher/admin dashboard data can come from mock demo data or the read-only Supabase adapter, but roster actions, dashboard exports, and region toggles are not production authority without a reviewed auth/session and write policy.
+- Progress is local to the current browser and device.
 - No AI marking.
 - No browser-side answer input or automatic grading for Quick Checks or generated warm-ups.
 - No automated browser smoke test for the full student flow; the latest browser smoke was manual/agent-browser based against the Vite dev server.
-- No production-build browser smoke pass yet.
 - Adaptive selection is intentionally simple and rule-based.
 - Generated warm-up coverage is intentionally still being expanded through reviewed deterministic families.
 - P3 `33autumn25` records are trainable again after canonical question and mark-scheme image restoration.

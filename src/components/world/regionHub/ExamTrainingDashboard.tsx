@@ -1,44 +1,27 @@
-import {
-  ArrowLeft,
-  BarChart3,
-  ChevronDown,
-  Gem,
-  Info,
-  Medal,
-  Mountain,
-  ShieldCheck,
-  Sparkles,
-  Star,
-  Target,
-  Trophy,
-  UsersRound,
-} from 'lucide-react';
+import { ArrowLeft, BarChart3, ChevronDown, FileText, Info, Target } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import type { AvatarGear, AvatarSettings, NormalizedQuestion, RegionDefinition, RegionProgress, StoredProgress } from '../../../types';
 import type { RegionLearningPageId } from '../../../lib/regionRoutes';
 import {
-  buildExamTrainingRewardGoals,
   buildExamTrainingTopicMastery,
   EXAM_TRAINING_TOPIC_MASTERY_CONTRACTS,
   EXAM_TRAINING_PRACTICE_LABELS,
   type ExamTrainingPracticeMode,
-  type ExamTrainingRewardGoal,
   type ExamTrainingTopicMasteryItem,
 } from '../../../lib/examTrainingDashboard';
-import { AvatarRenderer } from '../../avatar/AvatarRenderer';
 import { MathText } from '../../shared/MathText';
 
 interface ExamTrainingDashboardProps {
   progress: StoredProgress;
   questions: NormalizedQuestion[];
   worldProgress: RegionProgress[];
-  avatarName: string;
-  avatar: AvatarSettings;
-  avatarGear: AvatarGear;
+  avatarName?: string;
+  avatar?: AvatarSettings;
+  avatarGear?: AvatarGear;
   selectedRegion?: RegionDefinition;
   practiceDisabledReason?: string;
   isStaffPreview?: boolean;
-  onOpenRegions: () => void;
+  onOpenRegions?: () => void;
   onReturnToMap: () => void;
   onNavigateRegionPage?: (page: RegionLearningPageId) => void;
   onStartPractice: (mode: ExamTrainingPracticeMode) => void;
@@ -52,40 +35,33 @@ const practiceCards: Array<{
   {
     mode: 'core',
     explanation: 'Balanced exam-style practice. Start here when you want a steady next question.',
-    icon: <Target size={30} />,
+    icon: <Target size={28} />,
   },
   {
     mode: 'weak',
-    explanation: 'Review based on saved mistakes and lower scores. If you have no saved attempt yet, start with Core.',
-    icon: <BarChart3 size={30} />,
+    explanation: 'Review based on saved mistakes and lower scores. If you have no saved attempt yet, start with Core Practice.',
+    icon: <BarChart3 size={28} />,
   },
   {
     mode: 'stretch',
-    explanation: 'Challenge-style practice. Selection is still exam-style, not a precise difficulty engine.',
-    icon: <Mountain size={30} />,
+    explanation: 'More demanding exam-style practice once recent saved scores are strong.',
+    icon: <FileText size={28} />,
   },
 ];
 
 interface PracticeEvidenceRecommendation {
   recommendedMode: ExamTrainingPracticeMode;
-  weakEvidenceReady: boolean;
-  stretchEvidenceReady: boolean;
   weakHint?: string;
   stretchHint?: string;
 }
 
-const masteryLegend: Array<Pick<ExamTrainingTopicMasteryItem, 'status' | 'statusLabel'>> = [
+const progressLegend: Array<Pick<ExamTrainingTopicMasteryItem, 'status' | 'statusLabel'>> = [
   { status: 'strong', statusLabel: 'Strong' },
   { status: 'secure', statusLabel: 'Secure' },
   { status: 'developing', statusLabel: 'Developing' },
   { status: 'needs_work', statusLabel: 'Needs Work' },
   { status: 'not_tried', statusLabel: 'Not Tried' },
 ];
-
-function percent(current: number, target: number): number {
-  if (target <= 0) return 0;
-  return Math.max(0, Math.min(100, Math.round((current / target) * 100)));
-}
 
 function scoreText(item: ExamTrainingTopicMasteryItem): string {
   return typeof item.scorePercent === 'number' ? `${item.scorePercent}%` : 'No signal';
@@ -123,7 +99,7 @@ function practiceEvidenceRecommendation(input: {
   selectedRegionProgress?: RegionProgress;
 }): PracticeEvidenceRecommendation {
   const attempts = input.selectedRegionProgress
-    ? input.progress.attempts.filter((attempt) => attempt.validatedRegionId === input.selectedRegionProgress?.region.id)
+    ? input.progress.attempts.filter((attempt) => attempt.validatedRegionId === input.selectedRegionProgress?.region.id || attempt.displayRegionId === input.selectedRegionProgress?.region.id)
     : input.progress.attempts.filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3');
   const scoredAttempts = attempts.filter((attempt) => typeof attempt.scoreRatio === 'number');
   const scopedAttemptCount = attempts.length || input.selectedRegionProgress?.attempts || 0;
@@ -143,10 +119,8 @@ function practiceEvidenceRecommendation(input: {
 
   return {
     recommendedMode,
-    weakEvidenceReady,
-    stretchEvidenceReady,
     weakHint: weakEvidenceReady ? undefined : 'Save a scored attempt with missed marks before Weak Area Review can target a real weak spot.',
-    stretchHint: stretchEvidenceReady ? undefined : 'Stretch unlocks as a recommendation after a short run of strong saved scores.',
+    stretchHint: stretchEvidenceReady ? undefined : 'Stretch Practice is recommended after a short run of strong saved scores.',
   };
 }
 
@@ -158,7 +132,7 @@ function broadStatusFor(scorePercent: number | undefined, attempts: number): Pic
   return { status: 'needs_work', statusLabel: 'Needs Work' };
 }
 
-function groupedTopicMastery(topics: ExamTrainingTopicMasteryItem[]) {
+function groupedTopicProgress(topics: ExamTrainingTopicMasteryItem[]) {
   const grouped = broadTopicOrder.map((name) => {
     const subtopics = topics.filter((topic) => broadTopicForSkill(topic.skillId) === name);
     const attempts = subtopics.reduce((sum, topic) => sum + topic.attempts, 0);
@@ -186,12 +160,6 @@ function groupedTopicMastery(topics: ExamTrainingTopicMasteryItem[]) {
   }] : grouped;
 }
 
-function goalIcon(goal: ExamTrainingRewardGoal) {
-  if (goal.id === 'smurf-hat') return <Sparkles size={22} />;
-  if (goal.id === 'golden-notes') return <Medal size={22} />;
-  return <Gem size={22} />;
-}
-
 function PracticeChoiceCards({
   disabledReason,
   recommendation,
@@ -205,10 +173,10 @@ function PracticeChoiceCards({
   return (
     <section className="exam-training-practice-panel" aria-labelledby="exam-training-practice-title">
       <div className="exam-training-section-heading">
-        <span className="mode-pill">Start your practice</span>
+        <span className="mode-pill">Start practice</span>
         <div>
-          <h3 id="exam-training-practice-title">Choose today&apos;s exam practice</h3>
-          <p>Every attempt builds your readiness. Choose the kind of work that fits today.</p>
+          <h3 id="exam-training-practice-title">Choose an exam practice mode</h3>
+          <p>Every saved attempt updates your local topic progress.</p>
         </div>
       </div>
       <div className="exam-training-practice-cards">
@@ -271,27 +239,27 @@ function PracticeChoiceCards({
       ) : (
         <div className="exam-training-safe-note">
           <Info size={18} aria-hidden="true" />
-          <span>Pick the kind of practice you need today. Saved marks and mistake tags shape what comes next.</span>
+          <span>Saved marks and mistake tags determine future review suggestions. The app does not auto-mark exam work.</span>
         </div>
       )}
     </section>
   );
 }
 
-function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] }) {
+function TopicProgressPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] }) {
   const attemptedCount = topics.filter((item) => item.attempts > 0).length;
-  const broadTopics = groupedTopicMastery(topics);
+  const broadTopics = groupedTopicProgress(topics);
   return (
     <section className="exam-training-mastery-panel" aria-labelledby="exam-training-mastery-title">
       <div className="exam-training-section-heading mastery-heading">
         <div>
-          <h3 id="exam-training-mastery-title">Your Topic Mastery</h3>
-          <p>Mastery reflects saved exam practice. Empty topics need a first attempt.</p>
+          <h3 id="exam-training-mastery-title">Topic Progress</h3>
+          <p>Progress reflects saved exam practice. Empty topics need a first attempt.</p>
         </div>
         <span className="exam-training-evidence-chip">{attemptedCount} topic{attemptedCount === 1 ? '' : 's'} tried</span>
       </div>
-      <div className="exam-training-mastery-legend" aria-label="Mastery status legend">
-        {masteryLegend.map((item) => (
+      <div className="exam-training-mastery-legend" aria-label="Topic progress status legend">
+        {progressLegend.map((item) => (
           <span key={item.status} className={`mastery-legend-item mastery-${item.status}`}>
             <i aria-hidden="true" />
             {item.statusLabel}
@@ -333,107 +301,6 @@ function TopicMasteryPanel({ topics }: { topics: ExamTrainingTopicMasteryItem[] 
           </details>
         ))}
       </div>
-      <div className="exam-training-panel-footer">
-        <Star size={18} aria-hidden="true" />
-        <span>Keep going. Green topics are strong; orange and red topics are good targets for review.</span>
-      </div>
-    </section>
-  );
-}
-
-function AvatarRewardsPanel({
-  avatarName,
-  avatar,
-  avatarGear,
-  goals,
-  worldProgress,
-}: {
-  avatarName: string;
-  avatar: AvatarSettings;
-  avatarGear: AvatarGear;
-  goals: ExamTrainingRewardGoal[];
-  worldProgress: RegionProgress[];
-}) {
-  return (
-    <>
-      <section className="exam-training-side-card avatar-goal-card" aria-labelledby="exam-training-avatar-title">
-        <div className="exam-training-section-heading compact">
-          <div>
-            <h3 id="exam-training-avatar-title">Your Avatar</h3>
-            <p>Progress comes from saved academic work.</p>
-          </div>
-        </div>
-        <div className="exam-training-avatar-row">
-          <div className="exam-training-avatar-frame">
-            <AvatarRenderer
-              avatarName={avatarName}
-              avatar={avatar}
-              regionProgress={worldProgress}
-              mode="portrait"
-            />
-          </div>
-          <div className="exam-training-avatar-copy">
-            <strong>{avatarName}</strong>
-            <span>{avatarGear.title}</span>
-            <small>Starter avatar active. More visible styles unlock later.</small>
-          </div>
-        </div>
-      </section>
-      <section className="exam-training-side-card reward-goals-card" aria-labelledby="exam-training-goals-title">
-        <div className="exam-training-section-heading compact">
-          <div>
-            <h3 id="exam-training-goals-title">Goals & Rewards</h3>
-            <p>Motivation goals only. These do not change your outfit yet.</p>
-          </div>
-        </div>
-        <div className="exam-training-goal-list">
-          {goals.map((goal) => (
-            <article className="exam-training-goal" key={goal.id}>
-              <span className="exam-training-goal-icon" aria-hidden="true">{goalIcon(goal)}</span>
-              <div>
-                <strong>{goal.title}</strong>
-                <small>{goal.description}</small>
-                <div className="reward-progress-line">
-                  <span style={{ width: `${percent(goal.current, goal.target)}%` }} />
-                </div>
-              </div>
-              <b>{Math.min(goal.current, goal.target)} / {goal.target}</b>
-            </article>
-          ))}
-        </div>
-      </section>
-    </>
-  );
-}
-
-function ClassCompetitionPanel({
-  progress,
-  isStaffPreview,
-}: {
-  progress: StoredProgress;
-  isStaffPreview?: boolean;
-}) {
-  const p3Attempts = progress.attempts.filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3').length;
-  const examTrainingPoints = progress.attempts
-    .filter((attempt) => String(attempt.paperFamily).toLowerCase() === 'p3')
-    .reduce((sum, attempt) => sum + Math.max(0, attempt.marksEarned), 0);
-  return (
-    <section className="exam-training-side-card class-competition-card" aria-labelledby="exam-training-class-title">
-      <div className="exam-training-section-heading compact">
-        <div>
-          <h3 id="exam-training-class-title">Class Competition</h3>
-          <p>This week</p>
-        </div>
-        <Trophy size={22} aria-hidden="true" />
-      </div>
-      <div className="class-competition-empty">
-        <UsersRound size={26} aria-hidden="true" />
-        <strong>You&apos;re unranked</strong>
-        <span>Class rank appears after enough classmates have saved Exam Training attempts.</span>
-        <small>Exam Training points: {examTrainingPoints}</small>
-        {p3Attempts > 0 ? <small>Saved Exam Training items: {p3Attempts}</small> : <small>Save your first item to start your weekly signal.</small>}
-        {isStaffPreview ? <em>Staff preview only: no sample classmates are shown as real students.</em> : null}
-      </div>
     </section>
   );
 }
@@ -442,52 +309,37 @@ export function ExamTrainingDashboard({
   progress,
   questions,
   worldProgress,
-  avatarName,
-  avatar,
-  avatarGear,
   selectedRegion,
   practiceDisabledReason,
-  isStaffPreview,
   onReturnToMap,
   onStartPractice,
 }: ExamTrainingDashboardProps) {
-  const topicMastery = buildExamTrainingTopicMastery({ progress, questions });
-  const goals = buildExamTrainingRewardGoals({ progress, topicMastery, worldProgress });
+  const topicProgress = buildExamTrainingTopicMastery({ progress, questions });
   const selectedRegionProgress = selectedRegion
     ? worldProgress.find((item) => item.region.id === selectedRegion.id)
     : undefined;
   const recommendation = practiceEvidenceRecommendation({ progress, selectedRegionProgress });
   return (
     <section className="exam-training-dashboard" aria-labelledby="exam-training-dashboard-title">
-      <header className="exam-training-dashboard-header">
+      <header className="exam-training-dashboard-header study-exam-training-header">
         <div className="exam-training-crest" aria-hidden="true">
-          <ShieldCheck size={30} />
+          <FileText size={30} />
         </div>
         <div className="exam-training-title-copy">
-          <span className="mode-pill">Paper 3 practice</span>
+          <span className="mode-pill">CAIE 9709 · Paper 3</span>
           <h2 id="exam-training-dashboard-title">Exam Training</h2>
-          <p>Real exam practice. Real progress.</p>
-          {selectedRegion ? <small>Focused on {selectedRegion.name}.</small> : <small>Choose a practice route, then self-mark from the official mark scheme.</small>}
+          <p>Exam-style question practice with local self-marked progress.</p>
+          {selectedRegion ? <small>Focused on {selectedRegion.name}.</small> : <small>Choose a practice mode, then self-mark from the official mark scheme.</small>}
         </div>
         <button className="exam-training-back-button" type="button" onClick={onReturnToMap}>
           <ArrowLeft size={18} aria-hidden="true" />
-          Back to map
+          Back to topics
         </button>
       </header>
 
-      <div className="exam-training-dashboard-grid">
+      <div className="exam-training-dashboard-grid study-exam-training-grid">
         <PracticeChoiceCards disabledReason={practiceDisabledReason} recommendation={recommendation} onStartPractice={onStartPractice} />
-        <TopicMasteryPanel topics={topicMastery} />
-        <aside className="exam-training-side-rail" aria-label="Avatar goals and class motivation">
-          <AvatarRewardsPanel
-            avatarName={avatarName}
-            avatar={avatar}
-            avatarGear={avatarGear}
-            goals={goals}
-            worldProgress={worldProgress}
-          />
-          <ClassCompetitionPanel progress={progress} isStaffPreview={isStaffPreview} />
-        </aside>
+        <TopicProgressPanel topics={topicProgress} />
       </div>
     </section>
   );
