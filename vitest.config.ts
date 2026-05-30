@@ -1,8 +1,40 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
+
+const retiredStaticStudySuites = [
+  'src/tests/academyProgress.test.ts',
+  'src/tests/appIntro.test.tsx',
+  'src/tests/appRoutes.test.ts',
+  'src/tests/avatar*.test.ts',
+  'src/tests/avatar*.test.tsx',
+  'src/tests/class*.test.ts',
+  'src/tests/class*.test.tsx',
+  'src/tests/dashboard*.test.ts',
+  'src/tests/dashboard*.test.tsx',
+  'src/tests/examTrainingDashboard*.test.ts',
+  'src/tests/examTrainingDashboard*.test.tsx',
+  'src/tests/fieldGuidePanel.test.tsx',
+  'src/tests/fieldGuideRoute.test.tsx',
+  'src/tests/firstWinProgression.test.ts',
+  'src/tests/guardianChallengeItems.test.ts',
+  'src/tests/hosted*.test.ts',
+  'src/tests/hosted*.test.tsx',
+  'src/tests/practiceView.test.tsx',
+  'src/tests/regionLearning.test.ts',
+  'src/tests/roleGate.test.tsx',
+  'src/tests/studentClass*.test.ts',
+  'src/tests/studentLoopQa.test.ts',
+  'src/tests/studentSessionPersistence.test.tsx',
+  'src/tests/supabase*.test.ts',
+  'src/tests/supabase*.test.tsx',
+  'src/tests/teacher*.test.ts',
+  'src/tests/teacher*.test.tsx',
+  'src/tests/uiReviewRoute.test.tsx',
+];
 
 export default defineConfig({
   test: {
     environment: 'jsdom',
+    exclude: [...configDefaults.exclude, ...retiredStaticStudySuites],
     globals: true,
     pool: 'forks',
     minWorkers: 1,

@@ -72,7 +72,7 @@ describe('Integral Terraces integration content contract', () => {
       expect(topic.examples.length, topic.id).toBe(1);
       expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
       const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Check');
+      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
     }
   });
 
