@@ -25,20 +25,20 @@
     "violation_count": 0,
     "violation_type_counts": {}
   },
-  "generated_at": "2026-05-28T08:24:05.925491+00:00",
+  "generated_at": "2026-05-31T01:16:37.062628+00:00",
   "generated_by": "tools/content_lab/scripts/build_p3_gold_skill_pack_readiness.py",
   "generated_label": "deterministic-p3-gold-skill-pack-readiness-v1",
   "per_region_summary": [
     {
-      "blocked_skill_count": 2,
+      "blocked_skill_count": 0,
       "missing_repair_note_skill_count": 3,
       "mvp_gold_ready_count": 0,
       "region": "Algebra Vault",
       "region_id": "algebra-forge",
       "skill_count": 7,
       "thin_evidence_skill_count": 1,
-      "warmup_role_gap_skill_count": 2,
-      "warning_only_skill_count": 5,
+      "warmup_role_gap_skill_count": 0,
+      "warning_only_skill_count": 7,
       "worked_example_gap_skill_count": 1
     },
     {
@@ -270,9 +270,7 @@
       ]
     },
     {
-      "blockers": [
-        "missing_all_warmup_support"
-      ],
+      "blockers": [],
       "clean_evidence_count": 1,
       "clean_evidence_question_ids": [
         "32autumn25_q05"
@@ -293,7 +291,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Add reviewed deterministic warm-up support before claiming MVP gold.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -312,14 +310,18 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 0,
-      "warmup_practice_ids": [],
-      "warmup_roles_missing": [
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_algebra_discriminant_root_condition_bridge_0001",
+        "gen_algebra_discriminant_root_condition_bridge_0002",
+        "gen_algebra_discriminant_root_condition_bridge_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
         "first_step",
         "complete_step",
         "guardian_prep"
       ],
-      "warmup_roles_present": [],
       "warnings": [
         "source_backed_worked_examples_sparse",
         "thin_evidence_resilience"
@@ -542,9 +544,7 @@
       ]
     },
     {
-      "blockers": [
-        "missing_all_warmup_support"
-      ],
+      "blockers": [],
       "clean_evidence_count": 3,
       "clean_evidence_question_ids": [
         "32summer22_q03",
@@ -567,7 +567,7 @@
       ],
       "misconception_repair_status": "available",
       "mvp_gold_ready": false,
-      "next_action": "Add reviewed deterministic warm-up support before claiming MVP gold.",
+      "next_action": "Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready.",
       "official_syllabus_section": "Algebra",
       "prerequisite_ref_status": "support_only",
       "prerequisite_repair_status": "available",
@@ -586,14 +586,18 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Algebra",
-      "warmup_practice_count": 0,
-      "warmup_practice_ids": [],
-      "warmup_roles_missing": [
+      "warmup_practice_count": 3,
+      "warmup_practice_ids": [
+        "gen_algebra_structure_first_bridge_0001",
+        "gen_algebra_structure_first_bridge_0002",
+        "gen_algebra_structure_first_bridge_0003"
+      ],
+      "warmup_roles_missing": [],
+      "warmup_roles_present": [
         "first_step",
         "complete_step",
         "guardian_prep"
       ],
-      "warmup_roles_present": [],
       "warnings": [
         "source_backed_worked_examples_sparse"
       ],
@@ -1470,10 +1474,13 @@
       "support_content_contaminating_ids": [],
       "support_content_status": "separated",
       "syllabus_section": "Integration",
-      "warmup_practice_count": 7,
+      "warmup_practice_count": 10,
       "warmup_practice_ids": [
         "gen_integrals_arctan_forms_0004",
         "gen_integrals_basic_trig_0004",
+        "gen_integrals_definite_area_bridge_0001",
+        "gen_integrals_definite_area_bridge_0002",
+        "gen_integrals_definite_area_bridge_0003",
         "gen_integrals_exponential_logarithmic_0002",
         "gen_integrals_exponential_logarithmic_0003",
         "gen_integrals_exponential_logarithmic_0004",
@@ -2876,9 +2883,9 @@
     }
   ],
   "skill_summary": {
-    "blocked_skill_count": 3,
+    "blocked_skill_count": 1,
     "blocker_counts": {
-      "missing_all_warmup_support": 3
+      "missing_all_warmup_support": 1
     },
     "evidence_status_counts": {
       "ambiguous": 0,
@@ -2898,7 +2905,7 @@
       "source_backed_worked_examples_sparse": 37,
       "thin_evidence_resilience": 1
     },
-    "warning_only_skill_count": 34
+    "warning_only_skill_count": 36
   },
   "thin_region_priority_summary": [
     {

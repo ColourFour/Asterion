@@ -1542,7 +1542,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     });
     expect(skillCheckMissing.querySelector<HTMLButtonElement>('.region-current-step-button')?.dataset.regionPage)
       .toBe('skill-practice');
-    expect(skillCheckMissing.querySelector('.region-journey-bar')?.textContent).toContain('1/5');
+    expect(skillCheckMissing.querySelector('.region-journey-bar')?.textContent).toContain('1/7');
 
     const guardianMissing = renderRegionHubPage({
       regionId: 'algebra-forge',
@@ -2212,10 +2212,12 @@ describe('FieldGuidePanel teaching snippets', () => {
     expect(container.textContent).toContain('Field Guide / Algebra Vault');
     expect(container.textContent).toContain('Choose a topic to learn.');
     expect(container.querySelector('.field-guide-snippet-card')).toBeFalsy();
-    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(5);
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(7);
+    expect(container.textContent).toContain('Structure Before Expansion');
     expect(container.textContent).toContain('Modulus Graphs and Equations');
     expect(container.textContent).toContain('Polynomial Division');
     expect(container.textContent).toContain('Remainder and Factor Theorem');
+    expect(container.textContent).toContain('Discriminant and Root Conditions');
     expect(container.textContent).toContain('Partial Fractions');
     expect(container.textContent).toContain('Binomial Expansions');
     expect(container.textContent).toContain('Each topic uses one worked example, one pattern, and one guided try.');
@@ -2234,7 +2236,7 @@ describe('FieldGuidePanel teaching snippets', () => {
       polynomialTopic!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container.textContent).toContain('Topic 2 of 5');
+    expect(container.textContent).toContain('Topic 3 of 7');
     expect(container.textContent).toContain('Current topic');
     expect(container.textContent).toContain('Polynomial Division');
     expect(container.textContent).toContain('Example 1');
@@ -2256,7 +2258,7 @@ describe('FieldGuidePanel teaching snippets', () => {
     act(() => {
       backToTopics!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(5);
+    expect(container.querySelectorAll('.field-guide-topic-card')).toHaveLength(7);
     expect(onCompleteFieldGuide).not.toHaveBeenCalled();
 
     const binomialTopic = container.querySelector<HTMLButtonElement>('[data-topic-id="algebra_binomial_expansion"]');
@@ -2330,9 +2332,11 @@ describe('FieldGuidePanel teaching snippets', () => {
     const complexTopics = FIELD_GUIDE_TOPICS_BY_REGION['complex-harbor'];
 
     expect(algebraTopics.map((topic) => topic.id)).toEqual([
+      'algebra_structure_first_bridge',
       'algebra_modulus_graph_equations',
       'algebra_polynomial_division',
       'algebra_remainder_factor_theorem',
+      'algebra_discriminant_root_conditions',
       'algebra_partial_fractions',
       'algebra_binomial_expansion',
     ]);

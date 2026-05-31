@@ -40,10 +40,12 @@ PARTIAL_FRACTIONS_DISTINCT_FAMILY = "algebra.partial_fractions_distinct_linear"
 PARTIAL_FRACTIONS_REPEATED_FAMILY = "algebra.partial_fractions_repeated_linear"
 ALGEBRA_TOPIC = "algebra"
 ALGEBRA_STRUCTURE_FAMILY = "algebra.structure_rearrangement_basic"
+ALGEBRA_STRUCTURE_BRIDGE_FAMILY = "algebra.structure_first_bridge"
 POLYNOMIAL_REMAINDER_FAMILY = "algebra.polynomial_remainder_factor_basic"
 MODULUS_EQUATION_FAMILY = "algebra.modulus_equation_basic"
 QUADRATICS_TOPIC = "quadratics"
 QUADRATICS_DISCRIMINANT_FAMILY = "quadratics.discriminant_root_condition_basic"
+QUADRATICS_DISCRIMINANT_BRIDGE_FAMILY = "quadratics.discriminant_root_condition_bridge"
 TRIG_TOPIC = "trigonometry"
 TRIG_IDENTITY_FAMILY = "trigonometry.identity_rewrite_basic"
 TRIG_ADDITION_FORMULAE_FAMILY = "trigonometry.addition_formulae_basic"
@@ -90,8 +92,10 @@ REGION_DISPLAY_NAMES = P3_REGION_DISPLAY_NAMES
 
 GENERATOR_FAMILY_SKILL_TARGET_IDS = {
     ALGEBRA_STRUCTURE_FAMILY: "p3_alg_structure_rearrangement",
+    ALGEBRA_STRUCTURE_BRIDGE_FAMILY: "p3_alg_structure_rearrangement",
     POLYNOMIAL_REMAINDER_FAMILY: "p3_alg_polynomial_remainder_factor",
     QUADRATICS_DISCRIMINANT_FAMILY: "p3_alg_discriminant_root_conditions",
+    QUADRATICS_DISCRIMINANT_BRIDGE_FAMILY: "p3_alg_discriminant_root_conditions",
     LOG_FAMILY: "p3_log_exponential_equations",
     LOG_GRAPH_INVERSE_FAMILY: "p3_log_convert_forms",
     LOG_LAWS_FAMILY: "p3_log_laws_equations",
@@ -133,7 +137,9 @@ GENERATOR_FAMILY_SKILL_TARGET_IDS = {
 }
 
 PROMOTED_RUNTIME_GENERATOR_FAMILIES = {
+    ALGEBRA_STRUCTURE_BRIDGE_FAMILY,
     POLYNOMIAL_REMAINDER_FAMILY,
+    QUADRATICS_DISCRIMINANT_BRIDGE_FAMILY,
     LOG_GRAPH_INVERSE_FAMILY,
     LOG_LAWS_FAMILY,
     LOG_EXPONENTIAL_INEQUALITY_FAMILY,
@@ -1726,6 +1732,67 @@ def build_algebra_structure_items(context: dict[str, Any]) -> list[dict[str, Any
     return [build_algebra_structure_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
+def build_algebra_structure_bridge_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_algebra_structure_first_bridge_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"repeated_block_substitution", "cancel_with_restriction", "solve_without_expanding"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "easy"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "topic_contract_id": "algebra_structure_first_bridge",
+    }
+
+    if item_type == "repeated_block_substitution":
+        prompt = "In (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0, what substitution keeps the structure?"
+        answer = "u = x^2 + 2x"
+        worked_solution = [
+            "The whole block x^2 + 2x appears twice.",
+            "Set u = x^2 + 2x before expanding anything.",
+            "The equation becomes u^2 - 5u + 6 = 0.",
+        ]
+    elif item_type == "cancel_with_restriction":
+        prompt = "Simplify ((x - 3)(x + 2))/(x - 3), stating the restriction."
+        answer = "x + 2, with x != 3"
+        worked_solution = [
+            "The original denominator is zero when x = 3, so x != 3.",
+            "Cancel the common factor x - 3.",
+            "The simplified expression is x + 2, with x != 3.",
+        ]
+    else:
+        prompt = "Solve (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0 without expanding the quartic."
+        answer = "x = -3, 1, -1 - sqrt(3), or -1 + sqrt(3)"
+        worked_solution = [
+            "Set u = x^2 + 2x to get u^2 - 5u + 6 = 0.",
+            "Factor: (u - 2)(u - 3) = 0, so u = 2 or u = 3.",
+            "Solve x^2 + 2x = 2 and x^2 + 2x = 3.",
+            "This gives x = -1 +/- sqrt(3), and x = -3 or 1.",
+        ]
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=ALGEBRA_STRUCTURE_BRIDGE_FAMILY,
+        topic=ALGEBRA_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, ALGEBRA_TOPIC, ["p3-algebra-rearrangement-001"]),
+    )
+
+
+def build_algebra_structure_bridge_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "repeated_block_substitution", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "cancel_with_restriction", "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "solve_without_expanding", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_algebra_structure_bridge_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
 def build_polynomial_remainder_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
     practice_id = f"gen_polynomial_remainder_factor_basic_{index:04d}"
     item_type = item_type_parameter(case, practice_id, {
@@ -1950,6 +2017,69 @@ def build_quadratics_discriminant_items(context: dict[str, Any]) -> list[dict[st
         {"item_type": "repeated_root_parameter", "a": 1, "b": 0, "c": 9, "sequence_role": "guardian_prep", "difficulty_band": "medium"},
     ]
     return [build_quadratics_discriminant_item(context, index, case) for index, case in enumerate(cases, start=1)]
+
+
+def build_quadratics_discriminant_bridge_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
+    practice_id = f"gen_algebra_discriminant_root_condition_bridge_{index:04d}"
+    item_type = item_type_parameter(case, practice_id, {"discriminant_sign", "root_type", "repeated_root_parameter"})
+    sequence_role = sequence_role_parameter(case, practice_id)
+    difficulty_band = non_empty_string(case.get("difficulty_band")) or "easy"
+    parameters: dict[str, Any] = {
+        "item_type": item_type,
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "topic_contract_id": "algebra_discriminant_root_conditions",
+    }
+
+    if item_type == "discriminant_sign":
+        prompt = "For x^2 + 2x + 5 = 0, calculate the discriminant and state its sign."
+        answer = "D = -16, so D < 0"
+        worked_solution = [
+            "Use D = b^2 - 4ac.",
+            "Here a = 1, b = 2, and c = 5.",
+            "D = 2^2 - 4(1)(5) = 4 - 20 = -16, which is negative.",
+        ]
+        parameters.update({"a": 1, "b": 2, "c": 5, "discriminant": -16})
+    elif item_type == "root_type":
+        prompt = "Use the discriminant to state the root type of 2x^2 - 3x - 1 = 0."
+        answer = "two distinct real roots"
+        worked_solution = [
+            "Use D = b^2 - 4ac with a = 2, b = -3, and c = -1.",
+            "D = (-3)^2 - 4(2)(-1) = 9 + 8 = 17.",
+            "Since D > 0, the equation has two distinct real roots.",
+        ]
+        parameters.update({"a": 2, "b": -3, "c": -1, "discriminant": 17})
+    else:
+        prompt = "Find k if x^2 + kx + 9 = 0 has a repeated root."
+        answer = "k = -6 or k = 6"
+        worked_solution = [
+            "A repeated root means D = 0.",
+            "So k^2 - 4(1)(9) = 0.",
+            "k^2 = 36, giving k = -6 or k = 6.",
+        ]
+        parameters.update({"a": 1, "c": 9, "discriminant_condition": "D = 0"})
+
+    return review_queue_item(
+        practice_id=practice_id,
+        generator_family=QUADRATICS_DISCRIMINANT_BRIDGE_FAMILY,
+        topic=QUADRATICS_TOPIC,
+        prompt=prompt,
+        answer=answer,
+        worked_solution=worked_solution,
+        parameters=parameters,
+        context=context,
+        sequence_role=sequence_role,
+        difficulty_band=difficulty_band,
+        snippet_ids=preferred_snippet_ids(context, QUADRATICS_TOPIC, ["p3-quadratics-discriminant-001"]),
+    )
+
+
+def build_quadratics_discriminant_bridge_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    cases = [
+        {"item_type": "discriminant_sign", "sequence_role": "first_step", "difficulty_band": "easy"},
+        {"item_type": "root_type", "sequence_role": "complete_step", "difficulty_band": "easy"},
+        {"item_type": "repeated_root_parameter", "sequence_role": "guardian_prep", "difficulty_band": "medium"},
+    ]
+    return [build_quadratics_discriminant_bridge_item(context, index, case) for index, case in enumerate(cases, start=1)]
 
 
 def build_log_domain_item(context: dict[str, Any], index: int, case: dict[str, Any]) -> dict[str, Any]:
@@ -3868,7 +3998,9 @@ def build_generated_practice(skill_targets: dict[str, Any], snippets: dict[str, 
         + build_log_laws_items(context)
         + build_log_exponential_inequality_items(context)
         + build_binomial_items(context)
+        + build_algebra_structure_bridge_items(context)
         + build_polynomial_remainder_items(context)
+        + build_quadratics_discriminant_bridge_items(context)
         + build_log_domain_items(context)
         + build_log_linearisation_items(context)
         + build_log_calculus_context_items(context)

@@ -15,10 +15,7 @@ const selectedSnippetIds = [
   'p3-quadratics-discriminant-001',
 ] as const;
 
-const quarantinedAlgebraWarmupSkills = new Set([
-  'p3_alg_structure_rearrangement',
-  'p3_alg_discriminant_root_conditions',
-]);
+const quarantinedAlgebraWarmupSkills = new Set<string>();
 
 function readJson(path: string) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -61,9 +58,11 @@ describe('Algebra Vault Phase 2B support-depth batch', () => {
   it('publishes deterministic runtime warm-up role breadth without candidate content', () => {
     const runtimePractice = readJson('public/data/generated_practice_bank.json').items;
     const approvedContracts = new Set([
+      'algebra_structure_first_bridge',
       'algebra_modulus_graph_equations',
       'algebra_polynomial_division',
       'algebra_remainder_factor_theorem',
+      'algebra_discriminant_root_conditions',
       'algebra_partial_fractions',
       'algebra_binomial_expansion',
     ]);
@@ -80,6 +79,8 @@ describe('Algebra Vault Phase 2B support-depth batch', () => {
       .toEqual(approvedContracts);
     expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'algebra.structure_rearrangement_basic')).toBe(false);
     expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'quadratics.discriminant_root_condition_basic')).toBe(false);
+    expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'algebra.structure_first_bridge')).toBe(true);
+    expect(algebraItems.some((item: { generator_family?: string }) => item.generator_family === 'quadratics.discriminant_root_condition_bridge')).toBe(true);
 
     for (const topicId of approvedContracts) {
       const items = algebraItems.filter((item: { parameters?: { topic_contract_id?: string } }) => (

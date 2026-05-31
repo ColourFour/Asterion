@@ -899,7 +899,7 @@ async function ensureParent(filePath: string): Promise<void> {
 async function writeStaticPage(pagePath: string, html: string): Promise<void> {
   const destination = path.join(outputRoot, pagePath);
   await ensureParent(destination);
-  await writeFile(destination, html, 'utf8');
+  await writeFile(destination, html.replace(/[ \t]+$/gm, ''), 'utf8');
 }
 
 function shouldSkipPublicAsset(relativePath: string): boolean {

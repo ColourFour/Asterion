@@ -30,8 +30,16 @@ function correctResponse(item: GuardianChallengeItem): QuickCheckResponse {
 }
 
 describe('Guardian challenge item contracts', () => {
-  it('has one Algebra Vault Guardian item per Field Guide subtopic', () => {
-    const topics = getFieldGuideTopicsForRegion('algebra-forge');
+  it('keeps Algebra Vault Guardian items on the pre-existing challenge subtopics', () => {
+    const challengeTopicIds = [
+      'algebra_modulus_graph_equations',
+      'algebra_polynomial_division',
+      'algebra_remainder_factor_theorem',
+      'algebra_partial_fractions',
+      'algebra_binomial_expansion',
+    ];
+    const topics = getFieldGuideTopicsForRegion('algebra-forge')
+      .filter((topic) => challengeTopicIds.includes(topic.id));
     const items = getGuardianChallengeItemsForRegion('algebra-forge');
 
     expect(items.map((item) => item.fieldGuideTopicId).sort()).toEqual(topics.map((topic) => topic.id).sort());

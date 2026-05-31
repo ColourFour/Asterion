@@ -30,6 +30,7 @@ const expectedIntegralTitles = [
   'Integration of 1/(1 + x^2) and arctan Forms',
   'Integration by Substitution',
   'Integration by Parts',
+  'Definite Integrals, Area, and Limit-Style Checks',
 ];
 
 function topicText(regionId: string): string {
@@ -64,17 +65,19 @@ function contractedIntegralPractice() {
 }
 
 describe('Integral Terraces integration content contract', () => {
-  it('exposes exactly the seven approved integration Field Guide topic IDs in order', () => {
+  it('exposes exactly the eight approved integration Field Guide topic IDs in order', () => {
     const integralTopics = FIELD_GUIDE_TOPICS_BY_REGION['integration-gardens'];
 
     expect(integralTopics.map((topic) => topic.id)).toEqual([...INTEGRAL_TERRACES_TOPIC_ORDER]);
     expect(integralTopics.map((topic) => topic.title)).toEqual(expectedIntegralTitles);
     for (const topic of integralTopics) {
       expect(topic.skillIds).toEqual([topic.id]);
-      expect(topic.examples.length, topic.id).toBe(1);
-      expect(topic.examples[0]?.workedLines.length, topic.id).toBeGreaterThanOrEqual(3);
-      const takeaway = topic.examples[0]?.takeaway ?? [];
-      expect(takeaway[takeaway.length - 1], topic.id).toContain('Skill Practice');
+      expect(topic.examples.length, topic.id).toBeGreaterThanOrEqual(1);
+      for (const example of topic.examples) {
+        expect(example.workedLines.length, `${topic.id}:${example.title}`).toBeGreaterThanOrEqual(3);
+        const takeaway = example.takeaway ?? [];
+        expect(takeaway[takeaway.length - 1], `${topic.id}:${example.title}`).toContain('Skill Practice');
+      }
     }
   });
 
@@ -148,7 +151,7 @@ describe('Integral Terraces integration content contract', () => {
       ...item.workedSolution,
     ]).join('\n').toLowerCase();
 
-    expect(contractedPractice).toHaveLength(28);
+    expect(contractedPractice).toHaveLength(31);
     expect(new Set(contractedPractice.map((item) => item.parameters.topic_contract_id))).toEqual(approvedTopicIds);
     expect(contractedPractice.every((item) => approvedTopicIds.has(String(item.parameters.topic_contract_id)))).toBe(true);
     expect(text).not.toMatch(/dy\/dx|differentiat|differential equation|growth model|newton|argand|complex number|vector line/);
@@ -191,6 +194,47 @@ describe('Integral Terraces integration content contract', () => {
     expect(changedLimits?.answer).toBe('15/4');
   });
 
+  it('adds a dedicated definite, area, and limit-style Integration bridge without promoting quarantined broad items', () => {
+    const bridge = FIELD_GUIDE_TOPICS_BY_REGION['integration-gardens']
+      .find((topic) => topic.id === 'integrals_definite_area_bridge');
+    const bridgeText = [
+      bridge?.title,
+      bridge?.description,
+      bridge?.supportNote,
+      ...(bridge?.examples ?? []).flatMap((example) => [
+        example.title,
+        example.prompt,
+        ...example.workedLines,
+        example.patternTitle,
+        ...example.patternRows.flatMap((row) => [row.from, row.move, row.to]),
+        example.tryPrompt,
+        ...example.tryScaffold,
+        ...(example.tryWorkedLines ?? []),
+        example.tryResult ?? '',
+        ...example.takeaway,
+        example.result,
+      ]),
+    ].join('\n').toLowerCase();
+    const bridgePractice = contractedIntegralPractice()
+      .filter((item) => item.parameters.topic_contract_id === 'integrals_definite_area_bridge');
+
+    expect(bridge?.title).toBe('Definite Integrals, Area, and Limit-Style Checks');
+    expect(bridge?.examples.map((example) => example.title)).toEqual([
+      'Bracket before substituting limits',
+      'Use upper minus lower for area',
+      'Use a limit for an infinite bound',
+    ]);
+    expect(bridgeText).toContain('upper-minus-lower');
+    expect(bridgeText).toContain('area between curves');
+    expect(bridgeText).toContain('source-backed p3-style convergent improper evaluations');
+    expect(bridgePractice.map((item) => item.practiceId)).toEqual([
+      'gen_integrals_definite_area_bridge_0001',
+      'gen_integrals_definite_area_bridge_0002',
+      'gen_integrals_definite_area_bridge_0003',
+    ]);
+    expect(new Set(bridgePractice.map((item) => item.skillTargetId))).toEqual(new Set(['p3_int_definite_improper_area']));
+  });
+
   it('removes old broad integration warm-ups from runtime and documents their quarantine IDs', () => {
     const runtimeIds = new Set(runtimePractice.map((item) => item.practiceId));
     const integralRuntimeIds = new Set(getGeneratedPracticeForRegion(runtimePractice, 'integration-gardens', 'p3').map((item) => item.practiceId));
@@ -213,6 +257,8 @@ describe('Integral Terraces integration content contract', () => {
     expect(integralText).toContain('tan^{-1}');
     expect(integralText).toContain('changing the limits');
     expect(integralText).toContain('integration by parts');
+    expect(integralText).toContain('area between curves');
+    expect(integralText).toContain('limit-style');
     expect(CALCULUS_CLIFFS_TOPIC_ORDER).not.toContain('integrals_exponential_logarithmic');
     expect(LOGARITHM_OBSERVATORY_TOPIC_ORDER).not.toContain('integrals_exponential_logarithmic');
     expect(TRIGONOMETRY_SPIRE_TOPIC_ORDER).not.toContain('integrals_trig_identities');

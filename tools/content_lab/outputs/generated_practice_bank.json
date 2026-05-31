@@ -669,6 +669,130 @@
       ]
     },
     {
+      "answer": "u = x^2 + 2x",
+      "difficulty_band": "easy",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "repeated_block_substitution",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0001",
+      "prompt": "In (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0, what substitution keeps the structure?",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The whole block x^2 + 2x appears twice.",
+        "Set u = x^2 + 2x before expanding anything.",
+        "The equation becomes u^2 - 5u + 6 = 0."
+      ]
+    },
+    {
+      "answer": "x + 2, with x != 3",
+      "difficulty_band": "easy",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cancel_with_restriction",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0002",
+      "prompt": "Simplify ((x - 3)(x + 2))/(x - 3), stating the restriction.",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The original denominator is zero when x = 3, so x != 3.",
+        "Cancel the common factor x - 3.",
+        "The simplified expression is x + 2, with x != 3."
+      ]
+    },
+    {
+      "answer": "x = -3, 1, -1 - sqrt(3), or -1 + sqrt(3)",
+      "difficulty_band": "medium",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "solve_without_expanding",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0003",
+      "prompt": "Solve (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0 without expanding the quartic.",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Set u = x^2 + 2x to get u^2 - 5u + 6 = 0.",
+        "Factor: (u - 2)(u - 3) = 0, so u = 2 or u = 3.",
+        "Solve x^2 + 2x = 2 and x^2 + 2x = 3.",
+        "This gives x = -1 +/- sqrt(3), and x = -3 or 1."
+      ]
+    },
+    {
       "answer": "quotient = x^2 - 5x + 6, remainder = 0",
       "difficulty_band": "easy",
       "exam_move": "Use theorem checks to choose factors before division or coefficient comparison.",
@@ -1097,6 +1221,140 @@
         "Factor by grouping: x^3 - 4x^2 - x + 4 = (x^2 - 1)(x - 4).",
         "Then (x^2 - 1)(x - 4) = (x - 1)(x + 1)(x - 4).",
         "So the solutions are x = -1, 1, and 4."
+      ]
+    },
+    {
+      "answer": "D = -16, so D < 0",
+      "difficulty_band": "easy",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 1,
+        "b": 2,
+        "c": 5,
+        "discriminant": -16,
+        "item_type": "discriminant_sign",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0001",
+      "prompt": "For x^2 + 2x + 5 = 0, calculate the discriminant and state its sign.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use D = b^2 - 4ac.",
+        "Here a = 1, b = 2, and c = 5.",
+        "D = 2^2 - 4(1)(5) = 4 - 20 = -16, which is negative."
+      ]
+    },
+    {
+      "answer": "two distinct real roots",
+      "difficulty_band": "easy",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "b": -3,
+        "c": -1,
+        "discriminant": 17,
+        "item_type": "root_type",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0002",
+      "prompt": "Use the discriminant to state the root type of 2x^2 - 3x - 1 = 0.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use D = b^2 - 4ac with a = 2, b = -3, and c = -1.",
+        "D = (-3)^2 - 4(2)(-1) = 9 + 8 = 17.",
+        "Since D > 0, the equation has two distinct real roots."
+      ]
+    },
+    {
+      "answer": "k = -6 or k = 6",
+      "difficulty_band": "medium",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 1,
+        "c": 9,
+        "discriminant_condition": "D = 0",
+        "item_type": "repeated_root_parameter",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0003",
+      "prompt": "Find k if x^2 + kx + 9 = 0 has a repeated root.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "A repeated root means D = 0.",
+        "So k^2 - 4(1)(9) = 0.",
+        "k^2 = 36, giving k = -6 or k = 6."
       ]
     },
     {
@@ -2810,7 +3068,8 @@
         "item_type": "stationary_condition",
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "p3_diff_stationary_tangent_normal"
       },
       "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0001",
       "prompt": "For y = x^3 - 12x, find the x-values of the stationary points.",
@@ -2853,6 +3112,7 @@
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
+        "topic_contract_id": "p3_diff_stationary_tangent_normal",
         "x0": 3,
         "y0": 10
       },
@@ -2898,6 +3158,7 @@
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
         "tangent_gradient": 4,
+        "topic_contract_id": "p3_diff_stationary_tangent_normal",
         "x0": 2,
         "y0": 4
       },
@@ -4047,58 +4308,6 @@
         "Subtract A from B component by component.",
         "AB = <4, 1, 2> - <1, -2, 0>.",
         "So the direction vector is <3, 3, 2>."
-      ]
-    },
-    {
-      "answer": "AB = <3, -2, 1>, BC = <2, 3, 3>, so AB + BC = <5, 1, 4> = AC",
-      "difficulty_band": "easy",
-      "exam_move": "Choose a vector path before calculating components.",
-      "example_model_id": "p3-vectors-3d-geometry-001-example-1",
-      "generator_family": "vectors.line_relationship_basic",
-      "key_method": "Subtract position vectors to form each displacement, then add linked displacements head-to-tail.",
-      "paper_family": "p3",
-      "parameters": {
-        "ax": 1,
-        "ay": 2,
-        "az": -1,
-        "bx": 4,
-        "by": 0,
-        "bz": 0,
-        "cx": 6,
-        "cy": 3,
-        "cz": 3,
-        "item_type": "geometric_addition_from_position_vectors",
-        "safe_bounds": "3D integer point and displacement components within [-9, 9]; exact component checks",
-        "sequence_role": "first_step",
-        "sequence_stage": "first_step",
-        "topic_contract_id": "vectors_geometric_add_subtract"
-      },
-      "practice_id": "gen_vectors_line_relationship_basic_0004",
-      "prompt": "Points A(1, 2, -1), B(4, 0, 0), and C(6, 3, 3) have position vectors a, b, and c. Find AB, BC, and AB + BC. What single displacement does the sum equal?",
-      "question_type": "Geometric vector addition",
-      "region_ids": [
-        "vector-workshop"
-      ],
-      "review_status": "teacher_reviewed",
-      "sequence_role": "first_step",
-      "skill_target_id": "p3_vec_3d_geometry_modelling",
-      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
-      "snippet_ids": [
-        "p3-vectors-3d-geometry-001",
-        "p3-vectors-lines-001"
-      ],
-      "source_snippet_id": "p3-vectors-3d-geometry-001",
-      "topic": "vectors",
-      "verification": {
-        "method": "deterministic",
-        "status": "pass",
-        "verifier": "content_lab_schema_v2"
-      },
-      "worked_solution": [
-        "AB = b - a = <4, 0, 0> - <1, 2, -1> = <3, -2, 1>.",
-        "BC = c - b = <6, 3, 3> - <4, 0, 0> = <2, 3, 3>.",
-        "AB + BC = <3, -2, 1> + <2, 3, 3> = <5, 1, 4>.",
-        "The head-to-tail path from A to B then B to C is the single displacement AC."
       ]
     },
     {
@@ -5500,7 +5709,7 @@
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 9,
   "published_runtime_count": 0,
-  "runtime_reviewed_count": 117,
+  "runtime_reviewed_count": 123,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Internal planning/generated output; may include needs_review candidates and is not app-facing runtime.",

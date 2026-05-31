@@ -1,7 +1,9 @@
 export const ALGEBRA_VAULT_TOPIC_ORDER = [
+  'algebra_structure_first_bridge',
   'algebra_modulus_graph_equations',
   'algebra_polynomial_division',
   'algebra_remainder_factor_theorem',
+  'algebra_discriminant_root_conditions',
   'algebra_partial_fractions',
   'algebra_binomial_expansion',
 ] as const;
@@ -10,7 +12,7 @@ export type AlgebraVaultTopicId = typeof ALGEBRA_VAULT_TOPIC_ORDER[number];
 
 export interface AlgebraVaultPracticeAlignment {
   topicId: AlgebraVaultTopicId;
-  status: 'reviewed_runtime' | 'todo_teacher_review';
+  status: 'reviewed_runtime' | 'reviewed_static_skill_check' | 'todo_teacher_review';
   reviewedPracticeIds: string[];
   candidatePrompt: string;
   expectedAnswer: string;
@@ -18,6 +20,21 @@ export interface AlgebraVaultPracticeAlignment {
 }
 
 export const ALGEBRA_VAULT_SKILL_PRACTICE_ALIGNMENT: AlgebraVaultPracticeAlignment[] = [
+  {
+    topicId: 'algebra_structure_first_bridge',
+    status: 'reviewed_static_skill_check',
+    reviewedPracticeIds: [
+      'sc-alg-structure-first-bridge-foundation-001',
+      'sc-alg-structure-first-bridge-core-001',
+      'sc-alg-structure-first-bridge-challenge-001',
+      'gen_algebra_structure_first_bridge_0001',
+      'gen_algebra_structure_first_bridge_0002',
+      'gen_algebra_structure_first_bridge_0003',
+    ],
+    candidatePrompt: 'Choose the structure-preserving first move for a repeated block or cancellable factor.',
+    expectedAnswer: 'Use substitution, factorisation, cancellation with restrictions, or the zero-product rule before expanding.',
+    authoringNote: 'Static Skill Check and guided practice are original deterministic support items for the reviewed P3 structure-rearrangement skill. Legacy generated structure-rearrangement candidates remain quarantined.',
+  },
   {
     topicId: 'algebra_modulus_graph_equations',
     status: 'reviewed_runtime',
@@ -58,6 +75,21 @@ export const ALGEBRA_VAULT_SKILL_PRACTICE_ALIGNMENT: AlgebraVaultPracticeAlignme
     candidatePrompt: 'For $f(x)=x^3+ax^2+bx+6$, use one factor condition and one remainder condition to find $a$ and $b$.',
     expectedAnswer: '$$ a=0,\\quad b=-7 $$',
     authoringNote: 'Runtime keeps theorem work separate from long division by matching on this topic contract ID.',
+  },
+  {
+    topicId: 'algebra_discriminant_root_conditions',
+    status: 'reviewed_static_skill_check',
+    reviewedPracticeIds: [
+      'sc-alg-discriminant-root-conditions-foundation-001',
+      'sc-alg-discriminant-root-conditions-core-001',
+      'sc-alg-discriminant-root-conditions-challenge-001',
+      'gen_algebra_discriminant_root_condition_bridge_0001',
+      'gen_algebra_discriminant_root_condition_bridge_0002',
+      'gen_algebra_discriminant_root_condition_bridge_0003',
+    ],
+    candidatePrompt: 'Use the discriminant to decide a root condition before solving the quadratic.',
+    expectedAnswer: '$$D=b^2-4ac;\\quad D>0\\text{ distinct real roots},\\ D=0\\text{ repeated root},\\ D<0\\text{ no real roots}.$$',
+    authoringNote: 'Static Skill Check and guided practice cover the official P3 root-condition use case without promoting old quadratics discriminator candidates.',
   },
   {
     topicId: 'algebra_partial_fractions',
@@ -114,5 +146,4 @@ export const ALGEBRA_VAULT_OUT_OF_SCOPE_TERMS = [
   'trigonometric',
   'iteration',
   'newton',
-  'discriminant',
 ] as const;

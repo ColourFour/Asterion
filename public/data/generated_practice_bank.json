@@ -7202,6 +7202,127 @@
       ]
     },
     {
+      "answer": "8",
+      "difficulty_band": "easy",
+      "exam_move": "Show the antiderivative and bracketed upper-minus-lower substitution.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-31-integrals_definite_area_bridge-definite_integral",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Use [F(x)]_a^b = F(b) - F(a).",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "definite_integral_bridge",
+        "sequence_role": "first_step",
+        "topic_contract_id": "integrals_definite_area_bridge"
+      },
+      "practice_id": "gen_integrals_definite_area_bridge_0001",
+      "prompt": "Evaluate the integral of 3x^2 from x = 0 to x = 2.",
+      "question_type": "Definite integral bridge",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-integration-definite-area-001"
+      ],
+      "source_snippet_id": "p3-integration-definite-area-001",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "An antiderivative of 3x^2 is x^3.",
+        "Use bracket notation: [x^3]_0^2.",
+        "Substitute upper then lower: 2^3 - 0^3.",
+        "The value is 8."
+      ]
+    },
+    {
+      "answer": "10/3",
+      "difficulty_band": "medium",
+      "exam_move": "Identify upper minus lower before integrating for area.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-31-integrals_definite_area_bridge-area_between_curves",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Area between curves is the integral of upper curve minus lower curve.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "area_between_curves_bridge",
+        "sequence_role": "complete_step",
+        "topic_contract_id": "integrals_definite_area_bridge"
+      },
+      "practice_id": "gen_integrals_definite_area_bridge_0002",
+      "prompt": "Find the area between y = x + 2 and y = x^2 from x = 0 to x = 2.",
+      "question_type": "Area between curves bridge",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-integration-definite-area-001"
+      ],
+      "source_snippet_id": "p3-integration-definite-area-001",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "On 0 <= x <= 2, the upper curve is y = x + 2 and the lower curve is y = x^2.",
+        "Area is the integral of (x + 2 - x^2) from 0 to 2.",
+        "An antiderivative is x^2/2 + 2x - x^3/3.",
+        "Substituting 2 and 0 gives 2 + 4 - 8/3 = 10/3."
+      ]
+    },
+    {
+      "answer": "1/2",
+      "difficulty_band": "medium",
+      "exam_move": "Show the limiting step rather than substituting infinity directly.",
+      "example_model_id": "integral-terraces-field-guide-2026-05-31-integrals_definite_area_bridge-improper_exponential_limit",
+      "generator_family": "integration.definite_area_basic",
+      "key_method": "Replace the infinite upper bound by a limit and use the exponential limiting value.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "improper_exponential_bridge",
+        "sequence_role": "guardian_prep",
+        "topic_contract_id": "integrals_definite_area_bridge"
+      },
+      "practice_id": "gen_integrals_definite_area_bridge_0003",
+      "prompt": "Evaluate the improper integral of e^(-2x) from x = 0 to infinity.",
+      "question_type": "Limit-style improper integral bridge",
+      "region_ids": [
+        "integration-gardens"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_int_definite_improper_area",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "integral-terraces-field-guide-2026-05-27",
+        "31autumn21_q04_improper_evaluation"
+      ],
+      "source_snippet_id": "integral-terraces-field-guide-2026-05-27",
+      "topic": "integration",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "teacher_static_review"
+      },
+      "worked_solution": [
+        "Write the integral as lim b->infinity of the integral from 0 to b of e^(-2x).",
+        "An antiderivative is -(1/2)e^(-2x).",
+        "Substituting 0 and b gives -(1/2)e^(-2b) + 1/2.",
+        "As b tends to infinity, e^(-2b) tends to 0, so the value is 1/2."
+      ]
+    },
+    {
       "answer": "dh/dt = 4 - k sqrt(h)",
       "difficulty_band": "medium",
       "exam_move": "Translate the rate statement before deciding whether solving is required.",
@@ -7716,12 +7837,270 @@
         "status": "pass",
         "verifier": "teacher_static_review"
       }
+    },
+    {
+      "answer": "u = x^2 + 2x",
+      "difficulty_band": "easy",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "repeated_block_substitution",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0001",
+      "prompt": "In (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0, what substitution keeps the structure?",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The whole block x^2 + 2x appears twice.",
+        "Set u = x^2 + 2x before expanding anything.",
+        "The equation becomes u^2 - 5u + 6 = 0."
+      ]
+    },
+    {
+      "answer": "x + 2, with x != 3",
+      "difficulty_band": "easy",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "cancel_with_restriction",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0002",
+      "prompt": "Simplify ((x - 3)(x + 2))/(x - 3), stating the restriction.",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "The original denominator is zero when x = 3, so x != 3.",
+        "Cancel the common factor x - 3.",
+        "The simplified expression is x + 2, with x != 3."
+      ]
+    },
+    {
+      "answer": "x = -3, 1, -1 - sqrt(3), or -1 + sqrt(3)",
+      "difficulty_band": "medium",
+      "exam_move": "Pause before expansion and ask whether the expression has a shared structure.",
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "generator_family": "algebra.structure_first_bridge",
+      "key_method": "Choose algebraic simplification before opening every bracket.",
+      "paper_family": "p3",
+      "parameters": {
+        "item_type": "solve_without_expanding",
+        "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_structure_first_bridge"
+      },
+      "practice_id": "gen_algebra_structure_first_bridge_0003",
+      "prompt": "Solve (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0 without expanding the quartic.",
+      "question_type": "Algebraic simplification",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_structure_rearrangement",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-algebra-rearrangement-001"
+      ],
+      "source_snippet_id": "p3-algebra-rearrangement-001",
+      "topic": "algebra",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Set u = x^2 + 2x to get u^2 - 5u + 6 = 0.",
+        "Factor: (u - 2)(u - 3) = 0, so u = 2 or u = 3.",
+        "Solve x^2 + 2x = 2 and x^2 + 2x = 3.",
+        "This gives x = -1 +/- sqrt(3), and x = -3 or 1."
+      ]
+    },
+    {
+      "answer": "D = -16, so D < 0",
+      "difficulty_band": "easy",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 1,
+        "b": 2,
+        "c": 5,
+        "discriminant": -16,
+        "item_type": "discriminant_sign",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "first_step",
+        "sequence_stage": "first_step",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0001",
+      "prompt": "For x^2 + 2x + 5 = 0, calculate the discriminant and state its sign.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "first_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use D = b^2 - 4ac.",
+        "Here a = 1, b = 2, and c = 5.",
+        "D = 2^2 - 4(1)(5) = 4 - 20 = -16, which is negative."
+      ]
+    },
+    {
+      "answer": "two distinct real roots",
+      "difficulty_band": "easy",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 2,
+        "b": -3,
+        "c": -1,
+        "discriminant": 17,
+        "item_type": "root_type",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "complete_step",
+        "sequence_stage": "complete_step",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0002",
+      "prompt": "Use the discriminant to state the root type of 2x^2 - 3x - 1 = 0.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "complete_step",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "Use D = b^2 - 4ac with a = 2, b = -3, and c = -1.",
+        "D = (-3)^2 - 4(2)(-1) = 9 + 8 = 17.",
+        "Since D > 0, the equation has two distinct real roots."
+      ]
+    },
+    {
+      "answer": "k = -6 or k = 6",
+      "difficulty_band": "medium",
+      "exam_move": "Use the discriminant when a condition asks for tangency, intersections, or real-root counts.",
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "generator_family": "quadratics.discriminant_root_condition_bridge",
+      "key_method": "Use the discriminant as a root-counting shortcut.",
+      "paper_family": "p3",
+      "parameters": {
+        "a": 1,
+        "c": 9,
+        "discriminant_condition": "D = 0",
+        "item_type": "repeated_root_parameter",
+        "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
+        "sequence_role": "guardian_prep",
+        "sequence_stage": "guardian_prep",
+        "topic_contract_id": "algebra_discriminant_root_conditions"
+      },
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0003",
+      "prompt": "Find k if x^2 + kx + 9 = 0 has a repeated root.",
+      "question_type": "Quadratic discriminant decision",
+      "region_ids": [
+        "algebra-forge"
+      ],
+      "review_status": "teacher_reviewed",
+      "sequence_role": "guardian_prep",
+      "skill_target_id": "p3_alg_discriminant_root_conditions",
+      "skill_target_resolution_status": "reviewed_p3_skill_map_id",
+      "snippet_ids": [
+        "p3-quadratics-discriminant-001"
+      ],
+      "source_snippet_id": "p3-quadratics-discriminant-001",
+      "topic": "quadratics",
+      "verification": {
+        "method": "deterministic",
+        "status": "pass",
+        "verifier": "content_lab_schema_v2"
+      },
+      "worked_solution": [
+        "A repeated root means D = 0.",
+        "So k^2 - 4(1)(9) = 0.",
+        "k^2 = 36, giving k = -6 or k = 6."
+      ]
     }
   ],
   "missing_example_model_id_count": 0,
   "needs_review_internal_count": 0,
-  "published_runtime_count": 159,
-  "runtime_reviewed_count": 159,
+  "published_runtime_count": 193,
+  "runtime_reviewed_count": 193,
   "schema_name": "asterion_generated_practice",
   "schema_version": 2,
   "scope_note": "Runtime app-facing reviewed warm-up practice.",

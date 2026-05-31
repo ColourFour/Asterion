@@ -1,14 +1,14 @@
 # P3 Gold Skill Pack Readiness
 
-Generated at: `2026-05-28T08:24:05.925491+00:00`
+Generated at: `2026-05-31T01:16:37.062628+00:00`
 
 ## Summary
 
 - Artifact scope: `p3_gold_skill_pack_readiness`
 - Reviewed P3 skills evaluated: 40
 - MVP gold ready: 3
-- Blocked: 3
-- Warning-only / thin / resilience-risk: 34
+- Blocked: 1
+- Warning-only / thin / resilience-risk: 36
 - Thin evidence resilience risks: 1
 - Contract violations: 0
 
@@ -16,7 +16,7 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 
 ## Blocker Counts
 
-- `missing_all_warmup_support`: 3
+- `missing_all_warmup_support`: 1
 
 ## Warning Counts
 
@@ -39,7 +39,7 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 
 | Region | Skills | Ready | Blocked | Warning-Only | Thin Evidence | Warm-Up Gaps | Worked-Example Gaps | Repair Gaps |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Algebra Vault | 7 | 0 | 2 | 5 | 1 | 2 | 1 | 3 |
+| Algebra Vault | 7 | 0 | 0 | 7 | 1 | 0 | 1 | 3 |
 | Argand Atrium | 4 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
 | Calculus Cliffs | 5 | 2 | 0 | 3 | 0 | 0 | 0 | 0 |
 | Differential Shrine | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
@@ -55,11 +55,11 @@ MVP gold ready means no blockers and no warnings under the Phase 2A contract. A 
 | --- | --- | --- | --- | ---: | --- | ---: | ---: | --- | --- | --- | --- | --- | --- |
 | p3_alg_binomial_terms_coefficients | Algebra Vault | Algebra | clean | 5 | available | 2 | 0 | available | none | misconception:missing, prerequisite:available, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_alg_binomial_validity | Algebra Vault | Algebra | clean | 4 | available | 1 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:missing | none | fewer_than_two_worked_examples, missing_mark_scheme_move_note, source_backed_worked_examples_sparse | Resolve warning `fewer_than_two_worked_examples` before marking this skill MVP gold ready. |
-| p3_alg_discriminant_root_conditions | Algebra Vault | Algebra | thin | 1 | available | 2 | 0 | available | first_step, complete_step, guardian_prep | misconception:available, prerequisite:available, mark_scheme:available | missing_all_warmup_support | source_backed_worked_examples_sparse, thin_evidence_resilience | Add reviewed deterministic warm-up support before claiming MVP gold. |
+| p3_alg_discriminant_root_conditions | Algebra Vault | Algebra | thin | 1 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse, thin_evidence_resilience | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_alg_modulus_cases | Algebra Vault | Algebra | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_alg_partial_fraction_form | Algebra Vault | Algebra | clean | 4 | available | 2 | 0 | available | none | misconception:missing, prerequisite:available, mark_scheme:missing | none | missing_mark_scheme_move_note, missing_misconception_repair_note, source_backed_worked_examples_sparse | Resolve warning `missing_mark_scheme_move_note` before marking this skill MVP gold ready. |
 | p3_alg_polynomial_remainder_factor | Algebra Vault | Algebra | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
-| p3_alg_structure_rearrangement | Algebra Vault | Algebra | clean | 3 | available | 2 | 0 | available | first_step, complete_step, guardian_prep | misconception:available, prerequisite:available, mark_scheme:available | missing_all_warmup_support | source_backed_worked_examples_sparse | Add reviewed deterministic warm-up support before claiming MVP gold. |
+| p3_alg_structure_rearrangement | Algebra Vault | Algebra | clean | 3 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_complex_argand_loci_regions | Argand Atrium | Complex numbers | clean | 5 | available | 2 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_complex_cartesian_conjugate | Argand Atrium | Complex numbers | clean | 5 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |
 | p3_complex_modulus_argument_form | Argand Atrium | Complex numbers | clean | 5 | available | 3 | 0 | available | none | misconception:available, prerequisite:available, mark_scheme:available | none | source_backed_worked_examples_sparse | Resolve warning `source_backed_worked_examples_sparse` before marking this skill MVP gold ready. |

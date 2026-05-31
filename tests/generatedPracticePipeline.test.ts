@@ -827,7 +827,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
     try {
       const items = generatedItems(runGeneratedBuild(dir).output);
       const families = [
+        'algebra.structure_first_bridge',
         'algebra.polynomial_remainder_factor_basic',
+        'quadratics.discriminant_root_condition_bridge',
         'algebra.partial_fractions_distinct_linear',
         'algebra.partial_fractions_repeated_linear',
         'algebra.modulus_equation_basic',
@@ -847,6 +849,8 @@ describe.sequential('generated practice Content Lab pipeline', () => {
 
       expect(items.find((item) => item.parameters.topic_contract_id === 'algebra_polynomial_division' && item.sequence_role === 'guardian_prep')?.answer).toBe('quotient = x^2 - x + 3, remainder = 4');
       expect(items.find((item) => item.parameters.topic_contract_id === 'algebra_remainder_factor_theorem' && item.parameters.item_type === 'two_condition_parameters')?.answer).toBe('a = 0, b = -7');
+      expect(items.find((item) => item.generator_family === 'algebra.structure_first_bridge' && item.sequence_role === 'first_step')?.answer).toBe('u = x^2 + 2x');
+      expect(items.find((item) => item.generator_family === 'quadratics.discriminant_root_condition_bridge' && item.sequence_role === 'guardian_prep')?.answer).toBe('k = -6 or k = 6');
       expect(items.find((item) => item.generator_family === 'algebra.partial_fractions_repeated_linear' && item.sequence_role === 'first_step')?.answer).toContain('(x - 1)^2');
       expect(items.find((item) => item.generator_family === 'algebra.modulus_equation_basic' && item.parameters.item_type === 'graph_interval')?.answer).toBe('x < -1/2 or x > 1');
       expect(items.find((item) => item.generator_family === 'algebra.binomial_validity_range' && item.sequence_role === 'guardian_prep')?.answer).toBe('1.0198');
@@ -908,7 +912,9 @@ describe.sequential('generated practice Content Lab pipeline', () => {
 
       expect(runtimeItems.some((item) => families.includes(item.generator_family))).toBe(false);
       const promotedFamilies = [
+        ['algebra.structure_first_bridge', 'p3_alg_structure_rearrangement', 3],
         ['algebra.polynomial_remainder_factor_basic', 'p3_alg_polynomial_remainder_factor', 10],
+        ['quadratics.discriminant_root_condition_bridge', 'p3_alg_discriminant_root_conditions', 3],
         ['logarithms_and_exponentials.graph_inverse_basic', 'p3_log_convert_forms', 3],
         ['logarithms_and_exponentials.laws_basic', 'p3_log_laws_equations', 3],
         ['logarithms_and_exponentials.exponential_inequality_basic', 'p3_log_exponential_equations', 3],
@@ -1039,6 +1045,7 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'algebra.polynomial_remainder_factor_basic': 10,
         'algebra.partial_fractions_distinct_linear': 4,
         'algebra.partial_fractions_repeated_linear': 3,
+        'algebra.structure_first_bridge': 3,
         'logarithms_and_exponentials.domain_validation_basic': 3,
         'logarithms_and_exponentials.linearisation_basic': 3,
         'logarithms_and_exponentials.calculus_context_basic': 3,
@@ -1065,13 +1072,14 @@ describe.sequential('generated practice Content Lab pipeline', () => {
         'numerical_methods.iteration_formula_basic': 3,
         'numerical_methods.sign_change_iteration_basic': 3,
         'parametric_equations.derivative_ratio_basic': 3,
+        'quadratics.discriminant_root_condition_bridge': 3,
         'vectors.line_intersection_basic': 3,
         'vectors.line_relationship_basic': 3,
         'vectors.line_scalar_product_basic': 3,
       });
       expect(report.generated_warmups_per_region).toMatchObject({
         'logarithm-grove': 18,
-        'algebra-forge': 27,
+        'algebra-forge': 33,
         'calculus-cliffs': 9,
         'complex-harbor': 12,
         'differential-shrine': 9,

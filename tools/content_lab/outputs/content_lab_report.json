@@ -74,7 +74,7 @@
   },
   "active_regions": [
     {
-      "generated_warmups": 27,
+      "generated_warmups": 33,
       "quick_checks": 8,
       "region_id": "algebra-forge",
       "region_name": "Algebra Vault",
@@ -82,7 +82,7 @@
       "snippets_with_examples": 8
     },
     {
-      "generated_warmups": 12,
+      "generated_warmups": 9,
       "quick_checks": 5,
       "region_id": "calculus-cliffs",
       "region_name": "Calculus Cliffs",
@@ -152,7 +152,7 @@
     "priority_region_depth": [
       {
         "depth_status": "priority_deepened",
-        "generated_warmups": 27,
+        "generated_warmups": 33,
         "quick_checks": 8,
         "region_id": "algebra-forge",
         "region_name": "Algebra Vault",
@@ -202,7 +202,7 @@
   },
   "content_review_status_counts": {
     "generated_practice:needs_review": 9,
-    "generated_practice:teacher_reviewed": 117,
+    "generated_practice:teacher_reviewed": 123,
     "snippet:published": 3,
     "snippet:teacher_reviewed": 38
   },
@@ -210,7 +210,8 @@
   "generated_families_by_topic": {
     "algebra": {
       "algebra.modulus_equation_basic": 4,
-      "algebra.polynomial_remainder_factor_basic": 10
+      "algebra.polynomial_remainder_factor_basic": 10,
+      "algebra.structure_first_bridge": 3
     },
     "binomial_expansion": {
       "algebra.binomial_validity_range": 3,
@@ -259,6 +260,9 @@
       "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3
     },
+    "quadratics": {
+      "quadratics.discriminant_root_condition_bridge": 3
+    },
     "trigonometry": {
       "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
@@ -274,8 +278,8 @@
   },
   "generated_practice_scope_note": "Legacy generated_warmup coverage fields now report runtime-reviewed public warm-ups. Internal planning/candidate counts are separated under internal_generated_practice_summary.",
   "generated_warmups_per_region": {
-    "algebra-forge": 27,
-    "calculus-cliffs": 12,
+    "algebra-forge": 33,
+    "calculus-cliffs": 9,
     "complex-harbor": 12,
     "differential-shrine": 9,
     "integration-gardens": 16,
@@ -290,6 +294,7 @@
     "algebra.partial_fractions_distinct_linear": 4,
     "algebra.partial_fractions_repeated_linear": 3,
     "algebra.polynomial_remainder_factor_basic": 10,
+    "algebra.structure_first_bridge": 3,
     "binomial_expansion.first_terms_and_coefficient": 3,
     "complex_numbers.cartesian_conjugate_basic": 3,
     "complex_numbers.cartesian_locus_roots_basic": 3,
@@ -316,6 +321,7 @@
     "numerical_methods.iteration_formula_basic": 3,
     "numerical_methods.sign_change_iteration_basic": 3,
     "parametric_equations.derivative_ratio_basic": 3,
+    "quadratics.discriminant_root_condition_bridge": 3,
     "trigonometry.addition_formulae_basic": 3,
     "trigonometry.double_angle_basic": 3,
     "trigonometry.identity_rewrite_basic": 3,
@@ -399,6 +405,7 @@
       "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3,
       "algebra.polynomial_remainder_factor_basic": 10,
+      "algebra.structure_first_bridge": 3,
       "binomial_expansion.first_terms_and_coefficient": 3,
       "complex_numbers.cartesian_conjugate_basic": 3,
       "complex_numbers.cartesian_locus_roots_basic": 3,
@@ -425,6 +432,7 @@
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
       "parametric_equations.derivative_ratio_basic": 3,
+      "quadratics.discriminant_root_condition_bridge": 3,
       "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
@@ -440,14 +448,14 @@
     "published_runtime_count": 0,
     "review_status_counts": {
       "needs_review": 9,
-      "teacher_reviewed": 117
+      "teacher_reviewed": 123
     },
-    "runtime_reviewed_count": 117,
-    "total_count": 126,
+    "runtime_reviewed_count": 123,
+    "total_count": 132,
     "verification_failure_count": 0
   },
   "internal_generated_warmups_per_region": {
-    "algebra-forge": 27,
+    "algebra-forge": 33,
     "calculus-cliffs": 9,
     "complex-harbor": 12,
     "differential-shrine": 9,
@@ -466,7 +474,7 @@
       "region_name": "Algebra Vault",
       "snippets": 8,
       "snippets_with_examples": 8,
-      "warmups": 27
+      "warmups": 33
     },
     {
       "method_snippets_missing_examples": [],
@@ -520,6 +528,7 @@
       "algebra.partial_fractions_distinct_linear": 4,
       "algebra.partial_fractions_repeated_linear": 3,
       "algebra.polynomial_remainder_factor_basic": 10,
+      "algebra.structure_first_bridge": 3,
       "binomial_expansion.first_terms_and_coefficient": 3,
       "complex_numbers.cartesian_conjugate_basic": 3,
       "complex_numbers.locus_basic": 3,
@@ -529,9 +538,7 @@
       "differential_equations.initial_condition_basic": 3,
       "differential_equations.separation_basic": 3,
       "differentiation.chain_product_basic": 3,
-      "differentiation.chain_rule_basic": 1,
       "differentiation.implicit_log_exp_basic": 3,
-      "differentiation.product_rule_basic": 1,
       "differentiation.stationary_tangent_normal_basic": 3,
       "integration.definite_area_basic": 3,
       "integration.method_setup_basic": 3,
@@ -545,7 +552,7 @@
       "numerical_methods.accuracy_rounding_basic": 3,
       "numerical_methods.iteration_formula_basic": 3,
       "numerical_methods.sign_change_iteration_basic": 3,
-      "parametric_equations.derivative_ratio_basic": 1,
+      "quadratics.discriminant_root_condition_bridge": 3,
       "trigonometry.addition_formulae_basic": 3,
       "trigonometry.double_angle_basic": 3,
       "trigonometry.identity_rewrite_basic": 3,
@@ -558,12 +565,12 @@
     "internal_candidate_count": 0,
     "missing_example_model_id_count": 0,
     "needs_review_internal_count": 0,
-    "published_runtime_count": 120,
+    "published_runtime_count": 123,
     "review_status_counts": {
-      "teacher_reviewed": 120
+      "teacher_reviewed": 123
     },
-    "runtime_reviewed_count": 120,
-    "total_count": 120,
+    "runtime_reviewed_count": 123,
+    "total_count": 123,
     "verification_failure_count": 0
   },
   "schema_name": "asterion_content_lab_report",
@@ -652,12 +659,7 @@
     "trig-observatory": 6,
     "vector-workshop": 3
   },
-  "topics_needing_deterministic_generators": [
-    {
-      "paper_family": "p3",
-      "topic": "quadratics"
-    }
-  ],
+  "topics_needing_deterministic_generators": [],
   "topics_with_no_snippets": [
     {
       "paper_family": "p1",
@@ -788,12 +790,7 @@
       "topic": "work_energy_power"
     }
   ],
-  "topics_with_snippets_but_no_warmups": [
-    {
-      "paper_family": "p3",
-      "topic": "quadratics"
-    }
-  ],
+  "topics_with_snippets_but_no_warmups": [],
   "topics_with_source_records_but_no_skill_targets": [
     {
       "paper_family": "p1",
@@ -910,6 +907,42 @@
   "total_records_read": 1301,
   "verification_failure_counts": {},
   "warmups_linked_to_examples": [
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
+    },
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
+    },
+    {
+      "example_model_id": "p3-quadratics-discriminant-001-example-1",
+      "practice_id": "gen_algebra_discriminant_root_condition_bridge_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-quadratics-discriminant-001"
+    },
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_first_bridge_0001",
+      "sequence_role": "first_step",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_first_bridge_0002",
+      "sequence_role": "complete_step",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
+    {
+      "example_model_id": "p3-algebra-rearrangement-001-example-1",
+      "practice_id": "gen_algebra_structure_first_bridge_0003",
+      "sequence_role": "guardian_prep",
+      "source_snippet_id": "p3-algebra-rearrangement-001"
+    },
     {
       "example_model_id": "p3-binomial-term-001-example-1",
       "practice_id": "gen_binomial_first_terms_and_coefficient_0001",

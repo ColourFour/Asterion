@@ -6,6 +6,7 @@ export const INTEGRAL_TERRACES_TOPIC_ORDER = [
   'integrals_arctan_forms',
   'integrals_substitution',
   'integrals_by_parts',
+  'integrals_definite_area_bridge',
 ] as const;
 
 export type IntegralTerracesTopicId = typeof INTEGRAL_TERRACES_TOPIC_ORDER[number];
@@ -110,6 +111,18 @@ export const INTEGRAL_TERRACES_SKILL_PRACTICE_ALIGNMENT: IntegralTerracesPractic
     candidatePrompt: 'Use integration by parts for x e^x, x sin x, and x ln x.',
     expectedAnswer: 'Example: integral of x e^x dx is x e^x - e^x + c.',
     authoringNote: 'Implemented from existing reviewed repo by-parts content plus original typed seed items. The uploaded PDF source ends after the by-parts heading, so this remains marked in the report as source-gap-backed-by-repo-review.',
+  },
+  {
+    topicId: 'integrals_definite_area_bridge',
+    status: 'reviewed_runtime',
+    reviewedPracticeIds: [
+      'gen_integrals_definite_area_bridge_0001',
+      'gen_integrals_definite_area_bridge_0002',
+      'gen_integrals_definite_area_bridge_0003',
+    ],
+    candidatePrompt: 'Evaluate a definite integral, set up a positive area expression, and show a narrow limit-style improper integral.',
+    expectedAnswer: 'Example: integral of 3x^2 from 0 to 2 is [x^3]_0^2 = 8.',
+    authoringNote: 'Runtime bridge items are deterministic and teacher-authored from reviewed P3 definite/area/improper evidence. The older broad gen_integration_definite_area_basic items remain quarantined.',
   },
 ];
 

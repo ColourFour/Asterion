@@ -1001,8 +1001,8 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(184);
-    expect(internalGeneratedPractice.items).toHaveLength(127);
+    expect(generatedPractice.items).toHaveLength(193);
+    expect(internalGeneratedPractice.items).toHaveLength(132);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     for (const family of [
@@ -1110,14 +1110,16 @@ describe('P3 Gold Skill Pack readiness report', () => {
     const runtimeStatuses = new Set(generatedPractice.items.map((item) => item.review_status));
     const internalNeedsReview = internalGeneratedPractice.items.filter((item) => item.review_status === 'needs_review');
 
-    expect(generatedPractice.items).toHaveLength(184);
-    expect(internalGeneratedPractice.items).toHaveLength(127);
+    expect(generatedPractice.items).toHaveLength(193);
+    expect(internalGeneratedPractice.items).toHaveLength(132);
     expect(internalNeedsReview).toHaveLength(9);
     expect(runtimeStatuses).toEqual(new Set(['teacher_reviewed']));
     const expectedFamilyCounts = new Map<string, { runtime: number; internal: number }>([
+      ['algebra.structure_first_bridge', { runtime: 3, internal: 3 }],
+      ['quadratics.discriminant_root_condition_bridge', { runtime: 3, internal: 3 }],
       ['integration.method_setup_basic', { runtime: 7, internal: 3 }],
       ['integration.parts_substitution_basic', { runtime: 10, internal: 3 }],
-      ['integration.definite_area_basic', { runtime: 7, internal: 3 }],
+      ['integration.definite_area_basic', { runtime: 10, internal: 3 }],
       ['algebra.partial_fractions_distinct_linear', { runtime: 7, internal: 4 }],
       ['algebra.partial_fractions_repeated_linear', { runtime: 4, internal: 3 }],
     ]);
