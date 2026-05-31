@@ -78,6 +78,8 @@ const visibleCopyReplacements: Array<[RegExp, string]> = [
 
 const publicAssetExclusions = [
   /^404\.html$/,
+  /^data(?:\/|$)/i,
+  /^assets\/exam-bank-data\/[^/]+\.json$/i,
   /^assets\/avatar/i,
   /^assets\/guardian-art(?:\/|$)/i,
   /^assets\/region-art(?:\/|$)/i,

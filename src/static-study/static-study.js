@@ -133,6 +133,7 @@
       if (practiceCount > 0) parts.push(practiceCount + ' practice save' + (practiceCount === 1 ? '' : 's'));
       if (examCount > 0) parts.push(examCount + ' exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
+      node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
     });
 
     document.querySelectorAll('[data-complete-field-guide-topic]').forEach(function (button) {
@@ -282,19 +283,21 @@
       var index = 0;
       var controls = document.createElement('div');
       controls.className = 'practice-controls';
+      controls.setAttribute('aria-label', 'Question navigation');
 
       var label = document.createElement('span');
       label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
 
       var previous = document.createElement('button');
       previous.className = 'button secondary-button';
       previous.type = 'button';
-      previous.textContent = 'Previous item';
+      previous.textContent = 'Previous question';
 
       var next = document.createElement('button');
       next.className = 'button primary-button';
       next.type = 'button';
-      next.textContent = 'Next item';
+      next.textContent = 'Next question';
 
       controls.append(previous, label, next);
       stack.before(controls);
@@ -304,7 +307,7 @@
         cards.forEach(function (card, cardIndex) {
           card.hidden = cardIndex !== index;
         });
-        label.textContent = 'Item ' + (index + 1) + ' of ' + cards.length;
+        label.textContent = 'Question ' + (index + 1) + ' of ' + cards.length;
         previous.disabled = index === 0;
         next.disabled = index === cards.length - 1;
       }
