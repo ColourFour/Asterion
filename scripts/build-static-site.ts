@@ -56,12 +56,22 @@ interface RenderPageOptions {
 const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\$(?!\$)[\s\S]+?\$)/g;
 const visibleGameTerms = [
   'Guardian Challenge',
+  'Guardian',
   'XP',
   'gold',
   'avatar',
+  'rank',
+  'ranks',
+  'level',
+  'levels',
   'reward',
+  'rewards',
+  'fantasy',
+  'game',
   'world map',
   'academy',
+  'teacher dashboard',
+  'classroom',
 ];
 
 const visibleCopyReplacements: Array<[RegExp, string]> = [
@@ -621,7 +631,7 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
       ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button secondary-button')}`,
       `${course.shortName} ${topic.syllabusRef}`,
     )}
-    ${renderDraftNotice('This page is starter content for navigation and audit. It does not create mastery, game progress, or exam-bank evidence.')}
+    ${renderDraftNotice('This page is starter content for navigation and audit. It does not create mastery status, completion status, or exam-bank evidence.')}
     <section class="topic-overview-grid">
       <article class="summary-card">
         <h2>Overview</h2>

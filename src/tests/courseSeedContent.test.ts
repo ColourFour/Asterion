@@ -14,6 +14,7 @@ describe('draft course seed content', () => {
       'circular-measure',
       'trigonometry',
       'series',
+      'binomial-expansion',
       'differentiation',
       'integration',
     ]);
@@ -21,7 +22,8 @@ describe('draft course seed content', () => {
       'forces-equilibrium',
       'kinematics',
       'momentum',
-      'newtons-laws',
+      'newtons-laws-constant-acceleration',
+      'newtons-laws-variable-acceleration',
       'energy-work-power',
     ]);
     expect(getSeedTopicsForCourse('s1').map((topic) => topic.slug)).toEqual([
@@ -52,5 +54,28 @@ describe('draft course seed content', () => {
 
   it('exposes a visible draft seed status string', () => {
     expect(DRAFT_SEED_CONTENT_LABEL).toBe('Draft seed content - needs syllabus-contract review.');
+  });
+
+  it('keeps draft seed copy free of retired game-language terms', () => {
+    const copy = JSON.stringify(COURSE_SEED_TOPICS);
+    const retiredTerms = [
+      /\bgame\b/i,
+      /\bGuardian\b/i,
+      /\bXP\b/,
+      /\bgold\b/i,
+      /\bavatars?\b/i,
+      /\branks?\b/i,
+      /\blevels?\b/i,
+      /\brewards?\b/i,
+      /\bfantasy\b/i,
+      /\bworld map\b/i,
+      /\bacademy\b/i,
+      /\bteacher dashboard\b/i,
+      /\bclassroom\b/i,
+    ];
+
+    for (const term of retiredTerms) {
+      expect(copy).not.toMatch(term);
+    }
   });
 });

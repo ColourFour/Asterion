@@ -22,6 +22,7 @@ docs/p1/topics/index.html
 docs/p1/topics/quadratics/index.html
 docs/p1/topics/quadratics/field-guide/index.html
 docs/p1/topics/quadratics/practice/index.html
+docs/p1/topics/binomial-expansion/index.html
 docs/p3/index.html
 docs/p3/topics/index.html
 docs/p3/topics/algebra/index.html
@@ -41,6 +42,8 @@ docs/m1/topics/index.html
 docs/m1/topics/forces-equilibrium/index.html
 docs/m1/topics/forces-equilibrium/field-guide/index.html
 docs/m1/topics/forces-equilibrium/practice/index.html
+docs/m1/topics/newtons-laws-constant-acceleration/index.html
+docs/m1/topics/newtons-laws-variable-acceleration/index.html
 docs/s1/index.html
 docs/s1/topics/index.html
 docs/s1/topics/data-representation/index.html
@@ -51,9 +54,15 @@ docs/topics/algebra/index.html
 docs/exam-training/index.html
 ```
 
-Each P3 topic gets `field-guide/index.html` and `practice/index.html` under `/p3/topics/`. Each seeded P1/M1/S1 topic now gets the same three-page static pattern under its course prefix, plus a course-level `exam-training/index.html` placeholder. The unprefixed `/topics/...`, `/regions/`, and `/exam-training/` pages remain as P3 compatibility URLs, but the primary student flow starts at the course selector and routes courses through `/p1/`, `/p3/`, `/m1/`, and `/s1/`. The build currently writes 124 HTML pages in total.
+Each P3 topic gets `field-guide/index.html` and `practice/index.html` under `/p3/topics/`. Each seeded P1/M1/S1 topic now gets the same three-page static pattern under its course prefix, plus a course-level `exam-training/index.html` placeholder. The unprefixed `/topics/...`, `/regions/`, and `/exam-training/` pages remain as P3 compatibility URLs, but the primary student flow starts at the course selector and routes courses through `/p1/`, `/p3/`, `/m1/`, and `/s1/`. The build currently writes 130 HTML pages in total.
 
 P1/M1/S1 seed content lives in `src/data/courseSeedContent.ts`. It was drafted from the Cambridge International AS & A Level Mathematics 9709 syllabus headings for a fast audit pass. The [official Cambridge 9709 syllabus](https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf) remains the source of truth; a later syllabus-contract audit must verify topic coverage, wording, formula scope, and exam alignment before treating these pages as final.
+
+Current draft seed topic sets:
+
+- P1: Quadratics; Functions; Coordinate Geometry; Circular Measure; Trigonometry; Sequences and Series; Binomial Expansion; Differentiation; Integration.
+- M1: Forces and Equilibrium; Kinematics; Momentum; Newton's Laws with Constant Acceleration; Newton's Laws with Variable Acceleration; Energy, Work and Power.
+- S1: Representation of Data; Permutations and Combinations; Probability; Discrete Random Variables; The Normal Distribution.
 
 The site does not require a backend, authentication, Supabase, a React router, an app shell, GitHub Actions deployment, or a GitHub Pages 404 restore script.
 
@@ -102,6 +111,7 @@ Open the Vite preview URL and test direct URLs such as:
 /p1/
 /p1/topics/
 /p1/topics/quadratics/
+/p1/topics/binomial-expansion/
 /p3/
 /p3/topics/
 /p3/topics/algebra/
@@ -111,6 +121,7 @@ Open the Vite preview URL and test direct URLs such as:
 /m1/
 /m1/topics/
 /m1/topics/forces-equilibrium/
+/m1/topics/newtons-laws-variable-acceleration/
 /s1/
 /s1/topics/
 /s1/topics/data-representation/
@@ -194,4 +205,4 @@ The last two searches should return no matches for the generated student-facing 
 
 ## Boundaries
 
-This branch is the static study website branch. Do not add a backend, login flow, classroom dashboard, app-level routing, or game mechanics to the production surface. If old implementation files remain in `src/`, they are historical code unless the static generator imports them for data normalization or content selection.
+This branch is the static study website branch. Do not add a backend, login flow, classroom dashboard, app-level routing, or dynamic progression mechanics to the production surface. If old implementation files remain in `src/`, they are historical code unless the static generator imports them for data normalization or content selection.
