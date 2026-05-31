@@ -2679,7 +2679,8 @@
         "item_type": "stationary_condition",
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
         "sequence_role": "first_step",
-        "sequence_stage": "first_step"
+        "sequence_stage": "first_step",
+        "topic_contract_id": "p3_diff_stationary_tangent_normal"
       },
       "practice_id": "gen_differentiation_stationary_tangent_normal_basic_0001",
       "prompt": "For y = x^3 - 12x, find the x-values of the stationary points.",
@@ -2722,6 +2723,7 @@
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
         "sequence_role": "complete_step",
         "sequence_stage": "complete_step",
+        "topic_contract_id": "p3_diff_stationary_tangent_normal",
         "x0": 3,
         "y0": 10
       },
@@ -2767,6 +2769,7 @@
         "sequence_role": "guardian_prep",
         "sequence_stage": "guardian_prep",
         "tangent_gradient": 4,
+        "topic_contract_id": "p3_diff_stationary_tangent_normal",
         "x0": 2,
         "y0": 4
       },
@@ -6575,7 +6578,7 @@
         "topic_contract_id": "integrals_partial_fractions"
       },
       "practice_id": "gen_integrals_partial_fractions_0001",
-      "prompt": "Given (3x + 1)/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2), integrate (3x + 1)/((x - 1)(x + 2)) dx.",
+      "prompt": "Given 3x/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2), integrate 3x/((x - 1)(x + 2)) dx.",
       "question_type": "Partial-fraction integration",
       "region_ids": [
         "integration-gardens"

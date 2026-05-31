@@ -2,6 +2,7 @@ export const CALCULUS_CLIFFS_TOPIC_ORDER = [
   'derivatives_exponential_logarithmic',
   'derivatives_product_rule',
   'derivatives_quotient_rule',
+  'p3_diff_stationary_tangent_normal',
   'derivatives_trig_functions',
   'derivatives_implicit',
   'derivatives_parametric',
@@ -56,6 +57,18 @@ export const CALCULUS_CLIFFS_SKILL_PRACTICE_ALIGNMENT: CalculusCliffsPracticeAli
     authoringNote: 'Runtime prompts keep the v u\' minus u v\' order explicit.',
   },
   {
+    topicId: 'p3_diff_stationary_tangent_normal',
+    status: 'reviewed_runtime',
+    reviewedPracticeIds: [
+      'gen_differentiation_stationary_tangent_normal_basic_0001',
+      'gen_differentiation_stationary_tangent_normal_basic_0002',
+      'gen_differentiation_stationary_tangent_normal_basic_0003',
+    ],
+    candidatePrompt: 'Use dy/dx to find stationary values, tangent lines, and normal lines from a point or condition.',
+    expectedAnswer: 'Example: for y = x^2 + 1 at x = 3, the tangent is y - 10 = 6(x - 3).',
+    authoringNote: 'Reviewed follow-through practice is surfaced only after the dedicated Field Guide bridge explains the derivative-to-line sequence.',
+  },
+  {
     topicId: 'derivatives_trig_functions',
     status: 'reviewed_runtime',
     reviewedPracticeIds: [
@@ -105,9 +118,6 @@ export const CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS = [
   'gen_differentiation_chain_product_basic_0001',
   'gen_differentiation_chain_product_basic_0002',
   'gen_differentiation_chain_product_basic_0003',
-  'gen_differentiation_stationary_tangent_normal_basic_0001',
-  'gen_differentiation_stationary_tangent_normal_basic_0002',
-  'gen_differentiation_stationary_tangent_normal_basic_0003',
   'gen_differentiation_implicit_log_exp_basic_0001',
   'gen_differentiation_implicit_log_exp_basic_0002',
   'gen_differentiation_implicit_log_exp_basic_0003',
@@ -117,7 +127,7 @@ export const CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS = [
 ] as const;
 
 export const CALCULUS_CLIFFS_QUARANTINE_RECOMMENDATION =
-  'Keep old standalone chain-rule and broad stationary-follow-through topics out of the Calculus Cliffs runtime topic flow until a later calculus audit assigns them to reviewed derivative applications.';
+  'Keep old standalone chain-rule and broad implicit/parametric follow-through topics out of the Calculus Cliffs runtime topic flow until a later calculus audit assigns them to reviewed derivative applications.';
 
 export const CALCULUS_CLIFFS_OUT_OF_SCOPE_TERMS = [
   'integration by parts',

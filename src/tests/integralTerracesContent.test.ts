@@ -41,17 +41,19 @@ function topicText(regionId: string): string {
     topic.description,
     topic.supportNote ?? '',
     ...topic.skillIds,
-    ...topic.examples.flatMap((example) => [
-      example.title,
-      example.prompt,
-      ...example.workedLines,
-      example.patternTitle,
-      ...example.patternRows.flatMap((row) => [row.from, row.move, row.to]),
-      example.tryPrompt,
-      ...example.tryScaffold,
-      ...example.takeaway,
-      example.result,
-    ]),
+      ...topic.examples.flatMap((example) => [
+        example.title,
+        example.prompt,
+        ...example.workedLines,
+        example.patternTitle,
+        ...example.patternRows.flatMap((row) => [row.from, row.move, row.to]),
+        example.tryPrompt,
+        ...example.tryScaffold,
+        ...(example.tryWorkedLines ?? []),
+        example.tryResult ?? '',
+        ...example.takeaway,
+        example.result,
+      ]),
   ]).join('\n').toLowerCase();
 }
 
@@ -165,6 +167,18 @@ describe('Integral Terraces integration content contract', () => {
         .filter((item) => item.parameters.topic_contract_id === 'integrals_partial_fractions')
         .map((item) => item.skillTargetId),
     )).toEqual(new Set(['p3_int_partial_fractions']));
+  });
+
+  it('prevents the incorrect partial-fractions identity from returning', () => {
+    const fieldGuideText = topicText('integration-gardens');
+    const partialFractionPractice = contractedIntegralPractice()
+      .find((item) => item.practiceId === 'gen_integrals_partial_fractions_0001');
+    const incorrectIdentity = '\\frac{3x+1}{(x-1)(x+2)}=\\frac1{x-1}+\\frac2{x+2}';
+
+    expect(fieldGuideText).not.toContain(incorrectIdentity);
+    expect(fieldGuideText).toContain('\\frac{3x}{(x-1)(x+2)}=\\frac1{x-1}+\\frac2{x+2}');
+    expect(partialFractionPractice?.prompt).not.toContain('(3x + 1)/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2)');
+    expect(partialFractionPractice?.prompt).toContain('Given 3x/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2)');
   });
 
   it('includes definite substitution with changed limits', () => {

@@ -2257,6 +2257,7 @@ def build_differentiation_stationary_tangent_item(context: dict[str, Any], index
     parameters: dict[str, Any] = {
         "item_type": item_type,
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
+        "topic_contract_id": "p3_diff_stationary_tangent_normal",
     }
 
     if item_type == "stationary_condition":

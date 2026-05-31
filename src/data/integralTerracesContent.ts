@@ -69,7 +69,7 @@ export const INTEGRAL_TERRACES_SKILL_PRACTICE_ALIGNMENT: IntegralTerracesPractic
       'gen_integrals_partial_fractions_0004',
     ],
     candidatePrompt: 'Integrate after decomposition for distinct linear, repeated linear, improper, and definite partial-fraction cases.',
-    expectedAnswer: 'Example: integral of (3x + 1)/((x - 1)(x + 2)) dx becomes ln|x - 1| + 2ln|x + 2| + c after decomposition.',
+    expectedAnswer: 'Example: integral of 3x/((x - 1)(x + 2)) dx becomes ln|x - 1| + 2ln|x + 2| + c after decomposition.',
     authoringNote: 'Runtime integration items now live in Integral Terraces. Algebra Vault keeps decomposition-only prompts as algebra.',
   },
   {
