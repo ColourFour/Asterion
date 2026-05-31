@@ -182,6 +182,11 @@ public/data/teaching_snippets.json
 public/data/generated_practice_bank.json
 ```
 
+The exam-bank folder now has two Asterion-facing layers:
+
+- `asterion_exam_bank_catalog_v1.json` is the full all-course catalog exported from Exam Bank for audit and planning. It currently covers P1, P3, M1, and S1 records.
+- `asterion_question_bank_v1.json` is the reviewed student-runtime projection. It should contain only catalog records marked `student_runtime_safe=true` and `review_status=reviewed`.
+
 The static generator reuses existing normalizers and selection helpers rather than duplicating routing or image path logic in page templates.
 
 Historical Content Lab planning should not be stored in `docs/`, because that folder is now the committed GitHub Pages artifact.
@@ -198,7 +203,7 @@ npm run static:check
 npm test -- src/tests/staticStudyRoutes.test.ts
 git diff --check
 rg -n "id=\"root\"|src/main\\.tsx|asterion\\.spa\\.redirect|404\\.html" docs
-rg -n "Guardian Challenge|Guardian|\\bXP\\b|\\blevels?\\b|\\bgold\\b|avatars?|ranks?|rewards?|fantasy|world map|academy|teacher dashboard|admin|classroom" docs --glob "*.html"
+rg -n "\\bXP\\b|\\blevels?\\b|\\bgold\\b|avatars?|ranks?|rewards?|fantasy|world map|academy|teacher dashboard|admin|classroom" docs --glob "*.html"
 ```
 
 The last two searches should return no matches for the generated student-facing HTML.

@@ -6,8 +6,9 @@ The public site is now a static CAIE 9709 study hub with P1, P3, M1, and S1 cour
 
 ## Boundary
 
-- Input evidence: `public/assets/exam-bank-data/question_bank.json`
-- Projected app bank: `public/assets/exam-bank-data/asterion_question_bank_v1.json`
+- Raw Exam Bank export: `public/assets/exam-bank-data/question_bank.json`
+- Full Asterion-side audit catalog: `public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json`
+- Reviewed student-runtime projection: `public/assets/exam-bank-data/asterion_question_bank_v1.json`
 - Topic-routing sidecar: `public/assets/exam-bank-data/question_bank.topic_routing.v1.json`
 - Candidate inventory: `public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json`
 - Internal outputs: `tools/content_lab/outputs/`
@@ -18,6 +19,8 @@ The public site is now a static CAIE 9709 study hub with P1, P3, M1, and S1 cour
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
 
 The reviewed P3 skill map at `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` is the curriculum authority. OCR/raw text, AI labels, legacy DeepSeek labels, local labels, and fallback labels are review/display metadata only. Topic-routing records can validate placement only when clean/reviewed. Content Lab candidates remain blocked until reviewed source-skill evidence exists.
+
+The deterministic P3 audit reports use the full Asterion-side catalog so they continue to see all P3 route records. The browser runtime uses the reviewed projection only; P1, M1, and S1 catalog records are not student-runtime practice evidence until they are reviewed and explicitly projected.
 
 The active release is **Content Lab Worked Examples v1 / Question-to-Lesson Pass**. The teaching/generated-practice schema contract is v2. The worked-example content model is v1. The runtime loaders stay backward-compatible, but the verifier now requires canonical source question and mark-scheme asset IDs for every published/runtime P3 worked example.
 
@@ -125,7 +128,7 @@ Fallback-display-only placements, ambiguous routes, review-required routes, hard
 
 `review_queue.json` contains records that were not auto-eligible, with deterministic reasons.
 
-`content_lab_report.json` summarizes source counts, eligibility counts, active-region coverage, skill-target coverage by paper family and topic, review-queue reasons, source topics without skill targets, topics with no reviewed snippets, warm-up gaps, Guardian readiness metadata gaps, generator family counts, and verification failure counts. It is an `internal_planning` report. Internal generated-practice candidate counts and public runtime-reviewed counts are reported separately under `internal_generated_practice_summary` and `runtime_generated_practice_summary`.
+`content_lab_report.json` summarizes source counts, eligibility counts, active-region coverage, skill-target coverage by paper family and topic, review-queue reasons, source topics without skill targets, topics with no reviewed snippets, warm-up gaps, mastery-readiness metadata gaps, generator family counts, and verification failure counts. It is an `internal_planning` report. Internal generated-practice candidate counts and public runtime-reviewed counts are reported separately under `internal_generated_practice_summary` and `runtime_generated_practice_summary`.
 
 `public/data/teaching_snippets.json` contains original reviewed teaching content with `review_status` set to `teacher_reviewed` or `published`. It must not contain copied exam questions or claim that generated text is official exam wording.
 
@@ -133,7 +136,7 @@ Fallback-display-only placements, ambiguous routes, review-required routes, hard
 
 `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `npm run validate:p3-skill-map` writes the deterministic, reviewable report to `tools/content_lab/reports/p3_skill_coverage_report.json`, summarizing snippet, Quick Check, generated warm-up, canonical-question, curriculum-role, prerequisite-reference, and high-evidence weak-support gaps for Content Lab readiness. The report is intentionally kept in version control as a stable review artifact.
 
-`npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, Guardian candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
+`npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, mastery candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
 
 The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; image-reviewed route placements can be accepted with `validated_skill_map_route`, `clean_mastery_evidence`, `mastery_evidence_allowed: true`, `practice_allowed: true`, and `export_allowed: true`; active mismatches with no audit entry remain structural warnings. If audited ambiguous entries exist, they must remain visible as a deferred teacher-review backlog. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. When the deferred backlog is empty, the aggregate deferred policy fields remain `null` and all deferred counts remain `0`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
 

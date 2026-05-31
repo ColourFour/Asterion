@@ -41,62 +41,50 @@ function formatMissingAssets(missing: ReturnType<typeof auditQuestionAssetAvaila
 }
 
 describe('real P3 asset integrity', () => {
-  it('keeps every trainable P3 question connected to existing question and mark-scheme files', () => {
+  it('keeps every reviewed runtime P3 question connected to existing question and mark-scheme files', () => {
     const questions = loadNormalizedQuestions();
     const p3Questions = questions.filter(isP3Question);
     const trainableP3Questions = questions.filter(isTrainableP3Question);
     const assetUrls = collectAssetUrls(join(process.cwd(), 'public/assets'));
     const audit = auditQuestionAssetAvailability(trainableP3Questions, assetUrls);
 
-    expect(p3Questions).toHaveLength(396);
-    expect(trainableP3Questions).toHaveLength(396);
-    expect(audit.checkedQuestions).toBe(396);
+    expect(p3Questions).toHaveLength(57);
+    expect(trainableP3Questions).toHaveLength(57);
+    expect(audit.checkedQuestions).toBe(57);
     expect(audit.missingQuestionImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingMarkSchemeImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingExamples, formatMissingAssets(audit.missingExamples)).toEqual([]);
   });
 
-  it('keeps 33autumn25 connected to canonical question and mark-scheme images', () => {
+  it('keeps 31summer24 reviewed runtime records connected to canonical question and mark-scheme images', () => {
     const questions = loadNormalizedQuestions();
-    const autumn25Questions = questions.filter((question) => question.paper === '33autumn25');
+    const summer24Questions = questions.filter((question) => question.paper === '31summer24');
 
-    expect(autumn25Questions).toHaveLength(11);
-    expect(autumn25Questions.every((question) => isQuestionTrainable(question))).toBe(true);
-    expect(autumn25Questions.map((question) => question.id)).toEqual([
-      '33autumn25_q01',
-      '33autumn25_q02',
-      '33autumn25_q03',
-      '33autumn25_q04',
-      '33autumn25_q05',
-      '33autumn25_q06',
-      '33autumn25_q07',
-      '33autumn25_q08',
-      '33autumn25_q09',
-      '33autumn25_q10',
-      '33autumn25_q11',
+    expect(summer24Questions).toHaveLength(5);
+    expect(summer24Questions.every((question) => isQuestionTrainable(question))).toBe(true);
+    expect(summer24Questions.map((question) => question.id)).toEqual([
+      '31summer24_q01',
+      '31summer24_q02',
+      '31summer24_q03',
+      '31summer24_q04',
+      '31summer24_q07',
     ]);
-    expect(autumn25Questions.map((question) => Array.from(new Set(question.markSchemeImageRawPaths)))).toEqual([
-      ['p3/33autumn25/mark_scheme/q01.png'],
-      ['p3/33autumn25/mark_scheme/q02.png'],
-      ['p3/33autumn25/mark_scheme/q03.png'],
-      ['p3/33autumn25/mark_scheme/q04.png'],
-      ['p3/33autumn25/mark_scheme/q05.png'],
-      ['p3/33autumn25/mark_scheme/q06.png'],
-      ['p3/33autumn25/mark_scheme/q07.png'],
-      ['p3/33autumn25/mark_scheme/q08.png'],
-      ['p3/33autumn25/mark_scheme/q09.png'],
-      ['p3/33autumn25/mark_scheme/q10.png'],
-      ['p3/33autumn25/mark_scheme/q11.png'],
+    expect(summer24Questions.map((question) => Array.from(new Set(question.markSchemeImageRawPaths)))).toEqual([
+      ['p3/31summer24/mark_scheme/q01.png'],
+      ['p3/31summer24/mark_scheme/q02.png'],
+      ['p3/31summer24/mark_scheme/q03.png'],
+      ['p3/31summer24/mark_scheme/q04.png'],
+      ['p3/31summer24/mark_scheme/q07.png'],
     ]);
   });
 
-  it('reports no missing P3 image groups in the full P3 asset audit', () => {
+  it('reports no missing P3 image groups in the reviewed runtime asset audit', () => {
     const questions = loadNormalizedQuestions();
     const p3Questions = questions.filter(isP3Question);
     const assetUrls = collectAssetUrls(join(process.cwd(), 'public/assets'));
     const audit = auditQuestionAssetAvailability(p3Questions, assetUrls);
 
-    expect(audit.checkedQuestions).toBe(396);
+    expect(audit.checkedQuestions).toBe(57);
     expect(audit.missingQuestionImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingMarkSchemeImageGroups, formatMissingAssets(audit.missingExamples)).toBe(0);
     expect(audit.missingExamples, formatMissingAssets(audit.missingExamples)).toEqual([]);

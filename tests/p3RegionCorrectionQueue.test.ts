@@ -14,6 +14,12 @@ const warmupGapSkillRefs = [
   'p3_alg_structure_rearrangement',
   'p3_log_calculus_contexts',
 ];
+const supportQueueSkillRefs = [
+  'p3_alg_discriminant_root_conditions',
+  'p3_alg_partial_fraction_form',
+  'p3_alg_structure_rearrangement',
+  'p3_log_calculus_contexts',
+];
 
 interface QueueItem {
   queue_id: string;
@@ -203,16 +209,16 @@ describe('P3 region-correction queue', () => {
 
     expect(queue.source_route_summary.counts).toMatchObject({
       total_p3_route_records: 396,
-      safe_p3_route: 317,
-      missing_p3_route: 53,
-      ambiguous_multi_topic_route: 14,
-      review_needed_route: 12,
+      safe_p3_route: 356,
+      missing_p3_route: 12,
+      ambiguous_multi_topic_route: 15,
+      review_needed_route: 13,
     });
-    expect(countItemsByCategory(queue, 'route_correction', 'missing_p3_routes')).toBe(53);
-    expect(countItemsByCategory(queue, 'route_correction', 'ambiguous_multi_topic_routes')).toBe(14);
-    expect(countItemsByCategory(queue, 'route_correction', 'review_needed_routes')).toBe(12);
-    expect(countItemsByCategory(queue, 'route_correction', 'fallback_display_only_region_placements')).toBe(53);
-    expect(countItemsByCategory(queue, 'text_review', 'routing_text_or_visual_blockers')).toBeGreaterThan(53);
+    expect(countItemsByCategory(queue, 'route_correction', 'missing_p3_routes')).toBe(12);
+    expect(countItemsByCategory(queue, 'route_correction', 'ambiguous_multi_topic_routes')).toBe(15);
+    expect(countItemsByCategory(queue, 'route_correction', 'review_needed_routes')).toBe(13);
+    expect(countItemsByCategory(queue, 'route_correction', 'fallback_display_only_region_placements')).toBe(12);
+    expect(countItemsByCategory(queue, 'text_review', 'routing_text_or_visual_blockers')).toBeGreaterThan(12);
   });
 
   it('keeps missing routes and fallback display placements explicit', () => {
@@ -221,8 +227,8 @@ describe('P3 region-correction queue', () => {
     const fallback = queue.queue.route_correction.fallback_display_only_region_placements;
     const missingIds = new Set(missing.map((item) => item.question_id));
 
-    expect(missing).toHaveLength(53);
-    expect(fallback).toHaveLength(53);
+    expect(missing).toHaveLength(12);
+    expect(fallback).toHaveLength(12);
     for (const item of missing) {
       expect(item.primary_region_id).toBe('');
       expect(item.blocked_or_risky_reason).toContain('No mapped P3 primary topic');
@@ -306,9 +312,14 @@ describe('P3 region-correction queue', () => {
       warm_up: warmupGapSkillRefs.length,
       worked_example: 0,
     });
-    expect(support.map((item) => item.skill_ref)).toEqual(warmupGapSkillRefs);
+    expect(support.map((item) => item.skill_ref)).toEqual(supportQueueSkillRefs);
     expect(new Set(support.map((item) => item.region_id))).toEqual(new Set(['algebra-forge', 'logarithm-grove']));
-    expect(support.every((item) => item.support_gaps?.includes('warm_up'))).toBe(true);
+    expect(support.filter((item) => item.support_gaps?.includes('warm_up')).map((item) => item.skill_ref))
+      .toEqual(warmupGapSkillRefs);
+    expect(support.find((item) => item.skill_ref === 'p3_alg_partial_fraction_form')).toMatchObject({
+      support_gaps: [],
+      blocked_or_risky_reason: expect.stringContaining('unreviewed_app_region_mismatch'),
+    });
   });
 
   it('keeps summary totals aligned with detailed queue rows', () => {

@@ -615,7 +615,7 @@ describe('P3 coverage matrix', () => {
     });
     expect(matrix.teaching_support_summary.expected_support_types).toEqual(supportTypes);
     expect(matrix.coverage_rows.find((row) => row.skill_ref === 'p3_log_calculus_contexts')?.support_gaps).toEqual(['warm_up']);
-    expect(matrix.risk_summary.blocked_mastery_skill_refs).toEqual([]);
+    expect(matrix.risk_summary.blocked_mastery_skill_refs).toEqual(['p3_alg_partial_fraction_form']);
     expect(matrix.evidence_resilience_summary.thin_resilience_risk_skill_refs).toContain('p3_alg_discriminant_root_conditions');
     expect(matrix.evidence_resilience_summary.blocked_no_clean_mastery_evidence_skill_refs).toEqual([]);
 
@@ -623,7 +623,9 @@ describe('P3 coverage matrix', () => {
       expect(row.support_gaps, row.skill_ref).toEqual(
         knownWarmupSupportGapSkills.has(row.skill_ref) ? ['warm_up'] : [],
       );
-      expect(row.blocking_reasons, row.skill_ref).toEqual([]);
+      expect(row.blocking_reasons, row.skill_ref).toEqual(
+        row.skill_ref === 'p3_alg_partial_fraction_form' ? ['unreviewed_app_region_mismatch'] : [],
+      );
     }
   });
 
@@ -671,7 +673,8 @@ describe('P3 coverage matrix', () => {
     expect(markdown).toContain('## Deferred Ambiguous Evidence');
     expect(markdown).toContain('## Support Gaps');
     expect(markdown).toContain('## Suggested Region-By-Region Correction Order');
-    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('No skills are currently blocked for mastery.');
+    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('p3_alg_partial_fraction_form');
+    expect(markdownSection(markdown, '## Blocked Mastery Skills')).toContain('unreviewed_app_region_mismatch');
     expect(markdownSection(markdown, '## Evidence Resilience Risks')).toContain('p3_alg_discriminant_root_conditions');
     expect(markdownSection(markdown, '## Blocked Mastery Skills')).not.toContain('p3_log_calculus_contexts');
     expect(markdownSection(markdown, '## Deferred Ambiguous Evidence')).toContain('Deferred case count: 0');

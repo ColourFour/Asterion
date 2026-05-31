@@ -121,10 +121,13 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 
 ## Data Assumptions
 - Current exam-bank files live under `public/assets/exam-bank-data/`:
+  - `asterion_exam_bank_catalog_v1.json`
   - `asterion_question_bank_v1.json`
   - `question_bank.json`
   - `question_bank.topic_routing.v1.json`
   - `asterion_content_lab_candidates_v1.json`
+- `asterion_exam_bank_catalog_v1.json` is the full all-course Asterion-side catalog. It is the audit source for P1, P3, M1, and S1 exam-bank coverage.
+- `asterion_question_bank_v1.json` is the reviewed student-runtime projection. It must remain a subset of catalog records where `student_runtime_safe=true` and `review_status=reviewed`.
 - Legacy `public/data/question_bank*.json` files must not ship. If legacy migration/reference is needed, recover those files from git history or keep them outside `public/`.
 - Question and mark-scheme crops currently live under `public/assets/exam-bank-data/{paper-family}/{paper}/questions/q##.png` and `public/assets/exam-bank-data/{paper-family}/{paper}/mark_scheme/q##.png`. Legacy `public/assets/{paper}/...` and `public/assets/questions/{paper-family}/...` layouts are resolver fallbacks only.
 - JSON image paths may be strings or arrays.

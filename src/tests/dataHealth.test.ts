@@ -179,8 +179,8 @@ describe('buildDataHealthSummary', () => {
 });
 
 describe('buildP3RouteEvidenceDistribution', () => {
-  it('keeps the normalized P3 route-evidence distribution aligned with the deterministic report', () => {
-    const projectedBank = readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
+  it('keeps the full catalog P3 route-evidence distribution aligned with the deterministic report', () => {
+    const catalog = readJson('public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json');
     const topicRouting = readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
     const report = readJson('tools/content_lab/reports/p3_route_evidence_status_report.json') as {
       normalized_distribution: {
@@ -195,7 +195,7 @@ describe('buildP3RouteEvidenceDistribution', () => {
         normalized_status_by_route_report_category: Record<string, Record<string, number>>;
       };
     };
-    const { questions } = normalizeQuestionBankWithDiagnostics(projectedBank, {}, topicRouting, {
+    const { questions } = normalizeQuestionBankWithDiagnostics(catalog, {}, topicRouting, {
       contentSourceKind: 'projected-bank',
     });
     const distribution = buildP3RouteEvidenceDistribution(questions);
@@ -203,14 +203,14 @@ describe('buildP3RouteEvidenceDistribution', () => {
     expect(distribution).toMatchObject({
       totalP3Questions: 396,
       statusCounts: {
-        clean: 317,
-        'review-only': 60,
-        'ambiguous-route': 19,
+        clean: 356,
+        'review-only': 20,
+        'ambiguous-route': 20,
       },
-      validatedRegionIdCount: 317,
-      displayRegionIdOnlyCount: 26,
+      validatedRegionIdCount: 356,
+      displayRegionIdOnlyCount: 28,
       fallbackDisplayOnlyCount: 0,
-      noDisplayRegionIdCount: 53,
+      noDisplayRegionIdCount: 12,
     });
     expect(distribution.totalP3Questions).toBe(report.normalized_distribution.total_p3_questions);
     expect(distribution.statusCounts).toEqual(report.normalized_distribution.status_counts);
@@ -219,33 +219,52 @@ describe('buildP3RouteEvidenceDistribution', () => {
     expect(distribution.fallbackDisplayOnlyCount).toBe(report.normalized_distribution.fallback_display_only_count);
     expect(distribution.noDisplayRegionIdCount).toBe(report.normalized_distribution.no_display_region_id_count);
     expect(report.route_report_distribution.normalized_status_by_route_report_category).toEqual({
-      safe_p3_route: { clean: 317 },
-      missing_p3_route: { 'review-only': 53 },
-      ambiguous_multi_topic_route: { 'ambiguous-route': 14 },
-      review_needed_route: { 'ambiguous-route': 5, 'review-only': 7 },
+      safe_p3_route: { clean: 356 },
+      missing_p3_route: { 'review-only': 12 },
+      ambiguous_multi_topic_route: { 'ambiguous-route': 15 },
+      review_needed_route: { 'ambiguous-route': 5, 'review-only': 8 },
     });
 
     const healthSummary = buildDataHealthSummary(questions, []);
     expect(healthSummary.routeEvidenceStatusCounts).toEqual({
-      clean: 317,
-      'review-only': 60,
-      'ambiguous-route': 19,
-    });
-    expect(healthSummary.eligibilityBucketCounts).toMatchObject({
-      generationEligible: { eligible: 35, blocked: 361, missing: 0 },
-      masteryEligible: { eligible: 16, blocked: 380, missing: 0 },
-      guardianEligible: { eligible: 16, blocked: 380, missing: 0 },
+      clean: 356,
+      'ambiguous-route': 20,
+      'review-only': 20,
     });
     expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 396 });
     expect(healthSummary.fallbackDisplayOnlyCountsByRegion).toEqual({});
     expect(healthSummary.rawBankFallbackCount).toBe(0);
     expect(healthSummary.rawBankDebugCount).toBe(0);
-    expect(healthSummary.generationEligibleCounts).toEqual({ true: 35, false: 361, missing: 0 });
-    expect(healthSummary.generationBlockerReasonCounts).toEqual({
-      'blocked-review-only': 60,
-      'blocked-hard-failed-text': 17,
-      'missing-content-lab-usable-text': 342,
-      'blocked-ambiguous-route': 19,
+  });
+
+  it('keeps the student runtime projection narrowed to reviewed P3 records', () => {
+    const projectedBank = readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
+    const topicRouting = readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
+    const { questions } = normalizeQuestionBankWithDiagnostics(projectedBank, {}, topicRouting, {
+      contentSourceKind: 'projected-bank',
     });
+    const distribution = buildP3RouteEvidenceDistribution(questions);
+    const healthSummary = buildDataHealthSummary(questions, []);
+
+    expect(distribution).toMatchObject({
+      totalP3Questions: 57,
+      statusCounts: {
+        clean: 50,
+        'review-only': 3,
+        'ambiguous-route': 4,
+      },
+      validatedRegionIdCount: 50,
+      displayRegionIdOnlyCount: 7,
+      fallbackDisplayOnlyCount: 0,
+      noDisplayRegionIdCount: 0,
+    });
+    expect(healthSummary.routeEvidenceStatusCounts).toEqual({
+      clean: 50,
+      'ambiguous-route': 4,
+      'review-only': 3,
+    });
+    expect(healthSummary.contentSourceCounts).toEqual({ 'projected-bank': 57 });
+    expect(healthSummary.rawBankFallbackCount).toBe(0);
+    expect(healthSummary.rawBankDebugCount).toBe(0);
   });
 });

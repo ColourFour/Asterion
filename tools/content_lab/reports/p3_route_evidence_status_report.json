@@ -1,9 +1,9 @@
 {
   "differences": {
-    "ambiguous_route_minus_ambiguous_routes": 3,
-    "clean_minus_safe_routes": -2,
-    "missing_route_minus_missing_routes": -47,
-    "review_only_minus_review_needed_routes": 46
+    "ambiguous_route_minus_ambiguous_routes": 5,
+    "clean_minus_safe_routes": 0,
+    "missing_route_minus_missing_routes": -12,
+    "review_only_minus_review_needed_routes": 7
   },
   "examples": {
     "ambiguous-route": [
@@ -23,6 +23,26 @@
           "OCR text ambiguous for part (a)"
         ],
         "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "ambiguous-route",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "calculus-cliffs",
+          "integration-gardens"
+        ],
+        "display_region_id": "integration-gardens",
+        "display_region_title": "Integral Terraces",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_integration",
+        "question_id": "31autumn23_q09",
+        "reason_codes": [
+          "multiple-p3-candidate-regions"
+        ],
+        "review_reasons": [],
+        "route_report_category": "ambiguous_multi_topic_route",
         "source": "topic-routing",
         "status": "ambiguous-route",
         "validated_region_id": "",
@@ -148,27 +168,6 @@
         "fallback_region_id": "",
         "primary_topic_id": "9709_p3_topic_integration",
         "question_id": "32autumn21_q06",
-        "reason_codes": [
-          "multiple-p3-candidate-regions"
-        ],
-        "review_reasons": [],
-        "route_report_category": "ambiguous_multi_topic_route",
-        "source": "topic-routing",
-        "status": "ambiguous-route",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [
-          "algebra-forge",
-          "calculus-cliffs",
-          "numerical-mines"
-        ],
-        "display_region_id": "calculus-cliffs",
-        "display_region_title": "Calculus Cliffs",
-        "fallback_region_id": "",
-        "primary_topic_id": "9709_p3_topic_differentiation",
-        "question_id": "32autumn21_q11",
         "reason_codes": [
           "multiple-p3-candidate-regions"
         ],
@@ -336,19 +335,147 @@
     ],
     "review-only": [
       {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
+        "candidate_region_ids": [
+          "numerical-mines"
+        ],
+        "display_region_id": "numerical-mines",
+        "display_region_title": "Iteration Forge",
         "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q01",
+        "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
+        "question_id": "31summer23_q09",
+        "reason_codes": [
+          "topic-routing-review-reasons-unresolved"
+        ],
+        "review_reasons": [
+          "Question involves both integration and iterative numerical solution; primary focus is numerical method."
+        ],
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "algebra-forge"
+        ],
+        "display_region_id": "algebra-forge",
+        "display_region_title": "Algebra Vault",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_algebra",
+        "question_id": "32autumn25_q01",
         "reason_codes": [
           "topic-routing-review-required"
         ],
         "review_reasons": [
-          "schema_validation_error"
+          "Visual-dependent question without image; text insufficient for full routing."
         ],
-        "route_report_category": "missing_p3_route",
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "numerical-mines"
+        ],
+        "display_region_id": "numerical-mines",
+        "display_region_title": "Iteration Forge",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
+        "question_id": "32autumn25_q06",
+        "reason_codes": [
+          "topic-routing-review-required"
+        ],
+        "review_reasons": [
+          "Visual-dependent question without image; text insufficient for full routing."
+        ],
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "integration-gardens"
+        ],
+        "display_region_id": "integration-gardens",
+        "display_region_title": "Integral Terraces",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_integration",
+        "question_id": "32spring22_q08",
+        "reason_codes": [
+          "topic-routing-review-reasons-unresolved"
+        ],
+        "review_reasons": [
+          "Question covers both polynomial division (Algebra) and integration; primary topic assigned to Integration as the main goal."
+        ],
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "integration-gardens"
+        ],
+        "display_region_id": "integration-gardens",
+        "display_region_title": "Integral Terraces",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_integration",
+        "question_id": "32spring22_q11",
+        "reason_codes": [
+          "topic-routing-review-reasons-unresolved"
+        ],
+        "review_reasons": [
+          "Question includes both differentiation (finding maximum) and integration (area); primary topic assigned to Integration as the final result."
+        ],
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "complex-harbor"
+        ],
+        "display_region_id": "complex-harbor",
+        "display_region_title": "Argand Atrium",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_complex_numbers",
+        "question_id": "32summer23_q05",
+        "reason_codes": [
+          "topic-routing-review-reasons-unresolved"
+        ],
+        "review_reasons": [
+          "No OCR text provided, mark scheme only used"
+        ],
+        "route_report_category": "review_needed_route",
+        "source": "topic-routing",
+        "status": "review-only",
+        "validated_region_id": "",
+        "validated_region_title": ""
+      },
+      {
+        "candidate_region_ids": [
+          "numerical-mines"
+        ],
+        "display_region_id": "numerical-mines",
+        "display_region_title": "Iteration Forge",
+        "fallback_region_id": "",
+        "primary_topic_id": "9709_p3_topic_numerical_solution_of_equations",
+        "question_id": "32summer23_q06",
+        "reason_codes": [
+          "topic-routing-review-reasons-unresolved"
+        ],
+        "review_reasons": [
+          "No OCR text provided, mark scheme only used; involves iterative method"
+        ],
+        "route_report_category": "review_needed_route",
         "source": "topic-routing",
         "status": "review-only",
         "validated_region_id": "",
@@ -360,121 +487,7 @@
         "display_region_title": "",
         "fallback_region_id": "",
         "primary_topic_id": "",
-        "question_id": "31autumn23_q02",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q03",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q04",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q05",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q06",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q07",
-        "reason_codes": [
-          "topic-routing-review-required"
-        ],
-        "review_reasons": [
-          "schema_validation_error"
-        ],
-        "route_report_category": "missing_p3_route",
-        "source": "topic-routing",
-        "status": "review-only",
-        "validated_region_id": "",
-        "validated_region_title": ""
-      },
-      {
-        "candidate_region_ids": [],
-        "display_region_id": "",
-        "display_region_title": "",
-        "fallback_region_id": "",
-        "primary_topic_id": "",
-        "question_id": "31autumn23_q08",
+        "question_id": "33autumn24_q01",
         "reason_codes": [
           "topic-routing-review-required"
         ],
@@ -493,10 +506,10 @@
   "generated_label": "deterministic-p3-route-evidence-status-v1",
   "mapping_notes": [
     "Runtime clean and route-report safe now align exactly.",
-    "The 47 route-report missing_p3_route records are not runtime missing-route records after route stamping because their sidecar review reasons make them review-only; in the projected normalized bank they have no displayRegionId.",
+    "The 12 route-report missing_p3_route records are not runtime missing-route records after route stamping because their sidecar review reasons make them review-only; in the projected normalized bank they have no displayRegionId.",
     "Runtime ambiguous-route is broader than route-report ambiguous_multi_topic_route because ambiguous review reasons are stamped ambiguous even when the queue category is missing_p3_route or review_needed_route.",
     "Runtime review-only is broader than route-report review_needed_route because unresolved review reasons on missing primary routes are preserved as review-only instead of being downgraded to fallback display.",
-    "The route-correction queue still lists raw-bank fallback placements for the 47 missing routes as correction aids; those are not runtime fallback-display-only routeEvidence records.",
+    "The route-correction queue still lists raw-bank fallback placements for the 12 missing routes as correction aids; those are not runtime fallback-display-only routeEvidence records.",
     "Queue item totals are not route-status totals because the queue also includes text review, deferred mark-scheme evidence, and support-content gaps."
   ],
   "normalized_distribution": {
@@ -505,25 +518,25 @@
       "calculus-cliffs": 2,
       "complex-harbor": 1,
       "differential-shrine": 2,
-      "integration-gardens": 14,
-      "numerical-mines": 5,
+      "integration-gardens": 15,
+      "numerical-mines": 6,
       "trig-observatory": 1
     },
     "display_region_id_only_by_status": {
-      "ambiguous-route": 19,
-      "review-only": 7
+      "ambiguous-route": 20,
+      "review-only": 8
     },
-    "display_region_id_only_count": 26,
+    "display_region_id_only_count": 28,
     "fallback_display_only_by_region": {},
     "fallback_display_only_count": 0,
-    "no_display_region_id_count": 53,
+    "no_display_region_id_count": 12,
     "status_counts": {
-      "ambiguous-route": 19,
-      "clean": 317,
-      "review-only": 60
+      "ambiguous-route": 20,
+      "clean": 356,
+      "review-only": 20
     },
     "total_p3_questions": 396,
-    "validated_region_id_count": 317
+    "validated_region_id_count": 356
   },
   "route_decision_summary": {
     "counts_by_status": {
@@ -533,7 +546,7 @@
       "deferred": 1,
       "fallback_only": 0,
       "review_needed": 1,
-      "still_needs_review": 69,
+      "still_needs_review": 37,
       "thin": 2
     },
     "decided_question_count": 14,
@@ -774,52 +787,20 @@
     "review_label": "phase-1-route-and-evidence-cleanup-v1-plus-phase-2b-clean-source-pool-v1",
     "reviewed_at": "2026-05-22",
     "reviewer": "codex",
-    "still_needs_review_count": 69,
+    "still_needs_review_count": 37,
     "still_needs_review_question_ids": [
       "31autumn22_q07",
-      "31autumn23_q02",
-      "31autumn23_q03",
-      "31autumn23_q04",
-      "31autumn23_q05",
-      "31autumn23_q07",
-      "31autumn23_q08",
-      "31autumn23_q10",
-      "31autumn23_q11",
       "31autumn24_q06",
       "31summer22_q10",
-      "31summer23_q01",
-      "31summer23_q03",
-      "31summer23_q04",
-      "31summer23_q06",
-      "31summer23_q07",
-      "31summer23_q08",
       "31summer23_q09",
-      "31summer23_q10",
       "31summer25_q09",
       "31summer25_q10",
       "31summer25_q11",
       "32autumn21_q06",
       "32autumn21_q11",
-      "32autumn22_q01",
-      "32autumn22_q02",
-      "32autumn22_q04",
-      "32autumn22_q05",
-      "32autumn22_q06",
-      "32autumn22_q07",
-      "32autumn22_q08",
-      "32autumn22_q09",
-      "32autumn22_q10",
       "32autumn23_q09",
       "32autumn25_q01",
       "32autumn25_q06",
-      "32spring21_q01",
-      "32spring21_q02",
-      "32spring21_q03",
-      "32spring21_q05",
-      "32spring21_q06",
-      "32spring21_q07",
-      "32spring21_q08",
-      "32spring21_q09",
       "32spring22_q08",
       "32spring22_q11",
       "32spring23_q08",
@@ -851,26 +832,26 @@
   "route_report_distribution": {
     "normalized_status_by_route_report_category": {
       "ambiguous_multi_topic_route": {
-        "ambiguous-route": 14
+        "ambiguous-route": 15
       },
       "missing_p3_route": {
-        "review-only": 53
+        "review-only": 12
       },
       "review_needed_route": {
         "ambiguous-route": 5,
-        "review-only": 7
+        "review-only": 8
       },
       "safe_p3_route": {
-        "clean": 317
+        "clean": 356
       }
     },
-    "queue_items": 221,
-    "route_queue_fallback_display_only_items": 47,
+    "queue_items": 115,
+    "route_queue_fallback_display_only_items": 12,
     "source_route_counts": {
-      "ambiguous_multi_topic_route": 16,
-      "missing_p3_route": 47,
-      "review_needed_route": 14,
-      "safe_p3_route": 319,
+      "ambiguous_multi_topic_route": 15,
+      "missing_p3_route": 12,
+      "review_needed_route": 13,
+      "safe_p3_route": 356,
       "total_p3_route_records": 396
     }
   },
@@ -890,7 +871,7 @@
   "schema_name": "asterion_p3_route_evidence_status_report",
   "schema_version": 1,
   "source_reports": {
-    "projected_bank": "public/assets/exam-bank-data/asterion_question_bank_v1.json",
+    "projected_bank": "public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json",
     "raw_bank": "public/assets/exam-bank-data/question_bank.json",
     "route_queue": "tools/content_lab/reports/p3_region_correction_queue.json",
     "topic_routing_sidecar": "public/assets/exam-bank-data/question_bank.topic_routing.v1.json",

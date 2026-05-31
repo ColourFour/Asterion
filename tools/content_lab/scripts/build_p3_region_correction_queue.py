@@ -30,7 +30,7 @@ REPORT_SCHEMA_VERSION = 1
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SKILL_MAP = REPO_ROOT / "tools/content_lab/skill_maps/caie_9709_p3_skill_map.json"
-DEFAULT_PROJECTED_BANK = REPO_ROOT / "public/assets/exam-bank-data/asterion_question_bank_v1.json"
+DEFAULT_PROJECTED_BANK = REPO_ROOT / "public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json"
 DEFAULT_RAW_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
 DEFAULT_TOPIC_ROUTING = REPO_ROOT / "public/assets/exam-bank-data/question_bank.topic_routing.v1.json"
 DEFAULT_ROUTING_AUDIT = REPO_ROOT / "tools/content_lab/reviews/p3_app_region_routing_audit.json"
@@ -1003,7 +1003,12 @@ def render_markdown(report: dict[str, Any]) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the deterministic P3 region-correction queue.")
     parser.add_argument("--skill-map", type=Path, default=DEFAULT_SKILL_MAP)
-    parser.add_argument("--projected-bank", type=Path, default=DEFAULT_PROJECTED_BANK)
+    parser.add_argument(
+        "--projected-bank",
+        type=Path,
+        default=DEFAULT_PROJECTED_BANK,
+        help="Full exam-bank catalog used for audit reporting. The option name is retained for older scripts.",
+    )
     parser.add_argument("--raw-bank", type=Path, default=DEFAULT_RAW_BANK)
     parser.add_argument("--topic-routing", type=Path, default=DEFAULT_TOPIC_ROUTING)
     parser.add_argument("--routing-audit", type=Path, default=DEFAULT_ROUTING_AUDIT)

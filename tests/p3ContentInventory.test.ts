@@ -421,8 +421,8 @@ describe('P3 content inventory report', () => {
       expect(report.question_routing_summary.p3_question_count).toBeGreaterThan(0);
       expect(report.question_routing_summary.referenced_trainable_p3_question_count).toBeGreaterThan(0);
       expect(report.routing_audit_summary.original_reviewed_mismatch_count).toBe(42);
-      expect(report.routing_audit_summary.resolved_mismatch_count).toBe(36);
-      expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(15);
+      expect(report.routing_audit_summary.resolved_mismatch_count).toBe(34);
+      expect(report.routing_audit_summary.resolved_skill_warning_count).toBe(14);
       expect(report.routing_audit_summary.teacher_review_mismatch_count).toBe(0);
       expect(report.routing_audit_summary.teacher_review_skill_warning_count).toBe(0);
       expect(report.routing_audit_summary.deferred_teacher_review_count).toBe(0);
@@ -444,8 +444,8 @@ describe('P3 content inventory report', () => {
         && item.practice_allowed === true
         && item.export_allowed === false
       ))).toBe(true);
-      expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(0);
-      expect(report.routing_audit_summary.unreviewed_skill_warning_count).toBe(0);
+      expect(report.routing_audit_summary.unreviewed_mismatch_count).toBe(1);
+      expect(report.routing_audit_summary.unreviewed_skill_warning_count).toBe(1);
       expect(report.routing_audit_summary.teacher_review_mismatches.every((item) => item.resolution_status === 'teacher_review_deferred')).toBe(true);
       expect(report.routing_audit_summary.teacher_review_mismatches).toEqual([]);
 
@@ -477,13 +477,16 @@ describe('P3 content inventory report', () => {
         }
       }
       expect(report.per_skill_inventory.filter((row) => row.unreviewed_app_region_mismatch_question_ids.length > 0))
-        .toHaveLength(0);
+        .toMatchObject([{
+          skill_ref: 'p3_alg_partial_fraction_form',
+          unreviewed_app_region_mismatch_question_ids: ['32spring21_q06'],
+        }]);
       expect(report.reviewed_skill_summary.status_counts).toMatchObject({
         blocked: 0,
         missing: 0,
-        needs_review: 0,
+        needs_review: 1,
         partial: quarantinedRuntimeWarmupSkillRefs.length,
-        ready: 40 - quarantinedRuntimeWarmupSkillRefs.length,
+        ready: 40 - quarantinedRuntimeWarmupSkillRefs.length - 1,
       });
       expect(report.teacher_review_export_tag_summary.p1_prerequisite_ref_count).toBeGreaterThan(0);
       expect(report.teacher_review_export_tag_summary.skills_with_p1_prerequisite_refs).toBe(report.reviewed_skill_summary.skill_count);

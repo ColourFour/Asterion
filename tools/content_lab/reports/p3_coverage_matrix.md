@@ -6,19 +6,19 @@ This deterministic matrix covers 40 reviewed CAIE 9709 Paper 3 skills. It separa
 
 Coverage status counts:
 
-- `blocked_for_mastery`: 0
+- `blocked_for_mastery`: 1
 - `missing_support`: 3
 - `needs_teacher_review`: 0
 - `partial`: 0
-- `ready_for_review`: 37
+- `ready_for_review`: 36
 
 Correction priority counts:
 
-- `P0_blocked_mastery`: 0
+- `P0_blocked_mastery`: 1
 - `P1_missing_core_support`: 0
 - `P2_missing_practice_support`: 3
 - `P3_teacher_review_backlog`: 0
-- `P4_polish_or_complete`: 37
+- `P4_polish_or_complete`: 36
 
 ## Counts By Official Syllabus Section
 
@@ -48,7 +48,7 @@ Correction priority counts:
 
 ### P0_blocked_mastery
 
-none
+`p3_alg_partial_fraction_form`
 
 ### P1_missing_core_support
 
@@ -64,7 +64,7 @@ none
 
 ### P4_polish_or_complete
 
-`p3_alg_binomial_terms_coefficients`, `p3_alg_binomial_validity`, `p3_alg_modulus_cases`, `p3_alg_partial_fraction_form`, `p3_alg_polynomial_remainder_factor`, `p3_complex_argand_loci_regions`, `p3_complex_cartesian_conjugate`, `p3_complex_modulus_argument_form`, `p3_complex_roots_powers`, `p3_de_forming_context_model`, `p3_de_initial_condition`, `p3_de_separation_setup`, `p3_diff_chain_product_quotient`, `p3_diff_implicit_log_exp`, `p3_diff_method_selection`, `p3_diff_parametric_gradients`, `p3_diff_stationary_tangent_normal`, `p3_int_definite_improper_area`, `p3_int_method_choice`, `p3_int_partial_fractions`, `p3_int_parts_substitution`, `p3_log_convert_forms`, `p3_log_domain_validation`, `p3_log_exponential_equations`, `p3_log_laws_equations`, `p3_log_linearisation`, `p3_num_accuracy_rounding`, `p3_num_iteration_formula`, `p3_num_sign_change_graph_evidence`, `p3_trig_equation_interval`, `p3_trig_identity_selection`, `p3_trig_quadrant_solutions`, `p3_trig_r_form_compound_angles`, `p3_trig_reciprocal_double_angle`, `p3_vec_3d_geometry_modelling`, `p3_vec_line_equations_intersections`, `p3_vec_scalar_product_angles`
+`p3_alg_binomial_terms_coefficients`, `p3_alg_binomial_validity`, `p3_alg_modulus_cases`, `p3_alg_polynomial_remainder_factor`, `p3_complex_argand_loci_regions`, `p3_complex_cartesian_conjugate`, `p3_complex_modulus_argument_form`, `p3_complex_roots_powers`, `p3_de_forming_context_model`, `p3_de_initial_condition`, `p3_de_separation_setup`, `p3_diff_chain_product_quotient`, `p3_diff_implicit_log_exp`, `p3_diff_method_selection`, `p3_diff_parametric_gradients`, `p3_diff_stationary_tangent_normal`, `p3_int_definite_improper_area`, `p3_int_method_choice`, `p3_int_partial_fractions`, `p3_int_parts_substitution`, `p3_log_convert_forms`, `p3_log_domain_validation`, `p3_log_exponential_equations`, `p3_log_laws_equations`, `p3_log_linearisation`, `p3_num_accuracy_rounding`, `p3_num_iteration_formula`, `p3_num_sign_change_graph_evidence`, `p3_trig_equation_interval`, `p3_trig_identity_selection`, `p3_trig_quadrant_solutions`, `p3_trig_r_form_compound_angles`, `p3_trig_reciprocal_double_angle`, `p3_vec_3d_geometry_modelling`, `p3_vec_line_equations_intersections`, `p3_vec_scalar_product_angles`
 
 ## Compact Skill Matrix
 
@@ -74,7 +74,7 @@ none
 | p3_alg_binomial_validity | Algebra | Algebra Vault | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_alg_discriminant_root_conditions | Algebra | Algebra Vault | missing_support | 1 | thin_resilience_risk | 0 | warm_up | P2_missing_practice_support | Add reviewed deterministic warm-up support after core teaching support is safe. |
 | p3_alg_modulus_cases | Algebra | Algebra Vault | ready_for_review | 3 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
-| p3_alg_partial_fraction_form | Algebra | Algebra Vault | ready_for_review | 4 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
+| p3_alg_partial_fraction_form | Algebra | Algebra Vault | blocked_for_mastery | 3 | healthy_evidence_count | 0 | none | P0_blocked_mastery | Resolve mastery-safety blockers before using this skill for mastery claims. |
 | p3_alg_polynomial_remainder_factor | Algebra | Algebra Vault | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
 | p3_alg_structure_rearrangement | Algebra | Algebra Vault | missing_support | 3 | healthy_evidence_count | 0 | warm_up | P2_missing_practice_support | Add reviewed deterministic warm-up support after core teaching support is safe. |
 | p3_complex_argand_loci_regions | Complex numbers | Argand Atrium | ready_for_review | 5 | healthy_evidence_count | 0 | none | P4_polish_or_complete | Teacher review can confirm this row for region-by-region correction planning. |
@@ -127,7 +127,9 @@ Status counts:
 
 ## Blocked Mastery Skills
 
-No skills are currently blocked for mastery.
+| Skill | Clean Evidence | Deferred Evidence | Blocking Reasons | Next Action |
+| --- | ---: | ---: | --- | --- |
+| p3_alg_partial_fraction_form | 3 | 0 | unreviewed_app_region_mismatch | Resolve mastery-safety blockers before using this skill for mastery claims. |
 
 ## Deferred Ambiguous Evidence
 
@@ -158,7 +160,7 @@ No skills are currently blocked for mastery.
 
 | Order | Region | Highest Priority | Blocked Skills | Support Gap Skills |
 | ---: | --- | --- | ---: | ---: |
-| 1 | Algebra Vault | P2_missing_practice_support | 0 | 2 |
+| 1 | Algebra Vault | P0_blocked_mastery | 1 | 2 |
 | 2 | Logarithm Observatory | P2_missing_practice_support | 0 | 1 |
 | 3 | Calculus Cliffs | P4_polish_or_complete | 0 | 0 |
 | 4 | Argand Atrium | P4_polish_or_complete | 0 | 0 |

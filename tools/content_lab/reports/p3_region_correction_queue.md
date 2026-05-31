@@ -4,25 +4,25 @@ This deterministic queue plans future content correction only. It does not corre
 
 ## Source Route Summary
 
-- `ambiguous_multi_topic_route`: 14
-- `missing_p3_route`: 53
-- `review_needed_route`: 12
-- `safe_p3_route`: 317
+- `ambiguous_multi_topic_route`: 15
+- `missing_p3_route`: 12
+- `review_needed_route`: 13
+- `safe_p3_route`: 356
 - `total_p3_route_records`: 396
 
 ## Queue Counts
 
 ### route_correction
 
-- `ambiguous_multi_topic_routes`: 14
+- `ambiguous_multi_topic_routes`: 15
 - `audited_route_decisions`: 42
-- `fallback_display_only_region_placements`: 53
-- `missing_p3_routes`: 53
-- `review_needed_routes`: 12
+- `fallback_display_only_region_placements`: 12
+- `missing_p3_routes`: 12
+- `review_needed_routes`: 13
 
 ### text_review
 
-- `routing_text_or_visual_blockers`: 59
+- `routing_text_or_visual_blockers`: 18
 
 ### mark_scheme_subpart_review
 
@@ -30,14 +30,14 @@ This deterministic queue plans future content correction only. It does not corre
 
 ### support_content_gaps
 
-- `weak_or_missing_skill_support`: 3
+- `weak_or_missing_skill_support`: 4
 
 ## Reviewed Route Decision Summary
 
 - review label: `phase-1-route-and-evidence-cleanup-v1-plus-phase-2b-clean-source-pool-v1`
 - recorded decisions: 14
 - decided questions: 14
-- still-needs-review route questions: 69
+- still-needs-review route questions: 37
 
 - `ambiguous`: 2
 - `blocked`: 2
@@ -45,7 +45,7 @@ This deterministic queue plans future content correction only. It does not corre
 - `deferred`: 1
 - `fallback_only`: 0
 - `review_needed`: 1
-- `still_needs_review`: 69
+- `still_needs_review`: 37
 - `thin`: 2
 
 | Question | Previous | Decision | Reviewed Region | Mastery | Generation | Reason |
@@ -69,15 +69,15 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Region | Issues | Workstreams | Categories |
 | --- | ---: | --- | --- |
-| Calculus Cliffs | 55 | route_correction:41, text_review:14 | ambiguous_multi_topic_routes:2, audited_route_decisions:11, fallback_display_only_region_placements:14, missing_p3_routes:14, routing_text_or_visual_blockers:14 |
-| Algebra Vault | 44 | route_correction:30, support_content_gaps:2, text_review:12 | audited_route_decisions:7, fallback_display_only_region_placements:11, missing_p3_routes:11, review_needed_routes:1, routing_text_or_visual_blockers:12, weak_or_missing_skill_support:2 |
-| Iteration Forge | 26 | route_correction:18, text_review:8 | ambiguous_multi_topic_routes:2, audited_route_decisions:3, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:3, routing_text_or_visual_blockers:8 |
-| Integral Terraces | 25 | route_correction:23, text_review:2 | ambiguous_multi_topic_routes:9, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
-| Logarithm Observatory | 25 | route_correction:18, support_content_gaps:1, text_review:6 | audited_route_decisions:6, fallback_display_only_region_placements:6, missing_p3_routes:6, routing_text_or_visual_blockers:6, weak_or_missing_skill_support:1 |
-| Trigonometry Spire | 22 | route_correction:17, text_review:5 | audited_route_decisions:6, fallback_display_only_region_placements:5, missing_p3_routes:5, review_needed_routes:1, routing_text_or_visual_blockers:5 |
-| Argand Atrium | 20 | route_correction:13, text_review:7 | fallback_display_only_region_placements:6, missing_p3_routes:6, review_needed_routes:1, routing_text_or_visual_blockers:7 |
-| Vectors Gate | 15 | route_correction:10, text_review:5 | fallback_display_only_region_placements:5, missing_p3_routes:5, routing_text_or_visual_blockers:5 |
+| Integral Terraces | 26 | route_correction:24, text_review:2 | ambiguous_multi_topic_routes:10, audited_route_decisions:7, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:5, routing_text_or_visual_blockers:2 |
+| Algebra Vault | 21 | route_correction:14, support_content_gaps:3, text_review:4 | audited_route_decisions:7, fallback_display_only_region_placements:3, missing_p3_routes:3, review_needed_routes:1, routing_text_or_visual_blockers:4, weak_or_missing_skill_support:3 |
+| Calculus Cliffs | 19 | route_correction:17, text_review:2 | ambiguous_multi_topic_routes:2, audited_route_decisions:11, fallback_display_only_region_placements:2, missing_p3_routes:2, routing_text_or_visual_blockers:2 |
+| Iteration Forge | 15 | route_correction:11, text_review:4 | ambiguous_multi_topic_routes:2, audited_route_decisions:3, fallback_display_only_region_placements:1, missing_p3_routes:1, review_needed_routes:4, routing_text_or_visual_blockers:4 |
+| Logarithm Observatory | 13 | route_correction:10, support_content_gaps:1, text_review:2 | audited_route_decisions:6, fallback_display_only_region_placements:2, missing_p3_routes:2, routing_text_or_visual_blockers:2, weak_or_missing_skill_support:1 |
+| Argand Atrium | 8 | route_correction:5, text_review:3 | fallback_display_only_region_placements:2, missing_p3_routes:2, review_needed_routes:1, routing_text_or_visual_blockers:3 |
+| Trigonometry Spire | 7 | route_correction:7 | audited_route_decisions:6, review_needed_routes:1 |
 | Differential Shrine | 4 | route_correction:4 | ambiguous_multi_topic_routes:1, audited_route_decisions:2, review_needed_routes:1 |
+| Vectors Gate | 3 | route_correction:2, text_review:1 | fallback_display_only_region_placements:1, missing_p3_routes:1, routing_text_or_visual_blockers:1 |
 
 ## Route Correction
 
@@ -85,116 +85,34 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Question | Fallback Region | Confidence | Review Reasons |
 | --- | --- | --- | --- |
-| 31autumn23_q10 | Algebra Vault | low | schema_validation_error |
-| 31summer23_q03 | Algebra Vault | low | schema_validation_error |
-| 31summer23_q08 | Algebra Vault | low | schema_validation_error |
-| 31summer23_q10 | Algebra Vault | low | schema_validation_error |
-| 32autumn22_q02 | Algebra Vault | low | schema_validation_error |
-| 32autumn22_q10 | Algebra Vault | low | schema_validation_error |
-| 32spring21_q02 | Algebra Vault | low | schema_validation_error |
-| 32spring21_q06 | Algebra Vault | low | schema_validation_error |
 | 33autumn24_q05 | Algebra Vault | low | schema_validation_error |
 | 33autumn24_q08 | Algebra Vault | low | schema_validation_error |
 | 33autumn24_q09 | Algebra Vault | low | schema_validation_error |
-| 31autumn23_q01 | Calculus Cliffs | low | schema_validation_error |
-| 31autumn23_q06 | Calculus Cliffs | low | schema_validation_error |
-| 31autumn23_q07 | Calculus Cliffs | low | schema_validation_error |
-| 31autumn23_q09 | Calculus Cliffs | low | schema_validation_error |
-| 31summer23_q02 | Calculus Cliffs | low | schema_validation_error |
-| 31summer23_q05 | Calculus Cliffs | low | schema_validation_error |
-| 31summer23_q07 | Calculus Cliffs | low | schema_validation_error |
-| 32autumn22_q03 | Calculus Cliffs | low | schema_validation_error |
-| 32autumn22_q07 | Calculus Cliffs | low | schema_validation_error |
-| 32autumn22_q08 | Calculus Cliffs | low | schema_validation_error |
-| 32spring21_q04 | Calculus Cliffs | low | schema_validation_error |
-| 32spring21_q10 | Calculus Cliffs | low | schema_validation_error |
 | 33autumn24_q07 | Calculus Cliffs | low | schema_validation_error |
 | 33autumn24_q11 | Calculus Cliffs | low | schema_validation_error |
-| 31autumn23_q02 | Argand Atrium | low | schema_validation_error |
-| 31autumn23_q04 | Argand Atrium | low | schema_validation_error |
-| 32autumn22_q05 | Argand Atrium | low | schema_validation_error |
-| 32spring21_q08 | Argand Atrium | low | schema_validation_error |
 | 33autumn24_q01 | Argand Atrium | low | schema_validation_error |
 | 33autumn24_q04 | Argand Atrium | low | schema_validation_error |
 | 33autumn24_q10 | Integral Terraces | low | schema_validation_error |
-| 31autumn23_q03 | Logarithm Observatory | low | schema_validation_error |
-| 31summer23_q01 | Logarithm Observatory | low | schema_validation_error |
-| 32autumn22_q01 | Logarithm Observatory | low | schema_validation_error |
-| 32spring21_q01 | Logarithm Observatory | low | schema_validation_error |
 | 33autumn24_q03 | Logarithm Observatory | low | schema_validation_error |
 | 33autumn25_q03 | Logarithm Observatory | low | Poor OCR text; unable to determine topic. |
-| 31autumn23_q08 | Iteration Forge | low | schema_validation_error |
-| 31summer23_q09 | Iteration Forge | low | schema_validation_error |
-| 32autumn22_q09 | Iteration Forge | low | schema_validation_error |
-| 32spring21_q09 | Iteration Forge | low | schema_validation_error |
 | 33autumn24_q02 | Iteration Forge | low | schema_validation_error |
-| 31autumn23_q05 | Trigonometry Spire | low | schema_validation_error |
-| 31summer23_q04 | Trigonometry Spire | low | schema_validation_error |
-| 32autumn22_q04 | Trigonometry Spire | low | schema_validation_error |
-| 32spring21_q03 | Trigonometry Spire | low | schema_validation_error |
-| 32spring21_q05 | Trigonometry Spire | low | schema_validation_error |
-| 31autumn23_q11 | Vectors Gate | low | schema_validation_error |
-| 31summer23_q06 | Vectors Gate | low | schema_validation_error |
-| 32autumn22_q06 | Vectors Gate | low | schema_validation_error |
-| 32spring21_q07 | Vectors Gate | low | schema_validation_error |
 | 33autumn24_q06 | Vectors Gate | low | schema_validation_error |
 
 ### Fallback Display-Only Region Placements
 
 | Question | Fallback Region | Local Topic | Why Risky |
 | --- | --- | --- | --- |
-| 31autumn23_q10 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q03 | Algebra Vault | binomial_expansion | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q08 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q10 | Algebra Vault | polynomials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q02 | Algebra Vault | polynomials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q10 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q02 | Algebra Vault | polynomials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q06 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q05 | Algebra Vault | algebra | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q08 | Algebra Vault | partial_fractions | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q09 | Algebra Vault | polynomials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q01 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q06 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q09 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q02 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q05 | Calculus Cliffs | differentiation | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q03 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q08 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q04 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q10 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q07 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q11 | Calculus Cliffs | parametric_equations | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q02 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q04 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q05 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q08 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q01 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q04 | Argand Atrium | complex_numbers | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q10 | Integral Terraces | integration | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q03 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q01 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q01 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q01 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q03 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn25_q03 | Logarithm Observatory | logarithms_and_exponentials | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q08 | Iteration Forge | numerical_methods | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q09 | Iteration Forge | numerical_methods | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q09 | Iteration Forge | numerical_methods | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q09 | Iteration Forge | numerical_methods | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q02 | Iteration Forge | numerical_methods | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q05 | Trigonometry Spire | trigonometry | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q04 | Trigonometry Spire | trigonometry | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q04 | Trigonometry Spire | trigonometry | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q03 | Trigonometry Spire | trigonometry | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q05 | Trigonometry Spire | trigonometry | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31autumn23_q11 | Vectors Gate | vectors | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 31summer23_q06 | Vectors Gate | vectors | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32autumn22_q06 | Vectors Gate | vectors | No mapped P3 primary topic exists in the topic-routing sidecar. |
-| 32spring21_q07 | Vectors Gate | vectors | No mapped P3 primary topic exists in the topic-routing sidecar. |
 | 33autumn24_q06 | Vectors Gate | vectors | No mapped P3 primary topic exists in the topic-routing sidecar. |
 
 ### Ambiguous Multi-Topic Routes
@@ -204,6 +122,7 @@ This deterministic queue plans future content correction only. It does not corre
 | 32autumn21_q11 | Calculus Cliffs |  | A single whole-question route hides multiple P3 topic signals. |
 | 32summer25_q11 | Calculus Cliffs |  | A single whole-question route hides multiple P3 topic signals. |
 | 33autumn21_q10 | Differential Shrine |  | A single whole-question route hides multiple P3 topic signals. |
+| 31autumn23_q09 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32autumn21_q06 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
 | 32autumn23_q09 | Integral Terraces | Question involves both differentiation and integration; primary topic set to integration based on final objective. | A single whole-question route hides multiple P3 topic signals. |
 | 32spring23_q08 | Integral Terraces |  | A single whole-question route hides multiple P3 topic signals. |
@@ -229,6 +148,7 @@ This deterministic queue plans future content correction only. It does not corre
 | 32spring22_q08 | Integral Terraces | medium | Question covers both polynomial division (Algebra) and integration; primary topic assigned to Integration as the main goal. |
 | 32spring22_q11 | Integral Terraces | medium | Question includes both differentiation (finding maximum) and integration (area); primary topic assigned to Integration as the final result. |
 | 31autumn22_q07 | Iteration Forge | high | OCR text ambiguous for part (a) |
+| 31summer23_q09 | Iteration Forge | medium | Question involves both integration and iterative numerical solution; primary focus is numerical method. |
 | 32autumn25_q06 | Iteration Forge | low | Visual-dependent question without image; text insufficient for full routing. |
 | 32summer23_q06 | Iteration Forge | medium | No OCR text provided, mark scheme only used; involves iterative method |
 | 33summer24_q07 | Trigonometry Spire | medium | Question involves both polynomial factorization and trigonometric equation; primary topic chosen as trigonometry based on final solving step. |
@@ -284,64 +204,23 @@ This deterministic queue plans future content correction only. It does not corre
 
 | Question | Region | Confidence | Review Reasons | Recommended Action |
 | --- | --- | --- | --- | --- |
-| 31autumn23_q10 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q03 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q08 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q10 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q02 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q10 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32autumn25_q01 | Algebra Vault | low | Visual-dependent question without image; text insufficient for full routing. | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q02 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q06 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q05 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q08 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q09 | Algebra Vault | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q01 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q06 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q09 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q02 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q05 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q03 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q08 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q04 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q10 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q07 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q11 | Calculus Cliffs | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q02 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q04 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q05 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q08 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32summer23_q05 | Argand Atrium | medium | No OCR text provided, mark scheme only used | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q01 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q04 | Argand Atrium | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31autumn24_q06 | Integral Terraces | medium | Visual dependence: diagram may affect identification of region R | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q10 | Integral Terraces | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q03 | Logarithm Observatory | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q01 | Logarithm Observatory | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q01 | Logarithm Observatory | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q01 | Logarithm Observatory | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q03 | Logarithm Observatory | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn25_q03 | Logarithm Observatory | low | Poor OCR text; unable to determine topic. | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 31autumn22_q07 | Iteration Forge | high | OCR text ambiguous for part (a) | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q08 | Iteration Forge | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q09 | Iteration Forge | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q09 | Iteration Forge | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32autumn25_q06 | Iteration Forge | low | Visual-dependent question without image; text insufficient for full routing. | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q09 | Iteration Forge | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 32summer23_q06 | Iteration Forge | medium | No OCR text provided, mark scheme only used; involves iterative method | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q02 | Iteration Forge | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q05 | Trigonometry Spire | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q04 | Trigonometry Spire | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q04 | Trigonometry Spire | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q03 | Trigonometry Spire | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q05 | Trigonometry Spire | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31autumn23_q11 | Vectors Gate | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 31summer23_q06 | Vectors Gate | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32autumn22_q06 | Vectors Gate | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
-| 32spring21_q07 | Vectors Gate | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 | 33autumn24_q06 | Vectors Gate | low | schema_validation_error | Review against the canonical question image and mark-scheme image before trusting extracted text or route labels. |
 
 ## Mark-Scheme And Subpart Review
@@ -354,6 +233,7 @@ This deterministic queue plans future content correction only. It does not corre
 | Region | Skill | Priority | Status | Gaps / Blockers |
 | --- | --- | --- | --- | --- |
 | Algebra Vault | p3_alg_discriminant_root_conditions | P2_missing_practice_support | missing_support | warm_up |
+| Algebra Vault | p3_alg_partial_fraction_form | P0_blocked_mastery | blocked_for_mastery | blocking reasons: unreviewed_app_region_mismatch |
 | Algebra Vault | p3_alg_structure_rearrangement | P2_missing_practice_support | missing_support | warm_up |
 | Logarithm Observatory | p3_log_calculus_contexts | P2_missing_practice_support | missing_support | warm_up |
 

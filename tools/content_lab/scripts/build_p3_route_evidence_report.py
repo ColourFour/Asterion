@@ -30,7 +30,7 @@ REPORT_SCHEMA_VERSION = 1
 GENERATED_LABEL = "deterministic-p3-route-evidence-status-v1"
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_PROJECTED_BANK = REPO_ROOT / "public/assets/exam-bank-data/asterion_question_bank_v1.json"
+DEFAULT_PROJECTED_BANK = REPO_ROOT / "public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json"
 DEFAULT_RAW_BANK = REPO_ROOT / "public/assets/exam-bank-data/question_bank.json"
 DEFAULT_TOPIC_ROUTING = REPO_ROOT / "public/assets/exam-bank-data/question_bank.topic_routing.v1.json"
 DEFAULT_WORLD_MAP = REPO_ROOT / "src/lib/worldMap.ts"
@@ -477,7 +477,12 @@ def render_markdown(report: dict[str, Any]) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the deterministic P3 route-evidence status report.")
-    parser.add_argument("--projected-bank", type=Path, default=DEFAULT_PROJECTED_BANK)
+    parser.add_argument(
+        "--projected-bank",
+        type=Path,
+        default=DEFAULT_PROJECTED_BANK,
+        help="Full exam-bank catalog used for audit reporting. The option name is retained for older scripts.",
+    )
     parser.add_argument("--raw-bank", type=Path, default=DEFAULT_RAW_BANK)
     parser.add_argument("--topic-routing", type=Path, default=DEFAULT_TOPIC_ROUTING)
     parser.add_argument("--world-map", type=Path, default=DEFAULT_WORLD_MAP)

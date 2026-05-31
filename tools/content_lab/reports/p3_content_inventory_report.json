@@ -109,10 +109,10 @@
   "per_region_inventory": [
     {
       "active_by_default": true,
-      "canonical_question_count": 22,
+      "canonical_question_count": 21,
       "field_guide_count": 1,
-      "guardian_candidate_count": 11,
-      "instructional_status": "partial",
+      "guardian_candidate_count": 10,
+      "instructional_status": "needs_review",
       "missing_support_flags": [
         "missing_warm_up"
       ],
@@ -241,7 +241,7 @@
       ],
       "skill_count": 4,
       "snippet_count": 5,
-      "warmup_support_count": 35,
+      "warmup_support_count": 38,
       "worked_example_count": 8
     },
     {
@@ -735,7 +735,9 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [],
+      "app_region_mismatch_question_ids": [
+        "32spring21_q06"
+      ],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -745,7 +747,7 @@
         "canonical_question",
         "guardian_candidate"
       ],
-      "canonical_question_count": 4,
+      "canonical_question_count": 3,
       "canonical_question_ids": [
         "32spring21_q06",
         "32summer21_q09",
@@ -753,7 +755,6 @@
         "35summer25_q09"
       ],
       "canonical_question_ids_routed_to_skill": [
-        "32spring21_q06",
         "32summer21_q09",
         "32autumn21_q04",
         "35summer25_q09"
@@ -762,17 +763,17 @@
       "export_blocked_deferred_question_ids": [],
       "field_guide_count": 1,
       "field_guide_region_id": "algebra-forge",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "guardian_candidate_question_ids": [
-        "32spring21_q06",
         "32summer21_q09"
       ],
-      "instructional_status": "ready",
+      "instructional_status": "needs_review",
       "mastery_eligible": true,
-      "mastery_evidence_blocked_question_ids": [],
-      "mastery_evidence_question_count": 4,
+      "mastery_evidence_blocked_question_ids": [
+        "32spring21_q06"
+      ],
+      "mastery_evidence_question_count": 3,
       "mastery_evidence_question_ids": [
-        "32spring21_q06",
         "32summer21_q09",
         "32autumn21_q04",
         "35summer25_q09"
@@ -809,7 +810,9 @@
         "p3-partial-fractions-repeated-linear-001-qc"
       ],
       "region_id": "algebra-forge",
-      "risk_flags": [],
+      "risk_flags": [
+        "unreviewed_app_region_routing_mismatch"
+      ],
       "skill_ref": "p3_alg_partial_fraction_form",
       "snippet_count": 2,
       "snippet_ids": [
@@ -821,7 +824,9 @@
       "unresolved_generator_families": [],
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
-      "unreviewed_app_region_mismatch_question_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32spring21_q06"
+      ],
       "warmup_generator_families": [
         "algebra.partial_fractions_distinct_linear",
         "algebra.partial_fractions_repeated_linear"
@@ -2418,9 +2423,7 @@
       ]
     },
     {
-      "app_region_mismatch_question_ids": [
-        "32spring21_q10"
-      ],
+      "app_region_mismatch_question_ids": [],
       "available_support_types": [
         "field_guide",
         "snippet",
@@ -2525,13 +2528,16 @@
       "warmup_practice_ids": [
         "gen_integrals_arctan_forms_0004",
         "gen_integrals_basic_trig_0004",
+        "gen_integrals_definite_area_bridge_0001",
+        "gen_integrals_definite_area_bridge_0002",
+        "gen_integrals_definite_area_bridge_0003",
         "gen_integrals_exponential_logarithmic_0002",
         "gen_integrals_exponential_logarithmic_0003",
         "gen_integrals_exponential_logarithmic_0004",
         "gen_integrals_substitution_0003",
         "gen_integrals_trig_identities_0004"
       ],
-      "warmup_support_count": 7,
+      "warmup_support_count": 10,
       "worked_example_count": 2,
       "worked_example_ids": [
         "p3-integration-definite-area-001-example-1",
@@ -2659,7 +2665,6 @@
     },
     {
       "app_region_mismatch_question_ids": [
-        "32spring21_q06",
         "31summer21_q10"
       ],
       "available_support_types": [
@@ -4824,8 +4829,8 @@
     "app_region_unrouted_p3_question_count": 0,
     "by_region": [
       {
-        "app_routed_p3_question_count": 59,
-        "canonical_question_count": 22,
+        "app_routed_p3_question_count": 56,
+        "canonical_question_count": 21,
         "region_id": "algebra-forge",
         "region_title": "Algebra Vault",
         "skill_count": 7
@@ -4845,21 +4850,21 @@
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 60,
+        "app_routed_p3_question_count": 61,
         "canonical_question_count": 16,
         "region_id": "complex-harbor",
         "region_title": "Argand Atrium",
         "skill_count": 4
       },
       {
-        "app_routed_p3_question_count": 52,
+        "app_routed_p3_question_count": 44,
         "canonical_question_count": 14,
         "region_id": "calculus-cliffs",
         "region_title": "Calculus Cliffs",
         "skill_count": 5
       },
       {
-        "app_routed_p3_question_count": 49,
+        "app_routed_p3_question_count": 55,
         "canonical_question_count": 11,
         "region_id": "integration-gardens",
         "region_title": "Integral Terraces",
@@ -4880,7 +4885,7 @@
         "skill_count": 3
       },
       {
-        "app_routed_p3_question_count": 32,
+        "app_routed_p3_question_count": 36,
         "canonical_question_count": 10,
         "region_id": "differential-shrine",
         "region_title": "Differential Shrine",
@@ -4900,8 +4905,8 @@
     "status_counts": {
       "blocked": 0,
       "missing": 0,
-      "needs_review": 0,
-      "partial": 2,
+      "needs_review": 1,
+      "partial": 1,
       "ready": 7
     }
   },
@@ -4920,9 +4925,9 @@
     "status_counts": {
       "blocked": 0,
       "missing": 0,
-      "needs_review": 0,
+      "needs_review": 1,
       "partial": 3,
-      "ready": 37
+      "ready": 36
     }
   },
   "risk_summary": [
@@ -4987,13 +4992,13 @@
       "status": "clear"
     },
     {
-      "count": 0,
+      "count": 1,
       "risk_id": "unreviewed_app_region_mismatches",
       "risk_type": "structural_warning",
-      "status": "clear"
+      "status": "open"
     },
     {
-      "count": 36,
+      "count": 34,
       "risk_id": "resolved_app_region_mismatches",
       "risk_type": "audit_result",
       "status": "resolved"
@@ -5011,15 +5016,15 @@
       "status": "clear"
     },
     {
-      "count": 3,
+      "count": 4,
       "risk_id": "structural_warnings",
       "risk_type": "structural_warning",
       "status": "open"
     }
   ],
   "routing_audit_summary": {
-    "active_mismatch_count": 0,
-    "active_skill_warning_count": 0,
+    "active_mismatch_count": 1,
+    "active_skill_warning_count": 1,
     "deferred_ambiguous_case_count": 0,
     "deferred_review_backlog": {
       "affected_app_region_ids": [],
@@ -5043,7 +5048,7 @@
     "inactive_teacher_review_entries": [],
     "inactive_teacher_review_entry_count": 0,
     "original_reviewed_mismatch_count": 42,
-    "resolved_mismatch_count": 36,
+    "resolved_mismatch_count": 34,
     "resolved_mismatches": [
       {
         "app_region_id": "integration-gardens",
@@ -5116,20 +5121,6 @@
         "source_of_conflicting_label": "DeepSeek/app routing emphasize integration by parts; the question also asks for a maximum point."
       },
       {
-        "app_region_id": "calculus-cliffs",
-        "evidence_status": "clean_mastery_evidence",
-        "export_allowed": true,
-        "mastery_evidence_allowed": true,
-        "practice_allowed": true,
-        "question_id": "32spring21_q10",
-        "rationale": "Part (a) asks for the exact area under the curve, and the mark scheme rewards using the substitution, forming the definite integral, applying limits, and obtaining the exact area.",
-        "recommended_resolution": "Accept this as clean definite-area evidence from the area subpart.",
-        "resolution_status": "validated_skill_map_route",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_definite_improper_area",
-        "source_of_conflicting_label": "Local topic is parametric_equations; DeepSeek gives an unmapped Integration and Differentiation subtopic."
-      },
-      {
         "app_region_id": "differential-shrine",
         "evidence_status": "clean_mastery_evidence",
         "export_allowed": true,
@@ -5142,20 +5133,6 @@
         "reviewed_skill_map_region_id": "integration-gardens",
         "skill_ref": "p3_int_partial_fractions",
         "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; DeepSeek subtopic mentions differential equations."
-      },
-      {
-        "app_region_id": "algebra-forge",
-        "evidence_status": "clean_mastery_evidence",
-        "export_allowed": true,
-        "mastery_evidence_allowed": true,
-        "practice_allowed": true,
-        "question_id": "32spring21_q06",
-        "rationale": "Part (a) requires partial-fraction decomposition and part (b) uses it to evaluate a definite integral; the mark scheme rewards both decomposition and logarithmic integration.",
-        "recommended_resolution": "Accept this as clean integration-using-partial-fractions evidence.",
-        "resolution_status": "validated_skill_map_route",
-        "reviewed_skill_map_region_id": "integration-gardens",
-        "skill_ref": "p3_int_partial_fractions",
-        "source_of_conflicting_label": "Local and DeepSeek labels emphasize partial fractions; the second subpart is a definite integral."
       },
       {
         "app_region_id": "integration-gardens",
@@ -5550,14 +5527,29 @@
         "source_of_conflicting_label": "Local topic is parametric_equations and DeepSeek/app routing emphasize integration, while part (a) asks for points with a specified gradient."
       }
     ],
-    "resolved_skill_warning_count": 15,
+    "resolved_skill_warning_count": 14,
     "review_label": "phase-3-routing-audit-v1",
     "teacher_review_mismatch_count": 0,
     "teacher_review_mismatches": [],
     "teacher_review_skill_warning_count": 0,
-    "unreviewed_mismatch_count": 0,
-    "unreviewed_mismatches": [],
-    "unreviewed_skill_warning_count": 0
+    "unreviewed_mismatch_count": 1,
+    "unreviewed_mismatches": [
+      {
+        "app_region_id": "integration-gardens",
+        "evidence_status": "",
+        "export_allowed": null,
+        "mastery_evidence_allowed": null,
+        "practice_allowed": null,
+        "question_id": "32spring21_q06",
+        "rationale": "Active app-region mismatch has not been reviewed in the routing audit.",
+        "recommended_resolution": "Review the app label route against the reviewed P3 skill map before using this question as route evidence.",
+        "resolution_status": "unreviewed",
+        "reviewed_skill_map_region_id": "algebra-forge",
+        "skill_ref": "p3_alg_partial_fraction_form",
+        "source_of_conflicting_label": "No routing-audit entry; current labels are topic=partial_fractions, subtopic=general, deepseek=9709_p3_topic_integration."
+      }
+    ],
+    "unreviewed_skill_warning_count": 1
   },
   "schema_name": "asterion_p3_content_inventory_report",
   "schema_version": 1,
@@ -5590,6 +5582,15 @@
       "unresolved_quick_check_ids": [],
       "unresolved_snippet_ids": [],
       "unreviewed_app_region_mismatch_question_ids": []
+    },
+    {
+      "skill_ref": "p3_alg_partial_fraction_form",
+      "unresolved_generator_families": [],
+      "unresolved_quick_check_ids": [],
+      "unresolved_snippet_ids": [],
+      "unreviewed_app_region_mismatch_question_ids": [
+        "32spring21_q06"
+      ]
     },
     {
       "skill_ref": "p3_alg_structure_rearrangement",

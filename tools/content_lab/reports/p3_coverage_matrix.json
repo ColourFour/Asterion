@@ -2,26 +2,26 @@
   "clean_mastery_evidence_summary": {
     "skills_with_clean_mastery_evidence": 40,
     "skills_without_clean_mastery_evidence": 0,
-    "total_clean_mastery_evidence_links": 175
+    "total_clean_mastery_evidence_links": 174
   },
   "correction_priority_summary": {
     "priority_counts": {
-      "P0_blocked_mastery": 0,
+      "P0_blocked_mastery": 1,
       "P1_missing_core_support": 0,
       "P2_missing_practice_support": 3,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 37
+      "P4_polish_or_complete": 36
     },
     "suggested_region_correction_order": [
       {
-        "blocked_mastery_skill_count": 0,
-        "highest_priority": "P2_missing_practice_support",
+        "blocked_mastery_skill_count": 1,
+        "highest_priority": "P0_blocked_mastery",
         "priority_counts": {
-          "P0_blocked_mastery": 0,
+          "P0_blocked_mastery": 1,
           "P1_missing_core_support": 0,
           "P2_missing_practice_support": 2,
           "P3_teacher_review_backlog": 0,
-          "P4_polish_or_complete": 5
+          "P4_polish_or_complete": 4
         },
         "region_id": "algebra-forge",
         "region_title": "Algebra Vault",
@@ -343,26 +343,27 @@
       "worked_example_status": "available"
     },
     {
-      "blocking_reasons": [],
+      "blocking_reasons": [
+        "unreviewed_app_region_mismatch"
+      ],
       "canonical_question_count": 4,
-      "clean_mastery_evidence_count": 4,
+      "clean_mastery_evidence_count": 3,
       "clean_mastery_evidence_question_ids": [
-        "32spring21_q06",
         "32summer21_q09",
         "32autumn21_q04",
         "35summer25_q09"
       ],
-      "correction_priority": "P4_polish_or_complete",
-      "coverage_status": "ready_for_review",
+      "correction_priority": "P0_blocked_mastery",
+      "coverage_status": "blocked_for_mastery",
       "curriculum_role": "p3_core",
       "deferred_evidence_count": 0,
       "deferred_evidence_question_ids": [],
       "evidence_resilience_status": "healthy_evidence_count",
-      "export_allowed_evidence_count": 4,
+      "export_allowed_evidence_count": 3,
       "field_guide_status": "available",
-      "guardian_candidate_count": 2,
+      "guardian_candidate_count": 1,
       "mastery_eligible": true,
-      "needs_teacher_review": false,
+      "needs_teacher_review": true,
       "official_syllabus_section": "Algebra",
       "practice_allowed_deferred_count": 0,
       "prerequisite_notes": "P1 radians and compound-angle identity fluency are support-only: they prepare the R-form coefficient match, but do not count as P3 mastery evidence.",
@@ -374,7 +375,7 @@
         }
       ],
       "quick_check_status": "available",
-      "recommended_next_action": "Teacher review can confirm this row for region-by-region correction planning.",
+      "recommended_next_action": "Resolve mastery-safety blockers before using this skill for mastery claims.",
       "region_id": "algebra-forge",
       "region_title": "Algebra Vault",
       "skill_id": "p3_alg_partial_fraction_form",
@@ -2132,7 +2133,9 @@
   "generated_by": "tools/content_lab/scripts/build_p3_coverage_matrix.py",
   "generated_label": "deterministic-p3-coverage-matrix-v1",
   "next_step_summary": {
-    "highest_priority_skill_refs": [],
+    "highest_priority_skill_refs": [
+      "p3_alg_partial_fraction_form"
+    ],
     "note": "Do not create learner content or resolve deferred cases in the matrix pass; use this report to choose the next correction sequence.",
     "recommended_phase": "region_by_region_correction"
   },
@@ -2177,7 +2180,9 @@
   },
   "risk_summary": {
     "app_and_deepseek_labels_override_reviewed_skill_map": false,
-    "blocked_mastery_skill_refs": [],
+    "blocked_mastery_skill_refs": [
+      "p3_alg_partial_fraction_form"
+    ],
     "deferred_ambiguous_skill_refs": [],
     "p1_prerequisite_ref_count": 70,
     "p1_prerequisite_refs_are_mastery_evidence": false,
@@ -2196,22 +2201,22 @@
   "schema_version": 1,
   "skill_summary": {
     "correction_priority_counts": {
-      "P0_blocked_mastery": 0,
+      "P0_blocked_mastery": 1,
       "P1_missing_core_support": 0,
       "P2_missing_practice_support": 3,
       "P3_teacher_review_backlog": 0,
-      "P4_polish_or_complete": 37
+      "P4_polish_or_complete": 36
     },
     "coverage_status_counts": {
-      "blocked_for_mastery": 0,
+      "blocked_for_mastery": 1,
       "missing_support": 3,
       "needs_teacher_review": 0,
       "partial": 0,
-      "ready_for_review": 37
+      "ready_for_review": 36
     },
     "mastery_eligible_skill_count": 40,
     "reviewed_skill_count": 40,
-    "teacher_review_skill_count": 0
+    "teacher_review_skill_count": 1
   },
   "teaching_support_summary": {
     "expected_support_types": [
