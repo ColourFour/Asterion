@@ -1,4 +1,5 @@
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
+import { COURSES, P3_COURSE_ID, type CourseId } from '../data/courses';
 import type { LearningActivityAttempt, RegionDefinition, RegionLearningRecord, RegionProgress, StoredProgress } from '../types';
 import { P3_ASTRAL_ACADEMY } from './worldMap';
 
@@ -102,6 +103,7 @@ const topicsByRegionId = new Map(STUDY_TOPICS.map((topic) => [topic.regionId, to
 const topicsBySlug = new Map(STUDY_TOPICS.map((topic) => [topic.slug, topic]));
 
 export const STUDY_ROUTE_ROOTS = new Set([
+  ...COURSES.map((course) => course.slug),
   'topics',
   'regions',
   'exam-training',
@@ -139,10 +141,15 @@ export function displayRegionForTopic(topic: StudyTopic, region?: RegionDefiniti
   };
 }
 
-export function topicPath(topic: StudyTopic, page: TopicStudyPage = 'hub'): string {
+export function topicPath(topic: StudyTopic, page: TopicStudyPage = 'hub', courseSlug?: CourseId): string {
+  const root = courseSlug ? `/${courseSlug}/topics` : '/topics';
   return page === 'hub'
-    ? `/topics/${topic.slug}`
-    : `/topics/${topic.slug}/${page}`;
+    ? `${root}/${topic.slug}`
+    : `${root}/${topic.slug}/${page}`;
+}
+
+export function p3TopicPath(topic: StudyTopic, page: TopicStudyPage = 'hub'): string {
+  return topicPath(topic, page, P3_COURSE_ID);
 }
 
 export function stripStaticBasePath(pathname: string): string {

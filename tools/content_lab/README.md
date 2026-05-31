@@ -2,6 +2,8 @@
 
 Content Lab is an internal, local-first pipeline for turning exam-bank evidence into reviewed teaching support. It is not part of the browser runtime and must not mutate `public/assets/exam-bank-data/question_bank.json`.
 
+The public site is now a static CAIE 9709 study hub with P1, P3, M1, and S1 course pages. P1, M1, and S1 have rapid draft seed study pages in `src/data/courseSeedContent.ts`, but those pages are static audit scaffolds only. Content Lab remains P3-first because only the reviewed P3 skill map exists today. P1, M1, and S1 content should not be generated or published from this pipeline until reviewed syllabus/topic maps are added for those courses.
+
 ## Boundary
 
 - Input evidence: `public/assets/exam-bank-data/question_bank.json`
@@ -11,7 +13,8 @@ Content Lab is an internal, local-first pipeline for turning exam-bank evidence 
 - Internal outputs: `tools/content_lab/outputs/`
 - Review reports: `tools/content_lab/reports/`
 - Runtime-reviewed content: `public/data/teaching_snippets.json` and `public/data/generated_practice_bank.json`
-- Browser runtime: consumes only reviewed static JSON from `public/data/`
+- Static P3 pages: consume only reviewed static JSON from `public/data/`
+- Static P1/M1/S1 seed pages: consume only `src/data/courseSeedContent.ts` and must stay marked as draft starter content
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
 
 The reviewed P3 skill map at `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` is the curriculum authority. OCR/raw text, AI labels, legacy DeepSeek labels, local labels, and fallback labels are review/display metadata only. Topic-routing records can validate placement only when clean/reviewed. Content Lab candidates remain blocked until reviewed source-skill evidence exists.
@@ -272,10 +275,10 @@ Next useful generator work should deepen the one-item preserved runtime families
 
 ## Review Rules
 
-Runtime-visible teaching snippets must be compact, original, student-friendly, and reviewed. They should support the product flow:
+Runtime-visible teaching snippets must be compact, original, student-friendly, and reviewed. They should support the static P3 study flow:
 
 ```text
-Understand the idea -> try a small check -> practice safely -> face the Guardian
+Understand the idea -> try a small check -> practise safely -> self-mark exam images
 ```
 
 Runtime-visible generated practice must:

@@ -57,7 +57,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       purpose: 'Choose the algebra move that preserves useful structure before expanding.',
       skillIds: ['algebra_structure_first_bridge'],
       preview: '$$ (x^2+2x)^2-5(x^2+2x)+6=0 $$',
-      description: 'P3 algebra often rewards seeing the repeated block, common factor, or restriction before doing mechanical expansion.',
+      description: 'P3 algebra often depends on seeing the repeated block, common factor, or restriction before doing mechanical expansion.',
       supportNote: 'This is a P3 support bridge for structure-first manipulation. It is not a broad algebra revision page.',
       examples: [
         {

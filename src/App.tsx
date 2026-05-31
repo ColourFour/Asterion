@@ -1,7 +1,10 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { BookOpenCheck } from 'lucide-react';
+import { CourseDashboard } from './components/course/CourseDashboard';
+import { CourseSelector } from './components/course/CourseSelector';
 import { TopicHub } from './components/study/TopicHub';
 import { TopicIndex } from './components/study/TopicIndex';
+import { COURSES, getCourseBySlug, isCourseSlug, P3_COURSE_ID, type CourseMetadata } from './data/courses';
 import { getRegionFieldGuide } from './data/regionFieldGuides';
 import { selectNextQuestion, type PracticeMode } from './lib/adaptiveEngine';
 import { EXAM_TRAINING_PRACTICE_LABELS, type ExamTrainingPracticeMode } from './lib/examTrainingDashboard';
@@ -15,27 +18,30 @@ import { getTeachingSnippetsForRegion, loadTeachingSnippets, type TeachingSnippe
 import {
   currentStaticBasePath,
   displayRegionForTopic,
+  p3TopicPath,
   regionForStudyTopic,
   stripStaticBasePath,
   STUDY_ROUTE_ROOTS,
   studyTopicForRegionId,
   studyTopicForSlug,
-  topicPath,
   type StudyTopic,
   type TopicStudyPage,
 } from './lib/topicStudy';
 import { P3_ASTRAL_ACADEMY } from './lib/worldMap';
 import type { Attempt, IssueType, LearningActivityAttempt, NormalizedQuestion, RegionDefinition, StoredProgress, StudentProfile, TrainingSessionIntent } from './types';
 
-type ViewMode = 'index' | 'topic' | 'exam_training_dashboard' | 'start' | 'target_topic' | 'weak_areas';
+type ViewMode = 'course_selection' | 'course_dashboard' | 'index' | 'topic' | 'exam_training_dashboard' | 'start' | 'target_topic' | 'weak_areas';
 
 type StudyRoute =
+  | { kind: 'course-selection' }
+  | { kind: 'course-dashboard'; course: CourseMetadata }
   | { kind: 'index' }
-  | { kind: 'topic'; topic: StudyTopic; page: TopicStudyPage }
-  | { kind: 'exam-training'; topic?: StudyTopic };
+  | { kind: 'topic'; course: CourseMetadata; topic: StudyTopic; page: TopicStudyPage }
+  | { kind: 'exam-training'; course: CourseMetadata; topic?: StudyTopic };
 
 const ExamTrainingDashboard = lazy(() => import('./components/world/regionHub/ExamTrainingDashboard').then((module) => ({ default: module.ExamTrainingDashboard })));
 const PracticeView = lazy(() => import('./components/practice/PracticeView').then((module) => ({ default: module.PracticeView })));
+const P3_COURSE = COURSES.find((course) => course.id === P3_COURSE_ID)!;
 
 function recoverGithubPagesRedirect() {
   if (typeof window === 'undefined') return;
@@ -62,26 +68,52 @@ function routePathFromLocation(pathname: string, hash: string): string {
 
 function parseStudyRoute(pathname: string, hash: string): StudyRoute {
   const routePath = routePathFromLocation(pathname, hash);
-  const [root, idOrSlug, pageSegment] = routePath.split('/').filter(Boolean);
+  const [root, ...segments] = routePath.split('/').filter(Boolean);
 
-  if (!root || root === 'regions') {
-    if (root === 'regions' && idOrSlug) {
+  if (!root) return { kind: 'course-selection' };
+
+  if (isCourseSlug(root)) {
+    const course = getCourseBySlug(root) ?? P3_COURSE;
+    const [courseRoot, idOrSlug, pageSegment] = segments;
+    if (course.id !== P3_COURSE_ID || !courseRoot) return { kind: 'course-dashboard', course };
+
+    if (courseRoot === 'topics') {
+      if (!idOrSlug) return { kind: 'index' };
+      const topic = studyTopicForSlug(idOrSlug);
+      return topic ? { kind: 'topic', course, topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
+    }
+
+    if (courseRoot === 'regions') {
+      if (!idOrSlug) return { kind: 'index' };
       const topic = studyTopicForRegionId(idOrSlug);
-      return topic ? { kind: 'topic', topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
+      return topic ? { kind: 'topic', course, topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
+    }
+
+    if (courseRoot === 'exam-training') return { kind: 'exam-training', course };
+
+    return { kind: 'course-dashboard', course };
+  }
+
+  const [idOrSlug, pageSegment] = segments;
+
+  if (root === 'regions') {
+    if (idOrSlug) {
+      const topic = studyTopicForRegionId(idOrSlug);
+      return topic ? { kind: 'topic', course: P3_COURSE, topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
     }
     return { kind: 'index' };
   }
 
   if (root === 'topics') {
     const topic = studyTopicForSlug(idOrSlug);
-    return topic ? { kind: 'topic', topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
+    return topic ? { kind: 'topic', course: P3_COURSE, topic, page: parseTopicPage(pageSegment) } : { kind: 'index' };
   }
 
-  if (root === 'exam-training') return { kind: 'exam-training' };
+  if (root === 'exam-training') return { kind: 'exam-training', course: P3_COURSE };
 
   if (STUDY_ROUTE_ROOTS.has(root)) return { kind: 'index' };
 
-  return { kind: 'index' };
+  return { kind: 'course-selection' };
 }
 
 function localStudyProfile(): Omit<StudentProfile, 'id' | 'createdAt' | 'updatedAt'> {
@@ -95,8 +127,8 @@ function localStudyProfile(): Omit<StudentProfile, 'id' | 'createdAt' | 'updated
   };
 }
 
-function studentPracticeModeLabel(): string {
-  return 'CAIE 9709 Paper 3';
+function studentPracticeModeLabel(course?: CourseMetadata): string {
+  return course?.examComponentLabel ?? 'CAIE 9709 Study Hub';
 }
 
 function StudentViewFallback({ label }: { label: string }) {
@@ -116,7 +148,8 @@ export default function App() {
   const [teachingSnippets, setTeachingSnippets] = useState<TeachingSnippet[]>([]);
   const [generatedPractice, setGeneratedPractice] = useState<GeneratedPracticeItem[]>([]);
   const [progress, setProgress] = useState<StoredProgress>(() => progressAdapter.loadProgressContext());
-  const [viewMode, setViewMode] = useState<ViewMode>('index');
+  const [viewMode, setViewMode] = useState<ViewMode>('course_selection');
+  const [selectedCourse, setSelectedCourse] = useState<CourseMetadata>();
   const [selectedTopic, setSelectedTopic] = useState<StudyTopic>();
   const [selectedTopicPage, setSelectedTopicPage] = useState<TopicStudyPage>('hub');
   const [currentQuestion, setCurrentQuestion] = useState<NormalizedQuestion>();
@@ -179,7 +212,30 @@ export default function App() {
 
   useEffect(() => {
     const route = parseStudyRoute(window.location.pathname, window.location.hash);
+    if (route.kind === 'course-selection') {
+      setSelectedCourse(undefined);
+      setSelectedTopic(undefined);
+      setSelectedTopicPage('hub');
+      setCurrentQuestion(undefined);
+      setTrainingIntent(undefined);
+      setExamTrainingPracticeMode(undefined);
+      setViewMode('course_selection');
+      return;
+    }
+
+    if (route.kind === 'course-dashboard') {
+      setSelectedCourse(route.course);
+      setSelectedTopic(undefined);
+      setSelectedTopicPage('hub');
+      setCurrentQuestion(undefined);
+      setTrainingIntent(undefined);
+      setExamTrainingPracticeMode(undefined);
+      setViewMode('course_dashboard');
+      return;
+    }
+
     if (route.kind === 'index') {
+      setSelectedCourse(P3_COURSE);
       setSelectedTopic(undefined);
       setSelectedTopicPage('hub');
       setCurrentQuestion(undefined);
@@ -190,6 +246,7 @@ export default function App() {
     }
 
     if (route.kind === 'topic') {
+      setSelectedCourse(route.course);
       setSelectedTopic(route.topic);
       setSelectedTopicPage(route.page);
       setCurrentQuestion(undefined);
@@ -199,6 +256,7 @@ export default function App() {
       return;
     }
 
+    setSelectedCourse(route.course);
     setSelectedTopic(route.topic);
     setSelectedTopicPage('hub');
     setCurrentQuestion(undefined);
@@ -255,8 +313,30 @@ export default function App() {
     setLocationKey(`${window.location.pathname}${window.location.hash}`);
   }
 
-  function navigateIndex() {
+  function navigateCourseSelection() {
     navigateStudyPath('/');
+  }
+
+  function openCourse(course: CourseMetadata) {
+    setSelectedCourse(course);
+    setSelectedTopic(undefined);
+    setSelectedTopicPage('hub');
+    setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
+    setViewMode('course_dashboard');
+    navigateStudyPath(`/${course.slug}`);
+  }
+
+  function openP3Topics() {
+    setSelectedCourse(P3_COURSE);
+    setSelectedTopic(undefined);
+    setSelectedTopicPage('hub');
+    setCurrentQuestion(undefined);
+    setTrainingIntent(undefined);
+    setExamTrainingPracticeMode(undefined);
+    setViewMode('index');
+    navigateStudyPath(`/${P3_COURSE_ID}/topics`);
   }
 
   function openTopic(topic: StudyTopic, page: TopicStudyPage = 'hub') {
@@ -266,7 +346,7 @@ export default function App() {
     setTrainingIntent(undefined);
     setExamTrainingPracticeMode(undefined);
     setViewMode('topic');
-    navigateStudyPath(topicPath(topic, page));
+    navigateStudyPath(p3TopicPath(topic, page));
   }
 
   function openExamTrainingDashboard(topic?: StudyTopic) {
@@ -276,7 +356,7 @@ export default function App() {
     setTrainingIntent(undefined);
     setExamTrainingPracticeMode(undefined);
     setViewMode('exam_training_dashboard');
-    navigateStudyPath('/exam-training');
+    navigateStudyPath(`/${P3_COURSE_ID}/exam-training`);
   }
 
   function activePracticeMode(): PracticeMode {
@@ -374,17 +454,40 @@ export default function App() {
         <div className="study-brand">
           <span className="study-brand-mark" aria-hidden="true"><BookOpenCheck size={22} /></span>
           <div>
-            <span className="mode-pill">{studentPracticeModeLabel()}</span>
+            <span className="mode-pill">{studentPracticeModeLabel(selectedCourse)}</span>
             <h1>Asterion Study</h1>
           </div>
         </div>
         <nav aria-label="Primary">
-          <button className={viewMode === 'index' || viewMode === 'topic' ? 'active' : ''} type="button" onClick={navigateIndex}>Topics</button>
-          <button className={viewMode === 'exam_training_dashboard' || viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => openExamTrainingDashboard()}>Exam Training</button>
+          <button className={viewMode === 'course_selection' ? 'active' : ''} type="button" onClick={navigateCourseSelection}>Courses</button>
+          {selectedCourse ? (
+            <button className={viewMode === 'course_dashboard' ? 'active' : ''} type="button" onClick={() => openCourse(selectedCourse)}>
+              {selectedCourse.shortName}
+            </button>
+          ) : null}
+          {selectedCourse?.id === P3_COURSE_ID ? (
+            <>
+              <button className={viewMode === 'index' || viewMode === 'topic' ? 'active' : ''} type="button" onClick={openP3Topics}>P3 Topics</button>
+              <button className={viewMode === 'exam_training_dashboard' || viewMode === 'start' || viewMode === 'target_topic' || viewMode === 'weak_areas' ? 'active' : ''} type="button" onClick={() => openExamTrainingDashboard()}>Exam Training</button>
+            </>
+          ) : null}
         </nav>
       </header>
 
       {loadError ? <div className="notice">Question bank not loaded: {loadError}</div> : null}
+
+      {viewMode === 'course_selection' ? (
+        <CourseSelector onOpenCourse={openCourse} />
+      ) : null}
+
+      {viewMode === 'course_dashboard' && selectedCourse ? (
+        <CourseDashboard
+          course={selectedCourse}
+          onBackToCourses={navigateCourseSelection}
+          onOpenP3Topics={openP3Topics}
+          onOpenP3ExamTraining={() => openExamTrainingDashboard()}
+        />
+      ) : null}
 
       {viewMode === 'index' ? (
         <TopicIndex
@@ -411,7 +514,7 @@ export default function App() {
           profileId={progress.profile?.id}
           summary={selectedRegionLearningSummary}
           activePage={selectedTopicPage}
-          onBackToIndex={navigateIndex}
+          onBackToIndex={openP3Topics}
           onNavigatePage={(page) => openTopic(selectedTopic, page)}
           onCompleteFieldGuide={() => {
             persistProgressAfterMeaningfulEvent(progressAdapter.completeRegionFieldGuide(selectedRegion.id));
@@ -433,7 +536,7 @@ export default function App() {
             worldProgress={worldProgress}
             selectedRegion={selectedDisplayRegion}
             practiceDisabledReason={examTrainingPracticeDisabledReason}
-            onReturnToMap={navigateIndex}
+            onReturnToMap={openP3Topics}
             onStartPractice={startDashboardPractice}
           />
         </Suspense>
@@ -483,7 +586,7 @@ export default function App() {
                 regionName: selectedDisplayRegion?.name,
               }));
             }}
-            onReturnToMap={navigateIndex}
+            onReturnToMap={openP3Topics}
             onReviewWeak={() => reviewWeakAreas()}
             onContinuePractice={() => {
               chooseNext(progress, examTrainingPracticeMode

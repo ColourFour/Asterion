@@ -1,8 +1,15 @@
 # Asterion
 
-Asterion is a static, image-first CAIE 9709 Paper 3 study website. It builds real HTML files for the homepage, topic hubs, Field Guide pages, Practice Questions pages, and Exam Training, so direct refreshes work on GitHub Pages without a client-side router or a 404 fallback script.
+Asterion is a static CAIE 9709 study hub. Students first choose a course, then enter that course's study page. The initial course shells are:
 
-The question image and mark-scheme image remain the student-facing source of truth. Reviewed topic routing and the P3 skill map are the curriculum authority; OCR text, generated support content, local labels, and legacy labels are support metadata only.
+- P1: Pure Mathematics 1
+- P3: Pure Mathematics 3
+- M1: Mechanics 1
+- S1: Probability & Statistics 1
+
+P3 is currently the most developed section. It keeps the existing image-first topic pages, Field Guides, Practice Questions, and Exam Training under `/p3/`. P1, M1, and S1 now have rapid draft seed topic pages so the multi-course site is navigable, but those pages are explicitly labelled as starter content that needs syllabus-contract review.
+
+For P3, the question image and mark-scheme image remain the student-facing source of truth. Reviewed topic routing and the P3 skill map are the curriculum authority; OCR text, generated support content, local labels, and legacy labels are support metadata only.
 
 ## Current Shape
 
@@ -10,22 +17,43 @@ The production site is a static multi-page website:
 
 ```text
 docs/index.html
+docs/p1/index.html
+docs/p1/topics/index.html
+docs/p1/topics/quadratics/index.html
+docs/p1/topics/quadratics/field-guide/index.html
+docs/p1/topics/quadratics/practice/index.html
+docs/p3/index.html
+docs/p3/topics/index.html
+docs/p3/topics/algebra/index.html
+docs/p3/topics/algebra/field-guide/index.html
+docs/p3/topics/algebra/practice/index.html
+docs/p3/topics/logarithms/index.html
+docs/p3/topics/trigonometry/index.html
+docs/p3/topics/argand/index.html
+docs/p3/topics/calculus/index.html
+docs/p3/topics/integration/index.html
+docs/p3/topics/vectors/index.html
+docs/p3/topics/iteration/index.html
+docs/p3/topics/differential-equations/index.html
+docs/p3/exam-training/index.html
+docs/m1/index.html
+docs/m1/topics/index.html
+docs/m1/topics/forces-equilibrium/index.html
+docs/m1/topics/forces-equilibrium/field-guide/index.html
+docs/m1/topics/forces-equilibrium/practice/index.html
+docs/s1/index.html
+docs/s1/topics/index.html
+docs/s1/topics/data-representation/index.html
+docs/s1/topics/data-representation/field-guide/index.html
+docs/s1/topics/data-representation/practice/index.html
 docs/regions/index.html
 docs/topics/algebra/index.html
-docs/topics/algebra/field-guide/index.html
-docs/topics/algebra/practice/index.html
-docs/topics/logarithms/index.html
-docs/topics/trigonometry/index.html
-docs/topics/argand/index.html
-docs/topics/calculus/index.html
-docs/topics/integration/index.html
-docs/topics/vectors/index.html
-docs/topics/iteration/index.html
-docs/topics/differential-equations/index.html
 docs/exam-training/index.html
 ```
 
-Each topic also gets `field-guide/index.html` and `practice/index.html`. The build writes 30 HTML pages in total.
+Each P3 topic gets `field-guide/index.html` and `practice/index.html` under `/p3/topics/`. Each seeded P1/M1/S1 topic now gets the same three-page static pattern under its course prefix, plus a course-level `exam-training/index.html` placeholder. The unprefixed `/topics/...`, `/regions/`, and `/exam-training/` pages remain as P3 compatibility URLs, but the primary student flow starts at the course selector and routes courses through `/p1/`, `/p3/`, `/m1/`, and `/s1/`. The build currently writes 124 HTML pages in total.
+
+P1/M1/S1 seed content lives in `src/data/courseSeedContent.ts`. It was drafted from the Cambridge International AS & A Level Mathematics 9709 syllabus headings for a fast audit pass. The [official Cambridge 9709 syllabus](https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf) remains the source of truth; a later syllabus-contract audit must verify topic coverage, wording, formula scope, and exam alignment before treating these pages as final.
 
 The site does not require a backend, authentication, Supabase, a React router, an app shell, GitHub Actions deployment, or a GitHub Pages 404 restore script.
 
@@ -70,11 +98,22 @@ npm run preview
 Open the Vite preview URL and test direct URLs such as:
 
 ```text
-/regions/
-/topics/algebra/
-/topics/algebra/field-guide/
-/topics/algebra/practice/
-/exam-training/
+/
+/p1/
+/p1/topics/
+/p1/topics/quadratics/
+/p3/
+/p3/topics/
+/p3/topics/algebra/
+/p3/topics/algebra/field-guide/
+/p3/topics/algebra/practice/
+/p3/exam-training/
+/m1/
+/m1/topics/
+/m1/topics/forces-equilibrium/
+/s1/
+/s1/topics/
+/s1/topics/data-representation/
 ```
 
 ## GitHub Pages
@@ -100,7 +139,7 @@ https://username.github.io/Asterion/
 can serve nested pages such as:
 
 ```text
-https://username.github.io/Asterion/topics/algebra/practice/
+https://username.github.io/Asterion/p3/topics/algebra/practice/
 ```
 
 because the matching `index.html` file exists and asset links resolve relative to that file.
@@ -135,6 +174,8 @@ public/data/generated_practice_bank.json
 The static generator reuses existing normalizers and selection helpers rather than duplicating routing or image path logic in page templates.
 
 Historical Content Lab planning should not be stored in `docs/`, because that folder is now the committed GitHub Pages artifact.
+
+P1, M1, and S1 draft seed pages are static study notes only. They do not create mastery evidence, attempt records, exam-bank mappings, or adaptive routing. Do not copy the P3 skill map or route evidence into another course as a shortcut; replace the seed notes with reviewed course-specific contracts when that audit is complete.
 
 ## Validation
 
