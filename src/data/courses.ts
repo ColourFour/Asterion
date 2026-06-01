@@ -1,4 +1,5 @@
 import { courseSeedTopicSummaries } from './courseSeedContent';
+import type { PaperFamily } from '../types';
 
 export type CourseId = 'p1' | 'p3' | 'm1' | 's1';
 
@@ -18,6 +19,7 @@ export interface CourseMetadata {
   shortName: string;
   shortDescription: string;
   examComponentLabel: string;
+  paperFamilies: PaperFamily[];
   status: CourseStatus;
   statusLabel: string;
   coverageSummary: string;
@@ -34,6 +36,7 @@ export const COURSES: CourseMetadata[] = [
     shortName: 'P1',
     shortDescription: 'Core algebra, functions, coordinate geometry, sequences, binomial expansion, trigonometry, differentiation, and integration foundations.',
     examComponentLabel: 'Paper 1 / Pure Mathematics 1',
+    paperFamilies: ['p1'],
     status: 'draft-seed',
     statusLabel: 'Draft seed',
     coverageSummary: 'Rapid draft seed content is available for first audit. It follows the official 9709 P1 syllabus headings but still needs syllabus-contract review before it is treated as final.',
@@ -46,6 +49,7 @@ export const COURSES: CourseMetadata[] = [
     shortName: 'P3',
     shortDescription: 'The most developed course shell, with current image-first topic pages, Field Guides, Practice Questions, and Exam Training.',
     examComponentLabel: 'Paper 3 / Pure Mathematics 3',
+    paperFamilies: ['p3'],
     status: 'partial',
     statusLabel: 'Partial content ready',
     coverageSummary: 'P3 has the existing static topic pages and exam-image practice. It remains reviewed against the current P3 skill map.',
@@ -64,6 +68,7 @@ export const COURSES: CourseMetadata[] = [
     shortName: 'M1',
     shortDescription: 'Forces, motion, Newtonian modelling, momentum, constant and variable acceleration, and connected-particle mechanics.',
     examComponentLabel: 'Mechanics 1',
+    paperFamilies: ['p4'],
     status: 'draft-seed',
     statusLabel: 'Draft seed',
     coverageSummary: 'Rapid draft seed content is available for first audit. It follows the official 9709 Mechanics 1 syllabus headings but still needs syllabus-contract review before it is treated as final.',
@@ -76,6 +81,7 @@ export const COURSES: CourseMetadata[] = [
     shortName: 'S1',
     shortDescription: 'Data representation, probability, discrete distributions, normal distribution, and statistical sampling.',
     examComponentLabel: 'Probability & Statistics 1',
+    paperFamilies: ['p5'],
     status: 'draft-seed',
     statusLabel: 'Draft seed',
     coverageSummary: 'Rapid draft seed content is available for first audit. It follows the official 9709 Probability & Statistics 1 syllabus headings but still needs syllabus-contract review before it is treated as final.',

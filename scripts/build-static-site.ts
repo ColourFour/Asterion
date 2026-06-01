@@ -14,7 +14,13 @@ import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopi
 import { buildSkillChecklistTopicGroups, totalSkillChecklistItems, type SkillChecklistTopicGroup } from '../src/lib/skillChecklist';
 import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData, reviewedGeneratedPractice, type GeneratedPracticeItem } from '../src/lib/generatedPractice';
 import { normalizeQuestionBankWithDiagnostics } from '../src/lib/normalizeQuestionBank';
-import { filterTrainableQuestionsForRegion, isTrainableP3Question } from '../src/lib/questionTraining';
+import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from '../src/lib/questionTraining';
+import {
+  filterCourseExamQuestions,
+  filterCourseTopicExamQuestions,
+  readableRoutingTopicLabel,
+  seedTopicForCourseQuestion,
+} from '../src/lib/courseExamTraining';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS, STATIC_STUDY_PAGE_ROUTES } from '../src/lib/staticStudyRoutes';
 import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
@@ -33,6 +39,8 @@ if (!['docs', 'dist'].includes(path.relative(repoRoot, outputRoot))) {
 
 interface StaticSiteData {
   questions: NormalizedQuestion[];
+  catalogRecords: NormalizedQuestion[];
+  catalogQuestions: NormalizedQuestion[];
   generatedPractice: GeneratedPracticeItem[];
   teachingSnippets: TeachingSnippet[];
 }
@@ -178,6 +186,27 @@ function hrefToPublicAsset(fromPagePath: string, publicPath: string): string {
   return relative || path.posix.basename(clean);
 }
 
+function publicAssetExists(publicPath: string): boolean {
+  if (/^https?:\/\//i.test(publicPath)) return true;
+  const clean = publicPath.replace(/^\/+/, '');
+  return existsSync(path.join(publicRoot, clean));
+}
+
+function firstExistingAssetCandidate(candidateGroups: string[][], fallbackUrls: string[]): string | undefined {
+  for (const group of candidateGroups) {
+    const match = group.find(publicAssetExists);
+    if (match) return match;
+  }
+  return fallbackUrls.find(publicAssetExists);
+}
+
+function hasExistingQuestionImagePair(question: NormalizedQuestion): boolean {
+  return Boolean(
+    firstExistingAssetCandidate(question.questionImageCandidates, question.questionImageUrls)
+    && firstExistingAssetCandidate(question.markSchemeImageCandidates, question.markSchemeImageUrls),
+  );
+}
+
 function coursePagePath(course: CourseMetadata): string {
   return `${course.slug}/index.html`;
 }
@@ -196,6 +225,10 @@ function seedFieldGuidePagePath(course: CourseMetadata, topic: CourseSeedTopic):
 
 function seedPracticePagePath(course: CourseMetadata, topic: CourseSeedTopic): string {
   return `${course.slug}/topics/${topic.slug}/practice/index.html`;
+}
+
+function seedTopicExamTrainingPagePath(course: CourseMetadata, topic: CourseSeedTopic): string {
+  return `${course.slug}/topics/${topic.slug}/exam-training/index.html`;
 }
 
 function seedExamTrainingPagePath(course: CourseMetadata): string {
@@ -228,6 +261,14 @@ function practicePagePath(topic: StudyTopic): string {
 
 function legacyPracticePagePath(topic: StudyTopic): string {
   return `topics/${topic.slug}/practice/index.html`;
+}
+
+function topicExamTrainingPagePath(topic: StudyTopic): string {
+  return `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`;
+}
+
+function legacyTopicExamTrainingPagePath(topic: StudyTopic): string {
+  return `topics/${topic.slug}/exam-training/index.html`;
 }
 
 function routeLink(fromPagePath: string, targetPagePath: string, label: string, className?: string): string {
@@ -343,7 +384,7 @@ function renderStudyPath(): string {
   `;
 }
 
-function renderTopicCard(fromPagePath: string, context: TopicContext): string {
+function renderTopicCard(fromPagePath: string, context: TopicContext, examTrainingPath = topicExamTrainingPagePath(context.topic)): string {
   const { topic, region } = context;
   return `
     <article class="topic-card" data-region-card="${escapeAttr(region.id)}">
@@ -353,6 +394,7 @@ function renderTopicCard(fromPagePath: string, context: TopicContext): string {
       <div class="button-row">
         ${routeLink(fromPagePath, fieldGuidePagePath(topic), 'Start Field Guide', 'button secondary-button')}
         ${routeLink(fromPagePath, practicePagePath(topic), 'Practice now', 'button text-button')}
+        ${routeLink(fromPagePath, examTrainingPath, 'Exam Training', 'button text-button')}
         ${routeLink(fromPagePath, topicPagePath(topic), 'Topic overview', 'button text-button')}
       </div>
     </article>
@@ -380,6 +422,7 @@ function renderSeedTopicCard(fromPagePath: string, course: CourseMetadata, topic
         ${routeLink(fromPagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button primary-button')}
         ${routeLink(fromPagePath, seedFieldGuidePagePath(course, topic), 'Field Guide', 'button secondary-button')}
         ${routeLink(fromPagePath, seedPracticePagePath(course, topic), 'Practice placeholder', 'button text-button')}
+        ${routeLink(fromPagePath, seedTopicExamTrainingPagePath(course, topic), 'Exam Training', 'button text-button')}
       </div>
     </article>
   `;
@@ -473,7 +516,7 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
   const examAction = isP3
     ? routeLink(pagePath, `${P3_COURSE_ID}/exam-training/index.html`, 'Open Exam Training', 'button secondary-button')
     : hasSeedContent
-      ? routeLink(pagePath, seedExamTrainingPagePath(course), 'Open exam-training placeholder', 'button secondary-button')
+      ? routeLink(pagePath, seedExamTrainingPagePath(course), 'Open Exam Training', 'button secondary-button')
       : '<span class="button disabled-button" aria-disabled="true">Exam practice coming soon</span>';
   const heroFormula = isP3
     ? '\\int f(x)\\,dx \\quad \\mathbf{a}\\cdot\\mathbf{b} \\quad z=x+iy'
@@ -523,7 +566,7 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
       <article class="entry-card">
         <p class="eyebrow">Exam preparation</p>
         <h2>Exam-style practice</h2>
-        <p>${isP3 ? 'Use the existing mixed P3 image-first exam practice.' : hasSeedContent ? 'Exam-training pages describe directions to audit before real exam-bank mapping.' : 'Exam-style practice is not populated yet.'}</p>
+        <p>${isP3 ? 'Use the existing mixed P3 image-first exam practice.' : hasSeedContent ? 'Use catalog-wired Exam Training pages. Image cards appear only when local question and mark-scheme crops exist.' : 'Exam-style practice is not populated yet.'}</p>
         ${examAction}
       </article>
     </section>
@@ -594,7 +637,7 @@ function renderSeedTopicsIndexPage(course: CourseMetadata): string {
       'Choose a topic to audit the starter notes, Field Guide outline, and practice placeholders.',
       firstTopic?.headerFormula,
       `${firstTopic ? routeLink(pagePath, seedTopicPagePath(course, firstTopic), `Start ${firstTopic.shortTitle}`, 'button primary-button') : ''}
-      ${routeLink(pagePath, seedExamTrainingPagePath(course), 'Exam-training placeholder', 'button secondary-button')}`,
+      ${routeLink(pagePath, seedExamTrainingPagePath(course), 'Exam Training', 'button secondary-button')}`,
       course.examComponentLabel,
     )}
     ${renderDraftNotice('Official 9709 syllabus headings guided this seed pass. These pages are not final course contracts.')}
@@ -622,13 +665,15 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
   const pagePath = seedTopicPagePath(course, topic);
   const fieldGuidePath = seedFieldGuidePagePath(course, topic);
   const practicePath = seedPracticePagePath(course, topic);
+  const examTrainingPath = seedTopicExamTrainingPagePath(course, topic);
   const body = `
     ${renderHero(
       `${topic.title} Study`,
       topic.description,
       topic.headerFormula,
       `${routeLink(pagePath, fieldGuidePath, 'Open Field Guide', 'button primary-button')}
-      ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button secondary-button')}`,
+      ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button secondary-button')}
+      ${routeLink(pagePath, examTrainingPath, 'Exam Training', 'button text-button')}`,
       `${course.shortName} ${topic.syllabusRef}`,
     )}
     ${renderDraftNotice('This page is starter content for navigation and audit. It does not create mastery status, completion status, or exam-bank evidence.')}
@@ -678,6 +723,7 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
       <h2>Practice placeholder</h2>
       <p>${escapeHtml(topic.practiceHook)}</p>
       ${routeLink(pagePath, practicePath, 'Open practice placeholder', 'button primary-button')}
+      ${routeLink(pagePath, examTrainingPath, 'Open Exam Training', 'button secondary-button')}
       ${routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Back to ${course.shortName} topics`, 'button secondary-button')}
     </section>
   `;
@@ -741,8 +787,11 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
   });
 }
 
-function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic): string {
+function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, data?: StaticSiteData): string {
   const pagePath = seedPracticePagePath(course, topic);
+  const examTrainingPath = seedTopicExamTrainingPagePath(course, topic);
+  const availableExamQuestions = data ? filterCourseTopicExamQuestions(data.catalogQuestions, course, topic).length : 0;
+  const routedCatalogRecords = data ? filterCourseTopicExamQuestions(data.catalogRecords, course, topic).length : 0;
   const body = `
     ${renderHero(
       `${topic.title} Practice Placeholder`,
@@ -784,7 +833,12 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic):
         </div>
       </div>
       ${renderPlainList(topic.examStyle)}
-      <p class="empty-state">Reviewed exam-bank questions for ${escapeHtml(course.shortName)} are not wired in this seed pass.</p>
+      <p class="empty-state">${availableExamQuestions > 0
+        ? `${availableExamQuestions} catalog question image pair${availableExamQuestions === 1 ? '' : 's'} are available for this rough topic route. They still need course-contract review.`
+        : routedCatalogRecords > 0
+          ? `${routedCatalogRecords} catalog record${routedCatalogRecords === 1 ? '' : 's'} match this rough topic route, but local question and mark-scheme image files are missing.`
+          : `No catalog question image pairs are currently routed to this draft topic.`}</p>
+      ${routeLink(pagePath, examTrainingPath, 'Open topic Exam Training', 'button primary-button')}
     </section>
   `;
   return renderPage({
@@ -796,43 +850,142 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic):
   });
 }
 
-function renderSeedExamTrainingPage(course: CourseMetadata): string {
+function courseTrainingQuestions(data: StaticSiteData, course: CourseMetadata): NormalizedQuestion[] {
+  const source = course.id === P3_COURSE_ID ? data.questions : data.catalogQuestions;
+  return filterCourseExamQuestions(source, course);
+}
+
+function courseQuestionDisplayTopic(course: CourseMetadata, question: NormalizedQuestion): string {
+  return seedTopicForCourseQuestion(course, question)?.title
+    ?? readableRoutingTopicLabel(question)
+    ?? cleanVisibleCopy(question.displayTopic)
+    ?? course.displayName;
+}
+
+function courseQuestionReviewNote(course: CourseMetadata): string | undefined {
+  if (course.id === P3_COURSE_ID) return undefined;
+  return 'Catalog image pair; route is not yet a reviewed course contract or mastery signal.';
+}
+
+function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData): string {
   const pagePath = seedExamTrainingPagePath(course);
   const topics = getSeedTopicsForCourse(course.id);
+  const questions = courseTrainingQuestions(data, course);
+  const catalogRecords = filterCourseExamQuestions(data.catalogRecords, course);
+  const mixedQuestions = questions.slice(0, 12);
   const body = `
     ${renderHero(
-      `${course.shortName} Exam-Training Placeholder`,
-      'This page gives a first navigation target for exam preparation, but real exam-bank mapping is intentionally deferred.',
+      `${course.shortName} Exam Training`,
+      'Catalog wiring is active for build-first practice. Question cards appear only when local question and mark-scheme image files exist.',
       topics[0]?.headerFormula,
       routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Back to ${course.shortName} topics`, 'button primary-button'),
       course.examComponentLabel,
     )}
-    ${renderDraftNotice('No official question images, mark schemes, mastery evidence, or adaptive selection are connected for this course yet.')}
+    ${renderDraftNotice('Exam-bank metadata is wired from the catalog, but this course is not fully reviewed. Do not treat these routes as mastery evidence or official progress evidence yet.')}
+    <section class="exam-callout compact-callout">
+      <div>
+        <p class="eyebrow">Catalog availability</p>
+        <h2>${questions.length} image pair${questions.length === 1 ? '' : 's'} available</h2>
+        <p>${catalogRecords.length > questions.length
+          ? `${catalogRecords.length} catalog record${catalogRecords.length === 1 ? '' : 's'} exist, but only records with local question and mark-scheme image files can be shown.`
+          : 'Question crops and mark-scheme crops are the source of truth. Extracted text and route labels are advisory.'}</p>
+      </div>
+      ${questions.length ? '<a class="button primary-button" href="#mixed-questions">Start with mixed questions</a>' : ''}
+    </section>
+    <section class="exam-question-section" id="mixed-questions">
+      <div class="section-heading">
+        <div>
+          <h2>Mixed ${escapeHtml(course.shortName)} questions</h2>
+          <p>Use these for paper practice only while course routing is awaiting review.</p>
+        </div>
+      </div>
+      <div class="exam-question-grid">
+        ${mixedQuestions.map((question) => renderExamQuestionCard(question, pagePath, {
+          displayTopic: courseQuestionDisplayTopic(course, question),
+          allowAttemptSave: false,
+          reviewNote: courseQuestionReviewNote(course),
+        })).join('')}
+      </div>
+      ${mixedQuestions.length === 0 ? `<p class="empty-state">${catalogRecords.length
+        ? 'Catalog records exist for this course, but no referenced question and mark-scheme image files are present in this checkout.'
+        : 'No usable question and mark-scheme image pairs are available for this course yet.'}</p>` : ''}
+    </section>
     <section class="exam-topic-dashboard" aria-label="${escapeAttr(course.shortName)} draft exam directions">
       <div class="section-heading">
         <div>
-          <h2>Topic directions for later audit</h2>
-          <p>Use this list to decide which draft topic pages need syllabus, wording, and exam-alignment review first.</p>
+          <h2>Topic routes</h2>
+          <p>Use topic links when the routing sidecar has a matching course topic. Empty topics are shown honestly.</p>
         </div>
       </div>
       <div class="exam-topic-list">
-        ${topics.map((topic) => `
+        ${topics.map((topic) => {
+          const topicQuestions = filterCourseTopicExamQuestions(data.catalogQuestions, course, topic);
+          const topicRecords = filterCourseTopicExamQuestions(data.catalogRecords, course, topic);
+          return `
           <article class="exam-topic-row">
             <div>
               <p class="eyebrow">${escapeHtml(topic.syllabusRef)}</p>
               <h3>${escapeHtml(topic.title)}</h3>
-              <p>${escapeHtml(topic.examTrainingHook)}</p>
+              <p>${topicQuestions.length > 0
+                ? `${topicQuestions.length} catalog image pair${topicQuestions.length === 1 ? '' : 's'} matched by rough topic routing.`
+                : topicRecords.length > 0
+                  ? `${topicRecords.length} catalog record${topicRecords.length === 1 ? '' : 's'} matched, but local image files are missing.`
+                  : 'No catalog image pairs are currently matched to this draft topic.'}</p>
             </div>
-            ${routeLink(pagePath, seedPracticePagePath(course, topic), 'Practice placeholder', 'button secondary-button')}
+            ${routeLink(pagePath, seedTopicExamTrainingPagePath(course, topic), 'Open topic Exam Training', 'button secondary-button')}
           </article>
-        `).join('')}
+        `;
+        }).join('')}
       </div>
     </section>
   `;
   return renderPage({
     pagePath,
-    title: `${course.shortName} Exam-Training Placeholder`,
-    description: `Draft exam-training placeholder for ${course.displayName}.`,
+    title: `${course.shortName} Exam Training`,
+    description: `Static Exam Training for ${course.displayName}.`,
+    active: course.id,
+    body,
+  });
+}
+
+function renderSeedTopicExamTrainingPage(course: CourseMetadata, topic: CourseSeedTopic, data: StaticSiteData): string {
+  const pagePath = seedTopicExamTrainingPagePath(course, topic);
+  const questions = filterCourseTopicExamQuestions(data.catalogQuestions, course, topic).slice(0, 16);
+  const catalogRecords = filterCourseTopicExamQuestions(data.catalogRecords, course, topic);
+  const body = `
+    ${renderHero(
+      `${topic.title} Exam Training`,
+      'Use available question and mark-scheme images for paper practice. This route is intentionally labelled review-needed.',
+      topic.headerFormula,
+      `${routeLink(pagePath, seedExamTrainingPagePath(course), `Back to ${course.shortName} Exam Training`, 'button secondary-button')}
+      ${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button text-button')}`,
+      `${course.shortName} ${topic.syllabusRef}`,
+    )}
+    ${renderDraftNotice('Topic routing for this course is rough. These image pairs are not mastery evidence, adaptive evidence, or final syllabus-contract coverage.')}
+    <section class="exam-question-section" id="topic-exam-questions">
+      <div class="section-heading">
+        <div>
+          <h2>Image-first exam questions</h2>
+          <p>Question crops and mark-scheme crops are the source of truth. Route labels are advisory until review.</p>
+        </div>
+      </div>
+      <div class="exam-question-grid">
+        ${questions.map((question) => renderExamQuestionCard(question, pagePath, {
+          displayTopic: topic.title,
+          displaySubtopic: readableRoutingTopicLabel(question),
+          allowAttemptSave: false,
+          reviewNote: courseQuestionReviewNote(course),
+        })).join('')}
+      </div>
+      ${questions.length === 0 ? `<p class="empty-state">${catalogRecords.length
+        ? `${catalogRecords.length} catalog record${catalogRecords.length === 1 ? '' : 's'} are routed to ${escapeHtml(topic.title)}, but the referenced question and mark-scheme image files are not present locally.`
+        : `No catalog question and mark-scheme image pairs are currently routed to ${escapeHtml(topic.title)}. This needs review rather than placeholder content.`}</p>` : ''}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${course.shortName} ${topic.title} Exam Training`,
+    description: `Static Exam Training images for ${topic.title}.`,
     active: course.id,
     body,
   });
@@ -882,6 +1035,7 @@ function renderTopicHubPage(
   pagePath = topicPagePath(context.topic),
   fieldGuidePath = fieldGuidePagePath(context.topic),
   practicePath = practicePagePath(context.topic),
+  examTrainingPath = topicExamTrainingPagePath(context.topic),
 ): string {
   const { topic, region, fieldGuideTopics, questions, groups } = context;
   const totalPracticeItems = groups.reduce((sum, group) => sum + totalSkillChecklistItems(group), 0);
@@ -891,7 +1045,8 @@ function renderTopicHubPage(
       'Recommended path: learn the method first. If this topic is already secure, go straight to Practice Questions.',
       topic.headerFormula,
       `${routeLink(pagePath, fieldGuidePath, 'Start Field Guide', 'button primary-button')}
-      ${routeLink(pagePath, practicePath, 'Practice now', 'button secondary-button')}`,
+      ${routeLink(pagePath, practicePath, 'Practice now', 'button secondary-button')}
+      ${routeLink(pagePath, examTrainingPath, 'Exam Training', 'button text-button')}`,
     )}
     ${renderStudyPath()}
     <section class="topic-overview-grid">
@@ -921,6 +1076,12 @@ function renderTopicHubPage(
         <h2>Practice Questions</h2>
         <p>Go straight to focused questions and image-first exam practice.</p>
         ${routeLink(pagePath, practicePath, 'Practice now', 'button secondary-button')}
+      </article>
+      <article class="entry-card">
+        <p class="eyebrow">Exam images</p>
+        <h2>Exam Training</h2>
+        <p>Use reviewed question and mark-scheme image pairs for this topic.</p>
+        ${routeLink(pagePath, examTrainingPath, 'Open Exam Training', 'button secondary-button')}
       </article>
     </section>
   `;
@@ -1214,19 +1375,32 @@ function displayTopicForQuestion(question: NormalizedQuestion): string {
   return topic?.name ?? cleanVisibleCopy(question.displayTopic);
 }
 
-function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string): string {
-  const questionImage = question.questionImageUrls[0];
-  const markSchemeImage = question.markSchemeImageUrls[0];
+interface ExamQuestionCardOptions {
+  displayTopic?: string;
+  displaySubtopic?: string;
+  allowAttemptSave?: boolean;
+  reviewNote?: string;
+  validatedRegionId?: string;
+  displayRegionId?: string;
+}
+
+function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, options: ExamQuestionCardOptions = {}): string {
+  const questionImage = firstExistingAssetCandidate(question.questionImageCandidates, question.questionImageUrls);
+  const markSchemeImage = firstExistingAssetCandidate(question.markSchemeImageCandidates, question.markSchemeImageUrls);
   if (!questionImage || !markSchemeImage) return '';
   const totalMarks = marksAvailable(question);
+  const displayTopic = options.displayTopic ?? displayTopicForQuestion(question);
+  const displaySubtopic = options.displaySubtopic ?? question.displaySubtopic;
+  const allowAttemptSave = options.allowAttemptSave ?? true;
   return `
     <article class="exam-question-card" id="question-${escapeAttr(question.id)}">
       <header>
         <div>
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
-          <h3>${escapeHtml(displayTopicForQuestion(question))}</h3>
-          ${question.displaySubtopic ? `<p>${escapeHtml(question.displaySubtopic)}</p>` : ''}
+          <h3>${escapeHtml(displayTopic)}</h3>
+          ${displaySubtopic ? `<p>${escapeHtml(displaySubtopic)}</p>` : ''}
           <p class="question-instruction">Work on paper first, then use the mark scheme to self-mark.</p>
+          ${options.reviewNote ? `<p class="question-instruction">${escapeHtml(options.reviewNote)}</p>` : ''}
         </div>
         <span class="marks-pill">${totalMarks} mark${totalMarks === 1 ? '' : 's'}</span>
       </header>
@@ -1239,7 +1413,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string):
           <img loading="lazy" src="${hrefToPublicAsset(pagePath, markSchemeImage)}" alt="${escapeAttr(`${questionTitle(question)} mark scheme image`)}" />
         </figure>
       </details>
-      <form class="attempt-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopicForQuestion(question))}" data-subtopic="${escapeAttr(question.displaySubtopic)}" data-marks-available="${totalMarks}" data-validated-region-id="${escapeAttr(question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(question.routeEvidence?.displayRegionId)}">
+      ${allowAttemptSave ? `<form class="attempt-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
         <label>
           Marks earned after marking
           <input name="marksEarned" type="number" min="0" max="${totalMarks}" step="1" required />
@@ -1260,7 +1434,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string):
         </label>
         <button class="button primary-button" type="submit">Save attempt locally</button>
         <p class="form-status" role="status"></p>
-      </form>
+      </form>` : '<p class="empty-state">Use this image pair for practice only. Saving marks as progress is held back until this course routing is reviewed.</p>'}
     </article>
   `;
 }
@@ -1317,7 +1491,45 @@ function renderPracticePage(
   });
 }
 
-function renderExamTrainingTopicCard(fromPagePath: string, context: TopicContext, practicePath = practicePagePath(context.topic)): string {
+function renderTopicExamTrainingPage(
+  context: TopicContext,
+  pagePath = topicExamTrainingPagePath(context.topic),
+  topicsIndexPath = p3TopicsIndexPagePath(),
+  practicePath = practicePagePath(context.topic),
+): string {
+  const { topic, questions } = context;
+  const body = `
+    ${renderHero(
+      `${topic.name} Exam Training`,
+      'Use reviewed Paper 3 question and mark-scheme image pairs for this topic.',
+      topic.headerFormula,
+      `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start topic questions</a>' : ''}
+      ${routeLink(pagePath, practicePath, 'Practice Questions', 'button secondary-button')}
+      ${routeLink(pagePath, topicsIndexPath, 'Back to P3 topics', 'button text-button')}`,
+    )}
+    <section class="exam-question-section" id="topic-exam-questions">
+      <div class="section-heading">
+        <div>
+          <h2>Image-first exam questions</h2>
+          <p>Try the question image first. Reveal the mark scheme only when you are ready to mark your work.</p>
+        </div>
+      </div>
+      <div class="exam-question-grid">
+        ${questions.map((question) => renderExamQuestionCard(question, pagePath)).join('')}
+      </div>
+      ${questions.length === 0 ? '<p class="empty-state">No reviewed image-first questions are currently mapped cleanly to this P3 topic.</p>' : ''}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${topic.name} Exam Training`,
+    description: `Static Exam Training questions for ${topic.name}.`,
+    active: 'p3-exam-training',
+    body,
+  });
+}
+
+function renderExamTrainingTopicCard(fromPagePath: string, context: TopicContext, examTrainingPath = topicExamTrainingPagePath(context.topic)): string {
   const total = Math.max(1, context.fieldGuideTopics.length);
   return `
     <article class="exam-topic-row" data-region-card="${escapeAttr(context.region.id)}">
@@ -1325,7 +1537,7 @@ function renderExamTrainingTopicCard(fromPagePath: string, context: TopicContext
         <h3>${escapeHtml(context.topic.name)}</h3>
         ${compactProgress(context.region.id, total)}
       </div>
-      ${routeLink(fromPagePath, practicePath, 'Practice this topic', 'button secondary-button')}
+      ${routeLink(fromPagePath, examTrainingPath, 'Open topic Exam Training', 'button secondary-button')}
     </article>
   `;
 }
@@ -1334,7 +1546,7 @@ function renderExamTrainingPage(
   data: StaticSiteData,
   pagePath = `${P3_COURSE_ID}/exam-training/index.html`,
   topicsIndexPath = p3TopicsIndexPagePath(),
-  practicePathForTopic = practicePagePath,
+  examTrainingPathForTopic = topicExamTrainingPagePath,
 ): string {
   const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
   const mixedQuestions = data.questions
@@ -1356,8 +1568,8 @@ function renderExamTrainingPage(
         <p>Use the totals as a revision guide, not a grade.</p>
       </div>
       <div class="exam-stats">
-        <span data-total-attempts>0 saved Paper 3 attempts</span>
-        <span data-topic-tried-count>0 topic areas tried</span>
+        <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>
+        <span data-topic-tried-count data-paper-family="p3">0 topic areas tried</span>
       </div>
     </section>
     <details class="jump-details">
@@ -1387,7 +1599,7 @@ function renderExamTrainingPage(
         </div>
       </div>
       <div class="exam-topic-list">
-        ${contexts.map((context) => renderExamTrainingTopicCard(pagePath, context, practicePathForTopic(context.topic))).join('')}
+        ${contexts.map((context) => renderExamTrainingTopicCard(pagePath, context, examTrainingPathForTopic(context.topic))).join('')}
       </div>
     </section>
   `;
@@ -1444,15 +1656,22 @@ async function copyStaticAssets(): Promise<void> {
 
 async function loadStaticSiteData(): Promise<StaticSiteData> {
   const questionBank = await readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
+  const catalogQuestionBank = await readJson('public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json');
   const topicRouting = await readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
   const generatedPracticeJson = await readJson('public/data/generated_practice_bank.json');
   const teachingSnippetsJson = await readJson('public/data/teaching_snippets.json');
   const { questions } = normalizeQuestionBankWithDiagnostics(questionBank, {}, topicRouting, {
     contentSourceKind: 'projected-bank',
   });
+  const { questions: normalizedCatalogQuestions } = normalizeQuestionBankWithDiagnostics(catalogQuestionBank, {}, topicRouting, {
+    contentSourceKind: 'raw-bank-fallback',
+  });
+  const catalogRecords = normalizedCatalogQuestions.filter(isQuestionTrainable);
 
   return {
     questions: questions.filter(isTrainableP3Question),
+    catalogRecords,
+    catalogQuestions: catalogRecords.filter(hasExistingQuestionImagePair),
     generatedPractice: reviewedGeneratedPractice(normalizeGeneratedPracticeData(generatedPracticeJson)),
     teachingSnippets: reviewedTeachingSnippets(normalizeTeachingSnippetsData(teachingSnippetsJson)),
   };
@@ -1491,11 +1710,12 @@ async function generate(): Promise<void> {
     const seedTopics = getSeedTopicsForCourse(course.id);
     if (seedTopics.length) {
       htmlByPath.set(seedCourseTopicsIndexPagePath(course), renderSeedTopicsIndexPage(course));
-      htmlByPath.set(seedExamTrainingPagePath(course), renderSeedExamTrainingPage(course));
+      htmlByPath.set(seedExamTrainingPagePath(course), renderSeedExamTrainingPage(course, data));
       for (const topic of seedTopics) {
         htmlByPath.set(seedTopicPagePath(course, topic), renderSeedTopicHubPage(course, topic));
         htmlByPath.set(seedFieldGuidePagePath(course, topic), renderSeedFieldGuidePage(course, topic));
-        htmlByPath.set(seedPracticePagePath(course, topic), renderSeedPracticePage(course, topic));
+        htmlByPath.set(seedPracticePagePath(course, topic), renderSeedPracticePage(course, topic, data));
+        htmlByPath.set(seedTopicExamTrainingPagePath(course, topic), renderSeedTopicExamTrainingPage(course, topic, data));
       }
     }
   }
@@ -1509,13 +1729,15 @@ async function generate(): Promise<void> {
     htmlByPath.set(topicPagePath(topic), renderTopicHubPage(context));
     htmlByPath.set(fieldGuidePagePath(topic), renderFieldGuidePage(context));
     htmlByPath.set(practicePagePath(topic), renderPracticePage(context));
-    htmlByPath.set(legacyTopicPagePath(topic), renderTopicHubPage(context, legacyTopicPagePath(topic), legacyFieldGuidePagePath(topic), legacyPracticePagePath(topic)));
+    htmlByPath.set(topicExamTrainingPagePath(topic), renderTopicExamTrainingPage(context));
+    htmlByPath.set(legacyTopicPagePath(topic), renderTopicHubPage(context, legacyTopicPagePath(topic), legacyFieldGuidePagePath(topic), legacyPracticePagePath(topic), legacyTopicExamTrainingPagePath(topic)));
     htmlByPath.set(legacyFieldGuidePagePath(topic), renderFieldGuidePage(context, legacyFieldGuidePagePath(topic), legacyPracticePagePath(topic)));
     htmlByPath.set(legacyPracticePagePath(topic), renderPracticePage(context, legacyPracticePagePath(topic), legacyFieldGuidePagePath(topic)));
+    htmlByPath.set(legacyTopicExamTrainingPagePath(topic), renderTopicExamTrainingPage(context, legacyTopicExamTrainingPagePath(topic), p3TopicsIndexPagePath(), legacyPracticePagePath(topic)));
   }
 
   htmlByPath.set(`${P3_COURSE_ID}/exam-training/index.html`, renderExamTrainingPage(data));
-  htmlByPath.set('exam-training/index.html', renderExamTrainingPage(data, 'exam-training/index.html', 'index.html', legacyPracticePagePath));
+  htmlByPath.set('exam-training/index.html', renderExamTrainingPage(data, 'exam-training/index.html', 'index.html', legacyTopicExamTrainingPagePath));
   validateNoVisibleGameTerms(htmlByPath);
 
   for (const [pagePath, html] of htmlByPath) {
@@ -1529,6 +1751,8 @@ async function generate(): Promise<void> {
     generatedBy: 'scripts/build-static-site.ts',
     pages: STATIC_STUDY_PAGE_ROUTES,
     questionCount: data.questions.length,
+    catalogRecordCount: data.catalogRecords.length,
+    catalogQuestionCount: data.catalogQuestions.length,
   }, null, 2)}\n`, 'utf8');
 
   console.log(`Generated ${htmlByPath.size} static HTML pages in ${toPosix(path.relative(repoRoot, outputRoot))}/`);

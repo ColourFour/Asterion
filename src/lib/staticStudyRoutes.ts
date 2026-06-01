@@ -22,8 +22,9 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
         { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} draft topic` },
         { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} draft Field Guide` },
         { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} draft Practice` },
+        { path: `${course.slug}/topics/${topic.slug}/exam-training/index.html`, label: `${course.shortName} ${topic.title} Exam Training` },
       ]),
-      { path: `${course.slug}/exam-training/index.html`, label: `${course.shortName} draft Exam Training` },
+      { path: `${course.slug}/exam-training/index.html`, label: `${course.shortName} Exam Training` },
     ];
   }),
   { path: `${P3_COURSE_ID}/topics/index.html`, label: 'P3 topic index' },
@@ -31,6 +32,7 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/index.html`, label: `P3 ${topic.name} hub` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Field Guide` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`, label: `P3 ${topic.name} Practice Questions` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`, label: `P3 ${topic.name} Exam Training` },
   ]),
   { path: `${P3_COURSE_ID}/exam-training/index.html`, label: 'P3 Exam Training' },
   { path: `${P3_COURSE_ID}/regions/index.html`, label: 'P3 Regions' },
@@ -39,6 +41,7 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
     { path: `topics/${topic.slug}/index.html`, label: `${topic.name} hub` },
     { path: `topics/${topic.slug}/field-guide/index.html`, label: `${topic.name} Field Guide` },
     { path: `topics/${topic.slug}/practice/index.html`, label: `${topic.name} Practice Questions` },
+    { path: `topics/${topic.slug}/exam-training/index.html`, label: `${topic.name} Exam Training` },
   ]),
   { path: 'exam-training/index.html', label: 'Exam Training' },
 ];

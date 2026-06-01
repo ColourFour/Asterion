@@ -16,25 +16,30 @@ describe('static study routes', () => {
       'p1/topics/quadratics/index.html',
       'p1/topics/quadratics/field-guide/index.html',
       'p1/topics/quadratics/practice/index.html',
+      'p1/topics/quadratics/exam-training/index.html',
       'p1/exam-training/index.html',
       'm1/topics/index.html',
       'm1/topics/forces-equilibrium/index.html',
       'm1/topics/forces-equilibrium/field-guide/index.html',
       'm1/topics/forces-equilibrium/practice/index.html',
+      'm1/topics/forces-equilibrium/exam-training/index.html',
       'm1/exam-training/index.html',
       's1/topics/index.html',
       's1/topics/data-representation/index.html',
       's1/topics/data-representation/field-guide/index.html',
       's1/topics/data-representation/practice/index.html',
+      's1/topics/data-representation/exam-training/index.html',
       's1/exam-training/index.html',
       'p3/topics/index.html',
       'p3/topics/algebra/index.html',
       'p3/topics/algebra/field-guide/index.html',
       'p3/topics/algebra/practice/index.html',
+      'p3/topics/algebra/exam-training/index.html',
       'regions/index.html',
       'topics/algebra/index.html',
       'topics/algebra/field-guide/index.html',
       'topics/algebra/practice/index.html',
+      'topics/algebra/exam-training/index.html',
       'topics/logarithms/index.html',
       'topics/trigonometry/index.html',
       'topics/argand/index.html',
@@ -64,15 +69,17 @@ describe('static study routes', () => {
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/field-guide/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/practice/index.html`);
+        expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/exam-training/index.html`);
       }
     }
   });
 
-  it('declares P3-prefixed hub, Field Guide, and Practice Questions pages for every topic', () => {
+  it('declares P3-prefixed hub, Field Guide, Practice Questions, and Exam Training pages for every topic', () => {
     for (const topic of STUDY_TOPICS) {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`);
     }
   });
 
@@ -81,6 +88,7 @@ describe('static study routes', () => {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/field-guide/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/practice/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/exam-training/index.html`);
     }
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('regions/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('exam-training/index.html');

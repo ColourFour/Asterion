@@ -69,9 +69,21 @@
   }
 
   function p3Attempts(progress) {
+    return attemptsForPaperFamily(progress, 'p3');
+  }
+
+  function attemptsForPaperFamily(progress, paperFamily) {
     return progress.attempts.filter(function (attempt) {
-      return String(attempt.paperFamily).toLowerCase() === 'p3';
+      return String(attempt.paperFamily).toLowerCase() === String(paperFamily || 'p3').toLowerCase();
     });
+  }
+
+  function paperFamilyLabel(paperFamily) {
+    var normalized = String(paperFamily || 'p3').toLowerCase();
+    if (normalized === 'p1') return 'Paper 1';
+    if (normalized === 'p4') return 'Mechanics 1';
+    if (normalized === 'p5') return 'Statistics 1';
+    return 'Paper 3';
   }
 
   function updateProgressText() {
@@ -102,12 +114,15 @@
     });
 
     document.querySelectorAll('[data-total-attempts]').forEach(function (node) {
-      var count = p3Attempts(progress).length;
-      node.textContent = count + ' saved Paper 3 attempt' + (count === 1 ? '' : 's');
+      var family = node.getAttribute('data-paper-family') || 'p3';
+      var label = node.getAttribute('data-paper-label') || paperFamilyLabel(family);
+      var count = attemptsForPaperFamily(progress, family).length;
+      node.textContent = count + ' saved ' + label + ' attempt' + (count === 1 ? '' : 's');
     });
 
     document.querySelectorAll('[data-topic-tried-count]').forEach(function (node) {
-      var tried = new Set(p3Attempts(progress).map(function (attempt) {
+      var family = node.getAttribute('data-paper-family') || 'p3';
+      var tried = new Set(attemptsForPaperFamily(progress, family).map(function (attempt) {
         return attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName;
       }).filter(Boolean));
       node.textContent = tried.size + ' topic area' + (tried.size === 1 ? '' : 's') + ' tried';
@@ -251,7 +266,7 @@
       paperFamily: form.getAttribute('data-paper-family') || 'p3',
       paper: form.getAttribute('data-paper') || undefined,
       questionNumber: form.getAttribute('data-question-number') || undefined,
-      topicDisplayName: form.getAttribute('data-topic') || 'Paper 3',
+      topicDisplayName: form.getAttribute('data-topic') || 'Exam question',
       subtopic: form.getAttribute('data-subtopic') || undefined,
       marksEarned: marksEarned,
       marksAvailable: marksAvailable,
@@ -264,7 +279,7 @@
       attemptedAt: now,
       validatedRegionId: form.getAttribute('data-validated-region-id') || undefined,
       displayRegionId: form.getAttribute('data-display-region-id') || undefined,
-      worldName: 'CAIE 9709 Paper 3'
+      worldName: 'CAIE 9709 ' + paperFamilyLabel(form.getAttribute('data-paper-family') || 'p3')
     });
 
     saveProgress(progress);
