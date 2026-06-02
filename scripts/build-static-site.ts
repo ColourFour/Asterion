@@ -417,7 +417,7 @@ function renderSeedTopicCard(fromPagePath: string, course: CourseMetadata, topic
       <p class="eyebrow">${escapeHtml(topic.syllabusRef)}</p>
       <h2>${escapeHtml(topic.title)}</h2>
       <p>${escapeHtml(topic.description)}</p>
-      <p class="seed-topic-status">${escapeHtml(DRAFT_SEED_CONTENT_LABEL)}</p>
+      <p class="seed-topic-status">${escapeHtml(DRAFT_SEED_CONTENT_LABEL)}</p>${renderSeedReviewStatus(topic)}
       <div class="button-row">
         ${routeLink(fromPagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button primary-button')}
         ${routeLink(fromPagePath, seedFieldGuidePagePath(course, topic), 'Field Guide', 'button secondary-button')}
@@ -441,6 +441,22 @@ function renderSeedFormulaList(topic: CourseSeedTopic): string {
     <ul class="formula-list">
       ${topic.formulas.map((formula) => `<li>${renderMathText(formula)}</li>`).join('')}
     </ul>
+  `;
+}
+
+function renderSeedReviewStatus(topic: CourseSeedTopic): string {
+  return topic.reviewStatus
+    ? `<p class="seed-topic-status">${escapeHtml(topic.reviewStatus)}</p>`
+    : '';
+}
+
+function renderOptionalList(title: string, items: string[] | undefined, className = 'plain-list'): string {
+  if (!items?.length) return '';
+  return `
+    <div class="support-details">
+      <h4>${escapeHtml(title)}</h4>
+      ${renderPlainList(items, className)}
+    </div>
   `;
 }
 
@@ -680,14 +696,19 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
     <section class="topic-overview-grid">
       <article class="summary-card">
         <h2>Overview</h2>
-        <p>${escapeHtml(topic.description)}</p>
+        <p>${escapeHtml(topic.description)}</p>${renderSeedReviewStatus(topic)}
         <h3>Key formulae and methods</h3>
         ${renderSeedFormulaList(topic)}
       </article>
       <article class="summary-card">
         <h2>What you need to be able to do</h2>
         ${renderPlainList(topic.studentGoals)}
-      </article>
+      </article>${topic.visualRequirements?.length ? `
+        <article class="summary-card">
+          <h2>Required visual elements</h2>
+          ${renderPlainList(topic.visualRequirements)}
+        </article>
+      ` : ''}
     </section>
     <section class="lesson-stack compact-lesson-stack">
       <article class="lesson-card">
@@ -721,7 +742,7 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
     </section>
     <section class="next-step-card">
       <h2>Practice placeholder</h2>
-      <p>${escapeHtml(topic.practiceHook)}</p>
+      <p>${escapeHtml(topic.practiceHook)}</p>${renderOptionalList('Draft/generated practice prompts', topic.genericPracticePrompts)}
       ${routeLink(pagePath, practicePath, 'Open practice placeholder', 'button primary-button')}
       ${routeLink(pagePath, examTrainingPath, 'Open Exam Training', 'button secondary-button')}
       ${routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Back to ${course.shortName} topics`, 'button secondary-button')}
@@ -767,7 +788,7 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
           </header>
           <article class="lesson-card">
             <h3>Method notes</h3>
-            ${renderPlainList(section.bullets)}
+            ${renderPlainList(section.bullets)}${renderOptionalList('Required visual elements', section.visualRequirements)}${renderOptionalList('Draft/generated practice prompts', section.practicePrompts)}
           </article>
         </article>
       `).join('')}
@@ -823,7 +844,31 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, 
             </article>
           `).join('')}
         </div>
-      </article>
+      </article>${topic.genericPracticePrompts?.length ? `
+        <article class="practice-topic">
+          <header class="topic-section-header">
+            <div>
+              <p class="eyebrow">Draft/generated practice</p>
+              <h2>Source-style prompt scaffolds</h2>
+              <p>These are generic prompt directions for first-pass practice authoring. They are not reviewed exam questions or mark schemes.</p>
+            </div>
+          </header>
+          <div class="practice-card-stack">
+            ${topic.genericPracticePrompts.map((prompt, index) => `
+              <article class="practice-card">
+                <p class="eyebrow">Draft prompt ${index + 1}</p>
+                <h3>${renderMathText(prompt)}</h3>
+                ${topic.visualRequirements?.length ? `
+                  <details>
+                    <summary>Visual setup to include</summary>
+                    ${renderPlainList(topic.visualRequirements)}
+                  </details>
+                ` : ''}
+              </article>
+            `).join('')}
+          </div>
+        </article>
+      ` : ''}
     </section>
     <section class="exam-question-section">
       <div class="section-heading">

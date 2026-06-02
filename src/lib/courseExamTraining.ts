@@ -15,12 +15,19 @@ const seedTopicRoutingAliases: Partial<Record<CourseId, Record<string, string[]>
     integration: ['9709_p1_topic_integration'],
   },
   m1: {
-    'forces-equilibrium': ['9709_m1_topic_forces_and_equilibrium'],
-    kinematics: ['9709_m1_topic_kinematics_of_motion_in_a_straight_line'],
+    'velocity-and-constant-acceleration': ['9709_m1_topic_kinematics_of_motion_in_a_straight_line'],
+    'force-and-motion': [
+      '9709_m1_topic_forces_and_equilibrium',
+      '9709_m1_topic_newtons_laws_of_motion',
+    ],
+    friction: [
+      '9709_m1_topic_forces_and_equilibrium',
+      '9709_m1_topic_newtons_laws_of_motion',
+    ],
+    'connected-particles': ['9709_m1_topic_newtons_laws_of_motion'],
+    'general-motion-in-a-straight-line': ['9709_m1_topic_kinematics_of_motion_in_a_straight_line'],
     momentum: ['9709_m1_topic_momentum'],
-    'newtons-laws-constant-acceleration': ['9709_m1_topic_newtons_laws_of_motion'],
-    'newtons-laws-variable-acceleration': ['9709_m1_topic_newtons_laws_of_motion'],
-    'energy-work-power': ['9709_m1_topic_energy_work_and_power'],
+    'work-and-energy': ['9709_m1_topic_energy_work_and_power'],
   },
   s1: {
     'data-representation': ['9709_s1_topic_representation_of_data'],

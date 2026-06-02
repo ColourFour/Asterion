@@ -60,15 +60,15 @@ describe('course Exam Training routing helpers', () => {
     const p1 = getCourseById('p1')!;
     const quadratics = getSeedTopicBySlug('p1', 'quadratics')!;
     const m1 = getCourseById('m1')!;
-    const newtonConstant = getSeedTopicBySlug('m1', 'newtons-laws-constant-acceleration')!;
-    const newtonVariable = getSeedTopicBySlug('m1', 'newtons-laws-variable-acceleration')!;
+    const forceAndMotion = getSeedTopicBySlug('m1', 'force-and-motion')!;
+    const connectedParticles = getSeedTopicBySlug('m1', 'connected-particles')!;
     const p1Question = question('p1_quadratics', 'p1', '9709_p1_topic_quadratics');
     const m1Question = question('m1_newton', 'p4', '9709_m1_topic_newtons_laws_of_motion');
 
     expect(topicRoutingIdsForSeedTopic(quadratics)).toContain('9709_p1_topic_quadratics');
     expect(filterCourseTopicExamQuestions([p1Question, m1Question], p1, quadratics).map((item) => item.id)).toEqual(['p1_quadratics']);
-    expect(filterCourseTopicExamQuestions([m1Question], m1, newtonConstant).map((item) => item.id)).toEqual(['m1_newton']);
-    expect(filterCourseTopicExamQuestions([m1Question], m1, newtonVariable).map((item) => item.id)).toEqual(['m1_newton']);
+    expect(filterCourseTopicExamQuestions([m1Question], m1, forceAndMotion).map((item) => item.id)).toEqual(['m1_newton']);
+    expect(filterCourseTopicExamQuestions([m1Question], m1, connectedParticles).map((item) => item.id)).toEqual(['m1_newton']);
     expect(seedTopicForCourseQuestion(p1, p1Question)?.slug).toBe('quadratics');
     expect(readableRoutingTopicLabel(m1Question)).toBe('Newtons Laws Of Motion');
   });

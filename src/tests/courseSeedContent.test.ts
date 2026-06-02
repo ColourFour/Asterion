@@ -19,12 +19,13 @@ describe('draft course seed content', () => {
       'integration',
     ]);
     expect(getSeedTopicsForCourse('m1').map((topic) => topic.slug)).toEqual([
-      'forces-equilibrium',
-      'kinematics',
+      'velocity-and-constant-acceleration',
+      'force-and-motion',
+      'friction',
+      'connected-particles',
+      'general-motion-in-a-straight-line',
       'momentum',
-      'newtons-laws-constant-acceleration',
-      'newtons-laws-variable-acceleration',
-      'energy-work-power',
+      'work-and-energy',
     ]);
     expect(getSeedTopicsForCourse('s1').map((topic) => topic.slug)).toEqual([
       'data-representation',
@@ -49,6 +50,61 @@ describe('draft course seed content', () => {
       expect(topic.selfChecks.length).toBeGreaterThanOrEqual(3);
       expect(topic.examStyle.length).toBeGreaterThanOrEqual(2);
       expect(topic.fieldGuideSections.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('fills M1 from the Blake source structure with visible draft and visual scaffolding', () => {
+    const m1 = getSeedTopicsForCourse('m1');
+    expect(m1.map((topic) => topic.title)).toEqual([
+      'Velocity and Constant Acceleration',
+      'Force and Motion',
+      'Friction',
+      'Connected Particles',
+      'General Motion in a Straight Line',
+      'Momentum',
+      'Work and Energy',
+    ]);
+    expect(m1.flatMap((topic) => topic.fieldGuideSections.map((section) => section.title))).toEqual([
+      'Displacement and velocity',
+      'Acceleration',
+      'Equations of constant acceleration',
+      'Displacement-time graph',
+      'Velocity-time graphs',
+      'Graphs with discontinuities',
+      'Newton\'s first law',
+      'Combinations of forces',
+      'Weight and motion due to gravity',
+      'Normal contact force',
+      'Resolving forces in horizontal and vertical directions',
+      'Resolving forces at equilibrium',
+      'Resolving forces not in equilibrium',
+      'Friction as contact force',
+      'Limit of friction',
+      'Changes of direction with relation to friction',
+      'Newton\'s third law',
+      'Objects connected by rods',
+      'Objects connected by strings',
+      'Velocity as derivative of displacement',
+      'Acceleration as derivative of velocity',
+      'Displacement as integral of velocity',
+      'Velocity as integral of acceleration',
+      'Momentum definition',
+      'Collisions and conservation of momentum',
+      'Work done by force',
+      'Kinetic energy',
+      'Gravitational potential energy',
+      'Work energy principle',
+      'Conservation of energy',
+      'Power',
+    ]);
+    for (const topic of m1) {
+      expect(topic.reviewStatus).toContain('needs syllabus-contract review');
+      expect(topic.visualRequirements?.length).toBeGreaterThan(0);
+      expect(topic.genericPracticePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
+      for (const section of topic.fieldGuideSections) {
+        expect(section.visualRequirements?.length).toBeGreaterThan(0);
+        expect(section.practicePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
+      }
     }
   });
 
