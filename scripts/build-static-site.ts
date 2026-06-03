@@ -12,6 +12,7 @@ import {
   type CourseSeedVisualTemplate,
 } from '../src/data/courseSeedContent';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
+import { getSkillCheckItemsForCourseTopic, skillCheckContractForItem, type SkillCheckItem } from '../src/data/skillCheckItems';
 import { buildSkillChecklistTopicGroups, totalSkillChecklistItems, type SkillChecklistTopicGroup } from '../src/lib/skillChecklist';
 import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData, reviewedGeneratedPractice, type GeneratedPracticeItem } from '../src/lib/generatedPractice';
 import { normalizeQuestionBankWithDiagnostics } from '../src/lib/normalizeQuestionBank';
@@ -841,18 +842,28 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, 
   const examTrainingPath = seedTopicExamTrainingPagePath(course, topic);
   const availableExamQuestions = data ? filterCourseTopicExamQuestions(data.catalogQuestions, course, topic).length : 0;
   const routedCatalogRecords = data ? filterCourseTopicExamQuestions(data.catalogRecords, course, topic).length : 0;
+  const draftSkillCheckItems = getSkillCheckItemsForCourseTopic(course.id, topic.id);
+  const draftSkillChecksMarkup = renderSeedDraftSkillChecks(course, topic);
+  const heroActions = draftSkillCheckItems.length
+    ? `<a class="button primary-button" href="#draft-skill-checks">Start draft Skill Checks</a>
+      ${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
+      ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`
+    : `${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
+      ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`;
   const body = `
     ${renderHero(
-      `${topic.title} Practice Placeholder`,
-      'Use these prompts for self-checking only. Full reviewed practice and exam-image mapping are out of scope for this seed pass.',
+      `${topic.title} ${draftSkillCheckItems.length ? 'Draft Skill Check' : 'Practice Placeholder'}`,
+      draftSkillCheckItems.length
+        ? 'Use these draft checks to test the support-only Skill Check path. They are not mastery or readiness evidence.'
+        : 'Use these prompts for self-checking only. Full reviewed practice and exam-image mapping are out of scope for this seed pass.',
       topic.headerFormula,
-      `${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
-      ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`,
+      heroActions,
       `${course.shortName} draft practice`,
     )}
     ${renderDraftNotice('No marks, mastery, adaptive selection, or exam evidence are created on this placeholder page.')}
     <section class="practice-stack">
-      <article class="practice-topic">
+      ${draftSkillChecksMarkup ? `${draftSkillChecksMarkup}
+      ` : ''}<article class="practice-topic">
         <header class="topic-section-header">
           <div>
             <p class="eyebrow">${escapeHtml(topic.syllabusRef)}</p>
@@ -1317,6 +1328,64 @@ function renderOptions(options: Array<{ id: string; label: string }> | undefined
   `;
 }
 
+function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
+  if (item.inputType === 'numeric') {
+    return `
+      <label class="single-answer-field">
+        Answer
+        <input type="text" aria-label="${escapeAttr(`${item.itemId} answer`)}" />
+      </label>
+    `;
+  }
+
+  if (item.inputType === 'two_value' && item.fields?.length) {
+    return `
+      <div class="field-list">
+        ${item.fields.map((field) => `
+          <label>${escapeHtml(field.label)} <input type="text" aria-label="${escapeAttr(field.label)}" /></label>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  return renderOptions(item.options ?? item.cards, item.itemId, item.inputType === 'checkbox');
+}
+
+function answerValueLabel(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? '';
+  return value ?? '';
+}
+
+function renderExpectedAnswerSummary(item: SkillCheckItem): string {
+  const contract = skillCheckContractForItem(item);
+  if (contract.answerType === 'single_value') {
+    return `${item.displayPrefix ? `${escapeHtml(item.displayPrefix)} ` : ''}${renderMathText(answerValueLabel(contract.expectedAnswer))}${item.displaySuffix ? ` ${escapeHtml(item.displaySuffix)}` : ''}`;
+  }
+  if (contract.answerType === 'two_value') {
+    return `
+      <ul class="plain-list">
+        ${(contract.fields ?? []).map((field) => `
+          <li>${escapeHtml(field.label)}: ${field.displayPrefix ? `${escapeHtml(field.displayPrefix)} ` : ''}${renderMathText(answerValueLabel(field.expectedAnswer))}${field.displaySuffix ? ` ${escapeHtml(field.displaySuffix)}` : ''}</li>
+        `).join('')}
+      </ul>
+    `;
+  }
+  if (contract.answerType === 'ordered_cards') {
+    const cardById = new Map((contract.orderedCards ?? []).map((card) => [card.id, card.label]));
+    return `
+      <ol class="worked-list">
+        ${(contract.expectedOrder ?? []).map((id) => `<li>${renderMathText(cardById.get(id) ?? id)}</li>`).join('')}
+      </ol>
+    `;
+  }
+  const optionById = new Map((contract.options ?? []).map((option) => [option.id, option.label]));
+  return `
+    <ul class="plain-list">
+      ${(contract.expectedChoices ?? []).map((id) => `<li>${renderMathText(optionById.get(id) ?? id)}</li>`).join('')}
+    </ul>
+  `;
+}
+
 function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: string): string {
   if (!group.authoredItems.length) return '';
   return `
@@ -1350,6 +1419,61 @@ function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: strin
     </section>
   `;
 }
+
+function seedVisualTemplatesById(topic: CourseSeedTopic): Map<string, CourseSeedVisualTemplate> {
+  return new Map(topic.fieldGuideSections
+    .flatMap((section) => section.visualTemplates ?? [])
+    .map((template) => [template.id, template]));
+}
+
+function renderDraftSkillCheckVisual(item: SkillCheckItem, templatesById: Map<string, CourseSeedVisualTemplate>): string {
+  if (!item.visualTemplateId) return '';
+  const template = templatesById.get(item.visualTemplateId);
+  if (!template) return `<p class="seed-topic-status">Visual template ${escapeHtml(item.visualTemplateId)} is referenced but not available on this topic.</p>`;
+  return renderSeedVisualTemplates([template]);
+}
+
+function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTopic): string {
+  const items = getSkillCheckItemsForCourseTopic(course.id, topic.id);
+  if (!items.length) return '';
+  const templatesById = seedVisualTemplatesById(topic);
+  return `
+    <article class="practice-topic" id="draft-skill-checks">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">${items.length} draft support-only Skill Check${items.length === 1 ? '' : 's'}</p>
+          <h2>Draft Skill Checks</h2>
+          <p>These checks test the M1 Field Guide path and renderer contracts. They are review-needed support practice only.</p>
+          <p class="seed-topic-status">Evidence disabled: these items do not create mastery, unlock-system access, adaptive routing, teacher evidence, official readiness, or course completion.</p>
+        </div>
+      </header>
+      <div class="practice-card-stack">
+        ${items.map((item) => `
+          <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}" data-review-status="${escapeAttr(item.review.status)}">
+            <p class="eyebrow">${escapeHtml(item.complexity)} · ${escapeHtml(item.inputType.replace(/_/g, ' '))} · draft/review-needed</p>
+            <h3>${renderMathText(item.prompt)}</h3>
+            ${item.visualTemplateId ? `<p class="question-instruction">Visual template: ${escapeHtml(item.visualTemplateId)}</p>` : ''}
+            ${renderDraftSkillCheckVisual(item, templatesById)}
+            ${renderSkillCheckAnswerInput(item)}
+            <details>
+              <summary>Show answer contract and worked route</summary>
+              <div class="support-details"><strong>Expected answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
+              <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
+              ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
+              ${item.hints.firstStep ? `<p><strong>First step:</strong> ${renderMathText(item.hints.firstStep)}</p>` : ''}
+              ${item.commonMistake ? `<p><strong>Common mistake / feedback:</strong> ${renderMathText(item.commonMistake)}</p>` : ''}
+              <ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
+            </details>
+            <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topic.title)}" data-prompt="${escapeAttr(item.prompt)}">
+              Save support-only practice
+            </button>
+          </article>
+        `).join('')}
+      </div>
+    </article>
+  `;
+}
+
 
 function renderQuickChecks(group: SkillChecklistTopicGroup): string {
   if (!group.quickCheckSnippets.length) return '';

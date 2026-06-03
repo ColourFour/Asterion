@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
-import { AUTHORED_SKILL_CHECK_ITEMS, skillCheckContractForItem, validateSkillCheckItemContract } from '../data/skillCheckItems';
+import {
+  AUTHORED_SKILL_CHECK_ITEMS,
+  getSkillCheckItemsForCourseTopic,
+  skillCheckContractForItem,
+  validateSkillCheckItemContract,
+} from '../data/skillCheckItems';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import {
   buildSkillChecklistTopicGroups,
@@ -187,13 +192,69 @@ describe('Skill Checklist grouping', () => {
       getFieldGuideTopicsForRegion(regionId).map((topic) => topic.id)
     )));
 
-    for (const item of AUTHORED_SKILL_CHECK_ITEMS) {
+    for (const item of AUTHORED_SKILL_CHECK_ITEMS.filter((candidate) => candidate.paperFamily === 'p3')) {
       expect(item.fieldGuideSubtopicId).toBe(item.fieldGuideTopicId);
       expect(allowedTopics.has(item.fieldGuideTopicId), item.itemId).toBe(true);
       expect(isValidP3RegionId(item.regionId), item.itemId).toBe(true);
       expect(isValidP3SkillId(item.skillId), item.itemId).toBe(true);
       expect(item.validationMode, item.itemId).toBe('deterministic');
       expect(item.review.affectsMastery, item.itemId).toBe(false);
+    }
+  });
+
+  it('adds the first M1 draft Skill Check seed batch as support-only non-evidence items', () => {
+    const m1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'm1');
+    const coveredSubtopics = new Set(m1Items.map((item) => item.fieldGuideSubtopicId));
+    const visualTemplateIds = new Set(m1Items.flatMap((item) => item.sourceRefs.visualTemplateIds ?? []));
+
+    expect(m1Items).toHaveLength(16);
+    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-velocity-constant-acceleration')).toHaveLength(4);
+    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-general-motion-straight-line')).toHaveLength(4);
+    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-momentum')).toHaveLength(2);
+    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-work-and-energy')).toHaveLength(4);
+    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-force-and-motion')).toHaveLength(2);
+
+    expect(coveredSubtopics).toEqual(new Set([
+      'm1-velocity-displacement-velocity',
+      'm1-velocity-acceleration',
+      'm1-velocity-equations-constant-acceleration',
+      'm1-velocity-velocity-time-graphs',
+      'm1-general-velocity-derivative-displacement',
+      'm1-general-acceleration-derivative-velocity',
+      'm1-general-displacement-integral-velocity',
+      'm1-general-velocity-integral-acceleration',
+      'm1-momentum-definition',
+      'm1-momentum-collisions-conservation',
+      'm1-energy-kinetic-energy',
+      'm1-energy-gravitational-potential-energy',
+      'm1-energy-power',
+      'm1-energy-conservation',
+      'm1-force-combinations-of-forces',
+      'm1-force-resolving-horizontal-vertical',
+    ]));
+    expect(coveredSubtopics).not.toContain('m1-friction-limit');
+    expect(coveredSubtopics).not.toContain('m1-connected-strings');
+    expect(visualTemplateIds).toEqual(new Set([
+      'm1-template-velocity-time-area-gradient',
+      'm1-template-momentum-before-after-table',
+      'm1-template-energy-table',
+      'm1-template-resolving-triangle',
+    ]));
+
+    for (const item of m1Items) {
+      expect(item.paperFamily, item.itemId).toBe('m1');
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(item.sourceRefs.courseContentSource, item.itemId).toBe('content-model/M1/m1-total.pdf');
+      expect(item.sourceRefs.visualFoundationSource, item.itemId).toBe('M1_VISUAL_TEMPLATE_FOUNDATION_2026_06_03.md');
+      expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
+      expect(item.inputType === 'numeric' || item.inputType === 'two_value', item.itemId).toBe(true);
     }
   });
 

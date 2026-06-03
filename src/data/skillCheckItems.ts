@@ -1,5 +1,7 @@
 import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } from '../types';
+import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
+import { M1_SKILL_CHECK_ITEMS } from './m1SkillCheckItems';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
 
 export type SkillCheckInputType =
@@ -20,7 +22,10 @@ export type SkillCheckSourceType =
   | 'teaching snippet';
 
 export interface SkillCheckSourceRefs {
-  skillMapSource: 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json';
+  skillMapSource?: 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json';
+  courseContentSource?: 'content-model/M1/m1-total.pdf';
+  visualFoundationSource?: 'M1_VISUAL_TEMPLATE_FOUNDATION_2026_06_03.md';
+  visualTemplateIds?: string[];
   generatedPracticeIds?: string[];
   quickCheckContractIds?: string[];
   teachingSnippetIds?: string[];
@@ -32,8 +37,9 @@ export interface SkillCheckSourceRefs {
 
 export interface SkillCheckItem {
   itemId: string;
-  paperFamily: 'p3';
-  regionId: P3RegionId;
+  courseId?: CourseId;
+  paperFamily: 'p3' | 'm1';
+  regionId: P3RegionId | string;
   fieldGuideTopicId: string;
   fieldGuideSubtopicId: string;
   skillId: string;
@@ -49,6 +55,8 @@ export interface SkillCheckItem {
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
+  visualTemplateId?: string;
+  commonMistake?: string;
   complexity: SkillCheckComplexity;
   hints: {
     nudge: string;
@@ -59,10 +67,12 @@ export interface SkillCheckItem {
   sourceTypes: SkillCheckSourceType[];
   sourceRefs: SkillCheckSourceRefs;
   review: {
-    status: 'teacher_reviewed';
-    sourceSkillReviewed: true;
+    status: 'teacher_reviewed' | 'draft_review_needed';
+    sourceSkillReviewed: boolean;
     markEventReviewed: boolean;
     affectsMastery: false;
+    supportOnly?: boolean;
+    evidenceEnabled?: false;
   };
 }
 
@@ -1153,6 +1163,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     review: review(),
   },
   ...REMAINING_REGION_SKILL_CHECK_ITEMS,
+  ...M1_SKILL_CHECK_ITEMS,
 ];
 
 export function skillCheckContractForItem(item: SkillCheckItem): QuickCheckContract {
@@ -1213,10 +1224,22 @@ export function getSkillCheckItemsForFieldGuideTopic(topicId: string | undefined
   return AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.fieldGuideTopicId === topicId);
 }
 
+export function getSkillCheckItemsForCourseTopic(courseId: CourseId | undefined, topicId: string | undefined): SkillCheckItem[] {
+  return AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
+    item.courseId === courseId && item.fieldGuideTopicId === topicId
+  ));
+}
+
 export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   const errors: string[] = [];
   if (!item.itemId.trim()) errors.push('missing itemId');
-  if (item.paperFamily !== 'p3') errors.push('paperFamily must be p3');
+  if (!['p3', 'm1'].includes(item.paperFamily)) errors.push('paperFamily must be p3 or m1');
+  if (item.paperFamily === 'm1' && item.courseId !== 'm1') errors.push('M1 item must carry courseId m1');
+  if (item.paperFamily === 'm1' && item.review.status !== 'draft_review_needed') errors.push('M1 item must remain draft_review_needed');
+  if (item.paperFamily === 'm1' && item.review.evidenceEnabled !== false) errors.push('M1 item must have evidenceEnabled false');
+  if (item.paperFamily === 'm1' && item.review.supportOnly !== true) errors.push('M1 item must be supportOnly');
+  if (item.paperFamily === 'm1' && !item.commonMistake?.trim()) errors.push('M1 item missing commonMistake feedback');
+  if (item.paperFamily === 'm1' && item.sourceRefs.contentLabCandidateIds?.length) errors.push('M1 item cannot reference Content Lab candidates');
   if (!item.regionId.trim()) errors.push('missing regionId');
   if (!item.fieldGuideTopicId.trim()) errors.push('missing fieldGuideTopicId');
   if (!item.fieldGuideSubtopicId.trim()) errors.push('missing fieldGuideSubtopicId');
