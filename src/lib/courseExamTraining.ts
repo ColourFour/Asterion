@@ -10,6 +10,7 @@ const seedTopicRoutingAliases: Partial<Record<CourseId, Record<string, string[]>
     'coordinate-geometry': ['9709_p1_topic_coordinate_geometry'],
     'circular-measure': ['9709_p1_topic_circular_measure'],
     trigonometry: ['9709_p1_topic_trigonometry'],
+    'binomial-expansion': ['9709_p1_topic_binomial_expansion'],
     series: ['9709_p1_topic_series'],
     differentiation: ['9709_p1_topic_differentiation'],
     integration: ['9709_p1_topic_integration'],

@@ -1,5 +1,6 @@
 import type { CourseId } from './courses';
 import { m1Topics } from './m1SeedContent';
+import { P1_SOURCE_FILLED_TOPICS } from './p1SeedContent';
 
 export const DRAFT_SEED_CONTENT_LABEL = 'Draft seed content - needs syllabus-contract review.';
 
@@ -965,13 +966,13 @@ const s1Topics: CourseSeedTopic[] = [
 ];
 
 export const COURSE_SEED_TOPICS: CourseSeedTopic[] = [
-  ...p1Topics,
+  ...P1_SOURCE_FILLED_TOPICS,
   ...m1Topics,
   ...s1Topics,
 ];
 
 export const COURSE_SEED_TOPICS_BY_COURSE: Record<DraftSeedCourseId, CourseSeedTopic[]> = {
-  p1: p1Topics,
+  p1: P1_SOURCE_FILLED_TOPICS,
   m1: m1Topics,
   s1: s1Topics,
 };

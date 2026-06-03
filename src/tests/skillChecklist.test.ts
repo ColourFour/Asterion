@@ -7,6 +7,7 @@ import {
   skillCheckContractForItem,
   validateSkillCheckItemContract,
 } from '../data/skillCheckItems';
+import { getSeedTopicsForCourse } from '../data/courseSeedContent';
 import type { GeneratedPracticeItem } from '../lib/generatedPractice';
 import {
   buildSkillChecklistTopicGroups,
@@ -202,43 +203,49 @@ describe('Skill Checklist grouping', () => {
     }
   });
 
-  it('adds the first M1 draft Skill Check seed batch as support-only non-evidence items', () => {
+  it('keeps full M1 draft Skill Check coverage support-only and bounded', () => {
     const m1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'm1');
     const coveredSubtopics = new Set(m1Items.map((item) => item.fieldGuideSubtopicId));
     const visualTemplateIds = new Set(m1Items.flatMap((item) => item.sourceRefs.visualTemplateIds ?? []));
+    const supportedTypes = new Set(['numeric', 'multiple_choice', 'checkbox', 'ordered_cards', 'two_value']);
+    const m1Topics = getSeedTopicsForCourse('m1');
+    const expectedSubtopics = new Set(m1Topics.flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)));
+    const expectedTopicCounts = new Map([
+      ['m1-velocity-constant-acceleration', 7],
+      ['m1-force-and-motion', 8],
+      ['m1-friction', 6],
+      ['m1-connected-particles', 6],
+      ['m1-general-motion-straight-line', 6],
+      ['m1-momentum', 6],
+      ['m1-work-and-energy', 7],
+    ]);
 
-    expect(m1Items).toHaveLength(16);
-    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-velocity-constant-acceleration')).toHaveLength(4);
-    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-general-motion-straight-line')).toHaveLength(4);
-    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-momentum')).toHaveLength(2);
-    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-work-and-energy')).toHaveLength(4);
-    expect(getSkillCheckItemsForCourseTopic('m1', 'm1-force-and-motion')).toHaveLength(2);
+    expect(m1Items).toHaveLength(46);
+    expect(m1Items.length).toBeGreaterThanOrEqual(45);
+    expect(m1Items.length).toBeLessThanOrEqual(60);
 
-    expect(coveredSubtopics).toEqual(new Set([
-      'm1-velocity-displacement-velocity',
-      'm1-velocity-acceleration',
-      'm1-velocity-equations-constant-acceleration',
-      'm1-velocity-velocity-time-graphs',
-      'm1-general-velocity-derivative-displacement',
-      'm1-general-acceleration-derivative-velocity',
-      'm1-general-displacement-integral-velocity',
-      'm1-general-velocity-integral-acceleration',
-      'm1-momentum-definition',
-      'm1-momentum-collisions-conservation',
-      'm1-energy-kinetic-energy',
-      'm1-energy-gravitational-potential-energy',
-      'm1-energy-power',
-      'm1-energy-conservation',
-      'm1-force-combinations-of-forces',
-      'm1-force-resolving-horizontal-vertical',
-    ]));
-    expect(coveredSubtopics).not.toContain('m1-friction-limit');
-    expect(coveredSubtopics).not.toContain('m1-connected-strings');
+    for (const topic of m1Topics) {
+      const topicItems = getSkillCheckItemsForCourseTopic('m1', topic.id);
+      expect(topicItems.length, topic.id).toBe(expectedTopicCounts.get(topic.id));
+      expect(topicItems.length, topic.id).toBeGreaterThanOrEqual(5);
+      expect(topicItems.length, topic.id).toBeLessThanOrEqual(12);
+    }
+
+    expect(coveredSubtopics).toEqual(expectedSubtopics);
     expect(visualTemplateIds).toEqual(new Set([
+      'm1-template-displacement-time-crossing',
       'm1-template-velocity-time-area-gradient',
-      'm1-template-momentum-before-after-table',
-      'm1-template-energy-table',
+      'm1-template-piecewise-discontinuity',
+      'm1-template-free-body-diagrams',
       'm1-template-resolving-triangle',
+      'm1-template-normal-reaction-cases',
+      'm1-template-friction-direction',
+      'm1-template-connected-particles',
+      'm1-template-calculus-motion-flow',
+      'm1-template-momentum-before-after-table',
+      'm1-template-work-energy-setup',
+      'm1-template-energy-table',
+      'm1-template-power-setup',
     ]));
 
     for (const item of m1Items) {
@@ -254,7 +261,50 @@ describe('Skill Checklist grouping', () => {
       expect(item.sourceRefs.courseContentSource, item.itemId).toBe('content-model/M1/m1-total.pdf');
       expect(item.sourceRefs.visualFoundationSource, item.itemId).toBe('M1_VISUAL_TEMPLATE_FOUNDATION_2026_06_03.md');
       expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
-      expect(item.inputType === 'numeric' || item.inputType === 'two_value', item.itemId).toBe(true);
+      expect(supportedTypes.has(item.inputType), item.itemId).toBe(true);
+    }
+  });
+
+  it('keeps P1 draft Skill Check coverage support-only for every uploaded-map subtopic', () => {
+    const p1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'p1');
+    const coveredSubtopics = new Set(p1Items.map((item) => item.fieldGuideSubtopicId));
+    const p1Topics = getSeedTopicsForCourse('p1');
+    const expectedSubtopics = new Set(p1Topics.flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)));
+    const expectedTopicCounts = new Map([
+      ['p1-quadratics', 5],
+      ['p1-functions-transformations', 5],
+      ['p1-coordinate-geometry', 4],
+      ['p1-circular-measure', 2],
+      ['p1-trigonometry', 4],
+      ['p1-binomial-expansion', 2],
+      ['p1-series', 3],
+      ['p1-differentiation', 7],
+      ['p1-integration', 6],
+    ]);
+
+    expect(p1Items).toHaveLength(38);
+    expect(coveredSubtopics).toEqual(expectedSubtopics);
+
+    for (const topic of p1Topics) {
+      const topicItems = getSkillCheckItemsForCourseTopic('p1', topic.id);
+      expect(topicItems.length, topic.id).toBe(expectedTopicCounts.get(topic.id));
+      expect(topicItems.length, topic.id).toBe(topic.fieldGuideSections.length);
+    }
+
+    for (const item of p1Items) {
+      expect(item.paperFamily, item.itemId).toBe('p1');
+      expect(item.regionId, item.itemId).toBe('p1-draft-skill-check');
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(item.sourceRefs.courseContentSource, item.itemId).toBe('content-model/P1/p1-content map.pdf');
+      expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
+      expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
     }
   });
 

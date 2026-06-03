@@ -2,6 +2,7 @@ import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } fr
 import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
 import { M1_SKILL_CHECK_ITEMS } from './m1SkillCheckItems';
+import { P1_SKILL_CHECK_ITEMS } from './p1SkillCheckItems';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
 
 export type SkillCheckInputType =
@@ -23,7 +24,7 @@ export type SkillCheckSourceType =
 
 export interface SkillCheckSourceRefs {
   skillMapSource?: 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json';
-  courseContentSource?: 'content-model/M1/m1-total.pdf';
+  courseContentSource?: 'content-model/M1/m1-total.pdf' | 'content-model/P1/p1-content map.pdf';
   visualFoundationSource?: 'M1_VISUAL_TEMPLATE_FOUNDATION_2026_06_03.md';
   visualTemplateIds?: string[];
   generatedPracticeIds?: string[];
@@ -38,7 +39,7 @@ export interface SkillCheckSourceRefs {
 export interface SkillCheckItem {
   itemId: string;
   courseId?: CourseId;
-  paperFamily: 'p3' | 'm1';
+  paperFamily: 'p3' | 'm1' | 'p1';
   regionId: P3RegionId | string;
   fieldGuideTopicId: string;
   fieldGuideSubtopicId: string;
@@ -1163,6 +1164,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     review: review(),
   },
   ...REMAINING_REGION_SKILL_CHECK_ITEMS,
+  ...P1_SKILL_CHECK_ITEMS,
   ...M1_SKILL_CHECK_ITEMS,
 ];
 
@@ -1233,7 +1235,13 @@ export function getSkillCheckItemsForCourseTopic(courseId: CourseId | undefined,
 export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   const errors: string[] = [];
   if (!item.itemId.trim()) errors.push('missing itemId');
-  if (!['p3', 'm1'].includes(item.paperFamily)) errors.push('paperFamily must be p3 or m1');
+  if (!['p3', 'm1', 'p1'].includes(item.paperFamily)) errors.push('paperFamily must be p3, p1, or m1');
+  if (item.paperFamily === 'p1' && item.courseId !== 'p1') errors.push('P1 item must carry courseId p1');
+  if (item.paperFamily === 'p1' && item.review.status !== 'draft_review_needed') errors.push('P1 item must remain draft_review_needed');
+  if (item.paperFamily === 'p1' && item.review.evidenceEnabled !== false) errors.push('P1 item must have evidenceEnabled false');
+  if (item.paperFamily === 'p1' && item.review.supportOnly !== true) errors.push('P1 item must be supportOnly');
+  if (item.paperFamily === 'p1' && !item.commonMistake?.trim()) errors.push('P1 item missing commonMistake feedback');
+  if (item.paperFamily === 'p1' && item.sourceRefs.contentLabCandidateIds?.length) errors.push('P1 item cannot reference Content Lab candidates');
   if (item.paperFamily === 'm1' && item.courseId !== 'm1') errors.push('M1 item must carry courseId m1');
   if (item.paperFamily === 'm1' && item.review.status !== 'draft_review_needed') errors.push('M1 item must remain draft_review_needed');
   if (item.paperFamily === 'm1' && item.review.evidenceEnabled !== false) errors.push('M1 item must have evidenceEnabled false');

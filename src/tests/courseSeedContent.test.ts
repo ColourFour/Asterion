@@ -13,8 +13,8 @@ describe('draft course seed content', () => {
       'coordinate-geometry',
       'circular-measure',
       'trigonometry',
-      'series',
       'binomial-expansion',
+      'series',
       'differentiation',
       'integration',
     ]);
@@ -130,6 +130,87 @@ describe('draft course seed content', () => {
       expect(template.supports.length).toBeGreaterThan(0);
       expect(template.svg).toContain('<svg');
       expect(template.svg).toContain('</svg>');
+    }
+  });
+
+  it('fills P1 from the uploaded content map with every requested unit and Field Guide subtopic', () => {
+    const p1 = getSeedTopicsForCourse('p1');
+    const expectedSubtopics = new Map([
+      ['Quadratics', [
+        'Solving by factoring',
+        'Solving inequalities',
+        'Solving by quadratic formula',
+        'Discriminant',
+        'Graphs of quadratic functions',
+      ]],
+      ['Functions and Transformations', [
+        'Composite functions',
+        'Inverse functions',
+        'Translations',
+        'Reflections',
+        'Stretches',
+      ]],
+      ['Coordinate Geometry', [
+        'Parallel and perpendicular lines',
+        'Equation of a straight line',
+        'Circles',
+        'Points of intersection',
+      ]],
+      ['Circular Measure', [
+        'Radians',
+        'Arc length and sector area',
+      ]],
+      ['Trigonometry', [
+        'Exact values',
+        'Graphs of trigonometric functions',
+        'Trigonometric equations',
+        'Trigonometric identities',
+      ]],
+      ['Binomial Expansion', [
+        'Binomial expansion',
+        'More complex expansions',
+      ]],
+      ['Series', [
+        'Arithmetic progressions',
+        'Geometric progressions',
+        'Infinite geometric progressions',
+      ]],
+      ['Differentiation', [
+        'Gradient of tangent',
+        'Differentiation of polynomials',
+        'Chain rule',
+        'Second derivative',
+        'Equations of tangents and normals',
+        'Stationary points',
+        'Rates of change',
+      ]],
+      ['Integration', [
+        'Basic integration',
+        'Constant of integration',
+        'Definite integrals',
+        'Area bounded between curves',
+        'Improper integrals',
+        'Volumes of revolution',
+      ]],
+    ]);
+
+    expect(p1.map((topic) => topic.title)).toEqual(Array.from(expectedSubtopics.keys()));
+
+    for (const topic of p1) {
+      expect(topic.reviewStatus).toContain('content-model/P1/p1-content map.pdf');
+      expect(topic.reviewStatus).toContain('needs syllabus-contract review');
+      expect(topic.genericPracticePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
+      expect(topic.fieldGuideSections.map((section) => section.title)).toEqual(expectedSubtopics.get(topic.title));
+      for (const section of topic.fieldGuideSections) {
+        const copy = section.bullets.join(' ');
+        expect(copy).toContain('Learning goal:');
+        expect(copy).toContain('Key method:');
+        expect(copy).toContain('Draft worked example:');
+        expect(copy).toContain('Common mistake:');
+        expect(copy).toContain('Quick takeaway:');
+        expect(section.practicePrompts?.length).toBeGreaterThanOrEqual(1);
+        expect(section.practicePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
+      }
     }
   });
 
