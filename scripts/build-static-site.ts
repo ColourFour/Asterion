@@ -9,6 +9,7 @@ import {
   getSeedTopicsForCourse,
   hasDraftSeedTopics,
   type CourseSeedTopic,
+  type CourseSeedVisualTemplate,
 } from '../src/data/courseSeedContent';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
 import { buildSkillChecklistTopicGroups, totalSkillChecklistItems, type SkillChecklistTopicGroup } from '../src/lib/skillChecklist';
@@ -460,6 +461,33 @@ function renderOptionalList(title: string, items: string[] | undefined, classNam
   `;
 }
 
+function renderSeedVisualTemplates(templates: CourseSeedVisualTemplate[] | undefined): string {
+  if (!templates?.length) return '';
+  return `
+    <div class="visual-template-grid" aria-label="Instructional visual templates">
+      ${templates.map((template) => `
+        <article class="visual-template-card" id="${escapeAttr(template.id)}">
+          <div class="visual-template-copy">
+            <p class="eyebrow">Visual template</p>
+            <h4>${escapeHtml(template.title)}</h4>
+            <p>${escapeHtml(template.explanation)}</p>
+          </div>
+          <div class="visual-template-figure">
+            ${template.svg}
+          </div>
+          <p class="visual-template-notice"><strong>Notice:</strong> ${escapeHtml(template.notice)}</p>
+          <div class="visual-template-supports">
+            <h5>Supports</h5>
+            <ul>
+              ${template.supports.map((support) => `<li>${escapeHtml(support)}</li>`).join('')}
+            </ul>
+          </div>
+        </article>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderHero(title: string, body: string, formula?: string, actions = '', eyebrow = 'CAIE 9709 Paper 3'): string {
   return `
     <section class="page-hero">
@@ -789,7 +817,7 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
           <article class="lesson-card">
             <h3>Method notes</h3>
             ${renderPlainList(section.bullets)}${renderOptionalList('Required visual elements', section.visualRequirements)}${renderOptionalList('Draft/generated practice prompts', section.practicePrompts)}
-          </article>
+          </article>${renderSeedVisualTemplates(section.visualTemplates)}
         </article>
       `).join('')}
     </section>

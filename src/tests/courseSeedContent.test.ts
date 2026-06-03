@@ -55,6 +55,21 @@ describe('draft course seed content', () => {
 
   it('fills M1 from the Blake source structure with visible draft and visual scaffolding', () => {
     const m1 = getSeedTopicsForCourse('m1');
+    const expectedTemplateIds = [
+      'm1-template-displacement-time-crossing',
+      'm1-template-velocity-time-area-gradient',
+      'm1-template-piecewise-discontinuity',
+      'm1-template-free-body-diagrams',
+      'm1-template-resolving-triangle',
+      'm1-template-normal-reaction-cases',
+      'm1-template-friction-direction',
+      'm1-template-connected-particles',
+      'm1-template-calculus-motion-flow',
+      'm1-template-momentum-before-after-table',
+      'm1-template-work-energy-setup',
+      'm1-template-energy-table',
+      'm1-template-power-setup',
+    ];
     expect(m1.map((topic) => topic.title)).toEqual([
       'Velocity and Constant Acceleration',
       'Force and Motion',
@@ -105,6 +120,16 @@ describe('draft course seed content', () => {
         expect(section.visualRequirements?.length).toBeGreaterThan(0);
         expect(section.practicePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
       }
+    }
+    const visualTemplates = m1.flatMap((topic) => topic.fieldGuideSections.flatMap((section) => section.visualTemplates ?? []));
+    expect(new Set(visualTemplates.map((template) => template.id))).toEqual(new Set(expectedTemplateIds));
+    for (const template of visualTemplates) {
+      expect(template.title.length).toBeGreaterThan(10);
+      expect(template.explanation.length).toBeGreaterThan(30);
+      expect(template.notice.length).toBeGreaterThan(30);
+      expect(template.supports.length).toBeGreaterThan(0);
+      expect(template.svg).toContain('<svg');
+      expect(template.svg).toContain('</svg>');
     }
   });
 

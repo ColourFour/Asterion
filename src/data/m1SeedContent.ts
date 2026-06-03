@@ -1,4 +1,4 @@
-import type { CourseSeedTopic, CourseSeedTopicSection } from './courseSeedContent';
+import type { CourseSeedTopic, CourseSeedTopicSection, CourseSeedVisualTemplate } from './courseSeedContent';
 
 const draftStatus = 'Draft/source-filled from content-model/M1/m1-total.pdf; needs syllabus-contract review before Skill Check or mastery use.';
 
@@ -9,6 +9,7 @@ function section(
   bullets: string[],
   visualRequirements: string[],
   practicePrompts: string[],
+  visualTemplates: CourseSeedVisualTemplate[] = [],
 ): CourseSeedTopicSection {
   return {
     id,
@@ -17,8 +18,398 @@ function section(
     bullets,
     visualRequirements,
     practicePrompts,
+    ...(visualTemplates.length ? { visualTemplates } : {}),
   };
 }
+
+function visualTemplate(
+  id: string,
+  title: string,
+  explanation: string,
+  notice: string,
+  supports: string[],
+  svg: string,
+): CourseSeedVisualTemplate {
+  return { id, title, explanation, notice, supports, svg };
+}
+
+const displacementTimeGraphTemplate = visualTemplate(
+  'm1-template-displacement-time-crossing',
+  'Displacement-time graph with intercepts and crossing point',
+  'Use this template when two objects move in one straight line and their displacement-time graphs meet.',
+  'Gradient represents velocity. The crossing point is the same displacement at the same time, not necessarily the starting point.',
+  ['Displacement-time graph', 'Displacement and velocity'],
+  `<svg viewBox="0 0 640 360" role="img" aria-labelledby="m1-template-displacement-time-crossing-title">
+    <title id="m1-template-displacement-time-crossing-title">Displacement-time graph template</title>
+    <defs>
+      <marker id="arrow-dt" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker>
+    </defs>
+    <rect x="18" y="18" width="604" height="324" rx="12" />
+    <line x1="92" y1="285" x2="565" y2="285" marker-end="url(#arrow-dt)" />
+    <line x1="92" y1="285" x2="92" y2="48" marker-end="url(#arrow-dt)" />
+    <text x="570" y="301">t (s)</text>
+    <text x="49" y="51">s (m)</text>
+    <text x="75" y="305">0</text>
+    <line class="grid" x1="92" y1="112" x2="565" y2="112" />
+    <line class="grid" x1="170" y1="285" x2="170" y2="48" />
+    <line class="grid" x1="438" y1="285" x2="438" y2="48" />
+    <line class="accent" x1="92" y1="250" x2="500" y2="70" />
+    <line class="contrast" x1="92" y1="96" x2="520" y2="250" />
+    <circle class="point" cx="323" cy="148" r="7" />
+    <text x="336" y="138">crossing point</text>
+    <circle class="point" cx="92" cy="250" r="5" />
+    <text x="108" y="263">s-intercept A</text>
+    <circle class="point" cx="92" cy="96" r="5" />
+    <text x="108" y="90">s-intercept B</text>
+    <path class="brace" d="M260 184 L302 166" />
+    <path class="brace" d="M260 184 L292 184" />
+    <text x="229" y="205">slope = velocity</text>
+    <text x="171" y="308">marked time</text>
+    <text x="404" y="308">same time</text>
+  </svg>`,
+);
+
+const velocityTimeGraphTemplate = visualTemplate(
+  'm1-template-velocity-time-area-gradient',
+  'Velocity-time graph with area and gradient',
+  'Use this template for accelerate-cruise-decelerate journeys.',
+  'Gradient represents acceleration. Area under the graph represents displacement; area below the axis would count negative.',
+  ['Velocity-time graphs', 'Acceleration', 'Equations of constant acceleration'],
+  `<svg viewBox="0 0 640 360" role="img" aria-labelledby="m1-template-velocity-time-area-gradient-title">
+    <title id="m1-template-velocity-time-area-gradient-title">Velocity-time graph template</title>
+    <defs>
+      <marker id="arrow-vt" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker>
+      <pattern id="shade-vt" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 10 L10 0" /></pattern>
+    </defs>
+    <rect x="18" y="18" width="604" height="324" rx="12" />
+    <line x1="92" y1="285" x2="565" y2="285" marker-end="url(#arrow-vt)" />
+    <line x1="92" y1="285" x2="92" y2="48" marker-end="url(#arrow-vt)" />
+    <text x="570" y="301">t (s)</text>
+    <text x="49" y="51">v (m s^-1)</text>
+    <polygon class="shade" points="92,285 92,230 190,116 358,116 500,285" />
+    <polyline class="accent" points="92,230 190,116 358,116 500,285" />
+    <line class="brace" x1="115" y1="230" x2="175" y2="116" />
+    <text x="175" y="185">gradient = acceleration</text>
+    <text x="235" y="230">shaded area = displacement</text>
+    <line class="grid" x1="190" y1="285" x2="190" y2="116" />
+    <line class="grid" x1="358" y1="285" x2="358" y2="116" />
+    <text x="177" y="308">t1</text>
+    <text x="345" y="308">t2</text>
+    <text x="507" y="302">stop</text>
+  </svg>`,
+);
+
+const discontinuityGraphTemplate = visualTemplate(
+  'm1-template-piecewise-discontinuity',
+  'Piecewise graph with a discontinuity',
+  'Use this template when a motion model changes suddenly between stages.',
+  'Do not join stages smoothly unless the question says the transition is continuous. Label each stage before using a formula.',
+  ['Graphs with discontinuities'],
+  `<svg viewBox="0 0 640 360" role="img" aria-labelledby="m1-template-piecewise-discontinuity-title">
+    <title id="m1-template-piecewise-discontinuity-title">Piecewise discontinuity graph template</title>
+    <defs><marker id="arrow-piece" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="604" height="324" rx="12" />
+    <line x1="92" y1="285" x2="565" y2="285" marker-end="url(#arrow-piece)" />
+    <line x1="92" y1="285" x2="92" y2="48" marker-end="url(#arrow-piece)" />
+    <text x="570" y="301">t</text><text x="62" y="51">v or s</text>
+    <polyline class="accent" points="100,250 210,185 275,185" />
+    <circle class="open-point" cx="275" cy="185" r="7" />
+    <circle class="point" cx="275" cy="110" r="7" />
+    <polyline class="contrast" points="275,110 390,145 520,92" />
+    <line class="warning" x1="275" y1="285" x2="275" y2="70" />
+    <text x="286" y="77">jump / new stage</text>
+    <text x="133" y="214">stage 1</text>
+    <text x="404" y="124">stage 2</text>
+    <text x="255" y="307">transition time</text>
+  </svg>`,
+);
+
+const freeBodyDiagramTemplate = visualTemplate(
+  'm1-template-free-body-diagrams',
+  'Free-body diagram set',
+  'Use these four mini-templates to decide which forces act on one chosen body.',
+  'Draw only forces acting on the selected body. Weight is vertical, normal reaction is perpendicular to the surface, and applied pulls act in their stated direction.',
+  ["Newton's first law", 'Combinations of forces', 'Weight and motion due to gravity', 'Normal contact force'],
+  `<svg viewBox="0 0 760 420" role="img" aria-labelledby="m1-template-free-body-diagrams-title">
+    <title id="m1-template-free-body-diagrams-title">Free-body diagram templates</title>
+    <defs><marker id="arrow-fbd" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="724" height="384" rx="12" />
+    <g transform="translate(45 45)">
+      <text x="0" y="0">horizontal surface</text>
+      <line class="ground" x1="0" y1="118" x2="145" y2="118" />
+      <rect class="block" x="50" y="78" width="54" height="40" />
+      <line class="force" x1="77" y1="78" x2="77" y2="26" marker-end="url(#arrow-fbd)" /><text x="88" y="35">R</text>
+      <line class="force" x1="77" y1="118" x2="77" y2="166" marker-end="url(#arrow-fbd)" /><text x="87" y="158">mg</text>
+    </g>
+    <g transform="translate(245 45)">
+      <text x="0" y="0">slope</text>
+      <line class="ground" x1="0" y1="140" x2="160" y2="70" />
+      <rect class="block" x="75" y="83" width="54" height="40" transform="rotate(-23 102 103)" />
+      <line class="force" x1="102" y1="103" x2="80" y2="52" marker-end="url(#arrow-fbd)" /><text x="60" y="48">R</text>
+      <line class="force" x1="102" y1="103" x2="102" y2="166" marker-end="url(#arrow-fbd)" /><text x="112" y="158">mg</text>
+    </g>
+    <g transform="translate(465 45)">
+      <text x="0" y="0">vertical motion</text>
+      <circle class="block" cx="70" cy="94" r="24" />
+      <line class="force" x1="70" y1="94" x2="70" y2="165" marker-end="url(#arrow-fbd)" /><text x="82" y="158">mg</text>
+      <line class="ghost" x1="115" y1="155" x2="115" y2="70" marker-end="url(#arrow-fbd)" /><text x="126" y="84">chosen +</text>
+    </g>
+    <g transform="translate(45 240)">
+      <text x="0" y="0">angled pull / push</text>
+      <line class="ground" x1="0" y1="116" x2="215" y2="116" />
+      <rect class="block" x="55" y="76" width="58" height="40" />
+      <line class="force" x1="84" y1="76" x2="84" y2="25" marker-end="url(#arrow-fbd)" /><text x="94" y="36">R</text>
+      <line class="force" x1="84" y1="116" x2="84" y2="166" marker-end="url(#arrow-fbd)" /><text x="94" y="158">mg</text>
+      <line class="accent" x1="113" y1="84" x2="190" y2="42" marker-end="url(#arrow-fbd)" /><text x="175" y="36">F</text>
+      <path class="brace" d="M128 83 A38 38 0 0 1 151 70" /><text x="150" y="88">theta</text>
+    </g>
+    <g transform="translate(410 245)">
+      <text x="0" y="0">student check</text>
+      <text x="0" y="34">1. Pick one body.</text>
+      <text x="0" y="62">2. Add weight and contacts.</text>
+      <text x="0" y="90">3. Add pulls, tensions, resistance.</text>
+      <text x="0" y="118">4. Choose axes before equations.</text>
+    </g>
+  </svg>`,
+);
+
+const resolvingTriangleTemplate = visualTemplate(
+  'm1-template-resolving-triangle',
+  'Resolving-force triangle',
+  'Use this template to decide which component uses cosine and which uses sine.',
+  'Cosine goes next to the marked angle; sine goes opposite the marked angle. If the angle is marked from a different axis, the component labels swap.',
+  ['Resolving forces in horizontal and vertical directions', 'Resolving forces at equilibrium', 'Resolving forces not in equilibrium'],
+  `<svg viewBox="0 0 640 360" role="img" aria-labelledby="m1-template-resolving-triangle-title">
+    <title id="m1-template-resolving-triangle-title">Resolving force triangle template</title>
+    <defs><marker id="arrow-resolve" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="604" height="324" rx="12" />
+    <line class="axis" x1="92" y1="270" x2="540" y2="270" marker-end="url(#arrow-resolve)" />
+    <line class="axis" x1="92" y1="270" x2="92" y2="58" marker-end="url(#arrow-resolve)" />
+    <text x="545" y="286">horizontal</text><text x="42" y="60">vertical</text>
+    <line class="accent" x1="135" y1="245" x2="430" y2="110" marker-end="url(#arrow-resolve)" />
+    <line class="contrast" x1="135" y1="245" x2="430" y2="245" marker-end="url(#arrow-resolve)" />
+    <line class="contrast" x1="430" y1="245" x2="430" y2="110" marker-end="url(#arrow-resolve)" />
+    <path class="brace" d="M177 245 A48 48 0 0 1 194 222" />
+    <text x="204" y="231">theta from horizontal</text>
+    <text x="295" y="98">F</text>
+    <text x="270" y="265">horizontal = F cos theta</text>
+    <text x="440" y="178">vertical = F sin theta</text>
+    <text x="110" y="320">If theta is measured from vertical, swap which component is adjacent.</text>
+  </svg>`,
+);
+
+const normalReactionTemplate = visualTemplate(
+  'm1-template-normal-reaction-cases',
+  'Normal reaction cases',
+  'Use this template to check whether $R=mg$ is valid.',
+  'Normal reaction is perpendicular to the surface. Angled forces and slopes change the perpendicular balance.',
+  ['Normal contact force', 'Resolving forces not in equilibrium', 'Friction as contact force'],
+  `<svg viewBox="0 0 760 420" role="img" aria-labelledby="m1-template-normal-reaction-cases-title">
+    <title id="m1-template-normal-reaction-cases-title">Normal reaction diagrams</title>
+    <defs><marker id="arrow-normal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="724" height="384" rx="12" />
+    <g transform="translate(45 70)">
+      <text x="0" y="0">horizontal: often R = mg</text>
+      <line class="ground" x1="0" y1="122" x2="185" y2="122" /><rect class="block" x="75" y="82" width="55" height="40" />
+      <line class="force" x1="103" y1="82" x2="103" y2="30" marker-end="url(#arrow-normal)" /><text x="113" y="42">R</text>
+      <line class="force" x1="103" y1="122" x2="103" y2="170" marker-end="url(#arrow-normal)" /><text x="113" y="162">mg</text>
+    </g>
+    <g transform="translate(285 70)">
+      <text x="0" y="0">inclined plane</text>
+      <line class="ground" x1="0" y1="155" x2="205" y2="72" /><rect class="block" x="94" y="94" width="55" height="40" transform="rotate(-22 121 114)" />
+      <line class="force" x1="121" y1="114" x2="94" y2="54" marker-end="url(#arrow-normal)" /><text x="68" y="55">R</text>
+      <line class="force" x1="121" y1="114" x2="121" y2="180" marker-end="url(#arrow-normal)" /><text x="132" y="172">mg</text>
+      <text x="95" y="205">resolve perpendicular</text>
+    </g>
+    <g transform="translate(525 70)">
+      <text x="0" y="0">angled force changes R</text>
+      <line class="ground" x1="0" y1="122" x2="185" y2="122" /><rect class="block" x="62" y="82" width="55" height="40" />
+      <line class="force" x1="90" y1="82" x2="90" y2="32" marker-end="url(#arrow-normal)" /><text x="100" y="42">R</text>
+      <line class="force" x1="90" y1="122" x2="90" y2="170" marker-end="url(#arrow-normal)" /><text x="100" y="162">mg</text>
+      <line class="accent" x1="118" y1="90" x2="170" y2="58" marker-end="url(#arrow-normal)" /><text x="153" y="50">F</text>
+      <text x="0" y="205">include vertical component</text>
+    </g>
+  </svg>`,
+);
+
+const frictionDirectionTemplate = visualTemplate(
+  'm1-template-friction-direction',
+  'Friction direction guide',
+  'Use this template before writing a friction equation.',
+  'Friction opposes actual motion or impending motion. At the limit, use $F=\\mu R$ after deciding the direction.',
+  ['Friction as contact force', 'Limit of friction', 'Changes of direction with relation to friction'],
+  `<svg viewBox="0 0 760 440" role="img" aria-labelledby="m1-template-friction-direction-title">
+    <title id="m1-template-friction-direction-title">Friction direction diagrams</title>
+    <defs><marker id="arrow-friction" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="724" height="402" rx="12" />
+    <g transform="translate(45 55)">
+      <text x="0" y="0">impending right</text><line class="ground" x1="0" y1="100" x2="210" y2="100" /><rect class="block" x="80" y="60" width="55" height="40" />
+      <line class="accent" x1="135" y1="78" x2="190" y2="78" marker-end="url(#arrow-friction)" /><text x="148" y="67">tendency</text>
+      <line class="warning" x1="80" y1="90" x2="25" y2="90" marker-end="url(#arrow-friction)" /><text x="25" y="118">friction left</text>
+    </g>
+    <g transform="translate(400 55)">
+      <text x="0" y="0">impending left</text><line class="ground" x1="0" y1="100" x2="210" y2="100" /><rect class="block" x="80" y="60" width="55" height="40" />
+      <line class="accent" x1="80" y1="78" x2="25" y2="78" marker-end="url(#arrow-friction)" /><text x="25" y="67">tendency</text>
+      <line class="warning" x1="135" y1="90" x2="190" y2="90" marker-end="url(#arrow-friction)" /><text x="120" y="118">friction right</text>
+    </g>
+    <g transform="translate(45 235)">
+      <text x="0" y="0">impending down slope</text><line class="ground" x1="10" y1="130" x2="230" y2="45" /><rect class="block" x="104" y="70" width="56" height="40" transform="rotate(-21 132 90)" />
+      <line class="accent" x1="132" y1="90" x2="90" y2="108" marker-end="url(#arrow-friction)" /><text x="47" y="121">tendency down</text>
+      <line class="warning" x1="132" y1="90" x2="185" y2="67" marker-end="url(#arrow-friction)" /><text x="170" y="58">friction up</text>
+    </g>
+    <g transform="translate(400 235)">
+      <text x="0" y="0">impending up slope</text><line class="ground" x1="10" y1="130" x2="230" y2="45" /><rect class="block" x="104" y="70" width="56" height="40" transform="rotate(-21 132 90)" />
+      <line class="accent" x1="132" y1="90" x2="185" y2="67" marker-end="url(#arrow-friction)" /><text x="170" y="58">tendency up</text>
+      <line class="warning" x1="132" y1="90" x2="90" y2="108" marker-end="url(#arrow-friction)" /><text x="47" y="121">friction down</text>
+    </g>
+  </svg>`,
+);
+
+const connectedParticlesTemplate = visualTemplate(
+  'm1-template-connected-particles',
+  'Connected-particle setup gallery',
+  'Use these mini-templates to identify the connection type before writing equations.',
+  'Write one equation per body when you need tension or thrust. Strings usually share acceleration magnitude while intact; rods can be in tension or thrust.',
+  ['Objects connected by rods', 'Objects connected by strings', "Newton's third law"],
+  `<svg viewBox="0 0 820 520" role="img" aria-labelledby="m1-template-connected-particles-title">
+    <title id="m1-template-connected-particles-title">Connected-particle templates</title>
+    <defs><marker id="arrow-connected" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="784" height="484" rx="12" />
+    <g transform="translate(45 55)">
+      <text x="0" y="0">rod</text><rect class="block" x="0" y="45" width="55" height="40" /><rect class="block" x="155" y="45" width="55" height="40" /><line class="accent" x1="55" y1="65" x2="155" y2="65" /><text x="78" y="55">rod force</text>
+    </g>
+    <g transform="translate(310 55)">
+      <text x="0" y="0">tow-bar</text><rect class="block" x="0" y="45" width="70" height="40" /><rect class="block" x="170" y="45" width="70" height="40" /><line class="accent" x1="70" y1="65" x2="170" y2="65" /><line class="force" x1="240" y1="65" x2="285" y2="65" marker-end="url(#arrow-connected)" /><text x="82" y="55">tension or thrust</text>
+    </g>
+    <g transform="translate(45 185)">
+      <text x="0" y="0">string over pulley</text><circle class="pulley" cx="125" cy="45" r="24" /><path class="accent" d="M125 69 L125 130 M149 45 L230 45 L230 130" /><rect class="block" x="100" y="130" width="50" height="40" /><rect class="block" x="205" y="130" width="50" height="40" /><text x="86" y="190">same T</text>
+    </g>
+    <g transform="translate(365 185)">
+      <text x="0" y="0">table + hanging mass</text><line class="ground" x1="0" y1="80" x2="220" y2="80" /><rect class="block" x="35" y="40" width="55" height="40" /><circle class="pulley" cx="215" cy="80" r="18" /><path class="accent" d="M90 60 L215 60 L215 145" /><rect class="block" x="190" y="145" width="50" height="40" /><text x="105" y="50">T</text><text x="225" y="128">T</text>
+    </g>
+    <g transform="translate(45 365)">
+      <text x="0" y="0">slope-connected system</text><line class="ground" x1="0" y1="105" x2="220" y2="25" /><rect class="block" x="75" y="48" width="55" height="40" transform="rotate(-20 102 68)" /><circle class="pulley" cx="230" cy="25" r="18" /><path class="accent" d="M130 50 L230 25 L230 130" /><rect class="block" x="205" y="130" width="50" height="40" /><line class="force" x1="105" y1="68" x2="150" y2="52" marker-end="url(#arrow-connected)" /><text x="126" y="44">a</text>
+    </g>
+  </svg>`,
+);
+
+const momentumTableTemplate = visualTemplate(
+  'm1-template-momentum-before-after-table',
+  'Before/after momentum table',
+  'Use this template before writing a conservation of momentum equation.',
+  'Choose a positive direction first. Put signed velocities in the table before multiplying by mass.',
+  ['Momentum definition', 'Collisions and conservation of momentum'],
+  `<svg viewBox="0 0 720 390" role="img" aria-labelledby="m1-template-momentum-before-after-table-title">
+    <title id="m1-template-momentum-before-after-table-title">Momentum before-after table</title>
+    <rect x="18" y="18" width="684" height="354" rx="12" />
+    <text x="48" y="55">positive direction -></text>
+    <line class="accent" x1="210" y1="50" x2="285" y2="50" marker-end="url(#arrow-momentum)" />
+    <defs><marker id="arrow-momentum" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <g class="table">
+      <rect x="48" y="82" width="625" height="250" />
+      <line x1="48" y1="132" x2="673" y2="132" /><line x1="48" y1="207" x2="673" y2="207" /><line x1="48" y1="267" x2="673" y2="267" />
+      <line x1="165" y1="82" x2="165" y2="332" /><line x1="300" y1="82" x2="300" y2="332" /><line x1="445" y1="82" x2="445" y2="332" /><line x1="555" y1="82" x2="555" y2="332" />
+      <text x="72" y="113">stage</text><text x="190" y="113">particle</text><text x="326" y="113">mass</text><text x="464" y="113">velocity</text><text x="575" y="113">momentum</text>
+      <text x="70" y="174">before</text><text x="205" y="164">A</text><text x="205" y="194">B</text><text x="324" y="164">mA</text><text x="324" y="194">mB</text><text x="462" y="164">uA</text><text x="462" y="194">uB</text><text x="575" y="164">mA uA</text><text x="575" y="194">mB uB</text>
+      <text x="70" y="248">after</text><text x="205" y="240">A</text><text x="205" y="260">B</text><text x="324" y="240">mA</text><text x="324" y="260">mB</text><text x="462" y="240">vA</text><text x="462" y="260">vB</text><text x="575" y="240">mA vA</text><text x="575" y="260">mB vB</text>
+      <text x="72" y="305">equation</text><text x="190" y="305">total before = total after</text>
+    </g>
+  </svg>`,
+);
+
+const workEnergySetupTemplate = visualTemplate(
+  'm1-template-work-energy-setup',
+  'Work-energy setup diagram',
+  'Use this template before building an energy equation.',
+  'Mark displacement direction first. Work uses the force component along displacement; normal reaction does no work when displacement is along the surface.',
+  ['Work done by force', 'Gravitational potential energy', 'Work energy principle', 'Conservation of energy'],
+  `<svg viewBox="0 0 760 430" role="img" aria-labelledby="m1-template-work-energy-setup-title">
+    <title id="m1-template-work-energy-setup-title">Work-energy setup template</title>
+    <defs><marker id="arrow-work" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="724" height="394" rx="12" />
+    <line class="ground" x1="70" y1="310" x2="590" y2="160" />
+    <rect class="block" x="250" y="225" width="64" height="42" transform="rotate(-16 282 246)" />
+    <line class="accent" x1="282" y1="246" x2="412" y2="208" marker-end="url(#arrow-work)" /><text x="382" y="198">force F</text>
+    <path class="brace" d="M315 238 A54 54 0 0 1 350 218" /><text x="346" y="244">theta</text>
+    <line class="force" x1="282" y1="246" x2="260" y2="180" marker-end="url(#arrow-work)" /><text x="230" y="182">R</text>
+    <line class="force" x1="282" y1="246" x2="282" y2="330" marker-end="url(#arrow-work)" /><text x="292" y="323">mg</text>
+    <line class="warning" x1="250" y1="257" x2="165" y2="280" marker-end="url(#arrow-work)" /><text x="128" y="297">resistance</text>
+    <line class="contrast" x1="160" y1="330" x2="505" y2="230" marker-end="url(#arrow-work)" /><text x="340" y="302">displacement s</text>
+    <line class="grid" x1="585" y1="160" x2="585" y2="310" /><line class="grid" x1="90" y1="310" x2="585" y2="310" />
+    <text x="596" y="244">height change h</text>
+    <text x="88" y="365">Include work by named forces, KE change, and PE change.</text>
+  </svg>`,
+);
+
+const energyTableTemplate = visualTemplate(
+  'm1-template-energy-table',
+  'Energy accounting table',
+  'Use this table before writing a work-energy or conservation equation.',
+  'If resistance, friction, or energy absorbed is present, do not call the equation pure conservation of mechanical energy.',
+  ['Work energy principle', 'Conservation of energy', 'Kinetic energy', 'Gravitational potential energy'],
+  `<svg viewBox="0 0 760 390" role="img" aria-labelledby="m1-template-energy-table-title">
+    <title id="m1-template-energy-table-title">Energy table template</title>
+    <rect x="18" y="18" width="724" height="354" rx="12" />
+    <g class="table">
+      <rect x="48" y="70" width="664" height="255" />
+      <line x1="48" y1="120" x2="712" y2="120" /><line x1="48" y1="172" x2="712" y2="172" /><line x1="48" y1="224" x2="712" y2="224" /><line x1="48" y1="276" x2="712" y2="276" />
+      <line x1="210" y1="70" x2="210" y2="325" /><line x1="385" y1="70" x2="385" y2="325" /><line x1="545" y1="70" x2="545" y2="325" />
+      <text x="70" y="101">term</text><text x="236" y="101">initial</text><text x="414" y="101">final</text><text x="565" y="101">change / work</text>
+      <text x="70" y="151">kinetic energy</text><text x="232" y="151">1/2 m u^2</text><text x="407" y="151">1/2 m v^2</text><text x="565" y="151">Delta KE</text>
+      <text x="70" y="203">gravitational PE</text><text x="232" y="203">m g h1</text><text x="407" y="203">m g h2</text><text x="565" y="203">Delta PE</text>
+      <text x="70" y="255">work by named forces</text><text x="232" y="255">driving +</text><text x="407" y="255">resistance -</text><text x="565" y="255">sum work</text>
+      <text x="70" y="307">losses / absorbed</text><text x="232" y="307">friction</text><text x="407" y="307">air resistance</text><text x="565" y="307">include separately</text>
+    </g>
+  </svg>`,
+);
+
+const powerSetupTemplate = visualTemplate(
+  'm1-template-power-setup',
+  'Power setup: force-speed or work-time',
+  'Use this template to choose between $P=Fv$ and $P=W/t$.',
+  'Use $P=Fv$ when the force and velocity are in the same line at that instant. Use $P=W/t$ for average power over a time interval.',
+  ['Power'],
+  `<svg viewBox="0 0 760 390" role="img" aria-labelledby="m1-template-power-setup-title">
+    <title id="m1-template-power-setup-title">Power formula scope template</title>
+    <defs><marker id="arrow-power" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="724" height="354" rx="12" />
+    <g transform="translate(55 70)">
+      <text x="0" y="0">instantaneous power: P = Fv</text>
+      <line class="ground" x1="0" y1="120" x2="285" y2="120" /><rect class="block" x="90" y="80" width="62" height="40" />
+      <line class="accent" x1="152" y1="94" x2="245" y2="94" marker-end="url(#arrow-power)" /><text x="185" y="83">force F</text>
+      <line class="contrast" x1="152" y1="112" x2="245" y2="112" marker-end="url(#arrow-power)" /><text x="185" y="144">velocity v</text>
+      <text x="0" y="175">valid when aligned in same line</text>
+    </g>
+    <g transform="translate(420 70)">
+      <text x="0" y="0">average power: P = W / t</text>
+      <rect class="table-fill" x="0" y="52" width="250" height="118" rx="8" />
+      <text x="20" y="86">total work W</text>
+      <text x="20" y="118">time interval t</text>
+      <line class="accent" x1="20" y1="140" x2="190" y2="140" marker-end="url(#arrow-power)" />
+      <text x="20" y="205">use for a journey or interval</text>
+    </g>
+  </svg>`,
+);
+
+const calculusMotionFlowTemplate = visualTemplate(
+  'm1-template-calculus-motion-flow',
+  'Calculus motion flow',
+  'Use this template to decide whether to differentiate or integrate.',
+  'Move right by differentiating and left by integrating. Integration needs a condition to fix the constant.',
+  ['Velocity as derivative of displacement', 'Acceleration as derivative of velocity', 'Displacement as integral of velocity', 'Velocity as integral of acceleration'],
+  `<svg viewBox="0 0 640 270" role="img" aria-labelledby="m1-template-calculus-motion-flow-title">
+    <title id="m1-template-calculus-motion-flow-title">Calculus motion flow template</title>
+    <defs><marker id="arrow-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+    <rect x="18" y="18" width="604" height="234" rx="12" />
+    <rect class="table-fill" x="60" y="95" width="120" height="55" rx="8" /><text x="98" y="130">s(t)</text>
+    <rect class="table-fill" x="270" y="95" width="120" height="55" rx="8" /><text x="308" y="130">v(t)</text>
+    <rect class="table-fill" x="480" y="95" width="120" height="55" rx="8" /><text x="518" y="130">a(t)</text>
+    <line class="accent" x1="180" y1="112" x2="270" y2="112" marker-end="url(#arrow-flow)" /><text x="195" y="96">differentiate</text>
+    <line class="accent" x1="390" y1="112" x2="480" y2="112" marker-end="url(#arrow-flow)" /><text x="405" y="96">differentiate</text>
+    <line class="contrast" x1="270" y1="143" x2="180" y2="143" marker-end="url(#arrow-flow)" /><text x="203" y="176">integrate + condition</text>
+    <line class="contrast" x1="480" y1="143" x2="390" y2="143" marker-end="url(#arrow-flow)" /><text x="410" y="202">integrate + condition</text>
+  </svg>`,
+);
 
 export const m1Topics: CourseSeedTopic[] = [
   {
@@ -143,6 +534,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Sketch displacement-time graphs for two vehicles moving toward one another.',
           'Draft/generated practice: Find the equation of a straight displacement-time graph from two marked points.',
         ],
+        [displacementTimeGraphTemplate],
       ),
       section(
         'm1-velocity-velocity-time-graphs',
@@ -158,6 +550,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find distance from a velocity-time graph made of triangles and rectangles.',
           'Draft/generated practice: Sketch a braking graph and find the required starting time for braking.',
         ],
+        [velocityTimeGraphTemplate],
       ),
       section(
         'm1-velocity-graphs-with-discontinuities',
@@ -173,6 +566,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Sketch a motion graph with a sudden change of velocity at a given time.',
           'Draft/generated practice: Explain what assumption is being made when a graph has a discontinuity.',
         ],
+        [discontinuityGraphTemplate],
       ),
     ],
   },
@@ -251,6 +645,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find a resistance force when a vehicle comes to rest under constant deceleration.',
           'Draft/generated practice: Explain why a constant-speed object can still have several forces acting on it.',
         ],
+        [freeBodyDiagramTemplate],
       ),
       section(
         'm1-force-combinations-of-forces',
@@ -296,6 +691,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find $R$ for a block on a horizontal surface with an upward angled pull.',
           'Draft/generated practice: Find $R$ for a block resting on a smooth slope.',
         ],
+        [normalReactionTemplate],
       ),
       section(
         'm1-force-resolving-horizontal-vertical',
@@ -311,6 +707,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Resolve a force at an angle above the horizontal into horizontal and vertical components.',
           'Draft/generated practice: Reconstruct force magnitude and angle from two components.',
         ],
+        [resolvingTriangleTemplate],
       ),
       section(
         'm1-force-resolving-equilibrium',
@@ -431,6 +828,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find the smallest force needed to prevent sliding down a slope.',
           'Draft/generated practice: Find the largest force that keeps an object in equilibrium before it slips upward.',
         ],
+        [frictionDirectionTemplate],
       ),
       section(
         'm1-friction-direction-change',
@@ -554,6 +952,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find acceleration and tension for one hanging mass and one table mass.',
           'Draft/generated practice: Recalculate motion after a string breaks or a particle reaches a pulley.',
         ],
+        [connectedParticlesTemplate],
       ),
     ],
   },
@@ -632,6 +1031,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Given $s(t)$, find speed at $t=0$, $t=1$, and $t=2$.',
           'Draft/generated practice: Find when a particle is momentarily stationary.',
         ],
+        [calculusMotionFlowTemplate],
       ),
       section(
         'm1-general-acceleration-derivative-velocity',
@@ -768,6 +1168,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find the final speed of a crate after a box collides and sticks to it.',
           'Draft/generated practice: Use conservation of momentum to find a ratio of masses after a direct impact.',
         ],
+        [momentumTableTemplate],
       ),
     ],
   },
@@ -848,6 +1249,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find work done by tension pulling a barge at an angle.',
           'Draft/generated practice: Find total work by tension, friction, weight, and normal reaction for a box moving horizontally.',
         ],
+        [workEnergySetupTemplate],
       ),
       section(
         'm1-energy-kinetic-energy',
@@ -893,6 +1295,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find speed after a journey with driving work and resistance work.',
           'Draft/generated practice: Find average resistance from a known speed change and distance.',
         ],
+        [energyTableTemplate],
       ),
       section(
         'm1-energy-conservation',
@@ -923,6 +1326,7 @@ export const m1Topics: CourseSeedTopic[] = [
           'Draft/generated practice: Find power from work done over a time interval.',
           'Draft/generated practice: Find tractive force from power and constant speed.',
         ],
+        [powerSetupTemplate],
       ),
     ],
   },

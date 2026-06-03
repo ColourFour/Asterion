@@ -12,6 +12,16 @@ export interface CourseSeedTopicSection {
   bullets: string[];
   visualRequirements?: string[];
   practicePrompts?: string[];
+  visualTemplates?: CourseSeedVisualTemplate[];
+}
+
+export interface CourseSeedVisualTemplate {
+  id: string;
+  title: string;
+  explanation: string;
+  notice: string;
+  supports: string[];
+  svg: string;
 }
 
 export interface CourseSeedTopic {

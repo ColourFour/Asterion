@@ -869,6 +869,185 @@ main > * {
   margin-top: 12px;
 }
 
+.visual-template-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  min-width: 0;
+}
+
+.visual-template-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fffdf8;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.visual-template-copy h4 {
+  margin: 2px 0 6px;
+  color: var(--ink-warm);
+  line-height: 1.25;
+}
+
+.visual-template-copy p,
+.visual-template-notice,
+.visual-template-supports {
+  margin: 0;
+}
+
+.visual-template-figure {
+  min-width: 0;
+  overflow-x: auto;
+  padding: 10px;
+  border: 1px solid rgba(116, 84, 54, 0.18);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.visual-template-figure svg {
+  display: block;
+  width: 100%;
+  min-width: 520px;
+  max-width: 820px;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.visual-template-figure svg rect:first-of-type {
+  fill: #fffaf2;
+  stroke: rgba(116, 84, 54, 0.22);
+}
+
+.visual-template-figure svg text {
+  fill: var(--ink-warm);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.visual-template-figure svg line,
+.visual-template-figure svg path,
+.visual-template-figure svg polyline,
+.visual-template-figure svg polygon {
+  stroke: var(--ink-warm);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.visual-template-figure svg marker path {
+  fill: currentColor;
+  stroke: none;
+}
+
+.visual-template-figure svg .grid {
+  stroke: rgba(116, 84, 54, 0.3);
+  stroke-dasharray: 5 6;
+}
+
+.visual-template-figure svg .accent,
+.visual-template-figure svg .force {
+  stroke: var(--accent);
+}
+
+.visual-template-figure svg .contrast {
+  stroke: var(--sage);
+}
+
+.visual-template-figure svg .warning {
+  stroke: var(--danger);
+  stroke-dasharray: 7 7;
+}
+
+.visual-template-figure svg .brace,
+.visual-template-figure svg .component,
+.visual-template-figure svg .normal {
+  stroke: var(--focus);
+}
+
+.visual-template-figure svg .ground {
+  stroke: rgba(116, 84, 54, 0.55);
+  stroke-width: 4;
+}
+
+.visual-template-figure svg .shade {
+  fill: rgba(196, 123, 27, 0.18);
+  stroke: rgba(196, 123, 27, 0.38);
+}
+
+.visual-template-figure svg .point {
+  fill: var(--accent);
+  stroke: #ffffff;
+}
+
+.visual-template-figure svg .open-point {
+  fill: #ffffff;
+  stroke: var(--accent);
+}
+
+.visual-template-figure svg .block {
+  fill: var(--amber-soft);
+  stroke: rgba(116, 84, 54, 0.55);
+}
+
+.visual-template-figure svg .pulley,
+.visual-template-figure svg .mass {
+  fill: var(--sage-soft);
+  stroke: var(--sage);
+}
+
+.visual-template-figure svg .table-fill {
+  fill: #f3eadf;
+  stroke: rgba(116, 84, 54, 0.45);
+}
+
+.visual-template-figure svg .table-line {
+  stroke: rgba(116, 84, 54, 0.32);
+}
+
+.visual-template-notice {
+  padding: 10px 12px;
+  border-left: 4px solid var(--accent);
+  color: var(--muted-strong);
+  background: #fff4dd;
+}
+
+.visual-template-supports {
+  display: grid;
+  gap: 6px;
+}
+
+.visual-template-supports h5 {
+  margin: 0;
+  color: var(--ink-warm);
+}
+
+.visual-template-supports ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.visual-template-supports li {
+  padding: 5px 8px;
+  border: 1px solid rgba(63, 113, 98, 0.24);
+  border-radius: 999px;
+  color: var(--sage);
+  background: var(--sage-soft);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
 .jump-details {
   padding: 13px 15px;
   background: rgba(255, 253, 248, 0.78);
@@ -1341,6 +1520,14 @@ summary {
   .practice-card,
   .attempt-form {
     padding: 14px;
+  }
+
+  .visual-template-card {
+    padding: 12px;
+  }
+
+  .visual-template-figure {
+    padding: 6px;
   }
 }
 
