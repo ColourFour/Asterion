@@ -9,6 +9,7 @@ export interface CourseTopicPlaceholder {
   id: string;
   slug?: string;
   syllabusRef?: string;
+  formula?: string;
   title: string;
   note: string;
 }
@@ -19,6 +20,7 @@ export interface CourseMetadata {
   displayName: string;
   shortName: string;
   shortDescription: string;
+  launchDescription: string;
   examComponentLabel: string;
   paperFamilies: PaperFamily[];
   status: CourseStatus;
@@ -36,6 +38,7 @@ export const COURSES: CourseMetadata[] = [
     displayName: 'Pure Mathematics 1',
     shortName: 'P1',
     shortDescription: 'Build the pure maths foundations: algebra, functions, coordinate geometry, sequences, trigonometry, differentiation, and integration.',
+    launchDescription: 'Algebra, graphs, trig, calculus.',
     examComponentLabel: 'Paper 1 / Pure Mathematics 1',
     paperFamilies: ['p1'],
     status: 'draft-seed',
@@ -49,6 +52,7 @@ export const COURSES: CourseMetadata[] = [
     displayName: 'Pure Mathematics 3',
     shortName: 'P3',
     shortDescription: 'Extend pure maths into logarithms, trigonometry, complex numbers, vectors, advanced calculus, iteration, and differential equations.',
+    launchDescription: 'Advanced pure maths and problem solving.',
     examComponentLabel: 'Paper 3 / Pure Mathematics 3',
     paperFamilies: ['p3'],
     status: 'partial',
@@ -68,6 +72,7 @@ export const COURSES: CourseMetadata[] = [
     displayName: 'Mechanics 1',
     shortName: 'M1',
     shortDescription: 'Study motion and forces through kinematics, Newtonian modelling, momentum, connected particles, and variable acceleration.',
+    launchDescription: 'Motion, forces, momentum.',
     examComponentLabel: 'Mechanics 1',
     paperFamilies: ['p4'],
     status: 'draft-seed',
@@ -81,6 +86,7 @@ export const COURSES: CourseMetadata[] = [
     displayName: 'Probability & Statistics 1',
     shortName: 'S1',
     shortDescription: 'Work with data, probability, discrete distributions, the normal distribution, permutations, combinations, and statistical sampling.',
+    launchDescription: 'Data, probability, distributions.',
     examComponentLabel: 'Probability & Statistics 1',
     paperFamilies: ['p5'],
     status: 'draft-seed',

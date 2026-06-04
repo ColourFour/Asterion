@@ -1,10 +1,10 @@
 import { ArrowRight } from 'lucide-react';
 import { P3_COURSE_ID, type CourseMetadata, type CourseTopicPlaceholder } from '../../data/courses';
+import { MathText } from '../shared/MathText';
+import { STUDY_TOPICS, p3TopicPath } from '../../lib/topicStudy';
 
 interface CourseDashboardProps {
   course: CourseMetadata;
-  onOpenP3Topics: () => void;
-  onOpenP3ExamTraining: () => void;
 }
 
 function CourseMathVisual() {
@@ -46,14 +46,33 @@ function draftFieldGuideHref(course: CourseMetadata, topic: CourseTopicPlacehold
   return topic.slug ? `/${course.slug}/topics/${topic.slug}/field-guide/` : undefined;
 }
 
+function courseTopics(course: CourseMetadata): Array<CourseTopicPlaceholder & { href: string }> {
+  if (course.id === P3_COURSE_ID) {
+    return STUDY_TOPICS.map((topic) => ({
+      id: topic.slug,
+      slug: topic.slug,
+      title: topic.name,
+      note: topic.description,
+      formula: topic.headerFormula,
+      href: p3TopicPath(topic, 'field-guide'),
+    }));
+  }
+
+  return course.topics.map((topic) => ({
+    ...topic,
+    href: draftFieldGuideHref(course, topic) ?? `/${course.slug}/topics/`,
+  }));
+}
+
+function courseSectionPath(course: CourseMetadata, section: 'field-guide' | 'practice' | 'exam-training'): string {
+  if (section === 'exam-training') return `/${course.slug}/exam-training/`;
+  return `/${course.slug}/topics/`;
+}
+
 export function CourseDashboard({
   course,
-  onOpenP3Topics,
-  onOpenP3ExamTraining,
 }: CourseDashboardProps) {
-  const isP3 = course.id === P3_COURSE_ID;
-  const hasDraftSeed = course.status === 'draft-seed';
-  const topicHeading = hasDraftSeed ? 'Field Guides' : 'Topics';
+  const topics = courseTopics(course);
 
   return (
     <section className="course-dashboard" aria-labelledby="course-dashboard-title">
@@ -65,60 +84,33 @@ export function CourseDashboard({
         </div>
         <CourseMathVisual />
         <nav className="course-action-nav" aria-label={`${course.shortName} study sections`}>
-          {isP3 ? (
-            <button className="primary-button" type="button" onClick={onOpenP3Topics}>Field Guide</button>
-          ) : hasDraftSeed ? (
-            <a className="primary-button" href={`/${course.slug}/topics/`}>Field Guide</a>
-          ) : (
-            <span className="secondary-button disabled-button" aria-disabled="true">Field Guide</span>
-          )}
-          {isP3 ? (
-            <button className="secondary-button" type="button" onClick={onOpenP3Topics}>Practice</button>
-          ) : hasDraftSeed ? (
-            <a className="secondary-button" href={`/${course.slug}/topics/`}>Practice</a>
-          ) : (
-            <span className="secondary-button disabled-button" aria-disabled="true">Practice</span>
-          )}
-          {isP3 ? (
-            <button className="secondary-button" type="button" onClick={onOpenP3ExamTraining}>Exam Training</button>
-          ) : hasDraftSeed ? (
-            <a className="secondary-button" href={`/${course.slug}/exam-training/`}>Exam Training</a>
-          ) : (
-            <span className="secondary-button disabled-button" aria-disabled="true">Exam Training</span>
-          )}
+          <a className="primary-button" href="#course-topics" aria-current="page">Topics</a>
+          <a className="secondary-button" href={courseSectionPath(course, 'field-guide')}>Field Guide</a>
+          <a className="secondary-button" href={courseSectionPath(course, 'practice')}>Practice</a>
+          <a className="secondary-button" href={courseSectionPath(course, 'exam-training')}>Exam Training</a>
         </nav>
       </header>
 
-      {hasDraftSeed ? (
-        <aside className="course-warning-banner" role="note">
-          <strong>{course.statusLabel}</strong>
-          <span>Starter study notes are visible for audit; they are not mastery evidence or final exam-bank mapping yet.</span>
-        </aside>
-      ) : null}
-
-      <section className="summary-card course-topic-list" aria-labelledby="course-topic-list-title">
+      <section className="summary-card course-topic-list" aria-labelledby="course-topic-list-title" id="course-topics">
         <div>
-          <h3 id="course-topic-list-title">{topicHeading}</h3>
-          <p>{hasDraftSeed ? 'Choose a topic to open its Field Guide.' : 'Choose a topic area to continue studying.'}</p>
+          <h3 id="course-topic-list-title">Topics</h3>
+          <p>Choose a topic to start learning.</p>
         </div>
         <div className="course-topic-button-grid">
-          {course.topics.map((topic) => {
-            const href = draftFieldGuideHref(course, topic);
-            const content = (
-              <>
-                <span>{topic.title}</span>
-                {topic.syllabusRef ? <small>{topic.syllabusRef}</small> : <small>{topic.note}</small>}
-                <ArrowRight size={16} aria-hidden="true" />
-              </>
-            );
-            if (href) {
-              return <a className="course-topic-button" href={href} key={topic.id}>{content}</a>;
-            }
-            if (isP3) {
-              return <button className="course-topic-button" type="button" onClick={onOpenP3Topics} key={topic.id}>{content}</button>;
-            }
-            return <span className="course-topic-button is-disabled" aria-disabled="true" key={topic.id}>{content}</span>;
-          })}
+          {topics.map((topic) => (
+            <a className="course-topic-button" href={topic.href} key={topic.id}>
+              <span className="topic-card-visual" aria-hidden="true">
+                <svg viewBox="0 0 92 54" focusable="false">
+                  <path d="M8 42c16-34 30-34 44 0s22 16 32-20" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="5" />
+                  <path d="M9 43h74M18 47V8" stroke="currentColor" strokeLinecap="round" strokeOpacity="0.38" strokeWidth="2" />
+                </svg>
+              </span>
+              <span className="topic-card-title">{topic.title}</span>
+              {topic.syllabusRef ? <small>{topic.syllabusRef}</small> : null}
+              {topic.formula ? <span className="topic-card-formula"><MathText text={`$${topic.formula}$`} /></span> : null}
+              <ArrowRight size={16} aria-hidden="true" />
+            </a>
+          ))}
         </div>
       </section>
     </section>

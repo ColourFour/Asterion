@@ -481,11 +481,7 @@ export default function App() {
       ) : null}
 
       {viewMode === 'course_dashboard' && selectedCourse ? (
-        <CourseDashboard
-          course={selectedCourse}
-          onOpenP3Topics={openP3Topics}
-          onOpenP3ExamTraining={() => openExamTrainingDashboard()}
-        />
+        <CourseDashboard course={selectedCourse} />
       ) : null}
 
       {viewMode === 'index' ? (

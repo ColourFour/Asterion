@@ -138,10 +138,26 @@ for (const page of requiredPages) {
   }
 }
 
-for (const page of requiredPages.filter((page) => /^(p1|m1|s1)\/topics\/[^/]+\/index\.html$/.test(page))) {
+const internalStudentCopy = [
+  'Draft seed content',
+  'needs syllabus-contract review',
+  'starter study notes only',
+  'not mastery evidence',
+  'final exam-bank mapping',
+  'not mastery or readiness evidence',
+  'not reviewed exam questions',
+  'not yet a reviewed course contract',
+  'mastery signal',
+  'review-needed',
+  'support-only',
+  'official progress evidence',
+];
+
+for (const page of requiredPages) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
-  if (!html.includes('Draft seed content - needs syllabus-contract review.')) {
-    console.error(`${page} is missing the visible draft seed warning.`);
+  const matchedCopy = internalStudentCopy.find((phrase) => html.includes(phrase));
+  if (matchedCopy) {
+    console.error(`${page} includes internal student-facing copy: ${matchedCopy}`);
     process.exit(1);
   }
 }

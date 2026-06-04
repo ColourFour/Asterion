@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
 import {
-  DRAFT_SEED_CONTENT_LABEL,
   getSeedTopicsForCourse,
   hasDraftSeedTopics,
   type CourseSeedTopic,
@@ -85,6 +84,55 @@ const visibleGameTerms = [
 ];
 
 const visibleCopyReplacements: Array<[RegExp, string]> = [
+  [/Reviewer note:\s*[^.]*\./gi, ''],
+  [/Later review (?:must|should) [^.]*\./gi, 'Check your class syllabus if your teacher has set a specific scope.'],
+  [/Later review [^.]*\./gi, 'Check your class syllabus if your teacher has set a specific scope.'],
+  [/This is a teacher-guided draft support item\./gi, 'This is an extra guided practice item.'],
+  [/Use the matching draft Field Guide method/gi, 'Use the matching Field Guide method'],
+  [/Draft Skill Checks/gi, 'Skill Checks'],
+  [/Draft Skill Check/gi, 'Skill Check'],
+  [/draft placeholder/gi, 'practice'],
+  [/practice placeholder/gi, 'practice'],
+  [/placeholder/gi, 'practice'],
+  [/Draft\/source-filled[^.]*\./gi, ''],
+  [/teacher-guided draft/gi, 'guided'],
+  [/draft support-only/gi, 'guided practice'],
+  [/draft support/gi, 'guided practice'],
+  [/support-only/gi, 'practice'],
+  [/support only/gi, 'practice'],
+  [/support item/gi, 'practice item'],
+  [/review-needed/gi, 'practice'],
+  [/not reviewed exam questions?/gi, 'practice questions'],
+  [/reviewed exam evidence/gi, 'exam practice'],
+  [/reviewed assessment evidence/gi, 'exam practice'],
+  [/reviewed P1 assessment evidence/gi, 'exam practice'],
+  [/reviewed by-parts content/gi, 'by-parts content'],
+  [/reviewed Paper 3/gi, 'Paper 3'],
+  [/reviewed image-first/gi, 'image-first'],
+  [/reviewed question/gi, 'question'],
+  [/reviewed route/gi, 'route'],
+  [/source PDF gap is documented for teacher audit/gi, 'use the worked route as your guide'],
+  [/syllabus-scope audit/gi, 'syllabus scope check'],
+  [/until P1 syllabus scope is audited/gi, 'until your teacher confirms your syllabus scope'],
+  [/until scope is reviewed/gi, 'when this appears in your class syllabus'],
+  [/still needs course-contract review/gi, 'is best checked against your class syllabus'],
+  [/course-contract review/gi, 'syllabus check'],
+  [/course contract/gi, 'course plan'],
+  [/contract/gi, 'plan'],
+  [/mastery or readiness evidence/gi, 'exam readiness'],
+  [/mastery, readiness, marks, teacher evidence, final assessment evidence/gi, 'saved marks'],
+  [/mastery evidence/gi, 'exam practice'],
+  [/readiness evidence/gi, 'exam practice'],
+  [/assessment evidence/gi, 'exam practice'],
+  [/exam evidence/gi, 'exam practice'],
+  [/teacher evidence/gi, 'teacher feedback'],
+  [/final assessment/gi, 'exam'],
+  [/does not count as mastery/gi, 'is for practice'],
+  [/do not count as mastery/gi, 'are for practice'],
+  [/not mastery/gi, 'practice'],
+  [/mastery/gi, 'progress'],
+  [/audit/gi, 'check'],
+  [/\bdraft\b/gi, 'practice'],
   [/\bAlgebra Vault\b/g, 'Algebra'],
   [/\bAlgebra Forge\b/g, 'Algebra'],
   [/\bLogarithm Observatory\b/g, 'Logarithms'],
@@ -112,10 +160,6 @@ const publicAssetExclusions = [
   /^assets\/region-art(?:\/|$)/i,
   /^assets\/ui(?:\/|$)/i,
 ];
-
-const staticHomeAssetAllowList = new Set([
-  'assets/ui/course-selector-study-hero.png',
-]);
 
 function cleanVisibleCopy(value: string | number | undefined): string {
   return visibleCopyReplacements.reduce((current, [pattern, replacement]) => (
@@ -408,26 +452,22 @@ function renderTopicCard(fromPagePath: string, context: TopicContext, examTraini
 }
 
 function renderDraftNotice(extra = ''): string {
-  return `
-    <aside class="draft-seed-notice" role="note">
-      <strong>${escapeHtml(DRAFT_SEED_CONTENT_LABEL)}</strong>
-      ${extra ? `<span>${escapeHtml(extra)}</span>` : ''}
-    </aside>
-  `;
+  void extra;
+  return '';
 }
 
 function renderSeedTopicCard(fromPagePath: string, course: CourseMetadata, topic: CourseSeedTopic): string {
   return `
-    <article class="topic-card draft-topic-card">
+    <article class="topic-card">
       <div class="topic-card-formula">${renderInlineFormula(topic.headerFormula)}</div>
       <p class="eyebrow">${escapeHtml(topic.syllabusRef)}</p>
       <h2>${escapeHtml(topic.title)}</h2>
       <p>${escapeHtml(topic.description)}</p>
-      <p class="seed-topic-status">${escapeHtml(DRAFT_SEED_CONTENT_LABEL)}</p>${renderSeedReviewStatus(topic)}
+      ${renderSeedReviewStatus(topic)}
       <div class="button-row">
         ${routeLink(fromPagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button primary-button')}
         ${routeLink(fromPagePath, seedFieldGuidePagePath(course, topic), 'Field Guide', 'button secondary-button')}
-        ${routeLink(fromPagePath, seedPracticePagePath(course, topic), 'Practice placeholder', 'button text-button')}
+        ${routeLink(fromPagePath, seedPracticePagePath(course, topic), 'Practice', 'button text-button')}
         ${routeLink(fromPagePath, seedTopicExamTrainingPagePath(course, topic), 'Exam Training', 'button text-button')}
       </div>
     </article>
@@ -451,9 +491,8 @@ function renderSeedFormulaList(topic: CourseSeedTopic): string {
 }
 
 function renderSeedReviewStatus(topic: CourseSeedTopic): string {
-  return topic.reviewStatus
-    ? `<p class="seed-topic-status">${escapeHtml(topic.reviewStatus)}</p>`
-    : '';
+  void topic;
+  return '';
 }
 
 function renderOptionalList(title: string, items: string[] | undefined, className = 'plain-list'): string {
@@ -542,17 +581,59 @@ function renderCourseMathVisual(): string {
   `;
 }
 
+function renderExamPanicVisual(): string {
+  return `
+    <div class="home-meme-visual" aria-hidden="true">
+      <svg viewBox="0 0 420 300" focusable="false">
+        <defs>
+          <linearGradient id="panicPaper" x1="70" y1="22" x2="346" y2="254" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fffdf8" />
+            <stop offset="1" stop-color="#f9e6be" />
+          </linearGradient>
+          <linearGradient id="panicAccent" x1="32" y1="248" x2="382" y2="50" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#78351f" />
+            <stop offset="0.55" stop-color="#c47b1b" />
+            <stop offset="1" stop-color="#3f7162" />
+          </linearGradient>
+        </defs>
+        <rect x="20" y="20" width="380" height="260" rx="22" fill="#fff8ed" />
+        <path d="M46 232c62-86 104-88 150-16s78 64 142-48" fill="none" stroke="url(#panicAccent)" stroke-linecap="round" stroke-width="9" opacity="0.75" />
+        <g transform="translate(188 34) rotate(5)">
+          <rect width="160" height="188" rx="12" fill="url(#panicPaper)" stroke="#d9c9b7" stroke-width="2" />
+          <text x="18" y="34" fill="#34251f" font-size="15" font-weight="800">Question 1</text>
+          <text x="18" y="58" fill="#78351f" font-size="13">Hence prove...</text>
+          <path d="M18 82h124M18 104h98M18 126h116" stroke="#8f735d" stroke-opacity="0.35" stroke-width="4" stroke-linecap="round" />
+          <text x="18" y="164" fill="#3f7162" font-size="14" font-weight="800">Time left: 00:03</text>
+        </g>
+        <g transform="translate(72 96)">
+          <circle cx="66" cy="70" r="46" fill="#f4ddbd" stroke="#78351f" stroke-width="4" />
+          <path d="M28 48c10-34 64-38 78-2" fill="none" stroke="#34251f" stroke-width="8" stroke-linecap="round" />
+          <circle cx="50" cy="70" r="5" fill="#34251f" />
+          <circle cx="82" cy="70" r="5" fill="#34251f" />
+          <path d="M54 94c10-10 22-10 32 0" fill="none" stroke="#34251f" stroke-width="4" stroke-linecap="round" />
+          <path d="M20 126c34 20 64 20 98 0" fill="none" stroke="#3f7162" stroke-width="10" stroke-linecap="round" />
+          <text x="10" y="164" fill="#78351f" font-size="15" font-weight="900">Brain loading...</text>
+        </g>
+        <g fill="#34251f" fill-opacity="0.7" font-family="Georgia, Times New Roman, serif" font-size="18" font-style="italic">
+          <text x="42" y="70">dy/dx?</text>
+          <text x="300" y="246">Σ panic</text>
+        </g>
+      </svg>
+    </div>
+  `;
+}
+
 function renderCourseCard(fromPagePath: string, course: CourseMetadata): string {
   return `
     <a class="course-card course-status-${escapeAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="Open ${escapeAttr(course.displayName)}">
-      <div>
-        <div class="course-card-kicker">
-          <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
-          <span aria-hidden="true">&#8594;</span>
+      <div class="course-launch-card-main">
+        <span class="course-code-badge">${escapeHtml(course.shortName)}</span>
+        <div>
+          <h2>${escapeHtml(course.displayName)}</h2>
+          <p>${escapeHtml(course.launchDescription)}</p>
         </div>
-        <h2>${escapeHtml(`${course.shortName}: ${course.displayName}`)}</h2>
-        <p>${escapeHtml(course.shortDescription)}</p>
       </div>
+      <span class="course-launch-cta">Start ${escapeHtml(course.shortName)} <span aria-hidden="true">&#8594;</span></span>
     </a>
   `;
 }
@@ -576,6 +657,7 @@ function renderCourseActionNav(pagePath: string, course: CourseMetadata, isP3: b
 
   return `
     <nav class="course-action-nav" aria-label="${escapeAttr(course.shortName)} study sections">
+      <a class="button primary-button" href="#course-topics" aria-current="page">Topics</a>
       ${fieldGuideAction}${practiceAction}${examAction}
     </nav>
   `;
@@ -583,7 +665,6 @@ function renderCourseActionNav(pagePath: string, course: CourseMetadata, isP3: b
 
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
-  const heroImagePath = hrefToPublicAsset(pagePath, 'assets/ui/course-selector-study-hero.png');
   const body = `
     <section class="page-hero course-selector-hero">
       <div class="hero-copy">
@@ -591,9 +672,7 @@ function renderCourseSelectorPage(): string {
         <h1>Choose your course</h1>
         <p>Pick the maths paper you are studying today. Each course opens into a focused study page with topics, practice, and exam preparation where available.</p>
       </div>
-      <figure class="hero-image-panel">
-        <img src="${heroImagePath}" alt="A calm study desk with a maths notebook, pencil, tea, and laptop." />
-      </figure>
+      ${renderExamPanicVisual()}
     </section>
     <section class="section-heading">
       <div>
@@ -622,16 +701,30 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
   const topicButtons = isP3
     ? STUDY_TOPICS.map((topic) => `
       <a class="course-topic-button" href="${hrefToPage(pagePath, fieldGuidePagePath(topic))}">
-        <span>${escapeHtml(topic.name)}</span>
+        <span class="topic-card-visual" aria-hidden="true">
+          <svg viewBox="0 0 92 54" focusable="false">
+            <path d="M8 42c16-34 30-34 44 0s22 16 32-20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="5" />
+            <path d="M9 43h74M18 47V8" stroke="currentColor" stroke-linecap="round" stroke-opacity="0.38" stroke-width="2" />
+          </svg>
+        </span>
+        <span class="topic-card-title">${escapeHtml(topic.name)}</span>
         <small>${escapeHtml(topic.description)}</small>
-        <span aria-hidden="true">&#8594;</span>
+        <span class="topic-card-formula">${renderMathText(`$${topic.headerFormula}$`)}</span>
+        <span class="topic-card-arrow" aria-hidden="true">&#8594;</span>
       </a>
     `).join('')
     : seedTopics.map((topic) => `
       <a class="course-topic-button" href="${hrefToPage(pagePath, seedFieldGuidePagePath(course, topic))}">
-        <span>${escapeHtml(topic.title)}</span>
+        <span class="topic-card-visual" aria-hidden="true">
+          <svg viewBox="0 0 92 54" focusable="false">
+            <path d="M8 42c16-34 30-34 44 0s22 16 32-20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="5" />
+            <path d="M9 43h74M18 47V8" stroke="currentColor" stroke-linecap="round" stroke-opacity="0.38" stroke-width="2" />
+          </svg>
+        </span>
+        <span class="topic-card-title">${escapeHtml(topic.title)}</span>
         <small>${escapeHtml(topic.syllabusRef)}</small>
-        <span aria-hidden="true">&#8594;</span>
+        <span class="topic-card-formula">${renderMathText(`$${topic.headerFormula}$`)}</span>
+        <span class="topic-card-arrow" aria-hidden="true">&#8594;</span>
       </a>
     `).join('');
   const body = `
@@ -644,11 +737,10 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
       ${renderCourseMathVisual()}
     </section>
     ${renderCourseActionNav(pagePath, course, isP3, hasSeedContent)}
-    ${hasSeedContent ? renderDraftNotice('These pages are starter study notes only, not mastery evidence or final exam-bank mapping.') : ''}
-    <section class="summary-card course-topic-list" aria-labelledby="course-topic-list-title">
+    <section class="summary-card course-topic-list" aria-labelledby="course-topic-list-title" id="course-topics">
       <div>
-        <h2 id="course-topic-list-title">${hasSeedContent ? 'Field Guides' : 'Topics'}</h2>
-        <p>${hasSeedContent ? 'Choose a topic to open its Field Guide.' : 'Choose a topic area to continue studying.'}</p>
+        <h2 id="course-topic-list-title">Topics</h2>
+        <p>Choose a topic to start learning.</p>
       </div>
       <div class="course-topic-button-grid">
         ${topicButtons || '<p class="empty-state">Topic pages are coming soon.</p>'}
@@ -717,8 +809,8 @@ function renderSeedTopicsIndexPage(course: CourseMetadata): string {
   const firstTopic = topics[0];
   const body = `
     ${renderHero(
-      `${course.shortName} Draft Topic Practice`,
-      'Choose a topic to audit the starter notes, Field Guide outline, and practice placeholders.',
+      `${course.shortName} Topic Practice`,
+      'Choose a topic, review the key ideas, then try practice and exam-style questions.',
       firstTopic?.headerFormula,
       `${firstTopic ? routeLink(pagePath, seedTopicPagePath(course, firstTopic), `Start ${firstTopic.shortTitle}`, 'button primary-button') : ''}
       ${routeLink(pagePath, seedExamTrainingPagePath(course), 'Exam Training', 'button secondary-button')}`,
@@ -728,18 +820,18 @@ function renderSeedTopicsIndexPage(course: CourseMetadata): string {
     ${renderStudyPath()}
     <section class="section-heading" id="topic-list">
       <div>
-        <h2>Choose a draft topic</h2>
-        <p>Each topic follows the P3 page pattern at a smaller draft depth: overview, key ideas, method route, mistakes, self-checks, and practice direction.</p>
+        <h2>Choose a topic</h2>
+        <p>Start with the overview, build the method, then move into practice.</p>
       </div>
     </section>
-    <section class="topic-grid" aria-label="${escapeAttr(course.shortName)} draft topic pages">
+    <section class="topic-grid" aria-label="${escapeAttr(course.shortName)} topic pages">
       ${topics.map((topic) => renderSeedTopicCard(pagePath, course, topic)).join('')}
     </section>
   `;
   return renderPage({
     pagePath,
-    title: `${course.shortName} Draft Topics`,
-    description: `Draft static topic pages for ${course.displayName}.`,
+    title: `${course.shortName} Topics`,
+    description: `Topic pages for ${course.displayName}.`,
     active: course.id,
     body,
   });
@@ -756,7 +848,7 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
       topic.description,
       topic.headerFormula,
       `${routeLink(pagePath, fieldGuidePath, 'Open Field Guide', 'button primary-button')}
-      ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button secondary-button')}
+      ${routeLink(pagePath, practicePath, 'Practice', 'button secondary-button')}
       ${routeLink(pagePath, examTrainingPath, 'Exam Training', 'button text-button')}`,
       `${course.shortName} ${topic.syllabusRef}`,
     )}
@@ -809,9 +901,9 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
       </article>
     </section>
     <section class="next-step-card">
-      <h2>Practice placeholder</h2>
-      <p>${escapeHtml(topic.practiceHook)}</p>${renderOptionalList('Draft/generated practice prompts', topic.genericPracticePrompts)}
-      ${routeLink(pagePath, practicePath, 'Open practice placeholder', 'button primary-button')}
+      <h2>Practice</h2>
+      <p>${escapeHtml(topic.practiceHook)}</p>${renderOptionalList('Practice prompts', topic.genericPracticePrompts)}
+      ${routeLink(pagePath, practicePath, 'Open practice', 'button primary-button')}
       ${routeLink(pagePath, examTrainingPath, 'Open Exam Training', 'button secondary-button')}
       ${routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Back to ${course.shortName} topics`, 'button secondary-button')}
     </section>
@@ -819,7 +911,7 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
   return renderPage({
     pagePath,
     title: `${course.shortName} ${topic.title}`,
-    description: `${DRAFT_SEED_CONTENT_LABEL} ${topic.description}`,
+    description: topic.description,
     active: course.id,
     body,
   });
@@ -831,16 +923,16 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
   const body = `
     ${renderHero(
       `${topic.title} Field Guide`,
-      'Use these short sections as a first audit scaffold, then test the outline with practice prompts.',
+      'Use these short sections to learn the method, then test the idea with practice prompts.',
       topic.headerFormula,
       `${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
-      ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button primary-button')}`,
-      `${course.shortName} draft Field Guide`,
+      ${routeLink(pagePath, practicePath, 'Practice', 'button primary-button')}`,
+      `${course.shortName} Field Guide`,
     )}
     ${renderDraftNotice('Field Guide sections are provisional and must be checked against the official syllabus contract.')}
     <details class="jump-details" open>
       <summary>Show section list</summary>
-      <nav class="subnav" aria-label="${escapeAttr(topic.title)} draft Field Guide sections">
+      <nav class="subnav" aria-label="${escapeAttr(topic.title)} Field Guide sections">
         ${topic.fieldGuideSections.map((section) => `<a href="#${escapeAttr(section.id)}">${escapeHtml(section.title)}</a>`).join('')}
       </nav>
     </details>
@@ -849,14 +941,14 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
         <article class="field-guide-topic" id="${escapeAttr(section.id)}">
           <header class="topic-section-header">
             <div>
-              <p class="eyebrow">Draft section ${index + 1} of ${topic.fieldGuideSections.length}</p>
+              <p class="eyebrow">Section ${index + 1} of ${topic.fieldGuideSections.length}</p>
               <h2>${escapeHtml(section.title)}</h2>
               <p>${escapeHtml(section.purpose)}</p>
             </div>
           </header>
           <article class="lesson-card">
             <h3>Method notes</h3>
-            ${renderPlainList(section.bullets)}${renderOptionalList('Required visual elements', section.visualRequirements)}${renderOptionalList('Draft/generated practice prompts', section.practicePrompts)}
+            ${renderPlainList(section.bullets)}${renderOptionalList('Visual ideas', section.visualRequirements)}${renderOptionalList('Practice prompts', section.practicePrompts)}
           </article>${renderSeedVisualTemplates(section.visualTemplates)}
         </article>
       `).join('')}
@@ -864,13 +956,13 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
     <section class="next-step-card">
       <h2>Next step</h2>
       <p>${escapeHtml(topic.practiceHook)}</p>
-      ${routeLink(pagePath, practicePath, 'Practice placeholder', 'button primary-button')}
+      ${routeLink(pagePath, practicePath, 'Practice', 'button primary-button')}
     </section>
   `;
   return renderPage({
     pagePath,
     title: `${course.shortName} ${topic.title} Field Guide`,
-    description: `Draft Field Guide for ${topic.title}.`,
+    description: `Field Guide for ${topic.title}.`,
     active: course.id,
     body,
   });
@@ -881,27 +973,27 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, 
   const examTrainingPath = seedTopicExamTrainingPagePath(course, topic);
   const availableExamQuestions = data ? filterCourseTopicExamQuestions(data.catalogQuestions, course, topic).length : 0;
   const routedCatalogRecords = data ? filterCourseTopicExamQuestions(data.catalogRecords, course, topic).length : 0;
-  const draftSkillCheckItems = getSkillCheckItemsForCourseTopic(course.id, topic.id);
-  const draftSkillChecksMarkup = renderSeedDraftSkillChecks(course, topic);
-  const heroActions = draftSkillCheckItems.length
-    ? `<a class="button primary-button" href="#draft-skill-checks">Start draft Skill Checks</a>
+  const skillCheckItems = getSkillCheckItemsForCourseTopic(course.id, topic.id);
+  const skillChecksMarkup = renderSeedDraftSkillChecks(course, topic);
+  const heroActions = skillCheckItems.length
+    ? `<a class="button primary-button" href="#skill-checks">Start Skill Checks</a>
       ${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
       ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`
     : `${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
       ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`;
   const body = `
     ${renderHero(
-      `${topic.title} ${draftSkillCheckItems.length ? 'Draft Skill Check' : 'Practice Placeholder'}`,
-      draftSkillCheckItems.length
-        ? 'Use these draft checks to test the support-only Skill Check path. They are not mastery or readiness evidence.'
-        : 'Use these prompts for self-checking only. Full reviewed practice and exam-image mapping are out of scope for this seed pass.',
+      `${topic.title} ${skillCheckItems.length ? 'Skill Check' : 'Practice'}`,
+      skillCheckItems.length
+        ? 'Use these checks to test the method before moving into exam-style questions.'
+        : 'Use these prompts for quick self-checking before exam-style questions.',
       topic.headerFormula,
       heroActions,
-      `${course.shortName} draft practice`,
+      `${course.shortName} practice`,
     )}
     ${renderDraftNotice('No marks, mastery, adaptive selection, or exam evidence are created on this placeholder page.')}
     <section class="practice-stack">
-      ${draftSkillChecksMarkup ? `${draftSkillChecksMarkup}
+      ${skillChecksMarkup ? `${skillChecksMarkup}
       ` : ''}<article class="practice-topic">
         <header class="topic-section-header">
           <div>
@@ -926,15 +1018,15 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, 
         <article class="practice-topic">
           <header class="topic-section-header">
             <div>
-              <p class="eyebrow">Draft/generated practice</p>
-              <h2>Source-style prompt scaffolds</h2>
-              <p>These are generic prompt directions for first-pass practice authoring. They are not reviewed exam questions or mark schemes.</p>
+              <p class="eyebrow">Extra practice</p>
+              <h2>Prompt scaffolds</h2>
+              <p>Use these directions to make your own quick questions before exam practice.</p>
             </div>
           </header>
           <div class="practice-card-stack">
             ${topic.genericPracticePrompts.map((prompt, index) => `
               <article class="practice-card">
-                <p class="eyebrow">Draft prompt ${index + 1}</p>
+                <p class="eyebrow">Prompt ${index + 1}</p>
                 <h3>${renderMathText(prompt)}</h3>
                 ${topic.visualRequirements?.length ? `
                   <details>
@@ -957,17 +1049,17 @@ function renderSeedPracticePage(course: CourseMetadata, topic: CourseSeedTopic, 
       </div>
       ${renderPlainList(topic.examStyle)}
       <p class="empty-state">${availableExamQuestions > 0
-        ? `${availableExamQuestions} catalog question image pair${availableExamQuestions === 1 ? '' : 's'} are available for this rough topic route. They still need course-contract review.`
+        ? `${availableExamQuestions} question image pair${availableExamQuestions === 1 ? '' : 's'} available for this topic.`
         : routedCatalogRecords > 0
-          ? `${routedCatalogRecords} catalog record${routedCatalogRecords === 1 ? '' : 's'} match this rough topic route, but local question and mark-scheme image files are missing.`
-          : `No catalog question image pairs are currently routed to this draft topic.`}</p>
+          ? `${routedCatalogRecords} question record${routedCatalogRecords === 1 ? '' : 's'} match this topic, but local question and mark-scheme image files are missing.`
+          : `No question image pairs are currently available for this topic.`}</p>
       ${routeLink(pagePath, examTrainingPath, 'Open topic Exam Training', 'button primary-button')}
     </section>
   `;
   return renderPage({
     pagePath,
-    title: `${course.shortName} ${topic.title} Practice Placeholder`,
-    description: `Draft practice placeholder for ${topic.title}.`,
+    title: `${course.shortName} ${topic.title} Practice`,
+    description: `Practice for ${topic.title}.`,
     active: course.id,
     body,
   });
@@ -987,7 +1079,7 @@ function courseQuestionDisplayTopic(course: CourseMetadata, question: Normalized
 
 function courseQuestionReviewNote(course: CourseMetadata): string | undefined {
   if (course.id === P3_COURSE_ID) return undefined;
-  return 'Catalog image pair; route is not yet a reviewed course contract or mastery signal.';
+  return undefined;
 }
 
 function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData): string {
@@ -999,7 +1091,7 @@ function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData
   const body = `
     ${renderHero(
       `${course.shortName} Exam Training`,
-      'Catalog wiring is active for build-first practice. Question cards appear only when local question and mark-scheme image files exist.',
+      'Use available question and mark-scheme images for timed paper practice.',
       topics[0]?.headerFormula,
       routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Back to ${course.shortName} topics`, 'button primary-button'),
       course.examComponentLabel,
@@ -1007,11 +1099,11 @@ function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData
     ${renderDraftNotice('Exam-bank metadata is wired from the catalog, but this course is not fully reviewed. Do not treat these routes as mastery evidence or official progress evidence yet.')}
     <section class="exam-callout compact-callout">
       <div>
-        <p class="eyebrow">Catalog availability</p>
+        <p class="eyebrow">Question availability</p>
         <h2>${questions.length} image pair${questions.length === 1 ? '' : 's'} available</h2>
         <p>${catalogRecords.length > questions.length
-          ? `${catalogRecords.length} catalog record${catalogRecords.length === 1 ? '' : 's'} exist, but only records with local question and mark-scheme image files can be shown.`
-          : 'Question crops and mark-scheme crops are the source of truth. Extracted text and route labels are advisory.'}</p>
+          ? `${catalogRecords.length} question record${catalogRecords.length === 1 ? '' : 's'} exist, but only records with local question and mark-scheme image files can be shown.`
+          : 'Question crops and mark-scheme crops are the source of truth.'}</p>
       </div>
       ${questions.length ? '<a class="button primary-button" href="#mixed-questions">Start with mixed questions</a>' : ''}
     </section>
@@ -1019,7 +1111,7 @@ function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData
       <div class="section-heading">
         <div>
           <h2>Mixed ${escapeHtml(course.shortName)} questions</h2>
-          <p>Use these for paper practice only while course routing is awaiting review.</p>
+          <p>Use these for focused paper practice.</p>
         </div>
       </div>
       <div class="exam-question-grid">
@@ -1030,14 +1122,14 @@ function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData
         })).join('')}
       </div>
       ${mixedQuestions.length === 0 ? `<p class="empty-state">${catalogRecords.length
-        ? 'Catalog records exist for this course, but no referenced question and mark-scheme image files are present in this checkout.'
+        ? 'Question records exist for this course, but no referenced question and mark-scheme image files are present in this checkout.'
         : 'No usable question and mark-scheme image pairs are available for this course yet.'}</p>` : ''}
     </section>
-    <section class="exam-topic-dashboard" aria-label="${escapeAttr(course.shortName)} draft exam directions">
+    <section class="exam-topic-dashboard" aria-label="${escapeAttr(course.shortName)} exam directions">
       <div class="section-heading">
         <div>
           <h2>Topic routes</h2>
-          <p>Use topic links when the routing sidecar has a matching course topic. Empty topics are shown honestly.</p>
+          <p>Open a topic to focus your exam practice.</p>
         </div>
       </div>
       <div class="exam-topic-list">
@@ -1050,10 +1142,10 @@ function renderSeedExamTrainingPage(course: CourseMetadata, data: StaticSiteData
               <p class="eyebrow">${escapeHtml(topic.syllabusRef)}</p>
               <h3>${escapeHtml(topic.title)}</h3>
               <p>${topicQuestions.length > 0
-                ? `${topicQuestions.length} catalog image pair${topicQuestions.length === 1 ? '' : 's'} matched by rough topic routing.`
+                ? `${topicQuestions.length} question image pair${topicQuestions.length === 1 ? '' : 's'} available.`
                 : topicRecords.length > 0
-                  ? `${topicRecords.length} catalog record${topicRecords.length === 1 ? '' : 's'} matched, but local image files are missing.`
-                  : 'No catalog image pairs are currently matched to this draft topic.'}</p>
+                  ? `${topicRecords.length} question record${topicRecords.length === 1 ? '' : 's'} matched, but local image files are missing.`
+                  : 'No question image pairs are currently available for this topic.'}</p>
             </div>
             ${routeLink(pagePath, seedTopicExamTrainingPagePath(course, topic), 'Open topic Exam Training', 'button secondary-button')}
           </article>
@@ -1078,7 +1170,7 @@ function renderSeedTopicExamTrainingPage(course: CourseMetadata, topic: CourseSe
   const body = `
     ${renderHero(
       `${topic.title} Exam Training`,
-      'Use available question and mark-scheme images for paper practice. This route is intentionally labelled review-needed.',
+      'Use available question and mark-scheme images for paper practice.',
       topic.headerFormula,
       `${routeLink(pagePath, seedExamTrainingPagePath(course), `Back to ${course.shortName} Exam Training`, 'button secondary-button')}
       ${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button text-button')}`,
@@ -1089,7 +1181,7 @@ function renderSeedTopicExamTrainingPage(course: CourseMetadata, topic: CourseSe
       <div class="section-heading">
         <div>
           <h2>Image-first exam questions</h2>
-          <p>Question crops and mark-scheme crops are the source of truth. Route labels are advisory until review.</p>
+          <p>Question crops and mark-scheme crops are the source of truth.</p>
         </div>
       </div>
       <div class="exam-question-grid">
@@ -1101,8 +1193,8 @@ function renderSeedTopicExamTrainingPage(course: CourseMetadata, topic: CourseSe
         })).join('')}
       </div>
       ${questions.length === 0 ? `<p class="empty-state">${catalogRecords.length
-        ? `${catalogRecords.length} catalog record${catalogRecords.length === 1 ? '' : 's'} are routed to ${escapeHtml(topic.title)}, but the referenced question and mark-scheme image files are not present locally.`
-        : `No catalog question and mark-scheme image pairs are currently routed to ${escapeHtml(topic.title)}. This needs review rather than placeholder content.`}</p>` : ''}
+        ? `${catalogRecords.length} question record${catalogRecords.length === 1 ? '' : 's'} are listed for ${escapeHtml(topic.title)}, but the referenced question and mark-scheme image files are not present locally.`
+        : `No question and mark-scheme image pairs are currently available for ${escapeHtml(topic.title)}.`}</p>` : ''}
     </section>
   `;
   return renderPage({
@@ -1476,29 +1568,25 @@ function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTop
   const items = getSkillCheckItemsForCourseTopic(course.id, topic.id);
   if (!items.length) return '';
   const templatesById = seedVisualTemplatesById(topic);
-  const supportOnlyNotice = course.id === 'p1'
-    ? '<strong>Student trial warning:</strong> these are draft practice support checks only. Saving them records a support-only practice interaction; it does not create mastery, readiness, marks, teacher evidence, final assessment evidence, adaptive routing, unlock progress, or course completion.'
-    : 'Evidence disabled: these items do not create mastery, unlock-system access, adaptive routing, teacher evidence, official readiness, or course completion.';
   return `
-    <article class="practice-topic" id="draft-skill-checks">
+    <article class="practice-topic" id="skill-checks">
       <header class="topic-section-header">
         <div>
-          <p class="eyebrow">${items.length} draft support-only Skill Check${items.length === 1 ? '' : 's'}</p>
-          <h2>Draft Skill Checks</h2>
-          <p>These checks test the ${escapeHtml(course.shortName)} Field Guide path and renderer contracts. They are review-needed support practice only.</p>
-          <p class="seed-topic-status">${supportOnlyNotice}</p>
+          <p class="eyebrow">${items.length} Skill Check${items.length === 1 ? '' : 's'}</p>
+          <h2>Skill Checks</h2>
+          <p>Try these quick checks after the Field Guide and before exam-style questions.</p>
         </div>
       </header>
       <div class="practice-card-stack">
         ${items.map((item) => `
-          <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}" data-review-status="${escapeAttr(item.review.status)}">
-            <p class="eyebrow">${escapeHtml(item.complexity)} · ${escapeHtml(item.inputType.replace(/_/g, ' '))} · draft/review-needed</p>
+          <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}">
+            <p class="eyebrow">${escapeHtml(item.complexity)} · ${escapeHtml(item.inputType.replace(/_/g, ' '))}</p>
             <h3>${renderMathText(item.prompt)}</h3>
             ${item.visualTemplateId ? `<p class="question-instruction">Visual template: ${escapeHtml(item.visualTemplateId)}</p>` : ''}
             ${renderDraftSkillCheckVisual(item, templatesById)}
             ${renderSkillCheckAnswerInput(item)}
             <details>
-              <summary>Show answer contract and worked route</summary>
+              <summary>Show answer and worked route</summary>
               <div class="support-details"><strong>Expected answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
               <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
               ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
@@ -1507,7 +1595,7 @@ function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTop
               <ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
             </details>
             <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topic.title)}" data-prompt="${escapeAttr(item.prompt)}">
-              Save support-only practice
+              Save practice
             </button>
           </article>
         `).join('')}
@@ -1863,8 +1951,6 @@ async function writeStaticPage(pagePath: string, html: string): Promise<void> {
 
 function shouldSkipPublicAsset(relativePath: string): boolean {
   const posixPath = toPosix(relativePath);
-  if (staticHomeAssetAllowList.has(posixPath)) return false;
-  if (Array.from(staticHomeAssetAllowList).some((allowedPath) => allowedPath.startsWith(`${posixPath}/`))) return false;
   return publicAssetExclusions.some((pattern) => pattern.test(posixPath));
 }
 

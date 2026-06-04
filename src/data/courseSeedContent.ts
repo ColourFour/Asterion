@@ -996,6 +996,7 @@ export function courseSeedTopicSummaries(courseId: CourseId | undefined) {
     id: topic.id,
     slug: topic.slug,
     syllabusRef: topic.syllabusRef,
+    formula: topic.headerFormula,
     title: topic.title,
     note: topic.description,
   }));

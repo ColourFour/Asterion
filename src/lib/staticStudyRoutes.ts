@@ -17,11 +17,11 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
     const seedTopics = getSeedTopicsForCourse(course.id);
     if (!seedTopics.length) return [];
     return [
-      { path: `${course.slug}/topics/index.html`, label: `${course.shortName} draft topic index` },
+      { path: `${course.slug}/topics/index.html`, label: `${course.shortName} topic index` },
       ...seedTopics.flatMap((topic) => [
-        { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} draft topic` },
-        { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} draft Field Guide` },
-        { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} draft Practice` },
+        { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} topic` },
+        { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} Field Guide` },
+        { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} Practice` },
         { path: `${course.slug}/topics/${topic.slug}/exam-training/index.html`, label: `${course.shortName} ${topic.title} Exam Training` },
       ]),
       { path: `${course.slug}/exam-training/index.html`, label: `${course.shortName} Exam Training` },

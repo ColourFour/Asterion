@@ -75,13 +75,13 @@ describe('static study routes', () => {
     }
   });
 
-  it('renders seeded practice warnings as course-specific support-only trial text', () => {
+  it('renders seeded practice pages with student-facing skill-check copy', () => {
     const staticBuilderSource = readFileSync('scripts/build-static-site.ts', 'utf8');
 
-    expect(staticBuilderSource).toContain('Student trial warning');
-    expect(staticBuilderSource).toContain('${escapeHtml(course.shortName)} Field Guide path');
-    expect(staticBuilderSource).not.toContain('M1 Field Guide path');
-    expect(staticBuilderSource).toContain('does not create mastery, readiness, marks, teacher evidence, final assessment evidence');
+    expect(staticBuilderSource).toContain('Start Skill Checks');
+    expect(staticBuilderSource).toContain('Try these quick checks after the Field Guide');
+    expect(staticBuilderSource).toContain("[/support-only/gi, 'practice']");
+    expect(staticBuilderSource).not.toContain('Student trial warning');
   });
 
   it('declares P3-prefixed hub, Field Guide, Practice Questions, and Exam Training pages for every topic', () => {
