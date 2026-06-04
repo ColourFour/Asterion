@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS } from '../lib/staticStudyRoutes';
 import { STUDY_TOPICS } from '../lib/topicStudy';
 import { COURSES, P3_COURSE_ID } from '../data/courses';
@@ -72,6 +73,15 @@ describe('static study routes', () => {
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/exam-training/index.html`);
       }
     }
+  });
+
+  it('renders seeded practice warnings as course-specific support-only trial text', () => {
+    const staticBuilderSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+
+    expect(staticBuilderSource).toContain('Student trial warning');
+    expect(staticBuilderSource).toContain('${escapeHtml(course.shortName)} Field Guide path');
+    expect(staticBuilderSource).not.toContain('M1 Field Guide path');
+    expect(staticBuilderSource).toContain('does not create mastery, readiness, marks, teacher evidence, final assessment evidence');
   });
 
   it('declares P3-prefixed hub, Field Guide, Practice Questions, and Exam Training pages for every topic', () => {

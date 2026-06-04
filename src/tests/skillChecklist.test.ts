@@ -271,23 +271,23 @@ describe('Skill Checklist grouping', () => {
     const p1Topics = getSeedTopicsForCourse('p1');
     const expectedSubtopics = new Set(p1Topics.flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)));
     const expectedTopicCounts = new Map([
-      ['p1-quadratics', 14],
-      ['p1-functions-transformations', 14],
-      ['p1-coordinate-geometry', 10],
-      ['p1-circular-measure', 5],
-      ['p1-trigonometry', 12],
-      ['p1-binomial-expansion', 5],
-      ['p1-series', 7],
-      ['p1-differentiation', 18],
-      ['p1-integration', 12],
+      ['p1-quadratics', 15],
+      ['p1-functions-transformations', 15],
+      ['p1-coordinate-geometry', 12],
+      ['p1-circular-measure', 6],
+      ['p1-trigonometry', 13],
+      ['p1-binomial-expansion', 6],
+      ['p1-series', 9],
+      ['p1-differentiation', 21],
+      ['p1-integration', 18],
     ]);
     const subtopicCounts = new Map<string, number>();
     for (const item of p1Items) {
       subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
     }
 
-    expect(p1Items).toHaveLength(97);
-    expect(p1Items.length).toBeGreaterThanOrEqual(90);
+    expect(p1Items).toHaveLength(115);
+    expect(p1Items.length).toBeGreaterThanOrEqual(110);
     expect(p1Items.length).toBeLessThanOrEqual(130);
     expect(coveredSubtopics).toEqual(expectedSubtopics);
 
@@ -315,6 +315,284 @@ describe('Skill Checklist grouping', () => {
       expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
       expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
     }
+  });
+
+  it('keeps P1 Quadratics quality-pass items student-facing and fully covered', () => {
+    const quadraticsItems = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
+      item.courseId === 'p1' && item.fieldGuideTopicId === 'p1-quadratics'
+    ));
+    const itemById = new Map(quadraticsItems.map((item) => [item.itemId, item]));
+    const subtopicCounts = new Map<string, number>();
+    for (const item of quadraticsItems) {
+      subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
+    }
+
+    expect(quadraticsItems).toHaveLength(15);
+    expect(subtopicCounts).toEqual(new Map([
+      ['p1-quadratics-factoring', 3],
+      ['p1-quadratics-inequalities', 3],
+      ['p1-quadratics-formula', 3],
+      ['p1-quadratics-discriminant', 3],
+      ['p1-quadratics-graphs', 3],
+    ]));
+
+    for (const item of quadraticsItems) {
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(['numeric', 'multiple_choice'].includes(item.inputType), item.itemId).toBe(true);
+      expect(item.prompt, item.itemId).not.toMatch(/smaller root|larger root|upper endpoint|x-coordinate of the vertex|hidden code/i);
+    }
+
+    for (const itemId of [
+      'p1-sc-quadratics-factoring-001',
+      'p1-sc-quadratics-inequalities-001',
+      'p1-sc-quadratics-formula-001',
+      'p1-sc-quadratics-formula-003',
+      'p1-sc-quadratics-graphs-001',
+      'p1-sc-quadratics-graphs-003',
+    ]) {
+      expect(itemById.get(itemId), itemId).toMatchObject({
+        inputType: 'multiple_choice',
+        expectedOptionIds: expect.any(Array),
+        options: expect.any(Array),
+      });
+      expect(itemById.get(itemId)?.expectedOptionIds?.length, itemId).toBe(1);
+      expect(itemById.get(itemId)?.options?.length, itemId).toBeGreaterThanOrEqual(4);
+    }
+
+    expect(itemById.get('p1-sc-quadratics-factoring-002')?.prompt).toContain('efficient');
+    expect(itemById.get('p1-sc-quadratics-factoring-003')?.prompt).toContain('rectangle');
+    expect(itemById.get('p1-sc-quadratics-graphs-001')?.prompt).toContain('line of symmetry');
+    expect(itemById.get('p1-sc-quadratics-graphs-003')?.prompt).toContain('x-intercepts');
+  });
+
+  it('keeps P1 Functions quality-pass items student-facing and fully covered', () => {
+    const functionItems = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
+      item.courseId === 'p1' && item.fieldGuideTopicId === 'p1-functions-transformations'
+    ));
+    const itemById = new Map(functionItems.map((item) => [item.itemId, item]));
+    const subtopicCounts = new Map<string, number>();
+    for (const item of functionItems) {
+      subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
+    }
+
+    expect(functionItems).toHaveLength(15);
+    expect(subtopicCounts).toEqual(new Map([
+      ['p1-functions-transformations-composite-functions', 3],
+      ['p1-functions-transformations-inverse-functions', 3],
+      ['p1-functions-transformations-translations', 3],
+      ['p1-functions-transformations-reflections', 3],
+      ['p1-functions-transformations-stretches', 3],
+    ]));
+
+    for (const item of functionItems) {
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(['numeric', 'multiple_choice'].includes(item.inputType), item.itemId).toBe(true);
+      expect(item.prompt, item.itemId).not.toMatch(/enter \$?1|enter 1|enter the vertical shift|enter the horizontal scale factor|hidden code|axis code/i);
+    }
+
+    for (const itemId of [
+      'p1-sc-functions-translations-001',
+      'p1-sc-functions-translations-002',
+      'p1-sc-functions-translations-003',
+      'p1-sc-functions-reflections-001',
+      'p1-sc-functions-reflections-002',
+      'p1-sc-functions-reflections-003',
+      'p1-sc-functions-stretches-001',
+      'p1-sc-functions-stretches-002',
+      'p1-sc-functions-stretches-003',
+    ]) {
+      expect(itemById.get(itemId), itemId).toMatchObject({
+        inputType: 'multiple_choice',
+        expectedOptionIds: expect.any(Array),
+        options: expect.any(Array),
+      });
+      expect(itemById.get(itemId)?.expectedOptionIds?.length, itemId).toBe(1);
+      expect(itemById.get(itemId)?.options?.length, itemId).toBeGreaterThanOrEqual(4);
+    }
+
+    expect(itemById.get('p1-sc-functions-composite-001')?.prompt).toContain('fg(4)');
+    expect(itemById.get('p1-sc-functions-composite-002')?.prompt).toContain('gf(3)');
+    expect(itemById.get('p1-sc-functions-inverse-001')?.prompt).toContain('f^{-1}(8)');
+    expect(itemById.get('p1-sc-functions-reflections-003')?.prompt).toContain('new point');
+    expect(itemById.get('p1-sc-functions-stretches-003')?.prompt).toContain('new point');
+  });
+
+  it('keeps P1 Coordinate Geometry quality-pass items student-facing and fully covered', () => {
+    const coordinateItems = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
+      item.courseId === 'p1' && item.fieldGuideTopicId === 'p1-coordinate-geometry'
+    ));
+    const itemById = new Map(coordinateItems.map((item) => [item.itemId, item]));
+    const subtopicCounts = new Map<string, number>();
+    for (const item of coordinateItems) {
+      subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
+    }
+
+    expect(coordinateItems).toHaveLength(12);
+    expect(subtopicCounts).toEqual(new Map([
+      ['p1-coordinate-geometry-parallel-perpendicular', 3],
+      ['p1-coordinate-geometry-straight-line', 3],
+      ['p1-coordinate-geometry-circles', 3],
+      ['p1-coordinate-geometry-intersections', 3],
+    ]));
+
+    for (const item of coordinateItems) {
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(['numeric', 'multiple_choice'].includes(item.inputType), item.itemId).toBe(true);
+      expect(item.prompt, item.itemId).not.toMatch(/in \$y=.*find \$?c|enter the radius|x-coordinate where|hidden code|axis code/i);
+    }
+
+    for (const itemId of [
+      'p1-sc-coordinate-parallel-perpendicular-003',
+      'p1-sc-coordinate-straight-line-001',
+      'p1-sc-coordinate-straight-line-002',
+      'p1-sc-coordinate-circles-001',
+      'p1-sc-coordinate-circles-002',
+      'p1-sc-coordinate-circles-003',
+      'p1-sc-coordinate-intersections-001',
+      'p1-sc-coordinate-intersections-002',
+      'p1-sc-coordinate-intersections-003',
+    ]) {
+      expect(itemById.get(itemId), itemId).toMatchObject({
+        inputType: 'multiple_choice',
+        expectedOptionIds: expect.any(Array),
+        options: expect.any(Array),
+      });
+      expect(itemById.get(itemId)?.expectedOptionIds?.length, itemId).toBe(1);
+      expect(itemById.get(itemId)?.options?.length, itemId).toBeGreaterThanOrEqual(4);
+    }
+
+    expect(itemById.get('p1-sc-coordinate-parallel-perpendicular-003')?.prompt).toContain('compares');
+    expect(itemById.get('p1-sc-coordinate-straight-line-001')?.prompt).toContain('equation of the line');
+    expect(itemById.get('p1-sc-coordinate-circles-001')?.prompt).toContain('centre and radius');
+    expect(itemById.get('p1-sc-coordinate-intersections-002')?.prompt).toContain('point where');
+    expect(itemById.get('p1-sc-coordinate-intersections-003')?.prompt).toContain('circle');
+  });
+
+  it('keeps the remaining P1 quality-sweep units student-facing and bounded', () => {
+    const expectedSubtopicCounts = new Map([
+      ['p1-circular-measure-radians', 3],
+      ['p1-circular-measure-arc-sector', 3],
+      ['p1-trigonometry-exact-values', 3],
+      ['p1-trigonometry-graphs', 3],
+      ['p1-trigonometry-equations', 4],
+      ['p1-trigonometry-identities', 3],
+      ['p1-binomial-expansion-basic-expansion', 3],
+      ['p1-binomial-expansion-complex-expansions', 3],
+      ['p1-series-arithmetic-progressions', 3],
+      ['p1-series-geometric-progressions', 3],
+      ['p1-series-infinite-geometric-progressions', 3],
+      ['p1-differentiation-gradient-tangent', 3],
+      ['p1-differentiation-polynomials', 3],
+      ['p1-differentiation-chain-rule', 3],
+      ['p1-differentiation-second-derivative', 3],
+      ['p1-differentiation-tangents-normals', 3],
+      ['p1-differentiation-stationary-points', 3],
+      ['p1-differentiation-rates-change', 3],
+      ['p1-integration-basic-integration', 3],
+      ['p1-integration-constant-integration', 3],
+      ['p1-integration-definite-integrals', 3],
+      ['p1-integration-area-between-curves', 3],
+      ['p1-integration-improper-integrals', 3],
+      ['p1-integration-volumes-revolution', 3],
+    ]);
+    const sweptTopicIds = new Set([
+      'p1-circular-measure',
+      'p1-trigonometry',
+      'p1-binomial-expansion',
+      'p1-series',
+      'p1-differentiation',
+      'p1-integration',
+    ]);
+    const sweptItems = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
+      item.courseId === 'p1' && sweptTopicIds.has(item.fieldGuideTopicId)
+    ));
+    const subtopicCounts = new Map<string, number>();
+    for (const item of sweptItems) {
+      subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
+    }
+
+    for (const [subtopicId, count] of expectedSubtopicCounts) {
+      expect(subtopicCounts.get(subtopicId), subtopicId).toBe(count);
+    }
+
+    for (const item of sweptItems) {
+      expect(item.review, item.itemId).toMatchObject({
+        status: 'draft_review_needed',
+        sourceSkillReviewed: false,
+        markEventReviewed: false,
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+      expect(['numeric', 'multiple_choice'].includes(item.inputType), item.itemId).toBe(true);
+      expect(item.prompt, item.itemId).not.toMatch(/hidden code|enter exponent|larger solution|x-coordinate of the stationary point|coefficient of the first term|V=k\\pi|enter k|coefficient before|find C in|enter the radius|Enter the coefficient of \\$x\\^4/i);
+    }
+
+    for (const itemId of [
+      'p1-sc-circular-radians-001',
+      'p1-sc-circular-arc-sector-001',
+      'p1-sc-circular-arc-sector-002',
+      'p1-sc-circular-arc-sector-003',
+      'p1-sc-trig-exact-values-003',
+      'p1-sc-trig-equations-004',
+      'p1-sc-binomial-basic-001',
+      'p1-sc-binomial-basic-003',
+      'p1-sc-binomial-complex-003',
+      'p1-sc-series-gp-003',
+      'p1-sc-diff-polynomials-001',
+      'p1-sc-diff-chain-rule-001',
+      'p1-sc-diff-chain-rule-002',
+      'p1-sc-diff-rates-002',
+      'p1-sc-integration-basic-001',
+      'p1-sc-integration-basic-002',
+      'p1-sc-integration-constant-001',
+      'p1-sc-integration-constant-002',
+      'p1-sc-integration-area-between-003',
+      'p1-sc-integration-improper-003',
+      'p1-sc-integration-volumes-001',
+      'p1-sc-integration-volumes-002',
+      'p1-sc-integration-volumes-003',
+    ]) {
+      const item = AUTHORED_SKILL_CHECK_ITEMS.find((candidate) => candidate.itemId === itemId);
+      expect(item, itemId).toMatchObject({
+        inputType: 'multiple_choice',
+        expectedOptionIds: expect.any(Array),
+        options: expect.any(Array),
+      });
+      expect(item?.expectedOptionIds?.length, itemId).toBe(1);
+      expect(item?.options?.length, itemId).toBeGreaterThanOrEqual(4);
+    }
+
+    const itemById = new Map(AUTHORED_SKILL_CHECK_ITEMS.map((item) => [item.itemId, item]));
+    expect(itemById.get('p1-sc-circular-arc-sector-003')?.prompt).toContain('perimeter');
+    expect(itemById.get('p1-sc-trig-equations-004')?.prompt).toContain('complete reasoning');
+    expect(itemById.get('p1-sc-binomial-complex-003')?.prompt).toContain('value of $r$');
+    expect(itemById.get('p1-sc-series-gp-003')?.prompt).toContain('third term');
+    expect(itemById.get('p1-sc-diff-rates-002')?.prompt).toContain('interpretation');
+    expect(itemById.get('p1-sc-integration-area-between-003')?.prompt).toContain('$y=x^2$');
+    expect(itemById.get('p1-sc-integration-improper-003')?.prompt).toContain('Teacher-guided draft only');
+    expect(itemById.get('p1-sc-integration-volumes-001')?.prompt).toContain('Teacher-guided draft only');
   });
 
   it('keeps the first P1 temporary cleanup items on student-facing answer shapes', () => {

@@ -1437,14 +1437,17 @@ function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTop
   const items = getSkillCheckItemsForCourseTopic(course.id, topic.id);
   if (!items.length) return '';
   const templatesById = seedVisualTemplatesById(topic);
+  const supportOnlyNotice = course.id === 'p1'
+    ? '<strong>Student trial warning:</strong> these are draft practice support checks only. Saving them records a support-only practice interaction; it does not create mastery, readiness, marks, teacher evidence, final assessment evidence, adaptive routing, unlock progress, or course completion.'
+    : 'Evidence disabled: these items do not create mastery, unlock-system access, adaptive routing, teacher evidence, official readiness, or course completion.';
   return `
     <article class="practice-topic" id="draft-skill-checks">
       <header class="topic-section-header">
         <div>
           <p class="eyebrow">${items.length} draft support-only Skill Check${items.length === 1 ? '' : 's'}</p>
           <h2>Draft Skill Checks</h2>
-          <p>These checks test the M1 Field Guide path and renderer contracts. They are review-needed support practice only.</p>
-          <p class="seed-topic-status">Evidence disabled: these items do not create mastery, unlock-system access, adaptive routing, teacher evidence, official readiness, or course completion.</p>
+          <p>These checks test the ${escapeHtml(course.shortName)} Field Guide path and renderer contracts. They are review-needed support practice only.</p>
+          <p class="seed-topic-status">${supportOnlyNotice}</p>
         </div>
       </header>
       <div class="practice-card-stack">
