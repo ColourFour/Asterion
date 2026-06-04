@@ -1,5 +1,8 @@
-import { ArrowRight, BookOpenCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { COURSES, type CourseMetadata } from '../../data/courses';
+import { resolvePublicAssetPath } from '../../lib/resolveAssetPath';
+
+const courseSelectorHeroImage = resolvePublicAssetPath('/assets/ui/course-selector-study-hero.png');
 
 interface CourseSelectorProps {
   onOpenCourse: (course: CourseMetadata) => void;
@@ -12,30 +15,25 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
         <div>
           <span className="mode-pill">CAIE 9709 Study Hub</span>
           <h2 id="course-selector-title">Choose your course</h2>
-          <p>Select a 9709 component to open its study page. P3 has the developed image-first study content; P1, M1, and S1 have draft seed pages for syllabus-contract audit.</p>
+          <p>Pick the maths paper you are studying today. Each course opens into a focused study page with topics, practice, and exam preparation where available.</p>
         </div>
-        <div className="study-hero-visual" aria-hidden="true">
-          <BookOpenCheck size={44} />
-          <span>9709</span>
-        </div>
+        <figure className="study-hero-visual">
+          <img src={courseSelectorHeroImage} alt="A calm study desk with a maths notebook, pencil, tea, and laptop." />
+        </figure>
       </header>
 
       <div className="course-card-grid" aria-label="Available CAIE 9709 courses">
         {COURSES.map((course) => (
-          <article className={`course-card course-status-${course.status}`} key={course.id}>
+          <button className={`course-card course-status-${course.status}`} key={course.id} type="button" onClick={() => onOpenCourse(course)} aria-label={`Open ${course.displayName}`}>
             <div>
-              <span className="mode-pill">{course.examComponentLabel}</span>
+              <div className="course-card-kicker">
+                <span className="mode-pill">{course.examComponentLabel}</span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </div>
               <h3>{course.shortName}: {course.displayName}</h3>
               <p>{course.shortDescription}</p>
             </div>
-            <div className="course-card-footer">
-              <span className="course-status-pill">{course.statusLabel}</span>
-              <button className="primary-button" type="button" onClick={() => onOpenCourse(course)}>
-                Open {course.shortName}
-                <ArrowRight size={16} aria-hidden="true" />
-              </button>
-            </div>
-          </article>
+          </button>
         ))}
       </div>
     </section>

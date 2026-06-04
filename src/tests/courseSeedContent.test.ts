@@ -205,6 +205,14 @@ describe('draft course seed content', () => {
         expect(topic.practiceHook).toContain('teacher-guided draft support only');
         expect(topic.examTrainingHook).toContain('assessment-ready');
       }
+      if (topic.title === 'Coordinate Geometry') {
+        expect(topic.formulas.join(' ')).toContain('d=\\sqrt');
+        expect(topic.formulas.join(' ')).toContain('\\frac{x_1+x_2}{2}');
+        expect(topic.workedMethod.join(' ')).toContain('complete the square');
+        expect(topic.workedMethod.join(' ')).toContain('line-circle intersection');
+        expect(topic.workedMethod.join(' ')).toContain('tangent at a point');
+        expect(topic.practiceHook).toContain('saved attempts do not count as mastery or readiness evidence');
+      }
       for (const section of topic.fieldGuideSections) {
         const copy = section.bullets.join(' ');
         expect(copy).toContain('Learning goal:');

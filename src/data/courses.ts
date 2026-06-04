@@ -8,6 +8,7 @@ export type CourseStatus = 'ready' | 'partial' | 'draft-seed' | 'coming-soon';
 export interface CourseTopicPlaceholder {
   id: string;
   slug?: string;
+  syllabusRef?: string;
   title: string;
   note: string;
 }
@@ -34,7 +35,7 @@ export const COURSES: CourseMetadata[] = [
     slug: 'p1',
     displayName: 'Pure Mathematics 1',
     shortName: 'P1',
-    shortDescription: 'Core algebra, functions, coordinate geometry, sequences, binomial expansion, trigonometry, differentiation, and integration foundations.',
+    shortDescription: 'Build the pure maths foundations: algebra, functions, coordinate geometry, sequences, trigonometry, differentiation, and integration.',
     examComponentLabel: 'Paper 1 / Pure Mathematics 1',
     paperFamilies: ['p1'],
     status: 'draft-seed',
@@ -47,7 +48,7 @@ export const COURSES: CourseMetadata[] = [
     slug: 'p3',
     displayName: 'Pure Mathematics 3',
     shortName: 'P3',
-    shortDescription: 'The most developed course shell, with current image-first topic pages, Field Guides, Practice Questions, and Exam Training.',
+    shortDescription: 'Extend pure maths into logarithms, trigonometry, complex numbers, vectors, advanced calculus, iteration, and differential equations.',
     examComponentLabel: 'Paper 3 / Pure Mathematics 3',
     paperFamilies: ['p3'],
     status: 'partial',
@@ -66,7 +67,7 @@ export const COURSES: CourseMetadata[] = [
     slug: 'm1',
     displayName: 'Mechanics 1',
     shortName: 'M1',
-    shortDescription: 'Forces, motion, Newtonian modelling, momentum, constant and variable acceleration, and connected-particle mechanics.',
+    shortDescription: 'Study motion and forces through kinematics, Newtonian modelling, momentum, connected particles, and variable acceleration.',
     examComponentLabel: 'Mechanics 1',
     paperFamilies: ['p4'],
     status: 'draft-seed',
@@ -79,7 +80,7 @@ export const COURSES: CourseMetadata[] = [
     slug: 's1',
     displayName: 'Probability & Statistics 1',
     shortName: 'S1',
-    shortDescription: 'Data representation, probability, discrete distributions, normal distribution, and statistical sampling.',
+    shortDescription: 'Work with data, probability, discrete distributions, the normal distribution, permutations, combinations, and statistical sampling.',
     examComponentLabel: 'Probability & Statistics 1',
     paperFamilies: ['p5'],
     status: 'draft-seed',

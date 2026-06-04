@@ -483,7 +483,6 @@ export default function App() {
       {viewMode === 'course_dashboard' && selectedCourse ? (
         <CourseDashboard
           course={selectedCourse}
-          onBackToCourses={navigateCourseSelection}
           onOpenP3Topics={openP3Topics}
           onOpenP3ExamTraining={() => openExamTrainingDashboard()}
         />

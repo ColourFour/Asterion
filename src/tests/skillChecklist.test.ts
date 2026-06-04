@@ -273,7 +273,7 @@ describe('Skill Checklist grouping', () => {
     const expectedTopicCounts = new Map([
       ['p1-quadratics', 15],
       ['p1-functions-transformations', 15],
-      ['p1-coordinate-geometry', 12],
+      ['p1-coordinate-geometry', 18],
       ['p1-circular-measure', 6],
       ['p1-trigonometry', 13],
       ['p1-binomial-expansion', 6],
@@ -286,7 +286,7 @@ describe('Skill Checklist grouping', () => {
       subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
     }
 
-    expect(p1Items).toHaveLength(115);
+    expect(p1Items).toHaveLength(121);
     expect(p1Items.length).toBeGreaterThanOrEqual(110);
     expect(p1Items.length).toBeLessThanOrEqual(130);
     expect(coveredSubtopics).toEqual(expectedSubtopics);
@@ -431,7 +431,7 @@ describe('Skill Checklist grouping', () => {
     expect(itemById.get('p1-sc-functions-stretches-003')?.prompt).toContain('new point');
   });
 
-  it('keeps P1 Coordinate Geometry quality-pass items student-facing and fully covered', () => {
+  it('keeps P1 Coordinate Geometry viability-pass items student-facing and fully covered', () => {
     const coordinateItems = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => (
       item.courseId === 'p1' && item.fieldGuideTopicId === 'p1-coordinate-geometry'
     ));
@@ -441,12 +441,12 @@ describe('Skill Checklist grouping', () => {
       subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
     }
 
-    expect(coordinateItems).toHaveLength(12);
+    expect(coordinateItems).toHaveLength(18);
     expect(subtopicCounts).toEqual(new Map([
-      ['p1-coordinate-geometry-parallel-perpendicular', 3],
-      ['p1-coordinate-geometry-straight-line', 3],
-      ['p1-coordinate-geometry-circles', 3],
-      ['p1-coordinate-geometry-intersections', 3],
+      ['p1-coordinate-geometry-parallel-perpendicular', 4],
+      ['p1-coordinate-geometry-straight-line', 4],
+      ['p1-coordinate-geometry-circles', 5],
+      ['p1-coordinate-geometry-intersections', 5],
     ]));
 
     for (const item of coordinateItems) {
@@ -464,14 +464,20 @@ describe('Skill Checklist grouping', () => {
 
     for (const itemId of [
       'p1-sc-coordinate-parallel-perpendicular-003',
+      'p1-sc-coordinate-parallel-perpendicular-004',
       'p1-sc-coordinate-straight-line-001',
       'p1-sc-coordinate-straight-line-002',
+      'p1-sc-coordinate-straight-line-004',
       'p1-sc-coordinate-circles-001',
       'p1-sc-coordinate-circles-002',
       'p1-sc-coordinate-circles-003',
+      'p1-sc-coordinate-circles-004',
+      'p1-sc-coordinate-circles-005',
       'p1-sc-coordinate-intersections-001',
       'p1-sc-coordinate-intersections-002',
       'p1-sc-coordinate-intersections-003',
+      'p1-sc-coordinate-intersections-004',
+      'p1-sc-coordinate-intersections-005',
     ]) {
       expect(itemById.get(itemId), itemId).toMatchObject({
         inputType: 'multiple_choice',
@@ -483,10 +489,27 @@ describe('Skill Checklist grouping', () => {
     }
 
     expect(itemById.get('p1-sc-coordinate-parallel-perpendicular-003')?.prompt).toContain('compares');
+    expect(itemById.get('p1-sc-coordinate-parallel-perpendicular-004')?.prompt).toContain('perpendicular bisector');
     expect(itemById.get('p1-sc-coordinate-straight-line-001')?.prompt).toContain('equation of the line');
+    expect(itemById.get('p1-sc-coordinate-straight-line-004')?.prompt).toContain('both requested forms');
     expect(itemById.get('p1-sc-coordinate-circles-001')?.prompt).toContain('centre and radius');
+    expect(itemById.get('p1-sc-coordinate-circles-003')?.prompt).toContain('diameter');
+    expect(itemById.get('p1-sc-coordinate-circles-004')?.prompt).toContain('Complete the square');
+    expect(itemById.get('p1-sc-coordinate-circles-005')?.prompt).toContain('tangent');
     expect(itemById.get('p1-sc-coordinate-intersections-002')?.prompt).toContain('point where');
     expect(itemById.get('p1-sc-coordinate-intersections-003')?.prompt).toContain('circle');
+    expect(itemById.get('p1-sc-coordinate-intersections-004')?.prompt).toContain('$y=3x-5$');
+    expect(itemById.get('p1-sc-coordinate-intersections-005')?.prompt).toContain('intersects, touches, or misses');
+
+    const coordinateSkillIds = new Set(coordinateItems.map((item) => item.skillId));
+    expect(coordinateSkillIds.has('p1_coordinate_perpendicular_gradient')).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('perpendicular_bisector'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('line_equation_two_points'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('circle_from_diameter'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('expanded_circle_completing_square'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('tangent_radius_gradient'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('line_circle_intersection'))).toBe(true);
+    expect(coordinateItems.some((item) => item.skillId.includes('discriminant_tangency_condition'))).toBe(true);
   });
 
   it('keeps the remaining P1 quality-sweep units student-facing and bounded', () => {

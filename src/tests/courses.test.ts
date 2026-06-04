@@ -19,7 +19,7 @@ describe('course metadata', () => {
       expect(course?.status).toBe('draft-seed');
       expect(course?.statusLabel).toBe('Draft seed');
       expect(course?.coverageSummary).toContain('needs syllabus-contract review');
-      expect(course?.topics.every((topic) => topic.slug && topic.note.includes('Draft seed content'))).toBe(true);
+      expect(course?.topics.every((topic) => topic.slug && topic.syllabusRef?.startsWith('9709 ') && !topic.note.includes('Draft seed content'))).toBe(true);
     }
   });
 

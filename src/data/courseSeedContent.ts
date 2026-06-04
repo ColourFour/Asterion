@@ -995,7 +995,8 @@ export function courseSeedTopicSummaries(courseId: CourseId | undefined) {
   return getSeedTopicsForCourse(courseId).map((topic) => ({
     id: topic.id,
     slug: topic.slug,
+    syllabusRef: topic.syllabusRef,
     title: topic.title,
-    note: `${topic.syllabusRef}. ${DRAFT_SEED_CONTENT_LABEL}`,
+    note: topic.description,
   }));
 }

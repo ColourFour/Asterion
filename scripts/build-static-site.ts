@@ -113,6 +113,10 @@ const publicAssetExclusions = [
   /^assets\/ui(?:\/|$)/i,
 ];
 
+const staticHomeAssetAllowList = new Set([
+  'assets/ui/course-selector-study-hero.png',
+]);
+
 function cleanVisibleCopy(value: string | number | undefined): string {
   return visibleCopyReplacements.reduce((current, [pattern, replacement]) => (
     current.replace(pattern, replacement)
@@ -503,36 +507,98 @@ function renderHero(title: string, body: string, formula?: string, actions = '',
   `;
 }
 
+function renderCourseMathVisual(): string {
+  return `
+    <div class="course-math-visual" aria-hidden="true">
+      <svg viewBox="0 0 360 250" focusable="false">
+        <defs>
+          <linearGradient id="courseVisualWarm" x1="34" y1="20" x2="322" y2="232" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fffaf0" />
+            <stop offset="0.52" stop-color="#f4ddbd" />
+            <stop offset="1" stop-color="#dce9df" />
+          </linearGradient>
+          <linearGradient id="courseVisualLine" x1="42" y1="196" x2="324" y2="64" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#78351f" />
+            <stop offset="0.5" stop-color="#c47b1b" />
+            <stop offset="1" stop-color="#3f7162" />
+          </linearGradient>
+        </defs>
+        <rect x="14" y="16" width="332" height="218" rx="18" fill="url(#courseVisualWarm)" />
+        <g stroke="#8f735d" stroke-opacity="0.24" stroke-width="1">
+          ${Array.from({ length: 8 }, (_, index) => `<path d="M${54 + index * 36} 32v184" />`).join('')}
+          ${Array.from({ length: 6 }, (_, index) => `<path d="M34 ${54 + index * 32}h292" />`).join('')}
+        </g>
+        <path d="M46 186c40-84 74-84 102 0s58 84 95 0 58-93 78-28" fill="none" stroke="url(#courseVisualLine)" stroke-linecap="round" stroke-width="7" />
+        <path d="M64 184h238M82 202V48" stroke="#34251f" stroke-linecap="round" stroke-opacity="0.52" stroke-width="2" />
+        <circle cx="122" cy="122" r="44" fill="none" stroke="#3f7162" stroke-opacity="0.72" stroke-width="3" />
+        <path d="M230 74l38 66h-76z" fill="none" stroke="#78351f" stroke-opacity="0.72" stroke-width="3" />
+        <g fill="#34251f" fill-opacity="0.72" font-family="Georgia, Times New Roman, serif" font-size="18" font-style="italic">
+          <text x="112" y="70">f(x)</text>
+          <text x="242" y="164">dx</text>
+          <text x="92" y="212">x</text>
+        </g>
+      </svg>
+    </div>
+  `;
+}
+
 function renderCourseCard(fromPagePath: string, course: CourseMetadata): string {
   return `
-    <article class="course-card course-status-${escapeAttr(course.status)}">
+    <a class="course-card course-status-${escapeAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="Open ${escapeAttr(course.displayName)}">
       <div>
-        <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
+        <div class="course-card-kicker">
+          <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
+          <span aria-hidden="true">&#8594;</span>
+        </div>
         <h2>${escapeHtml(`${course.shortName}: ${course.displayName}`)}</h2>
         <p>${escapeHtml(course.shortDescription)}</p>
       </div>
-      <div class="course-card-footer">
-        <span class="course-status-pill">${escapeHtml(course.statusLabel)}</span>
-        ${routeLink(fromPagePath, coursePagePath(course), `Open ${course.shortName}`, 'button primary-button')}
-      </div>
-    </article>
+    </a>
+  `;
+}
+
+function renderCourseActionNav(pagePath: string, course: CourseMetadata, isP3: boolean, hasSeedContent: boolean): string {
+  const fieldGuideAction = isP3
+    ? routeLink(pagePath, p3TopicsIndexPagePath(), 'Field Guide', 'button primary-button')
+    : hasSeedContent
+      ? routeLink(pagePath, seedCourseTopicsIndexPagePath(course), 'Field Guide', 'button primary-button')
+      : '<span class="button disabled-button" aria-disabled="true">Field Guide</span>';
+  const practiceAction = isP3
+    ? routeLink(pagePath, p3TopicsIndexPagePath(), 'Practice', 'button secondary-button')
+    : hasSeedContent
+      ? routeLink(pagePath, seedCourseTopicsIndexPagePath(course), 'Practice', 'button secondary-button')
+      : '<span class="button disabled-button" aria-disabled="true">Practice</span>';
+  const examAction = isP3
+    ? routeLink(pagePath, `${P3_COURSE_ID}/exam-training/index.html`, 'Exam Training', 'button secondary-button')
+    : hasSeedContent
+      ? routeLink(pagePath, seedExamTrainingPagePath(course), 'Exam Training', 'button secondary-button')
+      : '<span class="button disabled-button" aria-disabled="true">Exam Training</span>';
+
+  return `
+    <nav class="course-action-nav" aria-label="${escapeAttr(course.shortName)} study sections">
+      ${fieldGuideAction}${practiceAction}${examAction}
+    </nav>
   `;
 }
 
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
+  const heroImagePath = hrefToPublicAsset(pagePath, 'assets/ui/course-selector-study-hero.png');
   const body = `
-    ${renderHero(
-      'Choose your CAIE 9709 course',
-      'Start from the component you are studying. P3 has the developed image-first study pages; P1, M1, and S1 now have draft seed topic pages for audit.',
-      '9709 \\quad P1 \\quad P3 \\quad M1 \\quad S1',
-      '',
-      'CAIE 9709 Study Hub',
-    )}
+    <section class="page-hero course-selector-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">CAIE 9709 Study Hub</p>
+        <h1>Choose your course</h1>
+        <p>Pick the maths paper you are studying today. Each course opens into a focused study page with topics, practice, and exam preparation where available.</p>
+      </div>
+      <figure class="hero-image-panel">
+        <img src="${heroImagePath}" alt="A calm study desk with a maths notebook, pencil, tea, and laptop." />
+      </figure>
+    </section>
     <section class="section-heading">
       <div>
-        <h2>Course selection</h2>
-        <p>Each course keeps its study path separate. Draft seed content is visibly labelled until it has completed syllabus-contract review.</p>
+        <h2>Available courses</h2>
+        <p>Choose P1, P3, M1, or S1 to keep your study route focused on the component you are taking.</p>
       </div>
     </section>
     <section class="course-grid" aria-label="CAIE 9709 course pages">
@@ -553,67 +619,40 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
   const isP3 = course.id === P3_COURSE_ID;
   const seedTopics = getSeedTopicsForCourse(course.id);
   const hasSeedContent = hasDraftSeedTopics(course.id);
-  const topicAction = isP3
-    ? routeLink(pagePath, p3TopicsIndexPagePath(), 'Open P3 topics', 'button primary-button')
-    : hasSeedContent
-      ? routeLink(pagePath, seedCourseTopicsIndexPagePath(course), `Open ${course.shortName} topics`, 'button primary-button')
-      : '<span class="button disabled-button" aria-disabled="true">Content coming soon</span>';
-  const examAction = isP3
-    ? routeLink(pagePath, `${P3_COURSE_ID}/exam-training/index.html`, 'Open Exam Training', 'button secondary-button')
-    : hasSeedContent
-      ? routeLink(pagePath, seedExamTrainingPagePath(course), 'Open Exam Training', 'button secondary-button')
-      : '<span class="button disabled-button" aria-disabled="true">Exam practice coming soon</span>';
-  const heroFormula = isP3
-    ? '\\int f(x)\\,dx \\quad \\mathbf{a}\\cdot\\mathbf{b} \\quad z=x+iy'
-    : seedTopics.slice(0, 3).map((topic) => topic.headerFormula).join('\\quad ');
+  const topicButtons = isP3
+    ? STUDY_TOPICS.map((topic) => `
+      <a class="course-topic-button" href="${hrefToPage(pagePath, fieldGuidePagePath(topic))}">
+        <span>${escapeHtml(topic.name)}</span>
+        <small>${escapeHtml(topic.description)}</small>
+        <span aria-hidden="true">&#8594;</span>
+      </a>
+    `).join('')
+    : seedTopics.map((topic) => `
+      <a class="course-topic-button" href="${hrefToPage(pagePath, seedFieldGuidePagePath(course, topic))}">
+        <span>${escapeHtml(topic.title)}</span>
+        <small>${escapeHtml(topic.syllabusRef)}</small>
+        <span aria-hidden="true">&#8594;</span>
+      </a>
+    `).join('');
   const body = `
-    ${renderHero(
-      `${course.shortName}: ${course.displayName}`,
-      course.shortDescription,
-      heroFormula || undefined,
-      isP3 || hasSeedContent ? `${topicAction}${examAction}` : '',
-      course.examComponentLabel,
-    )}
-    ${hasSeedContent ? renderDraftNotice('These pages are starter study notes only, not mastery evidence or final exam-bank mapping.') : ''}
-    <section class="topic-overview-grid">
-      <article class="summary-card">
-        <h2>What this course covers</h2>
-        <p>${escapeHtml(course.coverageSummary)}</p>
-        ${hasSeedContent ? '<p>Official Cambridge 9709 syllabus headings were used as the first-pass structure; wording and coverage still need human audit.</p>' : ''}
-      </article>
-      <article class="summary-card">
-        <h2>${hasSeedContent ? 'Draft topic list' : 'Topic list placeholder'}</h2>
-        <ul class="plain-list">
-          ${course.topics.map((topic) => `
-            <li>
-              ${hasSeedContent && topic.slug
-                ? routeLink(pagePath, `${course.slug}/topics/${topic.slug}/index.html`, topic.title)
-                : `<strong>${escapeHtml(topic.title)}</strong>`}
-              <span>${escapeHtml(topic.note)}</span>
-            </li>
-          `).join('')}
-        </ul>
-      </article>
+    <section class="page-hero course-dashboard-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
+        <h1>${escapeHtml(`${course.shortName}: ${course.displayName}`)}</h1>
+        <p>${escapeHtml(course.shortDescription)}</p>
+      </div>
+      ${renderCourseMathVisual()}
     </section>
-    <section class="entry-grid course-entry-grid" aria-label="${escapeAttr(course.shortName)} study placeholders">
-      <article class="entry-card">
-        <p class="eyebrow">Study notes</p>
-        <h2>Field Guide</h2>
-        <p>${isP3 ? 'Use the current P3 Field Guide topic pages.' : hasSeedContent ? 'Use draft Field Guide pages as a starter checklist.' : 'Field Guide content coming soon.'}</p>
-        ${topicAction}
-      </article>
-      <article class="entry-card">
-        <p class="eyebrow">Focused work</p>
-        <h2>Practice</h2>
-        <p>${isP3 ? 'Use focused practice from the current P3 topic pages.' : hasSeedContent ? 'Practice pages are placeholders with self-check prompts only.' : 'Practice pages will be added after the topic map is reviewed.'}</p>
-        ${topicAction}
-      </article>
-      <article class="entry-card">
-        <p class="eyebrow">Exam preparation</p>
-        <h2>Exam-style practice</h2>
-        <p>${isP3 ? 'Use the existing mixed P3 image-first exam practice.' : hasSeedContent ? 'Use catalog-wired Exam Training pages. Image cards appear only when local question and mark-scheme crops exist.' : 'Exam-style practice is not populated yet.'}</p>
-        ${examAction}
-      </article>
+    ${renderCourseActionNav(pagePath, course, isP3, hasSeedContent)}
+    ${hasSeedContent ? renderDraftNotice('These pages are starter study notes only, not mastery evidence or final exam-bank mapping.') : ''}
+    <section class="summary-card course-topic-list" aria-labelledby="course-topic-list-title">
+      <div>
+        <h2 id="course-topic-list-title">${hasSeedContent ? 'Field Guides' : 'Topics'}</h2>
+        <p>${hasSeedContent ? 'Choose a topic to open its Field Guide.' : 'Choose a topic area to continue studying.'}</p>
+      </div>
+      <div class="course-topic-button-grid">
+        ${topicButtons || '<p class="empty-state">Topic pages are coming soon.</p>'}
+      </div>
     </section>
   `;
   return renderPage({
@@ -1823,7 +1862,10 @@ async function writeStaticPage(pagePath: string, html: string): Promise<void> {
 }
 
 function shouldSkipPublicAsset(relativePath: string): boolean {
-  return publicAssetExclusions.some((pattern) => pattern.test(toPosix(relativePath)));
+  const posixPath = toPosix(relativePath);
+  if (staticHomeAssetAllowList.has(posixPath)) return false;
+  if (Array.from(staticHomeAssetAllowList).some((allowedPath) => allowedPath.startsWith(`${posixPath}/`))) return false;
+  return publicAssetExclusions.some((pattern) => pattern.test(posixPath));
 }
 
 async function copyPublicDirectory(source: string, destination: string, relativeRoot = ''): Promise<void> {
