@@ -271,24 +271,33 @@ describe('Skill Checklist grouping', () => {
     const p1Topics = getSeedTopicsForCourse('p1');
     const expectedSubtopics = new Set(p1Topics.flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)));
     const expectedTopicCounts = new Map([
-      ['p1-quadratics', 5],
-      ['p1-functions-transformations', 5],
-      ['p1-coordinate-geometry', 4],
-      ['p1-circular-measure', 2],
-      ['p1-trigonometry', 4],
-      ['p1-binomial-expansion', 2],
-      ['p1-series', 3],
-      ['p1-differentiation', 7],
-      ['p1-integration', 6],
+      ['p1-quadratics', 14],
+      ['p1-functions-transformations', 14],
+      ['p1-coordinate-geometry', 10],
+      ['p1-circular-measure', 5],
+      ['p1-trigonometry', 12],
+      ['p1-binomial-expansion', 5],
+      ['p1-series', 7],
+      ['p1-differentiation', 18],
+      ['p1-integration', 12],
     ]);
+    const subtopicCounts = new Map<string, number>();
+    for (const item of p1Items) {
+      subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
+    }
 
-    expect(p1Items).toHaveLength(38);
+    expect(p1Items).toHaveLength(97);
+    expect(p1Items.length).toBeGreaterThanOrEqual(90);
+    expect(p1Items.length).toBeLessThanOrEqual(130);
     expect(coveredSubtopics).toEqual(expectedSubtopics);
 
     for (const topic of p1Topics) {
       const topicItems = getSkillCheckItemsForCourseTopic('p1', topic.id);
       expect(topicItems.length, topic.id).toBe(expectedTopicCounts.get(topic.id));
-      expect(topicItems.length, topic.id).toBe(topic.fieldGuideSections.length);
+      expect(topicItems.length, topic.id).toBeGreaterThanOrEqual(topic.fieldGuideSections.length * 2);
+      for (const section of topic.fieldGuideSections) {
+        expect(subtopicCounts.get(section.id) ?? 0, section.id).toBeGreaterThanOrEqual(2);
+      }
     }
 
     for (const item of p1Items) {
@@ -305,6 +314,52 @@ describe('Skill Checklist grouping', () => {
       expect(item.sourceRefs.courseContentSource, item.itemId).toBe('content-model/P1/p1-content map.pdf');
       expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
       expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
+    }
+  });
+
+  it('keeps the first P1 temporary cleanup items on student-facing answer shapes', () => {
+    const itemById = new Map(AUTHORED_SKILL_CHECK_ITEMS.map((item) => [item.itemId, item]));
+
+    for (const itemId of [
+      'p1-sc-functions-reflections-001',
+      'p1-sc-trig-identities-001',
+      'p1-sc-quadratics-inequalities-001',
+      'p1-sc-coordinate-intersections-001',
+      'p1-sc-trig-equations-001',
+      'p1-sc-diff-stationary-001',
+    ]) {
+      expect(itemById.get(itemId), itemId).toMatchObject({
+        inputType: 'multiple_choice',
+        review: expect.objectContaining({
+          status: 'draft_review_needed',
+          supportOnly: true,
+          evidenceEnabled: false,
+        }),
+      });
+      expect(itemById.get(itemId)?.options?.length, itemId).toBeGreaterThanOrEqual(4);
+      expect(itemById.get(itemId)?.expectedOptionIds?.length, itemId).toBe(1);
+    }
+
+    expect(itemById.get('p1-sc-integration-area-between-001')).toMatchObject({
+      inputType: 'numeric',
+      expectedAnswer: ['1/6', '\\frac{1}{6}', '$\\frac16$', '$\\frac{1}{6}$'],
+      review: expect.objectContaining({
+        status: 'draft_review_needed',
+        supportOnly: true,
+        evidenceEnabled: false,
+      }),
+    });
+
+    for (const itemId of [
+      'p1-sc-functions-reflections-001',
+      'p1-sc-trig-identities-001',
+      'p1-sc-integration-area-between-001',
+      'p1-sc-quadratics-inequalities-001',
+      'p1-sc-coordinate-intersections-001',
+      'p1-sc-trig-equations-001',
+      'p1-sc-diff-stationary-001',
+    ]) {
+      expect(itemById.get(itemId)?.prompt, itemId).not.toMatch(/enter \$1\$|exponent on|coefficient of the first term|x-coordinate of the stationary point|larger solution/);
     }
   });
 
