@@ -3,6 +3,8 @@ import type { FieldGuideTopic } from '../data/fieldGuideTopics';
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import {
   AUTHORED_SKILL_CHECK_ITEMS,
+  P1_SKILL_CHECK_GROUPS,
+  getP1SkillCheckGroupsForTopic,
   getSkillCheckItemsForCourseTopic,
   skillCheckContractForItem,
   validateSkillCheckItemContract,
@@ -279,14 +281,14 @@ describe('Skill Checklist grouping', () => {
       ['p1-binomial-expansion', 6],
       ['p1-series', 9],
       ['p1-differentiation', 21],
-      ['p1-integration', 18],
+      ['p1-integration', 12],
     ]);
     const subtopicCounts = new Map<string, number>();
     for (const item of p1Items) {
       subtopicCounts.set(item.fieldGuideSubtopicId, (subtopicCounts.get(item.fieldGuideSubtopicId) ?? 0) + 1);
     }
 
-    expect(p1Items).toHaveLength(121);
+    expect(p1Items).toHaveLength(115);
     expect(p1Items.length).toBeGreaterThanOrEqual(110);
     expect(p1Items.length).toBeLessThanOrEqual(130);
     expect(coveredSubtopics).toEqual(expectedSubtopics);
@@ -315,6 +317,130 @@ describe('Skill Checklist grouping', () => {
       expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
       expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
     }
+  });
+
+  it('structures P1 Skill Checks as focused 3-item Field Guide groups', () => {
+    const p1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'p1');
+    const itemById = new Map(p1Items.map((item) => [item.itemId, item]));
+    const p1Topics = getSeedTopicsForCourse('p1');
+    const expectedSubtopics = new Set(p1Topics.flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)));
+    const groupIds = new Set(P1_SKILL_CHECK_GROUPS.map((group) => group.groupId));
+    const bannedStudentTerms = /generated practice|seed|draft|mapping|mastery evidence|review required|data record|source-filled|placeholder/i;
+
+    expect(groupIds).toEqual(expectedSubtopics);
+
+    for (const group of P1_SKILL_CHECK_GROUPS) {
+      expect(group.label, group.groupId).not.toMatch(bannedStudentTerms);
+      expect(group.purpose, group.groupId).not.toMatch(bannedStudentTerms);
+      expect(group.defaultItems, group.groupId).toHaveLength(3);
+      expect(new Set(group.defaultItems.map((item) => item.role))).toEqual(new Set([
+        'first_check',
+        'use_the_method',
+        'exam_style_twist',
+      ]));
+
+      for (const defaultItem of group.defaultItems) {
+        expect(defaultItem.label, defaultItem.itemId).not.toMatch(bannedStudentTerms);
+        const item = itemById.get(defaultItem.itemId);
+        expect(item, defaultItem.itemId).toBeDefined();
+        expect(item?.fieldGuideTopicId, defaultItem.itemId).toBe(group.topicId);
+        expect(item?.fieldGuideSubtopicId, defaultItem.itemId).toBe(group.groupId);
+        expect(item?.review, defaultItem.itemId).toMatchObject({
+          affectsMastery: false,
+          supportOnly: true,
+          evidenceEnabled: false,
+        });
+      }
+
+      for (const optionalSet of group.optionalSets ?? []) {
+        expect(optionalSet.label, group.groupId).not.toMatch(bannedStudentTerms);
+        for (const itemId of optionalSet.itemIds) {
+          const item = itemById.get(itemId);
+          expect(item, itemId).toBeDefined();
+          expect(item?.fieldGuideTopicId, itemId).toBe(group.topicId);
+          expect(item?.fieldGuideSubtopicId, itemId).toBe(group.groupId);
+        }
+      }
+    }
+
+    expect(groupIds.has('p1-integration-improper-integrals')).toBe(false);
+    expect(groupIds.has('p1-integration-volumes-revolution')).toBe(false);
+  });
+
+  it('keeps P1 worked answers method-led and useful', () => {
+    const p1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'p1');
+    const usefulFinalAnswerSignal = /answer|antiderivative|amplitude|area|centre|circle|coefficient|condition|correct|curve|derivative|description|equation|expansion|gradient|intercept|interpretation|length|line|minimum|maximum|normal|period|point|radius|rate|ratio|reflection|root|solution|setup|sum|term|translation|value|width|therefore|so\b/i;
+
+    for (const item of p1Items) {
+      expect(item.hints.methodCue, item.itemId).toBeTruthy();
+      expect(item.hints.methodCue, item.itemId).not.toMatch(/matching Field Guide|draft|seed|generated|placeholder/i);
+      expect(item.hints.methodCue?.length ?? 0, item.itemId).toBeGreaterThan(35);
+      expect(item.hints.firstStep?.length ?? 0, item.itemId).toBeGreaterThanOrEqual(8);
+      expect(item.workedRoute.length, item.itemId).toBeGreaterThanOrEqual(3);
+      expect(item.workedRoute.length, item.itemId).toBeLessThanOrEqual(4);
+      expect(item.commonMistake?.length ?? 0, item.itemId).toBeGreaterThan(20);
+
+      const finalLine = item.workedRoute[item.workedRoute.length - 1] ?? '';
+      expect(finalLine, item.itemId).toMatch(usefulFinalAnswerSignal);
+    }
+  });
+
+  it('keeps active P1 Skill Checks tied to the local P1 Field Guide source only', () => {
+    const p1Items = AUTHORED_SKILL_CHECK_ITEMS.filter((item) => item.courseId === 'p1');
+    const p1Topics = getSeedTopicsForCourse('p1');
+    const topicById = new Map(p1Topics.map((topic) => [topic.id, topic]));
+    const sectionById = new Map(p1Topics.flatMap((topic) => (
+      topic.fieldGuideSections.map((section) => [section.id, { topic, section }] as const)
+    )));
+    const outOfScopeSignals = /improper|volume of revolution|by parts|partial fractions|product rule|quotient rule|implicit|parametric|vectors?|momentum|force|probability|normal distribution/i;
+
+    for (const topic of p1Topics) {
+      const groups = getP1SkillCheckGroupsForTopic(topic.id);
+      expect(groups.map((group) => group.groupId), topic.id).toEqual(
+        topic.fieldGuideSections.map((section) => section.id),
+      );
+    }
+
+    for (const group of P1_SKILL_CHECK_GROUPS) {
+      for (const defaultItem of group.defaultItems) {
+        expect(Object.keys(defaultItem).sort(), defaultItem.itemId).toEqual(['itemId', 'label', 'role']);
+      }
+      for (const optionalSet of group.optionalSets ?? []) {
+        expect(Object.keys(optionalSet).sort(), group.groupId).toEqual(['itemIds', 'label']);
+      }
+    }
+
+    for (const item of p1Items) {
+      const sourceTopic = topicById.get(item.fieldGuideTopicId);
+      const sourceSection = sectionById.get(item.fieldGuideSubtopicId);
+      expect(sourceTopic, item.itemId).toBeDefined();
+      expect(sourceSection, item.itemId).toBeDefined();
+      expect(sourceSection?.topic.id, item.itemId).toBe(item.fieldGuideTopicId);
+      expect(item.sourceTypes, item.itemId).toEqual(['authored']);
+      expect(item.sourceRefs.courseContentSource, item.itemId).toBe('content-model/P1/p1-content map.pdf');
+      expect(item.sourceRefs.canonicalQuestionIds ?? [], item.itemId).toEqual([]);
+      expect(item.sourceRefs.questionAssetIds ?? [], item.itemId).toEqual([]);
+      expect(item.sourceRefs.markSchemeAssetIds ?? [], item.itemId).toEqual([]);
+      expect(item.sourceRefs.contentLabCandidateIds ?? [], item.itemId).toEqual([]);
+      expect(item.review, item.itemId).toMatchObject({
+        affectsMastery: false,
+        supportOnly: true,
+        evidenceEnabled: false,
+      });
+
+      const studentFacingAndSupportCopy = [
+        item.prompt,
+        item.hints.nudge,
+        item.hints.methodCue ?? '',
+        item.hints.firstStep ?? '',
+        item.commonMistake ?? '',
+        ...item.workedRoute,
+      ].join(' ');
+      expect(studentFacingAndSupportCopy, item.itemId).not.toMatch(outOfScopeSignals);
+    }
+
+    expect(sectionById.has('p1-integration-improper-integrals')).toBe(false);
+    expect(sectionById.has('p1-integration-volumes-revolution')).toBe(false);
   });
 
   it('keeps P1 Quadratics quality-pass items student-facing and fully covered', () => {
@@ -536,8 +662,6 @@ describe('Skill Checklist grouping', () => {
       ['p1-integration-constant-integration', 3],
       ['p1-integration-definite-integrals', 3],
       ['p1-integration-area-between-curves', 3],
-      ['p1-integration-improper-integrals', 3],
-      ['p1-integration-volumes-revolution', 3],
     ]);
     const sweptTopicIds = new Set([
       'p1-circular-measure',
@@ -592,10 +716,6 @@ describe('Skill Checklist grouping', () => {
       'p1-sc-integration-constant-001',
       'p1-sc-integration-constant-002',
       'p1-sc-integration-area-between-003',
-      'p1-sc-integration-improper-003',
-      'p1-sc-integration-volumes-001',
-      'p1-sc-integration-volumes-002',
-      'p1-sc-integration-volumes-003',
     ]) {
       const item = AUTHORED_SKILL_CHECK_ITEMS.find((candidate) => candidate.itemId === itemId);
       expect(item, itemId).toMatchObject({
@@ -614,8 +734,8 @@ describe('Skill Checklist grouping', () => {
     expect(itemById.get('p1-sc-series-gp-003')?.prompt).toContain('third term');
     expect(itemById.get('p1-sc-diff-rates-002')?.prompt).toContain('interpretation');
     expect(itemById.get('p1-sc-integration-area-between-003')?.prompt).toContain('$y=x^2$');
-    expect(itemById.get('p1-sc-integration-improper-003')?.prompt).toContain('Teacher-guided draft only');
-    expect(itemById.get('p1-sc-integration-volumes-001')?.prompt).toContain('Teacher-guided draft only');
+    expect(itemById.has('p1-sc-integration-improper-003')).toBe(false);
+    expect(itemById.has('p1-sc-integration-volumes-001')).toBe(false);
   });
 
   it('keeps the first P1 temporary cleanup items on student-facing answer shapes', () => {

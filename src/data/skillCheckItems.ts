@@ -2,8 +2,27 @@ import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } fr
 import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
 import { M1_SKILL_CHECK_ITEMS } from './m1SkillCheckItems';
-import { P1_SKILL_CHECK_ITEMS } from './p1SkillCheckItems';
+import {
+  getP1SkillCheckGroup,
+  getP1SkillCheckGroupsForTopic,
+  P1_SKILL_CHECK_GROUPS,
+  P1_SKILL_CHECK_ITEMS,
+  type P1SkillCheckGroup,
+  type P1SkillCheckGroupItem,
+  type P1SkillCheckOptionalSet,
+  type P1SkillCheckRole,
+} from './p1SkillCheckItems';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
+
+export {
+  getP1SkillCheckGroup,
+  getP1SkillCheckGroupsForTopic,
+  P1_SKILL_CHECK_GROUPS,
+  type P1SkillCheckGroup,
+  type P1SkillCheckGroupItem,
+  type P1SkillCheckOptionalSet,
+  type P1SkillCheckRole,
+};
 
 export type SkillCheckInputType =
   | 'numeric'

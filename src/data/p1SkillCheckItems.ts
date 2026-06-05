@@ -33,6 +33,45 @@ const sourceRefs = (): SkillCheckItem['sourceRefs'] => ({
   courseContentSource: 'content-model/P1/p1-content map.pdf',
 });
 
+const P1_METHOD_CUES_BY_SUBTOPIC: Record<string, string> = {
+  'p1-quadratics-factoring': 'Choose factorising when the quadratic has tidy bracket factors, then set each factor to zero.',
+  'p1-quadratics-inequalities': 'Find the boundary roots first, then use the graph or a sign line to choose the correct interval.',
+  'p1-quadratics-formula': 'Use the quadratic formula after identifying $a$, $b$, and $c$ in standard form.',
+  'p1-quadratics-discriminant': 'Use $D=b^2-4ac$ to decide the root condition before solving anything.',
+  'p1-quadratics-graphs': 'Read roots, vertex, or direction from factorised or completed-square form before sketching.',
+  'p1-functions-transformations-composite-functions': 'Work from the inside function outward; composition order matters.',
+  'p1-functions-transformations-inverse-functions': 'Reverse the function by solving for the original input or swapping $x$ and $y$.',
+  'p1-functions-transformations-translations': 'Separate horizontal movement inside the function from vertical movement outside it.',
+  'p1-functions-transformations-reflections': 'Decide whether the sign change affects inputs or outputs to choose the reflection axis.',
+  'p1-functions-transformations-stretches': 'Use outside multipliers for vertical scale factors and inside multipliers for reciprocal horizontal scale factors.',
+  'p1-coordinate-geometry-parallel-perpendicular': 'Find the gradient first, then use equal gradients for parallel lines or negative reciprocals for perpendicular lines.',
+  'p1-coordinate-geometry-straight-line': 'Use $y=mx+c$ or point-gradient form after identifying the gradient and a point.',
+  'p1-coordinate-geometry-circles': 'Compare with circle form or find centre and radius from midpoint and distance facts.',
+  'p1-coordinate-geometry-intersections': 'At an intersection, substitute or equate equations, then give full coordinate pairs.',
+  'p1-circular-measure-radians': 'Choose the conversion direction first: degrees multiply by $\\pi/180$, radians multiply by $180/\\pi$.',
+  'p1-circular-measure-arc-sector': 'Choose arc length $s=r\\theta$ or sector area $A=\\frac12r^2\\theta$, with $\\theta$ in radians.',
+  'p1-trigonometry-exact-values': 'Use the standard exact-value triangles or unit-circle values instead of decimal approximations.',
+  'p1-trigonometry-graphs': 'Start from the base sine, cosine, or tangent graph, then apply the period or amplitude change.',
+  'p1-trigonometry-equations': 'Find the reference angle, then use the interval and graph symmetry to list every valid solution.',
+  'p1-trigonometry-identities': 'Choose the standard identity that matches the expression before simplifying.',
+  'p1-binomial-expansion-basic-expansion': 'Use the positive-integer binomial coefficients and attach the correct powers term by term.',
+  'p1-binomial-expansion-complex-expansions': 'Use the target term formula to find the requested coefficient or parameter.',
+  'p1-series-arithmetic-progressions': 'Use the AP term or sum formula with $a$, $d$, and $n$ identified first.',
+  'p1-series-geometric-progressions': 'Use the GP term or finite-sum formula with $a$, $r$, and $n$ identified first.',
+  'p1-series-infinite-geometric-progressions': 'Check $|r|<1$ before using the infinite geometric sum formula.',
+  'p1-differentiation-gradient-tangent': 'Differentiate first, then substitute the point or x-value into the gradient function.',
+  'p1-differentiation-polynomials': 'Apply the power rule term by term and drop constant terms.',
+  'p1-differentiation-chain-rule': 'Differentiate the outside power, then multiply by the derivative of the linear bracket.',
+  'p1-differentiation-second-derivative': 'Find the first derivative, differentiate again, then substitute if a value is requested.',
+  'p1-differentiation-tangents-normals': 'Find the tangent gradient first, then use the negative reciprocal for the normal.',
+  'p1-differentiation-stationary-points': 'Set $dy/dx=0$ to locate stationary points, then classify them using shape or $d^2y/dx^2$.',
+  'p1-differentiation-rates-change': 'Differentiate the quantity with respect to the stated variable before interpreting the rate.',
+  'p1-integration-basic-integration': 'Use the reverse power rule and include $+C$ for an indefinite integral.',
+  'p1-integration-constant-integration': 'Integrate first, then substitute the given point to find the constant.',
+  'p1-integration-definite-integrals': 'Find an antiderivative, then subtract lower-limit value from upper-limit value.',
+  'p1-integration-area-between-curves': 'Identify upper minus lower curve on the interval, then evaluate the definite integral.',
+};
+
 function item(spec: P1Spec): SkillCheckItem {
   return {
     itemId: spec.itemId,
@@ -53,7 +92,7 @@ function item(spec: P1Spec): SkillCheckItem {
     commonMistake: spec.commonMistake,
     hints: {
       nudge: spec.nudge,
-      methodCue: 'Use the matching draft Field Guide method before simplifying.',
+      methodCue: P1_METHOD_CUES_BY_SUBTOPIC[spec.subtopicId] ?? spec.nudge,
       firstStep: spec.firstStep,
     },
     workedRoute: spec.workedRoute,
@@ -342,7 +381,7 @@ const P1_BASE_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Using the sector area formula instead of $s=r\\theta$.',
     nudge: 'Arc length is $s=r\\theta$.',
     firstStep: '$s=6\\times\\frac\\pi3$.',
-    workedRoute: ['$s=r\\theta=6\\times\\frac\\pi3$.', 'So $s=2\\pi$.', 'That is the full arc length.'],
+    workedRoute: ['$s=r\\theta=6\\times\\frac\\pi3$.', 'So $s=2\\pi$.', 'The final arc length is $2\\pi$.'],
   }),
   item({
     itemId: 'p1-sc-trig-exact-values-001',
@@ -536,7 +575,7 @@ const P1_BASE_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Evaluating the first derivative instead of differentiating twice.',
     nudge: 'Find $y\\prime$, then differentiate again.',
     firstStep: '$y\\prime=3x^2-3$.',
-    workedRoute: ['$y\\prime=3x^2-3$.', '$y^{\\prime\\prime}=6x$.', 'At $x=2$, $y^{\\prime\\prime}=12$.'],
+    workedRoute: ['$y\\prime=3x^2-3$.', '$y^{\\prime\\prime}=6x$.', 'The second derivative value at $x=2$ is $12$.'],
   }),
   item({
     itemId: 'p1-sc-diff-tangents-normals-001',
@@ -992,7 +1031,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Choosing $-f(x)$, which reflects in the x-axis instead.',
     nudge: 'A y-axis reflection changes input x-values.',
     firstStep: 'Replace $x$ by $-x$ inside the function.',
-    workedRoute: ['Reflection in the y-axis sends $x$ to $-x$.', 'That gives $y=f(-x)$.', 'The outside negative would reflect in the x-axis.'],
+    workedRoute: ['Reflection in the y-axis sends $x$ to $-x$.', 'An outside negative would reflect in the x-axis instead.', 'The correct equation is $y=f(-x)$.'],
   }),
   item({
     itemId: 'p1-sc-functions-reflections-003',
@@ -1103,12 +1142,8 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Finding the negative reciprocal gradient but using an endpoint instead of the midpoint, or using a parallel gradient through the midpoint.',
     nudge: 'A perpendicular bisector must pass through the midpoint of $AB$.',
     firstStep: 'The midpoint is $(4,6)$ and the gradient of $AB$ is $\\frac{10}{6}=\\frac53$.',
-    workedRoute: ['The midpoint is $(4,6)$.', 'The gradient of $AB$ is $\\frac53$, so the perpendicular gradient is $-\\frac35$.', '$y-6=-\\frac35(x-4)$ rearranges to $3x+5y-42=0$.'],
+    workedRoute: ['The midpoint is $(4,6)$.', 'The gradient of $AB$ is $\\frac53$, so the perpendicular gradient is $-\\frac35$.', 'The perpendicular bisector equation is $3x+5y-42=0$.'],
     complexity: 'core',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['12autumn22_q01'],
-    },
   }),
   item({
     itemId: 'p1-sc-coordinate-straight-line-002',
@@ -1158,7 +1193,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Finding the gradient correctly but then creating a line that does not pass through both given points.',
     nudge: 'Find the gradient first, then use point-gradient form before rearranging.',
     firstStep: '$m=\\frac{10-2}{5-1}=2$.',
-    workedRoute: ['$m=2$.', 'Using $(1,2)$ gives $y-2=2(x-1)$, so $y=2x$.', 'Rearranged into general form, this is $2x-y=0$.'],
+    workedRoute: ['$m=2$.', 'Using $(1,2)$ gives $y-2=2(x-1)$, so $y=2x$.', 'The same line can be written as $y=2x$ or $2x-y=0$.'],
     complexity: 'core',
   }),
   item({
@@ -1199,10 +1234,6 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     firstStep: 'The midpoint of $P$ and $Q$ is $(4,6)$.',
     workedRoute: ['The centre is the midpoint $(4,6)$.', 'The radius squared is $(4-1)^2+(6-1)^2=34$.', 'The circle is $(x-4)^2+(y-6)^2=34$.'],
     complexity: 'core',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['12autumn25_q07'],
-    },
   }),
   item({
     itemId: 'p1-sc-coordinate-circles-004',
@@ -1223,10 +1254,6 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     firstStep: '$x^2+6x=(x+3)^2-9$ and $y^2-10y=(y-5)^2-25$.',
     workedRoute: ['Rewrite as $(x+3)^2-9+(y-5)^2-25+18=0$.', 'So $(x+3)^2+(y-5)^2=16$.', 'The centre is $(-3,5)$ and the radius is $4$.'],
     complexity: 'core',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['11autumn24_q06'],
-    },
   }),
   item({
     itemId: 'p1-sc-coordinate-circles-005',
@@ -1247,10 +1274,6 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     firstStep: 'The radius gradient from $(3,-2)$ to $(5,4)$ is $\\frac{6}{2}=3$.',
     workedRoute: ['The radius gradient is $3$.', 'The tangent gradient is $-\\frac13$.', 'Using $P(5,4)$: $y-4=-\\frac13(x-5)$, so $x+3y-17=0$.'],
     complexity: 'core',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['12autumn21_q12', '12autumn24_q08'],
-    },
   }),
   item({
     itemId: 'p1-sc-coordinate-intersections-002',
@@ -1308,12 +1331,8 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Solving the quadratic for x-values but not substituting back to form full coordinate pairs.',
     nudge: 'Substitute the line equation into the circle equation.',
     firstStep: '$x^2+(3x-5)^2=25$.',
-    workedRoute: ['$x^2+(3x-5)^2=25$ gives $10x^2-30x=0$.', 'So $10x(x-3)=0$ and $x=0$ or $x=3$.', 'Substitute into $y=3x-5$ to get $(0,-5)$ and $(3,4)$.'],
+    workedRoute: ['$x^2+(3x-5)^2=25$ gives $10x^2-30x=0$.', 'So $10x(x-3)=0$ and $x=0$ or $x=3$.', 'The intersection points are $(0,-5)$ and $(3,4)$.'],
     complexity: 'challenge',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['11autumn21_q07', '12spring22_q06'],
-    },
   }),
   item({
     itemId: 'p1-sc-coordinate-intersections-005',
@@ -1332,12 +1351,8 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Trying to judge all intersection cases from a sketch or one trial value instead of using the discriminant of the substituted quadratic.',
     nudge: 'After line substitution, the number of real roots tells you the number of intersection points.',
     firstStep: 'Substitute the line equation into the circle or curve equation and collect terms into $ax^2+bx+c=0$.',
-    workedRoute: ['Substitution turns the intersection problem into a quadratic.', 'The discriminant counts real roots: $D>0$ gives two intersections, $D=0$ gives a tangent, and $D<0$ gives no intersection.', 'This is the method order needed for parameter intersection questions.'],
+    workedRoute: ['Substitution turns the intersection problem into a quadratic.', 'The discriminant counts real roots: $D>0$ gives two intersections, $D=0$ gives a tangent, and $D<0$ gives no intersection.', 'The correct method sequence is substitute, collect a quadratic, then test the discriminant.'],
     complexity: 'challenge',
-    sourceTypes: ['authored', 'exam-bank reference'],
-    sourceRefs: {
-      canonicalQuestionIds: ['11autumn22_q11', '11summer22_q09', '11autumn24_q04'],
-    },
   }),
 
   item({
@@ -1494,7 +1509,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Stopping after the first solution and missing the second point on the cycle.',
     nudge: 'Cosine is zero on the y-axis of the unit circle.',
     firstStep: 'Identify where the x-coordinate on the unit circle is zero.',
-    workedRoute: ['Cosine is zero at the top and bottom of the unit circle.', 'Those angles are $90^\\circ$ and $270^\\circ$.', 'Both lie in the requested interval.'],
+    workedRoute: ['Cosine is zero at the top and bottom of the unit circle.', 'Both angles lie in the requested interval.', 'The full solution set is $90^\\circ,270^\\circ$.'],
   }),
   item({
     itemId: 'p1-sc-trig-equations-003',
@@ -1711,7 +1726,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Thinking any common ratio except $1$ gives a convergent infinite sum.',
     nudge: 'The terms must get smaller in size.',
     firstStep: 'Check the size of the common ratio.',
-    workedRoute: ['An infinite GP sum exists only when terms shrink to zero.', 'That requires $|r|<1$.', 'Then $S_\\infty=\\frac{a}{1-r}$.'],
+    workedRoute: ['An infinite GP sum exists only when terms shrink to zero.', 'When $|r|<1$, use $S_\\infty=\\frac{a}{1-r}$.', 'The required condition is $|r|<1$.'],
   }),
   item({
     itemId: 'p1-sc-series-infinite-gp-003',
@@ -1848,7 +1863,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Evaluating the first derivative instead of the second derivative.',
     nudge: 'Differentiate twice, then substitute $x=1$.',
     firstStep: '$y\\prime=8x^3-2x$.',
-    workedRoute: ['$y\\prime=8x^3-2x$.', '$y^{\\prime\\prime}=24x^2-2$.', 'At $x=1$, $y^{\\prime\\prime}=22$.'],
+    workedRoute: ['$y\\prime=8x^3-2x$.', '$y^{\\prime\\prime}=24x^2-2$.', 'The second derivative value at $x=1$ is $22$.'],
     complexity: 'core',
   }),
   item({
@@ -1900,7 +1915,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Finding the normal line or not passing the tangent through the point on the curve.',
     nudge: 'Find the gradient and the point first.',
     firstStep: '$dy/dx=2x$, so at $x=1$ the gradient is $2$.',
-    workedRoute: ['At $x=1$, $y=1$, so the point is $(1,1)$.', 'The tangent gradient is $2$.', 'Using $y-1=2(x-1)$ gives $y=2x-1$.'],
+    workedRoute: ['At $x=1$, $y=1$, so the point is $(1,1)$.', 'The tangent gradient is $2$.', 'The tangent equation is $y=2x-1$.'],
     complexity: 'core',
   }),
   item({
@@ -2090,7 +2105,7 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     commonMistake: 'Using $x^2-4$ even though the horizontal line is above the curve on the interval.',
     nudge: 'Use upper curve minus lower curve.',
     firstStep: 'Area $=\\int_0^2(4-x^2)\\,dx$.',
-    workedRoute: ['On $0\\le x\\le2$, $4$ is above $x^2$.', 'Area $=[4x-x^3/3]_0^2$.', 'That gives $8-\\frac83=\\frac{16}{3}$.'],
+    workedRoute: ['On $0\\le x\\le2$, $4$ is above $x^2$.', 'Area $=[4x-x^3/3]_0^2$.', 'The exact area is $8-\\frac83=\\frac{16}{3}$.'],
     complexity: 'core',
   }),
   item({
@@ -2188,7 +2203,465 @@ const P1_EXPANSION_001_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   }),
 ];
 
-export const P1_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
+export type P1SkillCheckRole = 'first_check' | 'use_the_method' | 'exam_style_twist';
+
+export interface P1SkillCheckGroupItem {
+  role: P1SkillCheckRole;
+  label: string;
+  itemId: string;
+}
+
+export interface P1SkillCheckOptionalSet {
+  label: 'More practice' | 'Mixed quick check' | 'Challenge';
+  itemIds: string[];
+}
+
+export interface P1SkillCheckGroup {
+  groupId: string;
+  topicId: string;
+  label: string;
+  purpose: string;
+  defaultItems: [P1SkillCheckGroupItem, P1SkillCheckGroupItem, P1SkillCheckGroupItem];
+  optionalSets?: P1SkillCheckOptionalSet[];
+}
+
+const HIDDEN_P1_SKILL_CHECK_SUBTOPICS = new Set([
+  'p1-integration-improper-integrals',
+  'p1-integration-volumes-revolution',
+]);
+
+const P1_ALL_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   ...P1_BASE_SKILL_CHECK_ITEMS,
   ...P1_EXPANSION_001_SKILL_CHECK_ITEMS,
 ];
+
+export const P1_SKILL_CHECK_ITEMS: SkillCheckItem[] = P1_ALL_SKILL_CHECK_ITEMS
+  .filter((skillCheckItem) => !HIDDEN_P1_SKILL_CHECK_SUBTOPICS.has(skillCheckItem.fieldGuideSubtopicId));
+
+export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
+  {
+    groupId: 'p1-quadratics-factoring',
+    topicId: 'p1-quadratics',
+    label: 'Spot the factors',
+    purpose: 'Choose factorising when it is efficient, then solve and interpret roots.',
+    defaultItems: [
+      { role: 'first_check', label: 'Spot the method', itemId: 'p1-sc-quadratics-factoring-002' },
+      { role: 'use_the_method', label: 'Solve the quadratic', itemId: 'p1-sc-quadratics-factoring-001' },
+      { role: 'exam_style_twist', label: 'Use the root in context', itemId: 'p1-sc-quadratics-factoring-003' },
+    ],
+  },
+  {
+    groupId: 'p1-quadratics-inequalities',
+    topicId: 'p1-quadratics',
+    label: 'Check the interval',
+    purpose: 'Use roots and signs to choose the correct solution interval.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find the negative region', itemId: 'p1-sc-quadratics-inequalities-001' },
+      { role: 'use_the_method', label: 'Check outside or inside', itemId: 'p1-sc-quadratics-inequalities-002' },
+      { role: 'exam_style_twist', label: 'Include endpoints', itemId: 'p1-sc-quadratics-inequalities-003' },
+    ],
+  },
+  {
+    groupId: 'p1-quadratics-formula',
+    topicId: 'p1-quadratics',
+    label: 'Use the formula',
+    purpose: 'Substitute safely into the quadratic formula and simplify both roots.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use the formula', itemId: 'p1-sc-quadratics-formula-001' },
+      { role: 'use_the_method', label: 'Check the denominator', itemId: 'p1-sc-quadratics-formula-003' },
+      { role: 'exam_style_twist', label: 'Simplify exact roots', itemId: 'p1-sc-quadratics-formula-002' },
+    ],
+  },
+  {
+    groupId: 'p1-quadratics-discriminant',
+    topicId: 'p1-quadratics',
+    label: 'Count the roots',
+    purpose: 'Use the discriminant to decide repeated, distinct, or no real roots.',
+    defaultItems: [
+      { role: 'first_check', label: 'Recognise the case', itemId: 'p1-sc-quadratics-discriminant-003' },
+      { role: 'use_the_method', label: 'Calculate the discriminant', itemId: 'p1-sc-quadratics-discriminant-001' },
+      { role: 'exam_style_twist', label: 'Set the parameter condition', itemId: 'p1-sc-quadratics-discriminant-002' },
+    ],
+  },
+  {
+    groupId: 'p1-quadratics-graphs',
+    topicId: 'p1-quadratics',
+    label: 'Try the graph',
+    purpose: 'Read completed-square form, opening direction, and intercepts.',
+    defaultItems: [
+      { role: 'first_check', label: 'Read the vertex', itemId: 'p1-sc-quadratics-graphs-001' },
+      { role: 'use_the_method', label: 'Check the opening direction', itemId: 'p1-sc-quadratics-graphs-002' },
+      { role: 'exam_style_twist', label: 'Interpret the roots', itemId: 'p1-sc-quadratics-graphs-003' },
+    ],
+  },
+  {
+    groupId: 'p1-functions-transformations-composite-functions',
+    topicId: 'p1-functions-transformations',
+    label: 'Read the order',
+    purpose: 'Evaluate and form composite functions in the correct order.',
+    defaultItems: [
+      { role: 'first_check', label: 'Evaluate fg', itemId: 'p1-sc-functions-composite-001' },
+      { role: 'use_the_method', label: 'Evaluate gf', itemId: 'p1-sc-functions-composite-002' },
+      { role: 'exam_style_twist', label: 'Form the expression', itemId: 'p1-sc-functions-composite-003' },
+    ],
+  },
+  {
+    groupId: 'p1-functions-transformations-inverse-functions',
+    topicId: 'p1-functions-transformations',
+    label: 'Reverse the function',
+    purpose: 'Undo function steps and find inverse values or expressions.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find an inverse value', itemId: 'p1-sc-functions-inverse-001' },
+      { role: 'use_the_method', label: 'Find the inverse function', itemId: 'p1-sc-functions-inverse-002' },
+      { role: 'exam_style_twist', label: 'Recover the input', itemId: 'p1-sc-functions-inverse-003' },
+    ],
+  },
+  {
+    groupId: 'p1-functions-transformations-translations',
+    topicId: 'p1-functions-transformations',
+    label: 'Move the graph',
+    purpose: 'Describe translations and map points under translated functions.',
+    defaultItems: [
+      { role: 'first_check', label: 'Read the shift', itemId: 'p1-sc-functions-translations-001' },
+      { role: 'use_the_method', label: 'Use the notation', itemId: 'p1-sc-functions-translations-002' },
+      { role: 'exam_style_twist', label: 'Move a point', itemId: 'p1-sc-functions-translations-003' },
+    ],
+  },
+  {
+    groupId: 'p1-functions-transformations-reflections',
+    topicId: 'p1-functions-transformations',
+    label: 'Flip the graph',
+    purpose: 'Identify reflection axes and map points after reflection.',
+    defaultItems: [
+      { role: 'first_check', label: 'Name the axis', itemId: 'p1-sc-functions-reflections-001' },
+      { role: 'use_the_method', label: 'Choose the notation', itemId: 'p1-sc-functions-reflections-002' },
+      { role: 'exam_style_twist', label: 'Move a point', itemId: 'p1-sc-functions-reflections-003' },
+    ],
+  },
+  {
+    groupId: 'p1-functions-transformations-stretches',
+    topicId: 'p1-functions-transformations',
+    label: 'Scale the graph',
+    purpose: 'Separate vertical scale factors from reciprocal horizontal scale factors.',
+    defaultItems: [
+      { role: 'first_check', label: 'Read the horizontal scale', itemId: 'p1-sc-functions-stretches-001' },
+      { role: 'use_the_method', label: 'Read the vertical scale', itemId: 'p1-sc-functions-stretches-002' },
+      { role: 'exam_style_twist', label: 'Scale a point', itemId: 'p1-sc-functions-stretches-003' },
+    ],
+  },
+  {
+    groupId: 'p1-coordinate-geometry-parallel-perpendicular',
+    topicId: 'p1-coordinate-geometry',
+    label: 'Check the gradient',
+    purpose: 'Use parallel and perpendicular gradient facts without sign errors.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find a perpendicular gradient', itemId: 'p1-sc-coordinate-parallel-perpendicular-001' },
+      { role: 'use_the_method', label: 'Find a parallel gradient', itemId: 'p1-sc-coordinate-parallel-perpendicular-002' },
+      { role: 'exam_style_twist', label: 'Compare two lines', itemId: 'p1-sc-coordinate-parallel-perpendicular-003' },
+    ],
+    optionalSets: [{ label: 'Challenge', itemIds: ['p1-sc-coordinate-parallel-perpendicular-004'] }],
+  },
+  {
+    groupId: 'p1-coordinate-geometry-straight-line',
+    topicId: 'p1-coordinate-geometry',
+    label: 'Build the line',
+    purpose: 'Find gradients and equations of straight lines in useful forms.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find the gradient', itemId: 'p1-sc-coordinate-straight-line-003' },
+      { role: 'use_the_method', label: 'Use point-gradient form', itemId: 'p1-sc-coordinate-straight-line-001' },
+      { role: 'exam_style_twist', label: 'Give both forms', itemId: 'p1-sc-coordinate-straight-line-004' },
+    ],
+    optionalSets: [{ label: 'More practice', itemIds: ['p1-sc-coordinate-straight-line-002'] }],
+  },
+  {
+    groupId: 'p1-coordinate-geometry-circles',
+    topicId: 'p1-coordinate-geometry',
+    label: 'Read the circle',
+    purpose: 'Use centre-radius form, midpoint, completing the square, and tangent facts.',
+    defaultItems: [
+      { role: 'first_check', label: 'Read centre and radius', itemId: 'p1-sc-coordinate-circles-001' },
+      { role: 'use_the_method', label: 'Use the diameter', itemId: 'p1-sc-coordinate-circles-003' },
+      { role: 'exam_style_twist', label: 'Complete the square', itemId: 'p1-sc-coordinate-circles-004' },
+    ],
+    optionalSets: [
+      { label: 'More practice', itemIds: ['p1-sc-coordinate-circles-002'] },
+      { label: 'Challenge', itemIds: ['p1-sc-coordinate-circles-005'] },
+    ],
+  },
+  {
+    groupId: 'p1-coordinate-geometry-intersections',
+    topicId: 'p1-coordinate-geometry',
+    label: 'Find the meeting point',
+    purpose: 'Solve intersections cleanly and state full coordinate pairs.',
+    defaultItems: [
+      { role: 'first_check', label: 'Intersect two lines', itemId: 'p1-sc-coordinate-intersections-001' },
+      { role: 'use_the_method', label: 'Intersect a line and circle', itemId: 'p1-sc-coordinate-intersections-003' },
+      { role: 'exam_style_twist', label: 'Find both points', itemId: 'p1-sc-coordinate-intersections-004' },
+    ],
+    optionalSets: [
+      { label: 'More practice', itemIds: ['p1-sc-coordinate-intersections-002'] },
+      { label: 'Challenge', itemIds: ['p1-sc-coordinate-intersections-005'] },
+    ],
+  },
+  {
+    groupId: 'p1-circular-measure-radians',
+    topicId: 'p1-circular-measure',
+    label: 'Switch the units',
+    purpose: 'Convert between degrees and radians before using circular formulae.',
+    defaultItems: [
+      { role: 'first_check', label: 'Recognise radians', itemId: 'p1-sc-circular-radians-003' },
+      { role: 'use_the_method', label: 'Convert to radians', itemId: 'p1-sc-circular-radians-001' },
+      { role: 'exam_style_twist', label: 'Convert to degrees', itemId: 'p1-sc-circular-radians-002' },
+    ],
+  },
+  {
+    groupId: 'p1-circular-measure-arc-sector',
+    topicId: 'p1-circular-measure',
+    label: 'Use the sector formula',
+    purpose: 'Apply arc length, sector area, and simple sector perimeter formulae.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find the arc length', itemId: 'p1-sc-circular-arc-sector-001' },
+      { role: 'use_the_method', label: 'Find the sector area', itemId: 'p1-sc-circular-arc-sector-002' },
+      { role: 'exam_style_twist', label: 'Include the radii', itemId: 'p1-sc-circular-arc-sector-003' },
+    ],
+  },
+  {
+    groupId: 'p1-trigonometry-exact-values',
+    topicId: 'p1-trigonometry',
+    label: 'Recall the exact value',
+    purpose: 'Use standard exact trigonometric values without decimal rounding.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use tan 45', itemId: 'p1-sc-trig-exact-values-001' },
+      { role: 'use_the_method', label: 'Use sin 60', itemId: 'p1-sc-trig-exact-values-002' },
+      { role: 'exam_style_twist', label: 'Use cos 30', itemId: 'p1-sc-trig-exact-values-003' },
+    ],
+  },
+  {
+    groupId: 'p1-trigonometry-graphs',
+    topicId: 'p1-trigonometry',
+    label: 'Read the graph feature',
+    purpose: 'Identify amplitude and period from simple trigonometric graphs.',
+    defaultItems: [
+      { role: 'first_check', label: 'Read the amplitude', itemId: 'p1-sc-trig-graphs-003' },
+      { role: 'use_the_method', label: 'Find sine period', itemId: 'p1-sc-trig-graphs-001' },
+      { role: 'exam_style_twist', label: 'Find tangent period', itemId: 'p1-sc-trig-graphs-002' },
+    ],
+  },
+  {
+    groupId: 'p1-trigonometry-equations',
+    topicId: 'p1-trigonometry',
+    label: 'Find all angles',
+    purpose: 'Solve simple trigonometric equations over the stated interval.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use sine symmetry', itemId: 'p1-sc-trig-equations-001' },
+      { role: 'use_the_method', label: 'Solve after rearranging', itemId: 'p1-sc-trig-equations-003' },
+      { role: 'exam_style_twist', label: 'Use tangent period', itemId: 'p1-sc-trig-equations-004' },
+    ],
+    optionalSets: [{ label: 'More practice', itemIds: ['p1-sc-trig-equations-002'] }],
+  },
+  {
+    groupId: 'p1-trigonometry-identities',
+    topicId: 'p1-trigonometry',
+    label: 'Use the identity',
+    purpose: 'Simplify expressions using standard P1 trigonometric identities.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use Pythagoras', itemId: 'p1-sc-trig-identities-001' },
+      { role: 'use_the_method', label: 'Use the tangent ratio', itemId: 'p1-sc-trig-identities-002' },
+      { role: 'exam_style_twist', label: 'Substitute into an identity', itemId: 'p1-sc-trig-identities-003' },
+    ],
+  },
+  {
+    groupId: 'p1-binomial-expansion-basic-expansion',
+    topicId: 'p1-binomial-expansion',
+    label: 'Spot the pattern',
+    purpose: 'Expand positive-integer binomials and track signs.',
+    defaultItems: [
+      { role: 'first_check', label: 'Expand directly', itemId: 'p1-sc-binomial-basic-001' },
+      { role: 'use_the_method', label: 'Find a coefficient', itemId: 'p1-sc-binomial-basic-002' },
+      { role: 'exam_style_twist', label: 'Check the signs', itemId: 'p1-sc-binomial-basic-003' },
+    ],
+  },
+  {
+    groupId: 'p1-binomial-expansion-complex-expansions',
+    topicId: 'p1-binomial-expansion',
+    label: 'Target the term',
+    purpose: 'Use the term formula to find requested coefficients.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find the coefficient', itemId: 'p1-sc-binomial-complex-001' },
+      { role: 'use_the_method', label: 'Track the sign', itemId: 'p1-sc-binomial-complex-002' },
+      { role: 'exam_style_twist', label: 'Choose the term', itemId: 'p1-sc-binomial-complex-003' },
+    ],
+  },
+  {
+    groupId: 'p1-series-arithmetic-progressions',
+    topicId: 'p1-series',
+    label: 'Use the AP formula',
+    purpose: 'Choose the AP term or sum formula and substitute carefully.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find a term', itemId: 'p1-sc-series-ap-001' },
+      { role: 'use_the_method', label: 'Find the difference', itemId: 'p1-sc-series-ap-002' },
+      { role: 'exam_style_twist', label: 'Find the sum', itemId: 'p1-sc-series-ap-003' },
+    ],
+  },
+  {
+    groupId: 'p1-series-geometric-progressions',
+    topicId: 'p1-series',
+    label: 'Use the GP formula',
+    purpose: 'Use powers of the common ratio for terms and unknown ratios.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find a term', itemId: 'p1-sc-series-gp-001' },
+      { role: 'use_the_method', label: 'Use a negative ratio', itemId: 'p1-sc-series-gp-002' },
+      { role: 'exam_style_twist', label: 'Find possible ratios', itemId: 'p1-sc-series-gp-003' },
+    ],
+  },
+  {
+    groupId: 'p1-series-infinite-geometric-progressions',
+    topicId: 'p1-series',
+    label: 'Check convergence',
+    purpose: 'Use the infinite GP condition before finding the sum.',
+    defaultItems: [
+      { role: 'first_check', label: 'Check the restriction', itemId: 'p1-sc-series-infinite-gp-002' },
+      { role: 'use_the_method', label: 'Find the sum', itemId: 'p1-sc-series-infinite-gp-001' },
+      { role: 'exam_style_twist', label: 'Use a fractional ratio', itemId: 'p1-sc-series-infinite-gp-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-gradient-tangent',
+    topicId: 'p1-differentiation',
+    label: 'Find the gradient',
+    purpose: 'Differentiate first, then substitute the x-value.',
+    defaultItems: [
+      { role: 'first_check', label: 'Differentiate and substitute', itemId: 'p1-sc-diff-gradient-tangent-001' },
+      { role: 'use_the_method', label: 'Use a negative value', itemId: 'p1-sc-diff-gradient-tangent-002' },
+      { role: 'exam_style_twist', label: 'Avoid the function value', itemId: 'p1-sc-diff-gradient-tangent-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-polynomials',
+    topicId: 'p1-differentiation',
+    label: 'Use the power rule',
+    purpose: 'Differentiate powers of x term by term.',
+    defaultItems: [
+      { role: 'first_check', label: 'Differentiate directly', itemId: 'p1-sc-diff-polynomials-001' },
+      { role: 'use_the_method', label: 'Drop the constant', itemId: 'p1-sc-diff-polynomials-002' },
+      { role: 'exam_style_twist', label: 'Handle negative powers', itemId: 'p1-sc-diff-polynomials-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-chain-rule',
+    topicId: 'p1-differentiation',
+    label: 'Keep the inner factor',
+    purpose: 'Differentiate powers of linear expressions where the local P1 content includes chain rule.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use the inner factor', itemId: 'p1-sc-diff-chain-rule-001' },
+      { role: 'use_the_method', label: 'Use a different coefficient', itemId: 'p1-sc-diff-chain-rule-002' },
+      { role: 'exam_style_twist', label: 'Keep the negative sign', itemId: 'p1-sc-diff-chain-rule-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-second-derivative',
+    topicId: 'p1-differentiation',
+    label: 'Differentiate twice',
+    purpose: 'Find and use the second derivative without stopping too early.',
+    defaultItems: [
+      { role: 'first_check', label: 'Evaluate the second derivative', itemId: 'p1-sc-diff-second-derivative-001' },
+      { role: 'use_the_method', label: 'Find the expression', itemId: 'p1-sc-diff-second-derivative-003' },
+      { role: 'exam_style_twist', label: 'Substitute after differentiating', itemId: 'p1-sc-diff-second-derivative-002' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-tangents-normals',
+    topicId: 'p1-differentiation',
+    label: 'Build the tangent or normal',
+    purpose: 'Use tangent gradients and negative reciprocals to form line answers.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find a normal gradient', itemId: 'p1-sc-diff-tangents-normals-001' },
+      { role: 'use_the_method', label: 'Check the reciprocal', itemId: 'p1-sc-diff-tangents-normals-002' },
+      { role: 'exam_style_twist', label: 'Build the tangent', itemId: 'p1-sc-diff-tangents-normals-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-stationary-points',
+    topicId: 'p1-differentiation',
+    label: 'Find the stationary point',
+    purpose: 'Set the derivative to zero and classify the result when needed.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find stationary x-values', itemId: 'p1-sc-diff-stationary-002' },
+      { role: 'use_the_method', label: 'Find point and nature', itemId: 'p1-sc-diff-stationary-001' },
+      { role: 'exam_style_twist', label: 'Classify with the second derivative', itemId: 'p1-sc-diff-stationary-003' },
+    ],
+  },
+  {
+    groupId: 'p1-differentiation-rates-change',
+    topicId: 'p1-differentiation',
+    label: 'Interpret the rate',
+    purpose: 'Differentiate a quantity and say what the derivative means.',
+    defaultItems: [
+      { role: 'first_check', label: 'Find the rate', itemId: 'p1-sc-diff-rates-001' },
+      { role: 'use_the_method', label: 'Use velocity', itemId: 'p1-sc-diff-rates-003' },
+      { role: 'exam_style_twist', label: 'Interpret the derivative', itemId: 'p1-sc-diff-rates-002' },
+    ],
+  },
+  {
+    groupId: 'p1-integration-basic-integration',
+    topicId: 'p1-integration',
+    label: 'Reverse the power rule',
+    purpose: 'Integrate powers of x and include the constant when needed.',
+    defaultItems: [
+      { role: 'first_check', label: 'Integrate directly', itemId: 'p1-sc-integration-basic-001' },
+      { role: 'use_the_method', label: 'Use the new power', itemId: 'p1-sc-integration-basic-002' },
+      { role: 'exam_style_twist', label: 'Handle a negative power', itemId: 'p1-sc-integration-basic-003' },
+    ],
+  },
+  {
+    groupId: 'p1-integration-constant-integration',
+    topicId: 'p1-integration',
+    label: 'Find the constant',
+    purpose: 'Integrate a gradient function and use a point to find C.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use the point', itemId: 'p1-sc-integration-constant-001' },
+      { role: 'use_the_method', label: 'Find C carefully', itemId: 'p1-sc-integration-constant-002' },
+      { role: 'exam_style_twist', label: 'Integrate before substituting', itemId: 'p1-sc-integration-constant-003' },
+    ],
+  },
+  {
+    groupId: 'p1-integration-definite-integrals',
+    topicId: 'p1-integration',
+    label: 'Use the limits',
+    purpose: 'Evaluate definite integrals with upper minus lower.',
+    defaultItems: [
+      { role: 'first_check', label: 'Use both limits', itemId: 'p1-sc-integration-definite-001' },
+      { role: 'use_the_method', label: 'Subtract lower from upper', itemId: 'p1-sc-integration-definite-002' },
+      { role: 'exam_style_twist', label: 'Check symmetry', itemId: 'p1-sc-integration-definite-003' },
+    ],
+  },
+  {
+    groupId: 'p1-integration-area-between-curves',
+    topicId: 'p1-integration',
+    label: 'Set up the area',
+    purpose: 'Choose upper curve minus lower curve before integrating.',
+    defaultItems: [
+      { role: 'first_check', label: 'Choose the setup', itemId: 'p1-sc-integration-area-between-003' },
+      { role: 'use_the_method', label: 'Find the exact area', itemId: 'p1-sc-integration-area-between-001' },
+      { role: 'exam_style_twist', label: 'Use the upper curve', itemId: 'p1-sc-integration-area-between-002' },
+    ],
+  },
+];
+
+const P1_SKILL_CHECK_GROUPS_BY_TOPIC = new Map<string, P1SkillCheckGroup[]>();
+const P1_SKILL_CHECK_GROUPS_BY_ID = new Map<string, P1SkillCheckGroup>();
+
+for (const group of P1_SKILL_CHECK_GROUPS) {
+  P1_SKILL_CHECK_GROUPS_BY_ID.set(group.groupId, group);
+  const topicGroups = P1_SKILL_CHECK_GROUPS_BY_TOPIC.get(group.topicId) ?? [];
+  topicGroups.push(group);
+  P1_SKILL_CHECK_GROUPS_BY_TOPIC.set(group.topicId, topicGroups);
+}
+
+export function getP1SkillCheckGroupsForTopic(topicId: string | undefined): P1SkillCheckGroup[] {
+  return topicId ? P1_SKILL_CHECK_GROUPS_BY_TOPIC.get(topicId) ?? [] : [];
+}
+
+export function getP1SkillCheckGroup(groupId: string | undefined): P1SkillCheckGroup | undefined {
+  return groupId ? P1_SKILL_CHECK_GROUPS_BY_ID.get(groupId) : undefined;
+}

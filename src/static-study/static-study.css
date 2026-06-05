@@ -659,15 +659,17 @@ main > * {
 .course-topic-button {
   position: relative;
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) auto;
-  gap: 5px 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
   align-items: start;
   min-height: 126px;
-  padding: 14px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--ink-warm);
-  background: #fffdf8;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(255, 248, 237, 0.92)),
+    #fffdf8;
   text-align: left;
   text-decoration: none;
   box-shadow: 0 6px 16px rgba(55, 38, 24, 0.05);
@@ -681,38 +683,19 @@ main > * {
   box-shadow: 0 12px 26px rgba(55, 38, 24, 0.11);
 }
 
-.topic-card-visual {
-  display: grid;
-  grid-row: 1 / span 3;
-  place-items: center;
-  width: 66px;
-  height: 66px;
-  border-radius: var(--radius);
-  color: var(--accent-dark);
-  background:
-    linear-gradient(135deg, rgba(249, 230, 190, 0.8), rgba(220, 233, 223, 0.8)),
-    repeating-linear-gradient(0deg, rgba(116, 84, 54, 0.12) 0 1px, transparent 1px 14px);
-}
-
-.topic-card-visual svg {
-  width: 54px;
-  height: auto;
-}
-
 .course-topic-button .topic-card-title {
   font-weight: 900;
   line-height: 1.2;
 }
 
 .course-topic-button small {
-  grid-column: 1;
   color: var(--muted);
   font-size: 0.86rem;
 }
 
 .course-topic-button small,
 .course-topic-button .topic-card-formula {
-  grid-column: 2;
+  grid-column: 1;
 }
 
 .topic-card-formula {
@@ -726,7 +709,7 @@ main > * {
 }
 
 .course-topic-button .topic-card-arrow {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1 / span 3;
   color: var(--sage);
   font-size: 1.1rem;
@@ -761,7 +744,7 @@ main > * {
 }
 
 .course-topic-button .topic-status-chip {
-  grid-column: 2;
+  grid-column: 1;
   width: fit-content;
 }
 
@@ -868,6 +851,71 @@ main > * {
   gap: 10px;
 }
 
+.formula-chip-list,
+.key-idea-grid,
+.worked-example-summary-list,
+.show-try-panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.formula-chip-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.formula-chip-list li {
+  min-width: 0;
+  overflow-x: auto;
+  padding: 10px 12px;
+  border: 1px solid rgba(120, 53, 31, 0.18);
+  border-radius: var(--radius);
+  color: var(--accent-dark);
+  background: #fff4df;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.key-idea-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
+.key-idea-details {
+  padding: 0;
+  overflow: hidden;
+  background: #f6fbf7;
+}
+
+.key-idea-details summary {
+  min-height: 42px;
+  padding: 9px 11px;
+  color: var(--sage);
+}
+
+.key-idea-details p {
+  padding: 0 11px 11px;
+  color: var(--muted-strong);
+  font-size: 0.94rem;
+}
+
+.mini-worked-example {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(116, 84, 54, 0.18);
+  border-radius: var(--radius);
+  background: rgba(255, 250, 243, 0.82);
+}
+
+.mini-worked-example h3 {
+  margin: 0 0 8px;
+  color: var(--ink-warm);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
 .formula-list li {
   width: fit-content;
   max-width: 100%;
@@ -880,6 +928,7 @@ main > * {
 }
 
 .formula-list .math-text,
+.formula-chip-list .math-text,
 .plain-list .math-text,
 .phase-panel .math-text,
 .formula-panel .math-text,
@@ -893,6 +942,7 @@ main > * {
 }
 
 .formula-list .math-text .katex,
+.formula-chip-list .math-text .katex,
 .plain-list .math-text .katex,
 .phase-panel .math-text .katex,
 .formula-panel .math-text .katex,
@@ -1213,6 +1263,65 @@ main > * {
 
 .guided-study-actions {
   margin-top: 16px;
+}
+
+.show-try-panel {
+  margin-top: 14px;
+}
+
+.worked-example-block,
+.try-similar-block,
+.exam-tip-block {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(116, 84, 54, 0.18);
+  border-radius: var(--radius);
+  background: rgba(255, 250, 243, 0.82);
+}
+
+.try-similar-block {
+  background: #fff8ef;
+}
+
+.try-similar-block h4 {
+  margin: 0 0 12px;
+  color: var(--ink-warm);
+  line-height: 1.25;
+}
+
+.exam-tip-block {
+  padding: 12px 14px;
+  color: var(--muted-strong);
+  background: var(--sage-soft);
+}
+
+.exam-tip-block p {
+  margin: 0;
+}
+
+.move-forward-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.skill-check-transition {
+  display: grid;
+  gap: 6px;
+  min-width: min(100%, 220px);
+}
+
+.skill-check-transition p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.compact-worked-list {
+  margin-top: 10px;
 }
 
 .course-entry-grid {
@@ -1626,7 +1735,10 @@ main > * {
 
 .section-footer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
+  gap: 12px;
   margin-top: 18px;
 }
 

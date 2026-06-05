@@ -90,6 +90,17 @@ describe('static study routes', () => {
     expect(staticBuilderSource).not.toContain('Student trial warning');
   });
 
+  it('maps P1 Field Guide subtopics to exact Skill Check anchors with a graceful fallback', () => {
+    const staticBuilderSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticStudyScript = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(staticBuilderSource).toContain("getP1SkillCheckGroup(section.id) ? section.id : undefined");
+    expect(staticBuilderSource).toContain("label = 'Try 3 quick questions'");
+    expect(staticBuilderSource).toContain('p1SkillCheckGroupIdForSection(course, section)');
+    expect(staticBuilderSource).not.toContain('renderSkillCheckTransition(fromPagePath, practicePath, section.id)');
+    expect(staticStudyScript).toContain("'Try 3 quick questions'");
+  });
+
   it('declares P3-prefixed hub, Field Guide, Skill Check, Practice compatibility, and Exam Training pages for every topic', () => {
     for (const topic of STUDY_TOPICS) {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/index.html`);

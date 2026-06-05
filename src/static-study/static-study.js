@@ -567,7 +567,7 @@
           panel.hidden = !isActive;
         });
         if (previous) previous.disabled = bounded === 0;
-        if (next) next.textContent = bounded === tabs.length - 1 ? 'Try 3 quick questions' : 'Next idea';
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Try 3 quick questions' : 'Next subtopic';
         if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
         if (updateHash) {
           var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';
@@ -599,7 +599,10 @@
         next.addEventListener('click', function () {
           var current = activeIndex();
           if (current >= tabs.length - 1) {
-            if (practiceHref) window.location.href = practiceHref;
+            if (practiceHref) {
+              var phaseId = tabs[current]?.getAttribute('data-phase-tab') || '';
+              window.location.href = practiceHref + (phaseId ? '#' + encodeURIComponent(phaseId) : '');
+            }
             return;
           }
           setActive(current + 1, true);

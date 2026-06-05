@@ -7,11 +7,20 @@ import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses'
 import {
   getSeedTopicsForCourse,
   hasDraftSeedTopics,
+  type CourseSeedTopicSection,
   type CourseSeedTopic,
   type CourseSeedVisualTemplate,
 } from '../src/data/courseSeedContent';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
-import { getSkillCheckItemsForCourseTopic, skillCheckContractForItem, type SkillCheckItem } from '../src/data/skillCheckItems';
+import {
+  getP1SkillCheckGroup,
+  getP1SkillCheckGroupsForTopic,
+  getSkillCheckItemsForCourseTopic,
+  skillCheckContractForItem,
+  type P1SkillCheckGroup,
+  type P1SkillCheckGroupItem,
+  type SkillCheckItem,
+} from '../src/data/skillCheckItems';
 import { buildSkillChecklistTopicGroups, totalSkillChecklistItems, type SkillChecklistTopicGroup } from '../src/lib/skillChecklist';
 import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData, reviewedGeneratedPractice, type GeneratedPracticeItem } from '../src/lib/generatedPractice';
 import { normalizeQuestionBankWithDiagnostics } from '../src/lib/normalizeQuestionBank';
@@ -527,12 +536,150 @@ function renderSeedFormulaList(topic: CourseSeedTopic): string {
   `;
 }
 
+function renderFormulaChips(formulas: string[], fallbackFormula?: string): string {
+  const formulaItems = formulas.length ? formulas : (fallbackFormula ? [`$${fallbackFormula}$`] : []);
+  if (!formulaItems.length) return '';
+  return `
+    <ul class="formula-chip-list" aria-label="Key formulae">
+      ${formulaItems.map((formula) => `<li>${renderMathText(formula)}</li>`).join('')}
+    </ul>
+  `;
+}
+
+function keyIdeaLabel(idea: string): string {
+  const plain = cleanVisibleCopy(idea)
+    .replace(/\$[^$]+\$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (plain.length <= 34) return plain || 'Key idea';
+  const words = plain.split(' ').slice(0, 4).join(' ');
+  return words ? `${words}...` : 'Key idea';
+}
+
+function renderKeyIdeaDetails(ideas: string[]): string {
+  if (!ideas.length) return '';
+  return `
+    <div class="key-idea-grid" aria-label="Key ideas">
+      ${ideas.map((idea) => `
+        <details class="key-idea-details">
+          <summary>${renderMathText(keyIdeaLabel(idea))}</summary>
+          <p>${renderMathText(idea)}</p>
+        </details>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderKnowledgeCard(formulas: string[], ideas: string[], fallbackFormula?: string): string {
+  return `
+    <article class="summary-card knowledge-card">
+      <h2>What you need to know</h2>
+      ${renderFormulaChips(formulas, fallbackFormula)}
+      ${renderKeyIdeaDetails(ideas.slice(0, 5))}
+    </article>
+  `;
+}
+
 interface GuidedStudyPhase {
   id: string;
   label: string;
   title: string;
   eyebrow: string;
   body: string;
+}
+
+interface SeedSubtopicDetails {
+  goal: string;
+  method: string;
+  example: string;
+  mistake: string;
+  takeaway: string;
+  prompt: string;
+}
+
+function stripSeedSupportPrefix(value: string | undefined): string {
+  return cleanVisibleCopy(String(value ?? '')
+    .replace(/^(?:Learning goal|Key method|Draft worked example|Worked example|Common mistake|Quick takeaway|Practice prompt|Draft\/generated practice|Skill Check):\s*/i, ''))
+    .trim();
+}
+
+function labeledSeedBullet(section: CourseSeedTopicSection, labels: string[]): string {
+  const match = section.bullets.find((bullet) => {
+    const normalized = bullet.toLowerCase();
+    return labels.some((label) => normalized.startsWith(`${label.toLowerCase()}:`));
+  });
+  return stripSeedSupportPrefix(match);
+}
+
+function seedSubtopicDetails(section: CourseSeedTopicSection, topic: CourseSeedTopic, index: number): SeedSubtopicDetails {
+  const fallbackBullet = (offset: number) => stripSeedSupportPrefix(section.bullets[offset]);
+  return {
+    goal: labeledSeedBullet(section, ['Learning goal']) || cleanVisibleCopy(section.purpose),
+    method: labeledSeedBullet(section, ['Key method']) || fallbackBullet(0) || topic.workedMethod[0] || '',
+    example: labeledSeedBullet(section, ['Draft worked example', 'Worked example']) || fallbackBullet(1) || topic.selfChecks[index % Math.max(1, topic.selfChecks.length)] || '',
+    mistake: labeledSeedBullet(section, ['Common mistake']) || topic.commonMistakes[index % Math.max(1, topic.commonMistakes.length)] || '',
+    takeaway: labeledSeedBullet(section, ['Quick takeaway']) || section.purpose || '',
+    prompt: stripSeedSupportPrefix(section.practicePrompts?.[0]) || topic.selfChecks[index % Math.max(1, topic.selfChecks.length)] || topic.practiceHook,
+  };
+}
+
+function seedSubtopicDisplayTitle(topic: CourseSeedTopic, section: CourseSeedTopicSection): string {
+  if (topic.id === 'p1-series' && section.title === 'Arithmetic progressions') return 'AP terms and sums';
+  if (topic.id === 'p1-series' && section.title === 'Geometric progressions') return 'GP terms and sums';
+  return section.title;
+}
+
+function renderMethodList(lines: string[]): string {
+  return `
+    <ol class="worked-list compact-worked-list">
+      ${lines.filter(Boolean).map((line) => `<li>${renderMathText(line)}</li>`).join('')}
+    </ol>
+  `;
+}
+
+function renderSeedWorkedExamplesCard(topic: CourseSeedTopic): string {
+  const examples = topic.fieldGuideSections.slice(0, 3).map((section, index) => ({
+    section,
+    details: seedSubtopicDetails(section, topic, index),
+  }));
+  return `
+    <article class="summary-card worked-example-summary">
+      <h2>Worked examples</h2>
+      <div class="worked-example-summary-list">
+        ${examples.map(({ section, details }, index) => `
+          <section class="mini-worked-example">
+            <p class="eyebrow">Example ${index + 1}</p>
+            <h3>${escapeHtml(seedSubtopicDisplayTitle(topic, section))}</h3>
+            <p class="prompt">${renderMathText(details.example)}</p>
+            ${renderMethodList([details.method])}
+            <p class="result"><strong>Answer/check:</strong> ${renderMathText(details.takeaway)}</p>
+          </section>
+        `).join('')}
+      </div>
+    </article>
+  `;
+}
+
+function renderP3WorkedExamplesCard(fieldGuideTopics: FieldGuideTopic[]): string {
+  const examples = fieldGuideTopics
+    .flatMap((topic) => topic.examples.map((example) => ({ topic, example })))
+    .slice(0, 3);
+  return `
+    <article class="summary-card worked-example-summary">
+      <h2>Worked examples</h2>
+      <div class="worked-example-summary-list">
+        ${examples.map(({ topic, example }, index) => `
+          <section class="mini-worked-example">
+            <p class="eyebrow">Example ${index + 1}</p>
+            <h3>${escapeHtml(topic.title)}</h3>
+            <p class="prompt">${renderMathText(example.prompt)}</p>
+            ${renderMethodList(example.workedLines.slice(0, 3))}
+            <p class="result"><strong>Answer:</strong> ${renderMathText(example.result)}</p>
+          </section>
+        `).join('')}
+      </div>
+    </article>
+  `;
 }
 
 function renderGuidedStudyPhaseList(items: string[], ordered = false): string {
@@ -545,62 +692,68 @@ function renderGuidedStudyPhaseList(items: string[], ordered = false): string {
   `;
 }
 
-function guidedStudyPhases(course: CourseMetadata, topic: CourseSeedTopic, practicePath: string, examTrainingPath: string): GuidedStudyPhase[] {
-  const practicePrompts = topic.genericPracticePrompts?.length
-    ? renderGuidedStudyPhaseList(topic.genericPracticePrompts.slice(0, 3))
-    : renderGuidedStudyPhaseList(topic.selfChecks.slice(0, 2));
+function renderSkillCheckTransition(fromPagePath: string, practicePath: string, groupId?: string, label = 'Try 3 quick questions'): string {
+  const href = `${hrefToPage(fromPagePath, practicePath)}${groupId ? `#${escapeAttr(groupId)}` : ''}`;
+  return `
+    <div class="skill-check-transition">
+      <a class="button primary-button" href="${href}">${escapeHtml(label)}</a>
+      <p>Opens 3 quick questions on this skill.</p>
+    </div>
+  `;
+}
 
-  return [
-    {
-      id: 'understand',
-      label: 'Understand',
-      title: 'Core understanding',
-      eyebrow: 'Start here',
-      body: renderGuidedStudyPhaseList(topic.keyIdeas),
-    },
-    {
-      id: 'method',
-      label: 'Method',
-      title: 'Method pattern',
-      eyebrow: 'Work the route',
-      body: renderGuidedStudyPhaseList(topic.workedMethod, true),
-    },
-    {
-      id: 'mistakes',
-      label: 'Mistakes',
-      title: 'Watch for these',
-      eyebrow: 'Avoid easy mark losses',
-      body: renderGuidedStudyPhaseList(topic.commonMistakes),
-    },
-    {
-      id: 'self-check',
-      label: 'Self-check',
-      title: 'Before practice',
-      eyebrow: 'Quick check',
-      body: renderGuidedStudyPhaseList(topic.selfChecks),
-    },
-    {
-      id: 'exam-focus',
-      label: 'Exam focus',
-      title: 'What this looks like in papers',
-      eyebrow: 'Paper habits',
-      body: `${renderGuidedStudyPhaseList(topic.examStyle)}<p>${renderMathText(topic.examTrainingHook)}</p>`,
-    },
-    {
-      id: 'practice',
-      label: 'Practice',
-      title: 'Practice',
-      eyebrow: `${course.shortName} next step`,
-      body: `
-        <p>${renderMathText(topic.practiceHook)}</p>
-        ${practicePrompts}
-        <div class="button-row guided-study-actions">
-          ${routeLink(seedTopicPagePath(course, topic), practicePath, 'Try 3 quick questions', 'button primary-button')}
-          ${routeLink(seedTopicPagePath(course, topic), examTrainingPath, 'One exam-style question', 'button secondary-button')}
-        </div>
-      `,
-    },
-  ];
+function p1SkillCheckGroupIdForSection(course: CourseMetadata, section: CourseSeedTopicSection): string | undefined {
+  if (course.id !== 'p1') return undefined;
+  return getP1SkillCheckGroup(section.id) ? section.id : undefined;
+}
+
+function renderSeedSubtopicPanel(
+  course: CourseMetadata,
+  topic: CourseSeedTopic,
+  section: CourseSeedTopicSection,
+  index: number,
+  practicePath: string,
+  fromPagePath: string,
+): string {
+  const details = seedSubtopicDetails(section, topic, index);
+  const nextSection = topic.fieldGuideSections[index + 1];
+  const nextTitle = nextSection ? seedSubtopicDisplayTitle(topic, nextSection) : '';
+  return `
+    <div class="show-try-panel">
+      <section class="worked-example-block">
+        <p class="eyebrow">Worked example</p>
+        <p class="prompt">${renderMathText(details.example)}</p>
+        ${renderMethodList([details.method])}
+        <p class="result"><strong>Check:</strong> ${renderMathText(details.takeaway)}</p>
+      </section>
+      <section class="try-similar-block">
+        <p class="eyebrow">Try a similar one</p>
+        <h4>${renderMathText(details.prompt)}</h4>
+        <details>
+          <summary>Reveal/check the method</summary>
+          <p><strong>Use:</strong> ${renderMathText(details.method)}</p>
+          <p><strong>Watch for:</strong> ${renderMathText(details.mistake)}</p>
+        </details>
+      </section>
+      <section class="exam-tip-block">
+        <p><strong>Exam tip:</strong> ${renderMathText(topic.examStyle[index % Math.max(1, topic.examStyle.length)] ?? details.goal)}</p>
+      </section>
+      <footer class="move-forward-block">
+        ${nextSection ? `<a class="button secondary-button" href="#${escapeAttr(nextSection.id)}">Next subtopic: ${escapeHtml(nextTitle)}</a>` : ''}
+        ${renderSkillCheckTransition(fromPagePath, practicePath, p1SkillCheckGroupIdForSection(course, section))}
+      </footer>
+    </div>
+  `;
+}
+
+function guidedStudyPhases(course: CourseMetadata, topic: CourseSeedTopic, practicePath: string, fromPagePath: string): GuidedStudyPhase[] {
+  return topic.fieldGuideSections.map((section, index) => ({
+    id: section.id,
+    label: seedSubtopicDisplayTitle(topic, section),
+    title: seedSubtopicDisplayTitle(topic, section),
+    eyebrow: `Subtopic ${index + 1} of ${topic.fieldGuideSections.length}`,
+    body: renderSeedSubtopicPanel(course, topic, section, index, practicePath, fromPagePath),
+  }));
 }
 
 function renderGuidedStudy(
@@ -610,19 +763,20 @@ function renderGuidedStudy(
   examTrainingPath: string,
   fromPagePath = seedTopicPagePath(course, topic),
 ): string {
-  const phases = guidedStudyPhases(course, topic, practicePath, examTrainingPath);
+  void examTrainingPath;
+  const phases = guidedStudyPhases(course, topic, practicePath, fromPagePath);
   return `
     <section class="guided-study-card" data-guided-study data-practice-href="${hrefToPage(fromPagePath, practicePath)}" aria-labelledby="guided-study-title">
       <div class="guided-study-header">
         <div>
-          <p class="eyebrow">Study path</p>
-          <h2 id="guided-study-title">Learn ${escapeHtml(topic.shortTitle)} step by step</h2>
-          <p>One idea is visible at a time. Open the step list only when you need to jump.</p>
+          <p class="eyebrow">Field Guide</p>
+          <h2 id="guided-study-title">Learn ${escapeHtml(topic.shortTitle)} by subtopic</h2>
+          <p>See one worked example, try a similar one, then move to the next skill.</p>
         </div>
         <span class="guided-study-progress" data-guided-progress aria-live="polite">1 of ${phases.length}</span>
       </div>
       <details class="phase-jump-details">
-        <summary>Choose another step</summary>
+        <summary>Choose another subtopic</summary>
         <div class="phase-tab-list" role="tablist" aria-label="${escapeAttr(topic.title)} study phases">
           ${phases.map((phase, index) => `
             <button
@@ -650,21 +804,16 @@ function renderGuidedStudy(
             <p class="eyebrow">${escapeHtml(phase.eyebrow)}</p>
             <h3>${escapeHtml(phase.title)}</h3>
             ${phase.body}
-            ${phase.id !== 'practice' ? `
-              <div class="button-row guided-study-actions">
-                ${routeLink(fromPagePath, practicePath, 'Try 3 quick questions', 'button primary-button')}
-              </div>
-            ` : ''}
           </article>
         `).join('')}
       </div>
       <div class="guided-study-footer">
         <button class="button secondary-button" type="button" data-guided-prev disabled>Back</button>
-        <button class="button primary-button" type="button" data-guided-next>Next</button>
+        <button class="button primary-button" type="button" data-guided-next>Next subtopic</button>
       </div>
     </section>
     <noscript>
-      <p class="empty-state">JavaScript is off, so this page shows the first study step. Use the Practice button above when you are ready.</p>
+      <p class="empty-state">JavaScript is off, so all Field Guide subtopics remain readable. Use the Skill Check button when you are ready.</p>
     </noscript>
   `;
 }
@@ -855,12 +1004,6 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
   const topicButtons = isP3
     ? STUDY_TOPICS.map((topic) => `
       <a class="course-topic-button" href="${hrefToPage(pagePath, fieldGuidePagePath(topic))}" aria-label="Start ${escapeAttr(topic.name)} Field Guide">
-        <span class="topic-card-visual" aria-hidden="true">
-          <svg viewBox="0 0 92 54" focusable="false">
-            <path d="M8 42c16-34 30-34 44 0s22 16 32-20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="5" />
-            <path d="M9 43h74M18 47V8" stroke="currentColor" stroke-linecap="round" stroke-opacity="0.38" stroke-width="2" />
-          </svg>
-        </span>
         <span class="topic-card-title">${escapeHtml(topic.name)}</span>
         <small>${escapeHtml(topic.description)}</small>
         <span class="topic-card-formula">${renderMathText(`$${topic.headerFormula}$`)}</span>
@@ -870,12 +1013,6 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
     `).join('')
     : seedTopics.map((topic) => `
       <a class="course-topic-button" href="${hrefToPage(pagePath, seedFieldGuidePagePath(course, topic))}" aria-label="Start ${escapeAttr(topic.title)} Field Guide">
-        <span class="topic-card-visual" aria-hidden="true">
-          <svg viewBox="0 0 92 54" focusable="false">
-            <path d="M8 42c16-34 30-34 44 0s22 16 32-20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="5" />
-            <path d="M9 43h74M18 47V8" stroke="currentColor" stroke-linecap="round" stroke-opacity="0.38" stroke-width="2" />
-          </svg>
-        </span>
         <span class="topic-card-title">${escapeHtml(topic.title)}</span>
         <small>${escapeHtml(topic.syllabusRef)}</small>
         <span class="topic-card-formula">${renderMathText(`$${topic.headerFormula}$`)}</span>
@@ -1004,16 +1141,8 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
     )}
     <p class="micro-win">You’re in. We’ll take this one step at a time.</p>
     <section class="topic-overview-grid">
-      <article class="summary-card">
-        <h2>Overview</h2>
-        <p>${escapeHtml(topic.description)}</p>${renderSeedReviewStatus(topic)}
-        <h3>Key formulae</h3>
-        ${renderSeedFormulaList(topic)}
-      </article>
-      <article class="summary-card">
-        <h2>What you need to be able to do</h2>
-        ${renderPlainList(topic.studentGoals.slice(0, 5))}
-      </article>
+      ${renderKnowledgeCard(topic.formulas, topic.keyIdeas, topic.headerFormula)}
+      ${renderSeedWorkedExamplesCard(topic)}
     </section>
     ${renderGuidedStudy(course, topic, practicePath, examTrainingPath, pagePath)}
   `;
@@ -1040,18 +1169,15 @@ function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic
       `${course.shortName} Field Guide`,
     )}
     <section class="topic-overview-grid field-guide-overview-grid">
-      <article class="summary-card">
-        <h2>Overview</h2>
-        <p>${escapeHtml(topic.description)}</p>
-        <h3>Key formulae</h3>
-        ${renderSeedFormulaList(topic)}
-      </article>
-      <article class="summary-card">
-        <h2>What you need to be able to do</h2>
-        ${renderPlainList(topic.studentGoals.slice(0, 5))}
-      </article>
+      ${renderKnowledgeCard(topic.formulas, topic.keyIdeas, topic.headerFormula)}
+      ${renderSeedWorkedExamplesCard(topic)}
     </section>
     ${renderGuidedStudy(course, topic, practicePath, examTrainingPath, pagePath)}
+    <section class="next-step-card">
+      <h2>Next step</h2>
+      <p>Ready to leave the Field Guide and check the method?</p>
+      ${renderSkillCheckTransition(pagePath, practicePath)}
+    </section>
   `;
   return renderPage({
     pagePath,
@@ -1435,25 +1561,25 @@ function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopi
         ${example.workedLines.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
       </ol>
       <p class="result"><strong>Result:</strong> ${renderMathText(example.result)}</p>
+      <section class="try-block">
+        <h4>Try a similar one</h4>
+        <p>${renderMathText(example.tryPrompt)}</p>
+        <ul>
+          ${example.tryScaffold.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
+        </ul>
+        ${example.tryWorkedLines?.length ? `
+          <details>
+            <summary>Reveal/check the worked route</summary>
+            <ol>
+              ${example.tryWorkedLines.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
+            </ol>
+            ${example.tryResult ? `<p><strong>Try result:</strong> ${renderMathText(example.tryResult)}</p>` : ''}
+          </details>
+        ` : ''}
+      </section>
       <details class="lesson-support-details">
-        <summary>Optional support: method table, guided try, and checks</summary>
+        <summary>Extra method table and checks</summary>
         ${renderPatternTable(example)}
-        <section class="try-block">
-          <h4>Guided try</h4>
-          <p>${renderMathText(example.tryPrompt)}</p>
-          <ul>
-            ${example.tryScaffold.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
-          </ul>
-          ${example.tryWorkedLines?.length ? `
-            <details>
-              <summary>Show worked route</summary>
-              <ol>
-                ${example.tryWorkedLines.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
-              </ol>
-              ${example.tryResult ? `<p><strong>Try result:</strong> ${renderMathText(example.tryResult)}</p>` : ''}
-            </details>
-          ` : ''}
-        </section>
         <ul class="takeaway-list" aria-label="${escapeAttr(topic.title)} takeaways">
           ${example.takeaway.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
         </ul>
@@ -1492,7 +1618,10 @@ function renderFieldGuideTopic(
       </header>
       ${topic.examples.map((example, exampleIndex) => renderFieldGuideExample(topic, example, exampleIndex)).join('')}
       <footer class="section-footer">
-        <a class="button primary-button" href="${skillCheckHref}">Try 3 quick questions</a>
+        <div class="skill-check-transition">
+          <a class="button primary-button" href="${skillCheckHref}">Next: Skill Check</a>
+          <p>Opens 3 quick questions on this skill.</p>
+        </div>
         ${nextTopicId ? `<a class="button secondary-button" href="#${escapeAttr(nextTopicId)}">Next idea</a>` : ''}
       </footer>
     </article>
@@ -1574,22 +1703,14 @@ function renderFieldGuidePage(
       ${routeLink(pagePath, practicePath, 'Try 3 quick questions', 'button primary-button')}`,
     )}
     <section class="topic-overview-grid field-guide-overview-grid">
-      <article class="summary-card">
-        <h2>Overview</h2>
-        <p>${escapeHtml(topic.description)}</p>
-        <h3>Key formulae</h3>
-        <div class="formula-list single-formula-list">${renderInlineFormula(topic.headerFormula)}</div>
-      </article>
-      <article class="summary-card">
-        <h2>What you need to be able to do</h2>
-        ${renderPlainList(fieldGuideTopics.slice(0, 5).map((item) => cleanVisibleCopy(item.purpose)))}
-      </article>
+      ${renderKnowledgeCard([`$${topic.headerFormula}$`], fieldGuideTopics.slice(0, 5).map((item) => cleanVisibleCopy(item.purpose)), topic.headerFormula)}
+      ${renderP3WorkedExamplesCard(fieldGuideTopics)}
     </section>
     ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
     <section class="next-step-card">
       <h2>Next step</h2>
-      <p>Want to lock this in with 3 quick questions?</p>
-      ${routeLink(pagePath, practicePath, 'Try 3 quick questions', 'button primary-button')}
+      <p>Ready to leave the Field Guide and check the method?</p>
+      ${renderSkillCheckTransition(pagePath, practicePath)}
     </section>
   `;
   return renderPage({
@@ -1721,11 +1842,88 @@ function renderDraftSkillCheckVisual(item: SkillCheckItem, templatesById: Map<st
   return renderSeedVisualTemplates([template]);
 }
 
+function renderSeedSkillCheckCard(
+  item: SkillCheckItem,
+  templatesById: Map<string, CourseSeedVisualTemplate>,
+  topicTitle: string,
+  label = 'Skill Check',
+): string {
+  return `
+    <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}">
+      <p class="eyebrow">${escapeHtml(label)}</p>
+      <h3>${renderMathText(item.prompt)}</h3>
+      ${renderDraftSkillCheckVisual(item, templatesById)}
+      ${renderSkillCheckAnswerInput(item)}
+      <details>
+        <summary>Show answer and worked route</summary>
+        <div class="support-details"><strong>Expected answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
+        <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
+        ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
+        ${item.hints.firstStep ? `<p><strong>First step:</strong> ${renderMathText(item.hints.firstStep)}</p>` : ''}
+        ${item.commonMistake ? `<p><strong>Common mistake / feedback:</strong> ${renderMathText(item.commonMistake)}</p>` : ''}
+        <ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
+      </details>
+      <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topicTitle)}" data-prompt="${escapeAttr(item.prompt)}">
+        I tried this
+      </button>
+    </article>
+  `;
+}
+
+function p1GroupItems(group: P1SkillCheckGroup, itemById: Map<string, SkillCheckItem>): Array<{ item: SkillCheckItem; meta: P1SkillCheckGroupItem }> {
+  return group.defaultItems
+    .map((meta) => {
+      const item = itemById.get(meta.itemId);
+      return item ? { item, meta } : undefined;
+    })
+    .filter((entry): entry is { item: SkillCheckItem; meta: P1SkillCheckGroupItem } => Boolean(entry));
+}
+
+function renderP1SkillCheckGroup(
+  group: P1SkillCheckGroup,
+  itemById: Map<string, SkillCheckItem>,
+  templatesById: Map<string, CourseSeedVisualTemplate>,
+  topicTitle: string,
+): string {
+  const defaultItems = p1GroupItems(group, itemById);
+  if (!defaultItems.length) return '';
+  const optionalSets = (group.optionalSets ?? [])
+    .map((set) => ({
+      ...set,
+      items: set.itemIds.map((itemId) => itemById.get(itemId)).filter((item): item is SkillCheckItem => Boolean(item)),
+    }))
+    .filter((set) => set.items.length);
+  return `
+    <article class="practice-topic" id="${escapeAttr(group.groupId)}" data-skill-check-group="${escapeAttr(group.groupId)}">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">3 quick checks</p>
+          <h2>${escapeHtml(group.label)}</h2>
+          <p>${escapeHtml(group.purpose)}</p>
+        </div>
+      </header>
+      <div class="practice-card-stack">
+        ${defaultItems.map(({ item, meta }) => renderSeedSkillCheckCard(item, templatesById, topicTitle, meta.label)).join('')}
+        ${optionalSets.flatMap((set) => (
+          set.items.map((item) => renderSeedSkillCheckCard(item, templatesById, topicTitle, set.label))
+        )).join('')}
+      </div>
+    </article>
+  `;
+}
+
 function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTopic): string {
   const items = getSkillCheckItemsForCourseTopic(course.id, topic.id);
   if (!items.length) return '';
-  const defaultItems = items.slice(0, 3);
   const templatesById = seedVisualTemplatesById(topic);
+  const p1Groups = course.id === 'p1' ? getP1SkillCheckGroupsForTopic(topic.id) : [];
+  if (p1Groups.length) {
+    const itemById = new Map(items.map((item) => [item.itemId, item]));
+    return p1Groups
+      .map((group) => renderP1SkillCheckGroup(group, itemById, templatesById, topic.title))
+      .join('');
+  }
+  const defaultItems = items.slice(0, 3);
   return `
     <article class="practice-topic" id="skill-checks">
       <header class="topic-section-header">
@@ -1736,26 +1934,7 @@ function renderSeedDraftSkillChecks(course: CourseMetadata, topic: CourseSeedTop
         </div>
       </header>
       <div class="practice-card-stack">
-        ${defaultItems.map((item) => `
-          <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}">
-            <p class="eyebrow">Skill Check</p>
-            <h3>${renderMathText(item.prompt)}</h3>
-            ${renderDraftSkillCheckVisual(item, templatesById)}
-            ${renderSkillCheckAnswerInput(item)}
-            <details>
-              <summary>Show answer and worked route</summary>
-              <div class="support-details"><strong>Expected answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
-              <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
-              ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
-              ${item.hints.firstStep ? `<p><strong>First step:</strong> ${renderMathText(item.hints.firstStep)}</p>` : ''}
-              ${item.commonMistake ? `<p><strong>Common mistake / feedback:</strong> ${renderMathText(item.commonMistake)}</p>` : ''}
-              <ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-            </details>
-            <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topic.title)}" data-prompt="${escapeAttr(item.prompt)}">
-              I tried this
-            </button>
-          </article>
-        `).join('')}
+        ${defaultItems.map((item) => renderSeedSkillCheckCard(item, templatesById, topic.title)).join('')}
       </div>
     </article>
   `;

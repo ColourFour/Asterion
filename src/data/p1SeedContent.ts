@@ -83,7 +83,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Quadratics',
     shortTitle: 'Quadratics',
     description: 'Solve and interpret quadratic equations, inequalities, discriminants, and graphs of quadratic functions.',
-    headerFormula: 'ax^2+bx+c=0,\\quad D=b^2-4ac',
+    headerFormula: 'y=ax^2+bx+c',
     formulas: ['$x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$', '$D=b^2-4ac$', '$y=a(x-h)^2+k$'],
     studentGoals: [
       'Choose a suitable solving method for a quadratic equation.',
@@ -177,7 +177,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Functions and Transformations',
     shortTitle: 'Functions',
     description: 'Work with composite functions, inverse functions, and graph transformations including translations, reflections, and stretches.',
-    headerFormula: 'fg(x)=f(g(x)),\\quad f^{-1}(x),\\quad y=f(x-a)+b',
+    headerFormula: 'f(x-a)+b',
     formulas: ['$fg(x)=f(g(x))$', '$f^{-1}(f(x))=x$', '$y=f(x-a)+b$'],
     studentGoals: [
       'Apply function notation in the correct order.',
@@ -271,7 +271,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Coordinate Geometry',
     shortTitle: 'Coordinate Geometry',
     description: 'Use gradients, distance, midpoint, straight-line equations, circle equations, tangents, and intersections in coordinate geometry.',
-    headerFormula: 'm=\\frac{y_2-y_1}{x_2-x_1},\\quad d=\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2},\\quad (x-a)^2+(y-b)^2=r^2',
+    headerFormula: 'm=\\frac{y_2-y_1}{x_2-x_1}',
     formulas: [
       '$m=\\frac{y_2-y_1}{x_2-x_1}$',
       '$M=\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2}\\right)$',
@@ -433,7 +433,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Trigonometry',
     shortTitle: 'Trigonometry',
     description: 'Use exact values, trigonometric graphs, equations, and identities.',
-    headerFormula: '\\sin^2x+\\cos^2x=1,\\quad \\tan x=\\frac{\\sin x}{\\cos x}',
+    headerFormula: '\\sin^2x+\\cos^2x=1',
     formulas: ['$\\sin^2x+\\cos^2x=1$', '$\\tan x=\\frac{\\sin x}{\\cos x}$', '$\\sin 30^\\circ=\\frac12$'],
     studentGoals: [
       'Recall exact values for common angles.',
@@ -517,7 +517,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Binomial Expansion',
     shortTitle: 'Binomial',
     description: 'Expand positive-integer binomials and handle more complex coefficient or substitution questions.',
-    headerFormula: '(a+b)^n,\\quad {}^nC_r a^{n-r}b^r',
+    headerFormula: '(a+b)^n',
     formulas: ['$(a+b)^n=\\sum_{r=0}^{n}{}^nC_r a^{n-r}b^r$', '${}^nC_r=\\frac{n!}{r!(n-r)!}$'],
     studentGoals: [
       'Expand binomials with positive integer powers.',
@@ -581,7 +581,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Series',
     shortTitle: 'Series',
     description: 'Spot sequence patterns, then use the right formula to find terms or sums quickly.',
-    headerFormula: 'u_n=a+(n-1)d,\\quad S_n=\\frac{a(1-r^n)}{1-r}',
+    headerFormula: 'u_n=a+(n-1)d',
     formulas: [
       '$u_n=a+(n-1)d$',
       '$S_n=\\frac{n}{2}\\left[2a+(n-1)d\\right]$',
@@ -665,7 +665,7 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     title: 'Differentiation',
     shortTitle: 'Differentiation',
     description: 'Use derivatives for gradients, polynomial differentiation, chain rule, second derivative, tangents, normals, stationary points, and rates of change.',
-    headerFormula: '\\frac{d}{dx}x^n=nx^{n-1},\\quad f\\prime(x)=0',
+    headerFormula: '\\frac{d}{dx}x^n=nx^{n-1}',
     formulas: ['$\\frac{d}{dx}x^n=nx^{n-1}$', '$m_{\\text{normal}}=-1/m_{\\text{tangent}}$', '$f\\prime(x)=0$'],
     studentGoals: [
       'Differentiate polynomials and simple chained powers.',
@@ -778,24 +778,24 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     syllabusRef: '9709 P1 1.9',
     title: 'Integration',
     shortTitle: 'Integration',
-    description: 'Use integration for antiderivatives, constants, definite integrals, bounded areas, improper integrals, and volumes of revolution.',
+    description: 'Use integration for antiderivatives, constants, definite integrals, and bounded areas.',
     headerFormula: '\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C',
-    formulas: ['$\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C$', '$\\int_a^b f(x)\\,dx=F(b)-F(a)$', '$V=\\pi\\int_a^b y^2\\,dx$'],
+    formulas: ['$\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C$', '$\\int_a^b f(x)\\,dx=F(b)-F(a)$', '$\\text{Area}=\\int_a^b (\\text{upper}-\\text{lower})\\,dx$'],
     studentGoals: [
       'Integrate powers and include constants when required.',
       'Evaluate definite integrals and areas between curves.',
-      'Recognise teacher-guided draft treatment of improper integrals and volumes of revolution without treating them as reviewed assessment evidence.',
+      'Set up area questions by deciding which curve is above the other.',
     ],
     keyIdeas: [
       'Integration reverses differentiation for power functions.',
       'Definite integrals are signed unless interpreted as area.',
-      'Some listed advanced applications need syllabus-scope audit before final use.',
+      'Area questions need upper curve minus lower curve over the correct interval.',
     ],
     workedMethod: [
       'Increase each power by one and divide by the new power.',
       'Add $C$ for indefinite integrals and use a given point to find it.',
       'For definite integrals, substitute upper and lower limits into the antiderivative.',
-      'For areas and teacher-guided draft volume checks, set up the geometric expression before integrating.',
+      'For areas, set up the geometric expression before integrating.',
     ],
     commonMistakes: [
       'Forgetting $+C$ in indefinite integration.',
@@ -809,10 +809,10 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
     ],
     examStyle: [
       'Expect reverse-power-rule questions followed by constants, limits, or area setup.',
-      'Improper-integral and volume examples are marked draft until P1 syllabus scope is audited.',
+      'Area questions usually credit the setup before the arithmetic.',
     ],
-    practiceHook: 'Draft Skill Checks cover every listed integration subtopic, with improper-integral and volume entries marked as teacher-guided draft support only.',
-    examTrainingHook: 'Later review must confirm whether improper integrals and volumes of revolution belong in this P1 course contract before they are treated as assessment-ready.',
+    practiceHook: 'Skill Checks cover basic integration, constants, definite integrals, and area setup.',
+    examTrainingHook: 'In exam questions, show the antiderivative and the substitution into limits or area expression.',
     subtopics: [
       {
         id: 'basic-integration',
@@ -853,26 +853,6 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
         mistake: 'Using lower minus upper and getting negative area.',
         takeaway: 'Area setup starts with deciding which curve is on top.',
         prompt: 'Set up or evaluate a simple area-between-curves integral.',
-      },
-      {
-        id: 'improper-integrals',
-        title: 'Improper integrals (teacher-guided draft)',
-        goal: 'Recognise the limit setup for an infinite bound as teacher-guided draft support.',
-        method: 'Replace the problem bound with a variable limit before any evaluation; do not treat this as reviewed P1 assessment evidence yet.',
-        example: 'Teacher-guided draft: treat $\\int_1^\\infty \\frac1{x^2}\\,dx$ as $\\lim_{b\\to\\infty}\\int_1^b x^{-2}\\,dx$ before evaluating.',
-        mistake: 'Substituting infinity like an ordinary number, or assuming this draft support item is reviewed exam evidence.',
-        takeaway: 'Improper means limit first; this section still needs course-contract review.',
-        prompt: 'Use a teacher-guided draft limit setup for an improper integral.',
-      },
-      {
-        id: 'volumes-revolution',
-        title: 'Volumes of revolution (teacher-guided draft)',
-        goal: 'Recognise the setup for a rotation volume as teacher-guided draft support.',
-        method: 'For rotation around the x-axis, use the draft setup $V=\\pi\\int_a^b y^2\\,dx$ only as teacher-guided support until scope is reviewed.',
-        example: 'Teacher-guided draft: rotating $y=x$ from $0$ to $2$ starts with $V=\\pi\\int_0^2x^2\\,dx$.',
-        mistake: 'Forgetting to square $y$, or assuming this draft support item is reviewed exam evidence.',
-        takeaway: 'Volume of revolution uses circular-slice setup, but this section still needs course-contract review.',
-        prompt: 'Set up a teacher-guided draft volume of revolution integral.',
       },
     ],
   }),

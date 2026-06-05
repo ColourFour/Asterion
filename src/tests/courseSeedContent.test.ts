@@ -189,8 +189,6 @@ describe('draft course seed content', () => {
         'Constant of integration',
         'Definite integrals',
         'Area bounded between curves',
-        'Improper integrals (teacher-guided draft)',
-        'Volumes of revolution (teacher-guided draft)',
       ]],
     ]);
 
@@ -202,8 +200,8 @@ describe('draft course seed content', () => {
       expect(topic.genericPracticePrompts?.every((prompt) => prompt.includes('Draft/generated practice'))).toBe(true);
       expect(topic.fieldGuideSections.map((section) => section.title)).toEqual(expectedSubtopics.get(topic.title));
       if (topic.title === 'Integration') {
-        expect(topic.practiceHook).toContain('teacher-guided draft support only');
-        expect(topic.examTrainingHook).toContain('assessment-ready');
+        expect(topic.practiceHook).toContain('basic integration, constants, definite integrals, and area setup');
+        expect(topic.examTrainingHook).toContain('antiderivative');
       }
       if (topic.title === 'Coordinate Geometry') {
         expect(topic.formulas.join(' ')).toContain('d=\\sqrt');
