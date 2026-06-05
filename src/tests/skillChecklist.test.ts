@@ -392,7 +392,8 @@ describe('Skill Checklist grouping', () => {
     const sectionById = new Map(p1Topics.flatMap((topic) => (
       topic.fieldGuideSections.map((section) => [section.id, { topic, section }] as const)
     )));
-    const outOfScopeSignals = /improper|volume of revolution|by parts|partial fractions|product rule|quotient rule|implicit|parametric|vectors?|momentum|force|probability|normal distribution/i;
+    const absentLocalFieldGuideSignals = /improper|volume of revolution/i;
+    const otherCourseOrAdvancedSignals = /by parts|partial fractions|product rule|quotient rule|implicit|parametric|vectors?|momentum|force|probability|normal distribution/i;
 
     for (const topic of p1Topics) {
       const groups = getP1SkillCheckGroupsForTopic(topic.id);
@@ -436,11 +437,31 @@ describe('Skill Checklist grouping', () => {
         item.commonMistake ?? '',
         ...item.workedRoute,
       ].join(' ');
-      expect(studentFacingAndSupportCopy, item.itemId).not.toMatch(outOfScopeSignals);
+      expect(studentFacingAndSupportCopy, item.itemId).not.toMatch(absentLocalFieldGuideSignals);
+      expect(studentFacingAndSupportCopy, item.itemId).not.toMatch(otherCourseOrAdvancedSignals);
     }
 
     expect(sectionById.has('p1-integration-improper-integrals')).toBe(false);
     expect(sectionById.has('p1-integration-volumes-revolution')).toBe(false);
+  });
+
+  it('keeps official-P1 Integration extensions hidden until local Field Guide support exists', () => {
+    const p1ItemsById = new Map(
+      AUTHORED_SKILL_CHECK_ITEMS
+        .filter((item) => item.courseId === 'p1')
+        .map((item) => [item.itemId, item]),
+    );
+    const p1GroupIds = new Set(P1_SKILL_CHECK_GROUPS.map((group) => group.groupId));
+    const p1FieldGuideSectionIds = new Set(
+      getSeedTopicsForCourse('p1').flatMap((topic) => topic.fieldGuideSections.map((section) => section.id)),
+    );
+
+    expect(p1FieldGuideSectionIds.has('p1-integration-improper-integrals')).toBe(false);
+    expect(p1FieldGuideSectionIds.has('p1-integration-volumes-revolution')).toBe(false);
+    expect(p1GroupIds.has('p1-integration-improper-integrals')).toBe(false);
+    expect(p1GroupIds.has('p1-integration-volumes-revolution')).toBe(false);
+    expect(p1ItemsById.has('p1-sc-integration-improper-001')).toBe(false);
+    expect(p1ItemsById.has('p1-sc-integration-volumes-001')).toBe(false);
   });
 
   it('keeps P1 Quadratics quality-pass items student-facing and fully covered', () => {

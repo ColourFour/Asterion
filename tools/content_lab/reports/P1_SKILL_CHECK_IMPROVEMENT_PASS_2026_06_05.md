@@ -65,16 +65,16 @@ Optional secondary sets remain non-default. Final active count is 108 default qu
 | Curriculum safety | Some items cited unreviewed P1 exam-bank references; unsafe Integration scope visible in data | Active items rely on P1 content-map source and active Field Guide sections only |
 | Rendered student flow | Field Guide links could land at topic-level Skill Check | P1 Field Guide subtopic CTAs use exact anchors; fallback is plain topic Skill Check page |
 
-## 5. Syllabus Uncertainties Left Unresolved
+## 5. Syllabus And Local Sequencing Status
 
 The local P1 source data remains labelled as draft/source-filled and still needs a formal syllabus-contract review before using it as mastery or readiness evidence.
 
-Unresolved syllabus confirmations:
+Resolved by the 2026-06-05 syllabus reconciliation:
 
 | Skill area | Current decision |
 | --- | --- |
-| Improper integrals | Needs syllabus confirmation. Quarantined from active P1 Skill Checks. |
-| Volumes of revolution | Needs syllabus confirmation. Quarantined from active P1 Skill Checks. |
+| Improper integrals | Official P1 content for simple improper integrals, but quarantined from active P1 Skill Checks because no matching local Field Guide phase exists. |
+| Volumes of revolution | Official P1 content for volumes about the x-axis or y-axis, but quarantined from active P1 Skill Checks because no matching local Field Guide phase exists. |
 | Unreviewed P1 exam-bank records | Not used as authority for active Skill Check metadata because local catalog records are `needs_review` and `student_runtime_safe=false`. |
 
 No deprecated difficulty metadata is used for P1 Skill Check routing or readiness.
@@ -90,7 +90,7 @@ The following authored support items remain hidden from the active P1 Skill Chec
 - `p1-sc-integration-volumes-002`
 - `p1-sc-integration-volumes-003`
 
-Reason: the active P1 Field Guide source no longer includes improper integrals or volumes of revolution, and these skills require syllabus confirmation before becoming student-facing P1 checks.
+Reason: the active P1 Field Guide source does not include improper integrals or volumes of revolution. The official syllabus includes them, but default student-facing Skill Checks still require matching local Field Guide support.
 
 Coordinate Geometry items previously carrying unreviewed `exam-bank reference` metadata were not rejected as questions, but their exam-bank source references were removed from active P1 Skill Check authority.
 
@@ -166,8 +166,8 @@ No screenshots were captured for this Phase 7/8 QA run. Browser QA used DOM, con
 
 ## 11. Remaining Next Steps
 
-1. Complete formal P1 syllabus-contract review against the official Cambridge 9709 syllabus before treating P1 checks as mastery or readiness evidence.
-2. Decide whether quarantined Integration improper-integral and volume-of-revolution items should be deleted, moved to another course/scope, or restored only after confirmation.
+1. Keep the formal P1 syllabus-contract review separate from mastery/readiness evidence; official inclusion alone is not enough to enable evidence.
+2. Restore quarantined Integration improper-integral and volume-of-revolution items only after adding matching local Field Guide support.
 3. Add reviewed P1 exam-bank source evidence only after catalog records are reviewed and marked student-runtime safe.
 4. Consider adding a generated-route alias or redirect for `/p1/topics/functions-transformations/` only if students or external links are expected to use that slug.
 5. Continue topic-by-topic student simulation after the content pass to check cognitive load, wording clarity, and retention across a full P1 study session.
