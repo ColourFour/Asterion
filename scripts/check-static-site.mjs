@@ -84,6 +84,20 @@ const requiredPages = existsSync(manifestPath)
   ? JSON.parse(readFileSync(manifestPath, 'utf8')).pages.map((page) => page.path)
   : fallbackRequiredPages;
 
+const forbiddenVisibleStudentTerms = [
+  'draft',
+  'syllabus-contract',
+  'audit',
+  'mastery evidence',
+  'generated practice',
+  'mapping',
+  'Guardian',
+  'admin',
+  'compatibility route',
+  'seed content',
+  'needs review',
+];
+
 function collectFiles(directory, root = directory) {
   if (!existsSync(directory)) return [];
   return readdirSync(directory).flatMap((entry) => {
@@ -96,6 +110,22 @@ function collectFiles(directory, root = directory) {
 
 function readJson(relativePath) {
   return JSON.parse(readFileSync(path.join(repoRoot, relativePath), 'utf8'));
+}
+
+function visibleBodyText(html) {
+  const bodyMatch = html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
+  const bodyHtml = bodyMatch ? bodyMatch[1] : html;
+  return bodyHtml
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&#(?:x[0-9a-f]+|\d+);/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function catalogImagePairCounts() {
@@ -136,6 +166,21 @@ for (const page of requiredPages) {
     console.error(`${page} is missing meaningful document content.`);
     process.exit(1);
   }
+}
+
+const forbiddenVisibleHits = [];
+for (const page of requiredPages) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const text = visibleBodyText(html);
+  for (const term of forbiddenVisibleStudentTerms) {
+    if (text.toLowerCase().includes(term.toLowerCase())) {
+      forbiddenVisibleHits.push(`${page}: ${term}`);
+    }
+  }
+}
+if (forbiddenVisibleHits.length) {
+  console.error(`Static pages contain forbidden student-facing visible text:\n${forbiddenVisibleHits.join('\n')}`);
+  process.exit(1);
 }
 
 const internalStudentCopy = [

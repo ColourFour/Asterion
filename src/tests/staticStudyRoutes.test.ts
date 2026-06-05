@@ -16,29 +16,34 @@ describe('static study routes', () => {
       'p1/topics/index.html',
       'p1/topics/quadratics/index.html',
       'p1/topics/quadratics/field-guide/index.html',
+      'p1/topics/quadratics/skill-check/index.html',
       'p1/topics/quadratics/practice/index.html',
       'p1/topics/quadratics/exam-training/index.html',
       'p1/exam-training/index.html',
       'm1/topics/index.html',
       'm1/topics/velocity-and-constant-acceleration/index.html',
       'm1/topics/velocity-and-constant-acceleration/field-guide/index.html',
+      'm1/topics/velocity-and-constant-acceleration/skill-check/index.html',
       'm1/topics/velocity-and-constant-acceleration/practice/index.html',
       'm1/topics/velocity-and-constant-acceleration/exam-training/index.html',
       'm1/exam-training/index.html',
       's1/topics/index.html',
       's1/topics/data-representation/index.html',
       's1/topics/data-representation/field-guide/index.html',
+      's1/topics/data-representation/skill-check/index.html',
       's1/topics/data-representation/practice/index.html',
       's1/topics/data-representation/exam-training/index.html',
       's1/exam-training/index.html',
       'p3/topics/index.html',
       'p3/topics/algebra/index.html',
       'p3/topics/algebra/field-guide/index.html',
+      'p3/topics/algebra/skill-check/index.html',
       'p3/topics/algebra/practice/index.html',
       'p3/topics/algebra/exam-training/index.html',
       'regions/index.html',
       'topics/algebra/index.html',
       'topics/algebra/field-guide/index.html',
+      'topics/algebra/skill-check/index.html',
       'topics/algebra/practice/index.html',
       'topics/algebra/exam-training/index.html',
       'topics/logarithms/index.html',
@@ -60,7 +65,7 @@ describe('static study routes', () => {
     }
   });
 
-  it('declares draft topic, Field Guide, Practice, and exam-training routes for seeded courses', () => {
+  it('declares topic, Field Guide, Skill Check, Practice compatibility, and exam-training routes for seeded courses', () => {
     for (const course of COURSES.filter((course) => course.id !== P3_COURSE_ID)) {
       const topics = getSeedTopicsForCourse(course.id);
       expect(topics.length).toBeGreaterThan(0);
@@ -69,6 +74,7 @@ describe('static study routes', () => {
       for (const topic of topics) {
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/field-guide/index.html`);
+        expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/skill-check/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/practice/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/exam-training/index.html`);
       }
@@ -84,10 +90,11 @@ describe('static study routes', () => {
     expect(staticBuilderSource).not.toContain('Student trial warning');
   });
 
-  it('declares P3-prefixed hub, Field Guide, Practice Questions, and Exam Training pages for every topic', () => {
+  it('declares P3-prefixed hub, Field Guide, Skill Check, Practice compatibility, and Exam Training pages for every topic', () => {
     for (const topic of STUDY_TOPICS) {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`);
     }
@@ -97,6 +104,7 @@ describe('static study routes', () => {
     for (const topic of STUDY_TOPICS) {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/field-guide/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/skill-check/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/practice/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`topics/${topic.slug}/exam-training/index.html`);
     }

@@ -344,16 +344,23 @@
 
   function setupOneCardFlow() {
     document.querySelectorAll('[data-one-card-flow]').forEach(function (flow) {
-      var cards = Array.from(flow.querySelectorAll('.practice-card')).filter(function (card) {
+      var allCards = Array.from(flow.querySelectorAll('.practice-card')).filter(function (card) {
         return card instanceof HTMLElement;
       });
-      if (cards.length <= 1 || flow.previousElementSibling?.classList.contains('practice-controls')) return;
+      if (allCards.length <= 1 || flow.previousElementSibling?.classList.contains('practice-controls')) return;
 
-      var containers = Array.from(new Set(cards.map(function (card) {
+      var containers = Array.from(new Set(allCards.map(function (card) {
         return card.closest('.practice-topic, .practice-subsection');
       }).filter(Boolean)));
+      var sectionContainers = Array.from(new Set(allCards.map(function (card) {
+        return card.closest('.practice-topic');
+      }).filter(Boolean)));
       var labelText = flow.getAttribute('data-flow-label') || 'Question';
+      var defaultLimit = Number(flow.getAttribute('data-default-card-limit') || '0');
       var index = 0;
+      var setIndex = 0;
+      var cards = [];
+      var selectedCards = [];
       var controls = document.createElement('div');
       controls.className = 'practice-controls';
       controls.setAttribute('aria-label', labelText + ' navigation');
@@ -372,23 +379,67 @@
       next.type = 'button';
       next.textContent = 'Next';
 
-      controls.append(previous, label, next);
+      var previousSet = document.createElement('button');
+      previousSet.className = 'button secondary-button';
+      previousSet.type = 'button';
+      previousSet.textContent = 'Previous set';
+
+      var morePractice = document.createElement('button');
+      morePractice.className = 'button secondary-button';
+      morePractice.type = 'button';
+      morePractice.textContent = 'More practice';
+
+      controls.append(previousSet, previous, label, next, morePractice);
       flow.before(controls);
       flow.classList.add('is-single-question');
 
+      function cardsForCurrentHash() {
+        var hash = window.location.hash ? window.location.hash.slice(1) : '';
+        var target = hash ? document.getElementById(hash) : null;
+        var selectedContainer = target?.closest?.('.practice-topic, .practice-subsection') || target;
+        if (!(selectedContainer instanceof HTMLElement) || !flow.contains(selectedContainer)) {
+          selectedContainer = sectionContainers[0] || containers[0];
+        }
+        var matches = allCards.filter(function (card) {
+          return selectedContainer ? selectedContainer.contains(card) : true;
+        });
+        return matches.length ? matches : allCards;
+      }
+
+      function currentChunk(cardsForSection) {
+        if (defaultLimit <= 0) return cardsForSection;
+        var start = setIndex * defaultLimit;
+        return cardsForSection.slice(start, start + defaultLimit);
+      }
+
       function render() {
+        selectedCards = cardsForCurrentHash();
+        var setCount = defaultLimit > 0 ? Math.max(1, Math.ceil(selectedCards.length / defaultLimit)) : 1;
+        setIndex = Math.min(setIndex, setCount - 1);
+        cards = currentChunk(selectedCards);
+        if (!cards.length) {
+          setIndex = 0;
+          cards = currentChunk(selectedCards);
+        }
+        index = Math.min(index, Math.max(0, cards.length - 1));
         var activeCard = cards[index];
-        cards.forEach(function (card, cardIndex) {
-          card.hidden = cardIndex !== index;
+        allCards.forEach(function (card) {
+          card.hidden = card !== activeCard;
         });
         containers.forEach(function (container) {
           if (container instanceof HTMLElement) {
             container.hidden = !container.contains(activeCard);
           }
         });
-        label.textContent = labelText + ' ' + (index + 1) + ' of ' + cards.length;
+        label.textContent = setCount > 1
+          ? 'Set ' + (setIndex + 1) + ' of ' + setCount + ' · ' + labelText + ' ' + (index + 1) + ' of ' + cards.length
+          : labelText + ' ' + (index + 1) + ' of ' + cards.length;
         previous.disabled = index === 0;
         next.disabled = index === cards.length - 1;
+        previousSet.hidden = setCount <= 1;
+        morePractice.hidden = setCount <= 1;
+        previousSet.disabled = setIndex === 0;
+        morePractice.disabled = setIndex === setCount - 1;
       }
 
       previous.addEventListener('click', function () {
@@ -398,6 +449,26 @@
 
       next.addEventListener('click', function () {
         index = Math.min(cards.length - 1, index + 1);
+        render();
+      });
+
+      previousSet.addEventListener('click', function () {
+        setIndex = Math.max(0, setIndex - 1);
+        index = 0;
+        render();
+      });
+
+      morePractice.addEventListener('click', function () {
+        selectedCards = cardsForCurrentHash();
+        var setCount = defaultLimit > 0 ? Math.max(1, Math.ceil(selectedCards.length / defaultLimit)) : 1;
+        setIndex = Math.min(setCount - 1, setIndex + 1);
+        index = 0;
+        render();
+      });
+
+      window.addEventListener('hashchange', function () {
+        index = 0;
+        setIndex = 0;
         render();
       });
 

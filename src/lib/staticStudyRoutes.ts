@@ -21,7 +21,8 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
       ...seedTopics.flatMap((topic) => [
         { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} topic` },
         { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} Field Guide` },
-        { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} Practice` },
+        { path: `${course.slug}/topics/${topic.slug}/skill-check/index.html`, label: `${course.shortName} ${topic.title} Skill Check` },
+        { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} Practice compatibility` },
         { path: `${course.slug}/topics/${topic.slug}/exam-training/index.html`, label: `${course.shortName} ${topic.title} Exam Training` },
       ]),
       { path: `${course.slug}/exam-training/index.html`, label: `${course.shortName} Exam Training` },
@@ -31,7 +32,8 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   ...STUDY_TOPICS.flatMap((topic) => [
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/index.html`, label: `P3 ${topic.name} hub` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Field Guide` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`, label: `P3 ${topic.name} Skill Check` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Skill Check` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`, label: `P3 ${topic.name} Practice compatibility` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`, label: `P3 ${topic.name} Exam Training` },
   ]),
   { path: `${P3_COURSE_ID}/exam-training/index.html`, label: 'P3 Exam Training' },
@@ -40,7 +42,8 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   ...STUDY_TOPICS.flatMap((topic) => [
     { path: `topics/${topic.slug}/index.html`, label: `${topic.name} hub` },
     { path: `topics/${topic.slug}/field-guide/index.html`, label: `${topic.name} Field Guide` },
-    { path: `topics/${topic.slug}/practice/index.html`, label: `${topic.name} Skill Check` },
+    { path: `topics/${topic.slug}/skill-check/index.html`, label: `${topic.name} Skill Check` },
+    { path: `topics/${topic.slug}/practice/index.html`, label: `${topic.name} Practice compatibility` },
     { path: `topics/${topic.slug}/exam-training/index.html`, label: `${topic.name} Exam Training` },
   ]),
   { path: 'exam-training/index.html', label: 'Exam Training' },

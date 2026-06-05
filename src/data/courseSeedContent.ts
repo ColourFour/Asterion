@@ -383,8 +383,15 @@ const p1Topics: CourseSeedTopic[] = [
     title: 'Sequences and Series',
     shortTitle: 'Series',
     description: 'Use arithmetic and geometric progressions, terms, sums, and unknown constants.',
-    headerFormula: 'S_n=\\frac n2(2a+(n-1)d),\\quad a(1-r^n)/(1-r)',
-    formulas: ['$u_n=a+(n-1)d$', '$S_n=\\frac n2(2a+(n-1)d)$', '$S_n=\\frac{a(1-r^n)}{1-r}$'],
+    headerFormula: 'u_n=a+(n-1)d,\\quad S_n=\\frac{a(1-r^n)}{1-r}',
+    formulas: [
+      '$u_n=a+(n-1)d$',
+      '$S_n=\\frac n2[2a+(n-1)d]$',
+      '$S_n=\\frac n2(a+l)$',
+      '$u_n=ar^{n-1}$',
+      '$S_n=\\frac{a(1-r^n)}{1-r},\\ r\\ne1$',
+      '$S_\\infty=\\frac a{1-r},\\ |r|<1$',
+    ],
     studentGoals: [
       'Identify arithmetic and geometric sequences from term relationships.',
       'Find terms, sums, and unknown constants.',
