@@ -99,7 +99,7 @@
 
     document.querySelectorAll('[data-progress-skill]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-skill') || '';
-      var label = node.getAttribute('data-label') || 'Practice Questions';
+      var label = node.getAttribute('data-label') || 'Skill Check';
       var count = skillAttemptsForRegion(progress, regionId).length;
       node.textContent = label + ': ' + count + ' saved';
       node.classList.toggle('is-complete', count > 0);
@@ -134,7 +134,7 @@
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = skillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide sections, ' + practiceCount + ' practice saves, ' + examCount + ' exam attempts.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check saves, ' + examCount + ' exam attempts.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
@@ -145,7 +145,7 @@
       var examCount = attemptsForRegion(progress, regionId).length;
       var parts = [];
       if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Field Guide');
-      if (practiceCount > 0) parts.push(practiceCount + ' practice save' + (practiceCount === 1 ? '' : 's'));
+      if (practiceCount > 0) parts.push(practiceCount + ' Skill Check save' + (practiceCount === 1 ? '' : 's'));
       if (examCount > 0) parts.push(examCount + ' exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
       node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
@@ -156,7 +156,7 @@
       var topicId = button.getAttribute('data-complete-field-guide-topic') || '';
       var saved = Boolean(completionsFor(progress, regionId)[topicId]);
       button.classList.toggle('is-saved', saved);
-      if (saved) button.textContent = 'Section complete';
+      if (saved) button.textContent = 'Got it';
     });
 
     document.querySelectorAll('[data-save-skill-check]').forEach(function (button) {
@@ -165,7 +165,7 @@
         return attempt.activityId === activityId;
       });
       button.classList.toggle('is-saved', saved);
-      if (saved) button.textContent = 'Saved locally';
+      if (saved) button.textContent = 'Done';
     });
   }
 
@@ -242,7 +242,7 @@
     saveProgress(progress);
     var status = document.createElement('p');
     status.className = 'save-status';
-    status.textContent = 'Saved locally. Use Next item when ready.';
+    status.textContent = 'Done. Review the first step if this felt shaky, or go to the next question.';
     button.insertAdjacentElement('afterend', status);
     updateProgressText();
   }
@@ -290,6 +290,7 @@
 
   function setupPracticeStacks() {
     document.querySelectorAll('.practice-card-stack').forEach(function (stack) {
+      if (stack.closest('[data-one-card-flow]')) return;
       var cards = Array.from(stack.children).filter(function (child) {
         return child instanceof HTMLElement && child.classList.contains('practice-card');
       });
@@ -341,9 +342,221 @@
     });
   }
 
+  function setupOneCardFlow() {
+    document.querySelectorAll('[data-one-card-flow]').forEach(function (flow) {
+      var cards = Array.from(flow.querySelectorAll('.practice-card')).filter(function (card) {
+        return card instanceof HTMLElement;
+      });
+      if (cards.length <= 1 || flow.previousElementSibling?.classList.contains('practice-controls')) return;
+
+      var containers = Array.from(new Set(cards.map(function (card) {
+        return card.closest('.practice-topic, .practice-subsection');
+      }).filter(Boolean)));
+      var labelText = flow.getAttribute('data-flow-label') || 'Question';
+      var index = 0;
+      var controls = document.createElement('div');
+      controls.className = 'practice-controls';
+      controls.setAttribute('aria-label', labelText + ' navigation');
+
+      var previous = document.createElement('button');
+      previous.className = 'button secondary-button';
+      previous.type = 'button';
+      previous.textContent = 'Previous';
+
+      var label = document.createElement('span');
+      label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
+
+      var next = document.createElement('button');
+      next.className = 'button primary-button';
+      next.type = 'button';
+      next.textContent = 'Next';
+
+      controls.append(previous, label, next);
+      flow.before(controls);
+      flow.classList.add('is-single-question');
+
+      function render() {
+        var activeCard = cards[index];
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+        });
+        containers.forEach(function (container) {
+          if (container instanceof HTMLElement) {
+            container.hidden = !container.contains(activeCard);
+          }
+        });
+        label.textContent = labelText + ' ' + (index + 1) + ' of ' + cards.length;
+        previous.disabled = index === 0;
+        next.disabled = index === cards.length - 1;
+      }
+
+      previous.addEventListener('click', function () {
+        index = Math.max(0, index - 1);
+        render();
+      });
+
+      next.addEventListener('click', function () {
+        index = Math.min(cards.length - 1, index + 1);
+        render();
+      });
+
+      render();
+    });
+  }
+
+  function setupExamQuestionFlow() {
+    document.querySelectorAll('[data-exam-flow]').forEach(function (grid) {
+      var cards = Array.from(grid.querySelectorAll('.exam-question-card')).filter(function (card) {
+        return card instanceof HTMLElement;
+      });
+      if (cards.length <= 1 || grid.previousElementSibling?.classList.contains('exam-controls')) return;
+
+      var labelText = grid.getAttribute('data-flow-label') || 'Question';
+      var index = 0;
+      var controls = document.createElement('div');
+      controls.className = 'practice-controls exam-controls';
+      controls.setAttribute('aria-label', labelText + ' navigation');
+
+      var previous = document.createElement('button');
+      previous.className = 'button secondary-button';
+      previous.type = 'button';
+      previous.textContent = 'Previous question';
+
+      var label = document.createElement('span');
+      label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
+
+      var next = document.createElement('button');
+      next.className = 'button primary-button';
+      next.type = 'button';
+      next.textContent = 'Next question';
+
+      controls.append(previous, label, next);
+      grid.before(controls);
+      grid.classList.add('is-single-question');
+
+      function render() {
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+        });
+        label.textContent = 'Question ' + (index + 1) + ' of ' + cards.length;
+        previous.disabled = index === 0;
+        next.disabled = index === cards.length - 1;
+      }
+
+      previous.addEventListener('click', function () {
+        index = Math.max(0, index - 1);
+        render();
+      });
+
+      next.addEventListener('click', function () {
+        index = Math.min(cards.length - 1, index + 1);
+        render();
+      });
+
+      render();
+    });
+  }
+
+  function setupGuidedStudy() {
+    document.querySelectorAll('[data-guided-study]').forEach(function (study) {
+      var tabs = Array.from(study.querySelectorAll('[data-phase-tab]'));
+      var panels = Array.from(study.querySelectorAll('[data-phase-panel]'));
+      var previous = study.querySelector('[data-guided-prev]');
+      var next = study.querySelector('[data-guided-next]');
+      var progress = study.querySelector('[data-guided-progress]');
+      var practiceHref = study.getAttribute('data-practice-href') || '';
+      if (!tabs.length || !panels.length) return;
+
+      function phaseFromHash() {
+        var hash = window.location.hash.replace(/^#/, '');
+        if (!hash) return '';
+        return tabs.some(function (tab) { return tab.getAttribute('data-phase-tab') === hash; }) ? hash : '';
+      }
+
+      function activeIndex() {
+        return Math.max(0, tabs.findIndex(function (tab) {
+          return tab.getAttribute('aria-selected') === 'true';
+        }));
+      }
+
+      function setActive(index, updateHash) {
+        var bounded = Math.max(0, Math.min(tabs.length - 1, index));
+        tabs.forEach(function (tab, tabIndex) {
+          var isActive = tabIndex === bounded;
+          tab.classList.toggle('is-active', isActive);
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          if (isActive) tab.setAttribute('aria-current', 'step');
+          else tab.removeAttribute('aria-current');
+        });
+        panels.forEach(function (panel, panelIndex) {
+          var isActive = panelIndex === bounded;
+          panel.classList.toggle('is-active', isActive);
+          panel.hidden = !isActive;
+        });
+        if (previous) previous.disabled = bounded === 0;
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Try 3 quick questions' : 'Next idea';
+        if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
+        if (updateHash) {
+          var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';
+          if (phaseId) window.history.replaceState(null, '', '#' + phaseId);
+        }
+      }
+
+      tabs.forEach(function (tab, index) {
+        tab.addEventListener('click', function () {
+          setActive(index, true);
+        });
+        tab.addEventListener('keydown', function (event) {
+          if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+          event.preventDefault();
+          var direction = event.key === 'ArrowRight' ? 1 : -1;
+          var targetIndex = (activeIndex() + direction + tabs.length) % tabs.length;
+          tabs[targetIndex].focus();
+          setActive(targetIndex, true);
+        });
+      });
+
+      if (previous) {
+        previous.addEventListener('click', function () {
+          setActive(activeIndex() - 1, true);
+        });
+      }
+
+      if (next) {
+        next.addEventListener('click', function () {
+          var current = activeIndex();
+          if (current >= tabs.length - 1) {
+            if (practiceHref) window.location.href = practiceHref;
+            return;
+          }
+          setActive(current + 1, true);
+        });
+      }
+
+      var hashPhase = phaseFromHash();
+      var initialIndex = hashPhase
+        ? tabs.findIndex(function (tab) { return tab.getAttribute('data-phase-tab') === hashPhase; })
+        : 0;
+      setActive(initialIndex, false);
+
+      window.addEventListener('hashchange', function () {
+        var phaseId = phaseFromHash();
+        if (!phaseId) return;
+        setActive(tabs.findIndex(function (tab) {
+          return tab.getAttribute('data-phase-tab') === phaseId;
+        }), false);
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
     setupPracticeStacks();
+    setupOneCardFlow();
+    setupExamQuestionFlow();
+    setupGuidedStudy();
     updateProgressText();
 
     document.addEventListener('click', function (event) {

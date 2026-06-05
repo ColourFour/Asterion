@@ -702,6 +702,56 @@ main > * {
   font-weight: 900;
 }
 
+.topic-card-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topic-card-heading h2,
+.topic-card-heading .eyebrow {
+  margin-top: 0;
+}
+
+.topic-status-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 30px;
+  padding: 6px 9px;
+  border: 1px solid rgba(63, 113, 98, 0.26);
+  border-radius: var(--radius);
+  color: var(--sage);
+  background: var(--sage-soft);
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.course-topic-button .topic-status-chip {
+  grid-column: 2;
+  width: fit-content;
+}
+
+.starter-note,
+.micro-win {
+  width: fit-content;
+  max-width: min(100%, 760px);
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(63, 113, 98, 0.22);
+  border-radius: var(--radius);
+  color: var(--sage);
+  background: rgba(220, 233, 223, 0.76);
+  font-weight: 850;
+}
+
+.starter-note {
+  color: var(--muted-strong);
+  background: rgba(255, 253, 248, 0.82);
+}
+
 .draft-seed-notice {
   display: grid;
   gap: 5px;
@@ -794,11 +844,31 @@ main > * {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface-muted);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.formula-list .math-text,
+.plain-list .math-text,
+.phase-panel .math-text,
+.topic-card-formula .math-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.formula-list .math-text .katex,
+.plain-list .math-text .katex,
+.phase-panel .math-text .katex,
+.topic-card-formula .math-text .katex {
+  white-space: nowrap;
 }
 
 .plain-list li {
-  display: grid;
-  gap: 3px;
+  display: block;
 }
 
 .plain-list a {
@@ -812,14 +882,20 @@ main > * {
   text-decoration: underline;
 }
 
-.plain-list strong,
-.plain-list span {
+.plain-list > li > strong,
+.plain-list > li > span:not(.math-text) {
   display: block;
 }
 
-.plain-list span {
+.plain-list > li > span:not(.math-text) {
   color: var(--muted);
   font-size: 0.94rem;
+}
+
+.plain-list .math-text {
+  display: inline-block;
+  color: inherit;
+  font-size: 1em;
 }
 
 .disabled-button {
@@ -972,6 +1048,118 @@ main > * {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.guided-study-card {
+  display: grid;
+  gap: 18px;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto 28px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(255, 253, 248, 0.98), rgba(255, 247, 235, 0.94)),
+    var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.guided-study-header,
+.guided-study-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.guided-study-header h2,
+.phase-panel h3 {
+  margin: 0;
+  color: var(--ink-warm);
+  line-height: 1.15;
+}
+
+.guided-study-header p,
+.phase-panel p {
+  margin: 4px 0 0;
+}
+
+.guided-study-progress {
+  flex: 0 0 auto;
+  min-width: 70px;
+  padding: 8px 10px;
+  border: 1px solid rgba(120, 53, 31, 0.22);
+  border-radius: var(--radius);
+  color: var(--accent-dark);
+  background: var(--amber-soft);
+  font-weight: 900;
+  text-align: center;
+}
+
+.phase-tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(244, 236, 225, 0.54);
+}
+
+.phase-tab {
+  flex: 1 1 122px;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--muted-strong);
+  background: transparent;
+  font-weight: 900;
+}
+
+.phase-tab:hover,
+.phase-tab:focus-visible {
+  border-color: rgba(120, 53, 31, 0.28);
+  color: var(--accent-dark);
+  background: rgba(255, 253, 248, 0.82);
+  outline: 3px solid rgba(196, 123, 27, 0.22);
+  outline-offset: 2px;
+}
+
+.phase-tab.is-active {
+  border-color: var(--accent-dark);
+  color: #ffffff;
+  background: linear-gradient(180deg, #904226, var(--accent-dark));
+  box-shadow: 0 8px 16px rgba(120, 53, 31, 0.16);
+}
+
+.phase-panel-stack {
+  min-width: 0;
+}
+
+.phase-panel {
+  min-height: 260px;
+  padding: 20px;
+  border: 1px solid rgba(120, 53, 31, 0.18);
+  border-radius: var(--radius);
+  background: #fffdf8;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.phase-panel[hidden] {
+  display: none;
+}
+
+.guided-study-list {
+  margin-top: 14px;
+}
+
+.guided-study-list li {
+  min-width: 0;
+}
+
+.guided-study-actions {
+  margin-top: 16px;
+}
+
 .course-entry-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1064,6 +1252,13 @@ main > * {
   min-width: 0;
   padding: 22px;
   overflow-x: auto;
+}
+
+.phase-panel .field-guide-topic {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .topic-section-header {
@@ -1451,7 +1646,10 @@ summary {
   transform: none;
 }
 
-.practice-card[hidden] {
+.practice-card[hidden],
+.practice-topic[hidden],
+.practice-subsection[hidden],
+.exam-question-card[hidden] {
   display: none;
 }
 
@@ -1507,6 +1705,14 @@ summary {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.static-enhanced .exam-question-grid.is-single-question {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.static-enhanced .exam-question-grid.is-single-question .exam-question-card {
+  max-width: 920px;
+}
+
 .exam-question-card {
   display: grid;
   gap: 15px;
@@ -1536,6 +1742,10 @@ summary {
 
 .mark-scheme-details {
   background: #fff8ef;
+}
+
+.question-review-link {
+  margin: 0.9rem 0 0;
 }
 
 .attempt-form {
@@ -1627,11 +1837,13 @@ summary {
 	  .page-hero,
 	  .topic-grid,
 	  .course-grid,
-	  .course-action-nav,
-	  .course-topic-button-grid,
-	  .topic-overview-grid,
-	  .entry-grid,
-	  .course-entry-grid,
+		  .course-action-nav,
+		  .course-topic-button-grid,
+		  .topic-overview-grid,
+		  .guided-study-header,
+		  .guided-study-footer,
+		  .entry-grid,
+		  .course-entry-grid,
   .exam-mode-grid,
   .exam-question-grid,
   .study-path,
@@ -1686,18 +1898,35 @@ summary {
     height: 38px;
   }
 
-  .page-hero,
-  .topic-card,
-  .field-guide-topic,
+	  .page-hero,
+	  .topic-card,
+	  .guided-study-card,
+	  .phase-panel,
+	  .field-guide-topic,
   .practice-topic,
   .exam-question-card,
   .exam-callout,
   .progress-banner,
   .summary-card,
   .entry-card,
-  .next-step-card,
-  .exam-mode-grid article {
-    padding: 16px;
+	  .next-step-card,
+	  .exam-mode-grid article {
+	    padding: 16px;
+	  }
+
+  .phase-tab-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .phase-tab {
+    flex: 0 0 auto;
+    min-width: 112px;
+  }
+
+  .phase-panel {
+    min-height: 300px;
   }
 
   .page-hero h1 {
@@ -1709,7 +1938,9 @@ summary {
   }
 
   .formula-panel {
-    display: none;
+    display: grid;
+    min-height: 96px;
+    padding: 14px;
   }
 
   .topic-card-header {
