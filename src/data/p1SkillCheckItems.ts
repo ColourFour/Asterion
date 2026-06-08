@@ -2551,7 +2551,7 @@ export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
     groupId: 'p1-differentiation-chain-rule',
     topicId: 'p1-differentiation',
     label: 'Keep the inner factor',
-    purpose: 'Differentiate powers of linear expressions where the local P1 content includes chain rule.',
+    purpose: 'Differentiate powers of linear expressions by multiplying by the inner derivative.',
     defaultItems: [
       { role: 'first_check', label: 'Use the inner factor', itemId: 'p1-sc-diff-chain-rule-001' },
       { role: 'use_the_method', label: 'Use a different coefficient', itemId: 'p1-sc-diff-chain-rule-002' },

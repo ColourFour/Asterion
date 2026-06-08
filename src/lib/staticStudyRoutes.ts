@@ -7,6 +7,15 @@ export interface StaticStudyPageRoute {
   label: string;
 }
 
+function seedFieldGuideSubtopicSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/&/g, ' ')
+    .replace(/\band\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: 'index.html', label: 'Courses' },
   ...COURSES.map((course) => ({
@@ -21,6 +30,10 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
       ...seedTopics.flatMap((topic) => [
         { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} topic` },
         { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} Field Guide` },
+        ...(course.id === 'p1' ? topic.fieldGuideSections.map((section) => ({
+          path: `${course.slug}/topics/${topic.slug}/field-guide/${seedFieldGuideSubtopicSlug(section.title)}/index.html`,
+          label: `${course.shortName} ${topic.title} ${section.title} Field Guide`,
+        })) : []),
         { path: `${course.slug}/topics/${topic.slug}/skill-check/index.html`, label: `${course.shortName} ${topic.title} Skill Check` },
         { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} Practice compatibility` },
         { path: `${course.slug}/topics/${topic.slug}/exam-training/index.html`, label: `${course.shortName} ${topic.title} Exam Training` },

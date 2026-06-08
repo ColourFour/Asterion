@@ -74,6 +74,15 @@ describe('static study routes', () => {
       for (const topic of topics) {
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/field-guide/index.html`);
+        if (course.id === 'p1') {
+          const firstSubtopicSlug = topic.fieldGuideSections[0]?.title
+            .toLowerCase()
+            .replace(/&/g, ' ')
+            .replace(/\band\b/g, ' ')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/field-guide/${firstSubtopicSlug}/index.html`);
+        }
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/skill-check/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/practice/index.html`);
         expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`${course.slug}/topics/${topic.slug}/exam-training/index.html`);
@@ -97,8 +106,16 @@ describe('static study routes', () => {
     expect(staticBuilderSource).toContain("getP1SkillCheckGroup(section.id) ? section.id : undefined");
     expect(staticBuilderSource).toContain("label = 'Try 3 quick questions'");
     expect(staticBuilderSource).toContain('p1SkillCheckGroupIdForSection(course, section)');
+    expect(staticBuilderSource).toContain("if (course.id === 'p1') return renderP1FieldGuideLandingPage(course, topic);");
+    expect(staticBuilderSource).toContain('renderP1FieldGuideSubtopicPage(course, topic, section, index)');
+    expect(staticBuilderSource).toContain('field-guide-overview-only');
     expect(staticBuilderSource).not.toContain('renderSkillCheckTransition(fromPagePath, practicePath, section.id)');
     expect(staticStudyScript).toContain("'Try 3 quick questions'");
+    expect(staticStudyScript).toContain('data-skill-check-inline-next');
+    expect(staticStudyScript).toContain('practice-group-switcher');
+    expect(staticStudyScript).toContain("'Finish check'");
+    expect(staticStudyScript).toContain("'Next skill'");
+    expect(staticStudyScript).toContain("'Try exam-style questions'");
   });
 
   it('declares P3-prefixed hub, Field Guide, Skill Check, Practice compatibility, and Exam Training pages for every topic', () => {

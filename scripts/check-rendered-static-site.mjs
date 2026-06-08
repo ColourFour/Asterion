@@ -13,6 +13,8 @@ const requiredRenderedPages = [
   'm1/index.html',
   's1/index.html',
   'p1/topics/series/field-guide/index.html',
+  'p1/topics/series/field-guide/arithmetic-progressions/index.html',
+  'p1/topics/series/skill-check/index.html',
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
   'p3/exam-training/index.html',
@@ -93,26 +95,79 @@ try {
     }
   }
 
-  for (const fieldGuidePage of ['p1/topics/series/field-guide/index.html', 'p3/topics/algebra/field-guide/index.html']) {
-    await waitForStaticEnhancement(page, fieldGuidePage);
-    const result = await page.evaluate(() => ({
-      guidedStudyCards: document.querySelectorAll('[data-guided-study]').length,
-      phaseButtons: document.querySelectorAll('[data-phase-tab]').length,
-      overviewCards: document.querySelectorAll('.field-guide-overview-grid .summary-card').length,
-    }));
-    const counts = await visibleCounts(page);
-    if (result.guidedStudyCards !== 1) {
-      fail(`${fieldGuidePage} must render one guided study container.`);
-    }
-    if (result.phaseButtons < 1) {
-      fail(`${fieldGuidePage} must render phase navigation buttons.`);
-    }
-    if (result.overviewCards < 2) {
-      fail(`${fieldGuidePage} must render Overview and skill-goals cards before the guided study panel.`);
-    }
-    if (counts.phasePanelsVisible !== 1) {
-      fail(`${fieldGuidePage} must show exactly one Field Guide phase after JS initialization; saw ${counts.phasePanelsVisible}.`);
-    }
+  await waitForStaticEnhancement(page, 'p1/topics/series/field-guide/index.html');
+  const p1LandingResult = await page.evaluate(() => ({
+    guidedStudyCards: document.querySelectorAll('[data-guided-study]').length,
+    phaseButtons: document.querySelectorAll('[data-phase-tab]').length,
+    overviewCards: document.querySelectorAll('.field-guide-overview-grid .summary-card').length,
+    subtopicLinks: document.querySelectorAll('.field-guide-subtopic-nav a').length,
+    hasWorkedExample: /Worked example|Try a similar one/i.test(document.body.innerText),
+  }));
+  if (p1LandingResult.guidedStudyCards !== 0 || p1LandingResult.phaseButtons !== 0) {
+    fail('P1 Field Guide landing pages must not render the guided-study lesson container or phase buttons.');
+  }
+  if (p1LandingResult.overviewCards !== 2 || p1LandingResult.subtopicLinks < 1) {
+    fail('P1 Field Guide landing pages must render only the overview card and compact subtopic navigation.');
+  }
+  if (p1LandingResult.hasWorkedExample) {
+    fail('P1 Field Guide landing pages must not show worked examples or try-similar content.');
+  }
+
+  await waitForStaticEnhancement(page, 'p1/topics/series/field-guide/arithmetic-progressions/index.html');
+  const p1SubtopicResult = await page.evaluate(() => ({
+    lessonShells: document.querySelectorAll('.subtopic-lesson-shell').length,
+    workedBlocks: document.querySelectorAll('.worked-example-block').length,
+    trySimilarBlocks: document.querySelectorAll('.try-similar-block').length,
+    currentLinks: document.querySelectorAll('.field-guide-subtopic-nav a[aria-current="page"]').length,
+    skillHref: document.querySelector('.skill-check-transition a')?.getAttribute('href') || '',
+  }));
+  if (p1SubtopicResult.lessonShells !== 1 || p1SubtopicResult.workedBlocks !== 1 || p1SubtopicResult.trySimilarBlocks !== 1) {
+    fail('P1 Field Guide subtopic pages must render one lesson with one worked example and one try-similar block.');
+  }
+  if (p1SubtopicResult.currentLinks !== 1) {
+    fail('P1 Field Guide subtopic navigation must highlight exactly one current subtopic.');
+  }
+  if (!/skill-check\/#p1-series-arithmetic-progressions$/.test(p1SubtopicResult.skillHref)) {
+    fail(`P1 Field Guide subtopic Skill Check link must target the matching group; saw "${p1SubtopicResult.skillHref}".`);
+  }
+
+  await waitForStaticEnhancement(page, 'p3/topics/algebra/field-guide/index.html');
+  const p3FieldGuideResult = await page.evaluate(() => ({
+    guidedStudyCards: document.querySelectorAll('[data-guided-study]').length,
+    phaseButtons: document.querySelectorAll('[data-phase-tab]').length,
+    overviewCards: document.querySelectorAll('.field-guide-overview-grid .summary-card').length,
+  }));
+  const p3FieldGuideCounts = await visibleCounts(page);
+  if (p3FieldGuideResult.guidedStudyCards !== 1) {
+    fail('P3 Algebra Field Guide must render one guided study container.');
+  }
+  if (p3FieldGuideResult.phaseButtons < 1) {
+    fail('P3 Algebra Field Guide must render phase navigation buttons.');
+  }
+  if (p3FieldGuideResult.overviewCards < 2) {
+    fail('P3 Algebra Field Guide must render Overview and skill-goals cards before the guided study panel.');
+  }
+  if (p3FieldGuideCounts.phasePanelsVisible !== 1) {
+    fail(`P3 Algebra Field Guide must show exactly one Field Guide phase after JS initialization; saw ${p3FieldGuideCounts.phasePanelsVisible}.`);
+  }
+
+  await waitForStaticEnhancement(page, 'p1/topics/series/skill-check/index.html');
+  const p1SkillCheckResult = await page.evaluate(() => {
+    const details = document.querySelector('.skill-check-answer-details');
+    if (details) details.open = true;
+    const inlineNext = document.querySelector('[data-skill-check-inline-next]');
+    const rect = inlineNext?.getBoundingClientRect();
+    return {
+      countText: document.querySelector('.practice-count')?.textContent?.replace(/\s+/g, ' ').trim() || '',
+      inlineNextText: inlineNext?.textContent?.replace(/\s+/g, ' ').trim() || '',
+      inlineNextVisible: Boolean(rect && rect.width > 0 && rect.height > 0),
+    };
+  });
+  if (!/Question\s+1\s+of\s+3\b/i.test(p1SkillCheckResult.countText)) {
+    fail(`P1 Series Skill Check must default to a 3-question group; saw "${p1SkillCheckResult.countText}".`);
+  }
+  if (!p1SkillCheckResult.inlineNextVisible || p1SkillCheckResult.inlineNextText !== 'Next question') {
+    fail(`P1 Series Skill Check must show an inline Next question after answer reveal; saw "${p1SkillCheckResult.inlineNextText}".`);
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/skill-check/index.html');

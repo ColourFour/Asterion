@@ -242,7 +242,7 @@
     saveProgress(progress);
     var status = document.createElement('p');
     status.className = 'save-status';
-    status.textContent = 'Done. Review the first step if this felt shaky, or go to the next question.';
+    status.textContent = 'Done. Review the first step if this felt shaky, then choose the next action.';
     button.insertAdjacentElement('afterend', status);
     updateProgressText();
   }
@@ -355,12 +355,23 @@
       var sectionContainers = Array.from(new Set(allCards.map(function (card) {
         return card.closest('.practice-topic');
       }).filter(Boolean)));
+      var skillCheckGroups = Array.from(flow.querySelectorAll('[data-skill-check-group]')).filter(function (group) {
+        return group instanceof HTMLElement;
+      });
       var labelText = flow.getAttribute('data-flow-label') || 'Question';
       var defaultLimit = Number(flow.getAttribute('data-default-card-limit') || '0');
       var index = 0;
       var setIndex = 0;
+      var activeContainer = null;
       var cards = [];
       var selectedCards = [];
+      var groupNav = null;
+      var groupSwitcher = null;
+      var currentSkillName = null;
+      var completion = null;
+      var completionText = null;
+      var completionAction = null;
+      var inCompletion = false;
       var controls = document.createElement('div');
       controls.className = 'practice-controls';
       controls.setAttribute('aria-label', labelText + ' navigation');
@@ -390,6 +401,43 @@
       morePractice.textContent = 'More practice';
 
       controls.append(previousSet, previous, label, next, morePractice);
+      if (skillCheckGroups.length > 1) {
+        groupSwitcher = document.createElement('details');
+        groupSwitcher.className = 'practice-group-switcher';
+        var groupSummary = document.createElement('summary');
+        groupSummary.className = 'practice-group-summary';
+        currentSkillName = document.createElement('span');
+        currentSkillName.className = 'practice-current-skill';
+        currentSkillName.textContent = 'Current skill';
+        var changeSkill = document.createElement('span');
+        changeSkill.className = 'practice-change-skill';
+        changeSkill.textContent = 'Change skill';
+        groupSummary.append(currentSkillName, changeSkill);
+        groupNav = document.createElement('nav');
+        groupNav.className = 'practice-group-nav';
+        groupNav.setAttribute('aria-label', labelText + ' groups');
+        skillCheckGroups.forEach(function (group) {
+          var link = document.createElement('a');
+          var groupId = group.getAttribute('id') || '';
+          var heading = group.querySelector('h2');
+          link.className = 'button secondary-button';
+          link.href = groupId ? '#' + encodeURIComponent(groupId) : '#';
+          link.textContent = heading?.textContent?.trim() || 'Skill Check';
+          groupNav.append(link);
+        });
+        groupSwitcher.append(groupSummary, groupNav);
+        flow.before(groupSwitcher);
+        completion = document.createElement('section');
+        completion.className = 'skill-check-completion';
+        completion.hidden = true;
+        completion.innerHTML = '<h2>Done.</h2><p></p>';
+        completionText = completion.querySelector('p');
+        completionAction = document.createElement('button');
+        completionAction.className = 'button primary-button';
+        completionAction.type = 'button';
+        completion.append(completionAction);
+        flow.after(completion);
+      }
       flow.before(controls);
       flow.classList.add('is-single-question');
 
@@ -398,12 +446,37 @@
         var target = hash ? document.getElementById(hash) : null;
         var selectedContainer = target?.closest?.('.practice-topic, .practice-subsection') || target;
         if (!(selectedContainer instanceof HTMLElement) || !flow.contains(selectedContainer)) {
-          selectedContainer = sectionContainers[0] || containers[0];
+          selectedContainer = skillCheckGroups[0] || sectionContainers[0] || containers[0];
         }
+        activeContainer = selectedContainer instanceof HTMLElement ? selectedContainer : null;
         var matches = allCards.filter(function (card) {
           return selectedContainer ? selectedContainer.contains(card) : true;
         });
         return matches.length ? matches : allCards;
+      }
+
+      function activeSkillGroupElement() {
+        return activeContainer?.closest?.('[data-skill-check-group]');
+      }
+
+      function activeSkillGroupIndex() {
+        var activeSkillGroup = activeSkillGroupElement();
+        return skillCheckGroups.findIndex(function (group) {
+          return group === activeSkillGroup;
+        });
+      }
+
+      function activeSkillLabel() {
+        var activeSkillGroup = activeSkillGroupElement();
+        var heading = activeSkillGroup?.querySelector?.('h2');
+        return heading?.textContent?.trim() || 'this skill';
+      }
+
+      function hashTargetIsInFlow() {
+        var hash = window.location.hash ? window.location.hash.slice(1) : '';
+        if (!hash) return false;
+        var target = document.getElementById(hash);
+        return target instanceof HTMLElement && flow.contains(target);
       }
 
       function currentChunk(cardsForSection) {
@@ -412,7 +485,50 @@
         return cardsForSection.slice(start, start + defaultLimit);
       }
 
+      function updateCompletion() {
+        if (!completion || !completionText || !completionAction) return;
+        var groupIndex = activeSkillGroupIndex();
+        var hasNextGroup = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1;
+        completionText.textContent = hasNextGroup
+          ? 'That was the 3-question check for ' + activeSkillLabel() + '.'
+          : 'That was the last 3-question check for this topic.';
+        completionAction.textContent = hasNextGroup ? 'Next skill' : 'Try exam-style questions';
+      }
+
+      function moveToNextSkillOrFinalAction() {
+        var activeGroupIndex = activeSkillGroupIndex();
+        if (activeGroupIndex >= 0 && activeGroupIndex < skillCheckGroups.length - 1) {
+          var nextGroupId = skillCheckGroups[activeGroupIndex + 1].id;
+          inCompletion = false;
+          if (nextGroupId) {
+            window.location.hash = nextGroupId;
+          }
+          return;
+        }
+        document.querySelector('.exam-question-section')?.scrollIntoView?.({ behavior: 'auto', block: 'start' });
+      }
+
       function render() {
+        if (inCompletion) {
+          allCards.forEach(function (card) {
+            card.hidden = true;
+          });
+          containers.forEach(function (container) {
+            if (container instanceof HTMLElement) {
+              container.hidden = true;
+            }
+          });
+          controls.hidden = true;
+          if (groupSwitcher) groupSwitcher.hidden = true;
+          if (completion) {
+            updateCompletion();
+            completion.hidden = false;
+          }
+          return;
+        }
+        controls.hidden = false;
+        if (groupSwitcher) groupSwitcher.hidden = false;
+        if (completion) completion.hidden = true;
         selectedCards = cardsForCurrentHash();
         var setCount = defaultLimit > 0 ? Math.max(1, Math.ceil(selectedCards.length / defaultLimit)) : 1;
         setIndex = Math.min(setIndex, setCount - 1);
@@ -431,15 +547,48 @@
             container.hidden = !container.contains(activeCard);
           }
         });
-        label.textContent = setCount > 1
-          ? 'Set ' + (setIndex + 1) + ' of ' + setCount + ' · ' + labelText + ' ' + (index + 1) + ' of ' + cards.length
-          : labelText + ' ' + (index + 1) + ' of ' + cards.length;
+        label.textContent = labelText + ' ' + (index + 1) + ' of ' + cards.length;
+        var activeSkillGroup = activeSkillGroupElement();
+        var isLastCardInChunk = index === cards.length - 1;
+        previous.hidden = index === 0;
         previous.disabled = index === 0;
-        next.disabled = index === cards.length - 1;
+        if (skillCheckGroups.length > 1 && isLastCardInChunk) {
+          next.disabled = false;
+          next.textContent = 'Finish check';
+        } else {
+          next.disabled = false;
+          next.textContent = 'Next question';
+        }
+        if (!skillCheckGroups.length && isLastCardInChunk) {
+          next.disabled = true;
+        }
+        if (activeCard instanceof HTMLElement) {
+          Array.from(activeCard.querySelectorAll('[data-skill-check-inline-next]')).forEach(function (button) {
+            if (!(button instanceof HTMLButtonElement)) return;
+            if (isLastCardInChunk && skillCheckGroups.length > 1) {
+              var groupIndex = activeSkillGroupIndex();
+              button.textContent = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1 ? 'Next skill' : 'Try exam-style questions';
+            } else {
+              button.textContent = 'Next question';
+            }
+            button.hidden = !skillCheckGroups.length && isLastCardInChunk;
+          });
+        }
         previousSet.hidden = setCount <= 1;
         morePractice.hidden = setCount <= 1;
         previousSet.disabled = setIndex === 0;
         morePractice.disabled = setIndex === setCount - 1;
+        if (groupNav) {
+          Array.from(groupNav.querySelectorAll('a[href^="#"]')).forEach(function (link) {
+            var linkTarget = decodeURIComponent((link.getAttribute('href') || '').replace(/^#/, ''));
+            var isActive = activeSkillGroup instanceof HTMLElement && linkTarget === activeSkillGroup.id;
+            if (isActive) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
+          });
+        }
+        if (currentSkillName) {
+          currentSkillName.textContent = activeSkillLabel();
+        }
       }
 
       previous.addEventListener('click', function () {
@@ -448,6 +597,22 @@
       });
 
       next.addEventListener('click', function () {
+        if (index >= cards.length - 1 && skillCheckGroups.length > 1) {
+          inCompletion = true;
+          render();
+          return;
+        }
+        index = Math.min(cards.length - 1, index + 1);
+        render();
+      });
+
+      flow.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element) || !target.closest('[data-skill-check-inline-next]')) return;
+        if (index >= cards.length - 1 && skillCheckGroups.length > 1) {
+          moveToNextSkillOrFinalAction();
+          return;
+        }
         index = Math.min(cards.length - 1, index + 1);
         render();
       });
@@ -466,9 +631,18 @@
         render();
       });
 
+      if (completionAction) {
+        completionAction.addEventListener('click', function () {
+          moveToNextSkillOrFinalAction();
+        });
+      }
+
       window.addEventListener('hashchange', function () {
+        if (!hashTargetIsInFlow()) return;
+        inCompletion = false;
         index = 0;
         setIndex = 0;
+        if (groupSwitcher) groupSwitcher.open = false;
         render();
       });
 

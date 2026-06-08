@@ -69,6 +69,7 @@ interface RenderPageOptions {
   description: string;
   active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-topics' | 'p3-exam-training';
   body: string;
+  bodyClass?: string;
 }
 
 const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\$(?!\$)[\s\S]+?\$)/g;
@@ -287,6 +288,19 @@ function seedFieldGuidePagePath(course: CourseMetadata, topic: CourseSeedTopic):
   return `${course.slug}/topics/${topic.slug}/field-guide/index.html`;
 }
 
+function seedFieldGuideSubtopicSlug(section: CourseSeedTopicSection): string {
+  return section.title
+    .toLowerCase()
+    .replace(/&/g, ' ')
+    .replace(/\band\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function seedFieldGuideSubtopicPagePath(course: CourseMetadata, topic: CourseSeedTopic, section: CourseSeedTopicSection): string {
+  return `${course.slug}/topics/${topic.slug}/field-guide/${seedFieldGuideSubtopicSlug(section)}/index.html`;
+}
+
 function seedPracticePagePath(course: CourseMetadata, topic: CourseSeedTopic): string {
   return seedSkillCheckPagePath(course, topic);
 }
@@ -418,7 +432,7 @@ function renderPage(options: RenderPageOptions): string {
     <link rel="stylesheet" href="${cssHref}" />
     <title>${escapeHtml(title)}</title>
   </head>
-  <body>
+  <body${options.bodyClass ? ` class="${escapeAttr(options.bodyClass)}"` : ''}>
     <header class="site-header">
       <a class="brand-link" href="${hrefToPage(options.pagePath, 'index.html')}" aria-label="Asterion Study home">
         <span class="brand-mark" aria-hidden="true">A</span>
@@ -629,6 +643,22 @@ function seedSubtopicDisplayTitle(topic: CourseSeedTopic, section: CourseSeedTop
   return section.title;
 }
 
+function renderP1FieldGuideSubtopicNav(
+  course: CourseMetadata,
+  topic: CourseSeedTopic,
+  fromPagePath: string,
+  currentSectionId?: string,
+): string {
+  return `
+    <nav class="field-guide-subtopic-nav" aria-label="${escapeAttr(topic.title)} subtopics">
+      ${topic.fieldGuideSections.map((section) => {
+        const isCurrent = section.id === currentSectionId;
+        return `<a class="subtopic-nav-link${isCurrent ? ' is-current' : ''}" href="${hrefToPage(fromPagePath, seedFieldGuideSubtopicPagePath(course, topic, section))}"${isCurrent ? ' aria-current="page"' : ''}>${escapeHtml(seedSubtopicDisplayTitle(topic, section))}</a>`;
+      }).join('')}
+    </nav>
+  `;
+}
+
 function renderMethodList(lines: string[]): string {
   return `
     <ol class="worked-list compact-worked-list">
@@ -718,6 +748,11 @@ function renderSeedSubtopicPanel(
   const details = seedSubtopicDetails(section, topic, index);
   const nextSection = topic.fieldGuideSections[index + 1];
   const nextTitle = nextSection ? seedSubtopicDisplayTitle(topic, nextSection) : '';
+  const nextHref = nextSection
+    ? course.id === 'p1'
+      ? hrefToPage(fromPagePath, seedFieldGuideSubtopicPagePath(course, topic, nextSection))
+      : `#${escapeAttr(nextSection.id)}`
+    : '';
   return `
     <div class="show-try-panel">
       <section class="worked-example-block">
@@ -739,7 +774,7 @@ function renderSeedSubtopicPanel(
         <p><strong>Exam tip:</strong> ${renderMathText(topic.examStyle[index % Math.max(1, topic.examStyle.length)] ?? details.goal)}</p>
       </section>
       <footer class="move-forward-block">
-        ${nextSection ? `<a class="button secondary-button" href="#${escapeAttr(nextSection.id)}">Next subtopic: ${escapeHtml(nextTitle)}</a>` : ''}
+        ${nextSection ? `<a class="button secondary-button" href="${nextHref}">Next subtopic: ${escapeHtml(nextTitle)}</a>` : ''}
         ${renderSkillCheckTransition(fromPagePath, practicePath, p1SkillCheckGroupIdForSection(course, section))}
       </footer>
     </div>
@@ -823,6 +858,73 @@ function renderSeedReviewStatus(topic: CourseSeedTopic): string {
   return '';
 }
 
+function renderP1FieldGuideLandingPage(course: CourseMetadata, topic: CourseSeedTopic): string {
+  const pagePath = seedFieldGuidePagePath(course, topic);
+  const firstSection = topic.fieldGuideSections[0];
+  const firstSubtopicPath = firstSection ? seedFieldGuideSubtopicPagePath(course, topic, firstSection) : seedPracticePagePath(course, topic);
+  const body = `
+    ${renderHero(
+      `${topic.title} Field Guide`,
+      'Use this overview to choose one small skill, then open the matching lesson.',
+      undefined,
+      `${routeLink(pagePath, seedCourseTopicsIndexPagePath(course), 'Back to topics', 'button secondary-button')}
+      ${routeLink(pagePath, firstSubtopicPath, firstSection ? `Start: ${seedSubtopicDisplayTitle(topic, firstSection)}` : 'Try 3 quick questions', 'button primary-button')}`,
+      `${course.shortName} Field Guide`,
+    )}
+    <section class="topic-overview-grid field-guide-overview-grid field-guide-overview-only">
+      ${renderKnowledgeCard(topic.formulas, topic.keyIdeas, topic.headerFormula)}
+      <article class="summary-card subtopic-nav-card">
+        <h2>Choose a subtopic</h2>
+        ${renderP1FieldGuideSubtopicNav(course, topic, pagePath)}
+      </article>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${course.shortName} ${topic.title} Field Guide`,
+    description: `Field Guide overview for ${topic.title}.`,
+    active: course.id,
+    body,
+  });
+}
+
+function renderP1FieldGuideSubtopicPage(
+  course: CourseMetadata,
+  topic: CourseSeedTopic,
+  section: CourseSeedTopicSection,
+  index: number,
+): string {
+  const pagePath = seedFieldGuideSubtopicPagePath(course, topic, section);
+  const practicePath = seedPracticePagePath(course, topic);
+  const title = seedSubtopicDisplayTitle(topic, section);
+  const body = `
+    ${renderHero(
+      title,
+      `${topic.title}: one worked example, one similar try, then a short Skill Check.`,
+      undefined,
+      routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Field Guide overview', 'button secondary-button'),
+      `${course.shortName} subtopic`,
+    )}
+    <section class="subtopic-lesson-shell" aria-labelledby="subtopic-lesson-title">
+      <div class="subtopic-lesson-header">
+        <div>
+          <p class="eyebrow">Subtopic ${index + 1} of ${topic.fieldGuideSections.length}</p>
+          <h2 id="subtopic-lesson-title">${escapeHtml(title)}</h2>
+        </div>
+        ${renderP1FieldGuideSubtopicNav(course, topic, pagePath, section.id)}
+      </div>
+      ${renderSeedSubtopicPanel(course, topic, section, index, practicePath, pagePath)}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${course.shortName} ${topic.title}: ${title}`,
+    description: `${title} Field Guide lesson.`,
+    active: course.id,
+    body,
+  });
+}
+
 function renderOptionalList(title: string, items: string[] | undefined, className = 'plain-list'): string {
   if (!items?.length) return '';
   return `
@@ -870,6 +972,18 @@ function renderHero(title: string, body: string, formula?: string, actions = '',
         ${actions ? `<div class="hero-actions">${actions}</div>` : ''}
       </div>
       ${formula ? `<div class="formula-panel" aria-hidden="true">${renderInlineFormula(formula)}</div>` : ''}
+    </section>
+  `;
+}
+
+function renderSkillCheckHero(title: string, courseShortName: string): string {
+  return `
+    <section class="page-hero skill-check-hero">
+      <div>
+        <p class="eyebrow">${escapeHtml(courseShortName)}</p>
+        <h1>${escapeHtml(title)}</h1>
+        <p>Try 3 quick questions.</p>
+      </div>
     </section>
   `;
 }
@@ -1156,6 +1270,8 @@ function renderSeedTopicHubPage(course: CourseMetadata, topic: CourseSeedTopic):
 }
 
 function renderSeedFieldGuidePage(course: CourseMetadata, topic: CourseSeedTopic): string {
+  if (course.id === 'p1') return renderP1FieldGuideLandingPage(course, topic);
+
   const pagePath = seedFieldGuidePagePath(course, topic);
   const practicePath = seedPracticePagePath(course, topic);
   const examTrainingPath = seedTopicExamTrainingPagePath(course, topic);
@@ -1199,14 +1315,18 @@ function renderSeedPracticePage(
   const routedCatalogRecords = data ? filterCourseTopicExamQuestions(data.catalogRecords, course, topic).length : 0;
   const skillCheckItems = getSkillCheckItemsForCourseTopic(course.id, topic.id);
   const skillChecksMarkup = renderSeedDraftSkillChecks(course, topic);
+  const isP1SkillCheckPage = course.id === 'p1' && skillCheckItems.length > 0;
+  const firstSkillCheckTargetId = course.id === 'p1'
+    ? getP1SkillCheckGroupsForTopic(topic.id)[0]?.groupId ?? 'skill-checks'
+    : 'skill-checks';
   const heroActions = skillCheckItems.length
-    ? `<a class="button primary-button" href="#skill-checks">Start Skill Checks</a>
+    ? `<a class="button primary-button" href="#${escapeAttr(firstSkillCheckTargetId)}">Start Skill Checks</a>
       ${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
       ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`
     : `${routeLink(pagePath, seedTopicPagePath(course, topic), 'Topic overview', 'button secondary-button')}
       ${routeLink(pagePath, seedFieldGuidePagePath(course, topic), 'Review Field Guide', 'button secondary-button')}`;
   const body = `
-    ${renderHero(
+    ${isP1SkillCheckPage ? renderSkillCheckHero(topic.title, course.shortName) : renderHero(
       `${topic.title} ${skillCheckItems.length ? 'Skill Check' : 'Practice'}`,
       skillCheckItems.length
         ? 'Use these short checks to test the method before moving into exam-style questions.'
@@ -1215,7 +1335,7 @@ function renderSeedPracticePage(
       heroActions,
       `${course.shortName} Skill Check`,
     )}
-    <section class="practice-stack" data-one-card-flow data-flow-label="Skill Check" data-default-card-limit="3">
+    <section class="practice-stack" data-one-card-flow data-flow-label="${isP1SkillCheckPage ? 'Question' : 'Skill Check'}" data-default-card-limit="3">
       ${skillChecksMarkup ? `${skillChecksMarkup}
       ` : ''}<article class="practice-topic">
         <header class="topic-section-header">
@@ -1285,6 +1405,7 @@ function renderSeedPracticePage(
     description: `Skill Check for ${topic.title}.`,
     active: course.id,
     body,
+    bodyClass: isP1SkillCheckPage ? 'skill-check-page' : undefined,
   });
 }
 
@@ -1847,8 +1968,10 @@ function renderSeedSkillCheckCard(
   templatesById: Map<string, CourseSeedVisualTemplate>,
   topicTitle: string,
   label = 'Skill Check',
+  focused = false,
 ): string {
-  return `
+  if (!focused) {
+    return `
     <article class="practice-card" data-skill-check-item-id="${escapeAttr(item.itemId)}">
       <p class="eyebrow">${escapeHtml(label)}</p>
       <h3>${renderMathText(item.prompt)}</h3>
@@ -1866,6 +1989,48 @@ function renderSeedSkillCheckCard(
       <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topicTitle)}" data-prompt="${escapeAttr(item.prompt)}">
         I tried this
       </button>
+    </article>
+  `;
+  }
+
+  const methodLine = item.hints.methodCue ?? item.hints.firstStep ?? item.workedRoute[0] ?? item.hints.nudge;
+  const saveButton = `
+        <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topicTitle)}" data-prompt="${escapeAttr(item.prompt)}">
+          I tried this
+        </button>`;
+  return `
+    <article class="practice-card${focused ? ' skill-check-focus-card' : ''}" data-skill-check-item-id="${escapeAttr(item.itemId)}">
+      <p class="eyebrow">${focused ? 'Try this' : escapeHtml(label)}</p>
+      <h3>${renderMathText(item.prompt)}</h3>
+      ${renderDraftSkillCheckVisual(item, templatesById)}
+      ${renderSkillCheckAnswerInput(item)}
+      ${focused && item.hints.nudge ? `
+        <details class="skill-check-hint-details">
+          <summary>Show hint</summary>
+          <p>${renderMathText(item.hints.nudge)}</p>
+        </details>
+      ` : ''}
+      <details class="skill-check-answer-details">
+        <summary>${focused ? 'Check answer' : 'Show answer and worked route'}</summary>
+        <div class="support-details"><strong>Answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
+        ${focused ? `<p class="skill-check-method-line"><strong>Method:</strong> ${renderMathText(methodLine)}</p>` : `
+          <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
+          ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
+          ${item.hints.firstStep ? `<p><strong>First step:</strong> ${renderMathText(item.hints.firstStep)}</p>` : ''}
+        `}
+        ${item.commonMistake ? `<p class="skill-check-feedback"><strong>Watch for:</strong> ${renderMathText(item.commonMistake)}</p>` : ''}
+        ${focused ? `
+          <details class="skill-check-working-details">
+            <summary>Show working</summary>
+            <ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
+          </details>
+          <button class="button primary-button skill-check-inline-next" type="button" data-skill-check-inline-next>
+            Next question
+          </button>
+        ` : `<ol class="worked-list">${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>`}
+        ${focused ? saveButton : ''}
+      </details>
+      ${focused ? '' : saveButton}
     </article>
   `;
 }
@@ -1895,17 +2060,16 @@ function renderP1SkillCheckGroup(
     .filter((set) => set.items.length);
   return `
     <article class="practice-topic" id="${escapeAttr(group.groupId)}" data-skill-check-group="${escapeAttr(group.groupId)}">
-      <header class="topic-section-header">
+      <header class="topic-section-header skill-check-group-header">
         <div>
-          <p class="eyebrow">3 quick checks</p>
+          <p class="eyebrow">Current skill</p>
           <h2>${escapeHtml(group.label)}</h2>
-          <p>${escapeHtml(group.purpose)}</p>
         </div>
       </header>
       <div class="practice-card-stack">
-        ${defaultItems.map(({ item, meta }) => renderSeedSkillCheckCard(item, templatesById, topicTitle, meta.label)).join('')}
+        ${defaultItems.map(({ item, meta }) => renderSeedSkillCheckCard(item, templatesById, topicTitle, meta.label, true)).join('')}
         ${optionalSets.flatMap((set) => (
-          set.items.map((item) => renderSeedSkillCheckCard(item, templatesById, topicTitle, set.label))
+          set.items.map((item) => renderSeedSkillCheckCard(item, templatesById, topicTitle, set.label, true))
         )).join('')}
       </div>
     </article>
@@ -2389,6 +2553,11 @@ async function generate(): Promise<void> {
       for (const topic of seedTopics) {
         htmlByPath.set(seedTopicPagePath(course, topic), renderSeedTopicHubPage(course, topic));
         htmlByPath.set(seedFieldGuidePagePath(course, topic), renderSeedFieldGuidePage(course, topic));
+        if (course.id === 'p1') {
+          topic.fieldGuideSections.forEach((section, index) => {
+            htmlByPath.set(seedFieldGuideSubtopicPagePath(course, topic, section), renderP1FieldGuideSubtopicPage(course, topic, section, index));
+          });
+        }
         htmlByPath.set(seedPracticePagePath(course, topic), renderSeedPracticePage(course, topic, data));
         htmlByPath.set(seedPracticeCompatibilityPagePath(course, topic), renderSeedPracticePage(course, topic, data, seedPracticeCompatibilityPagePath(course, topic)));
         htmlByPath.set(seedTopicExamTrainingPagePath(course, topic), renderSeedTopicExamTrainingPage(course, topic, data));
