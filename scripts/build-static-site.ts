@@ -1115,15 +1115,19 @@ function renderExamPanicVisual(): string {
 const homepageLoopSteps = [
   {
     label: 'Field Guide',
-    text: 'Learn the method before opening exam-image practice.',
+    text: 'Study the method and decision points before attempting exam-style work.',
   },
   {
     label: 'Skill Check',
-    text: 'Check one skill at a time so guessing does not look like readiness.',
+    text: 'Check one skill at a time so support practice does not pretend to be exam mastery.',
   },
   {
     label: 'Exam Training',
-    text: 'Move into source question images and mark-scheme review when the route is clear.',
+    text: 'Move into source question images when the written route is ready.',
+  },
+  {
+    label: 'Review',
+    text: 'Use mark-scheme review and gap checks before another attempt.',
   },
 ] as const;
 
@@ -1133,12 +1137,12 @@ function homepagePrimaryCourse(): CourseMetadata {
 
 function homepageCourseCta(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Start with P3';
-  return `View ${course.shortName} draft support`;
+  return `View ${course.shortName} support`;
 }
 
 function homepageCourseMaturity(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
-  return 'Draft support';
+  return 'Early support';
 }
 
 function homepageTopicPreviewText(course: CourseMetadata, count: number): string {
@@ -1146,14 +1150,17 @@ function homepageTopicPreviewText(course: CourseMetadata, count: number): string
 }
 
 function homepageCourseSummary(course: CourseMetadata, featured: boolean): string {
-  if (featured) return 'Full Field Guide, Skill Check, and Exam Training flow for the most developed Asterion course.';
+  if (featured) return 'Full method-first Field Guide, Skill Check, Exam Training, and review flow for the most developed Asterion course.';
   return 'Early topic notes and navigation support while this course is expanded and reviewed.';
 }
 
 function renderHomepageLoopPanel(course: CourseMetadata): string {
   return `
     <div class="homepage-loop-panel" aria-label="Asterion learning loop">
-      <span class="homepage-loop-kicker">Asterion loop</span>
+      <div class="homepage-loop-header">
+        <span class="homepage-loop-kicker">Training flow</span>
+        <span class="homepage-loop-tag">Method to evidence</span>
+      </div>
       <ol>
         ${homepageLoopSteps.map((step, index) => `
           <li>
@@ -1188,7 +1195,7 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
       </div>
       <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
       ${featured ? `<p class="homepage-primary-reason">Start here if you want the complete Asterion loop. Includes ${escapeRawHtml(homepageTopicPreviewText(course, topicCount))}.</p>` : ''}
-      ${featured ? '' : '<p class="course-card-status-copy">Draft support only: useful for orientation, not a fully reviewed course path yet.</p>'}
+      ${featured ? '' : '<p class="course-card-status-copy">Support only: useful for orientation, not a fully reviewed course path yet.</p>'}
       <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))} <span aria-hidden="true">&#8594;</span></span>
     </a>
   `;
@@ -1202,8 +1209,8 @@ function renderCourseSelectorPage(): string {
     <section class="page-hero course-selector-hero">
       <div class="hero-copy">
         <p class="eyebrow">CAIE 9709 training system</p>
-        <h1>Asterion trains exam readiness through a visible learning loop.</h1>
-        <p>Read the method, check the skill, then train with exam-style work and mark-scheme review. Start with P3; it has the strongest Asterion path today.</p>
+        <h1>CAIE 9709 practice that starts from the method, not the mark scheme.</h1>
+        <p>Asterion sends you through Field Guide, Skill Check, and Exam Training so P3 practice starts with the route you would write, then checks it against real question images and review.</p>
         <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">Start with P3 training <span aria-hidden="true">&#8594;</span></a>
       </div>
       ${renderHomepageLoopPanel(p3Course)}
@@ -1212,10 +1219,10 @@ function renderCourseSelectorPage(): string {
       ${renderHomepageCourseCard(pagePath, p3Course, true)}
       <section class="homepage-support-section" aria-labelledby="homepage-support-title">
         <div class="homepage-support-heading">
-          <h2 id="homepage-support-title">Draft/support courses</h2>
-          <p>P1, M1, and S1 stay available for early support, but P3 is the recommended full-flow path.</p>
+          <h2 id="homepage-support-title">Early support courses</h2>
+          <p>P1, M1, and S1 stay available for orientation and early support, but P3 is the recommended full-flow path.</p>
         </div>
-        <div class="course-grid course-support-grid" aria-label="Draft and support CAIE 9709 courses">
+        <div class="course-grid course-support-grid" aria-label="Early support CAIE 9709 courses">
           ${supportCourses.map((course) => renderHomepageCourseCard(pagePath, course)).join('')}
         </div>
       </section>
@@ -1223,7 +1230,7 @@ function renderCourseSelectorPage(): string {
     <section class="homepage-status-section" aria-labelledby="homepage-status-title">
       <p class="eyebrow">Status today</p>
       <h2 id="homepage-status-title">P3 is the most developed Asterion path today.</h2>
-      <p>P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.</p>
+      <p>P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.</p>
     </section>
   `;
   return renderPage({

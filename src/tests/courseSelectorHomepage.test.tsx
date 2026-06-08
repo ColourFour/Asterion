@@ -43,23 +43,29 @@ describe('CourseSelector homepage', () => {
     const openedCourses: CourseMetadata[] = [];
     const container = await render(<CourseSelector onOpenCourse={(course) => openedCourses.push(course)} />);
 
-    expect(container.textContent).toContain('Asterion trains exam readiness through a visible learning loop.');
+    expect(container.textContent).toContain('CAIE 9709 practice that starts from the method, not the mark scheme.');
+    expect(container.textContent).toContain('Asterion sends you through Field Guide, Skill Check, and Exam Training');
+    expect(container.textContent).toContain('Training flow');
+    expect(container.textContent).toContain('Method to evidence');
     expect(container.textContent).toContain('Field Guide');
     expect(container.textContent).toContain('Skill Check');
     expect(container.textContent).toContain('Exam Training');
+    expect(container.textContent).toContain('Review');
+    expect(container.textContent).toContain('Use mark-scheme review and gap checks before another attempt.');
     expect(container.textContent).toContain('Recommended first click: P3 Pure Mathematics 3');
     expect(container.textContent).toContain('Most complete Asterion path');
     expect(container.textContent).toContain('Recommended starting path');
-    expect(container.textContent).toContain('Full Field Guide, Skill Check, and Exam Training flow');
+    expect(container.textContent).toContain('Full method-first Field Guide, Skill Check, Exam Training, and review flow');
     expect(container.textContent).toContain('Start with P3');
     expect(container.textContent).toContain('Start here if you want the complete Asterion loop.');
     expect(container.textContent).toContain('Includes Algebra, Logarithms');
-    expect(container.textContent).toContain('Draft/support courses');
-    expect(container.textContent).toContain('Draft support');
-    expect(container.textContent).toContain('P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.');
-    expect(container.textContent).toContain('View P1 draft support');
-    expect(container.textContent).toContain('View M1 draft support');
-    expect(container.textContent).toContain('View S1 draft support');
+    expect(container.textContent).toContain('Early support courses');
+    expect(container.textContent).toContain('Early support');
+    expect(container.textContent).toContain('Support only: useful for orientation, not a fully reviewed course path yet.');
+    expect(container.textContent).toContain('P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.');
+    expect(container.textContent).toContain('View P1 support');
+    expect(container.textContent).toContain('View M1 support');
+    expect(container.textContent).toContain('View S1 support');
     expect(container.textContent).not.toContain('Homepage acceptance checklist');
     expect(container.textContent).toContain('Algebra');
     expect(container.textContent).not.toContain('Choose your course');
@@ -73,7 +79,7 @@ describe('CourseSelector homepage', () => {
     const p3Card = container.querySelector('.course-card-featured');
     const firstSupportCard = container.querySelector('.course-support-grid .course-card');
     expect(p3Card?.textContent).toContain('Start with P3');
-    expect(firstSupportCard?.textContent).toContain('Draft support');
+    expect(firstSupportCard?.textContent).toContain('Early support');
     expect(
       Boolean(p3Card && firstSupportCard && (p3Card.compareDocumentPosition(firstSupportCard) & Node.DOCUMENT_POSITION_FOLLOWING)),
     ).toBe(true);

@@ -73,11 +73,11 @@ try {
     const p3Card = document.querySelector('.course-card-featured');
     const supportCards = document.querySelectorAll('.course-support-grid .course-card');
     return {
-      hasLoop: ['Field Guide', 'Skill Check', 'Exam Training'].every((label) => text.includes(label)),
+      hasLoop: ['Field Guide', 'Skill Check', 'Exam Training', 'Review'].every((label) => text.includes(label)),
       hasP3Priority: text.includes('Most complete Asterion path') && text.includes('Recommended first click: P3 Pure Mathematics 3'),
-      hasP3Reason: text.includes('Recommended starting path') && text.includes('Full Field Guide, Skill Check, and Exam Training flow'),
-      hasDraftStatus: text.includes('Draft support') && text.includes('P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.'),
-      hasDraftSupportSection: text.includes('Draft/support courses') && text.includes('View P1 draft support'),
+      hasP3Reason: text.includes('Recommended starting path') && text.includes('Full method-first Field Guide, Skill Check, Exam Training, and review flow'),
+      hasSupportStatus: text.includes('Early support') && text.includes('P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.'),
+      hasSupportSection: text.includes('Early support courses') && text.includes('View P1 support'),
       hasChecklist: text.includes('Homepage acceptance checklist'),
       hasTopicEvidence: text.includes('Includes Algebra, Logarithms'),
       hasOldHeroCopy: text.includes('Which paper are you studying today?') || text.includes('Brain loading'),
@@ -87,13 +87,13 @@ try {
     };
   });
   if (!homepageResult.hasLoop) {
-    fail('Homepage must show the Field Guide -> Skill Check -> Exam Training learning loop.');
+    fail('Homepage must show the Field Guide -> Skill Check -> Exam Training -> Review learning loop.');
   }
   if (!homepageResult.hasP3Priority || !homepageResult.hasP3Reason || !/Start with P3\b/.test(homepageResult.p3CardText) || !homepageResult.p3BeforeSupport) {
     fail('Homepage must make P3 the obvious primary course path.');
   }
-  if (!homepageResult.hasDraftStatus || !homepageResult.hasDraftSupportSection || homepageResult.supportCardCount !== 3) {
-    fail('Homepage must honestly label P1, M1, and S1 as draft/support sections.');
+  if (!homepageResult.hasSupportStatus || !homepageResult.hasSupportSection || homepageResult.supportCardCount !== 3) {
+    fail('Homepage must honestly label P1, M1, and S1 as early support sections.');
   }
   if (homepageResult.hasChecklist) {
     fail('Homepage must not render an implementation acceptance checklist.');
