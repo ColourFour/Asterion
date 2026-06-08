@@ -1,8 +1,17 @@
 node_modules/
 dist/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.cache/
+.vite/
 .env
 .env.local
 .env.*.local
+*.log
+*.tmp
+*.trace
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts

@@ -64,7 +64,7 @@ Current draft seed topic sets:
 - M1: Forces and Equilibrium; Kinematics; Momentum; Newton's Laws with Constant Acceleration; Newton's Laws with Variable Acceleration; Energy, Work and Power.
 - S1: Representation of Data; Permutations and Combinations; Probability; Discrete Random Variables; The Normal Distribution.
 
-The site does not require a backend, authentication, Supabase, a React router, an app shell, GitHub Actions deployment, or a GitHub Pages 404 restore script.
+The site does not require a backend, authentication, Supabase, a React router, an app shell, or a GitHub Pages 404 restore script. The GitHub Actions workflow, once enabled as the Pages source, only builds and publishes the static artifact.
 
 ## Build
 
@@ -86,9 +86,9 @@ Check the generated artifact:
 npm run static:check
 ```
 
-The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages site to `docs/`.
+The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages artifact to `docs/`.
 
-`docs/` is generated output and is committed intentionally because GitHub Pages is configured to deploy directly from the `main` branch `/docs` folder. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
+`docs/` is generated output and is committed intentionally during the Pages deployment migration because the live repository may still be configured to deploy directly from the `main` branch `/docs` folder. Do not delete committed `docs/` until GitHub Pages has been switched to GitHub Actions and a successful Actions deployment has served the live site. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
 
 For local experiments that need a disposable `dist/` artifact:
 
@@ -129,7 +129,9 @@ Open the Vite preview URL and test direct URLs such as:
 
 ## GitHub Pages
 
-GitHub Pages should deploy directly from the committed generated site in `docs/`. Use these repository settings:
+Asterion is migrating from legacy branch publishing to GitHub Actions artifact deployment so `docs/` can later be removed from `main` as committed generated output.
+
+Current legacy settings, used until the migration is complete:
 
 ```text
 Source: Deploy from a branch
@@ -137,7 +139,19 @@ Branch: main
 Folder: /docs
 ```
 
-No GitHub Actions workflow is required to build, upload, or deploy the site. After `npm run build` has regenerated `docs/` and those files are committed, pushing `main` is enough for GitHub Pages to serve the latest static site.
+Target settings after the workflow has been verified:
+
+```text
+Source: GitHub Actions
+```
+
+Migration phases:
+
+1. Add `.github/workflows/deploy-pages.yml` so pushes to `main` build from source, run tests and static checks, upload `docs/` with `actions/upload-pages-artifact`, and deploy with `actions/deploy-pages`.
+2. Switch repository settings at `Settings -> Pages -> Build and deployment -> Source` to `GitHub Actions`, then verify `https://colourfour.github.io/Asterion/` is served by a successful Actions deployment.
+3. Remove committed `docs/` from `main`, add `docs/` to `.gitignore`, and keep `npm run build` producing `docs/` locally as the generated artifact.
+
+Do not perform phase 3 while Pages is still configured as `Deploy from a branch` with `main` and `/docs`.
 
 ### Base Path
 
