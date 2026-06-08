@@ -94,7 +94,7 @@ npm run assets:sync
 
 The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages artifact to `docs/`.
 
-`docs/` is generated output and is committed intentionally during the Pages deployment migration because the live repository may still be configured to deploy directly from the `main` branch `/docs` folder. Do not delete committed `docs/` until GitHub Pages has been switched to GitHub Actions and a successful Actions deployment has served the live site. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
+`docs/` is generated output and is committed intentionally only on legacy branch-publishing branches. On the current GitHub Actions Pages branch, `docs/` is ignored local output and the workflow uploads it as a Pages artifact. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
 
 For local experiments that need a disposable `dist/` artifact:
 
@@ -135,9 +135,15 @@ Open the Vite preview URL and test direct URLs such as:
 
 ## GitHub Pages
 
-Asterion is migrating from legacy branch publishing to GitHub Actions artifact deployment so `docs/` can later be removed from `main` as committed generated output.
+Asterion deploys with GitHub Actions artifact publishing. The workflow builds from source, generates `docs/`, runs static checks, uploads `docs/` as a Pages artifact, and deploys that artifact.
 
-Current legacy settings, used until the migration is complete:
+Current repository setting:
+
+```text
+Source: GitHub Actions
+```
+
+Legacy branch-publishing settings, kept here only for rollback context:
 
 ```text
 Source: Deploy from a branch
@@ -145,19 +151,13 @@ Branch: main
 Folder: /docs
 ```
 
-Target settings after the workflow has been verified:
-
-```text
-Source: GitHub Actions
-```
-
-Migration phases:
+Completed migration phases:
 
 1. Add `.github/workflows/deploy-pages.yml` so pushes to `main` build from source, run tests and static checks, upload `docs/` with `actions/upload-pages-artifact`, and deploy with `actions/deploy-pages`.
 2. Switch repository settings at `Settings -> Pages -> Build and deployment -> Source` to `GitHub Actions`, then verify `https://colourfour.github.io/Asterion/` is served by a successful Actions deployment.
 3. Remove committed `docs/` from `main`, add `docs/` to `.gitignore`, and keep `npm run build` producing `docs/` locally as the generated artifact.
 
-Do not perform phase 3 while Pages is still configured as `Deploy from a branch` with `main` and `/docs`.
+Do not restore committed `docs/` unless rolling back Pages to `Deploy from a branch` with `main` and `/docs`.
 
 ### Base Path
 
