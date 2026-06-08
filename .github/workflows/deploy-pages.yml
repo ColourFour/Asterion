@@ -33,6 +33,8 @@ jobs:
 
       - name: Verify exam-bank assets
         run: npm run assets:sync
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium

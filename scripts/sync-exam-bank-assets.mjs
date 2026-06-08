@@ -118,12 +118,12 @@ async function verifyTarget(manifest, targetPath) {
   return { ok: true, fingerprint };
 }
 
-async function download(url, destination) {
+async function downloadOnce(url, destination) {
   const get = url.startsWith('https:') ? httpsGet : httpGet;
   await new Promise((resolve, reject) => {
     const request = get(url, (response) => {
       if ([301, 302, 303, 307, 308].includes(response.statusCode ?? 0) && response.headers.location) {
-        download(response.headers.location, destination).then(resolve, reject);
+        downloadOnce(response.headers.location, destination).then(resolve, reject);
         return;
       }
       if (response.statusCode !== 200) {
@@ -135,8 +135,67 @@ async function download(url, destination) {
       stream.on('finish', () => stream.close(resolve));
       stream.on('error', reject);
     });
+    request.setTimeout(60000, () => request.destroy(new Error(`Download timed out: ${url}`)));
     request.on('error', reject);
   });
+}
+
+async function download(url, destination) {
+  const configuredAttempts = Number.parseInt(process.env.ASTERION_EXAM_BANK_DOWNLOAD_RETRIES || '4', 10);
+  const maxAttempts = Number.isFinite(configuredAttempts) ? Math.max(0, configuredAttempts) : 4;
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      await rm(destination, { force: true });
+      await downloadOnce(url, destination);
+      return;
+    } catch (error) {
+      lastError = error;
+      if (attempt === maxAttempts) break;
+      console.warn(`[exam-bank-assets] download attempt ${attempt} failed: ${error.message}. Retrying...`);
+    }
+  }
+
+  const releaseAsset = parseGitHubReleaseAssetUrl(url);
+  if (releaseAsset) {
+    console.warn('[exam-bank-assets] direct download failed; falling back to gh release download.');
+    await downloadGitHubReleaseAsset(releaseAsset, destination);
+    return;
+  }
+
+  throw lastError ?? new Error(`No supported download method succeeded for ${url}.`);
+}
+
+function parseGitHubReleaseAssetUrl(source) {
+  try {
+    const url = new URL(source);
+    if (url.hostname !== 'github.com') return null;
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts.length !== 6 || parts[2] !== 'releases' || parts[3] !== 'download') return null;
+    return {
+      repo: `${parts[0]}/${parts[1]}`,
+      tag: decodeURIComponent(parts[4]),
+      assetName: decodeURIComponent(parts[5]),
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function downloadGitHubReleaseAsset({ repo, tag, assetName }, destination) {
+  await run('gh', [
+    'release',
+    'download',
+    tag,
+    '--repo',
+    repo,
+    '--pattern',
+    assetName,
+    '--output',
+    destination,
+    '--clobber',
+  ]);
 }
 
 async function prepareBundle(source, destination) {

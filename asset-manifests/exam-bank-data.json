@@ -2,9 +2,9 @@
   "bundleName": "asterion-exam-bank-data-v2026-06-08.tgz",
   "version": "2026-06-08",
   "description": "Asterion runtime/build exam-bank data bundle: question and mark-scheme image crops plus JSON catalogs used by static generation, tests, and Content Lab tooling.",
-  "externalizationStatus": "planned-release-artifact",
-  "downloadUrl": null,
-  "bundleSha256": null,
+  "externalizationStatus": "release-artifact-published",
+  "downloadUrl": "https://github.com/ColourFour/Asterion/releases/download/assets-exam-bank-data-v2026-06-08/asterion-exam-bank-data-v2026-06-08.tgz",
+  "bundleSha256": "6375d30046a044467d9b68381ee9d08ef183612ffd73d8cd8bf08b19d5670294",
   "treeSha256": "85726e5a6d118e42165303508ab8fddb0bb7aeaaa8af89d226d3e7f156ea0959",
   "unpackPath": "public/assets/exam-bank-data",
   "restoreCommand": "npm run assets:sync",
@@ -60,6 +60,6 @@
   "notes": [
     "The JSON files are used by static generation, tests, and Content Lab tooling. They are intentionally excluded from generated docs/ output by scripts/build-static-site.ts.",
     "The image directories are copied into the GitHub Pages artifact and are required by generated static pages.",
-    "downloadUrl and bundleSha256 must be filled with a real GitHub Release asset before public/assets/exam-bank-data/ can be untracked safely."
+    "downloadUrl and bundleSha256 point at the versioned GitHub Release asset used by npm run assets:sync when the local asset tree is missing."
   ]
 }

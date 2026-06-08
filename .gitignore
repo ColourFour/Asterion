@@ -1,6 +1,7 @@
 node_modules/
 dist/
 docs/
+public/assets/exam-bank-data/
 coverage/
 test-results/
 playwright-report/
