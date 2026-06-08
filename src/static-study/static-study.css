@@ -889,6 +889,19 @@ main > * {
   align-items: start;
 }
 
+.formula-cue-block {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(63, 113, 98, 0.2);
+  border-radius: var(--radius);
+  background: rgba(246, 251, 247, 0.86);
+}
+
+.formula-cue-block .eyebrow {
+  color: var(--sage);
+}
+
 .subtopic-nav-card {
   gap: 14px;
 }
@@ -2018,10 +2031,18 @@ summary {
   background: #fff8ef;
 }
 
+.skill-check-first-step,
 .skill-check-method-line,
 .skill-check-feedback {
   margin: 0;
   color: var(--muted-strong);
+}
+
+.skill-check-first-step {
+  padding: 10px 12px;
+  border-left: 4px solid var(--sage);
+  background: rgba(220, 233, 223, 0.52);
+  font-weight: 800;
 }
 
 .skill-check-feedback {

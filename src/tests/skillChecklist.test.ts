@@ -657,6 +657,21 @@ describe('Skill Checklist grouping', () => {
     expect(coordinateItems.some((item) => item.skillId.includes('tangent_radius_gradient'))).toBe(true);
     expect(coordinateItems.some((item) => item.skillId.includes('line_circle_intersection'))).toBe(true);
     expect(coordinateItems.some((item) => item.skillId.includes('discriminant_tangency_condition'))).toBe(true);
+
+    const coordinateGroups = P1_SKILL_CHECK_GROUPS.filter((group) => group.topicId === 'p1-coordinate-geometry');
+    expect(coordinateGroups.flatMap((group) => group.optionalSets ?? []).map((set) => set.label)).toEqual([
+      'Perpendicular bisector',
+      'Extra line practice',
+      'Extra circle practice',
+      'Tangent at a point',
+      'Extra line intersection',
+      'Discriminant check',
+    ]);
+    expect(coordinateGroups.flatMap((group) => group.defaultItems.map((entry) => entry.itemId))).not.toEqual(expect.arrayContaining([
+      'p1-sc-coordinate-parallel-perpendicular-004',
+      'p1-sc-coordinate-circles-005',
+      'p1-sc-coordinate-intersections-005',
+    ]));
   });
 
   it('keeps the remaining P1 quality-sweep units student-facing and bounded', () => {

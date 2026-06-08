@@ -2212,7 +2212,7 @@ export interface P1SkillCheckGroupItem {
 }
 
 export interface P1SkillCheckOptionalSet {
-  label: 'More practice' | 'Mixed quick check' | 'Challenge';
+  label: string;
   itemIds: string[];
 }
 
@@ -2359,7 +2359,7 @@ export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
       { role: 'use_the_method', label: 'Find a parallel gradient', itemId: 'p1-sc-coordinate-parallel-perpendicular-002' },
       { role: 'exam_style_twist', label: 'Compare two lines', itemId: 'p1-sc-coordinate-parallel-perpendicular-003' },
     ],
-    optionalSets: [{ label: 'Challenge', itemIds: ['p1-sc-coordinate-parallel-perpendicular-004'] }],
+    optionalSets: [{ label: 'Perpendicular bisector', itemIds: ['p1-sc-coordinate-parallel-perpendicular-004'] }],
   },
   {
     groupId: 'p1-coordinate-geometry-straight-line',
@@ -2371,7 +2371,7 @@ export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
       { role: 'use_the_method', label: 'Use point-gradient form', itemId: 'p1-sc-coordinate-straight-line-001' },
       { role: 'exam_style_twist', label: 'Give both forms', itemId: 'p1-sc-coordinate-straight-line-004' },
     ],
-    optionalSets: [{ label: 'More practice', itemIds: ['p1-sc-coordinate-straight-line-002'] }],
+    optionalSets: [{ label: 'Extra line practice', itemIds: ['p1-sc-coordinate-straight-line-002'] }],
   },
   {
     groupId: 'p1-coordinate-geometry-circles',
@@ -2384,8 +2384,8 @@ export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
       { role: 'exam_style_twist', label: 'Complete the square', itemId: 'p1-sc-coordinate-circles-004' },
     ],
     optionalSets: [
-      { label: 'More practice', itemIds: ['p1-sc-coordinate-circles-002'] },
-      { label: 'Challenge', itemIds: ['p1-sc-coordinate-circles-005'] },
+      { label: 'Extra circle practice', itemIds: ['p1-sc-coordinate-circles-002'] },
+      { label: 'Tangent at a point', itemIds: ['p1-sc-coordinate-circles-005'] },
     ],
   },
   {
@@ -2399,8 +2399,8 @@ export const P1_SKILL_CHECK_GROUPS: P1SkillCheckGroup[] = [
       { role: 'exam_style_twist', label: 'Find both points', itemId: 'p1-sc-coordinate-intersections-004' },
     ],
     optionalSets: [
-      { label: 'More practice', itemIds: ['p1-sc-coordinate-intersections-002'] },
-      { label: 'Challenge', itemIds: ['p1-sc-coordinate-intersections-005'] },
+      { label: 'Extra line intersection', itemIds: ['p1-sc-coordinate-intersections-002'] },
+      { label: 'Discriminant check', itemIds: ['p1-sc-coordinate-intersections-005'] },
     ],
   },
   {

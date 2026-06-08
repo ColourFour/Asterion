@@ -12,6 +12,12 @@ interface P1SubtopicSpec {
   mistake: string;
   takeaway: string;
   prompt: string;
+  formulaCues?: string[];
+  workedExampleLines?: string[];
+  tryPrompt?: string;
+  tryScaffold?: string[];
+  tryWorkedLines?: string[];
+  tryResult?: string;
 }
 
 interface P1TopicSpec {
@@ -46,6 +52,12 @@ function section(topicId: string, spec: P1SubtopicSpec): CourseSeedTopicSection 
       `Common mistake: ${spec.mistake}`,
       `Quick takeaway: ${spec.takeaway}`,
     ],
+    formulaCues: spec.formulaCues,
+    workedExampleLines: spec.workedExampleLines,
+    tryPrompt: spec.tryPrompt,
+    tryScaffold: spec.tryScaffold,
+    tryWorkedLines: spec.tryWorkedLines,
+    tryResult: spec.tryResult,
     practicePrompts: [`${draftPromptPrefix}: ${spec.prompt}`],
   };
 }
@@ -326,40 +338,125 @@ export const P1_SOURCE_FILLED_TOPICS: CourseSeedTopic[] = [
         title: 'Parallel and perpendicular lines',
         goal: 'Use gradient relationships to compare or construct lines.',
         method: 'Parallel lines have equal gradients; perpendicular gradients multiply to $-1$. For a perpendicular bisector, first find the segment midpoint.',
-        example: 'For $A(1,1)$ and $B(7,11)$, midpoint is $(4,6)$ and gradient $AB=\\frac{10}{6}=\\frac53$, so the perpendicular bisector has gradient $-\\frac35$ and starts $y-6=-\\frac35(x-4)$.',
+        example: 'For $A(1,1)$ and $B(7,11)$, find the perpendicular bisector of $AB$.',
+        formulaCues: ['$m=\\frac{y_2-y_1}{x_2-x_1}$', '$m_1m_2=-1$ for perpendicular lines'],
+        workedExampleLines: [
+          'Midpoint $M=\\left(\\frac{1+7}{2},\\frac{1+11}{2}\\right)=(4,6)$.',
+          'Gradient $AB=\\frac{11-1}{7-1}=\\frac{10}{6}=\\frac53$.',
+          'Perpendicular gradient $=-\\frac35$.',
+          'Use the midpoint: $y-6=-\\frac35(x-4)$.',
+          'So the bisector is $3x+5y-42=0$.',
+        ],
         mistake: 'Using positive reciprocal instead of negative reciprocal, or using an endpoint instead of the midpoint for a bisector.',
         takeaway: 'Perpendicular bisectors need both midpoint and negative reciprocal gradient.',
-        prompt: 'Find a perpendicular bisector from two endpoints.',
+        prompt: 'Points $A(2,3)$ and $B(8,7)$ are endpoints of a line segment. Find the equation of the perpendicular bisector.',
+        tryPrompt: 'Points $A(2,3)$ and $B(8,7)$ are endpoints of a line segment. Find the equation of the perpendicular bisector.',
+        tryScaffold: [
+          'First find the midpoint.',
+          'Then find the gradient of $AB$ and take the negative reciprocal.',
+          'Use point-gradient form through the midpoint.',
+        ],
+        tryWorkedLines: [
+          'Midpoint $M=(5,5)$.',
+          'Gradient $AB=\\frac{7-3}{8-2}=\\frac23$, so perpendicular gradient $=-\\frac32$.',
+          '$y-5=-\\frac32(x-5)$.',
+          'Multiply out to get $3x+2y-25=0$.',
+        ],
+        tryResult: '$3x+2y-25=0$',
       },
       {
         id: 'straight-line',
         title: 'Equation of a straight line',
         goal: 'Find a line equation from a point and gradient or two points.',
         method: 'From two points, find $m=\\frac{y_2-y_1}{x_2-x_1}$, use $y-y_1=m(x-x_1)$, then convert to the requested form.',
-        example: 'Through $(1,2)$ and $(5,10)$, $m=2$, so $y-2=2(x-1)$, hence $y=2x$ and the same line can be written $2x-y=0$.',
+        example: 'Find the equation of the line through $(1,2)$ and $(5,10)$.',
+        formulaCues: ['$m=\\frac{y_2-y_1}{x_2-x_1}$', '$y-y_1=m(x-x_1)$'],
+        workedExampleLines: [
+          '$m=\\frac{10-2}{5-1}=\\frac84=2$.',
+          'Use $(1,2)$ in point-gradient form: $y-2=2(x-1)$.',
+          'Expand: $y-2=2x-2$.',
+          'So $y=2x$, or $2x-y=0$.',
+        ],
         mistake: 'Using the wrong point after finding the gradient, or giving $y=mx+c$ when the question asks for $ax+by+c=0$.',
         takeaway: 'Point-gradient form is the safest starting form; final form depends on the question.',
-        prompt: 'Find the equation of a line through two coordinates.',
+        prompt: 'Find the equation of the line through $(2,-1)$ and $(6,7)$. Give it as $y=mx+c$ and as $ax+by+c=0$.',
+        tryPrompt: 'Find the equation of the line through $(2,-1)$ and $(6,7)$. Give it as $y=mx+c$ and as $ax+by+c=0$.',
+        tryScaffold: [
+          'Find the gradient from the two points.',
+          'Use point-gradient form with either point.',
+          'Rearrange carefully into both requested forms.',
+        ],
+        tryWorkedLines: [
+          '$m=\\frac{7-(-1)}{6-2}=\\frac84=2$.',
+          '$y+1=2(x-2)$.',
+          '$y+1=2x-4$, so $y=2x-5$.',
+          'The same line is $2x-y-5=0$.',
+        ],
+        tryResult: '$y=2x-5$, or $2x-y-5=0$',
       },
       {
         id: 'circles',
         title: 'Circles',
         goal: 'Read or form a circle equation from centre and radius.',
         method: 'Use $(x-a)^2+(y-b)^2=r^2$ for centre $(a,b)$; complete the square when the equation is expanded.',
-        example: '$x^2+y^2+6x-10y+18=0$ becomes $(x+3)^2-9+(y-5)^2-25+18=0$, so $(x+3)^2+(y-5)^2=16$. Centre $(-3,5)$, radius $4$.',
+        example: 'Find the centre and radius of $x^2+y^2+6x-10y+18=0$.',
+        formulaCues: ['$(x-a)^2+(y-b)^2=r^2$ has centre $(a,b)$'],
+        workedExampleLines: [
+          'Group terms: $(x^2+6x)+(y^2-10y)+18=0$.',
+          'Complete $x$: $x^2+6x=(x+3)^2-9$.',
+          'Complete $y$: $y^2-10y=(y-5)^2-25$.',
+          'Substitute and move constants: $(x+3)^2-9+(y-5)^2-25+18=0$, so $(x+3)^2+(y-5)^2=16$.',
+          'Centre $(-3,5)$ and radius $4$.',
+        ],
         mistake: 'Writing the centre signs the wrong way round inside brackets, or forgetting to add square terms to both variables.',
         takeaway: 'Expanded circle equations hide the centre until you complete the square.',
-        prompt: 'Complete the square to find a circle centre and radius.',
+        prompt: 'Complete the square for $x^2+y^2-4x+8y+11=0$, then state the centre and radius.',
+        tryPrompt: 'Complete the square for $x^2+y^2-4x+8y+11=0$, then state the centre and radius.',
+        tryScaffold: [
+          'Group the $x$ terms and $y$ terms.',
+          'Complete the square for each variable.',
+          'Move the constants to read $r^2$.',
+        ],
+        tryWorkedLines: [
+          '$(x^2-4x)+(y^2+8y)+11=0$.',
+          '$x^2-4x=(x-2)^2-4$ and $y^2+8y=(y+4)^2-16$.',
+          '$(x-2)^2-4+(y+4)^2-16+11=0$.',
+          'So $(x-2)^2+(y+4)^2=9$.',
+          'Centre $(2,-4)$ and radius $3$.',
+        ],
+        tryResult: 'Centre $(2,-4)$, radius $3$',
       },
       {
         id: 'intersections',
         title: 'Points of intersection',
         goal: 'Find coordinates where two graphs meet.',
         method: 'Solve the equations simultaneously, then substitute back for the second coordinate; use the discriminant when the question asks whether graphs meet or touch.',
-        example: 'For $x^2+y^2=25$ and $y=3x-5$, substitute to get $x^2+(3x-5)^2=25$, so $10x^2-30x=0$ and the points are $(0,-5)$ and $(3,4)$.',
+        example: 'Find the intersections of $x^2+y^2=25$ and $y=3x-5$.',
+        formulaCues: ['Substitute one equation into the other', '$D=b^2-4ac$ counts quadratic intersections'],
+        workedExampleLines: [
+          'Substitute the line into the circle: $x^2+(3x-5)^2=25$.',
+          'Expand: $x^2+9x^2-30x+25=25$.',
+          'Collect: $10x^2-30x=0$.',
+          'Factorise: $10x(x-3)=0$, so $x=0$ or $x=3$.',
+          'Substitute back into $y=3x-5$: when $x=0$, $y=-5$; when $x=3$, $y=4$.',
+          'The intersection points are $(0,-5)$ and $(3,4)$.',
+        ],
         mistake: 'Finding only the x-coordinate, or treating a repeated quadratic root as two different intersections.',
         takeaway: 'Line-circle intersections become quadratics; $D>0$, $D=0$, and $D<0$ tell you two, one, or no real intersections.',
-        prompt: 'Find line-circle intersections or decide whether a line touches a circle.',
+        prompt: 'Find the intersection points of $x^2+y^2=13$ and $y=x+1$.',
+        tryPrompt: 'Find the intersection points of $x^2+y^2=13$ and $y=x+1$.',
+        tryScaffold: [
+          'Substitute $y=x+1$ into the circle.',
+          'Collect and factorise the quadratic.',
+          'Substitute each $x$ value back into the line.',
+        ],
+        tryWorkedLines: [
+          '$x^2+(x+1)^2=13$.',
+          '$x^2+x^2+2x+1=13$, so $2x^2+2x-12=0$.',
+          'Divide by $2$: $x^2+x-6=0=(x+3)(x-2)$.',
+          '$x=-3$ gives $y=-2$; $x=2$ gives $y=3$.',
+        ],
+        tryResult: '$(-3,-2)$ and $(2,3)$',
       },
     ],
   }),

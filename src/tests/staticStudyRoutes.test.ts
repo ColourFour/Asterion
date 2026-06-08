@@ -19,6 +19,8 @@ describe('static study routes', () => {
       'p1/topics/quadratics/skill-check/index.html',
       'p1/topics/quadratics/practice/index.html',
       'p1/topics/quadratics/exam-training/index.html',
+      'p1/topics/coordinate-geometry/field-guide/points-of-intersection/index.html',
+      'p1/topics/coordinate-geometry/field-guide/intersections/index.html',
       'p1/exam-training/index.html',
       'm1/topics/index.html',
       'm1/topics/velocity-and-constant-acceleration/index.html',
@@ -113,7 +115,8 @@ describe('static study routes', () => {
     expect(staticStudyScript).toContain("'Try 3 quick questions'");
     expect(staticStudyScript).toContain('data-skill-check-inline-next');
     expect(staticStudyScript).toContain('practice-group-switcher');
-    expect(staticStudyScript).toContain("'Finish check'");
+    expect(staticStudyScript).toContain("'Skip to finish check'");
+    expect(staticStudyScript).toContain("'Skip to next question'");
     expect(staticStudyScript).toContain("'Next skill'");
     expect(staticStudyScript).toContain("'Try exam-style questions'");
   });

@@ -358,6 +358,7 @@
       var skillCheckGroups = Array.from(flow.querySelectorAll('[data-skill-check-group]')).filter(function (group) {
         return group instanceof HTMLElement;
       });
+      var isCoordinateGeometrySkillCheck = flow.getAttribute('data-topic-id') === 'p1-coordinate-geometry';
       var labelText = flow.getAttribute('data-flow-label') || 'Question';
       var defaultLimit = Number(flow.getAttribute('data-default-card-limit') || '0');
       var index = 0;
@@ -554,10 +555,12 @@
         previous.disabled = index === 0;
         if (skillCheckGroups.length > 1 && isLastCardInChunk) {
           next.disabled = false;
-          next.textContent = 'Finish check';
+          next.className = isCoordinateGeometrySkillCheck ? 'button secondary-button' : 'button primary-button';
+          next.textContent = isCoordinateGeometrySkillCheck ? 'Skip to finish check' : 'Finish check';
         } else {
           next.disabled = false;
-          next.textContent = 'Next question';
+          next.className = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'button secondary-button' : 'button primary-button';
+          next.textContent = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'Skip to next question' : 'Next question';
         }
         if (!skillCheckGroups.length && isLastCardInChunk) {
           next.disabled = true;
@@ -578,6 +581,13 @@
         morePractice.hidden = setCount <= 1;
         previousSet.disabled = setIndex === 0;
         morePractice.disabled = setIndex === setCount - 1;
+        if (skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck && setCount > 1) {
+          var nextSetCard = selectedCards[(setIndex + 1) * defaultLimit];
+          var nextSetLabel = nextSetCard?.querySelector?.('.eyebrow')?.textContent?.trim();
+          morePractice.textContent = nextSetLabel && nextSetLabel !== 'Try this' ? 'Try: ' + nextSetLabel : 'More practice';
+        } else {
+          morePractice.textContent = 'More practice';
+        }
         if (groupNav) {
           Array.from(groupNav.querySelectorAll('a[href^="#"]')).forEach(function (link) {
             var linkTarget = decodeURIComponent((link.getAttribute('href') || '').replace(/^#/, ''));

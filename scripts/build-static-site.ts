@@ -301,6 +301,13 @@ function seedFieldGuideSubtopicPagePath(course: CourseMetadata, topic: CourseSee
   return `${course.slug}/topics/${topic.slug}/field-guide/${seedFieldGuideSubtopicSlug(section)}/index.html`;
 }
 
+function seedFieldGuideSubtopicAliasPagePaths(course: CourseMetadata, topic: CourseSeedTopic, section: CourseSeedTopicSection): string[] {
+  if (course.id === 'p1' && topic.id === 'p1-coordinate-geometry' && section.id === 'p1-coordinate-geometry-intersections') {
+    return [`${course.slug}/topics/${topic.slug}/field-guide/intersections/index.html`];
+  }
+  return [];
+}
+
 function seedPracticePagePath(course: CourseMetadata, topic: CourseSeedTopic): string {
   return seedSkillCheckPagePath(course, topic);
 }
@@ -609,6 +616,11 @@ interface SeedSubtopicDetails {
   mistake: string;
   takeaway: string;
   prompt: string;
+  formulaCues: string[];
+  workedExampleLines: string[];
+  tryScaffold: string[];
+  tryWorkedLines: string[];
+  tryResult: string;
 }
 
 function stripSeedSupportPrefix(value: string | undefined): string {
@@ -633,7 +645,12 @@ function seedSubtopicDetails(section: CourseSeedTopicSection, topic: CourseSeedT
     example: labeledSeedBullet(section, ['Draft worked example', 'Worked example']) || fallbackBullet(1) || topic.selfChecks[index % Math.max(1, topic.selfChecks.length)] || '',
     mistake: labeledSeedBullet(section, ['Common mistake']) || topic.commonMistakes[index % Math.max(1, topic.commonMistakes.length)] || '',
     takeaway: labeledSeedBullet(section, ['Quick takeaway']) || section.purpose || '',
-    prompt: stripSeedSupportPrefix(section.practicePrompts?.[0]) || topic.selfChecks[index % Math.max(1, topic.selfChecks.length)] || topic.practiceHook,
+    prompt: section.tryPrompt || stripSeedSupportPrefix(section.practicePrompts?.[0]) || topic.selfChecks[index % Math.max(1, topic.selfChecks.length)] || topic.practiceHook,
+    formulaCues: section.formulaCues ?? [],
+    workedExampleLines: section.workedExampleLines ?? [],
+    tryScaffold: section.tryScaffold ?? [],
+    tryWorkedLines: section.tryWorkedLines ?? [],
+    tryResult: section.tryResult ?? '',
   };
 }
 
@@ -664,6 +681,18 @@ function renderMethodList(lines: string[]): string {
     <ol class="worked-list compact-worked-list">
       ${lines.filter(Boolean).map((line) => `<li>${renderMathText(line)}</li>`).join('')}
     </ol>
+  `;
+}
+
+function renderFormulaCueBlock(cues: string[]): string {
+  if (!cues.length) return '';
+  return `
+    <aside class="formula-cue-block" aria-label="Formula cue">
+      <p class="eyebrow">Formula cue</p>
+      <ul class="formula-chip-list single-formula-list">
+        ${cues.map((cue) => `<li>${renderMathText(cue)}</li>`).join('')}
+      </ul>
+    </aside>
   `;
 }
 
@@ -758,15 +787,20 @@ function renderSeedSubtopicPanel(
       <section class="worked-example-block">
         <p class="eyebrow">Worked example</p>
         <p class="prompt">${renderMathText(details.example)}</p>
-        ${renderMethodList([details.method])}
+        ${renderFormulaCueBlock(details.formulaCues)}
+        ${renderMethodList(details.workedExampleLines.length ? details.workedExampleLines : [details.method])}
         <p class="result"><strong>Check:</strong> ${renderMathText(details.takeaway)}</p>
       </section>
       <section class="try-similar-block">
         <p class="eyebrow">Try a similar one</p>
         <h4>${renderMathText(details.prompt)}</h4>
+        ${details.tryScaffold.length ? renderGuidedStudyPhaseList(details.tryScaffold) : ''}
         <details>
-          <summary>Reveal/check the method</summary>
-          <p><strong>Use:</strong> ${renderMathText(details.method)}</p>
+          <summary>${details.tryWorkedLines.length ? 'Reveal/check the worked route' : 'Reveal/check the method'}</summary>
+          ${details.tryWorkedLines.length
+            ? `<ol class="worked-list">${details.tryWorkedLines.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>`
+            : `<p><strong>Use:</strong> ${renderMathText(details.method)}</p>`}
+          ${details.tryResult ? `<p><strong>Final answer:</strong> ${renderMathText(details.tryResult)}</p>` : ''}
           <p><strong>Watch for:</strong> ${renderMathText(details.mistake)}</p>
         </details>
       </section>
@@ -1335,7 +1369,7 @@ function renderSeedPracticePage(
       heroActions,
       `${course.shortName} Skill Check`,
     )}
-    <section class="practice-stack" data-one-card-flow data-flow-label="${isP1SkillCheckPage ? 'Question' : 'Skill Check'}" data-default-card-limit="3">
+    <section class="practice-stack" data-one-card-flow data-topic-id="${escapeAttr(topic.id)}" data-flow-label="${isP1SkillCheckPage ? 'Question' : 'Skill Check'}" data-default-card-limit="3">
       ${skillChecksMarkup ? `${skillChecksMarkup}
       ` : ''}<article class="practice-topic">
         <header class="topic-section-header">
@@ -1969,6 +2003,8 @@ function renderSeedSkillCheckCard(
   topicTitle: string,
   label = 'Skill Check',
   focused = false,
+  showFocusedLabel = false,
+  preferFocusedFirstStep = false,
 ): string {
   if (!focused) {
     return `
@@ -1993,14 +2029,15 @@ function renderSeedSkillCheckCard(
   `;
   }
 
-  const methodLine = item.hints.methodCue ?? item.hints.firstStep ?? item.workedRoute[0] ?? item.hints.nudge;
+  const firstStepLine = item.hints.firstStep ?? item.workedRoute[0] ?? item.hints.nudge;
+  const methodLine = item.hints.methodCue ?? item.hints.nudge;
   const saveButton = `
         <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(topicTitle)}" data-prompt="${escapeAttr(item.prompt)}">
           I tried this
         </button>`;
   return `
     <article class="practice-card${focused ? ' skill-check-focus-card' : ''}" data-skill-check-item-id="${escapeAttr(item.itemId)}">
-      <p class="eyebrow">${focused ? 'Try this' : escapeHtml(label)}</p>
+      <p class="eyebrow">${focused && !showFocusedLabel ? 'Try this' : escapeHtml(label)}</p>
       <h3>${renderMathText(item.prompt)}</h3>
       ${renderDraftSkillCheckVisual(item, templatesById)}
       ${renderSkillCheckAnswerInput(item)}
@@ -2013,7 +2050,12 @@ function renderSeedSkillCheckCard(
       <details class="skill-check-answer-details">
         <summary>${focused ? 'Check answer' : 'Show answer and worked route'}</summary>
         <div class="support-details"><strong>Answer:</strong> ${renderExpectedAnswerSummary(item)}</div>
-        ${focused ? `<p class="skill-check-method-line"><strong>Method:</strong> ${renderMathText(methodLine)}</p>` : `
+        ${focused && preferFocusedFirstStep ? `
+          <p class="skill-check-first-step"><strong>First step:</strong> ${renderMathText(firstStepLine)}</p>
+          ${methodLine ? `<p class="skill-check-method-line"><strong>Method cue:</strong> ${renderMathText(methodLine)}</p>` : ''}
+        ` : focused ? `
+          <p class="skill-check-method-line"><strong>Method:</strong> ${renderMathText(methodLine)}</p>
+        ` : `
           <p><strong>Hint:</strong> ${renderMathText(item.hints.nudge)}</p>
           ${item.hints.methodCue ? `<p><strong>Method cue:</strong> ${renderMathText(item.hints.methodCue)}</p>` : ''}
           ${item.hints.firstStep ? `<p><strong>First step:</strong> ${renderMathText(item.hints.firstStep)}</p>` : ''}
@@ -2052,6 +2094,7 @@ function renderP1SkillCheckGroup(
 ): string {
   const defaultItems = p1GroupItems(group, itemById);
   if (!defaultItems.length) return '';
+  const isCoordinateGeometry = group.topicId === 'p1-coordinate-geometry';
   const optionalSets = (group.optionalSets ?? [])
     .map((set) => ({
       ...set,
@@ -2067,9 +2110,9 @@ function renderP1SkillCheckGroup(
         </div>
       </header>
       <div class="practice-card-stack">
-        ${defaultItems.map(({ item, meta }) => renderSeedSkillCheckCard(item, templatesById, topicTitle, meta.label, true)).join('')}
+        ${defaultItems.map(({ item, meta }) => renderSeedSkillCheckCard(item, templatesById, topicTitle, meta.label, true, isCoordinateGeometry, isCoordinateGeometry)).join('')}
         ${optionalSets.flatMap((set) => (
-          set.items.map((item) => renderSeedSkillCheckCard(item, templatesById, topicTitle, set.label, true))
+          set.items.map((item) => renderSeedSkillCheckCard(item, templatesById, topicTitle, set.label, true, isCoordinateGeometry, isCoordinateGeometry))
         )).join('')}
       </div>
     </article>
@@ -2555,7 +2598,11 @@ async function generate(): Promise<void> {
         htmlByPath.set(seedFieldGuidePagePath(course, topic), renderSeedFieldGuidePage(course, topic));
         if (course.id === 'p1') {
           topic.fieldGuideSections.forEach((section, index) => {
-            htmlByPath.set(seedFieldGuideSubtopicPagePath(course, topic, section), renderP1FieldGuideSubtopicPage(course, topic, section, index));
+            const subtopicHtml = renderP1FieldGuideSubtopicPage(course, topic, section, index);
+            htmlByPath.set(seedFieldGuideSubtopicPagePath(course, topic, section), subtopicHtml);
+            seedFieldGuideSubtopicAliasPagePaths(course, topic, section).forEach((aliasPath) => {
+              htmlByPath.set(aliasPath, subtopicHtml);
+            });
           });
         }
         htmlByPath.set(seedPracticePagePath(course, topic), renderSeedPracticePage(course, topic, data));
