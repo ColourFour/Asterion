@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 describe('CourseSelector homepage', () => {
-  it('communicates the Asterion loop, P3 maturity, and draft support status', async () => {
+  it('communicates the Asterion loop, P3 maturity, and support-only status', async () => {
     const openedCourses: CourseMetadata[] = [];
     const container = await render(<CourseSelector onOpenCourse={(course) => openedCourses.push(course)} />);
 
@@ -59,13 +59,16 @@ describe('CourseSelector homepage', () => {
     expect(container.textContent).toContain('Start with P3');
     expect(container.textContent).toContain('Start here if you want the complete Asterion loop.');
     expect(container.textContent).toContain('Includes Algebra, Logarithms');
-    expect(container.textContent).toContain('Early support courses');
-    expect(container.textContent).toContain('Early support');
+    expect(container.textContent).toContain('Support only courses');
+    expect(container.textContent).toContain('Support only');
     expect(container.textContent).toContain('Support only: useful for orientation, not a fully reviewed course path yet.');
-    expect(container.textContent).toContain('P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.');
+    expect(container.textContent).toContain('They are not full-flow courses yet.');
+    expect(container.textContent).toContain('P1, M1, and S1 are available as support only paths while their coverage is expanded and reviewed.');
     expect(container.textContent).toContain('View P1 support');
     expect(container.textContent).toContain('View M1 support');
     expect(container.textContent).toContain('View S1 support');
+    expect(container.textContent).not.toContain('Early support');
+    expect(container.textContent?.toLowerCase()).not.toContain('draft');
     expect(container.textContent).not.toContain('Homepage acceptance checklist');
     expect(container.textContent).toContain('Algebra');
     expect(container.textContent).not.toContain('Choose your course');
@@ -79,7 +82,8 @@ describe('CourseSelector homepage', () => {
     const p3Card = container.querySelector('.course-card-featured');
     const firstSupportCard = container.querySelector('.course-support-grid .course-card');
     expect(p3Card?.textContent).toContain('Start with P3');
-    expect(firstSupportCard?.textContent).toContain('Early support');
+    expect(firstSupportCard?.textContent).toContain('Support only');
+    expect(firstSupportCard?.textContent).toContain('not a fully reviewed course path yet');
     expect(
       Boolean(p3Card && firstSupportCard && (p3Card.compareDocumentPosition(firstSupportCard) & Node.DOCUMENT_POSITION_FOLLOWING)),
     ).toBe(true);

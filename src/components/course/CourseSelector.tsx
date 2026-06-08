@@ -35,7 +35,7 @@ function courseCtaLabel(course: CourseMetadata): string {
 
 function courseMaturityLabel(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
-  return 'Early support';
+  return 'Support only';
 }
 
 function previewTopics(course: CourseMetadata, count: number): CourseMetadata['topics'] {
@@ -48,7 +48,7 @@ function topicPreviewText(course: CourseMetadata, count: number): string {
 
 function courseSummary(course: CourseMetadata, featured: boolean): string {
   if (featured) return 'Full method-first Field Guide, Skill Check, Exam Training, and review flow for the most developed Asterion course.';
-  return 'Early topic notes and navigation support while this course is expanded and reviewed.';
+  return 'Limited topic notes and navigation support while this course is expanded and reviewed.';
 }
 
 export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
@@ -119,10 +119,10 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
 
         <section className="homepage-support-section" aria-labelledby="homepage-support-title">
           <div className="homepage-support-heading">
-            <h3 id="homepage-support-title">Early support courses</h3>
-            <p>P1, M1, and S1 stay available for orientation and early support, but P3 is the recommended full-flow path.</p>
+            <h3 id="homepage-support-title">Support only courses</h3>
+            <p>P1, M1, and S1 stay available for orientation and limited support. They are not full-flow courses yet.</p>
           </div>
-          <div className="course-card-grid course-support-grid" aria-label="Early support CAIE 9709 courses">
+          <div className="course-card-grid course-support-grid" aria-label="Support only CAIE 9709 courses">
             {supportCourses.map((course) => (
               <button className={`course-card course-status-${course.status}`} key={course.id} type="button" onClick={() => onOpenCourse(course)} aria-label={`Open ${course.displayName}`}>
                 <div className="course-card-header-row">
@@ -147,7 +147,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
       <section className="homepage-status-section" aria-labelledby="homepage-status-title">
         <span className="mode-pill">Status today</span>
         <h3 id="homepage-status-title">P3 is the most developed Asterion path today.</h3>
-        <p>P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.</p>
+        <p>P1, M1, and S1 are available as support only paths while their coverage is expanded and reviewed.</p>
       </section>
     </section>
   );

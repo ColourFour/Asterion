@@ -76,8 +76,9 @@ try {
       hasLoop: ['Field Guide', 'Skill Check', 'Exam Training', 'Review'].every((label) => text.includes(label)),
       hasP3Priority: text.includes('Most complete Asterion path') && text.includes('Recommended first click: P3 Pure Mathematics 3'),
       hasP3Reason: text.includes('Recommended starting path') && text.includes('Full method-first Field Guide, Skill Check, Exam Training, and review flow'),
-      hasSupportStatus: text.includes('Early support') && text.includes('P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.'),
-      hasSupportSection: text.includes('Early support courses') && text.includes('View P1 support'),
+      hasSupportStatus: text.includes('Support only') && text.includes('P1, M1, and S1 are available as support only paths while their coverage is expanded and reviewed.'),
+      hasSupportSection: text.includes('Support only courses') && text.includes('They are not full-flow courses yet.') && text.includes('View P1 support'),
+      hasSoftSupportLabel: text.includes('Early support'),
       hasChecklist: text.includes('Homepage acceptance checklist'),
       hasTopicEvidence: text.includes('Includes Algebra, Logarithms'),
       hasOldHeroCopy: text.includes('Which paper are you studying today?') || text.includes('Brain loading'),
@@ -93,7 +94,10 @@ try {
     fail('Homepage must make P3 the obvious primary course path.');
   }
   if (!homepageResult.hasSupportStatus || !homepageResult.hasSupportSection || homepageResult.supportCardCount !== 3) {
-    fail('Homepage must honestly label P1, M1, and S1 as early support sections.');
+    fail('Homepage must honestly label P1, M1, and S1 as support-only sections.');
+  }
+  if (homepageResult.hasSoftSupportLabel) {
+    fail('Homepage must not soften P1, M1, or S1 maturity as Early support.');
   }
   if (homepageResult.hasChecklist) {
     fail('Homepage must not render an implementation acceptance checklist.');

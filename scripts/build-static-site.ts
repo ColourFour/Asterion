@@ -1142,7 +1142,7 @@ function homepageCourseCta(course: CourseMetadata): string {
 
 function homepageCourseMaturity(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
-  return 'Early support';
+  return 'Support only';
 }
 
 function homepageTopicPreviewText(course: CourseMetadata, count: number): string {
@@ -1151,7 +1151,7 @@ function homepageTopicPreviewText(course: CourseMetadata, count: number): string
 
 function homepageCourseSummary(course: CourseMetadata, featured: boolean): string {
   if (featured) return 'Full method-first Field Guide, Skill Check, Exam Training, and review flow for the most developed Asterion course.';
-  return 'Early topic notes and navigation support while this course is expanded and reviewed.';
+  return 'Limited topic notes and navigation support while this course is expanded and reviewed.';
 }
 
 function renderHomepageLoopPanel(course: CourseMetadata): string {
@@ -1219,10 +1219,10 @@ function renderCourseSelectorPage(): string {
       ${renderHomepageCourseCard(pagePath, p3Course, true)}
       <section class="homepage-support-section" aria-labelledby="homepage-support-title">
         <div class="homepage-support-heading">
-          <h2 id="homepage-support-title">Early support courses</h2>
-          <p>P1, M1, and S1 stay available for orientation and early support, but P3 is the recommended full-flow path.</p>
+          <h2 id="homepage-support-title">Support only courses</h2>
+          <p>P1, M1, and S1 stay available for orientation and limited support. They are not full-flow courses yet.</p>
         </div>
-        <div class="course-grid course-support-grid" aria-label="Early support CAIE 9709 courses">
+        <div class="course-grid course-support-grid" aria-label="Support only CAIE 9709 courses">
           ${supportCourses.map((course) => renderHomepageCourseCard(pagePath, course)).join('')}
         </div>
       </section>
@@ -1230,7 +1230,7 @@ function renderCourseSelectorPage(): string {
     <section class="homepage-status-section" aria-labelledby="homepage-status-title">
       <p class="eyebrow">Status today</p>
       <h2 id="homepage-status-title">P3 is the most developed Asterion path today.</h2>
-      <p>P1, M1, and S1 are available as early support while their coverage is expanded and reviewed.</p>
+      <p>P1, M1, and S1 are available as support only paths while their coverage is expanded and reviewed.</p>
     </section>
   `;
   return renderPage({
