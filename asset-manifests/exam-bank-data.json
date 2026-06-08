@@ -1,0 +1,65 @@
+{
+  "bundleName": "asterion-exam-bank-data-v2026-06-08.tgz",
+  "version": "2026-06-08",
+  "description": "Asterion runtime/build exam-bank data bundle: question and mark-scheme image crops plus JSON catalogs used by static generation, tests, and Content Lab tooling.",
+  "externalizationStatus": "planned-release-artifact",
+  "downloadUrl": null,
+  "bundleSha256": null,
+  "treeSha256": "85726e5a6d118e42165303508ab8fddb0bb7aeaaa8af89d226d3e7f156ea0959",
+  "unpackPath": "public/assets/exam-bank-data",
+  "restoreCommand": "npm run assets:sync",
+  "requiredTopLevelFiles": [
+    "asterion_exam_bank_catalog_v1.json",
+    "asterion_question_bank_v1.json",
+    "question_bank.json",
+    "question_bank.topic_routing.v1.json",
+    "asterion_content_lab_candidates_v1.json"
+  ],
+  "requiredRuntimeDirectories": [
+    "p1",
+    "p3",
+    "p4",
+    "p5"
+  ],
+  "summary": {
+    "fileCount": 2607,
+    "totalBytes": 488076770,
+    "jsonFiles": 5,
+    "pngFiles": 2602,
+    "topLevelBytes": {
+      "asterion_content_lab_candidates_v1.json": 11934896,
+      "asterion_exam_bank_catalog_v1.json": 39636996,
+      "asterion_question_bank_v1.json": 1741156,
+      "question_bank.json": 16664152,
+      "question_bank.topic_routing.v1.json": 1002837,
+      "p1": 106038353,
+      "p3": 106362417,
+      "p4": 100950561,
+      "p5": 103745402
+    }
+  },
+  "runtimeUse": {
+    "githubPagesArtifact": [
+      "p1/**/questions/*.png",
+      "p1/**/mark_scheme/*.png",
+      "p3/**/questions/*.png",
+      "p3/**/mark_scheme/*.png",
+      "p4/**/questions/*.png",
+      "p4/**/mark_scheme/*.png",
+      "p5/**/questions/*.png",
+      "p5/**/mark_scheme/*.png"
+    ],
+    "buildAndTestInputs": [
+      "asterion_exam_bank_catalog_v1.json",
+      "asterion_question_bank_v1.json",
+      "question_bank.json",
+      "question_bank.topic_routing.v1.json",
+      "asterion_content_lab_candidates_v1.json"
+    ]
+  },
+  "notes": [
+    "The JSON files are used by static generation, tests, and Content Lab tooling. They are intentionally excluded from generated docs/ output by scripts/build-static-site.ts.",
+    "The image directories are copied into the GitHub Pages artifact and are required by generated static pages.",
+    "downloadUrl and bundleSha256 must be filled with a real GitHub Release asset before public/assets/exam-bank-data/ can be untracked safely."
+  ]
+}

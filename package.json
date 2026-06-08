@@ -14,6 +14,7 @@
     "build:classroom-pilot": "npm run build",
     "build:china-static-pilot": "npm run build",
     "static:check": "node scripts/check-static-site.mjs && node scripts/check-rendered-static-site.mjs",
+    "assets:sync": "node scripts/sync-exam-bank-assets.mjs",
     "assets:ui": "node scripts/optimize-ui-assets.mjs",
     "assets:region": "node scripts/optimize-region-assets.mjs",
     "data:p3": "vite-node scripts/generate-p3-data.ts",

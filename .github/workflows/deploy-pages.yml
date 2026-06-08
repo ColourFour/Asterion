@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify exam-bank assets
+        run: npm run assets:sync
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 

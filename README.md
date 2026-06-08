@@ -86,6 +86,12 @@ Check the generated artifact:
 npm run static:check
 ```
 
+Verify or restore the exam-bank runtime assets:
+
+```bash
+npm run assets:sync
+```
+
 The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages artifact to `docs/`.
 
 `docs/` is generated output and is committed intentionally during the Pages deployment migration because the live repository may still be configured to deploy directly from the `main` branch `/docs` folder. Do not delete committed `docs/` until GitHub Pages has been switched to GitHub Actions and a successful Actions deployment has served the live site. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
@@ -195,6 +201,14 @@ public/assets/exam-bank-data/
 public/data/teaching_snippets.json
 public/data/generated_practice_bank.json
 ```
+
+`public/assets/exam-bank-data/` is runtime/build data, not hand-authored app source. It contains large generated exports and image crops from the Exam Bank pipeline. Keep application code in `src/`; treat this folder as a versioned data artifact that can be restored with:
+
+```bash
+npm run assets:sync
+```
+
+The current manifest is `asset-manifests/exam-bank-data.json`. It records the bundle name, version, expected unpack path, stable tree SHA256, file count, required JSON files, and runtime image directories. In the current staged migration, the assets remain tracked in git and `npm run assets:sync` verifies their integrity. Before untracking `public/assets/exam-bank-data/`, publish a real `asterion-exam-bank-data-*.tgz` bundle, fill `downloadUrl` and `bundleSha256` in the manifest, and verify a clean missing-assets restore locally and in GitHub Actions.
 
 The exam-bank folder now has two Asterion-facing layers:
 
