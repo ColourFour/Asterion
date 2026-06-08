@@ -24,6 +24,8 @@ const LOOP_STEPS = [
   },
 ] as const;
 
+const P3_TOPIC_EVIDENCE = 'Includes algebra, vectors, complex numbers, calculus, and differential equations.';
+
 interface CourseSelectorProps {
   onOpenCourse: (course: CourseMetadata) => void;
 }
@@ -40,14 +42,6 @@ function courseActionLabel(course: CourseMetadata): string {
 function courseMaturityLabel(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
   return 'Support only';
-}
-
-function previewTopics(course: CourseMetadata, count: number): CourseMetadata['topics'] {
-  return course.topics.slice(0, count);
-}
-
-function topicPreviewText(course: CourseMetadata, count: number): string {
-  return previewTopics(course, count).map((topic) => topic.title).join(', ');
 }
 
 function courseSummary(course: CourseMetadata, featured: boolean): string {
@@ -118,7 +112,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
           </div>
           <p className="course-card-lede">{courseSummary(p3Course, true)}</p>
           <p className="homepage-primary-reason">
-            Start here if you want the complete Asterion loop. Includes {topicPreviewText(p3Course, 5)}.
+            Start here if you want the complete Asterion loop. {P3_TOPIC_EVIDENCE}
           </p>
           <span className="course-launch-cta course-launch-cta-primary">
             {courseCtaLabel(p3Course)}

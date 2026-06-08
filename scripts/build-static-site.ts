@@ -1131,6 +1131,8 @@ const homepageLoopSteps = [
   },
 ] as const;
 
+const homepageP3TopicEvidence = 'Includes algebra, vectors, complex numbers, calculus, and differential equations.';
+
 function homepagePrimaryCourse(): CourseMetadata {
   return COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[0];
 }
@@ -1147,10 +1149,6 @@ function homepageCourseActionLabel(course: CourseMetadata): string {
 function homepageCourseMaturity(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
   return 'Support only';
-}
-
-function homepageTopicPreviewText(course: CourseMetadata, count: number): string {
-  return course.topics.slice(0, count).map((topic) => topic.title).join(', ');
 }
 
 function homepageCourseSummary(course: CourseMetadata, featured: boolean): string {
@@ -1186,7 +1184,6 @@ function renderHomepageLoopPanel(course: CourseMetadata): string {
 
 function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, featured = false): string {
   const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
-  const topicCount = featured ? 5 : 3;
   return `
     <a class="course-card${featured ? ' course-card-featured' : ''} course-status-${escapeRawAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="${escapeRawAttr(homepageCourseActionLabel(course))}">
       ${featured ? '<span class="homepage-primary-label">Recommended starting path</span>' : ''}
@@ -1198,7 +1195,7 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
         </div>
       </div>
       <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
-      ${featured ? `<p class="homepage-primary-reason">Start here if you want the complete Asterion loop. Includes ${escapeRawHtml(homepageTopicPreviewText(course, topicCount))}.</p>` : ''}
+      ${featured ? `<p class="homepage-primary-reason">Start here if you want the complete Asterion loop. ${escapeRawHtml(homepageP3TopicEvidence)}</p>` : ''}
       ${featured ? '' : '<p class="course-card-status-copy">Support only: useful for orientation, not a fully reviewed course path yet.</p>'}
       <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))} <span aria-hidden="true">&#8594;</span></span>
     </a>

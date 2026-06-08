@@ -61,7 +61,8 @@ describe('CourseSelector homepage', () => {
     expect(container.textContent).toContain('Full method-first Field Guide, Skill Check, Exam Training, and review flow');
     expect(container.textContent).toContain('Start P3');
     expect(container.textContent).toContain('Start here if you want the complete Asterion loop.');
-    expect(container.textContent).toContain('Includes Algebra, Logarithms');
+    expect(container.textContent).toContain('Includes algebra, vectors, complex numbers, calculus, and differential equations.');
+    expect(container.textContent).not.toContain('Includes Algebra, Logarithms, Trigonometry');
     expect(container.textContent).toContain('Support only courses');
     expect(container.textContent).toContain('Support only');
     expect(container.textContent).toContain('Support only: useful for orientation, not a fully reviewed course path yet.');
@@ -73,7 +74,7 @@ describe('CourseSelector homepage', () => {
     expect(container.textContent).not.toContain('Early support');
     expect(container.textContent?.toLowerCase()).not.toContain('draft');
     expect(container.textContent).not.toContain('Homepage acceptance checklist');
-    expect(container.textContent).toContain('Algebra');
+    expect(container.textContent).toContain('algebra');
     expect(container.textContent).not.toContain('Choose your course');
     expect(container.textContent).not.toContain('Brain loading');
     expect(container.querySelector('[aria-label^="Open "]')).toBeNull();
@@ -87,9 +88,14 @@ describe('CourseSelector homepage', () => {
     const p3Card = container.querySelector('.course-card-featured');
     const firstSupportCard = container.querySelector('.course-support-grid .course-card');
     expect(p3Card?.textContent).toContain('Start P3');
+    expect(p3Card?.textContent).toContain('Field Guide');
+    expect(p3Card?.textContent).toContain('Skill Check');
+    expect(p3Card?.textContent).toContain('Exam Training');
     expect(firstSupportCard?.textContent).toContain('Support only');
     expect(firstSupportCard?.getAttribute('aria-label')).toBe('View P1 support: Pure Mathematics 1');
     expect(firstSupportCard?.textContent).toContain('not a fully reviewed course path yet');
+    expect(firstSupportCard?.textContent).not.toContain('Full method-first Field Guide, Skill Check, Exam Training');
+    expect(container.querySelector('.course-support-grid .course-topic-preview')).toBeNull();
     expect(
       Boolean(p3Card && firstSupportCard && (p3Card.compareDocumentPosition(firstSupportCard) & Node.DOCUMENT_POSITION_FOLLOWING)),
     ).toBe(true);

@@ -81,12 +81,15 @@ try {
       hasSupportSection: text.includes('Support only courses') && text.includes('They are not full-flow courses yet.') && text.includes('View P1 support'),
       hasSoftSupportLabel: text.includes('Early support'),
       hasChecklist: text.includes('Homepage acceptance checklist'),
-      hasTopicEvidence: text.includes('Includes Algebra, Logarithms'),
+      hasTopicEvidence: text.includes('Includes algebra, vectors, complex numbers, calculus, and differential equations.'),
+      hasLongTopicEvidence: text.includes('Includes Algebra, Logarithms, Trigonometry'),
       hasOldHeroCopy: text.includes('Which paper are you studying today?') || text.includes('Brain loading'),
       p3CardText: p3Card?.textContent?.replace(/\s+/g, ' ').trim() || '',
       p3CardActionLabel: p3Card?.getAttribute('aria-label') || '',
+      supportCardTexts: Array.from(supportCards).map((card) => card.textContent?.replace(/\s+/g, ' ').trim() || ''),
       supportCardActionLabels: Array.from(supportCards).map((card) => card.getAttribute('aria-label') || ''),
       hasGenericHomepageAction: Boolean(document.querySelector('a[aria-label^="Open "]')) || /\b(Open course|Learn more|Explore)\b/.test(text),
+      hasSupportTopicPreview: Boolean(document.querySelector('.course-support-grid .course-topic-preview')),
       supportCardCount: supportCards.length,
       p3BeforeSupport: Boolean(p3Card && supportCards[0] && (p3Card.compareDocumentPosition(supportCards[0]) & Node.DOCUMENT_POSITION_FOLLOWING)),
     };
@@ -97,7 +100,7 @@ try {
   if (!homepageResult.hasP3Priority || !homepageResult.hasRecommendedStart || !homepageResult.hasP3Reason || !/Start P3\b/.test(homepageResult.p3CardText) || homepageResult.p3CardActionLabel !== 'Start P3: Pure Mathematics 3' || !homepageResult.p3BeforeSupport) {
     fail('Homepage must make P3 the obvious primary course path.');
   }
-  if (!homepageResult.hasSupportStatus || !homepageResult.hasSupportSection || homepageResult.supportCardCount !== 3 || !homepageResult.supportCardActionLabels.includes('View P1 support: Pure Mathematics 1')) {
+  if (!homepageResult.hasSupportStatus || !homepageResult.hasSupportSection || homepageResult.supportCardCount !== 3 || !homepageResult.supportCardActionLabels.includes('View P1 support: Pure Mathematics 1') || homepageResult.supportCardTexts.some((text) => text.includes('Full method-first Field Guide, Skill Check, Exam Training')) || homepageResult.hasSupportTopicPreview) {
     fail('Homepage must honestly label P1, M1, and S1 as support-only sections.');
   }
   if (homepageResult.hasGenericHomepageAction) {
@@ -109,8 +112,8 @@ try {
   if (homepageResult.hasChecklist) {
     fail('Homepage must not render an implementation acceptance checklist.');
   }
-  if (!homepageResult.hasTopicEvidence) {
-    fail('Homepage must show topic-preview evidence from actual course content.');
+  if (!homepageResult.hasTopicEvidence || homepageResult.hasLongTopicEvidence) {
+    fail('Homepage must show concise P3 topic evidence without a long topic-preview list.');
   }
   if (homepageResult.hasOldHeroCopy) {
     fail('Homepage must not retain the old generic course-selector hero copy or illustration text.');
