@@ -1136,8 +1136,12 @@ function homepagePrimaryCourse(): CourseMetadata {
 }
 
 function homepageCourseCta(course: CourseMetadata): string {
-  if (course.id === P3_COURSE_ID) return 'Start with P3';
+  if (course.id === P3_COURSE_ID) return 'Start P3';
   return `View ${course.shortName} support`;
+}
+
+function homepageCourseActionLabel(course: CourseMetadata): string {
+  return `${homepageCourseCta(course)}: ${course.displayName}`;
 }
 
 function homepageCourseMaturity(course: CourseMetadata): string {
@@ -1184,7 +1188,7 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
   const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
   const topicCount = featured ? 5 : 3;
   return `
-    <a class="course-card${featured ? ' course-card-featured' : ''} course-status-${escapeRawAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="Open ${escapeRawAttr(course.displayName)}">
+    <a class="course-card${featured ? ' course-card-featured' : ''} course-status-${escapeRawAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="${escapeRawAttr(homepageCourseActionLabel(course))}">
       ${featured ? '<span class="homepage-primary-label">Recommended starting path</span>' : ''}
       <div class="course-card-header-row">
         <span class="course-code-badge">${escapeRawHtml(course.shortName)}</span>
@@ -1211,7 +1215,12 @@ function renderCourseSelectorPage(): string {
         <p class="eyebrow">CAIE 9709 training system</p>
         <h1>CAIE 9709 practice that starts from the method, not the mark scheme.</h1>
         <p>Asterion sends you through Field Guide, Skill Check, and Exam Training so P3 practice starts with the route you would write, then checks it against real question images and review.</p>
-        <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">Start with P3 training <span aria-hidden="true">&#8594;</span></a>
+        <div class="homepage-recommended-start">
+          <span>Recommended start</span>
+          <strong>Start with ${escapeRawHtml(`${p3Course.shortName} ${p3Course.displayName}`)}</strong>
+          <p>Use the full Field Guide -&gt; Skill Check -&gt; Exam Training flow.</p>
+        </div>
+        <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">${escapeRawHtml(homepageCourseCta(p3Course))} <span aria-hidden="true">&#8594;</span></a>
       </div>
       ${renderHomepageLoopPanel(p3Course)}
     </section>

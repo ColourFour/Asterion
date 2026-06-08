@@ -29,8 +29,12 @@ interface CourseSelectorProps {
 }
 
 function courseCtaLabel(course: CourseMetadata): string {
-  if (course.id === P3_COURSE_ID) return 'Start with P3';
+  if (course.id === P3_COURSE_ID) return 'Start P3';
   return `View ${course.shortName} support`;
+}
+
+function courseActionLabel(course: CourseMetadata): string {
+  return `${courseCtaLabel(course)}: ${course.displayName}`;
 }
 
 function courseMaturityLabel(course: CourseMetadata): string {
@@ -64,8 +68,13 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
           <p>
             Asterion sends you through Field Guide, Skill Check, and Exam Training so P3 practice starts with the route you would write, then checks it against real question images and review.
           </p>
+          <div className="homepage-recommended-start">
+            <span>Recommended start</span>
+            <strong>Start with {p3Course.shortName} {p3Course.displayName}</strong>
+            <p>Use the full Field Guide -&gt; Skill Check -&gt; Exam Training flow.</p>
+          </div>
           <button type="button" className="primary-button homepage-recommended-action" onClick={() => onOpenCourse(p3Course)}>
-            Start with P3 training
+            {courseCtaLabel(p3Course)}
             <ArrowRight size={18} aria-hidden="true" />
           </button>
         </div>
@@ -97,7 +106,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
           className={`course-card course-card-featured course-status-${p3Course.status}`}
           type="button"
           onClick={() => onOpenCourse(p3Course)}
-          aria-label={`Open ${p3Course.displayName}`}
+          aria-label={courseActionLabel(p3Course)}
         >
           <span className="homepage-primary-label">Recommended starting path</span>
           <div className="course-card-header-row">
@@ -124,7 +133,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
           </div>
           <div className="course-card-grid course-support-grid" aria-label="Support only CAIE 9709 courses">
             {supportCourses.map((course) => (
-              <button className={`course-card course-status-${course.status}`} key={course.id} type="button" onClick={() => onOpenCourse(course)} aria-label={`Open ${course.displayName}`}>
+              <button className={`course-card course-status-${course.status}`} key={course.id} type="button" onClick={() => onOpenCourse(course)} aria-label={courseActionLabel(course)}>
                 <div className="course-card-header-row">
                   <span className="course-code-badge">{course.shortName}</span>
                   <div>
