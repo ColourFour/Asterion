@@ -948,23 +948,27 @@ main > * {
   font-weight: 900;
 }
 
-.homepage-status-section,
-.homepage-checklist {
+.homepage-status-section {
   display: grid;
-  gap: 16px;
-  padding: 20px;
-  border: 1px solid var(--border);
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid rgba(63, 113, 98, 0.22);
   border-radius: var(--radius);
-  background: rgba(255, 253, 248, 0.94);
+  background: #f7fbfb;
   box-shadow: var(--shadow-sm);
 }
 
-.homepage-status-section h2,
-.homepage-checklist h2 {
+.homepage-status-section h2 {
   margin: 0;
   color: var(--ink-warm);
-  font-size: 1.55rem;
+  font-size: 1.28rem;
   line-height: 1.18;
+}
+
+.homepage-status-section p:not(.eyebrow) {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
 }
 
 .homepage-status-grid {

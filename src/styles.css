@@ -642,24 +642,28 @@
   font-weight: 900;
 }
 
-.homepage-status-section,
-.homepage-checklist {
+.homepage-status-section {
   display: grid;
-  gap: 16px;
+  gap: 8px;
   margin-top: 18px;
-  padding: 20px;
-  border: 1px solid #d8e0ea;
+  padding: 16px 18px;
+  border: 1px solid #b9d4df;
   border-radius: 8px;
-  background: #ffffff;
+  background: #f8fbfd;
   box-shadow: 0 8px 22px rgba(24, 34, 53, 0.06);
 }
 
-.homepage-status-section h3,
-.homepage-checklist h3 {
-  margin: 7px 0 0;
+.homepage-status-section h3 {
+  margin: 0;
   color: #172033;
-  font-size: 1.35rem;
+  font-size: 1.28rem;
   line-height: 1.2;
+}
+
+.homepage-status-section p {
+  max-width: 780px;
+  margin: 0;
+  color: #536277;
 }
 
 .homepage-status-grid {

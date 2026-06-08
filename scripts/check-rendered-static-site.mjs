@@ -76,10 +76,10 @@ try {
       hasLoop: ['Field Guide', 'Skill Check', 'Exam Training'].every((label) => text.includes(label)),
       hasP3Priority: text.includes('Most complete Asterion path') && text.includes('Recommended first click: P3 Pure Mathematics 3'),
       hasP3Reason: text.includes('Recommended starting path') && text.includes('Full Field Guide, Skill Check, and Exam Training flow'),
-      hasDraftStatus: text.includes('Draft/support section') && text.includes('P1, M1, and S1 are draft support sections'),
+      hasDraftStatus: text.includes('Draft support') && text.includes('P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.'),
       hasDraftSupportSection: text.includes('Draft/support courses') && text.includes('View P1 draft support'),
       hasChecklist: text.includes('Homepage acceptance checklist'),
-      hasTopicEvidence: text.includes('Current topic evidence') && text.includes('9709 P1 1.1: Quadratics'),
+      hasTopicEvidence: text.includes('Includes Algebra, Logarithms'),
       hasOldHeroCopy: text.includes('Which paper are you studying today?') || text.includes('Brain loading'),
       p3CardText: p3Card?.textContent?.replace(/\s+/g, ' ').trim() || '',
       supportCardCount: supportCards.length,
@@ -95,8 +95,8 @@ try {
   if (!homepageResult.hasDraftStatus || !homepageResult.hasDraftSupportSection || homepageResult.supportCardCount !== 3) {
     fail('Homepage must honestly label P1, M1, and S1 as draft/support sections.');
   }
-  if (!homepageResult.hasChecklist) {
-    fail('Homepage must render the homepage acceptance checklist.');
+  if (homepageResult.hasChecklist) {
+    fail('Homepage must not render an implementation acceptance checklist.');
   }
   if (!homepageResult.hasTopicEvidence) {
     fail('Homepage must show topic-preview evidence from actual course content.');

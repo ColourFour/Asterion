@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpenCheck, CheckCircle2, ClipboardCheck, FileText, ShieldCheck, Target } from 'lucide-react';
+import { ArrowRight, BookOpenCheck, ClipboardCheck, FileText, Target } from 'lucide-react';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../../data/courses';
 
 const LOOP_STEPS = [
@@ -19,12 +19,6 @@ const LOOP_STEPS = [
   },
 ] as const;
 
-const HOMEPAGE_CHECKLIST = [
-  'Start with P3 unless your teacher has assigned another course.',
-  'Use Field Guide -> Skill Check -> Exam Training as the study loop.',
-  'Treat P1, M1, and S1 as draft support until their syllabus-contract audits are complete.',
-] as const;
-
 interface CourseSelectorProps {
   onOpenCourse: (course: CourseMetadata) => void;
 }
@@ -36,11 +30,20 @@ function courseCtaLabel(course: CourseMetadata): string {
 
 function courseMaturityLabel(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
-  return 'Draft/support section';
+  return 'Draft support';
 }
 
 function previewTopics(course: CourseMetadata, count: number): CourseMetadata['topics'] {
   return course.topics.slice(0, count);
+}
+
+function topicPreviewText(course: CourseMetadata, count: number): string {
+  return previewTopics(course, count).map((topic) => topic.title).join(', ');
+}
+
+function courseSummary(course: CourseMetadata, featured: boolean): string {
+  if (featured) return 'Full Field Guide, Skill Check, and Exam Training flow for the most developed Asterion course.';
+  return 'Early topic notes and navigation support while this course is expanded and reviewed.';
 }
 
 export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
@@ -54,7 +57,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
           <span className="mode-pill">CAIE 9709 training system</span>
           <h2 id="course-selector-title">Asterion trains exam readiness through a visible learning loop.</h2>
           <p>
-            Start with a Field Guide, prove the method in a Skill Check, then use Exam Training with source question and mark-scheme images. P3 is the most complete path today; P1, M1, and S1 are draft support sections.
+            Read the method, check the skill, then train with exam-style work and mark-scheme review. Start with P3; it has the strongest Asterion path today.
           </p>
           <button type="button" className="primary-button homepage-recommended-action" onClick={() => onOpenCourse(p3Course)}>
             Start with P3 training
@@ -96,19 +99,10 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
               <h3>{p3Course.displayName}</h3>
             </div>
           </div>
-          <p className="course-card-lede">{p3Course.shortDescription}</p>
+          <p className="course-card-lede">{courseSummary(p3Course, true)}</p>
           <p className="homepage-primary-reason">
-            Full Field Guide, Skill Check, and Exam Training flow. Recommended because P3 has the deepest reviewed Asterion study path today, while still marked as partial content ready.
+            Start here if you want the complete Asterion loop. Includes {topicPreviewText(p3Course, 5)}.
           </p>
-          <p className="course-card-status-copy">{p3Course.coverageSummary}</p>
-          <div className="course-topic-preview" aria-label={`${p3Course.shortName} topic preview`}>
-            <span>Current topic evidence</span>
-            <ul>
-              {previewTopics(p3Course, 5).map((topic) => (
-                <li key={topic.id}>{topic.title}</li>
-              ))}
-            </ul>
-          </div>
           <span className="course-launch-cta course-launch-cta-primary">
             {courseCtaLabel(p3Course)}
             <ArrowRight size={16} aria-hidden="true" />
@@ -118,7 +112,7 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
         <section className="homepage-support-section" aria-labelledby="homepage-support-title">
           <div className="homepage-support-heading">
             <h3 id="homepage-support-title">Draft/support courses</h3>
-            <p>P1, M1, and S1 stay available for navigation and early study support, but they are not presented as fully reviewed Asterion paths.</p>
+            <p>P1, M1, and S1 stay available for early support, but P3 is the recommended full-flow path.</p>
           </div>
           <div className="course-card-grid course-support-grid" aria-label="Draft and support CAIE 9709 courses">
             {supportCourses.map((course) => (
@@ -126,21 +120,12 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
                 <div className="course-card-header-row">
                   <span className="course-code-badge">{course.shortName}</span>
                   <div>
-                    <span className="course-status-pill">{course.statusLabel}</span>
-                    <span className="course-maturity-note">{courseMaturityLabel(course)}</span>
+                    <span className="course-status-pill">{courseMaturityLabel(course)}</span>
                     <h3>{course.displayName}</h3>
                   </div>
                 </div>
-                <p className="course-card-lede">{course.launchDescription}</p>
-                <p className="course-card-status-copy">{course.coverageSummary}</p>
-                <div className="course-topic-preview" aria-label={`${course.shortName} topic preview`}>
-                  <span>Draft topic preview</span>
-                  <ul>
-                    {previewTopics(course, 3).map((topic) => (
-                      <li key={topic.id}>{topic.syllabusRef ? `${topic.syllabusRef}: ` : ''}{topic.title}</li>
-                    ))}
-                  </ul>
-                </div>
+                <p className="course-card-lede">{courseSummary(course, false)}</p>
+                <p className="course-card-status-copy">Draft support only: useful for orientation, not a fully reviewed course path yet.</p>
                 <span className="course-launch-cta course-launch-cta-secondary">
                   {courseCtaLabel(course)}
                   <ArrowRight size={16} aria-hidden="true" />
@@ -152,39 +137,9 @@ export function CourseSelector({ onOpenCourse }: CourseSelectorProps) {
       </div>
 
       <section className="homepage-status-section" aria-labelledby="homepage-status-title">
-        <div>
-          <span className="mode-pill">Trust and status</span>
-          <h3 id="homepage-status-title">What is ready, and what is not overclaimed</h3>
-        </div>
-        <div className="homepage-status-grid">
-          <article>
-            <ShieldCheck size={20} aria-hidden="true" />
-            <h4>Static study surface</h4>
-            <p>No backend-only promise is needed for the course selector. The production study surface stays GitHub Pages compatible.</p>
-          </article>
-          <article>
-            <FileText size={20} aria-hidden="true" />
-            <h4>P3 image-first practice</h4>
-            <p>P3 remains the developed path because its student-facing practice uses question images and mark-scheme images.</p>
-          </article>
-          <article>
-            <CheckCircle2 size={20} aria-hidden="true" />
-            <h4>Drafts are labelled</h4>
-            <p>P1, M1, and S1 are useful for orientation, but they are still support drafts until reviewed against course contracts.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="homepage-checklist" aria-labelledby="homepage-checklist-title">
-        <h3 id="homepage-checklist-title">Homepage acceptance checklist</h3>
-        <ul>
-          {HOMEPAGE_CHECKLIST.map((item) => (
-            <li key={item}>
-              <CheckCircle2 size={16} aria-hidden="true" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+        <span className="mode-pill">Status today</span>
+        <h3 id="homepage-status-title">P3 is the most developed Asterion path today.</h3>
+        <p>P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.</p>
       </section>
     </section>
   );

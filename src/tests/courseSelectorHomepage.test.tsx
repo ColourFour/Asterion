@@ -52,17 +52,16 @@ describe('CourseSelector homepage', () => {
     expect(container.textContent).toContain('Recommended starting path');
     expect(container.textContent).toContain('Full Field Guide, Skill Check, and Exam Training flow');
     expect(container.textContent).toContain('Start with P3');
-    expect(container.textContent).toContain('P3 image-first practice');
-    expect(container.textContent).toContain('source question and mark-scheme images');
+    expect(container.textContent).toContain('Start here if you want the complete Asterion loop.');
+    expect(container.textContent).toContain('Includes Algebra, Logarithms');
     expect(container.textContent).toContain('Draft/support courses');
-    expect(container.textContent).toContain('Draft/support section');
-    expect(container.textContent).toContain('P1, M1, and S1 are draft support sections');
+    expect(container.textContent).toContain('Draft support');
+    expect(container.textContent).toContain('P1, M1, and S1 are available as draft support while their coverage is expanded and reviewed.');
     expect(container.textContent).toContain('View P1 draft support');
     expect(container.textContent).toContain('View M1 draft support');
     expect(container.textContent).toContain('View S1 draft support');
-    expect(container.textContent).toContain('Homepage acceptance checklist');
+    expect(container.textContent).not.toContain('Homepage acceptance checklist');
     expect(container.textContent).toContain('Algebra');
-    expect(container.textContent).toContain('9709 P1 1.1: Quadratics');
     expect(container.textContent).not.toContain('Choose your course');
     expect(container.textContent).not.toContain('Brain loading');
 
@@ -74,7 +73,7 @@ describe('CourseSelector homepage', () => {
     const p3Card = container.querySelector('.course-card-featured');
     const firstSupportCard = container.querySelector('.course-support-grid .course-card');
     expect(p3Card?.textContent).toContain('Start with P3');
-    expect(firstSupportCard?.textContent).toContain('Draft/support section');
+    expect(firstSupportCard?.textContent).toContain('Draft support');
     expect(
       Boolean(p3Card && firstSupportCard && (p3Card.compareDocumentPosition(firstSupportCard) & Node.DOCUMENT_POSITION_FOLLOWING)),
     ).toBe(true);
