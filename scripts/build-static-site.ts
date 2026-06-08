@@ -195,6 +195,19 @@ function escapeHtml(value: string | number | undefined): string {
     .replace(/'/g, '&#39;');
 }
 
+function escapeRawHtml(value: string | number | undefined): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeRawAttr(value: string | number | boolean | undefined): string {
+  return escapeRawHtml(String(value ?? ''));
+}
+
 function escapeAttr(value: string | number | boolean | undefined): string {
   return escapeHtml(String(value ?? ''));
 }
@@ -1099,40 +1112,151 @@ function renderExamPanicVisual(): string {
   `;
 }
 
-function renderCourseCard(fromPagePath: string, course: CourseMetadata): string {
+const homepageLoopSteps = [
+  {
+    label: 'Field Guide',
+    text: 'Learn the method before opening exam-image practice.',
+  },
+  {
+    label: 'Skill Check',
+    text: 'Check one skill at a time so guessing does not look like readiness.',
+  },
+  {
+    label: 'Exam Training',
+    text: 'Move into source question images and mark-scheme review when the route is clear.',
+  },
+] as const;
+
+const homepageChecklist = [
+  'Start with P3 unless your teacher has assigned another course.',
+  'Use Field Guide -> Skill Check -> Exam Training as the study loop.',
+  'Treat P1, M1, and S1 as draft support until their syllabus-contract audits are complete.',
+] as const;
+
+function homepagePrimaryCourse(): CourseMetadata {
+  return COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[0];
+}
+
+function homepageCourseCta(course: CourseMetadata): string {
+  if (course.id === P3_COURSE_ID) return 'Start with P3';
+  return `View ${course.shortName} draft support`;
+}
+
+function homepageCourseMaturity(course: CourseMetadata): string {
+  if (course.id === P3_COURSE_ID) return 'Most complete Asterion path';
+  return 'Draft/support section';
+}
+
+function homepageTopicPreview(course: CourseMetadata, count: number): string {
+  return course.topics.slice(0, count).map((topic) => {
+    const prefix = topic.syllabusRef ? `${topic.syllabusRef}: ` : '';
+    return `<li>${escapeRawHtml(`${prefix}${topic.title}`)}</li>`;
+  }).join('');
+}
+
+function renderHomepageLoopPanel(course: CourseMetadata): string {
   return `
-    <a class="course-card course-status-${escapeAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="Open ${escapeAttr(course.displayName)}">
-      <div class="course-launch-card-main">
-        <span class="course-code-badge">${escapeHtml(course.shortName)}</span>
+    <div class="homepage-loop-panel" aria-label="Asterion learning loop">
+      <span class="homepage-loop-kicker">Asterion loop</span>
+      <ol>
+        ${homepageLoopSteps.map((step, index) => `
+          <li>
+            <span class="homepage-loop-number" aria-hidden="true">${index + 1}</span>
+            <div>
+              <strong>${escapeRawHtml(step.label)}</strong>
+              <p>${escapeRawHtml(step.text)}</p>
+            </div>
+          </li>
+        `).join('')}
+      </ol>
+      <div class="homepage-loop-next-step">
+        <span aria-hidden="true">Target</span>
+        <strong>Recommended first click: ${escapeRawHtml(`${course.shortName} ${course.displayName}`)}</strong>
+      </div>
+    </div>
+  `;
+}
+
+function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, featured = false): string {
+  const topicLabel = featured ? 'Current topic evidence' : 'Draft topic preview';
+  const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
+  const topicCount = featured ? 5 : 3;
+  return `
+    <a class="course-card${featured ? ' course-card-featured' : ''} course-status-${escapeRawAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="Open ${escapeRawAttr(course.displayName)}">
+      ${featured ? '<span class="homepage-primary-label">Recommended starting path</span>' : ''}
+      <div class="course-card-header-row">
+        <span class="course-code-badge">${escapeRawHtml(course.shortName)}</span>
         <div>
-          <h2>${escapeHtml(course.displayName)}</h2>
-          <p>${escapeHtml(course.launchDescription)}</p>
+          <span class="${statusPillClass}">${escapeRawHtml(featured ? homepageCourseMaturity(course) : course.statusLabel)}</span>
+          ${featured ? '' : `<span class="course-maturity-note">${escapeRawHtml(homepageCourseMaturity(course))}</span>`}
+          <h2>${escapeRawHtml(course.displayName)}</h2>
         </div>
       </div>
-      <span class="course-launch-cta">Start ${escapeHtml(course.shortName)} <span aria-hidden="true">&#8594;</span></span>
+      <p class="course-card-lede">${escapeRawHtml(featured ? course.shortDescription : course.launchDescription)}</p>
+      ${featured ? '<p class="homepage-primary-reason">Full Field Guide, Skill Check, and Exam Training flow. Recommended because P3 has the deepest reviewed Asterion study path today, while still marked as partial content ready.</p>' : ''}
+      <p class="course-card-status-copy">${escapeRawHtml(course.coverageSummary)}</p>
+      <div class="course-topic-preview" aria-label="${escapeRawAttr(`${course.shortName} topic preview`)}">
+        <span>${escapeRawHtml(topicLabel)}</span>
+        <ul>
+          ${homepageTopicPreview(course, topicCount)}
+        </ul>
+      </div>
+      <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))} <span aria-hidden="true">&#8594;</span></span>
     </a>
   `;
 }
 
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
+  const p3Course = homepagePrimaryCourse();
+  const supportCourses = COURSES.filter((course) => course.id !== p3Course.id);
   const body = `
     <section class="page-hero course-selector-hero">
       <div class="hero-copy">
-        <p class="eyebrow">CAIE 9709 Study Hub</p>
-        <h1>Which paper are you studying today?</h1>
-        <p>Pick P1, P3, M1, or S1. After that, choose one topic and start with one small step.</p>
+        <p class="eyebrow">CAIE 9709 training system</p>
+        <h1>Asterion trains exam readiness through a visible learning loop.</h1>
+        <p>Start with a Field Guide, prove the method in a Skill Check, then use Exam Training with source question and mark-scheme images. P3 is the most complete path today; P1, M1, and S1 are draft support sections.</p>
+        <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">Start with P3 training <span aria-hidden="true">&#8594;</span></a>
       </div>
-      ${renderExamPanicVisual()}
+      ${renderHomepageLoopPanel(p3Course)}
     </section>
-    <section class="section-heading">
+    <section class="homepage-course-layout" aria-label="Available CAIE 9709 courses">
+      ${renderHomepageCourseCard(pagePath, p3Course, true)}
+      <section class="homepage-support-section" aria-labelledby="homepage-support-title">
+        <div class="homepage-support-heading">
+          <h2 id="homepage-support-title">Draft/support courses</h2>
+          <p>P1, M1, and S1 stay available for navigation and early study support, but they are not presented as fully reviewed Asterion paths.</p>
+        </div>
+        <div class="course-grid course-support-grid" aria-label="Draft and support CAIE 9709 courses">
+          ${supportCourses.map((course) => renderHomepageCourseCard(pagePath, course)).join('')}
+        </div>
+      </section>
+    </section>
+    <section class="homepage-status-section" aria-labelledby="homepage-status-title">
       <div>
-        <h2>Choose your paper</h2>
-        <p>One click gets you to the right topic list.</p>
+        <p class="eyebrow">Trust and status</p>
+        <h2 id="homepage-status-title">What is ready, and what is not overclaimed</h2>
+      </div>
+      <div class="homepage-status-grid">
+        <article>
+          <h3>Static study surface</h3>
+          <p>No backend-only promise is needed for the course selector. The production study surface stays GitHub Pages compatible.</p>
+        </article>
+        <article>
+          <h3>P3 image-first practice</h3>
+          <p>P3 remains the developed path because its student-facing practice uses question images and mark-scheme images.</p>
+        </article>
+        <article>
+          <h3>Drafts are labelled</h3>
+          <p>P1, M1, and S1 are useful for orientation, but they are still support drafts until reviewed against course contracts.</p>
+        </article>
       </div>
     </section>
-    <section class="course-grid" aria-label="CAIE 9709 course pages">
-      ${COURSES.map((course) => renderCourseCard(pagePath, course)).join('')}
+    <section class="homepage-checklist" aria-labelledby="homepage-checklist-title">
+      <h2 id="homepage-checklist-title">Homepage acceptance checklist</h2>
+      <ul>
+        ${homepageChecklist.map((item) => `<li><span aria-hidden="true">✓</span><span>${escapeRawHtml(item)}</span></li>`).join('')}
+      </ul>
     </section>
   `;
   return renderPage({
