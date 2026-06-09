@@ -2,7 +2,7 @@ import type { PaperFamily, QuickCheckAnswerType, QuickCheckOption, QuickCheckTwo
 import {
   LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_SNIPPET_IDS,
   LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS,
-} from '../data/logarithmObservatoryContent';
+} from '../data/logarithmicExponentialContent';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
@@ -10,7 +10,7 @@ import { matchRegionForLabels, normalizeLabel } from './worldMap';
 
 export type TeachingSnippetReviewStatus = 'needs_review' | 'teacher_reviewed' | 'published' | string;
 export type TeachingSnippetSource = 'teacher_authored' | 'template_authored' | string;
-export type TeachingSnippetType = 'concept' | 'method' | 'mistake_repair' | 'quick_check' | 'guardian_prep' | string;
+export type TeachingSnippetType = 'concept' | 'method' | 'mistake_repair' | 'quick_check' | 'challenge_prep' | string;
 
 export interface TeachingSnippetQuickCheck {
   id?: string;
@@ -40,7 +40,7 @@ export interface TeachingSnippetQuickCheck {
   workedFirstStep?: string;
 }
 
-export interface TeachingSnippetGuardianReadiness {
+export interface TeachingSnippetChallengeReadiness {
   supportsTopics: string[];
   recommendedBeforeQuestionIds: string[];
   readinessNote: string;
@@ -79,7 +79,7 @@ export interface TeachingSnippet {
   commonMistakes: string[];
   workedExamples: TeachingSnippetWorkedExample[];
   quickCheck?: TeachingSnippetQuickCheck;
-  guardianReadiness?: TeachingSnippetGuardianReadiness;
+  challengeReadiness?: TeachingSnippetChallengeReadiness;
   estimatedTimeMinutes?: number;
   snippetType?: TeachingSnippetType;
   sourceQuestionIds: string[];
@@ -214,7 +214,7 @@ function quickCheckValue(value: unknown): TeachingSnippetQuickCheck | undefined 
   return quickCheck;
 }
 
-function guardianReadinessValue(value: unknown): TeachingSnippetGuardianReadiness | undefined {
+function challengeReadinessValue(value: unknown): TeachingSnippetChallengeReadiness | undefined {
   const record = asRecord(value);
   if (!record) return undefined;
   const supportsTopics = stringArray(record.supports_topics);
@@ -341,7 +341,7 @@ export function normalizeTeachingSnippetsData(data: unknown): TeachingSnippet[] 
       commonMistakes: stringArray(snippet.common_mistakes),
       workedExamples: workedExamplesValue(snippet),
       quickCheck: quickCheckValue(snippet.quick_check),
-      guardianReadiness: guardianReadinessValue(snippet.guardian_readiness),
+      challengeReadiness: challengeReadinessValue(snippet.challenge_readiness),
       estimatedTimeMinutes: positiveNumber(snippet.estimated_time_minutes),
       snippetType: stringValue(snippet.snippet_type),
       sourceQuestionIds: stringArray(snippet.source_question_ids),

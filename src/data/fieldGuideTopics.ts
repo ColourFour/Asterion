@@ -1,11 +1,11 @@
-import { ALGEBRA_VAULT_TOPIC_ORDER } from './algebraVaultContent';
-import { CALCULUS_CLIFFS_TOPIC_ORDER } from './calculusCliffsContent';
-import { DIFFERENTIAL_SHRINE_TOPIC_ORDER } from './differentialShrineContent';
-import { INTEGRAL_TERRACES_TOPIC_ORDER } from './integralTerracesContent';
-import { ITERATION_FORGE_TOPIC_ORDER } from './iterationForgeContent';
-import { LOGARITHM_OBSERVATORY_TOPIC_ORDER } from './logarithmObservatoryContent';
-import { TRIGONOMETRY_SPIRE_TOPIC_ORDER } from './trigonometrySpireContent';
-import { VECTORS_GATE_TOPIC_ORDER } from './vectorsGateContent';
+import { ALGEBRA_TOPIC_ORDER } from './algebraContent';
+import { DIFFERENTIATION_TOPIC_ORDER } from './differentiationContent';
+import { DIFFERENTIAL_EQUATIONS_TOPIC_ORDER } from './differentialEquationsContent';
+import { INTEGRATION_TOPIC_ORDER } from './integrationContent';
+import { NUMERICAL_SOLUTION_TOPIC_ORDER } from './numericalSolutionContent';
+import { LOG_E_TOPIC_ORDER } from './logarithmicExponentialContent';
+import { TRIGONOMETRY_TOPIC_ORDER } from './trigonometryContent';
+import { VECTORS_TOPIC_ORDER } from './vectorsContent';
 
 export interface FieldGuideTopicExample {
   title: string;
@@ -34,22 +34,22 @@ export interface FieldGuideTopic {
 }
 
 export const REQUIRED_FIELD_GUIDE_SKILL_IDS = [
-  ...ALGEBRA_VAULT_TOPIC_ORDER,
+  ...ALGEBRA_TOPIC_ORDER,
   'complex_numbers.cartesian_conjugate_basic',
   'complex_numbers.locus_basic',
   'complex_numbers.modulus_argument_basic',
   'complex_numbers.roots_basic',
-  ...DIFFERENTIAL_SHRINE_TOPIC_ORDER,
-  ...CALCULUS_CLIFFS_TOPIC_ORDER,
-  ...INTEGRAL_TERRACES_TOPIC_ORDER,
-  ...LOGARITHM_OBSERVATORY_TOPIC_ORDER,
-  ...ITERATION_FORGE_TOPIC_ORDER,
-  ...TRIGONOMETRY_SPIRE_TOPIC_ORDER,
-  ...VECTORS_GATE_TOPIC_ORDER,
+  ...DIFFERENTIAL_EQUATIONS_TOPIC_ORDER,
+  ...DIFFERENTIATION_TOPIC_ORDER,
+  ...INTEGRATION_TOPIC_ORDER,
+  ...LOG_E_TOPIC_ORDER,
+  ...NUMERICAL_SOLUTION_TOPIC_ORDER,
+  ...TRIGONOMETRY_TOPIC_ORDER,
+  ...VECTORS_TOPIC_ORDER,
 ] as const;
 
 export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
-  'algebra-forge': [
+  'algebra': [
     {
       id: 'algebra_structure_first_bridge',
       marker: 'form',
@@ -102,7 +102,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['algebra_modulus_graph_equations'],
       preview: '$$ y=|x+2| $$',
       description: 'A modulus output is never negative. A linear expression inside a modulus makes a V-shape because the negative side is reflected upward.',
-      supportNote: 'Algebra Vault modulus here means real algebraic modulus only, not complex-number modulus or Argand diagrams.',
+      supportNote: 'Algebra modulus here means real algebraic modulus only, not complex-number modulus or Argand diagrams.',
       examples: [
         {
           title: 'Equation as two graph intersections',
@@ -346,7 +346,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'logarithm-grove': [
+  'logarithmic-and-exponential-functions': [
     {
       id: 'log_graph_inverse',
       marker: 'f^-1',
@@ -594,7 +594,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'trig-observatory': [
+  'trigonometry': [
     {
       id: 'trig_reciprocal_functions',
       marker: 'sec',
@@ -603,7 +603,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['trig_reciprocal_functions'],
       preview: '$$ \\sec x=\\frac1{\\cos x},\\quad \\operatorname{cosec}x=\\frac1{\\sin x},\\quad \\cot x=\\frac1{\\tan x} $$',
       description: 'Secant, cosecant, and cotangent are reciprocal functions. Their graphs inherit vertical asymptotes where the denominator function is zero.',
-      supportNote: 'Support skill: reciprocal functions prepare safe P3 trig transformations. Mastery evidence still comes from reviewed P3 exam-image attempts.',
+      supportNote: 'Support skill: reciprocal functions prepare safe P3 trig transformations. Exam readiness still comes from reviewed P3 exam-image attempts.',
       examples: [
         {
           title: 'Solve a reciprocal equation',
@@ -804,7 +804,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'complex-harbor': [
+  'complex-numbers': [
     {
       id: 'cartesian-conjugate',
       marker: 'z',
@@ -967,12 +967,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'calculus-cliffs': [
+  'differentiation': [
     {
       id: 'derivatives_exponential_logarithmic',
       marker: 'e',
       title: 'Exponential and Logarithmic Derivatives',
-      purpose: 'Differentiate e^(f(x)) and ln(f(x)) while keeping log-only skills in Logarithm Observatory.',
+      purpose: 'Differentiate e^(f(x)) and ln(f(x)) while keeping log-only skills in Logarithmic and Exponential Functions.',
       skillIds: ['derivatives_exponential_logarithmic'],
       preview: '$$ \\frac{d}{dx}e^{f(x)}=f\\prime(x)e^{f(x)} $$',
       description: 'The base rules are that e^x differentiates to e^x, e^(f(x)) picks up the inside derivative, and ln(f(x)) differentiates to f\'(x)/f(x).',
@@ -1004,7 +1004,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Constants outside exponentials stay as multipliers.',
             'Simplify logarithms first only when it makes the derivative cleaner.',
-            'Skill Practice keeps differentiating logs here; log graphs and log-law-only questions remain in Logarithm Observatory.',
+            'Skill Practice keeps differentiating logs here; log graphs and log-law-only questions remain in Logarithmic and Exponential Functions.',
           ],
           result: '$$ \\frac{dy}{dx}=12e^{3x-2}+\\frac{5}{5x+1} $$',
         },
@@ -1102,7 +1102,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['p3_diff_stationary_tangent_normal'],
       preview: '$$ y-y_1=m(x-x_1),\\quad m_n=-\\frac1m $$',
       description: 'These questions are not finished when dy/dx is found. Differentiate, substitute the point or solve dy/dx = 0, interpret the gradient, then form the requested line equation.',
-      supportNote: 'This bridge connects the reviewed stationary, tangent, and normal practice IDs for Calculus Cliffs without changing Exam Training selection.',
+      supportNote: 'This bridge connects the reviewed stationary, tangent, and normal practice IDs for Differentiation without changing Exam Training selection.',
       examples: [
         {
           title: 'Find tangent and normal equations',
@@ -1147,7 +1147,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['derivatives_trig_functions'],
       preview: '$$ \\frac{d}{dx}\\sin x=\\cos x $$',
       description: 'Memorize the base derivatives: sin differentiates to cos, cos differentiates to negative sin, and tan differentiates to sec^2. For sin(f(x)), cos(f(x)), or tan(f(x)), multiply by f\'(x).',
-      supportNote: 'Trig simplification and equation solving remain in Trigonometry Spire unless the assessed move is differentiation.',
+      supportNote: 'Trig simplification and equation solving remain in Trigonometry unless the assessed move is differentiation.',
       examples: [
         {
           title: 'Differentiate a composite sine',
@@ -1294,7 +1294,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'integration-gardens': [
+  'integration': [
     {
       id: 'integrals_exponential_logarithmic',
       marker: 'e, ln',
@@ -1303,7 +1303,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['integrals_exponential_logarithmic'],
       preview: '$$ \\int e^{2x+3}\\,dx,\\quad \\int \\frac{f\'(x)}{f(x)}\\,dx $$',
       description: 'Integration reverses a derivative. For $e^{kx+a}$, divide by $k$. For $f\'(x)/f(x)$, use $\\ln|f(x)|$ when the denominator is valid.',
-      supportNote: 'Log laws are only used to simplify final integral answers here. Standalone log-law work remains in Logarithm Observatory.',
+      supportNote: 'Log laws are only used to simplify final integral answers here. Standalone log-law work remains in Logarithmic and Exponential Functions.',
       examples: [
         {
           title: 'Divide by the inner coefficient',
@@ -1344,7 +1344,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['integrals_basic_trig'],
       preview: '$$ \\int \\sin(3x+\\pi/4)\\,dx,\\quad \\int \\sec^2(4x)\\,dx $$',
       description: 'For a linear inner function, integrate the outside trig function and divide by the coefficient of $x$. Radians are the default.',
-      supportNote: 'These are integration rules. Trig derivative prompts remain in Calculus Cliffs and trig equation solving remains in Trigonometry Spire.',
+      supportNote: 'These are integration rules. Trig derivative prompts remain in Differentiation and trig equation solving remains in Trigonometry.',
       examples: [
         {
           title: 'Keep the negative sign',
@@ -1385,7 +1385,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['integrals_trig_identities'],
       preview: '$$ \\int \\cos^2x\\,dx,\\quad \\int \\tan^2x\\,dx $$',
       description: 'Some trig integrals are not direct. Use identities such as $\\cos^2x=\\frac12(1+\\cos2x)$ and $\\tan^2x=\\sec^2x-1$ before integrating.',
-      supportNote: 'Identity work supports the integral here; pure identity proof and equation solving remain in Trigonometry Spire.',
+      supportNote: 'Identity work supports the integral here; pure identity proof and equation solving remain in Trigonometry.',
       examples: [
         {
           title: 'Use a double-angle rewrite',
@@ -1426,7 +1426,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       skillIds: ['integrals_partial_fractions'],
       preview: '$$ \\int \\frac{3x}{(x-1)(x+2)}\\,dx $$',
       description: 'Decompose first, then integrate each term. Linear denominators give logarithms; repeated factors may give reciprocal powers.',
-      supportNote: 'Algebra Vault trains decomposition as algebra. Integral Terraces trains the integration after decomposition.',
+      supportNote: 'Algebra trains decomposition as algebra. Integration trains the integration after decomposition.',
       examples: [
         {
           title: 'Decompose before logarithms',
@@ -1688,7 +1688,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'vector-workshop': [
+  'vectors': [
     {
       id: 'vectors_notation',
       marker: 'v',
@@ -2020,7 +2020,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'numerical-mines': [
+  'numerical-solution-of-equations': [
     {
       id: 'iteration_change_of_sign',
       marker: '+/-',
@@ -2186,7 +2186,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       ],
     },
   ],
-  'differential-shrine': [
+  'differential-equations': [
     {
       id: 'differential_first_order_model',
       marker: 'rate',
@@ -2235,7 +2235,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       purpose: 'Rearrange a separable differential equation, integrate both sides, and state a general solution.',
       skillIds: ['differential_separable_variables'],
       preview: '$$ \\frac{dy}{dx}=xy $$',
-      description: 'A separable differential equation can be rearranged so all y terms sit with dy and all x terms sit with dx. Integration methods from Integral Terraces may appear after that separation step.',
+      description: 'A separable differential equation can be rearranged so all y terms sit with dy and all x terms sit with dx. Integration methods from Integration may appear after that separation step.',
       examples: [
         {
           title: 'General exponential family',

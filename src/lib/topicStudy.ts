@@ -1,9 +1,9 @@
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import { COURSES, P3_COURSE_ID, type CourseId } from '../data/courses';
 import type { LearningActivityAttempt, RegionDefinition, RegionLearningRecord, RegionProgress, StoredProgress } from '../types';
-import { P3_ASTRAL_ACADEMY } from './worldMap';
+import { P3_COURSE_MAP } from './worldMap';
 
-export type TopicStudyPage = 'hub' | 'field-guide' | 'skill-practice';
+export type TopicStudyPage = 'field-guide' | 'skill-check' | 'exam-training';
 
 export interface StudyTopic {
   regionId: string;
@@ -26,7 +26,7 @@ export interface TopicProgressSummary {
 
 export const STUDY_TOPICS: StudyTopic[] = [
   {
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     slug: 'algebra',
     name: 'Algebra',
     shortName: 'Algebra',
@@ -34,15 +34,15 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: 'f(x), \\; P(x), \\; |x|, \\; (1+x)^n',
   },
   {
-    regionId: 'logarithm-grove',
-    slug: 'logarithms',
-    name: 'Logarithms',
-    shortName: 'Logs',
+    regionId: 'logarithmic-and-exponential-functions',
+    slug: 'logarithmic-and-exponential-functions',
+    name: 'Logarithmic and Exponential Functions',
+    shortName: 'Logs and Exponentials',
     description: 'Work with logarithmic and exponential equations, domain checks, and linearisation.',
     headerFormula: '\\log_a x, \\; e^x, \\; y = ab^x',
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     slug: 'trigonometry',
     name: 'Trigonometry',
     shortName: 'Trig',
@@ -50,23 +50,15 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\sin x, \\; \\cos x, \\; \\tan x',
   },
   {
-    regionId: 'complex-harbor',
-    slug: 'argand',
-    name: 'Complex Numbers / Argand Diagrams',
-    shortName: 'Argand',
-    description: 'Use Cartesian, modulus-argument, locus, polar, and root forms of complex numbers.',
-    headerFormula: 'z = x+iy, \\; |z|, \\; \\arg z',
-  },
-  {
-    regionId: 'calculus-cliffs',
-    slug: 'calculus',
-    name: 'Calculus',
-    shortName: 'Calculus',
+    regionId: 'differentiation',
+    slug: 'differentiation',
+    name: 'Differentiation',
+    shortName: 'Differentiation',
     description: 'Study differentiation techniques, tangents, normals, stationary points, implicit and parametric forms.',
     headerFormula: '\\frac{dy}{dx}, \\; f^{\\prime}(x), \\; \\frac{dy/dt}{dx/dt}',
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     slug: 'integration',
     name: 'Integration',
     shortName: 'Integration',
@@ -74,7 +66,15 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\int f(x)\\,dx, \\; \\int_a^b f(x)\\,dx',
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'numerical-solution-of-equations',
+    slug: 'numerical-solution-of-equations',
+    name: 'Numerical Solution of Equations',
+    shortName: 'Numerical Solution',
+    description: 'Use sign-change arguments, fixed-point iteration, convergence checks, and numerical accuracy.',
+    headerFormula: 'x_{n+1}=g(x_n), \\; f(a)f(b)<0',
+  },
+  {
+    regionId: 'vectors',
     slug: 'vectors',
     name: 'Vectors',
     shortName: 'Vectors',
@@ -82,38 +82,28 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\mathbf{r}=\\mathbf{a}+\\lambda\\mathbf{b}, \\; \\mathbf{a}\\cdot\\mathbf{b}',
   },
   {
-    regionId: 'numerical-mines',
-    slug: 'iteration',
-    name: 'Numerical Methods / Iteration',
-    shortName: 'Iteration',
-    description: 'Use sign-change arguments, fixed-point iteration, convergence checks, and numerical accuracy.',
-    headerFormula: 'x_{n+1}=g(x_n), \\; f(a)f(b)<0',
-  },
-  {
-    regionId: 'differential-shrine',
+    regionId: 'differential-equations',
     slug: 'differential-equations',
     name: 'Differential Equations',
     shortName: 'DEs',
     description: 'Form and solve first-order differential equations, including separation and initial conditions.',
     headerFormula: '\\frac{dy}{dx}=f(x,y), \\; y(x_0)=y_0',
   },
+  {
+    regionId: 'complex-numbers',
+    slug: 'complex-numbers',
+    name: 'Complex Numbers',
+    shortName: 'Complex Numbers',
+    description: 'Use Cartesian, modulus-argument, locus, polar, and root forms of complex numbers.',
+    headerFormula: 'z = x+iy, \\; |z|, \\; \\arg z',
+  },
 ];
 
 const topicsByRegionId = new Map(STUDY_TOPICS.map((topic) => [topic.regionId, topic]));
 const topicsBySlug = new Map(STUDY_TOPICS.map((topic) => [topic.slug, topic]));
 
-export const STUDY_ROUTE_ROOTS = new Set([
+export const STUDY_ROUTE_ROOTS = new Set<string>([
   ...COURSES.map((course) => course.slug),
-  'topics',
-  'regions',
-  'exam-training',
-  'student',
-  'teacher',
-  'admin',
-  'dashboard',
-  'ui-review',
-  'class-hall',
-  'classHall',
 ]);
 
 export function studyTopicForRegionId(regionId: string | undefined): StudyTopic | undefined {
@@ -125,7 +115,7 @@ export function studyTopicForSlug(slug: string | undefined): StudyTopic | undefi
 }
 
 export function regionForStudyTopic(topic: StudyTopic): RegionDefinition | undefined {
-  return P3_ASTRAL_ACADEMY.regions.find((region) => region.id === topic.regionId);
+  return P3_COURSE_MAP.regions.find((region) => region.id === topic.regionId);
 }
 
 export function displayRegionForTopic(topic: StudyTopic, region?: RegionDefinition): RegionDefinition {
@@ -141,14 +131,12 @@ export function displayRegionForTopic(topic: StudyTopic, region?: RegionDefiniti
   };
 }
 
-export function topicPath(topic: StudyTopic, page: TopicStudyPage = 'hub', courseSlug?: CourseId): string {
-  const root = courseSlug ? `/${courseSlug}/topics` : '/topics';
-  return page === 'hub'
-    ? `${root}/${topic.slug}`
-    : `${root}/${topic.slug}/${page}`;
+export function topicPath(topic: StudyTopic, page: TopicStudyPage = 'field-guide', courseSlug?: CourseId): string {
+  const root = `/${courseSlug ?? P3_COURSE_ID}/topics`;
+  return `${root}/${topic.slug}/${page}`;
 }
 
-export function p3TopicPath(topic: StudyTopic, page: TopicStudyPage = 'hub'): string {
+export function p3TopicPath(topic: StudyTopic, page: TopicStudyPage = 'field-guide'): string {
   return topicPath(topic, page, P3_COURSE_ID);
 }
 

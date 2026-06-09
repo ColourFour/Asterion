@@ -24,7 +24,7 @@
       "prompt": "If e^(2x) = 7, write x exactly.",
       "question_type": "Natural logarithm inverse step",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -69,7 +69,7 @@
       "prompt": "Solve 5e^(3x) = 20.",
       "question_type": "Natural logarithm inverse step",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -104,8 +104,8 @@
         "form": "shifted_exp",
         "rhs": 9,
         "scale": 2,
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "shift": 1,
         "topic_contract_id": "log_e_natural_logs"
       },
@@ -113,10 +113,10 @@
       "prompt": "Solve 2e^(x+1) = 9.",
       "question_type": "Natural logarithm inverse step",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_exponential_equations",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -158,7 +158,7 @@
       "prompt": "Rewrite log_2 32 = 5 in exponential form.",
       "question_type": "Logarithmic and exponential form conversion",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -202,7 +202,7 @@
       "prompt": "The point (3, 8) lies on y = 2^x. State the matching point on y = log_2 x.",
       "question_type": "Logarithmic and exponential form conversion",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -236,18 +236,18 @@
         "base": 3,
         "item_type": "domain_range",
         "safe_bounds": "small positive bases and integer graph points",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "log_graph_inverse"
       },
       "practice_id": "gen_log_graph_inverse_basic_0003",
       "prompt": "State the domain and range of y = log_3 x.",
       "question_type": "Logarithmic and exponential form conversion",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_convert_forms",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -286,7 +286,7 @@
       "prompt": "Simplify ln x + ln 5 into a single logarithm.",
       "question_type": "Logarithm laws",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -330,7 +330,7 @@
       "prompt": "Write 2ln x - ln(x + 1) as a single logarithm.",
       "question_type": "Logarithm laws",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -365,18 +365,18 @@
         "constant": 3,
         "item_type": "invalid_sum_law",
         "safe_bounds": "same-base logarithms with positive-domain reminders",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "log_laws"
       },
       "practice_id": "gen_log_laws_basic_0003",
       "prompt": "Explain why ln(x + 3) is not equal to ln x + ln 3.",
       "question_type": "Logarithm laws",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_laws_equations",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -418,7 +418,7 @@
       "prompt": "Solve 3^x > 27.",
       "question_type": "Exponential equation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -462,7 +462,7 @@
       "prompt": "Solve (1/2)^x <= (1/2)^3.",
       "question_type": "Exponential equation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -499,18 +499,18 @@
         "rhs": 12,
         "safe_bounds": "small exact exponent comparisons and isolated exponential inequalities",
         "scale": 3,
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "exponential_equations_inequalities"
       },
       "practice_id": "gen_log_exponential_inequality_basic_0003",
       "prompt": "Solve 3e^(2x) < 12.",
       "question_type": "Exponential equation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_exponential_equations",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -554,7 +554,7 @@
       "prompt": "Expand (1 - 2x)^-2 up to and including the x^3 term, and state the validity condition.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -600,7 +600,7 @@
       "prompt": "Rewrite sqrt(2 - 6x) in binomial form, then expand up to and including the x^2 term.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -637,18 +637,18 @@
         "item_type": "coefficient_extraction",
         "numerator_constant": 3,
         "numerator_x_coefficient": 1,
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_first_terms_and_coefficient_0003",
       "prompt": "Find the coefficient of x^3 in (3 + x)/(1 + 3x), using a binomial expansion.",
       "question_type": "Binomial term or coefficient",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_binomial_terms_coefficients",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -687,7 +687,7 @@
       "prompt": "Divide x^3 - 6x^2 + 11x - 6 by x - 1.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -729,7 +729,7 @@
       "prompt": "Divide x^3 + 3x^2 - x + 5 by x - 2, giving the quotient and remainder.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -771,7 +771,7 @@
       "prompt": "Divide 2x^3 - 5x + 4 by x + 1, writing the missing term first.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -805,18 +805,18 @@
       "parameters": {
         "item_type": "division_non_monic",
         "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_polynomial_division"
       },
       "practice_id": "gen_polynomial_remainder_factor_basic_0004",
       "prompt": "Divide 2x^3 - x^2 + 5x + 7 by 2x + 1, giving the quotient and remainder.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -856,7 +856,7 @@
       "prompt": "For f(x) = x^3 - 4x + 1, what substitution gives the remainder on division by x + 2?",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -899,7 +899,7 @@
       "prompt": "Find the remainder when f(x) = 2x^3 - x + 4 is divided by 2x + 1.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -942,7 +942,7 @@
       "prompt": "Show that x - 2 is a factor of x^3 - 3x^2 - 4x + 12.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -979,18 +979,18 @@
         "k": -5,
         "root": -1,
         "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_remainder_factor_theorem"
       },
       "practice_id": "gen_polynomial_remainder_factor_basic_0008",
       "prompt": "Find k if x + 1 is a factor of x^3 + kx^2 - x + 5.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1025,18 +1025,18 @@
         "remainder": 12,
         "remainder_root": -2,
         "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_remainder_factor_theorem"
       },
       "practice_id": "gen_polynomial_remainder_factor_basic_0009",
       "prompt": "For f(x) = x^3 + ax^2 + bx + 6, x - 1 is a factor and the remainder on division by x + 2 is 12. Find a and b.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1068,18 +1068,18 @@
         "item_type": "solve_by_factors",
         "roots": "-1,1,4",
         "safe_bounds": "cubic coefficients, divisor roots, and constants kept small; arithmetic checked exactly",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_remainder_factor_theorem"
       },
       "practice_id": "gen_polynomial_remainder_factor_basic_0010",
       "prompt": "Solve x^3 - 4x^2 - x + 4 = 0, using simple factors.",
       "question_type": "Polynomial factor theorem",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_polynomial_remainder_factor",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1119,7 +1119,7 @@
       "prompt": "State the domain restriction before working with ln(x - 2).",
       "question_type": "Logarithm domain check",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1164,7 +1164,7 @@
       "prompt": "Solve ln(x - 1) = ln 5, checking the domain.",
       "question_type": "Logarithm domain check",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1202,8 +1202,8 @@
         "rhs": 10,
         "right_shift": -1,
         "safe_bounds": "linear log arguments with positive checked final roots",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "log_equations_inequalities",
         "valid_root": 4
       },
@@ -1211,10 +1211,10 @@
       "prompt": "Solve ln(x - 2) + ln(x + 1) = ln 10, rejecting any invalid root.",
       "question_type": "Logarithm domain check",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_domain_validation",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1255,7 +1255,7 @@
       "prompt": "For y = Ae^(kx), write a linear form suitable for plotting ln y against x.",
       "question_type": "Logarithmic linearisation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1298,7 +1298,7 @@
       "prompt": "If ln y = 2 + 3x, state the gradient and intercept on a graph of ln y against x.",
       "question_type": "Logarithmic linearisation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1333,18 +1333,18 @@
         "gradient": 2,
         "item_type": "specific_model",
         "safe_bounds": "positive coefficients and small gradients for log-linear forms",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "log_linearisation"
       },
       "practice_id": "gen_log_linearisation_basic_0003",
       "prompt": "Linearise y = 4e^(2x) by taking natural logs.",
       "question_type": "Logarithmic linearisation",
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_log_linearisation",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1380,7 +1380,7 @@
       "prompt": "Write the partial-fraction form for \\frac{x + 3}{(x - 2)(x + 1)}. Do not solve for constants.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1420,7 +1420,7 @@
       "prompt": "Decompose \\frac{x + 3}{(x - 2)(x + 1)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1461,7 +1461,7 @@
       "prompt": "Write the partial-fraction form for \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)}. Do not solve for constants.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1494,17 +1494,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "quadratic_decompose",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_distinct_linear_0004",
       "prompt": "Decompose \\frac{2x^2 - x + 6}{(x + 1)(x^2 + 2)} into partial fractions.",
       "question_type": "Partial fractions setup",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_partial_fraction_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1542,7 +1542,7 @@
       "prompt": "Write the partial-fraction form for \\frac{3x^2 + 2}{x(x - 1)^2}. Do not solve for constants.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1582,7 +1582,7 @@
       "prompt": "Decompose \\frac{3x^2 + 2}{x(x - 1)^2} into partial fractions.",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1616,17 +1616,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "mixed_form_review",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "algebra_partial_fractions"
       },
       "practice_id": "gen_partial_fractions_repeated_linear_0003",
       "prompt": "For each denominator, name the partial-fraction form: (i) (x - 2)(x + 1), (ii) x(x - 1)^2, (iii) (x + 1)(x^2 + 2).",
       "question_type": "Partial fractions with repeated factors",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_partial_fraction_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1663,7 +1663,7 @@
       "prompt": "Solve |3x + 1| = 7.",
       "question_type": "Modulus equation cases",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1703,7 +1703,7 @@
       "prompt": "Solve |x + 2| = |3x|.",
       "question_type": "Modulus equation cases",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1743,7 +1743,7 @@
       "prompt": "Solve |x - 3| < 5.",
       "question_type": "Modulus equation cases",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1776,17 +1776,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "graph_interval",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "algebra_modulus_graph_equations"
       },
       "practice_id": "gen_modulus_equation_basic_0004",
       "prompt": "The graphs y = |x + 2| and y = |3x| meet at x = -1/2 and x = 1. For which x-values is |x + 2| < |3x|?",
       "question_type": "Modulus equation cases",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_modulus_cases",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1823,7 +1823,7 @@
       "prompt": "State the interval of validity for the expansion of (1 + 3x)^-2.",
       "question_type": "Binomial validity range",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1863,7 +1863,7 @@
       "prompt": "Rewrite (5 - x)^-3 in the form a(1 + kx)^n and state the validity interval.",
       "question_type": "Binomial validity range",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -1897,17 +1897,17 @@
       "paper_family": "p3",
       "parameters": {
         "form": "estimate_value",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "algebra_binomial_expansion"
       },
       "practice_id": "gen_binomial_validity_range_0003",
       "prompt": "Using sqrt(1 + x) = 1 + x/2 - x^2/8 + ..., estimate sqrt(1.04).",
       "question_type": "Binomial validity range",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_binomial_validity",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -1944,7 +1944,7 @@
       "prompt": "Rewrite sec x using sine or cosine.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -1984,7 +1984,7 @@
       "prompt": "Rewrite 1 - cos^2 x using a Pythagorean identity.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2017,17 +2017,17 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "double_angle_cancel",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_identity_rewrite_basic_0003",
       "prompt": "Rewrite (1 - cos 2x)/sin x as a simpler expression, stating the restriction.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_trig_identity_selection",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2064,7 +2064,7 @@
       "prompt": "Choose a double-angle identity for sin 2x.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2102,7 +2102,7 @@
       "prompt": "Rewrite cos 2x in terms of sin x only.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2133,17 +2133,17 @@
       "paper_family": "p3",
       "parameters": {
         "identity": "convert_quadratic_sine",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_double_angle_basic_0003",
       "prompt": "Rewrite 3 - 4sin^2 x using cos 2x.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_trig_reciprocal_double_angle",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2179,7 +2179,7 @@
       "prompt": "Solve sec x = 2 for 0 <= x < 2pi.",
       "question_type": "Trigonometric equation in an interval",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2219,7 +2219,7 @@
       "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
       "question_type": "Trigonometric equation in an interval",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2253,17 +2253,17 @@
       "paper_family": "p3",
       "parameters": {
         "equation": "product_zero",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "trig_double_angle_formulae"
       },
       "practice_id": "gen_trig_solve_equation_interval_basic_0003",
       "prompt": "Solve sin x(2cos x - 1) = 0 for 0 <= x < 2pi.",
       "question_type": "Trigonometric equation in an interval",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_trig_equation_interval",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2301,7 +2301,7 @@
       "prompt": "Use an addition formula to find sin(45 degrees + 30 degrees).",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2342,7 +2342,7 @@
       "prompt": "Use an addition formula to find tan(pi/4 + pi/6).",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2376,17 +2376,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "shifted_angle_equation",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "trig_addition_formulae"
       },
       "practice_id": "gen_trig_addition_formulae_basic_0003",
       "prompt": "Solve sin(x + pi/6) = 1/2 for 0 <= x < 2pi.",
       "question_type": "Trigonometric identity selection",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_trig_r_form_compound_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2426,7 +2426,7 @@
       "prompt": "Find R for 3sin x + 4cos x.",
       "question_type": "Reciprocal identity or R-form route",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2467,7 +2467,7 @@
       "prompt": "Write 5sin x + 12cos x in the form R sin(x + alpha), with alpha acute.",
       "question_type": "Reciprocal identity or R-form route",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2502,17 +2502,17 @@
         "a": 8,
         "b": -6,
         "r": 10,
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "trig_r_form_transformations"
       },
       "practice_id": "gen_trig_r_form_basic_0003",
       "prompt": "Find R and the maximum value of 8sin x - 6cos x.",
       "question_type": "Reciprocal identity or R-form route",
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_trig_r_form_compound_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2554,7 +2554,7 @@
       "prompt": "Differentiate (2x + 3)^5 by writing the chain-rule structure first.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2596,7 +2596,7 @@
       "prompt": "Differentiate x e^(2x).",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2634,8 +2634,8 @@
         "item_type": "tangent_chain",
         "n": 3,
         "safe_bounds": "small integer coefficients; derivative magnitudes capped at 200",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "x0": 1,
         "y0": 8
       },
@@ -2643,10 +2643,10 @@
       "prompt": "For y = (x^2 + 1)^3, find the tangent line at x = 1.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_chain_product_quotient",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2686,7 +2686,7 @@
       "prompt": "For y = x^3 - 12x, find the x-values of the stationary points.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2731,7 +2731,7 @@
       "prompt": "Find the tangent line to y = x^2 + 1 at x = 3.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2766,8 +2766,8 @@
         "item_type": "normal_line",
         "normal_gradient": "-1/4",
         "safe_bounds": "low-degree polynomial curves with exact integer gradients or simple reciprocal normals",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "tangent_gradient": 4,
         "topic_contract_id": "p3_diff_stationary_tangent_normal",
         "x0": 2,
@@ -2777,10 +2777,10 @@
       "prompt": "Find the normal line to y = x^2 at x = 2.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_stationary_tangent_normal",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2821,7 +2821,7 @@
       "prompt": "Find the modulus of z = 3 + 4i.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -2866,7 +2866,7 @@
       "prompt": "For z = -3 + 4i, state the modulus and a quadrant-aware argument.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -2906,17 +2906,17 @@
         "power": 3,
         "powered_modulus": 8,
         "safe_bounds": "small integer Cartesian parts; modulus checked as exact square root",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep"
       },
       "practice_id": "gen_complex_modulus_argument_basic_0003",
       "prompt": "If z has modulus 2 and argument pi/6, state the modulus and argument of z^3.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_complex_modulus_argument_form",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -2957,7 +2957,7 @@
       "prompt": "For |z - (2 + i)| = 3, state the centre and radius of the locus.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3001,7 +3001,7 @@
       "prompt": "Describe the locus |z - (1)| = |z - (5)|.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3036,8 +3036,8 @@
         "argument_numerator": 1,
         "item_type": "argument_ray",
         "safe_bounds": "small integer centres and simple pi-fraction argument rays",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "start_imaginary": -2,
         "start_real": 1
       },
@@ -3045,10 +3045,10 @@
       "prompt": "Describe the locus arg(z - (1 - 2i)) = pi/4.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_complex_argand_loci_regions",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3090,7 +3090,7 @@
       "prompt": "If z = 2e^(i*pi/6), find z^3 in modulus-argument form.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3133,7 +3133,7 @@
       "prompt": "Find the square roots of 4e^(i*pi/3) in modulus-argument form.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3169,17 +3169,17 @@
         "root_count": 3,
         "root_modulus": 2,
         "safe_bounds": "small moduli and standard pi-fraction arguments with exact roots",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep"
       },
       "practice_id": "gen_complex_roots_basic_0003",
       "prompt": "Find the cube roots of 8 in Cartesian form.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_complex_roots_powers",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3219,7 +3219,7 @@
       "prompt": "Write the conjugate of 3 - 4i.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3262,7 +3262,7 @@
       "prompt": "Simplify 1/(2 - i) in Cartesian form.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3298,17 +3298,17 @@
         "item_type": "solve_with_conjugate",
         "real": 3,
         "safe_bounds": "small Cartesian components with exact conjugate products",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep"
       },
       "practice_id": "gen_complex_cartesian_conjugate_basic_0003",
       "prompt": "Given z + conjugate(z) = 6 and z - conjugate(z) = 4i, find z.",
       "question_type": "complex_numbers",
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_complex_cartesian_conjugate",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3354,7 +3354,7 @@
       "prompt": "Find <1, 2, -1> . <3, -1, 2>.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3403,7 +3403,7 @@
       "prompt": "Use a scalar product to decide whether <2, -1, 2> and <1, 2, 0> are perpendicular.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3447,18 +3447,18 @@
         "right_y": 1,
         "right_z": 2,
         "safe_bounds": "3D integer components within [-9, 9]; non-zero direction vectors checked",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "vectors_angle_between_lines"
       },
       "practice_id": "gen_vectors_line_scalar_product_basic_0003",
       "prompt": "For direction vectors <1, 2, 2> and <2, 1, 2>, find cos theta for the angle between them.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_vec_scalar_product_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3504,7 +3504,7 @@
       "prompt": "Find the direction vector from A(1, -2, 0) to B(4, 1, 2).",
       "question_type": "Point on a vector line",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3555,7 +3555,7 @@
       "prompt": "Points A(1, 2, -1), B(4, 0, 0), and C(6, 3, 3) have position vectors a, b, and c. Find AB, BC, and AB + BC. What single displacement does the sum equal?",
       "question_type": "Geometric vector addition",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3605,7 +3605,7 @@
       "prompt": "Point P lies on r = <1, 2, 0> + lambda<3, -1, 2> with lambda = 2. Find P.",
       "question_type": "Point on a vector line",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3643,18 +3643,18 @@
         "item_type": "relationship_from_directions",
         "safe_bounds": "3D integer point and direction components within [-9, 9]; exact component checks",
         "scale_factor": 2,
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "vectors_magnitude_unit_parallel"
       },
       "practice_id": "gen_vectors_line_relationship_basic_0003",
       "prompt": "Lines have direction vectors <1, 2, 3> and <2, 4, 6>. What relationship is possible before checking positions?",
       "question_type": "Point on a vector line",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_vec_3d_geometry_modelling",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3698,7 +3698,7 @@
       "prompt": "For f(x) = x^2 - 5, check whether the interval (2, 3) contains a root.",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3749,7 +3749,7 @@
       "prompt": "For f(x) = x^2 - 7, use f(2), f(3) and f(4) to choose an interval containing a root.",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3784,8 +3784,8 @@
         "lower": 1,
         "lower_value": -3,
         "safe_bounds": "small integer endpoint checks with explicit opposite signs",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_change_of_sign",
         "upper": 2,
         "upper_value": 4
@@ -3794,10 +3794,10 @@
       "prompt": "A graph of y = f(x) shows f(1) = -3 and f(2) = 4. What root interval is justified?",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_sign_change_graph_evidence",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3836,7 +3836,7 @@
       "prompt": "For x^2 = 6, which recurrence keeps the fixed-point equation unchanged: x_(n+1) = sqrt(6) or x_(n+1) = 6/x_n?",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -3882,7 +3882,7 @@
       "prompt": "Use x_(n+1) = (x_n + 5/x_n)/2 with x_0 = 2. Find x_1 and x_2 to 3 d.p.",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -3916,17 +3916,17 @@
         "gradient_abs": "3/5",
         "item_type": "suitability_check",
         "safe_bounds": "small positive constants; iteration values checked positive and bounded",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep"
       },
       "practice_id": "gen_numerical_iteration_formula_basic_0003",
       "prompt": "Near the fixed point, an iteration has |g'(x)| = 3/5. Is this locally suitable for convergence?",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_iteration_formula",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -3965,7 +3965,7 @@
       "prompt": "An iteration gives x = 1.5248. State x to 3 significant figures.",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4009,7 +4009,7 @@
       "prompt": "For x_(n+1) = (x_n + 5/x_n)/2 and x_0 = 2, should x_1 = 2.25000 be rounded to 2.2 before finding x_2?",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4044,18 +4044,18 @@
         "item_type": "successive_bounds",
         "lower_value": "0.1523",
         "safe_bounds": "short decimal checks using fixed deterministic approximations",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "upper_value": "0.1524"
       },
       "practice_id": "gen_numerical_accuracy_rounding_basic_0003",
       "prompt": "Two successive approximations are 0.1523 and 0.1524. Give the value to 2 d.p. if both round the same way.",
       "question_type": "Sign-change evidence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_accuracy_rounding",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4078,7 +4078,7 @@
       "answer": "Use f(x) = sqrt(x^3 + 3) + x - 2, then f(0) < 0 and f(1) > 0, so a root lies between 0 and 1",
       "difficulty_band": "medium",
       "exam_move": "Rewrite the equation into f(x) = 0 before applying the sign-change test.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-rewrite",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-change-of-sign-rewrite",
       "generator_family": "numerical_methods.sign_change_iteration_basic",
       "key_method": "Move all terms to one side, then evaluate both endpoints.",
       "paper_family": "p3",
@@ -4093,7 +4093,7 @@
       "prompt": "Rewrite sqrt(x^3 + 3) = 2 - x as f(x) = 0, then use f(0) and f(1) to justify a root interval.",
       "question_type": "Change-of-sign interval",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4119,25 +4119,25 @@
       "answer": "The table shows f(1.5) < 0 and f(1.6) > 0, so the root is between 1.5 and 1.6",
       "difficulty_band": "medium",
       "exam_move": "Use a value table to narrow the sign-change interval.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-table",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-change-of-sign-table",
       "generator_family": "numerical_methods.sign_change_iteration_basic",
       "key_method": "Track the signs as the tested values get closer together.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "table_interval_narrowing",
         "safe_bounds": "cubic values rounded consistently for sign comparison",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_change_of_sign"
       },
       "practice_id": "gen_iteration_change_of_sign_0005",
       "prompt": "For f(x) = x^3 - x - 2, a table gives f(1.4) = -0.656, f(1.5) = -0.125, f(1.6) = 0.496. Which interval is now justified?",
       "question_type": "Change-of-sign interval",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_sign_change_graph_evidence",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4160,7 +4160,7 @@
       "answer": "Test f(1.55) and f(1.65); a sign change across these bounds justifies 1.6 to 1 decimal place",
       "difficulty_band": "medium",
       "exam_move": "Use the two bounding values around a rounded decimal-place answer.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-change-of-sign-rounding",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-change-of-sign-rounding",
       "generator_family": "numerical_methods.sign_change_iteration_basic",
       "key_method": "Decimal-place proof needs the correct values on either side of the rounded answer.",
       "paper_family": "p3",
@@ -4168,18 +4168,18 @@
         "decimal_places": 1,
         "item_type": "decimal_place_bounding",
         "safe_bounds": "cubic values chosen to make rounding boundary explicit",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_change_of_sign"
       },
       "practice_id": "gen_iteration_change_of_sign_0006",
       "prompt": "A student wants to prove a root is 1.6 to 1 d.p. Why is testing only f(1.5) and f(1.6) not enough, and which two bounds should be tested?",
       "question_type": "Decimal-place sign-change proof",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_sign_change_graph_evidence",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4202,7 +4202,7 @@
       "answer": "Use y = x^2 + 2 and y = 1/x; their intersection solves x^3 + 2x - 1 = 0",
       "difficulty_band": "easy",
       "exam_move": "Split the equation into two graph equations and connect the intersection back to the original equation.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-choice",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-graph-root-choice",
       "generator_family": "numerical_methods.graph_root_proof",
       "key_method": "Rearrange to f(x) = g(x), then name the two graphs.",
       "paper_family": "p3",
@@ -4217,7 +4217,7 @@
       "prompt": "For x^3 + 2x - 1 = 0, choose two graphs whose intersections give the roots.",
       "question_type": "Graph root proof",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4243,7 +4243,7 @@
       "answer": "At an intersection f(x) = g(x), so the x-coordinate satisfies the original equation",
       "difficulty_band": "easy",
       "exam_move": "Explain why graph intersection solves the equation instead of only naming the graphs.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-explain",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-graph-root-explain",
       "generator_family": "numerical_methods.graph_root_proof",
       "key_method": "Connect equal y-values to the original equation.",
       "paper_family": "p3",
@@ -4258,7 +4258,7 @@
       "prompt": "A sketch shows y = x^2 + 1 and y = 5 - x crossing once. Explain why the crossing gives one solution of x^2 + 1 = 5 - x.",
       "question_type": "Graph root proof",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4284,25 +4284,25 @@
       "answer": "The graphs intersect once, so the original equation has one root according to the graph evidence",
       "difficulty_band": "medium",
       "exam_move": "Use exactly-one-intersection evidence to justify exactly one root.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-graph-root-one-root",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-graph-root-one-root",
       "generator_family": "numerical_methods.graph_root_proof",
       "key_method": "Tie the number of intersections to the number of roots.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "one_root_explanation",
         "safe_bounds": "graph evidence with one stated intersection",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_graph_root_proof"
       },
       "practice_id": "gen_iteration_graph_root_proof_0003",
       "prompt": "Sketch evidence for y = x^2 + 2 and y = 1/x shows exactly one intersection on x > 0. What does this prove about x^3 + 2x - 1 = 0 on x > 0?",
       "question_type": "Graph root proof",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_sign_change_graph_evidence",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4325,7 +4325,7 @@
       "answer": "Both forms rearrange to x^2 - 3x - 5 = 0",
       "difficulty_band": "easy",
       "exam_move": "Verify a proposed iteration by rearranging it back to the original equation.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-verify",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-fixed-point-verify",
       "generator_family": "numerical_methods.iteration_formula_basic",
       "key_method": "Set x = g(x), then rearrange to f(x) = 0.",
       "paper_family": "p3",
@@ -4340,7 +4340,7 @@
       "prompt": "Verify that x = sqrt(3x + 5) is an iterative form for the positive root of x^2 - 3x - 5 = 0.",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4366,7 +4366,7 @@
       "answer": "x_1 = 3.742, x_2 = 4.028, x_3 = 4.133",
       "difficulty_band": "medium",
       "exam_move": "Generate each approximation from the previous value.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-table",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-fixed-point-table",
       "generator_family": "numerical_methods.iteration_formula_basic",
       "key_method": "Substitute x_n into g(x_n), keeping guard digits until the final rounding.",
       "paper_family": "p3",
@@ -4381,7 +4381,7 @@
       "prompt": "Use x_(n+1) = sqrt(3x_n + 5), starting with x_0 = 3, to find x_1, x_2, and x_3 to 3 d.p.",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4407,25 +4407,25 @@
       "answer": "The values settle near 4.19, so the positive root is about 4.19",
       "difficulty_band": "medium",
       "exam_move": "Use a converging iteration sequence to state the approximate root to the requested accuracy.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-fixed-point-root-accuracy",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-fixed-point-root-accuracy",
       "generator_family": "numerical_methods.iteration_formula_basic",
       "key_method": "Continue until successive approximations support the requested accuracy.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "root_to_accuracy",
         "safe_bounds": "positive quadratic fixed-point sequence rounded to 2 d.p.",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_fixed_point_roots"
       },
       "practice_id": "gen_iteration_fixed_point_roots_0005",
       "prompt": "An iteration for x^2 - 3x - 5 = 0 gives x_4 = 4.171, x_5 = 4.184, and x_6 = 4.189. State the positive root to 2 d.p.",
       "question_type": "Fixed-point iteration",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_iteration_formula",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4448,7 +4448,7 @@
       "answer": "The first sequence appears to converge; the second does not settle",
       "difficulty_band": "medium",
       "exam_move": "Judge convergence from the generated values, not from the formula appearance alone.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-values",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-convergence-values",
       "generator_family": "numerical_methods.iteration_convergence",
       "key_method": "Compare whether the sequence values settle toward a stable number.",
       "paper_family": "p3",
@@ -4463,7 +4463,7 @@
       "prompt": "Sequence A is 0.600, 0.549, 0.578, 0.561, 0.570. Sequence B is 0.600, 0.511, 0.672, 0.398, 0.922. Which appears more useful for finding a root?",
       "question_type": "Iteration convergence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4489,7 +4489,7 @@
       "answer": "If an iterate is negative, the next value -ln(x_n) is undefined in real numbers",
       "difficulty_band": "medium",
       "exam_move": "Check the domain of the iteration formula before continuing.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-domain",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-convergence-domain",
       "generator_family": "numerical_methods.iteration_convergence",
       "key_method": "A logarithmic iteration needs a positive input.",
       "paper_family": "p3",
@@ -4504,7 +4504,7 @@
       "prompt": "For x_(n+1) = -ln(x_n), explain why the iteration fails if one generated value is negative.",
       "question_type": "Iteration convergence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4530,25 +4530,25 @@
       "answer": "Show a root between 0 and 1, then prefer x_(n+1) = e^(-x_n) because its values settle while -ln(x_n) can fail",
       "difficulty_band": "medium",
       "exam_move": "Compare two rearrangements for the same equation using sign-change evidence and generated values.",
-      "example_model_id": "iteration-forge-field-guide-2026-05-27-convergence-rearrangements",
+      "example_model_id": "numerical-solution-field-guide-2026-05-27-convergence-rearrangements",
       "generator_family": "numerical_methods.iteration_convergence",
       "key_method": "Use sign change for existence, then generated sequence behavior for iteration usefulness.",
       "paper_family": "p3",
       "parameters": {
         "item_type": "compare_rearrangements",
         "safe_bounds": "xe^x = 1 comparison with short deterministic sequences",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "iteration_convergence"
       },
       "practice_id": "gen_iteration_convergence_0003",
       "prompt": "For xe^x = 1, f(0) = -1 and f(1) = e - 1. Starting from x_1 = 0.6, compare x_(n+1) = e^(-x_n) with x_(n+1) = -ln(x_n).",
       "question_type": "Iteration convergence",
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_num_iteration_formula",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4590,7 +4590,7 @@
       "prompt": "For dy/dx = 3x^2y, write a separated-variable first line.",
       "question_type": "Separable differential equation",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4635,7 +4635,7 @@
       "prompt": "Solve dy/dx = 2xy given y(0) = 5.",
       "question_type": "Separable differential equation",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4671,8 +4671,8 @@
         "final_y": 5,
         "item_type": "initial_condition_value",
         "safe_bounds": "positive initial values and small coefficients; exact outputs checked",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "x_value": 4,
         "y0": 3,
         "topic_contract_id": "differential_particular_solutions"
@@ -4681,10 +4681,10 @@
       "prompt": "For dy/dx = x/y with y(0) = 3, find y when x = 4, taking the positive branch.",
       "question_type": "Separable differential equation",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_separation_setup",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4727,7 +4727,7 @@
       "prompt": "Given the integrated relation y^2 = x^2 + C and y = 3 when x = 1, find C.",
       "question_type": "Initial condition in differential equations",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4770,7 +4770,7 @@
       "prompt": "A general solution is y = Ae^(2x^2). If y = 4 when x = 0, write the particular solution.",
       "question_type": "Initial condition in differential equations",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4805,8 +4805,8 @@
         "final_y": 5,
         "item_type": "value_from_relation",
         "safe_bounds": "small positive values; initial condition applied only after an integrated relation is given",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "x0": 0,
         "x_value": 4,
         "y0": 3,
@@ -4816,10 +4816,10 @@
       "prompt": "For y^2 = x^2 + C, y = 3 when x = 0. Find the positive y when x = 4.",
       "question_type": "Initial condition in differential equations",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_initial_condition",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4857,7 +4857,7 @@
       "prompt": "For x^2 + y^2 = 25, write the first implicit-differentiation line.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -4898,7 +4898,7 @@
       "prompt": "For x^2 + y^2 = 25, find dy/dx in terms of x and y.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -4931,17 +4931,17 @@
       "parameters": {
         "item_type": "implicit_log_relation",
         "safe_bounds": "canonical implicit forms with exact symbolic derivative checks",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep"
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep"
       },
       "practice_id": "gen_differentiation_implicit_log_exp_basic_0003",
       "prompt": "For y ln x = x^2, find dy/dx.",
       "question_type": "differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_implicit_log_exp",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -4982,7 +4982,7 @@
       "prompt": "Write the component equations for intersecting r = <1, 2, 0> + lambda<2, -1, 1> and r = <3, 1, 1> + mu<1, 0, 2>.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5026,7 +5026,7 @@
       "prompt": "Find the intersection point of r = <1, 2, 0> + lambda<2, -1, 1> and r = <3, 1, 1> + mu<1, 0, 2>.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5062,18 +5062,18 @@
         "k": 0,
         "lambda_value": 2,
         "safe_bounds": "3D integer line components chosen to give exact parameter checks",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "vectors_line_equation"
       },
       "practice_id": "gen_vectors_line_intersection_basic_0003",
       "prompt": "The point (5, k, 2) lies on r = <1, 2, 0> + lambda<2, -1, 1>. Find k.",
       "question_type": "vectors",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_vec_line_equations_intersections",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5112,7 +5112,7 @@
       "prompt": "A quantity y grows at a rate proportional to y with constant 3. Write the differential equation.",
       "question_type": "Differential equation model from words",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5156,7 +5156,7 @@
       "prompt": "If dy/dt = ky, y = 10, and dy/dt = 5, find k.",
       "question_type": "Differential equation model from words",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5191,8 +5191,8 @@
         "k": "1/5",
         "rate": 4,
         "safe_bounds": "positive context values with exact rational rate constants",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "value": 20,
         "topic_contract_id": "differential_first_order_model"
       },
@@ -5200,10 +5200,10 @@
       "prompt": "A population P is 20 when its rate of increase is 4. If dP/dt = kP, write the model.",
       "question_type": "Differential equation model from words",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_forming_context_model",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5239,7 +5239,7 @@
       "prompt": "Differentiate y = (2x + 1)^5.",
       "question_type": "Differentiation method selection",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5278,7 +5278,7 @@
       "prompt": "Differentiate y = x^2 e^x.",
       "question_type": "Product rule differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5310,7 +5310,7 @@
       "key_method": "Differentiate both parametric equations with respect to t, then divide.",
       "paper_family": "p3",
       "parameters": {
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "x_power": 2,
         "y_power": 3
       },
@@ -5318,10 +5318,10 @@
       "prompt": "For x = t^2 + 1 and y = t^3, find dy/dx in terms of t.",
       "question_type": "Parametric gradient",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_parametric_gradients",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5357,7 +5357,7 @@
       "prompt": "Differentiate y = e^(3x).",
       "question_type": "Exponential derivative",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5396,7 +5396,7 @@
       "prompt": "Differentiate y = ln(2x + 1).",
       "question_type": "Logarithmic derivative",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5428,17 +5428,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "exp_log_tangent",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_exponential_logarithmic"
       },
       "practice_id": "gen_calculus_exp_log_derivative_0003",
       "prompt": "For y = e^(2x - 1), find the tangent line at x = 1.",
       "question_type": "Exponential tangent",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_method_selection",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5474,7 +5474,7 @@
       "prompt": "Differentiate y = x^2 e^x.",
       "question_type": "Product rule",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5513,7 +5513,7 @@
       "prompt": "Differentiate y = (x - 1)(2x + 1)^4.",
       "question_type": "Product rule",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5546,17 +5546,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "product_gradient",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_product_rule"
       },
       "practice_id": "gen_calculus_product_rule_0003",
       "prompt": "For y = x ln x, find the gradient at x = e.",
       "question_type": "Product rule gradient",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_chain_product_quotient",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5592,7 +5592,7 @@
       "prompt": "Differentiate y = (x^2 + 1)/(x - 1), leaving the quotient-rule structure clear.",
       "question_type": "Quotient rule",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5631,7 +5631,7 @@
       "prompt": "Differentiate y = 2x/(e^x + 1).",
       "question_type": "Quotient rule",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5664,17 +5664,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "quotient_stationary",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_quotient_rule"
       },
       "practice_id": "gen_calculus_quotient_rule_0003",
       "prompt": "For y = x/(x^2 + 1), find the positive x-value of the stationary point.",
       "question_type": "Quotient stationary point",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_chain_product_quotient",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5711,7 +5711,7 @@
       "prompt": "Differentiate y = sin(5x).",
       "question_type": "Trig derivative",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5750,7 +5750,7 @@
       "prompt": "Differentiate y = cos(x^2 + 2x).",
       "question_type": "Trig derivative",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5782,17 +5782,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "tan_power",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_trig_functions"
       },
       "practice_id": "gen_calculus_trig_derivative_0003",
       "prompt": "Differentiate y = tan^2 x.",
       "question_type": "Trig derivative",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_method_selection",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5829,7 +5829,7 @@
       "prompt": "For x^2 + y^2 = 25, find dy/dx in terms of x and y.",
       "question_type": "Implicit differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5868,7 +5868,7 @@
       "prompt": "For xy + 3y = 3x, find dy/dx.",
       "question_type": "Implicit differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -5901,17 +5901,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "implicit_normal_gradient",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_implicit"
       },
       "practice_id": "gen_calculus_implicit_derivative_0003",
       "prompt": "For x^2 + y^2 = 25, find the gradient of the normal at the point (3, 4).",
       "question_type": "Implicit normal",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_implicit_log_exp",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -5947,7 +5947,7 @@
       "prompt": "For x = t^2 + 1 and y = t^3, find dy/dx in terms of t.",
       "question_type": "Parametric differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -5986,7 +5986,7 @@
       "prompt": "For x = t^2 - 5 and y = 2 - t^3, find dy/dx when x = -1 and t > 0.",
       "question_type": "Parametric differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6019,17 +6019,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "parametric_trig_horizontal_tangent",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "derivatives_parametric"
       },
       "practice_id": "gen_calculus_parametric_derivative_0003",
       "prompt": "For x = 2cos theta and y = sin^2 theta, find theta in 0 < theta < pi where the tangent is parallel to the x-axis.",
       "question_type": "Parametric differentiation",
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_diff_parametric_gradients",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6059,17 +6059,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "point_to_line_distance_projection",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "vectors_point_to_line_distance"
       },
       "practice_id": "gen_vectors_point_to_line_distance_0001",
       "prompt": "Point P is (3, 3, 1). Line l is r = <1, 1, 0> + lambda<2, 1, 2>. Let Q be a general point on l. Use PQ . <2, 1, 2> = 0, then find the shortest distance from P to l.",
       "question_type": "Point-to-line distance",
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_vec_scalar_product_angles",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6107,7 +6107,7 @@
       "prompt": "Integrate e^(2x + 3) dx.",
       "question_type": "Exponential integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6146,7 +6146,7 @@
       "prompt": "Evaluate the integral of e^(2x) from x = 0 to x = 1.",
       "question_type": "Definite exponential integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6179,17 +6179,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "logarithmic_definite_single_log",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_exponential_logarithmic"
       },
       "practice_id": "gen_integrals_exponential_logarithmic_0003",
       "prompt": "Evaluate the integral of 2/(2x - 3) from x = 2 to x = 4 and simplify to a single logarithm.",
       "question_type": "Logarithmic definite integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6219,17 +6219,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "improper_exponential_limit_zero",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_exponential_logarithmic"
       },
       "practice_id": "gen_integrals_exponential_logarithmic_0004",
       "prompt": "Evaluate the improper integral of e^(-2x) from x = 0 to infinity.",
       "question_type": "Improper exponential integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6266,7 +6266,7 @@
       "prompt": "Integrate sin(3x + pi/4) dx.",
       "question_type": "Basic trigonometric integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6305,7 +6305,7 @@
       "prompt": "Integrate cos(2x) dx.",
       "question_type": "Basic trigonometric integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6337,17 +6337,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "sec_squared_linear_inner",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_basic_trig"
       },
       "practice_id": "gen_integrals_basic_trig_0003",
       "prompt": "Integrate sec^2(4x) dx.",
       "question_type": "Basic trigonometric integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_method_choice",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6383,7 +6383,7 @@
       "prompt": "Evaluate the integral of cos x from x = 0 to x = pi/2.",
       "question_type": "Definite trigonometric integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6423,7 +6423,7 @@
       "prompt": "Use cos^2 x = (1 + cos 2x)/2 to integrate cos^2 x dx.",
       "question_type": "Trig identity integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6463,7 +6463,7 @@
       "prompt": "Integrate tan^2 x dx.",
       "question_type": "Trig identity integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6495,17 +6495,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "show_that_hence_integrate",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_trig_identities"
       },
       "practice_id": "gen_integrals_trig_identities_0003",
       "prompt": "Given that 2sin x cos x = sin 2x, hence integrate 2sin x cos x dx.",
       "question_type": "Hence integrate trig identity",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_method_choice",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6534,17 +6534,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "sin_squared_definite",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_trig_identities"
       },
       "practice_id": "gen_integrals_trig_identities_0004",
       "prompt": "Evaluate the integral of sin^2 x from x = 0 to x = pi/2.",
       "question_type": "Definite trig identity integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6567,7 +6567,7 @@
     {
       "answer": "ln|x - 1| + 2ln|x + 2| + c",
       "difficulty_band": "easy",
-      "exam_move": "Algebra Vault handles decomposition; this item assesses the integration step.",
+      "exam_move": "Algebra handles decomposition; this item assesses the integration step.",
       "example_model_id": "integral-terraces-field-guide-2026-05-27-integrals_partial_fractions-distinct_linear_integral",
       "generator_family": "algebra.partial_fractions_distinct_linear",
       "key_method": "Integrate after the rational function is decomposed.",
@@ -6581,7 +6581,7 @@
       "prompt": "Given 3x/((x - 1)(x + 2)) = 1/(x - 1) + 2/(x + 2), integrate 3x/((x - 1)(x + 2)) dx.",
       "question_type": "Partial-fraction integration",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6621,7 +6621,7 @@
       "prompt": "Given 1/(x(x + 1)^2) = 1/x - 1/(x + 1) - 1/(x + 1)^2, integrate 1/(x(x + 1)^2) dx.",
       "question_type": "Partial-fraction integration",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6654,17 +6654,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "improper_fraction_division_first",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_partial_fractions"
       },
       "practice_id": "gen_integrals_partial_fractions_0003",
       "prompt": "Given (x^2 + 3x + 1)/(x + 1) = x + 2 - 1/(x + 1), integrate (x^2 + 3x + 1)/(x + 1) dx.",
       "question_type": "Improper partial-fraction integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_partial_fractions",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6694,17 +6694,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "definite_partial_fraction_integral",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_partial_fractions"
       },
       "practice_id": "gen_integrals_partial_fractions_0004",
       "prompt": "Given 1/(x(x + 1)) = 1/x - 1/(x + 1), evaluate the integral of 1/(x(x + 1)) from x = 1 to x = 2.",
       "question_type": "Definite partial-fraction integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_partial_fractions",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6741,7 +6741,7 @@
       "prompt": "Integrate 1/(1 + x^2) dx.",
       "question_type": "Arctan-form integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6780,7 +6780,7 @@
       "prompt": "Integrate 1/(x^2 + 25) dx.",
       "question_type": "Scaled arctan-form integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6812,17 +6812,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "complete_square_arctan",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_arctan_forms"
       },
       "practice_id": "gen_integrals_arctan_forms_0003",
       "prompt": "Integrate 3/(x^2 - 8x + 17) dx.",
       "question_type": "Completing-the-square arctan integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_parts_substitution",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6851,17 +6851,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "definite_arctan_integral",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_arctan_forms"
       },
       "practice_id": "gen_integrals_arctan_forms_0004",
       "prompt": "Evaluate the integral of 1/(1 + x^2) from x = 0 to x = 1.",
       "question_type": "Definite arctan-form integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -6898,7 +6898,7 @@
       "prompt": "Use u = x^2 + 2 to integrate 2x/(x^2 + 2) dx.",
       "question_type": "Substitution integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -6938,7 +6938,7 @@
       "prompt": "Use u = 1 + 3x to integrate (1 + 3x)^5 dx.",
       "question_type": "Formal u-substitution integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -6971,17 +6971,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "definite_changed_limits",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_substitution"
       },
       "practice_id": "gen_integrals_substitution_0003",
       "prompt": "Use u = x^2 + 1 to evaluate the integral of 2x(x^2 + 1)^3 from x = 0 to x = 1, changing the limits.",
       "question_type": "Definite substitution with changed limits",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7011,17 +7011,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "exponential_log_substitution",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_substitution"
       },
       "practice_id": "gen_integrals_substitution_0004",
       "prompt": "Use u = 1 + e^x to integrate e^x/(1 + e^x) dx.",
       "question_type": "Exponential/log substitution integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_parts_substitution",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7051,17 +7051,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "trig_substitution_seed",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_substitution"
       },
       "practice_id": "gen_integrals_substitution_0005",
       "prompt": "Using x = 2sin theta, rewrite the integral of 1/sqrt(4 - x^2) dx in terms of theta.",
       "question_type": "Trig substitution integral",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_parts_substitution",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7098,7 +7098,7 @@
       "prompt": "Integrate x e^x dx using integration by parts.",
       "question_type": "Integration by parts",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -7138,7 +7138,7 @@
       "prompt": "Integrate x sin x dx using integration by parts.",
       "question_type": "Integration by parts",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -7171,17 +7171,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "x_ln_x",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_by_parts"
       },
       "practice_id": "gen_integrals_by_parts_0003",
       "prompt": "Integrate x ln x dx for x > 0 using integration by parts.",
       "question_type": "Integration by parts",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_parts_substitution",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7218,7 +7218,7 @@
       "prompt": "Evaluate the integral of 3x^2 from x = 0 to x = 2.",
       "question_type": "Definite integral bridge",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -7258,7 +7258,7 @@
       "prompt": "Find the area between y = x + 2 and y = x^2 from x = 0 to x = 2.",
       "question_type": "Area between curves bridge",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -7291,17 +7291,17 @@
       "paper_family": "p3",
       "parameters": {
         "item_type": "improper_exponential_bridge",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "integrals_definite_area_bridge"
       },
       "practice_id": "gen_integrals_definite_area_bridge_0003",
       "prompt": "Evaluate the improper integral of e^(-2x) from x = 0 to infinity.",
       "question_type": "Limit-style improper integral bridge",
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_int_definite_improper_area",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7326,7 +7326,7 @@
       "answer": "dh/dt = 4 - k sqrt(h)",
       "difficulty_band": "medium",
       "exam_move": "Translate the rate statement before deciding whether solving is required.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0004",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0004",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
@@ -7351,7 +7351,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7366,18 +7366,18 @@
       "answer": "dT/dt = -k(T - 18)",
       "difficulty_band": "medium",
       "exam_move": "Translate the rate statement before deciding whether solving is required.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0005",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0005",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
         "item_type": "cooling_setup",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "differential_first_order_model"
       },
       "practice_id": "gen_differential_equations_context_model_basic_0005",
       "prompt": "A body with temperature T cools in a room at 18 degrees C. Its rate of cooling is proportional to T - 18. Write the first-order differential equation.",
       "question_type": "First-order differential equation setup",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_forming_context_model",
       "snippet_ids": [
         "p3-differential-context-model-001"
@@ -7391,7 +7391,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7406,7 +7406,7 @@
       "answer": "dh/dt = 3 - kh",
       "difficulty_band": "easy",
       "exam_move": "Translate the rate statement before deciding whether solving is required.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0006",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0006",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
@@ -7431,7 +7431,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7446,7 +7446,7 @@
       "answer": "T = 20 + 60e^(-kt)",
       "difficulty_band": "medium",
       "exam_move": "Form the model, separate it, then use the initial condition to fix the constant.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0007",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0007",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
@@ -7471,7 +7471,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7486,7 +7486,7 @@
       "answer": "x = 50(1 - e^(-2t))",
       "difficulty_band": "medium",
       "exam_move": "Use the initial amount after solving the differential equation.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0008",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0008",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
@@ -7511,7 +7511,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7526,18 +7526,18 @@
       "answer": "dP/dt = 0.03P, so the population increases at 3% of its current size per unit time.",
       "difficulty_band": "medium",
       "exam_move": "Interpret the derivative and proportionality constant in context.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0009",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_context_model_basic_0009",
       "generator_family": "differential_equations.context_model_basic",
       "key_method": "Represent first-order rate statements with derivatives and proportionality constants.",
       "parameters": {
         "item_type": "model_interpretation",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "differential_modeling"
       },
       "practice_id": "gen_differential_equations_context_model_basic_0009",
       "prompt": "A population model is P = 120e^(0.03t). What does the differential equation say about the rate of increase at any time?",
       "question_type": "Differential equation model and solve",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_forming_context_model",
       "snippet_ids": [
         "p3-differential-context-model-001"
@@ -7551,7 +7551,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7566,7 +7566,7 @@
       "answer": "y = Ae^(2x)",
       "difficulty_band": "easy",
       "exam_move": "Separate variables before integrating either side.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0004",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_separation_basic_0004",
       "generator_family": "differential_equations.separation_basic",
       "key_method": "Move y terms with dy and x terms with dx before integrating.",
       "parameters": {
@@ -7590,7 +7590,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7605,7 +7605,7 @@
       "answer": "y = Ae^(x^2)",
       "difficulty_band": "medium",
       "exam_move": "Separate variables before integrating either side.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0005",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_separation_basic_0005",
       "generator_family": "differential_equations.separation_basic",
       "key_method": "Move y terms with dy and x terms with dx before integrating.",
       "parameters": {
@@ -7629,7 +7629,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7644,7 +7644,7 @@
       "answer": "tan(y) = sin(x) + c",
       "difficulty_band": "medium",
       "exam_move": "Separate variables before integrating either side.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0006",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_separation_basic_0006",
       "generator_family": "differential_equations.separation_basic",
       "key_method": "Move y terms with dy and x terms with dx before integrating.",
       "parameters": {
@@ -7668,7 +7668,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7683,18 +7683,18 @@
       "answer": "y = A(x + 1)/(x + 2)",
       "difficulty_band": "medium",
       "exam_move": "Separate variables before integrating either side.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0007",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_separation_basic_0007",
       "generator_family": "differential_equations.separation_basic",
       "key_method": "Move y terms with dy and x terms with dx before integrating.",
       "parameters": {
         "item_type": "partial_fraction_general",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "differential_separable_variables"
       },
       "practice_id": "gen_differential_equations_separation_basic_0007",
       "prompt": "Solve dy/dx = y/((x + 1)(x + 2)) for the general solution.",
       "question_type": "Separable differential equation general solution",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_separation_setup",
       "snippet_ids": [
         "p3-differential-separation-001"
@@ -7708,7 +7708,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7723,18 +7723,18 @@
       "answer": "y = Ae^(e^x(x - 1))",
       "difficulty_band": "medium",
       "exam_move": "Separate variables before integrating either side.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_separation_basic_0008",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_separation_basic_0008",
       "generator_family": "differential_equations.separation_basic",
       "key_method": "Move y terms with dy and x terms with dx before integrating.",
       "parameters": {
         "item_type": "by_parts_after_separation",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "differential_separable_variables"
       },
       "practice_id": "gen_differential_equations_separation_basic_0008",
       "prompt": "Solve dy/dx = x e^x y for the general solution.",
       "question_type": "Separable differential equation general solution",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_separation_setup",
       "snippet_ids": [
         "p3-differential-separation-001"
@@ -7748,7 +7748,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7763,7 +7763,7 @@
       "answer": "y = 12(x + 1)/(x + 2)",
       "difficulty_band": "medium",
       "exam_move": "Use the initial condition after the general solution is found.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0004",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0004",
       "generator_family": "differential_equations.initial_condition_basic",
       "key_method": "Find the arbitrary constant from the given point or initial value.",
       "parameters": {
@@ -7787,7 +7787,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7802,18 +7802,18 @@
       "answer": "y = 2(x^2 + 3)^2/9",
       "difficulty_band": "medium",
       "exam_move": "Use the initial condition after the general solution is found.",
-      "example_model_id": "differential-shrine-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0005",
+      "example_model_id": "differential-equations-field-guide-2026-05-27-gen_differential_equations_initial_condition_basic_0005",
       "generator_family": "differential_equations.initial_condition_basic",
       "key_method": "Find the arbitrary constant from the given point or initial value.",
       "parameters": {
         "item_type": "separable_power_particular",
-        "sequence_role": "guardian_prep",
+        "sequence_role": "challenge_prep",
         "topic_contract_id": "differential_particular_solutions"
       },
       "practice_id": "gen_differential_equations_initial_condition_basic_0005",
       "prompt": "Solve dy/dx = 4xy/(x^2 + 3), given y = 2 when x = 0.",
       "question_type": "Particular solution of a first-order differential equation",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_de_initial_condition",
       "snippet_ids": [
         "p3-differential-initial-condition-001"
@@ -7827,7 +7827,7 @@
       ],
       "paper_family": "p3",
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "review_status": "teacher_reviewed",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
@@ -7857,7 +7857,7 @@
       "prompt": "In (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0, what substitution keeps the structure?",
       "question_type": "Algebraic simplification",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -7898,7 +7898,7 @@
       "prompt": "Simplify ((x - 3)(x + 2))/(x - 3), stating the restriction.",
       "question_type": "Algebraic simplification",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -7931,18 +7931,18 @@
       "parameters": {
         "item_type": "solve_without_expanding",
         "safe_bounds": "original deterministic P3 support bridge; repeated blocks and cancellable factors use small integer coefficients",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_structure_first_bridge"
       },
       "practice_id": "gen_algebra_structure_first_bridge_0003",
       "prompt": "Solve (x^2 + 2x)^2 - 5(x^2 + 2x) + 6 = 0 without expanding the quartic.",
       "question_type": "Algebraic simplification",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_structure_rearrangement",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [
@@ -7985,7 +7985,7 @@
       "prompt": "For x^2 + 2x + 5 = 0, calculate the discriminant and state its sign.",
       "question_type": "Quadratic discriminant decision",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "first_step",
@@ -8030,7 +8030,7 @@
       "prompt": "Use the discriminant to state the root type of 2x^2 - 3x - 1 = 0.",
       "question_type": "Quadratic discriminant decision",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
       "sequence_role": "complete_step",
@@ -8066,18 +8066,18 @@
         "discriminant_condition": "D = 0",
         "item_type": "repeated_root_parameter",
         "safe_bounds": "original deterministic P3 support bridge; small integer coefficients and exact discriminants",
-        "sequence_role": "guardian_prep",
-        "sequence_stage": "guardian_prep",
+        "sequence_role": "challenge_prep",
+        "sequence_stage": "challenge_prep",
         "topic_contract_id": "algebra_discriminant_root_conditions"
       },
       "practice_id": "gen_algebra_discriminant_root_condition_bridge_0003",
       "prompt": "Find k if x^2 + kx + 9 = 0 has a repeated root.",
       "question_type": "Quadratic discriminant decision",
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "review_status": "teacher_reviewed",
-      "sequence_role": "guardian_prep",
+      "sequence_role": "challenge_prep",
       "skill_target_id": "p3_alg_discriminant_root_conditions",
       "skill_target_resolution_status": "reviewed_p3_skill_map_id",
       "snippet_ids": [

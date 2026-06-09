@@ -1,28 +1,7 @@
 import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } from '../types';
 import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
-import { M1_SKILL_CHECK_ITEMS } from './m1SkillCheckItems';
-import {
-  getP1SkillCheckGroup,
-  getP1SkillCheckGroupsForTopic,
-  P1_SKILL_CHECK_GROUPS,
-  P1_SKILL_CHECK_ITEMS,
-  type P1SkillCheckGroup,
-  type P1SkillCheckGroupItem,
-  type P1SkillCheckOptionalSet,
-  type P1SkillCheckRole,
-} from './p1SkillCheckItems';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
-
-export {
-  getP1SkillCheckGroup,
-  getP1SkillCheckGroupsForTopic,
-  P1_SKILL_CHECK_GROUPS,
-  type P1SkillCheckGroup,
-  type P1SkillCheckGroupItem,
-  type P1SkillCheckOptionalSet,
-  type P1SkillCheckRole,
-};
 
 export type SkillCheckInputType =
   | 'numeric'
@@ -43,8 +22,6 @@ export type SkillCheckSourceType =
 
 export interface SkillCheckSourceRefs {
   skillMapSource?: 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json';
-  courseContentSource?: 'content-model/M1/m1-total.pdf' | 'content-model/P1/p1-content map.pdf';
-  visualFoundationSource?: 'M1_VISUAL_TEMPLATE_FOUNDATION_2026_06_03.md';
   visualTemplateIds?: string[];
   generatedPracticeIds?: string[];
   quickCheckContractIds?: string[];
@@ -58,7 +35,7 @@ export interface SkillCheckSourceRefs {
 export interface SkillCheckItem {
   itemId: string;
   courseId?: CourseId;
-  paperFamily: 'p3' | 'm1' | 'p1';
+  paperFamily: 'p3';
   regionId: P3RegionId | string;
   fieldGuideTopicId: string;
   fieldGuideSubtopicId: string;
@@ -87,12 +64,10 @@ export interface SkillCheckItem {
   sourceTypes: SkillCheckSourceType[];
   sourceRefs: SkillCheckSourceRefs;
   review: {
-    status: 'teacher_reviewed' | 'draft_review_needed';
+    status: 'teacher_reviewed';
     sourceSkillReviewed: boolean;
     markEventReviewed: boolean;
-    affectsMastery: false;
-    supportOnly?: boolean;
-    evidenceEnabled?: false;
+    affectsProgression: false;
   };
 }
 
@@ -110,7 +85,7 @@ function review(): SkillCheckItem['review'] {
     status: 'teacher_reviewed',
     sourceSkillReviewed: true,
     markEventReviewed: false,
-    affectsMastery: false,
+    affectsProgression: false,
   };
 }
 
@@ -118,7 +93,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-modulus-foundation-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_modulus_graph_equations',
     fieldGuideSubtopicId: 'algebra_modulus_graph_equations',
     skillId: 'p3_alg_modulus_cases',
@@ -154,7 +129,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-modulus-core-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_modulus_graph_equations',
     fieldGuideSubtopicId: 'algebra_modulus_graph_equations',
     skillId: 'p3_alg_modulus_cases',
@@ -189,7 +164,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-modulus-challenge-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_modulus_graph_equations',
     fieldGuideSubtopicId: 'algebra_modulus_graph_equations',
     skillId: 'p3_alg_modulus_cases',
@@ -224,7 +199,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-polynomial-division-foundation-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_polynomial_division',
     fieldGuideSubtopicId: 'algebra_polynomial_division',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -256,7 +231,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-polynomial-division-core-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_polynomial_division',
     fieldGuideSubtopicId: 'algebra_polynomial_division',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -285,7 +260,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-polynomial-division-challenge-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_polynomial_division',
     fieldGuideSubtopicId: 'algebra_polynomial_division',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -314,7 +289,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-remainder-factor-foundation-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_remainder_factor_theorem',
     fieldGuideSubtopicId: 'algebra_remainder_factor_theorem',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -350,7 +325,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-remainder-factor-core-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_remainder_factor_theorem',
     fieldGuideSubtopicId: 'algebra_remainder_factor_theorem',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -376,7 +351,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-remainder-factor-challenge-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_remainder_factor_theorem',
     fieldGuideSubtopicId: 'algebra_remainder_factor_theorem',
     skillId: 'p3_alg_polynomial_remainder_factor',
@@ -405,7 +380,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-partial-fractions-foundation-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_partial_fractions',
     fieldGuideSubtopicId: 'algebra_partial_fractions',
     skillId: 'p3_alg_partial_fraction_form',
@@ -440,7 +415,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-partial-fractions-core-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_partial_fractions',
     fieldGuideSubtopicId: 'algebra_partial_fractions',
     skillId: 'p3_alg_partial_fraction_form',
@@ -476,7 +451,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-partial-fractions-challenge-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_partial_fractions',
     fieldGuideSubtopicId: 'algebra_partial_fractions',
     skillId: 'p3_alg_partial_fraction_form',
@@ -508,7 +483,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-binomial-foundation-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_binomial_expansion',
     fieldGuideSubtopicId: 'algebra_binomial_expansion',
     skillId: 'p3_alg_binomial_terms_coefficients',
@@ -537,7 +512,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-binomial-core-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_binomial_expansion',
     fieldGuideSubtopicId: 'algebra_binomial_expansion',
     skillId: 'p3_alg_binomial_validity',
@@ -573,7 +548,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-alg-binomial-challenge-001',
     paperFamily: 'p3',
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     fieldGuideTopicId: 'algebra_binomial_expansion',
     fieldGuideSubtopicId: 'algebra_binomial_expansion',
     skillId: 'p3_alg_binomial_terms_coefficients',
@@ -599,7 +574,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-graph-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_graph_inverse',
     fieldGuideSubtopicId: 'log_graph_inverse',
     skillId: 'p3_log_convert_forms',
@@ -634,7 +609,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-graph-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_graph_inverse',
     fieldGuideSubtopicId: 'log_graph_inverse',
     skillId: 'p3_log_convert_forms',
@@ -663,7 +638,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-graph-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_graph_inverse',
     fieldGuideSubtopicId: 'log_graph_inverse',
     skillId: 'p3_log_convert_forms',
@@ -695,7 +670,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-laws-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_laws',
     fieldGuideSubtopicId: 'log_laws',
     skillId: 'p3_log_laws_equations',
@@ -730,7 +705,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-laws-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_laws',
     fieldGuideSubtopicId: 'log_laws',
     skillId: 'p3_log_laws_equations',
@@ -762,7 +737,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-laws-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_laws',
     fieldGuideSubtopicId: 'log_laws',
     skillId: 'p3_log_laws_equations',
@@ -797,7 +772,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-natural-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_e_natural_logs',
     fieldGuideSubtopicId: 'log_e_natural_logs',
     skillId: 'p3_log_exponential_equations',
@@ -832,7 +807,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-natural-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_e_natural_logs',
     fieldGuideSubtopicId: 'log_e_natural_logs',
     skillId: 'p3_log_exponential_equations',
@@ -864,7 +839,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-natural-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_e_natural_logs',
     fieldGuideSubtopicId: 'log_e_natural_logs',
     skillId: 'p3_log_exponential_equations',
@@ -895,7 +870,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-domain-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_equations_inequalities',
     fieldGuideSubtopicId: 'log_equations_inequalities',
     skillId: 'p3_log_domain_validation',
@@ -930,7 +905,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-domain-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_equations_inequalities',
     fieldGuideSubtopicId: 'log_equations_inequalities',
     skillId: 'p3_log_domain_validation',
@@ -957,7 +932,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-domain-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_equations_inequalities',
     fieldGuideSubtopicId: 'log_equations_inequalities',
     skillId: 'p3_log_domain_validation',
@@ -989,7 +964,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-exponential-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'exponential_equations_inequalities',
     fieldGuideSubtopicId: 'exponential_equations_inequalities',
     skillId: 'p3_log_exponential_equations',
@@ -1024,7 +999,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-exponential-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'exponential_equations_inequalities',
     fieldGuideSubtopicId: 'exponential_equations_inequalities',
     skillId: 'p3_log_exponential_equations',
@@ -1056,7 +1031,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-exponential-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'exponential_equations_inequalities',
     fieldGuideSubtopicId: 'exponential_equations_inequalities',
     skillId: 'p3_log_exponential_equations',
@@ -1088,7 +1063,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-linearisation-foundation-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_linearisation',
     fieldGuideSubtopicId: 'log_linearisation',
     skillId: 'p3_log_linearisation',
@@ -1120,7 +1095,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-linearisation-core-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_linearisation',
     fieldGuideSubtopicId: 'log_linearisation',
     skillId: 'p3_log_linearisation',
@@ -1153,7 +1128,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
   {
     itemId: 'sc-log-linearisation-challenge-001',
     paperFamily: 'p3',
-    regionId: 'logarithm-grove',
+    regionId: 'logarithmic-and-exponential-functions',
     fieldGuideTopicId: 'log_linearisation',
     fieldGuideSubtopicId: 'log_linearisation',
     skillId: 'p3_log_linearisation',
@@ -1183,8 +1158,6 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     review: review(),
   },
   ...REMAINING_REGION_SKILL_CHECK_ITEMS,
-  ...P1_SKILL_CHECK_ITEMS,
-  ...M1_SKILL_CHECK_ITEMS,
 ];
 
 export function skillCheckContractForItem(item: SkillCheckItem): QuickCheckContract {
@@ -1254,19 +1227,7 @@ export function getSkillCheckItemsForCourseTopic(courseId: CourseId | undefined,
 export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   const errors: string[] = [];
   if (!item.itemId.trim()) errors.push('missing itemId');
-  if (!['p3', 'm1', 'p1'].includes(item.paperFamily)) errors.push('paperFamily must be p3, p1, or m1');
-  if (item.paperFamily === 'p1' && item.courseId !== 'p1') errors.push('P1 item must carry courseId p1');
-  if (item.paperFamily === 'p1' && item.review.status !== 'draft_review_needed') errors.push('P1 item must remain draft_review_needed');
-  if (item.paperFamily === 'p1' && item.review.evidenceEnabled !== false) errors.push('P1 item must have evidenceEnabled false');
-  if (item.paperFamily === 'p1' && item.review.supportOnly !== true) errors.push('P1 item must be supportOnly');
-  if (item.paperFamily === 'p1' && !item.commonMistake?.trim()) errors.push('P1 item missing commonMistake feedback');
-  if (item.paperFamily === 'p1' && item.sourceRefs.contentLabCandidateIds?.length) errors.push('P1 item cannot reference Content Lab candidates');
-  if (item.paperFamily === 'm1' && item.courseId !== 'm1') errors.push('M1 item must carry courseId m1');
-  if (item.paperFamily === 'm1' && item.review.status !== 'draft_review_needed') errors.push('M1 item must remain draft_review_needed');
-  if (item.paperFamily === 'm1' && item.review.evidenceEnabled !== false) errors.push('M1 item must have evidenceEnabled false');
-  if (item.paperFamily === 'm1' && item.review.supportOnly !== true) errors.push('M1 item must be supportOnly');
-  if (item.paperFamily === 'm1' && !item.commonMistake?.trim()) errors.push('M1 item missing commonMistake feedback');
-  if (item.paperFamily === 'm1' && item.sourceRefs.contentLabCandidateIds?.length) errors.push('M1 item cannot reference Content Lab candidates');
+  if (item.paperFamily !== 'p3') errors.push('paperFamily must be p3');
   if (!item.regionId.trim()) errors.push('missing regionId');
   if (!item.fieldGuideTopicId.trim()) errors.push('missing fieldGuideTopicId');
   if (!item.fieldGuideSubtopicId.trim()) errors.push('missing fieldGuideSubtopicId');
@@ -1286,7 +1247,7 @@ export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   }
   if (!item.hints.nudge.trim()) errors.push('missing nudge');
   if (!item.workedRoute.length) errors.push('missing workedRoute');
-  if (item.review.affectsMastery !== false) errors.push('affectsMastery must be false');
+  if (item.review.affectsProgression !== false) errors.push('affectsProgression must be false');
   if (item.sourceRefs.contentLabCandidateIds?.length) errors.push('contentLabCandidateIds are not allowed in this first slice');
   return errors;
 }

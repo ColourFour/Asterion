@@ -20,8 +20,8 @@
         "safer_move": "Factor the repeated bracket or common factor first, then cancel only whole factors and keep excluded values visible.",
         "quick_check": "In $\\frac{x(x+1)}{x+1}$, what value of $x$ must still be excluded after cancelling?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on choose algebraic simplification before opening every bracket.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on choose algebraic simplification before opening every bracket.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "algebra"
@@ -40,7 +40,7 @@
       ],
       "quick_check": {
         "id": "p3-algebra-rearrangement-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "algebra",
         "skill_target_id": "p3_alg_structure_rearrangement",
         "title": "Shared bracket",
@@ -56,7 +56,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_structure_rearrangement"
@@ -126,8 +126,8 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use the general term when the question asks for a coefficient rather than a full expansion.",
       "explanation": "The coefficient you need comes from a specific power of the binomial term. Write the term structure first, then simplify signs and powers once the target power of $x$ is clear.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask for one coefficient from a larger expansion.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that ask for one coefficient from a larger expansion.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "binomial_expansion"
@@ -146,7 +146,7 @@
       ],
       "quick_check": {
         "id": "p3-binomial-term-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "binomial_expansion",
         "skill_target_id": "p3_alg_binomial_terms_coefficients",
         "title": "Use the general term",
@@ -162,7 +162,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_binomial_terms_coefficients"
@@ -231,8 +231,8 @@
       "estimated_time_minutes": 4,
       "exam_move": "For expansions such as (a+bx)^n, factor out a first, then use |variable part| < 1.",
       "explanation": "The validity condition comes from the small variable part, not from the whole bracket. If a constant has to be factored out first, do that before deciding the interval.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on state the range where a binomial expansion is valid.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on state the range where a binomial expansion is valid.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "binomial_expansion"
@@ -251,7 +251,7 @@
       ],
       "quick_check": {
         "id": "p3-binomial-validity-range-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "binomial_expansion",
         "skill_target_id": "p3_alg_binomial_validity",
         "title": "Validity range",
@@ -267,7 +267,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_binomial_validity"
@@ -328,8 +328,8 @@
         "safer_move": "For equations split into plus and minus cases; for less-than inequalities write the two-sided interval before simplifying.",
         "quick_check": "What second case must accompany $x-2=5$ when solving $|x-2|=5$?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on solve modulus equations and inequalities without illegal sign moves.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on solve modulus equations and inequalities without illegal sign moves.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "algebra"
@@ -348,7 +348,7 @@
       ],
       "quick_check": {
         "id": "p3-modulus-cases-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "algebra",
         "skill_target_id": "p3_alg_modulus_cases",
         "title": "Modulus interval",
@@ -364,7 +364,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_modulus_cases"
@@ -432,8 +432,8 @@
       "estimated_time_minutes": 5,
       "exam_move": "Write the full decomposition form before substituting values or comparing coefficients.",
       "explanation": "The denominator tells you the shape before any arithmetic starts. Once the form is right, substitution and coefficient comparison become routine instead of guesswork.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that start with algebraic decomposition or require integration after decomposition.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that start with algebraic decomposition or require integration after decomposition.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "partial_fractions"
@@ -452,7 +452,7 @@
       ],
       "quick_check": {
         "id": "p3-partial-fractions-form-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "partial_fractions",
         "skill_target_id": "p3_alg_partial_fraction_form",
         "title": "Let the denominator choose the form",
@@ -468,8 +468,8 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra",
+        "integration"
       ],
       "related_skill_targets": [
         "p3_alg_partial_fraction_form"
@@ -522,8 +522,8 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use repeated-factor terms before integrating rational functions.",
       "explanation": "Repeated factors are easy to undercount. The setup must include each power of the repeated factor, otherwise coefficient comparison cannot match every numerator.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on set up partial fractions when a linear factor is repeated.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on set up partial fractions when a linear factor is repeated.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "partial_fractions"
@@ -542,7 +542,7 @@
       ],
       "quick_check": {
         "id": "p3-partial-fractions-repeated-linear-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "partial_fractions",
         "skill_target_id": "p3_alg_partial_fraction_form",
         "title": "Repeated factor form",
@@ -558,8 +558,8 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge",
-        "integration-gardens"
+        "algebra",
+        "integration"
       ],
       "related_skill_targets": [
         "p3_alg_partial_fraction_form"
@@ -620,8 +620,8 @@
         "safer_move": "Rewrite the divisor as $x-a$, substitute $a$, and only call it a factor if the remainder is zero.",
         "quick_check": "For divisor $x+3$, should you substitute $3$ or $-3$?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use factor and remainder theorem checks before polynomial division.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use factor and remainder theorem checks before polynomial division.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "algebra"
@@ -640,7 +640,7 @@
       ],
       "quick_check": {
         "id": "p3-polynomial-theorem-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "algebra",
         "skill_target_id": "p3_alg_polynomial_remainder_factor",
         "title": "Remainder theorem",
@@ -656,7 +656,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_polynomial_remainder_factor"
@@ -733,8 +733,8 @@
         "safer_move": "Use $b^2-4ac$ first: greater than zero for two real roots, equal to zero for repeated roots, less than zero for no real roots.",
         "quick_check": "Which discriminant condition represents tangency or one repeated root?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where a parameter controls intersections or tangency.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions where a parameter controls intersections or tangency.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "quadratics"
@@ -753,7 +753,7 @@
       ],
       "quick_check": {
         "id": "p3-quadratics-discriminant-001-qc",
-        "region_id": "algebra-forge",
+        "region_id": "algebra",
         "topic": "quadratics",
         "skill_target_id": "p3_alg_discriminant_root_conditions",
         "title": "The discriminant is evidence",
@@ -769,7 +769,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "algebra-forge"
+        "algebra"
       ],
       "related_skill_targets": [
         "p3_alg_discriminant_root_conditions"
@@ -845,8 +845,8 @@
         "safer_move": "After differentiating, write the target condition: $dy/dx=0$ for stationary points, tangent gradient for tangents, and negative reciprocal gradient for normals.",
         "short_check": "Have you used the derivative to answer the actual geometry request, not just found $dy/dx$?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use differentiation results for tangents, normals, and stationary points.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use differentiation results for tangents, normals, and stationary points.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differentiation"
@@ -865,7 +865,7 @@
       ],
       "quick_check": {
         "id": "p3-differentiation-follow-through-001-qc",
-        "region_id": "calculus-cliffs",
+        "region_id": "differentiation",
         "topic": "differentiation",
         "skill_target_id": "p3_diff_stationary_tangent_normal",
         "title": "Stationary condition",
@@ -880,7 +880,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "related_skill_targets": [
         "p3_diff_stationary_tangent_normal"
@@ -996,8 +996,8 @@
         "safer_move": "Label the structure first, choose the shortest valid route, then write the rule setup before simplifying.",
         "short_check": "Can you point to the product, quotient, or inner function before differentiating?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where the first decision is which differentiation route to take.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions where the first decision is which differentiation route to take.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differentiation"
@@ -1016,7 +1016,7 @@
       ],
       "quick_check": {
         "id": "p3-differentiation-method-001-qc",
-        "region_id": "calculus-cliffs",
+        "region_id": "differentiation",
         "topic": "differentiation",
         "skill_target_id": "p3_diff_method_selection",
         "title": "Name the structure first",
@@ -1031,7 +1031,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "related_skill_targets": [
         "p3_diff_method_selection"
@@ -1113,7 +1113,7 @@
       ],
       "quick_check": {
         "id": "p3-differentiation-chain-product-quotient-source-001-qc",
-        "region_id": "calculus-cliffs",
+        "region_id": "differentiation",
         "topic": "differentiation",
         "skill_target_id": "p3_diff_chain_product_quotient",
         "title": "Quotient-rule denominator",
@@ -1128,7 +1128,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "related_skill_targets": [
         "p3_diff_chain_product_quotient"
@@ -1222,8 +1222,8 @@
         "safer_move": "Find $dx/dt$ and $dy/dt$ first, divide to form $dy/dx$, then substitute the parameter value or convert to tangent/normal gradients.",
         "short_check": "Have you divided by $dx/dt$ before using a tangent or normal condition?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on find $dy/dx$ from parametric equations without eliminating the parameter first.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on find $dy/dx$ from parametric equations without eliminating the parameter first.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "parametric_equations"
@@ -1242,7 +1242,7 @@
       ],
       "quick_check": {
         "id": "p3-parametric-derivative-001-qc",
-        "region_id": "calculus-cliffs",
+        "region_id": "differentiation",
         "topic": "parametric_equations",
         "skill_target_id": "p3_diff_parametric_gradients",
         "title": "Parametric ratio",
@@ -1257,7 +1257,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "related_skill_targets": [
         "p3_diff_parametric_gradients"
@@ -1332,8 +1332,8 @@
         "safer_move": "Plot the sign of the real and imaginary parts first, then multiply by the conjugate before simplifying fractions.",
         "quick_check": "If z is in quadrant II, should arg z be the acute calculator angle or pi minus that angle?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask for powers, roots, or geometric interpretation of complex numbers.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that ask for powers, roots, or geometric interpretation of complex numbers.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "complex_numbers"
@@ -1352,7 +1352,7 @@
       ],
       "quick_check": {
         "id": "p3-complex-form-001-qc",
-        "region_id": "complex-harbor",
+        "region_id": "complex-numbers",
         "topic": "complex_numbers",
         "skill_target_id": "p3_complex_modulus_argument_form",
         "title": "Change form for the operation",
@@ -1367,7 +1367,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "related_skill_targets": [
         "p3_complex_modulus_argument_form"
@@ -1446,8 +1446,8 @@
         "safer_move": "Translate z-a as movement from the point a, then decide whether the statement gives a circle, perpendicular bisector, ray, or region.",
         "quick_check": "For |z-(2+i)|=3, is the centre 0 or 2+i?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on interpret modulus and argument statements geometrically.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on interpret modulus and argument statements geometrically.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "complex_numbers"
@@ -1466,7 +1466,7 @@
       ],
       "quick_check": {
         "id": "p3-complex-locus-argument-001-qc",
-        "region_id": "complex-harbor",
+        "region_id": "complex-numbers",
         "topic": "complex_numbers",
         "skill_target_id": "p3_complex_argand_loci_regions",
         "title": "Locus centre",
@@ -1481,7 +1481,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "related_skill_targets": [
         "p3_complex_argand_loci_regions"
@@ -1550,8 +1550,8 @@
         "safer_move": "Integrate first, keep the constant visible, then substitute both coordinates into the integrated relation.",
         "short_check": "Can you point to the constant before using the condition?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use an initial condition to find the constant in a differential-equation solution.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use an initial condition to find the constant in a differential-equation solution.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differential_equations"
@@ -1570,7 +1570,7 @@
       ],
       "quick_check": {
         "id": "p3-differential-initial-condition-001-qc",
-        "region_id": "differential-shrine",
+        "region_id": "differential-equations",
         "topic": "differential_equations",
         "skill_target_id": "p3_de_initial_condition",
         "title": "Use condition",
@@ -1586,7 +1586,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "related_skill_targets": [
         "p3_de_initial_condition"
@@ -1662,8 +1662,8 @@
         "safer_move": "Move y terms with dy and x terms with dx, then integrate each side separately.",
         "short_check": "Before integrating, does each side contain only one variable family?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask for a particular solution from a first-order differential equation.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that ask for a particular solution from a first-order differential equation.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differential_equations"
@@ -1685,7 +1685,7 @@
       ],
       "quick_check": {
         "id": "p3-differential-separation-001-qc",
-        "region_id": "differential-shrine",
+        "region_id": "differential-equations",
         "topic": "differential_equations",
         "skill_target_id": "p3_de_separation_setup",
         "title": "Separate before integrating",
@@ -1701,7 +1701,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "related_skill_targets": [
         "p3_de_separation_setup"
@@ -1776,8 +1776,8 @@
         "safer_move": "Classify the integrand first: hidden derivative for substitution, product that simplifies for parts, rational expression for algebra, then transform every part before integrating.",
         "short_check": "Can you point to the structural cue that justifies the method?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions where the first mark depends on choosing substitution, parts, or an algebraic rewrite.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "integration"
@@ -1799,7 +1799,7 @@
       ],
       "quick_check": {
         "id": "p3-integration-method-choice-001-qc",
-        "region_id": "integration-gardens",
+        "region_id": "integration",
         "topic": "integration",
         "skill_target_id": "p3_int_method_choice",
         "title": "Use the given substitution",
@@ -1814,7 +1814,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "related_skill_targets": [
         "p3_int_method_choice"
@@ -1884,8 +1884,8 @@
         "safer_move": "For substitution, compute du and rewrite the complete integral; for parts, choose u and dv, find du and v, then apply uv minus the remaining integral.",
         "short_check": "After the setup, is every piece written in the same variable or parts formula?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on pick an integration method from the integrand structure.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on pick an integration method from the integrand structure.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "integration"
@@ -1904,7 +1904,7 @@
       ],
       "quick_check": {
         "id": "p3-integration-parts-substitution-001-qc",
-        "region_id": "integration-gardens",
+        "region_id": "integration",
         "topic": "integration",
         "skill_target_id": "p3_int_parts_substitution",
         "title": "Parts cue",
@@ -1919,7 +1919,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "related_skill_targets": [
         "p3_int_parts_substitution"
@@ -1989,8 +1989,8 @@
         "safer_move": "First isolate the exponential expression or rewrite both sides with a shared base, then apply logs to both complete sides and keep the exponent bracketed.",
         "short_check": "After taking logs, is the entire exponent still inside one bracketed multiplier?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that mix exponential expressions and logarithmic rearrangement.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that mix exponential expressions and logarithmic rearrangement.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2009,7 +2009,7 @@
       ],
       "quick_check": {
         "id": "p3-exp-equations-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_exponential_equations",
         "title": "Same base first",
@@ -2025,7 +2025,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_exponential_equations"
@@ -2078,8 +2078,8 @@
       "estimated_time_minutes": 4,
       "exam_move": "Use natural logs for exact expressions such as $x=\\frac{\\ln 7}{2}$.",
       "explanation": "$\\ln$ and $e$ undo each other, but only when applied to a whole expression. Keep exponent brackets until the final linear rearrangement.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use $\\ln$ and $e$ as inverse operations when bases do not match.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use $\\ln$ and $e$ as inverse operations when bases do not match.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2098,7 +2098,7 @@
       ],
       "quick_check": {
         "id": "p3-ln-e-inverse-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_exponential_equations",
         "title": "Natural log inverse",
@@ -2114,7 +2114,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_exponential_equations"
@@ -2175,8 +2175,8 @@
         "safer_move": "Write the original argument inequalities first or return to them before accepting any root.",
         "short_check": "Does every original log argument stay greater than zero for the proposed answer?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian attempts that involve logarithmic equations with more than one possible solution.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training attempts that involve logarithmic equations with more than one possible solution.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2195,7 +2195,7 @@
       ],
       "quick_check": {
         "id": "p3-log-domain-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_domain_validation",
         "title": "Domain checks save marks",
@@ -2211,7 +2211,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_domain_validation"
@@ -2288,8 +2288,8 @@
         "safer_move": "Say 'base to this power equals the argument' before writing the exponential form.",
         "short_check": "In $\\log_4 64=3$, which number is the base and which number is the exponent?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that ask students to isolate an unknown inside a logarithm.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that ask students to isolate an unknown inside a logarithm.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2308,7 +2308,7 @@
       ],
       "quick_check": {
         "id": "p3-log-exp-convert-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_convert_forms",
         "title": "Switch forms before solving",
@@ -2324,7 +2324,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_convert_forms"
@@ -2401,8 +2401,8 @@
         "safer_move": "Label the structure inside each log, combine only matching-base logs using a valid law, and keep original argument restrictions visible.",
         "short_check": "Are all log bases matching, and did every original log argument stay positive?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on avoid illegal logarithm moves in equations.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on avoid illegal logarithm moves in equations.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2420,7 +2420,7 @@
       ],
       "quick_check": {
         "id": "p3-log-invalid-operations-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_laws_equations",
         "title": "Illegal split",
@@ -2436,7 +2436,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_laws_equations"
@@ -2489,8 +2489,8 @@
       "estimated_time_minutes": 4,
       "exam_move": "Expand when terms need comparing; combine when you need one logarithm before solving.",
       "explanation": "Log laws work because multiplication inside a log becomes addition outside it. They do not turn addition inside the log into anything simpler, so check the structure before using a law.",
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions where combining logs is needed before solving.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions where combining logs is needed before solving.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2509,7 +2509,7 @@
       ],
       "quick_check": {
         "id": "p3-log-laws-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_laws_equations",
         "title": "Log laws have boundaries",
@@ -2525,7 +2525,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_laws_equations"
@@ -2584,8 +2584,8 @@
         "safer_move": "Write the linear form as $Y=mX+c$ and label $X$, $Y$, $m$, and $c$ before interpreting the graph.",
         "short_check": "If the intercept is $\\ln A$, do you report $A$ as the intercept or as $e^{\\text{intercept}}$?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on connect log transformations to gradient and intercept.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on connect log transformations to gradient and intercept.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -2604,7 +2604,7 @@
       ],
       "quick_check": {
         "id": "p3-log-linearisation-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_linearisation",
         "title": "Linearising powers",
@@ -2620,7 +2620,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_linearisation"
@@ -2697,8 +2697,8 @@
         "safer_move": "Copy the recurrence once, then use each new value as the input for the next line without changing the formula.",
         "short_check": "Can every displayed value be obtained by substituting the previous value into the same recurrence?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on apply $x_{n+1}=g(x_n)$ with enough accuracy and clear rounding.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on apply $x_{n+1}=g(x_n)$ with enough accuracy and clear rounding.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "numerical_methods"
@@ -2717,7 +2717,7 @@
       ],
       "quick_check": {
         "id": "p3-iteration-formula-discipline-001-qc",
-        "region_id": "numerical-mines",
+        "region_id": "numerical-solution-of-equations",
         "topic": "numerical_methods",
         "skill_target_id": "p3_num_iteration_formula",
         "title": "One iteration",
@@ -2732,7 +2732,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "related_skill_targets": [
         "p3_num_iteration_formula"
@@ -2809,8 +2809,8 @@
         "safer_move": "Write the endpoint values or successive approximations first, then state the rounded conclusion.",
         "short_check": "Would another student be able to reproduce the final decimal from the displayed working?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving root intervals, iteration, or decimal-place accuracy.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving root intervals, iteration, or decimal-place accuracy.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "numerical_methods"
@@ -2832,7 +2832,7 @@
       ],
       "quick_check": {
         "id": "p3-numerical-method-evidence-001-qc",
-        "region_id": "numerical-mines",
+        "region_id": "numerical-solution-of-equations",
         "topic": "numerical_methods",
         "skill_target_id": "p3_num_sign_change_graph_evidence",
         "title": "Approximation needs evidence",
@@ -2847,7 +2847,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "numerical-mines"
+        "numerical-solution-of-equations"
       ],
       "related_skill_targets": [
         "p3_num_accuracy_rounding",
@@ -2923,8 +2923,8 @@
         "safer_move": "Read the target form first, choose the identity that creates that form, then state any non-zero condition before simplifying.",
         "short_check": "Does the identity you chose reduce the expression toward the requested form?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on select a trig identity because it moves the expression toward the needed form.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on select a trig identity because it moves the expression toward the needed form.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "trigonometry"
@@ -2942,7 +2942,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-identity-selection-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_identity_selection",
         "title": "Double-angle choice",
@@ -2958,7 +2958,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_identity_selection"
@@ -3034,8 +3034,8 @@
         "safer_move": "Write the interval first, solve the basic angle, use signs or periodicity to list all interval solutions, then check any excluded or added cases.",
         "short_check": "Have you checked every solution branch against the original interval and equation?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that require all trig solutions in a stated range.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that require all trig solutions in a stated range.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "trigonometry"
@@ -3054,7 +3054,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-interval-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_equation_interval",
         "title": "The interval controls the answer",
@@ -3070,7 +3070,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_equation_interval"
@@ -3122,7 +3122,7 @@
       "common_trap": "Cancelling a trig factor that was one of the answers.",
       "estimated_time_minutes": 4,
       "exam_move": "Use product form to keep zero-factor solutions visible.",
-      "explanation": "Squaring, dividing, or rearranging can change the solution set. Guardian-level trig often tests whether you keep all cases and then check the interval.",
+      "explanation": "Squaring, dividing, or rearranging can change the solution set. Exam-level trig often tests whether you keep all cases and then check the interval.",
       "mark_scheme_move_note": "Show the factored or case-split equation before solving, solve each branch over the stated interval, and substitute back if any division or squaring step could alter the solution set.",
       "misconception_repair_note": {
         "wrong_move": "Dividing by a trig factor because it appears on both sides or looks inconvenient.",
@@ -3130,8 +3130,8 @@
         "safer_move": "Keep the equation factored, set each factor equal to zero, and solve every branch inside the stated interval.",
         "short_check": "Did any divided factor have its own zero solutions?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on preserve trig solutions when rearranging equations.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on preserve trig solutions when rearranging equations.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "trigonometry"
@@ -3150,7 +3150,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-lost-solutions-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_equation_interval",
         "title": "Lost solution trap",
@@ -3166,7 +3166,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_equation_interval"
@@ -3227,8 +3227,8 @@
         "safer_move": "Record the interval and unit first, find the reference angle, mark the valid quadrants, then test endpoints before writing the answer set.",
         "short_check": "Have you listed every quadrant solution that is inside the interval?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use signs and intervals to list every trig solution.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use signs and intervals to list every trig solution.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "trigonometry"
@@ -3247,7 +3247,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-quadrant-discipline-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_quadrant_solutions",
         "title": "Quadrant check",
@@ -3263,7 +3263,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_quadrant_solutions"
@@ -3340,8 +3340,8 @@
         "safer_move": "Write the reciprocal definition or compound-angle expansion first, then match coefficients and carry restrictions before solving or finding a range.",
         "short_check": "Have you expanded your chosen R-form and checked it returns the original coefficients?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use sec, cosec, cot, and r-form as deliberate rewrites.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use sec, cosec, cot, and r-form as deliberate rewrites.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "trigonometry"
@@ -3360,7 +3360,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-reciprocal-rform-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_r_form_compound_angles",
         "title": "Find R",
@@ -3376,7 +3376,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_r_form_compound_angles",
@@ -3456,7 +3456,7 @@
       ],
       "quick_check": {
         "id": "p3-trig-r-form-source-001-qc",
-        "region_id": "trig-observatory",
+        "region_id": "trigonometry",
         "topic": "trigonometry",
         "skill_target_id": "p3_trig_r_form_compound_angles",
         "title": "Choose R",
@@ -3472,7 +3472,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "trig-observatory"
+        "trigonometry"
       ],
       "related_skill_targets": [
         "p3_trig_r_form_compound_angles"
@@ -3569,8 +3569,8 @@
         "safer_move": "Use different parameters, equate matching components, solve two equations, then test the remaining component.",
         "short_check": "Do the two lines have different parameter letters before you start solving?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving line intersections, skew lines, or vector line equations.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving line intersections, skew lines, or vector line equations.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "vectors"
@@ -3589,7 +3589,7 @@
       ],
       "quick_check": {
         "id": "p3-vectors-lines-001-qc",
-        "region_id": "vector-workshop",
+        "region_id": "vectors",
         "topic": "vectors",
         "skill_target_id": "p3_vec_line_equations_intersections",
         "title": "Keep parameters separate",
@@ -3604,7 +3604,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "related_skill_targets": [
         "p3_vec_line_equations_intersections"
@@ -3683,8 +3683,8 @@
         "safer_move": "Extract or form the direction vectors first, then use $\\mathbf a\\cdot\\mathbf b=|\\mathbf a||\\mathbf b|\\cos\\theta$.",
         "short_check": "Are the two vectors in the scalar product both directions for the objects being compared?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that depend on use the scalar product to test perpendicularity or find an angle.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that depend on use the scalar product to test perpendicularity or find an angle.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "vectors"
@@ -3703,7 +3703,7 @@
       ],
       "quick_check": {
         "id": "p3-vectors-scalar-product-001-qc",
-        "region_id": "vector-workshop",
+        "region_id": "vectors",
         "topic": "vectors",
         "skill_target_id": "p3_vec_scalar_product_angles",
         "title": "Perpendicular check",
@@ -3718,7 +3718,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "related_skill_targets": [
         "p3_vec_scalar_product_angles"
@@ -3795,8 +3795,8 @@
         "safer_move": "Add $2k\\pi$ before dividing the argument, then list the allowed k-values for the required number of roots.",
         "quick_check": "For cube roots, how many different k-values should you use?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving complex powers or roots.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving complex powers or roots.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "complex_numbers"
@@ -3815,7 +3815,7 @@
       ],
       "quick_check": {
         "id": "p3-complex-roots-001-qc",
-        "region_id": "complex-harbor",
+        "region_id": "complex-numbers",
         "topic": "complex_numbers",
         "skill_target_id": "p3_complex_roots_powers",
         "title": "List every root",
@@ -3831,7 +3831,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "complex-harbor"
+        "complex-numbers"
       ],
       "related_skill_targets": [
         "p3_complex_roots_powers"
@@ -3901,8 +3901,8 @@
         "safer_move": "Name the changing quantity, identify what the rate is proportional to, add the constant, then choose the sign.",
         "short_check": "Does the model show both the derivative and the quantity named in the words?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that begin with a rate context instead of a ready-made differential equation.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that begin with a rate context instead of a ready-made differential equation.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differential_equations"
@@ -3921,7 +3921,7 @@
       ],
       "quick_check": {
         "id": "p3-differential-context-model-001-qc",
-        "region_id": "differential-shrine",
+        "region_id": "differential-equations",
         "topic": "differential_equations",
         "skill_target_id": "p3_de_forming_context_model",
         "title": "Translate the rate sentence",
@@ -3937,7 +3937,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "differential-shrine"
+        "differential-equations"
       ],
       "related_skill_targets": [
         "p3_de_forming_context_model"
@@ -4014,8 +4014,8 @@
         "safer_move": "Differentiate first with all $dy/dx$ factors visible, collect those terms on one side, factor $dy/dx$, and only then substitute values if needed.",
         "short_check": "Does every differentiated $y$ expression still show a $dy/dx$ factor?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving implicit logarithmic or exponential relations.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving implicit logarithmic or exponential relations.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "differentiation"
@@ -4034,7 +4034,7 @@
       ],
       "quick_check": {
         "id": "p3-differentiation-implicit-log-exp-001-qc",
-        "region_id": "calculus-cliffs",
+        "region_id": "differentiation",
         "topic": "differentiation",
         "skill_target_id": "p3_diff_implicit_log_exp",
         "title": "Carry the dy/dx factor",
@@ -4050,7 +4050,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "calculus-cliffs"
+        "differentiation"
       ],
       "related_skill_targets": [
         "p3_diff_implicit_log_exp"
@@ -4125,8 +4125,8 @@
         "safer_move": "Write F(b)-F(a) explicitly, keep exact values until the final line, and check whether the question asks for signed integral or geometric area.",
         "short_check": "Did you subtract the lower-limit value and check whether area needs an absolute value or split?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving exact definite integrals or bounded areas.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving exact definite integrals or bounded areas.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "integration"
@@ -4145,7 +4145,7 @@
       ],
       "quick_check": {
         "id": "p3-integration-definite-area-001-qc",
-        "region_id": "integration-gardens",
+        "region_id": "integration",
         "topic": "integration",
         "skill_target_id": "p3_int_definite_improper_area",
         "title": "Upper minus lower",
@@ -4161,7 +4161,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "integration-gardens"
+        "integration"
       ],
       "related_skill_targets": [
         "p3_int_definite_improper_area"
@@ -4235,8 +4235,8 @@
         "safer_move": "Name the calculus structure first, write the derivative or integral line, then substitute or solve.",
         "short_check": "Have you shown the derivative evidence before using a gradient or stationary condition?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions that mix logarithmic or exponential functions with differentiation or integration.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions that mix logarithmic or exponential functions with differentiation or integration.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "logarithms_and_exponentials"
@@ -4255,7 +4255,7 @@
       ],
       "quick_check": {
         "id": "p3-log-calculus-context-001-qc",
-        "region_id": "logarithm-grove",
+        "region_id": "logarithmic-and-exponential-functions",
         "topic": "logarithms_and_exponentials",
         "skill_target_id": "p3_log_calculus_contexts",
         "title": "Spot the calculus structure",
@@ -4271,7 +4271,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "logarithm-grove"
+        "logarithmic-and-exponential-functions"
       ],
       "related_skill_targets": [
         "p3_log_calculus_contexts"
@@ -4350,8 +4350,8 @@
         "safer_move": "Name the condition first, then write the matching vector line, midpoint, ratio, or scalar-product equation.",
         "short_check": "Can you say which geometry condition each vector equation represents?"
       },
-      "guardian_readiness": {
-        "readiness_note": "Use this before Guardian questions involving 3D geometry, points on lines, or vector modelling.",
+      "challenge_readiness": {
+        "readiness_note": "Use this before Exam Training questions involving 3D geometry, points on lines, or vector modelling.",
         "recommended_before_question_ids": [],
         "supports_topics": [
           "vectors"
@@ -4370,7 +4370,7 @@
       ],
       "quick_check": {
         "id": "p3-vectors-3d-geometry-001-qc",
-        "region_id": "vector-workshop",
+        "region_id": "vectors",
         "topic": "vectors",
         "skill_target_id": "p3_vec_3d_geometry_modelling",
         "title": "Translate point-on-line",
@@ -4386,7 +4386,7 @@
         "skill_target_resolution_status": "reviewed_p3_skill_map_id"
       },
       "region_ids": [
-        "vector-workshop"
+        "vectors"
       ],
       "related_skill_targets": [
         "p3_vec_3d_geometry_modelling"

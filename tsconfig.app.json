@@ -16,5 +16,31 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": [
+    "src/data/**/*.ts",
+    "src/lib/courseExamTraining.ts",
+    "src/lib/generatedPractice.ts",
+    "src/lib/loadQuestionBank.ts",
+    "src/lib/normalizeQuestionBank.ts",
+    "src/lib/p3SkillContract.ts",
+    "src/lib/questionRouteEvidence.ts",
+    "src/lib/questionTraining.ts",
+    "src/lib/quickCheckAnswer.ts",
+    "src/lib/regionThemes.ts",
+    "src/lib/resolveAssetPath.ts",
+    "src/lib/skillChecklist.ts",
+    "src/lib/staticStudyRoutes.ts",
+    "src/lib/teachingSnippets.ts",
+    "src/lib/topicRouting.ts",
+    "src/lib/topicStudy.ts",
+    "src/lib/worldMap.ts",
+    "src/types.ts",
+    "src/vite-env.d.ts"
+  ],
+  "exclude": [
+    "src/tests",
+    "src/components",
+    "src/App.tsx",
+    "src/main.tsx"
+  ]
 }

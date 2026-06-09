@@ -2,26 +2,26 @@ import type { PaperFamily, RegionDefinition } from '../types';
 import type { FieldGuideTopic } from '../data/fieldGuideTopics';
 import {
   CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS,
-  CALCULUS_CLIFFS_TOPIC_ORDER,
-} from '../data/calculusCliffsContent';
+  DIFFERENTIATION_TOPIC_ORDER,
+} from '../data/differentiationContent';
 import {
   LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES,
-  LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS,
+  LOG_E_QUARANTINED_RUNTIME_PRACTICE_IDS,
   LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS,
-} from '../data/logarithmObservatoryContent';
+} from '../data/logarithmicExponentialContent';
 import {
   INTEGRAL_TERRACES_MOVED_TO_ALGEBRA_PRACTICE_IDS,
   INTEGRAL_TERRACES_QUARANTINED_RUNTIME_PRACTICE_IDS,
-} from '../data/integralTerracesContent';
+} from '../data/integrationContent';
 import {
-  ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS,
-  ITERATION_FORGE_TOPIC_ORDER,
-} from '../data/iterationForgeContent';
+  NUMERICAL_SOLUTION_QUARANTINED_RUNTIME_PRACTICE_IDS,
+  NUMERICAL_SOLUTION_TOPIC_ORDER,
+} from '../data/numericalSolutionContent';
 import { staticDataFetchCache } from './loadQuestionBank';
 import { isValidP3RegionId, isValidP3SkillId } from './p3SkillContract';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
-import { matchRegionForLabels, normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
+import { matchRegionForLabels, normalizeLabel, P3_COURSE_MAP } from './worldMap';
 
 export type GeneratedPracticeReviewStatus = 'candidate' | 'needs_review' | 'teacher_reviewed' | 'published' | 'blocked' | string;
 
@@ -57,24 +57,24 @@ export interface GeneratedPracticeItem {
 
 const GENERATED_PRACTICE_PATH = './data/generated_practice_bank.json';
 const RUNTIME_REVIEW_STATUSES = new Set(['teacher_reviewed', 'published']);
-const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'guardian_prep']);
-const QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_RUNTIME_PRACTICE_IDS);
+const RUNTIME_SEQUENCE_ROLES = new Set(['first_step', 'complete_step', 'challenge_prep']);
+const QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(LOG_E_QUARANTINED_RUNTIME_PRACTICE_IDS);
 for (const practiceId of INTEGRAL_TERRACES_QUARANTINED_RUNTIME_PRACTICE_IDS) {
   QUARANTINED_RUNTIME_PRACTICE_IDS.add(practiceId);
 }
-for (const practiceId of ITERATION_FORGE_QUARANTINED_RUNTIME_PRACTICE_IDS) {
+for (const practiceId of NUMERICAL_SOLUTION_QUARANTINED_RUNTIME_PRACTICE_IDS) {
   QUARANTINED_RUNTIME_PRACTICE_IDS.add(practiceId);
 }
 const QUARANTINED_GENERATOR_FAMILIES = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_GENERATOR_FAMILIES);
 const QUARANTINED_SKILL_TARGET_IDS = new Set<string>(LOGARITHM_OBSERVATORY_QUARANTINED_SKILL_TARGET_IDS);
-const CALCULUS_FIELD_GUIDE_TOPIC_IDS = new Set<string>(CALCULUS_CLIFFS_TOPIC_ORDER);
-const ITERATION_FIELD_GUIDE_TOPIC_IDS = new Set<string>(ITERATION_FORGE_TOPIC_ORDER);
+const CALCULUS_FIELD_GUIDE_TOPIC_IDS = new Set<string>(DIFFERENTIATION_TOPIC_ORDER);
+const ITERATION_FIELD_GUIDE_TOPIC_IDS = new Set<string>(NUMERICAL_SOLUTION_TOPIC_ORDER);
 const CALCULUS_TOPIC_QUARANTINED_RUNTIME_PRACTICE_IDS = new Set<string>(CALCULUS_CLIFFS_QUARANTINED_RUNTIME_PRACTICE_IDS);
 const INTEGRAL_PRACTICE_MOVED_TO_ALGEBRA_IDS = new Set<string>(INTEGRAL_TERRACES_MOVED_TO_ALGEBRA_PRACTICE_IDS);
 const SEQUENCE_ROLE_ORDER: Record<string, number> = {
   first_step: 0,
   complete_step: 1,
-  guardian_prep: 2,
+  challenge_prep: 2,
 };
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -141,7 +141,7 @@ function matchesTopic(item: GeneratedPracticeItem, topic?: string): boolean {
 }
 
 function regionById(regionId: string): RegionDefinition | undefined {
-  return P3_ASTRAL_ACADEMY.regions.find((region) => region.id === regionId);
+  return P3_COURSE_MAP.regions.find((region) => region.id === regionId);
 }
 
 function matchesRegion(item: GeneratedPracticeItem, regionId?: string): boolean {
@@ -169,7 +169,7 @@ function selectedPractice(
     .filter((item) => matchesTopic(item, selection.topic))
     .filter((item) => !selection.skillTargetId || item.skillTargetId === selection.skillTargetId)
     .filter((item) => matchesRegion(item, selection.regionId))
-    .filter((item) => selection.regionId !== 'integration-gardens' || !INTEGRAL_PRACTICE_MOVED_TO_ALGEBRA_IDS.has(item.practiceId))
+    .filter((item) => selection.regionId !== 'integration' || !INTEGRAL_PRACTICE_MOVED_TO_ALGEBRA_IDS.has(item.practiceId))
     .sort((a, b) => a.practiceId.localeCompare(b.practiceId));
   return typeof selection.limit === 'number' ? selected.slice(0, selection.limit) : selected;
 }
@@ -311,7 +311,7 @@ export function getGeneratedPracticeBySkillTarget(
 export function getGeneratedPracticeForRegion(
   items: GeneratedPracticeItem[],
   regionId: string,
-  paperFamily: PaperFamily = P3_ASTRAL_ACADEMY.paperFamily,
+  paperFamily: PaperFamily = P3_COURSE_MAP.paperFamily,
   limit?: number,
 ): GeneratedPracticeItem[] {
   return selectedPractice(items, { paperFamily, regionId, limit });

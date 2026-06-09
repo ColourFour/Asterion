@@ -1,5 +1,4 @@
 import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionPartMark, QuestionPartRouteMapping, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
-import { deriveQuestionMasteryReadiness } from './masteryEvidenceReadiness';
 import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
@@ -198,17 +197,6 @@ function reviewBlockerReasonCodes(record: LooseRecord): string[] {
   ].includes(routeDecision)) {
     blockers.push(routeDecision.includes('defer') ? 'topic-routing-deferred-evidence' : 'topic-routing-audit-not-approved');
   }
-  if (falseyBoolean(record, [
-    'mastery_evidence_allowed',
-    'masteryEvidenceAllowed',
-    'mapping_reviewed',
-    'mappingReviewed',
-    'subpart_mapping_reviewed',
-    'subpartMappingReviewed',
-  ])) {
-    blockers.push('topic-routing-mastery-evidence-blocked');
-  }
-
   return unique(blockers);
 }
 
@@ -363,8 +351,6 @@ function normalizeContentSource(kind: QuestionContentSourceKind | undefined): Qu
 
   return {
     kind: sourceKind,
-    unsafeForMastery: unsafeRawBank,
-    unsafeForGuardian: unsafeRawBank,
     unsafeForGeneration: unsafeRawBank,
     reasonCodes,
   };
@@ -400,14 +386,10 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   const routeEvidence = question.routeEvidence;
   const routeIsClean = routeEvidence?.status === 'clean';
   const routeBlocks = routeBlockReasonCodes(routeEvidence);
-  const masteryReadiness = question.masteryReadiness ?? deriveQuestionMasteryReadiness(question);
-  const preciseMasteryReady = masteryReadiness.status === 'precise_skill_evidence';
   const textQuality = question.textQuality;
   const hasTextOnlySource = Boolean(textQuality?.questionText && textQuality?.markSchemeText);
   const textOnlyAllowed = textQuality?.textOnlyDisplayAllowed === true;
   const textHardFailed = textQuality?.hardFailed === true;
-  const evidenceQualityBlocked = textQuality?.contentLabGenerationAllowed === false
-    || Boolean(textQuality?.generationBlockerReasonCodes?.length);
   const trainingBlockers = question.trainingBlockers ?? [];
   const contentSource = question.contentSource ?? normalizeContentSource(undefined);
 
@@ -425,18 +407,6 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (!hasQuestionImage) practiceReasons.push('missing-question-image');
   if (!hasMarkSchemeImage) practiceReasons.push('missing-mark-scheme-image');
   if (trainingBlockers.length) practiceReasons.push('blocked-training-status');
-
-  const masteryReasons: string[] = [];
-  if (preciseMasteryReady) masteryReasons.push('validated-topic-routing');
-  else masteryReasons.push(...routeBlocks);
-  if (!preciseMasteryReady && routeIsClean) masteryReasons.push(...masteryReadiness.reasonCodes);
-  if (!hasImagePracticeAssets) masteryReasons.push('missing-image-practice-assets');
-  if (trainingBlockers.length) masteryReasons.push('blocked-training-status');
-  if (evidenceQualityBlocked) {
-    masteryReasons.push('blocked-content-lab-quality-gate');
-    masteryReasons.push(...(textQuality?.generationBlockerReasonCodes ?? []).map((code) => `quality-${code}`));
-  }
-  if (contentSource.unsafeForMastery) masteryReasons.push(...contentSource.reasonCodes);
 
   const textOnlyReasons: string[] = [];
   if (routeIsClean) textOnlyReasons.push('validated-topic-routing');
@@ -457,16 +427,12 @@ function deriveQuestionEligibility(question: NormalizedQuestion): QuestionEligib
   if (contentSource.unsafeForGeneration) generationReasons.push(...contentSource.reasonCodes);
 
   const imagePracticeEligible = hasImagePracticeAssets && trainingBlockers.length === 0;
-  const masteryEligible = preciseMasteryReady && imagePracticeEligible && !evidenceQualityBlocked && !contentSource.unsafeForMastery;
-  const guardianEligible = masteryEligible && !contentSource.unsafeForGuardian;
   const generationEligible = routeIsClean && textQuality?.contentLabSupportUsable === true && !textHardFailed && !contentSource.unsafeForGeneration;
   const textOnlyEligible = routeIsClean && hasTextOnlySource && textOnlyAllowed && !textHardFailed;
 
   return {
     regionDisplayEligible: eligibility(regionDisplayEligible, regionDisplayReasons),
     practiceEligible: eligibility(imagePracticeEligible, practiceReasons),
-    masteryEligible: eligibility(masteryEligible, masteryReasons),
-    guardianEligible: eligibility(guardianEligible, masteryReasons),
     generationEligible: eligibility(generationEligible, generationReasons),
     textOnlyEligible: eligibility(textOnlyEligible, textOnlyReasons),
   };
@@ -583,16 +549,12 @@ function partRouteMappingReviewed(record: LooseRecord, nestedRouting?: LooseReco
     'mappingReviewed',
     'subpart_mapping_reviewed',
     'subpartMappingReviewed',
-    'mastery_evidence_allowed',
-    'masteryEvidenceAllowed',
     'reviewed',
   ]) ?? pickBoolean(nestedRouting, [
     'mapping_reviewed',
     'mappingReviewed',
     'subpart_mapping_reviewed',
     'subpartMappingReviewed',
-    'mastery_evidence_allowed',
-    'masteryEvidenceAllowed',
     'reviewed',
   ]);
   if (explicit !== undefined) return explicit;
@@ -925,14 +887,9 @@ export function normalizeQuestionBank(
       ...normalizedQuestion,
       routeEvidence,
     };
-    const masteryReadiness = deriveQuestionMasteryReadiness(questionWithRouteEvidence);
-    const questionWithMasteryReadiness = {
-      ...questionWithRouteEvidence,
-      masteryReadiness,
-    };
     return {
-      ...questionWithMasteryReadiness,
-      eligibility: deriveQuestionEligibility(questionWithMasteryReadiness),
+      ...questionWithRouteEvidence,
+      eligibility: deriveQuestionEligibility(questionWithRouteEvidence),
     };
   });
 }

@@ -1,4 +1,3 @@
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 declare const process: {
@@ -9,7 +8,6 @@ export default defineConfig(() => {
   const isVercelBuild = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 
   return {
-    plugins: [react()],
     base: isVercelBuild ? '/' : './',
   };
 });

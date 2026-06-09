@@ -1,35 +1,5 @@
 import type { PaperFamily, RegionDefinition } from '../types';
-import { normalizeLabel, P3_ASTRAL_ACADEMY } from './worldMap';
-
-export type RegionThemeAccent =
-  | 'vault'
-  | 'observatory'
-  | 'spire'
-  | 'atrium'
-  | 'cliffs'
-  | 'terraces'
-  | 'gate'
-  | 'forge'
-  | 'shrine';
-
-export interface RegionThemeColors {
-  background: string;
-  panel: string;
-  panelStrong: string;
-  panelBorder: string;
-  headingText: string;
-  bodyText: string;
-  mutedText: string;
-  accent: string;
-  accentText: string;
-  accentSoft: string;
-  buttonBackground: string;
-  buttonText: string;
-  buttonBorder: string;
-  badgeBackground: string;
-  badgeText: string;
-  focusRing: string;
-}
+import { normalizeLabel, P3_COURSE_MAP } from './worldMap';
 
 export interface RegionTheme {
   regionId: string;
@@ -41,45 +11,15 @@ export interface RegionTheme {
   snippetTopics: string[];
   generatedPracticeTopics: string[];
   icon: string;
-  accent: RegionThemeAccent;
-  colors: RegionThemeColors;
-  atmosphere: string;
-  guideMessage: string;
-  masteryQuote: string;
-}
-
-const readableTextColors = {
-  background: '#fff8ec',
-  panel: '#fffdf8',
-  panelStrong: '#fff7eb',
-  headingText: '#172033',
-  bodyText: '#263244',
-  mutedText: '#38455a',
-  focusRing: '#1d4ed8',
-};
-
-function colorsForRegion(accent: string, accentText: string, accentSoft: string): RegionThemeColors {
-  return {
-    ...readableTextColors,
-    panelBorder: accentText,
-    accent,
-    accentText,
-    accentSoft,
-    buttonBackground: accentText,
-    buttonText: '#ffffff',
-    buttonBorder: accentText,
-    badgeBackground: accentSoft,
-    badgeText: accentText,
-  };
 }
 
 const regionThemes: Record<string, RegionTheme> = {
-  'algebra-forge': {
-    regionId: 'algebra-forge',
-    title: 'Algebra Vault',
-    subtitle: 'A guarded vault for expansions, factors, remainders, and locked algebraic forms.',
+  'algebra': {
+    regionId: 'algebra',
+    title: 'Algebra',
+    subtitle: 'Expressions, polynomials, partial fractions, modulus equations, and binomial expansion.',
     paperFamily: 'p3',
-    topic: 'algebra_functions_and_binomial',
+    topic: 'algebra',
     topicAliases: [
       'algebra',
       'algebraic_manipulation',
@@ -106,19 +46,14 @@ const regionThemes: Record<string, RegionTheme> = {
       'quadratics',
     ],
     generatedPracticeTopics: ['binomial_expansion'],
-    icon: 'AV',
-    accent: 'vault',
-    colors: colorsForRegion('#b8872d', '#283718', '#fff1d6'),
-    atmosphere: 'Brass locks, black marble counters, archive drawers, and valuable structure under guard.',
-    guideMessage: 'Pause here to identify structure: factor, divide, decompose, or compose before calculating.',
-    masteryQuote: 'Structure first. Expansion only when it earns a mark.',
+    icon: 'A',
   },
-  'logarithm-grove': {
-    regionId: 'logarithm-grove',
-    title: 'Logarithm Observatory',
-    subtitle: 'A storybook observatory where exponential growth and logarithmic structure become visible.',
+  'logarithmic-and-exponential-functions': {
+    regionId: 'logarithmic-and-exponential-functions',
+    title: 'Logarithmic and Exponential Functions',
+    subtitle: 'Logarithmic laws, exponential equations, domain checks, and linearisation.',
     paperFamily: 'p3',
-    topic: 'logarithms_and_exponentials',
+    topic: 'logarithmic_and_exponential_functions',
     topicAliases: [
       'logs',
       'log',
@@ -130,24 +65,21 @@ const regionThemes: Record<string, RegionTheme> = {
       'exponentials',
       'exponential functions',
       'logarithms and exponentials',
+      'logarithmic and exponential functions',
     ],
-    snippetTopics: ['logarithms_and_exponentials', 'logarithms', 'exponentials'],
+    snippetTopics: ['logarithmic_and_exponential_functions', 'logarithms_and_exponentials', 'logarithms', 'exponentials'],
     generatedPracticeTopics: ['logarithms_and_exponentials'],
-    icon: 'LO',
-    accent: 'observatory',
-    colors: colorsForRegion('#2b6f9f', '#173653', '#e7f2ff'),
-    atmosphere: 'Lantern domes, brass telescopes, star charts, moonlit shelves, and curves hidden in constellations.',
-    guideMessage: 'Use this stop to slow down: convert forms, combine logs safely, and check every domain restriction.',
-    masteryQuote: 'Every log solution must survive the original equation.',
+    icon: 'LE',
   },
-  'trig-observatory': {
-    regionId: 'trig-observatory',
-    title: 'Trigonometry Spire',
-    subtitle: 'An impossible spire of arcs, angled supports, intervals, and exact angle choices.',
+  'trigonometry': {
+    regionId: 'trigonometry',
+    title: 'Trigonometry',
+    subtitle: 'Identities, equations on intervals, reciprocal functions, and compound-angle formulae.',
     paperFamily: 'p3',
     topic: 'trigonometry',
     topicAliases: [
       'trig',
+      'trigonometry',
       'trigonometric',
       'trigonometric identities',
       'trig identities',
@@ -158,43 +90,12 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['trigonometry', 'trigonometric_identities', 'trigonometric_equations'],
     generatedPracticeTopics: [],
-    icon: 'TS',
-    accent: 'spire',
-    colors: colorsForRegion('#5d6fa8', '#243656', '#eef2ff'),
-    atmosphere: 'Tension cables, circular platforms, and high-angle paths returning from every quadrant.',
-    guideMessage: 'Keep identities visible, preserve every root, and sweep the requested interval deliberately.',
-    masteryQuote: 'Do not divide away a solution you have not accounted for.',
+    icon: 'T',
   },
-  'complex-harbor': {
-    regionId: 'complex-harbor',
-    title: 'Argand Atrium',
-    subtitle: 'A mirrored glass atrium for modulus, argument, loci, and roots.',
-    paperFamily: 'p3',
-    topic: 'complex_numbers',
-    topicAliases: [
-      'complex',
-      'complex numbers',
-      'argand',
-      'argand diagrams',
-      'argand diagram',
-      'modulus and argument',
-      'argument',
-      'polar form',
-      'roots of complex numbers',
-    ],
-    snippetTopics: ['complex_numbers', 'argand_diagrams', 'modulus_and_argument'],
-    generatedPracticeTopics: [],
-    icon: 'AA',
-    accent: 'atrium',
-    colors: colorsForRegion('#7561d8', '#30286c', '#ece9ff'),
-    atmosphere: 'Mirrored floors, floating axes, polar light, and compass geometry on the complex plane.',
-    guideMessage: 'Sketch before manipulating: the picture often tells you which form to use.',
-    masteryQuote: 'The quadrant is part of the answer, not a detail after it.',
-  },
-  'calculus-cliffs': {
-    regionId: 'calculus-cliffs',
-    title: 'Calculus Cliffs',
-    subtitle: 'White cliff paths for gradients, rates of change, and stationary points.',
+  'differentiation': {
+    regionId: 'differentiation',
+    title: 'Differentiation',
+    subtitle: 'Differentiation techniques, tangents, normals, stationary points, implicit and parametric forms.',
     paperFamily: 'p3',
     topic: 'differentiation',
     topicAliases: [
@@ -213,17 +114,12 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['differentiation', 'parametric_equations'],
     generatedPracticeTopics: [],
-    icon: 'CC',
-    accent: 'cliffs',
-    colors: colorsForRegion('#7d735f', '#3f3b33', '#f4efe6'),
-    atmosphere: 'White chalk cliffs, ocean wind, tangent paths, and turning points marked at the edge.',
-    guideMessage: 'Choose the derivative rule before simplifying, then interpret the result in context.',
-    masteryQuote: 'A derivative is evidence only after you say what it means.',
+    icon: 'D',
   },
-  'integration-gardens': {
-    regionId: 'integration-gardens',
-    title: 'Integral Terraces',
-    subtitle: 'Coastal academic terraces where areas, limits, and methods accumulate.',
+  'integration': {
+    regionId: 'integration',
+    title: 'Integration',
+    subtitle: 'Method choice, substitution, parts, partial fractions, areas, and definite integrals.',
     paperFamily: 'p3',
     topic: 'integration',
     topicAliases: [
@@ -240,17 +136,34 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['integration', 'partial_fractions'],
     generatedPracticeTopics: [],
-    icon: 'IT',
-    accent: 'terraces',
-    colors: colorsForRegion('#4f7c5c', '#2f593b', '#edf6e8'),
-    atmosphere: 'Warm stone, vines, sea air, careful limits, and accumulation built one strip at a time.',
-    guideMessage: 'Choose the method from the shape of the integrand, then keep limits and constants honest.',
-    masteryQuote: 'Changing variables means changing the whole setup.',
+    icon: 'I',
   },
-  'vector-workshop': {
-    regionId: 'vector-workshop',
-    title: 'Vectors Gate',
-    subtitle: 'A navigation gate for notation, magnitude, line equations, line relationships, scalar products, angles, and point-to-line distance.',
+  'numerical-solution-of-equations': {
+    regionId: 'numerical-solution-of-equations',
+    title: 'Numerical Solution of Equations',
+    subtitle: 'Sign-change arguments, fixed-point iteration, convergence checks, and numerical accuracy.',
+    paperFamily: 'p3',
+    topic: 'numerical_solution_of_equations',
+    topicAliases: [
+      'numerical',
+      'numerical methods',
+      'numerical solution',
+      'numerical solution of equations',
+      'iteration',
+      'iterative methods',
+      'newton raphson',
+      'newton-raphson',
+      'sign change',
+      'sign-change methods',
+    ],
+    snippetTopics: ['numerical_methods', 'numerical_solution_of_equations', 'iteration'],
+    generatedPracticeTopics: [],
+    icon: 'N',
+  },
+  'vectors': {
+    regionId: 'vectors',
+    title: 'Vectors',
+    subtitle: 'Vector notation, 3D lines, intersections, scalar products, angles, and geometry modelling.',
     paperFamily: 'p3',
     topic: 'vectors',
     topicAliases: [
@@ -273,44 +186,12 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['vectors'],
     generatedPracticeTopics: [],
-    icon: 'VG',
-    accent: 'gate',
-    colors: colorsForRegion('#386a83', '#213b52', '#e5eef5'),
-    atmosphere: 'Portal arches, compass bearings, wind lines, launch paths, and component checks at every gate.',
-    guideMessage: 'Separate position from direction, then let components verify the geometry.',
-    masteryQuote: 'One matching component is not an intersection.',
+    icon: 'V',
   },
-  'numerical-mines': {
-    regionId: 'numerical-mines',
-    title: 'Iteration Forge',
-    subtitle: 'A molten smithing hall for roots, iteration, and numerical accuracy.',
-    paperFamily: 'p3',
-    topic: 'numerical_methods',
-    topicAliases: [
-      'numerical',
-      'numerical methods',
-      'numerical solution',
-      'numerical solution of equations',
-      'iteration',
-      'iterative methods',
-      'newton raphson',
-      'newton-raphson',
-      'sign change',
-      'sign-change methods',
-    ],
-    snippetTopics: ['numerical_methods', 'numerical_solution_of_equations', 'iteration'],
-    generatedPracticeTopics: [],
-    icon: 'IF',
-    accent: 'forge',
-    colors: colorsForRegion('#b55320', '#5d321b', '#ffe3d1'),
-    atmosphere: 'Iron plates, ember heat, rivets, anvils, iteration wheels, and rounding checked at the final gate.',
-    guideMessage: 'Carry enough accuracy through the process and justify the final rounding step.',
-    masteryQuote: 'Approximation earns marks when the method is visible.',
-  },
-  'differential-shrine': {
-    regionId: 'differential-shrine',
-    title: 'Differential Shrine',
-    subtitle: 'A mountain shrine for forming and solving first-order differential equations.',
+  'differential-equations': {
+    regionId: 'differential-equations',
+    title: 'Differential Equations',
+    subtitle: 'Forming and solving first-order differential equations, including separation and initial conditions.',
     paperFamily: 'p3',
     topic: 'differential_equations',
     topicAliases: [
@@ -323,61 +204,81 @@ const regionThemes: Record<string, RegionTheme> = {
     ],
     snippetTopics: ['differential_equations', 'separation_of_variables'],
     generatedPracticeTopics: [],
-    icon: 'DS',
-    accent: 'shrine',
-    colors: colorsForRegion('#64705a', '#33402d', '#ecf4e6'),
-    atmosphere: 'Stone steps, prayer flags, lanterns, pale mist, separated variables, and constants placed with care.',
-    guideMessage: 'Translate the rate, separate cleanly, and use conditions only after integrating.',
-    masteryQuote: 'The constant belongs to the solution, not the differential equation.',
+    icon: 'DE',
+  },
+  'complex-numbers': {
+    regionId: 'complex-numbers',
+    title: 'Complex Numbers',
+    subtitle: 'Cartesian form, modulus-argument form, loci, polar form, and roots of complex numbers.',
+    paperFamily: 'p3',
+    topic: 'complex_numbers',
+    topicAliases: [
+      'complex',
+      'complex numbers',
+      'argand',
+      'argand diagrams',
+      'argand diagram',
+      'modulus and argument',
+      'argument',
+      'polar form',
+      'roots of complex numbers',
+    ],
+    snippetTopics: ['complex_numbers', 'argand_diagrams', 'modulus_and_argument'],
+    generatedPracticeTopics: [],
+    icon: 'C',
   },
 };
 
 const themeAliases: Record<string, string> = {
-  algebra: 'algebra-forge',
-  functions: 'algebra-forge',
-  function: 'algebra-forge',
-  'algebra functions': 'algebra-forge',
-  'algebra/functions': 'algebra-forge',
-  algebra_functions_and_binomial: 'algebra-forge',
-  binomial: 'algebra-forge',
-  binomial_expansion: 'algebra-forge',
-  'binomial expansion': 'algebra-forge',
-  'partial fractions': 'algebra-forge',
-  partial_fractions: 'algebra-forge',
-  quadratics: 'algebra-forge',
-  polynomial: 'algebra-forge',
-  polynomials: 'algebra-forge',
-  logs: 'logarithm-grove',
-  log: 'logarithm-grove',
-  logarithm: 'logarithm-grove',
-  logarithms: 'logarithm-grove',
-  logarithms_and_exponentials: 'logarithm-grove',
-  'logarithms and exponentials': 'logarithm-grove',
-  exponentials: 'logarithm-grove',
-  exponential: 'logarithm-grove',
-  trig: 'trig-observatory',
-  trigonometry: 'trig-observatory',
-  'trigonometric equations': 'trig-observatory',
-  'trigonometric identities': 'trig-observatory',
-  differentiation: 'calculus-cliffs',
-  derivative: 'calculus-cliffs',
-  parametric_equations: 'calculus-cliffs',
-  'parametric equations': 'calculus-cliffs',
-  integration: 'integration-gardens',
-  integral: 'integration-gardens',
-  integrals: 'integration-gardens',
-  complex: 'complex-harbor',
-  complex_numbers: 'complex-harbor',
-  'complex numbers': 'complex-harbor',
-  argand: 'complex-harbor',
-  vectors: 'vector-workshop',
-  vector: 'vector-workshop',
-  numerical_methods: 'numerical-mines',
-  'numerical methods': 'numerical-mines',
-  iteration: 'numerical-mines',
-  differential_equations: 'differential-shrine',
-  'differential equations': 'differential-shrine',
-  calculus: 'calculus-cliffs',
+  algebra: 'algebra',
+  functions: 'algebra',
+  function: 'algebra',
+  'algebra functions': 'algebra',
+  'algebra/functions': 'algebra',
+  algebra_functions_and_binomial: 'algebra',
+  binomial: 'algebra',
+  binomial_expansion: 'algebra',
+  'binomial expansion': 'algebra',
+  'partial fractions': 'algebra',
+  partial_fractions: 'algebra',
+  quadratics: 'algebra',
+  polynomial: 'algebra',
+  polynomials: 'algebra',
+  logs: 'logarithmic-and-exponential-functions',
+  log: 'logarithmic-and-exponential-functions',
+  logarithm: 'logarithmic-and-exponential-functions',
+  logarithms: 'logarithmic-and-exponential-functions',
+  logarithmic_and_exponential_functions: 'logarithmic-and-exponential-functions',
+  logarithms_and_exponentials: 'logarithmic-and-exponential-functions',
+  'logarithms and exponentials': 'logarithmic-and-exponential-functions',
+  'logarithmic and exponential functions': 'logarithmic-and-exponential-functions',
+  exponentials: 'logarithmic-and-exponential-functions',
+  exponential: 'logarithmic-and-exponential-functions',
+  trig: 'trigonometry',
+  trigonometry: 'trigonometry',
+  'trigonometric equations': 'trigonometry',
+  'trigonometric identities': 'trigonometry',
+  differentiation: 'differentiation',
+  derivative: 'differentiation',
+  calculus: 'differentiation',
+  parametric_equations: 'differentiation',
+  'parametric equations': 'differentiation',
+  integration: 'integration',
+  integral: 'integration',
+  integrals: 'integration',
+  numerical_methods: 'numerical-solution-of-equations',
+  numerical_solution_of_equations: 'numerical-solution-of-equations',
+  'numerical methods': 'numerical-solution-of-equations',
+  'numerical solution of equations': 'numerical-solution-of-equations',
+  iteration: 'numerical-solution-of-equations',
+  vectors: 'vectors',
+  vector: 'vectors',
+  differential_equations: 'differential-equations',
+  'differential equations': 'differential-equations',
+  complex: 'complex-numbers',
+  complex_numbers: 'complex-numbers',
+  'complex numbers': 'complex-numbers',
+  argand: 'complex-numbers',
 };
 
 function fallbackTheme(region: RegionDefinition): RegionTheme {
@@ -386,17 +287,12 @@ function fallbackTheme(region: RegionDefinition): RegionTheme {
     regionId: region.id,
     title: region.name,
     subtitle: region.description,
-    paperFamily: P3_ASTRAL_ACADEMY.paperFamily,
+    paperFamily: P3_COURSE_MAP.paperFamily,
     topic,
     topicAliases: [...region.matchTerms, ...region.subtopics],
     snippetTopics: [topic, ...region.matchTerms, ...region.subtopics],
     generatedPracticeTopics: [],
     icon: region.name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase(),
-    accent: 'observatory',
-    colors: colorsForRegion('#0f6f68', '#0b4f4b', '#dff4ef'),
-    atmosphere: region.description,
-    guideMessage: 'Start by identifying the topic signal, then choose the method before calculating.',
-    masteryQuote: 'Progress here comes from saved attempts and checked mark schemes.',
   };
 }
 
@@ -411,31 +307,26 @@ export function getRegionTheme(regionOrId: RegionDefinition | string): RegionThe
 
   if (typeof regionOrId !== 'string') return fallbackTheme(regionOrId);
 
-  const region = P3_ASTRAL_ACADEMY.regions.find((item) => item.id === regionId || normalizeLabel(item.name) === normalized);
+  const region = P3_COURSE_MAP.regions.find((item) => item.id === regionId || normalizeLabel(item.name) === normalized);
   return region ? fallbackTheme(region) : {
     regionId,
     title: regionId,
-    subtitle: 'A region theme has not been authored yet.',
-    paperFamily: P3_ASTRAL_ACADEMY.paperFamily,
+    subtitle: 'Topic metadata has not been authored yet.',
+    paperFamily: P3_COURSE_MAP.paperFamily,
     topic: normalized.replace(/\s+/g, '_'),
     topicAliases: [],
     snippetTopics: [normalized.replace(/\s+/g, '_')],
     generatedPracticeTopics: [],
-    icon: 'RG',
-    accent: 'observatory',
-    colors: colorsForRegion('#0f6f68', '#0b4f4b', '#dff4ef'),
-    atmosphere: 'A quiet academy station awaiting art direction.',
-    guideMessage: 'Use the Field Guide first, then move into checked practice.',
-    masteryQuote: 'Only saved academic evidence should move mastery.',
+    icon: 'P3',
   };
 }
 
 export function getRegionThemeClass(theme: RegionTheme): string {
-  return `region-theme-${theme.accent}`;
+  return `topic-theme-${theme.regionId.replace(/[^a-z0-9]+/gi, '-')}`;
 }
 
 export function listRegionThemes(): RegionTheme[] {
-  return P3_ASTRAL_ACADEMY.regions.map((region) => getRegionTheme(region));
+  return P3_COURSE_MAP.regions.map((region) => getRegionTheme(region));
 }
 
 export function topicKeysForTheme(theme: RegionTheme, purpose: 'snippets' | 'practice' | 'all' = 'all'): string[] {

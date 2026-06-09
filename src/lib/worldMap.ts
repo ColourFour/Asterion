@@ -4,10 +4,10 @@ import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { regionForTopicRouting } from './topicRouting';
 
-export const P3_WORLD_NAME = 'P3 Astral Academy';
+export const P3_WORLD_NAME = 'Pure Mathematics 3';
 
-export const P3_ASTRAL_ACADEMY: WorldDefinition = {
-  id: 'p3-astral-academy',
+export const P3_COURSE_MAP: WorldDefinition = {
+  id: 'p3-course-map',
   name: P3_WORLD_NAME,
   paperFamily: 'p3',
   regions: P3_REGION_DEFINITIONS.map(({ syllabusTopics: _syllabusTopics, subtopics, matchTerms, ...region }) => ({
@@ -71,7 +71,7 @@ function fallbackLabelsForQuestion(question: NormalizedQuestion): string[] {
   ].filter((value): value is string => Boolean(value));
 }
 
-export function matchRegionForLabels(labels: Array<string | undefined>, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
+export function matchRegionForLabels(labels: Array<string | undefined>, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
   const normalizedLabels = labels.map(normalizeLabel).filter(Boolean);
   const scored = world.regions.map((region) => {
     const terms = [...region.matchTerms, region.name, ...region.subtopics].map(normalizeLabel);
@@ -182,7 +182,7 @@ function routeEvidence(
   };
 }
 
-export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): QuestionRouteEvidence {
+export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): QuestionRouteEvidence {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) {
     return routeEvidence('not-P3', 'paper-family', question, world, ['non-p3-paper-family']);
   }
@@ -250,14 +250,14 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
   return routeEvidence('missing-route', 'none', question, world, ['no-topic-routing-record']);
 }
 
-export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
+export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
   const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
   if (routeEvidence.status !== 'clean') return undefined;
   return regionById(routeEvidence.validatedRegionId, world);
 }
 
-export function matchDisplayRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_ASTRAL_ACADEMY): RegionDefinition | undefined {
+export function matchDisplayRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
   const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
   const displayRegion = regionById(routeEvidence.displayRegionId, world);

@@ -1,7 +1,5 @@
 node_modules/
 dist/
-docs/
-public/assets/exam-bank-data/
 coverage/
 test-results/
 playwright-report/
@@ -20,7 +18,7 @@ vite.config.d.ts
 vitest.config.js
 vitest.config.d.ts
 .DS_Store
-public/assets/region-art1/
+public/assets/exam-bank-data/
 __pycache__/
 *.pyc
 .env.live.local

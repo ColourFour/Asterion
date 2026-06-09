@@ -1,241 +1,88 @@
 # Asterion
 
-Asterion is a static CAIE 9709 study hub. Students first choose a course, then enter that course's study page. The initial course shells are:
+Asterion is a static CAIE 9709 Paper 3 study hub for GitHub Pages.
 
-- P1: Pure Mathematics 1
-- P3: Pure Mathematics 3
-- M1: Mechanics 1
-- S1: Probability & Statistics 1
+P3 is the product path. P1, M1, and S1 are visible only as support-only course entries and do not expose topic pages, Skill Checks, exam mappings, attempt storage, or progression systems on this branch.
 
-P3 is currently the most developed section. It keeps the existing image-first topic pages, Field Guides, Practice Questions, and Exam Training under `/p3/`. P1, M1, and S1 now have rapid draft seed topic pages so the multi-course site is navigable, but those pages are explicitly labelled as starter content that needs syllabus-contract review.
+For P3, the question image and mark-scheme image are the student-facing source of truth. Text extraction, labels, and route metadata support display and selection only.
 
-For P3, the question image and mark-scheme image remain the student-facing source of truth. Reviewed topic routing and the P3 skill map are the curriculum authority; OCR text, generated support content, local labels, and legacy labels are support metadata only.
+## Install And Build
 
-## Current Shape
-
-The production site is a static multi-page website:
-
-```text
-docs/index.html
-docs/p1/index.html
-docs/p1/topics/index.html
-docs/p1/topics/quadratics/index.html
-docs/p1/topics/quadratics/field-guide/index.html
-docs/p1/topics/quadratics/practice/index.html
-docs/p1/topics/binomial-expansion/index.html
-docs/p3/index.html
-docs/p3/topics/index.html
-docs/p3/topics/algebra/index.html
-docs/p3/topics/algebra/field-guide/index.html
-docs/p3/topics/algebra/practice/index.html
-docs/p3/topics/logarithms/index.html
-docs/p3/topics/trigonometry/index.html
-docs/p3/topics/argand/index.html
-docs/p3/topics/calculus/index.html
-docs/p3/topics/integration/index.html
-docs/p3/topics/vectors/index.html
-docs/p3/topics/iteration/index.html
-docs/p3/topics/differential-equations/index.html
-docs/p3/exam-training/index.html
-docs/m1/index.html
-docs/m1/topics/index.html
-docs/m1/topics/forces-equilibrium/index.html
-docs/m1/topics/forces-equilibrium/field-guide/index.html
-docs/m1/topics/forces-equilibrium/practice/index.html
-docs/m1/topics/newtons-laws-constant-acceleration/index.html
-docs/m1/topics/newtons-laws-variable-acceleration/index.html
-docs/s1/index.html
-docs/s1/topics/index.html
-docs/s1/topics/data-representation/index.html
-docs/s1/topics/data-representation/field-guide/index.html
-docs/s1/topics/data-representation/practice/index.html
-docs/regions/index.html
-docs/topics/algebra/index.html
-docs/exam-training/index.html
-```
-
-Each P3 topic gets `field-guide/index.html` and `practice/index.html` under `/p3/topics/`. Each seeded P1/M1/S1 topic now gets the same three-page static pattern under its course prefix, plus a course-level `exam-training/index.html` placeholder. The unprefixed `/topics/...`, `/regions/`, and `/exam-training/` pages remain as P3 compatibility URLs, but the primary student flow starts at the course selector and routes courses through `/p1/`, `/p3/`, `/m1/`, and `/s1/`. The build currently writes 130 HTML pages in total.
-
-P1/M1/S1 seed content lives in `src/data/courseSeedContent.ts`. It was drafted from the Cambridge International AS & A Level Mathematics 9709 syllabus headings for a fast audit pass. The [official Cambridge 9709 syllabus](https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf) remains the source of truth; a later syllabus-contract audit must verify topic coverage, wording, formula scope, and exam alignment before treating these pages as final.
-
-Current draft seed topic sets:
-
-- P1: Quadratics; Functions; Coordinate Geometry; Circular Measure; Trigonometry; Sequences and Series; Binomial Expansion; Differentiation; Integration.
-- M1: Forces and Equilibrium; Kinematics; Momentum; Newton's Laws with Constant Acceleration; Newton's Laws with Variable Acceleration; Energy, Work and Power.
-- S1: Representation of Data; Permutations and Combinations; Probability; Discrete Random Variables; The Normal Distribution.
-
-The site does not require a backend, authentication, Supabase, a React router, an app shell, or a GitHub Pages 404 restore script. The GitHub Actions workflow, once enabled as the Pages source, only builds and publishes the static artifact.
-
-## Build
-
-Install dependencies:
+From a clean clone:
 
 ```bash
-npm ci
-```
-
-Build the static site:
-
-```bash
+npm install
 npm run build
 ```
 
-Check the generated artifact:
+The build verifies/restores the exam-bank runtime assets, type-checks the static source, and regenerates `docs/`.
+
+Optional local checks:
 
 ```bash
+npm test
 npm run static:check
 ```
 
-Verify or restore the exam-bank runtime assets:
+There is no `npm run lint` script on this branch.
 
-```bash
-npm run assets:sync
-```
+## GitHub Pages Output
 
-The build command runs TypeScript validation, then `scripts/build-static-site.ts` with `vite-node`. The generator reads the existing topic, Field Guide, generated-practice, teaching-snippet, and question-bank data, copies required static assets, and writes the final GitHub Pages artifact to `docs/`.
+`docs/` is the canonical GitHub Pages output and is committed intentionally.
 
-`docs/` is generated output and is committed intentionally only on legacy branch-publishing branches. On the current GitHub Actions Pages branch, `docs/` is ignored local output and the workflow uploads it as a Pages artifact. Do not put source notes, project documentation, scripts, or app source files in `docs/`; source files belong in `src/`, build scripts belong in `scripts/`, and project configuration belongs at the repository root.
+Do not add a competing GitHub Actions build/deploy workflow for Pages on this branch. Build locally, verify locally, then commit the regenerated `docs/` output with the source changes.
 
-For local experiments that need a disposable `dist/` artifact:
+The site does not require a backend, authentication, Supabase, class codes, teacher/admin dashboards, a React app shell, or SPA fallback routing.
 
-```bash
-npm run build:dist
-```
+## Routes
 
-## Local Preview
-
-After building:
-
-```bash
-npm run preview
-```
-
-Open the Vite preview URL and test direct URLs such as:
+Canonical P3 topic task routes:
 
 ```text
-/
-/p1/
-/p1/topics/
-/p1/topics/quadratics/
-/p1/topics/binomial-expansion/
-/p3/
-/p3/topics/
-/p3/topics/algebra/
-/p3/topics/algebra/field-guide/
-/p3/topics/algebra/practice/
-/p3/exam-training/
-/m1/
-/m1/topics/
-/m1/topics/forces-equilibrium/
-/m1/topics/newtons-laws-variable-acceleration/
-/s1/
-/s1/topics/
-/s1/topics/data-representation/
+/p3/topics/<topic>/field-guide/
+/p3/topics/<topic>/skill-check/
+/p3/topics/<topic>/exam-training/
 ```
 
-## GitHub Pages
-
-Asterion deploys with GitHub Actions artifact publishing. The workflow builds from source, generates `docs/`, runs static checks, uploads `docs/` as a Pages artifact, and deploys that artifact.
-
-Current repository setting:
+The supported P3 topic slugs are:
 
 ```text
-Source: GitHub Actions
+algebra
+logarithmic-and-exponential-functions
+trigonometry
+differentiation
+integration
+numerical-solution-of-equations
+vectors
+differential-equations
+complex-numbers
 ```
 
-Legacy branch-publishing settings, kept here only for rollback context:
-
-```text
-Source: Deploy from a branch
-Branch: main
-Folder: /docs
-```
-
-Completed migration phases:
-
-1. Add `.github/workflows/deploy-pages.yml` so pushes to `main` build from source, run tests and static checks, upload `docs/` with `actions/upload-pages-artifact`, and deploy with `actions/deploy-pages`.
-2. Switch repository settings at `Settings -> Pages -> Build and deployment -> Source` to `GitHub Actions`, then verify `https://colourfour.github.io/Asterion/` is served by a successful Actions deployment.
-3. Remove committed `docs/` from `main`, add `docs/` to `.gitignore`, and keep `npm run build` producing `docs/` locally as the generated artifact.
-
-Do not restore committed `docs/` unless rolling back Pages to `Deploy from a branch` with `main` and `/docs`.
-
-### Base Path
-
-No Vite `base` setting is required for normal GitHub Pages project deployment. Generated links, CSS, JavaScript, fonts, images, and JSON assets use relative paths, so a project URL such as:
-
-```text
-https://username.github.io/Asterion/
-```
-
-can serve nested pages such as:
-
-```text
-https://username.github.io/Asterion/p3/topics/algebra/practice/
-```
-
-because the matching `index.html` file exists and asset links resolve relative to that file.
-
-## Local Progress
-
-Progress is browser-local. The static pages use a small script at `docs/assets/static-study.js` to read and write `localStorage` under:
-
-```text
-asterion.progress.v1
-```
-
-Stored local data covers:
-
-- Field Guide section completion
-- focused Practice Questions completion
-- self-marked exam question attempts
-- Exam Training topic totals
-
-Content is meaningful without JavaScript. JavaScript only enhances local completion buttons, mark saving, progress totals, and status text.
+The build does not generate legacy unprefixed topic pages, `/regions/`, `/p3/regions/`, course-level `/p3/exam-training/`, topic hub pages, or `/practice/` compatibility pages.
 
 ## Source Data
 
-Runtime data lives under:
+Runtime source data lives in:
 
 ```text
 public/assets/exam-bank-data/
-public/data/teaching_snippets.json
 public/data/generated_practice_bank.json
+public/data/teaching_snippets.json
 ```
 
-`public/assets/exam-bank-data/` is runtime/build data, not hand-authored app source. It contains large generated exports and image crops from the Exam Bank pipeline. Keep application code in `src/`; treat this folder as a versioned data artifact that can be restored with:
+`public/assets/exam-bank-data/` is large runtime data and remains ignored in git. `npm run assets:sync` verifies the local folder or restores it from the asset manifest.
 
-```bash
-npm run assets:sync
-```
+Application source belongs in `src/`, build scripts belong in `scripts/`, and generated Pages output belongs in `docs/`.
 
-The current manifest is `asset-manifests/exam-bank-data.json`. It records the bundle name, version, expected unpack path, stable tree SHA256, file count, required JSON files, and runtime image directories. In the current staged migration, the assets remain tracked in git and `npm run assets:sync` verifies their integrity. Before untracking `public/assets/exam-bank-data/`, publish a real `asterion-exam-bank-data-*.tgz` bundle, fill `downloadUrl` and `bundleSha256` in the manifest, and verify a clean missing-assets restore locally and in GitHub Actions.
+## Static Product Boundaries
 
-The exam-bank folder now has two Asterion-facing layers:
+Keep the branch boring and reproducible:
 
-- `asterion_exam_bank_catalog_v1.json` is the full all-course catalog exported from Exam Bank for audit and planning. It currently covers P1, P3, M1, and S1 records.
-- `asterion_question_bank_v1.json` is the reviewed student-runtime projection. It should contain only catalog records marked `student_runtime_safe=true` and `review_status=reviewed`.
+- no backend or auth flows
+- no Supabase runtime code or dependencies
+- no teacher/admin/classroom flows
+- no game, lore, avatar, XP, or dynamic progression surface
+- no P1/M1/S1 topic-page expansion until separate reviewed course contracts exist
+- no duplicate route families unless a future compatibility task explicitly asks for them
 
-The static generator reuses existing normalizers and selection helpers rather than duplicating routing or image path logic in page templates.
-
-Historical Content Lab planning should not be stored in `docs/`, because that folder is now the committed GitHub Pages artifact.
-
-P1, M1, and S1 draft seed pages are static study notes only. They do not create mastery evidence, attempt records, exam-bank mappings, or adaptive routing. Do not copy the P3 skill map or route evidence into another course as a shortcut; replace the seed notes with reviewed course-specific contracts when that audit is complete.
-
-## Validation
-
-Useful checks for this branch:
-
-```bash
-npm run build
-npm run static:check
-npm test -- src/tests/staticStudyRoutes.test.ts
-git diff --check
-rg -n "id=\"root\"|src/main\\.tsx|asterion\\.spa\\.redirect|404\\.html" docs
-rg -n "\\bXP\\b|\\blevels?\\b|\\bgold\\b|avatars?|ranks?|rewards?|fantasy|world map|academy|teacher dashboard|admin|classroom" docs --glob "*.html"
-```
-
-The last two searches should return no matches for the generated student-facing HTML.
-
-## Boundaries
-
-This branch is the static study website branch. Do not add a backend, login flow, classroom dashboard, app-level routing, or dynamic progression mechanics to the production surface. If old implementation files remain in `src/`, they are historical code unless the static generator imports them for data normalization or content selection.
+Student-facing language should use exam-product terms such as Field Guide, Skill Check, Exam Training, Need to Know, Review, Practice, Self-marked, Ready, In progress, and Needs repair.

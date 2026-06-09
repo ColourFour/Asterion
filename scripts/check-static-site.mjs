@@ -6,10 +6,7 @@ const siteRoot = path.join(repoRoot, 'docs');
 const examBankRoot = path.join(repoRoot, 'public/assets/exam-bank-data');
 
 const courseExamFamilies = {
-  P1: ['p1'],
   P3: ['p3'],
-  M1: ['p4'],
-  S1: ['p5'],
 };
 
 const fallbackRequiredPages = [
@@ -19,64 +16,33 @@ const fallbackRequiredPages = [
   'm1/index.html',
   's1/index.html',
   'p3/topics/index.html',
-  'p3/topics/algebra/index.html',
   'p3/topics/algebra/field-guide/index.html',
-  'p3/topics/algebra/practice/index.html',
-  'p3/topics/logarithms/index.html',
-  'p3/topics/logarithms/field-guide/index.html',
-  'p3/topics/logarithms/practice/index.html',
-  'p3/topics/trigonometry/index.html',
+  'p3/topics/algebra/skill-check/index.html',
+  'p3/topics/algebra/exam-training/index.html',
+  'p3/topics/logarithmic-and-exponential-functions/field-guide/index.html',
+  'p3/topics/logarithmic-and-exponential-functions/skill-check/index.html',
+  'p3/topics/logarithmic-and-exponential-functions/exam-training/index.html',
   'p3/topics/trigonometry/field-guide/index.html',
-  'p3/topics/trigonometry/practice/index.html',
-  'p3/topics/argand/index.html',
-  'p3/topics/argand/field-guide/index.html',
-  'p3/topics/argand/practice/index.html',
-  'p3/topics/calculus/index.html',
-  'p3/topics/calculus/field-guide/index.html',
-  'p3/topics/calculus/practice/index.html',
-  'p3/topics/integration/index.html',
+  'p3/topics/trigonometry/skill-check/index.html',
+  'p3/topics/trigonometry/exam-training/index.html',
+  'p3/topics/differentiation/field-guide/index.html',
+  'p3/topics/differentiation/skill-check/index.html',
+  'p3/topics/differentiation/exam-training/index.html',
   'p3/topics/integration/field-guide/index.html',
-  'p3/topics/integration/practice/index.html',
-  'p3/topics/vectors/index.html',
+  'p3/topics/integration/skill-check/index.html',
+  'p3/topics/integration/exam-training/index.html',
+  'p3/topics/numerical-solution-of-equations/field-guide/index.html',
+  'p3/topics/numerical-solution-of-equations/skill-check/index.html',
+  'p3/topics/numerical-solution-of-equations/exam-training/index.html',
   'p3/topics/vectors/field-guide/index.html',
-  'p3/topics/vectors/practice/index.html',
-  'p3/topics/iteration/index.html',
-  'p3/topics/iteration/field-guide/index.html',
-  'p3/topics/iteration/practice/index.html',
-  'p3/topics/differential-equations/index.html',
+  'p3/topics/vectors/skill-check/index.html',
+  'p3/topics/vectors/exam-training/index.html',
   'p3/topics/differential-equations/field-guide/index.html',
-  'p3/topics/differential-equations/practice/index.html',
-  'p3/exam-training/index.html',
-  'p3/regions/index.html',
-  'regions/index.html',
-  'topics/algebra/index.html',
-  'topics/algebra/field-guide/index.html',
-  'topics/algebra/practice/index.html',
-  'topics/logarithms/index.html',
-  'topics/logarithms/field-guide/index.html',
-  'topics/logarithms/practice/index.html',
-  'topics/trigonometry/index.html',
-  'topics/trigonometry/field-guide/index.html',
-  'topics/trigonometry/practice/index.html',
-  'topics/argand/index.html',
-  'topics/argand/field-guide/index.html',
-  'topics/argand/practice/index.html',
-  'topics/calculus/index.html',
-  'topics/calculus/field-guide/index.html',
-  'topics/calculus/practice/index.html',
-  'topics/integration/index.html',
-  'topics/integration/field-guide/index.html',
-  'topics/integration/practice/index.html',
-  'topics/vectors/index.html',
-  'topics/vectors/field-guide/index.html',
-  'topics/vectors/practice/index.html',
-  'topics/iteration/index.html',
-  'topics/iteration/field-guide/index.html',
-  'topics/iteration/practice/index.html',
-  'topics/differential-equations/index.html',
-  'topics/differential-equations/field-guide/index.html',
-  'topics/differential-equations/practice/index.html',
-  'exam-training/index.html',
+  'p3/topics/differential-equations/skill-check/index.html',
+  'p3/topics/differential-equations/exam-training/index.html',
+  'p3/topics/complex-numbers/field-guide/index.html',
+  'p3/topics/complex-numbers/skill-check/index.html',
+  'p3/topics/complex-numbers/exam-training/index.html',
 ];
 
 const manifestPath = path.join(siteRoot, 'static-pages.json');
@@ -92,11 +58,20 @@ const forbiddenVisibleStudentTerms = [
   'generated practice',
   'mapping',
   'Guardian',
+  'XP',
+  'world map',
+  'restoration ledger',
+  'forge',
   'admin',
   'compatibility route',
   'seed content',
   'needs review',
 ];
+
+function visibleTermPattern(term) {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(^|[^A-Za-z0-9])${escaped}($|[^A-Za-z0-9])`, 'i');
+}
 
 function collectFiles(directory, root = directory) {
   if (!existsSync(directory)) return [];
@@ -173,7 +148,7 @@ for (const page of requiredPages) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
   for (const term of forbiddenVisibleStudentTerms) {
-    if (text.toLowerCase().includes(term.toLowerCase())) {
+    if (visibleTermPattern(term).test(text)) {
       forbiddenVisibleHits.push(`${page}: ${term}`);
     }
   }
@@ -194,7 +169,6 @@ const internalStudentCopy = [
   'not yet a reviewed course contract',
   'mastery signal',
   'review-needed',
-  'support-only',
   'official progress evidence',
 ];
 
@@ -209,14 +183,14 @@ for (const page of requiredPages) {
 
 for (const course of ['p1', 'p3', 'm1', 's1']) {
   const page = `${course}/exam-training/index.html`;
-  if (!requiredPages.includes(page) || !existsSync(path.join(siteRoot, page))) {
-    console.error(`${page} is missing from generated Exam Training pages.`);
+  if (existsSync(path.join(siteRoot, page))) {
+    console.error(`${page} should not exist on the static P3 product branch.`);
     process.exit(1);
   }
 }
 
 const topicExamTrainingPages = requiredPages.filter((page) => (
-  /^(p1|p3|m1|s1)\/topics\/[^/]+\/exam-training\/index\.html$/.test(page)
+  /^p3\/topics\/[^/]+\/exam-training\/index\.html$/.test(page)
 ));
 if (!topicExamTrainingPages.length) {
   console.error('No generated topic Exam Training pages were declared.');
@@ -248,12 +222,6 @@ if (missingImageRefs.length) {
   process.exit(1);
 }
 
-const p3ExamHtml = readFileSync(path.join(siteRoot, 'p3/exam-training/index.html'), 'utf8');
-if (!p3ExamHtml.includes('exam-question-card') || !p3ExamHtml.includes('mark-scheme-details')) {
-  console.error('p3/exam-training/index.html is missing real question or mark-scheme image cards.');
-  process.exit(1);
-}
-
 const p3TopicExamPages = topicExamTrainingPages.filter((page) => page.startsWith('p3/'));
 if (!p3TopicExamPages.some((page) => {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
@@ -271,12 +239,40 @@ if (!examBankImageRefs.length) {
 const courseImageCounts = catalogImagePairCounts();
 for (const [course, counts] of Object.entries(courseImageCounts)) {
   const courseSlug = course.toLowerCase();
-  const html = readFileSync(path.join(siteRoot, `${courseSlug}/exam-training/index.html`), 'utf8');
-  const hasImageCards = html.includes('exam-question-card') && html.includes('mark-scheme-details');
+  if (courseSlug !== 'p3') continue;
+  const topicExamHtml = p3TopicExamPages.map((page) => readFileSync(path.join(siteRoot, page), 'utf8')).join('\n');
+  const hasImageCards = topicExamHtml.includes('exam-question-card') && topicExamHtml.includes('mark-scheme-details');
   if (counts.localPairs > 0 && !hasImageCards) {
-    console.error(`${courseSlug}/exam-training/index.html has ${counts.localPairs} local image pairs but no generated image cards.`);
+    console.error('P3 topic Exam Training pages have local image pairs but no generated image cards.');
     process.exit(1);
   }
+}
+
+const forbiddenRouteDirectories = [
+  'topics',
+  'regions',
+  'exam-training',
+  'p3/regions',
+  'p3/exam-training',
+  'p1/topics',
+  'm1/topics',
+  's1/topics',
+];
+for (const directory of forbiddenRouteDirectories) {
+  if (existsSync(path.join(siteRoot, directory))) {
+    console.error(`Forbidden legacy or demoted route directory exists in docs/: ${directory}`);
+    process.exit(1);
+  }
+}
+
+const forbiddenRouteFiles = collectFiles(path.join(siteRoot, 'p3/topics'))
+  .filter((file) => (
+    /\/practice\/index\.html$/.test(file)
+    || /^[^/]+\/index\.html$/.test(file)
+  ));
+if (forbiddenRouteFiles.length) {
+  console.error(`P3 topic routes must be only field-guide, skill-check, and exam-training:\n${forbiddenRouteFiles.join('\n')}`);
+  process.exit(1);
 }
 
 const forbiddenSourceFiles = collectFiles(siteRoot).filter((file) => (

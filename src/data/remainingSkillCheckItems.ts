@@ -77,7 +77,7 @@ function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
       status: 'teacher_reviewed',
       sourceSkillReviewed: true,
       markEventReviewed: false,
-      affectsMastery: false,
+      affectsProgression: false,
     },
   };
 }
@@ -88,7 +88,7 @@ function topicItems(topic: TopicSpec): SkillCheckItem[] {
 
 const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
   {
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     topicId: 'algebra_structure_first_bridge',
     skillId: 'p3_alg_structure_rearrangement',
     slug: 'alg-structure-first-bridge',
@@ -126,7 +126,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'algebra-forge',
+    regionId: 'algebra',
     topicId: 'algebra_discriminant_root_conditions',
     skillId: 'p3_alg_discriminant_root_conditions',
     slug: 'alg-discriminant-root-conditions',
@@ -164,7 +164,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     topicId: 'trig_reciprocal_functions',
     skillId: 'p3_trig_reciprocal_double_angle',
     slug: 'trig-reciprocal-functions',
@@ -204,7 +204,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     topicId: 'trig_pythagorean_identities',
     skillId: 'p3_trig_identity_selection',
     slug: 'trig-pythagorean-identities',
@@ -244,7 +244,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     topicId: 'trig_addition_formulae',
     skillId: 'p3_trig_identity_selection',
     slug: 'trig-addition-formulae',
@@ -284,7 +284,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     topicId: 'trig_double_angle_formulae',
     skillId: 'p3_trig_reciprocal_double_angle',
     slug: 'trig-double-angle-formulae',
@@ -322,7 +322,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'trig-observatory',
+    regionId: 'trigonometry',
     topicId: 'trig_r_form_transformations',
     skillId: 'p3_trig_r_form_compound_angles',
     slug: 'trig-r-form-transformations',
@@ -369,7 +369,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'complex-harbor',
+    regionId: 'complex-numbers',
     topicId: 'cartesian-conjugate',
     skillId: 'p3_complex_cartesian_conjugate',
     slug: 'complex-cartesian-conjugate',
@@ -411,7 +411,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'complex-harbor',
+    regionId: 'complex-numbers',
     topicId: 'modulus-argument',
     skillId: 'p3_complex_modulus_argument_form',
     slug: 'complex-modulus-argument',
@@ -451,7 +451,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'complex-harbor',
+    regionId: 'complex-numbers',
     topicId: 'locus',
     skillId: 'p3_complex_argand_loci_regions',
     slug: 'complex-locus',
@@ -489,7 +489,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'complex-harbor',
+    regionId: 'complex-numbers',
     topicId: 'roots',
     skillId: 'p3_complex_roots_powers',
     slug: 'complex-roots',
@@ -529,7 +529,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_exponential_logarithmic',
     skillId: 'p3_diff_implicit_log_exp',
     slug: 'diff-exp-log-derivatives',
@@ -567,7 +567,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_product_rule',
     skillId: 'p3_diff_chain_product_quotient',
     slug: 'diff-product-rule',
@@ -607,7 +607,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_quotient_rule',
     skillId: 'p3_diff_chain_product_quotient',
     slug: 'diff-quotient-rule',
@@ -645,7 +645,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'p3_diff_stationary_tangent_normal',
     skillId: 'p3_diff_stationary_tangent_normal',
     slug: 'diff-stationary-tangent-normal',
@@ -685,7 +685,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_trig_functions',
     skillId: 'p3_diff_chain_product_quotient',
     slug: 'diff-trig-functions',
@@ -723,7 +723,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_implicit',
     skillId: 'p3_diff_implicit_log_exp',
     slug: 'diff-implicit',
@@ -761,7 +761,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'calculus-cliffs',
+    regionId: 'differentiation',
     topicId: 'derivatives_parametric',
     skillId: 'p3_diff_parametric_gradients',
     slug: 'diff-parametric',
@@ -799,7 +799,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_exponential_logarithmic',
     skillId: 'p3_int_method_choice',
     slug: 'int-exp-log',
@@ -837,7 +837,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_basic_trig',
     skillId: 'p3_int_method_choice',
     slug: 'int-basic-trig',
@@ -875,7 +875,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_trig_identities',
     skillId: 'p3_int_method_choice',
     slug: 'int-trig-identities',
@@ -913,7 +913,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_partial_fractions',
     skillId: 'p3_int_partial_fractions',
     slug: 'int-partial-fractions',
@@ -951,7 +951,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_arctan_forms',
     skillId: 'p3_int_method_choice',
     slug: 'int-arctan-forms',
@@ -989,7 +989,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_substitution',
     skillId: 'p3_int_parts_substitution',
     slug: 'int-substitution',
@@ -1027,7 +1027,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_by_parts',
     skillId: 'p3_int_parts_substitution',
     slug: 'int-by-parts',
@@ -1065,7 +1065,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'integration-gardens',
+    regionId: 'integration',
     topicId: 'integrals_definite_area_bridge',
     skillId: 'p3_int_definite_improper_area',
     slug: 'int-definite-area-bridge',
@@ -1103,7 +1103,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_notation',
     skillId: 'p3_vec_3d_geometry_modelling',
     slug: 'vectors-notation',
@@ -1141,7 +1141,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_magnitude_unit_parallel',
     skillId: 'p3_vec_3d_geometry_modelling',
     slug: 'vectors-magnitude-unit-parallel',
@@ -1179,7 +1179,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_geometric_add_subtract',
     skillId: 'p3_vec_3d_geometry_modelling',
     slug: 'vectors-geometric-add-subtract',
@@ -1217,7 +1217,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_line_equation',
     skillId: 'p3_vec_line_equations_intersections',
     slug: 'vectors-line-equation',
@@ -1255,7 +1255,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_intersect_parallel_skew',
     skillId: 'p3_vec_line_equations_intersections',
     slug: 'vectors-intersect-parallel-skew',
@@ -1293,7 +1293,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_scalar_product',
     skillId: 'p3_vec_scalar_product_angles',
     slug: 'vectors-scalar-product',
@@ -1335,7 +1335,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_angle_between_lines',
     skillId: 'p3_vec_scalar_product_angles',
     slug: 'vectors-angle-between-lines',
@@ -1377,7 +1377,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'vector-workshop',
+    regionId: 'vectors',
     topicId: 'vectors_point_to_line_distance',
     skillId: 'p3_vec_3d_geometry_modelling',
     slug: 'vectors-point-line-distance',
@@ -1415,7 +1415,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'numerical-mines',
+    regionId: 'numerical-solution-of-equations',
     topicId: 'iteration_change_of_sign',
     skillId: 'p3_num_sign_change_graph_evidence',
     slug: 'iteration-change-sign',
@@ -1461,7 +1461,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'numerical-mines',
+    regionId: 'numerical-solution-of-equations',
     topicId: 'iteration_graph_root_proof',
     skillId: 'p3_num_sign_change_graph_evidence',
     slug: 'iteration-graph-root-proof',
@@ -1499,7 +1499,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'numerical-mines',
+    regionId: 'numerical-solution-of-equations',
     topicId: 'iteration_fixed_point_roots',
     skillId: 'p3_num_iteration_formula',
     slug: 'iteration-fixed-point-roots',
@@ -1542,7 +1542,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'numerical-mines',
+    regionId: 'numerical-solution-of-equations',
     topicId: 'iteration_convergence',
     skillId: 'p3_num_iteration_formula',
     slug: 'iteration-convergence',
@@ -1580,7 +1580,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'differential-shrine',
+    regionId: 'differential-equations',
     topicId: 'differential_first_order_model',
     skillId: 'p3_de_separation_setup',
     slug: 'de-first-order-model',
@@ -1618,7 +1618,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'differential-shrine',
+    regionId: 'differential-equations',
     topicId: 'differential_separable_variables',
     skillId: 'p3_de_separation_setup',
     slug: 'de-separable-variables',
@@ -1656,7 +1656,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'differential-shrine',
+    regionId: 'differential-equations',
     topicId: 'differential_particular_solutions',
     skillId: 'p3_de_initial_condition',
     slug: 'de-particular-solutions',
@@ -1696,7 +1696,7 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
     ],
   },
   {
-    regionId: 'differential-shrine',
+    regionId: 'differential-equations',
     topicId: 'differential_modeling',
     skillId: 'p3_de_forming_context_model',
     slug: 'de-modeling',

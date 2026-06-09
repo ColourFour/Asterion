@@ -1,5 +1,4 @@
 import { COURSES, P3_COURSE_ID } from '../data/courses';
-import { getSeedTopicsForCourse } from '../data/courseSeedContent';
 import { STUDY_TOPICS } from './topicStudy';
 
 export interface StaticStudyPageRoute {
@@ -7,72 +6,18 @@ export interface StaticStudyPageRoute {
   label: string;
 }
 
-function seedFieldGuideSubtopicSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/&/g, ' ')
-    .replace(/\band\b/g, ' ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-function seedFieldGuideSubtopicAliasPaths(courseSlug: string, topicSlug: string, topicId: string, sectionId: string): StaticStudyPageRoute[] {
-  if (courseSlug === 'p1' && topicId === 'p1-coordinate-geometry' && sectionId === 'p1-coordinate-geometry-intersections') {
-    return [{
-      path: `${courseSlug}/topics/${topicSlug}/field-guide/intersections/index.html`,
-      label: 'P1 Coordinate Geometry intersections Field Guide alias',
-    }];
-  }
-  return [];
-}
-
 export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: 'index.html', label: 'Courses' },
   ...COURSES.map((course) => ({
     path: `${course.slug}/index.html`,
-    label: `${course.shortName} course dashboard`,
+    label: `${course.shortName} course page`,
   })),
-  ...COURSES.flatMap((course) => {
-    const seedTopics = getSeedTopicsForCourse(course.id);
-    if (!seedTopics.length) return [];
-    return [
-      { path: `${course.slug}/topics/index.html`, label: `${course.shortName} topic index` },
-      ...seedTopics.flatMap((topic) => [
-        { path: `${course.slug}/topics/${topic.slug}/index.html`, label: `${course.shortName} ${topic.title} topic` },
-        { path: `${course.slug}/topics/${topic.slug}/field-guide/index.html`, label: `${course.shortName} ${topic.title} Field Guide` },
-        ...(course.id === 'p1' ? topic.fieldGuideSections.flatMap((section) => [
-          {
-            path: `${course.slug}/topics/${topic.slug}/field-guide/${seedFieldGuideSubtopicSlug(section.title)}/index.html`,
-            label: `${course.shortName} ${topic.title} ${section.title} Field Guide`,
-          },
-          ...seedFieldGuideSubtopicAliasPaths(course.slug, topic.slug, topic.id, section.id),
-        ]) : []),
-        { path: `${course.slug}/topics/${topic.slug}/skill-check/index.html`, label: `${course.shortName} ${topic.title} Skill Check` },
-        { path: `${course.slug}/topics/${topic.slug}/practice/index.html`, label: `${course.shortName} ${topic.title} Practice compatibility` },
-        { path: `${course.slug}/topics/${topic.slug}/exam-training/index.html`, label: `${course.shortName} ${topic.title} Exam Training` },
-      ]),
-      { path: `${course.slug}/exam-training/index.html`, label: `${course.shortName} Exam Training` },
-    ];
-  }),
   { path: `${P3_COURSE_ID}/topics/index.html`, label: 'P3 topic index' },
   ...STUDY_TOPICS.flatMap((topic) => [
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/index.html`, label: `P3 ${topic.name} hub` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Field Guide` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Skill Check` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/practice/index.html`, label: `P3 ${topic.name} Practice compatibility` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`, label: `P3 ${topic.name} Exam Training` },
   ]),
-  { path: `${P3_COURSE_ID}/exam-training/index.html`, label: 'P3 Exam Training' },
-  { path: `${P3_COURSE_ID}/regions/index.html`, label: 'P3 Regions' },
-  { path: 'regions/index.html', label: 'Regions' },
-  ...STUDY_TOPICS.flatMap((topic) => [
-    { path: `topics/${topic.slug}/index.html`, label: `${topic.name} hub` },
-    { path: `topics/${topic.slug}/field-guide/index.html`, label: `${topic.name} Field Guide` },
-    { path: `topics/${topic.slug}/skill-check/index.html`, label: `${topic.name} Skill Check` },
-    { path: `topics/${topic.slug}/practice/index.html`, label: `${topic.name} Practice compatibility` },
-    { path: `topics/${topic.slug}/exam-training/index.html`, label: `${topic.name} Exam Training` },
-  ]),
-  { path: 'exam-training/index.html', label: 'Exam Training' },
 ];
 
 export const REQUIRED_STATIC_STUDY_PAGE_PATHS = STATIC_STUDY_PAGE_ROUTES.map((route) => route.path);

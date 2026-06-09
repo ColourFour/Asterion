@@ -72,7 +72,7 @@ export function quickCheckComplexityForSnippet(snippet: TeachingSnippet): SkillC
 }
 
 export function guidedPracticeComplexityForItem(item: GeneratedPracticeItem): SkillCheckComplexity {
-  if (item.sequenceRole === 'guardian_prep') return 'challenge';
+  if (item.sequenceRole === 'challenge_prep') return 'challenge';
   if (item.sequenceRole === 'complete_step') return 'core';
   return 'foundation';
 }
