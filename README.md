@@ -26,6 +26,38 @@ npm run static:check
 
 There is no `npm run lint` script on this branch.
 
+## Maintainer Checklist
+
+Use this branch as a static GitHub Pages product branch.
+
+```bash
+npm install
+npm run build
+npm test
+npm run static:check
+```
+
+`npm run build` runs `npm run assets:sync`, TypeScript validation, and the static page generator. The generated GitHub Pages site comes from `docs/`; commit the regenerated `docs/` files with any source change that affects the site.
+
+GitHub Pages should be configured to serve this repository from `/docs` on the target branch. Do not add a separate GitHub Actions Pages build/deploy workflow on this branch.
+
+The large exam-bank image and JSON tree is intentionally ignored at `public/assets/exam-bank-data/`. Asset sync restores it from `asset-manifests/exam-bank-data.json`, which points at the versioned GitHub Release bundle and expected SHA256 values.
+
+If asset sync fails:
+
+```bash
+npm run assets:sync
+npm run assets:sync -- --force
+```
+
+If the network or GitHub release download fails, download the manifest bundle manually and rerun with:
+
+```bash
+ASTERION_EXAM_BANK_ASSET_BUNDLE=/path/to/asterion-exam-bank-data-v2026-06-08.tgz npm run assets:sync -- --force
+```
+
+If a checksum mismatch is reported, do not bypass it. Delete the bad bundle, confirm the manifest URL and SHA256, then retry.
+
 ## GitHub Pages Output
 
 `docs/` is the canonical GitHub Pages output and is committed intentionally.

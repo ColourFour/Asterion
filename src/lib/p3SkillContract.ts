@@ -1,4 +1,17 @@
 import type { RegionDefinition } from '../types';
+import type { P3SkillId } from '../data/p3SkillContract';
+export {
+  P3_OFFICIAL_TOPICS,
+  P3_SKILL_CONTRACT,
+  P3_SKILL_CONTRACT_COURSE,
+  P3_SKILL_CONTRACT_SOURCE,
+  P3_SKILL_IDS,
+  P3_SKILL_READINESS_STATUSES,
+  type P3OfficialTopic,
+  type P3SkillId,
+  type P3SkillReadiness,
+} from '../data/p3SkillContract';
+import { P3_SKILL_IDS } from '../data/p3SkillContract';
 
 export const P3_SKILL_MAP_SOURCE = 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json';
 
@@ -28,51 +41,6 @@ export const P3_TOPIC_ID_TO_REGION_NAME = {
 
 export type P3TopicId = keyof typeof P3_TOPIC_ID_TO_REGION_ID;
 export type P3RegionId = typeof P3_TOPIC_ID_TO_REGION_ID[P3TopicId];
-
-export const P3_SKILL_IDS = [
-  'p3_alg_structure_rearrangement',
-  'p3_alg_polynomial_remainder_factor',
-  'p3_alg_binomial_terms_coefficients',
-  'p3_alg_binomial_validity',
-  'p3_alg_partial_fraction_form',
-  'p3_alg_modulus_cases',
-  'p3_alg_discriminant_root_conditions',
-  'p3_log_convert_forms',
-  'p3_log_laws_equations',
-  'p3_log_exponential_equations',
-  'p3_log_domain_validation',
-  'p3_log_linearisation',
-  'p3_log_calculus_contexts',
-  'p3_trig_identity_selection',
-  'p3_trig_equation_interval',
-  'p3_trig_quadrant_solutions',
-  'p3_trig_r_form_compound_angles',
-  'p3_trig_reciprocal_double_angle',
-  'p3_diff_method_selection',
-  'p3_diff_chain_product_quotient',
-  'p3_diff_stationary_tangent_normal',
-  'p3_diff_parametric_gradients',
-  'p3_diff_implicit_log_exp',
-  'p3_int_method_choice',
-  'p3_int_parts_substitution',
-  'p3_int_partial_fractions',
-  'p3_int_definite_improper_area',
-  'p3_num_sign_change_graph_evidence',
-  'p3_num_iteration_formula',
-  'p3_num_accuracy_rounding',
-  'p3_vec_line_equations_intersections',
-  'p3_vec_scalar_product_angles',
-  'p3_vec_3d_geometry_modelling',
-  'p3_de_separation_setup',
-  'p3_de_initial_condition',
-  'p3_de_forming_context_model',
-  'p3_complex_cartesian_conjugate',
-  'p3_complex_modulus_argument_form',
-  'p3_complex_argand_loci_regions',
-  'p3_complex_roots_powers',
-] as const;
-
-export type P3SkillId = typeof P3_SKILL_IDS[number];
 
 export const P3_REGION_DEFINITIONS = [
   {

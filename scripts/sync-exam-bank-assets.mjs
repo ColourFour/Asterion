@@ -130,7 +130,19 @@ async function downloadOnce(url, destination) {
         reject(new Error(`Download failed with HTTP ${response.statusCode}: ${url}`));
         return;
       }
+      const totalBytes = Number.parseInt(response.headers['content-length'] ?? '', 10);
+      let downloadedBytes = 0;
+      let nextProgressPercent = 10;
       const stream = createWriteStream(destination);
+      response.on('data', (chunk) => {
+        downloadedBytes += chunk.length;
+        if (!Number.isFinite(totalBytes) || totalBytes <= 0) return;
+        const percent = Math.floor((downloadedBytes / totalBytes) * 100);
+        if (percent >= nextProgressPercent) {
+          console.info(`[exam-bank-assets] download progress ${Math.min(percent, 100)}% (${downloadedBytes}/${totalBytes} bytes)`);
+          nextProgressPercent += 10;
+        }
+      });
       response.pipe(stream);
       stream.on('finish', () => stream.close(resolve));
       stream.on('error', reject);
@@ -148,6 +160,9 @@ async function download(url, destination) {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
       await rm(destination, { force: true });
+      console.info(`[exam-bank-assets] downloading bundle attempt ${attempt}/${maxAttempts}`);
+      console.info(`[exam-bank-assets] source: ${url}`);
+      console.info(`[exam-bank-assets] destination: ${destination}`);
       await downloadOnce(url, destination);
       return;
     } catch (error) {
@@ -160,11 +175,19 @@ async function download(url, destination) {
   const releaseAsset = parseGitHubReleaseAssetUrl(url);
   if (releaseAsset) {
     console.warn('[exam-bank-assets] direct download failed; falling back to gh release download.');
+    console.warn('[exam-bank-assets] if this fails, install/authenticate GitHub CLI or set ASTERION_EXAM_BANK_ASSET_BUNDLE to a local bundle path.');
     await downloadGitHubReleaseAsset(releaseAsset, destination);
     return;
   }
 
-  throw lastError ?? new Error(`No supported download method succeeded for ${url}.`);
+  const message = lastError?.message ?? `No supported download method succeeded for ${url}.`;
+  throw new Error(
+    `[exam-bank-assets] build blocked: bundle download failed.\n` +
+    `[exam-bank-assets] source: ${url}\n` +
+    `[exam-bank-assets] destination: ${destination}\n` +
+    `[exam-bank-assets] error: ${message}\n` +
+    '[exam-bank-assets] retry: run npm run assets:sync again, or set ASTERION_EXAM_BANK_ASSET_BUNDLE to a local bundle path and run npm run assets:sync -- --force.'
+  );
 }
 
 function parseGitHubReleaseAssetUrl(source) {
@@ -203,6 +226,8 @@ async function prepareBundle(source, destination) {
     await download(source, destination);
     return;
   }
+  console.info(`[exam-bank-assets] copying local bundle: ${path.resolve(source)}`);
+  console.info(`[exam-bank-assets] destination: ${destination}`);
   await cp(path.resolve(source), destination);
 }
 
@@ -220,35 +245,57 @@ function run(command, args, options = {}) {
 async function restoreFromBundle(manifest, targetPath, source, expectedBundleSha) {
   if (!source) {
     throw new Error(
-      `${manifest.unpackPath} is missing and no asset bundle source is configured. ` +
-      'Set ASTERION_EXAM_BANK_ASSET_BUNDLE or fill downloadUrl in asset-manifests/exam-bank-data.json.'
+      `[exam-bank-assets] build blocked: ${manifest.unpackPath} is missing and no asset bundle source is configured.\n` +
+      '[exam-bank-assets] retry: set ASTERION_EXAM_BANK_ASSET_BUNDLE to a local bundle path, or fill downloadUrl in asset-manifests/exam-bank-data.json, then run npm run assets:sync.'
     );
   }
 
   const tempRoot = await fsMkdtemp(path.join(tmpdir(), 'asterion-exam-bank-assets-'));
   const bundlePath = path.join(tempRoot, manifest.bundleName || 'exam-bank-data.tgz');
   const extractRoot = path.join(tempRoot, 'extract');
-  await mkdir(extractRoot, { recursive: true });
+  try {
+    await mkdir(extractRoot, { recursive: true });
 
-  await prepareBundle(source, bundlePath);
-  const actualBundleSha = await fileSha256(bundlePath);
-  if (expectedBundleSha && actualBundleSha !== expectedBundleSha) {
-    throw new Error(`Bundle SHA256 mismatch: expected ${expectedBundleSha}, got ${actualBundleSha}.`);
+    console.info('[exam-bank-assets] asset directory is missing or invalid; restoring from bundle.');
+    console.info(`[exam-bank-assets] unpack path: ${manifest.unpackPath}`);
+    console.info(`[exam-bank-assets] bundle: ${manifest.bundleName || 'exam-bank-data.tgz'}`);
+    console.info(`[exam-bank-assets] expected bundle SHA256: ${expectedBundleSha || '(not configured)'}`);
+    console.info(`[exam-bank-assets] expected tree SHA256: ${manifest.treeSha256}`);
+
+    await prepareBundle(source, bundlePath);
+    const actualBundleSha = await fileSha256(bundlePath);
+    console.info(`[exam-bank-assets] actual bundle SHA256: ${actualBundleSha}`);
+    if (expectedBundleSha && actualBundleSha !== expectedBundleSha) {
+      throw new Error(
+        `[exam-bank-assets] build blocked: bundle SHA256 mismatch.\n` +
+        `[exam-bank-assets] expected: ${expectedBundleSha}\n` +
+        `[exam-bank-assets] actual:   ${actualBundleSha}\n` +
+        '[exam-bank-assets] retry: remove the bad bundle, confirm the manifest downloadUrl, then run npm run assets:sync again.'
+      );
+    }
+
+    console.info(`[exam-bank-assets] extracting bundle to ${extractRoot}`);
+    await run('tar', ['-xzf', bundlePath, '-C', extractRoot]);
+
+    const bundledRoot = path.join(extractRoot, path.basename(manifest.unpackPath));
+    const extractedAssetRoot = existsSync(bundledRoot) ? bundledRoot : extractRoot;
+    const parent = path.dirname(targetPath);
+    await mkdir(parent, { recursive: true });
+    await rm(targetPath, { recursive: true, force: true });
+    await cp(extractedAssetRoot, targetPath, { recursive: true });
+
+    const verification = await verifyTarget(manifest, targetPath);
+    if (!verification.ok) {
+      throw new Error(
+        `[exam-bank-assets] build blocked: restored exam-bank assets failed verification.\n` +
+        `[exam-bank-assets] reason: ${verification.reason}\n` +
+        '[exam-bank-assets] retry: run npm run assets:sync -- --force, or set ASTERION_EXAM_BANK_ASSET_BUNDLE to a known-good bundle.'
+      );
+    }
+    return { ...verification, bundleSha256: actualBundleSha };
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
   }
-
-  await run('tar', ['-xzf', bundlePath, '-C', extractRoot]);
-
-  const bundledRoot = path.join(extractRoot, path.basename(manifest.unpackPath));
-  const extractedAssetRoot = existsSync(bundledRoot) ? bundledRoot : extractRoot;
-  const parent = path.dirname(targetPath);
-  await mkdir(parent, { recursive: true });
-  await rm(targetPath, { recursive: true, force: true });
-  await cp(extractedAssetRoot, targetPath, { recursive: true });
-
-  const verification = await verifyTarget(manifest, targetPath);
-  if (!verification.ok) throw new Error(`Restored exam-bank assets failed verification: ${verification.reason}`);
-  await rm(tempRoot, { recursive: true, force: true });
-  return { ...verification, bundleSha256: actualBundleSha };
 }
 
 async function fsMkdtemp(prefix) {
@@ -275,13 +322,16 @@ async function main() {
   }
 
   if (options.verifyOnly) {
-    throw new Error(`[exam-bank-assets] verification failed: ${verification.reason}`);
+    throw new Error(
+      `[exam-bank-assets] verification failed: ${verification.reason}\n` +
+      '[exam-bank-assets] retry: run npm run assets:sync without --verify-only to restore missing assets.'
+    );
   }
 
   if (existsSync(targetPath) && !options.force) {
     throw new Error(
-      `[exam-bank-assets] verification failed: ${verification.reason} ` +
-      'Use --force with a configured bundle source to replace the directory.'
+      `[exam-bank-assets] build blocked: ${verification.reason}\n` +
+      '[exam-bank-assets] retry: run npm run assets:sync -- --force to replace the invalid asset directory.'
     );
   }
 
