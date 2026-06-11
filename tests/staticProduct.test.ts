@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { COURSES, P3_COURSE_ID, coursePath, getCourseBySlug } from '../src/data/courses';
 import { P3_REGION_DEFINITIONS } from '../src/lib/p3SkillContract';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS } from '../src/lib/staticStudyRoutes';
@@ -51,6 +51,7 @@ describe('static P3 product contract', () => {
 
   it('declares only canonical P3 topic task routes', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/need-to-know/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/review/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/content-qa/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p1/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('m1/content-qa/index.html');
@@ -77,5 +78,13 @@ describe('static P3 product contract', () => {
     expect(generatorSource).not.toContain('data-save-skill-check');
     expect(generatorSource).not.toContain('I tried this');
     expect(staticClientSource).not.toContain('data-save-skill-check');
+
+    for (const pagePath of REQUIRED_STATIC_STUDY_PAGE_PATHS.filter((pagePath) => pagePath.includes('/skill-check/'))) {
+      const generatedPath = `docs/${pagePath}`;
+      if (!existsSync(generatedPath)) continue;
+      const generatedSource = readFileSync(generatedPath, 'utf8');
+      expect(generatedSource, generatedPath).not.toContain('data-save-skill-check');
+      expect(generatedSource, generatedPath).not.toContain('I tried this');
+    }
   });
 });

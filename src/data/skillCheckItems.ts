@@ -3,6 +3,7 @@ import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
 import type { SkillCheckAnswerSpec, SkillCheckAnswerType } from '../skill-checks/answerChecker';
 import { SUPPORTED_SKILL_CHECK_ANSWER_TYPES } from '../skill-checks/answerChecker';
+import { isSkillCheckMistakeTag } from '../skill-checks/mistakeRecovery';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
 
 export type SkillCheckInputType =
@@ -94,6 +95,15 @@ export interface SkillCheckCheckabilitySummary {
   reason?: string;
 }
 
+export interface SkillCheckTopicMigrationSummary {
+  regionId: string;
+  totalChecks: number;
+  checkableChecks: number;
+  uncheckableChecks: number;
+  unsupportedAnswerReasons: string[];
+  answerTypes: SkillCheckAnswerType[];
+}
+
 const SKILL_MAP_SOURCE = 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json' as const;
 
 function sourceRefs(refs: Omit<SkillCheckSourceRefs, 'skillMapSource'>): SkillCheckSourceRefs {
@@ -164,7 +174,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     acceptedAnswers: ['-1/2, 1'],
     orderInsensitive: true,
     repairStep: 'Split the equation into $x+2=3x$ and $x+2=-3x$, then list both roots.',
-    mistakeTags: ['missed-case', 'modulus-equation'],
+    mistakeTags: ['method choice', 'incomplete reasoning', 'sign error'],
     expectedOptionIds: ['minus-half', 'one'],
     options: [
       { id: 'minus-half', label: '$x=-\\frac12$' },
@@ -523,7 +533,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'numeric',
     acceptedAnswers: ['4'],
     repairStep: 'Use the linear binomial term $nu$ with $n=-2$ and $u=-2x$.',
-    mistakeTags: ['binomial-linear-term', 'coefficient'],
+    mistakeTags: ['coefficient error', 'method choice'],
     expectedAnswer: ['4', '$4'],
     complexity: 'foundation',
     hints: {
@@ -557,7 +567,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'interval',
     acceptedAnswers: ['-1/3 < x < 1/3'],
     repairStep: 'Start from $|3x|<1$, then divide the whole inequality by $3$.',
-    mistakeTags: ['binomial-validity', 'interval-endpoint'],
+    mistakeTags: ['domain/range issue', 'notation'],
     expectedOptionIds: ['thirds'],
     options: [
       { id: 'thirds', label: '$-\\frac13<x<\\frac13$' },
@@ -624,7 +634,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'expression-text',
     acceptedAnswers: ['2^5=32'],
     repairStep: 'Use $\\log_a b=c \\iff a^c=b$ and keep the base as $2$.',
-    mistakeTags: ['log-form-conversion'],
+    mistakeTags: ['notation', 'method choice'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$2^5=32$' },
@@ -664,7 +674,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'coordinate',
     acceptedAnswers: ['(8,3)'],
     repairStep: 'Swap the coordinates of the point on the inverse graph.',
-    mistakeTags: ['inverse-graph', 'coordinate-swap'],
+    mistakeTags: ['domain/range issue', 'notation'],
     fields: [
       { id: 'x', label: 'x-coordinate', expectedAnswer: '8', displayPrefix: '$x=$' },
       { id: 'y', label: 'y-coordinate', expectedAnswer: '3', displayPrefix: '$y=$' },
@@ -694,6 +704,16 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Select every true statement for $y=\\log_3x$.',
     inputType: 'checkbox',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: [
+      'domain x>0, range all real y',
+      'domain positive, range real',
+      'x>0, all real y',
+    ],
+    orderInsensitive: true,
+    repairStep: 'Use the inverse of $y=3^x$: exponential outputs are positive, while exponential inputs can be any real number.',
+    mistakeTags: ['domain/range issue', 'method choice', 'notation'],
     expectedOptionIds: ['domain-positive', 'range-real'],
     options: [
       { id: 'domain-positive', label: 'The domain is $x>0$.' },
@@ -726,6 +746,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Select every form equivalent to $\\ln x+\\ln5$.',
     inputType: 'checkbox',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['ln(5x), ln(x*5)', 'ln5x, ln(x*5)', 'ln(5x), ln(x times 5)'],
+    orderInsensitive: true,
+    repairStep: 'Use the product law: a sum of logarithms becomes one logarithm of a product.',
+    mistakeTags: ['wrong identity', 'notation', 'method choice'],
     expectedOptionIds: ['ln-5x', 'ln-x5'],
     options: [
       { id: 'ln-5x', label: '$\\ln(5x)$' },
@@ -761,6 +787,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Select every valid step for writing $2\\ln x-\\ln(x+1)$ as a single logarithm.',
     inputType: 'checkbox',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['2lnx=ln(x^2), ln(x^2)-ln(x+1)=ln(x^2/(x+1))'],
+    orderInsensitive: true,
+    repairStep: 'Use the power law first, then use the quotient law for the subtraction.',
+    mistakeTags: ['wrong identity', 'method choice', 'notation'],
     expectedOptionIds: ['power-law', 'quotient-law'],
     options: [
       { id: 'power-law', label: '$2\\ln x=\\ln(x^2)$' },
@@ -793,6 +825,16 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Why is $\\ln(x+3)=\\ln x+\\ln3$ invalid?',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'exact-text',
+    acceptedAnswers: [
+      'there is no log law that splits a sum inside one logarithm',
+      'no log law splits a sum inside one logarithm',
+      'log laws split products not sums',
+      'the product law is for multiplication not addition',
+    ],
+    repairStep: 'Compare $x+3$ with $3x$: logarithm laws combine products and quotients, not sums inside a logarithm.',
+    mistakeTags: ['wrong identity', 'method choice'],
     expectedOptionIds: ['sum-not-product'],
     options: [
       { id: 'sum-not-product', label: 'There is no log law that splits a sum inside one logarithm.' },
@@ -828,6 +870,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $e^{2x}=7$ exactly.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['1/2ln7', '(1/2)ln7', 'ln7/2', '\\frac12\\ln7', '\\frac{1}{2}\\ln7', '\\frac{\\ln7}{2}'],
+    repairStep: 'Take natural logs to get $2x=\\ln7$, then divide by $2$.',
+    mistakeTags: ['coefficient error', 'method choice', 'notation'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$x=\\frac12\\ln7$' },
@@ -863,6 +910,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $5e^{3x}=20$ exactly.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['1/3ln4', '(1/3)ln4', 'ln4/3', '\\frac13\\ln4', '\\frac{1}{3}\\ln4', '\\frac{\\ln4}{3}'],
+    repairStep: 'Divide by $5$ before taking natural logs, then divide the exponent equation by $3$.',
+    mistakeTags: ['coefficient error', 'method choice', 'notation'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$x=\\frac13\\ln4$' },
@@ -895,6 +947,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Order the moves to solve $2e^{x+1}=9$ exactly.',
     inputType: 'ordered_cards',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['divide by 2, take natural logs, subtract 1', 'divide-two, take-ln, subtract-one'],
+    orderInsensitive: false,
+    repairStep: 'First isolate $e^{x+1}$, then take natural logs, then subtract $1$.',
+    mistakeTags: ['method choice', 'incomplete reasoning'],
     expectedOrder: ['divide-two', 'take-ln', 'subtract-one'],
     cards: [
       { id: 'take-ln', label: 'Take natural logs: $x+1=\\ln\\left(\\frac92\\right)$.' },
@@ -926,6 +984,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'What condition must $x$ satisfy before working with $\\ln(x-2)$?',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['x>2'],
+    repairStep: 'Set the logarithm input positive: $x-2>0$.',
+    mistakeTags: ['domain/range issue', 'sign error', 'notation'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$x>2$' },
@@ -961,6 +1024,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $\\ln(x-1)=\\ln5$, checking the domain.',
     inputType: 'numeric',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'numeric',
+    acceptedAnswers: ['6'],
+    repairStep: 'Equal natural logarithms have equal positive inputs, so solve $x-1=5$ and check $x>1$.',
+    mistakeTags: ['domain/range issue', 'method choice'],
     expectedAnswer: '6',
     displayPrefix: '$x=$',
     complexity: 'core',
@@ -988,6 +1056,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Order the safe solving moves for $\\ln(x-2)+\\ln(x+1)=\\ln10$.',
     inputType: 'ordered_cards',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['domain, combine, solve, reject'],
+    orderInsensitive: false,
+    repairStep: 'State the original domain first, then combine logs, solve, and reject invalid candidates.',
+    mistakeTags: ['domain/range issue', 'method choice', 'incomplete reasoning'],
     expectedOrder: ['domain', 'combine', 'solve', 'reject'],
     cards: [
       { id: 'solve', label: 'Solve $(x-2)(x+1)=10$ to get candidate roots.' },
@@ -1020,6 +1094,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $3^x>27$.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['x>3'],
+    repairStep: 'Rewrite $27$ as $3^3$ and compare exponents because base $3$ is increasing.',
+    mistakeTags: ['method choice', 'notation'],
     expectedOptionIds: ['x-greater-3'],
     options: [
       { id: 'x-greater-3', label: '$x>3$' },
@@ -1055,6 +1134,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $\\left(\\frac12\\right)^x\\le\\left(\\frac12\\right)^3$.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['x>=3', 'x\\ge3', 'x\\geq3'],
+    repairStep: 'Because $0<\\frac12<1$, the exponential function is decreasing, so the inequality reverses when comparing exponents.',
+    mistakeTags: ['domain/range issue', 'method choice', 'notation'],
     expectedOptionIds: ['x-greater-equal-3'],
     options: [
       { id: 'x-greater-equal-3', label: '$x\\ge3$' },
@@ -1087,6 +1171,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Solve $3e^{2x}<12$ exactly.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['x<1/2ln4', 'x<(1/2)ln4', 'x<ln4/2', 'x<\\frac12\\ln4', 'x<\\frac{1}{2}\\ln4', 'x<\\frac{\\ln4}{2}'],
+    repairStep: 'Divide by $3$, take natural logs, and keep the inequality direction because $e^x$ is increasing.',
+    mistakeTags: ['coefficient error', 'method choice', 'notation'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$x<\\frac12\\ln4$' },
@@ -1119,6 +1208,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'For $y=Ae^{kx}$, order the steps that produce the linear form for plotting $\\ln y$ against $x$.',
     inputType: 'ordered_cards',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['take logs, split product, simplify exponential, read line', 'take-logs, split-product, simplify-exponential, read-line'],
+    orderInsensitive: false,
+    repairStep: 'Take natural logs of the whole model, split the product, simplify $\\ln(e^{kx})$, then read the straight-line form.',
+    mistakeTags: ['method choice', 'incomplete reasoning', 'notation'],
     expectedOrder: ['take-logs', 'split-product', 'simplify-exponential', 'read-line'],
     cards: [
       { id: 'take-logs', label: 'Take logs: $\\ln y=\\ln(Ae^{kx})$' },
@@ -1151,6 +1246,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'If $\\ln y=2+3x$, give the gradient and intercept on a graph of $\\ln y$ against $x$.',
     inputType: 'two_value',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'coordinate',
+    acceptedAnswers: ['(3,2)'],
+    repairStep: 'Match $\\ln y=2+3x$ to $Y=c+mX$: gradient first, intercept second.',
+    mistakeTags: ['coefficient error', 'notation'],
     fields: [
       { id: 'gradient', label: 'gradient', expectedAnswer: '3', displayPrefix: 'gradient =' },
       { id: 'intercept', label: 'intercept', expectedAnswer: '2', displayPrefix: 'intercept =' },
@@ -1184,6 +1284,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Order the moves to linearise $y=4e^{2x}$ by taking natural logs.',
     inputType: 'ordered_cards',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['take logs, split product, simplify exponential, read line', 'take-logs, split-product, simplify-exponential, read-line'],
+    orderInsensitive: false,
+    repairStep: 'Take logs of both sides, split $\\ln(4e^{2x})$, simplify $\\ln(e^{2x})$, then read the linear form.',
+    mistakeTags: ['method choice', 'incomplete reasoning', 'notation'],
     expectedOrder: ['take-logs', 'split-product', 'simplify-exponential', 'read-line'],
     cards: [
       { id: 'take-logs', label: 'Take logs: $\\ln y=\\ln(4e^{2x})$.' },
@@ -1308,6 +1414,31 @@ export function skillCheckCheckabilityReport(items: SkillCheckItem[] = AUTHORED_
   return items.map(skillCheckCheckabilityForItem);
 }
 
+export function skillCheckTopicMigrationSummary(
+  regionId: string,
+  items: SkillCheckItem[] = AUTHORED_SKILL_CHECK_ITEMS,
+): SkillCheckTopicMigrationSummary {
+  const topicItems = items.filter((item) => item.regionId === regionId);
+  const checkability = topicItems.map(skillCheckCheckabilityForItem);
+  return {
+    regionId,
+    totalChecks: topicItems.length,
+    checkableChecks: checkability.filter((item) => item.status === 'deterministically-checkable').length,
+    uncheckableChecks: checkability.filter((item) => item.status !== 'deterministically-checkable').length,
+    unsupportedAnswerReasons: Array.from(new Set(
+      checkability
+        .filter((item) => item.status === 'unsupported-answer-form')
+        .map((item) => item.reason)
+        .filter((reason): reason is string => Boolean(reason)),
+    )),
+    answerTypes: Array.from(new Set(
+      checkability
+        .map((item) => item.answerType)
+        .filter((answerType): answerType is SkillCheckAnswerType => Boolean(answerType)),
+    )).sort(),
+  };
+}
+
 export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   const errors: string[] = [];
   if (!item.itemId.trim()) errors.push('missing itemId');
@@ -1343,6 +1474,9 @@ export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
     if (item.checkable === false && !item.unsupportedAnswerReason?.trim()) {
       errors.push('uncheckable item missing unsupportedAnswerReason');
     }
+  }
+  for (const tag of item.mistakeTags ?? []) {
+    if (!isSkillCheckMistakeTag(tag)) errors.push(`unsupported mistake tag: ${tag}`);
   }
   if (!item.hints.nudge.trim()) errors.push('missing nudge');
   if (!item.workedRoute.length) errors.push('missing workedRoute');

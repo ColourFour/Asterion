@@ -307,7 +307,7 @@
             <p class="eyebrow">Skill Check</p>
             <h4>Select every solution of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi>x</mi><mo>+</mo><mn>2</mn><mi mathvariant="normal">∣</mi><mo>=</mo><mi mathvariant="normal">∣</mi><mn>3</mn><mi>x</mi><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">|x+2|=|3x|</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣3</span><span class="mord mathnormal">x</span><span class="mord">∣</span></span></span></span></span>.</h4>
 
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Modulus Graphs and Equations" data-skill-id="p3_alg_modulus_cases" data-check-id="sc-alg-modulus-core-001" data-answer-type="multi-value" data-accepted-answers="[&quot;-1/2, 1&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;missed-case&quot;,&quot;modulus-equation&quot;]">
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Modulus Graphs and Equations" data-skill-id="p3_alg_modulus_cases" data-check-id="sc-alg-modulus-core-001" data-answer-type="multi-value" data-accepted-answers="[&quot;-1/2, 1&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;sign error&quot;]">
       <label class="single-answer-field">
         Answer
         <input name="submittedAnswer" type="text" autocomplete="off" required />
@@ -318,6 +318,63 @@
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>Equal moduli can mean equal or opposite inside expressions.</p>
         <p>Use <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mo>=</mo><mn>3</mn><mi>x</mi></mrow><annotation encoding="application/x-tex">x+2=3x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span><span class="mord mathnormal">x</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mo>=</mo><mo>−</mo><mn>3</mn><mi>x</mi></mrow><annotation encoding="application/x-tex">x+2=-3x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">3</span><span class="mord mathnormal">x</span></span></span></span></span>.</p>
@@ -1159,7 +1216,7 @@
             <p class="eyebrow">Skill Check</p>
             <h4>Find the coefficient of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span></span> in the expansion of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mn>2</mn><mi>x</mi><msup><mo stretchy="false">)</mo><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">(1-2x)^{-2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></span>.</h4>
 
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_terms_coefficients" data-check-id="sc-alg-binomial-foundation-001" data-answer-type="numeric" data-accepted-answers="[&quot;4&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;binomial-linear-term&quot;,&quot;coefficient&quot;]">
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_terms_coefficients" data-check-id="sc-alg-binomial-foundation-001" data-answer-type="numeric" data-accepted-answers="[&quot;4&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]">
       <label class="single-answer-field">
         Answer
         <input name="submittedAnswer" type="text" autocomplete="off" required />
@@ -1170,6 +1227,63 @@
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>Use the generalized binomial linear term <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">nu</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span></span></span></span></span>.</p>
         <p>Here <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n=-2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">2</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mo>−</mo><mn>2</mn><mi>x</mi></mrow><annotation encoding="application/x-tex">u=-2x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">2</span><span class="mord mathnormal">x</span></span></span></span></span>.</p>
@@ -1194,7 +1308,7 @@
             <p class="eyebrow">Skill Check</p>
             <h4>State the interval of validity for expanding <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mn>3</mn><mi>x</mi><msup><mo stretchy="false">)</mo><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">(1+3x)^{-2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">3</span><span class="mord mathnormal">x</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></span>.</h4>
 
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_validity" data-check-id="sc-alg-binomial-core-001" data-answer-type="interval" data-accepted-answers="[&quot;-1/3 &lt; x &lt; 1/3&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;binomial-validity&quot;,&quot;interval-endpoint&quot;]">
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_validity" data-check-id="sc-alg-binomial-core-001" data-answer-type="interval" data-accepted-answers="[&quot;-1/3 &lt; x &lt; 1/3&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;domain/range issue&quot;,&quot;notation&quot;]">
       <label class="single-answer-field">
         Answer
         <input name="submittedAnswer" type="text" autocomplete="off" required />
@@ -1205,6 +1319,63 @@
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>The validity condition is on the variable part inside the bracket.</p>
         <p>For <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>u</mi><msup><mo stretchy="false">)</mo><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">(1+u)^n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">u</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span></span></span></span></span>, use <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi>u</mi><mi mathvariant="normal">∣</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|u|&lt;1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathnormal">u</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>.</p>

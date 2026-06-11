@@ -4,10 +4,12 @@ import {
   skillCheckAnswerSpecForItem,
   skillCheckCheckabilityForItem,
   skillCheckCheckabilityReport,
+  skillCheckTopicMigrationSummary,
   validateSkillCheckItemContract,
   type SkillCheckItem,
 } from '../src/data/skillCheckItems';
 import { checkSkillCheckAnswer } from '../src/skill-checks/answerChecker';
+import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const itemById = new Map(AUTHORED_SKILL_CHECK_ITEMS.map((item) => [item.itemId, item]));
 
@@ -44,6 +46,27 @@ describe('P3 Skill Check machine-checkable data', () => {
     };
 
     expect(validateSkillCheckItemContract(broken)).toContain('checkable item missing acceptedAnswers');
+  });
+
+  it('requires controlled mistake tags on migrated items', () => {
+    const broken: SkillCheckItem = {
+      ...requireItem('sc-alg-binomial-foundation-001'),
+      mistakeTags: ['coefficient error', 'made-up tag'],
+    };
+
+    expect(validateSkillCheckItemContract(broken)).toContain('unsupported mistake tag: made-up tag');
+    expect(SKILL_CHECK_MISTAKE_TAGS).toEqual([
+      'algebra slip',
+      'wrong identity',
+      'domain/range issue',
+      'notation',
+      'calculator',
+      'method choice',
+      'incomplete reasoning',
+      'sign error',
+      'coefficient error',
+      'forgot constant',
+    ]);
   });
 
   it('requires an explicit reason on items marked uncheckable', () => {
@@ -93,5 +116,60 @@ describe('P3 Skill Check machine-checkable data', () => {
     expectAccepted('sc-log-graph-core-001', '(8, 3)');
     expectAccepted('sc-alg-binomial-core-001', '(-1/3, 1/3)');
     expectAccepted('sc-complex-cartesian-conjugate-foundation-001', '3 + 4i');
+  });
+
+  it('reports Complex Numbers as the first complete topic migration batch', () => {
+    const summary = skillCheckTopicMigrationSummary('complex-numbers');
+
+    expect(summary).toEqual({
+      regionId: 'complex-numbers',
+      totalChecks: 12,
+      checkableChecks: 12,
+      uncheckableChecks: 0,
+      unsupportedAnswerReasons: [],
+      answerTypes: ['complex-number', 'exact-text', 'expression-text', 'multi-value', 'numeric'],
+    });
+  });
+
+  it('passes representative migrated Complex Numbers checks through the answer checker', () => {
+    expectAccepted('sc-complex-cartesian-conjugate-core-001', '5');
+    expectAccepted('sc-complex-cartesian-conjugate-challenge-001', '3.0');
+    expectAccepted('sc-complex-modulus-argument-foundation-001', '5');
+    expectAccepted('sc-complex-modulus-argument-core-001', '3pi/4');
+    expectAccepted('sc-complex-modulus-argument-challenge-001', 'sqrt3+i');
+    expectAccepted('sc-complex-locus-foundation-001', 'circle with centre 2+0i and radius 3');
+    expectAccepted('sc-complex-locus-core-001', 'x=-1');
+    expectAccepted('sc-complex-locus-challenge-001', 'half-line from 1+0i at angle pi/4 excluding 1+0i');
+    expectAccepted('sc-complex-roots-foundation-001', '3');
+    expectAccepted('sc-complex-roots-core-001', '2pi/3');
+    expectAccepted('sc-complex-roots-challenge-001', '-2i, 2i');
+  });
+
+  it('reports Logarithmic and Exponential Functions as the second complete topic migration batch', () => {
+    const summary = skillCheckTopicMigrationSummary('logarithmic-and-exponential-functions');
+
+    expect(summary).toEqual({
+      regionId: 'logarithmic-and-exponential-functions',
+      totalChecks: 18,
+      checkableChecks: 18,
+      uncheckableChecks: 0,
+      unsupportedAnswerReasons: [],
+      answerTypes: ['coordinate', 'exact-text', 'expression-text', 'multi-value', 'numeric'],
+    });
+  });
+
+  it('passes representative migrated Logarithmic and Exponential Functions checks through the answer checker', () => {
+    expectAccepted('sc-log-graph-challenge-001', 'range all real y, domain x>0');
+    expectAccepted('sc-log-laws-foundation-001', 'ln(x*5), ln(5x)');
+    expectAccepted('sc-log-laws-core-001', 'ln(x^2)-ln(x+1)=ln(x^2/(x+1)), 2lnx=ln(x^2)');
+    expectAccepted('sc-log-laws-challenge-001', 'log laws split products not sums');
+    expectAccepted('sc-log-natural-core-001', 'ln4/3');
+    expectAccepted('sc-log-natural-challenge-001', 'divide by 2, take natural logs, subtract 1');
+    expectAccepted('sc-log-domain-foundation-001', 'x>2');
+    expectAccepted('sc-log-domain-core-001', '6');
+    expectAccepted('sc-log-domain-challenge-001', 'domain, combine, solve, reject');
+    expectAccepted('sc-log-exponential-core-001', 'x>=3');
+    expectAccepted('sc-log-exponential-challenge-001', 'x<ln4/2');
+    expectAccepted('sc-log-linearisation-core-001', '(3, 2)');
   });
 });

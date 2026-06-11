@@ -30,6 +30,10 @@
       "label": "P3 Need to Know checklist"
     },
     {
+      "path": "p3/review/index.html",
+      "label": "P3 mistake review"
+    },
+    {
       "path": "p3/content-qa/index.html",
       "label": "P3 Content QA table"
     },

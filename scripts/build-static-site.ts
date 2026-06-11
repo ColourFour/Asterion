@@ -11,6 +11,7 @@ import {
   skillCheckAnswerSpecForItem,
   skillCheckCheckabilityReport,
   skillCheckContractForItem,
+  skillCheckTopicMigrationSummary,
   type SkillCheckItem,
 } from '../src/data/skillCheckItems';
 import { buildSkillChecklistTopicGroups, totalSkillChecklistItems, type SkillChecklistTopicGroup } from '../src/lib/skillChecklist';
@@ -23,6 +24,7 @@ import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
 import type { NormalizedQuestion, RegionDefinition } from '../src/types';
+import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
@@ -313,6 +315,10 @@ function p3NeedToKnowPagePath(): string {
   return `${P3_COURSE_ID}/need-to-know/index.html`;
 }
 
+function p3ReviewPagePath(): string {
+  return `${P3_COURSE_ID}/review/index.html`;
+}
+
 function p3ContentQaPagePath(): string {
   return `${P3_COURSE_ID}/content-qa/index.html`;
 }
@@ -429,6 +435,30 @@ function skillCheckabilityText(summary: P3SkillCheckabilitySummary): string {
   if (summary.unsupported) parts.push(`${summary.unsupported} unsupported`);
   if (summary.answerTypes.length) parts.push(`types: ${summary.answerTypes.sort().join(', ')}`);
   return parts.join('; ');
+}
+
+function renderTopicSkillCheckMigrationSnapshot(): string {
+  const rows = STUDY_TOPICS.map((topic) => ({
+    topic,
+    summary: skillCheckTopicMigrationSummary(topic.regionId),
+  }));
+  return `
+    <section class="summary-card contract-qa-summary">
+      <h2>Skill Check migration by topic</h2>
+      <p>Counts show deterministic Phase 3 Skill Check answer-data migration only. They do not imply full P3 migration.</p>
+      <ul class="plain-list">
+        ${rows.map(({ topic, summary }) => `
+          <li>
+            <strong>${escapeHtml(topic.name)}:</strong>
+            ${summary.checkableChecks}/${summary.totalChecks} checkable,
+            ${summary.uncheckableChecks} uncheckable
+            ${summary.answerTypes.length ? `; types: ${escapeHtml(summary.answerTypes.join(', '))}` : ''}
+            ${summary.unsupportedAnswerReasons.length ? `; unsupported: ${escapeHtml(summary.unsupportedAnswerReasons.join('; '))}` : ''}
+          </li>
+        `).join('')}
+      </ul>
+    </section>
+  `;
 }
 
 function p3SkillContractRows(data: StaticSiteData): P3SkillContractPageRow[] {
@@ -956,6 +986,12 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
           ${topicButtons}
         </div>
       </section>
+      <section class="summary-card" aria-labelledby="p3-review-title">
+        <p class="eyebrow">Review</p>
+        <h2 id="p3-review-title">Review mistakes from this browser.</h2>
+        <p>Asterion groups recent wrong, repaired, and revealed Skill Check attempts by mistake tag.</p>
+        ${routeLink(pagePath, p3ReviewPagePath(), 'Open review', 'button secondary-button')}
+      </section>
     `
     : `
       <section class="summary-card course-topic-list support-only-panel" aria-labelledby="course-topic-list-title" id="course-topics">
@@ -1117,6 +1153,42 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
   });
 }
 
+function renderP3ReviewPage(pagePath = p3ReviewPagePath()): string {
+  const body = `
+    ${renderHero(
+      'P3 Mistake Review',
+      'Review recent Skill Check mistakes saved in this browser. Groups appear after wrong, repaired, or revealed attempts with mistake tags.',
+      '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
+      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Open Skill Checks', 'button primary-button')}
+      ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}`,
+      'Local review',
+    )}
+    <section class="summary-card review-empty-state" data-review-empty>
+      <h2>No tagged mistakes yet.</h2>
+      <p>Review sessions will appear after you answer a machine-checkable P3 Skill Check incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
+      ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Go to P3 Skill Checks', 'button primary-button')}
+      ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Open Need to Know', 'button secondary-button')}
+    </section>
+    <section class="review-session" data-review-session hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Local mistake history</p>
+          <h2>Recommended review groups</h2>
+          <p data-review-summary>Loading local review...</p>
+        </div>
+      </div>
+      <div class="review-group-stack" data-review-groups></div>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'P3 Mistake Review',
+    description: 'Browser-local P3 review groups from Skill Check mistake tags.',
+    active: 'p3',
+    body,
+  });
+}
+
 function availabilityText(available: boolean): string {
   return available ? 'Available' : 'Missing';
 }
@@ -1150,6 +1222,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
       <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
       <p>Skill Check grading migration: ${escapeRawHtml(skillCheckabilityText(gradingSummary))}. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
     </section>
+    ${renderTopicSkillCheckMigrationSnapshot()}
     <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
       <div class="section-heading">
         <div>
@@ -1491,6 +1564,10 @@ function renderCheckableSkillCheckForm(
 ): string {
   const spec = skillCheckAnswerSpecForItem(item);
   if (!spec) return '';
+  const mistakeTags = Array.from(new Set([
+    ...(item.mistakeTags ?? []),
+    ...SKILL_CHECK_MISTAKE_TAGS,
+  ]));
   return `
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(spec.acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
       <label class="single-answer-field">
@@ -1503,6 +1580,18 @@ function renderCheckableSkillCheckForm(
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+          ${mistakeTags.map((tag) => `
+            <label>
+              <input type="checkbox" name="mistakeTags" value="${escapeAttr(tag)}" />
+              <span>${escapeHtml(tag)}</span>
+            </label>
+          `).join('')}
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>${renderMathText(item.hints.nudge)}</p>
         ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
@@ -2001,6 +2090,7 @@ async function generate(): Promise<void> {
 
   htmlByPath.set(p3TopicsIndexPagePath(), renderP3TopicsIndexPage(data));
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
+  htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage());
   htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));
 
   for (const topic of STUDY_TOPICS) {

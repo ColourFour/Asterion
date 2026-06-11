@@ -1,6 +1,18 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
   var PROFILE_ID = 'local-static-student';
+  var TARGETED_MISTAKE_PROMPTS = {
+    'algebra slip': 'I made an algebra error when...',
+    'wrong identity': 'I used the wrong identity because...',
+    'domain/range issue': 'I forgot to check the domain when...',
+    notation: 'My notation stopped the method from being clear when...',
+    calculator: 'My calculator setup was wrong because...',
+    'method choice': 'I lost the method mark because...',
+    'incomplete reasoning': 'My reasoning was incomplete because...',
+    'sign error': 'I made a sign error when...',
+    'coefficient error': 'I made a coefficient error when...',
+    'forgot constant': 'I forgot the constant when...'
+  };
 
   function createId(prefix) {
     return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
@@ -23,6 +35,27 @@
     return Array.isArray(value) ? value : [];
   }
 
+  function isSkillCheckAttemptRecord(value) {
+    return Boolean(value && typeof value === 'object'
+      && value.course === 'p3'
+      && typeof value.attemptId === 'string'
+      && typeof value.topic === 'string'
+      && typeof value.skillId === 'string'
+      && typeof value.checkId === 'string'
+      && typeof value.submittedAnswer === 'string'
+      && typeof value.isCorrect === 'boolean'
+      && typeof value.usedHint === 'boolean'
+      && typeof value.revealedAnswer === 'boolean'
+      && typeof value.revealedRepairStep === 'boolean'
+      && Array.isArray(value.mistakeTags)
+      && value.mistakeTags.every(function (tag) { return typeof tag === 'string'; })
+      && typeof value.timestamp === 'string');
+  }
+
+  function normalizeSkillCheckAttempts(records) {
+    return safeArray(records).filter(isSkillCheckAttemptRecord);
+  }
+
   function loadProgress() {
     try {
       var parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
@@ -30,7 +63,7 @@
       return Object.assign(emptyProgress(), parsed, {
         attempts: safeArray(parsed.attempts),
         learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
-        skillCheckAttempts: safeArray(parsed.skillCheckAttempts),
+        skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
         topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
         issueReports: safeArray(parsed.issueReports),
         regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
@@ -75,7 +108,7 @@
   }
 
   function isPassingSkillCheckAttempt(attempt) {
-    return Boolean(attempt && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
   }
 
   function parseRequiredCheckIds(node) {
@@ -447,71 +480,95 @@
     return numericLabel(value.real) + ' ' + (value.imaginary < 0 ? '-' : '+') + ' ' + numericLabel(Math.abs(value.imaginary)) + 'i';
   }
 
+  function skillCheckResult(spec, values) {
+    return Object.assign({ answerType: spec.answerType }, values);
+  }
+
+  function isSupportedSkillCheckAnswerType(answerType) {
+    return [
+      'exact-text',
+      'numeric',
+      'expression-text',
+      'multi-value',
+      'coordinate',
+      'interval',
+      'complex-number'
+    ].includes(answerType);
+  }
+
   function checkSubmittedSkillAnswer(spec, submittedAnswer) {
     var trimmed = String(submittedAnswer || '').trim();
+    if (!isSupportedSkillCheckAnswerType(spec.answerType)) {
+      return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'Unsupported answer type: ' + spec.answerType + '.', unsupported: true });
+    }
     if (!trimmed) {
-      return { isCorrect: false, normalizedSubmittedAnswer: '', reason: 'Submitted answer is empty.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: '', reason: 'Submitted answer is empty.', unsupported: false });
     }
     if (!spec.acceptedAnswers.length) {
-      return { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'No accepted answers are configured.', unsupported: true };
+      return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'No accepted answers are configured.', unsupported: true });
     }
     var tolerance = Number.isFinite(spec.tolerance) ? spec.tolerance : 1e-10;
     var match;
     if (spec.answerType === 'exact-text') {
       var exact = normalizeExactText(trimmed);
       match = spec.acceptedAnswers.find(function (accepted) { return normalizeExactText(accepted) === exact; });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: exact, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized exact text.' : 'Submitted text did not match any accepted answer.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: exact, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized exact text.' : 'Submitted text did not match any accepted answer.', unsupported: false });
     }
     if (spec.answerType === 'expression-text') {
       var expression = normalizeExpressionText(trimmed);
       match = spec.acceptedAnswers.find(function (accepted) { return normalizeExpressionText(accepted) === expression; });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: expression, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized expression text.' : 'Expression did not match an accepted normalized text form.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: expression, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized expression text.' : 'Expression did not match an accepted normalized text form. Algebraic equivalence is not inferred.', unsupported: false });
     }
     if (spec.answerType === 'numeric') {
       var submittedNumber = parseSimpleNumber(trimmed);
-      if (submittedNumber === undefined) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.', unsupported: false };
+      if (submittedNumber === undefined) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedNumber = parseSimpleNumber(accepted);
         return acceptedNumber !== undefined && numbersEqual(submittedNumber, acceptedNumber, tolerance);
       });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: numericLabel(submittedNumber), matchedAcceptedAnswer: match, reason: match ? 'Matched numeric answer within tolerance.' : 'Numeric answer did not match any accepted value within tolerance.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: numericLabel(submittedNumber), matchedAcceptedAnswer: match, reason: match ? 'Matched numeric answer within tolerance.' : 'Numeric answer did not match any accepted value within tolerance.', unsupported: false });
     }
     if (spec.answerType === 'multi-value') {
       var submittedParts = normalizeMultiValueParts(trimmed);
       match = spec.acceptedAnswers.find(function (accepted) {
         return multiValuesEqual(submittedParts, normalizeMultiValueParts(accepted), tolerance, spec.orderMatters === true);
       });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: submittedParts.join(', '), matchedAcceptedAnswer: match, reason: match ? 'Matched multi-value answer.' : 'Multi-value answer did not match any accepted value set.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: submittedParts.join(', '), matchedAcceptedAnswer: match, reason: match ? 'Matched multi-value answer.' : 'Multi-value answer did not match any accepted value set.', unsupported: false });
     }
     if (spec.answerType === 'coordinate') {
       var coordinate = parseCoordinate(trimmed);
-      if (!coordinate) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted coordinate is not a supported numeric tuple.', unsupported: false };
+      if (!coordinate) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted coordinate is not a supported numeric tuple.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedCoordinate = parseCoordinate(accepted);
         return acceptedCoordinate && coordinatesEqual(coordinate, acceptedCoordinate, tolerance);
       });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeCoordinate(coordinate), matchedAcceptedAnswer: match, reason: match ? 'Matched coordinate values within tolerance.' : 'Coordinate did not match any accepted tuple.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeCoordinate(coordinate), matchedAcceptedAnswer: match, reason: match ? 'Matched coordinate values within tolerance.' : 'Coordinate did not match any accepted tuple.', unsupported: false });
     }
     if (spec.answerType === 'interval') {
       var interval = parseInterval(trimmed);
-      if (!interval) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted interval is not a supported bounded interval form.', unsupported: false };
+      if (!interval) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted interval is not a supported bounded interval form.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedInterval = parseInterval(accepted);
         return acceptedInterval && intervalsEqual(interval, acceptedInterval, tolerance);
       });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeInterval(interval), matchedAcceptedAnswer: match, reason: match ? 'Matched interval bounds and endpoint inclusivity.' : 'Interval did not match any accepted bounded interval.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeInterval(interval), matchedAcceptedAnswer: match, reason: match ? 'Matched interval bounds and endpoint inclusivity.' : 'Interval did not match any accepted bounded interval.', unsupported: false });
     }
     if (spec.answerType === 'complex-number') {
       var complex = parseComplex(trimmed);
-      if (!complex) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted complex number is not a supported a + bi form.', unsupported: false };
+      if (!complex) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted complex number is not a supported a + bi form.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedComplex = parseComplex(accepted);
         return acceptedComplex && complexEqual(complex, acceptedComplex, tolerance);
       });
-      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeComplex(complex), matchedAcceptedAnswer: match, reason: match ? 'Matched complex number components within tolerance.' : 'Complex number did not match any accepted value.', unsupported: false };
+      return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeComplex(complex), matchedAcceptedAnswer: match, reason: match ? 'Matched complex number components within tolerance.' : 'Complex number did not match any accepted value.', unsupported: false });
     }
-    return { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'Unsupported answer type: ' + spec.answerType + '.', unsupported: true };
+    return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'Unsupported answer type: ' + spec.answerType + '.', unsupported: true });
   }
+
+  // Parity tests use this hook to compare the student-facing static checker with the TypeScript checker.
+  window.__ASTERION_SKILL_CHECK_TEST_HOOKS__ = {
+    checkSubmittedSkillAnswer: checkSubmittedSkillAnswer
+  };
 
   function parseJsonAttribute(node, name, fallback) {
     try {
@@ -520,6 +577,133 @@
     } catch (_error) {
       return fallback;
     }
+  }
+
+  function selectedMistakeTags(form) {
+    return Array.from(form.querySelectorAll('input[name="mistakeTags"]:checked'))
+      .map(function (input) { return input instanceof HTMLInputElement ? input.value : ''; })
+      .filter(Boolean);
+  }
+
+  function targetedPromptForTags(tags) {
+    for (var index = 0; index < tags.length; index += 1) {
+      var prompt = TARGETED_MISTAKE_PROMPTS[tags[index]];
+      if (prompt) return prompt;
+    }
+    return '';
+  }
+
+  function updateTargetedPrompt(form) {
+    var prompt = form.querySelector('[data-targeted-prompt]');
+    if (!prompt) return;
+    var text = targetedPromptForTags(selectedMistakeTags(form));
+    prompt.textContent = text;
+    prompt.hidden = !text;
+  }
+
+  function updateLatestSkillCheckAttemptMistakeTags(form) {
+    var progress = loadProgress();
+    var checkId = form.getAttribute('data-check-id') || '';
+    var latestIndex = progress.skillCheckAttempts.map(function (attempt) {
+      return attempt.checkId;
+    }).lastIndexOf(checkId);
+    if (latestIndex < 0) return;
+    progress.skillCheckAttempts[latestIndex] = Object.assign({}, progress.skillCheckAttempts[latestIndex], {
+      mistakeTags: selectedMistakeTags(form)
+    });
+    saveProgress(progress);
+  }
+
+  function reviewCandidateState(attempt) {
+    if (attempt.revealedAnswer) return 'revealed';
+    if (attempt.revealedRepairStep) return 'repaired';
+    if (!attempt.isCorrect) return 'incorrect';
+    return '';
+  }
+
+  function validReviewMistakeTags(attempt) {
+    return Array.isArray(attempt.mistakeTags)
+      ? attempt.mistakeTags.filter(function (tag) { return Boolean(TARGETED_MISTAKE_PROMPTS[tag]); })
+      : [];
+  }
+
+  function buildReviewGroups(attempts) {
+    var groups = new Map();
+    safeArray(attempts)
+      .filter(function (attempt) {
+        return attempt && attempt.course === 'p3' && typeof attempt.checkId === 'string' && typeof attempt.timestamp === 'string';
+      })
+      .sort(function (a, b) {
+        return String(b.timestamp).localeCompare(String(a.timestamp));
+      })
+      .slice(0, 30)
+      .forEach(function (attempt) {
+        var state = reviewCandidateState(attempt);
+        var tags = validReviewMistakeTags(attempt);
+        if (!state || !tags.length) return;
+        var candidate = {
+          topic: attempt.topic || 'P3 Skill Check',
+          skillId: attempt.skillId || '',
+          checkId: attempt.checkId || '',
+          submittedAnswer: attempt.submittedAnswer || '',
+          timestamp: attempt.timestamp || '',
+          state: state
+        };
+        tags.forEach(function (tag) {
+          var candidates = groups.get(tag) || [];
+          if (candidates.length < 6) candidates.push(candidate);
+          groups.set(tag, candidates);
+        });
+      });
+    return Array.from(groups, function (entry) {
+      return {
+        mistakeTag: entry[0],
+        candidates: entry[1],
+        count: entry[1].length
+      };
+    }).sort(function (a, b) {
+      return b.count - a.count || a.mistakeTag.localeCompare(b.mistakeTag);
+    });
+  }
+
+  function escapeText(value) {
+    return String(value || '').replace(/[&<>"']/g, function (char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+    });
+  }
+
+  function renderReviewPage() {
+    var groupContainer = document.querySelector('[data-review-groups]');
+    var reviewSection = document.querySelector('[data-review-session]');
+    var emptyState = document.querySelector('[data-review-empty]');
+    if (!groupContainer || !reviewSection || !emptyState) return;
+    var groups = buildReviewGroups(loadProgress().skillCheckAttempts);
+    if (!groups.length) {
+      reviewSection.hidden = true;
+      emptyState.hidden = false;
+      return;
+    }
+    emptyState.hidden = true;
+    reviewSection.hidden = false;
+    var total = groups.reduce(function (sum, group) { return sum + group.count; }, 0);
+    var summary = document.querySelector('[data-review-summary]');
+    if (summary) {
+      summary.textContent = total + ' recent tagged review candidate' + (total === 1 ? '' : 's') + ' from this browser.';
+    }
+    groupContainer.innerHTML = groups.map(function (group) {
+      return '<article class="review-group-card">'
+        + '<header><div><p class="eyebrow">' + group.count + ' recent</p><h3>' + escapeText(group.mistakeTag) + '</h3></div></header>'
+        + '<p class="targeted-prompt">' + escapeText(TARGETED_MISTAKE_PROMPTS[group.mistakeTag] || 'Review what went wrong before trying again.') + '</p>'
+        + '<ul class="review-candidate-list">'
+        + group.candidates.map(function (candidate) {
+          return '<li>'
+            + '<strong>' + escapeText(candidate.topic) + '</strong>'
+            + '<span>' + escapeText(candidate.skillId || candidate.checkId) + '</span>'
+            + '<small>' + escapeText(candidate.state) + (candidate.submittedAnswer ? ' · submitted: ' + escapeText(candidate.submittedAnswer) : '') + '</small>'
+            + '</li>';
+        }).join('')
+        + '</ul></article>';
+    }).join('');
   }
 
   function skillCheckSpecFromForm(form) {
@@ -547,7 +731,7 @@
       usedHint: form.getAttribute('data-used-hint') === 'true',
       revealedAnswer: form.getAttribute('data-revealed-answer') === 'true',
       revealedRepairStep: form.getAttribute('data-revealed-repair-step') === 'true',
-      mistakeTags: parseJsonAttribute(form, 'data-mistake-tags', []),
+      mistakeTags: selectedMistakeTags(form),
       timestamp: new Date().toISOString()
     };
     progress.skillCheckAttempts.push(attempt);
@@ -603,6 +787,7 @@
     var nextButton = form.querySelector('[data-skill-check-inline-next]');
     var repair = form.querySelector('[data-skill-repair]');
     var answerReveal = form.querySelector('[data-skill-answer-reveal]');
+    var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
     if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
       setSkillFeedback(form, 'Correct. Saved as a deterministic pass.', 'correct');
       form.classList.add('is-passed');
@@ -617,6 +802,8 @@
     }
     setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try again or open the repair step.', 'incorrect');
     if (submitButton) submitButton.textContent = 'Try again';
+    if (mistakePanel) mistakePanel.hidden = false;
+    updateTargetedPrompt(form);
     if (repair) repair.hidden = false;
     if (answerReveal) answerReveal.hidden = false;
     if (nextButton) nextButton.hidden = true;
@@ -1197,6 +1384,7 @@
     setupExamQuestionFlow();
     setupGuidedStudy();
     updateProgressText();
+    renderReviewPage();
 
     document.addEventListener('click', function (event) {
       var target = event.target;
@@ -1241,6 +1429,15 @@
         event.preventDefault();
         saveExamAttempt(form);
       }
+    });
+
+    document.addEventListener('change', function (event) {
+      var target = event.target;
+      if (!(target instanceof HTMLInputElement) || target.name !== 'mistakeTags') return;
+      var form = target.closest('[data-check-skill-answer]');
+      if (!(form instanceof HTMLFormElement)) return;
+      updateTargetedPrompt(form);
+      updateLatestSkillCheckAttemptMistakeTags(form);
     });
 
     document.addEventListener('toggle', function (event) {

@@ -1,11 +1,8 @@
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import { COURSES, P3_COURSE_ID, type CourseId } from '../data/courses';
+import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
 import type { RegionDefinition, RegionLearningRecord, RegionProgress, SkillCheckAttemptRecord, StoredProgress } from '../types';
 import { P3_COURSE_MAP } from './worldMap';
-
-function isPassingSkillCheckAttempt(attempt: SkillCheckAttemptRecord): boolean {
-  return attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep;
-}
 
 export type TopicStudyPage = 'field-guide' | 'skill-check' | 'exam-training';
 
@@ -170,7 +167,7 @@ export function topicProgressSummary(input: {
     ? Math.min(fieldGuideTopics.length, Object.keys(learningRecord?.fieldGuideTopicCompletions ?? {}).length)
     : learningRecord?.fieldGuideCompletedAt ? 1 : 0;
   const fieldGuideTotal = Math.max(1, fieldGuideTopics.length || 1);
-  const skillPracticeAttempts = (input.progress.skillCheckAttempts ?? []).filter((attempt) => (
+  const skillPracticeAttempts = normalizeSkillCheckLocalAttempts(input.progress.skillCheckAttempts ?? []).filter((attempt: SkillCheckAttemptRecord) => (
     (attempt.regionId === input.regionId || attempt.topic === input.regionId) && isPassingSkillCheckAttempt(attempt)
   )).length;
   const questionAttempts = input.regionProgress?.attempts ?? input.progress.attempts.filter((attempt) => (

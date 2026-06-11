@@ -2885,11 +2885,87 @@ body.skill-check-page .exam-question-section {
 
 .skill-check-hint-panel,
 .skill-check-repair-details,
-.skill-check-answer-details {
+.skill-check-answer-details,
+.mistake-tag-selector {
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: #fffdf8;
+}
+
+.mistake-tag-selector {
+  display: grid;
+  gap: 10px;
+}
+
+.mistake-tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mistake-tag-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  font-weight: 800;
+}
+
+.targeted-prompt {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.review-session {
+  display: grid;
+  gap: 16px;
+}
+
+.review-group-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.review-group-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.review-group-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-candidate-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-candidate-list li {
+  display: grid;
+  gap: 3px;
+  padding: 10px;
+  border: 1px solid rgba(77, 69, 61, 0.12);
+  border-radius: var(--radius);
+  background: #fbfaf7;
+}
+
+.review-candidate-list span,
+.review-candidate-list small {
+  color: var(--muted);
 }
 
 .exam-topic-list {

@@ -43,8 +43,89 @@
     <section class="summary-card contract-qa-summary">
       <h2>Contract coverage snapshot</h2>
       <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
-      <p>Skill Check grading migration: 6 deterministic; 153 not yet; types: complex-number, coordinate, expression-text, interval, multi-value, numeric. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
+      <p>Skill Check grading migration: 33 deterministic; 126 not yet; types: complex-number, coordinate, exact-text, expression-text, interval, multi-value, numeric. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
     </section>
+
+    <section class="summary-card contract-qa-summary">
+      <h2>Skill Check migration by topic</h2>
+      <p>Counts show deterministic Phase 3 Skill Check answer-data migration only. They do not imply full P3 migration.</p>
+      <ul class="plain-list">
+
+          <li>
+            <strong>Algebra:</strong>
+            3/21 checkable,
+            18 uncheckable
+            ; types: interval, multi-value, numeric
+
+          </li>
+
+          <li>
+            <strong>Logarithmic and Exponential Functions:</strong>
+            18/18 checkable,
+            0 uncheckable
+            ; types: coordinate, exact-text, expression-text, multi-value, numeric
+
+          </li>
+
+          <li>
+            <strong>Trigonometry:</strong>
+            0/15 checkable,
+            15 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Differentiation:</strong>
+            0/21 checkable,
+            21 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Integration:</strong>
+            0/24 checkable,
+            24 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Numerical Solution of Equations:</strong>
+            0/12 checkable,
+            12 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Vectors:</strong>
+            0/24 checkable,
+            24 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Differential Equations:</strong>
+            0/12 checkable,
+            12 uncheckable
+
+
+          </li>
+
+          <li>
+            <strong>Complex Numbers:</strong>
+            12/12 checkable,
+            0 uncheckable
+            ; types: complex-number, exact-text, expression-text, multi-value, numeric
+
+          </li>
+
+      </ul>
+    </section>
+
     <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
       <div class="section-heading">
         <div>
@@ -234,7 +315,7 @@
                 <td>Convert between logarithmic and exponential form</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>2 deterministic; 1 not yet; types: coordinate, expression-text</td>
+                <td>3 deterministic; 0 not yet; types: coordinate, expression-text, multi-value</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -256,7 +337,7 @@
                 <td>Use log laws to solve logarithmic equations</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: exact-text, multi-value</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -278,7 +359,7 @@
                 <td>Solve exponential equations using matching bases or natural logs</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 6 not yet</td>
+                <td>6 deterministic; 0 not yet; types: expression-text, multi-value</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -300,7 +381,7 @@
                 <td>Reject invalid logarithmic roots using domain checks</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: expression-text, multi-value, numeric</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -322,7 +403,7 @@
                 <td>Linearise logarithmic or exponential relationships</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: coordinate, multi-value</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -872,7 +953,7 @@
                 <td>Use Cartesian complex arithmetic and conjugates</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>1 deterministic; 2 not yet; types: complex-number</td>
+                <td>3 deterministic; 0 not yet; types: complex-number, numeric</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -894,7 +975,7 @@
                 <td>Move between Cartesian and modulus-argument form</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: expression-text, numeric</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -916,7 +997,7 @@
                 <td>Interpret loci and regions on an Argand diagram</td>
                 <td>Available</td>
                 <td>Available</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: exact-text</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -938,7 +1019,7 @@
                 <td>Find complex powers and roots using the suitable form</td>
                 <td>Available</td>
                 <td>Missing</td>
-                <td>0 deterministic; 3 not yet</td>
+                <td>3 deterministic; 0 not yet; types: expression-text, multi-value, numeric</td>
                 <td>Available</td>
                 <td>5</td>
 

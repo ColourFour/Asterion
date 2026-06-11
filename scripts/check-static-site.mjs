@@ -17,6 +17,7 @@ const fallbackRequiredPages = [
   's1/index.html',
   'p3/topics/index.html',
   'p3/need-to-know/index.html',
+  'p3/review/index.html',
   'p3/content-qa/index.html',
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
