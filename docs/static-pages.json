@@ -26,6 +26,14 @@
       "label": "P3 topic index"
     },
     {
+      "path": "p3/need-to-know/index.html",
+      "label": "P3 Need to Know checklist"
+    },
+    {
+      "path": "p3/content-qa/index.html",
+      "label": "P3 Content QA table"
+    },
+    {
       "path": "p3/topics/algebra/field-guide/index.html",
       "label": "P3 Algebra Field Guide"
     },

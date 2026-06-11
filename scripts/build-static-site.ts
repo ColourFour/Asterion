@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
+import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
 import {
   skillCheckContractForItem,
   type SkillCheckItem,
@@ -36,6 +37,7 @@ interface StaticSiteData {
   catalogQuestions: NormalizedQuestion[];
   generatedPractice: GeneratedPracticeItem[];
   teachingSnippets: TeachingSnippet[];
+  p3SkillCoverageReport: unknown;
 }
 
 interface TopicContext {
@@ -44,6 +46,24 @@ interface TopicContext {
   fieldGuideTopics: FieldGuideTopic[];
   groups: SkillChecklistTopicGroup[];
   questions: NormalizedQuestion[];
+}
+
+interface P3SkillCoverageSummary {
+  mappedExamQuestionCount?: number;
+}
+
+interface P3SkillContractAvailability {
+  fieldGuide: boolean;
+  skillCheck: boolean;
+  examTraining: boolean;
+}
+
+interface P3SkillContractPageRow {
+  skill: P3SkillContractEntry;
+  topic: StudyTopic;
+  availability: P3SkillContractAvailability;
+  mappedExamQuestionCount?: number;
+  statusLabel: 'Ready' | 'Needs Field Guide' | 'Needs Skill Check' | 'Needs Exam Mapping' | 'Draft';
 }
 
 interface RenderPageOptions {
@@ -276,6 +296,14 @@ function p3TopicsIndexPagePath(): string {
   return `${P3_COURSE_ID}/topics/index.html`;
 }
 
+function p3NeedToKnowPagePath(): string {
+  return `${P3_COURSE_ID}/need-to-know/index.html`;
+}
+
+function p3ContentQaPagePath(): string {
+  return `${P3_COURSE_ID}/content-qa/index.html`;
+}
+
 function fieldGuidePagePath(topic: StudyTopic): string {
   return `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`;
 }
@@ -294,6 +322,91 @@ function topicExamTrainingPagePath(topic: StudyTopic): string {
 
 function routeLink(fromPagePath: string, targetPagePath: string, label: string, className?: string): string {
   return `<a${className ? ` class="${className}"` : ''} href="${hrefToPage(fromPagePath, targetPagePath)}">${escapeHtml(label)}</a>`;
+}
+
+function topicForOfficialTopic(officialTopic: P3OfficialTopic): StudyTopic {
+  const topic = STUDY_TOPICS.find((candidate) => candidate.name === officialTopic);
+  if (!topic) throw new Error(`Missing P3 study topic for contract topic ${officialTopic}`);
+  return topic;
+}
+
+function p3SkillCoverageById(report: unknown): Map<string, P3SkillCoverageSummary> {
+  if (!report || typeof report !== 'object' || !Array.isArray((report as { skills?: unknown }).skills)) {
+    return new Map();
+  }
+  return new Map((report as { skills: unknown[] }).skills.flatMap((entry) => {
+    if (!entry || typeof entry !== 'object') return [];
+    const record = entry as {
+      skill_id?: unknown;
+      trainable_canonical_question_count?: unknown;
+      canonical_source_question_count?: unknown;
+    };
+    if (typeof record.skill_id !== 'string') return [];
+    const count = typeof record.trainable_canonical_question_count === 'number'
+      ? record.trainable_canonical_question_count
+      : record.canonical_source_question_count;
+    return [[record.skill_id, {
+      mappedExamQuestionCount: typeof count === 'number' ? count : undefined,
+    }]];
+  }));
+}
+
+function hasReviewFlag(skill: P3SkillContractEntry, flag: string): boolean {
+  return Boolean(skill.reviewFlags?.includes(flag));
+}
+
+function p3SkillContractAvailability(
+  skill: P3SkillContractEntry,
+  coverage: P3SkillCoverageSummary | undefined,
+): P3SkillContractAvailability {
+  return {
+    fieldGuide: !hasReviewFlag(skill, 'missing-reviewed-snippet'),
+    skillCheck: !hasReviewFlag(skill, 'missing-reviewed-quick-check'),
+    examTraining: typeof coverage?.mappedExamQuestionCount === 'number' && coverage.mappedExamQuestionCount > 0,
+  };
+}
+
+function p3SkillContractStatusLabel(
+  skill: P3SkillContractEntry,
+  availability: P3SkillContractAvailability,
+): P3SkillContractPageRow['statusLabel'] {
+  if (!availability.fieldGuide) return 'Needs Field Guide';
+  if (!availability.skillCheck) return 'Needs Skill Check';
+  if (!availability.examTraining) return 'Needs Exam Mapping';
+  if (skill.readiness === 'ready') return 'Ready';
+  return 'Draft';
+}
+
+function p3SkillContractRows(data: StaticSiteData): P3SkillContractPageRow[] {
+  const coverageById = p3SkillCoverageById(data.p3SkillCoverageReport);
+  return P3_SKILL_CONTRACT.map((skill) => {
+    const coverage = coverageById.get(skill.id);
+    const availability = p3SkillContractAvailability(skill, coverage);
+    return {
+      skill,
+      topic: topicForOfficialTopic(skill.officialTopic),
+      availability,
+      mappedExamQuestionCount: coverage?.mappedExamQuestionCount,
+      statusLabel: p3SkillContractStatusLabel(skill, availability),
+    };
+  });
+}
+
+function p3SkillContractRowsByTopic(data: StaticSiteData): Array<{ topic: P3OfficialTopic; rows: P3SkillContractPageRow[] }> {
+  const rows = p3SkillContractRows(data);
+  return P3_OFFICIAL_TOPICS.map((topic) => ({
+    topic,
+    rows: rows.filter((row) => row.skill.officialTopic === topic),
+  }));
+}
+
+function contractRouteLink(
+  fromPagePath: string,
+  targetPagePath: string,
+  label: string,
+  kind: 'field-guide' | 'skill-check' | 'exam-training',
+): string {
+  return `<a class="text-link contract-resource-link" href="${hrefToPage(fromPagePath, targetPagePath)}" data-contract-link="${kind}" data-canonical-path="${escapeRawAttr(targetPagePath)}">${escapeRawHtml(label)}</a>`;
 }
 
 function regionForTopic(topic: StudyTopic): RegionDefinition {
@@ -836,6 +949,153 @@ function renderP3TopicsIndexPage(
     title: 'Pure Mathematics 3 Topics',
     description: 'Static CAIE 9709 Paper 3 topic practice pages.',
     active: 'p3-topics',
+    body,
+  });
+}
+
+function statusClassName(label: P3SkillContractPageRow['statusLabel']): string {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function contractTopicAnchor(topic: P3OfficialTopic): string {
+  return `need-to-know-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+}
+
+function renderContractAvailabilityLinks(pagePath: string, row: P3SkillContractPageRow): string {
+  const { topic, availability } = row;
+  const links = [
+    availability.fieldGuide
+      ? contractRouteLink(pagePath, fieldGuidePagePath(topic), 'Field Guide', 'field-guide')
+      : '<span class="contract-resource-missing">Needs Field Guide</span>',
+    availability.skillCheck
+      ? contractRouteLink(pagePath, skillCheckPagePath(topic), 'Skill Check', 'skill-check')
+      : '<span class="contract-resource-missing">Needs Skill Check</span>',
+    availability.examTraining
+      ? contractRouteLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'exam-training')
+      : '<span class="contract-resource-missing">Needs Exam Mapping</span>',
+  ];
+
+  return `<div class="contract-resource-list">${links.join('')}</div>`;
+}
+
+function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPagePath()): string {
+  const groups = p3SkillContractRowsByTopic(data);
+  const totalSkills = P3_SKILL_CONTRACT.length;
+  const body = `
+    ${renderHero(
+      'P3 Need to Know',
+      'A checklist for the official Paper 3 skills currently tracked by Asterion.',
+      '\\frac{dy}{dx}, \\quad \\int f(x)\\,dx, \\quad z=x+iy',
+      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Back to P3 topics', 'button secondary-button')}
+      ${routeLink(pagePath, p3ContentQaPagePath(), 'Content QA', 'button text-button')}`,
+    )}
+    <section class="section-heading">
+      <div>
+        <h2>Skill checklist</h2>
+        <p>${totalSkills} skills grouped by official P3 topic.</p>
+      </div>
+    </section>
+    ${groups.map((group) => `
+      <section class="contract-topic-section" aria-labelledby="${escapeRawAttr(contractTopicAnchor(group.topic))}">
+        <div class="section-heading contract-topic-heading">
+          <div>
+            <h2 id="${escapeRawAttr(contractTopicAnchor(group.topic))}">${escapeRawHtml(group.topic)}</h2>
+            <p>${group.rows.length} tracked skills</p>
+          </div>
+        </div>
+        <div class="contract-skill-grid">
+          ${group.rows.map((row) => `
+            <article class="contract-skill-card" data-skill-id="${escapeRawAttr(row.skill.id)}">
+              <header class="contract-skill-card-header">
+                <div>
+                  <p class="eyebrow">${escapeRawHtml(row.skill.officialTopic)}</p>
+                  <h3>${escapeRawHtml(row.skill.title)}</h3>
+                </div>
+                <span class="contract-status contract-status-${escapeRawAttr(statusClassName(row.statusLabel))}">${escapeRawHtml(row.statusLabel)}</span>
+              </header>
+              <ul class="contract-checklist">
+                ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
+              </ul>
+              ${renderContractAvailabilityLinks(pagePath, row)}
+            </article>
+          `).join('')}
+        </div>
+      </section>
+    `).join('')}
+  `;
+  return renderPage({
+    pagePath,
+    title: 'P3 Need to Know',
+    description: 'Student-facing Paper 3 skill checklist grouped by official topic.',
+    active: 'p3',
+    body,
+  });
+}
+
+function availabilityText(available: boolean): string {
+  return available ? 'Available' : 'Missing';
+}
+
+function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPagePath()): string {
+  const rows = p3SkillContractRows(data);
+  const body = `
+    ${renderHero(
+      'P3 Content QA',
+      'Maintainer table for checking the Paper 3 skill contract against available content surfaces.',
+      '\\log_a x, \\quad \\mathbf{a}\\cdot\\mathbf{b}, \\quad \\arg z',
+      `${routeLink(pagePath, p3NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}`,
+      'Maintainer QA',
+    )}
+    <section class="summary-card contract-qa-summary">
+      <h2>Contract coverage snapshot</h2>
+      <p>Rows come from the structured P3 skill contract. Availability is derived from review flags and mapped trainable exam-question counts where available.</p>
+    </section>
+    <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="content-qa-table-title">Skill QA table</h2>
+          <p>${rows.length} P3 skills. P1, M1, and S1 are not part of this contract.</p>
+        </div>
+      </div>
+      <div class="contract-table-scroll">
+        <table class="contract-qa-table">
+          <thead>
+            <tr>
+              <th>Skill ID</th>
+              <th>Topic</th>
+              <th>Skill title</th>
+              <th>Field Guide</th>
+              <th>Skill Check</th>
+              <th>Exam Training</th>
+              <th>Mapped exam questions</th>
+              <th>Readiness</th>
+              <th>Notes / review flags</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `
+              <tr data-skill-id="${escapeRawAttr(row.skill.id)}">
+                <td><code>${escapeRawHtml(row.skill.id)}</code></td>
+                <td>${escapeRawHtml(row.skill.officialTopic)}</td>
+                <td>${escapeRawHtml(row.skill.title)}</td>
+                <td>${availabilityText(row.availability.fieldGuide)}</td>
+                <td>${availabilityText(row.availability.skillCheck)}</td>
+                <td>${availabilityText(row.availability.examTraining)}</td>
+                <td>${typeof row.mappedExamQuestionCount === 'number' ? row.mappedExamQuestionCount : 'Unknown'}</td>
+                <td><span class="contract-status contract-status-${escapeRawAttr(statusClassName(row.statusLabel))}">${escapeRawHtml(row.statusLabel)}</span></td>
+                <td>${escapeRawHtml([...(row.skill.reviewFlags ?? []), row.skill.notes].filter(Boolean).join('; ') || 'None')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'P3 Content QA',
+    description: 'Maintainer-facing QA table for the Paper 3 skill contract.',
+    active: 'p3',
     body,
   });
 }
@@ -1530,6 +1790,7 @@ async function loadStaticSiteData(): Promise<StaticSiteData> {
   const topicRouting = await readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
   const generatedPracticeJson = await readJson('public/data/generated_practice_bank.json');
   const teachingSnippetsJson = await readJson('public/data/teaching_snippets.json');
+  const p3SkillCoverageReport = await readJson('tools/content_lab/outputs/p3_skill_coverage_report.json');
   const { questions } = normalizeQuestionBankWithDiagnostics(questionBank, {}, topicRouting, {
     contentSourceKind: 'projected-bank',
   });
@@ -1544,6 +1805,7 @@ async function loadStaticSiteData(): Promise<StaticSiteData> {
     catalogQuestions: catalogRecords.filter(hasExistingQuestionImagePair),
     generatedPractice: reviewedGeneratedPractice(normalizeGeneratedPracticeData(generatedPracticeJson)),
     teachingSnippets: reviewedTeachingSnippets(normalizeTeachingSnippetsData(teachingSnippetsJson)),
+    p3SkillCoverageReport,
   };
 }
 
@@ -1580,6 +1842,8 @@ async function generate(): Promise<void> {
   }
 
   htmlByPath.set(p3TopicsIndexPagePath(), renderP3TopicsIndexPage(data));
+  htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
+  htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));
 
   for (const topic of STUDY_TOPICS) {
     const context = topicContext(topic, data);

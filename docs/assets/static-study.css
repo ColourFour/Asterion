@@ -536,6 +536,151 @@ main > * {
   color: var(--muted);
 }
 
+.contract-topic-section {
+  display: grid;
+  gap: 14px;
+}
+
+.contract-topic-heading {
+  align-items: start;
+}
+
+.contract-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.contract-skill-card,
+.contract-table-shell {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.88);
+  box-shadow: var(--shadow-sm);
+}
+
+.contract-skill-card {
+  display: grid;
+  gap: 14px;
+}
+
+.contract-skill-card-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.contract-skill-card h3 {
+  margin: 0;
+  color: var(--ink-warm);
+  font-size: 1.14rem;
+  line-height: 1.25;
+}
+
+.contract-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--muted-strong);
+  background: var(--surface-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.contract-status-ready {
+  border-color: rgba(47, 107, 79, 0.45);
+  color: var(--success);
+  background: rgba(220, 233, 223, 0.78);
+}
+
+.contract-status-needs-field-guide,
+.contract-status-needs-skill-check,
+.contract-status-needs-exam-mapping {
+  border-color: rgba(155, 47, 33, 0.3);
+  color: var(--danger);
+  background: rgba(255, 232, 224, 0.72);
+}
+
+.contract-checklist {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0 0 0 20px;
+  color: var(--muted-strong);
+}
+
+.contract-resource-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contract-resource-link,
+.contract-resource-missing {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(255, 253, 248, 0.8);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.contract-resource-missing {
+  color: var(--danger);
+  background: rgba(255, 232, 224, 0.58);
+}
+
+.contract-qa-summary {
+  max-width: var(--reading);
+}
+
+.contract-table-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.contract-table-scroll {
+  overflow-x: auto;
+}
+
+.contract-qa-table {
+  width: 100%;
+  min-width: 1120px;
+  border-collapse: collapse;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.contract-qa-table th,
+.contract-qa-table td {
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.contract-qa-table th {
+  color: var(--ink-warm);
+  background: var(--surface-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.contract-qa-table code {
+  color: var(--sage-dark);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2730,6 +2875,7 @@ body.skill-check-page .exam-question-section {
 		  .course-entry-grid,
   .exam-mode-grid,
   .exam-question-grid,
+  .contract-skill-grid,
   .study-path,
   .home-metrics {
     grid-template-columns: minmax(0, 1fr);
@@ -2758,6 +2904,10 @@ body.skill-check-page .exam-question-section {
   .attempt-form,
   .exam-topic-row {
     grid-template-columns: 1fr;
+  }
+
+  .contract-skill-card-header {
+    flex-direction: column;
   }
 }
 
@@ -2795,6 +2945,8 @@ body.skill-check-page .exam-question-section {
   .exam-question-card,
   .exam-callout,
   .progress-banner,
+  .contract-skill-card,
+  .contract-table-shell,
   .summary-card,
   .entry-card,
 	  .next-step-card,

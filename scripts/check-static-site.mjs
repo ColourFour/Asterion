@@ -16,6 +16,8 @@ const fallbackRequiredPages = [
   'm1/index.html',
   's1/index.html',
   'p3/topics/index.html',
+  'p3/need-to-know/index.html',
+  'p3/content-qa/index.html',
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
   'p3/topics/algebra/exam-training/index.html',
@@ -68,6 +70,31 @@ const forbiddenVisibleStudentTerms = [
   'needs review',
 ];
 
+const p3ContractPages = [
+  'p3/need-to-know/index.html',
+  'p3/content-qa/index.html',
+];
+
+const forbiddenContractPageTerms = [
+  'Guardian',
+  'XP',
+  'gold',
+  'avatar',
+  'rank',
+  'ranks',
+  'level',
+  'levels',
+  'reward',
+  'rewards',
+  'fantasy',
+  'game',
+  'world map',
+  'academy',
+  'restoration ledger',
+  'forge',
+  'classroom',
+];
+
 function visibleTermPattern(term) {
   const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return new RegExp(`(^|[^A-Za-z0-9])${escaped}($|[^A-Za-z0-9])`, 'i');
@@ -101,6 +128,33 @@ function visibleBodyText(html) {
     .replace(/&#(?:x[0-9a-f]+|\d+);/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function contractSkillIds() {
+  const source = readFileSync(path.join(repoRoot, 'src/data/p3SkillContract.ts'), 'utf8');
+  return new Set(Array.from(source.matchAll(/\bid:\s*'([^']+)'/g)).map((match) => match[1]));
+}
+
+function dataAttributeValues(html, attribute) {
+  const escaped = attribute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return Array.from(html.matchAll(new RegExp(`\\b${escaped}="([^"]+)"`, 'g'))).map((match) => match[1]);
+}
+
+function hrefsWithCanonicalPaths(html) {
+  return Array.from(html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*\bdata-canonical-path="([^"]+)"/gi))
+    .map((match) => ({ href: match[1], canonicalPath: match[2] }));
+}
+
+function resolveHtmlHref(page, href) {
+  const clean = decodeURI(href).replace(/[?#].*$/, '');
+  if (/^https?:\/\//i.test(clean) || clean.startsWith('data:')) return undefined;
+  const base = path.dirname(path.join(siteRoot, page));
+  const resolved = clean.startsWith('/')
+    ? path.join(siteRoot, clean.replace(/^\/+/, ''))
+    : path.resolve(base, clean);
+  const relative = path.relative(siteRoot, resolved).split(path.sep).join('/');
+  if (/\.html$/i.test(relative)) return relative;
+  return `${relative.replace(/\/$/, '')}/index.html`;
 }
 
 function catalogImagePairCounts() {
@@ -145,6 +199,7 @@ for (const page of requiredPages) {
 
 const forbiddenVisibleHits = [];
 for (const page of requiredPages) {
+  if (p3ContractPages.includes(page)) continue;
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
   for (const term of forbiddenVisibleStudentTerms) {
@@ -173,12 +228,73 @@ const internalStudentCopy = [
 ];
 
 for (const page of requiredPages) {
+  if (p3ContractPages.includes(page)) continue;
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const matchedCopy = internalStudentCopy.find((phrase) => html.includes(phrase));
   if (matchedCopy) {
     console.error(`${page} includes internal student-facing copy: ${matchedCopy}`);
     process.exit(1);
   }
+}
+
+const contractIds = contractSkillIds();
+for (const page of p3ContractPages) {
+  const fullPath = path.join(siteRoot, page);
+  if (!existsSync(fullPath)) {
+    console.error(`P3 contract page was not generated: ${page}`);
+    process.exit(1);
+  }
+
+  const html = readFileSync(fullPath, 'utf8');
+  const text = visibleBodyText(html);
+  const displayedIds = dataAttributeValues(html, 'data-skill-id');
+  const uniqueDisplayedIds = new Set(displayedIds);
+  const unknownIds = [...uniqueDisplayedIds].filter((id) => !contractIds.has(id));
+  const missingIds = [...contractIds].filter((id) => !uniqueDisplayedIds.has(id));
+
+  if (unknownIds.length || missingIds.length) {
+    console.error([
+      `${page} does not display exactly the P3 skill contract skills.`,
+      unknownIds.length ? `Unknown displayed skill IDs: ${unknownIds.join(', ')}` : '',
+      missingIds.length ? `Missing contract skill IDs: ${missingIds.join(', ')}` : '',
+    ].filter(Boolean).join('\n'));
+    process.exit(1);
+  }
+
+  for (const term of forbiddenContractPageTerms) {
+    if (visibleTermPattern(term).test(text)) {
+      console.error(`${page} contains forbidden game/lore visible text: ${term}`);
+      process.exit(1);
+    }
+  }
+}
+
+const needToKnowHtml = readFileSync(path.join(siteRoot, 'p3/need-to-know/index.html'), 'utf8');
+const contractLinks = hrefsWithCanonicalPaths(needToKnowHtml);
+if (!contractLinks.length) {
+  console.error('P3 Need to Know page has no generated Field Guide, Skill Check, or Exam Training links.');
+  process.exit(1);
+}
+for (const { href, canonicalPath } of contractLinks) {
+  if (!/^p3\/topics\/[^/]+\/(?:field-guide|skill-check|exam-training)\/index\.html$/.test(canonicalPath)) {
+    console.error(`P3 Need to Know link has a non-canonical target: ${canonicalPath}`);
+    process.exit(1);
+  }
+  const resolvedPath = resolveHtmlHref('p3/need-to-know/index.html', href);
+  if (resolvedPath !== canonicalPath) {
+    console.error(`P3 Need to Know link href does not resolve to its canonical path: ${href} -> ${resolvedPath}, expected ${canonicalPath}`);
+    process.exit(1);
+  }
+  if (!existsSync(path.join(siteRoot, canonicalPath))) {
+    console.error(`P3 Need to Know link points to a missing generated page: ${canonicalPath}`);
+    process.exit(1);
+  }
+}
+
+const contentQaText = visibleBodyText(readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8'));
+if (/\b(?:P1|M1|S1)\b/.test(contentQaText) && !contentQaText.includes('P1, M1, and S1 are not part of this contract.')) {
+  console.error('P3 Content QA must not promote P1, M1, or S1 as ready contract courses.');
+  process.exit(1);
 }
 
 for (const course of ['p1', 'p3', 'm1', 's1']) {
