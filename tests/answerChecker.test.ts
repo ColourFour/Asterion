@@ -171,6 +171,19 @@ describe('Skill Check answer checker', () => {
     });
   });
 
+  it('accepts imaginary-first complex-number notation without symbolic inference', () => {
+    const result = check(
+      { answerType: 'complex-number', acceptedAnswers: ['3 + 4i'] },
+      '4i + 3',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '3 + 4i',
+      matchedAcceptedAnswer: '3 + 4i',
+    });
+  });
+
   it('fails closed for unsupported answer types', () => {
     const result = check(
       { answerType: 'symbolic-proof', acceptedAnswers: ['valid proof'] },

@@ -266,13 +266,22 @@ function parseImaginaryCoefficient(value: string): number | undefined {
 function parseComplex(value: string): ComplexValue | undefined {
   const compact = compactText(afterEquals(value))
     .replace(/\*/g, '')
-    .replace(/j$/i, 'i');
+    .replace(/j/gi, 'i');
   if (!compact) return undefined;
 
   if (!compact.includes('i')) {
     const real = parseSimpleNumber(compact);
     return real === undefined ? undefined : { real, imaginary: 0 };
   }
+
+  const imaginaryFirst = compact.match(/^([+-]?\d*(?:\.\d+)?(?:\/[+-]?\d+(?:\.\d+)?)?)i([+-].+)$/);
+  if (imaginaryFirst) {
+    const imaginary = parseImaginaryCoefficient(imaginaryFirst[1]);
+    const real = parseSimpleNumber(imaginaryFirst[2]);
+    if (real === undefined || imaginary === undefined) return undefined;
+    return { real, imaginary };
+  }
+
   if (!compact.endsWith('i') || compact.indexOf('i') !== compact.length - 1) return undefined;
 
   const withoutI = compact.slice(0, -1);

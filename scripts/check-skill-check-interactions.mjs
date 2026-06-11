@@ -8,12 +8,123 @@ const siteRoot = path.join(repoRoot, 'docs');
 const storageKey = 'asterion.progress.v1';
 
 const skillPagePath = 'p3/topics/logarithmic-and-exponential-functions/skill-check/index.html';
+const algebraSkillPagePath = 'p3/topics/algebra/skill-check/index.html';
 const complexSkillPagePath = 'p3/topics/complex-numbers/skill-check/index.html';
 const reviewPagePath = 'p3/review/index.html';
 const checkId = 'sc-log-graph-foundation-001';
 const regionId = 'logarithmic-and-exponential-functions';
+const algebraRegionId = 'algebra';
 const complexRegionId = 'complex-numbers';
 const logRequiredCheckCount = 18;
+const algebraRequiredCheckCount = 21;
+
+const algebraChecks = [
+  {
+    checkId: 'sc-alg-structure-first-bridge-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: 'u=x^2+2x',
+  },
+  {
+    checkId: 'sc-alg-structure-first-bridge-core-001',
+    answerType: 'multi-value',
+    correctAnswer: 'x+2, x!=3',
+  },
+  {
+    checkId: 'sc-alg-structure-first-bridge-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: '-4, -1, 1',
+  },
+  {
+    checkId: 'sc-alg-modulus-foundation-001',
+    answerType: 'multi-value',
+    correctAnswer: '-8/3, 2',
+  },
+  {
+    checkId: 'sc-alg-modulus-core-001',
+    answerType: 'multi-value',
+    correctAnswer: '-1/2, 1',
+  },
+  {
+    checkId: 'sc-alg-modulus-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'x<-1/2, x>1',
+  },
+  {
+    checkId: 'sc-alg-polynomial-division-foundation-001',
+    answerType: 'multi-value',
+    correctAnswer: 'divide-leading, multiply-back, subtract, continue',
+  },
+  {
+    checkId: 'sc-alg-polynomial-division-core-001',
+    answerType: 'multi-value',
+    correctAnswer: 'x^2+5x+9, 23',
+  },
+  {
+    checkId: 'sc-alg-polynomial-division-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'x^2-x+3, 4',
+  },
+  {
+    checkId: 'sc-alg-remainder-factor-foundation-001',
+    answerType: 'numeric',
+    correctAnswer: '-2',
+  },
+  {
+    checkId: 'sc-alg-remainder-factor-core-001',
+    answerType: 'numeric',
+    correctAnswer: '17/4',
+  },
+  {
+    checkId: 'sc-alg-remainder-factor-challenge-001',
+    answerType: 'coordinate',
+    correctAnswer: '(0,-7)',
+  },
+  {
+    checkId: 'sc-alg-discriminant-root-conditions-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: 'D=b^2-4ac',
+  },
+  {
+    checkId: 'sc-alg-discriminant-root-conditions-core-001',
+    answerType: 'exact-text',
+    correctAnswer: 'two equal real roots',
+  },
+  {
+    checkId: 'sc-alg-discriminant-root-conditions-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: '-6, 6',
+  },
+  {
+    checkId: 'sc-alg-partial-fractions-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: 'A/(x-2)+B/(x+1)',
+  },
+  {
+    checkId: 'sc-alg-partial-fractions-core-001',
+    answerType: 'expression-text',
+    correctAnswer: 'A/x+B/(x-1)+C/(x-1)^2',
+  },
+  {
+    checkId: 'sc-alg-partial-fractions-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'A/(x-2)+B/(x+1), A/x+B/(x-1)+C/(x-1)^2, A/(x+1)+(Bx+C)/(x^2+2)',
+  },
+  {
+    checkId: 'sc-alg-binomial-foundation-001',
+    answerType: 'numeric',
+    correctAnswer: '4',
+  },
+  {
+    checkId: 'sc-alg-binomial-core-001',
+    answerType: 'interval',
+    correctAnswer: '(-1/3, 1/3)',
+  },
+  {
+    checkId: 'sc-alg-binomial-challenge-001',
+    answerType: 'numeric',
+    correctAnswer: '-72',
+  },
+];
 
 const logChecks = [
   {
@@ -187,6 +298,15 @@ const representativeLogChecks = [
   'sc-log-domain-core-001',
 ];
 
+const representativeAlgebraChecks = [
+  'sc-alg-structure-first-bridge-foundation-001',
+  'sc-alg-structure-first-bridge-core-001',
+  'sc-alg-remainder-factor-foundation-001',
+  'sc-alg-remainder-factor-challenge-001',
+  'sc-alg-discriminant-root-conditions-core-001',
+  'sc-alg-binomial-core-001',
+];
+
 function pageUrl(pagePath) {
   return pathToFileURL(path.join(siteRoot, pagePath)).href;
 }
@@ -252,6 +372,14 @@ async function progressText(page) {
 
 function logProgressLabel(passedCount) {
   return `Skill Check: ${passedCount}/${logRequiredCheckCount} passed`;
+}
+
+async function algebraProgressText(page) {
+  return page.locator(`[data-progress-skill="${algebraRegionId}"]`).textContent();
+}
+
+function algebraProgressLabel(passedCount) {
+  return `Skill Check: ${passedCount}/${algebraRequiredCheckCount} passed`;
 }
 
 async function complexProgressText(page) {
@@ -596,6 +724,175 @@ async function checkLogExpReviewPageFlow(page) {
   assert(!reviewText.includes('Clean Log Should Not Appear'), 'Clean correct Log/Exp attempts must not appear as mistake-review candidates.');
 }
 
+async function checkAlgebraFullTopicPage(page) {
+  await waitForStaticEnhancement(page, algebraSkillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  const pageShape = await page.evaluate((expectedIds) => {
+    const forms = Array.from(document.querySelectorAll('[data-check-skill-answer]'));
+    return {
+      formIds: forms.map((form) => form.getAttribute('data-check-id')),
+      hasFakeSaveButton: Boolean(document.querySelector('[data-save-skill-check]')),
+      hasTriedCopy: (document.body.textContent || '').includes('I tried this'),
+      missingInputs: expectedIds.filter((id) => !document.querySelector(`[data-check-id="${id}"] input[name="submittedAnswer"]`)),
+      missingSubmitButtons: expectedIds.filter((id) => {
+        const button = document.querySelector(`[data-check-id="${id}"] button[type="submit"]`);
+        return !button || button.textContent?.replace(/\s+/g, ' ').trim() !== 'Check answer';
+      }),
+      answerTypes: expectedIds.map((id) => document.querySelector(`[data-check-id="${id}"]`)?.getAttribute('data-answer-type')),
+    };
+  }, algebraChecks.map((item) => item.checkId));
+
+  assert(pageShape.formIds.length === algebraChecks.length, `Algebra must render ${algebraChecks.length} checkable forms; saw ${pageShape.formIds.length}.`);
+  assert(algebraChecks.every((item) => pageShape.formIds.includes(item.checkId)), 'Algebra page must render every migrated checkable form.');
+  assert(!pageShape.hasFakeSaveButton, 'Algebra page must not render data-save-skill-check fake completion controls.');
+  assert(!pageShape.hasTriedCopy, 'Algebra page must not render I tried this fake completion copy.');
+  assert(pageShape.missingInputs.length === 0, `Algebra checks missing answer inputs: ${pageShape.missingInputs.join(', ')}`);
+  assert(pageShape.missingSubmitButtons.length === 0, `Algebra checks missing Check answer buttons: ${pageShape.missingSubmitButtons.join(', ')}`);
+  assert(new Set(pageShape.answerTypes).size >= 6, 'Algebra browser coverage must include all migrated answer type families.');
+
+  for (const item of algebraChecks) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, 'definitely wrong');
+    const progress = await readProgress(page);
+    const attempt = latestAttempt(progress);
+    assert(attempt?.checkId === item.checkId, `Wrong answer must save a local attempt for ${item.checkId}.`);
+    assert(attempt.isCorrect === false, `Wrong answer must not be correct for ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false, `Wrong answer must not set revealedAnswer for ${item.checkId}.`);
+    assert(attempt.revealedRepairStep === false, `Wrong answer must not set revealedRepairStep for ${item.checkId}.`);
+    assert((await algebraProgressText(page))?.includes(algebraProgressLabel(0)), `Wrong answer must not update Algebra pass progress for ${item.checkId}.`);
+  }
+}
+
+async function checkAlgebraRepresentativeAnswerTypes(page) {
+  await waitForStaticEnhancement(page, algebraSkillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  for (const item of algebraChecks.filter((entry) => representativeAlgebraChecks.includes(entry.checkId))) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, item.correctAnswer);
+    const progress = await readProgress(page);
+    const attempt = latestAttempt(progress);
+    assert(attempt?.checkId === item.checkId, `Correct ${item.answerType} answer must save an attempt for ${item.checkId}.`);
+    assert(attempt.isCorrect === true, `Correct ${item.answerType} answer must be correct for ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false, `Clean ${item.answerType} answer must not be revealed for ${item.checkId}.`);
+    assert(attempt.revealedRepairStep === false, `Clean ${item.answerType} answer must not be repaired for ${item.checkId}.`);
+  }
+
+  const partialText = await algebraProgressText(page);
+  assert(partialText?.includes(algebraProgressLabel(6)), `Partial representative correct answers must not complete Algebra; saw "${partialText}".`);
+  const progressNodeClass = await page.locator(`[data-progress-skill="${algebraRegionId}"]`).getAttribute('class');
+  assert(!String(progressNodeClass || '').includes('is-complete'), 'Algebra topic must not be marked complete after partial correct attempts.');
+}
+
+async function checkAlgebraRevealRepairCannotPass(page) {
+  await waitForStaticEnhancement(page, algebraSkillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  const first = algebraChecks[0];
+  const form = await visibleFormForCheck(page, first.checkId);
+  await submitAnswer(form, 'expand');
+  await form.locator('input[name="mistakeTags"][value="method choice"]').check();
+  await form.locator('[data-skill-repair] summary').click();
+  await page.waitForFunction(
+    ({ key, id }) => {
+      const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+      const attempts = Array.isArray(progress.skillCheckAttempts) ? progress.skillCheckAttempts : [];
+      const latest = attempts[attempts.length - 1];
+      return latest?.checkId === id && latest.revealedRepairStep === true;
+    },
+    { key: storageKey, id: first.checkId },
+  );
+  await form.locator('[data-skill-answer-reveal] summary').click();
+  await page.waitForFunction(
+    ({ key, id }) => {
+      const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+      const attempts = Array.isArray(progress.skillCheckAttempts) ? progress.skillCheckAttempts : [];
+      const latest = attempts[attempts.length - 1];
+      return latest?.checkId === id && latest.revealedAnswer === true;
+    },
+    { key: storageKey, id: first.checkId },
+  );
+  await submitAnswer(form, first.correctAnswer);
+  const progress = await readProgress(page);
+  const attempt = latestAttempt(progress);
+  assert(attempt?.isCorrect === true, 'Algebra repaired/revealed correct retry must still be evaluated as correct.');
+  assert(attempt.revealedAnswer === true, 'Algebra revealed correct retry must retain revealedAnswer: true.');
+  assert(attempt.revealedRepairStep === true, 'Algebra repaired correct retry must retain revealedRepairStep: true.');
+  assert((await algebraProgressText(page))?.includes(algebraProgressLabel(0)), 'Algebra repaired/revealed correct retry must not count as pass.');
+}
+
+async function checkAlgebraFullTopicPassRule(page) {
+  await waitForStaticEnhancement(page, algebraSkillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  for (const item of algebraChecks) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, item.correctAnswer);
+    const progress = await readProgress(page);
+    const attempt = attemptForCheck(progress, item.checkId);
+    assert(attempt?.isCorrect === true, `Clean correct answer must pass individual Algebra check ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false && attempt.revealedRepairStep === false, `Clean correct attempt must remain unrevealed and unrepaired for ${item.checkId}.`);
+  }
+
+  const finalText = await algebraProgressText(page);
+  assert(finalText?.includes(algebraProgressLabel(21)), `All 21 clean Algebra attempts must pass the topic; saw "${finalText}".`);
+  const progressNodeClass = await page.locator(`[data-progress-skill="${algebraRegionId}"]`).getAttribute('class');
+  assert(String(progressNodeClass || '').includes('is-complete'), 'Algebra topic must be marked complete only after all 21 clean correct attempts.');
+}
+
+async function checkAlgebraReviewPageFlow(page) {
+  await waitForStaticEnhancement(page, reviewPagePath);
+  await writeProgress(page, progressWithAttempts([
+    {
+      attemptId: 'algebra_wrong_method',
+      course: 'p3',
+      topic: 'Structure Before Expansion',
+      skillId: 'p3_alg_structure_rearrangement',
+      checkId: 'sc-alg-structure-first-bridge-foundation-001',
+      submittedAnswer: 'expand',
+      isCorrect: false,
+      usedHint: false,
+      revealedAnswer: false,
+      revealedRepairStep: false,
+      mistakeTags: ['method choice'],
+      timestamp: '2026-06-11T00:08:00.000Z',
+      regionId: algebraRegionId,
+    },
+    {
+      attemptId: 'algebra_clean_correct',
+      course: 'p3',
+      topic: 'Clean Algebra Should Not Appear',
+      skillId: 'p3_alg_polynomial_remainder_factor',
+      checkId: 'sc-alg-remainder-factor-foundation-001',
+      submittedAnswer: '-2',
+      isCorrect: true,
+      usedHint: false,
+      revealedAnswer: false,
+      revealedRepairStep: false,
+      mistakeTags: ['method choice'],
+      timestamp: '2026-06-11T00:09:00.000Z',
+      regionId: algebraRegionId,
+    },
+  ]));
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render seeded Algebra mistake history.');
+  const reviewText = await visibleText(page.locator('[data-review-groups]'));
+  assert(reviewText.includes('method choice'), 'Algebra mistake history must group by mistake tag.');
+  assert(reviewText.includes('Structure Before Expansion'), 'Algebra mistake history must list the Algebra candidate.');
+  assert(!reviewText.includes('Clean Algebra Should Not Appear'), 'Clean correct Algebra attempts must not appear as mistake-review candidates.');
+}
+
 async function checkComplexNumbersFullTopicPage(page) {
   await waitForStaticEnhancement(page, complexSkillPagePath);
   await clearProgress(page);
@@ -848,7 +1145,7 @@ async function checkReviewPageFlow(page) {
   assert(!reviewText.includes('Should Not Appear'), 'Clean correct attempts must not appear as mistake-review candidates.');
 }
 
-for (const pagePath of [skillPagePath, complexSkillPagePath, reviewPagePath]) {
+for (const pagePath of [skillPagePath, algebraSkillPagePath, complexSkillPagePath, reviewPagePath]) {
   assert(existsSync(path.join(siteRoot, pagePath)), `Required generated page is missing: ${pagePath}`);
 }
 
@@ -862,12 +1159,17 @@ try {
   await checkLogExpRepresentativeAnswerTypes(page);
   await checkLogExpRevealRepairCannotPass(page);
   await checkLogExpFullTopicPassRule(page);
+  await checkAlgebraFullTopicPage(page);
+  await checkAlgebraRepresentativeAnswerTypes(page);
+  await checkAlgebraRevealRepairCannotPass(page);
+  await checkAlgebraFullTopicPassRule(page);
   await checkComplexNumbersFullTopicPage(page);
   await checkComplexRepresentativeAnswerTypes(page);
   await checkComplexRevealRepairCannotPass(page);
   await checkComplexFullTopicPassRule(page);
   await checkReviewPageFlow(page);
   await checkLogExpReviewPageFlow(page);
+  await checkAlgebraReviewPageFlow(page);
   await checkComplexReviewPageFlow(page);
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

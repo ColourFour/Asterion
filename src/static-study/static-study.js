@@ -449,11 +449,18 @@
   }
 
   function parseComplex(value) {
-    var compact = compactAnswerText(afterEquals(value)).replace(/\*/g, '').replace(/j$/i, 'i');
+    var compact = compactAnswerText(afterEquals(value)).replace(/\*/g, '').replace(/j/gi, 'i');
     if (!compact) return undefined;
     if (!compact.includes('i')) {
       var realOnly = parseSimpleNumber(compact);
       return realOnly === undefined ? undefined : { real: realOnly, imaginary: 0 };
+    }
+    var imaginaryFirst = compact.match(/^([+-]?\d*(?:\.\d+)?(?:\/[+-]?\d+(?:\.\d+)?)?)i([+-].+)$/);
+    if (imaginaryFirst) {
+      var firstImaginary = parseImaginaryCoefficient(imaginaryFirst[1]);
+      var firstReal = parseSimpleNumber(imaginaryFirst[2]);
+      if (firstReal === undefined || firstImaginary === undefined) return undefined;
+      return { real: firstReal, imaginary: firstImaginary };
     }
     if (!compact.endsWith('i') || compact.indexOf('i') !== compact.length - 1) return undefined;
     var withoutI = compact.slice(0, -1);

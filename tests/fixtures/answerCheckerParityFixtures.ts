@@ -128,6 +128,19 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     },
   },
   {
+    name: 'complex-number imaginary-first notation',
+    spec: { answerType: 'complex-number', acceptedAnswers: ['3 + 4i'] },
+    submittedAnswer: '4i + 3',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: '3 + 4i',
+      matchedAcceptedAnswer: '3 + 4i',
+      reason: 'Matched complex number components within tolerance.',
+      answerType: 'complex-number',
+      unsupported: false,
+    },
+  },
+  {
     name: 'empty input rejection',
     spec: { answerType: 'numeric', acceptedAnswers: ['4'] },
     submittedAnswer: '   ',

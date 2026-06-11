@@ -82,12 +82,12 @@ describe('P3 Skill Check machine-checkable data', () => {
   });
 
   it('labels not-yet-migrated items instead of treating them as checkable', () => {
-    const summary = skillCheckCheckabilityForItem(requireItem('sc-alg-modulus-foundation-001'));
+    const summary = skillCheckCheckabilityForItem(requireItem('sc-trig-reciprocal-functions-foundation-001'));
 
     expect(summary).toEqual({
-      itemId: 'sc-alg-modulus-foundation-001',
-      regionId: 'algebra',
-      skillId: 'p3_alg_modulus_cases',
+      itemId: 'sc-trig-reciprocal-functions-foundation-001',
+      regionId: 'trigonometry',
+      skillId: 'p3_trig_reciprocal_double_angle',
       status: 'not-yet-checkable',
       reason: 'Not yet migrated to Phase 3 machine-checkable answer fields.',
     });
@@ -107,6 +107,35 @@ describe('P3 Skill Check machine-checkable data', () => {
       'sc-complex-cartesian-conjugate-foundation-001',
     ]));
     expect(notYet.length).toBeGreaterThan(0);
+  });
+
+  it('reports the current migrated-topic QA counts accurately', () => {
+    const report = skillCheckCheckabilityReport();
+    const deterministic = report.filter((item) => item.status === 'deterministically-checkable');
+    const notYet = report.filter((item) => item.status === 'not-yet-checkable');
+    const unsupported = report.filter((item) => item.status === 'unsupported-answer-form');
+
+    expect(report).toHaveLength(159);
+    expect(deterministic).toHaveLength(51);
+    expect(notYet).toHaveLength(108);
+    expect(unsupported).toHaveLength(0);
+    expect(deterministic.map((item) => item.regionId)).toEqual(expect.arrayContaining([
+      'algebra',
+      'complex-numbers',
+      'logarithmic-and-exponential-functions',
+    ]));
+  });
+
+  it('keeps the three fully migrated topic QA summaries complete', () => {
+    expect([
+      skillCheckTopicMigrationSummary('complex-numbers'),
+      skillCheckTopicMigrationSummary('logarithmic-and-exponential-functions'),
+      skillCheckTopicMigrationSummary('algebra'),
+    ]).toMatchObject([
+      { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 18, checkableChecks: 18, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 21, checkableChecks: 21, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+    ]);
   });
 
   it('passes representative migrated checks through the deterministic answer checker', () => {
@@ -173,7 +202,42 @@ describe('P3 Skill Check machine-checkable data', () => {
     expectAccepted('sc-log-linearisation-core-001', '(3, 2)');
   });
 
+  it('reports Algebra as the third complete topic migration batch', () => {
+    const summary = skillCheckTopicMigrationSummary('algebra');
+
+    expect(summary).toEqual({
+      regionId: 'algebra',
+      totalChecks: 21,
+      checkableChecks: 21,
+      uncheckableChecks: 0,
+      unsupportedAnswerReasons: [],
+      answerTypes: ['coordinate', 'exact-text', 'expression-text', 'interval', 'multi-value', 'numeric'],
+    });
+  });
+
+  it('passes representative migrated Algebra checks through the answer checker', () => {
+    expectAccepted('sc-alg-modulus-foundation-001', ['2', '-8/3']);
+    expectAccepted('sc-alg-modulus-challenge-001', 'x>1 or x<-1/2');
+    expectAccepted('sc-alg-polynomial-division-foundation-001', 'divide-leading, multiply-back, subtract, continue');
+    expectAccepted('sc-alg-polynomial-division-core-001', 'x^2+5x+9, 23');
+    expectAccepted('sc-alg-polynomial-division-challenge-001', 'x^2-x+3, 4');
+    expectAccepted('sc-alg-remainder-factor-foundation-001', '-2');
+    expectAccepted('sc-alg-remainder-factor-core-001', '4.25');
+    expectAccepted('sc-alg-remainder-factor-challenge-001', '(0, -7)');
+    expectAccepted('sc-alg-partial-fractions-foundation-001', 'B/(x+1)+A/(x-2)');
+    expectAccepted('sc-alg-partial-fractions-core-001', 'A/x+B/(x-1)+C/(x-1)^2');
+    expectAccepted('sc-alg-partial-fractions-challenge-001', 'A/(x+1)+(Bx+C)/(x^2+2), A/(x-2)+B/(x+1), A/x+B/(x-1)+C/(x-1)^2');
+    expectAccepted('sc-alg-binomial-challenge-001', '-72');
+    expectAccepted('sc-alg-structure-first-bridge-foundation-001', 'u=x^2+2x');
+    expectAccepted('sc-alg-structure-first-bridge-core-001', 'x+2, x!=3');
+    expectAccepted('sc-alg-structure-first-bridge-challenge-001', '1, -4, -1');
+    expectAccepted('sc-alg-discriminant-root-conditions-foundation-001', 'D=b^2-4ac');
+    expectAccepted('sc-alg-discriminant-root-conditions-core-001', 'two equal real roots');
+    expectAccepted('sc-alg-discriminant-root-conditions-challenge-001', '6, -6');
+  });
+
   it('accepts audited brittleness variants for fully migrated topics', () => {
+    expectAccepted('sc-complex-cartesian-conjugate-foundation-001', '4i + 3');
     expectAccepted('sc-complex-cartesian-conjugate-foundation-001', '3 + 4j');
     expectAccepted('sc-complex-modulus-argument-core-001', '0.75pi');
     expectAccepted('sc-complex-modulus-argument-challenge-001', 'sqrt(3)+i');
@@ -186,5 +250,10 @@ describe('P3 Skill Check machine-checkable data', () => {
     expectAccepted('sc-log-natural-foundation-001', 'ln(7)/2');
     expectAccepted('sc-log-natural-core-001', 'ln(4)/3');
     expectAccepted('sc-log-exponential-challenge-001', 'x<ln(4)/2');
+    expectAccepted('sc-alg-polynomial-division-core-001', 'quotient x^2+5x+9, remainder 23');
+    expectAccepted('sc-alg-polynomial-division-challenge-001', 'quotient x^2-x+3, remainder 4');
+    expectAccepted('sc-alg-structure-first-bridge-core-001', 'x!=3, x+2');
+    expectAccepted('sc-alg-remainder-factor-challenge-001', 'a=0, b=-7');
+    expectAccepted('sc-alg-binomial-core-001', 'x > -1/3 and x < 1/3');
   });
 });
