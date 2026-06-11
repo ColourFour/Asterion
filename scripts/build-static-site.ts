@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
+import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3ExamLadder, type P3MappedExamQuestionIdsBySkill } from '../src/data/p3ExamLadders';
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
 import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
 import {
@@ -50,6 +51,7 @@ interface TopicContext {
 
 interface P3SkillCoverageSummary {
   mappedExamQuestionCount?: number;
+  mappedExamQuestionIds: string[];
 }
 
 interface P3SkillContractAvailability {
@@ -62,6 +64,7 @@ interface P3SkillContractPageRow {
   skill: P3SkillContractEntry;
   topic: StudyTopic;
   availability: P3SkillContractAvailability;
+  examLadder: P3ExamLadder;
   mappedExamQuestionCount?: number;
   statusLabel: 'Ready' | 'Needs Field Guide' | 'Needs Skill Check' | 'Needs Exam Mapping' | 'Draft';
 }
@@ -340,13 +343,18 @@ function p3SkillCoverageById(report: unknown): Map<string, P3SkillCoverageSummar
       skill_id?: unknown;
       trainable_canonical_question_count?: unknown;
       canonical_source_question_count?: unknown;
+      resolved_trainable_canonical_question_ids?: unknown;
     };
     if (typeof record.skill_id !== 'string') return [];
+    const mappedExamQuestionIds = Array.isArray(record.resolved_trainable_canonical_question_ids)
+      ? record.resolved_trainable_canonical_question_ids.filter((id): id is string => typeof id === 'string')
+      : [];
     const count = typeof record.trainable_canonical_question_count === 'number'
       ? record.trainable_canonical_question_count
       : record.canonical_source_question_count;
     return [[record.skill_id, {
-      mappedExamQuestionCount: typeof count === 'number' ? count : undefined,
+      mappedExamQuestionCount: typeof count === 'number' ? count : mappedExamQuestionIds.length,
+      mappedExamQuestionIds,
     }]];
   }));
 }
@@ -379,13 +387,24 @@ function p3SkillContractStatusLabel(
 
 function p3SkillContractRows(data: StaticSiteData): P3SkillContractPageRow[] {
   const coverageById = p3SkillCoverageById(data.p3SkillCoverageReport);
+  const mappedQuestionIdsBySkill = Object.fromEntries(Array.from(coverageById, ([skillId, coverage]) => [
+    skillId,
+    coverage.mappedExamQuestionIds,
+  ])) as P3MappedExamQuestionIdsBySkill;
+  const laddersBySkill = new Map(buildP3ExamLaddersFromMappedQuestions(mappedQuestionIdsBySkill).map((ladder) => [
+    ladder.skillId,
+    ladder,
+  ]));
   return P3_SKILL_CONTRACT.map((skill) => {
     const coverage = coverageById.get(skill.id);
     const availability = p3SkillContractAvailability(skill, coverage);
+    const examLadder = laddersBySkill.get(skill.id);
+    if (!examLadder) throw new Error(`Missing P3 exam ladder for ${skill.id}`);
     return {
       skill,
       topic: topicForOfficialTopic(skill.officialTopic),
       availability,
+      examLadder,
       mappedExamQuestionCount: coverage?.mappedExamQuestionCount,
       statusLabel: p3SkillContractStatusLabel(skill, availability),
     };
@@ -978,6 +997,17 @@ function renderContractAvailabilityLinks(pagePath: string, row: P3SkillContractP
   return `<div class="contract-resource-list">${links.join('')}</div>`;
 }
 
+function renderExamTriggerList(skill: P3SkillContractEntry): string {
+  return `
+    <section class="contract-trigger-section" aria-label="Exam triggers for ${escapeRawAttr(skill.title)}">
+      <h4>Exam triggers</h4>
+      <ul class="contract-trigger-list">
+        ${skill.examTriggers.map((trigger) => `<li>${escapeRawHtml(trigger)}</li>`).join('')}
+      </ul>
+    </section>
+  `;
+}
+
 function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPagePath()): string {
   const groups = p3SkillContractRowsByTopic(data);
   const totalSkills = P3_SKILL_CONTRACT.length;
@@ -1016,6 +1046,7 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
               <ul class="contract-checklist">
                 ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
               </ul>
+              ${renderExamTriggerList(row.skill)}
               ${renderContractAvailabilityLinks(pagePath, row)}
             </article>
           `).join('')}
@@ -1034,6 +1065,11 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
 
 function availabilityText(available: boolean): string {
   return available ? 'Available' : 'Missing';
+}
+
+function ladderAvailabilityText(row: P3SkillContractPageRow, ladderLevel: typeof P3_EXAM_LADDER_LEVELS[number]): string {
+  const bucket = row.examLadder.levels[ladderLevel];
+  return bucket.status === 'populated' ? `Available (${bucket.questionIds.length})` : 'Missing';
 }
 
 function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPagePath()): string {
@@ -1068,6 +1104,10 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
               <th>Skill Check</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
+              <th>Easy</th>
+              <th>Standard</th>
+              <th>Hard</th>
+              <th>Mixed</th>
               <th>Readiness</th>
               <th>Notes / review flags</th>
             </tr>
@@ -1082,6 +1122,9 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
                 <td>${availabilityText(row.availability.skillCheck)}</td>
                 <td>${availabilityText(row.availability.examTraining)}</td>
                 <td>${typeof row.mappedExamQuestionCount === 'number' ? row.mappedExamQuestionCount : 'Unknown'}</td>
+                ${P3_EXAM_LADDER_LEVELS.map((ladderLevel) => `
+                  <td data-ladder-level="${escapeRawAttr(ladderLevel)}">${escapeRawHtml(ladderAvailabilityText(row, ladderLevel))}</td>
+                `).join('')}
                 <td><span class="contract-status contract-status-${escapeRawAttr(statusClassName(row.statusLabel))}">${escapeRawHtml(row.statusLabel)}</span></td>
                 <td>${escapeRawHtml([...(row.skill.reviewFlags ?? []), row.skill.notes].filter(Boolean).join('; ') || 'None')}</td>
               </tr>

@@ -125,6 +125,10 @@ function visibleBodyText(html) {
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
     .replace(/&#(?:x[0-9a-f]+|\d+);/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -133,6 +137,25 @@ function visibleBodyText(html) {
 function contractSkillIds() {
   const source = readFileSync(path.join(repoRoot, 'src/data/p3SkillContract.ts'), 'utf8');
   return new Set(Array.from(source.matchAll(/\bid:\s*'([^']+)'/g)).map((match) => match[1]));
+}
+
+function contractExamTriggersBySkillId() {
+  const source = readFileSync(path.join(repoRoot, 'src/data/p3SkillContract.ts'), 'utf8');
+  const entries = [...source.matchAll(/\{\s*id:\s*'([^']+)'[\s\S]*?examTriggers:\s*\[([\s\S]*?)\],[\s\S]*?\n\s*\}/g)];
+  return new Map(entries.map((match) => [
+    match[1],
+    [...match[2].matchAll(/'([^']+)'/g)].map((trigger) => trigger[1]),
+  ]));
+}
+
+function mappedExamQuestionCountsBySkillId() {
+  const report = readJson('tools/content_lab/outputs/p3_skill_coverage_report.json');
+  return new Map(report.skills.map((skill) => [
+    skill.skill_id,
+    Array.isArray(skill.resolved_trainable_canonical_question_ids)
+      ? skill.resolved_trainable_canonical_question_ids.length
+      : skill.trainable_canonical_question_count,
+  ]));
 }
 
 function dataAttributeValues(html, attribute) {
@@ -238,6 +261,8 @@ for (const page of requiredPages) {
 }
 
 const contractIds = contractSkillIds();
+const contractTriggers = contractExamTriggersBySkillId();
+const mappedExamCounts = mappedExamQuestionCountsBySkillId();
 for (const page of p3ContractPages) {
   const fullPath = path.join(siteRoot, page);
   if (!existsSync(fullPath)) {
@@ -270,6 +295,28 @@ for (const page of p3ContractPages) {
 }
 
 const needToKnowHtml = readFileSync(path.join(siteRoot, 'p3/need-to-know/index.html'), 'utf8');
+if (!needToKnowHtml.includes('contract-trigger-list')) {
+  console.error('P3 Need to Know page does not render exam trigger UI.');
+  process.exit(1);
+}
+for (const [skillId, triggers] of contractTriggers) {
+  if (!triggers.length) {
+    console.error(`P3 contract skill has no machine-readable exam triggers: ${skillId}`);
+    process.exit(1);
+  }
+  const skillCardMatch = needToKnowHtml.match(new RegExp(`<article class="contract-skill-card" data-skill-id="${skillId}">([\\s\\S]*?)<\\/article>`));
+  if (!skillCardMatch) {
+    console.error(`P3 Need to Know page is missing trigger UI card for ${skillId}`);
+    process.exit(1);
+  }
+  const skillCardText = visibleBodyText(skillCardMatch[1]);
+  const missingTrigger = triggers.find((trigger) => !skillCardText.includes(trigger));
+  if (missingTrigger) {
+    console.error(`P3 Need to Know page is missing trigger "${missingTrigger}" for ${skillId}`);
+    process.exit(1);
+  }
+}
+
 const contractLinks = hrefsWithCanonicalPaths(needToKnowHtml);
 if (!contractLinks.length) {
   console.error('P3 Need to Know page has no generated Field Guide, Skill Check, or Exam Training links.');
@@ -295,6 +342,37 @@ const contentQaText = visibleBodyText(readFileSync(path.join(siteRoot, 'p3/conte
 if (/\b(?:P1|M1|S1)\b/.test(contentQaText) && !contentQaText.includes('P1, M1, and S1 are not part of this contract.')) {
   console.error('P3 Content QA must not promote P1, M1, or S1 as ready contract courses.');
   process.exit(1);
+}
+const contentQaHtml = readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8');
+for (const ladderLevel of ['easy', 'standard', 'hard', 'mixed']) {
+  if (!contentQaHtml.includes(`data-ladder-level="${ladderLevel}"`)) {
+    console.error(`P3 Content QA does not surface the ${ladderLevel} ladder bucket.`);
+    process.exit(1);
+  }
+}
+for (const skillId of contractIds) {
+  const rowMatch = contentQaHtml.match(new RegExp(`<tr data-skill-id="${skillId}">([\\s\\S]*?)<\\/tr>`));
+  if (!rowMatch) {
+    console.error(`P3 Content QA is missing ladder row for ${skillId}`);
+    process.exit(1);
+  }
+  const rowHtml = rowMatch[1];
+  for (const ladderLevel of ['easy', 'standard', 'hard']) {
+    if (!new RegExp(`data-ladder-level="${ladderLevel}"[\\s\\S]*?>Missing<`).test(rowHtml)) {
+      console.error(`P3 Content QA must show missing ${ladderLevel} ladder coverage for ${skillId}.`);
+      process.exit(1);
+    }
+  }
+  const expectedMixedCount = mappedExamCounts.get(skillId);
+  if (typeof expectedMixedCount === 'number') {
+    const mixedPattern = expectedMixedCount > 0
+      ? `data-ladder-level="mixed"[\\s\\S]*?>Available \\(${expectedMixedCount}\\)<`
+      : 'data-ladder-level="mixed"[\\s\\S]*?>Missing<';
+    if (!new RegExp(mixedPattern).test(rowHtml)) {
+      console.error(`P3 Content QA mixed ladder count for ${skillId} does not match reviewed mapped exam data.`);
+      process.exit(1);
+    }
+  }
 }
 
 for (const course of ['p1', 'p3', 'm1', 's1']) {

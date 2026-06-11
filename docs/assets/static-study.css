@@ -617,6 +617,36 @@ main > * {
   color: var(--muted-strong);
 }
 
+.contract-trigger-section {
+  display: grid;
+  gap: 8px;
+}
+
+.contract-trigger-section h4 {
+  margin: 0;
+  color: var(--ink-warm);
+  font-size: 0.9rem;
+}
+
+.contract-trigger-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contract-trigger-list li {
+  padding: 5px 8px;
+  border: 1px solid rgba(63, 113, 98, 0.24);
+  border-radius: 6px;
+  color: var(--sage-dark);
+  background: rgba(220, 233, 223, 0.52);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .contract-resource-list {
   display: flex;
   flex-wrap: wrap;
@@ -654,7 +684,7 @@ main > * {
 
 .contract-qa-table {
   width: 100%;
-  min-width: 1120px;
+  min-width: 1320px;
   border-collapse: collapse;
   color: var(--ink);
   font-size: 0.9rem;
