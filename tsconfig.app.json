@@ -34,6 +34,7 @@
     "src/lib/topicRouting.ts",
     "src/lib/topicStudy.ts",
     "src/lib/worldMap.ts",
+    "src/skill-checks/**/*.ts",
     "src/types.ts",
     "src/vite-env.d.ts"
   ],

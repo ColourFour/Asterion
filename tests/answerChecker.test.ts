@@ -1,0 +1,175 @@
+import { describe, expect, it } from 'vitest';
+import { checkSkillCheckAnswer, type SkillCheckAnswerSpec } from '../src/skill-checks/answerChecker';
+
+function check(spec: SkillCheckAnswerSpec, submittedAnswer: string | string[]) {
+  return checkSkillCheckAnswer({ spec, submittedAnswer });
+}
+
+describe('Skill Check answer checker', () => {
+  it('accepts numeric answers within tolerance', () => {
+    const result = check(
+      { answerType: 'numeric', acceptedAnswers: ['2.5'], tolerance: 0.01 },
+      '2.504',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      answerType: 'numeric',
+      matchedAcceptedAnswer: '2.5',
+      unsupported: false,
+    });
+  });
+
+  it('treats integers, decimals, and simple fractions as equivalent numeric values', () => {
+    expect(check({ answerType: 'numeric', acceptedAnswers: ['5/2'] }, '2.5').isCorrect).toBe(true);
+    expect(check({ answerType: 'numeric', acceptedAnswers: ['2.5'] }, '\\frac{5}{2}').isCorrect).toBe(true);
+    expect(check({ answerType: 'numeric', acceptedAnswers: ['3'] }, '3.0').isCorrect).toBe(true);
+  });
+
+  it('rejects empty and invalid numeric input', () => {
+    const empty = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, '   ');
+    const invalid = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, 'four');
+
+    expect(empty).toMatchObject({
+      isCorrect: false,
+      normalizedSubmittedAnswer: '',
+      reason: 'Submitted answer is empty.',
+      unsupported: false,
+    });
+    expect(invalid).toMatchObject({
+      isCorrect: false,
+      reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.',
+      unsupported: false,
+    });
+  });
+
+  it('normalizes exact text answers without inferring new meaning', () => {
+    const result = check(
+      { answerType: 'exact-text', acceptedAnswers: ['one repeated real root'] },
+      '  One   repeated real root. ',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: 'one repeated real root',
+      matchedAcceptedAnswer: 'one repeated real root',
+    });
+  });
+
+  it('checks expression text by normalized form only', () => {
+    const accepted = check(
+      { answerType: 'expression-text', acceptedAnswers: ['6x(x^2+1)^2'] },
+      '6 x ( x^2 + 1 ) ^2',
+    );
+    const notInferred = check(
+      { answerType: 'expression-text', acceptedAnswers: ['(x+1)^2'] },
+      'x^2+2x+1',
+    );
+
+    expect(accepted.isCorrect).toBe(true);
+    expect(notInferred).toMatchObject({
+      isCorrect: false,
+      reason: 'Expression did not match an accepted normalized text form. Algebraic equivalence is not inferred.',
+    });
+  });
+
+  it('supports order-insensitive multi-value checking by default', () => {
+    const result = check(
+      { answerType: 'multi-value', acceptedAnswers: ['-1, 1, 5/2'] },
+      ['2.5', '1', '-1'],
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      matchedAcceptedAnswer: '-1, 1, 5/2',
+      unsupported: false,
+    });
+  });
+
+  it('can require ordered multi-value checking when configured', () => {
+    const spec: SkillCheckAnswerSpec = {
+      answerType: 'multi-value',
+      acceptedAnswers: ['-1, 1, 5/2'],
+      orderMatters: true,
+    };
+
+    expect(check(spec, ['-1', '1', '2.5']).isCorrect).toBe(true);
+    expect(check(spec, ['2.5', '1', '-1']).isCorrect).toBe(false);
+  });
+
+  it('checks numeric coordinate tuples', () => {
+    const result = check(
+      { answerType: 'coordinate', acceptedAnswers: ['(3, -1)'] },
+      ' ( 3.0 , -1 ) ',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(3, -1)',
+      matchedAcceptedAnswer: '(3, -1)',
+    });
+  });
+
+  it('checks bounded intervals across practical equivalent forms', () => {
+    const open = check(
+      { answerType: 'interval', acceptedAnswers: ['1 < x < 4'] },
+      '(1, 4)',
+    );
+    const closedOpen = check(
+      { answerType: 'interval', acceptedAnswers: ['[1, 4)'] },
+      'x >= 1 and x < 4',
+    );
+
+    expect(open).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(1, 4)',
+      matchedAcceptedAnswer: '1 < x < 4',
+    });
+    expect(closedOpen).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '[1, 4)',
+      matchedAcceptedAnswer: '[1, 4)',
+    });
+  });
+
+  it('fails closed for unsupported interval unions', () => {
+    const result = check(
+      { answerType: 'interval', acceptedAnswers: ['1 < x < 4'] },
+      'x < 1 or x > 4',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: false,
+      reason: 'Submitted interval is not a supported bounded interval form.',
+      unsupported: false,
+    });
+  });
+
+  it('checks complex numbers in a + bi form', () => {
+    const result = check(
+      { answerType: 'complex-number', acceptedAnswers: ['2 + 3i'] },
+      'z = 2+3i',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '2 + 3i',
+      matchedAcceptedAnswer: '2 + 3i',
+    });
+  });
+
+  it('fails closed for unsupported answer types', () => {
+    const result = check(
+      { answerType: 'symbolic-proof', acceptedAnswers: ['valid proof'] },
+      'valid proof',
+    );
+
+    expect(result).toEqual({
+      isCorrect: false,
+      normalizedSubmittedAnswer: 'valid proof',
+      reason: 'Unsupported answer type: symbolic-proof.',
+      answerType: 'symbolic-proof',
+      unsupported: true,
+    });
+  });
+});

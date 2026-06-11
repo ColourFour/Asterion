@@ -1,6 +1,7 @@
 import type { QuickCheckOption, QuickCheckTwoValueField } from '../types';
 import type { P3RegionId, P3SkillId } from '../lib/p3SkillContract';
 import type { SkillCheckComplexity, SkillCheckInputType, SkillCheckItem } from './skillCheckItems';
+import type { SkillCheckAnswerType } from '../skill-checks/answerChecker';
 
 const SKILL_MAP_SOURCE = 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json' as const;
 
@@ -19,6 +20,13 @@ interface ChoiceSpec {
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
+  answerType?: SkillCheckAnswerType;
+  acceptedAnswers?: string[];
+  orderInsensitive?: boolean;
+  repairStep?: string;
+  mistakeTags?: string[];
+  checkable?: boolean;
+  unsupportedAnswerReason?: string;
   nudge: string;
   methodCue?: string;
   firstStep?: string;
@@ -64,6 +72,13 @@ function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
     displayPrefix: spec.displayPrefix,
     displaySuffix: spec.displaySuffix,
     tolerance: spec.tolerance,
+    answerType: spec.answerType,
+    acceptedAnswers: spec.acceptedAnswers,
+    orderInsensitive: spec.orderInsensitive,
+    repairStep: spec.repairStep,
+    mistakeTags: spec.mistakeTags,
+    checkable: spec.checkable,
+    unsupportedAnswerReason: spec.unsupportedAnswerReason,
     complexity: spec.complexity,
     hints: {
       nudge: spec.nudge,
@@ -379,6 +394,11 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         prompt: 'What is the conjugate of $3-4i$?',
         correct: '$3+4i$',
         distractors: ['$-3+4i$', '$-3-4i$', '$4+3i$'],
+        checkable: true,
+        answerType: 'complex-number',
+        acceptedAnswers: ['3+4i'],
+        repairStep: 'Keep the real part and change only the sign of the imaginary part.',
+        mistakeTags: ['complex-conjugate'],
         nudge: 'Only the sign of the imaginary part changes.',
         methodCue: '$a+bi$ has conjugate $a-bi$.',
         firstStep: 'Keep the real part $3$.',

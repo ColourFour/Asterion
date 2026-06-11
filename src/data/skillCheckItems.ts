@@ -1,6 +1,8 @@
 import type { QuickCheckContract, QuickCheckOption, QuickCheckTwoValueField } from '../types';
 import type { CourseId } from './courses';
 import type { P3RegionId } from '../lib/p3SkillContract';
+import type { SkillCheckAnswerSpec, SkillCheckAnswerType } from '../skill-checks/answerChecker';
+import { SUPPORTED_SKILL_CHECK_ANSWER_TYPES } from '../skill-checks/answerChecker';
 import { REMAINING_REGION_SKILL_CHECK_ITEMS } from './remainingSkillCheckItems';
 
 export type SkillCheckInputType =
@@ -52,6 +54,13 @@ export interface SkillCheckItem {
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
+  answerType?: SkillCheckAnswerType;
+  acceptedAnswers?: string[];
+  orderInsensitive?: boolean;
+  repairStep?: string;
+  mistakeTags?: string[];
+  checkable?: boolean;
+  unsupportedAnswerReason?: string;
   visualTemplateId?: string;
   commonMistake?: string;
   complexity: SkillCheckComplexity;
@@ -69,6 +78,20 @@ export interface SkillCheckItem {
     markEventReviewed: boolean;
     affectsProgression: false;
   };
+}
+
+export type SkillCheckCheckabilityStatus =
+  | 'deterministically-checkable'
+  | 'not-yet-checkable'
+  | 'unsupported-answer-form';
+
+export interface SkillCheckCheckabilitySummary {
+  itemId: string;
+  regionId: string;
+  skillId: string;
+  status: SkillCheckCheckabilityStatus;
+  answerType?: SkillCheckAnswerType;
+  reason?: string;
 }
 
 const SKILL_MAP_SOURCE = 'tools/content_lab/skill_maps/caie_9709_p3_skill_map.json' as const;
@@ -136,6 +159,12 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Select every solution of $|x+2|=|3x|$.',
     inputType: 'checkbox',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'multi-value',
+    acceptedAnswers: ['-1/2, 1'],
+    orderInsensitive: true,
+    repairStep: 'Split the equation into $x+2=3x$ and $x+2=-3x$, then list both roots.',
+    mistakeTags: ['missed-case', 'modulus-equation'],
     expectedOptionIds: ['minus-half', 'one'],
     options: [
       { id: 'minus-half', label: '$x=-\\frac12$' },
@@ -490,6 +519,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Find the coefficient of $x$ in the expansion of $(1-2x)^{-2}$.',
     inputType: 'numeric',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'numeric',
+    acceptedAnswers: ['4'],
+    repairStep: 'Use the linear binomial term $nu$ with $n=-2$ and $u=-2x$.',
+    mistakeTags: ['binomial-linear-term', 'coefficient'],
     expectedAnswer: ['4', '$4'],
     complexity: 'foundation',
     hints: {
@@ -519,6 +553,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'State the interval of validity for expanding $(1+3x)^{-2}$.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'interval',
+    acceptedAnswers: ['-1/3 < x < 1/3'],
+    repairStep: 'Start from $|3x|<1$, then divide the whole inequality by $3$.',
+    mistakeTags: ['binomial-validity', 'interval-endpoint'],
     expectedOptionIds: ['thirds'],
     options: [
       { id: 'thirds', label: '$-\\frac13<x<\\frac13$' },
@@ -581,6 +620,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'Rewrite $\\log_2 32=5$ in exponential form.',
     inputType: 'multiple_choice',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'expression-text',
+    acceptedAnswers: ['2^5=32'],
+    repairStep: 'Use $\\log_a b=c \\iff a^c=b$ and keep the base as $2$.',
+    mistakeTags: ['log-form-conversion'],
     expectedOptionIds: ['correct'],
     options: [
       { id: 'correct', label: '$2^5=32$' },
@@ -616,6 +660,11 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     prompt: 'The point $(3,8)$ lies on $y=2^x$. Enter the matching point on $y=\\log_2x$.',
     inputType: 'two_value',
     validationMode: 'deterministic',
+    checkable: true,
+    answerType: 'coordinate',
+    acceptedAnswers: ['(8,3)'],
+    repairStep: 'Swap the coordinates of the point on the inverse graph.',
+    mistakeTags: ['inverse-graph', 'coordinate-swap'],
     fields: [
       { id: 'x', label: 'x-coordinate', expectedAnswer: '8', displayPrefix: '$x=$' },
       { id: 'y', label: 'y-coordinate', expectedAnswer: '3', displayPrefix: '$y=$' },
@@ -1224,6 +1273,41 @@ export function getSkillCheckItemsForCourseTopic(courseId: CourseId | undefined,
   ));
 }
 
+export function skillCheckAnswerSpecForItem(item: SkillCheckItem): SkillCheckAnswerSpec | undefined {
+  if (item.checkable !== true || !item.answerType || !item.acceptedAnswers?.length) return undefined;
+  return {
+    answerType: item.answerType,
+    acceptedAnswers: item.acceptedAnswers,
+    tolerance: item.tolerance,
+    orderMatters: item.answerType === 'multi-value' ? !(item.orderInsensitive ?? true) : undefined,
+  };
+}
+
+export function skillCheckCheckabilityForItem(item: SkillCheckItem): SkillCheckCheckabilitySummary {
+  if (item.checkable === true) {
+    return {
+      itemId: item.itemId,
+      regionId: item.regionId,
+      skillId: item.skillId,
+      status: 'deterministically-checkable',
+      answerType: item.answerType,
+    };
+  }
+
+  const reason = item.unsupportedAnswerReason ?? 'Not yet migrated to Phase 3 machine-checkable answer fields.';
+  return {
+    itemId: item.itemId,
+    regionId: item.regionId,
+    skillId: item.skillId,
+    status: item.unsupportedAnswerReason ? 'unsupported-answer-form' : 'not-yet-checkable',
+    reason,
+  };
+}
+
+export function skillCheckCheckabilityReport(items: SkillCheckItem[] = AUTHORED_SKILL_CHECK_ITEMS): SkillCheckCheckabilitySummary[] {
+  return items.map(skillCheckCheckabilityForItem);
+}
+
 export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
   const errors: string[] = [];
   if (!item.itemId.trim()) errors.push('missing itemId');
@@ -1243,6 +1327,21 @@ export function validateSkillCheckItemContract(item: SkillCheckItem): string[] {
     }
     if (item.inputType === 'two_value' && !item.fields?.every((field) => field.expectedAnswer)) {
       errors.push('two_value item missing field expectedAnswer');
+    }
+  }
+  const hasMachineAnswerData = Boolean(item.answerType || item.acceptedAnswers?.length);
+  if (item.checkable === true) {
+    if (!item.answerType) errors.push('checkable item missing answerType');
+    if (item.answerType && !SUPPORTED_SKILL_CHECK_ANSWER_TYPES.includes(item.answerType)) errors.push('checkable item has unsupported answerType');
+    if (!item.acceptedAnswers?.length) errors.push('checkable item missing acceptedAnswers');
+    if (item.answerType === 'multi-value' && typeof item.orderInsensitive !== 'boolean') {
+      errors.push('multi-value checkable item missing orderInsensitive flag');
+    }
+    if (item.unsupportedAnswerReason) errors.push('checkable item must not set unsupportedAnswerReason');
+  } else {
+    if (hasMachineAnswerData) errors.push('machine-check answer fields require checkable=true');
+    if (item.checkable === false && !item.unsupportedAnswerReason?.trim()) {
+      errors.push('uncheckable item missing unsupportedAnswerReason');
     }
   }
   if (!item.hints.nudge.trim()) errors.push('missing nudge');

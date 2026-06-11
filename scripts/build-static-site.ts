@@ -8,6 +8,7 @@ import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3Ex
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
 import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
 import {
+  skillCheckCheckabilityReport,
   skillCheckContractForItem,
   type SkillCheckItem,
 } from '../src/data/skillCheckItems';
@@ -65,8 +66,16 @@ interface P3SkillContractPageRow {
   topic: StudyTopic;
   availability: P3SkillContractAvailability;
   examLadder: P3ExamLadder;
+  skillCheckCheckability: P3SkillCheckabilitySummary;
   mappedExamQuestionCount?: number;
   statusLabel: 'Ready' | 'Needs Field Guide' | 'Needs Skill Check' | 'Needs Exam Mapping' | 'Draft';
+}
+
+interface P3SkillCheckabilitySummary {
+  deterministic: number;
+  notYetCheckable: number;
+  unsupported: number;
+  answerTypes: string[];
 }
 
 interface RenderPageOptions {
@@ -385,8 +394,45 @@ function p3SkillContractStatusLabel(
   return 'Draft';
 }
 
+function emptySkillCheckabilitySummary(): P3SkillCheckabilitySummary {
+  return {
+    deterministic: 0,
+    notYetCheckable: 0,
+    unsupported: 0,
+    answerTypes: [],
+  };
+}
+
+function p3SkillCheckabilityBySkill(): Map<string, P3SkillCheckabilitySummary> {
+  const bySkill = new Map<string, P3SkillCheckabilitySummary>();
+  for (const item of skillCheckCheckabilityReport()) {
+    const current = bySkill.get(item.skillId) ?? emptySkillCheckabilitySummary();
+    if (item.status === 'deterministically-checkable') {
+      current.deterministic += 1;
+      if (item.answerType && !current.answerTypes.includes(item.answerType)) current.answerTypes.push(item.answerType);
+    } else if (item.status === 'unsupported-answer-form') {
+      current.unsupported += 1;
+    } else {
+      current.notYetCheckable += 1;
+    }
+    bySkill.set(item.skillId, current);
+  }
+  return bySkill;
+}
+
+function skillCheckabilityText(summary: P3SkillCheckabilitySummary): string {
+  const parts = [
+    `${summary.deterministic} deterministic`,
+    `${summary.notYetCheckable} not yet`,
+  ];
+  if (summary.unsupported) parts.push(`${summary.unsupported} unsupported`);
+  if (summary.answerTypes.length) parts.push(`types: ${summary.answerTypes.sort().join(', ')}`);
+  return parts.join('; ');
+}
+
 function p3SkillContractRows(data: StaticSiteData): P3SkillContractPageRow[] {
   const coverageById = p3SkillCoverageById(data.p3SkillCoverageReport);
+  const checkabilityBySkill = p3SkillCheckabilityBySkill();
   const mappedQuestionIdsBySkill = Object.fromEntries(Array.from(coverageById, ([skillId, coverage]) => [
     skillId,
     coverage.mappedExamQuestionIds,
@@ -405,6 +451,7 @@ function p3SkillContractRows(data: StaticSiteData): P3SkillContractPageRow[] {
       topic: topicForOfficialTopic(skill.officialTopic),
       availability,
       examLadder,
+      skillCheckCheckability: checkabilityBySkill.get(skill.id) ?? emptySkillCheckabilitySummary(),
       mappedExamQuestionCount: coverage?.mappedExamQuestionCount,
       statusLabel: p3SkillContractStatusLabel(skill, availability),
     };
@@ -1077,6 +1124,12 @@ function ladderAvailabilityText(row: P3SkillContractPageRow, ladderLevel: typeof
 
 function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPagePath()): string {
   const rows = p3SkillContractRows(data);
+  const gradingSummary = rows.reduce((summary, row) => ({
+    deterministic: summary.deterministic + row.skillCheckCheckability.deterministic,
+    notYetCheckable: summary.notYetCheckable + row.skillCheckCheckability.notYetCheckable,
+    unsupported: summary.unsupported + row.skillCheckCheckability.unsupported,
+    answerTypes: Array.from(new Set([...summary.answerTypes, ...row.skillCheckCheckability.answerTypes])),
+  }), emptySkillCheckabilitySummary());
   const body = `
     ${renderHero(
       'P3 Content QA',
@@ -1088,6 +1141,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
     <section class="summary-card contract-qa-summary">
       <h2>Contract coverage snapshot</h2>
       <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
+      <p>Skill Check grading migration: ${escapeRawHtml(skillCheckabilityText(gradingSummary))}. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
     </section>
     <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
       <div class="section-heading">
@@ -1105,6 +1159,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
               <th>Skill title</th>
               <th>Field Guide</th>
               <th>Skill Check</th>
+              <th>Skill Check grading</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
               <th>Easy ladder</th>
@@ -1123,6 +1178,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
                 <td>${escapeRawHtml(row.skill.title)}</td>
                 <td>${availabilityText(row.availability.fieldGuide)}</td>
                 <td>${availabilityText(row.availability.skillCheck)}</td>
+                <td>${escapeRawHtml(skillCheckabilityText(row.skillCheckCheckability))}</td>
                 <td>${availabilityText(row.availability.examTraining)}</td>
                 <td>${typeof row.mappedExamQuestionCount === 'number' ? row.mappedExamQuestionCount : 'Unknown'}</td>
                 ${P3_EXAM_LADDER_LEVELS.map((ladderLevel) => `

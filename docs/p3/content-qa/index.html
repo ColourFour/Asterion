@@ -43,6 +43,7 @@
     <section class="summary-card contract-qa-summary">
       <h2>Contract coverage snapshot</h2>
       <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
+      <p>Skill Check grading migration: 6 deterministic; 153 not yet; types: complex-number, coordinate, expression-text, interval, multi-value, numeric. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
     </section>
     <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
       <div class="section-heading">
@@ -60,6 +61,7 @@
               <th>Skill title</th>
               <th>Field Guide</th>
               <th>Skill Check</th>
+              <th>Skill Check grading</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
               <th>Easy ladder</th>
@@ -78,6 +80,7 @@
                 <td>Choose algebraic structure before expanding</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -99,6 +102,7 @@
                 <td>Use polynomial division and remainder or factor theorem evidence</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -120,6 +124,7 @@
                 <td>Find binomial terms and coefficients efficiently</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>1 deterministic; 1 not yet; types: numeric</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -141,6 +146,7 @@
                 <td>State and use binomial expansion validity</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>1 deterministic; 0 not yet; types: interval</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -162,6 +168,7 @@
                 <td>Set up partial fractions from denominator structure</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>6</td>
 
@@ -183,6 +190,7 @@
                 <td>Split modulus equations or inequalities into valid cases</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>1 deterministic; 2 not yet; types: multi-value</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -204,6 +212,7 @@
                 <td>Use discriminant or root conditions as evidence</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -225,6 +234,7 @@
                 <td>Convert between logarithmic and exponential form</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>2 deterministic; 1 not yet; types: coordinate, expression-text</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -246,6 +256,7 @@
                 <td>Use log laws to solve logarithmic equations</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -267,6 +278,7 @@
                 <td>Solve exponential equations using matching bases or natural logs</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -288,6 +300,7 @@
                 <td>Reject invalid logarithmic roots using domain checks</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -309,6 +322,7 @@
                 <td>Linearise logarithmic or exponential relationships</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -330,6 +344,7 @@
                 <td>Handle log and exponential functions inside calculus questions</td>
                 <td>Missing</td>
                 <td>Missing</td>
+                <td>0 deterministic; 0 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -351,6 +366,7 @@
                 <td>Choose trig identities for proof or simplification</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -372,6 +388,7 @@
                 <td>Solve trig equations over a specified interval</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 0 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -393,6 +410,7 @@
                 <td>Use quadrant discipline to find every trig solution</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 0 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -414,6 +432,7 @@
                 <td>Rewrite a sin and cos combination in R-form</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -435,6 +454,7 @@
                 <td>Transform reciprocal and double-angle equations safely</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -456,6 +476,7 @@
                 <td>Name the differentiation method before differentiating</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 0 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -477,6 +498,7 @@
                 <td>Apply chain, product, and quotient rules accurately</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 9 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -498,6 +520,7 @@
                 <td>Use derivatives for stationary points, tangents, and normals</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -519,6 +542,7 @@
                 <td>Differentiate parametric equations using the derivative ratio</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -540,6 +564,7 @@
                 <td>Differentiate implicit log or exponential relations</td>
                 <td>Available</td>
                 <td>Missing</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>4</td>
 
@@ -561,6 +586,7 @@
                 <td>Choose a direct rule, substitution, parts, or algebraic rewrite</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 12 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -582,6 +608,7 @@
                 <td>Use integration by parts or substitution with correct setup</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -603,6 +630,7 @@
                 <td>Integrate rational functions using partial fractions</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -624,6 +652,7 @@
                 <td>Evaluate definite and improper integrals exactly</td>
                 <td>Available</td>
                 <td>Missing</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -645,6 +674,7 @@
                 <td>Justify roots using sign changes or graph evidence</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -666,6 +696,7 @@
                 <td>Apply an iteration formula consistently</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -687,6 +718,7 @@
                 <td>Control accuracy and rounding in numerical solutions</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 0 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -708,6 +740,7 @@
                 <td>Form and compare vector equations of lines</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -729,6 +762,7 @@
                 <td>Use scalar products for angles and perpendicular conditions</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -750,6 +784,7 @@
                 <td>Translate 3D geometric conditions into vector equations</td>
                 <td>Available</td>
                 <td>Missing</td>
+                <td>0 deterministic; 12 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -771,6 +806,7 @@
                 <td>Separate variables before integrating</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 6 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -792,6 +828,7 @@
                 <td>Apply initial conditions after integration</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -813,6 +850,7 @@
                 <td>Form differential equations from rate contexts</td>
                 <td>Available</td>
                 <td>Missing</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -834,6 +872,7 @@
                 <td>Use Cartesian complex arithmetic and conjugates</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>1 deterministic; 2 not yet; types: complex-number</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -855,6 +894,7 @@
                 <td>Move between Cartesian and modulus-argument form</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -876,6 +916,7 @@
                 <td>Interpret loci and regions on an Argand diagram</td>
                 <td>Available</td>
                 <td>Available</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
@@ -897,6 +938,7 @@
                 <td>Find complex powers and roots using the suitable form</td>
                 <td>Available</td>
                 <td>Missing</td>
+                <td>0 deterministic; 3 not yet</td>
                 <td>Available</td>
                 <td>5</td>
 
