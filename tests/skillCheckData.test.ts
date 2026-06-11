@@ -172,4 +172,19 @@ describe('P3 Skill Check machine-checkable data', () => {
     expectAccepted('sc-log-exponential-challenge-001', 'x<ln4/2');
     expectAccepted('sc-log-linearisation-core-001', '(3, 2)');
   });
+
+  it('accepts audited brittleness variants for fully migrated topics', () => {
+    expectAccepted('sc-complex-cartesian-conjugate-foundation-001', '3 + 4j');
+    expectAccepted('sc-complex-modulus-argument-core-001', '0.75pi');
+    expectAccepted('sc-complex-modulus-argument-challenge-001', 'sqrt(3)+i');
+    expectAccepted('sc-complex-modulus-argument-challenge-001', 'sqrt3+j');
+    expectAccepted('sc-complex-locus-foundation-001', 'circle centered at (2,0) with radius 3');
+    expectAccepted('sc-complex-locus-core-001', 'vertical line x=-1');
+    expectAccepted('sc-complex-locus-challenge-001', 'ray from 1+0i at angle pi/4 not including 1+0i');
+    expectAccepted('sc-complex-roots-challenge-001', '2j, -2j');
+    expectAccepted('sc-log-graph-foundation-001', '32 = 2^5');
+    expectAccepted('sc-log-natural-foundation-001', 'ln(7)/2');
+    expectAccepted('sc-log-natural-core-001', 'ln(4)/3');
+    expectAccepted('sc-log-exponential-challenge-001', 'x<ln(4)/2');
+  });
 });

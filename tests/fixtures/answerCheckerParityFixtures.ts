@@ -115,6 +115,19 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     },
   },
   {
+    name: 'complex-number j notation',
+    spec: { answerType: 'complex-number', acceptedAnswers: ['2 + 3i'] },
+    submittedAnswer: 'z = 2+3j',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: '2 + 3i',
+      matchedAcceptedAnswer: '2 + 3i',
+      reason: 'Matched complex number components within tolerance.',
+      answerType: 'complex-number',
+      unsupported: false,
+    },
+  },
+  {
     name: 'empty input rejection',
     spec: { answerType: 'numeric', acceptedAnswers: ['4'] },
     submittedAnswer: '   ',

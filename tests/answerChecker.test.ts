@@ -158,6 +158,19 @@ describe('Skill Check answer checker', () => {
     });
   });
 
+  it('accepts j as an imaginary-unit notation for complex numbers', () => {
+    const result = check(
+      { answerType: 'complex-number', acceptedAnswers: ['2 + 3i'] },
+      'z = 2+3j',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '2 + 3i',
+      matchedAcceptedAnswer: '2 + 3i',
+    });
+  });
+
   it('fails closed for unsupported answer types', () => {
     const result = check(
       { answerType: 'symbolic-proof', acceptedAnswers: ['valid proof'] },

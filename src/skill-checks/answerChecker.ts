@@ -265,7 +265,8 @@ function parseImaginaryCoefficient(value: string): number | undefined {
 
 function parseComplex(value: string): ComplexValue | undefined {
   const compact = compactText(afterEquals(value))
-    .replace(/\*/g, '');
+    .replace(/\*/g, '')
+    .replace(/j$/i, 'i');
   if (!compact) return undefined;
 
   if (!compact.includes('i')) {

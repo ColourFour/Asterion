@@ -15,6 +15,99 @@ const regionId = 'logarithmic-and-exponential-functions';
 const complexRegionId = 'complex-numbers';
 const logRequiredCheckCount = 18;
 
+const logChecks = [
+  {
+    checkId: 'sc-log-graph-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: '2^5=32',
+  },
+  {
+    checkId: 'sc-log-graph-core-001',
+    answerType: 'coordinate',
+    correctAnswer: '(8,3)',
+  },
+  {
+    checkId: 'sc-log-graph-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'domain x>0, range all real y',
+  },
+  {
+    checkId: 'sc-log-laws-foundation-001',
+    answerType: 'multi-value',
+    correctAnswer: 'ln(5x), ln(x*5)',
+  },
+  {
+    checkId: 'sc-log-laws-core-001',
+    answerType: 'multi-value',
+    correctAnswer: '2lnx=ln(x^2), ln(x^2)-ln(x+1)=ln(x^2/(x+1))',
+  },
+  {
+    checkId: 'sc-log-laws-challenge-001',
+    answerType: 'exact-text',
+    correctAnswer: 'log laws split products not sums',
+  },
+  {
+    checkId: 'sc-log-natural-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: '1/2ln7',
+  },
+  {
+    checkId: 'sc-log-natural-core-001',
+    answerType: 'expression-text',
+    correctAnswer: '1/3ln4',
+  },
+  {
+    checkId: 'sc-log-natural-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'divide by 2, take natural logs, subtract 1',
+  },
+  {
+    checkId: 'sc-log-domain-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: 'x>2',
+  },
+  {
+    checkId: 'sc-log-domain-core-001',
+    answerType: 'numeric',
+    correctAnswer: '6',
+  },
+  {
+    checkId: 'sc-log-domain-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'domain, combine, solve, reject',
+  },
+  {
+    checkId: 'sc-log-exponential-foundation-001',
+    answerType: 'expression-text',
+    correctAnswer: 'x>3',
+  },
+  {
+    checkId: 'sc-log-exponential-core-001',
+    answerType: 'expression-text',
+    correctAnswer: 'x>=3',
+  },
+  {
+    checkId: 'sc-log-exponential-challenge-001',
+    answerType: 'expression-text',
+    correctAnswer: 'x<ln4/2',
+  },
+  {
+    checkId: 'sc-log-linearisation-foundation-001',
+    answerType: 'multi-value',
+    correctAnswer: 'take logs, split product, simplify exponential, read line',
+  },
+  {
+    checkId: 'sc-log-linearisation-core-001',
+    answerType: 'coordinate',
+    correctAnswer: '(3,2)',
+  },
+  {
+    checkId: 'sc-log-linearisation-challenge-001',
+    answerType: 'multi-value',
+    correctAnswer: 'take logs, split product, simplify exponential, read line',
+  },
+];
+
 const complexChecks = [
   {
     checkId: 'sc-complex-cartesian-conjugate-foundation-001',
@@ -84,6 +177,14 @@ const representativeComplexChecks = [
   'sc-complex-modulus-argument-core-001',
   'sc-complex-locus-core-001',
   'sc-complex-roots-challenge-001',
+];
+
+const representativeLogChecks = [
+  'sc-log-graph-foundation-001',
+  'sc-log-graph-core-001',
+  'sc-log-laws-foundation-001',
+  'sc-log-laws-challenge-001',
+  'sc-log-domain-core-001',
 ];
 
 function pageUrl(pagePath) {
@@ -324,6 +425,175 @@ async function checkLegacyAndMalformedProgressFailClosed(page) {
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
   assert((await progressText(page))?.includes(logProgressLabel(0)), 'Malformed JSON localStorage must fail closed to an empty Skill Check state.');
+}
+
+async function checkLogExpFullTopicPage(page) {
+  await waitForStaticEnhancement(page, skillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  const pageShape = await page.evaluate((expectedIds) => {
+    const forms = Array.from(document.querySelectorAll('[data-check-skill-answer]'));
+    return {
+      formIds: forms.map((form) => form.getAttribute('data-check-id')),
+      hasFakeSaveButton: Boolean(document.querySelector('[data-save-skill-check]')),
+      hasTriedCopy: (document.body.textContent || '').includes('I tried this'),
+      missingInputs: expectedIds.filter((id) => !document.querySelector(`[data-check-id="${id}"] input[name="submittedAnswer"]`)),
+      missingSubmitButtons: expectedIds.filter((id) => {
+        const button = document.querySelector(`[data-check-id="${id}"] button[type="submit"]`);
+        return !button || button.textContent?.replace(/\s+/g, ' ').trim() !== 'Check answer';
+      }),
+      answerTypes: expectedIds.map((id) => document.querySelector(`[data-check-id="${id}"]`)?.getAttribute('data-answer-type')),
+    };
+  }, logChecks.map((item) => item.checkId));
+
+  assert(pageShape.formIds.length === logChecks.length, `Log/Exp must render ${logChecks.length} checkable forms; saw ${pageShape.formIds.length}.`);
+  assert(logChecks.every((item) => pageShape.formIds.includes(item.checkId)), 'Log/Exp page must render every migrated checkable form.');
+  assert(!pageShape.hasFakeSaveButton, 'Log/Exp page must not render data-save-skill-check fake completion controls.');
+  assert(!pageShape.hasTriedCopy, 'Log/Exp page must not render I tried this fake completion copy.');
+  assert(pageShape.missingInputs.length === 0, `Log/Exp checks missing answer inputs: ${pageShape.missingInputs.join(', ')}`);
+  assert(pageShape.missingSubmitButtons.length === 0, `Log/Exp checks missing Check answer buttons: ${pageShape.missingSubmitButtons.join(', ')}`);
+  assert(new Set(pageShape.answerTypes).size >= 5, 'Log/Exp browser coverage must include all migrated answer type families.');
+
+  for (const item of logChecks) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, 'definitely wrong');
+    const progress = await readProgress(page);
+    const attempt = latestAttempt(progress);
+    assert(attempt?.checkId === item.checkId, `Wrong answer must save a local attempt for ${item.checkId}.`);
+    assert(attempt.isCorrect === false, `Wrong answer must not be correct for ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false, `Wrong answer must not set revealedAnswer for ${item.checkId}.`);
+    assert(attempt.revealedRepairStep === false, `Wrong answer must not set revealedRepairStep for ${item.checkId}.`);
+    assert((await progressText(page))?.includes(logProgressLabel(0)), `Wrong answer must not update Log/Exp pass progress for ${item.checkId}.`);
+  }
+}
+
+async function checkLogExpRepresentativeAnswerTypes(page) {
+  await waitForStaticEnhancement(page, skillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  for (const item of logChecks.filter((entry) => representativeLogChecks.includes(entry.checkId))) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, item.correctAnswer);
+    const progress = await readProgress(page);
+    const attempt = latestAttempt(progress);
+    assert(attempt?.checkId === item.checkId, `Correct ${item.answerType} answer must save an attempt for ${item.checkId}.`);
+    assert(attempt.isCorrect === true, `Correct ${item.answerType} answer must be correct for ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false, `Clean ${item.answerType} answer must not be revealed for ${item.checkId}.`);
+    assert(attempt.revealedRepairStep === false, `Clean ${item.answerType} answer must not be repaired for ${item.checkId}.`);
+  }
+
+  const partialText = await progressText(page);
+  assert(partialText?.includes(logProgressLabel(5)), `Partial representative correct answers must not complete Log/Exp; saw "${partialText}".`);
+  const progressNodeClass = await page.locator(`[data-progress-skill="${regionId}"]`).getAttribute('class');
+  assert(!String(progressNodeClass || '').includes('is-complete'), 'Log/Exp topic must not be marked complete after partial correct attempts.');
+}
+
+async function checkLogExpRevealRepairCannotPass(page) {
+  await waitForStaticEnhancement(page, skillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  const first = logChecks[0];
+  const form = await visibleFormForCheck(page, first.checkId);
+  await submitAnswer(form, '2^32=5');
+  await form.locator('input[name="mistakeTags"][value="notation"]').check();
+  await form.locator('[data-skill-repair] summary').click();
+  await page.waitForFunction(
+    ({ key, id }) => {
+      const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+      const attempts = Array.isArray(progress.skillCheckAttempts) ? progress.skillCheckAttempts : [];
+      const latest = attempts[attempts.length - 1];
+      return latest?.checkId === id && latest.revealedRepairStep === true;
+    },
+    { key: storageKey, id: first.checkId },
+  );
+  await form.locator('[data-skill-answer-reveal] summary').click();
+  await page.waitForFunction(
+    ({ key, id }) => {
+      const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+      const attempts = Array.isArray(progress.skillCheckAttempts) ? progress.skillCheckAttempts : [];
+      const latest = attempts[attempts.length - 1];
+      return latest?.checkId === id && latest.revealedAnswer === true;
+    },
+    { key: storageKey, id: first.checkId },
+  );
+  await submitAnswer(form, first.correctAnswer);
+  const progress = await readProgress(page);
+  const attempt = latestAttempt(progress);
+  assert(attempt?.isCorrect === true, 'Log/Exp repaired/revealed correct retry must still be evaluated as correct.');
+  assert(attempt.revealedAnswer === true, 'Log/Exp revealed correct retry must retain revealedAnswer: true.');
+  assert(attempt.revealedRepairStep === true, 'Log/Exp repaired correct retry must retain revealedRepairStep: true.');
+  assert((await progressText(page))?.includes(logProgressLabel(0)), 'Log/Exp repaired/revealed correct retry must not count as pass.');
+}
+
+async function checkLogExpFullTopicPassRule(page) {
+  await waitForStaticEnhancement(page, skillPagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  for (const item of logChecks) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, item.correctAnswer);
+    const progress = await readProgress(page);
+    const attempt = attemptForCheck(progress, item.checkId);
+    assert(attempt?.isCorrect === true, `Clean correct answer must pass individual Log/Exp check ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false && attempt.revealedRepairStep === false, `Clean correct attempt must remain unrevealed and unrepaired for ${item.checkId}.`);
+  }
+
+  const finalText = await progressText(page);
+  assert(finalText?.includes(logProgressLabel(18)), `All 18 clean Log/Exp attempts must pass the topic; saw "${finalText}".`);
+  const progressNodeClass = await page.locator(`[data-progress-skill="${regionId}"]`).getAttribute('class');
+  assert(String(progressNodeClass || '').includes('is-complete'), 'Log/Exp topic must be marked complete only after all 18 clean correct attempts.');
+}
+
+async function checkLogExpReviewPageFlow(page) {
+  await waitForStaticEnhancement(page, reviewPagePath);
+  await writeProgress(page, progressWithAttempts([
+    {
+      attemptId: 'log_wrong_notation',
+      course: 'p3',
+      topic: 'Log Graphs and Inverses',
+      skillId: 'p3_log_convert_forms',
+      checkId: 'sc-log-graph-foundation-001',
+      submittedAnswer: '2^32=5',
+      isCorrect: false,
+      usedHint: false,
+      revealedAnswer: false,
+      revealedRepairStep: false,
+      mistakeTags: ['notation'],
+      timestamp: '2026-06-11T00:06:00.000Z',
+      regionId,
+    },
+    {
+      attemptId: 'log_clean_correct',
+      course: 'p3',
+      topic: 'Clean Log Should Not Appear',
+      skillId: 'p3_log_domain_validation',
+      checkId: 'sc-log-domain-core-001',
+      submittedAnswer: '6',
+      isCorrect: true,
+      usedHint: false,
+      revealedAnswer: false,
+      revealedRepairStep: false,
+      mistakeTags: ['notation'],
+      timestamp: '2026-06-11T00:07:00.000Z',
+      regionId,
+    },
+  ]));
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render seeded Log/Exp mistake history.');
+  const reviewText = await visibleText(page.locator('[data-review-groups]'));
+  assert(reviewText.includes('notation'), 'Log/Exp mistake history must group by mistake tag.');
+  assert(reviewText.includes('Log Graphs and Inverses'), 'Log/Exp mistake history must list the Log/Exp candidate.');
+  assert(!reviewText.includes('Clean Log Should Not Appear'), 'Clean correct Log/Exp attempts must not appear as mistake-review candidates.');
 }
 
 async function checkComplexNumbersFullTopicPage(page) {
@@ -588,11 +858,16 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 try {
   await checkLegacyAndMalformedProgressFailClosed(page);
   await checkSkillPageFlow(page);
+  await checkLogExpFullTopicPage(page);
+  await checkLogExpRepresentativeAnswerTypes(page);
+  await checkLogExpRevealRepairCannotPass(page);
+  await checkLogExpFullTopicPassRule(page);
   await checkComplexNumbersFullTopicPage(page);
   await checkComplexRepresentativeAnswerTypes(page);
   await checkComplexRevealRepairCannotPass(page);
   await checkComplexFullTopicPassRule(page);
   await checkReviewPageFlow(page);
+  await checkLogExpReviewPageFlow(page);
   await checkComplexReviewPageFlow(page);
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

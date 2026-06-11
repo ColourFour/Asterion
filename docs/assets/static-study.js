@@ -449,7 +449,7 @@
   }
 
   function parseComplex(value) {
-    var compact = compactAnswerText(afterEquals(value)).replace(/\*/g, '');
+    var compact = compactAnswerText(afterEquals(value)).replace(/\*/g, '').replace(/j$/i, 'i');
     if (!compact) return undefined;
     if (!compact.includes('i')) {
       var realOnly = parseSimpleNumber(compact);
