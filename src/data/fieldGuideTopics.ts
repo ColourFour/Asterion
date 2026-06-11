@@ -1143,10 +1143,10 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
       id: 'derivatives_trig_functions',
       marker: 'trig',
       title: 'sin/cos/tan Derivatives',
-      purpose: 'Differentiate sin, cos, and tan expressions without turning the task into identity work.',
-      skillIds: ['derivatives_trig_functions'],
+      purpose: 'Differentiate one trig expression by applying the base derivative and one chain-rule step.',
+      skillIds: ['derivatives_trig_functions', 'p3_diff_chain_product_quotient'],
       preview: '$$ \\frac{d}{dx}\\sin x=\\cos x $$',
-      description: 'Memorize the base derivatives: sin differentiates to cos, cos differentiates to negative sin, and tan differentiates to sec^2. For sin(f(x)), cos(f(x)), or tan(f(x)), multiply by f\'(x).',
+      description: 'Use one base derivative, then multiply by the inside derivative. Keep trig identity work separate unless the derivative step needs it.',
       supportNote: 'Trig simplification and equation solving remain in Trigonometry unless the assessed move is differentiation.',
       examples: [
         {
@@ -1179,6 +1179,18 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           result: '$$ \\frac{dy}{dx}=30x\\cos(3x^2) $$',
         },
+      ],
+    },
+    {
+      id: 'derivatives_inverse_tangent_support',
+      marker: 'tan^-1',
+      title: 'Inverse Tangent Derivative',
+      purpose: 'Recognize the inverse-tangent derivative form and apply one chain-rule step.',
+      skillIds: ['derivatives_trig_functions', 'p3_diff_chain_product_quotient'],
+      preview: '$$ \\frac{d}{dx}\\tan^{-1}u=\\frac{u\\prime}{1+u^2} $$',
+      description: 'Treat $\\tan^{-1}(u)$ as inverse tangent, not as a reciprocal tangent expression.',
+      supportNote: 'This is narrow support for P3 differentiation follow-through when inverse tangent appears.',
+      examples: [
         {
           title: 'Inverse tangent derivative support',
           prompt: 'Differentiate $y=\\tan^{-1}(3x)$.',
@@ -1588,12 +1600,12 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
     {
       id: 'integrals_definite_area_bridge',
       marker: 'a..b',
-      title: 'Definite Integrals, Area, and Limit-Style Checks',
-      purpose: 'Turn an antiderivative into exam-style bounds, positive area, or a narrow limiting evaluation.',
-      skillIds: ['integrals_definite_area_bridge'],
-      preview: '$$ \\int_a^b f(x)\\,dx,\\quad \\int_a^b(\\text{upper}-\\text{lower})\\,dx $$',
-      description: 'A definite integral needs a complete antiderivative and an upper-minus-lower substitution line. Area questions add an interpretation step: integrate the positive height, or use upper curve minus lower curve.',
-      supportNote: 'Limit-style improper examples are kept narrow here: replace the infinite bound by a limit and use the reviewed P3 integration evidence only when the limiting value is clear.',
+      title: 'Definite Integral Bounds',
+      purpose: 'Turn an antiderivative into a clean upper-minus-lower evaluation.',
+      skillIds: ['integrals_definite_area_bridge', 'p3_int_definite_improper_area'],
+      preview: '$$ \\int_a^b f(x)\\,dx=F(b)-F(a) $$',
+      description: 'A definite integral needs a complete antiderivative and one bracketed upper-minus-lower substitution line.',
+      supportNote: 'This atomic section covers bounds only. Area and improper-limit checks are separate steps.',
       examples: [
         {
           title: 'Bracket before substituting limits',
@@ -1625,6 +1637,18 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           result: '$$ 10 $$',
         },
+      ],
+    },
+    {
+      id: 'integrals_area_between_curves',
+      marker: 'area',
+      title: 'Area Between Curves',
+      purpose: 'Set up one area integral using upper curve minus lower curve.',
+      skillIds: ['integrals_definite_area_bridge', 'p3_int_definite_improper_area'],
+      preview: '$$ \\int_a^b(\\text{upper}-\\text{lower})\\,dx $$',
+      description: 'Area questions add one interpretation step before integrating: decide which expression is above on the interval.',
+      supportNote: 'This section is only about setting up and evaluating a positive area expression.',
+      examples: [
         {
           title: 'Use upper minus lower for area',
           prompt: 'Find the area between $y=x+2$ and $y=x^2$ from $x=0$ to $x=2$.',
@@ -1655,6 +1679,18 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           ],
           result: '$$ \\frac{10}{3} $$',
         },
+      ],
+    },
+    {
+      id: 'integrals_improper_limit_check',
+      marker: 'lim',
+      title: 'Improper Integral Limit Check',
+      purpose: 'Replace one infinite bound by a limit before evaluating.',
+      skillIds: ['integrals_definite_area_bridge', 'p3_int_definite_improper_area'],
+      preview: '$$ \\int_0^\\infty f(x)\\,dx=\\lim_{b\\to\\infty}\\int_0^b f(x)\\,dx $$',
+      description: 'Do not substitute infinity directly. Replace the infinite bound, integrate to a finite variable, then take the limit.',
+      supportNote: 'This is a narrow P3-style convergent improper evaluation, not a broad improper-integral course.',
+      examples: [
         {
           title: 'Use a limit for an infinite bound',
           prompt: 'Evaluate $\\int_0^\\infty e^{-2x}\\,dx$.',

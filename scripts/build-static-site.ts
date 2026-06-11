@@ -1069,7 +1069,10 @@ function availabilityText(available: boolean): string {
 
 function ladderAvailabilityText(row: P3SkillContractPageRow, ladderLevel: typeof P3_EXAM_LADDER_LEVELS[number]): string {
   const bucket = row.examLadder.levels[ladderLevel];
-  return bucket.status === 'populated' ? `Available (${bucket.questionIds.length})` : 'Missing';
+  if (bucket.status !== 'populated') return 'Missing';
+  return ladderLevel === 'mixed'
+    ? `Mapped questions (${bucket.questionIds.length})`
+    : `Available (${bucket.questionIds.length})`;
 }
 
 function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPagePath()): string {
@@ -1084,7 +1087,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
     )}
     <section class="summary-card contract-qa-summary">
       <h2>Contract coverage snapshot</h2>
-      <p>Rows come from the structured P3 skill contract. Availability is derived from review flags and mapped trainable exam-question counts where available.</p>
+      <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
     </section>
     <section class="contract-table-shell" aria-labelledby="content-qa-table-title">
       <div class="section-heading">
@@ -1104,10 +1107,10 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
               <th>Skill Check</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
-              <th>Easy</th>
-              <th>Standard</th>
-              <th>Hard</th>
-              <th>Mixed</th>
+              <th>Easy ladder</th>
+              <th>Standard ladder</th>
+              <th>Hard ladder</th>
+              <th>Mixed mapped questions</th>
               <th>Readiness</th>
               <th>Notes / review flags</th>
             </tr>
@@ -1161,6 +1164,17 @@ function renderPatternTable(example: FieldGuideTopicExample): string {
   `;
 }
 
+function renderCommonMistake(example: FieldGuideTopicExample): string {
+  const commonMistake = example.takeaway.find((line) => /^Common (?:mistake|trap):/i.test(cleanVisibleCopy(line)));
+  if (!commonMistake) return '';
+  return `
+    <aside class="common-mistake-box">
+      <strong>Common mistake</strong>
+      <p>${renderMathText(cleanVisibleCopy(commonMistake).replace(/^Common (?:mistake|trap):\s*/i, ''))}</p>
+    </aside>
+  `;
+}
+
 function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopicExample, index: number): string {
   return `
     <article class="lesson-card">
@@ -1187,6 +1201,7 @@ function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopi
           </details>
         ` : ''}
       </section>
+      ${renderCommonMistake(example)}
       <details class="lesson-support-details">
         <summary>Extra method table and checks</summary>
         ${renderPatternTable(example)}

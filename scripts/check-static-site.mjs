@@ -95,6 +95,15 @@ const forbiddenContractPageTerms = [
   'classroom',
 ];
 
+const forbiddenCoverageClaims = [
+  'complete coverage',
+  'fully covered',
+  'all skills are ready',
+  'every skill is ready',
+  'complete P3 course',
+  'complete syllabus coverage',
+];
+
 function visibleTermPattern(term) {
   const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return new RegExp(`(^|[^A-Za-z0-9])${escaped}($|[^A-Za-z0-9])`, 'i');
@@ -168,6 +177,10 @@ function hrefsWithCanonicalPaths(html) {
     .map((match) => ({ href: match[1], canonicalPath: match[2] }));
 }
 
+function pageAnchors(html) {
+  return Array.from(html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/gi)).map((match) => match[1]);
+}
+
 function resolveHtmlHref(page, href) {
   const clean = decodeURI(href).replace(/[?#].*$/, '');
   if (/^https?:\/\//i.test(clean) || clean.startsWith('data:')) return undefined;
@@ -217,6 +230,36 @@ for (const page of requiredPages) {
   if (!html.includes('<main>') || !html.includes('</main>')) {
     console.error(`${page} is missing meaningful document content.`);
     process.exit(1);
+  }
+}
+
+for (const page of requiredPages) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const text = visibleBodyText(html);
+  const claim = forbiddenCoverageClaims.find((phrase) => visibleTermPattern(phrase).test(text));
+  if (claim) {
+    console.error(`${page} includes an unsupported completeness claim: ${claim}`);
+    process.exit(1);
+  }
+}
+
+for (const page of requiredPages) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  for (const href of pageAnchors(html)) {
+    if (
+      href.startsWith('#')
+      || /^https?:\/\//i.test(href)
+      || /^mailto:/i.test(href)
+      || /^tel:/i.test(href)
+      || href.startsWith('data:')
+    ) {
+      continue;
+    }
+    const resolvedPath = resolveHtmlHref(page, href);
+    if (!resolvedPath || !existsSync(path.join(siteRoot, resolvedPath))) {
+      console.error(`${page} has a broken internal link: ${href} -> ${resolvedPath}`);
+      process.exit(1);
+    }
   }
 }
 
@@ -322,6 +365,16 @@ if (!contractLinks.length) {
   console.error('P3 Need to Know page has no generated Field Guide, Skill Check, or Exam Training links.');
   process.exit(1);
 }
+for (const requiredLabel of ['Ready', 'Needs Field Guide', 'Needs Skill Check', 'Draft']) {
+  if (!visibleBodyText(needToKnowHtml).includes(requiredLabel)) {
+    console.error(`P3 Need to Know page does not keep the "${requiredLabel}" status visible.`);
+    process.exit(1);
+  }
+}
+if (!pageAnchors(needToKnowHtml).some((href) => resolveHtmlHref('p3/need-to-know/index.html', href) === 'p3/content-qa/index.html')) {
+  console.error('P3 Need to Know page does not link to the canonical Content QA route.');
+  process.exit(1);
+}
 for (const { href, canonicalPath } of contractLinks) {
   if (!/^p3\/topics\/[^/]+\/(?:field-guide|skill-check|exam-training)\/index\.html$/.test(canonicalPath)) {
     console.error(`P3 Need to Know link has a non-canonical target: ${canonicalPath}`);
@@ -344,6 +397,14 @@ if (/\b(?:P1|M1|S1)\b/.test(contentQaText) && !contentQaText.includes('P1, M1, a
   process.exit(1);
 }
 const contentQaHtml = readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8');
+if (!contentQaText.includes('Missing')) {
+  console.error('P3 Content QA must keep missing coverage visible.');
+  process.exit(1);
+}
+if (!pageAnchors(contentQaHtml).some((href) => resolveHtmlHref('p3/content-qa/index.html', href) === 'p3/need-to-know/index.html')) {
+  console.error('P3 Content QA page does not link to the canonical Need to Know route.');
+  process.exit(1);
+}
 for (const ladderLevel of ['easy', 'standard', 'hard', 'mixed']) {
   if (!contentQaHtml.includes(`data-ladder-level="${ladderLevel}"`)) {
     console.error(`P3 Content QA does not surface the ${ladderLevel} ladder bucket.`);
@@ -366,10 +427,33 @@ for (const skillId of contractIds) {
   const expectedMixedCount = mappedExamCounts.get(skillId);
   if (typeof expectedMixedCount === 'number') {
     const mixedPattern = expectedMixedCount > 0
-      ? `data-ladder-level="mixed"[\\s\\S]*?>Available \\(${expectedMixedCount}\\)<`
+      ? `data-ladder-level="mixed"[\\s\\S]*?>Mapped questions \\(${expectedMixedCount}\\)<`
       : 'data-ladder-level="mixed"[\\s\\S]*?>Missing<';
     if (!new RegExp(mixedPattern).test(rowHtml)) {
       console.error(`P3 Content QA mixed ladder count for ${skillId} does not match reviewed mapped exam data.`);
+      process.exit(1);
+    }
+  }
+}
+
+const p3FieldGuidePages = requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-guide\/index\.html$/.test(page));
+for (const page of p3FieldGuidePages) {
+  const topicSlug = page.split('/')[2];
+  const expectedSkillCheckPage = `p3/topics/${topicSlug}/skill-check/index.html`;
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const skillCheckHrefs = Array.from(html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi))
+    .filter((match) => visibleBodyText(match[2]).includes('Skill Check'))
+    .map((match) => match[1]);
+
+  if (!skillCheckHrefs.length) {
+    console.error(`${page} has no Skill Check link.`);
+    process.exit(1);
+  }
+
+  for (const href of skillCheckHrefs) {
+    const resolvedPath = resolveHtmlHref(page, href);
+    if (resolvedPath !== expectedSkillCheckPage) {
+      console.error(`${page} has non-canonical Skill Check link: ${href} -> ${resolvedPath}, expected ${expectedSkillCheckPage}`);
       process.exit(1);
     }
   }
