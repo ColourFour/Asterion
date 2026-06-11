@@ -316,6 +316,22 @@ export interface LearningActivityAttempt {
   completedAt?: string;
 }
 
+export interface SkillCheckAttemptRecord {
+  attemptId: string;
+  course: 'p3';
+  topic: string;
+  skillId: string;
+  checkId: string;
+  submittedAnswer: string;
+  isCorrect: boolean;
+  usedHint: boolean;
+  revealedAnswer: boolean;
+  revealedRepairStep: boolean;
+  mistakeTags: string[];
+  timestamp: string;
+  regionId?: string;
+}
+
 export interface TopicCompletionRecord {
   topicId: string;
   subtopicId?: string;
@@ -366,5 +382,6 @@ export interface StoredProgress {
   schemaVersion?: number;
   attempts: Attempt[];
   learningActivityAttempts: LearningActivityAttempt[];
+  skillCheckAttempts?: SkillCheckAttemptRecord[];
   regionLearning?: Record<string, RegionLearningRecord>;
 }

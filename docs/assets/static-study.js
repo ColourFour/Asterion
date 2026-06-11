@@ -11,6 +11,7 @@
       schemaVersion: 1,
       attempts: [],
       learningActivityAttempts: [],
+      skillCheckAttempts: [],
       topicProfiles: {},
       issueReports: [],
       regionLearning: {},
@@ -29,6 +30,7 @@
       return Object.assign(emptyProgress(), parsed, {
         attempts: safeArray(parsed.attempts),
         learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
+        skillCheckAttempts: safeArray(parsed.skillCheckAttempts),
         topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
         issueReports: safeArray(parsed.issueReports),
         regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
@@ -63,8 +65,33 @@
   }
 
   function skillAttemptsForRegion(progress, regionId) {
-    return progress.learningActivityAttempts.filter(function (attempt) {
+    return progress.skillCheckAttempts.filter(function (attempt) {
       return attempt.regionId === regionId;
+    });
+  }
+
+  function passingSkillAttemptsForRegion(progress, regionId) {
+    return skillAttemptsForRegion(progress, regionId).filter(isPassingSkillCheckAttempt);
+  }
+
+  function isPassingSkillCheckAttempt(attempt) {
+    return Boolean(attempt && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+  }
+
+  function parseRequiredCheckIds(node) {
+    try {
+      var parsed = JSON.parse(node.getAttribute('data-required-checks') || '[]');
+      return Array.isArray(parsed) ? parsed.filter(function (id) { return typeof id === 'string' && id; }) : [];
+    } catch (_error) {
+      return [];
+    }
+  }
+
+  function passedCheckIds(progress, requiredCheckIds, regionId) {
+    return requiredCheckIds.filter(function (checkId) {
+      return progress.skillCheckAttempts.some(function (attempt) {
+        return attempt.regionId === regionId && attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
+      });
     });
   }
 
@@ -100,9 +127,14 @@
     document.querySelectorAll('[data-progress-skill]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-skill') || '';
       var label = node.getAttribute('data-label') || 'Skill Check';
-      var count = skillAttemptsForRegion(progress, regionId).length;
-      node.textContent = label + ': ' + count + ' saved';
-      node.classList.toggle('is-complete', count > 0);
+      var requiredCheckIds = parseRequiredCheckIds(node);
+      var passCount = requiredCheckIds.length
+        ? passedCheckIds(progress, requiredCheckIds, regionId).length
+        : passingSkillAttemptsForRegion(progress, regionId).length;
+      node.textContent = requiredCheckIds.length
+        ? label + ': ' + passCount + '/' + requiredCheckIds.length + ' passed'
+        : label + ': ' + passCount + ' passed';
+      node.classList.toggle('is-complete', requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length);
     });
 
     document.querySelectorAll('[data-progress-exam]').forEach(function (node) {
@@ -132,20 +164,20 @@
       var regionId = node.getAttribute('data-progress-status') || '';
       var fieldTotal = Number(document.querySelector('[data-progress-field-guide="' + regionId + '"]')?.getAttribute('data-total') || 1);
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
-      var practiceCount = skillAttemptsForRegion(progress, regionId).length;
+      var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check saves, ' + examCount + ' exam attempts.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check passes, ' + examCount + ' exam attempts.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-summary') || '';
       var fieldTotal = Number(node.getAttribute('data-field-total') || 1);
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
-      var practiceCount = skillAttemptsForRegion(progress, regionId).length;
+      var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
       var parts = [];
       if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Field Guide');
-      if (practiceCount > 0) parts.push(practiceCount + ' Skill Check save' + (practiceCount === 1 ? '' : 's'));
+      if (practiceCount > 0) parts.push(practiceCount + ' Skill Check pass' + (practiceCount === 1 ? '' : 'es'));
       if (examCount > 0) parts.push(examCount + ' exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
       node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
@@ -159,14 +191,7 @@
       if (saved) button.textContent = 'Got it';
     });
 
-    document.querySelectorAll('[data-save-skill-check]').forEach(function (button) {
-      var activityId = button.getAttribute('data-activity-id') || '';
-      var saved = progress.learningActivityAttempts.some(function (attempt) {
-        return attempt.activityId === activityId;
-      });
-      button.classList.toggle('is-saved', saved);
-      if (saved) button.textContent = 'Done';
-    });
+    updateSkillCheckForms(progress);
   }
 
   function completeFieldGuideTopic(regionId, topicId, title) {
@@ -216,35 +241,385 @@
     updateProgressText();
   }
 
-  function saveSkillCheck(button) {
+  function normalizeMathText(value) {
+    return String(value || '')
+      .trim()
+      .replace(/^\$+|\$+$/g, '')
+      .replace(/^\\\(|\\\)$/g, '')
+      .replace(/\\left|\\right/g, '')
+      .replace(/\\mathrm\s*\{\s*i\s*\}/g, 'i')
+      .replace(/\\operatorname\s*\{\s*i\s*\}/g, 'i')
+      .replace(/−/g, '-')
+      .replace(/≤/g, '<=')
+      .replace(/≥/g, '>=')
+      .replace(/\\leq?|\\le/g, '<=')
+      .replace(/\\geq?|\\ge/g, '>=')
+      .replace(/\\lt/g, '<')
+      .replace(/\\gt/g, '>')
+      .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '$1/$2')
+      .replace(/\\cdot|\\times/g, '*')
+      .replace(/[{}]/g, '')
+      .replace(/\s+/g, ' ');
+  }
+
+  function compactAnswerText(value) {
+    return normalizeMathText(value).replace(/\s+/g, '').toLowerCase();
+  }
+
+  function afterEquals(value) {
+    var text = String(value || '');
+    var index = text.lastIndexOf('=');
+    return index >= 0 ? text.slice(index + 1) : text;
+  }
+
+  function parseSimpleNumber(value) {
+    var compact = compactAnswerText(afterEquals(value)).replace(/^\+/, '');
+    if (!compact) return undefined;
+    if (/^[+-]?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
+    var fraction = compact.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+(?:\.\d+)?)$/);
+    if (!fraction) return undefined;
+    var numerator = Number(fraction[1]);
+    var denominator = Number(fraction[2]);
+    if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return undefined;
+    return numerator / denominator;
+  }
+
+  function numericLabel(value) {
+    return Number.isInteger(value) ? String(value) : String(Number(value.toPrecision(12)));
+  }
+
+  function numbersEqual(left, right, tolerance) {
+    return Math.abs(left - right) <= tolerance;
+  }
+
+  function normalizeExactText(value) {
+    return normalizeMathText(value).replace(/[.。]+$/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function normalizeExpressionText(value) {
+    return compactAnswerText(value).replace(/\*/g, '').replace(/\^1(?!\d)/g, '');
+  }
+
+  function splitTopLevelValues(value) {
+    return normalizeMathText(value)
+      .replace(/\bor\b/gi, ',')
+      .replace(/[;]/g, ',')
+      .split(',')
+      .map(function (part) { return part.trim(); })
+      .filter(Boolean);
+  }
+
+  function normalizeMultiValueParts(value) {
+    return splitTopLevelValues(value).map(function (part) {
+      var numeric = parseSimpleNumber(part);
+      return numeric === undefined ? normalizeExpressionText(part) : '#' + numericLabel(numeric);
+    });
+  }
+
+  function multiValuesEqual(submittedParts, acceptedParts, tolerance, orderMatters) {
+    if (submittedParts.length !== acceptedParts.length) return false;
+    function entryMatches(left, right) {
+      if (left.startsWith('#') && right.startsWith('#')) {
+        return numbersEqual(Number(left.slice(1)), Number(right.slice(1)), tolerance);
+      }
+      return left === right;
+    }
+    if (orderMatters) {
+      return submittedParts.every(function (part, index) { return entryMatches(part, acceptedParts[index]); });
+    }
+    var unmatched = acceptedParts.slice();
+    for (var index = 0; index < submittedParts.length; index += 1) {
+      var matchIndex = unmatched.findIndex(function (accepted) { return entryMatches(submittedParts[index], accepted); });
+      if (matchIndex < 0) return false;
+      unmatched.splice(matchIndex, 1);
+    }
+    return unmatched.length === 0;
+  }
+
+  function parseCoordinate(value) {
+    var match = normalizeMathText(value).match(/^\(?\s*([^,()]+)\s*,\s*([^,()]+)(?:\s*,\s*([^,()]+))?\s*\)?$/);
+    if (!match) return undefined;
+    var parts = [match[1], match[2], match[3]].filter(Boolean);
+    var parsed = parts.map(parseSimpleNumber);
+    if (parsed.some(function (part) { return part === undefined; })) return undefined;
+    return parsed;
+  }
+
+  function coordinatesEqual(left, right, tolerance) {
+    return left.length === right.length && left.every(function (value, index) {
+      return numbersEqual(value, right[index], tolerance);
+    });
+  }
+
+  function normalizeCoordinate(value) {
+    return '(' + value.map(numericLabel).join(', ') + ')';
+  }
+
+  function parseInterval(value) {
+    var normalized = normalizeMathText(value).trim();
+    var compact = normalized.replace(/\s+/g, '');
+    var notation = compact.match(/^([\[(])([^,]+),([^\])]+)([\]\)])$/);
+    if (notation) {
+      var notationLower = parseSimpleNumber(notation[2]);
+      var notationUpper = parseSimpleNumber(notation[3]);
+      if (notationLower === undefined || notationUpper === undefined || notationLower > notationUpper) return undefined;
+      return {
+        lower: notationLower,
+        upper: notationUpper,
+        lowerInclusive: notation[1] === '[',
+        upperInclusive: notation[4] === ']'
+      };
+    }
+    var chain = compact.match(/^(.+?)(<=|<)([a-z])(?:<=|<)(.+)$/i);
+    if (chain) {
+      var secondOperator = compact.slice(compact.indexOf(chain[3]) + chain[3].length).match(/^(<=|<)/)?.[1];
+      var chainLower = parseSimpleNumber(chain[1]);
+      var chainUpper = parseSimpleNumber(chain[4]);
+      if (!secondOperator || chainLower === undefined || chainUpper === undefined || chainLower > chainUpper) return undefined;
+      return {
+        lower: chainLower,
+        upper: chainUpper,
+        lowerInclusive: chain[2] === '<=',
+        upperInclusive: secondOperator === '<='
+      };
+    }
+    var conjunction = normalized.replace(/\s+/g, ' ').match(/^([a-z])\s*(>=|>)\s*(.+?)\s*(?:and|,)\s*\1\s*(<=|<)\s*(.+)$/i);
+    if (conjunction) {
+      var conjunctionLower = parseSimpleNumber(conjunction[3]);
+      var conjunctionUpper = parseSimpleNumber(conjunction[5]);
+      if (conjunctionLower === undefined || conjunctionUpper === undefined || conjunctionLower > conjunctionUpper) return undefined;
+      return {
+        lower: conjunctionLower,
+        upper: conjunctionUpper,
+        lowerInclusive: conjunction[2] === '>=',
+        upperInclusive: conjunction[4] === '<='
+      };
+    }
+    return undefined;
+  }
+
+  function intervalsEqual(left, right, tolerance) {
+    return numbersEqual(left.lower, right.lower, tolerance)
+      && numbersEqual(left.upper, right.upper, tolerance)
+      && left.lowerInclusive === right.lowerInclusive
+      && left.upperInclusive === right.upperInclusive;
+  }
+
+  function normalizeInterval(value) {
+    return (value.lowerInclusive ? '[' : '(') + numericLabel(value.lower) + ', ' + numericLabel(value.upper) + (value.upperInclusive ? ']' : ')');
+  }
+
+  function parseImaginaryCoefficient(value) {
+    if (value === '' || value === '+') return 1;
+    if (value === '-') return -1;
+    return parseSimpleNumber(value);
+  }
+
+  function parseComplex(value) {
+    var compact = compactAnswerText(afterEquals(value)).replace(/\*/g, '');
+    if (!compact) return undefined;
+    if (!compact.includes('i')) {
+      var realOnly = parseSimpleNumber(compact);
+      return realOnly === undefined ? undefined : { real: realOnly, imaginary: 0 };
+    }
+    if (!compact.endsWith('i') || compact.indexOf('i') !== compact.length - 1) return undefined;
+    var withoutI = compact.slice(0, -1);
+    var splitIndex = -1;
+    for (var index = 1; index < withoutI.length; index += 1) {
+      var char = withoutI[index];
+      if (char === '+' || char === '-') splitIndex = index;
+    }
+    if (splitIndex < 0) {
+      var imaginaryOnly = parseImaginaryCoefficient(withoutI);
+      return imaginaryOnly === undefined ? undefined : { real: 0, imaginary: imaginaryOnly };
+    }
+    var real = parseSimpleNumber(withoutI.slice(0, splitIndex));
+    var imaginary = parseImaginaryCoefficient(withoutI.slice(splitIndex));
+    if (real === undefined || imaginary === undefined) return undefined;
+    return { real: real, imaginary: imaginary };
+  }
+
+  function complexEqual(left, right, tolerance) {
+    return numbersEqual(left.real, right.real, tolerance) && numbersEqual(left.imaginary, right.imaginary, tolerance);
+  }
+
+  function normalizeComplex(value) {
+    return numericLabel(value.real) + ' ' + (value.imaginary < 0 ? '-' : '+') + ' ' + numericLabel(Math.abs(value.imaginary)) + 'i';
+  }
+
+  function checkSubmittedSkillAnswer(spec, submittedAnswer) {
+    var trimmed = String(submittedAnswer || '').trim();
+    if (!trimmed) {
+      return { isCorrect: false, normalizedSubmittedAnswer: '', reason: 'Submitted answer is empty.', unsupported: false };
+    }
+    if (!spec.acceptedAnswers.length) {
+      return { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'No accepted answers are configured.', unsupported: true };
+    }
+    var tolerance = Number.isFinite(spec.tolerance) ? spec.tolerance : 1e-10;
+    var match;
+    if (spec.answerType === 'exact-text') {
+      var exact = normalizeExactText(trimmed);
+      match = spec.acceptedAnswers.find(function (accepted) { return normalizeExactText(accepted) === exact; });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: exact, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized exact text.' : 'Submitted text did not match any accepted answer.', unsupported: false };
+    }
+    if (spec.answerType === 'expression-text') {
+      var expression = normalizeExpressionText(trimmed);
+      match = spec.acceptedAnswers.find(function (accepted) { return normalizeExpressionText(accepted) === expression; });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: expression, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized expression text.' : 'Expression did not match an accepted normalized text form.', unsupported: false };
+    }
+    if (spec.answerType === 'numeric') {
+      var submittedNumber = parseSimpleNumber(trimmed);
+      if (submittedNumber === undefined) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.', unsupported: false };
+      match = spec.acceptedAnswers.find(function (accepted) {
+        var acceptedNumber = parseSimpleNumber(accepted);
+        return acceptedNumber !== undefined && numbersEqual(submittedNumber, acceptedNumber, tolerance);
+      });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: numericLabel(submittedNumber), matchedAcceptedAnswer: match, reason: match ? 'Matched numeric answer within tolerance.' : 'Numeric answer did not match any accepted value within tolerance.', unsupported: false };
+    }
+    if (spec.answerType === 'multi-value') {
+      var submittedParts = normalizeMultiValueParts(trimmed);
+      match = spec.acceptedAnswers.find(function (accepted) {
+        return multiValuesEqual(submittedParts, normalizeMultiValueParts(accepted), tolerance, spec.orderMatters === true);
+      });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: submittedParts.join(', '), matchedAcceptedAnswer: match, reason: match ? 'Matched multi-value answer.' : 'Multi-value answer did not match any accepted value set.', unsupported: false };
+    }
+    if (spec.answerType === 'coordinate') {
+      var coordinate = parseCoordinate(trimmed);
+      if (!coordinate) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted coordinate is not a supported numeric tuple.', unsupported: false };
+      match = spec.acceptedAnswers.find(function (accepted) {
+        var acceptedCoordinate = parseCoordinate(accepted);
+        return acceptedCoordinate && coordinatesEqual(coordinate, acceptedCoordinate, tolerance);
+      });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeCoordinate(coordinate), matchedAcceptedAnswer: match, reason: match ? 'Matched coordinate values within tolerance.' : 'Coordinate did not match any accepted tuple.', unsupported: false };
+    }
+    if (spec.answerType === 'interval') {
+      var interval = parseInterval(trimmed);
+      if (!interval) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted interval is not a supported bounded interval form.', unsupported: false };
+      match = spec.acceptedAnswers.find(function (accepted) {
+        var acceptedInterval = parseInterval(accepted);
+        return acceptedInterval && intervalsEqual(interval, acceptedInterval, tolerance);
+      });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeInterval(interval), matchedAcceptedAnswer: match, reason: match ? 'Matched interval bounds and endpoint inclusivity.' : 'Interval did not match any accepted bounded interval.', unsupported: false };
+    }
+    if (spec.answerType === 'complex-number') {
+      var complex = parseComplex(trimmed);
+      if (!complex) return { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted complex number is not a supported a + bi form.', unsupported: false };
+      match = spec.acceptedAnswers.find(function (accepted) {
+        var acceptedComplex = parseComplex(accepted);
+        return acceptedComplex && complexEqual(complex, acceptedComplex, tolerance);
+      });
+      return { isCorrect: Boolean(match), normalizedSubmittedAnswer: normalizeComplex(complex), matchedAcceptedAnswer: match, reason: match ? 'Matched complex number components within tolerance.' : 'Complex number did not match any accepted value.', unsupported: false };
+    }
+    return { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'Unsupported answer type: ' + spec.answerType + '.', unsupported: true };
+  }
+
+  function parseJsonAttribute(node, name, fallback) {
+    try {
+      var parsed = JSON.parse(node.getAttribute(name) || '');
+      return parsed ?? fallback;
+    } catch (_error) {
+      return fallback;
+    }
+  }
+
+  function skillCheckSpecFromForm(form) {
+    var toleranceText = form.getAttribute('data-tolerance') || '';
+    var tolerance = toleranceText === '' ? NaN : Number(toleranceText);
+    return {
+      answerType: form.getAttribute('data-answer-type') || '',
+      acceptedAnswers: parseJsonAttribute(form, 'data-accepted-answers', []),
+      tolerance: Number.isFinite(tolerance) ? tolerance : undefined,
+      orderMatters: form.getAttribute('data-order-matters') === 'true'
+    };
+  }
+
+  function saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult) {
     var progress = loadProgress();
-    var now = new Date().toISOString();
-    var activityId = button.getAttribute('data-activity-id') || createId('activity');
-    if (progress.learningActivityAttempts.some(function (attempt) { return attempt.activityId === activityId; })) {
-      updateProgressText();
+    var attempt = {
+      attemptId: createId('skill_attempt'),
+      course: 'p3',
+      topic: form.getAttribute('data-topic') || '',
+      skillId: form.getAttribute('data-skill-id') || '',
+      checkId: form.getAttribute('data-check-id') || '',
+      regionId: form.getAttribute('data-region-id') || '',
+      submittedAnswer: submittedAnswer,
+      isCorrect: Boolean(checkResult.isCorrect),
+      usedHint: form.getAttribute('data-used-hint') === 'true',
+      revealedAnswer: form.getAttribute('data-revealed-answer') === 'true',
+      revealedRepairStep: form.getAttribute('data-revealed-repair-step') === 'true',
+      mistakeTags: parseJsonAttribute(form, 'data-mistake-tags', []),
+      timestamp: new Date().toISOString()
+    };
+    progress.skillCheckAttempts.push(attempt);
+    saveProgress(progress);
+    updateProgressText();
+    return attempt;
+  }
+
+  function setSkillFeedback(form, message, state) {
+    var feedback = form.querySelector('.skill-check-feedback');
+    if (!feedback) return;
+    feedback.textContent = message;
+    feedback.setAttribute('data-state', state);
+  }
+
+  function updateSkillCheckFormState(form, progress) {
+    var checkId = form.getAttribute('data-check-id') || '';
+    var passingAttempt = progress.skillCheckAttempts.find(function (attempt) {
+      return attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
+    });
+    var next = form.querySelector('[data-skill-check-inline-next]');
+    if (passingAttempt) {
+      form.classList.add('is-passed');
+      setSkillFeedback(form, 'Passed locally with a correct unrevealed answer.', 'passed');
+      if (next) next.hidden = false;
+    }
+  }
+
+  function updateSkillCheckForms(progress) {
+    document.querySelectorAll('[data-check-skill-answer]').forEach(function (form) {
+      if (form instanceof HTMLFormElement) updateSkillCheckFormState(form, progress);
+    });
+  }
+
+  function saveSkillReveal(form, revealKind) {
+    form.setAttribute(revealKind === 'answer' ? 'data-revealed-answer' : 'data-revealed-repair-step', 'true');
+    var submitted = String(new FormData(form).get('submittedAnswer') || '').trim();
+    saveSkillCheckLocalAttempt(form, submitted, {
+      isCorrect: false,
+      normalizedSubmittedAnswer: submitted,
+      reason: revealKind === 'answer' ? 'Answer revealed.' : 'Repair step revealed.'
+    });
+    setSkillFeedback(form, revealKind === 'answer'
+      ? 'Answer revealed. This is saved as repaired practice, not passed.'
+      : 'Repair step revealed. This is saved as repaired practice, not passed.', 'repaired');
+  }
+
+  function checkSkillAnswer(form) {
+    var submittedAnswer = String(new FormData(form).get('submittedAnswer') || '').trim();
+    var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
+    saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
+    var submitButton = form.querySelector('button[type="submit"]');
+    var nextButton = form.querySelector('[data-skill-check-inline-next]');
+    var repair = form.querySelector('[data-skill-repair]');
+    var answerReveal = form.querySelector('[data-skill-answer-reveal]');
+    if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
+      setSkillFeedback(form, 'Correct. Saved as a deterministic pass.', 'correct');
+      form.classList.add('is-passed');
+      if (nextButton) nextButton.hidden = false;
+      if (submitButton) submitButton.textContent = 'Check again';
       return;
     }
-    progress.learningActivityAttempts.push({
-      id: createId('learn'),
-      profileId: PROFILE_ID,
-      regionId: button.getAttribute('data-region-id') || '',
-      activityType: button.getAttribute('data-save-skill-check') || 'quick_check',
-      activityId: activityId,
-      topic: button.getAttribute('data-topic') || '',
-      prompt: button.getAttribute('data-prompt') || 'Static practice item',
-      learnerResponse: 'Completed on static page',
-      revealedEarly: false,
-      outcome: 'got_it',
-      confidence: 3,
-      createdAt: now,
-      completedAt: now
-    });
-    saveProgress(progress);
-    var status = document.createElement('p');
-    status.className = 'save-status';
-    status.textContent = 'Done. Review the first step if this felt shaky, then choose the next action.';
-    button.insertAdjacentElement('afterend', status);
-    updateProgressText();
+    if (checkResult.isCorrect) {
+      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not marked passed.', 'repaired');
+      if (nextButton) nextButton.hidden = false;
+      return;
+    }
+    setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try again or open the repair step.', 'incorrect');
+    if (submitButton) submitButton.textContent = 'Try again';
+    if (repair) repair.hidden = false;
+    if (answerReveal) answerReveal.hidden = false;
+    if (nextButton) nextButton.hidden = true;
   }
 
   function saveExamAttempt(form) {
@@ -566,6 +941,12 @@
           next.disabled = true;
         }
         if (activeCard instanceof HTMLElement) {
+          var activeSkillForm = activeCard.querySelector('[data-check-skill-answer]');
+          var activeSkillPassed = activeSkillForm?.classList?.contains('is-passed');
+          if (activeSkillForm && !activeSkillPassed) {
+            next.className = 'button secondary-button';
+            next.textContent = isLastCardInChunk && skillCheckGroups.length > 1 ? 'Skip for now' : 'Skip to next question';
+          }
           Array.from(activeCard.querySelectorAll('[data-skill-check-inline-next]')).forEach(function (button) {
             if (!(button instanceof HTMLButtonElement)) return;
             if (isLastCardInChunk && skillCheckGroups.length > 1) {
@@ -574,7 +955,7 @@
             } else {
               button.textContent = 'Next question';
             }
-            button.hidden = !skillCheckGroups.length && isLastCardInChunk;
+            button.hidden = !activeSkillPassed || (!skillCheckGroups.length && isLastCardInChunk);
           });
         }
         previousSet.hidden = setCount <= 1;
@@ -837,17 +1218,42 @@
         return;
       }
 
-      var skillButton = target.closest('[data-save-skill-check]');
-      if (skillButton) {
-        saveSkillCheck(skillButton);
+      var hintButton = target.closest('[data-show-skill-hint]');
+      if (hintButton) {
+        var form = hintButton.closest('[data-check-skill-answer]');
+        if (form) {
+          form.setAttribute('data-used-hint', 'true');
+          var hint = form.querySelector('[data-skill-hint]');
+          if (hint) hint.hidden = false;
+        }
       }
     });
 
     document.addEventListener('submit', function (event) {
       var form = event.target;
-      if (!(form instanceof HTMLFormElement) || !form.matches('[data-save-exam-attempt]')) return;
-      event.preventDefault();
-      saveExamAttempt(form);
+      if (!(form instanceof HTMLFormElement)) return;
+      if (form.matches('[data-check-skill-answer]')) {
+        event.preventDefault();
+        checkSkillAnswer(form);
+        return;
+      }
+      if (form.matches('[data-save-exam-attempt]')) {
+        event.preventDefault();
+        saveExamAttempt(form);
+      }
     });
+
+    document.addEventListener('toggle', function (event) {
+      var details = event.target;
+      if (!(details instanceof HTMLDetailsElement) || !details.open) return;
+      var form = details.closest('[data-check-skill-answer]');
+      if (!(form instanceof HTMLFormElement)) return;
+      if (details.matches('[data-skill-answer-reveal]') && form.getAttribute('data-revealed-answer') !== 'true') {
+        saveSkillReveal(form, 'answer');
+      }
+      if (details.matches('[data-skill-repair]') && form.getAttribute('data-revealed-repair-step') !== 'true') {
+        saveSkillReveal(form, 'repair');
+      }
+    }, true);
   });
 })();

@@ -2733,7 +2733,8 @@ summary {
 }
 
 .option-list,
-.field-list {
+.field-list,
+.skill-check-form {
   display: grid;
   gap: 9px;
   margin: 0;
@@ -2752,6 +2753,7 @@ summary {
 
 .option-list label,
 .field-list label,
+.skill-check-form label,
 .attempt-form label {
   display: grid;
   gap: 6px;
@@ -2838,7 +2840,8 @@ body.skill-check-page .exam-question-section {
 
 .attempt-form input,
 .attempt-form select,
-.field-list input {
+.field-list input,
+.skill-check-form input {
   width: 100%;
   min-height: 44px;
   padding: 9px 11px;
@@ -2853,6 +2856,40 @@ body.skill-check-page .exam-question-section {
   margin: 0;
   color: var(--success);
   font-weight: 900;
+}
+
+.skill-check-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+
+.skill-check-feedback {
+  min-height: 1.5rem;
+  font-weight: 900;
+}
+
+.skill-check-feedback[data-state="correct"],
+.skill-check-feedback[data-state="passed"] {
+  color: var(--success);
+}
+
+.skill-check-feedback[data-state="incorrect"] {
+  color: #9f3a25;
+}
+
+.skill-check-feedback[data-state="repaired"] {
+  color: #8a5b16;
+}
+
+.skill-check-hint-panel,
+.skill-check-repair-details,
+.skill-check-answer-details {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fffdf8;
 }
 
 .exam-topic-list {
@@ -2876,8 +2913,7 @@ body.skill-check-page .exam-question-section {
   gap: 14px;
 }
 
-.static-enhanced [data-complete-field-guide-topic].is-saved,
-.static-enhanced [data-save-skill-check].is-saved {
+.static-enhanced [data-complete-field-guide-topic].is-saved {
   border-color: rgba(47, 107, 79, 0.45);
   color: var(--success);
   background: #edf7ef;

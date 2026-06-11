@@ -8,6 +8,7 @@ import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3Ex
 import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
 import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
 import {
+  skillCheckAnswerSpecForItem,
   skillCheckCheckabilityReport,
   skillCheckContractForItem,
   type SkillCheckItem,
@@ -554,11 +555,11 @@ function renderPage(options: RenderPageOptions): string {
 `;
 }
 
-function progressList(regionId: string, fieldGuideTotal: number): string {
+function progressList(regionId: string, fieldGuideTotal: number, requiredSkillChecks: string[] = []): string {
   return `
     <ul class="progress-list" aria-label="Local progress">
       <li><span data-progress-field-guide="${escapeAttr(regionId)}" data-total="${fieldGuideTotal}" data-label="Field Guide">Field Guide: 0/${fieldGuideTotal}</span></li>
-      <li><span data-progress-skill="${escapeAttr(regionId)}" data-label="Skill Check">Skill Check: 0 saved</span></li>
+      <li><span data-progress-skill="${escapeAttr(regionId)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillChecks))}" data-label="Skill Check">Skill Check: 0/${requiredSkillChecks.length} passed</span></li>
       <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam questions">Exam questions: 0 saved</span></li>
     </ul>
   `;
@@ -570,6 +571,12 @@ function compactProgress(regionId: string, fieldGuideTotal: number): string {
       Local progress saved in this browser.
     </p>
   `;
+}
+
+function checkableSkillCheckIdsForRegion(regionId: string): string[] {
+  return skillCheckCheckabilityReport()
+    .filter((item) => item.regionId === regionId && item.status === 'deterministically-checkable')
+    .map((item) => item.itemId);
 }
 
 function renderStudyPath(): string {
@@ -1476,7 +1483,47 @@ function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   `;
 }
 
-function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: string): string {
+function renderCheckableSkillCheckForm(
+  item: SkillCheckItem,
+  group: SkillChecklistTopicGroup,
+  pagePath: string,
+  fieldGuidePath: string,
+): string {
+  const spec = skillCheckAnswerSpecForItem(item);
+  if (!spec) return '';
+  return `
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(spec.acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
+      <label class="single-answer-field">
+        Answer
+        <input name="submittedAnswer" type="text" autocomplete="off" required />
+      </label>
+      <div class="skill-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-skill-hint>Show hint</button>
+        <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-skill-hint hidden>
+        <p>${renderMathText(item.hints.nudge)}</p>
+        ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
+      </div>
+      <details class="skill-check-repair-details" data-skill-repair hidden>
+        <summary>Show repair step</summary>
+        <p>${renderMathText(item.repairStep ?? item.hints.firstStep ?? item.hints.nudge)}</p>
+        <p class="question-instruction">Using this repair marks the attempt as repaired, not passed.</p>
+      </details>
+      <details class="skill-check-answer-details" data-skill-answer-reveal hidden>
+        <summary>Show answer and worked route</summary>
+        <div>${renderExpectedAnswerSummary(item)}</div>
+        <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
+        <p class="question-instruction">Revealed answers are saved as repaired practice and do not count as passed.</p>
+      </details>
+      ${routeLink(pagePath, fieldGuidePath, 'Back to Field Guide', 'button secondary-button')}
+    </form>
+  `;
+}
+
+function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: string, fieldGuidePath: string): string {
   if (!group.authoredItems.length) return '';
   return `
     <section class="practice-subsection">
@@ -1486,23 +1533,23 @@ function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: strin
           <article class="practice-card">
             <p class="eyebrow">Skill Check</p>
             <h4>${renderMathText(item.prompt)}</h4>
-            ${renderOptions(item.options ?? item.cards, item.itemId, item.inputType === 'checkbox')}
-            ${item.fields?.length ? `
+            ${item.checkable === true ? renderCheckableSkillCheckForm(item, group, pagePath, fieldGuidePath) : `
+              ${renderOptions(item.options ?? item.cards, item.itemId, item.inputType === 'checkbox')}
+              ${item.fields?.length ? `
               <div class="field-list">
                 ${item.fields.map((field) => `
                   <label>${escapeHtml(field.label)} <input type="text" aria-label="${escapeAttr(field.label)}" /></label>
                 `).join('')}
               </div>
-            ` : ''}
-            <details>
-              <summary>Show hint and worked route</summary>
-              <p>${renderMathText(item.hints.nudge)}</p>
-              ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
-              <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-            </details>
-            <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(item.regionId)}" data-activity-id="${escapeAttr(item.itemId)}" data-topic="${escapeAttr(group.topic.title)}" data-prompt="${escapeAttr(item.prompt)}">
-              I tried this
-            </button>
+              ` : ''}
+              <details>
+                <summary>Show hint and worked route</summary>
+                <p>${renderMathText(item.hints.nudge)}</p>
+                ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
+                <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
+              </details>
+              <p class="empty-state">This check is not machine-checkable yet. Use it for practice, not pass credit.</p>
+            `}
           </article>
         `).join('')}
       </div>
@@ -1529,9 +1576,7 @@ function renderQuickChecks(group: SkillChecklistTopicGroup): string {
                 <p><strong>Answer:</strong> ${renderMathText(check.answer)}</p>
                 <p>${renderMathText(check.explanation)}</p>
               </details>
-              <button class="button secondary-button" type="button" data-save-skill-check="quick_check" data-region-id="${escapeAttr(snippet.regionIds[0] ?? '')}" data-activity-id="${escapeAttr(check.id ?? snippet.snippetId)}" data-topic="${escapeAttr(group.topic.title)}" data-prompt="${escapeAttr(check.prompt)}">
-                Save quick check
-              </button>
+              <p class="empty-state">Review only. This does not count toward deterministic Skill Check pass state.</p>
             </article>
           `;
         }).join('')}
@@ -1551,9 +1596,7 @@ function renderGeneratedPracticeItem(item: GeneratedPracticeItem): string {
         <p><strong>Answer:</strong> ${renderMathText(item.answer)}</p>
         <ol>${item.workedSolution.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
       </details>
-      <button class="button secondary-button" type="button" data-save-skill-check="warm_up" data-region-id="${escapeAttr(item.regionIds[0] ?? '')}" data-activity-id="${escapeAttr(item.practiceId)}" data-topic="${escapeAttr(item.topic)}" data-prompt="${escapeAttr(item.prompt)}">
-        I tried this
-      </button>
+      <p class="empty-state">Guided practice is review only. It does not create Skill Check pass credit.</p>
     </article>
   `;
 }
@@ -1570,7 +1613,7 @@ function renderGeneratedPractice(group: SkillChecklistTopicGroup): string {
   `;
 }
 
-function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: string): string {
+function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: string, fieldGuidePath: string): string {
   const totalItems = totalSkillChecklistItems(group);
   const defaultItems = Math.min(3, totalItems);
   return `
@@ -1583,7 +1626,7 @@ function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: str
           <p class="practice-instruction">Try one item first. Use the hint if you need a repair step.</p>
         </div>
       </header>
-      ${renderAuthoredPractice(group, pagePath)}
+      ${renderAuthoredPractice(group, pagePath, fieldGuidePath)}
       ${renderQuickChecks(group)}
       ${renderGeneratedPractice(group)}
       ${totalItems === 0 ? '<p class="empty-state">Focused practice for this section is still being prepared.</p>' : ''}
@@ -1692,6 +1735,7 @@ function renderPracticePage(
 ): string {
   const { topic, region, groups } = context;
   const firstPracticeId = groups[0]?.topic.id ? `practice-${groups[0].topic.id}` : 'exam-questions';
+  const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const body = `
     ${renderHero(
       `${topic.name} Skill Check`,
@@ -1707,12 +1751,12 @@ function renderPracticePage(
         ${groups.map((group) => `<a href="#practice-${escapeAttr(group.topic.id)}">${escapeHtml(group.topic.title)}</a>`).join('')}
       </nav>
       <div class="progress-detail-row">
-        ${progressList(region.id, Math.max(1, context.fieldGuideTopics.length))}
+        ${progressList(region.id, Math.max(1, context.fieldGuideTopics.length), requiredSkillCheckIds)}
         ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button secondary-button')}
       </div>
     </details>
     <section class="practice-stack" data-one-card-flow data-flow-label="Skill Check" data-default-card-limit="3">
-      ${groups.map((group) => renderSkillPracticeGroup(group, pagePath)).join('')}
+      ${groups.map((group) => renderSkillPracticeGroup(group, pagePath, fieldGuidePath)).join('')}
     </section>
     <section class="next-step-card">
       <h2>Next step</h2>

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { COURSES, P3_COURSE_ID, coursePath, getCourseBySlug } from '../src/data/courses';
 import { P3_REGION_DEFINITIONS } from '../src/lib/p3SkillContract';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS } from '../src/lib/staticStudyRoutes';
@@ -67,5 +68,14 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p3/exam-training/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('regions/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
+  });
+
+  it('does not expose legacy self-reported Skill Check completion controls', () => {
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(generatorSource).not.toContain('data-save-skill-check');
+    expect(generatorSource).not.toContain('I tried this');
+    expect(staticClientSource).not.toContain('data-save-skill-check');
   });
 });
