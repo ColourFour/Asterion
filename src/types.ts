@@ -31,6 +31,8 @@ export interface QuestionPartMark {
   label: string;
   marksAvailable: number;
   markBreakdown?: AttemptMarkBreakdown;
+  markSchemeText?: string;
+  markPoints?: QuestionMarkPoint[];
   primaryTopicId?: string;
   skillRef?: string;
   mappedRegionId?: string;
@@ -41,14 +43,37 @@ export interface QuestionPartMark {
   reasonCodes?: string[];
 }
 
+export interface QuestionMarkPoint {
+  id: string;
+  label: string;
+  markCode?: string;
+  source: 'mark_scheme_text' | 'mark_events';
+  confidence?: number;
+  reviewStatus?: string;
+}
+
 export interface AttemptPartScore {
   partId?: string;
   subpartId?: string;
   label: string;
+  attempted?: boolean;
   marksEarned: number;
   marksAvailable: number;
   markBreakdown?: AttemptMarkBreakdown;
+  markPointIds?: string[];
+  markPointsAvailable?: number;
 }
+
+export type ExamAttemptSuspicionFlag =
+  | 'full_marks_without_mark_points'
+  | 'very_high_score_low_time'
+  | 'repeated_perfect_self_marking'
+  | 'answer_revealed_before_marking'
+  | 'confidence_score_mismatch';
+
+export type ExamAttemptEvidenceKind = 'weak_self_marked_exam';
+
+export type ExamAttemptConfidence = 'low' | 'medium' | 'high';
 
 export interface DeepSeekMetadata {
   topic?: string;
@@ -242,6 +267,20 @@ export interface Attempt {
   mistakeType?: MistakeType;
   mistakeTypes?: MistakeType[];
   fullScoreConfirmed?: boolean;
+  selfMarked?: boolean;
+  evidenceKind?: ExamAttemptEvidenceKind;
+  evidenceLabel?: string;
+  masteryEligible?: boolean;
+  masteryGate?: 'skill_check_required' | 'skill_check_passed';
+  trustLabel?: string;
+  suspicionFlags?: ExamAttemptSuspicionFlag[];
+  confidentMode?: boolean;
+  confidenceRating?: ExamAttemptConfidence;
+  answerRevealedBeforeMarking?: boolean;
+  markPointsTicked?: number;
+  markPointsAvailable?: number;
+  coarseSelfMarking?: boolean;
+  timingReliable?: boolean;
   note?: string;
   timeSpentSeconds: number;
   markSchemeRevealed: boolean;

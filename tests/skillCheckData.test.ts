@@ -81,19 +81,19 @@ describe('P3 Skill Check machine-checkable data', () => {
     expect(validateSkillCheckItemContract(broken)).toContain('uncheckable item missing unsupportedAnswerReason');
   });
 
-  it('labels not-yet-migrated items instead of treating them as checkable', () => {
+  it('labels formerly remaining items as deterministically checkable after migration', () => {
     const summary = skillCheckCheckabilityForItem(requireItem('sc-trig-reciprocal-functions-foundation-001'));
 
     expect(summary).toEqual({
       itemId: 'sc-trig-reciprocal-functions-foundation-001',
       regionId: 'trigonometry',
       skillId: 'p3_trig_reciprocal_double_angle',
-      status: 'not-yet-checkable',
-      reason: 'Not yet migrated to Phase 3 machine-checkable answer fields.',
+      status: 'deterministically-checkable',
+      answerType: 'expression-text',
     });
   });
 
-  it('reports a partial migration rather than full coverage', () => {
+  it('reports full authored P3 Skill Check deterministic coverage', () => {
     const report = skillCheckCheckabilityReport();
     const deterministic = report.filter((item) => item.status === 'deterministically-checkable');
     const notYet = report.filter((item) => item.status === 'not-yet-checkable');
@@ -105,8 +105,14 @@ describe('P3 Skill Check machine-checkable data', () => {
       'sc-log-graph-foundation-001',
       'sc-log-graph-core-001',
       'sc-complex-cartesian-conjugate-foundation-001',
+      'sc-trig-reciprocal-functions-foundation-001',
+      'sc-diff-exp-log-derivatives-foundation-001',
+      'sc-int-exp-log-foundation-001',
+      'sc-iteration-change-sign-foundation-001',
+      'sc-vectors-notation-foundation-001',
+      'sc-de-first-order-model-foundation-001',
     ]));
-    expect(notYet.length).toBeGreaterThan(0);
+    expect(notYet).toHaveLength(0);
   });
 
   it('reports the current migrated-topic QA counts accurately', () => {
@@ -116,25 +122,43 @@ describe('P3 Skill Check machine-checkable data', () => {
     const unsupported = report.filter((item) => item.status === 'unsupported-answer-form');
 
     expect(report).toHaveLength(159);
-    expect(deterministic).toHaveLength(51);
-    expect(notYet).toHaveLength(108);
+    expect(deterministic).toHaveLength(159);
+    expect(notYet).toHaveLength(0);
     expect(unsupported).toHaveLength(0);
     expect(deterministic.map((item) => item.regionId)).toEqual(expect.arrayContaining([
       'algebra',
       'complex-numbers',
+      'differential-equations',
+      'differentiation',
+      'integration',
       'logarithmic-and-exponential-functions',
+      'numerical-solution-of-equations',
+      'trigonometry',
+      'vectors',
     ]));
   });
 
-  it('keeps the three fully migrated topic QA summaries complete', () => {
+  it('keeps all P3 topic QA summaries complete', () => {
     expect([
       skillCheckTopicMigrationSummary('complex-numbers'),
       skillCheckTopicMigrationSummary('logarithmic-and-exponential-functions'),
       skillCheckTopicMigrationSummary('algebra'),
+      skillCheckTopicMigrationSummary('trigonometry'),
+      skillCheckTopicMigrationSummary('differentiation'),
+      skillCheckTopicMigrationSummary('integration'),
+      skillCheckTopicMigrationSummary('numerical-solution-of-equations'),
+      skillCheckTopicMigrationSummary('vectors'),
+      skillCheckTopicMigrationSummary('differential-equations'),
     ]).toMatchObject([
       { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
       { totalChecks: 18, checkableChecks: 18, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
       { totalChecks: 21, checkableChecks: 21, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 15, checkableChecks: 15, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 21, checkableChecks: 21, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 24, checkableChecks: 24, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 24, checkableChecks: 24, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
     ]);
   });
 
@@ -145,6 +169,21 @@ describe('P3 Skill Check machine-checkable data', () => {
     expectAccepted('sc-log-graph-core-001', '(8, 3)');
     expectAccepted('sc-alg-binomial-core-001', '(-1/3, 1/3)');
     expectAccepted('sc-complex-cartesian-conjugate-foundation-001', '3 + 4i');
+  });
+
+  it('passes representative newly migrated remaining-topic checks through the deterministic answer checker', () => {
+    expectAccepted('sc-trig-reciprocal-functions-core-001', '5');
+    expectAccepted('sc-trig-r-form-transformations-core-001', '$\\cos\\alpha=\\frac35$, $\\sin\\alpha=\\frac45$');
+    expectAccepted('sc-diff-product-rule-challenge-001', '-1');
+    expectAccepted('sc-diff-stationary-tangent-normal-core-001', '6');
+    expectAccepted('sc-int-substitution-challenge-001', '$u=1$ to $u=2$');
+    expectAccepted('sc-int-definite-area-bridge-foundation-001', 'Lower-bound value');
+    expectAccepted('sc-iteration-fixed-point-roots-challenge-001', '1.732');
+    expectAccepted('sc-iteration-change-sign-core-001', '$f(2)=-0.4$, $f(3)=1.2$ and $f(2)=0.8$, $f(3)=-0.2$');
+    expectAccepted('sc-vectors-scalar-product-foundation-001', '1');
+    expectAccepted('sc-vectors-line-equation-challenge-001', 'Yes, with $\\lambda=2$');
+    expectAccepted('sc-de-particular-solutions-core-001', '1');
+    expectAccepted('sc-de-modeling-core-001', '$\\frac{dP}{dt}=k(50-P)$');
   });
 
   it('reports Complex Numbers as the first complete topic migration batch', () => {

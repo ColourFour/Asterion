@@ -1,6 +1,20 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
   var PROFILE_ID = 'local-static-student';
+  var CSV_HEADERS = [
+    'export_timestamp',
+    'topic',
+    'route_page_type',
+    'activity_type',
+    'item_id',
+    'attempt_timestamp',
+    'answer_result_summary',
+    'deterministic_pass_fail',
+    'self_marked_score',
+    'evidence_label',
+    'mastery_eligibility_label',
+    'suspicion_flags'
+  ];
   var TARGETED_MISTAKE_PROMPTS = {
     'algebra slip': 'I made an algebra error when...',
     'wrong identity': 'I used the wrong identity because...',
@@ -79,6 +93,136 @@
     return progress;
   }
 
+  function csvCell(value) {
+    var cell = value === undefined || value === null || value === ''
+      ? ''
+      : Array.isArray(value) ? value.filter(Boolean).join('|') : String(value);
+    return /[",\n\r]/.test(cell) ? '"' + cell.replace(/"/g, '""') + '"' : cell;
+  }
+
+  function csvRow(row) {
+    return CSV_HEADERS.map(function (header) { return csvCell(row[header]); }).join(',');
+  }
+
+  function blankCsvRow(exportTimestamp) {
+    return CSV_HEADERS.reduce(function (row, header) {
+      row[header] = header === 'export_timestamp' ? exportTimestamp : '';
+      return row;
+    }, {});
+  }
+
+  function skillCheckCsvRow(attempt, exportTimestamp) {
+    var passed = isPassingSkillCheckAttempt(attempt);
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: attempt.topic || '',
+      route_page_type: 'skill-check',
+      activity_type: 'Skill Check',
+      item_id: attempt.checkId || '',
+      attempt_timestamp: attempt.timestamp || '',
+      answer_result_summary: attempt.submittedAnswer || '',
+      deterministic_pass_fail: passed ? 'pass' : 'fail',
+      evidence_label: passed ? 'Deterministic Skill Check evidence' : 'Skill Check attempt',
+      mastery_eligibility_label: passed ? 'mastery_gate_passed_for_this_check' : 'not_passed'
+    });
+  }
+
+  function reviewCsvRow(attempt, exportTimestamp) {
+    var tags = safeArray(attempt.mistakeTags).filter(Boolean);
+    var isCandidate = tags.length > 0 || !attempt.isCorrect || attempt.revealedAnswer || attempt.revealedRepairStep;
+    if (!isCandidate) return undefined;
+    var state = attempt.revealedAnswer
+      ? 'answer_revealed'
+      : attempt.revealedRepairStep ? 'repair_revealed' : attempt.isCorrect ? 'tagged_review' : 'incorrect';
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: attempt.topic || '',
+      route_page_type: 'review',
+      activity_type: 'Review',
+      item_id: attempt.checkId || '',
+      attempt_timestamp: attempt.timestamp || '',
+      answer_result_summary: state,
+      deterministic_pass_fail: 'not_available',
+      evidence_label: 'Review candidate from local Skill Check attempt',
+      mastery_eligibility_label: 'not_mastery_evidence',
+      suspicion_flags: tags.join('|')
+    });
+  }
+
+  function examCsvRow(attempt, exportTimestamp) {
+    var score = typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0
+      ? attempt.marksEarned + '/' + attempt.marksAvailable
+      : typeof attempt.marksEarned === 'number' ? String(attempt.marksEarned) : '';
+    var masteryLabel = attempt.masteryGate === 'skill_check_passed'
+      ? 'skill_check_passed_exam_supports_confidence'
+      : 'not_mastery_evidence_by_itself';
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: attempt.topicDisplayName || '',
+      route_page_type: 'exam-training',
+      activity_type: 'Exam Training',
+      item_id: attempt.questionId || '',
+      attempt_timestamp: attempt.attemptedAt || '',
+      answer_result_summary: attempt.mistakeType || '',
+      deterministic_pass_fail: 'not_available',
+      self_marked_score: score,
+      evidence_label: attempt.evidenceLabel || (attempt.selfMarked ? 'Self-marked attempt' : 'Exam practice evidence'),
+      mastery_eligibility_label: masteryLabel,
+      suspicion_flags: safeArray(attempt.suspicionFlags).join('|')
+    });
+  }
+
+  function learningCsvRow(attempt, exportTimestamp) {
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: attempt.topic || attempt.regionId || '',
+      route_page_type: 'field-guide',
+      activity_type: attempt.activityType || 'Field Guide',
+      item_id: attempt.activityId || attempt.id || '',
+      attempt_timestamp: attempt.completedAt || attempt.createdAt || '',
+      answer_result_summary: attempt.prompt || '',
+      deterministic_pass_fail: 'not_available',
+      evidence_label: 'Local learning activity',
+      mastery_eligibility_label: 'not_mastery_evidence'
+    });
+  }
+
+  function buildLocalProgressCsv(progress, exportTimestamp) {
+    var skillRows = normalizeSkillCheckAttempts(progress.skillCheckAttempts).flatMap(function (attempt) {
+      return [skillCheckCsvRow(attempt, exportTimestamp), reviewCsvRow(attempt, exportTimestamp)].filter(Boolean);
+    });
+    var examRows = safeArray(progress.attempts).map(function (attempt) {
+      return examCsvRow(attempt, exportTimestamp);
+    });
+    var learningRows = safeArray(progress.learningActivityAttempts).map(function (attempt) {
+      return learningCsvRow(attempt, exportTimestamp);
+    });
+    return [CSV_HEADERS.join(',')].concat(skillRows, examRows, learningRows).map(function (row) {
+      return typeof row === 'string' ? row : csvRow(row);
+    }).join('\n');
+  }
+
+  function downloadTextFile(filename, content, mimeType) {
+    var blob = new Blob([content], { type: mimeType });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportLocalProgressCsv(button) {
+    var progress = loadProgress();
+    var timestamp = new Date().toISOString();
+    var csv = buildLocalProgressCsv(progress, timestamp);
+    var compactDate = timestamp.replace(/[:.]/g, '-');
+    downloadTextFile('asterion-local-progress-' + compactDate + '.csv', csv, 'text/csv;charset=utf-8');
+    var status = button.closest('[data-export-panel]')?.querySelector('[data-export-status]');
+    if (status) {
+      var rowCount = Math.max(0, csv.split('\n').length - 1);
+      status.textContent = 'CSV export prepared from this browser: ' + rowCount + ' row' + (rowCount === 1 ? '' : 's') + '.';
+    }
+  }
+
   function completionsFor(progress, regionId) {
     var record = progress.regionLearning && progress.regionLearning[regionId];
     var completions = record && record.fieldGuideTopicCompletions;
@@ -146,6 +290,77 @@
     return 'Paper 3';
   }
 
+  function scoreRatioForAttempt(attempt) {
+    if (typeof attempt.scoreRatio === 'number' && Number.isFinite(attempt.scoreRatio)) return attempt.scoreRatio;
+    if (typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0) {
+      return attempt.marksEarned / attempt.marksAvailable;
+    }
+    return undefined;
+  }
+
+  function markPointCountsForAttempt(attempt) {
+    var fromParts = safeArray(attempt.partScores).reduce(function (counts, part) {
+      return {
+        ticked: counts.ticked + safeArray(part.markPointIds).length,
+        available: counts.available + Number(part.markPointsAvailable || 0)
+      };
+    }, { ticked: 0, available: 0 });
+    return {
+      ticked: typeof attempt.markPointsTicked === 'number' ? attempt.markPointsTicked : fromParts.ticked,
+      available: typeof attempt.markPointsAvailable === 'number' ? attempt.markPointsAvailable : fromParts.available
+    };
+  }
+
+  function isPerfectSelfMarkedAttempt(attempt) {
+    return Boolean(
+      attempt
+      && attempt.selfMarked !== false
+      && typeof attempt.marksAvailable === 'number'
+      && attempt.marksAvailable > 0
+      && attempt.marksEarned === attempt.marksAvailable
+    );
+  }
+
+  function examAttemptSuspicionFlags(attempt, previousAttempts) {
+    var flags = new Set();
+    var ratio = scoreRatioForAttempt(attempt);
+    var markPoints = markPointCountsForAttempt(attempt);
+    if (isPerfectSelfMarkedAttempt(attempt) && markPoints.available > 0 && markPoints.ticked === 0) {
+      flags.add('full_marks_without_mark_points');
+    }
+    if (attempt.timingReliable === true && typeof ratio === 'number' && ratio >= 0.9 && attempt.timeSpentSeconds > 0 && attempt.timeSpentSeconds < 90) {
+      flags.add('very_high_score_low_time');
+    }
+    if (isPerfectSelfMarkedAttempt(attempt) && safeArray(previousAttempts).filter(isPerfectSelfMarkedAttempt).length >= 2) {
+      flags.add('repeated_perfect_self_marking');
+    }
+    if (attempt.answerRevealedBeforeMarking) {
+      flags.add('answer_revealed_before_marking');
+    }
+    if (
+      (attempt.confidenceRating === 'low' && typeof ratio === 'number' && ratio >= 0.85)
+      || (attempt.confidenceRating === 'high' && typeof ratio === 'number' && ratio <= 0.4)
+    ) {
+      flags.add('confidence_score_mismatch');
+    }
+    return Array.from(flags);
+  }
+
+  function examTrustLabel(flags) {
+    if (flags.includes('answer_revealed_before_marking') || flags.includes('repeated_perfect_self_marking')) {
+      return 'Needs teacher check';
+    }
+    return flags.length ? 'Low-trust self-marked evidence' : 'Exam practice evidence';
+  }
+
+  function skillCheckGatePassed(progress, regionId) {
+    if (!regionId) return false;
+    var node = document.querySelector('[data-progress-skill="' + regionId + '"]');
+    var requiredCheckIds = node ? parseRequiredCheckIds(node) : [];
+    if (!requiredCheckIds.length) return false;
+    return passedCheckIds(progress, requiredCheckIds, regionId).length >= requiredCheckIds.length;
+  }
+
   function updateProgressText() {
     var progress = loadProgress();
     document.querySelectorAll('[data-progress-field-guide]').forEach(function (node) {
@@ -172,17 +387,18 @@
 
     document.querySelectorAll('[data-progress-exam]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-exam') || '';
-      var label = node.getAttribute('data-label') || 'Exam questions';
+      var label = node.getAttribute('data-label') || 'Exam practice evidence';
       var count = attemptsForRegion(progress, regionId).length;
-      node.textContent = label + ': ' + count + ' saved';
-      node.classList.toggle('is-complete', count > 0);
+      node.textContent = label + ': ' + count + ' self-marked';
+      node.classList.remove('is-complete');
+      node.classList.toggle('has-evidence', count > 0);
     });
 
     document.querySelectorAll('[data-total-attempts]').forEach(function (node) {
       var family = node.getAttribute('data-paper-family') || 'p3';
       var label = node.getAttribute('data-paper-label') || paperFamilyLabel(family);
       var count = attemptsForPaperFamily(progress, family).length;
-      node.textContent = count + ' saved ' + label + ' attempt' + (count === 1 ? '' : 's');
+      node.textContent = count + ' saved ' + label + ' self-marked attempt' + (count === 1 ? '' : 's');
     });
 
     document.querySelectorAll('[data-topic-tried-count]').forEach(function (node) {
@@ -199,7 +415,7 @@
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check passes, ' + examCount + ' exam attempts.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check passes, ' + examCount + ' self-marked exam evidence.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
@@ -211,7 +427,7 @@
       var parts = [];
       if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Field Guide');
       if (practiceCount > 0) parts.push(practiceCount + ' Skill Check pass' + (practiceCount === 1 ? '' : 'es'));
-      if (examCount > 0) parts.push(examCount + ' exam attempt' + (examCount === 1 ? '' : 's'));
+      if (examCount > 0) parts.push(examCount + ' self-marked exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
       node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
     });
@@ -764,6 +980,8 @@
       form.classList.add('is-passed');
       setSkillFeedback(form, 'Passed locally with a correct unrevealed answer.', 'passed');
       if (next) next.hidden = false;
+      var submit = form.querySelector('button[type="submit"]');
+      if (submit) submit.className = 'button secondary-button';
     }
   }
 
@@ -799,7 +1017,10 @@
       setSkillFeedback(form, 'Correct. Saved as a deterministic pass.', 'correct');
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
-      if (submitButton) submitButton.textContent = 'Check again';
+      if (submitButton) {
+        submitButton.textContent = 'Check again';
+        submitButton.className = 'button secondary-button';
+      }
       return;
     }
     if (checkResult.isCorrect) {
@@ -808,7 +1029,10 @@
       return;
     }
     setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try again or open the repair step.', 'incorrect');
-    if (submitButton) submitButton.textContent = 'Try again';
+    if (submitButton) {
+      submitButton.textContent = 'Try again';
+      submitButton.className = 'button primary-button';
+    }
     if (mistakePanel) mistakePanel.hidden = false;
     updateTargetedPrompt(form);
     if (repair) repair.hidden = false;
@@ -816,19 +1040,80 @@
     if (nextButton) nextButton.hidden = true;
   }
 
+  function examPartScores(form) {
+    return Array.from(form.querySelectorAll('[data-exam-part]')).map(function (part) {
+      var marksAvailable = Number(part.getAttribute('data-marks-available') || 0);
+      var markPointsAvailable = Number(part.getAttribute('data-mark-points-available') || 0);
+      var marksInput = part.querySelector('[data-part-marks-earned]');
+      var marksEarned = Number(marksInput?.value || 0);
+      var tickedMarkPoints = Array.from(part.querySelectorAll('[data-mark-point]:checked')).map(function (input) {
+        return input.value;
+      }).filter(Boolean);
+      var attempted = Boolean(part.querySelector('[data-part-attempted]')?.checked || marksEarned > 0 || tickedMarkPoints.length > 0);
+      return {
+        partId: part.getAttribute('data-part-id') || undefined,
+        subpartId: part.getAttribute('data-subpart-id') || undefined,
+        label: part.getAttribute('data-part-label') || 'Whole question',
+        attempted: attempted,
+        marksEarned: marksEarned,
+        marksAvailable: marksAvailable,
+        markPointIds: tickedMarkPoints,
+        markPointsAvailable: markPointsAvailable
+      };
+    });
+  }
+
+  function validateExamPartScores(partScores) {
+    if (!partScores.length) return 'No self-marking parts are available for this question.';
+    if (!partScores.some(function (part) { return part.attempted; })) return 'Mark at least one part as attempted before saving.';
+    for (var index = 0; index < partScores.length; index += 1) {
+      var part = partScores[index];
+      if (!Number.isFinite(part.marksEarned) || part.marksEarned < 0 || part.marksEarned > part.marksAvailable) {
+        return 'Check the self-awarded marks for ' + part.label + '.';
+      }
+    }
+    return '';
+  }
+
+  function applyExamAttemptIntegrity(attempt, progress) {
+    var previousAttempts = attemptsForRegion(progress, attempt.validatedRegionId || attempt.displayRegionId || '');
+    var flags = examAttemptSuspicionFlags(attempt, previousAttempts);
+    var gatePassed = skillCheckGatePassed(progress, attempt.validatedRegionId || attempt.displayRegionId || '');
+    attempt.suspicionFlags = flags;
+    attempt.trustLabel = examTrustLabel(flags);
+    attempt.evidenceKind = 'weak_self_marked_exam';
+    attempt.evidenceLabel = 'Self-marked attempt';
+    attempt.masteryEligible = false;
+    attempt.masteryGate = gatePassed ? 'skill_check_passed' : 'skill_check_required';
+    return attempt;
+  }
+
   function saveExamAttempt(form) {
     var progress = loadProgress();
     var now = new Date().toISOString();
     var marksAvailable = Number(form.getAttribute('data-marks-available') || 0);
-    var marksEarned = Number(new FormData(form).get('marksEarned'));
-    var mistakeType = String(new FormData(form).get('mistakeType') || '');
+    var formData = new FormData(form);
+    var partScores = examPartScores(form);
+    var validationMessage = validateExamPartScores(partScores);
+    var marksEarned = partScores.reduce(function (sum, part) { return sum + part.marksEarned; }, 0);
+    var markPointsTicked = partScores.reduce(function (sum, part) { return sum + safeArray(part.markPointIds).length; }, 0);
+    var markPointsAvailable = partScores.reduce(function (sum, part) { return sum + Number(part.markPointsAvailable || 0); }, 0);
+    var mistakeType = String(formData.get('mistakeType') || '');
+    var confidenceRating = String(formData.get('confidenceRating') || '');
     var status = form.querySelector('.form-status');
-    if (!Number.isFinite(marksEarned) || marksEarned < 0 || marksEarned > marksAvailable || !mistakeType) {
-      if (status) status.textContent = 'Add marks and a reflection before saving.';
+    var card = form.closest('.exam-question-card');
+    var markSchemeRevealed = Boolean(card?.querySelector('[data-mark-scheme-reveal]')?.open);
+    if (validationMessage || !markSchemeRevealed || !mistakeType || !['low', 'medium', 'high'].includes(confidenceRating)) {
+      if (status) {
+        status.textContent = validationMessage || (!markSchemeRevealed ? 'Reveal the mark scheme before saving a self-marked attempt.' : 'Add a reflection and confidence before saving.');
+        status.setAttribute('data-state', 'warning');
+      }
       return;
     }
 
-    progress.attempts.push({
+    var startedAt = Number(form.getAttribute('data-started-at') || 0);
+    var elapsedSeconds = startedAt > 0 ? Math.max(1, Math.round((Date.now() - startedAt) / 1000)) : 0;
+    var attempt = applyExamAttemptIntegrity({
       id: createId('attempt'),
       profileId: PROFILE_ID,
       questionId: form.getAttribute('data-question-id') || '',
@@ -840,21 +1125,74 @@
       marksEarned: marksEarned,
       marksAvailable: marksAvailable,
       scoreRatio: marksAvailable > 0 ? marksEarned / marksAvailable : undefined,
+      partScores: partScores,
       mistakeType: mistakeType,
       mistakeTypes: mistakeType === 'no_issue' ? [] : [mistakeType],
       fullScoreConfirmed: marksAvailable > 0 && marksEarned === marksAvailable,
-      timeSpentSeconds: 1,
-      markSchemeRevealed: true,
+      selfMarked: true,
+      confidentMode: document.documentElement.classList.contains('confident-student-mode'),
+      confidenceRating: confidenceRating,
+      answerRevealedBeforeMarking: form.getAttribute('data-answer-revealed-before-marking') === 'true',
+      markPointsTicked: markPointsTicked,
+      markPointsAvailable: markPointsAvailable,
+      coarseSelfMarking: form.getAttribute('data-coarse-self-marking') === 'true',
+      timingReliable: elapsedSeconds > 0,
+      timeSpentSeconds: elapsedSeconds,
+      markSchemeRevealed: markSchemeRevealed,
       attemptedAt: now,
       validatedRegionId: form.getAttribute('data-validated-region-id') || undefined,
       displayRegionId: form.getAttribute('data-display-region-id') || undefined,
       worldName: 'CAIE 9709 ' + paperFamilyLabel(form.getAttribute('data-paper-family') || 'p3')
-    });
+    }, progress);
+
+    progress.attempts.push(attempt);
 
     saveProgress(progress);
-    if (status) status.textContent = 'Attempt saved locally.';
-    form.reset();
+    if (status) {
+      var gateText = attempt.masteryGate === 'skill_check_passed'
+        ? 'Skill Check gate passed; exam work supports confidence only.'
+        : 'Skill Check required for mastery.';
+      status.textContent = attempt.trustLabel + '. Self-marked attempt saved. ' + gateText;
+      status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
+    }
     updateProgressText();
+  }
+
+  function applyConfidentStudentMode(enabled) {
+    document.documentElement.classList.toggle('confident-student-mode', enabled);
+    document.querySelectorAll('[data-save-exam-attempt]').forEach(function (form) {
+      if (form instanceof HTMLFormElement) form.setAttribute('data-confident-mode', enabled ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-confident-student-mode]').forEach(function (input) {
+      if (input instanceof HTMLInputElement) input.checked = enabled;
+    });
+  }
+
+  function setupConfidentStudentMode() {
+    applyConfidentStudentMode(loadProgress().settings?.confidentStudentMode === true);
+    document.querySelectorAll('[data-confident-student-mode]').forEach(function (input) {
+      if (!(input instanceof HTMLInputElement)) return;
+      input.addEventListener('change', function () {
+        var progress = loadProgress();
+        progress.settings = Object.assign({}, progress.settings || {}, {
+          confidentStudentMode: input.checked
+        });
+        saveProgress(progress);
+        applyConfidentStudentMode(input.checked);
+      });
+    });
+  }
+
+  function setupExamSelfMarking() {
+    document.querySelectorAll('[data-save-exam-attempt]').forEach(function (form) {
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!form.getAttribute('data-started-at')) form.setAttribute('data-started-at', String(Date.now()));
+      form.querySelectorAll('[data-part-attempted], [data-part-marks-earned], [data-mark-point]').forEach(function (input) {
+        input.addEventListener('change', function () {
+          form.setAttribute('data-started-marking', 'true');
+        });
+      });
+    });
   }
 
   function setupPracticeStacks() {
@@ -1389,6 +1727,8 @@
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();
+    setupConfidentStudentMode();
+    setupExamSelfMarking();
     setupGuidedStudy();
     updateProgressText();
     renderReviewPage();
@@ -1422,6 +1762,12 @@
           if (hint) hint.hidden = false;
         }
       }
+
+      var exportButton = target.closest('[data-export-local-progress]');
+      if (exportButton) {
+        exportLocalProgressCsv(exportButton);
+        return;
+      }
     });
 
     document.addEventListener('submit', function (event) {
@@ -1450,6 +1796,20 @@
     document.addEventListener('toggle', function (event) {
       var details = event.target;
       if (!(details instanceof HTMLDetailsElement) || !details.open) return;
+      if (details.matches('[data-mark-scheme-reveal]')) {
+        var card = details.closest('.exam-question-card');
+        var form = card?.querySelector('[data-save-exam-attempt]');
+        var workedBeforeReveal = Boolean(card?.querySelector('[data-worked-before-reveal]')?.checked);
+        if (form instanceof HTMLFormElement) {
+          if (!form.getAttribute('data-mark-scheme-opened-at')) {
+            form.setAttribute('data-mark-scheme-opened-at', new Date().toISOString());
+          }
+          if (!workedBeforeReveal && form.getAttribute('data-started-marking') !== 'true') {
+            form.setAttribute('data-answer-revealed-before-marking', 'true');
+          }
+        }
+        return;
+      }
       var form = details.closest('[data-check-skill-answer]');
       if (!(form instanceof HTMLFormElement)) return;
       if (details.matches('[data-skill-answer-reveal]') && form.getAttribute('data-revealed-answer') !== 'true') {

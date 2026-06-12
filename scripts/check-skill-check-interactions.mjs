@@ -11,12 +11,52 @@ const skillPagePath = 'p3/topics/logarithmic-and-exponential-functions/skill-che
 const algebraSkillPagePath = 'p3/topics/algebra/skill-check/index.html';
 const complexSkillPagePath = 'p3/topics/complex-numbers/skill-check/index.html';
 const reviewPagePath = 'p3/review/index.html';
+const contentQaPagePath = 'p3/content-qa/index.html';
 const checkId = 'sc-log-graph-foundation-001';
 const regionId = 'logarithmic-and-exponential-functions';
 const algebraRegionId = 'algebra';
 const complexRegionId = 'complex-numbers';
 const logRequiredCheckCount = 18;
 const algebraRequiredCheckCount = 21;
+
+const newlyMigratedTopicPages = [
+  {
+    name: 'Trigonometry',
+    regionId: 'trigonometry',
+    pagePath: 'p3/topics/trigonometry/skill-check/index.html',
+    requiredCheckCount: 15,
+  },
+  {
+    name: 'Differentiation',
+    regionId: 'differentiation',
+    pagePath: 'p3/topics/differentiation/skill-check/index.html',
+    requiredCheckCount: 21,
+  },
+  {
+    name: 'Integration',
+    regionId: 'integration',
+    pagePath: 'p3/topics/integration/skill-check/index.html',
+    requiredCheckCount: 24,
+  },
+  {
+    name: 'Numerical Solution of Equations',
+    regionId: 'numerical-solution-of-equations',
+    pagePath: 'p3/topics/numerical-solution-of-equations/skill-check/index.html',
+    requiredCheckCount: 12,
+  },
+  {
+    name: 'Vectors',
+    regionId: 'vectors',
+    pagePath: 'p3/topics/vectors/skill-check/index.html',
+    requiredCheckCount: 24,
+  },
+  {
+    name: 'Differential Equations',
+    regionId: 'differential-equations',
+    pagePath: 'p3/topics/differential-equations/skill-check/index.html',
+    requiredCheckCount: 12,
+  },
+];
 
 const algebraChecks = [
   {
@@ -384,6 +424,14 @@ function algebraProgressLabel(passedCount) {
 
 async function complexProgressText(page) {
   return page.locator(`[data-progress-skill="${complexRegionId}"]`).textContent();
+}
+
+async function topicProgressText(page, targetRegionId) {
+  return page.locator(`[data-progress-skill="${targetRegionId}"]`).textContent();
+}
+
+function topicProgressLabel(passedCount, requiredCheckCount) {
+  return `Skill Check: ${passedCount}/${requiredCheckCount} passed`;
 }
 
 async function submitAnswer(form, answer) {
@@ -1062,6 +1110,90 @@ async function checkComplexReviewPageFlow(page) {
   assert(!reviewText.includes('Clean Complex Should Not Appear'), 'Clean correct Complex attempts must not appear as mistake-review candidates.');
 }
 
+async function migratedTopicForms(page, topic) {
+  await waitForStaticEnhancement(page, topic.pagePath);
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  const pageShape = await page.evaluate(() => {
+    const forms = Array.from(document.querySelectorAll('[data-check-skill-answer]'));
+    return {
+      checkIds: forms.map((form) => form.getAttribute('data-check-id')),
+      hasFakeSaveButton: Boolean(document.querySelector('[data-save-skill-check]')),
+      hasTriedCopy: (document.body.textContent || '').includes('I tried this'),
+      missingInputs: forms
+        .filter((form) => !form.querySelector('input[name="submittedAnswer"]'))
+        .map((form) => form.getAttribute('data-check-id')),
+      missingSubmitButtons: forms
+        .filter((form) => {
+          const button = form.querySelector('button[type="submit"]');
+          return !button || button.textContent?.replace(/\s+/g, ' ').trim() !== 'Check answer';
+        })
+        .map((form) => form.getAttribute('data-check-id')),
+      acceptedAnswers: forms.map((form) => ({
+        checkId: form.getAttribute('data-check-id'),
+        answerType: form.getAttribute('data-answer-type'),
+        acceptedAnswers: JSON.parse(form.getAttribute('data-accepted-answers') || '[]'),
+      })),
+    };
+  });
+
+  assert(pageShape.checkIds.length === topic.requiredCheckCount, `${topic.name} must render ${topic.requiredCheckCount} checkable forms; saw ${pageShape.checkIds.length}.`);
+  assert(!pageShape.hasFakeSaveButton, `${topic.name} page must not render data-save-skill-check fake completion controls.`);
+  assert(!pageShape.hasTriedCopy, `${topic.name} page must not render I tried this fake completion copy.`);
+  assert(pageShape.missingInputs.length === 0, `${topic.name} checks missing answer inputs: ${pageShape.missingInputs.join(', ')}`);
+  assert(pageShape.missingSubmitButtons.length === 0, `${topic.name} checks missing Check answer buttons: ${pageShape.missingSubmitButtons.join(', ')}`);
+  assert(pageShape.acceptedAnswers.every((item) => item.answerType && item.acceptedAnswers.length), `${topic.name} checks must expose answer type and accepted answers.`);
+  return pageShape.acceptedAnswers.map((item) => ({
+    checkId: item.checkId,
+    answerType: item.answerType,
+    correctAnswer: item.acceptedAnswers[0],
+  }));
+}
+
+async function checkNewlyMigratedTopicPage(page, topic) {
+  const checks = await migratedTopicForms(page, topic);
+  const first = checks[0];
+  const firstForm = await visibleFormForCheck(page, first.checkId);
+  await submitAnswer(firstForm, 'definitely wrong');
+  let progress = await readProgress(page);
+  let attempt = latestAttempt(progress);
+  assert(attempt?.checkId === first.checkId, `${topic.name} wrong answer must save a local attempt.`);
+  assert(attempt.isCorrect === false, `${topic.name} wrong answer must save isCorrect: false.`);
+  assert(attempt.revealedAnswer === false, `${topic.name} wrong answer must not set revealedAnswer.`);
+  assert(attempt.revealedRepairStep === false, `${topic.name} wrong answer must not set revealedRepairStep.`);
+  assert((await topicProgressText(page, topic.regionId))?.includes(topicProgressLabel(0, topic.requiredCheckCount)), `${topic.name} wrong answer must not grant pass progress.`);
+
+  await clearProgress(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+
+  for (const item of checks) {
+    const form = await visibleFormForCheck(page, item.checkId);
+    await submitAnswer(form, item.correctAnswer);
+    progress = await readProgress(page);
+    attempt = attemptForCheck(progress, item.checkId);
+    assert(attempt?.isCorrect === true, `${topic.name} clean correct answer must pass individual check ${item.checkId}.`);
+    assert(attempt.revealedAnswer === false, `${topic.name} clean correct ${item.checkId} must not be revealed.`);
+    assert(attempt.revealedRepairStep === false, `${topic.name} clean correct ${item.checkId} must not be repaired.`);
+  }
+
+  const finalText = await topicProgressText(page, topic.regionId);
+  assert(finalText?.includes(topicProgressLabel(topic.requiredCheckCount, topic.requiredCheckCount)), `All clean ${topic.name} attempts must pass the topic; saw "${finalText}".`);
+  const progressNodeClass = await page.locator(`[data-progress-skill="${topic.regionId}"]`).getAttribute('class');
+  assert(String(progressNodeClass || '').includes('is-complete'), `${topic.name} topic must be marked complete only after all clean correct attempts.`);
+}
+
+async function checkContentQaMigrationCount(page) {
+  await waitForStaticEnhancement(page, contentQaPagePath);
+  const text = await visibleText(page.locator('body'));
+  assert(
+    text.includes('Skill Check grading migration: 159 deterministic; 0 not yet'),
+    'P3 Content QA must show the current full deterministic Skill Check migration count.',
+  );
+}
+
 async function checkReviewPageFlow(page) {
   await waitForStaticEnhancement(page, reviewPagePath);
   await clearProgress(page);
@@ -1145,7 +1277,14 @@ async function checkReviewPageFlow(page) {
   assert(!reviewText.includes('Should Not Appear'), 'Clean correct attempts must not appear as mistake-review candidates.');
 }
 
-for (const pagePath of [skillPagePath, algebraSkillPagePath, complexSkillPagePath, reviewPagePath]) {
+for (const pagePath of [
+  skillPagePath,
+  algebraSkillPagePath,
+  complexSkillPagePath,
+  reviewPagePath,
+  contentQaPagePath,
+  ...newlyMigratedTopicPages.map((topic) => topic.pagePath),
+]) {
   assert(existsSync(path.join(siteRoot, pagePath)), `Required generated page is missing: ${pagePath}`);
 }
 
@@ -1167,6 +1306,10 @@ try {
   await checkComplexRepresentativeAnswerTypes(page);
   await checkComplexRevealRepairCannotPass(page);
   await checkComplexFullTopicPassRule(page);
+  for (const topic of newlyMigratedTopicPages) {
+    await checkNewlyMigratedTopicPage(page, topic);
+  }
+  await checkContentQaMigrationCount(page);
   await checkReviewPageFlow(page);
   await checkLogExpReviewPageFlow(page);
   await checkAlgebraReviewPageFlow(page);

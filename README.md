@@ -76,6 +76,14 @@ Canonical P3 topic task routes:
 /p3/topics/<topic>/exam-training/
 ```
 
+Static support route:
+
+```text
+/p3/topics/<topic>/worksheet/
+```
+
+Worksheet pages are print/PDF views of topic Skill Check items. They do not replace the interactive Skill Check route and do not create pass state.
+
 The supported P3 topic slugs are:
 
 ```text
@@ -91,6 +99,14 @@ complex-numbers
 ```
 
 The build does not generate legacy unprefixed topic pages, `/regions/`, `/p3/regions/`, course-level `/p3/exam-training/`, topic hub pages, or `/practice/` compatibility pages.
+
+## Static Teacher Support
+
+The P3 Review page includes an `Export local progress CSV` action. It reads only `localStorage` data from the current browser and downloads a CSV; there is no account, cloud sync, class roster, or teacher dashboard.
+
+CSV exports include available Skill Check attempts, Exam Training attempts, local learning activity rows, and derived Review candidates. Missing fields are left blank or marked `not_available`.
+
+Printable worksheet pages use browser print / Save as PDF. Print styles hide navigation and buttons, show student/date lines, and leave working space under each question. Answers are not printed on the student worksheet.
 
 ## Source Data
 

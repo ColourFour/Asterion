@@ -2784,6 +2784,43 @@ body.skill-check-page .exam-question-section {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.exam-mode-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border: 1px solid rgba(61, 86, 109, 0.18);
+  border-radius: var(--radius);
+  background: #eef5f4;
+}
+
+.exam-mode-toolbar p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.exam-mode-toggle,
+.exam-commit-checkbox,
+.inline-check {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px;
+  align-items: center;
+  font-weight: 900;
+}
+
+.exam-mode-toggle input,
+.exam-commit-checkbox input,
+.inline-check input,
+.mark-point-list input {
+  inline-size: 18px;
+  block-size: 18px;
+}
+
 .static-enhanced .exam-question-grid.is-single-question {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -2823,19 +2860,89 @@ body.skill-check-page .exam-question-section {
   background: #fff8ef;
 }
 
+.confident-student-mode .exam-hint-details {
+  display: none;
+}
+
 .question-review-link {
   margin: 0.9rem 0 0;
 }
 
 .attempt-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: 11px;
-  align-items: end;
+  align-items: stretch;
   padding: 14px;
   border: 1px solid rgba(116, 84, 54, 0.16);
   border-radius: var(--radius);
   background: #f8f1e8;
+}
+
+.exam-evidence-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid rgba(61, 86, 109, 0.2);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.exam-evidence-banner span,
+.coarse-marking-note,
+.self-marking-guidance-note {
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.exam-part-list {
+  display: grid;
+  gap: 12px;
+}
+
+.exam-part-card {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 13px;
+  border: 1px solid rgba(77, 69, 61, 0.22);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.exam-part-card legend,
+.mark-point-list legend {
+  padding: 0 4px;
+  font-weight: 900;
+}
+
+.mark-point-list {
+  display: grid;
+  gap: 8px;
+  margin: 2px 0 0;
+  padding: 10px;
+  border: 1px solid rgba(61, 86, 109, 0.16);
+  border-radius: var(--radius);
+  background: #f5f8fb;
+}
+
+.mark-point-list label {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.self-marking-guidance {
+  background: #f6f3ee;
+}
+
+.self-marking-guidance p {
+  margin-bottom: 0;
 }
 
 .attempt-form input,
@@ -2856,6 +2963,10 @@ body.skill-check-page .exam-question-section {
   margin: 0;
   color: var(--success);
   font-weight: 900;
+}
+
+.form-status[data-state="warning"] {
+  color: #8a5b16;
 }
 
 .skill-check-actions {
@@ -2926,6 +3037,23 @@ body.skill-check-page .exam-question-section {
   gap: 16px;
 }
 
+.support-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 24px 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #f5f8fb;
+}
+
+.support-panel h2,
+.support-panel p {
+  margin-top: 0;
+}
+
 .review-group-stack {
   display: grid;
   gap: 12px;
@@ -2966,6 +3094,90 @@ body.skill-check-page .exam-question-section {
 .review-candidate-list span,
 .review-candidate-list small {
   color: var(--muted);
+}
+
+.worksheet-hero,
+.worksheet-instructions,
+.worksheet-question {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.worksheet-hero {
+  display: grid;
+  gap: 14px;
+}
+
+.worksheet-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.worksheet-meta p {
+  margin: 0;
+  font-weight: 900;
+}
+
+.worksheet-meta span,
+.worksheet-answer-line {
+  display: inline-block;
+  min-width: min(320px, 100%);
+  border-bottom: 1px solid var(--ink);
+}
+
+.worksheet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.worksheet-instructions,
+.worksheet-question-list {
+  margin-top: 18px;
+}
+
+.worksheet-question-list {
+  display: grid;
+  gap: 18px;
+}
+
+.worksheet-question {
+  break-inside: avoid;
+}
+
+.worksheet-question h3 {
+  margin-top: 0;
+  font-size: 1.08rem;
+}
+
+.worksheet-option-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.worksheet-checkbox {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 1px solid var(--ink);
+  vertical-align: -2px;
+}
+
+.worksheet-working-space {
+  min-height: 170px;
+  margin-top: 14px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgba(77, 69, 61, 0.28) 32px
+  );
 }
 
 .exam-topic-list {
@@ -3064,7 +3276,9 @@ body.skill-check-page .exam-question-section {
   }
 
   .attempt-form,
-  .exam-topic-row {
+  .exam-topic-row,
+  .support-panel,
+  .worksheet-meta {
     grid-template-columns: 1fr;
   }
 
@@ -3307,5 +3521,57 @@ body.skill-check-page .exam-question-section {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body {
+    color: #000000;
+    background: #ffffff;
+  }
+
+  .site-header,
+  .site-footer,
+  .site-nav,
+  .hero-actions,
+  .worksheet-actions,
+  .practice-controls,
+  .practice-group-switcher,
+  .button,
+  button,
+  details.exam-hint-details,
+  details.skill-check-answer-details,
+  details.skill-check-repair-details,
+  .attempt-form,
+  .support-panel,
+  .question-review-link {
+    display: none !important;
+  }
+
+  main,
+  .worksheet-page main {
+    width: 100%;
+  }
+
+  .worksheet-hero,
+  .worksheet-instructions,
+  .worksheet-question {
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .worksheet-question {
+    padding-top: 12mm;
+    border-top: 1px solid #000000;
+    page-break-inside: avoid;
+  }
+
+  .worksheet-working-space {
+    min-height: 52mm;
   }
 }

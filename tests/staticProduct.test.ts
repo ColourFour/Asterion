@@ -61,6 +61,7 @@ describe('static P3 product contract', () => {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/field-guide/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/skill-check/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/exam-training/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/worksheet/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain(`p3/topics/${topic.slug}/practice/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain(`p3/topics/${topic.slug}/index.html`);
     }
@@ -86,5 +87,26 @@ describe('static P3 product contract', () => {
       expect(generatedSource, generatedPath).not.toContain('data-save-skill-check');
       expect(generatedSource, generatedPath).not.toContain('I tried this');
     }
+  });
+
+  it('keeps static support actions and printable worksheet routes available', () => {
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(generatorSource).toContain('Export local progress CSV');
+    expect(staticClientSource).toContain('data-export-local-progress');
+    expect(generatorSource).toContain('Print / Save PDF');
+
+    const algebraWorksheetPath = 'docs/p3/topics/algebra/worksheet/index.html';
+    if (existsSync(algebraWorksheetPath)) {
+      const worksheetSource = readFileSync(algebraWorksheetPath, 'utf8');
+      expect(worksheetSource).toContain('Algebra Skill Check Worksheet');
+      expect(worksheetSource).toContain('Student name:');
+      expect(worksheetSource).toContain('Print / Save PDF');
+    }
+
+    expect(generatorSource).toContain('Start first question');
+    expect(generatorSource).toContain('Print worksheet');
+    expect(generatorSource).toContain('One exam question');
   });
 });

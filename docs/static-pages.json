@@ -50,6 +50,10 @@
       "label": "P3 Algebra Exam Training"
     },
     {
+      "path": "p3/topics/algebra/worksheet/index.html",
+      "label": "P3 Algebra printable worksheet"
+    },
+    {
       "path": "p3/topics/logarithmic-and-exponential-functions/field-guide/index.html",
       "label": "P3 Logarithmic and Exponential Functions Field Guide"
     },
@@ -60,6 +64,10 @@
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/exam-training/index.html",
       "label": "P3 Logarithmic and Exponential Functions Exam Training"
+    },
+    {
+      "path": "p3/topics/logarithmic-and-exponential-functions/worksheet/index.html",
+      "label": "P3 Logarithmic and Exponential Functions printable worksheet"
     },
     {
       "path": "p3/topics/trigonometry/field-guide/index.html",
@@ -74,6 +82,10 @@
       "label": "P3 Trigonometry Exam Training"
     },
     {
+      "path": "p3/topics/trigonometry/worksheet/index.html",
+      "label": "P3 Trigonometry printable worksheet"
+    },
+    {
       "path": "p3/topics/differentiation/field-guide/index.html",
       "label": "P3 Differentiation Field Guide"
     },
@@ -84,6 +96,10 @@
     {
       "path": "p3/topics/differentiation/exam-training/index.html",
       "label": "P3 Differentiation Exam Training"
+    },
+    {
+      "path": "p3/topics/differentiation/worksheet/index.html",
+      "label": "P3 Differentiation printable worksheet"
     },
     {
       "path": "p3/topics/integration/field-guide/index.html",
@@ -98,6 +114,10 @@
       "label": "P3 Integration Exam Training"
     },
     {
+      "path": "p3/topics/integration/worksheet/index.html",
+      "label": "P3 Integration printable worksheet"
+    },
+    {
       "path": "p3/topics/numerical-solution-of-equations/field-guide/index.html",
       "label": "P3 Numerical Solution of Equations Field Guide"
     },
@@ -108,6 +128,10 @@
     {
       "path": "p3/topics/numerical-solution-of-equations/exam-training/index.html",
       "label": "P3 Numerical Solution of Equations Exam Training"
+    },
+    {
+      "path": "p3/topics/numerical-solution-of-equations/worksheet/index.html",
+      "label": "P3 Numerical Solution of Equations printable worksheet"
     },
     {
       "path": "p3/topics/vectors/field-guide/index.html",
@@ -122,6 +146,10 @@
       "label": "P3 Vectors Exam Training"
     },
     {
+      "path": "p3/topics/vectors/worksheet/index.html",
+      "label": "P3 Vectors printable worksheet"
+    },
+    {
       "path": "p3/topics/differential-equations/field-guide/index.html",
       "label": "P3 Differential Equations Field Guide"
     },
@@ -134,6 +162,10 @@
       "label": "P3 Differential Equations Exam Training"
     },
     {
+      "path": "p3/topics/differential-equations/worksheet/index.html",
+      "label": "P3 Differential Equations printable worksheet"
+    },
+    {
       "path": "p3/topics/complex-numbers/field-guide/index.html",
       "label": "P3 Complex Numbers Field Guide"
     },
@@ -144,6 +176,10 @@
     {
       "path": "p3/topics/complex-numbers/exam-training/index.html",
       "label": "P3 Complex Numbers Exam Training"
+    },
+    {
+      "path": "p3/topics/complex-numbers/worksheet/index.html",
+      "label": "P3 Complex Numbers printable worksheet"
     }
   ],
   "questionCount": 57,

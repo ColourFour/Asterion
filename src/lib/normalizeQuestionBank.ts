@@ -1,4 +1,4 @@
-import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionPartMark, QuestionPartRouteMapping, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionMarkPoint, QuestionPartMark, QuestionPartRouteMapping, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
 import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
@@ -238,6 +238,62 @@ function textObject(record: LooseRecord | undefined, key: string): LooseRecord |
   const value = record?.[key];
   if (typeof value === 'string') return { text: value };
   return asRecord(value);
+}
+
+function markSchemeTextForSubpart(record: LooseRecord | undefined): string | undefined {
+  const markSchemeTextRecord = textObject(record, 'mark_scheme_text');
+  return pickString(markSchemeTextRecord, ['text']) ?? pickString(record, ['mark_scheme_text']);
+}
+
+function cleanMarkPointText(value: string): string {
+  return value
+    .replace(/\s+/g, ' ')
+    .replace(/^\(?[a-z0-9]+\)?\s+/i, '')
+    .replace(/^[,.;:\-\s]+/, '')
+    .trim();
+}
+
+function markPointIdPrefix(label: string, sourceRecord: LooseRecord | undefined): string {
+  return (
+    pickString(sourceRecord, ['subpart_id', 'subpartId', 'part_id', 'partId', 'id'])
+    ?? normalizedPartKey(label)
+    ?? 'part'
+  ).replace(/[^a-z0-9_-]+/gi, '_');
+}
+
+function markPointsFromSchemeText(
+  label: string,
+  sourceRecord: LooseRecord | undefined,
+  marksAvailable: number,
+): QuestionMarkPoint[] | undefined {
+  const text = markSchemeTextForSubpart(sourceRecord);
+  if (!text || marksAvailable <= 0) return undefined;
+  const markCodePattern = /(^|[^A-Za-z0-9])((?:\*?D?M|\*?M|A|B|SCB)\d)(?![A-Za-z0-9])/g;
+  const matches = Array.from(text.matchAll(markCodePattern)).map((match) => {
+    const codeStart = (match.index ?? 0) + match[1].length;
+    const markCode = match[2].replace(/^\*/, '');
+    return {
+      markCode,
+      codeStart,
+      codeEnd: codeStart + match[2].length,
+    };
+  });
+  if (matches.length !== marksAvailable) return undefined;
+
+  const prefix = markPointIdPrefix(label, sourceRecord);
+  const points = matches.map((match, index) => {
+    const previousEnd = index === 0 ? 0 : matches[index - 1].codeEnd;
+    const pointText = cleanMarkPointText(text.slice(previousEnd, match.codeStart));
+    return {
+      id: `${prefix}_mp${String(index + 1).padStart(2, '0')}`,
+      markCode: match.markCode,
+      label: pointText,
+      source: 'mark_scheme_text' as const,
+    };
+  });
+
+  if (points.some((point) => point.label.length < 4 || point.label.length > 240)) return undefined;
+  return points;
 }
 
 function normalizeTextQuality(record: LooseRecord): QuestionTextQuality {
@@ -797,11 +853,18 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number, routing?: Q
   if (wholePositiveMarks.length !== labels.length) return undefined;
   if (typeof totalMarks === 'number' && totalMarks > 0 && totalFromParts !== totalMarks) return undefined;
 
-  return labels.map((label, index) => ({
-    ...metadataForPart(label, findSubpartRecord(label, sourceSubpartRecords), findPartRouteMapping(label, partMappings)),
-    label: partLabel(label),
-    marksAvailable: wholePositiveMarks[index],
-  }));
+  return labels.map((label, index) => {
+    const sourceRecord = findSubpartRecord(label, sourceSubpartRecords);
+    const markSchemeText = markSchemeTextForSubpart(sourceRecord);
+    const markPoints = markPointsFromSchemeText(label, sourceRecord, wholePositiveMarks[index]);
+    return {
+      ...metadataForPart(label, sourceRecord, findPartRouteMapping(label, partMappings)),
+      label: partLabel(label),
+      marksAvailable: wholePositiveMarks[index],
+      ...(markSchemeText ? { markSchemeText } : {}),
+      ...(markPoints?.length ? { markPoints } : {}),
+    };
+  });
 }
 
 export function normalizeQuestionBank(

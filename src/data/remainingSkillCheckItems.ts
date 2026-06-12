@@ -48,9 +48,59 @@ function option(label: string, index: number): QuickCheckOption {
   };
 }
 
+function inferredAnswerType(inputType: SkillCheckInputType, correct: string): SkillCheckAnswerType {
+  if (inputType === 'numeric') return 'numeric';
+  if (inputType === 'checkbox') return 'exact-text';
+  if (/^\$.*\$$/.test(correct.trim())) return 'expression-text';
+  return 'exact-text';
+}
+
+function inferredAcceptedAnswers(
+  inputType: SkillCheckInputType,
+  spec: ChoiceSpec,
+  choiceOptions: QuickCheckOption[],
+): string[] {
+  if (spec.acceptedAnswers?.length) return spec.acceptedAnswers;
+  if (inputType === 'numeric') {
+    const expected = spec.expectedAnswer ?? spec.correct;
+    return Array.isArray(expected) ? expected : [expected];
+  }
+  if (inputType === 'checkbox') {
+    const expectedOptionIds = spec.expectedOptionIds ?? ['correct'];
+    const expectedLabels = expectedOptionIds
+      .map((id) => choiceOptions.find((choice) => choice.id === id)?.label)
+      .filter((label): label is string => Boolean(label));
+    return expectedLabels.length ? [expectedLabels.join(' and ')] : [spec.correct];
+  }
+  return [spec.correct];
+}
+
+function inferredMistakeTags(spec: ChoiceSpec): string[] {
+  if (spec.mistakeTags?.length) return spec.mistakeTags;
+  const tags = new Set<string>(['method choice', 'incomplete reasoning', 'notation']);
+  if (spec.inputType === 'numeric') tags.add('calculator');
+  if (/(?:-|\+|negative|positive|decreas|sign)/i.test(`${spec.prompt} ${spec.correct}`)) tags.add('sign error');
+  if (/coefficient|factor|multiply|divide|proportional|amplitude|gradient|rate/i.test(`${spec.prompt} ${spec.correct}`)) {
+    tags.add('coefficient error');
+  }
+  if (/\+C|constant|initial condition|particular solution/i.test(`${spec.prompt} ${spec.correct}`)) {
+    tags.add('forgot constant');
+  }
+  if (/identity|formula|sin|cos|tan|sec|trig/i.test(`${spec.prompt} ${spec.correct}`)) {
+    tags.add('wrong identity');
+  }
+  if (/domain|range|limit|between|interval|root|argument|acute|principal/i.test(`${spec.prompt} ${spec.correct}`)) {
+    tags.add('domain/range issue');
+  }
+  return Array.from(tags).slice(0, 4);
+}
+
 function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
   const inputType = spec.inputType ?? 'multiple_choice';
   const choiceOptions = spec.options ?? [spec.correct, ...spec.distractors].map(option);
+  const checkable = spec.checkable ?? true;
+  const answerType = checkable ? spec.answerType ?? inferredAnswerType(inputType, spec.correct) : spec.answerType;
+  const acceptedAnswers = checkable ? inferredAcceptedAnswers(inputType, spec, choiceOptions) : spec.acceptedAnswers;
   return {
     itemId: `sc-${topic.slug}-${spec.complexity}-001`,
     paperFamily: 'p3',
@@ -72,12 +122,12 @@ function choiceItem(topic: TopicSpec, spec: ChoiceSpec): SkillCheckItem {
     displayPrefix: spec.displayPrefix,
     displaySuffix: spec.displaySuffix,
     tolerance: spec.tolerance,
-    answerType: spec.answerType,
-    acceptedAnswers: spec.acceptedAnswers,
+    answerType,
+    acceptedAnswers,
     orderInsensitive: spec.orderInsensitive,
-    repairStep: spec.repairStep,
-    mistakeTags: spec.mistakeTags,
-    checkable: spec.checkable,
+    repairStep: spec.repairStep ?? spec.workedRoute[spec.workedRoute.length - 1],
+    mistakeTags: inferredMistakeTags(spec),
+    checkable,
     unsupportedAnswerReason: spec.unsupportedAnswerReason,
     complexity: spec.complexity,
     hints: {

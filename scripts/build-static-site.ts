@@ -23,7 +23,7 @@ import { REQUIRED_STATIC_STUDY_PAGE_PATHS, STATIC_STUDY_PAGE_ROUTES } from '../s
 import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
-import type { NormalizedQuestion, RegionDefinition } from '../src/types';
+import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, RegionDefinition } from '../src/types';
 import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -339,6 +339,10 @@ function topicExamTrainingPagePath(topic: StudyTopic): string {
   return `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`;
 }
 
+function worksheetPagePath(topic: StudyTopic): string {
+  return `${P3_COURSE_ID}/topics/${topic.slug}/worksheet/index.html`;
+}
+
 function routeLink(fromPagePath: string, targetPagePath: string, label: string, className?: string): string {
   return `<a${className ? ` class="${className}"` : ''} href="${hrefToPage(fromPagePath, targetPagePath)}">${escapeHtml(label)}</a>`;
 }
@@ -590,7 +594,7 @@ function progressList(regionId: string, fieldGuideTotal: number, requiredSkillCh
     <ul class="progress-list" aria-label="Local progress">
       <li><span data-progress-field-guide="${escapeAttr(regionId)}" data-total="${fieldGuideTotal}" data-label="Field Guide">Field Guide: 0/${fieldGuideTotal}</span></li>
       <li><span data-progress-skill="${escapeAttr(regionId)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillChecks))}" data-label="Skill Check">Skill Check: 0/${requiredSkillChecks.length} passed</span></li>
-      <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam questions">Exam questions: 0 saved</span></li>
+      <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam practice evidence">Exam practice evidence: 0 saved</span></li>
     </ul>
   `;
 }
@@ -1157,17 +1161,24 @@ function renderP3ReviewPage(pagePath = p3ReviewPagePath()): string {
   const body = `
     ${renderHero(
       'P3 Mistake Review',
-      'Review recent Skill Check mistakes saved in this browser. Groups appear after wrong, repaired, or revealed attempts with mistake tags.',
+      'Review recent Skill Check mistakes saved in this browser, or export local progress for a teacher conversation.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
-      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Open Skill Checks', 'button primary-button')}
-      ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}`,
+      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Open Skill Checks', 'button primary-button')}`,
       'Local review',
     )}
+    <section class="support-panel" data-export-panel>
+      <div>
+        <p class="eyebrow">Teacher support</p>
+        <h2>Export local progress CSV</h2>
+        <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
+      </div>
+      <button class="button secondary-button" type="button" data-export-local-progress>Export local progress CSV</button>
+      <p class="save-status" data-export-status role="status"></p>
+    </section>
     <section class="summary-card review-empty-state" data-review-empty>
       <h2>No tagged mistakes yet.</h2>
       <p>Review sessions will appear after you answer a machine-checkable P3 Skill Check incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
       ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Go to P3 Skill Checks', 'button primary-button')}
-      ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Open Need to Know', 'button secondary-button')}
     </section>
     <section class="review-session" data-review-session hidden>
       <div class="section-heading">
@@ -1556,6 +1567,40 @@ function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   `;
 }
 
+function renderWorksheetResponseArea(item: SkillCheckItem): string {
+  if (item.inputType === 'multiple_choice' || item.inputType === 'checkbox' || item.inputType === 'ordered_cards') {
+    const options = item.options ?? item.cards ?? [];
+    if (options.length) {
+      return `
+        <ul class="worksheet-option-list">
+          ${options.map((option) => `<li><span class="worksheet-checkbox"></span>${renderMathText(option.label)}</li>`).join('')}
+        </ul>
+      `;
+    }
+  }
+  if (item.inputType === 'two_value' && item.fields?.length) {
+    return `
+      <div class="worksheet-field-list">
+        ${item.fields.map((field) => `<p>${escapeHtml(field.label)}: <span class="worksheet-answer-line"></span></p>`).join('')}
+      </div>
+    `;
+  }
+  return '<p>Answer: <span class="worksheet-answer-line"></span></p>';
+}
+
+function renderWorksheetItem(item: SkillCheckItem, index: number): string {
+  return `
+    <article class="worksheet-question">
+      <header>
+        <p class="eyebrow">Question ${index + 1}</p>
+        <h3>${renderMathText(item.prompt)}</h3>
+      </header>
+      ${renderWorksheetResponseArea(item)}
+      <div class="worksheet-working-space" aria-label="Working space"></div>
+    </article>
+  `;
+}
+
 function renderCheckableSkillCheckForm(
   item: SkillCheckItem,
   group: SkillChecklistTopicGroup,
@@ -1735,6 +1780,76 @@ function marksAvailable(question: NormalizedQuestion): number {
   return parts > 0 ? parts : 10;
 }
 
+interface ExamSelfMarkPart {
+  partId?: string;
+  subpartId?: string;
+  label: string;
+  marksAvailable: number;
+  markSchemeText?: string;
+  markPoints?: QuestionMarkPoint[];
+}
+
+function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvailable(question)): ExamSelfMarkPart[] {
+  const cleanParts = (question.parts ?? [])
+    .filter((part): part is QuestionPartMark => typeof part.marksAvailable === 'number' && part.marksAvailable > 0)
+    .map((part) => ({
+      partId: part.partId,
+      subpartId: part.subpartId,
+      label: part.label,
+      marksAvailable: part.marksAvailable,
+      markSchemeText: part.markSchemeText,
+      markPoints: part.markPoints,
+    }));
+  if (cleanParts.length) return cleanParts;
+  return [{
+    label: 'Whole question',
+    marksAvailable: totalMarks,
+    markSchemeText: question.textQuality?.markSchemeText,
+  }];
+}
+
+function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): string {
+  const markPoints = part.markPoints ?? [];
+  if (!markPoints.length) {
+    return part.markSchemeText
+      ? `<details class="self-marking-guidance">
+          <summary>Self-marking guidance</summary>
+          <p>${escapeRawHtml(part.markSchemeText)}</p>
+        </details>`
+      : '<p class="self-marking-guidance-note">Self-marking guidance is the mark-scheme image for this part.</p>';
+  }
+  return `
+    <fieldset class="mark-point-list">
+      <legend>Tick mark points you can justify from the mark scheme image</legend>
+      ${markPoints.map((point) => `
+        <label>
+          <input type="checkbox" data-mark-point data-part-index="${partIndex}" value="${escapeRawAttr(point.id)}" />
+          <span>${point.markCode ? `<strong>${escapeRawHtml(point.markCode)}</strong> ` : ''}${escapeRawHtml(point.label)}</span>
+        </label>
+      `).join('')}
+    </fieldset>
+  `;
+}
+
+function renderExamPartControls(part: ExamSelfMarkPart, partIndex: number): string {
+  const markPointCount = part.markPoints?.length ?? 0;
+  return `
+    <fieldset class="exam-part-card" data-exam-part data-part-index="${partIndex}" data-part-label="${escapeRawAttr(part.label)}" data-part-id="${escapeRawAttr(part.partId)}" data-subpart-id="${escapeRawAttr(part.subpartId)}" data-marks-available="${part.marksAvailable}" data-mark-points-available="${markPointCount}">
+      <legend>${escapeRawHtml(part.label)} · ${part.marksAvailable} mark${part.marksAvailable === 1 ? '' : 's'}</legend>
+      <label class="inline-check">
+        <input type="checkbox" data-part-attempted />
+        <span>Attempted this part</span>
+      </label>
+      <label>
+        Self-awarded marks
+        <input data-part-marks-earned type="number" min="0" max="${part.marksAvailable}" step="1" value="0" inputmode="numeric" />
+      </label>
+      ${markPointCount ? renderMarkPointControls(part, partIndex) : ''}
+      ${!markPointCount ? renderMarkPointControls(part, partIndex) : '<p class="self-marking-guidance-note">These ticks are support only. The mark-scheme image is the source of truth.</p>'}
+    </fieldset>
+  `;
+}
+
 function displayTopicForQuestion(question: NormalizedQuestion): string {
   const regionId = question.routeEvidence?.validatedRegionId ?? question.routeEvidence?.displayRegionId;
   const topic = STUDY_TOPICS.find((candidate) => candidate.regionId === regionId);
@@ -1756,17 +1871,20 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
   const markSchemeImage = firstExistingAssetCandidate(question.markSchemeImageCandidates, question.markSchemeImageUrls);
   if (!questionImage || !markSchemeImage) return '';
   const totalMarks = marksAvailable(question);
+  const selfMarkParts = examSelfMarkParts(question, totalMarks);
+  const hasPartData = Boolean(question.parts?.length);
+  const hasTickableMarkPoints = selfMarkParts.some((part) => (part.markPoints?.length ?? 0) > 0);
   const displayTopic = options.displayTopic ?? displayTopicForQuestion(question);
   const displaySubtopic = options.displaySubtopic ?? question.displaySubtopic;
   const allowAttemptSave = options.allowAttemptSave ?? true;
   return `
-    <article class="exam-question-card" id="question-${escapeAttr(question.id)}">
+    <article class="exam-question-card" id="question-${escapeAttr(question.id)}" data-coarse-self-marking="${hasPartData ? 'false' : 'true'}">
       <header>
         <div>
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
           <h3>${escapeHtml(displayTopic)}</h3>
           ${displaySubtopic ? `<p>${escapeHtml(displaySubtopic)}</p>` : ''}
-          <p class="question-instruction">Work on paper first, then use the mark scheme to self-mark.</p>
+          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
           ${options.reviewNote ? `<p class="question-instruction">${escapeHtml(options.reviewNote)}</p>` : ''}
         </div>
         <span class="marks-pill">${totalMarks} mark${totalMarks === 1 ? '' : 's'}</span>
@@ -1778,18 +1896,26 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
         <summary>Need a first step?</summary>
         <p>Underline what the question asks for, write the formula or method you recognise, then do one line of working before checking the mark scheme.</p>
       </details>
-      <details class="mark-scheme-details">
+      <label class="exam-commit-checkbox">
+        <input type="checkbox" data-worked-before-reveal />
+        <span>I attempted this on paper before revealing the mark scheme.</span>
+      </label>
+      <details class="mark-scheme-details" data-mark-scheme-reveal>
         <summary>Show mark scheme image</summary>
         <figure class="question-figure">
           <img loading="lazy" src="${hrefToPublicAsset(pagePath, markSchemeImage)}" alt="${escapeAttr(`${questionTitle(question)} mark scheme image`)}" />
         </figure>
       </details>
       ${options.reviewLinkPath ? `<p class="question-review-link">${routeLink(pagePath, options.reviewLinkPath, 'Review Field Guide', 'button secondary-button')}</p>` : ''}
-      ${allowAttemptSave ? `<form class="attempt-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
-        <label>
-          Marks earned after marking
-          <input name="marksEarned" type="number" min="0" max="${totalMarks}" step="1" required />
-        </label>
+      ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${hasPartData ? 'false' : 'true'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
+        <div class="exam-evidence-banner">
+          <strong>Self-marked attempt</strong>
+          <span>Exam practice evidence. Needs Skill Check pass before mastery can be shown.</span>
+        </div>
+        ${!hasPartData ? '<p class="coarse-marking-note">Coarse self-marking: this source record does not expose reliable separate parts, so save one whole-question score.</p>' : ''}
+        <div class="exam-part-list">
+          ${selfMarkParts.map(renderExamPartControls).join('')}
+        </div>
         <label>
           Reflection
           <select name="mistakeType" required>
@@ -1804,7 +1930,16 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
             <option value="other">Other</option>
           </select>
         </label>
-        <button class="button primary-button" type="submit">Save attempt locally</button>
+        <label>
+          Confidence after marking
+          <select name="confidenceRating" required>
+            <option value="">Choose one</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+        <button class="button primary-button" type="submit">Save self-marked attempt</button>
         <p class="form-status" role="status"></p>
       </form>` : '<p class="empty-state">Use this question for practice. Save marks only if you want to track the attempt locally.</p>'}
     </article>
@@ -1832,6 +1967,7 @@ function renderPracticePage(
       topic.headerFormula,
       `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start first question</a>
       ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'One exam question', 'button secondary-button')}
+      ${routeLink(pagePath, worksheetPagePath(topic), 'Print worksheet', 'button secondary-button')}
       ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button text-button')}`,
     )}
     <details class="jump-details">
@@ -1863,6 +1999,44 @@ function renderPracticePage(
   });
 }
 
+function renderWorksheetPage(
+  context: TopicContext,
+  pagePath = worksheetPagePath(context.topic),
+  skillCheckPath = practicePagePath(context.topic),
+): string {
+  const { topic, groups } = context;
+  const items = groups.flatMap((group) => group.authoredItems);
+  const body = `
+    <section class="worksheet-hero">
+      <p class="eyebrow">Printable worksheet</p>
+      <h1>${escapeHtml(topic.name)} Skill Check Worksheet</h1>
+      <div class="worksheet-meta">
+        <p>Student name: <span></span></p>
+        <p>Date: <span></span></p>
+      </div>
+      <div class="worksheet-actions">
+        <button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>
+        ${routeLink(pagePath, skillCheckPath, 'Back to Skill Check', 'button secondary-button')}
+      </div>
+    </section>
+    <section class="worksheet-instructions">
+      <h2>Questions</h2>
+      <p>Show working clearly. Use the interactive Skill Check page for deterministic checking after this worksheet.</p>
+    </section>
+    <section class="worksheet-question-list">
+      ${items.length ? items.map(renderWorksheetItem).join('') : '<p class="empty-state">No printable Skill Check items are available for this topic yet.</p>'}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${topic.name} Worksheet`,
+    description: `Printable P3 Skill Check worksheet for ${topic.name}.`,
+    active: 'p3-topics',
+    body,
+    bodyClass: 'worksheet-page',
+  });
+}
+
 function renderTopicExamTrainingPage(
   context: TopicContext,
   pagePath = topicExamTrainingPagePath(context.topic),
@@ -1873,7 +2047,7 @@ function renderTopicExamTrainingPage(
   const body = `
     ${renderHero(
       `${topic.name} Exam Training`,
-      'Try one Paper 3 question at a time. Reveal the mark scheme only when you are ready.',
+      'Try one Paper 3 question at a time. Self-mark honestly and use Skill Check for mastery.',
       topic.headerFormula,
       `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start topic questions</a>' : ''}
       ${routeLink(pagePath, practicePath, 'Skill Check', 'button secondary-button')}
@@ -1883,8 +2057,15 @@ function renderTopicExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Exam questions</h2>
-          <p>Try the question image first. Reveal the mark scheme only when you are ready to mark your work.</p>
+          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
         </div>
+      </div>
+      <div class="exam-mode-toolbar">
+        <label class="exam-mode-toggle">
+          <input type="checkbox" data-confident-student-mode />
+          <span>Confident student mode</span>
+        </label>
+        <p>Fewer prompts and faster access to self-marking. Integrity labels and Skill Check gating stay on.</p>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="${escapeAttr(topic.name)} exam question">
         ${questions.map((question) => renderExamQuestionCard(question, pagePath, {
@@ -1930,7 +2111,7 @@ function renderExamTrainingPage(
   const body = `
     ${renderHero(
       'Exam Training',
-      'Use this after topic practice, or for revision when you want one mixed Paper 3 question.',
+      'Use this after topic practice, or for revision when you want one mixed Paper 3 question. Exam attempts are self-marked evidence.',
       '\\frac{dy}{dx}, \\quad \\int_a^b f(x)\\,dx, \\quad \\arg z',
       `<a class="button primary-button" href="#mixed-questions">Start mixed questions</a>
       ${routeLink(pagePath, topicsIndexPath, 'Back to topics', 'button secondary-button')}`,
@@ -1939,8 +2120,15 @@ function renderExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Mixed Paper 3 questions</h2>
-          <p>Work on paper first, reveal the mark scheme, then save your marks if you want to track the attempt.</p>
+          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
         </div>
+      </div>
+      <div class="exam-mode-toolbar">
+        <label class="exam-mode-toggle">
+          <input type="checkbox" data-confident-student-mode />
+          <span>Confident student mode</span>
+        </label>
+        <p>Fewer prompts and faster access to self-marking. Integrity labels and Skill Check gating stay on.</p>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam question">
         ${mixedQuestions.map((question) => renderExamQuestionCard(question, pagePath, {
@@ -1952,7 +2140,7 @@ function renderExamTrainingPage(
       <div>
         <p class="eyebrow">Local progress</p>
         <h2>Saved attempts</h2>
-        <p>Use the totals as a revision guide, not a grade.</p>
+        <p>Use the totals as practice evidence, not a grade or mastery decision.</p>
       </div>
       <div class="exam-stats">
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>
@@ -2098,6 +2286,7 @@ async function generate(): Promise<void> {
     htmlByPath.set(fieldGuidePagePath(topic), renderFieldGuidePage(context));
     htmlByPath.set(practicePagePath(topic), renderPracticePage(context));
     htmlByPath.set(topicExamTrainingPagePath(topic), renderTopicExamTrainingPage(context));
+    htmlByPath.set(worksheetPagePath(topic), renderWorksheetPage(context));
   }
   validateNoVisibleGameTerms(htmlByPath);
 
