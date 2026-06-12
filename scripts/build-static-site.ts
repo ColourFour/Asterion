@@ -535,14 +535,26 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 }
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
+  if (active === 'courses') {
+    return `
+      <nav class="site-nav homepage-nav" aria-label="Primary">
+        <a href="${hrefToPage(pagePath, coursePagePath(homepagePrimaryCourse()))}" aria-current="page">P3 (Live)</a>
+        <span>P1 (Locked)</span>
+        <span>M1 (Locked)</span>
+        <span>S1 (Locked)</span>
+        <a href="#learning-loop">About</a>
+        <a href="#contact">Contact</a>
+        <a class="nav-start-button" href="${hrefToPage(pagePath, coursePagePath(homepagePrimaryCourse()))}">Start P3</a>
+      </nav>
+    `;
+  }
+
   const activeCourseId = active === 'p3-topics' || active === 'p3-exam-training' ? P3_COURSE_ID : active;
   const currentCourse = COURSES.find((course) => course.id === activeCourseId);
-  const items = active === 'courses'
-    ? [{ key: 'courses', label: 'Courses', path: 'index.html' }]
-    : [
-        { key: 'courses', label: 'Courses', path: 'index.html' },
-        ...(currentCourse ? [{ key: currentCourse.id, label: currentCourse.shortName, path: coursePagePath(currentCourse) }] : []),
-      ];
+  const items = [
+    { key: 'courses', label: 'Courses', path: 'index.html' },
+    ...(currentCourse ? [{ key: currentCourse.id, label: currentCourse.shortName, path: coursePagePath(currentCourse) }] : []),
+  ];
 
   return `
     <nav class="site-nav" aria-label="Primary">
@@ -572,9 +584,13 @@ function renderPage(options: RenderPageOptions): string {
   <body${options.bodyClass ? ` class="${escapeAttr(options.bodyClass)}"` : ''}>
     <header class="site-header">
       <a class="brand-link" href="${hrefToPage(options.pagePath, 'index.html')}" aria-label="Asterion Study home">
-        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" focusable="false">
+            <path d="M16 2 19.8 12.2 30 8.8 21.8 16 30 23.2 19.8 19.8 16 30 12.2 19.8 2 23.2 10.2 16 2 8.8 12.2 12.2 16 2Z" />
+          </svg>
+        </span>
         <span>
-          <strong>Asterion Study</strong>
+          <strong>ASTERION</strong>
           <small>CAIE 9709 Study Hub</small>
         </span>
       </a>
@@ -900,6 +916,153 @@ function renderHomepageLoopPanel(course: CourseMetadata): string {
   `;
 }
 
+const homepageLearningSteps = [
+  ['Try the problem', 'You attempt first. Your attempt is the center.'],
+  ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
+  ['Learn the method', 'Explanation appears only when you are ready for it.'],
+  ['Pass a Skill Check', 'Deterministic checks prove the small skill before you proceed.'],
+  ['Train on real exam questions', 'Work on real CAIE Paper 3 questions and get reviewed.'],
+  ['Repair the gap', 'Mistakes are expected, repaired, and tracked.'],
+] as const;
+
+const homepageTrustCards = [
+  ['We start with your attempt.', 'Problems come before instruction. Your attempt drives the lesson.'],
+  ['Mistakes are expected.', 'They are not ignored. You repair them and move forward.'],
+  ['We train mathematical behavior.', 'Starting, explaining, checking, repairing, and improving.'],
+  ['Evidence over optimism.', 'Progress is based on attempts, checks, reviews, and practice.'],
+  ['Assessment recognizes what matters.', 'Production, participation, improvement, and contribution.'],
+  ['Teachers are coaches.', 'Students explain, defend, and teach their thinking.'],
+] as const;
+
+function renderHomepageAttemptCard(): string {
+  return `
+    <article class="homepage-attempt-card" aria-label="Problem first preview">
+      <div class="attempt-card-heading">
+        <h2>Try first. Then learn.</h2>
+        <p>Before instruction, attempt one small problem.</p>
+      </div>
+      <div class="attempt-problem-row">
+        <strong>Q.</strong>
+        <span>Differentiate ${renderInlineFormula('y=x^2e^{3x}')} with respect to ${renderInlineFormula('x')}.</span>
+      </div>
+      <div class="attempt-step">
+        <span class="attempt-step-number">1</span>
+        <div>
+          <strong>Your first attempt <small>(write here)</small></strong>
+          <div class="student-work-line">${renderInlineFormula("y'=2xe^{3x}+x^2 3e^{3x}")}<span aria-hidden="true">edit</span></div>
+        </div>
+      </div>
+      <div class="attempt-step">
+        <span class="attempt-step-number">2</span>
+        <div>
+          <strong>Compare your first move</strong>
+          <p>Your first move: You product-ruled the entire expression. <b>Not the most efficient start.</b></p>
+        </div>
+      </div>
+      <div class="attempt-step">
+        <span class="attempt-step-number">3</span>
+        <div>
+          <strong>See the move you missed</strong>
+          <p><b>Better first move:</b> Let ${renderInlineFormula('u=x^2')}, ${renderInlineFormula('v=e^{3x}')}.</p>
+        </div>
+      </div>
+      <div class="attempt-lock-row">
+        <span aria-hidden="true">lock</span>
+        <strong>Instruction appears after you compare.</strong>
+        <small>Explanation is delayed until you are ready.</small>
+      </div>
+    </article>
+  `;
+}
+
+function renderHomepageLearningLoop(): string {
+  return `
+    <section class="homepage-section homepage-learning-loop" id="learning-loop" aria-labelledby="learning-loop-title">
+      <div class="homepage-section-heading">
+        <h2 id="learning-loop-title">The Asterion Learning Loop</h2>
+        <p>A repeatable system that builds exam-ready mathematical behavior.</p>
+      </div>
+      <ol class="learning-loop-list">
+        ${homepageLearningSteps.map(([title, text], index) => `
+          <li>
+            <span class="loop-index">${index + 1}</span>
+            <span class="loop-icon" aria-hidden="true">${['try', 'scan', 'book', 'pass', 'exam', 'fix'][index]}</span>
+            <strong>${escapeRawHtml(title)}</strong>
+            <p>${escapeRawHtml(text)}</p>
+          </li>
+        `).join('')}
+      </ol>
+    </section>
+  `;
+}
+
+function renderHomepageTrustContract(): string {
+  return `
+    <section class="homepage-section homepage-trust-contract" aria-labelledby="trust-contract-title">
+      <div class="homepage-section-heading">
+        <h2 id="trust-contract-title">The Asterion Trust Contract</h2>
+        <p>We teach mathematical behavior, not just mathematical content.</p>
+      </div>
+      <div class="trust-card-grid">
+        ${homepageTrustCards.map(([title, text]) => `
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>${escapeRawHtml(title)}</h3>
+            <p>${escapeRawHtml(text)}</p>
+          </article>
+        `).join('')}
+      </div>
+      <div class="homepage-evidence-banner">
+        <div>
+          <strong>Asterion does not treat self-marked exam practice as progress.</strong>
+          <p>Self-marked questions are useful, but weaker evidence. We label it honestly.</p>
+        </div>
+        <ul aria-label="Progress evidence labels">
+          <li>Attempted</li>
+          <li>Self-Marked</li>
+          <li>Skill-Checked</li>
+          <li>Exam-Trained</li>
+        </ul>
+      </div>
+    </section>
+  `;
+}
+
+function renderHomepageCourseAvailability(fromPagePath: string, p3Course: CourseMetadata, supportCourses: CourseMetadata[]): string {
+  return `
+    <section class="homepage-section homepage-course-availability" aria-labelledby="course-availability-title">
+      <div class="homepage-section-heading">
+        <h2 id="course-availability-title">P3 is live. Everything else waits.</h2>
+        <p>We prove the learning loop in P3 before expanding.</p>
+      </div>
+      <div class="home-course-row">
+        ${renderHomepageCourseCard(fromPagePath, p3Course, true)}
+        ${supportCourses.map((course) => renderHomepageCourseCard(fromPagePath, course)).join('')}
+      </div>
+      <div class="home-feature-strip">
+        <span><strong>Static-first</strong>No backend dependency yet.</span>
+        <span><strong>Teacher-ready</strong>Assign, print, export, audit.</span>
+        <span><strong>Built for CAIE behavior</strong>Real exam questions, real methods.</span>
+        <span><strong>Expansion path</strong>P3 -> P1/M1/S1 -> Teacher tools</span>
+      </div>
+    </section>
+  `;
+}
+
+const homepageContactEmail = 'brooker@rdfzcygj.cn';
+
+function renderHomepageContactBar(): string {
+  return `
+    <section class="homepage-contact-bar" id="contact" aria-label="Contact Asterion">
+      <div>
+        <h2>Contact me</h2>
+        <p>Questions, feedback, course requests, or teacher use cases.</p>
+      </div>
+      <a href="mailto:${escapeAttr(homepageContactEmail)}">${escapeRawHtml(homepageContactEmail)}</a>
+    </section>
+  `;
+}
+
 function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, featured = false): string {
   const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
   const tag = featured ? 'a' : 'article';
@@ -918,6 +1081,7 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
       <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
       ${featured ? `<p class="homepage-primary-reason">${escapeRawHtml(homepageP3TopicEvidence)}</p>` : ''}
       ${featured ? '' : '<p class="course-card-status-copy">Available later. P3 is open now.</p>'}
+      ${featured ? '<ul class="home-p3-checklist"><li>Field Guides</li><li>Skill Checks</li><li>CAIE Paper 3 Practice</li><li>Mark Scheme Review</li></ul>' : '<span class="locked-glyph" aria-hidden="true">lock</span>'}
       <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))}${featured ? ' <span aria-hidden="true">&#8594;</span>' : ''}</span>
     </${tag}>
   `;
@@ -928,37 +1092,27 @@ function renderCourseSelectorPage(): string {
   const p3Course = homepagePrimaryCourse();
   const supportCourses = COURSES.filter((course) => course.id !== p3Course.id);
   const body = `
-    <section class="page-hero course-selector-hero">
+    <section class="homepage-hero">
       <div class="hero-copy">
-        <p class="eyebrow">CAIE 9709 training system</p>
-        <h1>Learn the move. Drill the skill. Walk into P3 expecting marks.</h1>
-        <p>Asterion gives you a simple route: study the method, prove the skill, then train against real CAIE Paper 3 question images until the mark scheme stops feeling mysterious.</p>
-        <div class="homepage-recommended-start">
-          <span>Open now</span>
-          <strong>${escapeRawHtml(`${p3Course.shortName} ${p3Course.displayName}`)}</strong>
-          <p>One course. One sequence. Follow the path.</p>
+        <h1>CAIE 9709 practice that starts with the <span>student&rsquo;s attempt.</span></h1>
+        <p>Asterion trains students to try the problem first, compare their method, repair mistakes, prove small skills, and then apply them to real CAIE exam questions.</p>
+        <div class="home-hero-actions">
+          <a class="button primary-button" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">Start P3</a>
+          <a class="button secondary-button" href="#learning-loop">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
         </div>
-        <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">${escapeRawHtml(homepageCourseCta(p3Course))} <span aria-hidden="true">&#8594;</span></a>
+        <ul class="home-hero-proof">
+          <li><strong>Built for</strong><span>CAIE 9709</span></li>
+          <li><strong>Real CAIE</strong><span>exam questions</span></li>
+          <li><strong>Honest</strong><span>progress labels</span></li>
+          <li><strong>Teacher</strong><span>ready</span></li>
+        </ul>
       </div>
-      ${renderHomepageLoopPanel(p3Course)}
+      ${renderHomepageAttemptCard()}
     </section>
-    <section class="homepage-course-layout" aria-label="Available CAIE 9709 courses">
-      ${renderHomepageCourseCard(pagePath, p3Course, true)}
-      <section class="homepage-support-section" aria-labelledby="homepage-support-title">
-        <div class="homepage-support-heading">
-          <h2 id="homepage-support-title">More 9709 routes are coming.</h2>
-          <p>P1, M1, and S1 are visible here so the full study hub has a clear shape, but they stay locked until their course audits are done.</p>
-        </div>
-        <div class="course-grid course-support-grid" aria-label="Support only CAIE 9709 courses">
-          ${supportCourses.map((course) => renderHomepageCourseCard(pagePath, course)).join('')}
-        </div>
-      </section>
-    </section>
-    <section class="homepage-status-section" aria-labelledby="homepage-status-title">
-      <p class="eyebrow">Status today</p>
-      <h2 id="homepage-status-title">P3 is the live course. Everything else waits its turn.</h2>
-      <p>The homepage intentionally points you at one action: start P3 and keep moving through the training loop.</p>
-    </section>
+    ${renderHomepageLearningLoop()}
+    ${renderHomepageTrustContract()}
+    ${renderHomepageCourseAvailability(pagePath, p3Course, supportCourses)}
+    ${renderHomepageContactBar()}
   `;
   return renderPage({
     pagePath,
@@ -966,6 +1120,7 @@ function renderCourseSelectorPage(): string {
     description: 'Static CAIE 9709 study hub course selector.',
     active: 'courses',
     body,
+    bodyClass: 'home-page',
   });
 }
 
