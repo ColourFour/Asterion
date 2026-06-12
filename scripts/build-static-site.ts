@@ -323,6 +323,10 @@ function p3ContentQaPagePath(): string {
   return `${P3_COURSE_ID}/content-qa/index.html`;
 }
 
+function aboutPagePath(): string {
+  return 'about/index.html';
+}
+
 function fieldGuidePagePath(topic: StudyTopic): string {
   return `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`;
 }
@@ -536,15 +540,13 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   if (active === 'courses') {
+    const startPath = fieldGuidePagePath(STUDY_TOPICS[0]);
+    const isAboutPage = pagePath === aboutPagePath();
     return `
       <nav class="site-nav homepage-nav" aria-label="Primary">
-        <a href="${hrefToPage(pagePath, coursePagePath(homepagePrimaryCourse()))}" aria-current="page">P3 (Live)</a>
-        <span>P1 (Locked)</span>
-        <span>M1 (Locked)</span>
-        <span>S1 (Locked)</span>
-        <a href="#learning-loop">About</a>
-        <a href="#contact">Contact</a>
-        <a class="nav-start-button" href="${hrefToPage(pagePath, coursePagePath(homepagePrimaryCourse()))}">Start P3</a>
+        <a href="${hrefToPage(pagePath, aboutPagePath())}"${isAboutPage ? ' aria-current="page"' : ''}>About</a>
+        <a href="${hrefToPage(pagePath, 'index.html')}#contact">Contact</a>
+        <a class="nav-start-button" href="${hrefToPage(pagePath, startPath)}">Start P3</a>
       </nav>
     `;
   }
@@ -845,77 +847,6 @@ function renderExamPanicVisual(): string {
   `;
 }
 
-const homepageLoopSteps = [
-  {
-    label: 'Learn the route',
-    text: 'Field Guides show the exact decisions that turn a blank page into a written method.',
-  },
-  {
-    label: 'Lock the skill',
-    text: 'Skill Checks keep the target small until the move is automatic.',
-  },
-  {
-    label: 'Train on real papers',
-    text: 'Exam Training uses source question images and mark-scheme review.',
-  },
-  {
-    label: 'Fix the gap',
-    text: 'Review the miss, return to the method, and make the next attempt cleaner.',
-  },
-] as const;
-
-const homepageP3TopicEvidence = 'Algebra, logs and exponentials, trig, differentiation, integration, numerical methods, vectors, differential equations, and complex numbers are already wired into the P3 path.';
-
-function homepagePrimaryCourse(): CourseMetadata {
-  return COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[0];
-}
-
-function homepageCourseCta(course: CourseMetadata): string {
-  if (course.id === P3_COURSE_ID) return 'Start P3';
-  return 'Coming after P3 proves.';
-}
-
-function homepageCourseActionLabel(course: CourseMetadata): string {
-  if (course.id !== P3_COURSE_ID) return `${course.shortName} locked: available later`;
-  return `${homepageCourseCta(course)}: ${course.displayName}`;
-}
-
-function homepageCourseMaturity(course: CourseMetadata): string {
-  if (course.id === P3_COURSE_ID) return 'Ready';
-  return 'Available later';
-}
-
-function homepageCourseSummary(course: CourseMetadata, featured: boolean): string {
-  if (featured) return 'The live route: learn the method, check the skill, then train on real Paper 3 question images.';
-  return `${course.shortName} is locked while its syllabus contract and exam alignment are finished.`;
-}
-
-function renderHomepageLoopPanel(course: CourseMetadata): string {
-  return `
-    <div class="homepage-loop-panel" aria-label="Asterion learning loop">
-      <div class="homepage-loop-header">
-        <span class="homepage-loop-kicker">Training flow</span>
-        <span class="homepage-loop-tag">Method to evidence</span>
-      </div>
-      <ol>
-        ${homepageLoopSteps.map((step, index) => `
-          <li>
-            <span class="homepage-loop-number" aria-hidden="true">${index + 1}</span>
-            <div>
-              <strong>${escapeRawHtml(step.label)}</strong>
-              <p>${escapeRawHtml(step.text)}</p>
-            </div>
-          </li>
-        `).join('')}
-      </ol>
-      <div class="homepage-loop-next-step">
-        <span aria-hidden="true">Today</span>
-        <strong>${escapeRawHtml(`${course.shortName} is the live path. Start there and follow the sequence.`)}</strong>
-      </div>
-    </div>
-  `;
-}
-
 const homepageLearningSteps = [
   ['Try the problem', 'You attempt first. Your attempt is the center.'],
   ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
@@ -945,40 +876,61 @@ const homepageTrustCards = [
 
 function renderHomepageAttemptCard(): string {
   return `
-    <article class="homepage-attempt-card" aria-label="Problem first preview">
+    <article class="homepage-attempt-card homepage-doing-card" aria-label="Learn by doing preview">
       <div class="attempt-card-heading">
-        <h2>Try first. Then learn.</h2>
-        <p>Before instruction, attempt one small problem.</p>
+        <h2>Learn by doing.</h2>
+        <p>Instruction comes from solving problems you already know, then forming connections.</p>
       </div>
       <div class="attempt-problem-row">
         <strong>Q.</strong>
-        <span>Differentiate ${renderInlineFormula('y=x^2e^{3x}')} with respect to ${renderInlineFormula('x')}.</span>
+        <span>Integrate ${renderInlineFormula('\\frac{1}{x^2-1}')}.</span>
       </div>
-      <div class="attempt-step">
-        <span class="attempt-step-number">1</span>
-        <div>
-          <strong>Your first attempt <small>(write here)</small></strong>
-          <div class="student-work-line">${renderInlineFormula("y'=2xe^{3x}+x^2 3e^{3x}")}<span aria-hidden="true">edit</span></div>
-        </div>
-      </div>
-      <div class="attempt-step">
-        <span class="attempt-step-number">2</span>
-        <div>
-          <strong>Compare your first move</strong>
-          <p>Your first move: You product-ruled the entire expression. <b>Not the most efficient start.</b></p>
-        </div>
-      </div>
-      <div class="attempt-step">
-        <span class="attempt-step-number">3</span>
-        <div>
-          <strong>See the move you missed</strong>
-          <p><b>Better first move:</b> Let ${renderInlineFormula('u=x^2')}, ${renderInlineFormula('v=e^{3x}')}.</p>
-        </div>
-      </div>
+      <ol class="doing-step-list">
+        <li>
+          <span class="attempt-step-number">1</span>
+          <label>
+            <strong>Recall the form</strong>
+            <span>${renderInlineFormula('\\frac{1}{x^2-1}')} can be written as partial fractions.</span>
+            <textarea aria-label="Recall the partial fraction form" placeholder="What denominator factors should you use?"></textarea>
+          </label>
+        </li>
+        <li>
+          <span class="attempt-step-number">2</span>
+          <label>
+            <strong>Recall the integral</strong>
+            <span>${renderInlineFormula('\\int \\frac{1}{x}\\,dx=\\ln|x|+C')}</span>
+            <textarea aria-label="Recall the logarithm integral" placeholder="Write the related log rule in your own words."></textarea>
+          </label>
+        </li>
+        <li>
+          <span class="attempt-step-number">3</span>
+          <label>
+            <strong>Split the expression</strong>
+            <span>Write ${renderInlineFormula('\\frac{1}{x^2-1}')} as partial fractions.</span>
+            <textarea aria-label="Write the partial fraction decomposition" placeholder="1/(x^2 - 1) = ..."></textarea>
+          </label>
+        </li>
+        <li>
+          <span class="attempt-step-number">4</span>
+          <label>
+            <strong>Integrate each piece</strong>
+            <span>Use the log rule on each fraction.</span>
+            <textarea aria-label="Integrate each partial fraction" placeholder="Integrate each term here."></textarea>
+          </label>
+        </li>
+        <li>
+          <span class="attempt-step-number">5</span>
+          <label>
+            <strong>Solve the overall structure</strong>
+            <span>Combine the pieces into one final answer.</span>
+            <textarea aria-label="Write the final integrated result" placeholder="Final answer + C"></textarea>
+          </label>
+        </li>
+      </ol>
       <div class="attempt-lock-row">
-        <span aria-hidden="true">lock</span>
-        <strong>Instruction appears after you compare.</strong>
-        <small>Explanation is delayed until you are ready.</small>
+        <span aria-hidden="true">do</span>
+        <strong>Work first. Instruction attaches to the work you produce.</strong>
+        <small>The page teaches from your next move, not from passive reading.</small>
       </div>
     </article>
   `;
@@ -1037,27 +989,6 @@ function renderHomepageTrustContract(): string {
   `;
 }
 
-function renderHomepageCourseAvailability(fromPagePath: string, p3Course: CourseMetadata, supportCourses: CourseMetadata[]): string {
-  return `
-    <section class="homepage-section homepage-course-availability" aria-labelledby="course-availability-title">
-      <div class="homepage-section-heading">
-        <h2 id="course-availability-title">P3 is live. Everything else waits.</h2>
-        <p>We prove the learning loop in P3 before expanding.</p>
-      </div>
-      <div class="home-course-row">
-        ${renderHomepageCourseCard(fromPagePath, p3Course, true)}
-        ${supportCourses.map((course) => renderHomepageCourseCard(fromPagePath, course)).join('')}
-      </div>
-      <div class="home-feature-strip">
-        <span><strong>Static-first</strong>No backend dependency yet.</span>
-        <span><strong>Teacher-ready</strong>Assign, print, export, audit.</span>
-        <span><strong>Built for CAIE behavior</strong>Real exam questions, real methods.</span>
-        <span><strong>Expansion path</strong>P3 -> P1/M1/S1 -> Teacher tools</span>
-      </div>
-    </section>
-  `;
-}
-
 const homepageContactEmail = 'brooker@rdfzcygj.cn';
 
 function renderHomepageContactBar(): string {
@@ -1067,47 +998,47 @@ function renderHomepageContactBar(): string {
         <h2>Contact me</h2>
         <p>Questions, feedback, course requests, or teacher use cases.</p>
       </div>
-      <a href="mailto:${escapeAttr(homepageContactEmail)}">${escapeRawHtml(homepageContactEmail)}</a>
+      <a href="mailto:${escapeAttr(homepageContactEmail)}?subject=Asterion%20contact">Send an email</a>
     </section>
   `;
 }
 
-function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, featured = false): string {
-  const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
-  const tag = featured ? 'a' : 'article';
-  const href = featured ? ` href="${hrefToPage(fromPagePath, coursePagePath(course))}"` : '';
-  const ariaDisabled = featured ? '' : ' aria-disabled="true"';
-  return `
-    <${tag} class="course-card${featured ? ' course-card-featured' : ' course-card-locked'} course-status-${escapeRawAttr(course.status)}"${href}${ariaDisabled} aria-label="${escapeRawAttr(homepageCourseActionLabel(course))}">
-      ${featured ? '<span class="homepage-primary-label">Recommended starting path</span>' : ''}
-      <div class="course-card-header-row">
-        <span class="course-code-badge">${escapeRawHtml(course.shortName)}</span>
-        <div>
-          <span class="${statusPillClass}">${escapeRawHtml(homepageCourseMaturity(course))}</span>
-          <h2>${escapeRawHtml(course.displayName)}</h2>
-        </div>
+function renderAboutPage(): string {
+  const pagePath = aboutPagePath();
+  const body = `
+    <section class="about-hero">
+      <p class="eyebrow">About Asterion</p>
+      <h1>Asterion teaches the behavior behind exam-ready mathematics.</h1>
+      <p>Students attempt first, compare their route, repair the gap, and then train on real CAIE questions. The system is deliberately evidence-first.</p>
+      <div class="hero-actions">
+        <a class="button primary-button" href="${hrefToPage(pagePath, fieldGuidePagePath(STUDY_TOPICS[0]))}">Start P3</a>
+        <a class="button secondary-button" href="${hrefToPage(pagePath, 'index.html')}#contact">Contact</a>
       </div>
-      <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
-      ${featured ? `<p class="homepage-primary-reason">${escapeRawHtml(homepageP3TopicEvidence)}</p>` : ''}
-      ${featured ? '' : '<p class="course-card-status-copy">Available later. P3 is open now.</p>'}
-      ${featured ? '<ul class="home-p3-checklist"><li>Field Guides</li><li>Skill Checks</li><li>CAIE Paper 3 Practice</li><li>Mark Scheme Review</li></ul>' : '<span class="locked-glyph" aria-hidden="true"></span>'}
-      <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))}${featured ? ' <span aria-hidden="true">&#8594;</span>' : ''}</span>
-    </${tag}>
+    </section>
+    ${renderHomepageLearningLoop()}
+    ${renderHomepageTrustContract()}
   `;
+  return renderPage({
+    pagePath,
+    title: 'About Asterion',
+    description: 'Asterion learning loop and trust contract for CAIE 9709 study.',
+    active: 'courses',
+    body,
+    bodyClass: 'home-page about-page',
+  });
 }
 
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
-  const p3Course = homepagePrimaryCourse();
-  const supportCourses = COURSES.filter((course) => course.id !== p3Course.id);
+  const startPath = fieldGuidePagePath(STUDY_TOPICS[0]);
   const body = `
     <section class="homepage-hero">
       <div class="hero-copy">
         <h1>CAIE 9709 practice that starts with the <span>student&rsquo;s attempt.</span></h1>
         <p>Asterion trains students to try the problem first, compare their method, repair mistakes, prove small skills, and then apply them to real CAIE exam questions.</p>
         <div class="home-hero-actions">
-          <a class="button primary-button" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">Start P3</a>
-          <a class="button secondary-button" href="#learning-loop">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
+          <a class="button primary-button" href="${hrefToPage(pagePath, startPath)}">Start P3</a>
+          <a class="button secondary-button" href="${hrefToPage(pagePath, aboutPagePath())}">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
         </div>
         <ul class="home-hero-proof">
           <li><strong>Built for</strong><span>CAIE 9709</span></li>
@@ -1118,9 +1049,6 @@ function renderCourseSelectorPage(): string {
       </div>
       ${renderHomepageAttemptCard()}
     </section>
-    ${renderHomepageLearningLoop()}
-    ${renderHomepageTrustContract()}
-    ${renderHomepageCourseAvailability(pagePath, p3Course, supportCourses)}
     ${renderHomepageContactBar()}
   `;
   return renderPage({
@@ -2439,6 +2367,7 @@ async function generate(): Promise<void> {
   const htmlByPath = new Map<string, string>();
 
   htmlByPath.set('index.html', renderCourseSelectorPage());
+  htmlByPath.set(aboutPagePath(), renderAboutPage());
 
   for (const course of COURSES) {
     htmlByPath.set(coursePagePath(course), renderCourseDashboardPage(course));

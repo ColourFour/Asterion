@@ -6,6 +6,10 @@
       "label": "Courses"
     },
     {
+      "path": "about/index.html",
+      "label": "About Asterion"
+    },
+    {
       "path": "p1/index.html",
       "label": "P1 course page"
     },

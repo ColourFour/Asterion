@@ -1664,6 +1664,56 @@ body.home-page main {
   gap: 12px;
 }
 
+.doing-step-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doing-step-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid #d8e1ec;
+}
+
+.doing-step-list label {
+  display: grid;
+  gap: 6px;
+}
+
+.doing-step-list strong {
+  color: var(--home-blue-dark);
+  font-size: 0.9rem;
+}
+
+.doing-step-list span:not(.attempt-step-number) {
+  color: #071329;
+  font-size: 0.9rem;
+  line-height: 1.32;
+}
+
+.doing-step-list textarea {
+  width: 100%;
+  min-height: 46px;
+  resize: vertical;
+  padding: 9px 10px;
+  border: 1px solid #cfd9e8;
+  border-radius: 6px;
+  color: var(--home-ink);
+  background: #ffffff;
+  font: inherit;
+  line-height: 1.35;
+}
+
+.doing-step-list textarea:focus {
+  outline: 3px solid rgba(0, 87, 217, 0.18);
+  border-color: var(--home-blue);
+}
+
 .attempt-step-number {
   display: grid;
   place-items: center;
@@ -2188,6 +2238,36 @@ body.home-page .course-launch-cta-secondary {
 .homepage-contact-bar a:hover,
 .homepage-contact-bar a:focus-visible {
   background: #0057d9;
+}
+
+.about-hero {
+  display: grid;
+  gap: 14px;
+  padding: clamp(34px, 5vw, 64px) clamp(18px, 5vw, 64px);
+  border-bottom: 1px solid #d8e1ec;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(0, 87, 217, 0.08), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+.about-hero h1 {
+  max-width: 900px;
+  margin: 0;
+  color: var(--home-ink);
+  font-size: clamp(2.3rem, 4vw, 4rem);
+  line-height: 1.03;
+  letter-spacing: 0;
+}
+
+.about-hero p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 0;
+  color: #071329;
+  font-size: 1.1rem;
+}
+
+.about-hero .hero-actions {
+  margin-top: 6px;
 }
 
 .course-topic-list {
@@ -4555,7 +4635,8 @@ body.skill-check-page .exam-question-section {
 
   .attempt-problem-row,
   .attempt-step,
-  .attempt-lock-row {
+  .attempt-lock-row,
+  .doing-step-list li {
     padding: 12px;
   }
 
@@ -4568,6 +4649,10 @@ body.skill-check-page .exam-question-section {
   .attempt-step b {
     display: block;
     margin: 8px 0 0;
+  }
+
+  .doing-step-list textarea {
+    min-height: 58px;
   }
 
   .homepage-evidence-banner {

@@ -8,6 +8,7 @@ export interface StaticStudyPageRoute {
 
 export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: 'index.html', label: 'Courses' },
+  { path: 'about/index.html', label: 'About Asterion' },
   ...COURSES.map((course) => ({
     path: `${course.slug}/index.html`,
     label: `${course.shortName} course page`,
