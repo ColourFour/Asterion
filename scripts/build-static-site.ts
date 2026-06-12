@@ -831,24 +831,24 @@ function renderExamPanicVisual(): string {
 
 const homepageLoopSteps = [
   {
-    label: 'Field Guide',
-    text: 'Study the method and decision points before attempting exam-style work.',
+    label: 'Learn the route',
+    text: 'Field Guides show the exact decisions that turn a blank page into a written method.',
   },
   {
-    label: 'Skill Check',
-    text: 'Check one skill at a time before moving into exam practice.',
+    label: 'Lock the skill',
+    text: 'Skill Checks keep the target small until the move is automatic.',
   },
   {
-    label: 'Exam Training',
-    text: 'Move into source question images when the written route is ready.',
+    label: 'Train on real papers',
+    text: 'Exam Training uses source question images and mark-scheme review.',
   },
   {
-    label: 'Review',
-    text: 'Use mark-scheme review and gap checks before another attempt.',
+    label: 'Fix the gap',
+    text: 'Review the miss, return to the method, and make the next attempt cleaner.',
   },
 ] as const;
 
-const homepageP3TopicEvidence = 'Includes Algebra, Logarithmic and Exponential Functions, Trigonometry, Differentiation, Integration, Numerical Solution of Equations, Vectors, Differential Equations, and Complex Numbers.';
+const homepageP3TopicEvidence = 'Algebra, logs and exponentials, trig, differentiation, integration, numerical methods, vectors, differential equations, and complex numbers are already wired into the P3 path.';
 
 function homepagePrimaryCourse(): CourseMetadata {
   return COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[0];
@@ -856,21 +856,22 @@ function homepagePrimaryCourse(): CourseMetadata {
 
 function homepageCourseCta(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Start P3';
-  return `View ${course.shortName} support`;
+  return 'Locked';
 }
 
 function homepageCourseActionLabel(course: CourseMetadata): string {
+  if (course.id !== P3_COURSE_ID) return `${course.shortName} locked: available later`;
   return `${homepageCourseCta(course)}: ${course.displayName}`;
 }
 
 function homepageCourseMaturity(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Ready';
-  return 'Support only';
+  return 'Available later';
 }
 
 function homepageCourseSummary(course: CourseMetadata, featured: boolean): string {
-  if (featured) return 'Field Guide, Skill Check, and Exam Training are available for the official Paper 3 topic list.';
-  return 'Demoted on this branch. These sections are available only for orientation.';
+  if (featured) return 'The live route: learn the method, check the skill, then train on real Paper 3 question images.';
+  return `${course.shortName} is locked while its syllabus contract and exam alignment are finished.`;
 }
 
 function renderHomepageLoopPanel(course: CourseMetadata): string {
@@ -892,8 +893,8 @@ function renderHomepageLoopPanel(course: CourseMetadata): string {
         `).join('')}
       </ol>
       <div class="homepage-loop-next-step">
-        <span aria-hidden="true">Target</span>
-        <strong>Recommended first click: ${escapeRawHtml(`${course.shortName} ${course.displayName}`)}</strong>
+        <span aria-hidden="true">Today</span>
+        <strong>${escapeRawHtml(`${course.shortName} is the live path. Start there and follow the sequence.`)}</strong>
       </div>
     </div>
   `;
@@ -901,8 +902,11 @@ function renderHomepageLoopPanel(course: CourseMetadata): string {
 
 function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, featured = false): string {
   const statusPillClass = featured ? 'course-status-pill course-status-pill-primary' : 'course-status-pill';
+  const tag = featured ? 'a' : 'article';
+  const href = featured ? ` href="${hrefToPage(fromPagePath, coursePagePath(course))}"` : '';
+  const ariaDisabled = featured ? '' : ' aria-disabled="true"';
   return `
-    <a class="course-card${featured ? ' course-card-featured' : ''} course-status-${escapeRawAttr(course.status)}" href="${hrefToPage(fromPagePath, coursePagePath(course))}" aria-label="${escapeRawAttr(homepageCourseActionLabel(course))}">
+    <${tag} class="course-card${featured ? ' course-card-featured' : ' course-card-locked'} course-status-${escapeRawAttr(course.status)}"${href}${ariaDisabled} aria-label="${escapeRawAttr(homepageCourseActionLabel(course))}">
       ${featured ? '<span class="homepage-primary-label">Recommended starting path</span>' : ''}
       <div class="course-card-header-row">
         <span class="course-code-badge">${escapeRawHtml(course.shortName)}</span>
@@ -913,9 +917,9 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
       </div>
       <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
       ${featured ? `<p class="homepage-primary-reason">${escapeRawHtml(homepageP3TopicEvidence)}</p>` : ''}
-      ${featured ? '' : '<p class="course-card-status-copy">Support only: not a ready course path on this branch.</p>'}
-      <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))} <span aria-hidden="true">&#8594;</span></span>
-    </a>
+      ${featured ? '' : '<p class="course-card-status-copy">Available later. P3 is open now.</p>'}
+      <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))}${featured ? ' <span aria-hidden="true">&#8594;</span>' : ''}</span>
+    </${tag}>
   `;
 }
 
@@ -927,12 +931,12 @@ function renderCourseSelectorPage(): string {
     <section class="page-hero course-selector-hero">
       <div class="hero-copy">
         <p class="eyebrow">CAIE 9709 training system</p>
-        <h1>CAIE 9709 practice that starts from the method, not the mark scheme.</h1>
-        <p>Asterion sends you through Field Guide, Skill Check, and Exam Training so P3 practice starts with the route you would write, then checks it against real question images and review.</p>
+        <h1>Learn the move. Drill the skill. Walk into P3 expecting marks.</h1>
+        <p>Asterion gives you a simple route: study the method, prove the skill, then train against real CAIE Paper 3 question images until the mark scheme stops feeling mysterious.</p>
         <div class="homepage-recommended-start">
-          <span>Recommended start</span>
-          <strong>Start with ${escapeRawHtml(`${p3Course.shortName} ${p3Course.displayName}`)}</strong>
-          <p>Use the full Field Guide -&gt; Skill Check -&gt; Exam Training flow.</p>
+          <span>Open now</span>
+          <strong>${escapeRawHtml(`${p3Course.shortName} ${p3Course.displayName}`)}</strong>
+          <p>One course. One sequence. Follow the path.</p>
         </div>
         <a class="button primary-button homepage-recommended-action" href="${hrefToPage(pagePath, coursePagePath(p3Course))}">${escapeRawHtml(homepageCourseCta(p3Course))} <span aria-hidden="true">&#8594;</span></a>
       </div>
@@ -942,8 +946,8 @@ function renderCourseSelectorPage(): string {
       ${renderHomepageCourseCard(pagePath, p3Course, true)}
       <section class="homepage-support-section" aria-labelledby="homepage-support-title">
         <div class="homepage-support-heading">
-          <h2 id="homepage-support-title">Support only courses</h2>
-          <p>P1, M1, and S1 are demoted. They are not ready course paths on this branch.</p>
+          <h2 id="homepage-support-title">More 9709 routes are coming.</h2>
+          <p>P1, M1, and S1 are visible here so the full study hub has a clear shape, but they stay locked until their course audits are done.</p>
         </div>
         <div class="course-grid course-support-grid" aria-label="Support only CAIE 9709 courses">
           ${supportCourses.map((course) => renderHomepageCourseCard(pagePath, course)).join('')}
@@ -952,8 +956,8 @@ function renderCourseSelectorPage(): string {
     </section>
     <section class="homepage-status-section" aria-labelledby="homepage-status-title">
       <p class="eyebrow">Status today</p>
-      <h2 id="homepage-status-title">P3 is the most developed Asterion path today.</h2>
-      <p>P1, M1, and S1 are support-only entries. P3 is the default product path.</p>
+      <h2 id="homepage-status-title">P3 is the live course. Everything else waits its turn.</h2>
+      <p>The homepage intentionally points you at one action: start P3 and keep moving through the training loop.</p>
     </section>
   `;
   return renderPage({

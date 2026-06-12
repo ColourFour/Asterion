@@ -27,8 +27,8 @@ describe('static P3 product contract', () => {
 
     for (const slug of ['p1', 'm1', 's1'] as const) {
       const course = getCourseBySlug(slug);
-      expect(course?.status).toBe('support-only');
-      expect(course?.statusLabel).toBe('Support only');
+      expect(course?.status).toBe('coming-soon');
+      expect(course?.statusLabel).toBe('Available later');
       expect(course?.topics).toEqual([]);
     }
   });
