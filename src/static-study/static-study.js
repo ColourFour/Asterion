@@ -1722,8 +1722,145 @@
     });
   }
 
+  function compactDemoAnswer(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\\left|\\right/g, '')
+      .replace(/\s+/g, '')
+      .replace(/[{}]/g, '')
+      .replace(/−/g, '-');
+  }
+
+  function hasBoth(value, first, second) {
+    return value.includes(first) && value.includes(second);
+  }
+
+  function checkHomepageDemoStep(index, rawAnswer) {
+    var answer = compactDemoAnswer(rawAnswer);
+    if (!answer) {
+      return { correct: false, message: 'Write an attempt first. The point is to check your work, not skip the step.' };
+    }
+
+    if (index === 0) {
+      var hasFactors = (hasBoth(answer, '(x+1)', '(x-1)') || hasBoth(answer, '(x-1)', '(x+1)'))
+        && (answer.includes('(x+1)(x-1)') || answer.includes('(x-1)(x+1)') || answer.includes('x+1') && answer.includes('x-1'));
+      return hasFactors
+        ? { correct: true, message: 'Correct. The denominator is a difference of squares, so the two linear factors are x - 1 and x + 1.' }
+        : { correct: false, message: 'Not yet. Look for a difference of squares: x^2 - 1 is x^2 - 1^2. Repair that factorization first.' };
+    }
+
+    if (index === 1) {
+      var hasA = /a\/\(?(x-1)\)?/.test(answer) || /a\/\(?(x\+1)\)?/.test(answer);
+      var hasB = /b\/\(?(x\+1)\)?/.test(answer) || /b\/\(?(x-1)\)?/.test(answer);
+      var mentionsBothDenominators = answer.includes('x-1') && answer.includes('x+1');
+      return hasA && hasB && mentionsBothDenominators
+        ? { correct: true, message: 'Correct. Use one constant over each distinct linear factor before solving for A and B.' }
+        : { correct: false, message: 'Not yet. Do not combine logs or integrate here. Write a fraction with A over one factor and B over the other.' };
+    }
+
+    if (index === 2) {
+      var hasPositiveHalf = answer.includes('a=1/2') || answer.includes('a=.5') || answer.includes('a=0.5') || answer.includes('1/2/(x-1)');
+      var hasNegativeHalf = answer.includes('b=-1/2') || answer.includes('b=-.5') || answer.includes('b=-0.5') || answer.includes('-1/2/(x+1)');
+      var hasEquivalentSplit = answer.includes('1/(2(x-1))') && answer.includes('-1/(2(x+1))');
+      return (hasPositiveHalf && hasNegativeHalf) || hasEquivalentSplit
+        ? { correct: true, message: 'Correct. Substituting x = 1 gives A = 1/2, and x = -1 gives B = -1/2.' }
+        : { correct: false, message: 'Check the signs. From 1 = A(x + 1) + B(x - 1), use x = 1 and x = -1 to isolate the constants.' };
+    }
+
+    if (index === 3) {
+      var hasFirstLog = answer.includes('1/2ln|x-1|') || answer.includes('0.5ln|x-1|') || answer.includes('(1/2)ln|x-1|');
+      var hasSecondLog = answer.includes('-1/2ln|x+1|') || answer.includes('-0.5ln|x+1|') || answer.includes('-(1/2)ln|x+1|');
+      var hasLnTerms = answer.includes('ln') && answer.includes('x-1') && answer.includes('x+1') && answer.includes('-');
+      return (hasFirstLog && hasSecondLog) || hasLnTerms
+        ? { correct: true, message: 'Correct. Each 1/(linear factor) term integrates to a logarithm of the absolute value.' }
+        : { correct: false, message: 'Not yet. Keep the 1/2 and -1/2 coefficients, then integrate each reciprocal linear term into a log.' };
+    }
+
+    if (index === 4) {
+      var hasCombinedRatio = answer.includes('1/2ln|(x-1)/(x+1)|') || answer.includes('(1/2)ln|(x-1)/(x+1)|') || answer.includes('0.5ln|(x-1)/(x+1)|');
+      var hasDifferenceWithC = answer.includes('ln') && answer.includes('x-1') && answer.includes('x+1') && answer.includes('-') && answer.includes('c');
+      return hasCombinedRatio || hasDifferenceWithC
+        ? { correct: true, message: 'Complete. The log difference combines to 1/2 ln |(x - 1)/(x + 1)| + C.' }
+        : { correct: false, message: 'Almost. Combine the log difference as a quotient and include the constant of integration.' };
+    }
+
+    return { correct: false, message: 'This demo only checks the five shown steps.' };
+  }
+
+  function setupHomepageDemo() {
+    document.querySelectorAll('[data-homepage-demo]').forEach(function (demo) {
+      var steps = Array.from(demo.querySelectorAll('[data-demo-step]'));
+      var progress = Array.from(demo.querySelectorAll('[data-demo-progress]'));
+      var complete = demo.querySelector('[data-demo-complete]');
+
+      function setStepState(step, state) {
+        step.classList.remove('is-active', 'is-locked', 'is-correct', 'is-incorrect');
+        step.classList.add('is-' + state);
+        var textarea = step.querySelector('textarea');
+        var button = step.querySelector('button');
+        var status = step.querySelector('[data-demo-status]');
+        var isEnabled = state === 'active' || state === 'incorrect';
+        if (textarea) textarea.disabled = !isEnabled;
+        if (button) button.disabled = !isEnabled;
+        if (status) {
+          status.className = 'homepage-demo-status is-' + (state === 'locked' ? 'waiting' : state);
+          status.textContent = state === 'locked' ? 'Locked' : state === 'active' ? 'Ready' : state === 'correct' ? 'Correct' : 'Try again';
+        }
+      }
+
+      function updateProgress(index, state) {
+        var item = progress[index];
+        if (!item) return;
+        item.className = state === 'correct' ? 'is-correct' : state === 'active' ? 'is-active' : 'is-locked';
+      }
+
+      steps.forEach(function (step, index) {
+        setStepState(step, index === 0 ? 'active' : 'locked');
+        updateProgress(index, index === 0 ? 'active' : 'locked');
+        var feedback = step.querySelector('[data-demo-feedback]');
+        if (feedback) feedback.hidden = true;
+      });
+
+      demo.addEventListener('submit', function (event) {
+        var form = event.target;
+        if (!(form instanceof HTMLFormElement) || !form.matches('[data-demo-step-form]')) return;
+        event.preventDefault();
+
+        var index = Number(form.getAttribute('data-demo-step-form') || '0');
+        var step = steps[index];
+        if (!step || step.classList.contains('is-locked') || step.classList.contains('is-correct')) return;
+
+        var textarea = form.querySelector('textarea');
+        var feedback = form.querySelector('[data-demo-feedback]');
+        var result = checkHomepageDemoStep(index, textarea ? textarea.value : '');
+        if (feedback) {
+          feedback.textContent = result.message;
+          feedback.hidden = false;
+        }
+
+        if (!result.correct) {
+          setStepState(step, 'incorrect');
+          return;
+        }
+
+        setStepState(step, 'correct');
+        updateProgress(index, 'correct');
+        var nextStep = steps[index + 1];
+        if (nextStep) {
+          setStepState(nextStep, 'active');
+          updateProgress(index + 1, 'active');
+          var nextTextarea = nextStep.querySelector('textarea');
+          if (nextTextarea) nextTextarea.focus();
+        } else if (complete) {
+          complete.textContent = 'Demo complete. The final answer is checked only after the preceding work is correct.';
+        }
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
+    setupHomepageDemo();
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();

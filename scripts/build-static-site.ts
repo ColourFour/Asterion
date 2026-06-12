@@ -853,7 +853,7 @@ const homepageLearningSteps = [
   ['Learn the method', 'Explanation appears only when you are ready for it.'],
   ['Pass a Skill Check', 'Deterministic checks prove the small skill before you proceed.'],
   ['Train on real exam questions', 'Work on real CAIE Paper 3 questions and get reviewed.'],
-  ['Repair the gap', 'Mistakes are expected, repaired, and tracked.'],
+  ['Review and repair', 'Mistakes are expected, repaired, and tracked.'],
 ] as const;
 
 const homepageLearningIcons = [
@@ -866,71 +866,91 @@ const homepageLearningIcons = [
 ] as const;
 
 const homepageTrustCards = [
-  ['We start with your attempt.', 'Problems come before instruction. Your attempt drives the lesson.'],
-  ['Mistakes are expected.', 'They are not ignored. You repair them and move forward.'],
-  ['We train mathematical behavior.', 'Starting, explaining, checking, repairing, and improving.'],
-  ['Evidence over optimism.', 'Progress is based on attempts, checks, reviews, and practice.'],
-  ['Assessment recognizes what matters.', 'Production, participation, improvement, and contribution.'],
-  ['Teachers are coaches.', 'Students explain, defend, and teach their thinking.'],
+  ['Try first, then learn.', 'The page asks for work before revealing the explanation.'],
+  ['Mistakes are repaired.', 'Wrong attempts get targeted feedback and another try.'],
+  ['Self-marking is labelled honestly.', 'Exam practice is useful, but self-marked work is not treated as mastery.'],
+  ['P3 is the trusted path.', 'P1, M1, and S1 stay locked until their course content is checked.'],
+] as const;
+
+const homepageDemoSteps = [
+  {
+    title: 'Recognize the denominator',
+    prompt: `${renderInlineFormula('x^2-1')} factors as...`,
+    label: 'Step 1 answer',
+    placeholder: '(x + 1)(x - 1)',
+  },
+  {
+    title: 'Split into partial fractions',
+    prompt: `Write the partial-fraction structure before solving for constants.`,
+    label: 'Step 2 answer',
+    placeholder: 'A/(x - 1) + B/(x + 1)',
+  },
+  {
+    title: 'Find the constants',
+    prompt: `Use ${renderInlineFormula('1=A(x+1)+B(x-1)')}.`,
+    label: 'Step 3 answer',
+    placeholder: 'A = 1/2, B = -1/2',
+  },
+  {
+    title: 'Integrate the terms',
+    prompt: `Apply ${renderInlineFormula('\\int \\frac{1}{x-a}\\,dx=\\ln|x-a|+C')} to each fraction.`,
+    label: 'Step 4 answer',
+    placeholder: '1/2 ln|x - 1| - 1/2 ln|x + 1|',
+  },
+  {
+    title: 'Combine the final answer',
+    prompt: `Write the result as a single log expression.`,
+    label: 'Step 5 answer',
+    placeholder: '1/2 ln|(x - 1)/(x + 1)| + C',
+  },
 ] as const;
 
 function renderHomepageAttemptCard(): string {
   return `
-    <article class="homepage-attempt-card homepage-doing-card" aria-label="Learn by doing preview">
+    <article class="homepage-attempt-card homepage-doing-card" aria-label="Learn by doing preview" data-homepage-demo>
       <div class="attempt-card-heading">
-        <h2>Learn by doing.</h2>
-        <p>Instruction comes from solving problems you already know, then forming connections.</p>
+        <span class="attempt-card-kicker">Deterministic local demo</span>
+        <h2>Attempt. Check. Repair.</h2>
+        <p>One example of the learning loop, not a full autograder.</p>
       </div>
       <div class="attempt-problem-row">
-        <strong>Q.</strong>
-        <span>Integrate ${renderInlineFormula('\\frac{1}{x^2-1}')}.</span>
+        <span class="attempt-problem-badge">Q</span>
+        <div>
+          <strong>Integrate ${renderInlineFormula('\\frac{1}{x^2-1}')}.</strong>
+          <small>Each step must be checked before the next one opens.</small>
+        </div>
+      </div>
+      <div class="homepage-demo-progress" aria-label="Demo progress">
+        ${homepageDemoSteps.map((_step, index) => `
+          <span class="${index === 0 ? 'is-active' : 'is-locked'}" data-demo-progress="${index}">${index + 1}</span>
+        `).join('')}
       </div>
       <ol class="doing-step-list">
-        <li>
-          <span class="attempt-step-number">1</span>
-          <label>
-            <strong>Recall the form</strong>
-            <span>${renderInlineFormula('\\frac{1}{x^2-1}')} can be written as partial fractions.</span>
-            <textarea aria-label="Recall the partial fraction form" placeholder="What denominator factors should you use?"></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">2</span>
-          <label>
-            <strong>Recall the integral</strong>
-            <span>${renderInlineFormula('\\int \\frac{1}{x}\\,dx=\\ln|x|+C')}</span>
-            <textarea aria-label="Recall the logarithm integral" placeholder="Write the related log rule in your own words."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">3</span>
-          <label>
-            <strong>Split the expression</strong>
-            <span>Write ${renderInlineFormula('\\frac{1}{x^2-1}')} as partial fractions.</span>
-            <textarea aria-label="Write the partial fraction decomposition" placeholder="1/(x^2 - 1) = ..."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">4</span>
-          <label>
-            <strong>Integrate each piece</strong>
-            <span>Use the log rule on each fraction.</span>
-            <textarea aria-label="Integrate each partial fraction" placeholder="Integrate each term here."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">5</span>
-          <label>
-            <strong>Solve the overall structure</strong>
-            <span>Combine the pieces into one final answer.</span>
-            <textarea aria-label="Write the final integrated result" placeholder="Final answer + C"></textarea>
-          </label>
-        </li>
+        ${homepageDemoSteps.map((step, index) => `
+          <li class="homepage-demo-step${index === 0 ? ' is-active' : ' is-locked'}" data-demo-step="${index}">
+            <span class="attempt-step-number">${index + 1}</span>
+            <form data-demo-step-form="${index}">
+              <div class="homepage-demo-step-copy">
+                <strong>${escapeRawHtml(step.title)}</strong>
+                <span>${step.prompt}</span>
+              </div>
+              <label>
+                <span class="visually-hidden">${escapeRawHtml(step.label)}</span>
+                <textarea aria-label="${escapeAttr(step.label)}" placeholder="${escapeAttr(step.placeholder)}"${index === 0 ? '' : ' disabled'}></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit"${index === 0 ? '' : ' disabled'}>Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+        `).join('')}
       </ol>
       <div class="attempt-lock-row">
-        <span aria-hidden="true">do</span>
-        <strong>Work first. Instruction attaches to the work you produce.</strong>
-        <small>The page teaches from your next move, not from passive reading.</small>
+        <span aria-hidden="true">loop</span>
+        <strong data-demo-complete>Work first. Instruction attaches to the work you produce.</strong>
+        <small>Correct checks unlock the next step; wrong checks keep the current step active.</small>
       </div>
     </article>
   `;
@@ -961,8 +981,8 @@ function renderHomepageTrustContract(): string {
   return `
     <section class="homepage-section homepage-trust-contract" aria-labelledby="trust-contract-title">
       <div class="homepage-section-heading">
-        <h2 id="trust-contract-title">The Asterion Trust Contract</h2>
-        <p>We teach mathematical behavior, not just mathematical content.</p>
+        <h2 id="trust-contract-title">Trust Signals</h2>
+        <p>Compact rules for a static CAIE 9709 learning system.</p>
       </div>
       <div class="trust-card-grid">
         ${homepageTrustCards.map(([title, text]) => `
@@ -985,6 +1005,63 @@ function renderHomepageTrustContract(): string {
           <li>Exam-Trained</li>
         </ul>
       </div>
+    </section>
+  `;
+}
+
+function renderHomepageCourseSelector(pagePath: string): string {
+  const p3Course = COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[1];
+  const supportCourses = COURSES.filter((course) => course.id !== P3_COURSE_ID);
+  return `
+    <section class="homepage-section homepage-course-layout" aria-labelledby="homepage-course-title">
+      <div class="homepage-section-heading">
+        <h2 id="homepage-course-title">Choose the trusted path</h2>
+        <p>P3 is live. P1, M1, and S1 remain locked until trusted.</p>
+      </div>
+      <a class="course-card course-card-featured" href="${hrefToPage(pagePath, coursePagePath(p3Course))}" aria-label="Start P3: ${escapeAttr(p3Course.displayName)}">
+        <span class="homepage-primary-label">Recommended starting path</span>
+        <div class="course-card-header-row">
+          <span class="course-code-badge" aria-hidden="true">${escapeHtml(p3Course.shortName)}</span>
+          <div>
+            <h2>${escapeHtml(p3Course.displayName)}</h2>
+            <p class="course-card-lede">${escapeHtml(p3Course.shortDescription)}</p>
+          </div>
+        </div>
+        <p class="homepage-priority-line"><strong>Ready.</strong> Recommended first click: P3 Pure Mathematics 3.</p>
+        <div class="homepage-recommended-start">
+          <span>Recommended start</span>
+          <strong>Start with P3 Pure Mathematics 3</strong>
+          <p>Use the full Field Guide -&gt; Skill Check -&gt; Exam Training flow.</p>
+        </div>
+        <p class="homepage-primary-reason">Field Guide, Skill Check, and Exam Training are available.</p>
+        <ul class="home-p3-checklist">
+          <li>Includes Algebra, Logarithmic and Exponential Functions, Trigonometry, Differentiation, Integration, Vectors, Complex Numbers, Numerical Solution, and Differential Equations.</li>
+          <li>Field Guide, Skill Check, and Exam Training are available.</li>
+        </ul>
+        <span class="course-launch-cta course-launch-cta-primary">Start P3</span>
+      </a>
+      <section class="homepage-support-section" aria-labelledby="homepage-support-title">
+        <div class="homepage-support-heading">
+          <h2 id="homepage-support-title">Support only courses</h2>
+          <p>P1, M1, and S1 are support-only entries. P3 is the default product path. They are not ready course paths on this branch.</p>
+        </div>
+        <div class="course-support-grid">
+          ${supportCourses.map((course) => `
+            <a class="course-card course-card-locked" href="${hrefToPage(pagePath, coursePagePath(course))}" aria-label="View ${escapeAttr(course.shortName)} support: ${escapeAttr(course.displayName)}">
+              <span class="course-status-pill">Support only</span>
+              <div class="course-card-header-row">
+                <span class="course-code-badge" aria-hidden="true">${escapeHtml(course.shortName)}</span>
+                <div>
+                  <h2>${escapeHtml(course.displayName)}</h2>
+                  <p class="course-card-lede">${escapeHtml(course.shortDescription)}</p>
+                </div>
+              </div>
+              <p class="course-card-status-copy">${escapeHtml(course.coverageSummary)}</p>
+              <span class="course-launch-cta course-launch-cta-secondary">View ${escapeHtml(course.shortName)} support</span>
+            </a>
+          `).join('')}
+        </div>
+      </section>
     </section>
   `;
 }
@@ -1034,6 +1111,11 @@ function renderCourseSelectorPage(): string {
   const body = `
     <section class="homepage-hero">
       <div class="hero-copy">
+        <div class="homepage-math-visual" aria-hidden="true">
+          <span class="math-fragment fragment-one">x² - 1 = (x + 1)(x - 1)</span>
+          <span class="math-fragment fragment-two">A(x + 1) + B(x - 1) = 1</span>
+          <span class="math-fragment fragment-three">✓ check the step</span>
+        </div>
         <h1>CAIE 9709 practice that starts with the <span>student&rsquo;s attempt.</span></h1>
         <p>Asterion trains students to try the problem first, compare their method, repair mistakes, prove small skills, and then apply them to real CAIE exam questions.</p>
         <div class="home-hero-actions">
@@ -1049,6 +1131,9 @@ function renderCourseSelectorPage(): string {
       </div>
       ${renderHomepageAttemptCard()}
     </section>
+    ${renderHomepageLearningLoop()}
+    ${renderHomepageTrustContract()}
+    ${renderHomepageCourseSelector(pagePath)}
     ${renderHomepageContactBar()}
   `;
   return renderPage({

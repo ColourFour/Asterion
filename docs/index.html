@@ -33,6 +33,11 @@
 
     <section class="homepage-hero">
       <div class="hero-copy">
+        <div class="homepage-math-visual" aria-hidden="true">
+          <span class="math-fragment fragment-one">x² - 1 = (x + 1)(x - 1)</span>
+          <span class="math-fragment fragment-two">A(x + 1) + B(x - 1) = 1</span>
+          <span class="math-fragment fragment-three">✓ check the step</span>
+        </div>
         <h1>CAIE 9709 practice that starts with the <span>student&rsquo;s attempt.</span></h1>
         <p>Asterion trains students to try the problem first, compare their method, repair mistakes, prove small skills, and then apply them to real CAIE exam questions.</p>
         <div class="home-hero-actions">
@@ -47,65 +52,316 @@
         </ul>
       </div>
 
-    <article class="homepage-attempt-card homepage-doing-card" aria-label="Learn by doing preview">
+    <article class="homepage-attempt-card homepage-doing-card" aria-label="Learn by doing preview" data-homepage-demo>
       <div class="attempt-card-heading">
-        <h2>Learn by doing.</h2>
-        <p>Instruction comes from solving problems you already know, then forming connections.</p>
+        <span class="attempt-card-kicker">Deterministic local demo</span>
+        <h2>Attempt. Check. Repair.</h2>
+        <p>One example of the learning loop, not a full autograder.</p>
       </div>
       <div class="attempt-problem-row">
-        <strong>Q.</strong>
-        <span>Integrate <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{x^2-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>.</span>
+        <span class="attempt-problem-badge">Q</span>
+        <div>
+          <strong>Integrate <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{x^2-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>.</strong>
+          <small>Each step must be checked before the next one opens.</small>
+        </div>
+      </div>
+      <div class="homepage-demo-progress" aria-label="Demo progress">
+
+          <span class="is-active" data-demo-progress="0">1</span>
+
+          <span class="is-locked" data-demo-progress="1">2</span>
+
+          <span class="is-locked" data-demo-progress="2">3</span>
+
+          <span class="is-locked" data-demo-progress="3">4</span>
+
+          <span class="is-locked" data-demo-progress="4">5</span>
+
       </div>
       <ol class="doing-step-list">
-        <li>
-          <span class="attempt-step-number">1</span>
-          <label>
-            <strong>Recall the form</strong>
-            <span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{x^2-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span> can be written as partial fractions.</span>
-            <textarea aria-label="Recall the partial fraction form" placeholder="What denominator factors should you use?"></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">2</span>
-          <label>
-            <strong>Recall the integral</strong>
-            <span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∫</mo><mfrac><mn>1</mn><mi>x</mi></mfrac><mtext> </mtext><mi>d</mi><mi>x</mi><mo>=</mo><mi>ln</mi><mo>⁡</mo><mi mathvariant="normal">∣</mi><mi>x</mi><mi mathvariant="normal">∣</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">\int \frac{1}{x}\,dx=\ln|x|+C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mop op-symbol small-op" style="margin-right:0.1945em;position:relative;top:-0.0006em;">∫</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0715em;">C</span></span></span></span></span></span>
-            <textarea aria-label="Recall the logarithm integral" placeholder="Write the related log rule in your own words."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">3</span>
-          <label>
-            <strong>Split the expression</strong>
-            <span>Write <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{x^2-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span> as partial fractions.</span>
-            <textarea aria-label="Write the partial fraction decomposition" placeholder="1/(x^2 - 1) = ..."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">4</span>
-          <label>
-            <strong>Integrate each piece</strong>
-            <span>Use the log rule on each fraction.</span>
-            <textarea aria-label="Integrate each partial fraction" placeholder="Integrate each term here."></textarea>
-          </label>
-        </li>
-        <li>
-          <span class="attempt-step-number">5</span>
-          <label>
-            <strong>Solve the overall structure</strong>
-            <span>Combine the pieces into one final answer.</span>
-            <textarea aria-label="Write the final integrated result" placeholder="Final answer + C"></textarea>
-          </label>
-        </li>
+
+          <li class="homepage-demo-step is-active" data-demo-step="0">
+            <span class="attempt-step-number">1</span>
+            <form data-demo-step-form="0">
+              <div class="homepage-demo-step-copy">
+                <strong>Recognize the denominator</strong>
+                <span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x^2-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> factors as...</span>
+              </div>
+              <label>
+                <span class="visually-hidden">Step 1 answer</span>
+                <textarea aria-label="Step 1 answer" placeholder="(x + 1)(x - 1)"></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit">Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+
+          <li class="homepage-demo-step is-locked" data-demo-step="1">
+            <span class="attempt-step-number">2</span>
+            <form data-demo-step-form="1">
+              <div class="homepage-demo-step-copy">
+                <strong>Split into partial fractions</strong>
+                <span>Write the partial-fraction structure before solving for constants.</span>
+              </div>
+              <label>
+                <span class="visually-hidden">Step 2 answer</span>
+                <textarea aria-label="Step 2 answer" placeholder="A/(x - 1) + B/(x + 1)" disabled></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit" disabled>Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+
+          <li class="homepage-demo-step is-locked" data-demo-step="2">
+            <span class="attempt-step-number">3</span>
+            <form data-demo-step-form="2">
+              <div class="homepage-demo-step-copy">
+                <strong>Find the constants</strong>
+                <span>Use <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>=</mo><mi>A</mi><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>B</mi><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">1=A(x+1)+B(x-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">A</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0502em;">B</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span>.</span>
+              </div>
+              <label>
+                <span class="visually-hidden">Step 3 answer</span>
+                <textarea aria-label="Step 3 answer" placeholder="A = 1/2, B = -1/2" disabled></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit" disabled>Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+
+          <li class="homepage-demo-step is-locked" data-demo-step="3">
+            <span class="attempt-step-number">4</span>
+            <form data-demo-step-form="3">
+              <div class="homepage-demo-step-copy">
+                <strong>Integrate the terms</strong>
+                <span>Apply <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∫</mo><mfrac><mn>1</mn><mrow><mi>x</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mtext> </mtext><mi>d</mi><mi>x</mi><mo>=</mo><mi>ln</mi><mo>⁡</mo><mi mathvariant="normal">∣</mi><mi>x</mi><mo>−</mo><mi>a</mi><mi mathvariant="normal">∣</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">\int \frac{1}{x-a}\,dx=\ln|x-a|+C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mop op-symbol small-op" style="margin-right:0.1945em;position:relative;top:-0.0006em;">∫</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight">a</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0715em;">C</span></span></span></span></span> to each fraction.</span>
+              </div>
+              <label>
+                <span class="visually-hidden">Step 4 answer</span>
+                <textarea aria-label="Step 4 answer" placeholder="1/2 ln|x - 1| - 1/2 ln|x + 1|" disabled></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit" disabled>Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+
+          <li class="homepage-demo-step is-locked" data-demo-step="4">
+            <span class="attempt-step-number">5</span>
+            <form data-demo-step-form="4">
+              <div class="homepage-demo-step-copy">
+                <strong>Combine the final answer</strong>
+                <span>Write the result as a single log expression.</span>
+              </div>
+              <label>
+                <span class="visually-hidden">Step 5 answer</span>
+                <textarea aria-label="Step 5 answer" placeholder="1/2 ln|(x - 1)/(x + 1)| + C" disabled></textarea>
+              </label>
+              <div class="homepage-demo-actions">
+                <button class="button primary-button" type="submit" disabled>Check step</button>
+                <span class="homepage-demo-status is-waiting" data-demo-status>Locked</span>
+              </div>
+              <p class="homepage-demo-feedback" data-demo-feedback hidden></p>
+            </form>
+          </li>
+
       </ol>
       <div class="attempt-lock-row">
-        <span aria-hidden="true">do</span>
-        <strong>Work first. Instruction attaches to the work you produce.</strong>
-        <small>The page teaches from your next move, not from passive reading.</small>
+        <span aria-hidden="true">loop</span>
+        <strong data-demo-complete>Work first. Instruction attaches to the work you produce.</strong>
+        <small>Correct checks unlock the next step; wrong checks keep the current step active.</small>
       </div>
     </article>
 
     </section>
+
+    <section class="homepage-section homepage-learning-loop" id="learning-loop" aria-labelledby="learning-loop-title">
+      <div class="homepage-section-heading">
+        <h2 id="learning-loop-title">The Asterion Learning Loop</h2>
+        <p>A repeatable system that builds exam-ready mathematical behavior.</p>
+      </div>
+      <ol class="learning-loop-list">
+
+          <li>
+            <span class="loop-index">1</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M7 24l4 1 14-14-5-5L6 20l1 4Z"/><path d="M18 8l5 5"/><path d="M5 27h18"/></svg></span>
+            <strong>Try the problem</strong>
+            <p>You attempt first. Your attempt is the center.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">2</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><circle cx="14" cy="14" r="8"/><path d="M20 20l7 7"/><path d="M11 10c2-2 6-2 8 1"/></svg></span>
+            <strong>Compare your first move</strong>
+            <p>Asterion compares your move, not just your final answer.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">3</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M6 7c4 0 7 1 10 4v17c-3-3-6-4-10-4V7Z"/><path d="M26 7c-4 0-7 1-10 4v17c3-3 6-4 10-4V7Z"/></svg></span>
+            <strong>Learn the method</strong>
+            <p>Explanation appears only when you are ready for it.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">4</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l10 4v7c0 7-4 11-10 13C10 26 6 22 6 15V8l10-4Z"/><path d="M11 16l4 4 7-8"/></svg></span>
+            <strong>Pass a Skill Check</strong>
+            <p>Deterministic checks prove the small skill before you proceed.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">5</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M8 5h16v22H8z"/><path d="M12 10h8"/><path d="M12 15h8"/><path d="M12 20h5"/><path d="M20 23l3 3 5-6"/></svg></span>
+            <strong>Train on real exam questions</strong>
+            <p>Work on real CAIE Paper 3 questions and get reviewed.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">6</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M5 25h22"/><path d="M8 22v-5"/><path d="M14 22v-9"/><path d="M20 22V9"/><path d="M7 13l6-5 6 3 6-7"/><path d="M23 4h4v4"/></svg></span>
+            <strong>Review and repair</strong>
+            <p>Mistakes are expected, repaired, and tracked.</p>
+          </li>
+
+      </ol>
+    </section>
+
+
+    <section class="homepage-section homepage-trust-contract" aria-labelledby="trust-contract-title">
+      <div class="homepage-section-heading">
+        <h2 id="trust-contract-title">Trust Signals</h2>
+        <p>Compact rules for a static CAIE 9709 learning system.</p>
+      </div>
+      <div class="trust-card-grid">
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Try first, then learn.</h3>
+            <p>The page asks for work before revealing the explanation.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Mistakes are repaired.</h3>
+            <p>Wrong attempts get targeted feedback and another try.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Self-marking is labelled honestly.</h3>
+            <p>Exam practice is useful, but self-marked work is not treated as mastery.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>P3 is the trusted path.</h3>
+            <p>P1, M1, and S1 stay locked until their course content is checked.</p>
+          </article>
+
+      </div>
+      <div class="homepage-evidence-banner">
+        <div>
+          <strong>Asterion does not treat self-marked exam practice as progress.</strong>
+          <p>Self-marked questions are useful, but weaker evidence. We label it honestly.</p>
+        </div>
+        <ul aria-label="Progress evidence labels">
+          <li>Attempted</li>
+          <li>Self-Marked</li>
+          <li>Skill-Checked</li>
+          <li>Exam-Trained</li>
+        </ul>
+      </div>
+    </section>
+
+
+    <section class="homepage-section homepage-course-layout" aria-labelledby="homepage-course-title">
+      <div class="homepage-section-heading">
+        <h2 id="homepage-course-title">Choose the trusted path</h2>
+        <p>P3 is live. P1, M1, and S1 remain locked until trusted.</p>
+      </div>
+      <a class="course-card course-card-featured" href="p3/" aria-label="Start P3: Pure Mathematics 3">
+        <span class="homepage-primary-label">Recommended starting path</span>
+        <div class="course-card-header-row">
+          <span class="course-code-badge" aria-hidden="true">P3</span>
+          <div>
+            <h2>Pure Mathematics 3</h2>
+            <p class="course-card-lede">Official Paper 3 topic path with Field Guide, Skill Check, and Exam Training pages.</p>
+          </div>
+        </div>
+        <p class="homepage-priority-line"><strong>Ready.</strong> Recommended first click: P3 Pure Mathematics 3.</p>
+        <div class="homepage-recommended-start">
+          <span>Recommended start</span>
+          <strong>Start with P3 Pure Mathematics 3</strong>
+          <p>Use the full Field Guide -&gt; Skill Check -&gt; Exam Training flow.</p>
+        </div>
+        <p class="homepage-primary-reason">Field Guide, Skill Check, and Exam Training are available.</p>
+        <ul class="home-p3-checklist">
+          <li>Includes Algebra, Logarithmic and Exponential Functions, Trigonometry, Differentiation, Integration, Vectors, Complex Numbers, Numerical Solution, and Differential Equations.</li>
+          <li>Field Guide, Skill Check, and Exam Training are available.</li>
+        </ul>
+        <span class="course-launch-cta course-launch-cta-primary">Start P3</span>
+      </a>
+      <section class="homepage-support-section" aria-labelledby="homepage-support-title">
+        <div class="homepage-support-heading">
+          <h2 id="homepage-support-title">Support only courses</h2>
+          <p>P1, M1, and S1 are support-only entries. P3 is the default product path. They are not ready course paths on this branch.</p>
+        </div>
+        <div class="course-support-grid">
+
+            <a class="course-card course-card-locked" href="p1/" aria-label="View P1 support: Pure Mathematics 1">
+              <span class="course-status-pill">Support only</span>
+              <div class="course-card-header-row">
+                <span class="course-code-badge" aria-hidden="true">P1</span>
+                <div>
+                  <h2>Pure Mathematics 1</h2>
+                  <p class="course-card-lede">Locked for now. P1 will be available later after a syllabus-plan check.</p>
+                </div>
+              </div>
+              <p class="course-card-status-copy">P1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+              <span class="course-launch-cta course-launch-cta-secondary">View P1 support</span>
+            </a>
+
+            <a class="course-card course-card-locked" href="m1/" aria-label="View M1 support: Mechanics 1">
+              <span class="course-status-pill">Support only</span>
+              <div class="course-card-header-row">
+                <span class="course-code-badge" aria-hidden="true">M1</span>
+                <div>
+                  <h2>Mechanics 1</h2>
+                  <p class="course-card-lede">Locked for now. M1 will be available later after a syllabus-plan check.</p>
+                </div>
+              </div>
+              <p class="course-card-status-copy">M1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+              <span class="course-launch-cta course-launch-cta-secondary">View M1 support</span>
+            </a>
+
+            <a class="course-card course-card-locked" href="s1/" aria-label="View S1 support: Probability &amp; Statistics 1">
+              <span class="course-status-pill">Support only</span>
+              <div class="course-card-header-row">
+                <span class="course-code-badge" aria-hidden="true">S1</span>
+                <div>
+                  <h2>Probability &amp; Statistics 1</h2>
+                  <p class="course-card-lede">Locked for now. S1 will be available later after a syllabus-plan check.</p>
+                </div>
+              </div>
+              <p class="course-card-status-copy">S1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+              <span class="course-launch-cta course-launch-cta-secondary">View S1 support</span>
+            </a>
+
+        </div>
+      </section>
+    </section>
+
 
     <section class="homepage-contact-bar" id="contact" aria-label="Contact Asterion">
       <div>
