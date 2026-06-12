@@ -10,6 +10,7 @@ import { VECTORS_TOPIC_ORDER } from './vectorsContent';
 export interface FieldGuideTopicExample {
   title: string;
   prompt: string;
+  lesson?: ProblemFirstLesson;
   workedLines: string[];
   patternTitle: string;
   patternRows: { from: string; move: string; to: string }[];
@@ -20,6 +21,24 @@ export interface FieldGuideTopicExample {
   takeaway: string[];
   result: string;
 }
+
+export interface ProblemFirstLesson {
+  needProblem: string;
+  studentAction: string;
+  nextUsefulPiece: string;
+  namedPrinciple: string;
+  similarOne: string;
+  examTransfer: string;
+}
+
+export const REQUIRED_PROBLEM_FIRST_LESSON_FIELDS = [
+  'needProblem',
+  'studentAction',
+  'nextUsefulPiece',
+  'namedPrinciple',
+  'similarOne',
+  'examTransfer',
+] as const satisfies readonly (keyof ProblemFirstLesson)[];
 
 export interface FieldGuideTopic {
   id: string;
@@ -2391,8 +2410,68 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
   ],
 };
 
+function trimSentence(value: string | undefined): string {
+  const trimmed = (value ?? '').replace(/\s+/g, ' ').trim();
+  if (!trimmed) return '';
+  return /[.!?)]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+}
+
+function lowerFirst(value: string): string {
+  return value ? `${value.charAt(0).toLowerCase()}${value.slice(1)}` : value;
+}
+
+function buildProblemFirstLesson(topic: FieldGuideTopic, example: FieldGuideTopicExample): ProblemFirstLesson {
+  const firstPattern = example.patternRows[0];
+  const principleName = example.patternTitle.replace(/\.$/, '').trim() || topic.title;
+  const action = firstPattern
+    ? /^(means|is)$/i.test(firstPattern.move)
+      ? `Rewrite ${firstPattern.from} as ${firstPattern.to}. Stop before doing the full solution.`
+      : `Identify ${firstPattern.from}, then ${firstPattern.move} toward ${firstPattern.to}. Stop before doing the full solution.`
+    : `${trimSentence(example.tryScaffold[0]) || 'Choose the first method move.'} Stop before doing the full solution.`;
+  const recognition = firstPattern
+    ? `Recognize ${firstPattern.from}; your first move is to ${firstPattern.move} before completing the solution.`
+    : `Recognize the structure named in the Field Guide before completing the solution.`;
+
+  return {
+    needProblem: example.lesson?.needProblem ?? example.prompt,
+    studentAction: example.lesson?.studentAction ?? action,
+    nextUsefulPiece: example.lesson?.nextUsefulPiece ?? trimSentence(example.workedLines[0] ?? topic.description),
+    namedPrinciple: example.lesson?.namedPrinciple ?? `Principle: ${principleName}.`,
+    similarOne: example.lesson?.similarOne ?? example.tryPrompt,
+    examTransfer: example.lesson?.examTransfer
+      ?? `Exam transfer: the question may hide this inside ${topic.preview} or phrase it as a request to ${lowerFirst(topic.purpose)} ${recognition}`,
+  };
+}
+
+function withProblemFirstLessons(topic: FieldGuideTopic): FieldGuideTopic {
+  return {
+    ...topic,
+    examples: topic.examples.map((example) => ({
+      ...example,
+      lesson: buildProblemFirstLesson(topic, example),
+    })),
+  };
+}
+
 export function getFieldGuideTopicsForRegion(regionId: string | undefined): FieldGuideTopic[] {
-  return regionId ? FIELD_GUIDE_TOPICS_BY_REGION[regionId] ?? [] : [];
+  return regionId ? (FIELD_GUIDE_TOPICS_BY_REGION[regionId] ?? []).map(withProblemFirstLessons) : [];
+}
+
+export function validateProblemFirstFieldGuideLessons(topicsByRegion = FIELD_GUIDE_TOPICS_BY_REGION): string[] {
+  const errors: string[] = [];
+  for (const [regionId, topics] of Object.entries(topicsByRegion)) {
+    for (const topic of topics) {
+      for (const [exampleIndex, example] of topic.examples.entries()) {
+        const lesson = buildProblemFirstLesson(topic, example);
+        for (const field of REQUIRED_PROBLEM_FIRST_LESSON_FIELDS) {
+          if (!lesson[field]?.trim()) {
+            errors.push(`${regionId}/${topic.id}/example-${exampleIndex + 1} is missing ${field}`);
+          }
+        }
+      }
+    }
+  }
+  return errors;
 }
 
 export function fieldGuideSkillCoverage(): Map<string, string[]> {

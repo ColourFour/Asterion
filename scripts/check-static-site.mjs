@@ -442,6 +442,24 @@ for (const page of p3FieldGuidePages) {
   const topicSlug = page.split('/')[2];
   const expectedSkillCheckPage = `p3/topics/${topicSlug}/skill-check/index.html`;
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const fieldGuideTopicCount = (html.match(/data-field-guide-topic="/g) ?? []).length;
+  const requiredLessonSections = [
+    '1. Try this first',
+    '2. First step',
+    '3. Hint',
+    '4. Idea',
+    '5. Try similar',
+    '6. Exam prep',
+  ];
+
+  for (const sectionLabel of requiredLessonSections) {
+    const sectionCount = (html.match(new RegExp(sectionLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
+    if (sectionCount < fieldGuideTopicCount) {
+      console.error(`${page} is missing problem-first Field Guide section "${sectionLabel}" on at least one subtopic.`);
+      process.exit(1);
+    }
+  }
+
   const skillCheckHrefs = Array.from(html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi))
     .filter((match) => visibleBodyText(match[2]).includes('Skill Check'))
     .map((match) => match[1]);

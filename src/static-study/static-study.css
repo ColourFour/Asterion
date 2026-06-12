@@ -3696,6 +3696,58 @@ body.home-page .course-launch-cta-secondary {
   font-weight: 800;
 }
 
+.problem-first-lesson {
+  display: grid;
+  gap: 12px;
+}
+
+.problem-first-lesson > .eyebrow,
+.problem-first-lesson > h3 {
+  margin-bottom: 0;
+}
+
+.lesson-loop-section {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(116, 84, 54, 0.18);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.9);
+}
+
+.lesson-loop-section h4,
+.lesson-loop-section p,
+.lesson-loop-section ul,
+.lesson-loop-section ol {
+  margin: 0;
+}
+
+.try-first-section {
+  border-color: rgba(22, 78, 99, 0.26);
+  background: #f6fbfb;
+}
+
+.first-move-section {
+  border-color: rgba(63, 113, 98, 0.3);
+  background: #edf7f2;
+}
+
+.reveal-section summary {
+  cursor: pointer;
+  color: var(--ink-warm);
+  font-weight: 900;
+}
+
+.worked-route-details {
+  margin-top: 10px;
+}
+
+.exam-transfer-section {
+  border-left: 4px solid var(--sage-dark);
+  background: #f1f5f9;
+}
+
 .worked-list,
 .takeaway-list,
 .lesson-card ol,

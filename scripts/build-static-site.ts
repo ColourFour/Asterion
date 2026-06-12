@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
 import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3ExamLadder, type P3MappedExamQuestionIdsBySkill } from '../src/data/p3ExamLadders';
-import { getFieldGuideTopicsForRegion, type FieldGuideTopic, type FieldGuideTopicExample } from '../src/data/fieldGuideTopics';
+import { getFieldGuideTopicsForRegion, validateProblemFirstFieldGuideLessons, type FieldGuideTopic, type FieldGuideTopicExample, type ProblemFirstLesson } from '../src/data/fieldGuideTopics';
 import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
 import {
   skillCheckAnswerSpecForItem,
@@ -1503,19 +1503,55 @@ function renderCommonMistake(example: FieldGuideTopicExample): string {
   `;
 }
 
-function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopicExample, index: number): string {
+function resolvedLesson(example: FieldGuideTopicExample): ProblemFirstLesson {
+  return example.lesson ?? {
+    needProblem: example.prompt,
+    studentAction: example.tryScaffold[0] ?? 'Choose the first useful move before reading the worked route.',
+    nextUsefulPiece: example.workedLines[0] ?? 'Look for the structure before doing the full calculation.',
+    namedPrinciple: `Principle: ${example.patternTitle}.`,
+    similarOne: example.tryPrompt,
+    examTransfer: example.takeaway.at(-1) ?? 'Exam transfer: recognize the method before completing the routine calculation.',
+  };
+}
+
+function renderWorkedRouteDetails(example: FieldGuideTopicExample): string {
   return `
-    <article class="lesson-card">
-      <p class="eyebrow">Example ${index + 1}</p>
-      <h3>${escapeHtml(example.title)}</h3>
-      <p class="prompt">${renderMathText(example.prompt)}</p>
+    <details class="lesson-support-details worked-route-details">
+      <summary>Show worked route</summary>
       <ol class="worked-list">
         ${example.workedLines.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
       </ol>
       <p class="result"><strong>Result:</strong> ${renderMathText(example.result)}</p>
-      <section class="try-block">
-        <h4>Try a similar one</h4>
-        <p>${renderMathText(example.tryPrompt)}</p>
+    </details>
+  `;
+}
+
+function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopicExample, index: number): string {
+  const lesson = resolvedLesson(example);
+  return `
+    <article class="lesson-card problem-first-lesson">
+      <p class="eyebrow">Example ${index + 1}</p>
+      <h3>${escapeHtml(example.title)}</h3>
+      <section class="lesson-loop-section try-first-section" aria-labelledby="${escapeAttr(topic.id)}-${index}-try">
+        <h4 id="${escapeAttr(topic.id)}-${index}-try">1. Try this first</h4>
+        <p class="prompt">${renderMathText(lesson.needProblem)}</p>
+      </section>
+      <section class="lesson-loop-section first-move-section" aria-labelledby="${escapeAttr(topic.id)}-${index}-move">
+        <h4 id="${escapeAttr(topic.id)}-${index}-move">2. First step</h4>
+        <p>${renderMathText(lesson.studentAction)}</p>
+      </section>
+      <details class="lesson-loop-section reveal-section">
+        <summary>3. Hint</summary>
+        <p>${renderMathText(lesson.nextUsefulPiece)}</p>
+      </details>
+      <details class="lesson-loop-section reveal-section">
+        <summary>4. Idea</summary>
+        <p>${renderMathText(lesson.namedPrinciple)}</p>
+        ${renderWorkedRouteDetails(example)}
+      </details>
+      <section class="lesson-loop-section try-block" aria-labelledby="${escapeAttr(topic.id)}-${index}-similar">
+        <h4 id="${escapeAttr(topic.id)}-${index}-similar">5. Try similar</h4>
+        <p>${renderMathText(lesson.similarOne)}</p>
         <ul>
           ${example.tryScaffold.map((line) => `<li>${renderMathText(line)}</li>`).join('')}
         </ul>
@@ -1528,6 +1564,10 @@ function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopi
             ${example.tryResult ? `<p><strong>Try result:</strong> ${renderMathText(example.tryResult)}</p>` : ''}
           </details>
         ` : ''}
+      </section>
+      <section class="lesson-loop-section exam-transfer-section" aria-labelledby="${escapeAttr(topic.id)}-${index}-transfer">
+        <h4 id="${escapeAttr(topic.id)}-${index}-transfer">6. Exam prep</h4>
+        <p>${renderMathText(lesson.examTransfer)}</p>
       </section>
       ${renderCommonMistake(example)}
       <details class="lesson-support-details">
@@ -1650,16 +1690,16 @@ function renderFieldGuidePage(
   const body = `
     ${renderHero(
       `${topic.name} Field Guide`,
-      'Learn one idea, try the worked route, then decide whether to continue or check it.',
+      'Start by trying one small problem, then reveal only the next useful move.',
       topic.headerFormula,
       `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Back to topics', 'button secondary-button')}
       ${routeLink(pagePath, practicePath, 'Try 3 quick questions', 'button primary-button')}`,
     )}
+    ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
     <section class="topic-overview-grid field-guide-overview-grid">
       ${renderKnowledgeCard([`$${topic.headerFormula}$`], fieldGuideTopics.slice(0, 5).map((item) => cleanVisibleCopy(item.purpose)), topic.headerFormula)}
       ${renderP3WorkedExamplesCard(fieldGuideTopics)}
     </section>
-    ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
     <section class="next-step-card">
       <h2>Next step</h2>
       <p>Ready to leave the Field Guide and check the method?</p>
@@ -2444,6 +2484,11 @@ function validateNoVisibleGameTerms(htmlByPath: Map<string, string>): void {
 }
 
 async function generate(): Promise<void> {
+  const lessonErrors = validateProblemFirstFieldGuideLessons();
+  if (lessonErrors.length) {
+    throw new Error(`P3 Field Guide problem-first lesson QA failed:\n${lessonErrors.join('\n')}`);
+  }
+
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
   await copyStaticAssets();
