@@ -872,7 +872,7 @@ function homepagePrimaryCourse(): CourseMetadata {
 
 function homepageCourseCta(course: CourseMetadata): string {
   if (course.id === P3_COURSE_ID) return 'Start P3';
-  return 'Locked';
+  return 'Coming after P3 proves.';
 }
 
 function homepageCourseActionLabel(course: CourseMetadata): string {
@@ -923,6 +923,15 @@ const homepageLearningSteps = [
   ['Pass a Skill Check', 'Deterministic checks prove the small skill before you proceed.'],
   ['Train on real exam questions', 'Work on real CAIE Paper 3 questions and get reviewed.'],
   ['Repair the gap', 'Mistakes are expected, repaired, and tracked.'],
+] as const;
+
+const homepageLearningIcons = [
+  '<svg viewBox="0 0 32 32" focusable="false"><path d="M7 24l4 1 14-14-5-5L6 20l1 4Z"/><path d="M18 8l5 5"/><path d="M5 27h18"/></svg>',
+  '<svg viewBox="0 0 32 32" focusable="false"><circle cx="14" cy="14" r="8"/><path d="M20 20l7 7"/><path d="M11 10c2-2 6-2 8 1"/></svg>',
+  '<svg viewBox="0 0 32 32" focusable="false"><path d="M6 7c4 0 7 1 10 4v17c-3-3-6-4-10-4V7Z"/><path d="M26 7c-4 0-7 1-10 4v17c3-3 6-4 10-4V7Z"/></svg>',
+  '<svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l10 4v7c0 7-4 11-10 13C10 26 6 22 6 15V8l10-4Z"/><path d="M11 16l4 4 7-8"/></svg>',
+  '<svg viewBox="0 0 32 32" focusable="false"><path d="M8 5h16v22H8z"/><path d="M12 10h8"/><path d="M12 15h8"/><path d="M12 20h5"/><path d="M20 23l3 3 5-6"/></svg>',
+  '<svg viewBox="0 0 32 32" focusable="false"><path d="M5 25h22"/><path d="M8 22v-5"/><path d="M14 22v-9"/><path d="M20 22V9"/><path d="M7 13l6-5 6 3 6-7"/><path d="M23 4h4v4"/></svg>',
 ] as const;
 
 const homepageTrustCards = [
@@ -986,7 +995,7 @@ function renderHomepageLearningLoop(): string {
         ${homepageLearningSteps.map(([title, text], index) => `
           <li>
             <span class="loop-index">${index + 1}</span>
-            <span class="loop-icon" aria-hidden="true">${['try', 'scan', 'book', 'pass', 'exam', 'fix'][index]}</span>
+            <span class="loop-icon" aria-hidden="true">${homepageLearningIcons[index]}</span>
             <strong>${escapeRawHtml(title)}</strong>
             <p>${escapeRawHtml(text)}</p>
           </li>
@@ -1081,7 +1090,7 @@ function renderHomepageCourseCard(fromPagePath: string, course: CourseMetadata, 
       <p class="course-card-lede">${escapeRawHtml(homepageCourseSummary(course, featured))}</p>
       ${featured ? `<p class="homepage-primary-reason">${escapeRawHtml(homepageP3TopicEvidence)}</p>` : ''}
       ${featured ? '' : '<p class="course-card-status-copy">Available later. P3 is open now.</p>'}
-      ${featured ? '<ul class="home-p3-checklist"><li>Field Guides</li><li>Skill Checks</li><li>CAIE Paper 3 Practice</li><li>Mark Scheme Review</li></ul>' : '<span class="locked-glyph" aria-hidden="true">lock</span>'}
+      ${featured ? '<ul class="home-p3-checklist"><li>Field Guides</li><li>Skill Checks</li><li>CAIE Paper 3 Practice</li><li>Mark Scheme Review</li></ul>' : '<span class="locked-glyph" aria-hidden="true"></span>'}
       <span class="course-launch-cta${featured ? ' course-launch-cta-primary' : ' course-launch-cta-secondary'}">${escapeRawHtml(homepageCourseCta(course))}${featured ? ' <span aria-hidden="true">&#8594;</span>' : ''}</span>
     </${tag}>
   `;

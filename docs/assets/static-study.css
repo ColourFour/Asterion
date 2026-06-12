@@ -1504,11 +1504,11 @@ body.home-page main {
 
 .homepage-hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1fr);
-  gap: clamp(30px, 6vw, 88px);
+  grid-template-columns: minmax(0, 0.92fr) minmax(400px, 0.86fr);
+  gap: clamp(28px, 5vw, 72px);
   align-items: center;
-  min-height: 560px;
-  padding-block: clamp(34px, 5vw, 64px);
+  min-height: 500px;
+  padding-block: clamp(28px, 4vw, 46px);
   border-bottom: 1px solid #d8e1ec;
   background:
     radial-gradient(circle at 36% 40%, rgba(0, 87, 217, 0.07), transparent 34%),
@@ -1518,14 +1518,14 @@ body.home-page main {
 .homepage-hero .hero-copy {
   display: grid;
   align-content: center;
-  gap: 22px;
+  gap: 18px;
 }
 
 .homepage-hero h1 {
   max-width: 620px;
   margin: 0;
   color: var(--home-ink);
-  font-size: clamp(2.65rem, 4.4vw, 4.45rem);
+  font-size: clamp(2.45rem, 4vw, 3.95rem);
   line-height: 1.04;
   letter-spacing: 0;
 }
@@ -1551,7 +1551,7 @@ body.home-page main {
   max-width: 560px;
   margin: 0;
   color: #071329;
-  font-size: 1.1rem;
+  font-size: 1.04rem;
   line-height: 1.48;
 }
 
@@ -1563,7 +1563,7 @@ body.home-page main {
 
 .home-hero-actions .button {
   min-width: 176px;
-  min-height: 52px;
+  min-height: 48px;
   border-color: var(--home-blue);
   border-radius: 6px;
 }
@@ -1582,7 +1582,7 @@ body.home-page main {
 .home-hero-proof {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 16px;
   max-width: 520px;
   margin: 8px 0 0;
   padding: 0;
@@ -1616,6 +1616,7 @@ body.home-page main {
 }
 
 .homepage-attempt-card {
+  align-self: center;
   overflow: hidden;
   border: 1px solid #c9d5e5;
   border-radius: 8px;
@@ -1627,14 +1628,14 @@ body.home-page main {
   display: grid;
   justify-items: center;
   gap: 4px;
-  padding: 0 0 14px;
+  padding: 0 0 10px;
   background: #ffffff;
 }
 
 .attempt-card-heading h2 {
   margin: 0;
   color: var(--home-ink);
-  font-size: 1.45rem;
+  font-size: 1.32rem;
 }
 
 .attempt-card-heading p {
@@ -1647,14 +1648,14 @@ body.home-page main {
 .attempt-step,
 .attempt-lock-row {
   border-top: 1px solid #d8e1ec;
-  padding: 14px 18px;
+  padding: 12px 16px;
 }
 
 .attempt-problem-row {
   display: flex;
   gap: 12px;
   align-items: center;
-  font-size: 1.02rem;
+  font-size: 0.96rem;
 }
 
 .attempt-step {
@@ -1686,7 +1687,7 @@ body.home-page main {
 }
 
 .attempt-step p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: #071329;
   font-size: 0.92rem;
 }
@@ -1703,14 +1704,14 @@ body.home-page main {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-top: 10px;
-  padding: 14px 16px;
+  margin-top: 8px;
+  padding: 12px 14px;
   border: 1px solid #cfd9e8;
   border-radius: 8px;
   color: var(--home-ink);
   background: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 12px rgba(8, 20, 44, 0.06);
-  font-size: 1.18rem;
+  font-size: 1.08rem;
 }
 
 .student-work-line > span:last-child {
@@ -1746,8 +1747,8 @@ body.home-page main {
 
 .homepage-section {
   display: grid;
-  gap: 22px;
-  padding-block: 24px;
+  gap: 18px;
+  padding-block: 22px;
   border-bottom: 1px solid #d8e1ec;
   background: #ffffff;
 }
@@ -1819,9 +1820,16 @@ body.home-page main {
   border-radius: 999px;
   color: var(--home-blue-dark);
   background: #eaf2ff;
-  font-size: 0.76rem;
-  font-weight: 900;
-  text-transform: uppercase;
+}
+
+.loop-icon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.1;
 }
 
 .learning-loop-list strong {
@@ -1939,7 +1947,9 @@ body.home-page main {
 }
 
 body.home-page .course-card {
-  min-height: 210px;
+  min-height: 196px;
+  gap: 10px;
+  padding: 16px;
   border-color: #cfd9e8;
   border-radius: 7px;
   background: #ffffff;
@@ -1961,7 +1971,7 @@ body.home-page .course-card-featured::after {
 
 body.home-page .homepage-primary-label,
 body.home-page .course-status-pill {
-  justify-self: center;
+  justify-self: start;
   min-height: 0;
   padding: 3px 9px;
   border-radius: 999px;
@@ -2040,11 +2050,32 @@ body.home-page .course-launch-cta-secondary {
 }
 
 .locked-glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
   justify-self: center;
+  width: 22px;
+  height: 26px;
   color: #65758f;
-  font-size: 0.82rem;
-  font-weight: 900;
-  text-transform: uppercase;
+}
+
+.locked-glyph::before {
+  width: 12px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  content: "";
+}
+
+.locked-glyph::after {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin-top: -14px;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  content: "";
 }
 
 .home-feature-strip {
