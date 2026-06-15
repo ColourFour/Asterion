@@ -3,7 +3,7 @@
   "pages": [
     {
       "path": "index.html",
-      "label": "Courses"
+      "label": "P3 learning path"
     },
     {
       "path": "about/index.html",
@@ -27,7 +27,7 @@
     },
     {
       "path": "p3/topics/index.html",
-      "label": "P3 topic index"
+      "label": "P3 unit sequence"
     },
     {
       "path": "p3/need-to-know/index.html",
@@ -35,7 +35,7 @@
     },
     {
       "path": "p3/review/index.html",
-      "label": "P3 mistake review"
+      "label": "P3 final exam review"
     },
     {
       "path": "p3/content-qa/index.html",

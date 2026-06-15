@@ -81,6 +81,15 @@ interface P3SkillCheckabilitySummary {
   answerTypes: string[];
 }
 
+interface P3ExamReviewRequirement {
+  regionId: string;
+  name: string;
+  fieldGuideTotal: number;
+  requiredCheckIds: string[];
+  fieldGuideHref: string;
+  skillCheckHref: string;
+}
+
 interface RenderPageOptions {
   pagePath: string;
   title: string;
@@ -539,29 +548,16 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 }
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
-  if (active === 'courses') {
-    const startPath = fieldGuidePagePath(STUDY_TOPICS[0]);
-    const isAboutPage = pagePath === aboutPagePath();
-    return `
-      <nav class="site-nav homepage-nav" aria-label="Primary">
-        <a href="${hrefToPage(pagePath, aboutPagePath())}"${isAboutPage ? ' aria-current="page"' : ''}>About</a>
-        <a href="${hrefToPage(pagePath, 'index.html')}#contact">Contact</a>
-        <a class="nav-start-button" href="${hrefToPage(pagePath, startPath)}">Start P3</a>
-      </nav>
-    `;
-  }
-
-  const activeCourseId = active === 'p3-topics' || active === 'p3-exam-training' ? P3_COURSE_ID : active;
-  const currentCourse = COURSES.find((course) => course.id === activeCourseId);
   const items = [
-    { key: 'courses', label: 'Courses', path: 'index.html' },
-    ...(currentCourse ? [{ key: currentCourse.id, label: currentCourse.shortName, path: coursePagePath(currentCourse) }] : []),
+    { key: 'p3', label: 'P3 Path', path: 'index.html' },
+    { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
+    { key: 'p3-exam-training', label: 'Exam Review', path: p3ReviewPagePath() },
   ];
 
   return `
     <nav class="site-nav" aria-label="Primary">
       ${items.map((item) => `
-        <a href="${hrefToPage(pagePath, item.path)}"${active === item.key ? ' aria-current="page"' : ''}>${item.label}</a>
+        <a href="${hrefToPage(pagePath, item.path)}"${active === item.key || (active === 'courses' && item.key === 'p3') ? ' aria-current="page"' : ''}>${item.label}</a>
       `).join('')}
     </nav>
   `;
@@ -593,7 +589,7 @@ function renderPage(options: RenderPageOptions): string {
         </span>
         <span>
           <strong>ASTERION</strong>
-          <small>CAIE 9709 Study Hub</small>
+          <small>CAIE 9709 P3 Path</small>
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
@@ -629,6 +625,142 @@ function checkableSkillCheckIdsForRegion(regionId: string): string[] {
   return skillCheckCheckabilityReport()
     .filter((item) => item.regionId === regionId && item.status === 'deterministically-checkable')
     .map((item) => item.itemId);
+}
+
+function topicIndex(topic: StudyTopic): number {
+  return STUDY_TOPICS.findIndex((candidate) => candidate.slug === topic.slug);
+}
+
+function nextStudyTopic(topic: StudyTopic): StudyTopic | undefined {
+  const index = topicIndex(topic);
+  return index >= 0 ? STUDY_TOPICS[index + 1] : undefined;
+}
+
+function previousStudyTopic(topic: StudyTopic): StudyTopic | undefined {
+  const index = topicIndex(topic);
+  return index > 0 ? STUDY_TOPICS[index - 1] : undefined;
+}
+
+function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P3ExamReviewRequirement[] {
+  return contexts.map((context) => ({
+    regionId: context.region.id,
+    name: context.topic.name,
+    fieldGuideTotal: Math.max(1, context.fieldGuideTopics.length),
+    requiredCheckIds: checkableSkillCheckIdsForRegion(context.region.id),
+    fieldGuideHref: hrefToPage(pagePath, fieldGuidePagePath(context.topic)),
+    skillCheckHref: hrefToPage(pagePath, skillCheckPagePath(context.topic)),
+  }));
+}
+
+function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
+  const { topic, region, fieldGuideTopics } = context;
+  const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
+  const subtopicPreview = fieldGuideTopics.slice(0, 5);
+  return `
+    <article class="path-unit-card" data-path-unit="${escapeAttr(region.id)}">
+      <div class="path-unit-number">Unit ${index + 1}</div>
+      <div class="path-unit-main">
+        <header>
+          <h2>${escapeHtml(topic.name)}</h2>
+          <p>${escapeHtml(topic.description)}</p>
+        </header>
+        <ol class="unit-step-list" aria-label="${escapeAttr(topic.name)} study steps">
+          <li>
+            <a href="${hrefToPage(fromPagePath, fieldGuidePagePath(topic))}">Field Guide</a>
+            <span>${fieldGuideTopics.length} ordered subtopic${fieldGuideTopics.length === 1 ? '' : 's'}</span>
+          </li>
+          <li>
+            <a href="${hrefToPage(fromPagePath, skillCheckPagePath(topic))}">Skill Check</a>
+            <span>${requiredSkillCheckIds.length} machine-checkable item${requiredSkillCheckIds.length === 1 ? '' : 's'}</span>
+          </li>
+        </ol>
+        <details class="unit-subtopic-details">
+          <summary>Subtopics</summary>
+          <ol>
+            ${subtopicPreview.map((item) => `<li>${escapeHtml(item.title)}</li>`).join('')}
+            ${fieldGuideTopics.length > subtopicPreview.length ? `<li>${fieldGuideTopics.length - subtopicPreview.length} more</li>` : ''}
+          </ol>
+        </details>
+      </div>
+      <div class="path-unit-progress">
+        ${compactProgress(region.id, Math.max(1, fieldGuideTopics.length))}
+      </div>
+    </article>
+  `;
+}
+
+function renderP3LearningPathPage(
+  data: StaticSiteData,
+  pagePath = 'index.html',
+): string {
+  const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
+  const totalFieldGuideSteps = contexts.reduce((sum, context) => sum + context.fieldGuideTopics.length, 0);
+  const totalSkillChecks = contexts.reduce((sum, context) => sum + checkableSkillCheckIdsForRegion(context.region.id).length, 0);
+  const firstTopic = STUDY_TOPICS[0];
+  const body = `
+    <section class="p3-path-hero">
+      <div>
+        <p class="eyebrow">After P1</p>
+        <h1>Learn P3 in order.</h1>
+        <p>You already have the P1 base. This path takes you through every P3 unit one at a time: Field Guide first, then checked practice, then the next unit. Mixed exam review comes last.</p>
+        <div class="hero-actions">
+          ${routeLink(pagePath, fieldGuidePagePath(firstTopic), 'Start Unit 1: Algebra', 'button primary-button')}
+          ${routeLink(pagePath, p3ReviewPagePath(), 'Exam Review', 'button secondary-button')}
+        </div>
+      </div>
+      <aside class="path-summary-panel" aria-label="P3 path summary">
+        <strong>One route</strong>
+        <span>${contexts.length} units</span>
+        <span>${totalFieldGuideSteps} Field Guide subtopics</span>
+        <span>${totalSkillChecks} checked Skill Check items</span>
+      </aside>
+    </section>
+    <section class="path-principle-strip" aria-label="How the path works">
+      <article>
+        <strong>1. Learn</strong>
+        <span>Read the Field Guide subtopic and try the small worked route.</span>
+      </article>
+      <article>
+        <strong>2. Check</strong>
+        <span>Pass the machine-checkable Skill Check before moving on.</span>
+      </article>
+      <article>
+        <strong>3. Review</strong>
+        <span>Use mixed exam questions only after the full unit path is complete.</span>
+      </article>
+    </section>
+    <section class="p3-unit-sequence" aria-labelledby="p3-unit-sequence-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="p3-unit-sequence-title">P3 unit sequence</h2>
+          <p>Follow the units from top to bottom. The topic pages still work offline and save local progress in this browser.</p>
+        </div>
+      </div>
+      <div class="path-unit-list">
+        ${contexts.map((context, index) => renderP3PathUnitCard(pagePath, context, index)).join('')}
+        <article class="path-unit-card path-exam-review-card">
+          <div class="path-unit-number">Final</div>
+          <div class="path-unit-main">
+            <header>
+              <h2>Mixed Exam Review</h2>
+              <p>Unlocked when every Field Guide is complete and every deterministic Skill Check has been passed locally.</p>
+            </header>
+          </div>
+          <div class="path-unit-progress">
+            ${routeLink(pagePath, p3ReviewPagePath(), 'Open Exam Review', 'button primary-button')}
+          </div>
+        </article>
+      </div>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'Learn P3',
+    description: 'A lean sequential CAIE 9709 Pure Mathematics 3 learning path after P1.',
+    active: pagePath === p3TopicsIndexPagePath() ? 'p3-topics' : 'p3',
+    body,
+    bodyClass: 'p3-path-page',
+  });
 }
 
 function renderStudyPath(): string {
@@ -1212,39 +1344,7 @@ function renderP3TopicsIndexPage(
   data: StaticSiteData,
   pagePath = p3TopicsIndexPagePath(),
 ): string {
-  const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
-  const body = `
-    ${renderHero(
-      'Pure Mathematics 3 Topics',
-      'Choose one topic. The Field Guide starts first, with Skill Check and Exam Training one step away.',
-      '\\int f(x)\\,dx \\quad \\mathbf{a}\\cdot\\mathbf{b} \\quad z=x+iy',
-      `${routeLink(pagePath, fieldGuidePagePath(STUDY_TOPICS[0]), 'Start Algebra', 'button primary-button')}`,
-    )}
-    <section class="section-heading" id="topic-list">
-      <div>
-        <h2>Choose a topic</h2>
-      <p>Unsure where to begin? Start with Algebra, or choose the topic you are currently studying.</p>
-      </div>
-    </section>
-    <section class="topic-grid" aria-label="Paper 3 topic pages">
-      ${contexts.map((context) => renderTopicCard(pagePath, context)).join('')}
-    </section>
-    <section class="exam-callout">
-      <div>
-        <p class="eyebrow">Exam Training</p>
-        <h2>Open Exam Training from a topic.</h2>
-        <p>The canonical route is <strong>/p3/topics/&lt;topic&gt;/exam-training/</strong>.</p>
-      </div>
-      ${routeLink(pagePath, topicExamTrainingPagePath(STUDY_TOPICS[0]), 'Algebra Exam Training', 'button secondary-button')}
-    </section>
-  `;
-  return renderPage({
-    pagePath,
-    title: 'Pure Mathematics 3 Topics',
-    description: 'Static CAIE 9709 Paper 3 topic practice pages.',
-    active: 'p3-topics',
-    body,
-  });
+  return renderP3LearningPathPage(data, pagePath);
 }
 
 function statusClassName(label: P3SkillContractPageRow['statusLabel']): string {
@@ -1338,45 +1438,106 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
   });
 }
 
-function renderP3ReviewPage(pagePath = p3ReviewPagePath()): string {
+function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath()): string {
+  const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
+  const mixedQuestions = data.questions
+    .filter(isTrainableP3Question)
+    .filter((question) => Boolean(question.routeEvidence?.displayRegionId))
+    .slice(0, 12);
+  const requirements = p3ExamReviewRequirements(contexts, pagePath);
   const body = `
     ${renderHero(
-      'P3 Mistake Review',
-      'Review recent Skill Check mistakes saved in this browser, or export local progress for a teacher conversation.',
+      'P3 Exam Review',
+      'Use mixed Paper 3 questions after the full unit path is complete. Field Guides and Skill Checks are the readiness gate; exam questions are for review and timing.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
-      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Open Skill Checks', 'button primary-button')}`,
-      'Local review',
+      `${routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}`,
+      'Final review',
     )}
+    <section class="exam-review-gate" data-p3-exam-review-gate data-required-topics="${escapeAttr(JSON.stringify(requirements))}">
+      <div class="exam-review-locked" data-exam-review-locked>
+        <div>
+          <p class="eyebrow">Locked until the path is complete</p>
+          <h2>Finish every P3 unit first.</h2>
+          <p data-exam-review-status>Checking local progress...</p>
+        </div>
+        <ol class="exam-review-topic-list" data-exam-review-topic-list>
+          ${requirements.map((requirement) => `
+            <li>
+              <strong>${escapeHtml(requirement.name)}</strong>
+              <span>Field Guide 0/${requirement.fieldGuideTotal}; Skill Check 0/${requirement.requiredCheckIds.length}</span>
+            </li>
+          `).join('')}
+        </ol>
+        ${routeLink(pagePath, fieldGuidePagePath(STUDY_TOPICS[0]), 'Start Unit 1', 'button primary-button')}
+      </div>
+      <div class="exam-review-open" data-exam-review-open hidden>
+        <section class="exam-question-section" id="mixed-questions">
+          <div class="section-heading">
+            <div>
+              <h2>Mixed Paper 3 questions</h2>
+              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are practice evidence, not automatic mastery.</p>
+            </div>
+          </div>
+          <div class="exam-mode-toolbar">
+            <label class="exam-mode-toggle">
+              <input type="checkbox" data-confident-student-mode />
+              <span>Confident student mode</span>
+            </label>
+            <p>Fewer prompts and faster access to self-marking. Integrity labels stay on.</p>
+          </div>
+          <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam review question">
+            ${mixedQuestions.map((question) => renderExamQuestionCard(question, pagePath, {
+              reviewLinkPath: p3FieldGuidePathForQuestion(question),
+            })).join('')}
+          </div>
+          ${mixedQuestions.length === 0 ? '<p class="empty-state">No mixed exam images are available yet.</p>' : ''}
+        </section>
+      </div>
+    </section>
+    <section class="exam-callout compact-callout">
+      <div>
+        <p class="eyebrow">Local exam evidence</p>
+        <h2>Saved attempts</h2>
+        <p>Use these totals to plan review, not as a grade.</p>
+      </div>
+      <div class="exam-stats">
+        <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>
+        <span data-topic-tried-count data-paper-family="p3">0 topic areas tried</span>
+      </div>
+    </section>
     <section class="support-panel" data-export-panel>
       <div>
-        <p class="eyebrow">Teacher support</p>
+        <p class="eyebrow">Export</p>
         <h2>Export local progress CSV</h2>
         <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
       </div>
       <button class="button secondary-button" type="button" data-export-local-progress>Export local progress CSV</button>
       <p class="save-status" data-export-status role="status"></p>
     </section>
-    <section class="summary-card review-empty-state" data-review-empty>
-      <h2>No tagged mistakes yet.</h2>
-      <p>Review sessions will appear after you answer a machine-checkable P3 Skill Check incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
-      ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Go to P3 Skill Checks', 'button primary-button')}
-    </section>
-    <section class="review-session" data-review-session hidden>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Local mistake history</p>
-          <h2>Recommended review groups</h2>
-          <p data-review-summary>Loading local review...</p>
+    <details class="jump-details" data-mistake-review-details>
+      <summary>Review saved Skill Check mistakes</summary>
+      <section class="summary-card review-empty-state" data-review-empty>
+        <h2>No tagged mistakes yet.</h2>
+        <p>Review groups appear after you answer a machine-checkable Skill Check incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
+        ${routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+      </section>
+      <section class="review-session" data-review-session hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Local mistake history</p>
+            <h2>Recommended repair groups</h2>
+            <p data-review-summary>Loading local review...</p>
+          </div>
         </div>
-      </div>
-      <div class="review-group-stack" data-review-groups></div>
-    </section>
+        <div class="review-group-stack" data-review-groups></div>
+      </section>
+    </details>
   `;
   return renderPage({
     pagePath,
-    title: 'P3 Mistake Review',
-    description: 'Browser-local P3 review groups from Skill Check mistake tags.',
-    active: 'p3',
+    title: 'P3 Exam Review',
+    description: 'Final mixed Paper 3 review after the sequential P3 unit path.',
+    active: 'p3-exam-training',
     body,
   });
 }
@@ -1687,23 +1848,21 @@ function renderFieldGuidePage(
   practicePath = practicePagePath(context.topic),
 ): string {
   const { topic, fieldGuideTopics } = context;
+  const index = topicIndex(topic);
+  const previousTopic = previousStudyTopic(topic);
   const body = `
     ${renderHero(
-      `${topic.name} Field Guide`,
-      'Start by trying one small problem, then reveal only the next useful move.',
+      `Unit ${index + 1}: ${topic.name}`,
+      'Work through the Field Guide subtopics in order. Try the small problem first, then reveal only the next useful move.',
       topic.headerFormula,
-      `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Back to topics', 'button secondary-button')}
-      ${routeLink(pagePath, practicePath, 'Try 3 quick questions', 'button primary-button')}`,
+      `${previousTopic ? routeLink(pagePath, skillCheckPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+      ${routeLink(pagePath, practicePath, 'Next: Skill Check', 'button primary-button')}`,
     )}
     ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
-    <section class="topic-overview-grid field-guide-overview-grid">
-      ${renderKnowledgeCard([`$${topic.headerFormula}$`], fieldGuideTopics.slice(0, 5).map((item) => cleanVisibleCopy(item.purpose)), topic.headerFormula)}
-      ${renderP3WorkedExamplesCard(fieldGuideTopics)}
-    </section>
     <section class="next-step-card">
-      <h2>Next step</h2>
-      <p>Ready to leave the Field Guide and check the method?</p>
-      ${renderSkillCheckTransition(pagePath, practicePath)}
+      <h2>After the Field Guide</h2>
+      <p>Use the Skill Check to prove these subtopics are usable without the worked route open.</p>
+      ${renderSkillCheckTransition(pagePath, practicePath, undefined, 'Go to Skill Check')}
     </section>
   `;
   return renderPage({
@@ -1972,13 +2131,13 @@ function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: str
   const totalItems = totalSkillChecklistItems(group);
   const defaultItems = Math.min(3, totalItems);
   return `
-    <article class="practice-topic" id="practice-${escapeAttr(group.topic.id)}">
+    <article class="practice-topic" id="practice-${escapeAttr(group.topic.id)}" data-skill-check-group data-skill-check-group-id="${escapeAttr(group.topic.id)}">
       <header class="topic-section-header">
         <div>
-          <p class="eyebrow">${defaultItems || totalItems} quick check${(defaultItems || totalItems) === 1 ? '' : 's'}</p>
+          <p class="eyebrow">Subtopic check · ${defaultItems || totalItems} item${(defaultItems || totalItems) === 1 ? '' : 's'}</p>
           <h2>${escapeHtml(group.topic.title)}</h2>
           <p>${escapeHtml(group.topic.purpose)}</p>
-          <p class="practice-instruction">Try one item first. Use the hint if you need a repair step.</p>
+          <p class="practice-instruction">Pass the visible machine-checkable item to continue. Hints and revealed answers repair the attempt, but they do not count as passed.</p>
         </div>
       </header>
       ${renderAuthoredPractice(group, pagePath, fieldGuidePath)}
@@ -2181,18 +2340,20 @@ function renderPracticePage(
   const { topic, region, groups } = context;
   const firstPracticeId = groups[0]?.topic.id ? `practice-${groups[0].topic.id}` : 'exam-questions';
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
+  const index = topicIndex(topic);
+  const nextTopic = nextStudyTopic(topic);
+  const finalPath = nextTopic ? fieldGuidePagePath(nextTopic) : p3ReviewPagePath();
+  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Exam Review';
   const body = `
     ${renderHero(
-      `${topic.name} Skill Check`,
-      'Start with one focused question. Use a hint or review the Field Guide if you get stuck.',
+      `Unit ${index + 1}: ${topic.name} Skill Check`,
+      'Pass each visible check before moving on. If you need a hint or repair step, go back to the Field Guide and try again.',
       topic.headerFormula,
-      `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start first question</a>
-      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'One exam question', 'button secondary-button')}
-      ${routeLink(pagePath, worksheetPagePath(topic), 'Print worksheet', 'button secondary-button')}
-      ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button text-button')}`,
+      `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start Skill Check</a>
+      ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button secondary-button')}`,
     )}
     <details class="jump-details">
-      <summary>Show Skill Check sections and saved progress</summary>
+      <summary>Show subtopics and saved progress</summary>
       <nav class="subnav" aria-label="${escapeAttr(topic.name)} Skill Check sections">
         ${groups.map((group) => `<a href="#practice-${escapeAttr(group.topic.id)}">${escapeHtml(group.topic.title)}</a>`).join('')}
       </nav>
@@ -2201,14 +2362,12 @@ function renderPracticePage(
         ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button secondary-button')}
       </div>
     </details>
-    <section class="practice-stack" data-one-card-flow data-flow-label="Skill Check" data-default-card-limit="3">
+    <section class="practice-stack" data-one-card-flow data-flow-label="Skill Check" data-default-card-limit="3" data-flow-final-href="${escapeAttr(hrefToPage(pagePath, finalPath))}" data-flow-final-label="${escapeAttr(finalLabel)}">
       ${groups.map((group) => renderSkillPracticeGroup(group, pagePath, fieldGuidePath)).join('')}
     </section>
     <section class="next-step-card">
-      <h2>Next step</h2>
-      <p>Ready for the next step? Try one exam-style question.</p>
-      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'One exam question', 'button primary-button')}
-      ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button secondary-button')}
+      <h2>Finish the checks first</h2>
+      <p>The guided controls move to ${escapeHtml(finalLabel)} after the final subtopic check. Use the Field Guide link when a check exposes a gap.</p>
     </section>
   `;
   return renderPage({
@@ -2496,16 +2655,19 @@ async function generate(): Promise<void> {
   const data = await loadStaticSiteData();
   const htmlByPath = new Map<string, string>();
 
-  htmlByPath.set('index.html', renderCourseSelectorPage());
+  htmlByPath.set('index.html', renderP3LearningPathPage(data));
   htmlByPath.set(aboutPagePath(), renderAboutPage());
 
   for (const course of COURSES) {
-    htmlByPath.set(coursePagePath(course), renderCourseDashboardPage(course));
+    htmlByPath.set(
+      coursePagePath(course),
+      course.id === P3_COURSE_ID ? renderP3LearningPathPage(data, coursePagePath(course)) : renderCourseDashboardPage(course),
+    );
   }
 
   htmlByPath.set(p3TopicsIndexPagePath(), renderP3TopicsIndexPage(data));
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
-  htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage());
+  htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage(data));
   htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));
 
   for (const topic of STUDY_TOPICS) {

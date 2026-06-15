@@ -2571,6 +2571,274 @@ body.home-page .course-launch-cta-secondary {
   margin-top: 6px;
 }
 
+body.p3-path-page {
+  --path-bg: #f6f7f9;
+  --path-ink: #111827;
+  --path-muted: #4b5563;
+  --path-line: #d9dee8;
+  --path-blue: #123247;
+  --path-green: #2f6b4f;
+  color: var(--path-ink);
+  background: var(--path-bg);
+}
+
+body.p3-path-page .site-header {
+  width: min(1080px, calc(100% - 32px));
+  margin-bottom: 18px;
+  border-color: var(--path-line);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
+}
+
+body.p3-path-page main {
+  width: min(1080px, calc(100% - 32px));
+  gap: 16px;
+}
+
+.p3-path-hero,
+.path-principle-strip,
+.path-unit-card,
+.exam-review-gate,
+.exam-review-locked,
+.exam-review-open {
+  border: 1px solid var(--path-line);
+  border-radius: var(--radius);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.05);
+}
+
+.p3-path-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 22px;
+  align-items: stretch;
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.p3-path-hero h1 {
+  max-width: 720px;
+  margin: 0 0 10px;
+  color: var(--path-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.45rem);
+  line-height: 1;
+}
+
+.p3-path-hero p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 0;
+  color: var(--path-muted);
+  font-size: 1.04rem;
+}
+
+.path-summary-panel {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 18px;
+  border-left: 4px solid var(--path-blue);
+  border-radius: var(--radius);
+  color: var(--path-ink);
+  background: #f8fafc;
+}
+
+.path-summary-panel strong {
+  font-size: 1.1rem;
+}
+
+.path-summary-panel span {
+  color: var(--path-muted);
+  font-weight: 800;
+}
+
+.path-principle-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: var(--path-line);
+}
+
+.path-principle-strip article {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.path-principle-strip strong {
+  color: var(--path-blue);
+}
+
+.path-principle-strip span,
+.path-unit-main p,
+.path-unit-progress,
+.exam-review-topic-list span {
+  color: var(--path-muted);
+}
+
+.p3-unit-sequence {
+  display: grid;
+  gap: 14px;
+}
+
+.path-unit-list {
+  display: grid;
+  gap: 10px;
+}
+
+.path-unit-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) minmax(190px, auto);
+  gap: 16px;
+  align-items: start;
+  padding: 16px;
+}
+
+.path-unit-number {
+  display: inline-grid;
+  place-items: center;
+  min-height: 40px;
+  border-radius: 6px;
+  color: #ffffff;
+  background: var(--path-blue);
+  font-weight: 900;
+}
+
+.path-unit-main {
+  display: grid;
+  gap: 12px;
+}
+
+.path-unit-main h2,
+.exam-review-locked h2 {
+  margin: 0 0 5px;
+  color: var(--path-ink);
+  font-size: 1.22rem;
+  line-height: 1.2;
+}
+
+.unit-step-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.unit-step-list li {
+  display: grid;
+  min-width: min(100%, 190px);
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--path-line);
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.unit-step-list a {
+  color: var(--path-blue);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.unit-step-list a:hover,
+.unit-step-list a:focus-visible {
+  text-decoration: underline;
+}
+
+.unit-subtopic-details summary {
+  color: var(--path-blue);
+  font-weight: 900;
+}
+
+.unit-subtopic-details ol,
+.exam-review-topic-list {
+  display: grid;
+  gap: 7px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.unit-subtopic-details li {
+  color: var(--path-muted);
+}
+
+.path-unit-progress {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  text-align: right;
+}
+
+.path-exam-review-card {
+  border-color: rgba(47, 107, 79, 0.28);
+  background: linear-gradient(135deg, #ffffff, #f5fbf7);
+}
+
+.path-exam-review-card .path-unit-number {
+  background: var(--path-green);
+}
+
+.exam-review-gate {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+}
+
+.exam-review-locked,
+.exam-review-open {
+  border: 0;
+  box-shadow: none;
+}
+
+.exam-review-locked {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.exam-review-topic-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--path-line);
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.exam-review-topic-list li > div {
+  display: grid;
+  gap: 2px;
+}
+
+.exam-review-topic-list .is-complete,
+.exam-review-topic-list li.is-complete {
+  border-color: rgba(47, 107, 79, 0.28);
+  background: #f0f8f3;
+}
+
+.unit-state {
+  color: var(--path-green);
+  font-weight: 900;
+}
+
+.exam-review-open {
+  padding: 20px;
+}
+
+.practice-controls .button:disabled,
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
+  box-shadow: none;
+}
+
 .course-topic-list {
   display: grid;
   gap: 18px;
@@ -4538,6 +4806,8 @@ body.skill-check-page .exam-question-section {
   }
 
 	  .page-hero,
+    .p3-path-hero,
+    .path-principle-strip,
 	  .topic-grid,
 	  .course-grid,
     .homepage-status-grid,
@@ -4578,6 +4848,7 @@ body.skill-check-page .exam-question-section {
   }
 
   .attempt-form,
+  .path-unit-card,
   .exam-topic-row,
   .support-panel,
   .worksheet-meta {
@@ -4611,6 +4882,8 @@ body.skill-check-page .exam-question-section {
   }
 
 	  .page-hero,
+    .p3-path-hero,
+    .path-unit-card,
 	  .topic-card,
     .course-card,
     .homepage-status-section,
@@ -4631,6 +4904,20 @@ body.skill-check-page .exam-question-section {
 	  .exam-mode-grid article {
 	    padding: 16px;
 	  }
+
+  .path-unit-card {
+    gap: 12px;
+  }
+
+  .path-unit-progress {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .exam-review-topic-list li {
+    align-items: start;
+    flex-direction: column;
+  }
 
   .course-selector-hero {
     padding: 16px;

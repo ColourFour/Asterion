@@ -373,6 +373,13 @@ async function waitForStaticEnhancement(page, pagePath) {
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
 }
 
+async function openMistakeReviewDetails(page) {
+  const details = page.locator('[data-mistake-review-details]');
+  if ((await details.count()) === 0) return;
+  const isOpen = await details.evaluate((node) => node instanceof HTMLDetailsElement && node.open);
+  if (!isOpen) await details.locator('summary').click();
+}
+
 async function readProgress(page) {
   return page.evaluate((key) => {
     const raw = window.localStorage.getItem(key);
@@ -764,6 +771,7 @@ async function checkLogExpReviewPageFlow(page) {
   ]));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  await openMistakeReviewDetails(page);
 
   assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render seeded Log/Exp mistake history.');
   const reviewText = await visibleText(page.locator('[data-review-groups]'));
@@ -933,6 +941,7 @@ async function checkAlgebraReviewPageFlow(page) {
   ]));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  await openMistakeReviewDetails(page);
 
   assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render seeded Algebra mistake history.');
   const reviewText = await visibleText(page.locator('[data-review-groups]'));
@@ -1102,6 +1111,7 @@ async function checkComplexReviewPageFlow(page) {
   ]));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  await openMistakeReviewDetails(page);
 
   assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render seeded Complex mistake history.');
   const reviewText = await visibleText(page.locator('[data-review-groups]'));
@@ -1199,6 +1209,7 @@ async function checkReviewPageFlow(page) {
   await clearProgress(page);
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  await openMistakeReviewDetails(page);
 
   assert(await page.locator('[data-review-empty]').isVisible(), 'P3 review route must render a useful empty state with no local mistake history.');
   assert(!(await page.locator('[data-review-session]').isVisible()), 'P3 review session must stay hidden for empty local mistake history.');
@@ -1267,6 +1278,7 @@ async function checkReviewPageFlow(page) {
   ]));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  await openMistakeReviewDetails(page);
 
   assert(await page.locator('[data-review-session]').isVisible(), 'P3 review route must render mistake-tag history from seeded localStorage.');
   const reviewText = await visibleText(page.locator('[data-review-groups]'));

@@ -69,53 +69,24 @@ try {
   await waitForStaticEnhancement(page, 'index.html');
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
-    const p3Card = document.querySelector('.course-card-featured');
-    const supportCards = document.querySelectorAll('.course-support-grid .course-card');
     return {
-      hasLoop: ['Field Guide', 'Skill Check', 'Exam Training', 'Review'].every((label) => text.includes(label)),
-      hasP3Priority: text.includes('Ready') && text.includes('Recommended first click: P3 Pure Mathematics 3'),
-      hasRecommendedStart: text.includes('Recommended start') && text.includes('Start with P3 Pure Mathematics 3') && text.includes('Use the full Field Guide -> Skill Check -> Exam Training flow.'),
-      hasP3Reason: text.includes('Recommended starting path') && text.includes('Field Guide, Skill Check, and Exam Training are available'),
-      hasSupportStatus: text.includes('Support only') && text.includes('P1, M1, and S1 are support-only entries. P3 is the default product path.'),
-      hasSupportSection: text.includes('Support only courses') && text.includes('They are not ready course paths on this branch.') && text.includes('View P1 support'),
-      hasSoftSupportLabel: text.includes('Early support'),
-      hasChecklist: text.includes('Homepage acceptance checklist'),
-      hasTopicEvidence: text.includes('Includes Algebra, Logarithmic and Exponential Functions, Trigonometry, Differentiation'),
-      hasLongTopicEvidence: false,
-      hasOldHeroCopy: text.includes('Which paper are you studying today?') || text.includes('Brain loading'),
-      p3CardText: p3Card?.textContent?.replace(/\s+/g, ' ').trim() || '',
-      p3CardActionLabel: p3Card?.getAttribute('aria-label') || '',
-      supportCardTexts: Array.from(supportCards).map((card) => card.textContent?.replace(/\s+/g, ' ').trim() || ''),
-      supportCardActionLabels: Array.from(supportCards).map((card) => card.getAttribute('aria-label') || ''),
-      hasGenericHomepageAction: Boolean(document.querySelector('a[aria-label^="Open "]')) || /\b(Open course|Learn more|Explore)\b/.test(text),
-      hasSupportTopicPreview: Boolean(document.querySelector('.course-support-grid .course-topic-preview')),
-      supportCardCount: supportCards.length,
-      p3BeforeSupport: Boolean(p3Card && supportCards[0] && (p3Card.compareDocumentPosition(supportCards[0]) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      hasPathHero: text.includes('After P1') && text.includes('Learn P3 in order.'),
+      hasSequence: text.includes('P3 unit sequence') && text.includes('Unit 1') && text.includes('Unit 9'),
+      hasFlow: ['Field Guide', 'Skill Check', 'Mixed Exam Review'].every((label) => text.includes(label)),
+      hasStartAction: Array.from(document.querySelectorAll('a')).some((link) => /Start Unit 1: Algebra/.test(link.textContent || '')),
+      unitCards: document.querySelectorAll('.path-unit-card').length,
+      hasHomepageShell: Boolean(document.querySelector('.homepage-hero, .course-card-featured, .course-support-grid')),
+      hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the') || text.includes('Choose the trusted path') || text.includes('Support only courses'),
     };
   });
-  if (!homepageResult.hasLoop) {
-    fail('Homepage must show the Field Guide -> Skill Check -> Exam Training -> Review learning loop.');
+  if (!homepageResult.hasPathHero || !homepageResult.hasSequence || !homepageResult.hasFlow || !homepageResult.hasStartAction) {
+    fail('Root page must be the direct After P1 -> P3 learning path.');
   }
-  if (!homepageResult.hasP3Priority || !homepageResult.hasRecommendedStart || !homepageResult.hasP3Reason || !/Start P3\b/.test(homepageResult.p3CardText) || homepageResult.p3CardActionLabel !== 'Start P3: Pure Mathematics 3' || !homepageResult.p3BeforeSupport) {
-    fail('Homepage must make P3 the obvious primary course path.');
+  if (homepageResult.unitCards < 10) {
+    fail(`Root P3 path must show 9 units plus final review; saw ${homepageResult.unitCards} cards.`);
   }
-  if (!homepageResult.hasSupportStatus || !homepageResult.hasSupportSection || homepageResult.supportCardCount !== 3 || !homepageResult.supportCardActionLabels.includes('View P1 support: Pure Mathematics 1') || homepageResult.supportCardTexts.some((text) => text.includes('Field Guide, Skill Check, and Exam Training are available')) || homepageResult.hasSupportTopicPreview) {
-    fail('Homepage must honestly label P1, M1, and S1 as support-only sections.');
-  }
-  if (homepageResult.hasGenericHomepageAction) {
-    fail('Homepage must use direct action CTA language, not generic Open course/Learn more/Explore wording.');
-  }
-  if (homepageResult.hasSoftSupportLabel) {
-    fail('Homepage must not soften P1, M1, or S1 maturity as Early support.');
-  }
-  if (homepageResult.hasChecklist) {
-    fail('Homepage must not render an implementation acceptance checklist.');
-  }
-  if (!homepageResult.hasTopicEvidence || homepageResult.hasLongTopicEvidence) {
-    fail('Homepage must show concise P3 topic evidence without a long topic-preview list.');
-  }
-  if (homepageResult.hasOldHeroCopy) {
-    fail('Homepage must not retain the old generic course-selector hero copy or illustration text.');
+  if (homepageResult.hasHomepageShell || homepageResult.hasOldHeroCopy) {
+    fail('Root page must not retain the old homepage/course-selector shell.');
   }
 
   for (const coursePage of ['p1/index.html', 'm1/index.html', 's1/index.html']) {
@@ -133,28 +104,18 @@ try {
   for (const coursePage of ['p3/index.html']) {
     await waitForStaticEnhancement(page, coursePage);
     const courseResult = await page.evaluate(() => {
-      const grid = document.querySelector('.course-topic-button-grid');
-      const topicCards = document.querySelectorAll('.course-topic-button').length;
-      const hasStartHere = /Start here|Recommended first/i.test(document.body.innerText);
-      const beforeGrid = [];
-      if (grid) {
-        for (const element of document.querySelectorAll('a, button')) {
-          if (grid.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_PRECEDING) {
-            beforeGrid.push((element.textContent || '').replace(/\s+/g, ' ').trim());
-          }
-        }
-      }
-      const modeHeavyBeforeGrid = beforeGrid.filter((text) => /^(Field Guide|Practice|Practice Questions|Exam Training)$/i.test(text));
-      return { topicCards, hasStartHere, hasGrid: Boolean(grid), modeHeavyBeforeGrid };
+      const text = document.body.innerText;
+      return {
+        pathCards: document.querySelectorAll('.path-unit-card').length,
+        hasPathHero: text.includes('Learn P3 in order.'),
+        hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
+      };
     });
-    if (!courseResult.hasGrid || courseResult.topicCards < 1) {
-      fail(`${coursePage} must render topic cards on the course landing page.`);
+    if (!courseResult.hasPathHero || courseResult.pathCards < 10) {
+      fail(`${coursePage} must render the direct P3 learning path.`);
     }
-    if (!courseResult.hasStartHere) {
-      fail(`${coursePage} must include a Start here / Recommended first topic cue.`);
-    }
-    if (courseResult.modeHeavyBeforeGrid.length) {
-      fail(`${coursePage} exposes mode-heavy navigation before topic selection: ${courseResult.modeHeavyBeforeGrid.join(', ')}`);
+    if (courseResult.hasCourseGrid) {
+      fail(`${coursePage} must not render the old topic chooser grid.`);
     }
   }
 
@@ -162,7 +123,7 @@ try {
   const p3FieldGuideResult = await page.evaluate(() => ({
     guidedStudyCards: document.querySelectorAll('[data-guided-study]').length,
     phaseButtons: document.querySelectorAll('[data-phase-tab]').length,
-    overviewCards: document.querySelectorAll('.field-guide-overview-grid .summary-card').length,
+    hasNextSkillCheck: Array.from(document.querySelectorAll('a, button')).some((item) => /Go to Skill Check|Next: Skill Check/.test(item.textContent || '')),
   }));
   const p3FieldGuideCounts = await visibleCounts(page);
   if (p3FieldGuideResult.guidedStudyCards !== 1) {
@@ -171,8 +132,8 @@ try {
   if (p3FieldGuideResult.phaseButtons < 1) {
     fail('P3 Algebra Field Guide must render phase navigation buttons.');
   }
-  if (p3FieldGuideResult.overviewCards < 2) {
-    fail('P3 Algebra Field Guide must render Overview and skill-goals cards before the guided study panel.');
+  if (!p3FieldGuideResult.hasNextSkillCheck) {
+    fail('P3 Algebra Field Guide must point directly to the Skill Check.');
   }
   if (p3FieldGuideCounts.phasePanelsVisible !== 1) {
     fail(`P3 Algebra Field Guide must show exactly one Field Guide phase after JS initialization; saw ${p3FieldGuideCounts.phasePanelsVisible}.`);
@@ -184,6 +145,8 @@ try {
     hasSectionDisclosure: Boolean(document.querySelector('.jump-details')),
     hasMorePracticeControl: Array.from(document.querySelectorAll('button')).some((button) => /More practice/i.test(button.textContent || '') && !button.hidden),
     hasExamCards: document.querySelectorAll('.exam-question-card').length > 0,
+    hasSkillGroups: document.querySelectorAll('[data-skill-check-group]').length > 0,
+    nextDisabledUntilPass: Array.from(document.querySelectorAll('.practice-controls button')).some((button) => /Pass to continue/i.test(button.textContent || '') && button.disabled),
   }));
   const skillCounts = await visibleCounts(page);
   if (/of\s+44\b/i.test(skillCheckResult.countText)) {
@@ -203,6 +166,21 @@ try {
   }
   if (skillCheckResult.hasExamCards) {
     fail('P3 Algebra Skill Check must not render exam question cards by default.');
+  }
+  if (!skillCheckResult.hasSkillGroups || !skillCheckResult.nextDisabledUntilPass) {
+    fail('P3 Algebra Skill Check must be grouped by subtopic and require a pass before continuing.');
+  }
+
+  await waitForStaticEnhancement(page, 'p3/review/index.html');
+  const reviewGateResult = await page.evaluate(() => ({
+    hasGate: Boolean(document.querySelector('[data-p3-exam-review-gate]')),
+    lockedVisible: !document.querySelector('[data-exam-review-locked]')?.hidden,
+    openHidden: Boolean(document.querySelector('[data-exam-review-open]')?.hidden),
+    topicRows: document.querySelectorAll('[data-exam-review-topic-list] li').length,
+    hasMixedQuestions: document.querySelectorAll('.exam-question-card').length > 0,
+  }));
+  if (!reviewGateResult.hasGate || !reviewGateResult.lockedVisible || !reviewGateResult.openHidden || reviewGateResult.topicRows < 9 || !reviewGateResult.hasMixedQuestions) {
+    fail('P3 Exam Review must render mixed questions behind a local completion gate.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/exam-training/index.html');

@@ -361,6 +361,72 @@
     return passedCheckIds(progress, requiredCheckIds, regionId).length >= requiredCheckIds.length;
   }
 
+  function parseExamReviewRequirements(node) {
+    try {
+      var parsed = JSON.parse(node.getAttribute('data-required-topics') || '[]');
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(function (item) {
+        return item
+          && typeof item.regionId === 'string'
+          && typeof item.name === 'string'
+          && typeof item.fieldGuideTotal === 'number'
+          && Array.isArray(item.requiredCheckIds);
+      });
+    } catch (_error) {
+      return [];
+    }
+  }
+
+  function examReviewRequirementStatus(progress, requirement) {
+    var fieldGuideTotal = Math.max(1, Number(requirement.fieldGuideTotal || 1));
+    var guideCount = fieldGuideCompletedCount(progress, requirement.regionId, fieldGuideTotal);
+    var requiredCheckIds = requirement.requiredCheckIds.filter(function (id) { return typeof id === 'string' && id; });
+    var passCount = passedCheckIds(progress, requiredCheckIds, requirement.regionId).length;
+    return {
+      guideCount: guideCount,
+      fieldGuideTotal: fieldGuideTotal,
+      passCount: passCount,
+      requiredCheckCount: requiredCheckIds.length,
+      complete: guideCount >= fieldGuideTotal && passCount >= requiredCheckIds.length
+    };
+  }
+
+  function updateExamReviewGate(progress) {
+    document.querySelectorAll('[data-p3-exam-review-gate]').forEach(function (gate) {
+      var requirements = parseExamReviewRequirements(gate);
+      var statuses = requirements.map(function (requirement) {
+        return Object.assign({ requirement: requirement }, examReviewRequirementStatus(progress, requirement));
+      });
+      var completed = statuses.filter(function (status) { return status.complete; }).length;
+      var isOpen = requirements.length > 0 && completed === requirements.length;
+      var lockedPanel = gate.querySelector('[data-exam-review-locked]');
+      var openPanel = gate.querySelector('[data-exam-review-open]');
+      var statusText = gate.querySelector('[data-exam-review-status]');
+      var list = gate.querySelector('[data-exam-review-topic-list]');
+      if (lockedPanel) lockedPanel.hidden = isOpen;
+      if (openPanel) openPanel.hidden = !isOpen;
+      if (statusText) {
+        statusText.textContent = isOpen
+          ? 'All P3 units are complete in this browser. Mixed exam review is open.'
+          : completed + '/' + requirements.length + ' units complete. Finish the remaining Field Guides and Skill Checks first.';
+      }
+      if (list) {
+        list.innerHTML = statuses.map(function (status) {
+          var requirement = status.requirement;
+          var targetHref = status.guideCount < status.fieldGuideTotal
+            ? requirement.fieldGuideHref
+            : requirement.skillCheckHref;
+          return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
+            + '<div><strong>' + escapeText(requirement.name) + '</strong>'
+            + '<span>Field Guide ' + status.guideCount + '/' + status.fieldGuideTotal
+            + '; Skill Check ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
+            + (status.complete ? '<span class="unit-state">Done</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
+            + '</li>';
+        }).join('');
+      }
+    });
+  }
+
   function updateProgressText() {
     var progress = loadProgress();
     document.querySelectorAll('[data-progress-field-guide]').forEach(function (node) {
@@ -441,6 +507,7 @@
     });
 
     updateSkillCheckForms(progress);
+    updateExamReviewGate(progress);
   }
 
   function completeFieldGuideTopic(regionId, topicId, title) {
@@ -1268,6 +1335,8 @@
       var isCoordinateGeometrySkillCheck = flow.getAttribute('data-topic-id') === 'p1-coordinate-geometry';
       var labelText = flow.getAttribute('data-flow-label') || 'Question';
       var defaultLimit = Number(flow.getAttribute('data-default-card-limit') || '0');
+      var finalHref = flow.getAttribute('data-flow-final-href') || '';
+      var finalLabel = flow.getAttribute('data-flow-final-label') || 'Continue';
       var index = 0;
       var setIndex = 0;
       var activeContainer = null;
@@ -1400,7 +1469,7 @@
         completionText.textContent = hasNextGroup
           ? 'That was the 3-question check for ' + activeSkillLabel() + '.'
           : 'That was the last 3-question check for this topic.';
-        completionAction.textContent = hasNextGroup ? 'Next skill' : 'Try exam-style questions';
+        completionAction.textContent = hasNextGroup ? 'Next subtopic' : finalLabel;
       }
 
       function moveToNextSkillOrFinalAction() {
@@ -1411,6 +1480,10 @@
           if (nextGroupId) {
             window.location.hash = nextGroupId;
           }
+          return;
+        }
+        if (finalHref) {
+          window.location.href = finalHref;
           return;
         }
         document.querySelector('.exam-question-section')?.scrollIntoView?.({ behavior: 'auto', block: 'start' });
@@ -1477,13 +1550,14 @@
           var activeSkillPassed = activeSkillForm?.classList?.contains('is-passed');
           if (activeSkillForm && !activeSkillPassed) {
             next.className = 'button secondary-button';
-            next.textContent = isLastCardInChunk && skillCheckGroups.length > 1 ? 'Skip for now' : 'Skip to next question';
+            next.textContent = 'Pass to continue';
+            next.disabled = true;
           }
           Array.from(activeCard.querySelectorAll('[data-skill-check-inline-next]')).forEach(function (button) {
             if (!(button instanceof HTMLButtonElement)) return;
             if (isLastCardInChunk && skillCheckGroups.length > 1) {
               var groupIndex = activeSkillGroupIndex();
-              button.textContent = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1 ? 'Next skill' : 'Try exam-style questions';
+              button.textContent = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1 ? 'Next subtopic' : finalLabel;
             } else {
               button.textContent = 'Next question';
             }
@@ -1664,7 +1738,7 @@
           panel.hidden = !isActive;
         });
         if (previous) previous.disabled = bounded === 0;
-        if (next) next.textContent = bounded === tabs.length - 1 ? 'Try 3 quick questions' : 'Next subtopic';
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Go to Skill Check' : 'Next subtopic';
         if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
         if (updateHash) {
           var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';

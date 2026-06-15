@@ -72,6 +72,49 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
   });
 
+  it('uses the root page as a direct P3 learning path, not a homepage/course selector', () => {
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const generatedHomePath = 'docs/index.html';
+
+    expect(generatorSource).toContain('Learn P3 in order.');
+    expect(generatorSource).toContain('After P1');
+    expect(generatorSource).toContain('renderP3LearningPathPage(data)');
+    expect(generatorSource).toContain('data-p3-exam-review-gate');
+    expect(generatorSource).toContain('data-flow-final-href');
+    expect(generatorSource).toContain('Pass the visible machine-checkable item to continue');
+
+    if (existsSync(generatedHomePath)) {
+      const generatedHome = readFileSync(generatedHomePath, 'utf8');
+      expect(generatedHome).toContain('Learn P3 in order.');
+      expect(generatedHome).toContain('P3 unit sequence');
+      expect(generatedHome).toContain('Mixed Exam Review');
+      expect(generatedHome).not.toContain('CAIE 9709 practice that starts with the');
+      expect(generatedHome).not.toContain('Choose the trusted path');
+      expect(generatedHome).not.toContain('Support only courses');
+      expect(generatedHome).not.toContain('homepage-hero');
+    }
+  });
+
+  it('gates final exam review on local unit completion requirements', () => {
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(generatorSource).toContain('p3ExamReviewRequirements');
+    expect(generatorSource).toContain('data-required-topics');
+    expect(staticClientSource).toContain('updateExamReviewGate');
+    expect(staticClientSource).toContain('All P3 units are complete in this browser. Mixed exam review is open.');
+    expect(staticClientSource).toContain('Pass to continue');
+
+    const generatedReviewPath = 'docs/p3/review/index.html';
+    if (existsSync(generatedReviewPath)) {
+      const generatedReview = readFileSync(generatedReviewPath, 'utf8');
+      expect(generatedReview).toContain('P3 Exam Review');
+      expect(generatedReview).toContain('data-p3-exam-review-gate');
+      expect(generatedReview).toContain('Mixed Paper 3 questions');
+      expect(generatedReview).toContain('Locked until the path is complete');
+    }
+  });
+
   it('does not expose legacy self-reported Skill Check completion controls', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
@@ -105,8 +148,8 @@ describe('static P3 product contract', () => {
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
-    expect(generatorSource).toContain('Start first question');
-    expect(generatorSource).toContain('Print worksheet');
-    expect(generatorSource).toContain('One exam question');
+    expect(generatorSource).toContain('Start Skill Check');
+    expect(generatorSource).toContain('Go to Skill Check');
+    expect(generatorSource).toContain('Open Exam Review');
   });
 });

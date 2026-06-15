@@ -13,6 +13,15 @@ blob-report/
 *.tmp
 *.trace
 *.tsbuildinfo
+screenshots/
+mockups/
+concept-art/
+release-bundles/
+*.psd
+*.ai
+*.sketch
+*.fig
+*.blend
 vite.config.js
 vite.config.d.ts
 vitest.config.js
