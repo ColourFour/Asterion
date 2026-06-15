@@ -4314,6 +4314,75 @@ summary {
   background: #ffffff;
 }
 
+.learn-flow {
+  display: grid;
+  gap: 16px;
+}
+
+.learn-step-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.learn-step-card[hidden],
+.learn-after-attempt[hidden],
+.learn-similar-panel[hidden],
+.learn-exam-transfer[hidden] {
+  display: none;
+}
+
+.learn-step-state {
+  align-self: start;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--paper);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.learn-step-card.is-complete .learn-step-state {
+  color: #0f5132;
+  border-color: #badbcc;
+  background: #d1e7dd;
+}
+
+.learn-option-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.learn-option-bank span {
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--paper);
+  font-weight: 800;
+}
+
+.learn-check-form,
+.learn-similar-panel,
+.learn-exam-transfer {
+  max-width: 760px;
+}
+
+.learn-after-attempt,
+.learn-similar-panel,
+.learn-exam-transfer {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-left: 4px solid var(--accent);
+  background: #f8fbff;
+}
+
 .option-list legend {
   padding: 0 4px;
   color: var(--muted);

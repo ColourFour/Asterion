@@ -58,6 +58,7 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('s1/content-qa/index.html');
 
     for (const topic of STUDY_TOPICS) {
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/learn/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/field-guide/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/skill-check/index.html`);
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p3/topics/${topic.slug}/exam-training/index.html`);
@@ -81,7 +82,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('renderP3LearningPathPage(data)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
-    expect(generatorSource).toContain('Pass the visible machine-checkable item to continue');
+    expect(generatorSource).toContain('Start Learn Mode');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
@@ -103,7 +104,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('data-required-topics');
     expect(staticClientSource).toContain('updateExamReviewGate');
     expect(staticClientSource).toContain('All P3 units are complete in this browser. Mixed exam review is open.');
-    expect(staticClientSource).toContain('Pass to continue');
+    expect(staticClientSource).toContain('Finish lesson sequence');
 
     const generatedReviewPath = 'docs/p3/review/index.html';
     if (existsSync(generatedReviewPath)) {
@@ -148,8 +149,8 @@ describe('static P3 product contract', () => {
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
-    expect(generatorSource).toContain('Start Skill Check');
-    expect(generatorSource).toContain('Go to Skill Check');
+    expect(generatorSource).toContain('Start Learn Mode');
+    expect(generatorSource).toContain('Open Learn Mode');
     expect(generatorSource).toContain('Open Exam Review');
   });
 });

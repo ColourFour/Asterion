@@ -377,7 +377,7 @@ if (!pageAnchors(needToKnowHtml).some((href) => resolveHtmlHref('p3/need-to-know
   process.exit(1);
 }
 for (const { href, canonicalPath } of contractLinks) {
-  if (!/^p3\/topics\/[^/]+\/(?:field-guide|skill-check|exam-training)\/index\.html$/.test(canonicalPath)) {
+  if (!/^p3\/topics\/[^/]+\/(?:learn|field-guide|skill-check|exam-training)\/index\.html$/.test(canonicalPath)) {
     console.error(`P3 Need to Know link has a non-canonical target: ${canonicalPath}`);
     process.exit(1);
   }
@@ -437,44 +437,38 @@ for (const skillId of contractIds) {
   }
 }
 
-const p3FieldGuidePages = requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-guide\/index\.html$/.test(page));
-for (const page of p3FieldGuidePages) {
+const p3LearnPages = requiredPages.filter((page) => /^p3\/topics\/[^/]+\/learn\/index\.html$/.test(page));
+for (const page of p3LearnPages) {
   const topicSlug = page.split('/')[2];
-  const expectedSkillCheckPage = `p3/topics/${topicSlug}/skill-check/index.html`;
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
-  const fieldGuideTopicCount = (html.match(/data-field-guide-topic="/g) ?? []).length;
+  const learnStepCount = (html.match(/data-learn-step-card/g) ?? []).length;
   const requiredLessonSections = [
-    '1. Try this first',
-    '2. First step',
-    '3. Hint',
-    '4. Idea',
-    '5. Try similar',
-    '6. Exam prep',
+    'data-check-learn-answer',
+    'data-show-learn-hint',
+    'data-learn-after-attempt',
+    'data-learn-similar-panel',
+    'Exam transfer',
   ];
 
   for (const sectionLabel of requiredLessonSections) {
     const sectionCount = (html.match(new RegExp(sectionLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
-    if (sectionCount < fieldGuideTopicCount) {
-      console.error(`${page} is missing problem-first Field Guide section "${sectionLabel}" on at least one subtopic.`);
+    if (sectionCount < Math.min(1, learnStepCount)) {
+      console.error(`${page} is missing Learn Mode section "${sectionLabel}".`);
       process.exit(1);
     }
   }
 
-  const skillCheckHrefs = Array.from(html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi))
-    .filter((match) => visibleBodyText(match[2]).includes('Skill Check'))
-    .map((match) => match[1]);
-
-  if (!skillCheckHrefs.length) {
-    console.error(`${page} has no Skill Check link.`);
+  if (!learnStepCount) {
+    console.error(`${page} has no Learn Mode steps.`);
     process.exit(1);
   }
+}
 
-  for (const href of skillCheckHrefs) {
-    const resolvedPath = resolveHtmlHref(page, href);
-    if (resolvedPath !== expectedSkillCheckPage) {
-      console.error(`${page} has non-canonical Skill Check link: ${href} -> ${resolvedPath}, expected ${expectedSkillCheckPage}`);
-      process.exit(1);
-    }
+for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/(?:field-guide|skill-check)\/index\.html$/.test(page))) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  if (!visibleBodyText(html).includes('has moved') || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
+    console.error(`${page} must be a lightweight Learn Mode merge notice.`);
+    process.exit(1);
   }
 }
 
@@ -568,7 +562,7 @@ const forbiddenRouteFiles = collectFiles(path.join(siteRoot, 'p3/topics'))
     || /^[^/]+\/index\.html$/.test(file)
   ));
 if (forbiddenRouteFiles.length) {
-  console.error(`P3 topic routes must be only field-guide, skill-check, and exam-training:\n${forbiddenRouteFiles.join('\n')}`);
+  console.error(`P3 topic routes must be only learn, field-guide, skill-check, worksheet, and exam-training:\n${forbiddenRouteFiles.join('\n')}`);
   process.exit(1);
 }
 

@@ -42,6 +42,10 @@
       "label": "P3 Content QA table"
     },
     {
+      "path": "p3/topics/algebra/learn/index.html",
+      "label": "P3 Algebra Learn Mode"
+    },
+    {
       "path": "p3/topics/algebra/field-guide/index.html",
       "label": "P3 Algebra Field Guide"
     },
@@ -56,6 +60,10 @@
     {
       "path": "p3/topics/algebra/worksheet/index.html",
       "label": "P3 Algebra printable worksheet"
+    },
+    {
+      "path": "p3/topics/logarithmic-and-exponential-functions/learn/index.html",
+      "label": "P3 Logarithmic and Exponential Functions Learn Mode"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/field-guide/index.html",
@@ -74,6 +82,10 @@
       "label": "P3 Logarithmic and Exponential Functions printable worksheet"
     },
     {
+      "path": "p3/topics/trigonometry/learn/index.html",
+      "label": "P3 Trigonometry Learn Mode"
+    },
+    {
       "path": "p3/topics/trigonometry/field-guide/index.html",
       "label": "P3 Trigonometry Field Guide"
     },
@@ -88,6 +100,10 @@
     {
       "path": "p3/topics/trigonometry/worksheet/index.html",
       "label": "P3 Trigonometry printable worksheet"
+    },
+    {
+      "path": "p3/topics/differentiation/learn/index.html",
+      "label": "P3 Differentiation Learn Mode"
     },
     {
       "path": "p3/topics/differentiation/field-guide/index.html",
@@ -106,6 +122,10 @@
       "label": "P3 Differentiation printable worksheet"
     },
     {
+      "path": "p3/topics/integration/learn/index.html",
+      "label": "P3 Integration Learn Mode"
+    },
+    {
       "path": "p3/topics/integration/field-guide/index.html",
       "label": "P3 Integration Field Guide"
     },
@@ -120,6 +140,10 @@
     {
       "path": "p3/topics/integration/worksheet/index.html",
       "label": "P3 Integration printable worksheet"
+    },
+    {
+      "path": "p3/topics/numerical-solution-of-equations/learn/index.html",
+      "label": "P3 Numerical Solution of Equations Learn Mode"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/field-guide/index.html",
@@ -138,6 +162,10 @@
       "label": "P3 Numerical Solution of Equations printable worksheet"
     },
     {
+      "path": "p3/topics/vectors/learn/index.html",
+      "label": "P3 Vectors Learn Mode"
+    },
+    {
       "path": "p3/topics/vectors/field-guide/index.html",
       "label": "P3 Vectors Field Guide"
     },
@@ -154,6 +182,10 @@
       "label": "P3 Vectors printable worksheet"
     },
     {
+      "path": "p3/topics/differential-equations/learn/index.html",
+      "label": "P3 Differential Equations Learn Mode"
+    },
+    {
       "path": "p3/topics/differential-equations/field-guide/index.html",
       "label": "P3 Differential Equations Field Guide"
     },
@@ -168,6 +200,10 @@
     {
       "path": "p3/topics/differential-equations/worksheet/index.html",
       "label": "P3 Differential Equations printable worksheet"
+    },
+    {
+      "path": "p3/topics/complex-numbers/learn/index.html",
+      "label": "P3 Complex Numbers Learn Mode"
     },
     {
       "path": "p3/topics/complex-numbers/field-guide/index.html",

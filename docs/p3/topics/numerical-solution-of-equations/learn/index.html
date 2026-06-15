@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Integrated P3 Learn Mode for Numerical Solution of Equations." />
+    <link rel="stylesheet" href="../../../../assets/katex.min.css" />
+    <link rel="stylesheet" href="../../../../assets/static-study.css" />
+    <title>Numerical Solution of Equations Learn Mode | Asterion Study</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand-link" href="../../../../" aria-label="Asterion Study home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" focusable="false">
+            <path d="M16 2 19.8 12.2 30 8.8 21.8 16 30 23.2 19.8 19.8 16 30 12.2 19.8 2 23.2 10.2 16 2 8.8 12.2 12.2 16 2Z" />
+          </svg>
+        </span>
+        <span>
+          <strong>ASTERION</strong>
+          <small>CAIE 9709 P3 Path</small>
+        </span>
+      </a>
+
+    <nav class="site-nav" aria-label="Primary">
+
+        <a href="../../../../">P3 Path</a>
+
+        <a href="../../" aria-current="page">Units</a>
+
+        <a href="../../../review/">Exam Review</a>
+
+    </nav>
+
+    </header>
+    <main>
+
+
+    <section class="page-hero">
+      <div>
+        <p class="eyebrow">CAIE 9709 Paper 3</p>
+        <h1>Unit 6: Numerical Solution of Equations Learn Mode</h1>
+        <p>Answer first, then reveal the next useful hint and principle. Similar checked questions can satisfy the existing Skill Check gate when answered cleanly.</p>
+        <div class="hero-actions"><a class="button secondary-button" href="../../integration/learn/">Back: Unit 5</a>
+      <a class="button primary-button" href="#learn-flow">Start Learn Mode</a></div>
+      </div>
+      <div class="formula-panel" aria-hidden="true"><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mi>f</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mi>f</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x_{n+1}=g(x_n), \; f(a)f(b)&lt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></div>
+    </section>
+
+    <details class="jump-details">
+      <summary>Show steps and saved progress</summary>
+      <nav class="subnav" aria-label="Numerical Solution of Equations Learn Mode steps">
+        <a href="#learn-iteration_change_of_sign">Approximation by Change of Sign</a><a href="#learn-iteration_graph_root_proof">Graph Proof of Root</a><a href="#learn-iteration_fixed_point_roots">Finding Roots Using Iteration</a><a href="#learn-iteration_convergence">Convergence of Iteration</a>
+      </nav>
+      <div class="progress-detail-row">
+
+    <ul class="progress-list" aria-label="Local progress">
+      <li><span data-progress-field-guide="numerical-solution-of-equations" data-total="4" data-label="Learn Mode">Learn Mode: 0/4</span></li>
+      <li><span data-progress-skill="numerical-solution-of-equations" data-required-checks="[&quot;sc-iteration-change-sign-foundation-001&quot;,&quot;sc-iteration-change-sign-core-001&quot;,&quot;sc-iteration-change-sign-challenge-001&quot;,&quot;sc-iteration-graph-root-proof-foundation-001&quot;,&quot;sc-iteration-graph-root-proof-core-001&quot;,&quot;sc-iteration-graph-root-proof-challenge-001&quot;,&quot;sc-iteration-fixed-point-roots-foundation-001&quot;,&quot;sc-iteration-fixed-point-roots-core-001&quot;,&quot;sc-iteration-fixed-point-roots-challenge-001&quot;,&quot;sc-iteration-convergence-foundation-001&quot;,&quot;sc-iteration-convergence-core-001&quot;,&quot;sc-iteration-convergence-challenge-001&quot;]" data-label="Checked questions">Checked questions: 0/12 passed</span></li>
+      <li><span data-progress-exam="numerical-solution-of-equations" data-label="Exam practice evidence">Exam practice evidence: 0 saved</span></li>
+    </ul>
+
+      </div>
+    </details>
+    <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="../../vectors/learn/" data-flow-final-label="Next unit: Vectors">
+
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="learn-iteration_change_of_sign" data-field-guide-topic="iteration_change_of_sign" data-region-id="numerical-solution-of-equations">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">Step 1 of 4</p>
+          <h2>Approximation by Change of Sign</h2>
+          <p class="prompt">If <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(1)&lt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(2)&gt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span> for a continuous function, what can you conclude?</p>
+          <p class="question-instruction">Identify equation, then rewrite as toward <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(x)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>. Stop before doing the full solution.</p>
+        </div>
+        <span class="learn-step-state" data-learn-step-state>Not completed</span>
+      </header>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Approximation by Change of Sign"
+      data-step-id="learn-iteration_change_of_sign"
+      data-step-title="Approximation by Change of Sign"
+      data-field-guide-topic-id="iteration_change_of_sign"
+      data-skill-id="p3_num_sign_change_graph_evidence"
+      data-check-id="sc-iteration-change-sign-foundation-001"
+      data-learn-variant="primary"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;There is a root between $1$ and $2$&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;domain/range issue&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span>There is a root between <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span></span><span>There is no root between <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span></span><span>The root is exactly <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.5</mn></mrow><annotation encoding="application/x-tex">1.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.5</span></span></span></span></span></span><span>The function is decreasing everywhere</span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>A sign change over a continuous interval indicates a root.</p>
+        <p>Use the intermediate value idea.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> The function values have opposite signs. For a continuous function, the graph crosses the x-axis between them. So there is a root in <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1,2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span>.</p>
+        <p><strong>Principle: Bracket test.</strong></p>
+        <p class="question-instruction">Now try the similar checked question below. A clean correct answer is saved as Skill Check evidence.</p>
+
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li>There is a root between <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span></li>
+    </ul>
+  </div>
+        <ol><li>The function values have opposite signs.</li><li>For a continuous function, the graph crosses the x-axis between them.</li><li>So there is a root in <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1,2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span>.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+
+        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+          <p class="eyebrow">Try a similar checked question</p>
+          <h3>Which pair proves a root lies in <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(2,3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span></span> by sign change?</h3>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Approximation by Change of Sign"
+      data-step-id="learn-iteration_change_of_sign"
+      data-step-title="Approximation by Change of Sign"
+      data-field-guide-topic-id="iteration_change_of_sign"
+      data-skill-id="p3_num_sign_change_graph_evidence"
+      data-check-id="sc-iteration-change-sign-core-001"
+      data-learn-variant="similar"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;$f(2)=-0.4$, $f(3)=1.2$ and $f(2)=0.8$, $f(3)=-0.2$&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;sign error&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">f(2)=-0.4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.4</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">f(3)=1.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.2</span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">f(2)=0.8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.8</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mn>0.2</mn></mrow><annotation encoding="application/x-tex">f(3)=-0.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.2</span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">f(2)=0.4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.4</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">f(3)=1.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.2</span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(2)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">f(3)=1.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.2</span></span></span></span></span> as a sign-change interval</span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type all matching answers, separated by commas.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Look for one negative value and one positive value.</p>
+        <p>Product <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(2)f(3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span></span></span></span></span> should be negative.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> The function values have opposite signs. For a continuous function, the graph crosses the x-axis between them. So there is a root in <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1,2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span>.</p>
+        <p><strong>Principle: Bracket test.</strong></p>
+
+        <p class="question-instruction">Clean correct answers here can satisfy the existing Skill Check gate. Hinted or revealed attempts are saved as practice only.</p>
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">f(2)=-0.4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.4</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">f(3)=1.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.2</span></span></span></span></span></li><li><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">f(2)=0.8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.8</span></span></span></span></span>, <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mn>0.2</mn></mrow><annotation encoding="application/x-tex">f(3)=-0.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.2</span></span></span></span></span></li>
+    </ul>
+  </div>
+        <ol><li>A sign-change interval needs opposite signs at the two endpoints.</li><li><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">-0.4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.4</span></span></span></span></span> with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.2</mn></mrow><annotation encoding="application/x-tex">1.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.2</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.8</mn></mrow><annotation encoding="application/x-tex">0.8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.8</span></span></span></span></span> with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.2</mn></mrow><annotation encoding="application/x-tex">-0.2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">0.2</span></span></span></span></span> both have opposite signs.</li><li>Those pairs support a root in <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(2,3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span></span> for a continuous function.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+        </section>
+
+      <section class="learn-exam-transfer" data-learn-exam-transfer hidden>
+        <p class="eyebrow">Exam transfer</p>
+        <p>Exam transfer: the question may hide this inside <span class="math-text math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mi>f</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex"> f(a)f(b)&lt;0 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></span> or phrase it as a request to use endpoint signs and interval narrowing to locate and round a root. Recognize equation; your first move is to rewrite as before completing the solution.</p>
+      </section>
+    </article>
+
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="learn-iteration_graph_root_proof" data-field-guide-topic="iteration_graph_root_proof" data-region-id="numerical-solution-of-equations">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">Step 2 of 4</p>
+          <h2>Graph Proof of Root</h2>
+          <p class="prompt">To solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> graphically, what should you look for?</p>
+          <p class="question-instruction">Identify equation, then split into toward two graphs. Stop before doing the full solution.</p>
+        </div>
+        <span class="learn-step-state" data-learn-step-state>Not completed</span>
+      </header>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Graph Proof of Root"
+      data-step-id="learn-iteration_graph_root_proof"
+      data-step-title="Graph Proof of Root"
+      data-field-guide-topic-id="iteration_graph_root_proof"
+      data-skill-id="p3_num_sign_change_graph_evidence"
+      data-check-id="sc-iteration-graph-root-proof-foundation-001"
+      data-learn-variant="primary"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;Intersections of $y=f(x)$ and $y=g(x)$&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;wrong identity&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span>Intersections of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></span><span>Turning points of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> only</span><span>The y-intercept of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> only</span><span>Where both graphs have the same gradient</span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Equal function values appear at graph intersections.</p>
+        <p>At a solution, both curves have the same <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span></span></span></span></span> value.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> A solution of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> has equal outputs. On a graph, equal outputs occur at intersections. So look for intersections.</p>
+        <p><strong>Principle: Intersection proof.</strong></p>
+        <p class="question-instruction">Now try the similar checked question below. A clean correct answer is saved as Skill Check evidence.</p>
+
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li>Intersections of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> and <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></li>
+    </ul>
+  </div>
+        <ol><li>A solution of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> has equal outputs.</li><li>On a graph, equal outputs occur at intersections.</li><li>So look for intersections.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+
+        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+          <p class="eyebrow">Try a similar checked question</p>
+          <h3>Which statement best supports &quot;there is one root&quot; from a graph?</h3>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Graph Proof of Root"
+      data-step-id="learn-iteration_graph_root_proof"
+      data-step-title="Graph Proof of Root"
+      data-field-guide-topic-id="iteration_graph_root_proof"
+      data-skill-id="p3_num_sign_change_graph_evidence"
+      data-check-id="sc-iteration-graph-root-proof-core-001"
+      data-learn-variant="similar"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;The curve crosses the x-axis once in the shown interval&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;sign error&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span>The curve crosses the x-axis once in the shown interval</span><span>The curve is above the x-axis at one endpoint</span><span>The curve has a turning point</span><span>The y-axis is labelled</span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>A root is an x-axis intersection.</p>
+        <p>Count x-axis crossings in the interval.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> A solution of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> has equal outputs. On a graph, equal outputs occur at intersections. So look for intersections.</p>
+        <p><strong>Principle: Intersection proof.</strong></p>
+
+        <p class="question-instruction">Clean correct answers here can satisfy the existing Skill Check gate. Hinted or revealed attempts are saved as practice only.</p>
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li>The curve crosses the x-axis once in the shown interval</li>
+    </ul>
+  </div>
+        <ol><li>Roots occur where the graph crosses or touches the x-axis.</li><li>If the graph crosses once in the interval, the graph shows one root there.</li><li>That supports the one-root statement.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+        </section>
+
+      <section class="learn-exam-transfer" data-learn-exam-transfer hidden>
+        <p class="eyebrow">Exam transfer</p>
+        <p>Exam transfer: the question may hide this inside <span class="math-text math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mspace width="1em"/><mi>y</mi><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex"> y=f(x),\quad y=g(x) </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></span> or phrase it as a request to use graph intersections to prove that an equation has a root. Recognize equation; your first move is to split into before completing the solution.</p>
+      </section>
+    </article>
+
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="learn-iteration_fixed_point_roots" data-field-guide-topic="iteration_fixed_point_roots" data-region-id="numerical-solution-of-equations">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">Step 3 of 4</p>
+          <h2>Finding Roots Using Iteration</h2>
+          <p class="prompt">For the iteration <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msqrt><mrow><mn>2</mn><msub><mi>x</mi><mi>n</mi></msub><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x_{n+1}=\sqrt{2x_n+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.2078em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8322em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.7922em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2078em;"><span></span></span></span></span></span></span></span></span></span>, what is <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> if <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_1=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>?</p>
+          <p class="question-instruction">Identify <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(x)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>, then rearrange toward <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span>. Stop before doing the full solution.</p>
+        </div>
+        <span class="learn-step-state" data-learn-step-state>Not completed</span>
+      </header>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Finding Roots Using Iteration"
+      data-step-id="learn-iteration_fixed_point_roots"
+      data-step-title="Finding Roots Using Iteration"
+      data-field-guide-topic-id="iteration_fixed_point_roots"
+      data-skill-id="p3_num_iteration_formula"
+      data-check-id="sc-iteration-fixed-point-roots-foundation-001"
+      data-learn-variant="primary"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="numeric"
+      data-accepted-answers="[&quot;3&quot;,&quot;$3&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;calculator&quot;]"
+    >
+
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Substitute <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span> into the right-hand side.</p>
+        <p><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><msqrt><mrow><mn>2</mn><mo stretchy="false">(</mo><mn>3</mn><mo stretchy="false">)</mo><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x_2=\sqrt{2(3)+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.305em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord">2</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.895em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305em;"><span></span></span></span></span></span></span></span></span></span>.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> Use the iteration formula with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_1=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>. <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><msqrt><mn>9</mn></msqrt></mrow><annotation encoding="application/x-tex">x_2=\sqrt{9}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">9</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span></span>. So <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>.</p>
+        <p><strong>Principle: Fixed-point loop.</strong></p>
+        <p class="question-instruction">Now try the similar checked question below. A clean correct answer is saved as Skill Check evidence.</p>
+
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>3</div>
+        <ol><li>Use the iteration formula with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_1=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>.</li><li><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><msqrt><mn>9</mn></msqrt></mrow><annotation encoding="application/x-tex">x_2=\sqrt{9}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">9</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span></span>.</li><li>So <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+
+        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+          <p class="eyebrow">Try a similar checked question</p>
+          <h3>Which equation is suggested by the fixed-point form <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><msqrt><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x=\sqrt{2x+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1744em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8656em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.8256em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1744em;"><span></span></span></span></span></span></span></span></span></span> before branch/domain checks?</h3>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Finding Roots Using Iteration"
+      data-step-id="learn-iteration_fixed_point_roots"
+      data-step-title="Finding Roots Using Iteration"
+      data-field-guide-topic-id="iteration_fixed_point_roots"
+      data-skill-id="p3_num_iteration_formula"
+      data-check-id="sc-iteration-fixed-point-roots-core-001"
+      data-learn-variant="similar"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="expression-text"
+      data-accepted-answers="[&quot;$x^2=2x+3$&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;sign error&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x^2=2x+3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x=2x+3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><msqrt><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x^2=\sqrt{2x+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1744em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8656em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.8256em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1744em;"><span></span></span></span></span></span></span></span></span></span></span><span><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2+2x+3=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Square both sides, but remember that square-root forms can impose branch or domain restrictions.</p>
+        <p>If <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><msqrt><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x=\sqrt{2x+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1744em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8656em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.8256em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1744em;"><span></span></span></span></span></span></span></span></span></span>, then <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x^2=2x+3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> Use the iteration formula with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_1=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>. <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><msqrt><mn>9</mn></msqrt></mrow><annotation encoding="application/x-tex">x_2=\sqrt{9}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">9</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span></span>. So <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x_2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>.</p>
+        <p><strong>Principle: Fixed-point loop.</strong></p>
+
+        <p class="question-instruction">Clean correct answers here can satisfy the existing Skill Check gate. Hinted or revealed attempts are saved as practice only.</p>
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x^2=2x+3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span></li>
+    </ul>
+  </div>
+        <ol><li>Start from <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><msqrt><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow></msqrt></mrow><annotation encoding="application/x-tex">x=\sqrt{2x+3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1744em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8656em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span></span></span><span style="top:-2.8256em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1744em;"><span></span></span></span></span></span></span></span></span></span>.</li><li>Squaring gives <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x^2=2x+3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>, while the original fixed-point form also requires the square-root side to be defined and non-negative.</li><li>That is the equation suggested before checking branch/domain restrictions.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+        </section>
+
+      <section class="learn-exam-transfer" data-learn-exam-transfer hidden>
+        <p class="eyebrow">Exam transfer</p>
+        <p>Exam transfer: the question may hide this inside <span class="math-text math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex"> x_{n+1}=g(x_n) </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></span> or phrase it as a request to rearrange into <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x=g(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span> and use <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x_{n+1}=g(x_n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span> to approximate a root. Recognize <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(x)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>; your first move is to rearrange before completing the solution.</p>
+      </section>
+    </article>
+
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="learn-iteration_convergence" data-field-guide-topic="iteration_convergence" data-region-id="numerical-solution-of-equations">
+      <header class="topic-section-header">
+        <div>
+          <p class="eyebrow">Step 4 of 4</p>
+          <h2>Convergence of Iteration</h2>
+          <p class="prompt">What does it mean if iteration values settle towards one number?</p>
+          <p class="question-instruction">Identify same equation, then can have toward different iterations. Stop before doing the full solution.</p>
+        </div>
+        <span class="learn-step-state" data-learn-step-state>Not completed</span>
+      </header>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Convergence of Iteration"
+      data-step-id="learn-iteration_convergence"
+      data-step-title="Convergence of Iteration"
+      data-field-guide-topic-id="iteration_convergence"
+      data-skill-id="p3_num_iteration_formula"
+      data-check-id="sc-iteration-convergence-foundation-001"
+      data-learn-variant="primary"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;The iteration is converging&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span>The iteration is converging</span><span>The iteration is differentiating</span><span>The iteration is undefined</span><span>The iteration has no fixed point</span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Convergence means the sequence approaches a limit.</p>
+        <p>Look for values becoming stable.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> If successive values get closer to one number, the sequence approaches a limit. That behavior is called convergence. So the iteration is converging.</p>
+        <p><strong>Principle: Convergence check.</strong></p>
+        <p class="question-instruction">Now try the similar checked question below. A clean correct answer is saved as Skill Check evidence.</p>
+
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li>The iteration is converging</li>
+    </ul>
+  </div>
+        <ol><li>If successive values get closer to one number, the sequence approaches a limit.</li><li>That behavior is called convergence.</li><li>So the iteration is converging.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+
+        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+          <p class="eyebrow">Try a similar checked question</p>
+          <h3>The iterates are <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.4</mn><mo separator="true">,</mo><mn>1.41</mn><mo separator="true">,</mo><mn>1.414</mn><mo separator="true">,</mo><mn>1.4142</mn></mrow><annotation encoding="application/x-tex">1.4, 1.41, 1.414, 1.4142</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">1.4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.41</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.414</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1.4142</span></span></span></span></span>. Which description is safest?</h3>
+
+    <form
+      class="skill-check-form learn-check-form"
+      data-check-learn-answer
+      data-course="p3"
+      data-region-id="numerical-solution-of-equations"
+      data-topic="Convergence of Iteration"
+      data-step-id="learn-iteration_convergence"
+      data-step-title="Convergence of Iteration"
+      data-field-guide-topic-id="iteration_convergence"
+      data-skill-id="p3_num_iteration_formula"
+      data-check-id="sc-iteration-convergence-core-001"
+      data-learn-variant="similar"
+      data-learn-saves-skill-pass="true"
+      data-answer-type="exact-text"
+      data-accepted-answers="[&quot;The values appear to be converging&quot;]"
+      data-tolerance=""
+      data-order-matters="false"
+      data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;,&quot;coefficient error&quot;]"
+    >
+
+
+    <div class="learn-option-bank" aria-label="Answer choices">
+      <span>The values appear to be converging</span><span>The values are diverging</span><span>The iteration is undefined</span><span>The values prove the exact root is <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.4142</mn></mrow><annotation encoding="application/x-tex">1.4142</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.4142</span></span></span></span></span></span>
+    </div>
+
+    <label class="single-answer-field">
+      <span>Type your answer.</span>
+      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    </label>
+
+      <div class="skill-check-actions learn-check-actions">
+        <button class="button primary-button" type="submit">Check answer</button>
+        <button class="button secondary-button" type="button" data-show-learn-hint>Show hint</button>
+      </div>
+      <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <div class="skill-check-hint-panel" data-learn-hint hidden>
+        <p>Look for successive values settling down.</p>
+        <p>Convergence means the sequence approaches a stable value.</p>
+      </div>
+      <div class="learn-after-attempt" data-learn-after-attempt hidden>
+        <p><strong>Explanation:</strong> If successive values get closer to one number, the sequence approaches a limit. That behavior is called convergence. So the iteration is converging.</p>
+        <p><strong>Principle: Convergence check.</strong></p>
+
+        <p class="question-instruction">Clean correct answers here can satisfy the existing Skill Check gate. Hinted or revealed attempts are saved as practice only.</p>
+      </div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="method choice" />
+              <span>method choice</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
+              <span>incomplete reasoning</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="notation" />
+              <span>notation</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="coefficient error" />
+              <span>coefficient error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="algebra slip" />
+              <span>algebra slip</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="wrong identity" />
+              <span>wrong identity</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
+              <span>domain/range issue</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="calculator" />
+              <span>calculator</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="sign error" />
+              <span>sign error</span>
+            </label>
+
+            <label>
+              <input type="checkbox" name="mistakeTags" value="forgot constant" />
+              <span>forgot constant</span>
+            </label>
+
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
+      <details class="skill-check-answer-details" data-learn-answer-reveal>
+        <summary>Show answer and worked route</summary>
+        <div>
+    <ul class="plain-list">
+      <li>The values appear to be converging</li>
+    </ul>
+  </div>
+        <ol><li>The values are getting closer to a stable number.</li><li>This is evidence of convergence, not proof of an exact root value.</li><li>So the safest description is that the values appear to be converging.</li></ol>
+        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for Skill Check evidence.</p>
+      </details>
+    </form>
+
+        </section>
+
+      <section class="learn-exam-transfer" data-learn-exam-transfer hidden>
+        <p class="eyebrow">Exam transfer</p>
+        <p>Exam transfer: the question may hide this inside <span class="math-text math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>x</mi><mi>n</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex"> x_{n+1}=e^{-x_n} </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8213em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8213em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span> or phrase it as a request to compare iteration formulae by their generated values and domain restrictions. Recognize same equation; your first move is to can have before completing the solution.</p>
+      </section>
+    </article>
+
+    </section>
+    <section class="next-step-card">
+      <h2>Completion wording</h2>
+      <p>Finishing this page means you completed the lesson sequence. It does not claim mastery unless the checked Skill Check evidence has also passed locally.</p>
+      <a class="button secondary-button" href="../exam-training/">Exam Training</a>
+    </section>
+
+    </main>
+    <script src="../../../../assets/static-study.js" defer></script>
+  </body>
+</html>

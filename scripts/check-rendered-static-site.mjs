@@ -12,10 +12,11 @@ const requiredRenderedPages = [
   'p3/index.html',
   'm1/index.html',
   's1/index.html',
+  'p3/topics/algebra/learn/index.html',
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
   'p3/topics/algebra/exam-training/index.html',
-  'p3/topics/logarithmic-and-exponential-functions/field-guide/index.html',
+  'p3/topics/logarithmic-and-exponential-functions/learn/index.html',
   'p3/topics/complex-numbers/exam-training/index.html',
 ];
 
@@ -72,7 +73,7 @@ try {
     return {
       hasPathHero: text.includes('After P1') && text.includes('Learn P3 in order.'),
       hasSequence: text.includes('P3 unit sequence') && text.includes('Unit 1') && text.includes('Unit 9'),
-      hasFlow: ['Field Guide', 'Skill Check', 'Mixed Exam Review'].every((label) => text.includes(label)),
+      hasFlow: ['Learn Mode', 'Mixed Exam Review'].every((label) => text.includes(label)),
       hasStartAction: Array.from(document.querySelectorAll('a')).some((link) => /Start Unit 1: Algebra/.test(link.textContent || '')),
       unitCards: document.querySelectorAll('.path-unit-card').length,
       hasHomepageShell: Boolean(document.querySelector('.homepage-hero, .course-card-featured, .course-support-grid')),
@@ -119,56 +120,38 @@ try {
     }
   }
 
-  await waitForStaticEnhancement(page, 'p3/topics/algebra/field-guide/index.html');
-  const p3FieldGuideResult = await page.evaluate(() => ({
-    guidedStudyCards: document.querySelectorAll('[data-guided-study]').length,
-    phaseButtons: document.querySelectorAll('[data-phase-tab]').length,
-    hasNextSkillCheck: Array.from(document.querySelectorAll('a, button')).some((item) => /Go to Skill Check|Next: Skill Check/.test(item.textContent || '')),
+  await waitForStaticEnhancement(page, 'p3/topics/algebra/learn/index.html');
+  const p3LearnResult = await page.evaluate(() => ({
+    learnFlow: document.querySelectorAll('[data-learn-flow]').length,
+    learnSteps: document.querySelectorAll('[data-learn-step-card]').length,
+    visibleSteps: Array.from(document.querySelectorAll('[data-learn-step-card]')).filter((item) => !item.hidden).length,
+    checkForms: document.querySelectorAll('[data-check-learn-answer]').length,
+    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
   }));
-  const p3FieldGuideCounts = await visibleCounts(page);
-  if (p3FieldGuideResult.guidedStudyCards !== 1) {
-    fail('P3 Algebra Field Guide must render one guided study container.');
+  if (p3LearnResult.learnFlow !== 1) {
+    fail('P3 Algebra Learn Mode must render one learn flow.');
   }
-  if (p3FieldGuideResult.phaseButtons < 1) {
-    fail('P3 Algebra Field Guide must render phase navigation buttons.');
+  if (p3LearnResult.learnSteps < 1 || p3LearnResult.checkForms < 1) {
+    fail('P3 Algebra Learn Mode must render checked lesson steps.');
   }
-  if (!p3FieldGuideResult.hasNextSkillCheck) {
-    fail('P3 Algebra Field Guide must point directly to the Skill Check.');
+  if (p3LearnResult.visibleSteps !== 1) {
+    fail(`P3 Algebra Learn Mode must show one step at a time; saw ${p3LearnResult.visibleSteps}.`);
   }
-  if (p3FieldGuideCounts.phasePanelsVisible !== 1) {
-    fail(`P3 Algebra Field Guide must show exactly one Field Guide phase after JS initialization; saw ${p3FieldGuideCounts.phasePanelsVisible}.`);
+  if (!p3LearnResult.nextLocked) {
+    fail('P3 Algebra Learn Mode must lock next step until the current step is completed.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/skill-check/index.html');
-  const skillCheckResult = await page.evaluate(() => ({
-    countText: document.querySelector('.practice-count')?.textContent?.replace(/\s+/g, ' ').trim() || '',
-    hasSectionDisclosure: Boolean(document.querySelector('.jump-details')),
-    hasMorePracticeControl: Array.from(document.querySelectorAll('button')).some((button) => /More practice/i.test(button.textContent || '') && !button.hidden),
-    hasExamCards: document.querySelectorAll('.exam-question-card').length > 0,
-    hasSkillGroups: document.querySelectorAll('[data-skill-check-group]').length > 0,
-    nextDisabledUntilPass: Array.from(document.querySelectorAll('.practice-controls button')).some((button) => /Pass to continue/i.test(button.textContent || '') && button.disabled),
-  }));
-  const skillCounts = await visibleCounts(page);
-  if (/of\s+44\b/i.test(skillCheckResult.countText)) {
-    fail('P3 Algebra Skill Check must not present "Skill Check 1 of 44" as the default experience.');
-  }
-  if (!/of\s+3\b/i.test(skillCheckResult.countText)) {
-    fail(`P3 Algebra Skill Check must default to a small focused set; saw "${skillCheckResult.countText}".`);
-  }
-  if (skillCounts.practiceCardsVisible !== 1) {
-    fail(`P3 Algebra Skill Check must show one card after JS initialization; saw ${skillCounts.practiceCardsVisible}.`);
-  }
-  if (skillCounts.practiceCardsTotal > 3 && !skillCheckResult.hasSectionDisclosure) {
-    fail('P3 Algebra Skill Check has extra questions but no collapsed section/progress disclosure.');
-  }
-  if (skillCounts.practiceCardsTotal > 3 && !skillCheckResult.hasMorePracticeControl) {
-    fail('P3 Algebra Skill Check has extra questions but no visible More practice set control.');
-  }
-  if (skillCheckResult.hasExamCards) {
-    fail('P3 Algebra Skill Check must not render exam question cards by default.');
-  }
-  if (!skillCheckResult.hasSkillGroups || !skillCheckResult.nextDisabledUntilPass) {
-    fail('P3 Algebra Skill Check must be grouped by subtopic and require a pass before continuing.');
+  const oldSkillCheckResult = await page.evaluate(() => {
+    const text = document.body.innerText;
+    return {
+      moved: text.includes('Skill Check has moved'),
+      hasLearnLink: Array.from(document.querySelectorAll('a')).some((link) => /Open Learn Mode/.test(link.textContent || '') && /\/learn\/(?:index\.html)?$/.test(link.href)),
+      oldForms: document.querySelectorAll('[data-check-skill-answer]').length,
+    };
+  });
+  if (!oldSkillCheckResult.moved || !oldSkillCheckResult.hasLearnLink || oldSkillCheckResult.oldForms !== 0) {
+    fail('P3 Algebra Skill Check route must be a lightweight Learn Mode merge notice.');
   }
 
   await waitForStaticEnhancement(page, 'p3/review/index.html');

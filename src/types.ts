@@ -347,10 +347,17 @@ export interface QuickCheckCheckResult {
 export interface LearningActivityAttempt {
   id: string;
   regionId: string;
-  activityType?: 'quick_check' | 'warm_up';
+  activityType?: 'quick_check' | 'warm_up' | 'learn_mode';
   activityId?: string;
+  stepId?: string;
   topic?: string;
   prompt?: string;
+  submittedAnswer?: string;
+  isCorrect?: boolean;
+  usedHint?: boolean;
+  revealedAnswer?: boolean;
+  strongEvidence?: boolean;
+  mistakeTags?: string[];
   createdAt?: string;
   completedAt?: string;
 }

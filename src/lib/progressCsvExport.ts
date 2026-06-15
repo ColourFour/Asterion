@@ -115,17 +115,19 @@ function rowForExamAttempt(attempt: Attempt, exportTimestamp: string): LocalProg
 }
 
 function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestamp: string): LocalProgressCsvRow {
+  const isLearnMode = attempt.activityType === 'learn_mode';
   return {
     ...blankRow(exportTimestamp),
     topic: attempt.topic ?? attempt.regionId,
-    route_page_type: 'field-guide',
-    activity_type: attempt.activityType ?? 'Field Guide',
+    route_page_type: isLearnMode ? 'learn' : 'field-guide',
+    activity_type: isLearnMode ? 'Learn Mode' : (attempt.activityType ?? 'Field Guide'),
     item_id: attempt.activityId ?? attempt.id,
     attempt_timestamp: attempt.completedAt ?? attempt.createdAt ?? '',
-    answer_result_summary: attempt.prompt ?? '',
-    deterministic_pass_fail: 'not_available',
+    answer_result_summary: attempt.submittedAnswer ?? attempt.prompt ?? '',
+    deterministic_pass_fail: typeof attempt.isCorrect === 'boolean' ? (attempt.isCorrect ? 'pass' : 'fail') : 'not_available',
     evidence_label: 'Local learning activity',
-    mastery_eligibility_label: 'not_mastery_evidence',
+    mastery_eligibility_label: attempt.strongEvidence ? 'clean_checked_learning_attempt' : 'not_mastery_evidence',
+    suspicion_flags: (attempt.mistakeTags ?? []).join('|'),
   };
 }
 

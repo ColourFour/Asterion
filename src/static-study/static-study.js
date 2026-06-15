@@ -170,16 +170,18 @@
   }
 
   function learningCsvRow(attempt, exportTimestamp) {
+    var isLearnMode = attempt.activityType === 'learn_mode';
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topic || attempt.regionId || '',
-      route_page_type: 'field-guide',
-      activity_type: attempt.activityType || 'Field Guide',
+      route_page_type: isLearnMode ? 'learn' : 'field-guide',
+      activity_type: isLearnMode ? 'Learn Mode' : (attempt.activityType || 'Field Guide'),
       item_id: attempt.activityId || attempt.id || '',
       attempt_timestamp: attempt.completedAt || attempt.createdAt || '',
-      answer_result_summary: attempt.prompt || '',
-      deterministic_pass_fail: 'not_available',
+      answer_result_summary: attempt.submittedAnswer || attempt.prompt || '',
+      deterministic_pass_fail: typeof attempt.isCorrect === 'boolean' ? (attempt.isCorrect ? 'pass' : 'fail') : 'not_available',
       evidence_label: 'Local learning activity',
-      mastery_eligibility_label: 'not_mastery_evidence'
+      mastery_eligibility_label: attempt.strongEvidence ? 'clean_checked_learning_attempt' : 'not_mastery_evidence',
+      suspicion_flags: safeArray(attempt.mistakeTags).join('|')
     });
   }
 
@@ -408,7 +410,7 @@
       if (statusText) {
         statusText.textContent = isOpen
           ? 'All P3 units are complete in this browser. Mixed exam review is open.'
-          : completed + '/' + requirements.length + ' units complete. Finish the remaining Field Guides and Skill Checks first.';
+          : completed + '/' + requirements.length + ' units complete. Finish the remaining Learn Mode steps and checked questions first.';
       }
       if (list) {
         list.innerHTML = statuses.map(function (status) {
@@ -418,8 +420,8 @@
             : requirement.skillCheckHref;
           return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
             + '<div><strong>' + escapeText(requirement.name) + '</strong>'
-            + '<span>Field Guide ' + status.guideCount + '/' + status.fieldGuideTotal
-            + '; Skill Check ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
+            + '<span>Learn Mode ' + status.guideCount + '/' + status.fieldGuideTotal
+            + '; checked questions ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
             + (status.complete ? '<span class="unit-state">Done</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
         }).join('');
@@ -481,7 +483,7 @@
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Field Guide steps, ' + practiceCount + ' Skill Check passes, ' + examCount + ' self-marked exam evidence.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn Mode steps, ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
@@ -491,8 +493,8 @@
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
       var parts = [];
-      if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Field Guide');
-      if (practiceCount > 0) parts.push(practiceCount + ' Skill Check pass' + (practiceCount === 1 ? '' : 'es'));
+      if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Learn Mode');
+      if (practiceCount > 0) parts.push(practiceCount + ' checked pass' + (practiceCount === 1 ? '' : 'es'));
       if (examCount > 0) parts.push(examCount + ' self-marked exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
       node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
@@ -555,6 +557,41 @@
     });
     saveProgress(progress);
     updateProgressText();
+  }
+
+  function completeLearnStepInProgress(progress, regionId, stepId, title, attemptId) {
+    if (!regionId || !stepId) return progress;
+    var now = new Date().toISOString();
+    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    var completions = Object.assign({}, current.fieldGuideTopicCompletions || {});
+    completions[stepId] = completions[stepId] || {
+      topicId: stepId,
+      subtopicId: stepId,
+      title: title,
+      completedAt: now,
+      source: 'quick_check',
+      activityId: stepId,
+      attemptId: attemptId
+    };
+
+    var stepCards = Array.from(document.querySelectorAll('[data-learn-step-card][data-region-id="' + regionId + '"]'));
+    var allComplete = stepCards.length > 0 && stepCards.every(function (card) {
+      var id = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
+      return Boolean(completions[id]);
+    });
+
+    progress.regionLearning[regionId] = Object.assign({}, current, {
+      regionId: regionId,
+      fieldGuideStartedAt: current.fieldGuideStartedAt || now,
+      fieldGuideCompletedAt: allComplete ? (current.fieldGuideCompletedAt || now) : current.fieldGuideCompletedAt,
+      fieldGuideTopicCompletions: completions,
+      updatedAt: now
+    });
+    return progress;
+  }
+
+  function learnStepCompleted(progress, regionId, stepId) {
+    return Boolean(completionsFor(progress, regionId)[stepId]);
   }
 
   function normalizeMathText(value) {
@@ -1030,6 +1067,47 @@
     return attempt;
   }
 
+  function saveLearnModeAttempt(form, submittedAnswer, checkResult) {
+    var progress = loadProgress();
+    var now = new Date().toISOString();
+    var regionId = form.getAttribute('data-region-id') || '';
+    var stepId = form.getAttribute('data-field-guide-topic-id') || form.getAttribute('data-step-id') || '';
+    var usedHint = form.getAttribute('data-used-hint') === 'true';
+    var revealedAnswer = form.getAttribute('data-revealed-answer') === 'true';
+    var strongEvidence = Boolean(checkResult.isCorrect && !usedHint && !revealedAnswer);
+    var attempt = {
+      id: createId('learn_attempt'),
+      regionId: regionId,
+      activityType: 'learn_mode',
+      activityId: form.getAttribute('data-check-id') || stepId,
+      stepId: stepId,
+      topic: form.getAttribute('data-topic') || '',
+      prompt: form.getAttribute('data-step-title') || '',
+      submittedAnswer: submittedAnswer,
+      isCorrect: Boolean(checkResult.isCorrect),
+      usedHint: usedHint,
+      revealedAnswer: revealedAnswer,
+      strongEvidence: strongEvidence,
+      mistakeTags: selectedMistakeTags(form),
+      createdAt: now,
+      completedAt: checkResult.isCorrect ? now : undefined
+    };
+    progress.learningActivityAttempts.push(attempt);
+    if (checkResult.isCorrect) {
+      progress = completeLearnStepInProgress(progress, regionId, stepId, form.getAttribute('data-step-title') || '', attempt.id);
+    }
+    saveProgress(progress);
+    updateProgressText();
+    return attempt;
+  }
+
+  function cleanLearnAttemptCanSaveSkill(form, checkResult) {
+    return Boolean(checkResult.isCorrect
+      && form.getAttribute('data-learn-saves-skill-pass') === 'true'
+      && form.getAttribute('data-used-hint') !== 'true'
+      && form.getAttribute('data-revealed-answer') !== 'true');
+  }
+
   function setSkillFeedback(form, message, state) {
     var feedback = form.querySelector('.skill-check-feedback');
     if (!feedback) return;
@@ -1105,6 +1183,54 @@
     if (repair) repair.hidden = false;
     if (answerReveal) answerReveal.hidden = false;
     if (nextButton) nextButton.hidden = true;
+  }
+
+  function checkLearnAnswer(form) {
+    var submittedAnswer = String(new FormData(form).get('submittedAnswer') || '').trim();
+    var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
+    saveLearnModeAttempt(form, submittedAnswer, checkResult);
+    if (cleanLearnAttemptCanSaveSkill(form, checkResult)) {
+      saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
+    }
+
+    var submitButton = form.querySelector('button[type="submit"]');
+    var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
+    var hint = form.querySelector('[data-learn-hint]');
+    var afterAttempt = form.querySelector('[data-learn-after-attempt]');
+    var stepCard = form.closest('[data-learn-step-card]');
+    var similar = stepCard?.querySelector('[data-learn-similar-panel]');
+    var transfer = stepCard?.querySelector('[data-learn-exam-transfer]');
+
+    if (afterAttempt) afterAttempt.hidden = false;
+    if (similar) similar.hidden = false;
+    if (transfer) transfer.hidden = false;
+
+    if (checkResult.isCorrect) {
+      var clean = cleanLearnAttemptCanSaveSkill(form, checkResult);
+      setSkillFeedback(form, clean
+        ? 'Correct. Saved as a clean checked answer.'
+        : 'Correct. Saved as supported practice, not strong Skill Check evidence.', clean ? 'correct' : 'repaired');
+      form.classList.add('is-passed');
+      if (submitButton) {
+        submitButton.textContent = 'Check again';
+        submitButton.className = 'button secondary-button';
+      }
+      window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
+      updateLearnModeFlowState();
+      return;
+    }
+
+    setSkillFeedback(form, 'Not yet. The hint is now available, and this attempt has been saved as practice.', 'incorrect');
+    form.setAttribute('data-used-hint', 'true');
+    if (hint) hint.hidden = false;
+    if (mistakePanel) mistakePanel.hidden = false;
+    updateTargetedPrompt(form);
+    if (submitButton) {
+      submitButton.textContent = 'Try again';
+      submitButton.className = 'button primary-button';
+    }
+    window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
+    updateLearnModeFlowState();
   }
 
   function examPartScores(form) {
@@ -1701,6 +1827,105 @@
     });
   }
 
+  function updateLearnModeFlowState() {
+    var progress = loadProgress();
+    document.querySelectorAll('[data-learn-step-card]').forEach(function (card) {
+      if (!(card instanceof HTMLElement)) return;
+      var regionId = card.getAttribute('data-region-id') || '';
+      var stepId = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
+      var completed = learnStepCompleted(progress, regionId, stepId);
+      var state = card.querySelector('[data-learn-step-state]');
+      card.classList.toggle('is-complete', completed);
+      if (state) state.textContent = completed ? 'Completed' : 'Not completed';
+    });
+  }
+
+  function setupLearnModeFlow() {
+    document.querySelectorAll('[data-learn-flow]').forEach(function (flow) {
+      var cards = Array.from(flow.querySelectorAll('[data-learn-step-card]')).filter(function (card) {
+        return card instanceof HTMLElement;
+      });
+      if (!cards.length || flow.previousElementSibling?.classList.contains('learn-controls')) return;
+
+      var finalHref = flow.getAttribute('data-flow-final-href') || '';
+      var finalLabel = flow.getAttribute('data-flow-final-label') || 'Continue';
+      var index = Math.max(0, cards.findIndex(function (card) {
+        return window.location.hash.replace(/^#/, '') === card.getAttribute('data-learn-step-id');
+      }));
+      var controls = document.createElement('div');
+      controls.className = 'practice-controls learn-controls';
+      controls.setAttribute('aria-label', 'Learn Mode navigation');
+
+      var previous = document.createElement('button');
+      previous.className = 'button secondary-button';
+      previous.type = 'button';
+      previous.textContent = 'Previous';
+
+      var label = document.createElement('span');
+      label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
+
+      var next = document.createElement('button');
+      next.className = 'button primary-button';
+      next.type = 'button';
+      next.textContent = 'Next step';
+
+      controls.append(previous, label, next);
+      flow.before(controls);
+
+      function currentCardComplete() {
+        var progress = loadProgress();
+        var card = cards[index];
+        var regionId = card.getAttribute('data-region-id') || '';
+        var stepId = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
+        return learnStepCompleted(progress, regionId, stepId);
+      }
+
+      function render() {
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+        });
+        label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
+        previous.disabled = index === 0;
+        var complete = currentCardComplete();
+        next.disabled = !complete;
+        next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
+        updateLearnModeFlowState();
+      }
+
+      previous.addEventListener('click', function () {
+        index = Math.max(0, index - 1);
+        render();
+      });
+
+      next.addEventListener('click', function () {
+        if (!currentCardComplete()) return;
+        if (index >= cards.length - 1) {
+          if (finalHref) window.location.href = finalHref;
+          else next.textContent = 'Completed lesson sequence';
+          return;
+        }
+        index += 1;
+        var stepId = cards[index].getAttribute('data-learn-step-id') || '';
+        if (stepId) window.history.replaceState(null, '', '#' + stepId);
+        render();
+      });
+
+      window.addEventListener('hashchange', function () {
+        var hash = window.location.hash.replace(/^#/, '');
+        var targetIndex = cards.findIndex(function (card) {
+          return card.getAttribute('data-learn-step-id') === hash;
+        });
+        if (targetIndex < 0) return;
+        index = targetIndex;
+        render();
+      });
+
+      window.addEventListener('asterion:learn-progress', render);
+      render();
+    });
+  }
+
   function setupGuidedStudy() {
     document.querySelectorAll('[data-guided-study]').forEach(function (study) {
       var tabs = Array.from(study.querySelectorAll('[data-phase-tab]'));
@@ -1938,6 +2163,7 @@
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();
+    setupLearnModeFlow();
     setupConfidentStudentMode();
     setupExamSelfMarking();
     setupGuidedStudy();
@@ -1974,6 +2200,16 @@
         }
       }
 
+      var learnHintButton = target.closest('[data-show-learn-hint]');
+      if (learnHintButton) {
+        var learnForm = learnHintButton.closest('[data-check-learn-answer]');
+        if (learnForm) {
+          learnForm.setAttribute('data-used-hint', 'true');
+          var learnHint = learnForm.querySelector('[data-learn-hint]');
+          if (learnHint) learnHint.hidden = false;
+        }
+      }
+
       var exportButton = target.closest('[data-export-local-progress]');
       if (exportButton) {
         exportLocalProgressCsv(exportButton);
@@ -1989,6 +2225,11 @@
         checkSkillAnswer(form);
         return;
       }
+      if (form.matches('[data-check-learn-answer]')) {
+        event.preventDefault();
+        checkLearnAnswer(form);
+        return;
+      }
       if (form.matches('[data-save-exam-attempt]')) {
         event.preventDefault();
         saveExamAttempt(form);
@@ -1998,10 +2239,10 @@
     document.addEventListener('change', function (event) {
       var target = event.target;
       if (!(target instanceof HTMLInputElement) || target.name !== 'mistakeTags') return;
-      var form = target.closest('[data-check-skill-answer]');
+      var form = target.closest('[data-check-skill-answer], [data-check-learn-answer]');
       if (!(form instanceof HTMLFormElement)) return;
       updateTargetedPrompt(form);
-      updateLatestSkillCheckAttemptMistakeTags(form);
+      if (form.matches('[data-check-skill-answer]')) updateLatestSkillCheckAttemptMistakeTags(form);
     });
 
     document.addEventListener('toggle', function (event) {
@@ -2018,6 +2259,15 @@
           if (!workedBeforeReveal && form.getAttribute('data-started-marking') !== 'true') {
             form.setAttribute('data-answer-revealed-before-marking', 'true');
           }
+        }
+        return;
+      }
+      if (details.matches('[data-learn-answer-reveal]')) {
+        var learnForm = details.closest('[data-check-learn-answer]');
+        if (learnForm instanceof HTMLFormElement) {
+          learnForm.setAttribute('data-revealed-answer', 'true');
+          var learnAfterAttempt = learnForm.querySelector('[data-learn-after-attempt]');
+          if (learnAfterAttempt) learnAfterAttempt.hidden = false;
         }
         return;
       }
