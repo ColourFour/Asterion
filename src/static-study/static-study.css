@@ -4548,6 +4548,14 @@ summary {
   max-width: 760px;
 }
 
+body.learn-mode-page .learn-check-form,
+body.learn-mode-page .learn-after-attempt,
+body.learn-mode-page .learn-similar-panel,
+body.learn-mode-page .learn-exam-transfer {
+  width: 100%;
+  max-width: none;
+}
+
 .learn-check-form {
   display: grid;
   gap: 10px;
@@ -4561,6 +4569,25 @@ summary {
   padding: 12px;
   border-left: 4px solid var(--accent);
   background: #f8fbff;
+}
+
+.learn-step-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.learn-step-footer[hidden] {
+  display: none;
+}
+
+.learn-step-footer span {
+  color: var(--muted-strong);
+  font-weight: 900;
 }
 
 .option-list legend {
@@ -4588,7 +4615,35 @@ summary {
 }
 
 .exam-question-section {
+  display: grid;
+  gap: 14px;
   margin-top: 6px;
+}
+
+.exam-training-page main {
+  width: min(var(--content), calc(100% - 32px));
+}
+
+.exam-training-page .page-hero,
+.exam-training-page .exam-question-section,
+.exam-training-page .exam-callout,
+.exam-training-page .exam-topic-panel,
+.exam-training-page .jump-details {
+  width: 100%;
+}
+
+.exam-training-page .section-heading {
+  margin-top: 0;
+}
+
+.exam-training-page .exam-controls {
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+}
+
+.exam-training-page .exam-question-grid.is-single-question .exam-question-card {
+  width: 100%;
 }
 
 body.skill-check-page .exam-question-section {
@@ -4603,26 +4658,6 @@ body.skill-check-page .exam-question-section {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.exam-mode-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0 18px;
-  padding: 13px 15px;
-  border: 1px solid rgba(61, 86, 109, 0.18);
-  border-radius: var(--radius);
-  background: #eef5f4;
-}
-
-.exam-mode-toolbar p {
-  margin: 0;
-  color: var(--muted);
-  font-weight: 800;
-}
-
-.exam-mode-toggle,
 .exam-commit-checkbox,
 .inline-check {
   display: inline-grid;
@@ -4632,7 +4667,6 @@ body.skill-check-page .exam-question-section {
   font-weight: 900;
 }
 
-.exam-mode-toggle input,
 .exam-commit-checkbox input,
 .inline-check input,
 .mark-point-list input {
@@ -4645,7 +4679,7 @@ body.skill-check-page .exam-question-section {
 }
 
 .static-enhanced .exam-question-grid.is-single-question .exam-question-card {
-  max-width: 920px;
+  max-width: none;
 }
 
 .exam-question-card {
@@ -4677,10 +4711,6 @@ body.skill-check-page .exam-question-section {
 
 .mark-scheme-details {
   background: #fff8ef;
-}
-
-.confident-student-mode .exam-hint-details {
-  display: none;
 }
 
 .question-review-link {

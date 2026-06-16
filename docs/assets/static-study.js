@@ -1309,20 +1309,17 @@
     var progress = loadProgress();
     var now = new Date().toISOString();
     var marksAvailable = Number(form.getAttribute('data-marks-available') || 0);
-    var formData = new FormData(form);
     var partScores = examPartScores(form);
     var validationMessage = validateExamPartScores(partScores);
     var marksEarned = partScores.reduce(function (sum, part) { return sum + part.marksEarned; }, 0);
     var markPointsTicked = partScores.reduce(function (sum, part) { return sum + safeArray(part.markPointIds).length; }, 0);
     var markPointsAvailable = partScores.reduce(function (sum, part) { return sum + Number(part.markPointsAvailable || 0); }, 0);
-    var mistakeType = String(formData.get('mistakeType') || '');
-    var confidenceRating = String(formData.get('confidenceRating') || '');
     var status = form.querySelector('.form-status');
     var card = form.closest('.exam-question-card');
     var markSchemeRevealed = Boolean(card?.querySelector('[data-mark-scheme-reveal]')?.open);
-    if (validationMessage || !markSchemeRevealed || !mistakeType || !['low', 'medium', 'high'].includes(confidenceRating)) {
+    if (validationMessage || !markSchemeRevealed) {
       if (status) {
-        status.textContent = validationMessage || (!markSchemeRevealed ? 'Reveal the mark scheme before saving a self-marked attempt.' : 'Add a reflection and confidence before saving.');
+        status.textContent = validationMessage || 'Reveal the mark scheme before saving a self-marked attempt.';
         status.setAttribute('data-state', 'warning');
       }
       return;
@@ -1343,12 +1340,8 @@
       marksAvailable: marksAvailable,
       scoreRatio: marksAvailable > 0 ? marksEarned / marksAvailable : undefined,
       partScores: partScores,
-      mistakeType: mistakeType,
-      mistakeTypes: mistakeType === 'no_issue' ? [] : [mistakeType],
       fullScoreConfirmed: marksAvailable > 0 && marksEarned === marksAvailable,
       selfMarked: true,
-      confidentMode: document.documentElement.classList.contains('confident-student-mode'),
-      confidenceRating: confidenceRating,
       answerRevealedBeforeMarking: form.getAttribute('data-answer-revealed-before-marking') === 'true',
       markPointsTicked: markPointsTicked,
       markPointsAvailable: markPointsAvailable,
@@ -1373,31 +1366,6 @@
       status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
     }
     updateProgressText();
-  }
-
-  function applyConfidentStudentMode(enabled) {
-    document.documentElement.classList.toggle('confident-student-mode', enabled);
-    document.querySelectorAll('[data-save-exam-attempt]').forEach(function (form) {
-      if (form instanceof HTMLFormElement) form.setAttribute('data-confident-mode', enabled ? 'true' : 'false');
-    });
-    document.querySelectorAll('[data-confident-student-mode]').forEach(function (input) {
-      if (input instanceof HTMLInputElement) input.checked = enabled;
-    });
-  }
-
-  function setupConfidentStudentMode() {
-    applyConfidentStudentMode(loadProgress().settings?.confidentStudentMode === true);
-    document.querySelectorAll('[data-confident-student-mode]').forEach(function (input) {
-      if (!(input instanceof HTMLInputElement)) return;
-      input.addEventListener('change', function () {
-        var progress = loadProgress();
-        progress.settings = Object.assign({}, progress.settings || {}, {
-          confidentStudentMode: input.checked
-        });
-        saveProgress(progress);
-        applyConfidentStudentMode(input.checked);
-      });
-    });
   }
 
   function setupExamSelfMarking() {
@@ -1901,24 +1869,7 @@
         return learnCardCompleted(progress, card);
       }
 
-      function render() {
-        cards.forEach(function (card, cardIndex) {
-          card.hidden = cardIndex !== index;
-        });
-        label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
-        previous.disabled = index === 0;
-        var complete = currentCardComplete();
-        next.disabled = !complete;
-        next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
-        updateLearnModeFlowState();
-      }
-
-      previous.addEventListener('click', function () {
-        index = Math.max(0, index - 1);
-        render();
-      });
-
-      next.addEventListener('click', function () {
+      function advanceLearnStep(shouldScroll) {
         if (!currentCardComplete()) return;
         if (index >= cards.length - 1) {
           if (finalHref) window.location.href = finalHref;
@@ -1929,6 +1880,46 @@
         var stepId = cards[index].getAttribute('data-learn-step-id') || '';
         if (stepId) window.history.replaceState(null, '', '#' + stepId);
         render();
+        if (shouldScroll && cards[index] instanceof HTMLElement) {
+          cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function render() {
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+        });
+        label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
+        previous.disabled = index === 0;
+        var complete = currentCardComplete();
+        next.disabled = !complete;
+        next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
+        updateLearnModeFlowState();
+        cards.forEach(function (card, cardIndex) {
+          var footer = card.querySelector('[data-learn-step-footer]');
+          var inlineNext = card.querySelector('[data-learn-inline-next]');
+          if (footer instanceof HTMLElement) footer.hidden = cardIndex !== index || !complete;
+          if (inlineNext instanceof HTMLButtonElement) {
+            inlineNext.hidden = cardIndex !== index || !complete;
+            inlineNext.disabled = cardIndex !== index || !complete;
+            inlineNext.textContent = cardIndex === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
+          }
+        });
+      }
+
+      previous.addEventListener('click', function () {
+        index = Math.max(0, index - 1);
+        render();
+      });
+
+      next.addEventListener('click', function () {
+        advanceLearnStep(false);
+      });
+
+      flow.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element) || !target.closest('[data-learn-inline-next]')) return;
+        advanceLearnStep(true);
       });
 
       window.addEventListener('hashchange', function () {
@@ -2184,7 +2175,6 @@
     setupOneCardFlow();
     setupExamQuestionFlow();
     setupLearnModeFlow();
-    setupConfidentStudentMode();
     setupExamSelfMarking();
     setupGuidedStudy();
     updateProgressText();

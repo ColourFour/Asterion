@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
+import { examQuestionSupportPrompt } from '../src/data/examQuestionSupport';
 import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3ExamLadder, type P3MappedExamQuestionIdsBySkill } from '../src/data/p3ExamLadders';
 import { getFieldGuideTopicsForRegion, validateProblemFirstFieldGuideLessons, type FieldGuideTopic, type FieldGuideTopicExample, type ProblemFirstLesson } from '../src/data/fieldGuideTopics';
 import { getLearnStepsForRegion, validateLearnSteps, type LearnStep } from '../src/data/learnModeLessons';
@@ -1464,13 +1465,6 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
               <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are practice evidence, not automatic mastery.</p>
             </div>
           </div>
-          <div class="exam-mode-toolbar">
-            <label class="exam-mode-toggle">
-              <input type="checkbox" data-confident-student-mode />
-              <span>Confident student mode</span>
-            </label>
-            <p>Fewer prompts and faster access to self-marking. Integrity labels stay on.</p>
-          </div>
           <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam review question">
             ${mixedQuestions.map((question) => renderExamQuestionCard(question, pagePath, {
               reviewLinkPath: p3FieldGuidePathForQuestion(question),
@@ -1525,6 +1519,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
     description: 'Final mixed Paper 3 review after the sequential P3 unit path.',
     active: 'p3-exam-training',
     body,
+    bodyClass: 'exam-training-page',
   });
 }
 
@@ -2083,6 +2078,12 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
         <p class="eyebrow">Exam transfer</p>
         <p>${renderMathText(step.examTransfer)}</p>
       </section>
+      <footer class="learn-step-footer" data-learn-step-footer hidden>
+        <span>Step ${index + 1} of ${total} complete</span>
+        <button class="button primary-button" type="button" data-learn-inline-next>
+          ${index === total - 1 ? 'Finish lesson sequence' : 'Next step'}
+        </button>
+      </footer>
     </article>
   `;
 }
@@ -2124,8 +2125,9 @@ function renderLearnPage(
     </section>
     <section class="next-step-card">
       <h2>After this lesson</h2>
-      <p>Finishing this page records Learn Mode practice in this browser. Clean checked answers are stronger evidence than hinted or revealed work.</p>
-      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}
+      <p>Module 1 of 2: Learn Mode. Complete Step ${Math.max(1, learnSteps.length)} of ${Math.max(1, learnSteps.length)}, then move to Module 2 of 2: Exam Training.</p>
+      <p>Clean checked answers are stronger evidence than hinted or revealed work.</p>
+      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Open Exam Training', 'button secondary-button')}
     </section>
   `;
   return renderPage({
@@ -2476,6 +2478,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
   const displayTopic = options.displayTopic ?? displayTopicForQuestion(question);
   const displaySubtopic = options.displaySubtopic ?? question.displaySubtopic;
   const allowAttemptSave = options.allowAttemptSave ?? true;
+  const supportPrompt = examQuestionSupportPrompt(question.id);
   return `
     <article class="exam-question-card" id="question-${escapeAttr(question.id)}" data-coarse-self-marking="${hasPartData ? 'false' : 'true'}">
       <header>
@@ -2491,10 +2494,10 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
       <figure class="question-figure">
         <img loading="lazy" src="${hrefToPublicAsset(pagePath, questionImage)}" alt="${escapeAttr(`${questionTitle(question)} question image`)}" />
       </figure>
-      <details class="exam-hint-details">
+      ${supportPrompt ? `<details class="exam-hint-details">
         <summary>Need a first step?</summary>
-        <p>Underline what the question asks for, write the formula or method you recognise, then do one line of working before checking the mark scheme.</p>
-      </details>
+        <p>${escapeHtml(supportPrompt.firstStep)}</p>
+      </details>` : ''}
       <label class="exam-commit-checkbox">
         <input type="checkbox" data-worked-before-reveal />
         <span>I attempted this on paper before revealing the mark scheme.</span>
@@ -2515,29 +2518,6 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
         <div class="exam-part-list">
           ${selfMarkParts.map(renderExamPartControls).join('')}
         </div>
-        <label>
-          Reflection
-          <select name="mistakeType" required>
-            <option value="">Choose one</option>
-            <option value="no_issue">Full method was secure</option>
-            <option value="did_not_know_method">I did not know the method</option>
-            <option value="algebra_error">Algebra error</option>
-            <option value="misread_question">Misread the question</option>
-            <option value="formula_issue">Formula issue</option>
-            <option value="diagram_or_modeling_issue">Diagram or modelling issue</option>
-            <option value="ran_out_of_time">Ran out of time</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-        <label>
-          Confidence after marking
-          <select name="confidenceRating" required>
-            <option value="">Choose one</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-        </label>
         <button class="button primary-button" type="submit">Save self-marked attempt</button>
         <p class="form-status" role="status"></p>
       </form>` : '<p class="empty-state">Use this question for practice. Save marks only if you want to track the attempt locally.</p>'}
@@ -2651,6 +2631,7 @@ function renderTopicExamTrainingPage(
       `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start topic questions</a>' : ''}
       ${routeLink(pagePath, practicePath, 'Skill Check', 'button secondary-button')}
       ${routeLink(pagePath, topicsIndexPath, 'Back to P3 topics', 'button text-button')}`,
+      'Module 2 of 2: Exam Training',
     )}
     <section class="exam-question-section" id="topic-exam-questions">
       <div class="section-heading">
@@ -2658,13 +2639,6 @@ function renderTopicExamTrainingPage(
           <h2>Exam questions</h2>
           <p>Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
         </div>
-      </div>
-      <div class="exam-mode-toolbar">
-        <label class="exam-mode-toggle">
-          <input type="checkbox" data-confident-student-mode />
-          <span>Confident student mode</span>
-        </label>
-        <p>Fewer prompts and faster access to self-marking. Integrity labels and Skill Check gating stay on.</p>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="${escapeAttr(topic.name)} exam question">
         ${questions.map((question) => renderExamQuestionCard(question, pagePath, {
@@ -2680,6 +2654,7 @@ function renderTopicExamTrainingPage(
     description: `Static Exam Training questions for ${topic.name}.`,
     active: 'p3-exam-training',
     body,
+    bodyClass: 'exam-training-page',
   });
 }
 
@@ -2721,13 +2696,6 @@ function renderExamTrainingPage(
           <h2>Mixed Paper 3 questions</h2>
           <p>Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
         </div>
-      </div>
-      <div class="exam-mode-toolbar">
-        <label class="exam-mode-toggle">
-          <input type="checkbox" data-confident-student-mode />
-          <span>Confident student mode</span>
-        </label>
-        <p>Fewer prompts and faster access to self-marking. Integrity labels and Skill Check gating stay on.</p>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam question">
         ${mixedQuestions.map((question) => renderExamQuestionCard(question, pagePath, {
@@ -2772,6 +2740,7 @@ function renderExamTrainingPage(
     description: 'Static Exam Training panel for Paper 3 practice.',
     active: 'p3-exam-training',
     body,
+    bodyClass: 'exam-training-page',
   });
 }
 
