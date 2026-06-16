@@ -168,8 +168,8 @@ try {
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasPathHero: text.includes('After P1') && text.includes('Learn P3 in order.'),
-      hasSequence: text.includes('P3 unit sequence') && text.includes('Unit 1') && text.includes('Unit 9'),
+      hasPathHero: text.includes('Asterion - Learn by doing') && text.includes('Try the best example problem first.'),
+      hasSequence: text.includes('Units') && text.includes('Unit 1') && text.includes('Unit 9'),
       hasFlow: ['Learn Mode', 'Mixed Exam Review'].every((label) => text.includes(label)),
       hasStartAction: Array.from(document.querySelectorAll('a')).some((link) => /Start Unit 1: Algebra/.test(link.textContent || '')),
       unitCards: document.querySelectorAll('.path-unit-card').length,
@@ -178,7 +178,7 @@ try {
     };
   });
   if (!homepageResult.hasPathHero || !homepageResult.hasSequence || !homepageResult.hasFlow || !homepageResult.hasStartAction) {
-    fail('Root page must be the direct After P1 -> P3 learning path.');
+    fail('Root page must be the direct P3 learn-by-doing path.');
   }
   if (homepageResult.unitCards < 10) {
     fail(`Root P3 path must show 9 units plus final review; saw ${homepageResult.unitCards} cards.`);
@@ -202,10 +202,10 @@ try {
   for (const coursePage of ['p3/index.html']) {
     await waitForStaticEnhancement(page, coursePage);
     const courseResult = await page.evaluate(() => {
-      const text = document.body.innerText;
+      const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasPathHero: text.includes('Learn P3 in order.'),
+        hasPathHero: text.includes('Asterion - Learn by doing') && text.includes('Try the best example problem first.'),
         hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
       };
     });

@@ -49,18 +49,18 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
     title: 'Direction vector from two points',
     fieldGuideTopicId: 'vectors_notation',
     stem: 'A line passes through $A(1,2,-1)$ and $B(4,0,5)$. The direction vector is the displacement from one point to the other.',
-    prompt: 'Find $\\overrightarrow{AB}$.',
+    prompt: 'Use final minus initial coordinates. Find $\\overrightarrow{AB}$.',
     principle: 'Principle: subtract initial point coordinates from final point coordinates.',
     explanation: '$\\overrightarrow{AB}=B-A=(4-1,0-2,5-(-1))=(3,-2,6)$.',
-    examTransfer: 'Exam transfer: line and angle questions often start by forming a direction vector from two points before using a line equation or scalar product.',
+    examTransfer: 'Exam transfer: line and angle questions often start by forming a direction vector from two points; check the direction before using a line equation or scalar product.',
     primary: {
       id: 'learn-vectors-direction-from-points-primary',
-      prompt: 'Find $\\overrightarrow{AB}$ for $A(1,2,-1)$ and $B(4,0,5)$.',
+      prompt: 'Use $B-A$ to find $\\overrightarrow{AB}$ for $A(1,2,-1)$ and $B(4,0,5)$.',
       inputType: 'numeric',
       answerType: 'coordinate',
       expectedAnswer: '(3,-2,6)',
       acceptedAnswers: ['(3,-2,6)', '3,-2,6'],
-      hint: 'Use final minus initial coordinate by coordinate.',
+      hint: 'Use final minus initial coordinate by coordinate; reversing the order gives the opposite vector.',
       methodCue: '$B-A$.',
       firstStep: 'Use $(4-1,0-2,5-(-1))$.',
       workedRoute: [
@@ -68,7 +68,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The components are $3$, $-2$, and $6$.',
         'So $\\overrightarrow{AB}=(3,-2,6)$.',
       ],
-      skillId: 'vectors_notation',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
     similar: {
       id: 'learn-vectors-direction-from-points-similar',
@@ -85,7 +85,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'This gives $(3,2,-5)$.',
         'That displacement is the direction vector from $P$ to $Q$.',
       ],
-      skillId: 'vectors_notation',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
   },
   {
@@ -118,7 +118,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'Use $\\overrightarrow{AB}=(3,-2,6)$ as the direction.',
         'The line is $\\mathbf r=(1,2,-1)+\\lambda(3,-2,6)$.',
       ],
-      skillId: 'vectors_line_equation',
+      skillId: 'p3_vec_line_equations_intersections',
     },
     similar: {
       id: 'learn-vectors-line-equation-similar',
@@ -141,7 +141,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The direction vector is $(-1,4,3)$.',
         'So $\\mathbf r=(2,-1,0)+\\lambda(-1,4,3)$.',
       ],
-      skillId: 'vectors_line_equation',
+      skillId: 'p3_vec_line_equations_intersections',
     },
   },
   {
@@ -168,7 +168,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The $y$ coordinate gives $2-2(2)=-2$.',
         'The $z$ coordinate gives $-1+6(2)=11$, so yes.',
       ],
-      skillId: 'vectors_line_equation',
+      skillId: 'p3_vec_line_equations_intersections',
     },
     similar: {
       id: 'learn-vectors-point-on-line-similar',
@@ -185,7 +185,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The $y$ coordinate works: $2-2(1)=0$.',
         'The $z$ coordinate gives $5$, not $10$, so no.',
       ],
-      skillId: 'vectors_line_equation',
+      skillId: 'p3_vec_line_equations_intersections',
     },
   },
   {
@@ -212,7 +212,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'Substitute into $L_1$: $(1,0,2)+2(1,2,-1)$.',
         'The intersection point is $(3,4,0)$.',
       ],
-      skillId: 'vectors_intersect_parallel_skew',
+      skillId: 'p3_vec_line_equations_intersections',
     },
     similar: {
       id: 'learn-vectors-line-intersection-similar',
@@ -229,7 +229,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'Substitute into $L_1$ to get $(4,3,0)$.',
         'This is also on $L_2$ when $\\mu=0$.',
       ],
-      skillId: 'vectors_intersect_parallel_skew',
+      skillId: 'p3_vec_line_equations_intersections',
     },
   },
   {
@@ -258,7 +258,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The $z$ coordinates are inconsistent.',
         'The lines are skew.',
       ],
-      skillId: 'vectors_intersect_parallel_skew',
+      skillId: 'p3_vec_line_equations_intersections',
     },
     similar: {
       id: 'learn-vectors-skew-check-similar',
@@ -277,7 +277,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'Their fixed $z$ coordinates differ.',
         'So they are skew.',
       ],
-      skillId: 'vectors_intersect_parallel_skew',
+      skillId: 'p3_vec_line_equations_intersections',
     },
   },
   {
@@ -304,7 +304,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$1(4)+2(-1)+k(2)=0$.',
         '$2+2k=0$, so $k=-1$.',
       ],
-      skillId: 'vectors_scalar_product',
+      skillId: 'p3_vec_scalar_product_angles',
     },
     similar: {
       id: 'learn-vectors-scalar-product-perpendicular-similar',
@@ -321,7 +321,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$2+4k-6=0$.',
         'So $k=1$.',
       ],
-      skillId: 'vectors_scalar_product',
+      skillId: 'p3_vec_scalar_product_angles',
     },
   },
   {
@@ -348,7 +348,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$\\overrightarrow{PQ}=(\\lambda-1,-2,0)$.',
         'Perpendicularity gives $\\lambda=1$, so $Q=(1,0,0)$.',
       ],
-      skillId: 'vectors_point_to_line_distance',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
     similar: {
       id: 'learn-vectors-foot-of-perpendicular-similar',
@@ -365,7 +365,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$Q-P=(-2,\\lambda-3,-4)$.',
         'Dotting with $(0,1,0)$ gives $\\lambda=3$, so $Q=(0,3,0)$.',
       ],
-      skillId: 'vectors_point_to_line_distance',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
   },
   {
@@ -392,7 +392,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$P\\prime=2Q-P$.',
         '$P\\prime=(2,0,0)-(1,2,0)=(1,-2,0)$.',
       ],
-      skillId: 'vectors_point_to_line_distance',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
     similar: {
       id: 'learn-vectors-reflection-in-line-similar',
@@ -409,7 +409,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         '$2Q=(0,6,0)$.',
         'So $P\\prime=(-2,3,-4)$.',
       ],
-      skillId: 'vectors_point_to_line_distance',
+      skillId: 'p3_vec_3d_geometry_modelling',
     },
   },
   {
@@ -436,7 +436,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The magnitudes are $1$ and $\\sqrt2$.',
         'So $\\cos\\theta=\\frac{1}{\\sqrt2}$.',
       ],
-      skillId: 'vectors_scalar_product',
+      skillId: 'p3_vec_scalar_product_angles',
     },
     similar: {
       id: 'learn-vectors-angle-between-lines-similar',
@@ -453,7 +453,7 @@ const VECTORS_LEARN_DRAFTS: VectorsLearnStepDraft[] = [
         'The magnitudes are $1$ and $\\sqrt2$.',
         'So $\\cos\\theta=\\frac{1}{\\sqrt2}$.',
       ],
-      skillId: 'vectors_scalar_product',
+      skillId: 'p3_vec_scalar_product_angles',
     },
   },
 ];
