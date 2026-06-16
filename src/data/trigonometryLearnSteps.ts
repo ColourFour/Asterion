@@ -1,0 +1,733 @@
+import type { FieldGuideTopic } from './fieldGuideTopics';
+import type { LearnStep } from './learnModeLessons';
+import type { SkillCheckItem, SkillCheckInputType } from './skillCheckItems';
+import type { SkillCheckAnswerType } from '../skill-checks/answerChecker';
+
+type TrigLearnCheckDraft = {
+  id: string;
+  prompt: string;
+  inputType?: SkillCheckInputType;
+  answerType: SkillCheckAnswerType;
+  acceptedAnswers: string[];
+  expectedAnswer: string | string[];
+  options?: Array<{ id: string; label: string }>;
+  expectedOptionIds?: string[];
+  orderInsensitive?: boolean;
+  hint: string;
+  methodCue?: string;
+  firstStep?: string;
+  workedRoute: string[];
+  skillId: string;
+  mistakeTags?: string[];
+};
+
+type TrigLearnStepDraft = {
+  id: string;
+  title: string;
+  fieldGuideTopicId: string;
+  stem: string;
+  prompt: string;
+  principle: string;
+  explanation: string;
+  examTransfer: string;
+  primary: TrigLearnCheckDraft;
+  similar: TrigLearnCheckDraft;
+};
+
+const commonTrigMistakes = ['wrong identity', 'method choice', 'incomplete reasoning', 'notation'];
+
+function expressionChoices(labels: string[], correctIndex = 0): Array<{ id: string; label: string }> {
+  return labels.map((label, index) => ({
+    id: index === correctIndex ? 'correct' : `distractor-${index}`,
+    label,
+  }));
+}
+
+const TRIGONOMETRY_LEARN_DRAFTS: TrigLearnStepDraft[] = [
+  {
+    id: 'learn-trig-identity-form-choice',
+    title: 'Choose the identity family',
+    fieldGuideTopicId: 'trig_pythagorean_identities',
+    stem: 'You need to rewrite $1-\\sin^2 x$ before simplifying an equation. Three familiar identity families are available.',
+    prompt: 'Which identity should be used first?',
+    principle: 'Principle: choose the identity whose terms already match the expression.',
+    explanation: 'The expression has $1$ and $\\sin^2 x$, so the base Pythagorean identity is the direct route: $\\sin^2 x+\\cos^2 x=1$. Rearranging gives $1-\\sin^2 x=\\cos^2 x$.',
+    examTransfer: 'Exam transfer: when an expression contains $1$ minus a squared trig function, test the Pythagorean identity before reaching for a double-angle formula.',
+    primary: {
+      id: 'learn-trig-identity-form-choice-primary',
+      prompt: 'Choose the identity for rewriting $1-\\sin^2 x$.',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: 'sin^2x+cos^2x=1',
+      acceptedAnswers: [
+        'sin^2x+cos^2x=1',
+        '\\sin^2x+\\cos^2x=1',
+        '1=sin^2x+cos^2x',
+        '1=\\sin^2x+\\cos^2x',
+      ],
+      options: expressionChoices([
+        '$\\sin^2 x+\\cos^2 x=1$',
+        '$1+\\tan^2 x=\\sec^2 x$',
+        '$\\cos2x=1-2\\sin^2x$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: 'Look for the exact pieces already present: $1$ and a squared sine term.',
+      methodCue: 'The identity with $\\sin^2x$ and $\\cos^2x$ connects the two squared basic functions.',
+      firstStep: 'Start from $\\sin^2x+\\cos^2x=1$.',
+      workedRoute: [
+        'The expression has $1-\\sin^2x$.',
+        'Use $\\sin^2x+\\cos^2x=1$.',
+        'Rearrange to get $1-\\sin^2x=\\cos^2x$.',
+      ],
+      skillId: 'p3_trig_identity_selection',
+    },
+    similar: {
+      id: 'learn-trig-identity-form-choice-similar',
+      prompt: 'Which identity should be used first to rewrite $\\sec^2x-1$?',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: '1+tan^2x=sec^2x',
+      acceptedAnswers: [
+        '1+tan^2x=sec^2x',
+        'tan^2x+1=sec^2x',
+        '1+\\tan^2x=\\sec^2x',
+        '\\tan^2x+1=\\sec^2x',
+      ],
+      options: expressionChoices([
+        '$1+\\tan^2x=\\sec^2x$',
+        '$\\sin2x=2\\sin x\\cos x$',
+        '$\\sin^2x+\\cos^2x=1$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: '$\\sec^2x$ pairs with $\\tan^2x$ in the expanded Pythagorean identity.',
+      methodCue: 'Isolate $\\tan^2x$ after choosing the identity.',
+      firstStep: '$1+\\tan^2x=\\sec^2x$.',
+      workedRoute: [
+        'Use $1+\\tan^2x=\\sec^2x$.',
+        'Subtract $1$ from both sides.',
+        'So $\\sec^2x-1=\\tan^2x$.',
+      ],
+      skillId: 'p3_trig_identity_selection',
+    },
+  },
+  {
+    id: 'learn-trig-pythagorean-rewrite',
+    title: 'Rewrite with a Pythagorean identity',
+    fieldGuideTopicId: 'trig_pythagorean_identities',
+    stem: 'A trig equation has the term $1-\\sin^2x$. Before solving, rewrite it as a single squared trig function.',
+    prompt: 'Rewrite $1-\\sin^2x$.',
+    principle: 'Principle: move one squared term across the base identity without changing its square.',
+    explanation: 'From $\\sin^2x+\\cos^2x=1$, subtract $\\sin^2x$ from both sides. The replacement is $\\cos^2x$, not $\\cos x$.',
+    examTransfer: 'Exam transfer: identity rewrites often prepare an equation for factoring or substitution; keep the square until the equation tells you to take roots.',
+    primary: {
+      id: 'learn-trig-pythagorean-rewrite-primary',
+      prompt: 'Rewrite $1-\\sin^2x$.',
+      inputType: 'numeric',
+      answerType: 'expression-text',
+      expectedAnswer: 'cos^2x',
+      acceptedAnswers: ['cos^2x', '\\cos^2x'],
+      hint: 'Start with $\\sin^2x+\\cos^2x=1$ and subtract $\\sin^2x$.',
+      methodCue: 'The answer is still squared.',
+      firstStep: '$\\cos^2x=1-\\sin^2x$.',
+      workedRoute: [
+        '$\\sin^2x+\\cos^2x=1$.',
+        'Subtract $\\sin^2x$ from both sides.',
+        'Therefore $1-\\sin^2x=\\cos^2x$.',
+      ],
+      skillId: 'p3_trig_identity_selection',
+    },
+    similar: {
+      id: 'learn-trig-pythagorean-rewrite-similar',
+      prompt: 'Rewrite $\\sec^2x-1$.',
+      inputType: 'numeric',
+      answerType: 'expression-text',
+      expectedAnswer: 'tan^2x',
+      acceptedAnswers: ['tan^2x', '\\tan^2x'],
+      hint: 'Use $1+\\tan^2x=\\sec^2x$ and isolate the tangent term.',
+      methodCue: 'Subtract $1$ from both sides.',
+      firstStep: '$\\tan^2x=\\sec^2x-1$.',
+      workedRoute: [
+        'Start from $1+\\tan^2x=\\sec^2x$.',
+        'Subtract $1$.',
+        'So $\\sec^2x-1=\\tan^2x$.',
+      ],
+      skillId: 'p3_trig_identity_selection',
+    },
+  },
+  {
+    id: 'learn-trig-double-angle-choice',
+    title: 'Choose the useful double-angle form',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'You want to replace $\\cos2x$ using only $\\sin x$.',
+    prompt: 'Which form of $\\cos2x$ is useful?',
+    principle: 'Principle: choose the double-angle version that uses the function already requested by the target expression.',
+    explanation: 'The sine-only form is $\\cos2x=1-2\\sin^2x$. The form $2\\cos^2x-1$ is correct, but it leaves the expression in cosines.',
+    examTransfer: 'Exam transfer: many simplification questions are short if you choose the double-angle form that matches the required final function.',
+    primary: {
+      id: 'learn-trig-double-angle-choice-primary',
+      prompt: 'Choose the sine-only form of $\\cos2x$.',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: 'cos2x=1-2sin^2x',
+      acceptedAnswers: [
+        'cos2x=1-2sin^2x',
+        '\\cos2x=1-2\\sin^2x',
+        '1-2sin^2x',
+        '1-2\\sin^2x',
+      ],
+      options: expressionChoices([
+        '$\\cos2x=1-2\\sin^2x$',
+        '$\\cos2x=2\\cos^2x-1$',
+        '$\\cos2x=2\\sin x\\cos x$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: 'The target says only $\\sin x$, so avoid the form containing $\\cos^2x$.',
+      methodCue: '$\\cos2x$ has two squared-function forms.',
+      firstStep: 'Use $\\cos2x=1-2\\sin^2x$.',
+      workedRoute: [
+        'The target uses only sine.',
+        'Select $\\cos2x=1-2\\sin^2x$.',
+        'This avoids introducing $\\cos^2x$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+    similar: {
+      id: 'learn-trig-double-angle-choice-similar',
+      prompt: 'Choose the cosine-only form of $\\cos2x$.',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: 'cos2x=2cos^2x-1',
+      acceptedAnswers: [
+        'cos2x=2cos^2x-1',
+        '\\cos2x=2\\cos^2x-1',
+        '2cos^2x-1',
+        '2\\cos^2x-1',
+      ],
+      options: expressionChoices([
+        '$\\cos2x=2\\cos^2x-1$',
+        '$\\cos2x=1-2\\sin^2x$',
+        '$\\sin2x=2\\sin x\\cos x$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: 'The target says only $\\cos x$.',
+      methodCue: 'Pick the double-angle form that contains $\\cos^2x$.',
+      firstStep: '$\\cos2x=2\\cos^2x-1$.',
+      workedRoute: [
+        '$\\cos2x$ can be written several ways.',
+        'For a cosine-only target, use $2\\cos^2x-1$.',
+        'That is the useful form here.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+  },
+  {
+    id: 'learn-trig-double-angle-simplify',
+    title: 'Simplify with a double-angle identity',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'The expression $\\frac{\\sin2x}{2\\cos x}$ appears in a simplification step, with $\\cos x\\ne0$.',
+    prompt: 'Simplify the expression.',
+    principle: 'Principle: substitute the identity first, then cancel only a common non-zero factor.',
+    explanation: 'Use $\\sin2x=2\\sin x\\cos x$. The numerator becomes $2\\sin x\\cos x$, so the common factor $2\\cos x$ cancels and leaves $\\sin x$.',
+    examTransfer: 'Exam transfer: double-angle simplification usually expects a clean substitution before cancellation; do not cancel a term that has not been factored.',
+    primary: {
+      id: 'learn-trig-double-angle-simplify-primary',
+      prompt: 'Simplify $\\frac{\\sin2x}{2\\cos x}$.',
+      inputType: 'numeric',
+      answerType: 'expression-text',
+      expectedAnswer: 'sinx',
+      acceptedAnswers: ['sinx', 'sin x', '\\sinx', '\\sin x'],
+      hint: 'Replace $\\sin2x$ by $2\\sin x\\cos x$.',
+      methodCue: 'The whole numerator becomes a product.',
+      firstStep: '$\\frac{2\\sin x\\cos x}{2\\cos x}$.',
+      workedRoute: [
+        '$\\sin2x=2\\sin x\\cos x$.',
+        'So $\\frac{\\sin2x}{2\\cos x}=\\frac{2\\sin x\\cos x}{2\\cos x}$.',
+        'Cancel the common non-zero factor to get $\\sin x$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+    similar: {
+      id: 'learn-trig-double-angle-simplify-similar',
+      prompt: 'Simplify $\\frac{1-\\cos2x}{2\\sin x}$, with $\\sin x\\ne0$.',
+      inputType: 'numeric',
+      answerType: 'expression-text',
+      expectedAnswer: 'sinx',
+      acceptedAnswers: ['sinx', 'sin x', '\\sinx', '\\sin x'],
+      hint: 'First rewrite $1-\\cos2x$ using $\\sin x$.',
+      methodCue: '$1-\\cos2x=2\\sin^2x$.',
+      firstStep: '$\\frac{2\\sin^2x}{2\\sin x}$.',
+      workedRoute: [
+        'Use $1-\\cos2x=2\\sin^2x$.',
+        'Then $\\frac{1-\\cos2x}{2\\sin x}=\\frac{2\\sin^2x}{2\\sin x}$.',
+        'Cancel the common non-zero factor to get $\\sin x$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+  },
+  {
+    id: 'learn-trig-identity-full-solve',
+    title: 'Use an identity, then solve',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'A full trig routine often starts with an identity rewrite and ends with interval solutions.',
+    prompt: 'Solve $1-\\cos2x=1$ for $0\\le x<2\\pi$.',
+    principle: 'Principle: rewrite first, then solve the resulting standard trig equation on the given interval.',
+    explanation: 'Use $1-\\cos2x=2\\sin^2x$. The equation becomes $2\\sin^2x=1$, so $\\sin x=\\pm\\frac{1}{\\sqrt2}$. The interval solutions are $\\frac\\pi4$, $\\frac{3\\pi}4$, $\\frac{5\\pi}4$, and $\\frac{7\\pi}4$.',
+    examTransfer: 'Exam transfer: identity questions often test the whole chain: choose the identity, simplify to a standard equation, then list every interval solution.',
+    primary: {
+      id: 'learn-trig-identity-full-solve-primary',
+      prompt: 'Solve $1-\\cos2x=1$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/4, 3pi/4, 5pi/4, 7pi/4',
+      acceptedAnswers: [
+        'pi/4, 3pi/4, 5pi/4, 7pi/4',
+        '\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4',
+        'x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4',
+      ],
+      orderInsensitive: true,
+      hint: 'Rewrite $1-\\cos2x$ as $2\\sin^2x$.',
+      methodCue: 'Then solve $\\sin^2x=\\frac12$.',
+      firstStep: '$2\\sin^2x=1$.',
+      workedRoute: [
+        'Use $1-\\cos2x=2\\sin^2x$.',
+        'Then $2\\sin^2x=1$, so $\\sin x=\\pm\\frac{1}{\\sqrt2}$.',
+        'The interval solutions are $\\frac\\pi4$, $\\frac{3\\pi}4$, $\\frac{5\\pi}4$, and $\\frac{7\\pi}4$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+    similar: {
+      id: 'learn-trig-identity-full-solve-similar',
+      prompt: 'Solve $1+\\cos2x=1$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/4, 3pi/4, 5pi/4, 7pi/4',
+      acceptedAnswers: [
+        'pi/4, 3pi/4, 5pi/4, 7pi/4',
+        '\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4',
+        'x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4',
+      ],
+      orderInsensitive: true,
+      hint: 'Use $1+\\cos2x=2\\cos^2x$.',
+      methodCue: 'Then solve $\\cos^2x=\\frac12$? Check the equation carefully after rewriting.',
+      firstStep: '$2\\cos^2x=1$.',
+      workedRoute: [
+        'Use $1+\\cos2x=2\\cos^2x$.',
+        'The equation becomes $2\\cos^2x=1$, so $\\cos x=\\pm\\frac{1}{\\sqrt2}$.',
+        'The interval solutions are $\\frac\\pi4$, $\\frac{3\\pi}4$, $\\frac{5\\pi}4$, and $\\frac{7\\pi}4$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+  },
+  {
+    id: 'learn-trig-basic-equation-interval',
+    title: 'Solve a basic trig equation on an interval',
+    fieldGuideTopicId: 'trig_reciprocal_functions',
+    stem: 'Solve $\\sin x=\\frac12$ for $0\\le x<2\\pi$.',
+    prompt: 'What values of $x$ solve the equation in this interval?',
+    principle: 'Principle: use the reference angle, then keep every quadrant allowed by the interval and sign.',
+    explanation: 'The reference angle is $\\frac{\\pi}{6}$. Sine is positive in quadrants I and II, so the interval solutions are $\\frac{\\pi}{6}$ and $\\frac{5\\pi}{6}$.',
+    examTransfer: 'Exam transfer: after finding a reference angle, always return to the interval in the question before listing final values.',
+    primary: {
+      id: 'learn-trig-basic-equation-interval-primary',
+      prompt: 'Solve $\\sin x=\\frac12$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/6, 5pi/6',
+      acceptedAnswers: [
+        'pi/6, 5pi/6',
+        '\\pi/6, 5\\pi/6',
+        'x=pi/6, x=5pi/6',
+        'x=\\pi/6, x=5\\pi/6',
+      ],
+      orderInsensitive: true,
+      hint: 'The reference angle is $\\frac{\\pi}{6}$, and sine is positive in quadrants I and II.',
+      methodCue: 'Use $0\\le x<2\\pi$.',
+      firstStep: '$x=\\frac{\\pi}{6}$ is the quadrant I solution.',
+      workedRoute: [
+        '$\\sin x=\\frac12$ has reference angle $\\frac{\\pi}{6}$.',
+        'Sine is positive in quadrants I and II.',
+        'So $x=\\frac{\\pi}{6},\\frac{5\\pi}{6}$.',
+      ],
+      skillId: 'p3_trig_equation_interval',
+    },
+    similar: {
+      id: 'learn-trig-basic-equation-interval-similar',
+      prompt: 'Solve $\\cos x=-\\frac12$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '2pi/3, 4pi/3',
+      acceptedAnswers: [
+        '2pi/3, 4pi/3',
+        '2\\pi/3, 4\\pi/3',
+        'x=2pi/3, x=4pi/3',
+        'x=2\\pi/3, x=4\\pi/3',
+      ],
+      orderInsensitive: true,
+      hint: 'Cosine is negative in quadrants II and III.',
+      methodCue: 'The reference angle is $\\frac{\\pi}{3}$.',
+      firstStep: 'Quadrant II gives $x=\\frac{2\\pi}{3}$.',
+      workedRoute: [
+        'The reference angle is $\\frac{\\pi}{3}$.',
+        'Cosine is negative in quadrants II and III.',
+        'Therefore $x=\\frac{2\\pi}{3},\\frac{4\\pi}{3}$.',
+      ],
+      skillId: 'p3_trig_quadrant_solutions',
+    },
+  },
+  {
+    id: 'learn-trig-transformed-equation',
+    title: 'Solve a transformed trig equation',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'Solve $2\\cos^2x-1=0$ for $0\\le x<2\\pi$.',
+    prompt: 'Give all interval solutions.',
+    principle: 'Principle: recognize a double-angle expression, then solve the resulting trig equation over the original interval.',
+    explanation: '$2\\cos^2x-1$ is $\\cos2x$, so the equation is $\\cos2x=0$. Equivalently, $\\cos^2x=\\frac12$, so $\\cos x=\\pm\\frac{1}{\\sqrt2}$ and the four interval solutions are $\\frac{\\pi}{4},\\frac{3\\pi}{4},\\frac{5\\pi}{4},\\frac{7\\pi}{4}$.',
+    examTransfer: 'Exam transfer: transformed equations often hide a standard identity; after rewriting, check that every value lies in the interval for $x$, not just for $2x$.',
+    primary: {
+      id: 'learn-trig-transformed-equation-primary',
+      prompt: 'Solve $2\\cos^2x-1=0$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/4, 3pi/4, 5pi/4, 7pi/4',
+      acceptedAnswers: [
+        'pi/4, 3pi/4, 5pi/4, 7pi/4',
+        '\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4',
+        'x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4',
+        'x=\\pi/4, x=3\\pi/4, x=5\\pi/4, x=7\\pi/4',
+      ],
+      orderInsensitive: true,
+      hint: 'Recognize $2\\cos^2x-1$ as $\\cos2x$, or solve $\\cos^2x=\\frac12$.',
+      methodCue: '$\\cos x=\\pm\\frac{1}{\\sqrt2}$.',
+      firstStep: '$2\\cos^2x=1$.',
+      workedRoute: [
+        '$2\\cos^2x-1=0$ gives $\\cos^2x=\\frac12$.',
+        'So $\\cos x=\\pm\\frac{1}{\\sqrt2}$.',
+        'The interval solutions are $\\frac{\\pi}{4},\\frac{3\\pi}{4},\\frac{5\\pi}{4},\\frac{7\\pi}{4}$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+    similar: {
+      id: 'learn-trig-transformed-equation-similar',
+      prompt: 'Solve $1-2\\sin^2x=0$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/4, 3pi/4, 5pi/4, 7pi/4',
+      acceptedAnswers: [
+        'pi/4, 3pi/4, 5pi/4, 7pi/4',
+        '\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4',
+        'x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4',
+        'x=\\pi/4, x=3\\pi/4, x=5\\pi/4, x=7\\pi/4',
+      ],
+      orderInsensitive: true,
+      hint: 'This is the sine version of $\\cos2x=0$.',
+      methodCue: '$\\sin^2x=\\frac12$.',
+      firstStep: '$2\\sin^2x=1$.',
+      workedRoute: [
+        '$1-2\\sin^2x=0$ gives $\\sin^2x=\\frac12$.',
+        'So $\\sin x=\\pm\\frac{1}{\\sqrt2}$.',
+        'All four diagonal angles in the interval work.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+  },
+  {
+    id: 'learn-trig-division-trap',
+    title: 'Avoid the division trap',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'A student solves $\\sin x\\cos x=\\sin x$ by dividing both sides by $\\sin x$.',
+    prompt: 'Which case could be lost by that division?',
+    principle: 'Principle: factor before dividing by an expression that might be zero.',
+    explanation: 'Move everything to one side: $\\sin x\\cos x-\\sin x=0$. Factoring gives $\\sin x(\\cos x-1)=0$, so $\\sin x=0$ is a whole case. Dividing by $\\sin x$ would delete that case.',
+    examTransfer: 'Exam transfer: if a trig equation has a common trig factor, set the product equal to zero and solve every factor instead of dividing by a possible zero.',
+    primary: {
+      id: 'learn-trig-division-trap-primary',
+      prompt: 'In $\\sin x\\cos x=\\sin x$, which case is lost if you divide by $\\sin x$?',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: 'sinx=0',
+      acceptedAnswers: ['sinx=0', 'sin x=0', '\\sinx=0', '\\sin x=0'],
+      options: expressionChoices([
+        '$\\sin x=0$',
+        '$\\cos x=0$',
+        '$\\cos x=1$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: 'You may only divide by something after checking it is not zero.',
+      methodCue: 'Move everything to one side and factor $\\sin x$.',
+      firstStep: '$\\sin x(\\cos x-1)=0$.',
+      workedRoute: [
+        '$\\sin x\\cos x-\\sin x=0$.',
+        'Factor to get $\\sin x(\\cos x-1)=0$.',
+        'The lost case is $\\sin x=0$.',
+      ],
+      skillId: 'p3_trig_equation_interval',
+    },
+    similar: {
+      id: 'learn-trig-division-trap-similar',
+      prompt: 'Solve $\\sin x(2\\cos x-1)=0$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '0, pi, pi/3, 5pi/3',
+      acceptedAnswers: [
+        '0, pi, pi/3, 5pi/3',
+        '0, \\pi, \\pi/3, 5\\pi/3',
+        'x=0, x=pi, x=pi/3, x=5pi/3',
+        'x=0, x=\\pi, x=\\pi/3, x=5\\pi/3',
+      ],
+      orderInsensitive: true,
+      hint: 'Use both factors: $\\sin x=0$ and $2\\cos x-1=0$.',
+      methodCue: 'A product is zero when at least one factor is zero.',
+      firstStep: '$\\sin x=0$ or $\\cos x=\\frac12$.',
+      workedRoute: [
+        '$\\sin x=0$ gives $x=0,\\pi$.',
+        '$2\\cos x-1=0$ gives $\\cos x=\\frac12$.',
+        'So $x=0,\\frac{\\pi}{3},\\pi,\\frac{5\\pi}{3}$.',
+      ],
+      skillId: 'p3_trig_equation_interval',
+    },
+  },
+  {
+    id: 'learn-trig-quadratic-reject',
+    title: 'Turn a trig equation into a quadratic',
+    fieldGuideTopicId: 'trig_pythagorean_identities',
+    stem: 'The equation $2\\cos^2x+5\\cos x+2=0$ behaves like a quadratic in $\\cos x$.',
+    prompt: 'After factorising, which candidate value must be rejected?',
+    principle: 'Principle: solve the algebraic quadratic, then reject trig values outside $[-1,1]$ before finding angles.',
+    explanation: 'Let $u=\\cos x$. Then $2u^2+5u+2=(2u+1)(u+2)=0$, so $u=-\\frac12$ or $u=-2$. Since cosine cannot be $-2$, reject $\\cos x=-2$.',
+    examTransfer: 'Exam transfer: quadratic trig equations have two filters: algebraic roots first, then the possible range of sine or cosine before interval solving.',
+    primary: {
+      id: 'learn-trig-quadratic-reject-primary',
+      prompt: 'For $2\\cos^2x+5\\cos x+2=0$, which candidate value is invalid?',
+      inputType: 'multiple_choice',
+      answerType: 'expression-text',
+      expectedAnswer: 'cosx=-2',
+      acceptedAnswers: ['cosx=-2', 'cos x=-2', '\\cosx=-2', '\\cos x=-2', '-2'],
+      options: expressionChoices([
+        '$\\cos x=-2$',
+        '$\\cos x=-\\frac12$',
+        '$x=\\frac{2\\pi}{3}$',
+      ]),
+      expectedOptionIds: ['correct'],
+      hint: 'Cosine values must be between $-1$ and $1$.',
+      methodCue: 'Factor as $(2\\cos x+1)(\\cos x+2)=0$.',
+      firstStep: 'The candidate values are $\\cos x=-\\frac12$ and $\\cos x=-2$.',
+      workedRoute: [
+        'Factor the quadratic in $\\cos x$.',
+        'The candidates are $\\cos x=-\\frac12$ and $\\cos x=-2$.',
+        '$\\cos x=-2$ is impossible, so reject it.',
+      ],
+      skillId: 'p3_trig_equation_interval',
+    },
+    similar: {
+      id: 'learn-trig-quadratic-reject-similar',
+      prompt: 'Now solve $2\\cos^2x+5\\cos x+2=0$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '2pi/3, 4pi/3',
+      acceptedAnswers: [
+        '2pi/3, 4pi/3',
+        '2\\pi/3, 4\\pi/3',
+        'x=2pi/3, x=4pi/3',
+        'x=2\\pi/3, x=4\\pi/3',
+      ],
+      orderInsensitive: true,
+      hint: 'Only $\\cos x=-\\frac12$ remains after rejecting $-2$.',
+      methodCue: 'Cosine is negative in quadrants II and III.',
+      firstStep: '$\\cos x=-\\frac12$.',
+      workedRoute: [
+        'Reject $\\cos x=-2$.',
+        'Solve $\\cos x=-\\frac12$.',
+        'The interval solutions are $\\frac{2\\pi}{3}$ and $\\frac{4\\pi}{3}$.',
+      ],
+      skillId: 'p3_trig_quadrant_solutions',
+    },
+  },
+  {
+    id: 'learn-trig-repeated-angle-pattern',
+    title: 'Use the repeated-angle pattern',
+    fieldGuideTopicId: 'trig_addition_formulae',
+    stem: 'Solve $\\sin(2x)=0$ for $0\\le x<2\\pi$.',
+    prompt: 'Give the values of $x$ in the interval.',
+    principle: 'Principle: solve the repeated angle over its enlarged interval, then divide back to $x$.',
+    explanation: 'Since $0\\le x<2\\pi$, the repeated angle satisfies $0\\le2x<4\\pi$. For $\\sin(2x)=0$, use $2x=n\\pi$, so $x=\\frac{n\\pi}{2}$. The values in the interval are $0,\\frac{\\pi}{2},\\pi,\\frac{3\\pi}{2}$.',
+    examTransfer: 'Exam transfer: repeated-angle equations need enough turns of the unit circle for the repeated angle, otherwise interval solutions are missed.',
+    primary: {
+      id: 'learn-trig-repeated-angle-pattern-primary',
+      prompt: 'Solve $\\sin(2x)=0$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '0, pi/2, pi, 3pi/2',
+      acceptedAnswers: [
+        '0, pi/2, pi, 3pi/2',
+        '0, \\pi/2, \\pi, 3\\pi/2',
+        'x=0, x=pi/2, x=pi, x=3pi/2',
+        'x=0, x=\\pi/2, x=\\pi, x=3\\pi/2',
+      ],
+      orderInsensitive: true,
+      hint: 'Use $2x=n\\pi$, then divide by $2$.',
+      methodCue: '$0\\le2x<4\\pi$.',
+      firstStep: '$2x=0,\\pi,2\\pi,3\\pi$.',
+      workedRoute: [
+        '$\\sin(2x)=0$ gives $2x=n\\pi$.',
+        'In $0\\le2x<4\\pi$, use $2x=0,\\pi,2\\pi,3\\pi$.',
+        'Divide by $2$ to get $x=0,\\frac{\\pi}{2},\\pi,\\frac{3\\pi}{2}$.',
+      ],
+      skillId: 'p3_trig_quadrant_solutions',
+    },
+    similar: {
+      id: 'learn-trig-repeated-angle-pattern-similar',
+      prompt: 'Solve $\\cos(2x)=1$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '0, pi',
+      acceptedAnswers: [
+        '0, pi',
+        '0, \\pi',
+        'x=0, x=pi',
+        'x=0, x=\\pi',
+      ],
+      orderInsensitive: true,
+      hint: '$\\cos u=1$ at $u=0,2\\pi,4\\pi,\\ldots$; use the interval for $u=2x$.',
+      methodCue: '$0\\le2x<4\\pi$.',
+      firstStep: '$2x=0$ or $2\\pi$.',
+      workedRoute: [
+        'Let $u=2x$, so $0\\le u<4\\pi$.',
+        '$\\cos u=1$ gives $u=0$ or $2\\pi$ in this interval.',
+        'Therefore $x=0$ or $x=\\pi$.',
+      ],
+      skillId: 'p3_trig_quadrant_solutions',
+    },
+  },
+  {
+    id: 'learn-trig-mixed-exam-transfer',
+    title: 'Exam-facing mixed transfer',
+    fieldGuideTopicId: 'trig_double_angle_formulae',
+    stem: 'Solve $1-\\cos2x=\\sin x$ for $0\\le x<2\\pi$.',
+    prompt: 'Give all interval solutions.',
+    principle: 'Principle: choose the identity, factor the transformed equation, then solve every factor on the interval.',
+    explanation: 'Use $1-\\cos2x=2\\sin^2x$. The equation becomes $2\\sin^2x=\\sin x$, so $\\sin x(2\\sin x-1)=0$. This gives $\\sin x=0$ or $\\sin x=\\frac12$, producing $x=0,\\frac{\\pi}{6},\\frac{5\\pi}{6},\\pi$ in $0\\le x<2\\pi$.',
+    examTransfer: 'Exam transfer: a mixed exam problem may combine identity choice, simplification, factorising, and interval discipline. Write the identity used, keep all factors, and list only values allowed by the interval.',
+    primary: {
+      id: 'learn-trig-mixed-exam-transfer-primary',
+      prompt: 'Solve $1-\\cos2x=\\sin x$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: '0, pi/6, 5pi/6, pi',
+      acceptedAnswers: [
+        '0, pi/6, 5pi/6, pi',
+        '0, \\pi/6, 5\\pi/6, \\pi',
+        'x=0, x=pi/6, x=5pi/6, x=pi',
+        'x=0, x=\\pi/6, x=5\\pi/6, x=\\pi',
+      ],
+      orderInsensitive: true,
+      hint: 'First rewrite $1-\\cos2x$ as $2\\sin^2x$, then factor.',
+      methodCue: '$2\\sin^2x=\\sin x$.',
+      firstStep: '$\\sin x(2\\sin x-1)=0$.',
+      workedRoute: [
+        'Rewrite $1-\\cos2x$ as $2\\sin^2x$.',
+        'Factor $2\\sin^2x-\\sin x=0$ to get $\\sin x(2\\sin x-1)=0$.',
+        'The solutions are $0,\\frac{\\pi}{6},\\frac{5\\pi}{6},\\pi$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+    similar: {
+      id: 'learn-trig-mixed-exam-transfer-similar',
+      prompt: 'Solve $1+\\cos2x=\\cos x$ for $0\\le x<2\\pi$.',
+      inputType: 'numeric',
+      answerType: 'multi-value',
+      expectedAnswer: 'pi/3, pi/2, 3pi/2, 5pi/3',
+      acceptedAnswers: [
+        'pi/3, pi/2, 3pi/2, 5pi/3',
+        '\\pi/3, \\pi/2, 3\\pi/2, 5\\pi/3',
+        'x=pi/3, x=pi/2, x=3pi/2, x=5pi/3',
+        'x=\\pi/3, x=\\pi/2, x=3\\pi/2, x=5\\pi/3',
+      ],
+      orderInsensitive: true,
+      hint: 'Use $1+\\cos2x=2\\cos^2x$, then factor.',
+      methodCue: '$2\\cos^2x=\\cos x$.',
+      firstStep: '$\\cos x(2\\cos x-1)=0$.',
+      workedRoute: [
+        '$1+\\cos2x=2\\cos^2x$.',
+        'So $2\\cos^2x-\\cos x=0$, giving $\\cos x(2\\cos x-1)=0$.',
+        'The interval solutions are $\\frac{\\pi}{3},\\frac{\\pi}{2},\\frac{3\\pi}{2},\\frac{5\\pi}{3}$.',
+      ],
+      skillId: 'p3_trig_reciprocal_double_angle',
+    },
+  },
+];
+
+function toSkillCheckItem(
+  draft: TrigLearnCheckDraft,
+  fieldGuideTopicId: string,
+  stepTitle: string,
+): SkillCheckItem {
+  return {
+    itemId: draft.id,
+    paperFamily: 'p3',
+    regionId: 'trigonometry',
+    fieldGuideTopicId,
+    fieldGuideSubtopicId: fieldGuideTopicId,
+    skillId: draft.skillId,
+    prompt: draft.prompt,
+    inputType: draft.inputType ?? 'numeric',
+    validationMode: 'deterministic',
+    checkable: true,
+    answerType: draft.answerType,
+    acceptedAnswers: draft.acceptedAnswers,
+    expectedAnswer: draft.expectedAnswer,
+    expectedOptionIds: draft.expectedOptionIds,
+    options: draft.options,
+    orderInsensitive: draft.answerType === 'multi-value' ? draft.orderInsensitive ?? true : undefined,
+    repairStep: draft.workedRoute.at(-1) ?? draft.prompt,
+    mistakeTags: draft.mistakeTags ?? commonTrigMistakes,
+    complexity: 'core',
+    hints: {
+      nudge: draft.hint,
+      methodCue: draft.methodCue,
+      firstStep: draft.firstStep,
+    },
+    workedRoute: draft.workedRoute,
+    sourceTypes: ['authored'],
+    sourceRefs: {},
+    review: {
+      status: 'teacher_reviewed',
+      sourceSkillReviewed: true,
+      markEventReviewed: false,
+      affectsProgression: false,
+    },
+    visualTemplateId: `learn-trig-${stepTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`,
+  };
+}
+
+export function getAuthoredTrigonometryLearnSteps(fieldGuideTopics: FieldGuideTopic[]): LearnStep[] {
+  const topicById = new Map(fieldGuideTopics.map((topic) => [topic.id, topic]));
+
+  return TRIGONOMETRY_LEARN_DRAFTS.map((draft): LearnStep => {
+    const fieldGuideTopic = topicById.get(draft.fieldGuideTopicId);
+    if (!fieldGuideTopic) {
+      throw new Error(`Missing Trigonometry Field Guide topic for Learn step ${draft.id}: ${draft.fieldGuideTopicId}`);
+    }
+    const primaryCheck = toSkillCheckItem(draft.primary, draft.fieldGuideTopicId, draft.title);
+    const similarCheck = toSkillCheckItem(draft.similar, draft.fieldGuideTopicId, draft.title);
+
+    return {
+      id: draft.id,
+      title: draft.title,
+      stem: draft.stem,
+      prompt: draft.prompt,
+      inputType: primaryCheck.answerType === 'multi-value' ? 'multi-part' : 'text',
+      expectedAnswer: draft.primary.acceptedAnswers,
+      hint: draft.primary.hint,
+      explanation: draft.explanation,
+      principle: draft.principle,
+      mistakeTags: primaryCheck.mistakeTags,
+      nextStepLabel: 'Try a similar checked question',
+      examTransfer: draft.examTransfer,
+      fieldGuideTopic,
+      primaryCheck,
+      similarCheck,
+      primaryMirrorsSkillEvidence: false,
+      similarMirrorsSkillEvidence: true,
+    };
+  });
+}

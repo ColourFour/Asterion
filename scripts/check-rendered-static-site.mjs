@@ -121,37 +121,117 @@ try {
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/learn/index.html');
-  const p3LearnResult = await page.evaluate(() => ({
-    learnFlow: document.querySelectorAll('[data-learn-flow]').length,
-    learnSteps: document.querySelectorAll('[data-learn-step-card]').length,
-    visibleSteps: Array.from(document.querySelectorAll('[data-learn-step-card]')).filter((item) => !item.hidden).length,
-    checkForms: document.querySelectorAll('[data-check-learn-answer]').length,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
-  }));
+  const p3LearnResult = await page.evaluate(() => {
+    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
+    const cardRect = activeCard?.getBoundingClientRect();
+    return {
+      learnFlow: document.querySelectorAll('[data-learn-flow]').length,
+      learnSteps: document.querySelectorAll('[data-learn-step-card]').length,
+      visibleSteps: Array.from(document.querySelectorAll('[data-learn-step-card]')).filter((item) => !item.hidden).length,
+      checkForms: document.querySelectorAll('[data-check-learn-answer]').length,
+      activeProblemInFirstViewport: Boolean(cardRect && cardRect.top < window.innerHeight * 0.72 && cardRect.bottom > 0),
+      explanationHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.hidden),
+      similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
+      transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
+      answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
+      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    };
+  });
   if (p3LearnResult.learnFlow !== 1) {
     fail('P3 Algebra Learn Mode must render one learn flow.');
   }
-  if (p3LearnResult.learnSteps < 1 || p3LearnResult.checkForms < 1) {
-    fail('P3 Algebra Learn Mode must render checked lesson steps.');
+  if (p3LearnResult.learnSteps !== 11 || p3LearnResult.checkForms < 22) {
+    fail('P3 Algebra Learn Mode must render the authored checked lesson sequence.');
   }
-  if (p3LearnResult.visibleSteps !== 1) {
-    fail(`P3 Algebra Learn Mode must show one step at a time; saw ${p3LearnResult.visibleSteps}.`);
+  if (p3LearnResult.visibleSteps !== 1 || !p3LearnResult.activeProblemInFirstViewport) {
+    fail('P3 Algebra Learn Mode must show one active problem in the first viewport.');
+  }
+  if (!p3LearnResult.explanationHidden || !p3LearnResult.similarHidden || !p3LearnResult.transferHidden || !p3LearnResult.answerRevealHidden) {
+    fail('P3 Algebra Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
   }
   if (!p3LearnResult.nextLocked) {
     fail('P3 Algebra Learn Mode must lock next step until the current step is completed.');
   }
 
-  await waitForStaticEnhancement(page, 'p3/topics/algebra/skill-check/index.html');
-  const oldSkillCheckResult = await page.evaluate(() => {
+  await waitForStaticEnhancement(page, 'p3/topics/logarithmic-and-exponential-functions/learn/index.html');
+  const logExpLearnResult = await page.evaluate(() => {
+    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
+    const cardRect = activeCard?.getBoundingClientRect();
+    const afterAttempt = document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]');
+    return {
+      learnFlow: document.querySelectorAll('[data-learn-flow]').length,
+      learnSteps: document.querySelectorAll('[data-learn-step-card]').length,
+      visibleSteps: Array.from(document.querySelectorAll('[data-learn-step-card]')).filter((item) => !item.hidden).length,
+      checkForms: document.querySelectorAll('[data-check-learn-answer]').length,
+      activeProblemInFirstViewport: Boolean(cardRect && cardRect.top < window.innerHeight * 0.72 && cardRect.bottom > 0),
+      explanationHidden: Boolean(afterAttempt?.hidden),
+      principleHidden: Boolean(afterAttempt?.hidden),
+      similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
+      transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
+      answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
+      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    };
+  });
+  if (logExpLearnResult.learnFlow !== 1) {
+    fail('P3 Log/Exp Learn Mode must render one learn flow.');
+  }
+  if (logExpLearnResult.learnSteps !== 13 || logExpLearnResult.checkForms < 26) {
+    fail('P3 Log/Exp Learn Mode must render the authored checked lesson sequence.');
+  }
+  if (logExpLearnResult.visibleSteps !== 1 || !logExpLearnResult.activeProblemInFirstViewport) {
+    fail('P3 Log/Exp Learn Mode must show one active problem in the first viewport.');
+  }
+  if (!logExpLearnResult.explanationHidden || !logExpLearnResult.principleHidden || !logExpLearnResult.similarHidden || !logExpLearnResult.transferHidden || !logExpLearnResult.answerRevealHidden) {
+    fail('P3 Log/Exp Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
+  }
+  if (!logExpLearnResult.nextLocked) {
+    fail('P3 Log/Exp Learn Mode must lock next step until the current step is completed.');
+  }
+
+  await waitForStaticEnhancement(page, 'p3/topics/trigonometry/learn/index.html');
+  const trigLearnResult = await page.evaluate(() => {
+    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
+    const cardRect = activeCard?.getBoundingClientRect();
+    return {
+      learnFlow: document.querySelectorAll('[data-learn-flow]').length,
+      learnSteps: document.querySelectorAll('[data-learn-step-card]').length,
+      visibleSteps: Array.from(document.querySelectorAll('[data-learn-step-card]')).filter((item) => !item.hidden).length,
+      checkForms: document.querySelectorAll('[data-check-learn-answer]').length,
+      activeProblemInFirstViewport: Boolean(cardRect && cardRect.top < window.innerHeight * 0.72 && cardRect.bottom > 0),
+      explanationHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.hidden),
+      similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
+      transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
+      answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
+    };
+  });
+  if (trigLearnResult.learnFlow !== 1 || trigLearnResult.learnSteps !== 11 || trigLearnResult.checkForms < 22) {
+    fail('P3 Trigonometry Learn Mode must render the authored checked lesson sequence.');
+  }
+  if (trigLearnResult.visibleSteps !== 1 || !trigLearnResult.activeProblemInFirstViewport) {
+    fail('P3 Trigonometry Learn Mode must show one active problem in the first viewport.');
+  }
+  if (!trigLearnResult.explanationHidden || !trigLearnResult.similarHidden || !trigLearnResult.transferHidden || !trigLearnResult.answerRevealHidden) {
+    fail('P3 Trigonometry Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
+  }
+
+  for (const [oldAlgebraPath, oldAlgebraMode] of [
+    ['p3/topics/algebra/field-guide/index.html', 'Field Guide'],
+    ['p3/topics/algebra/skill-check/index.html', 'Skill Check'],
+    ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'Field Guide'],
+    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Skill Check'],
+  ]) {
+    await waitForStaticEnhancement(page, oldAlgebraPath);
+    const oldAlgebraRouteResult = await page.evaluate((mode) => {
     const text = document.body.innerText;
     return {
-      moved: text.includes('Skill Check has moved'),
+      moved: text.includes(`${mode} has moved`),
       hasLearnLink: Array.from(document.querySelectorAll('a')).some((link) => /Open Learn Mode/.test(link.textContent || '') && /\/learn\/(?:index\.html)?$/.test(link.href)),
       oldForms: document.querySelectorAll('[data-check-skill-answer]').length,
     };
-  });
-  if (!oldSkillCheckResult.moved || !oldSkillCheckResult.hasLearnLink || oldSkillCheckResult.oldForms !== 0) {
-    fail('P3 Algebra Skill Check route must be a lightweight Learn Mode merge notice.');
+    }, oldAlgebraMode);
+    if (!oldAlgebraRouteResult.moved || !oldAlgebraRouteResult.hasLearnLink || oldAlgebraRouteResult.oldForms !== 0) {
+      fail(`${oldAlgebraPath} must be a lightweight Learn Mode merge notice.`);
+    }
   }
 
   await waitForStaticEnhancement(page, 'p3/review/index.html');

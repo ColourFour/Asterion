@@ -5,6 +5,10 @@ import {
   type SkillCheckInputType,
   type SkillCheckItem,
 } from './skillCheckItems';
+import { getAuthoredAlgebraLearnSteps } from './algebraLearnSteps';
+import { getAuthoredLogExpLearnSteps } from './logarithmicExponentialLearnSteps';
+import { getAuthoredTrigonometryLearnSteps } from './trigonometryLearnSteps';
+import { getAuthoredVectorsLearnSteps } from './vectorsLearnSteps';
 
 export type LearnStepInputType =
   | 'multiple-choice'
@@ -30,6 +34,8 @@ export interface LearnStep {
   fieldGuideTopic: FieldGuideTopic;
   primaryCheck?: SkillCheckItem;
   similarCheck?: SkillCheckItem;
+  primaryMirrorsSkillEvidence?: boolean;
+  similarMirrorsSkillEvidence?: boolean;
 }
 
 function learnInputType(inputType: SkillCheckInputType | undefined): LearnStepInputType {
@@ -92,7 +98,13 @@ function fallbackLearnCheck(regionId: string | undefined, fieldGuideTopic: Field
 }
 
 export function getLearnStepsForRegion(regionId: string | undefined): LearnStep[] {
-  return getFieldGuideTopicsForRegion(regionId).map((fieldGuideTopic): LearnStep => {
+  const fieldGuideTopics = getFieldGuideTopicsForRegion(regionId);
+  if (regionId === 'algebra') return getAuthoredAlgebraLearnSteps(fieldGuideTopics);
+  if (regionId === 'logarithmic-and-exponential-functions') return getAuthoredLogExpLearnSteps(fieldGuideTopics);
+  if (regionId === 'trigonometry') return getAuthoredTrigonometryLearnSteps(fieldGuideTopics);
+  if (regionId === 'vectors') return getAuthoredVectorsLearnSteps(fieldGuideTopics);
+
+  return fieldGuideTopics.map((fieldGuideTopic): LearnStep => {
     const example = fieldGuideTopic.examples[0];
     const lesson = example?.lesson;
     const checkableItems = getSkillCheckItemsForFieldGuideTopic(fieldGuideTopic.id)
@@ -116,6 +128,8 @@ export function getLearnStepsForRegion(regionId: string | undefined): LearnStep[
       fieldGuideTopic,
       primaryCheck,
       similarCheck,
+      primaryMirrorsSkillEvidence: true,
+      similarMirrorsSkillEvidence: true,
     };
   });
 }
@@ -126,8 +140,11 @@ export function validateLearnSteps(regionIds: string[]): string[] {
     if (!step.stem.trim()) errors.push(`${regionId}/${step.id} is missing a stem`);
     if (!step.prompt.trim()) errors.push(`${regionId}/${step.id} is missing an action prompt`);
     if (!step.explanation.trim()) errors.push(`${regionId}/${step.id} is missing an explanation`);
+    if (!step.principle?.trim()) errors.push(`${regionId}/${step.id} is missing a named principle`);
     if (!step.examTransfer.trim()) errors.push(`${regionId}/${step.id} is missing exam transfer text`);
     if (!step.primaryCheck) errors.push(`${regionId}/${step.id} has no deterministic primary check`);
+    if (!step.expectedAnswer) errors.push(`${regionId}/${step.id} is missing expected answer data`);
+    if (!step.hint?.trim()) errors.push(`${regionId}/${step.id} is missing a targeted hint`);
     return errors;
   }));
 }

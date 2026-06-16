@@ -576,8 +576,9 @@
 
     var stepCards = Array.from(document.querySelectorAll('[data-learn-step-card][data-region-id="' + regionId + '"]'));
     var allComplete = stepCards.length > 0 && stepCards.every(function (card) {
-      var id = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
-      return Boolean(completions[id]);
+      var id = card.getAttribute('data-learn-step-id') || '';
+      var legacyId = card.getAttribute('data-field-guide-topic') || '';
+      return Boolean(completions[id] || completions[legacyId]);
     });
 
     progress.regionLearning[regionId] = Object.assign({}, current, {
@@ -592,6 +593,13 @@
 
   function learnStepCompleted(progress, regionId, stepId) {
     return Boolean(completionsFor(progress, regionId)[stepId]);
+  }
+
+  function learnCardCompleted(progress, card) {
+    var regionId = card.getAttribute('data-region-id') || '';
+    var stepId = card.getAttribute('data-learn-step-id') || '';
+    var legacyId = card.getAttribute('data-field-guide-topic') || '';
+    return Boolean(learnStepCompleted(progress, regionId, stepId) || learnStepCompleted(progress, regionId, legacyId));
   }
 
   function normalizeMathText(value) {
@@ -1071,16 +1079,21 @@
     var progress = loadProgress();
     var now = new Date().toISOString();
     var regionId = form.getAttribute('data-region-id') || '';
-    var stepId = form.getAttribute('data-field-guide-topic-id') || form.getAttribute('data-step-id') || '';
+    var stepId = form.getAttribute('data-step-id') || form.getAttribute('data-field-guide-topic-id') || '';
     var usedHint = form.getAttribute('data-used-hint') === 'true';
     var revealedAnswer = form.getAttribute('data-revealed-answer') === 'true';
     var strongEvidence = Boolean(checkResult.isCorrect && !usedHint && !revealedAnswer);
+    var stepCard = form.closest('[data-learn-step-card]');
+    var requiresSimilar = stepCard?.getAttribute('data-learn-requires-similar') === 'true';
+    var variant = form.getAttribute('data-learn-variant') || 'primary';
+    var completesStep = Boolean(checkResult.isCorrect && (!requiresSimilar || variant === 'similar'));
     var attempt = {
       id: createId('learn_attempt'),
       regionId: regionId,
       activityType: 'learn_mode',
       activityId: form.getAttribute('data-check-id') || stepId,
       stepId: stepId,
+      variant: variant,
       topic: form.getAttribute('data-topic') || '',
       prompt: form.getAttribute('data-step-title') || '',
       submittedAnswer: submittedAnswer,
@@ -1090,10 +1103,10 @@
       strongEvidence: strongEvidence,
       mistakeTags: selectedMistakeTags(form),
       createdAt: now,
-      completedAt: checkResult.isCorrect ? now : undefined
+      completedAt: completesStep ? now : undefined
     };
     progress.learningActivityAttempts.push(attempt);
-    if (checkResult.isCorrect) {
+    if (completesStep) {
       progress = completeLearnStepInProgress(progress, regionId, stepId, form.getAttribute('data-step-title') || '', attempt.id);
     }
     saveProgress(progress);
@@ -1186,7 +1199,10 @@
   }
 
   function checkLearnAnswer(form) {
-    var submittedAnswer = String(new FormData(form).get('submittedAnswer') || '').trim();
+    var submittedValues = new FormData(form).getAll('submittedAnswer').map(function (value) {
+      return String(value).trim();
+    }).filter(Boolean);
+    var submittedAnswer = submittedValues.join(', ');
     var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
     saveLearnModeAttempt(form, submittedAnswer, checkResult);
     if (cleanLearnAttemptCanSaveSkill(form, checkResult)) {
@@ -1197,13 +1213,18 @@
     var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
     var hint = form.querySelector('[data-learn-hint]');
     var afterAttempt = form.querySelector('[data-learn-after-attempt]');
+    var answerReveal = form.querySelector('[data-learn-answer-reveal]');
     var stepCard = form.closest('[data-learn-step-card]');
+    var variant = form.getAttribute('data-learn-variant') || 'primary';
+    var isPrimary = variant === 'primary';
+    var requiresSimilar = stepCard?.getAttribute('data-learn-requires-similar') === 'true';
     var similar = stepCard?.querySelector('[data-learn-similar-panel]');
     var transfer = stepCard?.querySelector('[data-learn-exam-transfer]');
 
     if (afterAttempt) afterAttempt.hidden = false;
-    if (similar) similar.hidden = false;
-    if (transfer) transfer.hidden = false;
+    if (answerReveal) answerReveal.hidden = false;
+    if (isPrimary && similar) similar.hidden = false;
+    if (transfer && (!requiresSimilar || !isPrimary)) transfer.hidden = false;
 
     if (checkResult.isCorrect) {
       var clean = cleanLearnAttemptCanSaveSkill(form, checkResult);
@@ -1214,6 +1235,9 @@
       if (submitButton) {
         submitButton.textContent = 'Check again';
         submitButton.className = 'button secondary-button';
+      }
+      if (isPrimary && requiresSimilar) {
+        setSkillFeedback(form, 'Correct. Primary step checked; complete the similar question before this lesson step is finished.', 'correct');
       }
       window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
       updateLearnModeFlowState();
@@ -1831,9 +1855,7 @@
     var progress = loadProgress();
     document.querySelectorAll('[data-learn-step-card]').forEach(function (card) {
       if (!(card instanceof HTMLElement)) return;
-      var regionId = card.getAttribute('data-region-id') || '';
-      var stepId = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
-      var completed = learnStepCompleted(progress, regionId, stepId);
+      var completed = learnCardCompleted(progress, card);
       var state = card.querySelector('[data-learn-step-state]');
       card.classList.toggle('is-complete', completed);
       if (state) state.textContent = completed ? 'Completed' : 'Not completed';
@@ -1876,9 +1898,7 @@
       function currentCardComplete() {
         var progress = loadProgress();
         var card = cards[index];
-        var regionId = card.getAttribute('data-region-id') || '';
-        var stepId = card.getAttribute('data-field-guide-topic') || card.getAttribute('data-learn-step-id') || '';
-        return learnStepCompleted(progress, regionId, stepId);
+        return learnCardCompleted(progress, card);
       }
 
       function render() {

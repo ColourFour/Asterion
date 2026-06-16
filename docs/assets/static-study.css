@@ -4314,15 +4314,57 @@ summary {
   background: #ffffff;
 }
 
+.learn-mode-page main {
+  gap: 12px;
+}
+
+.learn-mode-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fffdf8;
+  box-shadow: var(--shadow-sm);
+}
+
+.learn-mode-hero h1,
+.learn-mode-hero p {
+  margin: 0;
+}
+
+.learn-mode-hero h1 {
+  color: var(--ink-warm);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.learn-mode-hero p:not(.eyebrow) {
+  max-width: 720px;
+  margin-top: 2px;
+  color: var(--muted-strong);
+}
+
+.learn-mode-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .learn-flow {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .learn-step-card {
   display: grid;
-  gap: 16px;
-  padding: 18px;
+  gap: 12px;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: #ffffff;
@@ -4354,17 +4396,41 @@ summary {
 }
 
 .learn-option-bank {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
-.learn-option-bank span {
-  padding: 6px 9px;
+.learn-option-bank legend {
+  margin-bottom: 6px;
+  color: var(--muted-strong);
+  font-weight: 900;
+}
+
+.learn-option-bank label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: var(--paper);
+  background: #fffdf8;
   font-weight: 800;
+}
+
+.learn-option-bank input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.learn-option-bank label:has(input:checked) {
+  border-color: rgba(47, 107, 79, 0.55);
+  background: var(--sage-soft);
 }
 
 .learn-check-form,
@@ -4875,6 +4941,7 @@ body.skill-check-page .exam-question-section {
   }
 
 	  .page-hero,
+    .learn-mode-hero,
     .p3-path-hero,
     .path-principle-strip,
 	  .topic-grid,
@@ -4951,6 +5018,7 @@ body.skill-check-page .exam-question-section {
   }
 
 	  .page-hero,
+    .learn-mode-hero,
     .p3-path-hero,
     .path-unit-card,
 	  .topic-card,

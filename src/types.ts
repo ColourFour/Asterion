@@ -350,6 +350,7 @@ export interface LearningActivityAttempt {
   activityType?: 'quick_check' | 'warm_up' | 'learn_mode';
   activityId?: string;
   stepId?: string;
+  variant?: 'primary' | 'similar';
   topic?: string;
   prompt?: string;
   submittedAnswer?: string;

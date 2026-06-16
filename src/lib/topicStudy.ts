@@ -1,4 +1,5 @@
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
+import { getLearnStepsForRegion } from '../data/learnModeLessons';
 import { COURSES, P3_COURSE_ID, type CourseId } from '../data/courses';
 import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
 import type { RegionDefinition, RegionLearningRecord, RegionProgress, SkillCheckAttemptRecord, StoredProgress } from '../types';
@@ -162,11 +163,12 @@ export function topicProgressSummary(input: {
   regionId: string;
 }): TopicProgressSummary {
   const fieldGuideTopics = getFieldGuideTopicsForRegion(input.regionId);
+  const learnSteps = getLearnStepsForRegion(input.regionId);
+  const fieldGuideTotal = Math.max(1, learnSteps.length || fieldGuideTopics.length || 1);
   const learningRecord: RegionLearningRecord | undefined = input.progress.regionLearning?.[input.regionId];
-  const completedTopicCount = fieldGuideTopics.length
-    ? Math.min(fieldGuideTopics.length, Object.keys(learningRecord?.fieldGuideTopicCompletions ?? {}).length)
+  const completedTopicCount = fieldGuideTotal
+    ? Math.min(fieldGuideTotal, Object.keys(learningRecord?.fieldGuideTopicCompletions ?? {}).length)
     : learningRecord?.fieldGuideCompletedAt ? 1 : 0;
-  const fieldGuideTotal = Math.max(1, fieldGuideTopics.length || 1);
   const skillPracticeAttempts = normalizeSkillCheckLocalAttempts(input.progress.skillCheckAttempts ?? []).filter((attempt: SkillCheckAttemptRecord) => (
     (attempt.regionId === input.regionId || attempt.topic === input.regionId) && isPassingSkillCheckAttempt(attempt)
   )).length;

@@ -462,6 +462,69 @@ for (const page of p3LearnPages) {
     console.error(`${page} has no Learn Mode steps.`);
     process.exit(1);
   }
+
+  const authoredLearnContracts = {
+    algebra: {
+      topicName: 'Algebra',
+      stepCount: 11,
+      markers: [
+        'Remainder theorem need',
+        'Complete a cubic factorisation',
+        'Partial fractions: irreducible quadratic factor',
+        'Mixed exam transfer: cancellation trap',
+      ],
+    },
+    'logarithmic-and-exponential-functions': {
+      topicName: 'Log/Exp',
+      stepCount: 13,
+      markers: [
+        'Exponential and logarithmic form',
+        'Solve the condensed log equation',
+        'Reject invalid logarithmic solutions',
+        'Natural logs undo e',
+        'Mixed exam transfer',
+      ],
+    },
+    trigonometry: {
+      topicName: 'Trigonometry',
+      stepCount: 11,
+      markers: [
+        'Choose the identity family',
+        'Use an identity, then solve',
+        'Avoid the division trap',
+        'Exam-facing mixed transfer',
+      ],
+    },
+    vectors: {
+      topicName: 'Vectors',
+      stepCount: 9,
+      markers: [
+        'Direction vector from two points',
+        'Find where two lines intersect',
+        'Foot of perpendicular on a line',
+        'Reflect a point in a line',
+      ],
+    },
+  };
+  const authoredContract = authoredLearnContracts[topicSlug];
+  if (authoredContract) {
+    if (learnStepCount !== authoredContract.stepCount) {
+      console.error(`${page} must render ${authoredContract.stepCount} authored ${authoredContract.topicName} Learn steps; saw ${learnStepCount}.`);
+      process.exit(1);
+    }
+    for (const requiredCopy of [
+      ...authoredContract.markers,
+      'data-learn-answer-reveal hidden',
+      'data-learn-requires-similar="true"',
+      'data-learn-saves-skill-pass="false"',
+      'data-learn-saves-skill-pass="true"',
+    ]) {
+      if (!html.includes(requiredCopy)) {
+        console.error(`${page} is missing ${authoredContract.topicName} Learn contract marker: ${requiredCopy}`);
+        process.exit(1);
+      }
+    }
+  }
 }
 
 for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/(?:field-guide|skill-check)\/index\.html$/.test(page))) {

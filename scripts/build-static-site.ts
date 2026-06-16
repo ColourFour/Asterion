@@ -653,7 +653,7 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
   return contexts.map((context) => ({
     regionId: context.region.id,
     name: context.topic.name,
-    fieldGuideTotal: Math.max(1, context.fieldGuideTopics.length),
+    fieldGuideTotal: Math.max(1, context.learnSteps.length),
     requiredCheckIds: checkableSkillCheckIdsForRegion(context.region.id),
     fieldGuideHref: hrefToPage(pagePath, learnPagePath(context.topic)),
     skillCheckHref: hrefToPage(pagePath, learnPagePath(context.topic)),
@@ -661,9 +661,10 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
 }
 
 function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
-  const { topic, region, fieldGuideTopics } = context;
+  const { topic, region, fieldGuideTopics, learnSteps } = context;
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const subtopicPreview = fieldGuideTopics.slice(0, 5);
+  const learnStepTotal = Math.max(1, learnSteps.length);
   return `
     <article class="path-unit-card" data-path-unit="${escapeAttr(region.id)}">
       <div class="path-unit-number">Unit ${index + 1}</div>
@@ -675,7 +676,7 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
         <ol class="unit-step-list" aria-label="${escapeAttr(topic.name)} study steps">
           <li>
             <a href="${hrefToPage(fromPagePath, learnPagePath(topic))}">Learn Mode</a>
-            <span>${fieldGuideTopics.length} learn step${fieldGuideTopics.length === 1 ? '' : 's'} with ${requiredSkillCheckIds.length} checked item${requiredSkillCheckIds.length === 1 ? '' : 's'}</span>
+            <span>${learnSteps.length} learn step${learnSteps.length === 1 ? '' : 's'} with ${requiredSkillCheckIds.length} checked item${requiredSkillCheckIds.length === 1 ? '' : 's'}</span>
           </li>
         </ol>
         <details class="unit-subtopic-details">
@@ -687,7 +688,7 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
         </details>
       </div>
       <div class="path-unit-progress">
-        ${compactProgress(region.id, Math.max(1, fieldGuideTopics.length))}
+        ${compactProgress(region.id, learnStepTotal)}
       </div>
     </article>
   `;
@@ -698,7 +699,7 @@ function renderP3LearningPathPage(
   pagePath = 'index.html',
 ): string {
   const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
-  const totalFieldGuideSteps = contexts.reduce((sum, context) => sum + context.fieldGuideTopics.length, 0);
+  const totalFieldGuideSteps = contexts.reduce((sum, context) => sum + context.learnSteps.length, 0);
   const totalSkillChecks = contexts.reduce((sum, context) => sum + checkableSkillCheckIdsForRegion(context.region.id).length, 0);
   const firstTopic = STUDY_TOPICS[0];
   const body = `
@@ -1951,20 +1952,45 @@ function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   `;
 }
 
+function learnAnswerFormatHelp(item: SkillCheckItem): string {
+  if (item.inputType === 'multiple_choice') return 'Choose one answer.';
+  if (item.inputType === 'checkbox') return 'Choose all matching answers.';
+  if (item.answerType === 'multi-value') return 'Type all values separated by commas, e.g. pi/6, 5pi/6.';
+  if (item.answerType === 'coordinate') return 'Type coordinates as a tuple, e.g. (3,-2,6).';
+  if (item.answerType === 'interval') return 'Type a bounded interval or inequality, e.g. -1/3 < x < 1/3.';
+  if (item.answerType === 'numeric') return 'Type an integer, decimal, or simple fraction.';
+  if (item.answerType === 'expression-text') return 'Type a compact expression, e.g. ln(5x) or x^2-x-6.';
+  if (item.answerType === 'exact-text') return 'Type the requested word or short phrase.';
+  return 'Type your answer.';
+}
+
 function renderLearnAnswerInput(item: SkillCheckItem): string {
   const options = item.options ?? item.cards ?? [];
-  const optionList = options.length ? `
-    <div class="learn-option-bank" aria-label="Answer choices">
-      ${options.map((option) => `<span>${renderMathText(option.label)}</span>`).join('')}
-    </div>
-  ` : '';
+  if (options.length && (item.inputType === 'multiple_choice' || item.inputType === 'checkbox')) {
+    const multiple = item.inputType === 'checkbox';
+    return `
+      <fieldset class="learn-option-bank">
+        <legend>${escapeHtml(learnAnswerFormatHelp(item))}</legend>
+        ${options.map((option, index) => `
+          <label>
+            <input
+              type="${multiple ? 'checkbox' : 'radio'}"
+              name="submittedAnswer"
+              value="${escapeAttr(option.id)}"
+              ${index === 0 ? 'required' : ''}
+            />
+            <span>${renderMathText(option.label)}</span>
+          </label>
+        `).join('')}
+      </fieldset>
+    `;
+  }
   const helper = item.inputType === 'checkbox'
     ? 'Type all matching answers, separated by commas.'
     : item.inputType === 'ordered_cards'
       ? 'Type the order or the resulting expression.'
-      : 'Type your answer.';
+      : learnAnswerFormatHelp(item);
   return `
-    ${optionList}
     <label class="single-answer-field">
       <span>${escapeHtml(helper)}</span>
       <input name="submittedAnswer" type="text" autocomplete="off" required />
@@ -1981,11 +2007,18 @@ function renderLearnCheckForm(
   if (!item) return '<p class="empty-state">This Learn step needs a deterministic check before it can be completed.</p>';
   const spec = skillCheckAnswerSpecForItem(item);
   if (!spec) return '<p class="empty-state">This Learn step is review only until a deterministic answer is authored.</p>';
+  const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
+    ? item.expectedOptionIds
+    : spec.acceptedAnswers;
   const mistakeTags = Array.from(new Set([
     ...(item.mistakeTags ?? []),
     ...SKILL_CHECK_MISTAKE_TAGS,
   ]));
   const isPrimary = variant === 'primary';
+  const savesSkillEvidence = isPrimary
+    ? step.primaryMirrorsSkillEvidence !== false
+    : step.similarMirrorsSkillEvidence !== false;
+  const explanationText = isPrimary ? step.explanation : item.workedRoute.join(' ');
   return `
     <form
       class="skill-check-form learn-check-form"
@@ -1999,9 +2032,9 @@ function renderLearnCheckForm(
       data-skill-id="${escapeAttr(item.skillId)}"
       data-check-id="${escapeAttr(item.itemId)}"
       data-learn-variant="${escapeAttr(variant)}"
-      data-learn-saves-skill-pass="true"
+      data-learn-saves-skill-pass="${savesSkillEvidence ? 'true' : 'false'}"
       data-answer-type="${escapeAttr(spec.answerType)}"
-      data-accepted-answers="${escapeAttr(JSON.stringify(spec.acceptedAnswers))}"
+      data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}"
       data-tolerance="${escapeAttr(spec.tolerance)}"
       data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}"
       data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}"
@@ -2017,10 +2050,10 @@ function renderLearnCheckForm(
         ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
       </div>
       <div class="learn-after-attempt" data-learn-after-attempt hidden>
-        <p><strong>Explanation:</strong> ${renderMathText(step.explanation)}</p>
-        ${step.principle ? `<p><strong>${renderMathText(step.principle.replace(/^Principle:\s*/i, 'Principle: '))}</strong></p>` : ''}
-        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar checked question below. A clean correct answer is saved as Skill Check evidence.</p>' : ''}
-        ${!isPrimary ? '<p class="question-instruction">Clean correct answers here can satisfy the existing Skill Check gate. Hinted or revealed attempts are saved as practice only.</p>' : ''}
+        <p><strong>${isPrimary ? 'Explanation' : 'Similar route'}:</strong> ${renderMathText(explanationText)}</p>
+        ${isPrimary && step.principle ? `<p><strong>${renderMathText(step.principle.replace(/^Principle:\s*/i, 'Principle: '))}</strong></p>` : ''}
+        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>' : ''}
+        ${!isPrimary ? '<p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>' : ''}
       </div>
       <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
         <legend>What went wrong?</legend>
@@ -2034,7 +2067,7 @@ function renderLearnCheckForm(
         </div>
         <p class="targeted-prompt" data-targeted-prompt></p>
       </fieldset>
-      <details class="skill-check-answer-details" data-learn-answer-reveal>
+      <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Show answer and worked route</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
@@ -2046,7 +2079,7 @@ function renderLearnCheckForm(
 
 function renderLearnStepCard(step: LearnStep, index: number, total: number, pagePath: string): string {
   return `
-    <article class="learn-step-card" data-learn-step-card data-learn-step-id="${escapeAttr(step.id)}" data-field-guide-topic="${escapeAttr(step.fieldGuideTopic.id)}" data-region-id="${escapeAttr(step.primaryCheck?.regionId ?? '')}">
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="${escapeAttr(step.id)}" data-field-guide-topic="${escapeAttr(step.fieldGuideTopic.id)}" data-learn-requires-similar="${step.similarCheck ? 'true' : 'false'}" data-region-id="${escapeAttr(step.primaryCheck?.regionId ?? '')}">
       <header class="topic-section-header">
         <div>
           <p class="eyebrow">Step ${index + 1} of ${total}</p>
@@ -2084,13 +2117,17 @@ function renderLearnPage(
   const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Exam Review';
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const body = `
-    ${renderHero(
-      `Unit ${index + 1}: ${topic.name} Learn Mode`,
-      'Answer first, then reveal the next useful hint and principle. Similar checked questions can satisfy the existing Skill Check gate when answered cleanly.',
-      topic.headerFormula,
-      `${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
-      <a class="button primary-button" href="#learn-flow">Start Learn Mode</a>`,
-    )}
+    <section class="learn-mode-hero">
+      <div>
+        <p class="eyebrow">Unit ${index + 1} Learn Mode</p>
+        <h1>${escapeHtml(topic.name)}</h1>
+        <p>Try the small check first. Hint, explanation, principle, similar check, and transfer unlock in order.</p>
+      </div>
+      <div class="learn-mode-hero-actions">
+        ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+        <a class="button primary-button" href="#learn-flow">Start Learn Mode</a>
+      </div>
+    </section>
     <details class="jump-details">
       <summary>Show steps and saved progress</summary>
       <nav class="subnav" aria-label="${escapeAttr(topic.name)} Learn Mode steps">
@@ -2115,6 +2152,7 @@ function renderLearnPage(
     description: `Integrated P3 Learn Mode for ${topic.name}.`,
     active: 'p3-topics',
     body,
+    bodyClass: 'learn-mode-page',
   });
 }
 
@@ -2557,7 +2595,7 @@ function renderPracticePage(
         ${groups.map((group) => `<a href="#practice-${escapeAttr(group.topic.id)}">${escapeHtml(group.topic.title)}</a>`).join('')}
       </nav>
       <div class="progress-detail-row">
-        ${progressList(region.id, Math.max(1, context.fieldGuideTopics.length), requiredSkillCheckIds)}
+        ${progressList(region.id, Math.max(1, context.learnSteps.length), requiredSkillCheckIds)}
         ${routeLink(pagePath, fieldGuidePath, 'Review Field Guide', 'button secondary-button')}
       </div>
     </details>
@@ -2664,7 +2702,7 @@ function renderTopicExamTrainingPage(
 }
 
 function renderExamTrainingTopicCard(fromPagePath: string, context: TopicContext, examTrainingPath = topicExamTrainingPagePath(context.topic)): string {
-  const total = Math.max(1, context.fieldGuideTopics.length);
+  const total = Math.max(1, context.learnSteps.length);
   return `
     <article class="exam-topic-row" data-region-card="${escapeAttr(context.region.id)}">
       <div>
