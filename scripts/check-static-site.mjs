@@ -495,6 +495,61 @@ for (const page of p3LearnPages) {
         'Exam-facing mixed transfer',
       ],
     },
+    differentiation: {
+      topicName: 'Differentiation',
+      stepCount: 14,
+      markers: [
+        'Choose the rule before differentiating',
+        'Power rule with negative and fractional powers',
+        'Implicit differentiation keeps dy/dx',
+        'Normal gradient and equation',
+        'Mixed exam transfer: build the derivative condition',
+      ],
+    },
+    integration: {
+      topicName: 'Integration',
+      stepCount: 13,
+      markers: [
+        'Choose the integration method first',
+        'Power integration with negative and fractional powers',
+        'Substitution with changed limits',
+        'Area between curves',
+        'Mixed exam transfer: substitution and evaluation',
+      ],
+    },
+    'numerical-solution-of-equations': {
+      topicName: 'Numerical Solution of Equations',
+      stepCount: 12,
+      markers: [
+        'Need a numerical route',
+        'Rearrange into fixed-point form',
+        'Use a sign-change bracket',
+        'Recognize a bad iteration',
+        'Mixed exam transfer: bracket, iterate, estimate',
+      ],
+    },
+    'differential-equations': {
+      topicName: 'Differential Equations',
+      stepCount: 12,
+      markers: [
+        'Recognize a separable equation',
+        'Separate the variables',
+        'Use the initial condition after integration',
+        'Build a combined rate model',
+        'Mixed exam transfer: solve a separable model',
+      ],
+    },
+    'complex-numbers': {
+      topicName: 'Complex Numbers',
+      stepCount: 14,
+      markers: [
+        'Combine real and imaginary parts',
+        'Multiply and replace i squared',
+        'Divide using the conjugate',
+        'Modulus locus as a circle',
+        'Mixed exam transfer: arithmetic to geometry',
+      ],
+    },
     vectors: {
       topicName: 'Vectors',
       stepCount: 9,

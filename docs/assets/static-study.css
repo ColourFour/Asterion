@@ -3184,6 +3184,7 @@ body.p3-path-page main {
 .formula-chip-list .math-text,
 .plain-list .math-text,
 .phase-panel .math-text,
+.learn-step-card .math-text,
 .formula-panel .math-text,
 .topic-card-formula .math-text {
   display: inline-block;
@@ -3198,6 +3199,7 @@ body.p3-path-page main {
 .formula-chip-list .math-text .katex,
 .plain-list .math-text .katex,
 .phase-panel .math-text .katex,
+.learn-step-card .math-text .katex,
 .formula-panel .math-text .katex,
 .topic-card-formula .math-text .katex {
   white-space: nowrap;
@@ -4415,11 +4417,14 @@ summary {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   align-items: center;
+  min-height: 44px;
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #fffdf8;
+  cursor: pointer;
   font-weight: 800;
+  transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .learn-option-bank input {
@@ -4429,14 +4434,25 @@ summary {
 }
 
 .learn-option-bank label:has(input:checked) {
-  border-color: rgba(47, 107, 79, 0.55);
+  border-color: var(--success);
   background: var(--sage-soft);
+  box-shadow: inset 0 0 0 1px rgba(47, 107, 79, 0.22);
+}
+
+.learn-option-bank label:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .learn-check-form,
 .learn-similar-panel,
 .learn-exam-transfer {
   max-width: 760px;
+}
+
+.learn-check-form {
+  display: grid;
+  gap: 10px;
 }
 
 .learn-after-attempt,
@@ -5012,6 +5028,46 @@ body.skill-check-page .exam-question-section {
     margin-top: 10px;
   }
 
+  body.learn-mode-page .site-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-block: 8px 10px;
+    padding: 8px 10px;
+  }
+
+  body.learn-mode-page .brand-link {
+    gap: 8px;
+  }
+
+  body.learn-mode-page .brand-link small {
+    display: none;
+  }
+
+  body.learn-mode-page .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  body.learn-mode-page .site-nav {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  body.learn-mode-page .site-nav a {
+    width: auto;
+    min-height: 34px;
+    padding: 7px 9px;
+    font-size: 0.82rem;
+  }
+
+  body.learn-mode-page main {
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
   .brand-mark {
     width: 38px;
     height: 38px;
@@ -5041,6 +5097,87 @@ body.skill-check-page .exam-question-section {
 	  .exam-mode-grid article {
 	    padding: 16px;
 	  }
+
+  body.learn-mode-page .learn-mode-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  body.learn-mode-page .learn-mode-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  body.learn-mode-page .learn-mode-hero p:not(.eyebrow) {
+    display: none;
+  }
+
+  body.learn-mode-page .learn-mode-hero-actions {
+    justify-content: flex-start;
+  }
+
+  body.learn-mode-page .learn-mode-hero-actions .button {
+    width: auto;
+    min-height: 36px;
+    padding: 8px 10px;
+  }
+
+  body.learn-mode-page .jump-details {
+    min-height: 0;
+  }
+
+  body.learn-mode-page .jump-details > summary {
+    padding-block: 8px;
+  }
+
+  body.learn-mode-page .learn-controls {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  body.learn-mode-page .learn-controls .button {
+    width: auto;
+    min-height: 36px;
+    padding: 8px 10px;
+  }
+
+  body.learn-mode-page .learn-controls .practice-count {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  body.learn-mode-page .learn-step-card {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  body.learn-mode-page .learn-step-card .topic-section-header {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  body.learn-mode-page .learn-step-card h2 {
+    font-size: 1.18rem;
+  }
+
+  body.learn-mode-page .learn-step-state {
+    width: fit-content;
+    padding: 4px 8px;
+  }
+
+  body.learn-mode-page .learn-option-bank {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.learn-mode-page .skill-check-actions {
+    align-items: stretch;
+  }
+
+  body.learn-mode-page .skill-check-actions .button {
+    flex: 1 1 140px;
+  }
 
   .path-unit-card {
     gap: 12px;

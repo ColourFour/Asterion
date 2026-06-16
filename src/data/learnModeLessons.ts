@@ -9,6 +9,11 @@ import { getAuthoredAlgebraLearnSteps } from './algebraLearnSteps';
 import { getAuthoredLogExpLearnSteps } from './logarithmicExponentialLearnSteps';
 import { getAuthoredTrigonometryLearnSteps } from './trigonometryLearnSteps';
 import { getAuthoredVectorsLearnSteps } from './vectorsLearnSteps';
+import { getAuthoredDifferentiationLearnSteps } from './differentiationLearnSteps';
+import { getAuthoredIntegrationLearnSteps } from './integrationLearnSteps';
+import { getAuthoredDifferentialEquationsLearnSteps } from './differentialEquationsLearnSteps';
+import { getAuthoredComplexNumbersLearnSteps } from './complexNumbersLearnSteps';
+import { getAuthoredIterationLearnSteps } from './iterationLearnSteps';
 
 export type LearnStepInputType =
   | 'multiple-choice'
@@ -102,6 +107,11 @@ export function getLearnStepsForRegion(regionId: string | undefined): LearnStep[
   if (regionId === 'algebra') return getAuthoredAlgebraLearnSteps(fieldGuideTopics);
   if (regionId === 'logarithmic-and-exponential-functions') return getAuthoredLogExpLearnSteps(fieldGuideTopics);
   if (regionId === 'trigonometry') return getAuthoredTrigonometryLearnSteps(fieldGuideTopics);
+  if (regionId === 'differentiation') return getAuthoredDifferentiationLearnSteps(fieldGuideTopics);
+  if (regionId === 'integration') return getAuthoredIntegrationLearnSteps(fieldGuideTopics);
+  if (regionId === 'numerical-solution-of-equations') return getAuthoredIterationLearnSteps(fieldGuideTopics);
+  if (regionId === 'differential-equations') return getAuthoredDifferentialEquationsLearnSteps(fieldGuideTopics);
+  if (regionId === 'complex-numbers') return getAuthoredComplexNumbersLearnSteps(fieldGuideTopics);
   if (regionId === 'vectors') return getAuthoredVectorsLearnSteps(fieldGuideTopics);
 
   return fieldGuideTopics.map((fieldGuideTopic): LearnStep => {

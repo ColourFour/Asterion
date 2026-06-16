@@ -198,6 +198,347 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
+  it('uses an explicit authored fourteen-step Differentiation sequence', () => {
+    const differentiationSteps = getLearnStepsForRegion('differentiation');
+
+    expect(differentiationSteps).toHaveLength(14);
+    expect(differentiationSteps.map((step) => step.id)).toEqual([
+      'learn-diff-rule-choice',
+      'learn-diff-power-negative-fractional',
+      'learn-diff-chain-inside-function',
+      'learn-diff-product-structure',
+      'learn-diff-quotient-order',
+      'learn-diff-trig-derivative',
+      'learn-diff-exp-log-derivative',
+      'learn-diff-implicit-dydx',
+      'learn-diff-tangent-gradient',
+      'learn-diff-normal-gradient',
+      'learn-diff-stationary-condition',
+      'learn-diff-classify-stationary',
+      'learn-diff-increasing-decreasing',
+      'learn-diff-mixed-optimization-transfer',
+    ]);
+    expect(new Set(differentiationSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(differentiationSteps.length);
+  });
+
+  it('gives every Differentiation Learn step the required authored learning move parts', () => {
+    for (const step of getLearnStepsForRegion('differentiation')) {
+      expect(step.stem.trim(), step.id).not.toEqual('');
+      expect(step.prompt.trim(), step.id).not.toEqual('');
+      expect(step.expectedAnswer, step.id).toBeDefined();
+      expect(step.hint?.trim(), step.id).not.toEqual('');
+      expect(step.explanation.trim(), step.id).not.toEqual('');
+      expect(step.principle?.trim(), step.id).not.toEqual('');
+      expect(step.examTransfer.trim(), step.id).not.toEqual('');
+      expect(step.primaryCheck?.checkable, step.id).toBe(true);
+      expect(step.similarCheck?.checkable, step.id).toBe(true);
+      expect(skillCheckAnswerSpecForItem(step.primaryCheck!), step.id).toBeDefined();
+      expect(skillCheckAnswerSpecForItem(step.similarCheck!), step.id).toBeDefined();
+      expect(step.primaryMirrorsSkillEvidence, step.id).toBe(false);
+      expect(step.similarMirrorsSkillEvidence, step.id).toBe(true);
+    }
+  });
+
+  it('keeps representative Differentiation Learn answers machine-checkable', () => {
+    const steps = getLearnStepsForRegion('differentiation');
+    const answerByStep = new Map<string, string>([
+      ['learn-diff-rule-choice', 'product rule'],
+      ['learn-diff-power-negative-fractional', '-2/x^3'],
+      ['learn-diff-chain-inside-function', '3x-2'],
+      ['learn-diff-product-structure', 'x^2cosx+2xsinx'],
+      ['learn-diff-quotient-order', '(x-1)2x-(x^2+1)'],
+      ['learn-diff-trig-derivative', '3cos(3x)'],
+      ['learn-diff-exp-log-derivative', '2e^(2x)+3/(3x-1)'],
+      ['learn-diff-implicit-dydx', '3y^2dy/dx'],
+      ['learn-diff-tangent-gradient', '10'],
+      ['learn-diff-normal-gradient', '-0.25'],
+      ['learn-diff-stationary-condition', '3x^2-3=0'],
+      ['learn-diff-classify-stationary', 'max'],
+      ['learn-diff-increasing-decreasing', 'increasing'],
+      ['learn-diff-mixed-optimization-transfer', '12-2x=0'],
+    ]);
+
+    for (const [stepId, submittedAnswer] of answerByStep) {
+      const step = steps.find((candidate) => candidate.id === stepId);
+      expect(step, stepId).toBeDefined();
+      const spec = skillCheckAnswerSpecForItem(step!.primaryCheck!);
+      expect(spec, stepId).toBeDefined();
+      expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer }).isCorrect, stepId).toBe(true);
+    }
+  });
+
+  it('uses an explicit authored thirteen-step Integration sequence', () => {
+    const integrationSteps = getLearnStepsForRegion('integration');
+
+    expect(integrationSteps).toHaveLength(13);
+    expect(integrationSteps.map((step) => step.id)).toEqual([
+      'learn-int-method-choice',
+      'learn-int-power-negative-fractional',
+      'learn-int-reverse-chain-inside',
+      'learn-int-substitution-setup',
+      'learn-int-substitution-limits',
+      'learn-int-by-parts-structure',
+      'learn-int-partial-fractions-log',
+      'learn-int-trig-identity-rewrite',
+      'learn-int-definite-upper-minus-lower',
+      'learn-int-area-between-curves',
+      'learn-int-improper-limit-setup',
+      'learn-int-constant-from-point',
+      'learn-int-mixed-exam-transfer',
+    ]);
+    expect(new Set(integrationSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(integrationSteps.length);
+  });
+
+  it('gives every Integration Learn step the required authored learning move parts', () => {
+    for (const step of getLearnStepsForRegion('integration')) {
+      expect(step.stem.trim(), step.id).not.toEqual('');
+      expect(step.prompt.trim(), step.id).not.toEqual('');
+      expect(step.expectedAnswer, step.id).toBeDefined();
+      expect(step.hint?.trim(), step.id).not.toEqual('');
+      expect(step.explanation.trim(), step.id).not.toEqual('');
+      expect(step.principle?.trim(), step.id).not.toEqual('');
+      expect(step.examTransfer.trim(), step.id).not.toEqual('');
+      expect(step.primaryCheck?.checkable, step.id).toBe(true);
+      expect(step.similarCheck?.checkable, step.id).toBe(true);
+      expect(skillCheckAnswerSpecForItem(step.primaryCheck!), step.id).toBeDefined();
+      expect(skillCheckAnswerSpecForItem(step.similarCheck!), step.id).toBeDefined();
+      expect(step.primaryMirrorsSkillEvidence, step.id).toBe(false);
+      expect(step.similarMirrorsSkillEvidence, step.id).toBe(true);
+    }
+  });
+
+  it('keeps representative Integration Learn answers machine-checkable', () => {
+    const steps = getLearnStepsForRegion('integration');
+    const answerByStep = new Map<string, string>([
+      ['learn-int-method-choice', 'integration by parts'],
+      ['learn-int-power-negative-fractional', '-1/x+C'],
+      ['learn-int-reverse-chain-inside', 'x^2+3'],
+      ['learn-int-substitution-setup', 'u=x^2+2'],
+      ['learn-int-substitution-limits', '1,2'],
+      ['learn-int-by-parts-structure', 'lnx'],
+      ['learn-int-partial-fractions-log', 'partial fractions'],
+      ['learn-int-trig-identity-rewrite', 'sin^2x=(1-cos2x)/2'],
+      ['learn-int-definite-upper-minus-lower', '10'],
+      ['learn-int-area-between-curves', 'int_0^2((x+2)-x^2)dx'],
+      ['learn-int-improper-limit-setup', 'limit setup'],
+      ['learn-int-constant-from-point', '2'],
+      ['learn-int-mixed-exam-transfer', 'int_1^2u^3du'],
+    ]);
+
+    for (const [stepId, submittedAnswer] of answerByStep) {
+      const step = steps.find((candidate) => candidate.id === stepId);
+      expect(step, stepId).toBeDefined();
+      const spec = skillCheckAnswerSpecForItem(step!.primaryCheck!);
+      expect(spec, stepId).toBeDefined();
+      expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer }).isCorrect, stepId).toBe(true);
+    }
+  });
+
+  it('uses an explicit authored twelve-step Differential Equations sequence', () => {
+    const deSteps = getLearnStepsForRegion('differential-equations');
+
+    expect(deSteps).toHaveLength(12);
+    expect(deSteps.map((step) => step.id)).toEqual([
+      'learn-de-recognize-separable',
+      'learn-de-separate-variables',
+      'learn-de-integrate-both-sides',
+      'learn-de-initial-condition-constant',
+      'learn-de-solve-explicitly',
+      'learn-de-exponential-growth-decay',
+      'learn-de-direct-rate-statement',
+      'learn-de-combined-rate-statement',
+      'learn-de-boundary-condition-after-integration',
+      'learn-de-verify-proposed-solution',
+      'learn-de-interpret-behavior',
+      'learn-de-mixed-exam-transfer',
+    ]);
+    expect(new Set(deSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(deSteps.length);
+  });
+
+  it('gives every Differential Equations Learn step the required authored learning move parts', () => {
+    for (const step of getLearnStepsForRegion('differential-equations')) {
+      expect(step.stem.trim(), step.id).not.toEqual('');
+      expect(step.prompt.trim(), step.id).not.toEqual('');
+      expect(step.expectedAnswer, step.id).toBeDefined();
+      expect(step.hint?.trim(), step.id).not.toEqual('');
+      expect(step.explanation.trim(), step.id).not.toEqual('');
+      expect(step.principle?.trim(), step.id).not.toEqual('');
+      expect(step.examTransfer.trim(), step.id).not.toEqual('');
+      expect(step.primaryCheck?.checkable, step.id).toBe(true);
+      expect(step.similarCheck?.checkable, step.id).toBe(true);
+      expect(skillCheckAnswerSpecForItem(step.primaryCheck!), step.id).toBeDefined();
+      expect(skillCheckAnswerSpecForItem(step.similarCheck!), step.id).toBeDefined();
+      expect(step.primaryMirrorsSkillEvidence, step.id).toBe(false);
+      expect(step.similarMirrorsSkillEvidence, step.id).toBe(true);
+    }
+  });
+
+  it('keeps representative Differential Equations Learn answers machine-checkable', () => {
+    const steps = getLearnStepsForRegion('differential-equations');
+    const answerByStep = new Map<string, string>([
+      ['learn-de-recognize-separable', 'yes'],
+      ['learn-de-separate-variables', '(1/y) dy = x dx'],
+      ['learn-de-integrate-both-sides', 'ln|y|=x^2/2+C'],
+      ['learn-de-initial-condition-constant', 'ln2'],
+      ['learn-de-solve-explicitly', 'y=Ae^(x^2/2)'],
+      ['learn-de-exponential-growth-decay', 'y=Ae^(kx)'],
+      ['learn-de-direct-rate-statement', 'dP/dt=kP'],
+      ['learn-de-combined-rate-statement', 'dh/dt=4-ksqrt(h)'],
+      ['learn-de-boundary-condition-after-integration', '2/9'],
+      ['learn-de-verify-proposed-solution', '6e^(2x)'],
+      ['learn-de-interpret-behavior', '20'],
+      ['learn-de-mixed-exam-transfer', 'y=e^(x^2)'],
+    ]);
+
+    for (const [stepId, submittedAnswer] of answerByStep) {
+      const step = steps.find((candidate) => candidate.id === stepId);
+      expect(step, stepId).toBeDefined();
+      const spec = skillCheckAnswerSpecForItem(step!.primaryCheck!);
+      expect(spec, stepId).toBeDefined();
+      expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer }).isCorrect, stepId).toBe(true);
+    }
+  });
+
+  it('uses an explicit authored fourteen-step Complex Numbers sequence', () => {
+    const complexSteps = getLearnStepsForRegion('complex-numbers');
+
+    expect(complexSteps).toHaveLength(14);
+    expect(complexSteps.map((step) => step.id)).toEqual([
+      'learn-complex-real-imag-add',
+      'learn-complex-multiply-i-squared',
+      'learn-complex-conjugate-division',
+      'learn-complex-modulus',
+      'learn-complex-argument-quadrant',
+      'learn-complex-cartesian-to-modarg',
+      'learn-complex-modarg-to-cartesian',
+      'learn-complex-polar-multiply-divide',
+      'learn-complex-de-moivre-power',
+      'learn-complex-roots-arguments',
+      'learn-complex-modulus-locus',
+      'learn-complex-argument-locus',
+      'learn-complex-polynomial-conjugate-root',
+      'learn-complex-mixed-exam-transfer',
+    ]);
+    expect(new Set(complexSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(complexSteps.length);
+  });
+
+  it('gives every Complex Numbers Learn step the required authored learning move parts', () => {
+    for (const step of getLearnStepsForRegion('complex-numbers')) {
+      expect(step.stem.trim(), step.id).not.toEqual('');
+      expect(step.prompt.trim(), step.id).not.toEqual('');
+      expect(step.expectedAnswer, step.id).toBeDefined();
+      expect(step.hint?.trim(), step.id).not.toEqual('');
+      expect(step.explanation.trim(), step.id).not.toEqual('');
+      expect(step.principle?.trim(), step.id).not.toEqual('');
+      expect(step.examTransfer.trim(), step.id).not.toEqual('');
+      expect(step.primaryCheck?.checkable, step.id).toBe(true);
+      expect(step.similarCheck?.checkable, step.id).toBe(true);
+      expect(skillCheckAnswerSpecForItem(step.primaryCheck!), step.id).toBeDefined();
+      expect(skillCheckAnswerSpecForItem(step.similarCheck!), step.id).toBeDefined();
+      expect(step.primaryMirrorsSkillEvidence, step.id).toBe(false);
+      expect(step.similarMirrorsSkillEvidence, step.id).toBe(true);
+    }
+  });
+
+  it('keeps representative Complex Numbers Learn answers machine-checkable', () => {
+    const steps = getLearnStepsForRegion('complex-numbers');
+    const answerByStep = new Map<string, string>([
+      ['learn-complex-real-imag-add', '4-3i'],
+      ['learn-complex-multiply-i-squared', '10-5i'],
+      ['learn-complex-conjugate-division', '3+2i'],
+      ['learn-complex-modulus', '5'],
+      ['learn-complex-argument-quadrant', 'quadrant ii'],
+      ['learn-complex-cartesian-to-modarg', 'sqrt2(cos(pi/4)+isin(pi/4))'],
+      ['learn-complex-modarg-to-cartesian', 'sqrt3+i'],
+      ['learn-complex-polar-multiply-divide', 'pi/2'],
+      ['learn-complex-de-moivre-power', 'pi/2'],
+      ['learn-complex-roots-arguments', '2pi/3'],
+      ['learn-complex-modulus-locus', 'circle centre (2,1) radius 3'],
+      ['learn-complex-argument-locus', 'ray from 1+0i at angle pi/4 excluding endpoint'],
+      ['learn-complex-polynomial-conjugate-root', '-1-sqrt7i'],
+      ['learn-complex-mixed-exam-transfer', '1+i'],
+    ]);
+
+    for (const [stepId, submittedAnswer] of answerByStep) {
+      const step = steps.find((candidate) => candidate.id === stepId);
+      expect(step, stepId).toBeDefined();
+      const spec = skillCheckAnswerSpecForItem(step!.primaryCheck!);
+      expect(spec, stepId).toBeDefined();
+      expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer }).isCorrect, stepId).toBe(true);
+    }
+  });
+
+  it('uses the existing Numerical Solution of Equations slug for authored Iteration Learn Mode', () => {
+    const iterationSteps = getLearnStepsForRegion('numerical-solution-of-equations');
+
+    expect(iterationSteps).toHaveLength(12);
+    expect(iterationSteps.every((step) => step.primaryCheck?.regionId === 'numerical-solution-of-equations')).toBe(true);
+  });
+
+  it('uses an explicit authored twelve-step Iteration sequence', () => {
+    const iterationSteps = getLearnStepsForRegion('numerical-solution-of-equations');
+
+    expect(iterationSteps.map((step) => step.id)).toEqual([
+      'learn-iteration-need-numerical-solution',
+      'learn-iteration-rearrange-fixed-point',
+      'learn-iteration-starting-value-first-iterate',
+      'learn-iteration-table-continuation',
+      'learn-iteration-rounding-accuracy',
+      'learn-iteration-sign-change-bracket',
+      'learn-iteration-graph-link',
+      'learn-iteration-convergence-check',
+      'learn-iteration-bad-form-recognition',
+      'learn-iteration-compare-formulas',
+      'learn-iteration-final-root-estimate',
+      'learn-iteration-mixed-exam-transfer',
+    ]);
+    expect(new Set(iterationSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(iterationSteps.length);
+  });
+
+  it('gives every Iteration Learn step the required authored learning move parts', () => {
+    for (const step of getLearnStepsForRegion('numerical-solution-of-equations')) {
+      expect(step.stem.trim(), step.id).not.toEqual('');
+      expect(step.prompt.trim(), step.id).not.toEqual('');
+      expect(step.expectedAnswer, step.id).toBeDefined();
+      expect(step.hint?.trim(), step.id).not.toEqual('');
+      expect(step.explanation.trim(), step.id).not.toEqual('');
+      expect(step.principle?.trim(), step.id).not.toEqual('');
+      expect(step.examTransfer.trim(), step.id).not.toEqual('');
+      expect(step.primaryCheck?.checkable, step.id).toBe(true);
+      expect(step.similarCheck?.checkable, step.id).toBe(true);
+      expect(skillCheckAnswerSpecForItem(step.primaryCheck!), step.id).toBeDefined();
+      expect(skillCheckAnswerSpecForItem(step.similarCheck!), step.id).toBeDefined();
+      expect(step.primaryMirrorsSkillEvidence, step.id).toBe(false);
+      expect(step.similarMirrorsSkillEvidence, step.id).toBe(true);
+    }
+  });
+
+  it('keeps representative Iteration Learn answers machine-checkable', () => {
+    const steps = getLearnStepsForRegion('numerical-solution-of-equations');
+    const answerByStep = new Map<string, string>([
+      ['learn-iteration-need-numerical-solution', 'x-axis crossing'],
+      ['learn-iteration-rearrange-fixed-point', 'x=cuberoot(x+1)'],
+      ['learn-iteration-starting-value-first-iterate', '2.236'],
+      ['learn-iteration-table-continuation', '2.5, 2.45, 2.449'],
+      ['learn-iteration-rounding-accuracy', '1.732'],
+      ['learn-iteration-sign-change-bracket', 'opposite signs'],
+      ['learn-iteration-graph-link', 'y=x^3 and y=2x+1'],
+      ['learn-iteration-convergence-check', 'converging'],
+      ['learn-iteration-bad-form-recognition', 'diverging'],
+      ['learn-iteration-compare-formulas', 'formula a'],
+      ['learn-iteration-final-root-estimate', '1.521'],
+      ['learn-iteration-mixed-exam-transfer', '(1,2)'],
+    ]);
+
+    for (const [stepId, submittedAnswer] of answerByStep) {
+      const step = steps.find((candidate) => candidate.id === stepId);
+      expect(step, stepId).toBeDefined();
+      const spec = skillCheckAnswerSpecForItem(step!.primaryCheck!);
+      expect(spec, stepId).toBeDefined();
+      expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer }).isCorrect, stepId).toBe(true);
+    }
+  });
+
   it('uses an explicit authored nine-step Vectors sequence', () => {
     const vectorSteps = getLearnStepsForRegion('vectors');
 

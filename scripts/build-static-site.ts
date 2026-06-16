@@ -1956,6 +1956,7 @@ function learnAnswerFormatHelp(item: SkillCheckItem): string {
   if (item.inputType === 'multiple_choice') return 'Choose one answer.';
   if (item.inputType === 'checkbox') return 'Choose all matching answers.';
   if (item.answerType === 'multi-value') return 'Type all values separated by commas, e.g. pi/6, 5pi/6.';
+  if (item.answerType === 'complex-number') return 'Type complex numbers as 3+2i or 3-2i.';
   if (item.answerType === 'coordinate') return 'Type coordinates as a tuple, e.g. (3,-2,6).';
   if (item.answerType === 'interval') return 'Type a bounded interval or inequality, e.g. -1/3 < x < 1/3.';
   if (item.answerType === 'numeric') return 'Type an integer, decimal, or simple fraction.';
@@ -2121,7 +2122,7 @@ function renderLearnPage(
       <div>
         <p class="eyebrow">Unit ${index + 1} Learn Mode</p>
         <h1>${escapeHtml(topic.name)}</h1>
-        <p>Try the small check first. Hint, explanation, principle, similar check, and transfer unlock in order.</p>
+        <p>Answer first. Hint, explanation, principle, similar check, and exam transfer unlock in order.</p>
       </div>
       <div class="learn-mode-hero-actions">
         ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
@@ -2141,8 +2142,8 @@ function renderLearnPage(
       ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath)).join('') : '<p class="empty-state">No Learn Mode steps are available for this topic yet.</p>'}
     </section>
     <section class="next-step-card">
-      <h2>Completion wording</h2>
-      <p>Finishing this page means you completed the lesson sequence. It does not claim mastery unless the checked Skill Check evidence has also passed locally.</p>
+      <h2>After this lesson</h2>
+      <p>Finishing this page records Learn Mode practice in this browser. Clean checked answers are stronger evidence than hinted or revealed work.</p>
       ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}
     </section>
   `;
@@ -2165,14 +2166,14 @@ function renderMergedModeNoticePage(
   const body = `
     ${renderHero(
       `${topic.name} ${oldMode} has moved`,
-      'Field Guide and Skill Check are now one integrated Learn Mode. You will attempt first, reveal only the next useful support, then try a similar checked question.',
+      'Field Guide and Skill Check now live in Learn Mode. Start with an answer, then unlock support and a similar checked question.',
       topic.headerFormula,
       `${routeLink(pagePath, learnPagePath(topic), 'Open Learn Mode', 'button primary-button')}
       ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}`,
     )}
     <section class="next-step-card">
       <h2>Why this changed</h2>
-      <p>The old read-first and separate-check pages have been merged so practice starts with a student answer, not a long explanation. Existing local Skill Check evidence remains in this browser.</p>
+      <p>This route is only a notice. Existing local checked evidence remains in this browser.</p>
     </section>
   `;
   return renderPage({
