@@ -77,8 +77,9 @@ describe('static P3 product contract', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const generatedHomePath = 'docs/index.html';
 
-    expect(generatorSource).toContain('Learn P3 in order.');
-    expect(generatorSource).toContain('After P1');
+    expect(generatorSource).toContain('Asterion - Learn by doing');
+    expect(generatorSource).toContain('path-unit-grid');
+    expect(generatorSource).toContain('Start Unit 1: Algebra');
     expect(generatorSource).toContain('renderP3LearningPathPage(data)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
@@ -86,9 +87,14 @@ describe('static P3 product contract', () => {
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      expect(generatedHome).toContain('Learn P3 in order.');
-      expect(generatedHome).toContain('P3 unit sequence');
+      expect(generatedHome).toContain('Asterion - Learn by doing');
+      expect(generatedHome).toContain('Try the best example problem first.');
+      expect(generatedHome).toContain('path-unit-grid');
+      expect(generatedHome).toContain('Start Unit 1: Algebra');
+      expect(generatedHome).toContain('>Units<');
+      expect(generatedHome).toContain('>Exam Review<');
       expect(generatedHome).toContain('Mixed Exam Review');
+      expect(generatedHome.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedHome).not.toContain('CAIE 9709 practice that starts with the');
       expect(generatedHome).not.toContain('Choose the trusted path');
       expect(generatedHome).not.toContain('Support only courses');

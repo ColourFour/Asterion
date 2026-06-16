@@ -2609,19 +2609,26 @@ body.p3-path-page main {
 
 .p3-path-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
-  gap: 22px;
-  align-items: stretch;
-  padding: clamp(22px, 4vw, 34px);
+  place-items: center;
+  min-height: 230px;
+  padding: clamp(20px, 4vw, 34px);
+  text-align: center;
+}
+
+.p3-problem-hero-copy {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: 100%;
 }
 
 .p3-path-hero h1 {
   max-width: 720px;
-  margin: 0 0 10px;
+  margin: 0;
   color: var(--path-ink);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(2.2rem, 4vw, 3.45rem);
-  line-height: 1;
+  font-size: clamp(1.9rem, 3.5vw, 3rem);
+  line-height: 1.04;
 }
 
 .p3-path-hero p:not(.eyebrow) {
@@ -2629,6 +2636,43 @@ body.p3-path-page main {
   margin: 0;
   color: var(--path-muted);
   font-size: 1.04rem;
+}
+
+.p3-example-problem-bar {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  width: min(100%, 820px);
+  min-height: 96px;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid var(--path-line);
+  border-radius: 8px;
+  color: var(--path-ink);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72), 0 12px 28px rgba(17, 24, 39, 0.06);
+}
+
+.p3-example-problem-label {
+  color: var(--path-green);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.p3-example-problem-bar strong {
+  color: var(--path-ink);
+  font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+  line-height: 1.25;
+}
+
+.p3-example-problem-bar > span:last-child {
+  color: var(--path-muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.p3-problem-actions {
+  justify-content: center;
 }
 
 .path-summary-panel {
@@ -2682,9 +2726,19 @@ body.p3-path-page main {
   gap: 14px;
 }
 
+.path-unit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .path-unit-list {
   display: grid;
   gap: 10px;
+}
+
+.path-review-list {
+  margin-top: 2px;
 }
 
 .path-unit-card {
@@ -2695,10 +2749,27 @@ body.p3-path-page main {
   padding: 16px;
 }
 
+.path-unit-tile {
+  grid-template-columns: 1fr;
+  min-height: 190px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.path-unit-tile:hover,
+.path-unit-tile:focus-visible {
+  border-color: var(--path-blue);
+  box-shadow: 0 16px 30px rgba(18, 50, 71, 0.11);
+  transform: translateY(-2px);
+}
+
 .path-unit-number {
   display: inline-grid;
   place-items: center;
+  justify-self: start;
   min-height: 40px;
+  padding-inline: 12px;
   border-radius: 6px;
   color: #ffffff;
   background: var(--path-blue);
@@ -2710,12 +2781,39 @@ body.p3-path-page main {
   gap: 12px;
 }
 
+.path-unit-tile .path-unit-main {
+  align-content: start;
+  min-height: 92px;
+}
+
 .path-unit-main h2,
 .exam-review-locked h2 {
   margin: 0 0 5px;
   color: var(--path-ink);
   font-size: 1.22rem;
   line-height: 1.2;
+}
+
+.path-unit-representation {
+  display: grid;
+  place-items: center;
+  min-height: 62px;
+  padding: 12px;
+  border: 1px solid #e5e9f0;
+  border-radius: 7px;
+  color: var(--path-blue);
+  background: #f8fafc;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.path-unit-card-action {
+  align-self: end;
+  justify-self: start;
+  color: var(--path-green);
+  font-size: 0.86rem;
+  font-weight: 900;
 }
 
 .unit-step-list {
@@ -5466,6 +5564,10 @@ body.skill-check-page .exam-question-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .path-unit-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .learning-loop-list li:not(:last-child)::after {
     content: "";
   }
@@ -5523,6 +5625,7 @@ body.skill-check-page .exam-question-section {
   .home-hero-proof,
   .learning-loop-list,
   .trust-card-grid,
+  .path-unit-grid,
   .home-course-row,
   .home-feature-strip,
   .homepage-audience-band {

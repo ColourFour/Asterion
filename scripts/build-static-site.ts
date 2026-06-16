@@ -557,7 +557,6 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   const items = [
-    { key: 'p3', label: 'P3 Path', path: 'index.html' },
     { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Exam Review', path: p3ReviewPagePath() },
   ];
@@ -661,36 +660,21 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
 }
 
 function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
-  const { topic, region, fieldGuideTopics, learnSteps } = context;
-  const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
-  const subtopicPreview = fieldGuideTopics.slice(0, 5);
-  const learnStepTotal = Math.max(1, learnSteps.length);
+  const { topic } = context;
   return `
-    <article class="path-unit-card" data-path-unit="${escapeAttr(region.id)}">
+    <a class="path-unit-card path-unit-tile" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit="${escapeAttr(topic.regionId)}" aria-label="Start Unit ${index + 1}: ${escapeAttr(topic.name)}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header>
           <h2>${escapeHtml(topic.name)}</h2>
-          <p>${escapeHtml(topic.description)}</p>
+          <p>${escapeHtml(topic.shortName)}</p>
         </header>
-        <ol class="unit-step-list" aria-label="${escapeAttr(topic.name)} study steps">
-          <li>
-            <a href="${hrefToPage(fromPagePath, learnPagePath(topic))}">Learn Mode</a>
-            <span>${learnSteps.length} learn step${learnSteps.length === 1 ? '' : 's'} with ${requiredSkillCheckIds.length} checked item${requiredSkillCheckIds.length === 1 ? '' : 's'}</span>
-          </li>
-        </ol>
-        <details class="unit-subtopic-details">
-          <summary>Subtopics</summary>
-          <ol>
-            ${subtopicPreview.map((item) => `<li>${escapeHtml(item.title)}</li>`).join('')}
-            ${fieldGuideTopics.length > subtopicPreview.length ? `<li>${fieldGuideTopics.length - subtopicPreview.length} more</li>` : ''}
-          </ol>
-        </details>
+        <div class="path-unit-representation" aria-label="${escapeAttr(topic.name)} example representation">
+          ${renderMathText(`$${topic.headerFormula}$`)}
+        </div>
       </div>
-      <div class="path-unit-progress">
-        ${compactProgress(region.id, learnStepTotal)}
-      </div>
-    </article>
+      <span class="path-unit-card-action">Start unit</span>
+    </a>
   `;
 }
 
@@ -699,26 +683,21 @@ function renderP3LearningPathPage(
   pagePath = 'index.html',
 ): string {
   const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
-  const totalFieldGuideSteps = contexts.reduce((sum, context) => sum + context.learnSteps.length, 0);
-  const totalSkillChecks = contexts.reduce((sum, context) => sum + checkableSkillCheckIdsForRegion(context.region.id).length, 0);
   const firstTopic = STUDY_TOPICS[0];
   const body = `
     <section class="p3-path-hero">
-      <div>
-        <p class="eyebrow">After P1</p>
-        <h1>Learn P3 in order.</h1>
-        <p>You already have the P1 base. This path takes you through every P3 unit one at a time: attempt first, reveal the next useful hint, then answer a similar checked question. Mixed exam review comes last.</p>
-        <div class="hero-actions">
+      <div class="p3-problem-hero-copy">
+        <p class="eyebrow">Asterion - Learn by doing</p>
+        <h1>Try the best example problem first.</h1>
+        <div class="p3-example-problem-bar" aria-label="Example Algebra problem">
+          <span class="p3-example-problem-label">Unit 1 example</span>
+          <strong>Integrate ${renderInlineFormula('\\frac{1}{x^2-1}')}.</strong>
+          <span>Factor, split into partial fractions, then check each step in Learn Mode.</span>
+        </div>
+        <div class="hero-actions p3-problem-actions">
           ${routeLink(pagePath, learnPagePath(firstTopic), 'Start Unit 1: Algebra', 'button primary-button')}
-          ${routeLink(pagePath, p3ReviewPagePath(), 'Exam Review', 'button secondary-button')}
         </div>
       </div>
-      <aside class="path-summary-panel" aria-label="P3 path summary">
-        <strong>One route</strong>
-        <span>${contexts.length} units</span>
-        <span>${totalFieldGuideSteps} Learn Mode steps</span>
-        <span>${totalSkillChecks} checked questions</span>
-      </aside>
     </section>
     <section class="path-principle-strip" aria-label="How the path works">
       <article>
@@ -737,12 +716,14 @@ function renderP3LearningPathPage(
     <section class="p3-unit-sequence" aria-labelledby="p3-unit-sequence-title">
       <div class="section-heading">
         <div>
-          <h2 id="p3-unit-sequence-title">P3 unit sequence</h2>
-          <p>Follow the units from top to bottom. The topic pages still work offline and save local progress in this browser.</p>
+          <h2 id="p3-unit-sequence-title">Units</h2>
+          <p>Pick any unit, or follow them in order from Algebra to Complex Numbers.</p>
         </div>
       </div>
-      <div class="path-unit-list">
+      <div class="path-unit-grid">
         ${contexts.map((context, index) => renderP3PathUnitCard(pagePath, context, index)).join('')}
+      </div>
+      <div class="path-unit-list path-review-list">
         <article class="path-unit-card path-exam-review-card">
           <div class="path-unit-number">Final</div>
           <div class="path-unit-main">
@@ -762,7 +743,7 @@ function renderP3LearningPathPage(
     pagePath,
     title: 'Learn P3',
     description: 'A lean sequential CAIE 9709 Pure Mathematics 3 learning path after P1.',
-    active: pagePath === p3TopicsIndexPagePath() ? 'p3-topics' : 'p3',
+    active: 'p3-topics',
     body,
     bodyClass: 'p3-path-page',
   });
