@@ -168,7 +168,7 @@ describe('local exam self-marked attempts', () => {
     expect(questions[1].parts?.[0].markSchemeText).toContain('not a clean one-mark split');
   });
 
-  it('does not award mastery for a high self-marked exam score without Skill Check pass', () => {
+  it('does not award mastery for a high self-marked exam score without Checked Practice pass', () => {
     const summary = summarizeExamEvidence({
       attempt: attempt({
         marksEarned: 7,
@@ -182,11 +182,11 @@ describe('local exam self-marked attempts', () => {
       evidenceLabel: 'Self-marked attempt',
       masteryGate: 'skill_check_required',
       mastered: false,
-      masteryLabel: 'Skill Check required for mastery',
+      masteryLabel: 'Checked Practice required for mastery',
     });
   });
 
-  it('keeps Skill Check pass as the mastery gate while exam work only supports confidence', () => {
+  it('keeps Checked Practice pass as the mastery gate while exam work only supports confidence', () => {
     const summary = summarizeExamEvidence({
       attempt: attempt(),
       skillCheckPassed: true,
@@ -195,7 +195,7 @@ describe('local exam self-marked attempts', () => {
     expect(summary).toMatchObject({
       masteryGate: 'skill_check_passed',
       mastered: true,
-      masteryLabel: 'Skill Check passed; exam practice supports confidence',
+      masteryLabel: 'Checked Practice passed; exam practice supports confidence',
     });
   });
 

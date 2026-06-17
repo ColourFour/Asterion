@@ -77,23 +77,23 @@ describe('static P3 product contract', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const generatedHomePath = 'docs/index.html';
 
-    expect(generatorSource).toContain('Asterion - Learn by doing');
+    expect(generatorSource).toContain('CAIE 9709 Paper 3');
     expect(generatorSource).toContain('path-unit-grid');
     expect(generatorSource).toContain('Start Unit 1: Algebra');
     expect(generatorSource).toContain('renderP3LearningPathPage(data)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
-    expect(generatorSource).toContain('Start Learn Mode');
+    expect(generatorSource).toContain('Start Learn');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      expect(generatedHome).toContain('Asterion - Learn by doing');
-      expect(generatedHome).toContain('Try the best example problem first.');
+      expect(generatedHome).toContain('CAIE 9709 Paper 3');
+      expect(generatedHome).toContain('Start P3 with Algebra.');
       expect(generatedHome).toContain('path-unit-grid');
       expect(generatedHome).toContain('Start Unit 1: Algebra');
       expect(generatedHome).toContain('>Units<');
-      expect(generatedHome).toContain('>Exam Review<');
-      expect(generatedHome).toContain('Mixed Exam Review');
+      expect(generatedHome).toContain('>Review<');
+      expect(generatedHome).toContain('Exam Review unlocks after you complete the unit path.');
       expect(generatedHome.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedHome).not.toContain('CAIE 9709 practice that starts with the');
       expect(generatedHome).not.toContain('Choose the trusted path');
@@ -122,7 +122,7 @@ describe('static P3 product contract', () => {
     }
   });
 
-  it('does not expose legacy self-reported Skill Check completion controls', () => {
+  it('does not expose legacy self-reported Checked Practice completion controls', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
@@ -150,13 +150,13 @@ describe('static P3 product contract', () => {
     const algebraWorksheetPath = 'docs/p3/topics/algebra/worksheet/index.html';
     if (existsSync(algebraWorksheetPath)) {
       const worksheetSource = readFileSync(algebraWorksheetPath, 'utf8');
-      expect(worksheetSource).toContain('Algebra Skill Check Worksheet');
+      expect(worksheetSource).toContain('Algebra Checked Practice Worksheet');
       expect(worksheetSource).toContain('Student name:');
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
-    expect(generatorSource).toContain('Start Learn Mode');
-    expect(generatorSource).toContain('Open Learn Mode');
-    expect(generatorSource).toContain('Open Exam Review');
+    expect(generatorSource).toContain('Start Learn');
+    expect(generatorSource).toContain('Continue to Learn');
+    expect(generatorSource).toContain('Review later');
   });
 });

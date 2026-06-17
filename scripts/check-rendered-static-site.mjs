@@ -168,9 +168,9 @@ try {
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasPathHero: text.includes('Asterion - Learn by doing') && text.includes('Try the best example problem first.'),
+      hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
       hasSequence: text.includes('Units') && text.includes('Unit 1') && text.includes('Unit 9'),
-      hasFlow: ['Learn Mode', 'Mixed Exam Review'].every((label) => text.includes(label)),
+      hasFlow: ['Learn', 'Checked Practice', 'Exam Training', 'Review'].every((label) => text.includes(label)),
       hasStartAction: Array.from(document.querySelectorAll('a')).some((link) => /Start Unit 1: Algebra/.test(link.textContent || '')),
       unitCards: document.querySelectorAll('.path-unit-card').length,
       hasHomepageShell: Boolean(document.querySelector('.homepage-hero, .course-card-featured, .course-support-grid')),
@@ -205,7 +205,7 @@ try {
       const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasPathHero: text.includes('Asterion - Learn by doing') && text.includes('Try the best example problem first.'),
+        hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
         hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
       };
     });
@@ -531,33 +531,33 @@ try {
 
   await assertLearnVisualBasics(browser);
 
-  for (const [oldAlgebraPath, oldAlgebraMode] of [
-    ['p3/topics/algebra/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/algebra/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/differentiation/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/differentiation/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/integration/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/integration/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/numerical-solution-of-equations/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/numerical-solution-of-equations/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/differential-equations/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/differential-equations/skill-check/index.html', 'Skill Check'],
-    ['p3/topics/complex-numbers/field-guide/index.html', 'Field Guide'],
-    ['p3/topics/complex-numbers/skill-check/index.html', 'Skill Check'],
+  for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
+    ['p3/topics/algebra/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/algebra/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/differentiation/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/differentiation/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/integration/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/integration/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/numerical-solution-of-equations/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/numerical-solution-of-equations/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/differential-equations/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/differential-equations/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/complex-numbers/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
+    ['p3/topics/complex-numbers/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
   ]) {
     await waitForStaticEnhancement(page, oldAlgebraPath);
-    const oldAlgebraRouteResult = await page.evaluate((mode) => {
+    const oldAlgebraRouteResult = await page.evaluate(([title, expectedButtonLabel]) => {
     const text = document.body.innerText;
     return {
-      moved: text.includes(`${mode} has moved`),
-      hasLearnLink: Array.from(document.querySelectorAll('a')).some((link) => /Open Learn Mode/.test(link.textContent || '') && /\/learn\/(?:index\.html)?$/.test(link.href)),
+      bridgeTitle: text.includes(title),
+      hasLearnLink: Array.from(document.querySelectorAll('a')).some((link) => (link.textContent || '').includes(expectedButtonLabel) && /\/learn\/(?:index\.html)?$/.test(link.href)),
       oldForms: document.querySelectorAll('[data-check-skill-answer]').length,
     };
-    }, oldAlgebraMode);
-    if (!oldAlgebraRouteResult.moved || !oldAlgebraRouteResult.hasLearnLink || oldAlgebraRouteResult.oldForms !== 0) {
-      fail(`${oldAlgebraPath} must be a lightweight Learn Mode merge notice.`);
+    }, [bridgeTitle, buttonLabel]);
+    if (!oldAlgebraRouteResult.bridgeTitle || !oldAlgebraRouteResult.hasLearnLink || oldAlgebraRouteResult.oldForms !== 0) {
+      fail(`${oldAlgebraPath} must be a clean Learn bridge.`);
     }
   }
 

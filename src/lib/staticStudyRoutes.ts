@@ -16,13 +16,13 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: `${P3_COURSE_ID}/topics/index.html`, label: 'P3 unit sequence' },
   { path: `${P3_COURSE_ID}/need-to-know/index.html`, label: 'P3 Need to Know checklist' },
   { path: `${P3_COURSE_ID}/review/index.html`, label: 'P3 final exam review' },
-  { path: `${P3_COURSE_ID}/content-qa/index.html`, label: 'P3 Content QA table' },
+  { path: `${P3_COURSE_ID}/content-qa/index.html`, label: 'Internal P3 Content QA table' },
   ...STUDY_TOPICS.flatMap((topic) => [
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/learn/index.html`, label: `P3 ${topic.name} Learn Mode` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Field Guide` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Skill Check` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/learn/index.html`, label: `P3 ${topic.name} Learn` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Learn bridge` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Checked Practice bridge` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`, label: `P3 ${topic.name} Exam Training` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/worksheet/index.html`, label: `P3 ${topic.name} printable worksheet` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/worksheet/index.html`, label: `P3 ${topic.name} printable Checked Practice worksheet` },
   ]),
 ];
 

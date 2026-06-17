@@ -52,7 +52,7 @@ describe('local progress CSV export', () => {
     expect(csvEscapeCell('line 1\nline 2')).toBe('"line 1\nline 2"');
   });
 
-  it('exports available Skill Check, Exam Training, and Review rows from browser storage shape', () => {
+  it('exports available Checked Practice, Exam Training, and Review rows from browser storage shape', () => {
     const progress: Partial<StoredProgress> = {
       skillCheckAttempts: [
         skillAttempt({
@@ -73,7 +73,7 @@ describe('local progress CSV export', () => {
 
     expect(rows).toEqual([
       expect.objectContaining({
-        activity_type: 'Skill Check',
+        activity_type: 'Checked Practice',
         route_page_type: 'skill-check',
         item_id: 'sc-alg-001',
         deterministic_pass_fail: 'fail',
@@ -82,7 +82,7 @@ describe('local progress CSV export', () => {
       expect.objectContaining({
         activity_type: 'Review',
         route_page_type: 'review',
-        evidence_label: 'Review candidate from local Skill Check attempt',
+        evidence_label: 'Review candidate from local checked practice attempt',
         suspicion_flags: 'algebra slip',
       }),
       expect.objectContaining({

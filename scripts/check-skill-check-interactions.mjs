@@ -1140,33 +1140,33 @@ try {
   const revealedComplexState = await progressSnapshot(page);
   assert(revealedComplexState.skillCount === 0, 'Revealed Complex Numbers answer must not mirror into strong Skill Check evidence.');
 
-  for (const [oldPath, label] of [
-    [oldAlgebraFieldGuidePagePath, 'Algebra Field Guide'],
-    [oldAlgebraSkillCheckPagePath, 'Algebra Skill Check'],
-    [oldLogExpFieldGuidePagePath, 'Log/Exp Field Guide'],
-    [oldLogExpSkillCheckPagePath, 'Log/Exp Skill Check'],
-    [oldTrigFieldGuidePagePath, 'Trigonometry Field Guide'],
-    [oldTrigSkillCheckPagePath, 'Trigonometry Skill Check'],
-    [oldDiffFieldGuidePagePath, 'Differentiation Field Guide'],
-    [oldDiffSkillCheckPagePath, 'Differentiation Skill Check'],
-    [oldIntegrationFieldGuidePagePath, 'Integration Field Guide'],
-    [oldIntegrationSkillCheckPagePath, 'Integration Skill Check'],
-    [oldIterationFieldGuidePagePath, 'Numerical Solution Field Guide'],
-    [oldIterationSkillCheckPagePath, 'Numerical Solution Skill Check'],
-    [oldDeFieldGuidePagePath, 'Differential Equations Field Guide'],
-    [oldDeSkillCheckPagePath, 'Differential Equations Skill Check'],
-    [oldComplexFieldGuidePagePath, 'Complex Numbers Field Guide'],
-    [oldComplexSkillCheckPagePath, 'Complex Numbers Skill Check'],
+  for (const [oldPath, label, expectedTitle, expectedButton] of [
+    [oldAlgebraFieldGuidePagePath, 'Algebra Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldAlgebraSkillCheckPagePath, 'Algebra Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldLogExpFieldGuidePagePath, 'Log/Exp Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldLogExpSkillCheckPagePath, 'Log/Exp Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldTrigFieldGuidePagePath, 'Trigonometry Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldTrigSkillCheckPagePath, 'Trigonometry Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldDiffFieldGuidePagePath, 'Differentiation Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldDiffSkillCheckPagePath, 'Differentiation Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldIntegrationFieldGuidePagePath, 'Integration Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldIntegrationSkillCheckPagePath, 'Integration Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldIterationFieldGuidePagePath, 'Numerical Solution Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldIterationSkillCheckPagePath, 'Numerical Solution Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldDeFieldGuidePagePath, 'Differential Equations Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldDeSkillCheckPagePath, 'Differential Equations Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldComplexFieldGuidePagePath, 'Complex Numbers Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
+    [oldComplexSkillCheckPagePath, 'Complex Numbers Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
   ]) {
     await waitForStaticEnhancement(page, oldPath);
-    const oldRouteShape = await page.evaluate(() => ({
-      moved: document.body.innerText.includes('has moved'),
-      learnLinks: Array.from(document.querySelectorAll('a')).filter((link) => /Open Learn Mode/.test(link.textContent || '') && /\/learn\/(?:index\.html)?$/.test(link.href)).length,
+    const oldRouteShape = await page.evaluate(([title, buttonLabel]) => ({
+      bridgeTitle: document.body.innerText.includes(title),
+      learnLinks: Array.from(document.querySelectorAll('a')).filter((link) => (link.textContent || '').includes(buttonLabel) && /\/learn\/(?:index\.html)?$/.test(link.href)).length,
       legacyForms: document.querySelectorAll('[data-check-skill-answer]').length,
       learnForms: document.querySelectorAll('[data-check-learn-answer]').length,
-    }));
-    assert(oldRouteShape.moved, `${label} route must show a Learn Mode merge notice.`);
-    assert(oldRouteShape.learnLinks > 0, `${label} route must link to Learn Mode.`);
+    }), [expectedTitle, expectedButton]);
+    assert(oldRouteShape.bridgeTitle, `${label} route must show a clean bridge title.`);
+    assert(oldRouteShape.learnLinks > 0, `${label} route must link to Learn.`);
     assert(oldRouteShape.legacyForms === 0 && oldRouteShape.learnForms === 0, `${label} route must not render an old checking flow.`);
   }
 

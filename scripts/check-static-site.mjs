@@ -363,17 +363,17 @@ for (const [skillId, triggers] of contractTriggers) {
 
 const contractLinks = hrefsWithCanonicalPaths(needToKnowHtml);
 if (!contractLinks.length) {
-  console.error('P3 Need to Know page has no generated Field Guide, Skill Check, or Exam Training links.');
+  console.error('P3 Need to Know page has no generated Learn, Checked Practice, or Exam Training links.');
   process.exit(1);
 }
-for (const requiredLabel of ['Ready', 'Needs Field Guide', 'Needs Skill Check', 'Draft']) {
+for (const requiredLabel of ['Ready', 'Needs Learn', 'Needs Checked Practice', 'Draft']) {
   if (!visibleBodyText(needToKnowHtml).includes(requiredLabel)) {
     console.error(`P3 Need to Know page does not keep the "${requiredLabel}" status visible.`);
     process.exit(1);
   }
 }
-if (!pageAnchors(needToKnowHtml).some((href) => resolveHtmlHref('p3/need-to-know/index.html', href) === 'p3/content-qa/index.html')) {
-  console.error('P3 Need to Know page does not link to the canonical Content QA route.');
+if (pageAnchors(needToKnowHtml).some((href) => resolveHtmlHref('p3/need-to-know/index.html', href) === 'p3/content-qa/index.html')) {
+  console.error('P3 Need to Know page must not promote the internal Content QA route.');
   process.exit(1);
 }
 for (const { href, canonicalPath } of contractLinks) {
@@ -398,6 +398,10 @@ if (/\b(?:P1|M1|S1)\b/.test(contentQaText) && !contentQaText.includes('P1, M1, a
   process.exit(1);
 }
 const contentQaHtml = readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8');
+if (!contentQaText.includes('Internal Content QA') || !contentQaText.includes('This page is for maintaining the course, not for student study.')) {
+  console.error('P3 Content QA must be clearly labeled as internal.');
+  process.exit(1);
+}
 if (!contentQaText.includes('Missing')) {
   console.error('P3 Content QA must keep missing coverage visible.');
   process.exit(1);
@@ -584,8 +588,12 @@ for (const page of p3LearnPages) {
 
 for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/(?:field-guide|skill-check)\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
-  if (!visibleBodyText(html).includes('has moved') || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
-    console.error(`${page} must be a lightweight Learn Mode merge notice.`);
+  const text = visibleBodyText(html);
+  const isFieldGuideBridge = page.includes('/field-guide/');
+  const expectedTitle = isFieldGuideBridge ? 'This topic now starts in Learn' : 'Checked Practice now happens inside Learn';
+  const expectedButton = isFieldGuideBridge ? 'Start Learn' : 'Continue to Learn';
+  if (!text.includes(expectedTitle) || !text.includes(expectedButton) || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
+    console.error(`${page} must be a clean Learn bridge.`);
     process.exit(1);
   }
 }

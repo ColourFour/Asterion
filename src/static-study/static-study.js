@@ -116,12 +116,12 @@
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topic || '',
       route_page_type: 'skill-check',
-      activity_type: 'Skill Check',
+      activity_type: 'Checked Practice',
       item_id: attempt.checkId || '',
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: attempt.submittedAnswer || '',
       deterministic_pass_fail: passed ? 'pass' : 'fail',
-      evidence_label: passed ? 'Deterministic Skill Check evidence' : 'Skill Check attempt',
+      evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
       mastery_eligibility_label: passed ? 'mastery_gate_passed_for_this_check' : 'not_passed'
     });
   }
@@ -141,7 +141,7 @@
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: state,
       deterministic_pass_fail: 'not_available',
-      evidence_label: 'Review candidate from local Skill Check attempt',
+      evidence_label: 'Review candidate from local checked practice attempt',
       mastery_eligibility_label: 'not_mastery_evidence',
       suspicion_flags: tags.join('|')
     });
@@ -174,7 +174,7 @@
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topic || attempt.regionId || '',
       route_page_type: isLearnMode ? 'learn' : 'field-guide',
-      activity_type: isLearnMode ? 'Learn Mode' : (attempt.activityType || 'Field Guide'),
+      activity_type: isLearnMode ? 'Learn' : (attempt.activityType || 'Learn'),
       item_id: attempt.activityId || attempt.id || '',
       attempt_timestamp: attempt.completedAt || attempt.createdAt || '',
       answer_result_summary: attempt.submittedAnswer || attempt.prompt || '',
@@ -410,7 +410,7 @@
       if (statusText) {
         statusText.textContent = isOpen
           ? 'All P3 units are complete in this browser. Mixed exam review is open.'
-          : completed + '/' + requirements.length + ' units complete. Finish the remaining Learn Mode steps and checked questions first.';
+          : completed + '/' + requirements.length + ' units complete. Finish the remaining Learn steps and checked questions first.';
       }
       if (list) {
         list.innerHTML = statuses.map(function (status) {
@@ -420,7 +420,7 @@
             : requirement.skillCheckHref;
           return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
             + '<div><strong>' + escapeText(requirement.name) + '</strong>'
-            + '<span>Learn Mode ' + status.guideCount + '/' + status.fieldGuideTotal
+            + '<span>Learn ' + status.guideCount + '/' + status.fieldGuideTotal
             + '; checked questions ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
             + (status.complete ? '<span class="unit-state">Done</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
@@ -434,7 +434,7 @@
     document.querySelectorAll('[data-progress-field-guide]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-field-guide') || '';
       var total = Number(node.getAttribute('data-total') || 1);
-      var label = node.getAttribute('data-label') || 'Field Guide';
+      var label = node.getAttribute('data-label') || 'Learn';
       var completed = fieldGuideCompletedCount(progress, regionId, total);
       node.textContent = label + ': ' + completed + '/' + total;
       node.classList.toggle('is-complete', completed >= total);
@@ -442,7 +442,7 @@
 
     document.querySelectorAll('[data-progress-skill]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-skill') || '';
-      var label = node.getAttribute('data-label') || 'Skill Check';
+      var label = node.getAttribute('data-label') || 'Checked Practice';
       var requiredCheckIds = parseRequiredCheckIds(node);
       var passCount = requiredCheckIds.length
         ? passedCheckIds(progress, requiredCheckIds, regionId).length
@@ -483,7 +483,7 @@
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn Mode steps, ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn steps, ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
@@ -493,7 +493,7 @@
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
       var parts = [];
-      if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Learn Mode');
+      if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Learn');
       if (practiceCount > 0) parts.push(practiceCount + ' checked pass' + (practiceCount === 1 ? '' : 'es'));
       if (examCount > 0) parts.push(examCount + ' self-marked exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
@@ -977,7 +977,7 @@
         var tags = validReviewMistakeTags(attempt);
         if (!state || !tags.length) return;
         var candidate = {
-          topic: attempt.topic || 'P3 Skill Check',
+          topic: attempt.topic || 'P3 Checked Practice',
           skillId: attempt.skillId || '',
           checkId: attempt.checkId || '',
           submittedAnswer: attempt.submittedAnswer || '',
@@ -1230,7 +1230,7 @@
       var clean = cleanLearnAttemptCanSaveSkill(form, checkResult);
       setSkillFeedback(form, clean
         ? 'Correct. Saved as a clean checked answer.'
-        : 'Correct. Saved as supported practice, not strong Skill Check evidence.', clean ? 'correct' : 'repaired');
+        : 'Correct. Saved as supported practice, not strong checked evidence.', clean ? 'correct' : 'repaired');
       form.classList.add('is-passed');
       if (submitButton) {
         submitButton.textContent = 'Check again';
@@ -1360,8 +1360,8 @@
     saveProgress(progress);
     if (status) {
       var gateText = attempt.masteryGate === 'skill_check_passed'
-        ? 'Skill Check gate passed; exam work supports confidence only.'
-        : 'Skill Check required for mastery.';
+        ? 'Checked Practice gate passed; exam work supports confidence only.'
+        : 'Checked Practice required for mastery.';
       status.textContent = attempt.trustLabel + '. Self-marked attempt saved. ' + gateText;
       status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
     }
@@ -1517,7 +1517,7 @@
           var heading = group.querySelector('h2');
           link.className = 'button secondary-button';
           link.href = groupId ? '#' + encodeURIComponent(groupId) : '#';
-          link.textContent = heading?.textContent?.trim() || 'Skill Check';
+          link.textContent = heading?.textContent?.trim() || 'Checked Practice';
           groupNav.append(link);
         });
         groupSwitcher.append(groupSummary, groupNav);
@@ -1844,7 +1844,7 @@
       }));
       var controls = document.createElement('div');
       controls.className = 'practice-controls learn-controls';
-      controls.setAttribute('aria-label', 'Learn Mode navigation');
+      controls.setAttribute('aria-label', 'Learn navigation');
 
       var previous = document.createElement('button');
       previous.className = 'button secondary-button';
@@ -1974,7 +1974,7 @@
           panel.hidden = !isActive;
         });
         if (previous) previous.disabled = bounded === 0;
-        if (next) next.textContent = bounded === tabs.length - 1 ? 'Go to Skill Check' : 'Next subtopic';
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Go to Checked Practice' : 'Next subtopic';
         if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
         if (updateHash) {
           var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';

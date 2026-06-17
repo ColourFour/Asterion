@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Maintainer-facing QA table for the Paper 3 skill plan." />
+    <meta name="description" content="Internal QA table for the Paper 3 skill plan." />
     <link rel="stylesheet" href="../../assets/katex.min.css" />
     <link rel="stylesheet" href="../../assets/static-study.css" />
-    <title>P3 Content QA | Asterion Study</title>
+    <title>Internal Content QA | Asterion Study</title>
   </head>
   <body>
     <header class="site-header">
@@ -26,7 +26,7 @@
 
         <a href="../topics/">Units</a>
 
-        <a href="../review/">Exam Review</a>
+        <a href="../review/">Review</a>
 
     </nav>
 
@@ -36,15 +36,17 @@
 
     <section class="page-hero">
       <div>
-        <p class="eyebrow">Maintainer QA</p>
-        <h1>P3 Content QA</h1>
-        <p>Maintainer table for checking the Paper 3 skill plan against available content surfaces.</p>
+        <p class="eyebrow">Internal</p>
+        <h1>Internal Content QA</h1>
+        <p>This page is for maintaining the course, not for student study.</p>
         <div class="hero-actions"><a class="button secondary-button" href="../need-to-know/">Need to Know</a></div>
       </div>
       <div class="formula-panel" aria-hidden="true"><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>log</mi><mo>⁡</mo></mrow><mi>a</mi></msub><mi>x</mi><mo separator="true">,</mo><mspace width="1em"/><mi mathvariant="bold">a</mi><mo>⋅</mo><mi mathvariant="bold">b</mi><mo separator="true">,</mo><mspace width="1em"/><mi>arg</mi><mo>⁡</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\log_a x, \quad \mathbf{a}\cdot\mathbf{b}, \quad \arg z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9386em;vertical-align:-0.2441em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.0139em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0573em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">a</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathbf">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">ar<span style="margin-right:0.0139em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.044em;">z</span></span></span></span></span></div>
     </section>
 
     <section class="summary-card contract-qa-summary">
+      <p class="eyebrow">Internal maintenance page</p>
+      <p>This page is for maintaining the course, not for student study.</p>
       <h2>Contract coverage snapshot</h2>
       <p>Rows come from the structured P3 skill contract. Field Guide and Skill Check availability are proxy checks from review flags. Exam Training and mixed ladder counts come from reviewed mapped trainable exam questions. Mixed is not an easy, standard, or hard ladder.</p>
       <p>Skill Check grading migration: 159 deterministic; 0 not yet; types: complex-number, coordinate, exact-text, expression-text, interval, multi-value, numeric. This is a partial Phase 3 migration and does not mark existing saves as passed.</p>
@@ -144,9 +146,9 @@
               <th>Skill ID</th>
               <th>Topic</th>
               <th>Skill title</th>
-              <th>Field Guide</th>
-              <th>Skill Check</th>
-              <th>Skill Check grading</th>
+              <th>Learn</th>
+              <th>Checked Practice</th>
+              <th>Checked Practice grading</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
               <th>Easy ladder</th>
@@ -441,7 +443,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (5)</td>
 
-                <td><span class="contract-status contract-status-needs-field-guide">Needs Field Guide</span></td>
+                <td><span class="contract-status contract-status-needs-learn">Needs Learn</span></td>
                 <td>missing-reviewed-snippet; missing-reviewed-quick-check; missing-reviewed-generated-warm-up; weak-teaching-support; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 
@@ -661,7 +663,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (4)</td>
 
-                <td><span class="contract-status contract-status-needs-skill-check">Needs Skill Check</span></td>
+                <td><span class="contract-status contract-status-needs-checked-practice">Needs Checked Practice</span></td>
                 <td>missing-reviewed-quick-check; missing-reviewed-generated-warm-up; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 
@@ -749,7 +751,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (5)</td>
 
-                <td><span class="contract-status contract-status-needs-skill-check">Needs Skill Check</span></td>
+                <td><span class="contract-status contract-status-needs-checked-practice">Needs Checked Practice</span></td>
                 <td>missing-reviewed-quick-check; missing-reviewed-generated-warm-up; weak-teaching-support; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 
@@ -881,7 +883,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (5)</td>
 
-                <td><span class="contract-status contract-status-needs-skill-check">Needs Skill Check</span></td>
+                <td><span class="contract-status contract-status-needs-checked-practice">Needs Checked Practice</span></td>
                 <td>missing-reviewed-quick-check; missing-reviewed-generated-warm-up; weak-teaching-support; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 
@@ -947,7 +949,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (5)</td>
 
-                <td><span class="contract-status contract-status-needs-skill-check">Needs Skill Check</span></td>
+                <td><span class="contract-status contract-status-needs-checked-practice">Needs Checked Practice</span></td>
                 <td>missing-reviewed-quick-check; missing-reviewed-generated-warm-up; weak-teaching-support; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 
@@ -1035,7 +1037,7 @@
 
                   <td data-ladder-level="mixed">Mapped questions (5)</td>
 
-                <td><span class="contract-status contract-status-needs-skill-check">Needs Skill Check</span></td>
+                <td><span class="contract-status contract-status-needs-checked-practice">Needs Checked Practice</span></td>
                 <td>missing-reviewed-quick-check; missing-reviewed-generated-warm-up; weak-teaching-support; Imported from the reviewed internal P3 skill map; readiness is conservative and does not create exam coverage.</td>
               </tr>
 

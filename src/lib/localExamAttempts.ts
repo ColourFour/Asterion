@@ -17,7 +17,7 @@ export interface ExamEvidenceSummary {
   trustLabel: 'Exam practice evidence' | 'Low-trust self-marked evidence' | 'Needs teacher check';
   masteryGate: 'skill_check_required' | 'skill_check_passed';
   mastered: boolean;
-  masteryLabel: 'Skill Check required for mastery' | 'Skill Check passed; exam practice supports confidence';
+  masteryLabel: 'Checked Practice required for mastery' | 'Checked Practice passed; exam practice supports confidence';
   suspicionFlags: ExamAttemptSuspicionFlag[];
 }
 
@@ -107,8 +107,8 @@ export function summarizeExamEvidence(input: {
     masteryGate: mastered ? 'skill_check_passed' : 'skill_check_required',
     mastered,
     masteryLabel: mastered
-      ? 'Skill Check passed; exam practice supports confidence'
-      : 'Skill Check required for mastery',
+      ? 'Checked Practice passed; exam practice supports confidence'
+      : 'Checked Practice required for mastery',
     suspicionFlags,
   };
 }

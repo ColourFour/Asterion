@@ -39,19 +39,19 @@
     },
     {
       "path": "p3/content-qa/index.html",
-      "label": "P3 Content QA table"
+      "label": "Internal P3 Content QA table"
     },
     {
       "path": "p3/topics/algebra/learn/index.html",
-      "label": "P3 Algebra Learn Mode"
+      "label": "P3 Algebra Learn"
     },
     {
       "path": "p3/topics/algebra/field-guide/index.html",
-      "label": "P3 Algebra Field Guide"
+      "label": "P3 Algebra Learn bridge"
     },
     {
       "path": "p3/topics/algebra/skill-check/index.html",
-      "label": "P3 Algebra Skill Check"
+      "label": "P3 Algebra Checked Practice bridge"
     },
     {
       "path": "p3/topics/algebra/exam-training/index.html",
@@ -59,19 +59,19 @@
     },
     {
       "path": "p3/topics/algebra/worksheet/index.html",
-      "label": "P3 Algebra printable worksheet"
+      "label": "P3 Algebra printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/learn/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Learn Mode"
+      "label": "P3 Logarithmic and Exponential Functions Learn"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/field-guide/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Field Guide"
+      "label": "P3 Logarithmic and Exponential Functions Learn bridge"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/skill-check/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Skill Check"
+      "label": "P3 Logarithmic and Exponential Functions Checked Practice bridge"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/exam-training/index.html",
@@ -79,19 +79,19 @@
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/worksheet/index.html",
-      "label": "P3 Logarithmic and Exponential Functions printable worksheet"
+      "label": "P3 Logarithmic and Exponential Functions printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/trigonometry/learn/index.html",
-      "label": "P3 Trigonometry Learn Mode"
+      "label": "P3 Trigonometry Learn"
     },
     {
       "path": "p3/topics/trigonometry/field-guide/index.html",
-      "label": "P3 Trigonometry Field Guide"
+      "label": "P3 Trigonometry Learn bridge"
     },
     {
       "path": "p3/topics/trigonometry/skill-check/index.html",
-      "label": "P3 Trigonometry Skill Check"
+      "label": "P3 Trigonometry Checked Practice bridge"
     },
     {
       "path": "p3/topics/trigonometry/exam-training/index.html",
@@ -99,19 +99,19 @@
     },
     {
       "path": "p3/topics/trigonometry/worksheet/index.html",
-      "label": "P3 Trigonometry printable worksheet"
+      "label": "P3 Trigonometry printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/differentiation/learn/index.html",
-      "label": "P3 Differentiation Learn Mode"
+      "label": "P3 Differentiation Learn"
     },
     {
       "path": "p3/topics/differentiation/field-guide/index.html",
-      "label": "P3 Differentiation Field Guide"
+      "label": "P3 Differentiation Learn bridge"
     },
     {
       "path": "p3/topics/differentiation/skill-check/index.html",
-      "label": "P3 Differentiation Skill Check"
+      "label": "P3 Differentiation Checked Practice bridge"
     },
     {
       "path": "p3/topics/differentiation/exam-training/index.html",
@@ -119,19 +119,19 @@
     },
     {
       "path": "p3/topics/differentiation/worksheet/index.html",
-      "label": "P3 Differentiation printable worksheet"
+      "label": "P3 Differentiation printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/integration/learn/index.html",
-      "label": "P3 Integration Learn Mode"
+      "label": "P3 Integration Learn"
     },
     {
       "path": "p3/topics/integration/field-guide/index.html",
-      "label": "P3 Integration Field Guide"
+      "label": "P3 Integration Learn bridge"
     },
     {
       "path": "p3/topics/integration/skill-check/index.html",
-      "label": "P3 Integration Skill Check"
+      "label": "P3 Integration Checked Practice bridge"
     },
     {
       "path": "p3/topics/integration/exam-training/index.html",
@@ -139,19 +139,19 @@
     },
     {
       "path": "p3/topics/integration/worksheet/index.html",
-      "label": "P3 Integration printable worksheet"
+      "label": "P3 Integration printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/learn/index.html",
-      "label": "P3 Numerical Solution of Equations Learn Mode"
+      "label": "P3 Numerical Solution of Equations Learn"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/field-guide/index.html",
-      "label": "P3 Numerical Solution of Equations Field Guide"
+      "label": "P3 Numerical Solution of Equations Learn bridge"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/skill-check/index.html",
-      "label": "P3 Numerical Solution of Equations Skill Check"
+      "label": "P3 Numerical Solution of Equations Checked Practice bridge"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/exam-training/index.html",
@@ -159,19 +159,19 @@
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/worksheet/index.html",
-      "label": "P3 Numerical Solution of Equations printable worksheet"
+      "label": "P3 Numerical Solution of Equations printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/vectors/learn/index.html",
-      "label": "P3 Vectors Learn Mode"
+      "label": "P3 Vectors Learn"
     },
     {
       "path": "p3/topics/vectors/field-guide/index.html",
-      "label": "P3 Vectors Field Guide"
+      "label": "P3 Vectors Learn bridge"
     },
     {
       "path": "p3/topics/vectors/skill-check/index.html",
-      "label": "P3 Vectors Skill Check"
+      "label": "P3 Vectors Checked Practice bridge"
     },
     {
       "path": "p3/topics/vectors/exam-training/index.html",
@@ -179,19 +179,19 @@
     },
     {
       "path": "p3/topics/vectors/worksheet/index.html",
-      "label": "P3 Vectors printable worksheet"
+      "label": "P3 Vectors printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/differential-equations/learn/index.html",
-      "label": "P3 Differential Equations Learn Mode"
+      "label": "P3 Differential Equations Learn"
     },
     {
       "path": "p3/topics/differential-equations/field-guide/index.html",
-      "label": "P3 Differential Equations Field Guide"
+      "label": "P3 Differential Equations Learn bridge"
     },
     {
       "path": "p3/topics/differential-equations/skill-check/index.html",
-      "label": "P3 Differential Equations Skill Check"
+      "label": "P3 Differential Equations Checked Practice bridge"
     },
     {
       "path": "p3/topics/differential-equations/exam-training/index.html",
@@ -199,19 +199,19 @@
     },
     {
       "path": "p3/topics/differential-equations/worksheet/index.html",
-      "label": "P3 Differential Equations printable worksheet"
+      "label": "P3 Differential Equations printable Checked Practice worksheet"
     },
     {
       "path": "p3/topics/complex-numbers/learn/index.html",
-      "label": "P3 Complex Numbers Learn Mode"
+      "label": "P3 Complex Numbers Learn"
     },
     {
       "path": "p3/topics/complex-numbers/field-guide/index.html",
-      "label": "P3 Complex Numbers Field Guide"
+      "label": "P3 Complex Numbers Learn bridge"
     },
     {
       "path": "p3/topics/complex-numbers/skill-check/index.html",
-      "label": "P3 Complex Numbers Skill Check"
+      "label": "P3 Complex Numbers Checked Practice bridge"
     },
     {
       "path": "p3/topics/complex-numbers/exam-training/index.html",
@@ -219,7 +219,7 @@
     },
     {
       "path": "p3/topics/complex-numbers/worksheet/index.html",
-      "label": "P3 Complex Numbers printable worksheet"
+      "label": "P3 Complex Numbers printable Checked Practice worksheet"
     }
   ],
   "questionCount": 57,
