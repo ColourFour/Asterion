@@ -143,6 +143,23 @@ describe('P3 student analytics', () => {
         status: 'pending',
       }),
     ]);
+    expect(state.knowledge_errors).toEqual([
+      expect.objectContaining({
+        questionId: 'check_partial_fractions',
+        primarySkillNodeId: 'p3_alg_partial_fractions',
+        errorType: 'algebraic_execution_error',
+      }),
+    ]);
+    expect(state.knowledge_state_graph.skills.p3_alg_partial_fractions).toMatchObject({
+      category: 'unknown',
+      lastOutcome: 'failure',
+    });
+    expect(state.knowledge_interventions).toEqual([
+      expect.objectContaining({
+        action: 'micro_reteach',
+        skillNodeId: 'p3_alg_partial_fractions',
+      }),
+    ]);
     expect(state.weak_topics).toEqual(['algebra']);
     expect(state.priority_repair_topics).toEqual(['algebra']);
   });
@@ -166,6 +183,8 @@ describe('P3 student analytics', () => {
       score_lost: 2,
       questions: 2,
     });
+    expect(state.knowledge_state_updates.some((update) => update.skillNodeId === 'trigonometry')).toBe(true);
+    expect(state.knowledge_errors.length).toBeGreaterThan(0);
   });
 
   it('marks redo completion on the error log and gives redo repair higher weight', () => {
@@ -202,6 +221,11 @@ describe('P3 student analytics', () => {
       redo_queue: expect.any(Array),
       error_distribution: expect.any(Object),
       priority_repair_topics: expect.any(Array),
+      knowledge_state_graph: expect.any(Object),
+      knowledge_state_updates: expect.any(Array),
+      knowledge_errors: expect.any(Array),
+      knowledge_interventions: expect.any(Array),
+      knowledge_schedules: expect.any(Array),
     }));
   });
 });

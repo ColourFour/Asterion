@@ -29,6 +29,11 @@ function attempt(overrides: Partial<Attempt> = {}): Attempt {
         marksEarned: 6,
         marksAvailable: 6,
         markPointIds: ['32spring21_q04_a_mp01', '32spring21_q04_a_mp02'],
+        markPointIdsAvailable: ['32spring21_q04_a_mp01', '32spring21_q04_a_mp02'],
+        markPointLabels: {
+          '32spring21_q04_a_mp01': 'Separate variables',
+          '32spring21_q04_a_mp02': 'Integrate both sides',
+        },
         markPointsAvailable: 6,
       },
       {
@@ -37,6 +42,10 @@ function attempt(overrides: Partial<Attempt> = {}): Attempt {
         marksEarned: 0,
         marksAvailable: 1,
         markPointIds: [],
+        markPointIdsAvailable: ['32spring21_q04_b_mp01'],
+        markPointLabels: {
+          '32spring21_q04_b_mp01': 'Use the initial condition',
+        },
         markPointsAvailable: 0,
       },
     ],
@@ -114,6 +123,18 @@ describe('local exam self-marked attempts', () => {
       }),
     ]);
     expect(progress.topic_performance.differential_equations.score_lost).toBe(1);
+    expect(progress.knowledge_errors).toEqual([
+      expect.objectContaining({
+        markPointId: '32spring21_q04_b_mp01',
+        markPointLabel: 'Use the initial condition',
+        primarySkillNodeId: 'differential-equations',
+      }),
+    ]);
+    expect(progress.knowledge_interventions).toEqual([
+      expect.objectContaining({
+        action: 'micro_reteach',
+      }),
+    ]);
   });
 
   it('creates tickable mark points only when mark-scheme text matches official part marks', () => {

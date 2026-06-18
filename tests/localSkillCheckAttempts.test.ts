@@ -62,6 +62,17 @@ describe('local Skill Check attempts', () => {
         status: 'pending',
       }),
     ]);
+    expect(progress.knowledge_errors).toEqual([
+      expect.objectContaining({
+        questionId: 'sc-alg-binomial-foundation-001',
+        primarySkillNodeId: 'p3_alg_binomial_terms_coefficients',
+        errorType: 'representation_error',
+      }),
+    ]);
+    expect(progress.knowledge_state_graph.skills.p3_alg_binomial_terms_coefficients).toMatchObject({
+      category: 'unknown',
+      lastOutcome: 'failure',
+    });
   });
 
   it('does not mark wrong answers as passed', () => {
@@ -236,6 +247,10 @@ describe('local Skill Check attempts', () => {
     expect(progress.error_log.at(-1)).toMatchObject({
       question_id: 'check-a',
       error_type: 'ALGEBRA_ERROR',
+    });
+    expect(progress.knowledge_errors.at(-1)).toMatchObject({
+      questionId: 'check-a',
+      errorType: 'algebraic_execution_error',
     });
   });
 

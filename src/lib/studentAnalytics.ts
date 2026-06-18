@@ -1,6 +1,8 @@
 import type {
   Attempt,
   AttemptPartScore,
+  KnowledgeEvidenceSource,
+  KnowledgeSkillNode,
   P3ErrorLogEntry,
   P3ErrorLogErrorType,
   P3ErrorSeverity,
@@ -12,6 +14,18 @@ import type {
   P3TopicPerformanceStats,
   SkillCheckAttemptRecord,
 } from '../types';
+import {
+  knowledgeErrorTypeFromTags,
+  normalizeKnowledgeErrors,
+  normalizeKnowledgeInterventions,
+  normalizeKnowledgeSchedules,
+  normalizeKnowledgeSkillStateGraph,
+  normalizeKnowledgeStateUpdates,
+  transformErrorToKnowledgeState,
+  updateLatestKnowledgeErrorTypeFromTags,
+  type KnowledgeAttemptEvidence,
+  type KnowledgeMarkPointEvidence,
+} from './errorKnowledgeState';
 
 export const P3_TOPIC_MARK_KEYS: P3TopicMarkKey[] = [
   'algebra',
@@ -39,6 +53,12 @@ export interface TopicBreakdownQuestionInput {
   regionId?: string;
   mappedRegionId?: string;
   primaryTopicId?: string;
+  skillRef?: string;
+  skillNodeIds?: string[];
+  skillNodes?: KnowledgeSkillNode[];
+  markPoints?: KnowledgeMarkPointEvidence[];
+  representation?: string;
+  canonicalDeviation?: string;
   marksEarned?: number;
   marksAvailable?: number;
   scoreLost?: number;
@@ -76,6 +96,13 @@ export interface StudentPerformanceAssessmentInput {
   source: StudentPerformanceAssessmentSource;
   unit?: string;
   timestamp?: number;
+  finalAnswer?: string;
+  workingSteps?: string[];
+  timeTakenSeconds?: number;
+  editCount?: number;
+  attemptNumber?: number;
+  usedHint?: boolean;
+  revealedAnswer?: boolean;
   questions: Array<TopicBreakdownQuestionInput & {
     error_type?: P3ErrorLogErrorType | string;
     mistakeTags?: string[];
@@ -239,6 +266,7 @@ export function updateStudentPerformanceState<T extends StudentAnalyticsProgress
     next.redo_queue.push(redoItemForError(error));
   }
 
+  applyKnowledgeAssessment(next, input, timestamp);
   return refreshDerivedAnalytics(next);
 }
 
@@ -251,6 +279,18 @@ export function assessmentFromExamAttempt(attempt: Attempt, studentId = 'local-s
       unit: attempt.validatedRegionId ?? attempt.displayRegionId ?? attempt.topicDisplayName,
       topic: attempt.topicDisplayName,
       regionId: attempt.validatedRegionId ?? attempt.displayRegionId,
+      skillNodeIds: [
+        attempt.validatedRegionId,
+        attempt.displayRegionId,
+        attempt.topicDisplayName,
+      ].filter((value): value is string => typeof value === 'string' && value.trim().length > 0),
+      skillNodes: [{
+        id: attempt.validatedRegionId ?? attempt.displayRegionId ?? attempt.topicDisplayName,
+        label: attempt.topicDisplayName,
+        course: 'p3',
+        regionId: attempt.validatedRegionId ?? attempt.displayRegionId,
+        source: attempt.validatedRegionId || attempt.displayRegionId ? 'topic_route' as const : 'fallback_region' as const,
+      }],
       marksEarned: attempt.marksEarned,
       marksAvailable: attempt.marksAvailable ?? attempt.marksEarned,
       scoreLost: Math.max(0, finiteNonNegative(attempt.marksAvailable) - finiteNonNegative(attempt.marksEarned)),
@@ -265,6 +305,8 @@ export function assessmentFromExamAttempt(attempt: Attempt, studentId = 'local-s
     source: 'exam_training',
     unit: attempt.validatedRegionId ?? attempt.displayRegionId ?? attempt.topicDisplayName,
     timestamp: Number.isFinite(timestamp) ? timestamp : Date.now(),
+    timeTakenSeconds: attempt.timeSpentSeconds,
+    revealedAnswer: attempt.answerRevealedBeforeMarking,
     questions,
   };
 }
@@ -278,11 +320,32 @@ export function assessmentFromSkillCheckAttempt(attempt: SkillCheckAttemptRecord
     source: 'checked_practice',
     unit: attempt.regionId ?? attempt.topic,
     timestamp: Number.isFinite(timestamp) ? timestamp : Date.now(),
+    finalAnswer: attempt.submittedAnswer,
+    usedHint: attempt.usedHint,
+    revealedAnswer: attempt.revealedAnswer || attempt.revealedRepairStep,
     questions: [{
       question_id: attempt.checkId,
       unit: attempt.regionId ?? attempt.topic,
       topic: attempt.topic,
       regionId: attempt.regionId,
+      skillRef: attempt.skillId,
+      skillNodeIds: [attempt.skillId],
+      skillNodes: [{
+        id: attempt.skillId,
+        label: attempt.topic,
+        course: attempt.course,
+        regionId: attempt.regionId,
+        source: 'skill_check',
+      }],
+      markPoints: [{
+        id: attempt.checkId,
+        label: attempt.topic,
+        gained: attempt.isCorrect,
+        marks: 1,
+        skillNodeIds: [attempt.skillId],
+        errorType: knowledgeErrorTypeFromTags(attempt.mistakeTags),
+        evidenceStrength: 0.85,
+      }],
       marksEarned: attempt.isCorrect ? 1 : 0,
       marksAvailable: 1,
       scoreLost: attempt.isCorrect ? 0 : 1,
@@ -331,6 +394,11 @@ export function normalizeStudentAnalyticsState<T extends StudentAnalyticsProgres
     topic_assessments: Array.isArray(progress.topic_assessments)
       ? progress.topic_assessments.filter(isTopicAssessmentBreakdown)
       : [],
+    knowledge_state_graph: normalizeKnowledgeSkillStateGraph(progress.knowledge_state_graph),
+    knowledge_state_updates: normalizeKnowledgeStateUpdates(progress.knowledge_state_updates),
+    knowledge_errors: normalizeKnowledgeErrors(progress.knowledge_errors),
+    knowledge_interventions: normalizeKnowledgeInterventions(progress.knowledge_interventions),
+    knowledge_schedules: normalizeKnowledgeSchedules(progress.knowledge_schedules),
   } as T & P3StudentAnalyticsState;
   return next;
 }
@@ -353,6 +421,14 @@ export function updateErrorClassificationFromTags<T extends StudentAnalyticsProg
       ? { ...item, error_type: pathErrorType(errorType), error_type_detail: errorType }
       : item
   ));
+  const knowledgeUpdate = updateLatestKnowledgeErrorTypeFromTags(
+    next.knowledge_errors,
+    next.knowledge_state_graph,
+    questionId,
+    tags,
+  );
+  next.knowledge_errors = knowledgeUpdate.errors;
+  next.knowledge_state_graph = knowledgeUpdate.graph;
   return refreshDerivedAnalytics(next);
 }
 
@@ -367,12 +443,205 @@ function questionInputFromAttemptPart(attempt: Attempt, part: AttemptPartScore):
     regionId: part.mappedRegionId ?? attempt.validatedRegionId ?? attempt.displayRegionId,
     mappedRegionId: part.mappedRegionId,
     primaryTopicId: part.primaryTopicId,
+    skillRef: part.skillRef,
+    skillNodeIds: skillNodeIdsForAttemptPart(attempt, part),
+    skillNodes: skillNodesForAttemptPart(attempt, part),
+    markPoints: markPointEvidenceForAttemptPart(attempt, part),
     marksEarned: part.marksEarned,
     marksAvailable: part.marksAvailable,
     scoreLost: Math.max(0, finiteNonNegative(part.marksAvailable) - finiteNonNegative(part.marksEarned)),
     error_type: normalizeErrorType(attempt.mistakeType, attempt.mistakeTypes),
     mistakeTags: attempt.mistakeTypes,
   };
+}
+
+function skillNodeIdsForAttemptPart(attempt: Attempt, part: AttemptPartScore): string[] {
+  return Array.from(new Set([
+    part.skillRef,
+    part.primaryTopicId,
+    part.mappedRegionId,
+    attempt.validatedRegionId,
+    attempt.displayRegionId,
+    attempt.topicDisplayName,
+  ].filter((value): value is string => typeof value === 'string' && value.trim().length > 0)));
+}
+
+function skillNodesForAttemptPart(attempt: Attempt, part: AttemptPartScore): KnowledgeSkillNode[] {
+  return skillNodeIdsForAttemptPart(attempt, part).map((id) => ({
+    id,
+    label: attempt.topicDisplayName,
+    course: 'p3',
+    topicId: part.primaryTopicId,
+    regionId: part.mappedRegionId ?? attempt.validatedRegionId ?? attempt.displayRegionId,
+    source: part.skillRef === id
+      ? 'reviewed_skill_map'
+      : part.primaryTopicId === id
+        ? 'topic_route'
+        : part.mappedRegionId === id || attempt.validatedRegionId === id || attempt.displayRegionId === id
+          ? 'exam_part'
+          : 'fallback_region',
+  }));
+}
+
+function markPointEvidenceForAttemptPart(attempt: Attempt, part: AttemptPartScore): KnowledgeMarkPointEvidence[] {
+  const availableIds = part.markPointIdsAvailable ?? [];
+  if (!availableIds.length) return [];
+  const gainedIds = new Set(part.markPointIds ?? []);
+  const skillNodeIds = skillNodeIdsForAttemptPart(attempt, part);
+  return availableIds.map((id) => ({
+    id,
+    label: part.markPointLabels?.[id] ?? part.label,
+    gained: gainedIds.has(id),
+    marks: 1,
+    skillNodeIds,
+    errorType: knowledgeErrorTypeFromTags(attempt.mistakeTypes, attempt.mistakeType),
+    evidenceStrength: 0.8,
+  }));
+}
+
+function applyKnowledgeAssessment<T extends StudentAnalyticsProgressShape>(
+  state: T & P3StudentAnalyticsState,
+  input: StudentPerformanceAssessmentInput,
+  timestamp: number,
+): void {
+  const attempt = knowledgeAttemptFromAssessment(input, timestamp);
+  const result = transformErrorToKnowledgeState({
+    previousGraph: state.knowledge_state_graph,
+    priorErrors: state.knowledge_errors,
+    attempt,
+  });
+  state.knowledge_state_graph = result.skillStateGraph;
+  state.knowledge_state_updates = [...state.knowledge_state_updates, ...result.stateUpdates];
+  state.knowledge_errors = [...state.knowledge_errors, ...result.errors];
+  state.knowledge_interventions = [...state.knowledge_interventions, result.interventionPlan];
+  state.knowledge_schedules = [...state.knowledge_schedules, result.schedulingInstruction];
+}
+
+function knowledgeAttemptFromAssessment(
+  input: StudentPerformanceAssessmentInput,
+  timestamp: number,
+): KnowledgeAttemptEvidence {
+  const questions = input.questions.length ? input.questions : [];
+  const skillNodes = mergeSkillNodes(questions.flatMap(skillNodesForAssessmentQuestion));
+  const markPoints = questions.flatMap((question) => markPointEvidenceForAssessmentQuestion(question));
+  const marksEarned = questions.reduce((sum, question) => sum + finiteNonNegative(question.marksEarned), 0);
+  const marksAvailable = questions.reduce((sum, question) => sum + finiteNonNegative(question.marksAvailable), 0);
+  const scoreLost = questions.reduce((sum, question) => {
+    const marks = finiteNonNegative(question.marksAvailable);
+    const earned = finiteNonNegative(question.marksEarned);
+    return sum + (typeof question.scoreLost === 'number' && Number.isFinite(question.scoreLost)
+      ? Math.max(0, question.scoreLost)
+      : Math.max(0, marks - earned));
+  }, 0);
+  const firstQuestion = questions[0];
+  const singleQuestionId = questions.length === 1 ? firstQuestion?.question_id : undefined;
+
+  return {
+    attemptId: input.assessment_id,
+    source: input.source as KnowledgeEvidenceSource,
+    timestamp,
+    question: {
+      questionId: singleQuestionId ?? input.assessment_id,
+      course: 'p3',
+      topic: input.unit ?? firstQuestion?.topic,
+      regionId: firstQuestion?.regionId,
+      primaryTopicId: firstQuestion?.primaryTopicId,
+      skillNodes,
+      markPoints,
+      representation: firstQuestion?.representation,
+      canonicalPathId: questions.map((question) => question.primaryTopicId ?? question.regionId).filter(Boolean).join('|') || undefined,
+    },
+    response: {
+      finalAnswer: input.finalAnswer,
+      workingSteps: input.workingSteps,
+      timeTakenSeconds: input.timeTakenSeconds,
+      editCount: input.editCount,
+      attemptNumber: input.attemptNumber,
+      usedHint: input.usedHint,
+      revealedAnswer: input.revealedAnswer,
+    },
+    evaluation: {
+      marksEarned,
+      marksAvailable,
+      canonicalDeviation: questions.map((question) => question.canonicalDeviation).filter(Boolean).join('|') || undefined,
+      timePressure: Boolean(input.timeTakenSeconds && input.timeTakenSeconds > 0 && scoreLost > 0 && input.timeTakenSeconds < 90),
+    },
+  };
+}
+
+function markPointEvidenceForAssessmentQuestion(
+  question: TopicBreakdownQuestionInput & { error_type?: P3ErrorLogErrorType | string; mistakeTags?: string[] },
+): KnowledgeMarkPointEvidence[] {
+  if (question.markPoints?.length) return question.markPoints;
+  const marksAvailable = finiteNonNegative(question.marksAvailable);
+  const marksEarned = finiteNonNegative(question.marksEarned);
+  const scoreLost = typeof question.scoreLost === 'number' && Number.isFinite(question.scoreLost)
+    ? Math.max(0, question.scoreLost)
+    : Math.max(0, marksAvailable - marksEarned);
+  const skillNodeIds = skillNodeIdsForAssessmentQuestion(question);
+  const points: KnowledgeMarkPointEvidence[] = [];
+  if (marksEarned > 0) {
+    points.push({
+      id: `${question.question_id}:earned`,
+      label: 'Self-marked gained evidence',
+      gained: true,
+      marks: marksEarned,
+      skillNodeIds,
+      representation: question.representation,
+      evidenceStrength: 0.55,
+    });
+  }
+  for (let index = 0; index < Math.max(0, Math.round(scoreLost)); index += 1) {
+    points.push({
+      id: `${question.question_id}:missed:${index + 1}`,
+      label: 'Self-marked missed evidence',
+      gained: false,
+      marks: 1,
+      skillNodeIds,
+      errorType: knowledgeErrorTypeFromTags(question.mistakeTags, question.error_type),
+      representation: question.representation,
+      deviationFromCanonical: question.canonicalDeviation,
+      evidenceStrength: 0.45,
+    });
+  }
+  return points;
+}
+
+function skillNodesForAssessmentQuestion(question: TopicBreakdownQuestionInput): KnowledgeSkillNode[] {
+  if (question.skillNodes?.length) return question.skillNodes;
+  const skillNodeIds = skillNodeIdsForAssessmentQuestion(question);
+  return skillNodeIds.map((id) => ({
+    id,
+    label: question.topic ?? question.unit,
+    course: 'p3',
+    topicId: question.primaryTopicId,
+    regionId: question.mappedRegionId ?? question.regionId,
+    source: question.skillRef === id
+      ? 'reviewed_skill_map'
+      : question.primaryTopicId === id
+        ? 'topic_route'
+        : 'exam_part',
+  }));
+}
+
+function skillNodeIdsForAssessmentQuestion(question: TopicBreakdownQuestionInput): string[] {
+  const ids = [
+    ...(question.skillNodeIds ?? []),
+    question.skillRef,
+    question.primaryTopicId,
+    question.mappedRegionId,
+    question.regionId,
+    question.unit,
+  ].filter((value): value is string => typeof value === 'string' && value.trim().length > 0);
+  return Array.from(new Set(ids));
+}
+
+function mergeSkillNodes(nodes: KnowledgeSkillNode[]): KnowledgeSkillNode[] {
+  const byId = new Map<string, KnowledgeSkillNode>();
+  for (const node of nodes) {
+    byId.set(node.id, { ...byId.get(node.id), ...node });
+  }
+  return Array.from(byId.values());
 }
 
 function applyRedoCompletion<T extends StudentAnalyticsProgressShape>(

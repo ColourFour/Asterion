@@ -141,6 +141,9 @@ describe('static P3 product contract', () => {
       expect(generatedReview).toContain('data-p3-exam-review-gate');
       expect(generatedReview).toContain('Mixed Paper 3 questions');
       expect(generatedReview).toContain('Locked until the path is complete');
+      expect(generatedReview).toContain('data-review-skill-routes');
+      expect(generatedReview).toContain('p3_alg_partial_fraction_form');
+      expect(generatedReview).toContain('../topics/algebra/learn/#practice-algebra_partial_fractions');
     }
   });
 

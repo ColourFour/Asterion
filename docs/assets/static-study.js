@@ -3,6 +3,11 @@
   var PROFILE_ID = 'local-static-student';
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
   var REDO_COMPLETION_WEIGHT = 1.5;
+  var DAY_MS = 24 * 60 * 60 * 1000;
+  var SKILL_REPAIR_INTERVALS = [
+    { days: 2, label: '2-day repair' },
+    { days: 7, label: 'next-week repair' }
+  ];
   var P3_TOPIC_MARK_KEYS = [
     'algebra',
     'logs_exp',
@@ -26,7 +31,21 @@
     'self_marked_score',
     'evidence_label',
     'mastery_eligibility_label',
-    'suspicion_flags'
+    'suspicion_flags',
+    'knowledge_skill_id',
+    'knowledge_state_score',
+    'knowledge_state_category',
+    'knowledge_stability_flag',
+    'knowledge_confidence',
+    'knowledge_error_type',
+    'knowledge_error_severity',
+    'knowledge_repeat_flag',
+    'knowledge_misconception_tag',
+    'knowledge_evidence_strength',
+    'intervention_action',
+    'retest_timing',
+    'follow_up_item_type',
+    'follow_up_relation'
   ];
   var TARGETED_MISTAKE_PROMPTS = {
     'algebra slip': 'I made an algebra error when...',
@@ -63,6 +82,11 @@
       error_distribution: {},
       priority_repair_topics: [],
       topic_assessments: [],
+      knowledge_state_graph: emptyKnowledgeGraph(),
+      knowledge_state_updates: [],
+      knowledge_errors: [],
+      knowledge_interventions: [],
+      knowledge_schedules: [],
       settings: { activePaperFamily: 'p3' }
     };
   }
@@ -81,6 +105,409 @@
 
   function roundMetric(value) {
     return Math.round(value * 1000) / 1000;
+  }
+
+  function emptyKnowledgeGraph(timestamp) {
+    return {
+      schemaVersion: 1,
+      updatedAt: new Date(timestamp || 0).toISOString(),
+      skills: {},
+      misconceptions: {}
+    };
+  }
+
+  function knowledgeStableId(prefix) {
+    var seed = Array.prototype.slice.call(arguments, 1).filter(function (part) {
+      return part !== undefined && part !== null && part !== '';
+    }).join(':');
+    return prefix + '_' + (seed.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80) || 'item');
+  }
+
+  function knowledgeTypeFromValue(value) {
+    if (!value) return undefined;
+    if ([
+      'conceptual_gap',
+      'procedural_gap',
+      'algebraic_execution_error',
+      'representation_error',
+      'mis_selection_of_method',
+      'careless_slip',
+      'time_pressure_degradation'
+    ].includes(value)) return value;
+    if (value === 'CONCEPT_ERROR' || value === 'formula_issue') return 'conceptual_gap';
+    if (value === 'ALGEBRA_ERROR' || value === 'algebra_error' || value === 'rounding_accuracy') return 'algebraic_execution_error';
+    if (value === 'NOTATION_ERROR' || value === 'diagram_or_modeling_issue') return 'representation_error';
+    if (value === 'METHOD_ERROR' || value === 'did_not_know_method' || value === 'could_not_start' || value === 'slow_method') return 'mis_selection_of_method';
+    if (value === 'TIME_ERROR' || value === 'ran_out_of_time') return 'time_pressure_degradation';
+    if (value === 'CARELESS_ERROR' || value === 'misread_question') return 'careless_slip';
+    return undefined;
+  }
+
+  function knowledgeTypeFromTags(tags, fallback) {
+    var normalized = safeArray(tags).map(function (tag) { return String(tag).toLowerCase(); });
+    if (normalized.some(function (tag) { return tag.includes('time') || tag.includes('slow'); })) return 'time_pressure_degradation';
+    if (normalized.some(function (tag) { return tag.includes('careless') || tag.includes('misread'); })) return 'careless_slip';
+    if (normalized.some(function (tag) { return tag.includes('notation') || tag.includes('diagram') || tag.includes('graph'); })) return 'representation_error';
+    if (normalized.some(function (tag) { return tag.includes('algebra') || tag.includes('sign error') || tag.includes('coefficient') || tag.includes('forgot constant'); })) return 'algebraic_execution_error';
+    if (normalized.some(function (tag) { return tag.includes('concept') || tag.includes('wrong identity') || tag.includes('domain') || tag.includes('formula'); })) return 'conceptual_gap';
+    if (normalized.some(function (tag) { return tag.includes('method') || tag.includes('could not start') || tag.includes('did not know'); })) return 'mis_selection_of_method';
+    return knowledgeTypeFromValue(fallback) || 'procedural_gap';
+  }
+
+  function knowledgeCategory(score) {
+    if (score < 30) return 'unknown';
+    if (score < 50) return 'fragile';
+    if (score < 70) return 'developing';
+    if (score < 85) return 'stable';
+    return 'secure';
+  }
+
+  function initialKnowledgeState(skillNode, timestamp) {
+    return {
+      skillNode: skillNode,
+      score: 50,
+      category: 'developing',
+      confidence: 25,
+      stabilityFlag: 'new_evidence',
+      evidenceCount: 0,
+      successStreak: 0,
+      failureStreak: 0,
+      lastUpdated: new Date(timestamp).toISOString(),
+      errorTypeCounts: {}
+    };
+  }
+
+  function knowledgeSkillNodeIds(question) {
+    var ids = []
+      .concat(safeArray(question.skillNodeIds))
+      .concat([question.skillRef, question.primaryTopicId, question.mappedRegionId, question.regionId, question.unit])
+      .filter(function (value) { return typeof value === 'string' && value.trim(); });
+    return Array.from(new Set(ids));
+  }
+
+  function knowledgeSkillNodes(question) {
+    if (safeArray(question.skillNodes).length) return question.skillNodes;
+    var ids = knowledgeSkillNodeIds(question);
+    if (!ids.length) ids = [String(question.unit || question.topic || 'p3:unknown_skill')];
+    return ids.map(function (id) {
+      return {
+        id: id,
+        label: question.topic || question.unit || '',
+        course: 'p3',
+        topicId: question.primaryTopicId,
+        regionId: question.mappedRegionId || question.regionId,
+        source: question.skillRef === id
+          ? 'reviewed_skill_map'
+          : question.primaryTopicId === id
+            ? 'topic_route'
+            : 'exam_part'
+      };
+    });
+  }
+
+  function knowledgeMarkPointsForQuestion(question) {
+    if (safeArray(question.markPoints).length) return question.markPoints;
+    var marksAvailable = finiteNonNegative(question.marksAvailable);
+    var marksEarned = finiteNonNegative(question.marksEarned);
+    var scoreLost = typeof question.scoreLost === 'number' && Number.isFinite(question.scoreLost)
+      ? Math.max(0, question.scoreLost)
+      : Math.max(0, marksAvailable - marksEarned);
+    var skillNodeIds = knowledgeSkillNodeIds(question);
+    var points = [];
+    if (marksEarned > 0) {
+      points.push({
+        id: question.question_id + ':earned',
+        label: 'Self-marked gained evidence',
+        gained: true,
+        marks: marksEarned,
+        skillNodeIds: skillNodeIds,
+        representation: question.representation,
+        evidenceStrength: 0.55
+      });
+    }
+    for (var index = 0; index < Math.max(0, Math.round(scoreLost)); index += 1) {
+      points.push({
+        id: question.question_id + ':missed:' + (index + 1),
+        label: 'Self-marked missed evidence',
+        gained: false,
+        marks: 1,
+        skillNodeIds: skillNodeIds,
+        errorType: knowledgeTypeFromTags(question.mistakeTags, question.error_type),
+        representation: question.representation,
+        deviationFromCanonical: question.canonicalDeviation,
+        evidenceStrength: 0.45
+      });
+    }
+    return points;
+  }
+
+  function knowledgeAttemptFromAssessment(input, timestamp) {
+    var questions = safeArray(input.questions);
+    var skillNodeMap = {};
+    questions.flatMap(knowledgeSkillNodes).forEach(function (node) {
+      skillNodeMap[node.id] = Object.assign({}, skillNodeMap[node.id], node);
+    });
+    var markPoints = questions.flatMap(knowledgeMarkPointsForQuestion);
+    var marksEarned = questions.reduce(function (sum, question) { return sum + finiteNonNegative(question.marksEarned); }, 0);
+    var marksAvailable = questions.reduce(function (sum, question) { return sum + finiteNonNegative(question.marksAvailable); }, 0);
+    var firstQuestion = questions[0] || {};
+    return {
+      attemptId: input.assessment_id,
+      source: input.source,
+      timestamp: timestamp,
+      question: {
+        questionId: questions.length === 1 ? firstQuestion.question_id : input.assessment_id,
+        course: 'p3',
+        topic: input.unit || firstQuestion.topic,
+        regionId: firstQuestion.regionId,
+        primaryTopicId: firstQuestion.primaryTopicId,
+        skillNodes: Object.values(skillNodeMap),
+        markPoints: markPoints,
+        representation: firstQuestion.representation
+      },
+      response: {
+        finalAnswer: input.finalAnswer,
+        timeTakenSeconds: input.timeTakenSeconds,
+        usedHint: input.usedHint,
+        revealedAnswer: input.revealedAnswer
+      },
+      evaluation: {
+        marksEarned: marksEarned,
+        marksAvailable: marksAvailable,
+        timePressure: Boolean(input.timeTakenSeconds && input.timeTakenSeconds > 0 && marksAvailable > marksEarned && input.timeTakenSeconds < 90)
+      }
+    };
+  }
+
+  function knowledgeSeverity(marksLost, totalLost, marksAvailable) {
+    var ratio = marksAvailable > 0 ? totalLost / marksAvailable : 0;
+    if (marksLost >= 3 || ratio >= 0.6) return 'high';
+    if (marksLost >= 2 || ratio >= 0.3) return 'medium';
+    return 'low';
+  }
+
+  function knowledgeSeverityRank(severity) {
+    return severity === 'high' ? 3 : severity === 'medium' ? 2 : 1;
+  }
+
+  function classifyKnowledgeFailure(attempt, point) {
+    var explicit = knowledgeTypeFromValue(point.errorType);
+    if (explicit) return explicit;
+    if (attempt.evaluation.timePressure) return 'time_pressure_degradation';
+    if (point.markCode && point.markCode.startsWith('M')) return 'mis_selection_of_method';
+    if (point.markCode && point.markCode.startsWith('A')) return 'algebraic_execution_error';
+    if (point.markCode && point.markCode.startsWith('B')) return 'procedural_gap';
+    return 'procedural_gap';
+  }
+
+  function knowledgeHumanErrorType(errorType) {
+    return String(errorType || '').replace(/_/g, ' ');
+  }
+
+  function applyKnowledgeMisconceptions(errors, priorErrors, graph, timestamp) {
+    errors.forEach(function (error) {
+      var related = priorErrors.concat(errors).filter(function (candidate) {
+        return candidate.primarySkillNodeId === error.primarySkillNodeId && candidate.errorType === error.errorType;
+      });
+      var questionIds = Array.from(new Set(related.map(function (candidate) { return candidate.questionId; }).filter(Boolean)));
+      var representationIds = Array.from(new Set(related.map(function (candidate) { return candidate.representation; }).filter(Boolean)));
+      var nearMissCount = related.filter(function (candidate) { return candidate.severity === 'low' && candidate.marksLost <= 1; }).length;
+      if (questionIds.length < 2 && representationIds.length < 2 && nearMissCount < 3) return;
+      var pattern = representationIds.length >= 2 ? 'across-representations' : nearMissCount >= 3 ? 'near-miss' : 'repeated';
+      var tag = [error.primarySkillNodeId, error.errorType, pattern].join(':').toLowerCase().replace(/[^a-z0-9:_-]+/g, '_');
+      var state = graph.skills[error.primarySkillNodeId];
+      graph.misconceptions[tag] = {
+        tag: tag,
+        skillNodeId: error.primarySkillNodeId,
+        description: (state?.skillNode?.label || error.primarySkillNodeId) + ': ' + knowledgeHumanErrorType(error.errorType),
+        errorType: error.errorType,
+        evidenceCount: related.length,
+        questionIds: questionIds,
+        representationIds: representationIds,
+        lastSeenAt: new Date(timestamp).toISOString(),
+        stable: related.length >= 3 || questionIds.length >= 3
+      };
+      error.misconceptionTag = tag;
+      error.repeat = true;
+    });
+  }
+
+  function applyKnowledgeAssessment(progress, input, timestamp) {
+    progress.knowledge_state_graph = isRecord(progress.knowledge_state_graph) ? progress.knowledge_state_graph : emptyKnowledgeGraph(timestamp);
+    progress.knowledge_state_graph.skills = isRecord(progress.knowledge_state_graph.skills) ? progress.knowledge_state_graph.skills : {};
+    progress.knowledge_state_graph.misconceptions = isRecord(progress.knowledge_state_graph.misconceptions) ? progress.knowledge_state_graph.misconceptions : {};
+    progress.knowledge_state_graph.updatedAt = new Date(timestamp).toISOString();
+    progress.knowledge_state_updates = safeArray(progress.knowledge_state_updates);
+    progress.knowledge_errors = safeArray(progress.knowledge_errors);
+    progress.knowledge_interventions = safeArray(progress.knowledge_interventions);
+    progress.knowledge_schedules = safeArray(progress.knowledge_schedules);
+
+    var attempt = knowledgeAttemptFromAssessment(input, timestamp);
+    var graph = progress.knowledge_state_graph;
+    var questionNodes = safeArray(attempt.question.skillNodes);
+    if (!questionNodes.length) questionNodes = [{ id: attempt.question.regionId || attempt.question.topic || 'p3:unknown_skill', source: 'fallback_region' }];
+    questionNodes.forEach(function (node) {
+      if (!graph.skills[node.id]) graph.skills[node.id] = initialKnowledgeState(node, timestamp);
+    });
+
+    var totalLost = Math.max(0, finiteNonNegative(attempt.evaluation.marksAvailable) - finiteNonNegative(attempt.evaluation.marksEarned));
+    var missedPoints = safeArray(attempt.question.markPoints).filter(function (point) { return !point.gained; });
+    var errors = missedPoints.map(function (point, index) {
+      var skillNodeIds = safeArray(point.skillNodeIds).length ? point.skillNodeIds : questionNodes.map(function (node) { return node.id; });
+      var primarySkillNodeId = skillNodeIds[0];
+      var errorType = classifyKnowledgeFailure(attempt, point);
+      var marksLost = Math.max(1, finiteNonNegative(point.marks || 1));
+      var severity = knowledgeSeverity(marksLost, totalLost, attempt.evaluation.marksAvailable);
+      var repeat = progress.knowledge_errors.some(function (candidate) {
+        return candidate.primarySkillNodeId === primarySkillNodeId && candidate.errorType === errorType;
+      });
+      var strength = Math.min(1, (point.evidenceStrength || 0.75) + (severity === 'high' ? 0.15 : severity === 'medium' ? 0.08 : 0) + (repeat ? 0.08 : 0));
+      return {
+        id: knowledgeStableId('kerr', attempt.attemptId, attempt.question.questionId, point.id, index, timestamp),
+        attemptId: attempt.attemptId,
+        questionId: attempt.question.questionId,
+        markPointId: point.id,
+        markPointLabel: point.label,
+        skillNodeIds: skillNodeIds,
+        primarySkillNodeId: primarySkillNodeId,
+        errorType: errorType,
+        severity: severity,
+        repeat: repeat,
+        evidenceStrength: roundMetric(strength),
+        evidenceSource: attempt.source,
+        marksLost: marksLost,
+        timestamp: new Date(timestamp).toISOString(),
+        representation: point.representation || attempt.question.representation,
+        deviationFromCanonical: point.deviationFromCanonical
+      };
+    });
+    applyKnowledgeMisconceptions(errors, progress.knowledge_errors, graph, timestamp);
+
+    var evidenceBySkill = {};
+    safeArray(attempt.question.markPoints).forEach(function (point) {
+      if (!point.gained) return;
+      var ids = safeArray(point.skillNodeIds).length ? point.skillNodeIds : questionNodes.map(function (node) { return node.id; });
+      ids.forEach(function (id) {
+        evidenceBySkill[id] = evidenceBySkill[id] || { errors: [], successWeight: 0, strength: 0.5 };
+        evidenceBySkill[id].successWeight += Math.max(1, finiteNonNegative(point.marks || 1));
+        evidenceBySkill[id].strength = Math.max(evidenceBySkill[id].strength, point.evidenceStrength || 0.6);
+      });
+    });
+    errors.forEach(function (error) {
+      error.skillNodeIds.forEach(function (id) {
+        evidenceBySkill[id] = evidenceBySkill[id] || { errors: [], successWeight: 0, strength: 0.5 };
+        evidenceBySkill[id].errors.push(error);
+        evidenceBySkill[id].strength = Math.max(evidenceBySkill[id].strength, error.evidenceStrength);
+      });
+    });
+
+    var updates = Object.keys(evidenceBySkill).map(function (skillNodeId) {
+      var evidence = evidenceBySkill[skillNodeId];
+      var state = graph.skills[skillNodeId] || initialKnowledgeState({ id: skillNodeId, source: 'fallback_region' }, timestamp);
+      var previousScore = typeof state.score === 'number' ? state.score : 50;
+      var previousCategory = state.category || knowledgeCategory(previousScore);
+      var failure = evidence.errors.length > 0;
+      var worst = evidence.errors.reduce(function (current, error) {
+        return knowledgeSeverityRank(error.severity) > knowledgeSeverityRank(current) ? error.severity : current;
+      }, 'low');
+      var baseDelta = failure
+        ? (worst === 'high' ? -20 : worst === 'medium' ? -14 : -8)
+        : (state.lastOutcome === 'success' ? 9 : state.lastOutcome === 'failure' ? 6 : 4);
+      if (failure && !state.evidenceCount) baseDelta -= 6;
+      if (failure && state.lastOutcome === 'success' && state.successStreak > 0) baseDelta -= 6;
+      if (failure && evidence.errors.some(function (error) { return error.repeat; })) baseDelta -= 4;
+      var nextScore = Math.max(0, Math.min(100, previousScore + baseDelta));
+      var stability = failure && state.lastOutcome === 'success' && state.successStreak > 0
+        ? 'volatile'
+        : failure
+          ? (nextScore < 50 ? 'fragile' : 'volatile')
+          : state.lastOutcome === 'failure'
+            ? 'recovering'
+            : state.successStreak >= 1 && nextScore >= 70
+              ? 'stable_understanding'
+              : 'new_evidence';
+      var errorTypeCounts = Object.assign({}, state.errorTypeCounts || {});
+      evidence.errors.forEach(function (error) {
+        errorTypeCounts[error.errorType] = (errorTypeCounts[error.errorType] || 0) + 1;
+      });
+      graph.skills[skillNodeId] = Object.assign({}, state, {
+        score: roundMetric(nextScore),
+        category: knowledgeCategory(nextScore),
+        confidence: roundMetric(Math.min(100, (state.confidence || 25) + Math.max(3, (failure ? 9 : 6) * evidence.strength))),
+        stabilityFlag: stability,
+        evidenceCount: (state.evidenceCount || 0) + 1,
+        successStreak: failure ? 0 : (state.successStreak || 0) + 1,
+        failureStreak: failure ? (state.failureStreak || 0) + 1 : 0,
+        lastOutcome: failure ? 'failure' : 'success',
+        lastUpdated: new Date(timestamp).toISOString(),
+        lastAttemptId: attempt.attemptId,
+        lastQuestionId: attempt.question.questionId,
+        errorTypeCounts: errorTypeCounts
+      });
+      return {
+        id: knowledgeStableId('ksu', attempt.attemptId, skillNodeId, timestamp),
+        attemptId: attempt.attemptId,
+        questionId: attempt.question.questionId,
+        skillNodeId: skillNodeId,
+        previousScore: roundMetric(previousScore),
+        newScore: roundMetric(nextScore),
+        previousCategory: previousCategory,
+        newCategory: knowledgeCategory(nextScore),
+        confidence: graph.skills[skillNodeId].confidence,
+        stabilityFlag: stability,
+        outcome: failure ? 'failure' : 'success',
+        evidenceStrength: roundMetric(evidence.strength),
+        timestamp: new Date(timestamp).toISOString()
+      };
+    });
+
+    var selectedError = errors.slice().sort(function (a, b) {
+      return knowledgeSeverityRank(b.severity) - knowledgeSeverityRank(a.severity) || Number(b.repeat) - Number(a.repeat);
+    })[0];
+    var selectedUpdate = selectedError
+      ? updates.find(function (update) { return update.skillNodeId === selectedError.primarySkillNodeId; }) || updates[0]
+      : updates.slice().sort(function (a, b) { return (b.newScore - b.previousScore) - (a.newScore - a.previousScore); })[0];
+    var selectedSkillId = selectedError?.primarySkillNodeId || selectedUpdate?.skillNodeId || questionNodes[0].id;
+    var selectedState = graph.skills[selectedSkillId] || initialKnowledgeState({ id: selectedSkillId, source: 'fallback_region' }, timestamp);
+    var action = 'similar_question';
+    if (!selectedError) action = selectedState.score >= 70 && selectedState.stabilityFlag === 'stable_understanding' ? 'transfer_challenge' : 'delayed_retest';
+    else if (selectedUpdate?.stabilityFlag === 'volatile') action = 'delayed_retest';
+    else if (selectedError.misconceptionTag || selectedError.repeat) action = 'drill_set';
+    else if (selectedState.category === 'unknown' || selectedState.category === 'fragile' || selectedError.errorType === 'conceptual_gap' || selectedError.errorType === 'mis_selection_of_method') action = 'micro_reteach';
+    else if (selectedError.errorType === 'careless_slip' || selectedError.errorType === 'time_pressure_degradation') action = 'delayed_retest';
+    var intervention = {
+      id: knowledgeStableId('kint', attempt.attemptId, selectedSkillId, action, timestamp),
+      attemptId: attempt.attemptId,
+      skillNodeId: selectedSkillId,
+      action: action,
+      rationale: selectedError ? 'State change after ' + knowledgeHumanErrorType(selectedError.errorType) : 'State changed after successful evidence.',
+      stateChange: {
+        previousScore: selectedUpdate?.previousScore || selectedState.score,
+        newScore: selectedUpdate?.newScore || selectedState.score,
+        category: selectedState.category,
+        stabilityFlag: selectedState.stabilityFlag
+      },
+      sourceErrorIds: selectedError ? [selectedError.id] : [],
+      createdAt: new Date(timestamp).toISOString()
+    };
+    var delayed = action === 'delayed_retest' || action === 'transfer_challenge';
+    var schedule = {
+      id: knowledgeStableId('ksch', intervention.id, action, timestamp),
+      interventionId: intervention.id,
+      attemptId: attempt.attemptId,
+      skillNodeId: selectedSkillId,
+      retestTiming: delayed ? 'delayed' : 'immediate',
+      followUpItemType: action,
+      difficultyRelation: action === 'transfer_challenge' ? 'cross_skill' : 'isomorphic',
+      dueAt: new Date(timestamp + (delayed ? (action === 'transfer_challenge' ? 72 * 60 * 60 * 1000 : REDO_DELAY_MS) : 0)).toISOString(),
+      reason: delayed ? 'Re-test after spacing to check stability.' : 'Act immediately on the state change.',
+      createdAt: new Date(timestamp).toISOString()
+    };
+
+    progress.knowledge_state_updates = progress.knowledge_state_updates.concat(updates);
+    progress.knowledge_errors = progress.knowledge_errors.concat(errors);
+    progress.knowledge_interventions.push(intervention);
+    progress.knowledge_schedules.push(schedule);
   }
 
   function normalizeTopicCandidate(value) {
@@ -312,6 +739,13 @@
     progress.error_distribution = isRecord(progress.error_distribution) ? progress.error_distribution : {};
     progress.priority_repair_topics = safeArray(progress.priority_repair_topics).filter(function (topic) { return typeof topic === 'string'; });
     progress.topic_assessments = safeArray(progress.topic_assessments);
+    progress.knowledge_state_graph = isRecord(progress.knowledge_state_graph) ? progress.knowledge_state_graph : emptyKnowledgeGraph(0);
+    progress.knowledge_state_graph.skills = isRecord(progress.knowledge_state_graph.skills) ? progress.knowledge_state_graph.skills : {};
+    progress.knowledge_state_graph.misconceptions = isRecord(progress.knowledge_state_graph.misconceptions) ? progress.knowledge_state_graph.misconceptions : {};
+    progress.knowledge_state_updates = safeArray(progress.knowledge_state_updates);
+    progress.knowledge_errors = safeArray(progress.knowledge_errors);
+    progress.knowledge_interventions = safeArray(progress.knowledge_interventions);
+    progress.knowledge_schedules = safeArray(progress.knowledge_schedules);
     return progress;
   }
 
@@ -380,6 +814,7 @@
       progress.error_log.push(error);
       progress.redo_queue.push(redoItemForError(error));
     });
+    applyKnowledgeAssessment(progress, input, timestamp);
     return refreshDerivedAnalytics(progress);
   }
 
@@ -395,6 +830,23 @@
         ? Object.assign({}, item, { error_type: pathErrorType(errorType), error_type_detail: errorType })
         : item;
     });
+    var knowledgeIndex = safeArray(progress.knowledge_errors).map(function (entry) { return entry.questionId; }).lastIndexOf(questionId);
+    if (knowledgeIndex >= 0) {
+      var previous = progress.knowledge_errors[knowledgeIndex];
+      var nextType = knowledgeTypeFromTags(tags, previous.errorType);
+      progress.knowledge_errors[knowledgeIndex] = Object.assign({}, previous, {
+        errorType: nextType,
+        misconceptionTag: undefined
+      });
+      safeArray(previous.skillNodeIds).forEach(function (skillNodeId) {
+        var state = progress.knowledge_state_graph?.skills?.[skillNodeId];
+        if (!state) return;
+        var counts = Object.assign({}, state.errorTypeCounts || {});
+        counts[previous.errorType] = Math.max(0, (counts[previous.errorType] || 0) - 1);
+        counts[nextType] = (counts[nextType] || 0) + 1;
+        progress.knowledge_state_graph.skills[skillNodeId] = Object.assign({}, state, { errorTypeCounts: counts });
+      });
+    }
     return refreshDerivedAnalytics(progress);
   }
 
@@ -439,6 +891,11 @@
         error_distribution: parsed.error_distribution && typeof parsed.error_distribution === 'object' ? parsed.error_distribution : {},
         priority_repair_topics: safeArray(parsed.priority_repair_topics),
         topic_assessments: safeArray(parsed.topic_assessments),
+        knowledge_state_graph: parsed.knowledge_state_graph && typeof parsed.knowledge_state_graph === 'object' ? parsed.knowledge_state_graph : emptyKnowledgeGraph(0),
+        knowledge_state_updates: safeArray(parsed.knowledge_state_updates),
+        knowledge_errors: safeArray(parsed.knowledge_errors),
+        knowledge_interventions: safeArray(parsed.knowledge_interventions),
+        knowledge_schedules: safeArray(parsed.knowledge_schedules),
         settings: parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : { activePaperFamily: 'p3' }
       }));
     } catch (_error) {
@@ -543,6 +1000,69 @@
     });
   }
 
+  function knowledgeStateCsvRow(update, exportTimestamp) {
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: update.skillNodeId || '',
+      route_page_type: 'knowledge-state',
+      activity_type: 'Skill State Update',
+      item_id: update.id || '',
+      attempt_timestamp: update.timestamp || '',
+      answer_result_summary: String(update.previousScore) + '->' + String(update.newScore),
+      deterministic_pass_fail: update.outcome || '',
+      evidence_label: 'Error-to-knowledge-state transformer',
+      mastery_eligibility_label: 'not_mastery_evidence',
+      knowledge_skill_id: update.skillNodeId || '',
+      knowledge_state_score: String(update.newScore ?? ''),
+      knowledge_state_category: update.newCategory || '',
+      knowledge_stability_flag: update.stabilityFlag || '',
+      knowledge_confidence: String(update.confidence ?? ''),
+      knowledge_evidence_strength: String(update.evidenceStrength ?? '')
+    });
+  }
+
+  function knowledgeErrorCsvRow(error, exportTimestamp) {
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: error.primarySkillNodeId || '',
+      route_page_type: 'knowledge-state',
+      activity_type: 'Error Diagnostic',
+      item_id: error.id || '',
+      attempt_timestamp: error.timestamp || '',
+      answer_result_summary: error.markPointLabel || error.markPointId || error.errorType || '',
+      evidence_label: 'Skill-linked missed mark evidence',
+      mastery_eligibility_label: 'not_mastery_evidence',
+      knowledge_skill_id: error.primarySkillNodeId || '',
+      knowledge_error_type: error.errorType || '',
+      knowledge_error_severity: error.severity || '',
+      knowledge_repeat_flag: String(Boolean(error.repeat)),
+      knowledge_misconception_tag: error.misconceptionTag || '',
+      knowledge_evidence_strength: String(error.evidenceStrength ?? '')
+    });
+  }
+
+  function knowledgeInterventionCsvRow(intervention, schedules, exportTimestamp) {
+    var schedule = safeArray(schedules).find(function (candidate) {
+      return candidate.interventionId === intervention.id;
+    });
+    return Object.assign(blankCsvRow(exportTimestamp), {
+      topic: intervention.skillNodeId || '',
+      route_page_type: 'knowledge-state',
+      activity_type: 'Intervention Plan',
+      item_id: intervention.id || '',
+      attempt_timestamp: intervention.createdAt || '',
+      answer_result_summary: intervention.rationale || '',
+      evidence_label: 'State-change-driven intervention',
+      mastery_eligibility_label: 'not_mastery_evidence',
+      knowledge_skill_id: intervention.skillNodeId || '',
+      knowledge_state_score: String(intervention.stateChange?.newScore ?? ''),
+      knowledge_state_category: intervention.stateChange?.category || '',
+      knowledge_stability_flag: intervention.stateChange?.stabilityFlag || '',
+      intervention_action: intervention.action || '',
+      retest_timing: schedule?.retestTiming || '',
+      follow_up_item_type: schedule?.followUpItemType || '',
+      follow_up_relation: schedule?.difficultyRelation || ''
+    });
+  }
+
   function buildLocalProgressCsv(progress, exportTimestamp) {
     var skillRows = normalizeSkillCheckAttempts(progress.skillCheckAttempts).flatMap(function (attempt) {
       return [skillCheckCsvRow(attempt, exportTimestamp), reviewCsvRow(attempt, exportTimestamp)].filter(Boolean);
@@ -553,7 +1073,18 @@
     var learningRows = safeArray(progress.learningActivityAttempts).map(function (attempt) {
       return learningCsvRow(attempt, exportTimestamp);
     });
-    return [CSV_HEADERS.join(',')].concat(skillRows, examRows, learningRows).map(function (row) {
+    var knowledgeStateRows = safeArray(progress.knowledge_state_updates).map(function (update) {
+      return knowledgeStateCsvRow(update, exportTimestamp);
+    });
+    var knowledgeErrorRows = safeArray(progress.knowledge_errors).map(function (error) {
+      return knowledgeErrorCsvRow(error, exportTimestamp);
+    });
+    var knowledgeInterventionRows = safeArray(progress.knowledge_interventions).map(function (intervention) {
+      return knowledgeInterventionCsvRow(intervention, progress.knowledge_schedules, exportTimestamp);
+    });
+    return [CSV_HEADERS.join(',')]
+      .concat(skillRows, examRows, learningRows, knowledgeStateRows, knowledgeErrorRows, knowledgeInterventionRows)
+      .map(function (row) {
       return typeof row === 'string' ? row : csvRow(row);
     }).join('\n');
   }
@@ -1865,12 +2396,63 @@
       : [];
   }
 
+  function timestampMs(value) {
+    var ms = Date.parse(String(value || ''));
+    return Number.isFinite(ms) ? ms : undefined;
+  }
+
+  function repairDueTimestamp(attempt, interval) {
+    var base = timestampMs(attempt.timestamp);
+    return base === undefined ? undefined : base + interval.days * DAY_MS;
+  }
+
+  function isCleanCorrectRelatedAttempt(attempt, source) {
+    return Boolean(attempt
+      && attempt.course === 'p3'
+      && attempt.skillId === source.skillId
+      && attempt.isCorrect
+      && !attempt.revealedAnswer
+      && !attempt.revealedRepairStep);
+  }
+
+  function cleanRelatedRepairTimes(attempts, source) {
+    var sourceAt = timestampMs(source.timestamp);
+    if (sourceAt === undefined) return [];
+    return safeArray(attempts).flatMap(function (attempt) {
+      var attemptAt = timestampMs(attempt && attempt.timestamp);
+      return attemptAt !== undefined
+        && attemptAt > sourceAt
+        && isCleanCorrectRelatedAttempt(attempt, source)
+        ? [attemptAt]
+        : [];
+    }).sort(function (a, b) { return a - b; });
+  }
+
+  function completedSkillRepairStages(attempts, source) {
+    var repairTimes = cleanRelatedRepairTimes(attempts, source);
+    var nextRepairIndex = 0;
+    var completed = 0;
+    for (var intervalIndex = 0; intervalIndex < SKILL_REPAIR_INTERVALS.length; intervalIndex += 1) {
+      var dueAt = repairDueTimestamp(source, SKILL_REPAIR_INTERVALS[intervalIndex]);
+      if (dueAt === undefined) break;
+      var repairIndex = repairTimes.findIndex(function (time, index) {
+        return index >= nextRepairIndex && time >= dueAt;
+      });
+      if (repairIndex < 0) break;
+      completed += 1;
+      nextRepairIndex = repairIndex + 1;
+    }
+    return completed;
+  }
+
   function buildReviewGroups(attempts) {
     var groups = new Map();
-    safeArray(attempts)
+    var validAttempts = safeArray(attempts)
       .filter(function (attempt) {
         return attempt && attempt.course === 'p3' && typeof attempt.checkId === 'string' && typeof attempt.timestamp === 'string';
-      })
+      });
+    validAttempts
+      .slice()
       .sort(function (a, b) {
         return String(b.timestamp).localeCompare(String(a.timestamp));
       })
@@ -1879,13 +2461,25 @@
         var state = reviewCandidateState(attempt);
         var tags = validReviewMistakeTags(attempt);
         if (!state || !tags.length) return;
+        var completedStages = completedSkillRepairStages(validAttempts, attempt);
+        var interval = SKILL_REPAIR_INTERVALS.find(function (candidateInterval, index) {
+          var candidateDueAt = repairDueTimestamp(attempt, candidateInterval);
+          return index >= completedStages && candidateDueAt !== undefined && candidateDueAt <= Date.now();
+        });
+        var dueAt = interval ? repairDueTimestamp(attempt, interval) : undefined;
+        if (!interval || dueAt === undefined) return;
         var candidate = {
           topic: attempt.topic || 'P3 Checked Practice',
           skillId: attempt.skillId || '',
           checkId: attempt.checkId || '',
+          regionId: attempt.regionId || '',
           submittedAnswer: attempt.submittedAnswer || '',
           timestamp: attempt.timestamp || '',
-          state: state
+          state: state,
+          repairAttemptNumber: SKILL_REPAIR_INTERVALS.indexOf(interval) + 1,
+          dueAt: new Date(dueAt).toISOString(),
+          dueLabel: interval.label,
+          relatedSkillId: attempt.skillId || ''
         };
         tags.forEach(function (tag) {
           var candidates = groups.get(tag) || [];
@@ -1910,11 +2504,33 @@
     });
   }
 
+  function formatShortDate(value) {
+    var ms = timestampMs(value);
+    if (ms === undefined) return 'now';
+    return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  function validSkillRepairRoutes(value) {
+    return safeArray(value).filter(function (route) {
+      return route
+        && typeof route.skillId === 'string'
+        && typeof route.href === 'string'
+        && typeof route.label === 'string';
+    });
+  }
+
+  function skillRepairRouteForCandidate(routes, candidate) {
+    return routes.find(function (route) {
+      return route.skillId === candidate.relatedSkillId || route.skillId === candidate.skillId;
+    });
+  }
+
   function renderReviewPage() {
     var groupContainer = document.querySelector('[data-review-groups]');
     var reviewSection = document.querySelector('[data-review-session]');
     var emptyState = document.querySelector('[data-review-empty]');
     if (!groupContainer || !reviewSection || !emptyState) return;
+    var repairRoutes = validSkillRepairRoutes(parseJsonAttribute(reviewSection, 'data-review-skill-routes', []));
     var groups = buildReviewGroups(loadProgress().skillCheckAttempts);
     if (!groups.length) {
       reviewSection.hidden = true;
@@ -1926,18 +2542,20 @@
     var total = groups.reduce(function (sum, group) { return sum + group.count; }, 0);
     var summary = document.querySelector('[data-review-summary]');
     if (summary) {
-      summary.textContent = total + ' recent tagged review candidate' + (total === 1 ? '' : 's') + ' from this browser.';
+      summary.textContent = total + ' due spaced repair candidate' + (total === 1 ? '' : 's') + ' from this browser.';
     }
     groupContainer.innerHTML = groups.map(function (group) {
       return '<article class="review-group-card">'
-        + '<header><div><p class="eyebrow">' + group.count + ' recent</p><h3>' + escapeText(group.mistakeTag) + '</h3></div></header>'
+        + '<header><div><p class="eyebrow">' + group.count + ' due</p><h3>' + escapeText(group.mistakeTag) + '</h3></div></header>'
         + '<p class="targeted-prompt">' + escapeText(TARGETED_MISTAKE_PROMPTS[group.mistakeTag] || 'Review what went wrong before trying again.') + '</p>'
         + '<ul class="review-candidate-list">'
         + group.candidates.map(function (candidate) {
+          var route = skillRepairRouteForCandidate(repairRoutes, candidate);
           return '<li>'
             + '<strong>' + escapeText(candidate.topic) + '</strong>'
-            + '<span>' + escapeText(candidate.skillId || candidate.checkId) + '</span>'
-            + '<small>' + escapeText(candidate.state) + (candidate.submittedAnswer ? ' · submitted: ' + escapeText(candidate.submittedAnswer) : '') + '</small>'
+            + '<span>' + escapeText(candidate.dueLabel || 'spaced repair') + ' · try a related check for ' + escapeText(candidate.relatedSkillId || candidate.skillId || candidate.checkId) + '</span>'
+            + '<small>' + escapeText(candidate.state) + ' · due ' + escapeText(formatShortDate(candidate.dueAt)) + (candidate.submittedAnswer ? ' · submitted: ' + escapeText(candidate.submittedAnswer) : '') + '</small>'
+            + (route ? '<a class="button secondary-button review-repair-link" href="' + escapeText(route.href) + '">Open related question: ' + escapeText(route.label) + '</a>' : '')
             + '</li>';
         }).join('')
         + '</ul></article>';
@@ -1980,11 +2598,32 @@
       source: 'checked_practice',
       unit: attempt.regionId || attempt.topic,
       timestamp: Date.parse(attempt.timestamp),
+      finalAnswer: attempt.submittedAnswer,
+      usedHint: attempt.usedHint,
+      revealedAnswer: attempt.revealedAnswer || attempt.revealedRepairStep,
       questions: [{
         question_id: attempt.checkId,
         unit: attempt.regionId || attempt.topic,
         topic: attempt.topic,
         regionId: attempt.regionId,
+        skillRef: attempt.skillId,
+        skillNodeIds: [attempt.skillId].filter(Boolean),
+        skillNodes: [{
+          id: attempt.skillId,
+          label: attempt.topic,
+          course: attempt.course,
+          regionId: attempt.regionId,
+          source: 'skill_check'
+        }],
+        markPoints: [{
+          id: attempt.checkId,
+          label: attempt.topic,
+          gained: attempt.isCorrect,
+          marks: 1,
+          skillNodeIds: [attempt.skillId].filter(Boolean),
+          errorType: knowledgeTypeFromTags(attempt.mistakeTags),
+          evidenceStrength: 0.85
+        }],
         marksEarned: attempt.isCorrect ? 1 : 0,
         marksAvailable: 1,
         scoreLost: attempt.isCorrect ? 0 : 1,
@@ -2180,7 +2819,17 @@
   }
 
   function examPartScores(form) {
+    var sourceParts = [];
+    try {
+      var parsedParts = JSON.parse(form.getAttribute('data-parts') || '[]');
+      sourceParts = Array.isArray(parsedParts) ? parsedParts : [];
+    } catch (_error) {
+      sourceParts = [];
+    }
     return Array.from(form.querySelectorAll('[data-exam-part]')).map(function (part) {
+      var partIndex = Number(part.getAttribute('data-part-index') || 0);
+      var sourcePart = sourceParts[partIndex] || {};
+      var availableMarkPoints = safeArray(sourcePart.markPoints);
       var marksAvailable = Number(part.getAttribute('data-marks-available') || 0);
       var markPointsAvailable = Number(part.getAttribute('data-mark-points-available') || 0);
       var marksInput = part.querySelector('[data-part-marks-earned]');
@@ -2188,6 +2837,10 @@
       var tickedMarkPoints = Array.from(part.querySelectorAll('[data-mark-point]:checked')).map(function (input) {
         return input.value;
       }).filter(Boolean);
+      var markPointLabels = availableMarkPoints.reduce(function (labels, point) {
+        if (point && typeof point.id === 'string') labels[point.id] = point.label || point.markCode || '';
+        return labels;
+      }, {});
       var attempted = Boolean(part.querySelector('[data-part-attempted]')?.checked || marksEarned > 0 || tickedMarkPoints.length > 0);
       return {
         partId: part.getAttribute('data-part-id') || undefined,
@@ -2197,8 +2850,11 @@
         marksEarned: marksEarned,
         marksAvailable: marksAvailable,
         markPointIds: tickedMarkPoints,
+        markPointIdsAvailable: availableMarkPoints.map(function (point) { return point && point.id; }).filter(Boolean),
+        markPointLabels: markPointLabels,
         markPointsAvailable: markPointsAvailable,
         primaryTopicId: part.getAttribute('data-primary-topic-id') || undefined,
+        skillRef: part.getAttribute('data-skill-ref') || sourcePart.skillRef || undefined,
         mappedRegionId: part.getAttribute('data-mapped-region-id') || undefined
       };
     });
@@ -2287,8 +2943,12 @@
       source: 'exam_training',
       unit: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
       timestamp: Date.parse(attempt.attemptedAt),
+      timeTakenSeconds: attempt.timeSpentSeconds,
+      revealedAnswer: attempt.answerRevealedBeforeMarking,
       questions: safeArray(attempt.partScores).length ? safeArray(attempt.partScores).map(function (part) {
         var partQuestionId = [attempt.questionId, part.partId, part.subpartId, part.label].filter(Boolean).join(':') || attempt.questionId;
+        var skillNodeIds = [part.skillRef, part.primaryTopicId, part.mappedRegionId, attempt.validatedRegionId, attempt.displayRegionId, attempt.topicDisplayName].filter(Boolean);
+        var gainedIds = new Set(safeArray(part.markPointIds));
         return {
           question_id: partQuestionId,
           unit: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
@@ -2296,6 +2956,29 @@
           regionId: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId,
           mappedRegionId: part.mappedRegionId,
           primaryTopicId: part.primaryTopicId,
+          skillRef: part.skillRef,
+          skillNodeIds: skillNodeIds,
+          skillNodes: skillNodeIds.map(function (id) {
+            return {
+              id: id,
+              label: attempt.topicDisplayName,
+              course: 'p3',
+              topicId: part.primaryTopicId,
+              regionId: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId,
+              source: part.skillRef === id ? 'reviewed_skill_map' : part.primaryTopicId === id ? 'topic_route' : 'exam_part'
+            };
+          }),
+          markPoints: safeArray(part.markPointIdsAvailable).map(function (id) {
+            return {
+              id: id,
+              label: part.markPointLabels?.[id] || part.label,
+              gained: gainedIds.has(id),
+              marks: 1,
+              skillNodeIds: skillNodeIds,
+              errorType: knowledgeTypeFromTags(attempt.mistakeTypes, attempt.mistakeType),
+              evidenceStrength: 0.8
+            };
+          }),
           marksEarned: part.marksEarned,
           marksAvailable: part.marksAvailable,
           scoreLost: Math.max(0, finiteNonNegative(part.marksAvailable) - finiteNonNegative(part.marksEarned)),
@@ -2307,6 +2990,14 @@
         unit: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
         topic: attempt.topicDisplayName,
         regionId: attempt.validatedRegionId || attempt.displayRegionId,
+        skillNodeIds: [attempt.validatedRegionId, attempt.displayRegionId, attempt.topicDisplayName].filter(Boolean),
+        skillNodes: [{
+          id: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
+          label: attempt.topicDisplayName,
+          course: 'p3',
+          regionId: attempt.validatedRegionId || attempt.displayRegionId,
+          source: attempt.validatedRegionId || attempt.displayRegionId ? 'topic_route' : 'fallback_region'
+        }],
         marksEarned: attempt.marksEarned,
         marksAvailable: attempt.marksAvailable,
         scoreLost: Math.max(0, finiteNonNegative(attempt.marksAvailable) - finiteNonNegative(attempt.marksEarned)),

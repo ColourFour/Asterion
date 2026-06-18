@@ -1,4 +1,13 @@
-import type { Attempt, LearningActivityAttempt, SkillCheckAttemptRecord, StoredProgress } from '../types';
+import type {
+  Attempt,
+  KnowledgeErrorObject,
+  KnowledgeInterventionPlan,
+  KnowledgeSchedulingInstruction,
+  KnowledgeSkillStateUpdate,
+  LearningActivityAttempt,
+  SkillCheckAttemptRecord,
+  StoredProgress,
+} from '../types';
 import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
 
 export const LOCAL_PROGRESS_CSV_HEADERS = [
@@ -14,6 +23,20 @@ export const LOCAL_PROGRESS_CSV_HEADERS = [
   'evidence_label',
   'mastery_eligibility_label',
   'suspicion_flags',
+  'knowledge_skill_id',
+  'knowledge_state_score',
+  'knowledge_state_category',
+  'knowledge_stability_flag',
+  'knowledge_confidence',
+  'knowledge_error_type',
+  'knowledge_error_severity',
+  'knowledge_repeat_flag',
+  'knowledge_misconception_tag',
+  'knowledge_evidence_strength',
+  'intervention_action',
+  'retest_timing',
+  'follow_up_item_type',
+  'follow_up_relation',
 ] as const;
 
 export type LocalProgressCsvHeader = typeof LOCAL_PROGRESS_CSV_HEADERS[number];
@@ -131,6 +154,74 @@ function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestam
   };
 }
 
+function rowForKnowledgeStateUpdate(update: KnowledgeSkillStateUpdate, exportTimestamp: string): LocalProgressCsvRow {
+  return {
+    ...blankRow(exportTimestamp),
+    topic: update.skillNodeId,
+    route_page_type: 'knowledge-state',
+    activity_type: 'Skill State Update',
+    item_id: update.id,
+    attempt_timestamp: update.timestamp,
+    answer_result_summary: `${update.previousScore}->${update.newScore}`,
+    deterministic_pass_fail: update.outcome,
+    evidence_label: 'Error-to-knowledge-state transformer',
+    mastery_eligibility_label: 'not_mastery_evidence',
+    knowledge_skill_id: update.skillNodeId,
+    knowledge_state_score: String(update.newScore),
+    knowledge_state_category: update.newCategory,
+    knowledge_stability_flag: update.stabilityFlag,
+    knowledge_confidence: String(update.confidence),
+    knowledge_evidence_strength: String(update.evidenceStrength),
+  };
+}
+
+function rowForKnowledgeError(error: KnowledgeErrorObject, exportTimestamp: string): LocalProgressCsvRow {
+  return {
+    ...blankRow(exportTimestamp),
+    topic: error.primarySkillNodeId,
+    route_page_type: 'knowledge-state',
+    activity_type: 'Error Diagnostic',
+    item_id: error.id,
+    attempt_timestamp: error.timestamp,
+    answer_result_summary: error.markPointLabel ?? error.markPointId ?? error.errorType,
+    evidence_label: 'Skill-linked missed mark evidence',
+    mastery_eligibility_label: 'not_mastery_evidence',
+    knowledge_skill_id: error.primarySkillNodeId,
+    knowledge_error_type: error.errorType,
+    knowledge_error_severity: error.severity,
+    knowledge_repeat_flag: String(error.repeat),
+    knowledge_misconception_tag: error.misconceptionTag ?? '',
+    knowledge_evidence_strength: String(error.evidenceStrength),
+  };
+}
+
+function rowForKnowledgeIntervention(
+  intervention: KnowledgeInterventionPlan,
+  schedules: KnowledgeSchedulingInstruction[],
+  exportTimestamp: string,
+): LocalProgressCsvRow {
+  const schedule = schedules.find((candidate) => candidate.interventionId === intervention.id);
+  return {
+    ...blankRow(exportTimestamp),
+    topic: intervention.skillNodeId,
+    route_page_type: 'knowledge-state',
+    activity_type: 'Intervention Plan',
+    item_id: intervention.id,
+    attempt_timestamp: intervention.createdAt,
+    answer_result_summary: intervention.rationale,
+    evidence_label: 'State-change-driven intervention',
+    mastery_eligibility_label: 'not_mastery_evidence',
+    knowledge_skill_id: intervention.skillNodeId,
+    knowledge_state_score: String(intervention.stateChange.newScore),
+    knowledge_state_category: intervention.stateChange.category,
+    knowledge_stability_flag: intervention.stateChange.stabilityFlag,
+    intervention_action: intervention.action,
+    retest_timing: schedule?.retestTiming ?? '',
+    follow_up_item_type: schedule?.followUpItemType ?? '',
+    follow_up_relation: schedule?.difficultyRelation ?? '',
+  };
+}
+
 export function localProgressCsvRows(
   progress: Partial<StoredProgress>,
   exportTimestamp = new Date().toISOString(),
@@ -146,7 +237,27 @@ export function localProgressCsvRows(
   const learningRows = Array.isArray(progress.learningActivityAttempts)
     ? progress.learningActivityAttempts.map((attempt) => rowForLearningActivity(attempt, exportTimestamp))
     : [];
-  return [...skillRows, ...examRows, ...learningRows];
+  const knowledgeStateRows = Array.isArray(progress.knowledge_state_updates)
+    ? progress.knowledge_state_updates.map((update) => rowForKnowledgeStateUpdate(update, exportTimestamp))
+    : [];
+  const knowledgeErrorRows = Array.isArray(progress.knowledge_errors)
+    ? progress.knowledge_errors.map((error) => rowForKnowledgeError(error, exportTimestamp))
+    : [];
+  const knowledgeInterventionRows = Array.isArray(progress.knowledge_interventions)
+    ? progress.knowledge_interventions.map((intervention) => rowForKnowledgeIntervention(
+      intervention,
+      Array.isArray(progress.knowledge_schedules) ? progress.knowledge_schedules : [],
+      exportTimestamp,
+    ))
+    : [];
+  return [
+    ...skillRows,
+    ...examRows,
+    ...learningRows,
+    ...knowledgeStateRows,
+    ...knowledgeErrorRows,
+    ...knowledgeInterventionRows,
+  ];
 }
 
 export function buildLocalProgressCsv(

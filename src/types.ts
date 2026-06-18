@@ -61,8 +61,11 @@ export interface AttemptPartScore {
   marksAvailable: number;
   markBreakdown?: AttemptMarkBreakdown;
   markPointIds?: string[];
+  markPointIdsAvailable?: string[];
+  markPointLabels?: Record<string, string>;
   markPointsAvailable?: number;
   primaryTopicId?: string;
+  skillRef?: string;
   mappedRegionId?: string;
 }
 
@@ -416,6 +419,166 @@ export type P3ErrorLogErrorType =
 
 export type P3ErrorSeverity = 'LOW' | 'MEDIUM' | 'HIGH';
 
+export type KnowledgeErrorType =
+  | 'conceptual_gap'
+  | 'procedural_gap'
+  | 'algebraic_execution_error'
+  | 'representation_error'
+  | 'mis_selection_of_method'
+  | 'careless_slip'
+  | 'time_pressure_degradation';
+
+export type KnowledgeEvidenceSeverity = 'low' | 'medium' | 'high';
+
+export type KnowledgeSkillCategory = 'unknown' | 'fragile' | 'developing' | 'stable' | 'secure';
+
+export type KnowledgeStabilityFlag = 'new_evidence' | 'fragile' | 'volatile' | 'recovering' | 'stable_understanding';
+
+export type KnowledgeEvidenceOutcome = 'success' | 'failure';
+
+export type KnowledgeEvidenceSource =
+  | 'checked_practice'
+  | 'exam_training'
+  | 'mini_check'
+  | 'exam_strip'
+  | 'mock'
+  | 'redo'
+  | 'manual';
+
+export type KnowledgeSkillNodeSource =
+  | 'reviewed_skill_map'
+  | 'skill_check'
+  | 'topic_route'
+  | 'exam_part'
+  | 'fallback_region';
+
+export type KnowledgeInterventionAction =
+  | 'micro_reteach'
+  | 'similar_question'
+  | 'drill_set'
+  | 'delayed_retest'
+  | 'transfer_challenge';
+
+export type KnowledgeRetestTiming = 'immediate' | 'delayed';
+
+export type KnowledgeFollowUpItemType =
+  | 'micro_reteach'
+  | 'similar_question'
+  | 'drill_set'
+  | 'delayed_retest'
+  | 'transfer_challenge';
+
+export type KnowledgeDifficultyRelation = 'isomorphic' | 'harder' | 'cross_skill';
+
+export interface KnowledgeSkillNode {
+  id: string;
+  label?: string;
+  course?: string;
+  topicId?: string;
+  regionId?: string;
+  source: KnowledgeSkillNodeSource;
+}
+
+export interface KnowledgeMisconceptionSignature {
+  tag: string;
+  skillNodeId: string;
+  description: string;
+  errorType: KnowledgeErrorType;
+  evidenceCount: number;
+  questionIds: string[];
+  representationIds: string[];
+  lastSeenAt: string;
+  stable: boolean;
+}
+
+export interface KnowledgeSkillState {
+  skillNode: KnowledgeSkillNode;
+  score: number;
+  category: KnowledgeSkillCategory;
+  confidence: number;
+  stabilityFlag: KnowledgeStabilityFlag;
+  evidenceCount: number;
+  successStreak: number;
+  failureStreak: number;
+  lastOutcome?: KnowledgeEvidenceOutcome;
+  lastUpdated: string;
+  lastAttemptId?: string;
+  lastQuestionId?: string;
+  errorTypeCounts: Partial<Record<KnowledgeErrorType, number>>;
+}
+
+export interface KnowledgeSkillStateGraph {
+  schemaVersion: 1;
+  updatedAt: string;
+  skills: Record<string, KnowledgeSkillState>;
+  misconceptions: Record<string, KnowledgeMisconceptionSignature>;
+}
+
+export interface KnowledgeSkillStateUpdate {
+  id: string;
+  attemptId: string;
+  questionId: string;
+  skillNodeId: string;
+  previousScore: number;
+  newScore: number;
+  previousCategory: KnowledgeSkillCategory;
+  newCategory: KnowledgeSkillCategory;
+  confidence: number;
+  stabilityFlag: KnowledgeStabilityFlag;
+  outcome: KnowledgeEvidenceOutcome;
+  evidenceStrength: number;
+  timestamp: string;
+}
+
+export interface KnowledgeErrorObject {
+  id: string;
+  attemptId: string;
+  questionId: string;
+  markPointId?: string;
+  markPointLabel?: string;
+  skillNodeIds: string[];
+  primarySkillNodeId: string;
+  errorType: KnowledgeErrorType;
+  severity: KnowledgeEvidenceSeverity;
+  repeat: boolean;
+  misconceptionTag?: string;
+  evidenceStrength: number;
+  evidenceSource: KnowledgeEvidenceSource;
+  marksLost: number;
+  timestamp: string;
+  representation?: string;
+  deviationFromCanonical?: string;
+}
+
+export interface KnowledgeInterventionPlan {
+  id: string;
+  attemptId: string;
+  skillNodeId: string;
+  action: KnowledgeInterventionAction;
+  rationale: string;
+  stateChange: {
+    previousScore: number;
+    newScore: number;
+    category: KnowledgeSkillCategory;
+    stabilityFlag: KnowledgeStabilityFlag;
+  };
+  sourceErrorIds: string[];
+  createdAt: string;
+}
+
+export interface KnowledgeSchedulingInstruction {
+  id: string;
+  interventionId: string;
+  attemptId: string;
+  skillNodeId: string;
+  retestTiming: KnowledgeRetestTiming;
+  followUpItemType: KnowledgeFollowUpItemType;
+  difficultyRelation: KnowledgeDifficultyRelation;
+  dueAt: string;
+  reason: string;
+  createdAt: string;
+}
+
 export type P3TopicMarkKey =
   | 'algebra'
   | 'logs_exp'
@@ -480,6 +643,11 @@ export interface P3StudentAnalyticsState {
   error_distribution: Partial<Record<P3ErrorLogErrorType, number>>;
   priority_repair_topics: string[];
   topic_assessments?: P3TopicAssessmentBreakdown[];
+  knowledge_state_graph: KnowledgeSkillStateGraph;
+  knowledge_state_updates: KnowledgeSkillStateUpdate[];
+  knowledge_errors: KnowledgeErrorObject[];
+  knowledge_interventions: KnowledgeInterventionPlan[];
+  knowledge_schedules: KnowledgeSchedulingInstruction[];
 }
 
 export interface P3PathUnitCompletion {
@@ -577,4 +745,9 @@ export interface StoredProgress {
   error_distribution?: Partial<Record<P3ErrorLogErrorType, number>>;
   priority_repair_topics?: string[];
   topic_assessments?: P3TopicAssessmentBreakdown[];
+  knowledge_state_graph?: KnowledgeSkillStateGraph;
+  knowledge_state_updates?: KnowledgeSkillStateUpdate[];
+  knowledge_errors?: KnowledgeErrorObject[];
+  knowledge_interventions?: KnowledgeInterventionPlan[];
+  knowledge_schedules?: KnowledgeSchedulingInstruction[];
 }

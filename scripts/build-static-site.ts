@@ -103,6 +103,13 @@ interface P3ExamReviewRequirement {
   skillCheckHref: string;
 }
 
+interface SkillRepairRoute {
+  skillId: string;
+  regionId: string;
+  label: string;
+  href: string;
+}
+
 interface RenderPageOptions {
   pagePath: string;
   title: string;
@@ -687,6 +694,27 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
     fieldGuideHref: hrefToPage(pagePath, learnPagePath(context.topic)),
     skillCheckHref: hrefToPage(pagePath, learnPagePath(context.topic)),
   }));
+}
+
+function p3SkillRepairRoutes(contexts: TopicContext[], pagePath: string): SkillRepairRoute[] {
+  const routes = new Map<string, SkillRepairRoute>();
+
+  for (const context of contexts) {
+    for (const group of context.groups) {
+      const skillIds = new Set(group.authoredItems.map((item) => item.skillId));
+      for (const skillId of skillIds) {
+        if (routes.has(skillId)) continue;
+        routes.set(skillId, {
+          skillId,
+          regionId: context.region.id,
+          label: group.topic.title,
+          href: `${hrefToPage(pagePath, practicePagePath(context.topic))}#practice-${encodeURIComponent(group.topic.id)}`,
+        });
+      }
+    }
+  }
+
+  return Array.from(routes.values());
 }
 
 function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
@@ -1771,6 +1799,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
     .filter((question) => Boolean(question.routeEvidence?.displayRegionId))
     .slice(0, 12);
   const requirements = p3ExamReviewRequirements(contexts, pagePath);
+  const repairRoutes = p3SkillRepairRoutes(contexts, pagePath);
   const body = `
     ${renderHero(
       'P3 Exam Review',
@@ -1834,18 +1863,18 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       <p class="save-status" data-export-status role="status"></p>
     </section>
     <details class="jump-details" data-mistake-review-details>
-      <summary>Review saved Checked Practice mistakes</summary>
+      <summary>Spaced repair for saved Checked Practice mistakes</summary>
       <section class="summary-card review-empty-state" data-review-empty>
-        <h2>No tagged mistakes yet.</h2>
-        <p>Review groups appear after you answer a checked question incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
+        <h2>No due spaced repairs yet.</h2>
+        <p>Repair groups appear when a tagged Checked Practice mistake reaches its delayed retrieval window. One immediate correction does not close the loop.</p>
         ${routeLink(pagePath, p3CoursePagePath(), 'Back to P3 Home', 'button secondary-button')}
       </section>
-      <section class="review-session" data-review-session hidden>
+      <section class="review-session" data-review-session data-review-skill-routes="${escapeAttr(JSON.stringify(repairRoutes))}" hidden>
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Local mistake history</p>
-            <h2>Recommended repair groups</h2>
-            <p data-review-summary>Loading local review...</p>
+            <p class="eyebrow">Due delayed retrieval</p>
+            <h2>Spaced repair groups</h2>
+            <p data-review-summary>Loading local spaced repair...</p>
           </div>
         </div>
         <div class="review-group-stack" data-review-groups></div>
@@ -2739,6 +2768,7 @@ interface ExamSelfMarkPart {
   markSchemeText?: string;
   markPoints?: QuestionMarkPoint[];
   primaryTopicId?: string;
+  skillRef?: string;
   mappedRegionId?: string;
 }
 
@@ -2753,6 +2783,7 @@ function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvail
       markSchemeText: part.markSchemeText,
       markPoints: part.markPoints,
       primaryTopicId: part.primaryTopicId,
+      skillRef: part.skillRef,
       mappedRegionId: part.mappedRegionId,
     }));
   if (cleanParts.length) return cleanParts;
@@ -2789,7 +2820,7 @@ function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): str
 function renderExamPartControls(part: ExamSelfMarkPart, partIndex: number): string {
   const markPointCount = part.markPoints?.length ?? 0;
   return `
-    <fieldset class="exam-part-card" data-exam-part data-part-index="${partIndex}" data-part-label="${escapeRawAttr(part.label)}" data-part-id="${escapeRawAttr(part.partId)}" data-subpart-id="${escapeRawAttr(part.subpartId)}" data-primary-topic-id="${escapeRawAttr(part.primaryTopicId)}" data-mapped-region-id="${escapeRawAttr(part.mappedRegionId)}" data-marks-available="${part.marksAvailable}" data-mark-points-available="${markPointCount}">
+    <fieldset class="exam-part-card" data-exam-part data-part-index="${partIndex}" data-part-label="${escapeRawAttr(part.label)}" data-part-id="${escapeRawAttr(part.partId)}" data-subpart-id="${escapeRawAttr(part.subpartId)}" data-primary-topic-id="${escapeRawAttr(part.primaryTopicId)}" data-skill-ref="${escapeRawAttr(part.skillRef)}" data-mapped-region-id="${escapeRawAttr(part.mappedRegionId)}" data-marks-available="${part.marksAvailable}" data-mark-points-available="${markPointCount}">
       <legend>${escapeRawHtml(part.label)} · ${part.marksAvailable} mark${part.marksAvailable === 1 ? '' : 's'}</legend>
       <label class="inline-check">
         <input type="checkbox" data-part-attempted />

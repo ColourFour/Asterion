@@ -5372,6 +5372,11 @@ body.skill-check-page .exam-question-section {
   color: var(--muted);
 }
 
+.review-repair-link {
+  justify-self: start;
+  margin-top: 4px;
+}
+
 .worksheet-hero,
 .worksheet-instructions,
 .worksheet-question {
