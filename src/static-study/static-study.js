@@ -1610,6 +1610,11 @@
       .replace(/\\geq?|\\ge/g, '>=')
       .replace(/\\lt/g, '<')
       .replace(/\\gt/g, '>')
+      .replace(/\\frac\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}\s*\{([^{}]+)\}/g, 'sqrt($1)/$2')
+      .replace(/\\frac\s*\{([^{}]+)\}\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}/g, '$1/sqrt($2)')
+      .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
+      .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
+      .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
       .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '$1/$2')
       .replace(/\\cdot|\\times/g, '*')
       .replace(/[{}]/g, '')
@@ -1626,15 +1631,35 @@
     return index >= 0 ? text.slice(index + 1) : text;
   }
 
+  function parseDecimalNumber(value) {
+    return /^[+-]?\d+(?:\.\d+)?$/.test(value) ? Number(value) : undefined;
+  }
+
+  function parseRadicalNumber(value) {
+    var radical = value.match(/^([+-]?)(?:(\d+(?:\.\d+)?)\*?)?sqrt\(([+-]?\d+(?:\.\d+)?)\)$/);
+    if (!radical) return undefined;
+    var sign = radical[1] === '-' ? -1 : 1;
+    var coefficient = radical[2] === undefined ? 1 : Number(radical[2]);
+    var radicand = Number(radical[3]);
+    if (!Number.isFinite(coefficient) || !Number.isFinite(radicand) || radicand < 0) return undefined;
+    return sign * coefficient * Math.sqrt(radicand);
+  }
+
+  function parseNumericAtom(value) {
+    var decimal = parseDecimalNumber(value);
+    return decimal === undefined ? parseRadicalNumber(value) : decimal;
+  }
+
   function parseSimpleNumber(value) {
     var compact = compactAnswerText(afterEquals(value)).replace(/^\+/, '');
     if (!compact) return undefined;
-    if (/^[+-]?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
-    var fraction = compact.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+(?:\.\d+)?)$/);
+    var direct = parseNumericAtom(compact);
+    if (direct !== undefined) return direct;
+    var fraction = compact.match(/^(.+)\/(.+)$/);
     if (!fraction) return undefined;
-    var numerator = Number(fraction[1]);
-    var denominator = Number(fraction[2]);
-    if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return undefined;
+    var numerator = parseNumericAtom(fraction[1]);
+    var denominator = parseNumericAtom(fraction[2]);
+    if (numerator === undefined || denominator === undefined || denominator === 0) return undefined;
     return numerator / denominator;
   }
 

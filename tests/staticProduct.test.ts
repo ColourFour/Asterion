@@ -184,4 +184,30 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Continue to Learn');
     expect(generatorSource).toContain('Check review status');
   });
+
+  it('keeps local agent-loop run artifacts out of git status noise', () => {
+    const gitignore = readFileSync('.gitignore', 'utf8').split(/\r?\n/);
+
+    expect(gitignore).toContain('.agent-runs/');
+    expect(gitignore).toContain('agentic-loop-template/');
+    expect(gitignore).toContain('reports/*.json');
+    expect(gitignore).toContain('reports/screenshots/');
+    expect(gitignore).not.toContain('.agent-loop/');
+    expect(gitignore).not.toContain('reports/');
+  });
+
+  it('does not duplicate the same Field Guide visual on a generated Learn page', () => {
+    for (const topic of STUDY_TOPICS) {
+      const generatedPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
+      if (!existsSync(generatedPath)) continue;
+      const generatedSource = readFileSync(generatedPath, 'utf8');
+      const visualTopicIds = Array.from(
+        generatedSource.matchAll(/data-field-guide-visual="([^"]+)"/g),
+        (match) => match[1],
+      );
+      const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
+
+      expect(duplicateIds, generatedPath).toEqual([]);
+    }
+  });
 });

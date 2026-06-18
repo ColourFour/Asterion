@@ -26,6 +26,19 @@ describe('Skill Check answer checker', () => {
     expect(check({ answerType: 'numeric', acceptedAnswers: ['3'] }, '3.0').isCorrect).toBe(true);
   });
 
+  it('accepts simple exact radical forms for numeric answers', () => {
+    const exactSineValue: SkillCheckAnswerSpec = {
+      answerType: 'numeric',
+      acceptedAnswers: ['0.8660254037844386'],
+      tolerance: 1e-12,
+    };
+
+    expect(check(exactSineValue, 'sqrt(3)/2').isCorrect).toBe(true);
+    expect(check(exactSineValue, '\\sqrt{3}/2').isCorrect).toBe(true);
+    expect(check(exactSineValue, '\\frac{\\sqrt{3}}{2}').isCorrect).toBe(true);
+    expect(check({ ...exactSineValue, acceptedAnswers: ['-0.8660254037844386'] }, '-\\sqrt{3}/2').isCorrect).toBe(true);
+  });
+
   it('rejects empty and invalid numeric input', () => {
     const empty = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, '   ');
     const invalid = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, 'four');

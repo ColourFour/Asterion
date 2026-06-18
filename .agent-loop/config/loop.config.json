@@ -1,0 +1,28 @@
+{
+  "iterations_per_governor_review": 5,
+  "max_files_changed_per_iteration": 6,
+  "max_new_files_per_iteration": 2,
+  "allow_dependency_changes": false,
+  "require_clean_git_status_before_iteration": true,
+  "require_tests_fail_before_coder": true,
+  "require_auditor_pass_before_next_iteration": false,
+  "artifact_dir": ".agent-runs",
+  "agent_prompt_dir": ".agent-loop/agents",
+  "planner_policy": ".agent-loop/config/planner-purpose.md",
+  "project_gates": ".agent-loop/project-gates.md",
+  "static_site": true,
+  "default_course_priority": "P3",
+  "preferred_verification_commands": [
+    "npm test",
+    "npm run build",
+    "npm run static:check"
+  ],
+  "blocked_infrastructure": [
+    "auth",
+    "Supabase",
+    "server dependencies",
+    "dashboards",
+    "teacher/classroom flows",
+    "non-static production infrastructure"
+  ]
+}

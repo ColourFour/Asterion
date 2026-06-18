@@ -2093,6 +2093,28 @@ function renderFieldGuideExample(topic: FieldGuideTopic, example: FieldGuideTopi
   `;
 }
 
+function renderFieldGuideVisuals(topic: FieldGuideTopic, pagePath: string): string {
+  if (!topic.visuals?.length) return '';
+  return `
+    <div class="field-guide-visual-list" aria-label="${escapeAttr(topic.title)} visual support">
+      ${topic.visuals.map((visual) => {
+        if (!publicAssetExists(visual.assetPath)) {
+          throw new Error(`Missing Field Guide visual asset for ${topic.id}: ${visual.assetPath}`);
+        }
+        return `
+          <figure class="field-guide-visual" data-field-guide-visual="${escapeAttr(topic.id)}">
+            <img loading="lazy" src="${hrefToPublicAsset(pagePath, visual.assetPath)}" alt="${escapeAttr(visual.alt)}" />
+            <figcaption>
+              <span>${renderMathText(visual.caption)}</span>
+              <small>${renderMathText(visual.testedConcept)}</small>
+            </figcaption>
+          </figure>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
 function renderFieldGuideTopic(
   topic: FieldGuideTopic,
   region: RegionDefinition,
@@ -2100,6 +2122,7 @@ function renderFieldGuideTopic(
   topicCount: number,
   nextTopicId: string | undefined,
   practiceHref: string,
+  pagePath: string,
   skillCheckHref = practiceHref,
 ): string {
   return `
@@ -2121,6 +2144,7 @@ function renderFieldGuideTopic(
           I get this
         </button>
       </header>
+      ${renderFieldGuideVisuals(topic, pagePath)}
       ${topic.examples.map((example, exampleIndex) => renderFieldGuideExample(topic, example, exampleIndex)).join('')}
       <footer class="section-footer">
         <div class="skill-check-transition">
@@ -2180,6 +2204,7 @@ function renderP3GuidedFieldGuide(context: TopicContext, pagePath: string, pract
               fieldGuideTopics.length,
               fieldGuideTopics[index + 1]?.id,
               practiceHref,
+              pagePath,
               `${practiceHref}#practice-${escapeAttr(item.id)}`,
             )}
           </article>
@@ -2458,6 +2483,26 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
   `;
 }
 
+function renderSupplementalLearnVisuals(context: TopicContext, pagePath: string): string {
+  const supplementalTopics = context.fieldGuideTopics.filter((topic) => topic.visuals?.length);
+  if (!supplementalTopics.length) return '';
+  return `
+    <section class="supplemental-visual-section" aria-labelledby="supplemental-visual-title">
+      <div class="section-heading">
+        <p class="eyebrow">Visual anchor</p>
+        <h2 id="supplemental-visual-title">Extra diagram for this unit</h2>
+      </div>
+      ${supplementalTopics.map((topic) => `
+        <article class="supplemental-visual-topic" data-field-guide-topic="${escapeAttr(topic.id)}">
+          <h3>${escapeHtml(topic.title)}</h3>
+          <p>${escapeHtml(cleanVisibleCopy(topic.purpose))}</p>
+          ${renderFieldGuideVisuals(topic, pagePath)}
+        </article>
+      `).join('')}
+    </section>
+  `;
+}
+
 function renderLearnPage(
   context: TopicContext,
   pagePath = learnPagePath(context.topic),
@@ -2494,6 +2539,7 @@ function renderLearnPage(
     <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="${escapeAttr(hrefToPage(pagePath, finalPath))}" data-flow-final-label="${escapeAttr(finalLabel)}">
       ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath)).join('') : '<p class="empty-state">No Learn steps are available for this topic yet.</p>'}
     </section>
+    ${renderSupplementalLearnVisuals(context, pagePath)}
     <section class="next-step-card">
       <h2>After this lesson</h2>
       <p>Module 1 of 2: Learn. Complete Step ${Math.max(1, learnSteps.length)} of ${Math.max(1, learnSteps.length)}, including the checked similar questions, then move to Module 2 of 2: Exam Training.</p>

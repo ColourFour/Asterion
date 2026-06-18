@@ -6,6 +6,8 @@ playwright-report/
 blob-report/
 .cache/
 .vite/
+.agent-runs/
+agentic-loop-template/
 .env
 .env.local
 .env.*.local
@@ -14,6 +16,8 @@ blob-report/
 *.trace
 *.tsbuildinfo
 screenshots/
+reports/*.json
+reports/screenshots/
 mockups/
 concept-art/
 release-bundles/

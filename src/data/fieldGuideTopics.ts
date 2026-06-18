@@ -22,6 +22,13 @@ export interface FieldGuideTopicExample {
   result: string;
 }
 
+export interface FieldGuideVisual {
+  assetPath: string;
+  alt: string;
+  caption: string;
+  testedConcept: string;
+}
+
 export interface ProblemFirstLesson {
   needProblem: string;
   studentAction: string;
@@ -49,6 +56,7 @@ export interface FieldGuideTopic {
   preview: string;
   description: string;
   supportNote?: string;
+  visuals?: FieldGuideVisual[];
   examples: FieldGuideTopicExample[];
 }
 
@@ -2410,6 +2418,121 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
   ],
 };
 
+export const FIELD_GUIDE_VISUALS_BY_TOPIC_ID: Record<string, FieldGuideVisual[]> = {
+  algebra_modulus_graph_equations: [
+    {
+      assetPath: 'assets/p3/visuals/algebra/algebra_modulus_graph_equations.png',
+      alt: 'Graphs of y equals absolute value of x plus 2 and y equals absolute value of 3x with solution intervals shaded on a number line.',
+      caption: 'Notice how the two intersections split the graph and number line into the intervals used for the modulus inequality.',
+      testedConcept: 'This supports modulus equations and inequalities where graph position decides the solution interval.',
+    },
+  ],
+  log_graph_inverse: [
+    {
+      assetPath: 'assets/p3/visuals/logarithmic-and-exponential-functions/log_graph_inverse.png',
+      alt: 'Exponential and logarithmic inverse graphs reflected in the line y equals x.',
+      caption: 'Notice that inverse points swap coordinates across the line y=x.',
+      testedConcept: 'This supports graph and coordinate questions about exponential and logarithmic inverse functions.',
+    },
+  ],
+  trig_reciprocal_functions: [
+    {
+      assetPath: 'assets/p3/visuals/trigonometry/trig_reciprocal_functions.png',
+      alt: 'Graph of sec x with cosine reference curve and vertical asymptotes where cosine is zero.',
+      caption: 'Notice that reciprocal trig asymptotes occur where the denominator trig function is zero.',
+      testedConcept: 'This supports reciprocal trig graph and equation questions involving sec, cosec, and cot.',
+    },
+  ],
+  trig_double_angle_formulae: [
+    {
+      assetPath: 'assets/p3/visuals/trigonometry/trig_double_angle_interval_solutions.png',
+      alt: 'Unit circle and sine graph showing interval solutions for sine x equals one half.',
+      caption: 'Notice that interval solving keeps only the angles inside the requested range.',
+      testedConcept: 'This supports trig equation questions where double-angle or quadratic work must still be filtered by interval.',
+    },
+  ],
+  trig_r_form_transformations: [
+    {
+      assetPath: 'assets/p3/visuals/trigonometry/trig_r_form_transformations.png',
+      alt: 'Shifted sine curve for R-form transformation with amplitude and coefficient triangle labelled.',
+      caption: 'Notice that R-form turns a sum of sine and cosine into one shifted curve with amplitude R.',
+      testedConcept: 'This supports R sin(x plus alpha) and R cos(x plus alpha) transformation questions.',
+    },
+  ],
+  p3_diff_stationary_tangent_normal: [
+    {
+      assetPath: 'assets/p3/visuals/differentiation/p3_diff_stationary_tangent_normal.png',
+      alt: 'Curve with tangent, normal, and stationary point gradients labelled.',
+      caption: 'Notice that tangent, normal, and stationary-point conditions are all gradient statements on the curve.',
+      testedConcept: 'This supports differentiation questions asking for tangents, normals, or stationary points.',
+    },
+  ],
+  derivatives_parametric: [
+    {
+      assetPath: 'assets/p3/visuals/differentiation/derivatives_parametric.png',
+      alt: 'Parametric curve with dx by dt, dy by dt, tangent direction, and normal line.',
+      caption: 'Notice that dy/dx compares the vertical and horizontal rates at the same parameter value.',
+      testedConcept: 'This supports parametric differentiation questions involving tangent or normal gradients.',
+    },
+  ],
+  integrals_definite_area_bridge: [
+    {
+      assetPath: 'assets/p3/visuals/integration/integrals_definite_area_bridge.png',
+      alt: 'Area under a curve between bounds and a smaller inset showing area between two curves.',
+      caption: 'Notice that the bounds and shading decide whether the definite integral represents the required positive area.',
+      testedConcept: 'This supports definite integral and area-between-curves questions.',
+    },
+  ],
+  iteration_graph_root_proof: [
+    {
+      assetPath: 'assets/p3/visuals/numerical-solution-of-equations/iteration_graph_root_proof.png',
+      alt: 'Two graphs crossing inside a bracket with sign-change markers.',
+      caption: 'Notice that the root is the intersection inside the bracket, not just a rearranged equation.',
+      testedConcept: 'This supports numerical root-location questions using graph intersections or sign changes.',
+    },
+  ],
+  vectors_intersect_parallel_skew: [
+    {
+      assetPath: 'assets/p3/visuals/vectors/vectors_intersect_parallel_skew.png',
+      alt: 'Three panels comparing intersecting, parallel, and skew vector lines.',
+      caption: 'Notice that skew lines are not parallel but still have no common point.',
+      testedConcept: 'This supports vector line classification questions using direction and component consistency checks.',
+    },
+  ],
+  vectors_point_to_line_distance: [
+    {
+      assetPath: 'assets/p3/visuals/vectors/vectors_point_to_line_distance.png',
+      alt: 'Point-to-line distance diagram with projection, foot of perpendicular, and direction vector.',
+      caption: 'Notice that the foot point is found where the joining vector is perpendicular to the line direction.',
+      testedConcept: 'This supports point-to-line distance, projection, and reflection-in-line vector questions.',
+    },
+  ],
+  'modulus-argument': [
+    {
+      assetPath: 'assets/p3/visuals/complex-numbers/modulus_argument.png',
+      alt: 'Argand diagram showing z equals x plus iy, modulus, argument angle, and component triangle.',
+      caption: 'Notice that modulus is distance from the origin and argument is the directed angle from the positive real axis.',
+      testedConcept: 'This supports complex-number conversion between Cartesian and modulus-argument form.',
+    },
+  ],
+  roots: [
+    {
+      assetPath: 'assets/p3/visuals/complex-numbers/roots.png',
+      alt: 'Argand diagram showing complex roots equally spaced around a circle.',
+      caption: 'Notice that complex roots have equal angular spacing on the same modulus circle.',
+      testedConcept: 'This supports de Moivre and complex-root questions where all roots must be listed.',
+    },
+  ],
+  locus: [
+    {
+      assetPath: 'assets/p3/visuals/complex-numbers/locus.png',
+      alt: 'Argand locus diagram with circle, half-plane, perpendicular bisector, and shaded valid region.',
+      caption: 'Notice how each algebraic locus condition becomes a boundary or shaded region on the Argand plane.',
+      testedConcept: 'This supports complex loci involving modulus, argument, half-plane, and equal-distance conditions.',
+    },
+  ],
+};
+
 function trimSentence(value: string | undefined): string {
   const trimmed = (value ?? '').replace(/\s+/g, ' ').trim();
   if (!trimmed) return '';
@@ -2446,6 +2569,7 @@ function buildProblemFirstLesson(topic: FieldGuideTopic, example: FieldGuideTopi
 function withProblemFirstLessons(topic: FieldGuideTopic): FieldGuideTopic {
   return {
     ...topic,
+    visuals: topic.visuals ?? FIELD_GUIDE_VISUALS_BY_TOPIC_ID[topic.id],
     examples: topic.examples.map((example) => ({
       ...example,
       lesson: buildProblemFirstLesson(topic, example),
@@ -2468,6 +2592,34 @@ export function validateProblemFirstFieldGuideLessons(topicsByRegion = FIELD_GUI
             errors.push(`${regionId}/${topic.id}/example-${exampleIndex + 1} is missing ${field}`);
           }
         }
+      }
+    }
+  }
+  return errors;
+}
+
+export interface FieldGuideVisualValidationOptions {
+  assetExists?: (assetPath: string) => boolean;
+}
+
+export function validateFieldGuideVisuals(
+  visualsByTopicId = FIELD_GUIDE_VISUALS_BY_TOPIC_ID,
+  options: FieldGuideVisualValidationOptions = {},
+): string[] {
+  const errors: string[] = [];
+  for (const [topicId, visuals] of Object.entries(visualsByTopicId)) {
+    if (!visuals.length) {
+      errors.push(`${topicId} has no visual records`);
+      continue;
+    }
+    for (const [visualIndex, visual] of visuals.entries()) {
+      const label = `${topicId} visual ${visualIndex + 1}`;
+      if (!visual.assetPath.trim()) errors.push(`${label} missing assetPath`);
+      if (!visual.alt.trim()) errors.push(`${label} missing alt`);
+      if (!visual.caption.trim()) errors.push(`${label} missing caption`);
+      if (!visual.testedConcept.trim()) errors.push(`${label} missing testedConcept`);
+      if (visual.assetPath.trim() && options.assetExists && !options.assetExists(visual.assetPath)) {
+        errors.push(`${label} missing asset: ${visual.assetPath}`);
       }
     }
   }

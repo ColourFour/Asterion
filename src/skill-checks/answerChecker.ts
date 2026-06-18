@@ -74,6 +74,11 @@ function normalizeMathText(value: string): string {
     .replace(/\\geq?|\\ge/g, '>=')
     .replace(/\\lt/g, '<')
     .replace(/\\gt/g, '>')
+    .replace(/\\frac\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}\s*\{([^{}]+)\}/g, 'sqrt($1)/$2')
+    .replace(/\\frac\s*\{([^{}]+)\}\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}/g, '$1/sqrt($2)')
+    .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
+    .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
+    .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
     .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '$1/$2')
     .replace(/\\cdot|\\times/g, '*')
     .replace(/[{}]/g, '')
@@ -99,16 +104,35 @@ function isSupportedAnswerType(answerType: string): answerType is SkillCheckAnsw
   return SUPPORTED_SKILL_CHECK_ANSWER_TYPES.includes(answerType as SkillCheckAnswerType);
 }
 
+function parseDecimalNumber(value: string): number | undefined {
+  return /^[+-]?\d+(?:\.\d+)?$/.test(value) ? Number(value) : undefined;
+}
+
+function parseRadicalNumber(value: string): number | undefined {
+  const radical = value.match(/^([+-]?)(?:(\d+(?:\.\d+)?)\*?)?sqrt\(([+-]?\d+(?:\.\d+)?)\)$/);
+  if (!radical) return undefined;
+  const sign = radical[1] === '-' ? -1 : 1;
+  const coefficient = radical[2] === undefined ? 1 : Number(radical[2]);
+  const radicand = Number(radical[3]);
+  if (!Number.isFinite(coefficient) || !Number.isFinite(radicand) || radicand < 0) return undefined;
+  return sign * coefficient * Math.sqrt(radicand);
+}
+
+function parseNumericAtom(value: string): number | undefined {
+  return parseDecimalNumber(value) ?? parseRadicalNumber(value);
+}
+
 function parseSimpleNumber(value: string): number | undefined {
   const compact = compactText(afterEquals(value)).replace(/^\+/, '');
   if (!compact) return undefined;
-  if (/^[+-]?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
+  const direct = parseNumericAtom(compact);
+  if (direct !== undefined) return direct;
 
-  const fraction = compact.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+(?:\.\d+)?)$/);
+  const fraction = compact.match(/^(.+)\/(.+)$/);
   if (!fraction) return undefined;
-  const numerator = Number(fraction[1]);
-  const denominator = Number(fraction[2]);
-  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return undefined;
+  const numerator = parseNumericAtom(fraction[1]);
+  const denominator = parseNumericAtom(fraction[2]);
+  if (numerator === undefined || denominator === undefined || denominator === 0) return undefined;
   return numerator / denominator;
 }
 

@@ -37,6 +37,23 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     },
   },
   {
+    name: 'numeric exact radical fraction',
+    spec: {
+      answerType: 'numeric',
+      acceptedAnswers: ['0.8660254037844386'],
+      tolerance: 1e-12,
+    },
+    submittedAnswer: '\\frac{\\sqrt{3}}{2}',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: '0.866025403784',
+      matchedAcceptedAnswer: '0.8660254037844386',
+      reason: 'Matched numeric answer within tolerance.',
+      answerType: 'numeric',
+      unsupported: false,
+    },
+  },
+  {
     name: 'exact-text normalization',
     spec: { answerType: 'exact-text', acceptedAnswers: ['one repeated real root'] },
     submittedAnswer: '  One   repeated real root. ',
