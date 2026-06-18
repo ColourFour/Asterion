@@ -899,7 +899,9 @@ main > * {
 }
 
 .course-support-grid {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .course-support-grid .course-card {
@@ -919,6 +921,40 @@ main > * {
 
 .course-support-grid h2 {
   font-size: 1.05rem;
+}
+
+.homepage-course-panel {
+  align-self: stretch;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  padding: clamp(14px, 2vw, 18px);
+  border: 1px solid #c9d8f2;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 70px rgba(8, 20, 44, 0.12);
+}
+
+.homepage-course-panel-heading {
+  display: grid;
+  gap: 5px;
+}
+
+.homepage-course-panel-heading h2,
+.homepage-course-panel-heading p {
+  margin: 0;
+}
+
+.homepage-course-panel-heading h2 {
+  color: var(--home-ink);
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  line-height: 1.12;
+}
+
+.homepage-course-panel-heading p {
+  color: #41506b;
+  font-size: 0.95rem;
 }
 
 .homepage-recommended-start {
@@ -1525,6 +1561,12 @@ body.home-page main {
     radial-gradient(circle at 80% 18%, rgba(0, 87, 217, 0.16), transparent 30%),
     linear-gradient(135deg, #ffffff 0%, #f7fbff 48%, #eef5ff 100%);
   overflow: hidden;
+}
+
+.course-picker-hero {
+  grid-template-columns: minmax(0, 0.86fr) minmax(420px, 0.94fr);
+  align-items: stretch;
+  min-height: 690px;
 }
 
 .homepage-hero::before {
@@ -2282,6 +2324,10 @@ body.home-page .course-card-featured {
   box-shadow: 0 12px 30px rgba(0, 87, 217, 0.08);
 }
 
+.homepage-course-panel .course-card-featured {
+  padding: 16px;
+}
+
 body.home-page .course-card-featured::before {
   height: 0;
 }
@@ -2332,6 +2378,19 @@ body.home-page .course-card-lede,
 body.home-page .course-card-status-copy {
   color: #071329;
   font-size: 0.9rem;
+}
+
+body.home-page .course-card-support {
+  min-height: 0;
+  border-color: #d9e2ef;
+  background: #fbfcff;
+  opacity: 1;
+}
+
+body.home-page .course-card-support:hover,
+body.home-page .course-card-support:focus-visible {
+  border-color: #9aa8bc;
+  box-shadow: 0 10px 22px rgba(8, 20, 44, 0.08);
 }
 
 body.home-page .homepage-primary-reason {
@@ -2615,6 +2674,145 @@ body.p3-path-page main {
   text-align: center;
 }
 
+.p3-dashboard-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1fr);
+  gap: clamp(18px, 3vw, 32px);
+  align-items: stretch;
+  padding: clamp(20px, 4vw, 34px);
+  border: 1px solid var(--path-line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 58%, #eef5ff 100%);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.05);
+}
+
+.p3-dashboard-copy {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.p3-dashboard-copy h1,
+.p3-dashboard-copy p {
+  margin: 0;
+}
+
+.p3-dashboard-copy h1 {
+  max-width: 720px;
+  color: var(--path-ink);
+  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  line-height: 1.03;
+}
+
+.p3-dashboard-copy p:not(.eyebrow) {
+  max-width: 660px;
+  color: var(--path-muted);
+  font-size: 1.04rem;
+}
+
+.p3-dashboard-action-panel {
+  display: grid;
+  align-content: stretch;
+  gap: 10px;
+  min-width: 0;
+}
+
+.p3-dashboard-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.p3-dashboard-action-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 178px;
+  padding: 16px;
+  border: 1px solid var(--path-line);
+  border-radius: 8px;
+  color: var(--path-ink);
+  background: #ffffff;
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.p3-dashboard-action-card:hover,
+.p3-dashboard-action-card:focus-visible {
+  border-color: var(--path-blue);
+  box-shadow: 0 16px 30px rgba(18, 50, 71, 0.11);
+  transform: translateY(-2px);
+}
+
+.p3-dashboard-action-card span {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--path-blue);
+  background: #eef5ff;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.p3-dashboard-action-card strong {
+  color: var(--path-ink);
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.p3-dashboard-action-card p {
+  margin: 0;
+  color: var(--path-muted);
+  font-size: 0.92rem;
+}
+
+.p3-dashboard-action-card.is-primary {
+  border-color: rgba(47, 107, 79, 0.32);
+  background: #f5fbf7;
+}
+
+.p3-dashboard-action-card.is-primary span {
+  color: var(--path-green);
+  background: #e2f2e8;
+}
+
+.p3-dashboard-next-step {
+  display: grid;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(18, 50, 71, 0.14);
+  border-radius: 8px;
+  color: var(--path-muted);
+  background: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.p3-dashboard-next-step h2,
+.p3-dashboard-next-step p,
+.p3-dashboard-next-step ul {
+  margin: 0;
+}
+
+.p3-dashboard-next-step h2 {
+  color: var(--path-ink);
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.p3-dashboard-next-step ul {
+  display: grid;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.p3-dashboard-next-step strong {
+  color: var(--path-blue);
+}
+
 .p3-problem-hero-copy {
   display: grid;
   justify-items: center;
@@ -2693,6 +2891,44 @@ body.p3-path-page main {
 .path-summary-panel span {
   color: var(--path-muted);
   font-weight: 800;
+}
+
+.p3-next-step-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(18, 50, 71, 0.2);
+  border-radius: var(--radius);
+  color: var(--path-ink);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.05);
+}
+
+.p3-next-step-panel > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.p3-next-step-panel h2,
+.p3-next-step-panel p {
+  margin: 0;
+}
+
+.p3-next-step-panel h2 {
+  color: var(--path-ink);
+  font-size: 1.28rem;
+  line-height: 1.2;
+}
+
+.p3-next-step-panel p:not(.eyebrow) {
+  color: var(--path-muted);
+}
+
+.p3-next-step-panel .button {
+  flex: 0 0 auto;
 }
 
 .path-principle-strip {
@@ -2806,6 +3042,47 @@ body.p3-path-page main {
   font-size: 1.02rem;
   line-height: 1.4;
   text-align: center;
+}
+
+.path-unit-progress-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.path-unit-progress-strip li {
+  min-width: 0;
+}
+
+.path-unit-progress-strip span {
+  display: block;
+  min-height: 34px;
+  padding: 7px 8px;
+  overflow: hidden;
+  border: 1px solid var(--path-line);
+  border-radius: 6px;
+  color: var(--path-muted);
+  background: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.path-unit-progress-strip .is-complete {
+  border-color: rgba(47, 107, 79, 0.28);
+  color: var(--path-green);
+  background: #f0f8f3;
+}
+
+.path-unit-progress-strip .has-evidence {
+  border-color: rgba(18, 50, 71, 0.22);
+  color: var(--path-blue);
+  background: #eef5ff;
 }
 
 .path-unit-card-action {
@@ -5237,6 +5514,7 @@ body.skill-check-page .exam-question-section {
 	  .page-hero,
     .learn-mode-hero,
     .p3-path-hero,
+    .p3-dashboard-hero,
     .path-principle-strip,
 	  .topic-grid,
 	  .course-grid,
@@ -5251,6 +5529,7 @@ body.skill-check-page .exam-question-section {
 		  .course-entry-grid,
   .exam-mode-grid,
   .exam-question-grid,
+  .p3-dashboard-action-grid,
   .contract-skill-grid,
   .study-path,
   .home-metrics {
@@ -5312,8 +5591,8 @@ body.skill-check-page .exam-question-section {
   }
 
   body.learn-mode-page .site-header {
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
     margin-block: 8px 10px;
     padding: 8px 10px;
@@ -5333,17 +5612,19 @@ body.skill-check-page .exam-question-section {
   }
 
   body.learn-mode-page .site-nav {
-    flex: 0 0 auto;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex: 1 1 auto;
     gap: 6px;
+    width: 100%;
   }
 
   body.learn-mode-page .site-nav a {
-    width: auto;
+    width: 100%;
+    min-width: 0;
     min-height: 34px;
-    padding: 7px 9px;
-    font-size: 0.82rem;
+    padding: 7px 6px;
+    font-size: 0.78rem;
   }
 
   body.learn-mode-page main {
@@ -5359,6 +5640,7 @@ body.skill-check-page .exam-question-section {
 	  .page-hero,
     .learn-mode-hero,
     .p3-path-hero,
+    .p3-dashboard-hero,
     .path-unit-card,
 	  .topic-card,
     .course-card,
@@ -5736,6 +6018,10 @@ body.skill-check-page .exam-question-section {
     min-height: 0;
   }
 
+  .course-picker-hero {
+    min-height: 0;
+  }
+
   .homepage-hero h1,
   .homepage-hero p {
     max-width: 760px;
@@ -5749,8 +6035,9 @@ body.skill-check-page .exam-question-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .path-unit-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .path-unit-grid,
+  .course-support-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .learning-loop-list li:not(:last-child)::after {
@@ -5811,6 +6098,7 @@ body.skill-check-page .exam-question-section {
   .learning-loop-list,
   .trust-card-grid,
   .path-unit-grid,
+  .course-support-grid,
   .home-course-row,
   .home-feature-strip,
   .homepage-audience-band {
@@ -5829,6 +6117,23 @@ body.skill-check-page .exam-question-section {
 
   .homepage-attempt-card {
     font-size: 0.94rem;
+  }
+
+  .homepage-course-panel {
+    padding: 14px;
+  }
+
+  .path-unit-progress-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .p3-next-step-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .p3-next-step-panel .button {
+    width: 100%;
   }
 
   .attempt-card-heading {

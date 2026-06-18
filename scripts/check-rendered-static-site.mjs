@@ -168,23 +168,26 @@ try {
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
-      hasSequence: text.includes('Units') && text.includes('Unit 1') && text.includes('Unit 9'),
-      hasFlow: ['Learn', 'Checked Practice', 'Exam Training', 'Review'].every((label) => text.includes(label)),
-      hasStartAction: Array.from(document.querySelectorAll('a')).some((link) => /Start Unit 1: Algebra/.test(link.textContent || '')),
-      unitCards: document.querySelectorAll('.path-unit-card').length,
-      hasHomepageShell: Boolean(document.querySelector('.homepage-hero, .course-card-featured, .course-support-grid')),
-      hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the') || text.includes('Choose the trusted path') || text.includes('Support only courses'),
+      hasCourseHero: text.includes('Choose the course before the study path.'),
+      hasCoursePanel: Boolean(document.querySelector('.homepage-course-panel')),
+      courseCards: document.querySelectorAll('.homepage-course-panel .course-card').length,
+      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Start P3/.test(link.textContent || '')),
+      hasSupportStatus: text.includes('Available later'),
+      hasPathGrid: Boolean(document.querySelector('.path-unit-grid')),
+      hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the')
+        || text.includes('Teacher ready')
+        || text.includes('get reviewed')
+        || text.includes('Needs teacher check'),
     };
   });
-  if (!homepageResult.hasPathHero || !homepageResult.hasSequence || !homepageResult.hasFlow || !homepageResult.hasStartAction) {
-    fail('Root page must be the direct P3 learn-by-doing path.');
+  if (!homepageResult.hasCourseHero || !homepageResult.hasCoursePanel || !homepageResult.hasP3Start || !homepageResult.hasSupportStatus) {
+    fail('Root page must render the CAIE 9709 course selector.');
   }
-  if (homepageResult.unitCards < 10) {
-    fail(`Root P3 path must show 9 units plus final review; saw ${homepageResult.unitCards} cards.`);
+  if (homepageResult.courseCards < 4) {
+    fail(`Root course selector must show P1, P3, M1, and S1 cards; saw ${homepageResult.courseCards}.`);
   }
-  if (homepageResult.hasHomepageShell || homepageResult.hasOldHeroCopy) {
-    fail('Root page must not retain the old homepage/course-selector shell.');
+  if (homepageResult.hasPathGrid || homepageResult.hasOldHeroCopy) {
+    fail('Root page must not retain the old direct-P3 or teacher-facing shell.');
   }
 
   for (const coursePage of ['p1/index.html', 'm1/index.html', 's1/index.html']) {
@@ -205,16 +208,33 @@ try {
       const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
+        hasDashboard: text.includes('P3: Pure Mathematics 3') && text.includes('Take the diagnostic') && text.includes('Open full unit path'),
+        hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
+          && Boolean(document.querySelector('[data-progress-skill]'))
+          && Boolean(document.querySelector('[data-progress-exam]')),
         hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
       };
     });
-    if (!courseResult.hasPathHero || courseResult.pathCards < 10) {
-      fail(`${coursePage} must render the direct P3 learning path.`);
+    if (!courseResult.hasDashboard || !courseResult.hasProgressLabels || courseResult.pathCards < 10) {
+      fail(`${coursePage} must render the P3 dashboard with unit evidence cards.`);
     }
     if (courseResult.hasCourseGrid) {
       fail(`${coursePage} must not render the old topic chooser grid.`);
     }
+  }
+
+  await waitForStaticEnhancement(page, 'p3/topics/index.html');
+  const p3TopicsResult = await page.evaluate(() => {
+    const text = document.body.textContent || '';
+    return {
+      hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
+      hasSequence: text.includes('Units') && text.includes('Unit 1') && text.includes('Unit 9'),
+      hasFlow: ['Learn', 'Checked Practice', 'Exam Training', 'Review'].every((label) => text.includes(label)),
+      pathCards: document.querySelectorAll('.path-unit-card').length,
+    };
+  });
+  if (!p3TopicsResult.hasPathHero || !p3TopicsResult.hasSequence || !p3TopicsResult.hasFlow || p3TopicsResult.pathCards < 10) {
+    fail('P3 topics page must remain the direct unit learning path.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/learn/index.html');

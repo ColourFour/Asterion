@@ -43,11 +43,24 @@ function memoryStorage(initial?: unknown) {
 describe('local Skill Check attempts', () => {
   it('saves and reloads attempts from localStorage-shaped storage', () => {
     const storage = memoryStorage({ schemaVersion: 1, attempts: [] });
-    const saved = saveSkillCheckAttempt(storage, attempt({ attemptId: 'attempt_saved' }));
+    const saved = saveSkillCheckAttempt(storage, attempt({ attemptId: 'attempt_saved', isCorrect: false, mistakeTags: ['notation'] }));
+    const progress = JSON.parse(storage.getItem(ASTERION_PROGRESS_STORAGE_KEY) || '{}');
 
     expect(saved).toHaveLength(1);
     expect(loadSkillCheckAttempts(storage)).toEqual([
       expect.objectContaining({ attemptId: 'attempt_saved', submittedAnswer: '4' }),
+    ]);
+    expect(progress.error_log).toEqual([
+      expect.objectContaining({
+        question_id: 'sc-alg-binomial-foundation-001',
+        error_type: 'NOTATION_ERROR',
+      }),
+    ]);
+    expect(progress.redo_queue).toEqual([
+      expect.objectContaining({
+        error_log_id: progress.error_log[0].id,
+        status: 'pending',
+      }),
     ]);
   });
 
@@ -206,10 +219,11 @@ describe('local Skill Check attempts', () => {
 
   it('records selected mistake tags on the latest matching attempt', () => {
     const storage = memoryStorage();
-    saveSkillCheckAttempt(storage, attempt({ attemptId: 'older', checkId: 'check-a', mistakeTags: [] }));
-    saveSkillCheckAttempt(storage, attempt({ attemptId: 'latest', checkId: 'check-a', mistakeTags: [] }));
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'older', checkId: 'check-a', isCorrect: false, mistakeTags: [] }));
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'latest', checkId: 'check-a', isCorrect: false, mistakeTags: [] }));
 
     const updated = updateLatestSkillCheckAttemptMistakeTags(storage, 'check-a', ['algebra slip', 'sign error']);
+    const progress = JSON.parse(storage.getItem(ASTERION_PROGRESS_STORAGE_KEY) || '{}');
 
     expect(updated).toMatchObject({
       attemptId: 'latest',
@@ -219,6 +233,10 @@ describe('local Skill Check attempts', () => {
       [],
       ['algebra slip', 'sign error'],
     ]);
+    expect(progress.error_log.at(-1)).toMatchObject({
+      question_id: 'check-a',
+      error_type: 'ALGEBRA_ERROR',
+    });
   });
 
   it('selects a targeted prompt from the chosen mistake tag', () => {

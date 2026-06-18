@@ -35,7 +35,7 @@ function examAttempt(overrides: Partial<Attempt> = {}): Attempt {
     evidenceLabel: 'Self-marked attempt',
     masteryEligible: false,
     masteryGate: 'skill_check_required',
-    trustLabel: 'Needs teacher check',
+    trustLabel: 'Low-trust self-marked evidence',
     suspicionFlags: ['full_marks_without_mark_points', 'answer_revealed_before_marking'],
     timeSpentSeconds: 120,
     markSchemeRevealed: true,

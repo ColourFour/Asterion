@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A lean sequential CAIE 9709 Pure Mathematics 3 learning path after P1." />
+    <meta name="description" content="Static CAIE 9709 study hub course selector." />
     <link rel="stylesheet" href="assets/katex.min.css" />
     <link rel="stylesheet" href="assets/static-study.css" />
-    <title>Learn P3 | Asterion Study</title>
+    <title>CAIE 9709 Study Hub | Asterion Study</title>
   </head>
-  <body class="p3-path-page">
+  <body class="home-page">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
       <a class="brand-link" href="./" aria-label="Asterion Study home">
         <span class="brand-mark" aria-hidden="true">
@@ -18,205 +19,225 @@
         </span>
         <span>
           <strong>ASTERION</strong>
-          <small>CAIE 9709 P3 Path</small>
+          <small>CAIE 9709 Study Hub</small>
         </span>
       </a>
 
     <nav class="site-nav" aria-label="Primary">
 
+        <a href="./" aria-current="page">Courses</a>
+
+        <a href="p3/">P3</a>
+
         <a href="p3/diagnostic/">Diagnostic</a>
 
         <a href="p3/repair-lane/">Repair</a>
 
-        <a href="p3/topics/" aria-current="page">Units</a>
+        <a href="p3/topics/">Units</a>
 
         <a href="p3/review/">Review</a>
 
     </nav>
 
     </header>
-    <main>
+    <main id="main-content" tabindex="-1">
 
-    <section class="p3-path-hero">
-      <div class="p3-problem-hero-copy">
-        <p class="eyebrow">CAIE 9709 Paper 3</p>
-        <h1>Start P3 with Algebra.</h1>
-        <div class="p3-example-problem-bar" aria-label="Example Algebra problem">
-          <span class="p3-example-problem-label">Unit 1 example</span>
-          <strong>Integrate <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{x^2-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484em;vertical-align:-0.4033em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4033em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>.</strong>
-          <span>Factor, split into partial fractions, then check each step in Learn.</span>
+    <section class="homepage-hero course-picker-hero">
+      <div class="hero-copy">
+        <div class="homepage-math-visual" aria-hidden="true">
+          <span class="math-fragment fragment-one">x² - 1 = (x + 1)(x - 1)</span>
+          <span class="math-fragment fragment-two">A(x + 1) + B(x - 1) = 1</span>
+          <span class="math-fragment fragment-three">✓ check the step</span>
         </div>
-        <div class="hero-actions p3-problem-actions">
-          <a class="button primary-button" href="p3/diagnostic/">Take P3 diagnostic</a>
-          <a class="button secondary-button" href="p3/topics/algebra/learn/">Start Unit 1: Algebra</a>
+        <p class="eyebrow">CAIE 9709 Study Hub</p>
+        <h1>Choose the course before the study path.</h1>
+        <p>Asterion keeps the ready Paper 3 route separate from courses that still need a syllabus check.</p>
+        <div class="home-hero-actions">
+          <a class="button primary-button" href="p3/">Start P3</a>
+          <a class="button secondary-button" href="about/">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
         </div>
+        <ul class="home-hero-proof">
+          <li><strong>Built for</strong><span>CAIE 9709</span></li>
+          <li><strong>Image-first</strong><span>exam practice</span></li>
+          <li><strong>Honest</strong><span>evidence labels</span></li>
+          <li><strong>Static</strong><span>GitHub Pages</span></li>
+        </ul>
+      </div>
+
+    <section class="homepage-course-panel" aria-labelledby="course-panel-title">
+      <div class="homepage-course-panel-heading">
+        <span class="homepage-primary-label">Course selector</span>
+        <h2 id="course-panel-title">Choose your course</h2>
+        <p>P3 is ready. P1, M1, and S1 show status pages only until their course plans are checked.</p>
+      </div>
+      <a class="course-card course-card-featured" href="p3/" aria-label="Start P3: Pure Mathematics 3">
+        <div class="course-card-header-row">
+          <span class="course-code-badge" aria-hidden="true">P3</span>
+          <div>
+            <h2>Pure Mathematics 3</h2>
+            <p class="course-card-lede">Official Paper 3 topic path with integrated Learn Mode and Exam Training pages.</p>
+          </div>
+        </div>
+        <ul class="home-p3-checklist">
+          <li>Learn, Checked Practice, and Exam Training are available.</li>
+          <li>Question and mark-scheme images stay the source of truth.</li>
+        </ul>
+        <span class="course-launch-cta course-launch-cta-primary">Start P3</span>
+      </a>
+      <div class="course-support-grid">
+
+          <a class="course-card course-card-support" href="p1/" aria-label="View P1 status: Pure Mathematics 1">
+            <span class="course-status-pill">Available later</span>
+            <div class="course-card-header-row">
+              <span class="course-code-badge" aria-hidden="true">P1</span>
+              <div>
+                <h2>Pure Mathematics 1</h2>
+                <p class="course-card-lede">Locked for now. P1 will be available later after a syllabus check.</p>
+              </div>
+            </div>
+            <p class="course-card-status-copy">P1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+            <span class="course-launch-cta course-launch-cta-secondary">View status</span>
+          </a>
+
+          <a class="course-card course-card-support" href="m1/" aria-label="View M1 status: Mechanics 1">
+            <span class="course-status-pill">Available later</span>
+            <div class="course-card-header-row">
+              <span class="course-code-badge" aria-hidden="true">M1</span>
+              <div>
+                <h2>Mechanics 1</h2>
+                <p class="course-card-lede">Locked for now. M1 will be available later after a syllabus check.</p>
+              </div>
+            </div>
+            <p class="course-card-status-copy">M1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+            <span class="course-launch-cta course-launch-cta-secondary">View status</span>
+          </a>
+
+          <a class="course-card course-card-support" href="s1/" aria-label="View S1 status: Probability &amp; Statistics 1">
+            <span class="course-status-pill">Available later</span>
+            <div class="course-card-header-row">
+              <span class="course-code-badge" aria-hidden="true">S1</span>
+              <div>
+                <h2>Probability &amp; Statistics 1</h2>
+                <p class="course-card-lede">Locked for now. S1 will be available later after a syllabus check.</p>
+              </div>
+            </div>
+            <p class="course-card-status-copy">S1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.</p>
+            <span class="course-launch-cta course-launch-cta-secondary">View status</span>
+          </a>
+
       </div>
     </section>
-    <section class="path-principle-strip" aria-label="How the path works">
-      <article>
-        <strong>1. Learn</strong>
-        <span>Try a small question before the explanation appears.</span>
-      </article>
-      <article>
-        <strong>2. Checked Practice</strong>
-        <span>Use the similar checked question for clean evidence.</span>
-      </article>
-      <article>
-        <strong>3. Exam Training</strong>
-        <span>Self-mark Paper 3 questions after learning the topic.</span>
-      </article>
+
     </section>
-    <section class="p3-unit-sequence" aria-labelledby="p3-unit-sequence-title">
-      <div class="section-heading">
+
+    <section class="homepage-section homepage-learning-loop" id="learning-loop" aria-labelledby="learning-loop-title">
+      <div class="homepage-section-heading">
+        <h2 id="learning-loop-title">The Asterion Learning Loop</h2>
+        <p>A repeatable system that builds exam-ready mathematical behavior.</p>
+      </div>
+      <ol class="learning-loop-list">
+
+          <li>
+            <span class="loop-index">1</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M7 24l4 1 14-14-5-5L6 20l1 4Z"/><path d="M18 8l5 5"/><path d="M5 27h18"/></svg></span>
+            <strong>Try the problem</strong>
+            <p>You attempt first. Your attempt is the center.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">2</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><circle cx="14" cy="14" r="8"/><path d="M20 20l7 7"/><path d="M11 10c2-2 6-2 8 1"/></svg></span>
+            <strong>Compare your first move</strong>
+            <p>Asterion compares your move, not just your final answer.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">3</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M6 7c4 0 7 1 10 4v17c-3-3-6-4-10-4V7Z"/><path d="M26 7c-4 0-7 1-10 4v17c3-3 6-4 10-4V7Z"/></svg></span>
+            <strong>Learn the method</strong>
+            <p>Explanation appears only when you are ready for it.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">4</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l10 4v7c0 7-4 11-10 13C10 26 6 22 6 15V8l10-4Z"/><path d="M11 16l4 4 7-8"/></svg></span>
+            <strong>Complete Checked Practice</strong>
+            <p>Deterministic checks prove the small skill before you proceed.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">5</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M8 5h16v22H8z"/><path d="M12 10h8"/><path d="M12 15h8"/><path d="M12 20h5"/><path d="M20 23l3 3 5-6"/></svg></span>
+            <strong>Train on real exam questions</strong>
+            <p>Compare with the mark-scheme image and self-mark honestly.</p>
+          </li>
+
+          <li>
+            <span class="loop-index">6</span>
+            <span class="loop-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M5 25h22"/><path d="M8 22v-5"/><path d="M14 22v-9"/><path d="M20 22V9"/><path d="M7 13l6-5 6 3 6-7"/><path d="M23 4h4v4"/></svg></span>
+            <strong>Review and repair</strong>
+            <p>Mistakes are expected, repaired, and tracked.</p>
+          </li>
+
+      </ol>
+    </section>
+
+
+    <section class="homepage-section homepage-trust-contract" aria-labelledby="trust-contract-title">
+      <div class="homepage-section-heading">
+        <h2 id="trust-contract-title">Trust Signals</h2>
+        <p>Compact rules for a static CAIE 9709 learning system.</p>
+      </div>
+      <div class="trust-card-grid">
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Try first, then learn.</h3>
+            <p>The page asks for work before revealing the explanation.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Mistakes are repaired.</h3>
+            <p>Wrong attempts get targeted feedback and another try.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>Self-marking is labelled honestly.</h3>
+            <p>Exam practice is useful, but self-marked work is not treated as mastery.</p>
+          </article>
+
+          <article>
+            <span class="trust-icon" aria-hidden="true">check</span>
+            <h3>P3 is the trusted path.</h3>
+            <p>P1, M1, and S1 stay locked until their course content is checked.</p>
+          </article>
+
+      </div>
+      <div class="homepage-evidence-banner">
         <div>
-          <h2 id="p3-unit-sequence-title">Units</h2>
-          <p>Pick any unit, or follow them in order from Algebra to Complex Numbers.</p>
+          <strong>Asterion does not treat self-marked exam practice as progress.</strong>
+          <p>Self-marked questions are useful, but weaker evidence. We label it honestly.</p>
         </div>
-      </div>
-      <div class="path-unit-grid">
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/algebra/learn/" data-path-unit="algebra" aria-label="Start Unit 1: Algebra">
-      <div class="path-unit-number">Unit 1</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Algebra</h2>
-          <p>Algebra</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Algebra example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mi>P</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mi mathvariant="normal">∣</mi><mi>x</mi><mi mathvariant="normal">∣</mi><mo separator="true">,</mo><mtext>  </mtext><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>x</mi><msup><mo stretchy="false">)</mo><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">f(x), \; P(x), \; |x|, \; (1+x)^n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mord">∣</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/logarithmic-and-exponential-functions/learn/" data-path-unit="logarithmic-and-exponential-functions" aria-label="Start Unit 2: Logarithmic and Exponential Functions">
-      <div class="path-unit-number">Unit 2</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Logarithmic and Exponential Functions</h2>
-          <p>Logs and Exponentials</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Logarithmic and Exponential Functions example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>log</mi><mo>⁡</mo></mrow><mi>a</mi></msub><mi>x</mi><mo separator="true">,</mo><mtext>  </mtext><msup><mi>e</mi><mi>x</mi></msup><mo separator="true">,</mo><mtext>  </mtext><mi>y</mi><mo>=</mo><mi>a</mi><msup><mi>b</mi><mi>x</mi></msup></mrow><annotation encoding="application/x-tex">\log_a x, \; e^x, \; y = ab^x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9386em;vertical-align:-0.2441em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.0139em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0573em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">a</span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">x</span></span></span></span></span></span></span></span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/trigonometry/learn/" data-path-unit="trigonometry" aria-label="Start Unit 3: Trigonometry">
-      <div class="path-unit-number">Unit 3</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Trigonometry</h2>
-          <p>Trig</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Trigonometry example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>sin</mi><mo>⁡</mo><mi>x</mi><mo separator="true">,</mo><mtext>  </mtext><mi>cos</mi><mo>⁡</mo><mi>x</mi><mo separator="true">,</mo><mtext>  </mtext><mi>tan</mi><mo>⁡</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\sin x, \; \cos x, \; \tan x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8623em;vertical-align:-0.1944em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">tan</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/differentiation/learn/" data-path-unit="differentiation" aria-label="Start Unit 4: Differentiation">
-      <div class="path-unit-number">Unit 4</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Differentiation</h2>
-          <p>Differentiation</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Differentiation example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>d</mi><mi>y</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac><mo separator="true">,</mo><mtext>  </mtext><msup><mi>f</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mfrac><mrow><mi>d</mi><mi>y</mi><mi mathvariant="normal">/</mi><mi>d</mi><mi>t</mi></mrow><mrow><mi>d</mi><mi>x</mi><mi mathvariant="normal">/</mi><mi>d</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{dy}{dx}, \; f^{\prime}(x), \; \frac{dy/dt}{dx/dt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.53em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.0359em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">x</span><span class="mord mtight">/</span><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.0359em;">y</span><span class="mord mtight">/</span><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/integration/learn/" data-path-unit="integration" aria-label="Start Unit 5: Integration">
-      <div class="path-unit-number">Unit 5</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Integration</h2>
-          <p>Integration</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Integration example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∫</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>d</mi><mi>x</mi><mo separator="true">,</mo><mtext>  </mtext><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\int f(x)\,dx, \; \int_a^b f(x)\,dx</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.3998em;vertical-align:-0.3558em;"></span><span class="mop op-symbol small-op" style="margin-right:0.1945em;position:relative;top:-0.0006em;">∫</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="margin-right:0.1945em;position:relative;top:-0.0006em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.044em;"><span style="top:-2.3442em;margin-left:-0.1945em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.2579em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3558em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/numerical-solution-of-equations/learn/" data-path-unit="numerical-solution-of-equations" aria-label="Start Unit 6: Numerical Solution of Equations">
-      <div class="path-unit-number">Unit 6</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Numerical Solution of Equations</h2>
-          <p>Numerical Solution</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Numerical Solution of Equations example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mi>f</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mi>f</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x_{n+1}=g(x_n), \; f(a)f(b)&lt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/vectors/learn/" data-path-unit="vectors" aria-label="Start Unit 7: Vectors">
-      <div class="path-unit-number">Unit 7</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Vectors</h2>
-          <p>Vectors</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Vectors example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">r</mi><mo>=</mo><mi mathvariant="bold">a</mi><mo>+</mo><mi>λ</mi><mi mathvariant="bold">b</mi><mo separator="true">,</mo><mtext>  </mtext><mi mathvariant="bold">a</mi><mo>⋅</mo><mi mathvariant="bold">b</mi></mrow><annotation encoding="application/x-tex">\mathbf{r}=\mathbf{a}+\lambda\mathbf{b}, \; \mathbf{a}\cdot\mathbf{b}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4444em;"></span><span class="mord mathbf">r</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathbf">a</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">λ</span><span class="mord mathbf">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">a</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathbf">b</span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/differential-equations/learn/" data-path-unit="differential-equations" aria-label="Start Unit 8: Differential Equations">
-      <div class="path-unit-number">Unit 8</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Differential Equations</h2>
-          <p>DEs</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Differential Equations example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>d</mi><mi>y</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext>  </mtext><mi>y</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>=</mo><msub><mi>y</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\frac{dy}{dx}=f(x,y), \; y(x_0)=y_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2772em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.0359em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-    <a class="path-unit-card path-unit-tile" href="p3/topics/complex-numbers/learn/" data-path-unit="complex-numbers" aria-label="Start Unit 9: Complex Numbers">
-      <div class="path-unit-number">Unit 9</div>
-      <div class="path-unit-main">
-        <header>
-          <h2>Complex Numbers</h2>
-          <p>Complex Numbers</p>
-        </header>
-        <div class="path-unit-representation" aria-label="Complex Numbers example representation">
-          <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi><mo separator="true">,</mo><mtext>  </mtext><mi mathvariant="normal">∣</mi><mi>z</mi><mi mathvariant="normal">∣</mi><mo separator="true">,</mo><mtext>  </mtext><mi>arg</mi><mo>⁡</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">z = x+iy, \; |z|, \; \arg z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="mord">∣</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">ar<span style="margin-right:0.0139em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.044em;">z</span></span></span></span></span>
-        </div>
-      </div>
-      <span class="path-unit-card-action">Start unit</span>
-    </a>
-
-      </div>
-      <div class="path-unit-list path-review-list">
-        <article class="path-unit-card path-exam-review-card">
-          <div class="path-unit-number">Final</div>
-          <div class="path-unit-main">
-            <header>
-              <h2>Review</h2>
-              <p>Exam Review unlocks after you complete the unit path.</p>
-            </header>
-          </div>
-          <div class="path-unit-progress">
-            <a class="button secondary-button" href="p3/review/">Review later</a>
-          </div>
-        </article>
+        <ul aria-label="Progress evidence labels">
+          <li>Attempted</li>
+          <li>Self-Marked</li>
+          <li>Checked</li>
+          <li>Exam Training</li>
+        </ul>
       </div>
     </section>
+
+
+    <section class="homepage-contact-bar" id="contact" aria-label="Contact Asterion">
+      <div>
+        <h2>Contact me</h2>
+        <p>Questions, feedback, or course requests.</p>
+      </div>
+      <a href="mailto:brooker@rdfzcygj.cn?subject=Asterion%20contact">Send an email</a>
+    </section>
+
 
     </main>
     <script src="assets/static-study.js" defer></script>

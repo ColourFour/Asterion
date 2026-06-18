@@ -329,6 +329,11 @@ function coursePagePath(course: CourseMetadata): string {
   return `${course.slug}/index.html`;
 }
 
+function p3CoursePagePath(): string {
+  const p3Course = COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[1];
+  return coursePagePath(p3Course);
+}
+
 function p3TopicsIndexPagePath(): string {
   return `${P3_COURSE_ID}/topics/index.html`;
 }
@@ -576,16 +581,19 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   const items = [
+    { key: 'courses', label: 'Courses', path: 'index.html' },
+    { key: 'p3', label: 'P3', path: p3CoursePagePath() },
     { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
     { key: 'p1-repair', label: 'Repair', path: p1RepairLanePagePath() },
     { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Review', path: p3ReviewPagePath() },
   ];
+  const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
 
   return `
     <nav class="site-nav" aria-label="Primary">
       ${items.map((item) => `
-        <a href="${hrefToPage(pagePath, item.path)}"${active === item.key || (active === 'courses' && item.key === 'p3') ? ' aria-current="page"' : ''}>${item.label}</a>
+        <a href="${hrefToPage(pagePath, item.path)}"${activeKey === item.key ? ' aria-current="page"' : ''}>${item.label}</a>
       `).join('')}
     </nav>
   `;
@@ -608,6 +616,7 @@ function renderPage(options: RenderPageOptions): string {
     <title>${escapeHtml(title)}</title>
   </head>
   <body${options.bodyClass ? ` class="${escapeAttr(options.bodyClass)}"` : ''}>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
       <a class="brand-link" href="${hrefToPage(options.pagePath, 'index.html')}" aria-label="Asterion Study home">
         <span class="brand-mark" aria-hidden="true">
@@ -617,12 +626,12 @@ function renderPage(options: RenderPageOptions): string {
         </span>
         <span>
           <strong>ASTERION</strong>
-          <small>CAIE 9709 P3 Path</small>
+          <small>CAIE 9709 Study Hub</small>
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
     </header>
-    <main>
+    <main id="main-content" tabindex="-1">
       ${options.body}
     </main>
     <script src="${scriptHref}" defer></script>
@@ -681,9 +690,11 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
 }
 
 function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
-  const { topic } = context;
+  const { topic, region, learnSteps } = context;
+  const learnStepTotal = Math.max(1, learnSteps.length);
+  const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   return `
-    <a class="path-unit-card path-unit-tile" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit="${escapeAttr(topic.regionId)}" aria-label="Start Unit ${index + 1}: ${escapeAttr(topic.name)}">
+    <a class="path-unit-card path-unit-tile" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}" aria-label="Start Unit ${index + 1}: ${escapeAttr(topic.name)}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header>
@@ -694,8 +705,26 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
           ${renderMathText(`$${topic.headerFormula}$`)}
         </div>
       </div>
+      <ul class="path-unit-progress-strip" aria-label="${escapeAttr(topic.name)} local progress">
+        <li><span data-progress-field-guide="${escapeAttr(region.id)}" data-total="${learnStepTotal}" data-label="Learn">Learn: 0/${learnStepTotal}</span></li>
+        <li><span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span></li>
+        <li><span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span></li>
+      </ul>
       <span class="path-unit-card-action">Start unit</span>
     </a>
+  `;
+}
+
+function renderP3NextStepPanel(pagePath: string): string {
+  return `
+    <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(hrefToPage(pagePath, p3ReviewPagePath()))}" aria-labelledby="p3-next-step-panel-title">
+      <div>
+        <p class="eyebrow">Continue</p>
+        <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start Unit 1: Algebra</h2>
+        <p data-p3-next-step-copy>Use this as local practice guidance. It does not grade or certify your progress.</p>
+      </div>
+      <a class="button primary-button" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}" data-p3-next-step-link>Continue</a>
+    </section>
   `;
 }
 
@@ -925,6 +954,7 @@ function renderP3LearningPathPage(
         </div>
       </div>
     </section>
+    ${renderP3NextStepPanel(pagePath)}
     <section class="path-principle-strip" aria-label="How the path works">
       <article>
         <strong>1. Learn</strong>
@@ -959,7 +989,7 @@ function renderP3LearningPathPage(
             </header>
           </div>
           <div class="path-unit-progress">
-            ${routeLink(pagePath, p3ReviewPagePath(), 'Review later', 'button secondary-button')}
+            ${routeLink(pagePath, p3ReviewPagePath(), 'Check review status', 'button secondary-button')}
           </div>
         </article>
       </div>
@@ -972,6 +1002,105 @@ function renderP3LearningPathPage(
     active: 'p3-topics',
     body,
     bodyClass: 'p3-path-page',
+  });
+}
+
+function renderP3DashboardPage(
+  data: StaticSiteData,
+  course: CourseMetadata,
+  pagePath = coursePagePath(course),
+): string {
+  const contexts = STUDY_TOPICS.map((topic) => topicContext(topic, data));
+  const firstTopic = STUDY_TOPICS[0];
+  const body = `
+    <section class="p3-dashboard-hero">
+      <div class="p3-dashboard-copy">
+        <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
+        <h1>${escapeHtml(`${course.shortName}: ${course.displayName}`)}</h1>
+        <p>Use the diagnostic if you are unsure, start Algebra if you are ready, or jump to a unit for revision. Local progress is practice evidence only.</p>
+      </div>
+      <div class="p3-dashboard-action-panel">
+        <div class="p3-dashboard-action-grid" aria-label="P3 starting options">
+          <a class="p3-dashboard-action-card" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">
+            <span>Unsure</span>
+            <strong>Take the diagnostic</strong>
+            <p>Fixed local check for P1 fluency and early P3 readiness.</p>
+          </a>
+          <a class="p3-dashboard-action-card is-primary" href="${hrefToPage(pagePath, learnPagePath(firstTopic))}">
+            <span>Ready</span>
+            <strong>Start Unit 1: Algebra</strong>
+            <p>Begin the Learn, Checked Practice, Exam Training flow.</p>
+          </a>
+          <a class="p3-dashboard-action-card" href="${hrefToPage(pagePath, p3ReviewPagePath())}">
+            <span>Revising</span>
+            <strong>Check review status</strong>
+            <p>View the local requirements for mixed Paper 3 review.</p>
+          </a>
+        </div>
+        <section class="p3-dashboard-next-step" aria-labelledby="p3-next-step-title">
+          <div>
+            <p class="eyebrow">Choose by evidence</p>
+            <h2 id="p3-next-step-title">What should I do next?</h2>
+          </div>
+          <ul>
+            <li><strong>Unsure on foundations:</strong> take the diagnostic.</li>
+            <li><strong>Learn incomplete:</strong> continue that unit's Learn path.</li>
+            <li><strong>Learn complete, Checked incomplete:</strong> redo the checked similar questions until the method is reproducible.</li>
+            <li><strong>Checked complete:</strong> use Exam Training as weaker self-marked practice evidence.</li>
+          </ul>
+          <p>The diagnostic and saved progress are local guidance, not a grade. Start Algebra directly if your P1 algebra is already fluent.</p>
+        </section>
+      </div>
+    </section>
+    ${renderP3NextStepPanel(pagePath)}
+    <section class="path-principle-strip" aria-label="How the P3 path works">
+      <article>
+        <strong>1. Learn</strong>
+        <span>Try a small question before the explanation appears.</span>
+      </article>
+      <article>
+        <strong>2. Checked Practice</strong>
+        <span>Clean similar-question passes are the strongest local signal.</span>
+      </article>
+      <article>
+        <strong>3. Exam Training</strong>
+        <span>Self-mark real Paper 3 questions as weaker practice evidence.</span>
+      </article>
+    </section>
+    <section class="p3-unit-sequence" aria-labelledby="p3-dashboard-units-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="p3-dashboard-units-title">Units and local evidence</h2>
+          <p>Each card opens Learn first. The labels update from this browser only.</p>
+        </div>
+        ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Open full unit path', 'button secondary-button')}
+      </div>
+      <div class="path-unit-grid">
+        ${contexts.map((context, index) => renderP3PathUnitCard(pagePath, context, index)).join('')}
+      </div>
+      <div class="path-unit-list path-review-list">
+        <article class="path-unit-card path-exam-review-card">
+          <div class="path-unit-number">Final</div>
+          <div class="path-unit-main">
+            <header>
+              <h2>Review</h2>
+              <p>Mixed review is a local practice gate. Open it to see which unit requirements are still missing.</p>
+            </header>
+          </div>
+          <div class="path-unit-progress">
+            ${routeLink(pagePath, p3ReviewPagePath(), 'Check review status', 'button secondary-button')}
+          </div>
+        </article>
+      </div>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${course.shortName}: ${course.displayName}`,
+    description: `${course.shortName} course dashboard for the static CAIE 9709 study hub.`,
+    active: course.id,
+    body,
+    bodyClass: 'p3-path-page p3-dashboard-page',
   });
 }
 
@@ -1196,7 +1325,7 @@ const homepageLearningSteps = [
   ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
   ['Learn the method', 'Explanation appears only when you are ready for it.'],
   ['Complete Checked Practice', 'Deterministic checks prove the small skill before you proceed.'],
-  ['Train on real exam questions', 'Work on real CAIE Paper 3 questions and get reviewed.'],
+  ['Train on real exam questions', 'Compare with the mark-scheme image and self-mark honestly.'],
   ['Review and repair', 'Mistakes are expected, repaired, and tracked.'],
 ] as const;
 
@@ -1353,17 +1482,17 @@ function renderHomepageTrustContract(): string {
   `;
 }
 
-function renderHomepageCourseSelector(pagePath: string): string {
+function renderHomepageCoursePanel(pagePath: string): string {
   const p3Course = COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[1];
   const supportCourses = COURSES.filter((course) => course.id !== P3_COURSE_ID);
   return `
-    <section class="homepage-section homepage-course-layout" aria-labelledby="homepage-course-title">
-      <div class="homepage-section-heading">
-        <h2 id="homepage-course-title">Choose the trusted path</h2>
-        <p>P3 is live. P1, M1, and S1 remain locked until trusted.</p>
+    <section class="homepage-course-panel" aria-labelledby="course-panel-title">
+      <div class="homepage-course-panel-heading">
+        <span class="homepage-primary-label">Course selector</span>
+        <h2 id="course-panel-title">Choose your course</h2>
+        <p>P3 is ready. P1, M1, and S1 show status pages only until their course plans are checked.</p>
       </div>
-      <a class="course-card course-card-featured" href="${hrefToPage(pagePath, coursePagePath(p3Course))}" aria-label="Start P3: ${escapeAttr(p3Course.displayName)}">
-        <span class="homepage-primary-label">Recommended starting path</span>
+      <a class="course-card course-card-featured" href="${hrefToPage(pagePath, coursePagePath(p3Course))}" aria-label="Start ${escapeAttr(p3Course.shortName)}: ${escapeAttr(p3Course.displayName)}">
         <div class="course-card-header-row">
           <span class="course-code-badge" aria-hidden="true">${escapeHtml(p3Course.shortName)}</span>
           <div>
@@ -1371,41 +1500,28 @@ function renderHomepageCourseSelector(pagePath: string): string {
             <p class="course-card-lede">${escapeHtml(p3Course.shortDescription)}</p>
           </div>
         </div>
-        <p class="homepage-priority-line"><strong>Ready.</strong> Recommended first click: P3 Pure Mathematics 3.</p>
-        <div class="homepage-recommended-start">
-          <span>Recommended start</span>
-          <strong>Start with P3 Pure Mathematics 3</strong>
-          <p>Use the full Learn -&gt; Checked Practice -&gt; Exam Training flow.</p>
-        </div>
-        <p class="homepage-primary-reason">Learn and Exam Training are available.</p>
         <ul class="home-p3-checklist">
-          <li>Includes Algebra, Logarithmic and Exponential Functions, Trigonometry, Differentiation, Integration, Vectors, Complex Numbers, Numerical Solution, and Differential Equations.</li>
-          <li>Learn and Exam Training are available.</li>
+          <li>Learn, Checked Practice, and Exam Training are available.</li>
+          <li>Question and mark-scheme images stay the source of truth.</li>
         </ul>
         <span class="course-launch-cta course-launch-cta-primary">Start P3</span>
       </a>
-      <section class="homepage-support-section" aria-labelledby="homepage-support-title">
-        <div class="homepage-support-heading">
-          <h2 id="homepage-support-title">Support only courses</h2>
-          <p>P1, M1, and S1 are support-only entries. P3 is the default product path. They are not ready course paths on this branch.</p>
-        </div>
-        <div class="course-support-grid">
-          ${supportCourses.map((course) => `
-            <a class="course-card course-card-locked" href="${hrefToPage(pagePath, coursePagePath(course))}" aria-label="View ${escapeAttr(course.shortName)} support: ${escapeAttr(course.displayName)}">
-              <span class="course-status-pill">Support only</span>
-              <div class="course-card-header-row">
-                <span class="course-code-badge" aria-hidden="true">${escapeHtml(course.shortName)}</span>
-                <div>
-                  <h2>${escapeHtml(course.displayName)}</h2>
-                  <p class="course-card-lede">${escapeHtml(course.shortDescription)}</p>
-                </div>
+      <div class="course-support-grid">
+        ${supportCourses.map((course) => `
+          <a class="course-card course-card-support" href="${hrefToPage(pagePath, coursePagePath(course))}" aria-label="View ${escapeAttr(course.shortName)} status: ${escapeAttr(course.displayName)}">
+            <span class="course-status-pill">${escapeHtml(course.statusLabel)}</span>
+            <div class="course-card-header-row">
+              <span class="course-code-badge" aria-hidden="true">${escapeHtml(course.shortName)}</span>
+              <div>
+                <h2>${escapeHtml(course.displayName)}</h2>
+                <p class="course-card-lede">${escapeHtml(course.shortDescription)}</p>
               </div>
-              <p class="course-card-status-copy">${escapeHtml(course.coverageSummary)}</p>
-              <span class="course-launch-cta course-launch-cta-secondary">View ${escapeHtml(course.shortName)} support</span>
-            </a>
-          `).join('')}
-        </div>
-      </section>
+            </div>
+            <p class="course-card-status-copy">${escapeHtml(course.coverageSummary)}</p>
+            <span class="course-launch-cta course-launch-cta-secondary">View status</span>
+          </a>
+        `).join('')}
+      </div>
     </section>
   `;
 }
@@ -1417,7 +1533,7 @@ function renderHomepageContactBar(): string {
     <section class="homepage-contact-bar" id="contact" aria-label="Contact Asterion">
       <div>
         <h2>Contact me</h2>
-        <p>Questions, feedback, course requests, or teacher use cases.</p>
+        <p>Questions, feedback, or course requests.</p>
       </div>
       <a href="mailto:${escapeAttr(homepageContactEmail)}?subject=Asterion%20contact">Send an email</a>
     </section>
@@ -1451,33 +1567,32 @@ function renderAboutPage(): string {
 
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
-  const startPath = learnPagePath(STUDY_TOPICS[0]);
   const body = `
-    <section class="homepage-hero">
+    <section class="homepage-hero course-picker-hero">
       <div class="hero-copy">
         <div class="homepage-math-visual" aria-hidden="true">
           <span class="math-fragment fragment-one">x² - 1 = (x + 1)(x - 1)</span>
           <span class="math-fragment fragment-two">A(x + 1) + B(x - 1) = 1</span>
           <span class="math-fragment fragment-three">✓ check the step</span>
         </div>
-        <h1>CAIE 9709 practice that starts with the <span>student&rsquo;s attempt.</span></h1>
-        <p>Asterion trains students to try the problem first, compare their method, repair mistakes, prove small skills, and then apply them to real CAIE exam questions.</p>
+        <p class="eyebrow">CAIE 9709 Study Hub</p>
+        <h1>Choose the course before the study path.</h1>
+        <p>Asterion keeps the ready Paper 3 route separate from courses that still need a syllabus check.</p>
         <div class="home-hero-actions">
-          <a class="button primary-button" href="${hrefToPage(pagePath, startPath)}">Start P3</a>
+          <a class="button primary-button" href="${hrefToPage(pagePath, p3CoursePagePath())}">Start P3</a>
           <a class="button secondary-button" href="${hrefToPage(pagePath, aboutPagePath())}">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
         </div>
         <ul class="home-hero-proof">
           <li><strong>Built for</strong><span>CAIE 9709</span></li>
-          <li><strong>Real CAIE</strong><span>exam questions</span></li>
-          <li><strong>Honest</strong><span>progress labels</span></li>
-          <li><strong>Teacher</strong><span>ready</span></li>
+          <li><strong>Image-first</strong><span>exam practice</span></li>
+          <li><strong>Honest</strong><span>evidence labels</span></li>
+          <li><strong>Static</strong><span>GitHub Pages</span></li>
         </ul>
       </div>
-      ${renderHomepageAttemptCard()}
+      ${renderHomepageCoursePanel(pagePath)}
     </section>
     ${renderHomepageLearningLoop()}
     ${renderHomepageTrustContract()}
-    ${renderHomepageCourseSelector(pagePath)}
     ${renderHomepageContactBar()}
   `;
   return renderPage({
@@ -1529,7 +1644,7 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
           <p>${escapeHtml(course.coverageSummary)}</p>
         </div>
         <p class="empty-state">No ${escapeHtml(course.shortName)} topic route is published on this static P3 product branch.</p>
-        ${routeLink(pagePath, coursePagePath(COURSES.find((item) => item.id === P3_COURSE_ID) ?? course), 'Go to P3', 'button primary-button')}
+        ${routeLink(pagePath, p3CoursePagePath(), 'Go to P3', 'button primary-button')}
       </section>
     `;
   const body = `
@@ -1661,7 +1776,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       'P3 Exam Review',
       'Use mixed Paper 3 questions after the full unit path is complete. Learn and Checked Practice are the readiness gate; exam questions are for review and timing.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
-      `${routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}`,
+      `${routeLink(pagePath, p3CoursePagePath(), 'Back to P3 Home', 'button secondary-button')}`,
       'Final review',
     )}
     <section class="exam-review-gate" data-p3-exam-review-gate data-required-topics="${escapeAttr(JSON.stringify(requirements))}">
@@ -1723,7 +1838,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       <section class="summary-card review-empty-state" data-review-empty>
         <h2>No tagged mistakes yet.</h2>
         <p>Review groups appear after you answer a checked question incorrectly, reveal a repair step, or reveal an answer and choose a mistake tag.</p>
-        ${routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+        ${routeLink(pagePath, p3CoursePagePath(), 'Back to P3 Home', 'button secondary-button')}
       </section>
       <section class="review-session" data-review-session hidden>
         <div class="section-heading">
@@ -2062,7 +2177,7 @@ function renderFieldGuidePage(
       `Unit ${index + 1}: ${topic.name}`,
       'Work through the Field Guide subtopics in order. Try the small problem first, then reveal only the next useful move.',
       topic.headerFormula,
-      `${previousTopic ? routeLink(pagePath, skillCheckPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+      `${previousTopic ? routeLink(pagePath, skillCheckPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3 Home', 'button secondary-button')}
       ${routeLink(pagePath, practicePath, 'Next: Skill Check', 'button primary-button')}`,
     )}
     ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
@@ -2334,7 +2449,7 @@ function renderLearnPage(
         <p>Checked Practice is built into Learn. Clean correct similar answers count as stronger evidence than self-marked exam work.</p>
       </div>
       <div class="learn-mode-hero-actions">
-        ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, 'index.html', 'Back to P3 Path', 'button secondary-button')}
+        ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3 Home', 'button secondary-button')}
         <a class="button primary-button" href="#learn-flow">Start Learn</a>
       </div>
     </section>
@@ -2623,6 +2738,8 @@ interface ExamSelfMarkPart {
   marksAvailable: number;
   markSchemeText?: string;
   markPoints?: QuestionMarkPoint[];
+  primaryTopicId?: string;
+  mappedRegionId?: string;
 }
 
 function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvailable(question)): ExamSelfMarkPart[] {
@@ -2635,6 +2752,8 @@ function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvail
       marksAvailable: part.marksAvailable,
       markSchemeText: part.markSchemeText,
       markPoints: part.markPoints,
+      primaryTopicId: part.primaryTopicId,
+      mappedRegionId: part.mappedRegionId,
     }));
   if (cleanParts.length) return cleanParts;
   return [{
@@ -2670,7 +2789,7 @@ function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): str
 function renderExamPartControls(part: ExamSelfMarkPart, partIndex: number): string {
   const markPointCount = part.markPoints?.length ?? 0;
   return `
-    <fieldset class="exam-part-card" data-exam-part data-part-index="${partIndex}" data-part-label="${escapeRawAttr(part.label)}" data-part-id="${escapeRawAttr(part.partId)}" data-subpart-id="${escapeRawAttr(part.subpartId)}" data-marks-available="${part.marksAvailable}" data-mark-points-available="${markPointCount}">
+    <fieldset class="exam-part-card" data-exam-part data-part-index="${partIndex}" data-part-label="${escapeRawAttr(part.label)}" data-part-id="${escapeRawAttr(part.partId)}" data-subpart-id="${escapeRawAttr(part.subpartId)}" data-primary-topic-id="${escapeRawAttr(part.primaryTopicId)}" data-mapped-region-id="${escapeRawAttr(part.mappedRegionId)}" data-marks-available="${part.marksAvailable}" data-mark-points-available="${markPointCount}">
       <legend>${escapeRawHtml(part.label)} · ${part.marksAvailable} mark${part.marksAvailable === 1 ? '' : 's'}</legend>
       <label class="inline-check">
         <input type="checkbox" data-part-attempted />
@@ -3083,13 +3202,13 @@ async function generate(): Promise<void> {
   const data = await loadStaticSiteData();
   const htmlByPath = new Map<string, string>();
 
-  htmlByPath.set('index.html', renderP3LearningPathPage(data));
+  htmlByPath.set('index.html', renderCourseSelectorPage());
   htmlByPath.set(aboutPagePath(), renderAboutPage());
 
   for (const course of COURSES) {
     htmlByPath.set(
       coursePagePath(course),
-      course.id === P3_COURSE_ID ? renderP3LearningPathPage(data, coursePagePath(course)) : renderCourseDashboardPage(course),
+      course.id === P3_COURSE_ID ? renderP3DashboardPage(data, course) : renderCourseDashboardPage(course),
     );
   }
 

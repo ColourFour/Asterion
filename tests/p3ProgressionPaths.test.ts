@@ -308,6 +308,37 @@ describe('P3 progression completion evaluation', () => {
     expect(evaluation.complete).toBe(false);
     expect(evaluation.unmet).toContain('redo_cycles_incomplete');
   });
+
+  it('allows one redo item per error log entry even when the same question is missed twice', () => {
+    const evaluation = evaluatePathCompletion(aStarState({
+      error_log_entries: 2,
+      missed_question_count: 2,
+      redo_queue: [
+        {
+          id: 'redo-1',
+          error_log_id: 'err-1',
+          question_id: 'check-a',
+          error_type: 'method',
+          missed_at: '2026-06-18T01:00:00.000Z',
+          redo_available_at: '2026-06-20T01:00:00.000Z',
+          redo_completed_at: '2026-06-20T01:00:00.000Z',
+          status: 'corrected_full_solution',
+        },
+        {
+          id: 'redo-2',
+          error_log_id: 'err-2',
+          question_id: 'check-a',
+          error_type: 'algebra',
+          missed_at: '2026-06-18T02:00:00.000Z',
+          redo_available_at: '2026-06-20T02:00:00.000Z',
+          redo_completed_at: '2026-06-20T02:00:00.000Z',
+          status: 'improved',
+        },
+      ],
+    }));
+
+    expect(evaluation.unmet).not.toContain('redo_cycles_incomplete');
+  });
 });
 
 describe('P3 controller stress cases', () => {

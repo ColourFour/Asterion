@@ -285,8 +285,8 @@ function redoCyclesComplete(state: P3ProgressionStudentState, minDelayHours: num
   if (state.error_log_entries === 0) return true;
   if (state.redo_queue.length < state.error_log_entries) return false;
   if (typeof state.missed_question_count === 'number' && state.redo_queue.length < state.missed_question_count) return false;
-  const queuedQuestionIds = new Set(state.redo_queue.map((item) => item.question_id).filter(Boolean));
-  if (queuedQuestionIds.size < state.error_log_entries) return false;
+  const linkedRedoItems = state.redo_queue.filter((item) => item.error_log_id || item.id || item.question_id);
+  if (linkedRedoItems.length < state.error_log_entries) return false;
   const completed = state.redo_queue.filter((item) => (
     (item.status === 'improved' || item.status === 'corrected_full_solution')
     && redoWaitHoursMet(item, minDelayHours)

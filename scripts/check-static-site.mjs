@@ -69,6 +69,8 @@ const forbiddenVisibleStudentTerms = [
   'compatibility route',
   'seed content',
   'needs review',
+  'get reviewed',
+  'Needs teacher check',
 ];
 
 const p3ContractPages = [
@@ -228,7 +230,7 @@ if (indexHtml.includes('id="root"') || indexHtml.includes('/src/main.tsx') || in
 
 for (const page of requiredPages) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
-  if (!html.includes('<main>') || !html.includes('</main>')) {
+  if (!/<main\b/i.test(html) || !html.includes('</main>')) {
     console.error(`${page} is missing meaningful document content.`);
     process.exit(1);
   }

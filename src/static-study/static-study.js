@@ -1,6 +1,19 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
   var PROFILE_ID = 'local-static-student';
+  var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
+  var REDO_COMPLETION_WEIGHT = 1.5;
+  var P3_TOPIC_MARK_KEYS = [
+    'algebra',
+    'logs_exp',
+    'trigonometry',
+    'differentiation',
+    'integration',
+    'vectors',
+    'complex_numbers',
+    'differential_equations',
+    'numerical_methods'
+  ];
   var CSV_HEADERS = [
     'export_timestamp',
     'topic',
@@ -43,12 +56,346 @@
       topicProfiles: {},
       issueReports: [],
       regionLearning: {},
+      error_log: [],
+      topic_performance: {},
+      weak_topics: [],
+      redo_queue: [],
+      error_distribution: {},
+      priority_repair_topics: [],
+      topic_assessments: [],
       settings: { activePaperFamily: 'p3' }
     };
   }
 
   function safeArray(value) {
     return Array.isArray(value) ? value : [];
+  }
+
+  function isRecord(value) {
+    return Boolean(value && typeof value === 'object' && !Array.isArray(value));
+  }
+
+  function finiteNonNegative(value) {
+    return typeof value === 'number' && Number.isFinite(value) ? Math.max(0, value) : 0;
+  }
+
+  function roundMetric(value) {
+    return Math.round(value * 1000) / 1000;
+  }
+
+  function normalizeTopicCandidate(value) {
+    return String(value || '')
+      .replace(/^9709_[a-z0-9]+_topic_/i, '')
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+  }
+
+  function topicKeyFromMetadata(input) {
+    var candidates = [
+      input?.regionId,
+      input?.mappedRegionId,
+      input?.primaryTopicId,
+      input?.unit,
+      input?.topic
+    ].filter(Boolean);
+    for (var index = 0; index < candidates.length; index += 1) {
+      var normalized = normalizeTopicCandidate(candidates[index]);
+      if (normalized.includes('logarith') || normalized.includes('exponential') || normalized === 'logs_exp') return 'logs_exp';
+      if (normalized.includes('trig')) return 'trigonometry';
+      if (normalized.includes('differential_equation')) return 'differential_equations';
+      if (normalized.includes('differentiat')) return 'differentiation';
+      if (normalized.includes('integrat')) return 'integration';
+      if (normalized.includes('vector')) return 'vectors';
+      if (normalized.includes('complex')) return 'complex_numbers';
+      if (normalized.includes('numerical') || normalized.includes('iteration')) return 'numerical_methods';
+      if (normalized.includes('algebra') || normalized.includes('polynomial') || normalized.includes('binomial') || normalized.includes('partial_fraction')) return 'algebra';
+    }
+    return 'algebra';
+  }
+
+  function emptyTopicScores() {
+    return P3_TOPIC_MARK_KEYS.reduce(function (scores, key) {
+      scores[key] = { score_lost: 0, questions: 0 };
+      return scores;
+    }, {});
+  }
+
+  function emptyTopicPerformance() {
+    return {
+      score_lost: 0,
+      questions: 0,
+      attempts: 0,
+      marks_available: 0,
+      marks_earned: 0,
+      redo_marks_repaired: 0,
+      stability_score: 100,
+      history: []
+    };
+  }
+
+  function errorTypeFromTags(tags) {
+    var normalized = safeArray(tags).map(function (tag) { return String(tag).toLowerCase(); });
+    if (normalized.some(function (tag) { return tag.includes('algebra') || tag.includes('sign error') || tag.includes('coefficient') || tag.includes('forgot constant'); })) return 'ALGEBRA_ERROR';
+    if (normalized.some(function (tag) { return tag.includes('notation'); })) return 'NOTATION_ERROR';
+    if (normalized.some(function (tag) { return tag.includes('calculator'); })) return 'CALCULATOR_ERROR';
+    if (normalized.some(function (tag) { return tag.includes('time') || tag.includes('slow'); })) return 'TIME_ERROR';
+    if (normalized.some(function (tag) { return tag.includes('careless') || tag.includes('misread'); })) return 'CARELESS_ERROR';
+    if (normalized.some(function (tag) { return tag.includes('concept') || tag.includes('wrong identity') || tag.includes('domain'); })) return 'CONCEPT_ERROR';
+    return 'METHOD_ERROR';
+  }
+
+  function isErrorType(value) {
+    return [
+      'CONCEPT_ERROR',
+      'ALGEBRA_ERROR',
+      'NOTATION_ERROR',
+      'METHOD_ERROR',
+      'CALCULATOR_ERROR',
+      'TIME_ERROR',
+      'CARELESS_ERROR'
+    ].includes(value);
+  }
+
+  function normalizeErrorType(value, tags) {
+    return isErrorType(value) ? value : errorTypeFromTags(tags);
+  }
+
+  function pathErrorType(errorType) {
+    if (errorType === 'CONCEPT_ERROR') return 'concept';
+    if (errorType === 'ALGEBRA_ERROR' || errorType === 'NOTATION_ERROR' || errorType === 'CALCULATOR_ERROR') return 'algebra';
+    if (errorType === 'TIME_ERROR') return 'time';
+    if (errorType === 'CARELESS_ERROR') return 'careless';
+    return 'method';
+  }
+
+  function createStableAnalyticsId(prefix, seed, timestamp) {
+    var normalizedSeed = String(seed || 'item').replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 48) || 'item';
+    return prefix + '_' + normalizedSeed + '_' + Math.round(timestamp).toString(36);
+  }
+
+  function severityForScoreLost(scoreLost) {
+    if (scoreLost >= 4) return 'HIGH';
+    if (scoreLost >= 2) return 'MEDIUM';
+    return 'LOW';
+  }
+
+  function generateErrorLogEntry(input) {
+    var timestamp = Number.isFinite(input.timestamp) ? Number(input.timestamp) : Date.now();
+    var scoreLost = Math.max(0, finiteNonNegative(input.original_score_lost));
+    var errorType = normalizeErrorType(input.error_type, input.mistakeTags);
+    return {
+      id: input.id || createStableAnalyticsId('err', input.question_id, timestamp),
+      student_id: input.student_id || PROFILE_ID,
+      unit: input.unit || input.topic || '',
+      topic: input.topic || input.unit || '',
+      question_id: input.question_id,
+      error_type: errorType,
+      timestamp: timestamp,
+      severity: input.severity || severityForScoreLost(scoreLost),
+      original_score_lost: roundMetric(scoreLost),
+      redo_available_at: timestamp + REDO_DELAY_MS,
+      redo_completed: false,
+      redo_success: false
+    };
+  }
+
+  function redoItemForError(error) {
+    return {
+      id: createStableAnalyticsId('redo', error.id, error.timestamp),
+      error_log_id: error.id,
+      question_id: error.question_id,
+      error_type: pathErrorType(error.error_type),
+      error_type_detail: error.error_type,
+      unit: error.unit,
+      topic: error.topic,
+      original_score_lost: error.original_score_lost,
+      missed_at: new Date(error.timestamp).toISOString(),
+      redo_available_at: new Date(error.redo_available_at).toISOString(),
+      redo_success: false,
+      status: 'pending'
+    };
+  }
+
+  function computeTopicBreakdown(input) {
+    var topicScores = emptyTopicScores();
+    var totalScore = 0;
+    var totalLost = 0;
+    safeArray(input.questions).forEach(function (question) {
+      var topicKey = topicKeyFromMetadata(question);
+      var marksAvailable = finiteNonNegative(question.marksAvailable);
+      var marksEarned = finiteNonNegative(question.marksEarned);
+      var scoreLost = typeof question.scoreLost === 'number' && Number.isFinite(question.scoreLost)
+        ? Math.max(0, question.scoreLost)
+        : Math.max(0, marksAvailable - marksEarned);
+      topicScores[topicKey].score_lost += scoreLost;
+      topicScores[topicKey].questions += 1;
+      totalScore += marksEarned;
+      totalLost += scoreLost;
+    });
+    return {
+      assessment_id: input.assessment_id,
+      unit: input.unit || safeArray(input.questions)[0]?.unit || '',
+      topic_scores: topicScores,
+      total_score: roundMetric(totalScore),
+      total_marks_lost: roundMetric(totalLost)
+    };
+  }
+
+  function stabilityScore(history) {
+    var rates = safeArray(history)
+      .filter(function (entry) { return entry.questions > 0; })
+      .map(function (entry) { return entry.score_lost / entry.questions; });
+    if (rates.length < 2) return 100;
+    var mean = rates.reduce(function (sum, rate) { return sum + rate; }, 0) / rates.length;
+    var variance = rates.reduce(function (sum, rate) { return sum + Math.pow(rate - mean, 2); }, 0) / rates.length;
+    return roundMetric(Math.max(0, 100 - Math.sqrt(variance) * 25));
+  }
+
+  function recordTopicPerformance(progress, topic, record) {
+    var current = progress.topic_performance[topic] || emptyTopicPerformance();
+    var history = safeArray(current.history).concat({
+      assessment_id: record.assessmentId,
+      timestamp: record.timestamp,
+      score_lost: roundMetric(record.scoreLost),
+      questions: record.questions,
+      source: record.source
+    });
+    progress.topic_performance[topic] = {
+      score_lost: roundMetric(current.score_lost + record.scoreLost),
+      questions: current.questions + record.questions,
+      attempts: current.attempts + 1,
+      marks_available: roundMetric(current.marks_available + record.marksAvailable),
+      marks_earned: roundMetric(current.marks_earned + record.marksEarned),
+      redo_marks_repaired: roundMetric(current.redo_marks_repaired + record.redoMarksRepaired),
+      stability_score: stabilityScore(history),
+      history: history
+    };
+  }
+
+  function priorityScore(stats) {
+    return stats.score_lost + (100 - stats.stability_score) / 10 - stats.redo_marks_repaired / 10;
+  }
+
+  function refreshDerivedAnalytics(progress) {
+    var topicEntries = Object.entries(progress.topic_performance || {});
+    progress.weak_topics = topicEntries
+      .filter(function (entry) { return entry[1].score_lost > 0; })
+      .sort(function (a, b) { return b[1].score_lost - a[1].score_lost || a[0].localeCompare(b[0]); })
+      .map(function (entry) { return entry[0]; });
+    var errorCounts = safeArray(progress.error_log).reduce(function (counts, entry) {
+      counts[entry.error_type] = (counts[entry.error_type] || 0) + 1;
+      return counts;
+    }, {});
+    var errorTotal = safeArray(progress.error_log).length || 1;
+    progress.error_distribution = Object.fromEntries(Object.entries(errorCounts).map(function (entry) {
+      return [entry[0], roundMetric((entry[1] / errorTotal) * 100)];
+    }));
+    progress.priority_repair_topics = topicEntries
+      .filter(function (entry) { return entry[1].score_lost > 0; })
+      .sort(function (a, b) { return priorityScore(b[1]) - priorityScore(a[1]) || a[0].localeCompare(b[0]); })
+      .slice(0, 3)
+      .map(function (entry) { return entry[0]; });
+    return progress;
+  }
+
+  function normalizeAnalyticsProgress(progress) {
+    progress.error_log = safeArray(progress.error_log).filter(function (entry) {
+      return entry && typeof entry.id === 'string' && typeof entry.question_id === 'string' && isErrorType(entry.error_type);
+    });
+    progress.topic_performance = isRecord(progress.topic_performance) ? progress.topic_performance : {};
+    progress.weak_topics = safeArray(progress.weak_topics).filter(function (topic) { return typeof topic === 'string'; });
+    progress.redo_queue = safeArray(progress.redo_queue).filter(function (item) {
+      return item && typeof item.question_id === 'string';
+    });
+    progress.error_distribution = isRecord(progress.error_distribution) ? progress.error_distribution : {};
+    progress.priority_repair_topics = safeArray(progress.priority_repair_topics).filter(function (topic) { return typeof topic === 'string'; });
+    progress.topic_assessments = safeArray(progress.topic_assessments);
+    return progress;
+  }
+
+  function updateStudentPerformanceState(progress, input) {
+    normalizeAnalyticsProgress(progress);
+    if (input.kind === 'redo_completion') {
+      var completedAt = Number.isFinite(input.completed_at) ? Number(input.completed_at) : Date.now();
+      var matchedError = progress.error_log.find(function (entry) { return entry.id === input.error_log_id; });
+      if (!matchedError) return refreshDerivedAnalytics(progress);
+      progress.error_log = progress.error_log.map(function (entry) {
+        return entry.id === input.error_log_id ? Object.assign({}, entry, { redo_completed: true, redo_success: input.redo_success }) : entry;
+      });
+      progress.redo_queue = progress.redo_queue.map(function (item) {
+        return item.error_log_id === input.error_log_id
+          ? Object.assign({}, item, {
+            redo_completed_at: new Date(completedAt).toISOString(),
+            redo_success: input.redo_success,
+            status: input.redo_success ? 'corrected_full_solution' : 'completed'
+          })
+          : item;
+      });
+      recordTopicPerformance(progress, topicKeyFromMetadata(matchedError), {
+        assessmentId: 'redo:' + matchedError.id,
+        timestamp: completedAt,
+        source: 'redo',
+        scoreLost: input.redo_success ? 0 : matchedError.original_score_lost,
+        questions: 1,
+        marksAvailable: matchedError.original_score_lost,
+        marksEarned: input.redo_success ? matchedError.original_score_lost : 0,
+        redoMarksRepaired: input.redo_success ? finiteNonNegative(input.marks_repaired || matchedError.original_score_lost) * REDO_COMPLETION_WEIGHT : 0
+      });
+      return refreshDerivedAnalytics(progress);
+    }
+
+    var timestamp = Number.isFinite(input.timestamp) ? Number(input.timestamp) : Date.now();
+    var breakdown = computeTopicBreakdown(input);
+    progress.topic_assessments = safeArray(progress.topic_assessments).concat(breakdown);
+    safeArray(input.questions).forEach(function (question) {
+      var marksAvailable = finiteNonNegative(question.marksAvailable);
+      var marksEarned = finiteNonNegative(question.marksEarned);
+      var scoreLost = typeof question.scoreLost === 'number' && Number.isFinite(question.scoreLost)
+        ? Math.max(0, question.scoreLost)
+        : Math.max(0, marksAvailable - marksEarned);
+      var topic = topicKeyFromMetadata(question);
+      recordTopicPerformance(progress, topic, {
+        assessmentId: input.assessment_id,
+        timestamp: timestamp,
+        source: input.source,
+        scoreLost: scoreLost,
+        questions: 1,
+        marksAvailable: marksAvailable,
+        marksEarned: marksEarned,
+        redoMarksRepaired: 0
+      });
+      if (scoreLost <= 0) return;
+      var error = generateErrorLogEntry({
+        student_id: input.student_id || PROFILE_ID,
+        unit: question.unit || input.unit || topic,
+        topic: topic,
+        question_id: question.question_id,
+        error_type: normalizeErrorType(question.error_type, question.mistakeTags),
+        mistakeTags: question.mistakeTags,
+        timestamp: timestamp,
+        original_score_lost: scoreLost
+      });
+      progress.error_log.push(error);
+      progress.redo_queue.push(redoItemForError(error));
+    });
+    return refreshDerivedAnalytics(progress);
+  }
+
+  function updateErrorClassificationFromTags(progress, questionId, tags) {
+    normalizeAnalyticsProgress(progress);
+    var index = progress.error_log.map(function (entry) { return entry.question_id; }).lastIndexOf(questionId);
+    if (index < 0) return refreshDerivedAnalytics(progress);
+    var errorType = errorTypeFromTags(tags);
+    var error = Object.assign({}, progress.error_log[index], { error_type: errorType });
+    progress.error_log[index] = error;
+    progress.redo_queue = progress.redo_queue.map(function (item) {
+      return item.error_log_id === error.id || item.question_id === questionId
+        ? Object.assign({}, item, { error_type: pathErrorType(errorType), error_type_detail: errorType })
+        : item;
+    });
+    return refreshDerivedAnalytics(progress);
   }
 
   function isSkillCheckAttemptRecord(value) {
@@ -76,7 +423,7 @@
     try {
       var parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
       if (!parsed || typeof parsed !== 'object') return emptyProgress();
-      return Object.assign(emptyProgress(), parsed, {
+      return normalizeAnalyticsProgress(Object.assign(emptyProgress(), parsed, {
         attempts: safeArray(parsed.attempts),
         learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
         skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
@@ -85,8 +432,15 @@
         topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
         issueReports: safeArray(parsed.issueReports),
         regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
+        error_log: safeArray(parsed.error_log),
+        topic_performance: parsed.topic_performance && typeof parsed.topic_performance === 'object' ? parsed.topic_performance : {},
+        weak_topics: safeArray(parsed.weak_topics),
+        redo_queue: safeArray(parsed.redo_queue),
+        error_distribution: parsed.error_distribution && typeof parsed.error_distribution === 'object' ? parsed.error_distribution : {},
+        priority_repair_topics: safeArray(parsed.priority_repair_topics),
+        topic_assessments: safeArray(parsed.topic_assessments),
         settings: parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : { activePaperFamily: 'p3' }
-      });
+      }));
     } catch (_error) {
       return emptyProgress();
     }
@@ -354,7 +708,7 @@
 
   function examTrustLabel(flags) {
     if (flags.includes('answer_revealed_before_marking') || flags.includes('repeated_perfect_self_marking')) {
-      return 'Needs teacher check';
+      return 'Low-trust self-marked evidence';
     }
     return flags.length ? 'Low-trust self-marked evidence' : 'Exam practice evidence';
   }
@@ -429,6 +783,107 @@
             + (status.complete ? '<span class="unit-state">Done</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
         }).join('');
+      }
+    });
+  }
+
+  function unitProgressFromCard(progress, card) {
+    var regionId = card.getAttribute('data-path-unit') || '';
+    var name = card.getAttribute('data-unit-name') || card.querySelector('h2')?.textContent || 'this unit';
+    var unitLabel = card.getAttribute('data-unit-label') || '';
+    var learnHref = card.getAttribute('data-learn-href') || card.getAttribute('href') || '#';
+    var examHref = card.getAttribute('data-exam-href') || learnHref;
+    var guideNode = card.querySelector('[data-progress-field-guide]');
+    var skillNode = card.querySelector('[data-progress-skill]');
+    var fieldTotal = Number(guideNode?.getAttribute('data-total') || 1);
+    var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
+    var requiredCheckIds = skillNode ? parseRequiredCheckIds(skillNode) : [];
+    var passCount = requiredCheckIds.length
+      ? passedCheckIds(progress, requiredCheckIds, regionId).length
+      : passingSkillAttemptsForRegion(progress, regionId).length;
+    var examCount = attemptsForRegion(progress, regionId).length;
+    var guideComplete = guideCount >= fieldTotal;
+    var checkedComplete = requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length;
+    return {
+      card: card,
+      name: name,
+      unitLabel: unitLabel,
+      learnHref: learnHref,
+      examHref: examHref,
+      guideCount: guideCount,
+      fieldTotal: fieldTotal,
+      passCount: passCount,
+      requiredCheckCount: requiredCheckIds.length,
+      examCount: examCount,
+      guideComplete: guideComplete,
+      checkedComplete: checkedComplete,
+      reviewReady: guideComplete && checkedComplete,
+      started: guideCount > 0 || passCount > 0 || examCount > 0
+    };
+  }
+
+  function actionForUnitStatus(status) {
+    if (!status.guideComplete) {
+      return {
+        title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Learn',
+        copy: 'Learn progress in this browser: ' + status.guideCount + '/' + status.fieldTotal + ' steps. Work through the next attempt-first step.',
+        href: status.learnHref
+      };
+    }
+    if (!status.checkedComplete) {
+      return {
+        title: 'Finish ' + status.name + ' Checked Practice',
+        copy: 'Learn is complete here. Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '; use the checked similar questions before exam work.',
+        href: status.learnHref
+      };
+    }
+    return {
+      title: 'Try ' + status.name + ' Exam Training',
+      copy: 'Learn and Checked Practice are complete in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
+      href: status.examHref
+    };
+  }
+
+  function updateP3NextStepPanels(progress) {
+    var panels = Array.from(document.querySelectorAll('[data-p3-next-step-panel]'));
+    if (!panels.length) return;
+    var statuses = Array.from(document.querySelectorAll('[data-path-unit]')).map(function (card) {
+      return unitProgressFromCard(progress, card);
+    });
+    if (!statuses.length) return;
+    var allReviewReady = statuses.every(function (status) { return status.reviewReady; });
+    var startedIncomplete = statuses.find(function (status) { return status.started && !status.reviewReady; });
+    var checkedReadyForExam = statuses.find(function (status) { return status.reviewReady && status.examCount === 0; });
+    var firstIncomplete = statuses.find(function (status) { return !status.reviewReady; });
+    var selected = allReviewReady ? null : (startedIncomplete || checkedReadyForExam || firstIncomplete || statuses[0]);
+    var action = selected ? actionForUnitStatus(selected) : null;
+
+    statuses.forEach(function (status) {
+      status.card.classList.toggle('is-current-local-step', Boolean(selected && status.card === selected.card));
+      status.card.classList.toggle('is-complete', status.reviewReady);
+      status.card.classList.toggle('has-exam-evidence', status.examCount > 0);
+    });
+
+    panels.forEach(function (panel) {
+      var title = panel.querySelector('[data-p3-next-step-title]');
+      var copy = panel.querySelector('[data-p3-next-step-copy]');
+      var link = panel.querySelector('[data-p3-next-step-link]');
+      if (allReviewReady) {
+        var reviewHref = panel.getAttribute('data-review-href') || '#';
+        if (title) title.textContent = 'Check Review status';
+        if (copy) copy.textContent = 'All unit Learn and Checked Practice requirements are complete in this browser. Mixed review is still local practice guidance, not a grade.';
+        if (link) {
+          link.textContent = 'Open Review';
+          link.setAttribute('href', reviewHref);
+        }
+        return;
+      }
+      if (!action) return;
+      if (title) title.textContent = action.title;
+      if (copy) copy.textContent = action.copy;
+      if (link) {
+        link.textContent = 'Continue';
+        link.setAttribute('href', action.href);
       }
     });
   }
@@ -514,6 +969,7 @@
 
     updateSkillCheckForms(progress);
     updateExamReviewGate(progress);
+    updateP3NextStepPanels(progress);
     updateP1RepairLaneStatus(progress);
     applyP1RepairP3Locks(progress);
   }
@@ -1392,6 +1848,7 @@
     progress.skillCheckAttempts[latestIndex] = Object.assign({}, progress.skillCheckAttempts[latestIndex], {
       mistakeTags: selectedMistakeTags(form)
     });
+    progress = updateErrorClassificationFromTags(progress, checkId, selectedMistakeTags(form));
     saveProgress(progress);
   }
 
@@ -1516,6 +1973,25 @@
       timestamp: new Date().toISOString()
     };
     progress.skillCheckAttempts.push(attempt);
+    progress = updateStudentPerformanceState(progress, {
+      kind: 'assessment',
+      assessment_id: attempt.attemptId,
+      student_id: PROFILE_ID,
+      source: 'checked_practice',
+      unit: attempt.regionId || attempt.topic,
+      timestamp: Date.parse(attempt.timestamp),
+      questions: [{
+        question_id: attempt.checkId,
+        unit: attempt.regionId || attempt.topic,
+        topic: attempt.topic,
+        regionId: attempt.regionId,
+        marksEarned: attempt.isCorrect ? 1 : 0,
+        marksAvailable: 1,
+        scoreLost: attempt.isCorrect ? 0 : 1,
+        error_type: normalizeErrorType(undefined, attempt.mistakeTags),
+        mistakeTags: attempt.mistakeTags
+      }]
+    });
     saveProgress(progress);
     updateProgressText();
     return attempt;
@@ -1721,7 +2197,9 @@
         marksEarned: marksEarned,
         marksAvailable: marksAvailable,
         markPointIds: tickedMarkPoints,
-        markPointsAvailable: markPointsAvailable
+        markPointsAvailable: markPointsAvailable,
+        primaryTopicId: part.getAttribute('data-primary-topic-id') || undefined,
+        mappedRegionId: part.getAttribute('data-mapped-region-id') || undefined
       };
     });
   }
@@ -1802,6 +2280,40 @@
     }, progress);
 
     progress.attempts.push(attempt);
+    progress = updateStudentPerformanceState(progress, {
+      kind: 'assessment',
+      assessment_id: attempt.id,
+      student_id: PROFILE_ID,
+      source: 'exam_training',
+      unit: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
+      timestamp: Date.parse(attempt.attemptedAt),
+      questions: safeArray(attempt.partScores).length ? safeArray(attempt.partScores).map(function (part) {
+        var partQuestionId = [attempt.questionId, part.partId, part.subpartId, part.label].filter(Boolean).join(':') || attempt.questionId;
+        return {
+          question_id: partQuestionId,
+          unit: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
+          topic: attempt.topicDisplayName,
+          regionId: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId,
+          mappedRegionId: part.mappedRegionId,
+          primaryTopicId: part.primaryTopicId,
+          marksEarned: part.marksEarned,
+          marksAvailable: part.marksAvailable,
+          scoreLost: Math.max(0, finiteNonNegative(part.marksAvailable) - finiteNonNegative(part.marksEarned)),
+          error_type: normalizeErrorType(attempt.mistakeType, attempt.mistakeTypes),
+          mistakeTags: attempt.mistakeTypes
+        };
+      }) : [{
+        question_id: attempt.questionId,
+        unit: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
+        topic: attempt.topicDisplayName,
+        regionId: attempt.validatedRegionId || attempt.displayRegionId,
+        marksEarned: attempt.marksEarned,
+        marksAvailable: attempt.marksAvailable,
+        scoreLost: Math.max(0, finiteNonNegative(attempt.marksAvailable) - finiteNonNegative(attempt.marksEarned)),
+        error_type: normalizeErrorType(attempt.mistakeType, attempt.mistakeTypes),
+        mistakeTags: attempt.mistakeTypes
+      }]
+    });
 
     saveProgress(progress);
     if (status) {

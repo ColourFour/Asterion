@@ -73,32 +73,54 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
   });
 
-  it('uses the root page as a direct P3 learning path, not a homepage/course selector', () => {
+  it('uses the root page as the course selector and keeps P3 as the direct learning path', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const generatedHomePath = 'docs/index.html';
+    const generatedP3Path = 'docs/p3/index.html';
+    const generatedP3TopicsPath = 'docs/p3/topics/index.html';
 
     expect(generatorSource).toContain('CAIE 9709 Paper 3');
     expect(generatorSource).toContain('path-unit-grid');
     expect(generatorSource).toContain('Start Unit 1: Algebra');
-    expect(generatorSource).toContain('renderP3LearningPathPage(data)');
+    expect(generatorSource).toContain("htmlByPath.set('index.html', renderCourseSelectorPage())");
+    expect(generatorSource).toContain('renderP3DashboardPage(data, course)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
     expect(generatorSource).toContain('Start Learn');
+    expect(generatorSource).toContain('homepage-course-panel');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      expect(generatedHome).toContain('CAIE 9709 Paper 3');
-      expect(generatedHome).toContain('Start P3 with Algebra.');
-      expect(generatedHome).toContain('path-unit-grid');
-      expect(generatedHome).toContain('Start Unit 1: Algebra');
-      expect(generatedHome).toContain('>Units<');
-      expect(generatedHome).toContain('>Review<');
-      expect(generatedHome).toContain('Exam Review unlocks after you complete the unit path.');
-      expect(generatedHome.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
-      expect(generatedHome).not.toContain('CAIE 9709 practice that starts with the');
-      expect(generatedHome).not.toContain('Choose the trusted path');
-      expect(generatedHome).not.toContain('Support only courses');
-      expect(generatedHome).not.toContain('homepage-hero');
+      expect(generatedHome).toContain('Choose the course before the study path.');
+      expect(generatedHome).toContain('homepage-course-panel');
+      expect(generatedHome).toContain('Start P3');
+      expect(generatedHome).toContain('Available later');
+      expect(generatedHome.match(/class="course-card/g)?.length).toBeGreaterThanOrEqual(4);
+      expect(generatedHome).not.toContain('Start P3 with Algebra.');
+      expect(generatedHome).not.toContain('path-unit-grid');
+    }
+
+    if (existsSync(generatedP3Path)) {
+      const generatedP3 = readFileSync(generatedP3Path, 'utf8');
+      expect(generatedP3).toContain('P3: Pure Mathematics 3');
+      expect(generatedP3).toContain('Take the diagnostic');
+      expect(generatedP3).toContain('Start Unit 1: Algebra');
+      expect(generatedP3).toContain('Open full unit path');
+      expect(generatedP3).toContain('path-unit-grid');
+      expect(generatedP3).toContain('data-progress-field-guide');
+      expect(generatedP3).toContain('data-progress-skill');
+      expect(generatedP3).toContain('data-progress-exam');
+      expect(generatedP3).toContain('Check review status');
+      expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
+      expect(generatedP3).not.toContain('course-topic-button-grid');
+    }
+
+    if (existsSync(generatedP3TopicsPath)) {
+      const generatedP3Topics = readFileSync(generatedP3TopicsPath, 'utf8');
+      expect(generatedP3Topics).toContain('CAIE 9709 Paper 3');
+      expect(generatedP3Topics).toContain('Start P3 with Algebra.');
+      expect(generatedP3Topics).toContain('path-unit-grid');
+      expect(generatedP3Topics.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
     }
   });
 
@@ -157,6 +179,6 @@ describe('static P3 product contract', () => {
 
     expect(generatorSource).toContain('Start Learn');
     expect(generatorSource).toContain('Continue to Learn');
-    expect(generatorSource).toContain('Review later');
+    expect(generatorSource).toContain('Check review status');
   });
 });

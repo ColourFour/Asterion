@@ -1,4 +1,9 @@
 import type { SkillCheckAttemptRecord } from '../types';
+import {
+  assessmentFromSkillCheckAttempt,
+  updateErrorClassificationFromTags,
+  updateStudentPerformanceState,
+} from '../lib/studentAnalytics';
 
 export type SkillCheckLocalAttempt = SkillCheckAttemptRecord;
 
@@ -78,10 +83,11 @@ export function saveSkillCheckAttempt(
 
   const attempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
   const nextAttempts = [...attempts, attempt];
-  storage.setItem(key, JSON.stringify({
+  const nextProgress = updateStudentPerformanceState({
     ...progress,
     skillCheckAttempts: nextAttempts,
-  }));
+  }, assessmentFromSkillCheckAttempt(attempt));
+  storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;
 }
 
@@ -109,10 +115,11 @@ export function updateLatestSkillCheckAttemptMistakeTags(
   };
   const nextAttempts = attempts.slice();
   nextAttempts[index] = updatedAttempt;
-  storage.setItem(key, JSON.stringify({
+  const nextProgress = updateErrorClassificationFromTags({
     ...progress,
     skillCheckAttempts: nextAttempts,
-  }));
+  }, checkId, mistakeTags);
+  storage.setItem(key, JSON.stringify(nextProgress));
   return updatedAttempt;
 }
 

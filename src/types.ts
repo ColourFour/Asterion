@@ -62,6 +62,8 @@ export interface AttemptPartScore {
   markBreakdown?: AttemptMarkBreakdown;
   markPointIds?: string[];
   markPointsAvailable?: number;
+  primaryTopicId?: string;
+  mappedRegionId?: string;
 }
 
 export type ExamAttemptSuspicionFlag =
@@ -403,6 +405,83 @@ export type P3PathStatus = 'IN_PROGRESS' | 'COMPLETE';
 
 export type P3PathErrorType = 'concept' | 'algebra' | 'method' | 'misread' | 'time' | 'careless';
 
+export type P3ErrorLogErrorType =
+  | 'CONCEPT_ERROR'
+  | 'ALGEBRA_ERROR'
+  | 'NOTATION_ERROR'
+  | 'METHOD_ERROR'
+  | 'CALCULATOR_ERROR'
+  | 'TIME_ERROR'
+  | 'CARELESS_ERROR';
+
+export type P3ErrorSeverity = 'LOW' | 'MEDIUM' | 'HIGH';
+
+export type P3TopicMarkKey =
+  | 'algebra'
+  | 'logs_exp'
+  | 'trigonometry'
+  | 'differentiation'
+  | 'integration'
+  | 'vectors'
+  | 'complex_numbers'
+  | 'differential_equations'
+  | 'numerical_methods';
+
+export interface P3ErrorLogEntry {
+  id: string;
+  student_id: string;
+  unit: string;
+  topic: string;
+  question_id: string;
+  error_type: P3ErrorLogErrorType;
+  timestamp: number;
+  severity: P3ErrorSeverity;
+  original_score_lost: number;
+  redo_available_at: number;
+  redo_completed: boolean;
+  redo_success: boolean;
+}
+
+export interface P3TopicAssessmentScore {
+  score_lost: number;
+  questions: number;
+}
+
+export interface P3TopicAssessmentBreakdown {
+  assessment_id: string;
+  unit: string;
+  topic_scores: Record<P3TopicMarkKey, P3TopicAssessmentScore>;
+  total_score: number;
+  total_marks_lost: number;
+}
+
+export interface P3TopicPerformanceStats {
+  score_lost: number;
+  questions: number;
+  attempts: number;
+  marks_available: number;
+  marks_earned: number;
+  redo_marks_repaired: number;
+  stability_score: number;
+  history: Array<{
+    assessment_id: string;
+    timestamp: number;
+    score_lost: number;
+    questions: number;
+    source: 'checked_practice' | 'exam_training' | 'mini_check' | 'exam_strip' | 'mock' | 'redo';
+  }>;
+}
+
+export interface P3StudentAnalyticsState {
+  error_log: P3ErrorLogEntry[];
+  topic_performance: Record<string, P3TopicPerformanceStats>;
+  weak_topics: string[];
+  redo_queue: P3PathRedoQueueItem[];
+  error_distribution: Partial<Record<P3ErrorLogErrorType, number>>;
+  priority_repair_topics: string[];
+  topic_assessments?: P3TopicAssessmentBreakdown[];
+}
+
 export interface P3PathUnitCompletion {
   learn_complete: boolean;
   checked_practice_complete: boolean;
@@ -414,11 +493,18 @@ export interface P3PathUnitCompletion {
 }
 
 export interface P3PathRedoQueueItem {
+  id?: string;
+  error_log_id?: string;
   question_id: string;
   error_type: P3PathErrorType;
+  error_type_detail?: P3ErrorLogErrorType;
+  unit?: string;
+  topic?: string;
+  original_score_lost?: number;
   missed_at?: string;
   redo_available_at?: string;
   redo_completed_at?: string;
+  redo_success?: boolean;
   status: 'pending' | 'completed' | 'improved' | 'corrected_full_solution';
 }
 
@@ -484,4 +570,11 @@ export interface StoredProgress {
   learningActivityAttempts: LearningActivityAttempt[];
   skillCheckAttempts?: SkillCheckAttemptRecord[];
   regionLearning?: Record<string, RegionLearningRecord>;
+  error_log?: P3ErrorLogEntry[];
+  topic_performance?: Record<string, P3TopicPerformanceStats>;
+  weak_topics?: string[];
+  redo_queue?: P3PathRedoQueueItem[];
+  error_distribution?: Partial<Record<P3ErrorLogErrorType, number>>;
+  priority_repair_topics?: string[];
+  topic_assessments?: P3TopicAssessmentBreakdown[];
 }

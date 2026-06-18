@@ -1,5 +1,6 @@
 import type { Attempt, ExamAttemptSuspicionFlag } from '../types';
 import { ASTERION_PROGRESS_STORAGE_KEY } from '../skill-checks/localAttempts';
+import { assessmentFromExamAttempt, updateStudentPerformanceState } from './studentAnalytics';
 
 export interface ExamAttemptStorageLike {
   getItem(key: string): string | null;
@@ -14,7 +15,7 @@ export interface ExamAttemptProgressShape {
 export interface ExamEvidenceSummary {
   evidenceKind: 'weak_self_marked_exam';
   evidenceLabel: 'Self-marked attempt' | 'Exam practice evidence';
-  trustLabel: 'Exam practice evidence' | 'Low-trust self-marked evidence' | 'Needs teacher check';
+  trustLabel: 'Exam practice evidence' | 'Low-trust self-marked evidence';
   masteryGate: 'skill_check_required' | 'skill_check_passed';
   mastered: boolean;
   masteryLabel: 'Checked Practice required for mastery' | 'Checked Practice passed; exam practice supports confidence';
@@ -87,7 +88,7 @@ export function examAttemptSuspicionFlags(
 
 export function examTrustLabel(flags: ExamAttemptSuspicionFlag[]): ExamEvidenceSummary['trustLabel'] {
   if (flags.includes('answer_revealed_before_marking') || flags.includes('repeated_perfect_self_marking')) {
-    return 'Needs teacher check';
+    return 'Low-trust self-marked evidence';
   }
   if (flags.length > 0) return 'Low-trust self-marked evidence';
   return 'Exam practice evidence';
@@ -157,9 +158,10 @@ export function saveExamAttempt(
 
   const attempts = normalizeExamAttempts(progress.attempts);
   const nextAttempts = [...attempts, attempt];
-  storage.setItem(key, JSON.stringify({
+  const nextProgress = updateStudentPerformanceState({
     ...progress,
     attempts: nextAttempts,
-  }));
+  }, assessmentFromExamAttempt(attempt));
+  storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;
 }

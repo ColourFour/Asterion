@@ -3,7 +3,7 @@
   "pages": [
     {
       "path": "index.html",
-      "label": "P3 learning path"
+      "label": "Course selector"
     },
     {
       "path": "about/index.html",

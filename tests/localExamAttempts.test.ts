@@ -78,6 +78,7 @@ describe('local exam self-marked attempts', () => {
   it('saves and reloads part-by-part self-marking state', () => {
     const storage = memoryStorage({ schemaVersion: 1, attempts: [] });
     saveExamAttempt(storage, attempt({ id: 'part_attempt' }));
+    const progress = JSON.parse(storage.getItem(ASTERION_PROGRESS_STORAGE_KEY) || '{}');
 
     expect(loadExamAttempts(storage)).toEqual([
       expect.objectContaining({
@@ -99,6 +100,20 @@ describe('local exam self-marked attempts', () => {
         ],
       }),
     ]);
+    expect(progress.error_log).toEqual([
+      expect.objectContaining({
+        question_id: '32spring21_q04:(b)',
+        error_type: 'METHOD_ERROR',
+        original_score_lost: 1,
+      }),
+    ]);
+    expect(progress.redo_queue).toEqual([
+      expect.objectContaining({
+        error_log_id: progress.error_log[0].id,
+        status: 'pending',
+      }),
+    ]);
+    expect(progress.topic_performance.differential_equations.score_lost).toBe(1);
   });
 
   it('creates tickable mark points only when mark-scheme text matches official part marks', () => {
@@ -270,7 +285,7 @@ describe('local exam self-marked attempts', () => {
     });
 
     expect(summary.suspicionFlags).toContain('answer_revealed_before_marking');
-    expect(summary.trustLabel).toBe('Needs teacher check');
+    expect(summary.trustLabel).toBe('Low-trust self-marked evidence');
     expect(summary.mastered).toBe(false);
   });
 });
