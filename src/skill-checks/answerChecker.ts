@@ -76,6 +76,7 @@ function normalizeMathText(value: string): string {
     .replace(/\\gt/g, '>')
     .replace(/\\frac\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}\s*\{([^{}]+)\}/g, 'sqrt($1)/$2')
     .replace(/\\frac\s*\{([^{}]+)\}\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}/g, '$1/sqrt($2)')
+    .replace(/\\pi\b/g, 'pi')
     .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
     .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
     .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
@@ -118,8 +119,17 @@ function parseRadicalNumber(value: string): number | undefined {
   return sign * coefficient * Math.sqrt(radicand);
 }
 
+function parsePiNumber(value: string): number | undefined {
+  const pi = value.match(/^([+-]?)(?:(\d+(?:\.\d+)?)\*?)?pi$/);
+  if (!pi) return undefined;
+  const sign = pi[1] === '-' ? -1 : 1;
+  const coefficient = pi[2] === undefined ? 1 : Number(pi[2]);
+  if (!Number.isFinite(coefficient)) return undefined;
+  return sign * coefficient * Math.PI;
+}
+
 function parseNumericAtom(value: string): number | undefined {
-  return parseDecimalNumber(value) ?? parseRadicalNumber(value);
+  return parseDecimalNumber(value) ?? parseRadicalNumber(value) ?? parsePiNumber(value);
 }
 
 function parseSimpleNumber(value: string): number | undefined {
@@ -160,7 +170,7 @@ function normalizeExpressionText(value: string): string {
 
 function splitTopLevelValues(value: string): string[] {
   return normalizeMathText(value)
-    .replace(/\bor\b/gi, ',')
+    .replace(/\b(?:or|and)\b/gi, ',')
     .replace(/[;]/g, ',')
     .split(',')
     .map((part) => part.trim())
@@ -221,20 +231,70 @@ function normalizeCoordinate(value: number[]): string {
   return `(${value.map(numericLabel).join(', ')})`;
 }
 
+function parseIntervalEndpoint(value: string): number | undefined {
+  const compact = compactText(value);
+  if (/^[+-]?(?:inf|infinity|∞)$/.test(compact)) return compact.startsWith('-') ? -Infinity : Infinity;
+  return parseSimpleNumber(value);
+}
+
 function parseInterval(value: string): IntervalValue | undefined {
   const normalized = normalizeMathText(value).trim();
   const compact = normalized.replace(/\s+/g, '');
 
   const notation = compact.match(/^([\[(])([^,]+),([^\])]+)([\]\)])$/);
   if (notation) {
-    const lower = parseSimpleNumber(notation[2]);
-    const upper = parseSimpleNumber(notation[3]);
+    const lower = parseIntervalEndpoint(notation[2]);
+    const upper = parseIntervalEndpoint(notation[3]);
     if (lower === undefined || upper === undefined || lower > upper) return undefined;
     return {
       lower,
       upper,
       lowerInclusive: notation[1] === '[',
       upperInclusive: notation[4] === ']',
+    };
+  }
+
+  const lowerHalfLine = compact.match(/^([a-z])(?:>=|>)(.+)$/i);
+  if (lowerHalfLine && !compact.includes('and')) {
+    const lower = parseSimpleNumber(lowerHalfLine[2]);
+    if (lower === undefined) return undefined;
+    return {
+      lower,
+      upper: Infinity,
+      lowerInclusive: compact.includes('>='),
+      upperInclusive: false,
+    };
+  }
+
+  const upperHalfLine = compact.match(/^([a-z])(?:<=|<)(.+)$/i);
+  if (upperHalfLine && !compact.includes('and')) {
+    const upper = parseSimpleNumber(upperHalfLine[2]);
+    if (upper === undefined) return undefined;
+    return {
+      lower: -Infinity,
+      upper,
+      lowerInclusive: false,
+      upperInclusive: compact.includes('<='),
+    };
+  }
+
+  const reverseHalfLine = compact.match(/^(.+?)(<=|>=|<|>)([a-z])$/i);
+  if (reverseHalfLine) {
+    const endpoint = parseSimpleNumber(reverseHalfLine[1]);
+    if (endpoint === undefined) return undefined;
+    if (reverseHalfLine[2] === '<' || reverseHalfLine[2] === '<=') {
+      return {
+        lower: endpoint,
+        upper: Infinity,
+        lowerInclusive: reverseHalfLine[2] === '<=',
+        upperInclusive: false,
+      };
+    }
+    return {
+      lower: -Infinity,
+      upper: endpoint,
+      lowerInclusive: false,
+      upperInclusive: reverseHalfLine[2] === '>=',
     };
   }
 
@@ -270,15 +330,26 @@ function parseInterval(value: string): IntervalValue | undefined {
   return undefined;
 }
 
+function endpointsEqual(left: number, right: number, tolerance: number): boolean {
+  if (!Number.isFinite(left) || !Number.isFinite(right)) return left === right;
+  return numbersEqual(left, right, tolerance);
+}
+
 function intervalsEqual(left: IntervalValue, right: IntervalValue, tolerance: number): boolean {
-  return numbersEqual(left.lower, right.lower, tolerance)
-    && numbersEqual(left.upper, right.upper, tolerance)
+  return endpointsEqual(left.lower, right.lower, tolerance)
+    && endpointsEqual(left.upper, right.upper, tolerance)
     && left.lowerInclusive === right.lowerInclusive
     && left.upperInclusive === right.upperInclusive;
 }
 
+function intervalEndpointLabel(value: number): string {
+  if (value === Infinity) return 'infinity';
+  if (value === -Infinity) return '-infinity';
+  return numericLabel(value);
+}
+
 function normalizeInterval(value: IntervalValue): string {
-  return `${value.lowerInclusive ? '[' : '('}${numericLabel(value.lower)}, ${numericLabel(value.upper)}${value.upperInclusive ? ']' : ')'}`;
+  return `${value.lowerInclusive ? '[' : '('}${intervalEndpointLabel(value.lower)}, ${intervalEndpointLabel(value.upper)}${value.upperInclusive ? ']' : ')'}`;
 }
 
 function parseImaginaryCoefficient(value: string): number | undefined {
@@ -400,7 +471,7 @@ export function checkSkillCheckAnswer(input: SkillCheckAnswerCheckInput): SkillC
       return result(spec, {
         isCorrect: false,
         normalizedSubmittedAnswer: compactText(trimmedSubmitted),
-        reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.',
+        reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.',
         unsupported: false,
       });
     }

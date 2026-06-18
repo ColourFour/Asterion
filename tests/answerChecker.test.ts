@@ -39,6 +39,20 @@ describe('Skill Check answer checker', () => {
     expect(check({ ...exactSineValue, acceptedAnswers: ['-0.8660254037844386'] }, '-\\sqrt{3}/2').isCorrect).toBe(true);
   });
 
+  it('accepts simple exact pi forms for numeric answers', () => {
+    const oneThirdTurn: SkillCheckAnswerSpec = {
+      answerType: 'numeric',
+      acceptedAnswers: [String(Math.PI / 3)],
+      tolerance: 1e-12,
+    };
+
+    expect(check(oneThirdTurn, 'pi/3').isCorrect).toBe(true);
+    expect(check(oneThirdTurn, '\\pi/3').isCorrect).toBe(true);
+    expect(check({ ...oneThirdTurn, acceptedAnswers: [String(2 * Math.PI)] }, '2pi').isCorrect).toBe(true);
+    expect(check({ ...oneThirdTurn, acceptedAnswers: [String(2 * Math.PI)] }, '2\\pi').isCorrect).toBe(true);
+    expect(check({ ...oneThirdTurn, acceptedAnswers: [String(-Math.PI / 4)] }, '-\\pi/4').isCorrect).toBe(true);
+  });
+
   it('rejects empty and invalid numeric input', () => {
     const empty = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, '   ');
     const invalid = check({ answerType: 'numeric', acceptedAnswers: ['4'] }, 'four');
@@ -51,7 +65,7 @@ describe('Skill Check answer checker', () => {
     });
     expect(invalid).toMatchObject({
       isCorrect: false,
-      reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.',
+      reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.',
       unsupported: false,
     });
   });
@@ -95,6 +109,20 @@ describe('Skill Check answer checker', () => {
     expect(result).toMatchObject({
       isCorrect: true,
       matchedAcceptedAnswer: '-1, 1, 5/2',
+      unsupported: false,
+    });
+  });
+
+  it('accepts and as a multi-value separator for labelled roots', () => {
+    const result = check(
+      { answerType: 'multi-value', acceptedAnswers: ['1, 2'] },
+      'x=1 and x=2',
+    );
+
+    expect(result).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '#1, #2',
+      matchedAcceptedAnswer: '1, 2',
       unsupported: false,
     });
   });
@@ -143,6 +171,50 @@ describe('Skill Check answer checker', () => {
       normalizedSubmittedAnswer: '[1, 4)',
       matchedAcceptedAnswer: '[1, 4)',
     });
+  });
+
+  it('checks one-sided intervals across practical equivalent forms', () => {
+    const openRight = check(
+      { answerType: 'interval', acceptedAnswers: ['x > 2'] },
+      '(2, infinity)',
+    );
+    const closedLeft = check(
+      { answerType: 'interval', acceptedAnswers: ['x <= 2'] },
+      '(-infinity, 2]',
+    );
+    const exactPiBound = check(
+      { answerType: 'interval', acceptedAnswers: [`x <= ${Math.PI / 3}`], tolerance: 1e-12 },
+      'x <= \\pi/3',
+    );
+    const reverseOpenRight = check(
+      { answerType: 'interval', acceptedAnswers: ['x > 2'] },
+      '2 < x',
+    );
+    const reverseClosedLeft = check(
+      { answerType: 'interval', acceptedAnswers: ['x <= 2'] },
+      '2 >= x',
+    );
+    const reverseExactPiBound = check(
+      { answerType: 'interval', acceptedAnswers: [`x <= ${Math.PI / 3}`], tolerance: 1e-12 },
+      '\\pi/3 >= x',
+    );
+
+    expect(openRight).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(2, infinity)',
+      matchedAcceptedAnswer: 'x > 2',
+    });
+    expect(closedLeft).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(-infinity, 2]',
+      matchedAcceptedAnswer: 'x <= 2',
+    });
+    expect(exactPiBound.isCorrect).toBe(true);
+    expect(reverseOpenRight.normalizedSubmittedAnswer).toBe('(2, infinity)');
+    expect(reverseOpenRight.isCorrect).toBe(true);
+    expect(reverseClosedLeft.normalizedSubmittedAnswer).toBe('(-infinity, 2]');
+    expect(reverseClosedLeft.isCorrect).toBe(true);
+    expect(reverseExactPiBound.isCorrect).toBe(true);
   });
 
   it('fails closed for unsupported interval unions', () => {

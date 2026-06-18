@@ -1612,6 +1612,7 @@
       .replace(/\\gt/g, '>')
       .replace(/\\frac\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}\s*\{([^{}]+)\}/g, 'sqrt($1)/$2')
       .replace(/\\frac\s*\{([^{}]+)\}\s*\{\s*\\sqrt\s*\{([^{}]+)\}\s*\}/g, '$1/sqrt($2)')
+      .replace(/\\pi\b/g, 'pi')
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
       .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
       .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
@@ -1645,9 +1646,20 @@
     return sign * coefficient * Math.sqrt(radicand);
   }
 
+  function parsePiNumber(value) {
+    var pi = value.match(/^([+-]?)(?:(\d+(?:\.\d+)?)\*?)?pi$/);
+    if (!pi) return undefined;
+    var sign = pi[1] === '-' ? -1 : 1;
+    var coefficient = pi[2] === undefined ? 1 : Number(pi[2]);
+    if (!Number.isFinite(coefficient)) return undefined;
+    return sign * coefficient * Math.PI;
+  }
+
   function parseNumericAtom(value) {
     var decimal = parseDecimalNumber(value);
-    return decimal === undefined ? parseRadicalNumber(value) : decimal;
+    if (decimal !== undefined) return decimal;
+    var radical = parseRadicalNumber(value);
+    return radical === undefined ? parsePiNumber(value) : radical;
   }
 
   function parseSimpleNumber(value) {
@@ -1681,7 +1693,7 @@
 
   function splitTopLevelValues(value) {
     return normalizeMathText(value)
-      .replace(/\bor\b/gi, ',')
+      .replace(/\b(?:or|and)\b/gi, ',')
       .replace(/[;]/g, ',')
       .split(',')
       .map(function (part) { return part.trim(); })
@@ -1734,19 +1746,66 @@
     return '(' + value.map(numericLabel).join(', ') + ')';
   }
 
+  function parseIntervalEndpoint(value) {
+    var compact = compactAnswerText(value);
+    if (/^[+-]?(?:inf|infinity|∞)$/.test(compact)) return compact.startsWith('-') ? -Infinity : Infinity;
+    return parseSimpleNumber(value);
+  }
+
   function parseInterval(value) {
     var normalized = normalizeMathText(value).trim();
     var compact = normalized.replace(/\s+/g, '');
     var notation = compact.match(/^([\[(])([^,]+),([^\])]+)([\]\)])$/);
     if (notation) {
-      var notationLower = parseSimpleNumber(notation[2]);
-      var notationUpper = parseSimpleNumber(notation[3]);
+      var notationLower = parseIntervalEndpoint(notation[2]);
+      var notationUpper = parseIntervalEndpoint(notation[3]);
       if (notationLower === undefined || notationUpper === undefined || notationLower > notationUpper) return undefined;
       return {
         lower: notationLower,
         upper: notationUpper,
         lowerInclusive: notation[1] === '[',
         upperInclusive: notation[4] === ']'
+      };
+    }
+    var lowerHalfLine = compact.match(/^([a-z])(?:>=|>)(.+)$/i);
+    if (lowerHalfLine && !compact.includes('and')) {
+      var halfLineLower = parseSimpleNumber(lowerHalfLine[2]);
+      if (halfLineLower === undefined) return undefined;
+      return {
+        lower: halfLineLower,
+        upper: Infinity,
+        lowerInclusive: compact.includes('>='),
+        upperInclusive: false
+      };
+    }
+    var upperHalfLine = compact.match(/^([a-z])(?:<=|<)(.+)$/i);
+    if (upperHalfLine && !compact.includes('and')) {
+      var halfLineUpper = parseSimpleNumber(upperHalfLine[2]);
+      if (halfLineUpper === undefined) return undefined;
+      return {
+        lower: -Infinity,
+        upper: halfLineUpper,
+        lowerInclusive: false,
+        upperInclusive: compact.includes('<=')
+      };
+    }
+    var reverseHalfLine = compact.match(/^(.+?)(<=|>=|<|>)([a-z])$/i);
+    if (reverseHalfLine) {
+      var reverseEndpoint = parseSimpleNumber(reverseHalfLine[1]);
+      if (reverseEndpoint === undefined) return undefined;
+      if (reverseHalfLine[2] === '<' || reverseHalfLine[2] === '<=') {
+        return {
+          lower: reverseEndpoint,
+          upper: Infinity,
+          lowerInclusive: reverseHalfLine[2] === '<=',
+          upperInclusive: false
+        };
+      }
+      return {
+        lower: -Infinity,
+        upper: reverseEndpoint,
+        lowerInclusive: false,
+        upperInclusive: reverseHalfLine[2] === '>='
       };
     }
     var chain = compact.match(/^(.+?)(<=|<)([a-z])(?:<=|<)(.+)$/i);
@@ -1777,15 +1836,26 @@
     return undefined;
   }
 
+  function endpointsEqual(left, right, tolerance) {
+    if (!Number.isFinite(left) || !Number.isFinite(right)) return left === right;
+    return numbersEqual(left, right, tolerance);
+  }
+
   function intervalsEqual(left, right, tolerance) {
-    return numbersEqual(left.lower, right.lower, tolerance)
-      && numbersEqual(left.upper, right.upper, tolerance)
+    return endpointsEqual(left.lower, right.lower, tolerance)
+      && endpointsEqual(left.upper, right.upper, tolerance)
       && left.lowerInclusive === right.lowerInclusive
       && left.upperInclusive === right.upperInclusive;
   }
 
+  function intervalEndpointLabel(value) {
+    if (value === Infinity) return 'infinity';
+    if (value === -Infinity) return '-infinity';
+    return numericLabel(value);
+  }
+
   function normalizeInterval(value) {
-    return (value.lowerInclusive ? '[' : '(') + numericLabel(value.lower) + ', ' + numericLabel(value.upper) + (value.upperInclusive ? ']' : ')');
+    return (value.lowerInclusive ? '[' : '(') + intervalEndpointLabel(value.lower) + ', ' + intervalEndpointLabel(value.upper) + (value.upperInclusive ? ']' : ')');
   }
 
   function parseImaginaryCoefficient(value) {
@@ -1874,7 +1944,7 @@
     }
     if (spec.answerType === 'numeric') {
       var submittedNumber = parseSimpleNumber(trimmed);
-      if (submittedNumber === undefined) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, or simple fraction.', unsupported: false });
+      if (submittedNumber === undefined) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedNumber = parseSimpleNumber(accepted);
         return acceptedNumber !== undefined && numbersEqual(submittedNumber, acceptedNumber, tolerance);
