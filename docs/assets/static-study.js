@@ -38,6 +38,8 @@
       attempts: [],
       learningActivityAttempts: [],
       skillCheckAttempts: [],
+      diagnosticReports: [],
+      p1RepairLaneModules: [],
       topicProfiles: {},
       issueReports: [],
       regionLearning: {},
@@ -78,6 +80,8 @@
         attempts: safeArray(parsed.attempts),
         learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
         skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
+        diagnosticReports: safeArray(parsed.diagnosticReports),
+        p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules),
         topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
         issueReports: safeArray(parsed.issueReports),
         regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
@@ -510,6 +514,8 @@
 
     updateSkillCheckForms(progress);
     updateExamReviewGate(progress);
+    updateP1RepairLaneStatus(progress);
+    applyP1RepairP3Locks(progress);
   }
 
   function completeFieldGuideTopic(regionId, topicId, title) {
@@ -900,9 +906,449 @@
     return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: trimmed, reason: 'Unsupported answer type: ' + spec.answerType + '.', unsupported: true });
   }
 
+  var P3_DIAGNOSTIC_SECTION_IDS = ['algebra_foundation', 'p3_transition', 'problem_solving'];
+  var P3_DIAGNOSTIC_RISK_FLAGS = [
+    'ALGEBRA_WEAK',
+    'TRIG_WEAK',
+    'LOGS_WEAK',
+    'DIFF_WEAK',
+    'INTEGRATION_WEAK',
+    'VECTOR_WEAK',
+    'COMPLEX_WEAK'
+  ];
+  var P3_DIAGNOSTIC_REPAIR_MODULES = {
+    ALGEBRA_WEAK: 'P1 algebra fluency repair',
+    TRIG_WEAK: 'P3 trigonometry transition repair',
+    LOGS_WEAK: 'P3 logarithms and exponentials transition repair',
+    DIFF_WEAK: 'P3 differentiation basics repair',
+    INTEGRATION_WEAK: 'P3 integration recognition repair',
+    VECTOR_WEAK: 'P3 vectors interpretation repair',
+    COMPLEX_WEAK: 'P3 complex numbers interpretation repair'
+  };
+  var P1_REPAIR_LOCK_MESSAGE = 'P3 access locked: complete foundation repair modules to continue.';
+  var P1_REPAIR_SKILL_TAGS = [
+    'ALGEBRA_MANIPULATION',
+    'EQUATION_SOLVING',
+    'TRIG_BASIC',
+    'DIFFERENTIATION_BASIC',
+    'INTEGRATION_BASIC'
+  ];
+  var P1_REPAIR_MODULE_TITLES = [
+    'Algebra Manipulation',
+    'Equation Solving',
+    'Trigonometry Basics',
+    'Differentiation Basics',
+    'Integration Basics'
+  ];
+  var P1_REPAIR_MODULES = [
+    { module_id: 'p1-repair-algebra-manipulation', weak_skill_tags: ['ALGEBRA_MANIPULATION'] },
+    { module_id: 'p1-repair-equation-solving', weak_skill_tags: ['EQUATION_SOLVING'] },
+    { module_id: 'p1-repair-trig-basics', weak_skill_tags: ['TRIG_BASIC'] },
+    { module_id: 'p1-repair-differentiation-basics', weak_skill_tags: ['DIFFERENTIATION_BASIC'] },
+    { module_id: 'p1-repair-integration-basics', weak_skill_tags: ['INTEGRATION_BASIC'] }
+  ];
+
+  function percentScore(earned, available) {
+    return available > 0 ? Math.round((earned / available) * 100) : 0;
+  }
+
+  function diagnosticSpecFromInput(input) {
+    var toleranceText = input.getAttribute('data-tolerance') || '';
+    var tolerance = toleranceText === '' ? NaN : Number(toleranceText);
+    return {
+      answerType: input.getAttribute('data-answer-type') || '',
+      acceptedAnswers: parseJsonAttribute(input, 'data-accepted-answers', []),
+      tolerance: Number.isFinite(tolerance) ? tolerance : undefined,
+      orderMatters: input.getAttribute('data-order-matters') === 'true'
+    };
+  }
+
+  function emptyDiagnosticSectionScores() {
+    return P3_DIAGNOSTIC_SECTION_IDS.reduce(function (scores, sectionId) {
+      scores[sectionId] = { earned: 0, available: 0 };
+      return scores;
+    }, {});
+  }
+
+  function emptyDiagnosticRiskScores() {
+    return P3_DIAGNOSTIC_RISK_FLAGS.reduce(function (scores, flag) {
+      scores[flag] = { earned: 0, available: 0 };
+      return scores;
+    }, {});
+  }
+
+  function diagnosticUnlockPermissions(recommendedPath) {
+    if (recommendedPath === 'P1_REPAIR_REQUIRED') {
+      return {
+        field_guide: false,
+        skill_checks: false,
+        exam_training: false,
+        topic_exam_strips: false,
+        mocks: false
+      };
+    }
+    if (recommendedPath === 'ACCELERATED_P3_PATH') {
+      return {
+        field_guide: true,
+        skill_checks: true,
+        exam_training: true,
+        topic_exam_strips: true,
+        mocks: false
+      };
+    }
+    return {
+      field_guide: true,
+      skill_checks: true,
+      exam_training: true,
+      topic_exam_strips: false,
+      mocks: false
+    };
+  }
+
+  function buildP3DiagnosticReport(form) {
+    var sectionScores = emptyDiagnosticSectionScores();
+    var riskScores = emptyDiagnosticRiskScores();
+    var criticalFoundationFailed = false;
+    var marksEarned = 0;
+    var marksAvailable = 0;
+
+    form.querySelectorAll('[data-diagnostic-mark-point]').forEach(function (input) {
+      if (!(input instanceof HTMLInputElement)) return;
+      var sectionId = input.getAttribute('data-section-id') || '';
+      var riskFlags = parseJsonAttribute(input, 'data-risk-flags', []).filter(function (flag) {
+        return P3_DIAGNOSTIC_RISK_FLAGS.includes(flag);
+      });
+      var result = checkSubmittedSkillAnswer(diagnosticSpecFromInput(input), input.value);
+      var awarded = result.isCorrect ? 1 : 0;
+      if (!sectionScores[sectionId]) sectionScores[sectionId] = { earned: 0, available: 0 };
+      sectionScores[sectionId].earned += awarded;
+      sectionScores[sectionId].available += 1;
+      riskFlags.forEach(function (flag) {
+        riskScores[flag].earned += awarded;
+        riskScores[flag].available += 1;
+      });
+      if (input.getAttribute('data-critical-foundation-skill') && !result.isCorrect) {
+        criticalFoundationFailed = true;
+      }
+      marksEarned += awarded;
+      marksAvailable += 1;
+    });
+
+    var sectionPercentages = P3_DIAGNOSTIC_SECTION_IDS.reduce(function (scores, sectionId) {
+      scores[sectionId] = percentScore(sectionScores[sectionId].earned, sectionScores[sectionId].available);
+      return scores;
+    }, {});
+    var riskFlags = P3_DIAGNOSTIC_RISK_FLAGS.filter(function (flag) {
+      if (flag === 'ALGEBRA_WEAK' && sectionPercentages.algebra_foundation < 60) return true;
+      return riskScores[flag].available > 0 && percentScore(riskScores[flag].earned, riskScores[flag].available) < 60;
+    });
+    var foundationRisk = sectionPercentages.algebra_foundation < 60 || criticalFoundationFailed;
+    var highFluency = !foundationRisk
+      && sectionPercentages.algebra_foundation >= 75
+      && sectionPercentages.p3_transition >= 70
+      && sectionPercentages.problem_solving >= 60;
+    var standardEntry = !foundationRisk
+      && sectionPercentages.algebra_foundation >= 60
+      && sectionPercentages.p3_transition >= 50;
+    var readinessLevel = highFluency ? 'HIGH_FLUENCY' : (standardEntry ? 'STANDARD_ENTRY' : 'FOUNDATION_RISK');
+    var recommendedPath = readinessLevel === 'HIGH_FLUENCY'
+      ? 'ACCELERATED_P3_PATH'
+      : readinessLevel === 'STANDARD_ENTRY' ? 'FULL_P3_PATH' : 'P1_REPAIR_REQUIRED';
+
+    return {
+      total_score: percentScore(marksEarned, marksAvailable),
+      section_scores: sectionPercentages,
+      risk_flags: riskFlags,
+      readiness_level: readinessLevel,
+      recommended_path: recommendedPath,
+      unlock_permissions: diagnosticUnlockPermissions(recommendedPath),
+      priority_repair_modules: recommendedPath === 'P1_REPAIR_REQUIRED'
+        ? P1_REPAIR_MODULE_TITLES
+        : riskFlags.map(function (flag) {
+          return P3_DIAGNOSTIC_REPAIR_MODULES[flag];
+        }).filter(Boolean),
+      foundation_repair_skill_tags: recommendedPath === 'P1_REPAIR_REQUIRED' ? P1_REPAIR_SKILL_TAGS : [],
+      lock_message: recommendedPath === 'P1_REPAIR_REQUIRED' ? P1_REPAIR_LOCK_MESSAGE : undefined
+    };
+  }
+
+  function saveP3DiagnosticReport(report) {
+    var progress = loadProgress();
+    var record = {
+      id: createId('p3_diagnostic'),
+      course: 'p3',
+      report: report,
+      submittedAt: new Date().toISOString()
+    };
+    progress.diagnosticReports = safeArray(progress.diagnosticReports).concat(record);
+    progress.latestP3DiagnosticReport = record;
+    if (report.recommended_path === 'P1_REPAIR_REQUIRED') {
+      progress.p1RepairLaneModules = ensureP1RepairLaneStates(progress.p1RepairLaneModules);
+    }
+    saveProgress(progress);
+    return record;
+  }
+
+  function submitP3Diagnostic(form) {
+    var report = buildP3DiagnosticReport(form);
+    saveP3DiagnosticReport(report);
+    updateProgressText();
+    var panel = document.querySelector('[data-p3-diagnostic-report]');
+    var json = panel?.querySelector('[data-diagnostic-report-json]');
+    var recommendation = panel?.querySelector('[data-diagnostic-recommendation]');
+    if (json) json.textContent = JSON.stringify(report, null, 2);
+    if (recommendation) recommendation.textContent = 'Student should proceed via: ' + report.recommended_path;
+    if (panel) {
+      panel.hidden = false;
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function p1RepairModuleIdsFromPage() {
+    var pageIds = Array.from(document.querySelectorAll('[data-p1-repair-module]')).map(function (node) {
+      return node.getAttribute('data-p1-repair-module') || '';
+    }).filter(Boolean);
+    return pageIds.length ? pageIds : P1_REPAIR_MODULES.map(function (module) { return module.module_id; });
+  }
+
+  function ensureP1RepairLaneStates(states) {
+    var existing = safeArray(states);
+    return P1_REPAIR_MODULES.map(function (module) {
+      var current = existing.find(function (state) {
+        return state && state.module_id === module.module_id;
+      });
+      return current || {
+        module_id: module.module_id,
+        status: 'IN_PROGRESS',
+        fast_question_accuracy: 0,
+        mini_check_passed: false,
+        attempt_history: [],
+        weak_skill_tags: module.weak_skill_tags
+      };
+    });
+  }
+
+  function latestP1RepairDiagnostic(progress) {
+    var latest = progress.latestP3DiagnosticReport;
+    if (latest && latest.report && latest.report.recommended_path === 'P1_REPAIR_REQUIRED') return latest;
+    return safeArray(progress.diagnosticReports).slice().reverse().find(function (record) {
+      return record && record.report && record.report.recommended_path === 'P1_REPAIR_REQUIRED';
+    });
+  }
+
+  function p1RepairIsTriggered(progress) {
+    return Boolean(latestP1RepairDiagnostic(progress));
+  }
+
+  function p1RepairSpecFromInput(input) {
+    var toleranceText = input.getAttribute('data-tolerance') || '';
+    var tolerance = toleranceText === '' ? NaN : Number(toleranceText);
+    return {
+      answerType: input.getAttribute('data-answer-type') || '',
+      acceptedAnswers: parseJsonAttribute(input, 'data-accepted-answers', []),
+      tolerance: Number.isFinite(tolerance) ? tolerance : undefined,
+      orderMatters: input.getAttribute('data-order-matters') === 'true'
+    };
+  }
+
+  function p1RepairStateFor(progress, moduleId) {
+    return safeArray(progress.p1RepairLaneModules).find(function (state) {
+      return state && state.module_id === moduleId;
+    });
+  }
+
+  function p1RepairMiniFirstAttemptCorrect(state) {
+    return safeArray(state && state.attempt_history).some(function (attempt) {
+      return attempt && attempt.phase === 'MINI_CHECK' && attempt.attempt_number === 1 && attempt.is_correct === true;
+    });
+  }
+
+  function p1RepairMiniPassedWithinRetry(state) {
+    return safeArray(state && state.attempt_history).some(function (attempt) {
+      return attempt && attempt.phase === 'MINI_CHECK' && attempt.attempt_number <= 2 && attempt.is_correct === true;
+    });
+  }
+
+  function p1RepairModuleComplete(state) {
+    return Boolean(
+      state
+      && Number(state.fast_question_accuracy || 0) >= 70
+      && state.mini_check_passed === true
+      && p1RepairMiniPassedWithinRetry(state)
+    );
+  }
+
+  function p1RepairUnlockStatus(progress) {
+    var moduleIds = p1RepairModuleIdsFromPage();
+    var states = moduleIds.map(function (moduleId) {
+      return p1RepairStateFor(progress, moduleId);
+    }).filter(Boolean);
+    var completed = states.filter(p1RepairModuleComplete).length;
+    var firstAttemptMiniChecks = states.filter(p1RepairMiniFirstAttemptCorrect).length;
+    return {
+      p3_access_unlocked: moduleIds.length > 0 && completed === moduleIds.length && firstAttemptMiniChecks >= 3,
+      completed_module_count: completed,
+      required_module_count: moduleIds.length || 5,
+      first_attempt_mini_check_correct_count: firstAttemptMiniChecks,
+      required_first_attempt_mini_check_correct_count: 3
+    };
+  }
+
+  function updateP1RepairLaneStatus(progress) {
+    var triggered = p1RepairIsTriggered(progress);
+    var unlock = p1RepairUnlockStatus(progress);
+    document.querySelectorAll('[data-p1-repair-module]').forEach(function (card) {
+      var moduleId = card.getAttribute('data-p1-repair-module') || '';
+      var state = p1RepairStateFor(progress, moduleId);
+      var complete = p1RepairModuleComplete(state);
+      card.classList.toggle('is-complete', complete);
+      card.classList.toggle('is-locked', !triggered);
+      var form = card.querySelector('[data-p1-repair-module-form]');
+      if (form instanceof HTMLFormElement) {
+        Array.from(form.elements).forEach(function (element) {
+          if ('disabled' in element) element.disabled = !triggered;
+        });
+      }
+      var result = card.querySelector('[data-p1-repair-module-result]');
+      if (result) {
+        if (!triggered) {
+          result.textContent = 'Locked until the diagnostic gate recommends P1_REPAIR_REQUIRED.';
+        } else if (complete) {
+          result.textContent = 'COMPLETE. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check passed.';
+        } else if (state) {
+          result.textContent = 'IN_PROGRESS. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check not yet passed within the allowed attempts.';
+        } else {
+          result.textContent = 'IN_PROGRESS. No saved attempt yet.';
+        }
+      }
+    });
+
+    document.querySelectorAll('[data-p1-repair-unlock-status]').forEach(function (node) {
+      if (!triggered) {
+        node.textContent = 'Diagnostic gate has not assigned P1_REPAIR_REQUIRED in this browser.';
+        return;
+      }
+      node.textContent = unlock.p3_access_unlocked
+        ? 'All repair conditions met. Full P3 access can reopen.'
+        : unlock.completed_module_count + '/' + unlock.required_module_count + ' modules complete; '
+          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. P3 remains locked.';
+    });
+  }
+
+  function applyP1RepairP3Locks(progress) {
+    var triggered = p1RepairIsTriggered(progress);
+    var unlock = p1RepairUnlockStatus(progress);
+    var shouldLock = triggered && !unlock.p3_access_unlocked;
+    function repairLaneHrefForCurrentPage() {
+      var path = window.location.pathname || '';
+      if (/\/p3\/topics\/[^/]+\/[^/]+\//.test(path)) return '../../../repair-lane/index.html';
+      if (/\/p3\/(?:topics|review|need-to-know|diagnostic)\//.test(path)) return '../repair-lane/index.html';
+      if (/\/p3\//.test(path)) return 'repair-lane/index.html';
+      return 'p3/repair-lane/index.html';
+    }
+    document.querySelectorAll('a[href]').forEach(function (link) {
+      var href = link.getAttribute('href') || '';
+      var canonical = link.getAttribute('data-canonical-path') || href;
+      var isP3Progression = /(?:^|\/)p3\/(?:topics|review|need-to-know)\//.test(canonical)
+        || /(?:^|\/)p3\/topics\/index\.html/.test(canonical)
+        || /exam-training\/index\.html/.test(canonical)
+        || /(?:^|\/)topics\/index\.html/.test(canonical)
+        || /(?:^|\/)review\/index\.html/.test(canonical)
+        || /(?:^|\/)need-to-know\/index\.html/.test(canonical);
+      if (!isP3Progression) return;
+      link.classList.toggle('is-repair-locked-link', shouldLock);
+      if (shouldLock) {
+        link.setAttribute('aria-disabled', 'true');
+        link.setAttribute('data-original-href', link.getAttribute('data-original-href') || href);
+        link.setAttribute('href', repairLaneHrefForCurrentPage());
+        link.setAttribute('title', P1_REPAIR_LOCK_MESSAGE);
+      } else if (link.getAttribute('data-original-href')) {
+        link.setAttribute('href', link.getAttribute('data-original-href') || href);
+        link.removeAttribute('data-original-href');
+        link.removeAttribute('aria-disabled');
+        link.removeAttribute('title');
+      }
+    });
+  }
+
+  function p1RepairAttemptNumber(history, questionId, phase) {
+    return safeArray(history).filter(function (attempt) {
+      return attempt && attempt.question_id === questionId && attempt.phase === phase;
+    }).length + 1;
+  }
+
+  function showP1RepairFeedback(input, result) {
+    var questionId = input.getAttribute('data-question-id') || input.name || '';
+    var feedback = input.closest('.repair-answer-field')?.querySelector('[data-repair-feedback-for="' + questionId + '"]');
+    if (!feedback) return;
+    var correction = input.getAttribute('data-correction') || 'Check the core method and try again.';
+    feedback.textContent = result.isCorrect ? 'Correct.' : 'Incorrect. ' + correction;
+    feedback.classList.toggle('is-correct', result.isCorrect);
+    feedback.classList.toggle('is-incorrect', !result.isCorrect);
+  }
+
+  function submitP1RepairModule(form) {
+    var moduleId = form.getAttribute('data-module-id') || '';
+    var progress = loadProgress();
+    var existing = p1RepairStateFor(progress, moduleId) || {};
+    var previousHistory = safeArray(existing.attempt_history);
+    var newHistory = [];
+    var fastInputs = Array.from(form.querySelectorAll('[data-p1-repair-fast-question]')).filter(function (input) {
+      return input instanceof HTMLInputElement;
+    });
+    var correctFast = 0;
+    fastInputs.forEach(function (input) {
+      var result = checkSubmittedSkillAnswer(p1RepairSpecFromInput(input), input.value);
+      if (result.isCorrect) correctFast += 1;
+      showP1RepairFeedback(input, result);
+      newHistory.push({
+        question_id: input.getAttribute('data-question-id') || input.name || '',
+        phase: 'FAST_QUESTION',
+        is_correct: result.isCorrect,
+        attempted_at: new Date().toISOString(),
+        attempt_number: p1RepairAttemptNumber(previousHistory, input.getAttribute('data-question-id') || input.name || '', 'FAST_QUESTION')
+      });
+    });
+
+    var miniInput = form.querySelector('[data-p1-repair-mini-check]');
+    var miniPassed = existing.mini_check_passed === true;
+    if (miniInput instanceof HTMLInputElement) {
+      var miniQuestionId = miniInput.getAttribute('data-question-id') || miniInput.name || '';
+      var miniResult = checkSubmittedSkillAnswer(p1RepairSpecFromInput(miniInput), miniInput.value);
+      var miniAttemptNumber = p1RepairAttemptNumber(previousHistory, miniQuestionId, 'MINI_CHECK');
+      showP1RepairFeedback(miniInput, miniResult);
+      newHistory.push({
+        question_id: miniQuestionId,
+        phase: 'MINI_CHECK',
+        is_correct: miniResult.isCorrect,
+        attempted_at: new Date().toISOString(),
+        attempt_number: miniAttemptNumber
+      });
+      miniPassed = miniPassed || (miniResult.isCorrect && miniAttemptNumber <= 2);
+    }
+
+    var fastAccuracy = percentScore(correctFast, fastInputs.length);
+    var fullHistory = previousHistory.concat(newHistory);
+    var nextState = {
+      module_id: moduleId,
+      status: fastAccuracy >= 70 && miniPassed ? 'COMPLETE' : 'IN_PROGRESS',
+      fast_question_accuracy: fastAccuracy,
+      mini_check_passed: miniPassed,
+      attempt_history: fullHistory,
+      weak_skill_tags: parseJsonAttribute(form, 'data-weak-skill-tags', [])
+    };
+    progress.p1RepairLaneModules = safeArray(progress.p1RepairLaneModules)
+      .filter(function (state) { return state && state.module_id !== moduleId; })
+      .concat(nextState);
+    saveProgress(progress);
+    updateProgressText();
+  }
+
   // Parity tests use this hook to compare the student-facing static checker with the TypeScript checker.
   window.__ASTERION_SKILL_CHECK_TEST_HOOKS__ = {
-    checkSubmittedSkillAnswer: checkSubmittedSkillAnswer
+    checkSubmittedSkillAnswer: checkSubmittedSkillAnswer,
+    buildP3DiagnosticReport: buildP3DiagnosticReport,
+    p1RepairUnlockStatus: p1RepairUnlockStatus
   };
 
   function parseJsonAttribute(node, name, fallback) {
@@ -2243,6 +2689,16 @@
       if (form.matches('[data-save-exam-attempt]')) {
         event.preventDefault();
         saveExamAttempt(form);
+        return;
+      }
+      if (form.matches('[data-p3-diagnostic-form]')) {
+        event.preventDefault();
+        submitP3Diagnostic(form);
+        return;
+      }
+      if (form.matches('[data-p1-repair-module-form]')) {
+        event.preventDefault();
+        submitP1RepairModule(form);
       }
     });
 

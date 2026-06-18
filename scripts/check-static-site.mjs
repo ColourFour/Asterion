@@ -470,9 +470,11 @@ for (const page of p3LearnPages) {
   const authoredLearnContracts = {
     algebra: {
       topicName: 'Algebra',
-      stepCount: 11,
+      stepCount: 17,
       markers: [
         'Remainder theorem need',
+        'Sketch y = |ax + b|',
+        'Solve absolute value equations',
         'Complete a cubic factorisation',
         'Partial fractions: irreducible quadratic factor',
         'Mixed exam transfer: cancellation trap',
@@ -480,9 +482,12 @@ for (const page of p3LearnPages) {
     },
     'logarithmic-and-exponential-functions': {
       topicName: 'Log/Exp',
-      stepCount: 13,
+      stepCount: 17,
       markers: [
         'Exponential and logarithmic form',
+        'Power-law linearisation',
+        'Exponential inequalities',
+        'Logarithmic inequalities',
         'Solve the condensed log equation',
         'Reject invalid logarithmic solutions',
         'Natural logs undo e',
@@ -491,9 +496,12 @@ for (const page of p3LearnPages) {
     },
     trigonometry: {
       topicName: 'Trigonometry',
-      stepCount: 11,
+      stepCount: 14,
       markers: [
         'Choose the identity family',
+        'sec, cosec, cot graphs',
+        'sec, cosec, cot identities and equations',
+        'R sin(x +/- alpha) and R cos(x +/- alpha)',
         'Use an identity, then solve',
         'Avoid the division trap',
         'Exam-facing mixed transfer',
@@ -501,10 +509,11 @@ for (const page of p3LearnPages) {
     },
     differentiation: {
       topicName: 'Differentiation',
-      stepCount: 14,
+      stepCount: 15,
       markers: [
         'Choose the rule before differentiating',
         'Power rule with negative and fractional powers',
+        'arctan derivative',
         'Implicit differentiation keeps dy/dx',
         'Normal gradient and equation',
         'Mixed exam transfer: build the derivative condition',
@@ -512,11 +521,12 @@ for (const page of p3LearnPages) {
     },
     integration: {
       topicName: 'Integration',
-      stepCount: 13,
+      stepCount: 14,
       markers: [
         'Choose the integration method first',
         'Power integration with negative and fractional powers',
         'Substitution with changed limits',
+        'Arctangent form 1/(x^2 + a^2)',
         'Area between curves',
         'Mixed exam transfer: substitution and evaluation',
       ],
@@ -545,20 +555,25 @@ for (const page of p3LearnPages) {
     },
     'complex-numbers': {
       topicName: 'Complex Numbers',
-      stepCount: 14,
+      stepCount: 17,
       markers: [
         'Combine real and imaginary parts',
         'Multiply and replace i squared',
         'Divide using the conjugate',
+        'Exact square roots in Cartesian form',
+        'Argand effects of complex operations',
         'Modulus locus as a circle',
         'Mixed exam transfer: arithmetic to geometry',
       ],
     },
     vectors: {
       topicName: 'Vectors',
-      stepCount: 9,
+      stepCount: 12,
       markers: [
+        '2D and 3D vector notation',
         'Direction vector from two points',
+        'Magnitude, unit vectors, and direction ratios',
+        'Midpoints and geometric vector proofs',
         'Find where two lines intersect',
         'Foot of perpendicular on a line',
         'Reflect a point in a line',

@@ -248,7 +248,9 @@ function markSchemeTextForSubpart(record: LooseRecord | undefined): string | und
 function cleanMarkPointText(value: string): string {
   return value
     .replace(/\s+/g, ' ')
-    .replace(/^\(?[a-z0-9]+\)?\s+/i, '')
+    .replace(/^\([a-z0-9]+\)\s+/i, '')
+    .replace(/^[a-z0-9]+[.)]\s+/i, '')
+    .replace(/^\d+\s+/, '')
     .replace(/^[,.;:\-\s]+/, '')
     .trim();
 }
@@ -842,7 +844,33 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number, routing?: Q
     ...structureRecords.flatMap((structure) => stringArray(structure.subparts)),
     ...structureRecords.flatMap((structure) => stringArray(structure.question_subparts)),
   ]);
-  if (labels.length < 2) return undefined;
+  if (labels.length < 2) {
+    const sourceRecord = sourceSubpartRecords.length === 1 ? sourceSubpartRecords[0] : undefined;
+    const label = labels[0] ?? pickString(sourceRecord, ['label', 'subpart_label', 'subpart_id']);
+    const marksAvailable = pickNumber(sourceRecord, ['marks', 'marks_available', 'total_marks']);
+    if (
+      !sourceRecord
+      || !label
+      || typeof marksAvailable !== 'number'
+      || !Number.isInteger(marksAvailable)
+      || marksAvailable <= 0
+      || (typeof totalMarks === 'number' && totalMarks > 0 && marksAvailable !== totalMarks)
+    ) {
+      return undefined;
+    }
+
+    const markSchemeText = markSchemeTextForSubpart(sourceRecord);
+    const markPoints = markPointsFromSchemeText(label, sourceRecord, marksAvailable);
+    if (!markPoints?.length) return undefined;
+
+    return [{
+      ...metadataForPart(label, sourceRecord, findPartRouteMapping(label, partMappings)),
+      label: partLabel(label),
+      marksAvailable,
+      ...(markSchemeText ? { markSchemeText } : {}),
+      markPoints,
+    }];
+  }
 
   const markValues = marksBySubpart(record, labels).length === labels.length
     ? marksBySubpart(record, labels)

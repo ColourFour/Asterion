@@ -397,6 +397,59 @@ export interface RegionLearningRecord {
   updatedAt: string;
 }
 
+export type P3ProgressionPathId = 'MINIMUM_SURVIVAL' | 'A_STAR';
+
+export type P3PathStatus = 'IN_PROGRESS' | 'COMPLETE';
+
+export type P3PathErrorType = 'concept' | 'algebra' | 'method' | 'misread' | 'time' | 'careless';
+
+export interface P3PathUnitCompletion {
+  learn_complete: boolean;
+  checked_practice_complete: boolean;
+  exam_questions_completed: number;
+  exam_strips_completed: number;
+  checked_practice_required?: number;
+  checked_practice_completed?: number;
+  exam_strips_required?: number;
+}
+
+export interface P3PathRedoQueueItem {
+  question_id: string;
+  error_type: P3PathErrorType;
+  missed_at?: string;
+  redo_available_at?: string;
+  redo_completed_at?: string;
+  status: 'pending' | 'completed' | 'improved' | 'corrected_full_solution';
+}
+
+export interface P3PathWeeklySubmissionRecord {
+  id: string;
+  kind: 'csv' | 'screenshot' | 'form';
+  submitted_at: string;
+  covered_unit_ids: string[];
+}
+
+export interface P3PathMockRecord {
+  id: string;
+  kind: 'mixed_paper' | 'teacher_selected_mock' | 'full_paper_3';
+  duration_minutes: number;
+  timed: boolean;
+  completed_at?: string;
+}
+
+export interface P3ProgressionStudentState {
+  assigned_path: P3ProgressionPathId;
+  unit_completion: Record<string, P3PathUnitCompletion>;
+  weekly_submissions: number;
+  error_log_entries: number;
+  redo_queue: P3PathRedoQueueItem[];
+  mock_count: number;
+  path_status: P3PathStatus;
+  missed_question_count?: number;
+  mock_records?: P3PathMockRecord[];
+  weekly_submission_records?: P3PathWeeklySubmissionRecord[];
+}
+
 export interface WorldDefinition {
   id: string;
   name: string;

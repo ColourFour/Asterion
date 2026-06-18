@@ -121,8 +121,8 @@ describe('P3 Skill Check machine-checkable data', () => {
     const notYet = report.filter((item) => item.status === 'not-yet-checkable');
     const unsupported = report.filter((item) => item.status === 'unsupported-answer-form');
 
-    expect(report).toHaveLength(159);
-    expect(deterministic).toHaveLength(159);
+    expect(report).toHaveLength(171);
+    expect(deterministic).toHaveLength(171);
     expect(notYet).toHaveLength(0);
     expect(unsupported).toHaveLength(0);
     expect(deterministic.map((item) => item.regionId)).toEqual(expect.arrayContaining([
@@ -150,14 +150,14 @@ describe('P3 Skill Check machine-checkable data', () => {
       skillCheckTopicMigrationSummary('vectors'),
       skillCheckTopicMigrationSummary('differential-equations'),
     ]).toMatchObject([
-      { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
-      { totalChecks: 18, checkableChecks: 18, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
-      { totalChecks: 21, checkableChecks: 21, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
-      { totalChecks: 15, checkableChecks: 15, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
-      { totalChecks: 21, checkableChecks: 21, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 14, checkableChecks: 14, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 20, checkableChecks: 20, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
       { totalChecks: 24, checkableChecks: 24, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 17, checkableChecks: 17, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 22, checkableChecks: 22, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 25, checkableChecks: 25, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
       { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
-      { totalChecks: 24, checkableChecks: 24, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
+      { totalChecks: 25, checkableChecks: 25, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
       { totalChecks: 12, checkableChecks: 12, uncheckableChecks: 0, unsupportedAnswerReasons: [] },
     ]);
   });
@@ -191,8 +191,8 @@ describe('P3 Skill Check machine-checkable data', () => {
 
     expect(summary).toEqual({
       regionId: 'complex-numbers',
-      totalChecks: 12,
-      checkableChecks: 12,
+      totalChecks: 14,
+      checkableChecks: 14,
       uncheckableChecks: 0,
       unsupportedAnswerReasons: [],
       answerTypes: ['complex-number', 'exact-text', 'expression-text', 'multi-value', 'numeric'],
@@ -218,11 +218,11 @@ describe('P3 Skill Check machine-checkable data', () => {
 
     expect(summary).toEqual({
       regionId: 'logarithmic-and-exponential-functions',
-      totalChecks: 18,
-      checkableChecks: 18,
+      totalChecks: 20,
+      checkableChecks: 20,
       uncheckableChecks: 0,
       unsupportedAnswerReasons: [],
-      answerTypes: ['coordinate', 'exact-text', 'expression-text', 'multi-value', 'numeric'],
+      answerTypes: ['coordinate', 'exact-text', 'expression-text', 'interval', 'multi-value', 'numeric'],
     });
   });
 
@@ -246,8 +246,8 @@ describe('P3 Skill Check machine-checkable data', () => {
 
     expect(summary).toEqual({
       regionId: 'algebra',
-      totalChecks: 21,
-      checkableChecks: 21,
+      totalChecks: 24,
+      checkableChecks: 24,
       uncheckableChecks: 0,
       unsupportedAnswerReasons: [],
       answerTypes: ['coordinate', 'exact-text', 'expression-text', 'interval', 'multi-value', 'numeric'],

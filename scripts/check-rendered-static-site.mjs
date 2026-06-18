@@ -237,7 +237,7 @@ try {
   if (p3LearnResult.learnFlow !== 1) {
     fail('P3 Algebra Learn Mode must render one learn flow.');
   }
-  if (p3LearnResult.learnSteps !== 11 || p3LearnResult.checkForms < 22) {
+  if (p3LearnResult.learnSteps !== 17 || p3LearnResult.checkForms < 34) {
     fail('P3 Algebra Learn Mode must render the authored checked lesson sequence.');
   }
   if (p3LearnResult.visibleSteps !== 1 || !p3LearnResult.activeProblemInFirstViewport) {
@@ -272,7 +272,7 @@ try {
   if (logExpLearnResult.learnFlow !== 1) {
     fail('P3 Log/Exp Learn Mode must render one learn flow.');
   }
-  if (logExpLearnResult.learnSteps !== 13 || logExpLearnResult.checkForms < 26) {
+  if (logExpLearnResult.learnSteps !== 17 || logExpLearnResult.checkForms < 34) {
     fail('P3 Log/Exp Learn Mode must render the authored checked lesson sequence.');
   }
   if (logExpLearnResult.visibleSteps !== 1 || !logExpLearnResult.activeProblemInFirstViewport) {
@@ -301,7 +301,7 @@ try {
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
     };
   });
-  if (trigLearnResult.learnFlow !== 1 || trigLearnResult.learnSteps !== 11 || trigLearnResult.checkForms < 22) {
+  if (trigLearnResult.learnFlow !== 1 || trigLearnResult.learnSteps !== 14 || trigLearnResult.checkForms < 28) {
     fail('P3 Trigonometry Learn Mode must render the authored checked lesson sequence.');
   }
   if (trigLearnResult.visibleSteps !== 1 || !trigLearnResult.activeProblemInFirstViewport) {
@@ -337,7 +337,7 @@ try {
       nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
     };
   });
-  if (diffLearnResult.learnFlow !== 1 || diffLearnResult.learnSteps !== 14 || diffLearnResult.checkForms < 28) {
+  if (diffLearnResult.learnFlow !== 1 || diffLearnResult.learnSteps !== 15 || diffLearnResult.checkForms < 30) {
     fail('P3 Differentiation Learn Mode must render the authored checked lesson sequence.');
   }
   if (diffLearnResult.visibleSteps !== 1 || !diffLearnResult.activeProblemInFirstViewport || !diffLearnResult.answerControlInFirstViewport || !diffLearnResult.checkButtonInFirstViewport) {
@@ -381,7 +381,7 @@ try {
       nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
     };
   });
-  if (integrationLearnResult.learnFlow !== 1 || integrationLearnResult.learnSteps !== 13 || integrationLearnResult.checkForms < 26) {
+  if (integrationLearnResult.learnFlow !== 1 || integrationLearnResult.learnSteps !== 14 || integrationLearnResult.checkForms < 28) {
     fail('P3 Integration Learn Mode must render the authored checked lesson sequence.');
   }
   if (integrationLearnResult.visibleSteps !== 1 || !integrationLearnResult.activeProblemInFirstViewport || !integrationLearnResult.answerControlInFirstViewport || !integrationLearnResult.checkButtonInFirstViewport) {
@@ -513,7 +513,7 @@ try {
       nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
     };
   });
-  if (complexLearnResult.learnFlow !== 1 || complexLearnResult.learnSteps !== 14 || complexLearnResult.checkForms < 28) {
+  if (complexLearnResult.learnFlow !== 1 || complexLearnResult.learnSteps !== 17 || complexLearnResult.checkForms < 34) {
     fail('P3 Complex Numbers Learn Mode must render the authored checked lesson sequence.');
   }
   if (complexLearnResult.visibleSteps !== 1 || !complexLearnResult.activeProblemInFirstViewport || !complexLearnResult.answerControlInFirstViewport || !complexLearnResult.checkButtonInFirstViewport) {

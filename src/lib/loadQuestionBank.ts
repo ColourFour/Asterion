@@ -5,6 +5,7 @@ import {
   getTopicRoutingRecordCount,
   normalizeQuestionBankWithDiagnostics,
 } from './normalizeQuestionBank';
+import { applyP3TopicPackRefreshOverlay } from './p3TopicPackRefreshOverlay';
 import { isP3Question, matchRegionForQuestion } from './worldMap';
 
 interface LoadedJson {
@@ -50,7 +51,12 @@ export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankO
   const scope = options.scope ?? 'p3';
   const localResult = await loadMainBankWithFallback(scope);
   const routingResult = await loadTopicRoutingWithFallback();
-  const result = normalizeQuestionBankWithDiagnostics(localResult.data, {}, routingResult.data, {
+  const overlayApplied = scope === 'p3'
+    ? applyP3TopicPackRefreshOverlay(localResult.data, routingResult.data)
+    : undefined;
+  const questionBankData = overlayApplied?.questionBank ?? localResult.data;
+  const topicRoutingData = overlayApplied?.topicRouting ?? routingResult.data;
+  const result = normalizeQuestionBankWithDiagnostics(questionBankData, {}, topicRoutingData, {
     contentSourceKind: localResult.contentSourceKind,
   });
   if (scope === 'p3' && result.questions.filter(isP3Question).length === 0) {
@@ -59,8 +65,8 @@ export async function loadQuestionBankWithDiagnostics(options: LoadQuestionBankO
   result.diagnostics = {
     ...result.diagnostics,
     mainContentSource: localResult.contentSourceKind,
-    ...jsonMetadata('main', localResult.url, localResult.data),
-    ...jsonMetadata('routing', routingResult.url, routingResult.data),
+    ...jsonMetadata('main', localResult.url, questionBankData),
+    ...jsonMetadata('routing', routingResult.url, topicRoutingData),
     sidecarUrl: undefined,
     sidecarSchemaName: undefined,
     sidecarRecordCount: undefined,

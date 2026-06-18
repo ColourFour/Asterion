@@ -5,7 +5,15 @@ import { fileURLToPath } from 'node:url';
 import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
 import { examQuestionSupportPrompt } from '../src/data/examQuestionSupport';
+import {
+  P1_REPAIR_LOCK_MESSAGE,
+  P1_REPAIR_MODULES,
+  P1_REPAIR_REQUIRED_STATE_MESSAGE,
+  type P1RepairModuleDefinition,
+  type P1RepairQuestion,
+} from '../src/data/p1RepairLane';
 import { buildP3ExamLaddersFromMappedQuestions, P3_EXAM_LADDER_LEVELS, type P3ExamLadder, type P3MappedExamQuestionIdsBySkill } from '../src/data/p3ExamLadders';
+import { P3_DIAGNOSTIC_DURATION_TARGET_MINUTES, P3_DIAGNOSTIC_QUESTIONS, P3_DIAGNOSTIC_SECTIONS, type P3DiagnosticQuestion } from '../src/data/p3DiagnosticGate';
 import { getFieldGuideTopicsForRegion, validateProblemFirstFieldGuideLessons, type FieldGuideTopic, type FieldGuideTopicExample, type ProblemFirstLesson } from '../src/data/fieldGuideTopics';
 import { getLearnStepsForRegion, validateLearnSteps, type LearnStep } from '../src/data/learnModeLessons';
 import { P3_OFFICIAL_TOPICS, P3_SKILL_CONTRACT, type P3OfficialTopic, type P3SkillContractEntry } from '../src/data/p3SkillContract';
@@ -21,6 +29,8 @@ import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData, reviewed
 import { normalizeQuestionBankWithDiagnostics } from '../src/lib/normalizeQuestionBank';
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from '../src/lib/questionTraining';
 import { filterCourseExamQuestions, readableRoutingTopicLabel } from '../src/lib/courseExamTraining';
+import { applyP3TopicPackRefreshOverlay } from '../src/lib/p3TopicPackRefreshOverlay';
+import { P1_REPAIR_EXAMPLE_COMPLETION_STATE } from '../src/lib/p1RepairLane';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS, STATIC_STUDY_PAGE_ROUTES } from '../src/lib/staticStudyRoutes';
 import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
@@ -97,7 +107,7 @@ interface RenderPageOptions {
   pagePath: string;
   title: string;
   description: string;
-  active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-topics' | 'p3-exam-training';
+  active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-diagnostic' | 'p1-repair' | 'p3-topics' | 'p3-exam-training';
   body: string;
   bodyClass?: string;
 }
@@ -321,6 +331,14 @@ function coursePagePath(course: CourseMetadata): string {
 
 function p3TopicsIndexPagePath(): string {
   return `${P3_COURSE_ID}/topics/index.html`;
+}
+
+function p3DiagnosticPagePath(): string {
+  return `${P3_COURSE_ID}/diagnostic/index.html`;
+}
+
+function p1RepairLanePagePath(): string {
+  return `${P3_COURSE_ID}/repair-lane/index.html`;
 }
 
 function p3NeedToKnowPagePath(): string {
@@ -558,6 +576,8 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   const items = [
+    { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
+    { key: 'p1-repair', label: 'Repair', path: p1RepairLanePagePath() },
     { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Review', path: p3ReviewPagePath() },
   ];
@@ -679,6 +699,210 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
   `;
 }
 
+function renderDiagnosticInput(question: P3DiagnosticQuestion): string {
+  return `
+    <div class="diagnostic-mark-grid">
+      ${question.markPoints.map((markPoint) => `
+        <label class="single-answer-field diagnostic-answer-field">
+          <span>${renderMathText(markPoint.label)}</span>
+          <input
+            name="${escapeAttr(`${question.id}::${markPoint.id}`)}"
+            type="text"
+            autocomplete="off"
+            data-diagnostic-mark-point
+            data-question-id="${escapeAttr(question.id)}"
+            data-mark-point-id="${escapeAttr(markPoint.id)}"
+            data-section-id="${escapeAttr(question.sectionId)}"
+            data-risk-flags="${escapeAttr(JSON.stringify(markPoint.riskFlags))}"
+            data-critical-foundation-skill="${escapeAttr(markPoint.criticalFoundationSkill ?? '')}"
+            data-answer-type="${escapeAttr(markPoint.answerType)}"
+            data-accepted-answers="${escapeAttr(JSON.stringify(markPoint.acceptedAnswers))}"
+            data-tolerance="${escapeAttr(markPoint.tolerance ?? '')}"
+            data-order-matters="${markPoint.orderMatters === true ? 'true' : 'false'}"
+          />
+        </label>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderDiagnosticQuestion(question: P3DiagnosticQuestion, index: number): string {
+  return `
+    <article class="practice-card diagnostic-question-card" data-diagnostic-question="${escapeAttr(question.id)}">
+      <header>
+        <p class="eyebrow">${escapeHtml(question.sectionLabel)}${index + 1} · ${escapeHtml(question.answerFormat)} · ${question.markPoints.length} mark${question.markPoints.length === 1 ? '' : 's'}</p>
+        <h3>${escapeHtml(question.title)}</h3>
+      </header>
+      <p class="prompt">${renderMathText(question.prompt)}</p>
+      ${renderDiagnosticInput(question)}
+    </article>
+  `;
+}
+
+function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
+  const questionCount = P3_DIAGNOSTIC_QUESTIONS.length;
+  const markCount = P3_DIAGNOSTIC_QUESTIONS.reduce((sum, question) => sum + question.markPoints.length, 0);
+  const body = `
+    ${renderHero(
+      'P3 Diagnostic Gate',
+      `A fixed ${P3_DIAGNOSTIC_DURATION_TARGET_MINUTES} minute readiness paper for P1 algebra fluency, early P3 transition skills, and light mixed problem solving.`,
+      'P(x), \\quad \\log_a x, \\quad \\frac{dy}{dx}, \\quad \\int f(x)\\,dx',
+      '<a class="button primary-button" href="#diagnostic-paper">Start diagnostic</a>',
+      'CAIE 9709 Paper 3',
+    )}
+    <section class="diagnostic-rules summary-card" aria-labelledby="diagnostic-rules-title">
+      <div>
+        <p class="eyebrow">Classification paper</p>
+        <h2 id="diagnostic-rules-title">${questionCount} questions · ${markCount} mark points</h2>
+        <p>No hints, no teaching, no adaptive branching, and no mark-scheme explanations are shown during the paper.</p>
+      </div>
+    </section>
+    <form class="diagnostic-paper" id="diagnostic-paper" data-p3-diagnostic-form data-total-marks="${markCount}">
+      ${P3_DIAGNOSTIC_SECTIONS.map((section) => {
+        const questions = P3_DIAGNOSTIC_QUESTIONS.filter((question) => question.sectionId === section.id);
+        return `
+          <section class="diagnostic-section" data-diagnostic-section="${escapeAttr(section.id)}">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">${escapeHtml(section.purpose)}</p>
+                <h2>${escapeHtml(section.label)}</h2>
+              </div>
+            </div>
+            <div class="practice-card-stack">
+              ${questions.map((question, index) => renderDiagnosticQuestion(question, index)).join('')}
+            </div>
+          </section>
+        `;
+      }).join('')}
+      <section class="next-step-card diagnostic-submit-panel">
+        <h2>Submit for classification</h2>
+        <p>The report is generated from deterministic mark points only.</p>
+        <button class="button primary-button" type="submit">Submit diagnostic</button>
+      </section>
+    </form>
+    <section class="diagnostic-report-panel summary-card" data-p3-diagnostic-report hidden aria-labelledby="diagnostic-report-title">
+      <div>
+        <p class="eyebrow">Diagnostic report object</p>
+        <h2 id="diagnostic-report-title">Readiness classification</h2>
+      </div>
+      <pre class="diagnostic-report-json" data-diagnostic-report-json>{}</pre>
+      <p class="diagnostic-recommendation" data-diagnostic-recommendation>Student should proceed via: P1_REPAIR_REQUIRED</p>
+      ${routeLink(pagePath, p1RepairLanePagePath(), 'Open P1 Repair Lane', 'button primary-button')}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'P3 Diagnostic Gate',
+    description: 'Fixed Paper 3 diagnostic assessment and readiness classifier for CAIE 9709 P3.',
+    active: 'p3-diagnostic',
+    body,
+    bodyClass: 'diagnostic-page',
+  });
+}
+
+function renderP1RepairQuestionInput(question: P1RepairQuestion, phase: 'fast' | 'mini'): string {
+  const attrPrefix = phase === 'fast' ? 'data-p1-repair-fast-question' : 'data-p1-repair-mini-check';
+  return `
+    <label class="single-answer-field repair-answer-field">
+      <span>${renderMathText(question.prompt)}</span>
+      <input
+        name="${escapeAttr(question.id)}"
+        type="text"
+        autocomplete="off"
+        ${attrPrefix}
+        data-question-id="${escapeAttr(question.id)}"
+        data-answer-type="${escapeAttr(question.answerType)}"
+        data-accepted-answers="${escapeAttr(JSON.stringify(question.acceptedAnswers))}"
+        data-correction="${escapeAttr(question.correction)}"
+        data-tolerance="${escapeAttr(question.tolerance ?? '')}"
+        data-order-matters="${question.orderMatters === true ? 'true' : 'false'}"
+      />
+      <small class="repair-feedback" data-repair-feedback-for="${escapeAttr(question.id)}"></small>
+    </label>
+  `;
+}
+
+function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): string {
+  return `
+    <article class="repair-module-card" data-p1-repair-module="${escapeAttr(module.module_id)}">
+      <header>
+        <p class="eyebrow">Module ${index + 1} · ${escapeHtml(module.skill_tag)}</p>
+        <h2>${escapeHtml(module.title)}</h2>
+        <p>Learn refresh: ${escapeHtml(module.learn_refresh_minutes)} min. Fast questions require at least 70%.</p>
+      </header>
+      <section class="repair-refresh" aria-label="${escapeAttr(module.title)} learn refresh">
+        <h3>Learn Refresh</h3>
+        <ol>
+          ${module.learn_refresh.map((step) => `<li>${renderMathText(step)}</li>`).join('')}
+        </ol>
+      </section>
+      <form class="repair-module-form" data-p1-repair-module-form data-module-id="${escapeAttr(module.module_id)}" data-weak-skill-tags="${escapeAttr(JSON.stringify(module.weak_skill_tags))}">
+        <section class="repair-question-block">
+          <h3>Fast Questions</h3>
+          <div class="repair-question-grid">
+            ${module.fast_questions.map((question) => renderP1RepairQuestionInput(question, 'fast')).join('')}
+          </div>
+        </section>
+        <section class="repair-question-block repair-mini-check">
+          <h3>Mini-Check</h3>
+          <p>One exam-style check. A first attempt matters for the final unlock condition. One retry is allowed for module completion.</p>
+          ${renderP1RepairQuestionInput(module.mini_check, 'mini')}
+        </section>
+        <div class="repair-module-actions">
+          <button class="button primary-button" type="submit">Check module</button>
+          <p class="repair-module-result" data-p1-repair-module-result>Not complete.</p>
+        </div>
+      </form>
+    </article>
+  `;
+}
+
+function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
+  const exampleState = JSON.stringify(P1_REPAIR_EXAMPLE_COMPLETION_STATE, null, 2);
+  const body = `
+    ${renderHero(
+      'P1 Repair Lane',
+      'Short prerequisite recovery for core P1 algebra and calculus fluency before P3 Exam Training.',
+      'x^2-9, \\quad \\sin^2 x+\\cos^2 x=1, \\quad \\frac{dy}{dx}, \\quad \\int f(x)\\,dx',
+      '<a class="button primary-button" href="#repair-modules">Start repair</a>',
+      'CAIE 9709 foundation repair',
+    )}
+    <section class="repair-lock-panel summary-card" aria-labelledby="repair-lock-title" data-p1-repair-status-panel>
+      <div>
+        <p class="eyebrow">Locked state</p>
+        <h2 id="repair-lock-title">${escapeHtml(P1_REPAIR_LOCK_MESSAGE)}</h2>
+        <p>${escapeHtml(P1_REPAIR_REQUIRED_STATE_MESSAGE)}</p>
+      </div>
+      <p class="repair-unlock-status" data-p1-repair-unlock-status>0/${P1_REPAIR_MODULES.length} modules complete. P3 remains locked.</p>
+    </section>
+    <section class="summary-card repair-rule-panel" aria-labelledby="repair-rule-title">
+      <div>
+        <p class="eyebrow">Unlock logic function</p>
+        <h2 id="repair-rule-title">All modules complete, plus 3 first-attempt mini-checks.</h2>
+        <p>The pure function checks every module for fast-question accuracy at or above 70%, a mini-check pass within the first attempt or one retry, and at least 3 of 5 mini-checks correct on the first attempt.</p>
+      </div>
+    </section>
+    <section class="repair-module-list" id="repair-modules" aria-label="P1 Repair Lane modules">
+      ${P1_REPAIR_MODULES.map((module, index) => renderP1RepairModule(module, index)).join('')}
+    </section>
+    <section class="summary-card repair-state-example" aria-labelledby="repair-state-title">
+      <div>
+        <p class="eyebrow">Example completion state object</p>
+        <h2 id="repair-state-title">Student state shape</h2>
+      </div>
+      <pre class="diagnostic-report-json">${escapeHtml(exampleState)}</pre>
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'P1 Repair Lane',
+    description: 'Standalone P1 prerequisite recovery lane for CAIE 9709 students locked from P3 Exam Training by the diagnostic gate.',
+    active: 'p1-repair',
+    body,
+    bodyClass: 'repair-lane-page',
+  });
+}
+
 function renderP3LearningPathPage(
   data: StaticSiteData,
   pagePath = 'index.html',
@@ -696,7 +920,8 @@ function renderP3LearningPathPage(
           <span>Factor, split into partial fractions, then check each step in Learn.</span>
         </div>
         <div class="hero-actions p3-problem-actions">
-          ${routeLink(pagePath, learnPagePath(firstTopic), 'Start Unit 1: Algebra', 'button primary-button')}
+          ${routeLink(pagePath, p3DiagnosticPagePath(), 'Take P3 diagnostic', 'button primary-button')}
+          ${routeLink(pagePath, learnPagePath(firstTopic), 'Start Unit 1: Algebra', 'button secondary-button')}
         </div>
       </div>
     </section>
@@ -2483,14 +2708,14 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
   if (!questionImage || !markSchemeImage) return '';
   const totalMarks = marksAvailable(question);
   const selfMarkParts = examSelfMarkParts(question, totalMarks);
-  const hasPartData = Boolean(question.parts?.length);
   const hasTickableMarkPoints = selfMarkParts.some((part) => (part.markPoints?.length ?? 0) > 0);
+  const usesCoarseSelfMarking = !hasTickableMarkPoints;
   const displayTopic = options.displayTopic ?? displayTopicForQuestion(question);
   const displaySubtopic = options.displaySubtopic ?? question.displaySubtopic;
   const allowAttemptSave = options.allowAttemptSave ?? true;
   const supportPrompt = examQuestionSupportPrompt(question.id);
   return `
-    <article class="exam-question-card" id="question-${escapeAttr(question.id)}" data-coarse-self-marking="${hasPartData ? 'false' : 'true'}">
+    <article class="exam-question-card" id="question-${escapeAttr(question.id)}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}">
       <header>
         <div>
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
@@ -2519,12 +2744,12 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
         </figure>
       </details>
       ${options.reviewLinkPath ? `<p class="question-review-link">${routeLink(pagePath, options.reviewLinkPath, 'Review Learn', 'button secondary-button')}</p>` : ''}
-      ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${hasPartData ? 'false' : 'true'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
+      ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
           <span>Exam practice evidence. Needs Checked Practice pass before mastery can be shown.</span>
         </div>
-        ${!hasPartData ? '<p class="coarse-marking-note">Coarse self-marking: this source record does not expose reliable separate parts, so save one whole-question score.</p>' : ''}
+        ${usesCoarseSelfMarking ? '<p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>' : ''}
         <div class="exam-part-list">
           ${selfMarkParts.map(renderExamPartControls).join('')}
         </div>
@@ -2798,9 +3023,10 @@ async function copyStaticAssets(): Promise<void> {
 }
 
 async function loadStaticSiteData(): Promise<StaticSiteData> {
-  const questionBank = await readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
+  const baseQuestionBank = await readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
   const catalogQuestionBank = await readJson('public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json');
-  const topicRouting = await readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
+  const baseTopicRouting = await readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
+  const { questionBank, topicRouting } = applyP3TopicPackRefreshOverlay(baseQuestionBank, baseTopicRouting);
   const generatedPracticeJson = await readJson('public/data/generated_practice_bank.json');
   const teachingSnippetsJson = await readJson('public/data/teaching_snippets.json');
   const p3SkillCoverageReport = await readJson('tools/content_lab/outputs/p3_skill_coverage_report.json');
@@ -2868,6 +3094,8 @@ async function generate(): Promise<void> {
   }
 
   htmlByPath.set(p3TopicsIndexPagePath(), renderP3TopicsIndexPage(data));
+  htmlByPath.set(p3DiagnosticPagePath(), renderP3DiagnosticPage());
+  htmlByPath.set(p1RepairLanePagePath(), renderP1RepairLanePage());
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
   htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage(data));
   htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));

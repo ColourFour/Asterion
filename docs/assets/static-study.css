@@ -4624,6 +4624,156 @@ body.learn-mode-page .learn-exam-transfer {
   width: min(var(--content), calc(100% - 32px));
 }
 
+.diagnostic-page main {
+  width: min(var(--content), calc(100% - 32px));
+}
+
+.diagnostic-paper {
+  display: grid;
+  gap: 22px;
+}
+
+.diagnostic-section {
+  display: grid;
+  gap: 14px;
+}
+
+.diagnostic-question-card {
+  align-content: start;
+}
+
+.diagnostic-question-card header {
+  display: grid;
+  gap: 4px;
+}
+
+.diagnostic-mark-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diagnostic-answer-field {
+  align-content: start;
+}
+
+.diagnostic-submit-panel,
+.diagnostic-report-panel {
+  width: 100%;
+}
+
+.diagnostic-report-json {
+  overflow-x: auto;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: #102033;
+  background: #ffffff;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  white-space: pre;
+}
+
+.diagnostic-recommendation {
+  margin: 0;
+  color: var(--ink-warm);
+  font-weight: 900;
+}
+
+.repair-lane-page main {
+  width: min(var(--content), calc(100% - 32px));
+}
+
+.repair-lock-panel,
+.repair-rule-panel,
+.repair-state-example {
+  width: 100%;
+}
+
+.repair-unlock-status,
+.repair-module-result {
+  margin: 0;
+  color: var(--ink-warm);
+  font-weight: 900;
+}
+
+.repair-module-list {
+  display: grid;
+  gap: 18px;
+}
+
+.repair-module-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.repair-module-card.is-locked {
+  opacity: 0.72;
+}
+
+.repair-module-card.is-complete {
+  border-color: #266b4d;
+}
+
+.repair-module-card header,
+.repair-refresh,
+.repair-module-form,
+.repair-question-block {
+  display: grid;
+  gap: 10px;
+}
+
+.repair-refresh h3,
+.repair-question-block h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.repair-refresh ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.repair-question-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.repair-answer-field {
+  align-content: start;
+}
+
+.repair-feedback {
+  min-height: 1.3em;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.repair-feedback.is-correct {
+  color: #266b4d;
+}
+
+.repair-feedback.is-incorrect {
+  color: #8a2f18;
+}
+
+.repair-module-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.is-repair-locked-link {
+  cursor: not-allowed;
+}
+
 .exam-training-page .page-hero,
 .exam-training-page .exam-question-section,
 .exam-training-page .exam-callout,
@@ -5141,6 +5291,11 @@ body.skill-check-page .exam-question-section {
 }
 
 @media (max-width: 640px) {
+  .diagnostic-mark-grid,
+  .repair-question-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   html {
     scroll-padding-top: 24px;
   }

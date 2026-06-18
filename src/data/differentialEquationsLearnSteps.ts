@@ -52,7 +52,7 @@ const DIFFERENTIAL_EQUATIONS_LEARN_DRAFTS: DifferentialEquationsLearnStepDraft[]
     prompt: 'Look for an x-factor times a y-factor. Can this equation be separated?',
     principle: 'Principle: separable differential equations can be rearranged into a y-side and an x-side.',
     explanation: 'The right side is a product of a function of $x$ and a function of $y$. Dividing by $y$ and multiplying by $dx$ gives $\\frac1y\\,dy=x\\,dx$, so it is separable.',
-    examTransfer: 'Exam transfer: before solving a first-order differential equation, show that $y$ terms sit with $dy$ and $x$ terms with $dx$ before integrating.',
+    examTransfer: 'Exam transfer: before solving a first-order differential equation, show that $y$ terms sit with $dy$ and $x$ terms with $dx$. The setup line is often the first mark.',
     primary: {
       id: 'learn-de-recognize-separable-primary',
       prompt: 'For $\\frac{dy}{dx}=xy$, look for an x-factor times a y-factor, then decide whether it is separable.',
@@ -112,7 +112,7 @@ const DIFFERENTIAL_EQUATIONS_LEARN_DRAFTS: DifferentialEquationsLearnStepDraft[]
     prompt: 'Move the y terms to the left. What should the separated form be?',
     principle: 'Principle: separate before integrating: y terms with $dy$, x terms with $dx$.',
     explanation: 'Divide both sides by $y$, then multiply by $dx$. The separated equation is $\\frac1y\\,dy=x\\,dx$.',
-    examTransfer: 'Exam transfer: a mark scheme may accept separation even before integration, but missing $dx$ or $dy$ can lose the setup mark.',
+    examTransfer: 'Exam transfer: a mark scheme may accept separation before integration, but missing $dx$ or $dy$ can lose the setup mark. Produce a readable separated equation first.',
     primary: {
       id: 'learn-de-separate-variables-primary',
       prompt: 'Separate $\\frac{dy}{dx}=xy$.',

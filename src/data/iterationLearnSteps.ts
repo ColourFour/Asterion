@@ -53,7 +53,7 @@ const ITERATION_LEARN_DRAFTS: IterationLearnStepDraft[] = [
     prompt: 'Before iterating, identify the target. Which graph feature represents a solution?',
     principle: 'Principle: a numerical root is an x-value where the equation is satisfied, often seen as an axis crossing or graph intersection.',
     explanation: 'A root of $f(x)=0$ is where the graph $y=f(x)$ crosses or touches the x-axis. If the equation is split into two sides, a solution is the x-coordinate of an intersection.',
-    examTransfer: 'Exam transfer: before iterating, state the numerical target: a root of $f(x)=0$ or the x-coordinate of an intersection of two graphs.',
+    examTransfer: 'Exam transfer: before iterating, state the numerical target: a root of $f(x)=0$ or the x-coordinate of an intersection. The trap is iterating without saying what is being approximated.',
     primary: {
       id: 'learn-iteration-need-numerical-solution-primary',
       prompt: 'For $f(x)=x^3-x-1$, choose the target graph feature that represents a root.',
@@ -106,7 +106,7 @@ const ITERATION_LEARN_DRAFTS: IterationLearnStepDraft[] = [
     prompt: 'Which form is ready for fixed-point iteration?',
     principle: 'Principle: fixed-point iteration needs $x=g(x)$, then uses $x_{n+1}=g(x_n)$.',
     explanation: 'From $x^3-x-1=0$, rearrange to $x^3=x+1$, then take the cube root: $x=\\sqrt[3]{x+1}$. That can become $x_{n+1}=\\sqrt[3]{x_n+1}$.',
-    examTransfer: 'Exam transfer: when a question asks for an iteration formula, make the next value the subject before substituting any numbers.',
+    examTransfer: 'Exam transfer: when a question asks for an iteration formula, make the next value the subject before substituting numbers. Produce $x_{n+1}=g(x_n)$, not just an equivalent equation.',
     primary: {
       id: 'learn-iteration-rearrange-fixed-point-primary',
       prompt: 'For $x^3-x-1=0$, type the fixed-point form using cuberoot notation.',

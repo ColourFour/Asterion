@@ -32,7 +32,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'algebra',
     name: 'Algebra',
     shortName: 'Algebra',
-    description: 'Manipulate expressions, polynomials, partial fractions, modulus equations, and binomial expansions.',
+    description: 'Start here because polynomial structure, partial fractions, and binomial expansion feed later calculus and differential-equation questions.',
     headerFormula: 'f(x), \\; P(x), \\; |x|, \\; (1+x)^n',
   },
   {
@@ -40,7 +40,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'logarithmic-and-exponential-functions',
     name: 'Logarithmic and Exponential Functions',
     shortName: 'Logs and Exponentials',
-    description: 'Work with logarithmic and exponential equations, domain checks, and linearisation.',
+    description: 'Build log laws first, then use them to solve equations, check domains, and read exponential models in later calculus contexts.',
     headerFormula: '\\log_a x, \\; e^x, \\; y = ab^x',
   },
   {
@@ -48,7 +48,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'trigonometry',
     name: 'Trigonometry',
     shortName: 'Trig',
-    description: 'Practise identities, equations on intervals, reciprocal functions, and compound-angle formulae.',
+    description: 'Learn identities as tools for solving equations and rewriting calculus expressions, then practise interval discipline.',
     headerFormula: '\\sin x, \\; \\cos x, \\; \\tan x',
   },
   {
@@ -56,7 +56,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'differentiation',
     name: 'Differentiation',
     shortName: 'Differentiation',
-    description: 'Study differentiation techniques, tangents, normals, stationary points, implicit and parametric forms.',
+    description: 'Choose the derivative rule first, then turn gradients into tangents, normals, stationary points, and implicit or parametric results.',
     headerFormula: '\\frac{dy}{dx}, \\; f^{\\prime}(x), \\; \\frac{dy/dt}{dx/dt}',
   },
   {
@@ -64,7 +64,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'integration',
     name: 'Integration',
     shortName: 'Integration',
-    description: 'Build fluency with method choice, substitution, parts, partial fractions, areas, and definite integrals.',
+    description: 'Start with method choice because substitution, parts, partial fractions, and area questions all depend on choosing the first rewrite.',
     headerFormula: '\\int f(x)\\,dx, \\; \\int_a^b f(x)\\,dx',
   },
   {
@@ -72,7 +72,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'numerical-solution-of-equations',
     name: 'Numerical Solution of Equations',
     shortName: 'Numerical Solution',
-    description: 'Use sign-change arguments, fixed-point iteration, convergence checks, and numerical accuracy.',
+    description: 'Move from proving where a root lies to iterating accurately; exam marks reward the bracket, the formula, and the rounded conclusion.',
     headerFormula: 'x_{n+1}=g(x_n), \\; f(a)f(b)<0',
   },
   {
@@ -80,7 +80,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'vectors',
     name: 'Vectors',
     shortName: 'Vectors',
-    description: 'Practise vector notation, 3D lines, intersections, scalar products, angles, and geometry modelling.',
+    description: 'The goal is to turn vector notation into geometry: lines, intersections, angles, distances, and projections.',
     headerFormula: '\\mathbf{r}=\\mathbf{a}+\\lambda\\mathbf{b}, \\; \\mathbf{a}\\cdot\\mathbf{b}',
   },
   {
@@ -88,7 +88,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'differential-equations',
     name: 'Differential Equations',
     shortName: 'DEs',
-    description: 'Form and solve first-order differential equations, including separation and initial conditions.',
+    description: 'Form or separate the equation first, integrate cleanly, then use conditions and context to finish the model.',
     headerFormula: '\\frac{dy}{dx}=f(x,y), \\; y(x_0)=y_0',
   },
   {
@@ -96,7 +96,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: 'complex-numbers',
     name: 'Complex Numbers',
     shortName: 'Complex Numbers',
-    description: 'Use Cartesian, modulus-argument, locus, polar, and root forms of complex numbers.',
+    description: 'Move from arithmetic to geometry: Cartesian form, modulus-argument form, loci, powers, and roots all reuse the same representation choices.',
     headerFormula: 'z = x+iy, \\; |z|, \\; \\arg z',
   },
 ];

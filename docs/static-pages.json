@@ -26,6 +26,14 @@
       "label": "S1 course page"
     },
     {
+      "path": "p3/diagnostic/index.html",
+      "label": "P3 diagnostic gate"
+    },
+    {
+      "path": "p3/repair-lane/index.html",
+      "label": "P1 Repair Lane prerequisite recovery"
+    },
+    {
       "path": "p3/topics/index.html",
       "label": "P3 unit sequence"
     },
@@ -222,7 +230,7 @@
       "label": "P3 Complex Numbers printable Checked Practice worksheet"
     }
   ],
-  "questionCount": 57,
+  "questionCount": 72,
   "catalogRecordCount": 1301,
   "catalogQuestionCount": 1301
 }

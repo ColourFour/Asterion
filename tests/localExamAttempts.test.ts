@@ -154,6 +154,23 @@ describe('local exam self-marked attempts', () => {
             },
           ],
         },
+        {
+          question_id: 'fixture_q03',
+          paper_family: 'p3',
+          total_marks: 3,
+          question_image_path: 'assets/exam-bank-data/p3/test/questions/q03.png',
+          mark_scheme_image_path: 'assets/exam-bank-data/p3/test/mark_scheme/q03.png',
+          subparts: [
+            {
+              subpart_id: 'fixture_q03_whole',
+              label: 'whole',
+              marks: 3,
+              mark_scheme_text: {
+                text: 'Use the log law M1 Remove logarithms A1 Obtain the final expression A1',
+              },
+            },
+          ],
+        },
       ],
     });
 
@@ -166,6 +183,17 @@ describe('local exam self-marked attempts', () => {
     ]);
     expect(questions[1].parts?.[0].markPoints).toBeUndefined();
     expect(questions[1].parts?.[0].markSchemeText).toContain('not a clean one-mark split');
+    expect(questions[2].parts).toEqual([
+      expect.objectContaining({
+        label: '(whole)',
+        marksAvailable: 3,
+        markPoints: [
+          expect.objectContaining({ markCode: 'M1', label: 'Use the log law' }),
+          expect.objectContaining({ markCode: 'A1', label: 'Remove logarithms' }),
+          expect.objectContaining({ markCode: 'A1', label: 'Obtain the final expression' }),
+        ],
+      }),
+    ]);
   });
 
   it('does not award mastery for a high self-marked exam score without Checked Practice pass', () => {

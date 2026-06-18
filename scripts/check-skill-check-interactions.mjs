@@ -166,9 +166,9 @@ try {
     answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer] [data-learn-answer-reveal]')?.hidden),
     nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
   }));
-  assert(algebraInitialShape.learnSteps === 11, `Algebra Learn Mode must render 11 authored lesson steps; saw ${algebraInitialShape.learnSteps}.`);
+  assert(algebraInitialShape.learnSteps === 17, `Algebra Learn Mode must render 17 authored lesson steps; saw ${algebraInitialShape.learnSteps}.`);
   assert(algebraInitialShape.visibleSteps === 1, `Learn Mode must show one step at a time; saw ${algebraInitialShape.visibleSteps}.`);
-  assert(algebraInitialShape.learnForms >= 22, 'Learn Mode must render primary and similar checked answer forms.');
+  assert(algebraInitialShape.learnForms >= 34, 'Learn Mode must render primary and similar checked answer forms.');
   assert(algebraInitialShape.oldSkillForms === 0, 'Learn Mode must not render legacy Skill Check forms.');
   assert(algebraInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Algebra problem.');
   assert(algebraInitialShape.answerRevealHidden, 'Answer reveal must be unavailable before a submitted Learn attempt.');
@@ -247,9 +247,9 @@ try {
     };
   });
   assert(logExpInitialShape.hasLogExpTitle, 'Log/Exp Learn page must render.');
-  assert(logExpInitialShape.learnSteps === 13, `Log/Exp Learn Mode must render 13 authored steps; saw ${logExpInitialShape.learnSteps}.`);
+  assert(logExpInitialShape.learnSteps === 17, `Log/Exp Learn Mode must render 17 authored steps; saw ${logExpInitialShape.learnSteps}.`);
   assert(logExpInitialShape.visibleSteps === 1, 'Log/Exp Learn Mode must show one active step.');
-  assert(logExpInitialShape.learnForms >= 26, 'Log/Exp Learn Mode must render primary and similar checked forms.');
+  assert(logExpInitialShape.learnForms >= 34, 'Log/Exp Learn Mode must render primary and similar checked forms.');
   assert(logExpInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Log/Exp problem.');
   assert(logExpInitialShape.explanationHidden, 'Log/Exp explanation must be hidden before attempt.');
   assert(logExpInitialShape.principleHidden, 'Log/Exp principle must be hidden before attempt.');
@@ -354,7 +354,7 @@ try {
     };
   });
   assert(trigInitialShape.hasTrigTitle, 'Trigonometry Learn page must render.');
-  assert(trigInitialShape.learnSteps === 11, `Trigonometry Learn Mode must render 11 authored steps; saw ${trigInitialShape.learnSteps}.`);
+  assert(trigInitialShape.learnSteps === 14, `Trigonometry Learn Mode must render 14 authored steps; saw ${trigInitialShape.learnSteps}.`);
   assert(trigInitialShape.visibleSteps === 1, 'Trigonometry Learn Mode must show one active step.');
   assert(trigInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Trigonometry problem.');
   assert(trigInitialShape.explanationHidden, 'Explanation must be hidden before attempt.');
@@ -464,9 +464,9 @@ try {
     };
   });
   assert(diffInitialShape.hasDiffTitle, 'Differentiation Learn page must render.');
-  assert(diffInitialShape.learnSteps === 14, `Differentiation Learn Mode must render 14 authored steps; saw ${diffInitialShape.learnSteps}.`);
+  assert(diffInitialShape.learnSteps === 15, `Differentiation Learn Mode must render 15 authored steps; saw ${diffInitialShape.learnSteps}.`);
   assert(diffInitialShape.visibleSteps === 1, 'Differentiation Learn Mode must show one active step.');
-  assert(diffInitialShape.learnForms >= 28, 'Differentiation Learn Mode must render primary and similar checked forms.');
+  assert(diffInitialShape.learnForms >= 30, 'Differentiation Learn Mode must render primary and similar checked forms.');
   assert(diffInitialShape.oldSkillForms === 0, 'Differentiation Learn Mode must not render legacy Skill Check forms.');
   assert(diffInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Differentiation problem.');
   assert(diffInitialShape.answerControlInFirstViewport, 'First viewport must show the first Differentiation answer control.');
@@ -606,9 +606,9 @@ try {
     };
   });
   assert(integrationInitialShape.hasIntegrationTitle, 'Integration Learn page must render.');
-  assert(integrationInitialShape.learnSteps === 13, `Integration Learn Mode must render 13 authored steps; saw ${integrationInitialShape.learnSteps}.`);
+  assert(integrationInitialShape.learnSteps === 14, `Integration Learn Mode must render 14 authored steps; saw ${integrationInitialShape.learnSteps}.`);
   assert(integrationInitialShape.visibleSteps === 1, 'Integration Learn Mode must show one active step.');
-  assert(integrationInitialShape.learnForms >= 26, 'Integration Learn Mode must render primary and similar checked forms.');
+  assert(integrationInitialShape.learnForms >= 28, 'Integration Learn Mode must render primary and similar checked forms.');
   assert(integrationInitialShape.oldSkillForms === 0, 'Integration Learn Mode must not render legacy Skill Check forms.');
   assert(integrationInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Integration problem.');
   assert(integrationInitialShape.answerControlInFirstViewport, 'First viewport must show the first Integration answer control.');
@@ -1032,9 +1032,9 @@ try {
     };
   });
   assert(complexInitialShape.hasComplexTitle, 'Complex Numbers Learn page must render.');
-  assert(complexInitialShape.learnSteps === 14, `Complex Numbers Learn Mode must render 14 authored steps; saw ${complexInitialShape.learnSteps}.`);
+  assert(complexInitialShape.learnSteps === 17, `Complex Numbers Learn Mode must render 17 authored steps; saw ${complexInitialShape.learnSteps}.`);
   assert(complexInitialShape.visibleSteps === 1, 'Complex Numbers Learn Mode must show one active step.');
-  assert(complexInitialShape.learnForms >= 28, 'Complex Numbers Learn Mode must render primary and similar checked forms.');
+  assert(complexInitialShape.learnForms >= 34, 'Complex Numbers Learn Mode must render primary and similar checked forms.');
   assert(complexInitialShape.oldSkillForms === 0, 'Complex Numbers Learn Mode must not render legacy Skill Check forms.');
   assert(complexInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Complex Numbers problem.');
   assert(complexInitialShape.answerControlInFirstViewport, 'First viewport must show the first Complex Numbers answer control.');

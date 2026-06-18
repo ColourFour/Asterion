@@ -21,16 +21,22 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored eleven-step Algebra sequence', () => {
+  it('uses an explicit authored seventeen-step Algebra sequence', () => {
     const algebraSteps = getLearnStepsForRegion('algebra');
 
-    expect(algebraSteps).toHaveLength(11);
+    expect(algebraSteps).toHaveLength(17);
     expect(algebraSteps.map((step) => step.id)).toEqual([
       'learn-alg-remainder-theorem-need',
       'learn-alg-factor-theorem-need',
       'learn-alg-cubic-known-factor',
       'learn-alg-polynomial-division-first-term',
       'learn-alg-cubic-full-factorisation',
+      'learn-alg-quartic-quadratic-division',
+      'learn-alg-non-monic-and-unknown-coefficients',
+      'learn-alg-absolute-value-graph',
+      'learn-alg-absolute-value-equations',
+      'learn-alg-absolute-value-inequalities',
+      'learn-alg-absolute-value-graph-intervals',
       'learn-alg-partial-fractions-distinct',
       'learn-alg-partial-fractions-repeated',
       'learn-alg-partial-fractions-quadratic',
@@ -79,10 +85,10 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored thirteen-step Logarithmic and Exponential Functions sequence', () => {
+  it('uses an explicit authored seventeen-step Logarithmic and Exponential Functions sequence', () => {
     const logExpSteps = getLearnStepsForRegion('logarithmic-and-exponential-functions');
 
-    expect(logExpSteps).toHaveLength(13);
+    expect(logExpSteps).toHaveLength(17);
     expect(logExpSteps.map((step) => step.id)).toEqual([
       'learn-log-exp-form-conversion',
       'learn-log-product-law',
@@ -95,6 +101,10 @@ describe('P3 Learn Mode lessons', () => {
       'learn-log-natural-e-inverse',
       'learn-log-exponential-model-parameter',
       'learn-log-linearise-exponential',
+      'learn-log-linearise-power-law',
+      'learn-log-power-law-domain',
+      'learn-log-exponential-inequality',
+      'learn-log-logarithmic-inequality',
       'learn-log-graph-asymptote-domain',
       'learn-log-mixed-exam-transfer',
     ]);
@@ -141,13 +151,15 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored eleven-step Trigonometry sequence', () => {
+  it('uses an explicit authored fourteen-step Trigonometry sequence', () => {
     const trigSteps = getLearnStepsForRegion('trigonometry');
 
-    expect(trigSteps).toHaveLength(11);
+    expect(trigSteps).toHaveLength(14);
     expect(trigSteps.map((step) => step.id)).toEqual([
       'learn-trig-identity-form-choice',
       'learn-trig-pythagorean-rewrite',
+      'learn-trig-reciprocal-graphs',
+      'learn-trig-reciprocal-identities-equations',
       'learn-trig-double-angle-choice',
       'learn-trig-double-angle-simplify',
       'learn-trig-identity-full-solve',
@@ -156,6 +168,7 @@ describe('P3 Learn Mode lessons', () => {
       'learn-trig-division-trap',
       'learn-trig-quadratic-reject',
       'learn-trig-repeated-angle-pattern',
+      'learn-trig-r-form-transform',
       'learn-trig-mixed-exam-transfer',
     ]);
     expect(new Set(trigSteps.map((step) => step.fieldGuideTopic.id)).size).toBeLessThan(trigSteps.length);
@@ -198,10 +211,10 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored fourteen-step Differentiation sequence', () => {
+  it('uses an explicit authored fifteen-step Differentiation sequence', () => {
     const differentiationSteps = getLearnStepsForRegion('differentiation');
 
-    expect(differentiationSteps).toHaveLength(14);
+    expect(differentiationSteps).toHaveLength(15);
     expect(differentiationSteps.map((step) => step.id)).toEqual([
       'learn-diff-rule-choice',
       'learn-diff-power-negative-fractional',
@@ -209,6 +222,7 @@ describe('P3 Learn Mode lessons', () => {
       'learn-diff-product-structure',
       'learn-diff-quotient-order',
       'learn-diff-trig-derivative',
+      'learn-diff-arctan-derivative',
       'learn-diff-exp-log-derivative',
       'learn-diff-implicit-dydx',
       'learn-diff-tangent-gradient',
@@ -267,16 +281,17 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored thirteen-step Integration sequence', () => {
+  it('uses an explicit authored fourteen-step Integration sequence', () => {
     const integrationSteps = getLearnStepsForRegion('integration');
 
-    expect(integrationSteps).toHaveLength(13);
+    expect(integrationSteps).toHaveLength(14);
     expect(integrationSteps.map((step) => step.id)).toEqual([
       'learn-int-method-choice',
       'learn-int-power-negative-fractional',
       'learn-int-reverse-chain-inside',
       'learn-int-substitution-setup',
       'learn-int-substitution-limits',
+      'learn-int-arctangent-form',
       'learn-int-by-parts-structure',
       'learn-int-partial-fractions-log',
       'learn-int-trig-identity-rewrite',
@@ -399,10 +414,10 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored fourteen-step Complex Numbers sequence', () => {
+  it('uses an explicit authored seventeen-step Complex Numbers sequence', () => {
     const complexSteps = getLearnStepsForRegion('complex-numbers');
 
-    expect(complexSteps).toHaveLength(14);
+    expect(complexSteps).toHaveLength(17);
     expect(complexSteps.map((step) => step.id)).toEqual([
       'learn-complex-real-imag-add',
       'learn-complex-multiply-i-squared',
@@ -414,6 +429,9 @@ describe('P3 Learn Mode lessons', () => {
       'learn-complex-polar-multiply-divide',
       'learn-complex-de-moivre-power',
       'learn-complex-roots-arguments',
+      'learn-complex-exact-square-roots-cartesian',
+      'learn-complex-argand-transformations',
+      'learn-complex-argand-multiply-divide-effects',
       'learn-complex-modulus-locus',
       'learn-complex-argument-locus',
       'learn-complex-polynomial-conjugate-root',
@@ -539,12 +557,15 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
-  it('uses an explicit authored nine-step Vectors sequence', () => {
+  it('uses an explicit authored twelve-step Vectors sequence', () => {
     const vectorSteps = getLearnStepsForRegion('vectors');
 
-    expect(vectorSteps).toHaveLength(9);
+    expect(vectorSteps).toHaveLength(12);
     expect(vectorSteps.map((step) => step.id)).toEqual([
+      'learn-vectors-2d-3d-notation',
       'learn-vectors-direction-from-points',
+      'learn-vectors-magnitude-unit-direction-ratios',
+      'learn-vectors-midpoint-and-proof',
       'learn-vectors-line-equation',
       'learn-vectors-point-on-line',
       'learn-vectors-line-intersection',

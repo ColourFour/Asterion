@@ -13,6 +13,8 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
     path: `${course.slug}/index.html`,
     label: `${course.shortName} course page`,
   })),
+  { path: `${P3_COURSE_ID}/diagnostic/index.html`, label: 'P3 diagnostic gate' },
+  { path: `${P3_COURSE_ID}/repair-lane/index.html`, label: 'P1 Repair Lane prerequisite recovery' },
   { path: `${P3_COURSE_ID}/topics/index.html`, label: 'P3 unit sequence' },
   { path: `${P3_COURSE_ID}/need-to-know/index.html`, label: 'P3 Need to Know checklist' },
   { path: `${P3_COURSE_ID}/review/index.html`, label: 'P3 final exam review' },
