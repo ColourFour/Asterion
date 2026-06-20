@@ -100,6 +100,14 @@ describe('Skill Check answer checker', () => {
     });
   });
 
+  it('accepts harmless expression notation variants without changing algebraic meaning', () => {
+    expect(check({ answerType: 'expression-text', acceptedAnswers: ['1+sinx'] }, '1 + sin(x)').isCorrect).toBe(true);
+    expect(check({ answerType: 'expression-text', acceptedAnswers: ['2x/y'] }, '(2x)/y').isCorrect).toBe(true);
+    expect(check({ answerType: 'expression-text', acceptedAnswers: ['1/5(3x^2+1)^5+C'] }, '(1/5)(3x^2+1)^5 + C').isCorrect).toBe(true);
+    expect(check({ answerType: 'expression-text', acceptedAnswers: ['(3x^2+1)^5/5+C'] }, '((3x^2+1)^5)/5 + C').isCorrect).toBe(true);
+    expect(check({ answerType: 'expression-text', acceptedAnswers: ['12x^3-2'] }, 'dy/dx = 12x^3 - 2').isCorrect).toBe(true);
+  });
+
   it('supports order-insensitive multi-value checking by default', () => {
     const result = check(
       { answerType: 'multi-value', acceptedAnswers: ['-1, 1, 5/2'] },
@@ -149,6 +157,9 @@ describe('Skill Check answer checker', () => {
       normalizedSubmittedAnswer: '(3, -1)',
       matchedAcceptedAnswer: '(3, -1)',
     });
+
+    expect(check({ answerType: 'coordinate', acceptedAnswers: ['(3,-2,2)'] }, '<3, -2, 2>').isCorrect).toBe(true);
+    expect(check({ answerType: 'coordinate', acceptedAnswers: ['(3,-2,2)'] }, '⟨3, -2, 2⟩').isCorrect).toBe(true);
   });
 
   it('checks bounded intervals across practical equivalent forms', () => {

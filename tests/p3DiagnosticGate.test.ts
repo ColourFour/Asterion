@@ -24,6 +24,54 @@ function blankSubmission(): P3DiagnosticSubmission {
   ]));
 }
 
+function naturalNotationFullCreditSubmission(): P3DiagnosticSubmission {
+  return {
+    'p3diag-a01': { 'a01-final': '4*x - 23' },
+    'p3diag-a02': { 'a02-final': '( x - 3 )( x - 2 )' },
+    'p3diag-a03': { 'a03-final': '(2x)/y' },
+    'p3diag-a04': { 'a04-final': 'x = 9' },
+    'p3diag-a05': { 'a05-final': 'x=3 and x=2' },
+    'p3diag-a06': { 'a06-final': 'f(-2)=5' },
+    'p3diag-a07': { 'a07-final': 'x = y/3 - 2/3' },
+    'p3diag-a08': {
+      'a08-factor': '( x + 3 )( x - 3 )',
+      'a08-final': '(x+3)',
+    },
+    'p3diag-b01': {
+      'b01-substitution': 'substitute 2',
+      'b01-final': 'remainder = 1',
+    },
+    'p3diag-b02': {
+      'b02-value': 'P(2)=0',
+      'b02-conclusion': 'therefore x=2 is a root, so x-2 is a factor',
+    },
+    'p3diag-b03': { 'b03-final': 'log_a(8*2)' },
+    'p3diag-b04': { 'b04-final': 'x = (1/2)ln(5)' },
+    'p3diag-b05': { 'b05-final': '1 + sin(x)' },
+    'p3diag-b06': { 'b06-final': 'x=5pi/6, x=pi/6' },
+    'p3diag-b07': { 'b07-final': "y' = 12*x^3 - 2" },
+    'p3diag-b08': { 'b08-final': 'dy/dx = 10(2x+1)^4' },
+    'p3diag-c01': {
+      'c01-factor': 'sin(x)(2sin(x)-1)',
+      'c01-equations': 'sin(x)=1/2 and sin(x)=0',
+      'c01-final': 'x=0, x=pi/6, x=5pi/6, x=pi',
+    },
+    'p3diag-c02': {
+      'c02-derivative': "y'=3x^2-3",
+      'c02-x-values': 'x=1 and x=-1',
+      'c02-points': '(-1, 2) and (1, -2)',
+    },
+    'p3diag-c03': {
+      'c03-inside': 'u = 3x^2 + 1',
+      'c03-final': '((3x^2+1)^5)/5 + C',
+    },
+    'p3diag-c04': {
+      'c04-vector': '<3, -2, 2>',
+      'c04-magnitude': '4.123',
+    },
+  };
+}
+
 describe('P3 diagnostic gate classifier', () => {
   it('keeps the authored diagnostic within the required fixed-paper shape', () => {
     expect(P3_DIAGNOSTIC_QUESTIONS).toHaveLength(20);
@@ -61,6 +109,16 @@ describe('P3 diagnostic gate classifier', () => {
       foundation_repair_skill_tags: [],
     });
     expect(p3DiagnosticRecommendationSentence(scored.report)).toBe('Student should proceed via: ACCELERATED_P3_PATH');
+  });
+
+  it('awards full credit for correct diagnostic answers written in common student notation', () => {
+    const scored = scoreP3DiagnosticSubmission(naturalNotationFullCreditSubmission());
+
+    expect(scored.markResults.filter((result) => result.awarded === 0)).toEqual([]);
+    expect(scored.marksEarned).toBe(29);
+    expect(scored.report.total_score).toBe(100);
+    expect(scored.report.risk_flags).toEqual([]);
+    expect(scored.report.recommended_path).toBe('ACCELERATED_P3_PATH');
   });
 
   it('classifies adequate algebra and transition performance as standard entry', () => {

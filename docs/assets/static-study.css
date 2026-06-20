@@ -4999,6 +4999,112 @@ body.learn-mode-page .learn-exam-transfer {
   width: 100%;
 }
 
+.diagnostic-report-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.diagnostic-feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diagnostic-feedback-stat,
+.diagnostic-feedback-section,
+.diagnostic-confidence-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.diagnostic-feedback-stat {
+  padding: 14px;
+}
+
+.diagnostic-feedback-stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.diagnostic-feedback-stat strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink);
+  font-size: 1.18rem;
+}
+
+.diagnostic-feedback-section {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.diagnostic-feedback-section h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.diagnostic-feedback-section p,
+.diagnostic-feedback-section ul {
+  margin: 0;
+}
+
+.diagnostic-feedback-section ul {
+  padding-left: 20px;
+}
+
+.diagnostic-section-score-list,
+.diagnostic-confidence-list {
+  display: grid;
+  gap: 10px;
+}
+
+.diagnostic-section-score-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.diagnostic-section-score-row span {
+  color: var(--muted);
+}
+
+.diagnostic-confidence-panel {
+  border-color: #e5c46a;
+  background: #fff9e8;
+}
+
+.diagnostic-confidence-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.diagnostic-confidence-card strong {
+  color: var(--ink);
+}
+
+.diagnostic-confidence-answer {
+  color: var(--ink-warm);
+  font-weight: 900;
+}
+
+.diagnostic-technical-details {
+  display: grid;
+  gap: 10px;
+}
+
+.diagnostic-technical-details summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .diagnostic-report-json {
   overflow-x: auto;
   margin: 0;
@@ -5636,6 +5742,7 @@ body.skill-check-page .exam-question-section {
 
 @media (max-width: 640px) {
   .diagnostic-mark-grid,
+  .diagnostic-feedback-grid,
   .repair-question-grid {
     grid-template-columns: minmax(0, 1fr);
   }

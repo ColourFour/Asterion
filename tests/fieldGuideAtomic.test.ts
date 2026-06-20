@@ -15,6 +15,59 @@ const refactoredSections = [
   { regionId: 'integration', id: 'integrals_improper_limit_check' },
 ] as const;
 
+const commonTrapSections = [
+  {
+    regionId: 'algebra',
+    id: 'algebra_polynomial_division',
+    expectedTrapIncludes: 'subtracting the wrong signed row',
+  },
+  {
+    regionId: 'algebra',
+    id: 'algebra_remainder_factor_theorem',
+    expectedTrapIncludes: 'wrong sign for the divisor root',
+  },
+  {
+    regionId: 'logarithmic-and-exponential-functions',
+    id: 'log_laws',
+    expectedTrapIncludes: 'do not combine sums inside a logarithm',
+  },
+  {
+    regionId: 'logarithmic-and-exponential-functions',
+    id: 'log_equations_inequalities',
+    expectedTrapIncludes: 'check the original log inputs',
+  },
+  {
+    regionId: 'trigonometry',
+    id: 'trig_pythagorean_identities',
+    expectedTrapIncludes: 'match the visible squared terms',
+  },
+  {
+    regionId: 'trigonometry',
+    id: 'trig_r_form_transformations',
+    expectedTrapIncludes: 'match coefficients before solving for the angle',
+  },
+  {
+    regionId: 'complex-numbers',
+    id: 'modulus-argument',
+    expectedTrapIncludes: 'choose the quadrant before trusting a reference angle',
+  },
+  {
+    regionId: 'complex-numbers',
+    id: 'locus',
+    expectedTrapIncludes: 'read $z-a$ as distance from $a$',
+  },
+  {
+    regionId: 'vectors',
+    id: 'vectors_notation',
+    expectedTrapIncludes: 'reversing final and initial gives the opposite vector',
+  },
+  {
+    regionId: 'vectors',
+    id: 'vectors_line_equation',
+    expectedTrapIncludes: 'use a direction vector, not a second position vector',
+  },
+] as const;
+
 describe('atomic P3 Field Guide sections', () => {
   it('keeps refactored sections to one worked example and one try-one check', () => {
     for (const sectionRef of refactoredSections) {
@@ -61,5 +114,17 @@ describe('atomic P3 Field Guide sections', () => {
     });
 
     expect(errors).toContain('missing_visual_topic visual 1 missing asset: assets/p3/visuals/missing/not-there.png');
+  });
+
+  it('keeps selected Field Guide examples explicit about common traps', () => {
+    for (const sectionRef of commonTrapSections) {
+      const section = getFieldGuideTopicsForRegion(sectionRef.regionId).find((topic) => topic.id === sectionRef.id);
+      const commonTrapTakeaways = section?.examples.flatMap((example) => (
+        example.takeaway.filter((line) => /^Common (?:mistake|trap):/i.test(line.trim()))
+      ));
+
+      expect(section, sectionRef.id).toBeDefined();
+      expect(commonTrapTakeaways, sectionRef.id).toContainEqual(expect.stringContaining(sectionRef.expectedTrapIncludes));
+    }
   });
 });

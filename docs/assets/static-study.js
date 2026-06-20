@@ -1615,9 +1615,11 @@
       .replace(/\\pi\b/g, 'pi')
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
       .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
+      .replace(/\bsqrt\s*([+-]?\d+(?:\.\d+)?)/gi, 'sqrt($1)')
       .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
       .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '$1/$2')
       .replace(/\\cdot|\\times/g, '*')
+      .replace(/÷/g, '/')
       .replace(/[{}]/g, '')
       .replace(/\s+/g, ' ');
   }
@@ -1687,8 +1689,51 @@
     return normalizeMathText(value).replace(/[.。]+$/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  function hasBalancedOuterParentheses(value) {
+    if (!value.startsWith('(') || !value.endsWith(')')) return false;
+    var depth = 0;
+    for (var index = 0; index < value.length; index += 1) {
+      var character = value[index];
+      if (character === '(') depth += 1;
+      if (character === ')') depth -= 1;
+      if (depth === 0 && index < value.length - 1) return false;
+      if (depth < 0) return false;
+    }
+    return depth === 0;
+  }
+
+  function stripBalancedOuterParentheses(value) {
+    var current = value;
+    while (hasBalancedOuterParentheses(current)) {
+      current = current.slice(1, -1);
+    }
+    return current;
+  }
+
+  function normalizeFunctionNotation(value) {
+    var current = value;
+    var previous = '';
+    while (current !== previous) {
+      previous = current;
+      current = current.replace(/\\?(sin|cos|tan|sec|cosec|cot|ln)\(([^()+\-*/^,=]+)\)/g, '$1$2');
+    }
+    return current;
+  }
+
   function normalizeExpressionText(value) {
-    return compactAnswerText(value).replace(/\*/g, '').replace(/\^1(?!\d)/g, '');
+    return stripBalancedOuterParentheses(normalizeFunctionNotation(compactAnswerText(value)))
+      .replace(/\*/g, '')
+      .replace(/^\(([-+]?(?:\d+(?:\.\d+)?|\d*\.\d+)(?:\/[-+]?\d+(?:\.\d+)?)?)\)(?=\()/, '$1')
+      .replace(/^\((\([^()]+\)\^\d+)\)(?=\/)/, '$1')
+      .replace(/\(([-+]?\d*[a-z](?:\^\d+)?)\)(?=\/)/g, '$1')
+      .replace(/\^1(?!\d)/g, '');
+  }
+
+  function normalizeExpressionTextVariants(value) {
+    var variants = [normalizeExpressionText(value)];
+    var rightSide = afterEquals(value);
+    if (rightSide !== value) variants.push(normalizeExpressionText(rightSide));
+    return Array.from(new Set(variants));
   }
 
   function splitTopLevelValues(value) {
@@ -1728,7 +1773,7 @@
   }
 
   function parseCoordinate(value) {
-    var match = normalizeMathText(value).match(/^\(?\s*([^,()]+)\s*,\s*([^,()]+)(?:\s*,\s*([^,()]+))?\s*\)?$/);
+    var match = normalizeMathText(value).match(/^[([{<⟨]?\s*([^,()[\]{}<>⟨⟩]+)\s*,\s*([^,()[\]{}<>⟨⟩]+)(?:\s*,\s*([^,()[\]{}<>⟨⟩]+))?\s*[)\]}>⟩]?$/);
     if (!match) return undefined;
     var parts = [match[1], match[2], match[3]].filter(Boolean);
     var parsed = parts.map(parseSimpleNumber);
@@ -1938,8 +1983,14 @@
       return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: exact, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized exact text.' : 'Submitted text did not match any accepted answer.', unsupported: false });
     }
     if (spec.answerType === 'expression-text') {
-      var expression = normalizeExpressionText(trimmed);
-      match = spec.acceptedAnswers.find(function (accepted) { return normalizeExpressionText(accepted) === expression; });
+      var submittedExpressionVariants = normalizeExpressionTextVariants(trimmed);
+      var expression = submittedExpressionVariants[0];
+      match = spec.acceptedAnswers.find(function (accepted) {
+        var acceptedExpressionVariants = normalizeExpressionTextVariants(accepted);
+        return submittedExpressionVariants.some(function (submitted) {
+          return acceptedExpressionVariants.includes(submitted);
+        });
+      });
       return skillCheckResult(spec, { isCorrect: Boolean(match), normalizedSubmittedAnswer: expression, matchedAcceptedAnswer: match, reason: match ? 'Matched normalized expression text.' : 'Expression did not match an accepted normalized text form. Algebraic equivalence is not inferred.', unsupported: false });
     }
     if (spec.answerType === 'numeric') {
@@ -2006,6 +2057,52 @@
     INTEGRATION_WEAK: 'P3 integration recognition repair',
     VECTOR_WEAK: 'P3 vectors interpretation repair',
     COMPLEX_WEAK: 'P3 complex numbers interpretation repair'
+  };
+  var P3_DIAGNOSTIC_SECTION_LABELS = {
+    algebra_foundation: 'Core algebra fluency',
+    p3_transition: 'Early P3 transition skills',
+    problem_solving: 'Mixed problem solving'
+  };
+  var P3_DIAGNOSTIC_RISK_LABELS = {
+    ALGEBRA_WEAK: 'Algebra manipulation',
+    TRIG_WEAK: 'Trigonometry',
+    LOGS_WEAK: 'Logarithms and exponentials',
+    DIFF_WEAK: 'Differentiation',
+    INTEGRATION_WEAK: 'Integration',
+    VECTOR_WEAK: 'Vectors',
+    COMPLEX_WEAK: 'Complex numbers'
+  };
+  var P3_DIAGNOSTIC_PATH_COPY = {
+    P1_REPAIR_REQUIRED: 'Start with foundation repair. This protects you from being pushed into P3 questions before the algebra base is steady.',
+    FULL_P3_PATH: 'Use the full P3 route. You have enough foundation to start, and the weak areas below should be repaired alongside the units.',
+    ACCELERATED_P3_PATH: 'Use the accelerated route. Keep checking the listed weak areas, but you can move into harder topic practice sooner.'
+  };
+  var P3_DIAGNOSTIC_CONFIDENCE_CHECKS = {
+    ALGEBRA_WEAK: [
+      { area: 'Algebra', prompt: 'Simplify 2x + 3x.', answer: '5x', why: 'Collect like terms only.' },
+      { area: 'Algebra', prompt: 'Solve x + 4 = 9.', answer: 'x = 5', why: 'Subtract 4 from both sides.' },
+      { area: 'Algebra', prompt: 'Expand 3(x + 2).', answer: '3x + 6', why: 'Multiply both terms inside the bracket.' }
+    ],
+    TRIG_WEAK: [
+      { area: 'Trigonometry', prompt: 'Complete the identity: sin^2 x + cos^2 x = ?', answer: '1', why: 'This is the core Pythagorean identity.' },
+      { area: 'Trigonometry', prompt: 'For 0 <= x <= 2pi, one solution of sin x = 0 is?', answer: 'x = 0', why: 'The sine graph starts at zero.' }
+    ],
+    LOGS_WEAK: [
+      { area: 'Logs', prompt: 'Simplify log_a 3 + log_a 2.', answer: 'log_a 6', why: 'Addition of logs multiplies the arguments.' },
+      { area: 'Logs', prompt: 'If e^x = e^4, then x = ?', answer: '4', why: 'Matching bases give matching powers.' }
+    ],
+    DIFF_WEAK: [
+      { area: 'Differentiation', prompt: 'Differentiate y = x^3.', answer: 'dy/dx = 3x^2', why: 'Bring the power down, then reduce the power by 1.' },
+      { area: 'Differentiation', prompt: 'Differentiate y = 5x.', answer: 'dy/dx = 5', why: 'The gradient of a linear term ax is a.' }
+    ],
+    INTEGRATION_WEAK: [
+      { area: 'Integration', prompt: 'Integrate 4x with respect to x.', answer: '2x^2 + C', why: 'Raise the power to 2, then divide by 2.' },
+      { area: 'Integration', prompt: 'Integrate 3 with respect to x.', answer: '3x + C', why: 'A constant integrates to constant times x.' }
+    ],
+    VECTOR_WEAK: [
+      { area: 'Vectors', prompt: 'A(1, 2), B(4, 2). Find AB.', answer: '(3, 0)', why: 'Subtract A from B component by component.' },
+      { area: 'Vectors', prompt: 'Find the magnitude of (3, 4).', answer: '5', why: 'Use sqrt(3^2 + 4^2).' }
+    ]
   };
   var P1_REPAIR_LOCK_MESSAGE = 'P3 access locked: complete foundation repair modules to continue.';
   var P1_REPAIR_SKILL_TAGS = [
@@ -2087,16 +2184,43 @@
     };
   }
 
-  function buildP3DiagnosticReport(form) {
+  function questionCodeFromCard(card) {
+    var eyebrow = card?.querySelector('.eyebrow')?.textContent || '';
+    return eyebrow.split('·')[0].trim();
+  }
+
+  function collectP3DiagnosticEvaluation(form) {
     var sectionScores = emptyDiagnosticSectionScores();
     var riskScores = emptyDiagnosticRiskScores();
+    var questionScores = {};
+    var questionOrder = [];
+    var markResults = [];
     var criticalFoundationFailed = false;
     var marksEarned = 0;
     var marksAvailable = 0;
 
+    form.querySelectorAll('[data-diagnostic-question]').forEach(function (card) {
+      var questionId = card.getAttribute('data-diagnostic-question') || '';
+      if (!questionId) return;
+      questionOrder.push(questionId);
+      questionScores[questionId] = {
+        questionId: questionId,
+        code: questionCodeFromCard(card),
+        title: card.querySelector('h3')?.textContent?.trim() || questionId,
+        sectionId: card.closest('[data-diagnostic-section]')?.getAttribute('data-diagnostic-section') || '',
+        earned: 0,
+        available: 0,
+        missedMarkLabels: []
+      };
+    });
+
     form.querySelectorAll('[data-diagnostic-mark-point]').forEach(function (input) {
       if (!(input instanceof HTMLInputElement)) return;
       var sectionId = input.getAttribute('data-section-id') || '';
+      var questionId = input.getAttribute('data-question-id') || '';
+      var markPointId = input.getAttribute('data-mark-point-id') || '';
+      var question = questionScores[questionId];
+      var markLabel = input.closest('label')?.querySelector('span')?.textContent?.replace(/\s+/g, ' ').trim() || markPointId;
       var riskFlags = parseJsonAttribute(input, 'data-risk-flags', []).filter(function (flag) {
         return P3_DIAGNOSTIC_RISK_FLAGS.includes(flag);
       });
@@ -2112,8 +2236,35 @@
       if (input.getAttribute('data-critical-foundation-skill') && !result.isCorrect) {
         criticalFoundationFailed = true;
       }
+      if (question) {
+        question.earned += awarded;
+        question.available += 1;
+        if (!awarded) question.missedMarkLabels.push(markLabel);
+      }
+      markResults.push({
+        questionId: questionId,
+        markPointId: markPointId,
+        sectionId: sectionId,
+        label: markLabel,
+        riskFlags: riskFlags,
+        awarded: awarded
+      });
       marksEarned += awarded;
       marksAvailable += 1;
+    });
+
+    var currentMissedStreak = 0;
+    var longestMissedQuestionStreak = 0;
+    var questionResults = questionOrder.map(function (questionId) {
+      return questionScores[questionId];
+    }).filter(Boolean);
+    questionResults.forEach(function (question) {
+      if (question.available > 0 && question.earned === 0) {
+        currentMissedStreak += 1;
+        longestMissedQuestionStreak = Math.max(longestMissedQuestionStreak, currentMissedStreak);
+      } else {
+        currentMissedStreak = 0;
+      }
     });
 
     var sectionPercentages = P3_DIAGNOSTIC_SECTION_IDS.reduce(function (scores, sectionId) {
@@ -2137,7 +2288,7 @@
       ? 'ACCELERATED_P3_PATH'
       : readinessLevel === 'STANDARD_ENTRY' ? 'FULL_P3_PATH' : 'P1_REPAIR_REQUIRED';
 
-    return {
+    var report = {
       total_score: percentScore(marksEarned, marksAvailable),
       section_scores: sectionPercentages,
       risk_flags: riskFlags,
@@ -2152,6 +2303,192 @@
       foundation_repair_skill_tags: recommendedPath === 'P1_REPAIR_REQUIRED' ? P1_REPAIR_SKILL_TAGS : [],
       lock_message: recommendedPath === 'P1_REPAIR_REQUIRED' ? P1_REPAIR_LOCK_MESSAGE : undefined
     };
+
+    return {
+      report: report,
+      markResults: markResults,
+      questionResults: questionResults,
+      marksEarned: marksEarned,
+      marksAvailable: marksAvailable,
+      longestMissedQuestionStreak: longestMissedQuestionStreak
+    };
+  }
+
+  function buildP3DiagnosticReport(form) {
+    return collectP3DiagnosticEvaluation(form).report;
+  }
+
+  function replaceChildrenWith(parent, children) {
+    if (!parent) return;
+    parent.replaceChildren();
+    children.forEach(function (child) {
+      parent.appendChild(child);
+    });
+  }
+
+  function textElement(tagName, text, className) {
+    var element = document.createElement(tagName);
+    if (className) element.className = className;
+    element.textContent = text;
+    return element;
+  }
+
+  function diagnosticStat(label, value) {
+    var item = document.createElement('div');
+    item.className = 'diagnostic-feedback-stat';
+    item.appendChild(textElement('span', label));
+    item.appendChild(textElement('strong', value));
+    return item;
+  }
+
+  function diagnosticPathLabel(path) {
+    if (path === 'P1_REPAIR_REQUIRED') return 'Foundation repair';
+    if (path === 'ACCELERATED_P3_PATH') return 'Accelerated P3';
+    return 'Full P3 path';
+  }
+
+  function diagnosticReadinessLabel(level) {
+    if (level === 'FOUNDATION_RISK') return 'Foundation risk';
+    if (level === 'HIGH_FLUENCY') return 'High fluency';
+    return 'Standard entry';
+  }
+
+  function renderDiagnosticSummary(panel, report, evaluation) {
+    var summary = panel?.querySelector('[data-diagnostic-feedback-summary]');
+    replaceChildrenWith(summary, [
+      diagnosticStat('Score', evaluation.marksEarned + '/' + evaluation.marksAvailable + ' marks'),
+      diagnosticStat('Readiness', diagnosticReadinessLabel(report.readiness_level)),
+      diagnosticStat('Route', diagnosticPathLabel(report.recommended_path))
+    ]);
+  }
+
+  function renderDiagnosticSectionFeedback(panel, report) {
+    var target = panel?.querySelector('[data-diagnostic-section-feedback]');
+    if (!target) return;
+    target.replaceChildren();
+    target.appendChild(textElement('h3', 'Section scores'));
+    var list = document.createElement('div');
+    list.className = 'diagnostic-section-score-list';
+    P3_DIAGNOSTIC_SECTION_IDS.forEach(function (sectionId) {
+      var row = document.createElement('div');
+      row.className = 'diagnostic-section-score-row';
+      row.appendChild(textElement('span', P3_DIAGNOSTIC_SECTION_LABELS[sectionId] || sectionId));
+      row.appendChild(textElement('strong', String(report.section_scores[sectionId] ?? 0) + '%'));
+      list.appendChild(row);
+    });
+    target.appendChild(list);
+  }
+
+  function renderDiagnosticPriorityFeedback(panel, report) {
+    var target = panel?.querySelector('[data-diagnostic-priority-feedback]');
+    if (!target) return;
+    target.replaceChildren();
+    target.appendChild(textElement('h3', 'What this means'));
+    target.appendChild(textElement('p', P3_DIAGNOSTIC_PATH_COPY[report.recommended_path] || 'Use the route recommendation as local study guidance.'));
+    if (!report.risk_flags.length) {
+      target.appendChild(textElement('p', 'No weak area was flagged by this diagnostic.'));
+      return;
+    }
+    var list = document.createElement('ul');
+    report.risk_flags.forEach(function (flag) {
+      var item = document.createElement('li');
+      item.textContent = P3_DIAGNOSTIC_RISK_LABELS[flag] || flag;
+      list.appendChild(item);
+    });
+    target.appendChild(list);
+  }
+
+  function missedQuestionLabel(question) {
+    var prefix = question.code ? question.code + ' - ' : '';
+    var missed = question.missedMarkLabels.length ? ' missed: ' + question.missedMarkLabels.join(', ') : '';
+    return prefix + question.title + missed;
+  }
+
+  function renderDiagnosticMissedFeedback(panel, evaluation) {
+    var target = panel?.querySelector('[data-diagnostic-missed-feedback]');
+    if (!target) return;
+    target.replaceChildren();
+    var missedQuestions = evaluation.questionResults.filter(function (question) {
+      return question.available > 0 && question.earned < question.available;
+    });
+    target.appendChild(textElement('h3', 'Questions to revisit'));
+    if (!missedQuestions.length) {
+      target.appendChild(textElement('p', 'Every diagnostic question was marked correct.'));
+      return;
+    }
+    var list = document.createElement('ul');
+    missedQuestions.slice(0, 8).forEach(function (question) {
+      var item = document.createElement('li');
+      item.textContent = missedQuestionLabel(question);
+      list.appendChild(item);
+    });
+    target.appendChild(list);
+    if (missedQuestions.length > 8) {
+      target.appendChild(textElement('p', 'Start with the first few items above, then use the repair lane to rebuild the foundations in order.'));
+    }
+  }
+
+  function diagnosticConfidenceChecks(report, evaluation) {
+    if (evaluation.longestMissedQuestionStreak < 3) return [];
+    var flags = report.risk_flags.length ? report.risk_flags : ['ALGEBRA_WEAK'];
+    var checks = [];
+    flags.forEach(function (flag) {
+      safeArray(P3_DIAGNOSTIC_CONFIDENCE_CHECKS[flag]).forEach(function (check) {
+        if (checks.length < 4) checks.push(check);
+      });
+    });
+    if (!checks.length) checks = P3_DIAGNOSTIC_CONFIDENCE_CHECKS.ALGEBRA_WEAK.slice(0, 3);
+    return checks;
+  }
+
+  function renderDiagnosticConfidenceFeedback(panel, report, evaluation) {
+    var target = panel?.querySelector('[data-diagnostic-confidence-panel]');
+    if (!target) return;
+    var checks = diagnosticConfidenceChecks(report, evaluation);
+    target.replaceChildren();
+    if (!checks.length) {
+      target.hidden = true;
+      return;
+    }
+    target.hidden = false;
+    target.appendChild(textElement('h3', 'Warm-up before you continue'));
+    target.appendChild(textElement('p', 'Start here for a few quick wins, then move into the repair work below.'));
+    var list = document.createElement('div');
+    list.className = 'diagnostic-confidence-list';
+    checks.forEach(function (check) {
+      var card = document.createElement('div');
+      card.className = 'diagnostic-confidence-card';
+      card.appendChild(textElement('strong', check.area));
+      card.appendChild(textElement('p', check.prompt));
+      card.appendChild(textElement('p', 'Answer: ' + check.answer, 'diagnostic-confidence-answer'));
+      card.appendChild(textElement('p', check.why));
+      list.appendChild(card);
+    });
+    target.appendChild(list);
+  }
+
+  function renderP3DiagnosticFeedback(panel, evaluation) {
+    if (!panel) return;
+    var report = evaluation.report;
+    var json = panel.querySelector('[data-diagnostic-report-json]');
+    var recommendation = panel.querySelector('[data-diagnostic-recommendation]');
+    var nextLink = panel.querySelector('a.button');
+    if (json) json.textContent = JSON.stringify(report, null, 2);
+    if (recommendation) recommendation.textContent = P3_DIAGNOSTIC_PATH_COPY[report.recommended_path] || ('Student should proceed via: ' + report.recommended_path);
+    if (nextLink) {
+      if (report.recommended_path === 'P1_REPAIR_REQUIRED') {
+        nextLink.textContent = 'Open Repair Lane';
+        nextLink.setAttribute('href', '../repair-lane/');
+      } else {
+        nextLink.textContent = 'Open P3 Units';
+        nextLink.setAttribute('href', '../topics/');
+      }
+    }
+    renderDiagnosticSummary(panel, report, evaluation);
+    renderDiagnosticSectionFeedback(panel, report);
+    renderDiagnosticPriorityFeedback(panel, report);
+    renderDiagnosticMissedFeedback(panel, evaluation);
+    renderDiagnosticConfidenceFeedback(panel, report, evaluation);
   }
 
   function saveP3DiagnosticReport(report) {
@@ -2172,14 +2509,11 @@
   }
 
   function submitP3Diagnostic(form) {
-    var report = buildP3DiagnosticReport(form);
-    saveP3DiagnosticReport(report);
+    var evaluation = collectP3DiagnosticEvaluation(form);
+    saveP3DiagnosticReport(evaluation.report);
     updateProgressText();
     var panel = document.querySelector('[data-p3-diagnostic-report]');
-    var json = panel?.querySelector('[data-diagnostic-report-json]');
-    var recommendation = panel?.querySelector('[data-diagnostic-recommendation]');
-    if (json) json.textContent = JSON.stringify(report, null, 2);
-    if (recommendation) recommendation.textContent = 'Student should proceed via: ' + report.recommended_path;
+    renderP3DiagnosticFeedback(panel, evaluation);
     if (panel) {
       panel.hidden = false;
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2430,6 +2764,8 @@
   window.__ASTERION_SKILL_CHECK_TEST_HOOKS__ = {
     checkSubmittedSkillAnswer: checkSubmittedSkillAnswer,
     buildP3DiagnosticReport: buildP3DiagnosticReport,
+    collectP3DiagnosticEvaluation: collectP3DiagnosticEvaluation,
+    renderP3DiagnosticFeedback: renderP3DiagnosticFeedback,
     p1RepairUnlockStatus: p1RepairUnlockStatus
   };
 

@@ -79,9 +79,11 @@ function normalizeMathText(value: string): string {
     .replace(/\\pi\b/g, 'pi')
     .replace(/\\sqrt\s*\{([^{}]+)\}/g, 'sqrt($1)')
     .replace(/\\sqrt\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
+    .replace(/\bsqrt\s*([+-]?\d+(?:\.\d+)?)/gi, 'sqrt($1)')
     .replace(/√\s*([+-]?\d+(?:\.\d+)?)/g, 'sqrt($1)')
     .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '$1/$2')
     .replace(/\\cdot|\\times/g, '*')
+    .replace(/÷/g, '/')
     .replace(/[{}]/g, '')
     .replace(/\s+/g, ' ');
 }
@@ -162,10 +164,51 @@ function normalizeExactText(value: string): string {
     .toLowerCase();
 }
 
+function hasBalancedOuterParentheses(value: string): boolean {
+  if (!value.startsWith('(') || !value.endsWith(')')) return false;
+  let depth = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (character === '(') depth += 1;
+    if (character === ')') depth -= 1;
+    if (depth === 0 && index < value.length - 1) return false;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
+}
+
+function stripBalancedOuterParentheses(value: string): string {
+  let current = value;
+  while (hasBalancedOuterParentheses(current)) {
+    current = current.slice(1, -1);
+  }
+  return current;
+}
+
+function normalizeFunctionNotation(value: string): string {
+  let current = value;
+  let previous = '';
+  while (current !== previous) {
+    previous = current;
+    current = current.replace(/\\?(sin|cos|tan|sec|cosec|cot|ln)\(([^()+\-*/^,=]+)\)/g, '$1$2');
+  }
+  return current;
+}
+
 function normalizeExpressionText(value: string): string {
-  return compactText(value)
+  return stripBalancedOuterParentheses(normalizeFunctionNotation(compactText(value)))
     .replace(/\*/g, '')
+    .replace(/^\(([-+]?(?:\d+(?:\.\d+)?|\d*\.\d+)(?:\/[-+]?\d+(?:\.\d+)?)?)\)(?=\()/, '$1')
+    .replace(/^\((\([^()]+\)\^\d+)\)(?=\/)/, '$1')
+    .replace(/\(([-+]?\d*[a-z](?:\^\d+)?)\)(?=\/)/g, '$1')
     .replace(/\^1(?!\d)/g, '');
+}
+
+function normalizeExpressionTextVariants(value: string): string[] {
+  const variants = [normalizeExpressionText(value)];
+  const rightSide = afterEquals(value);
+  if (rightSide !== value) variants.push(normalizeExpressionText(rightSide));
+  return Array.from(new Set(variants));
 }
 
 function splitTopLevelValues(value: string): string[] {
@@ -215,7 +258,7 @@ function multiValuesEqual(
 
 function parseCoordinate(value: string): number[] | undefined {
   const normalized = normalizeMathText(value);
-  const match = normalized.match(/^\(?\s*([^,()]+)\s*,\s*([^,()]+)(?:\s*,\s*([^,()]+))?\s*\)?$/);
+  const match = normalized.match(/^[([{<⟨]?\s*([^,()[\]{}<>⟨⟩]+)\s*,\s*([^,()[\]{}<>⟨⟩]+)(?:\s*,\s*([^,()[\]{}<>⟨⟩]+))?\s*[)\]}>⟩]?$/);
   if (!match) return undefined;
   const parts = [match[1], match[2], match[3]].filter((part): part is string => Boolean(part));
   const parsed = parts.map(parseSimpleNumber);
@@ -452,8 +495,12 @@ export function checkSkillCheckAnswer(input: SkillCheckAnswerCheckInput): SkillC
   }
 
   if (spec.answerType === 'expression-text') {
-    const normalized = normalizeExpressionText(trimmedSubmitted);
-    const match = spec.acceptedAnswers.find((accepted) => normalizeExpressionText(accepted) === normalized);
+    const submittedVariants = normalizeExpressionTextVariants(trimmedSubmitted);
+    const normalized = submittedVariants[0];
+    const match = spec.acceptedAnswers.find((accepted) => {
+      const acceptedVariants = normalizeExpressionTextVariants(accepted);
+      return submittedVariants.some((submitted) => acceptedVariants.includes(submitted));
+    });
     return result(spec, {
       isCorrect: Boolean(match),
       normalizedSubmittedAnswer: normalized,

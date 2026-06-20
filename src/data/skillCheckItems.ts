@@ -1391,7 +1391,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'interval',
     acceptedAnswers: ['-1 < x < 4', '-1<x<4'],
-    repairStep: 'Below the horizontal line is between the two graph intersections.',
+    repairStep: 'Use the two intersection points as interval boundaries; the modulus graph is below the horizontal line between them.',
     mistakeTags: ['domain/range issue', 'method choice'],
     expectedOptionIds: ['between'],
     options: [
@@ -1429,7 +1429,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'multi-value',
     acceptedAnswers: ['x^2-2, 2', 'quotient x^2-2, remainder 2'],
     orderInsensitive: false,
-    repairStep: 'Use long division until the remainder has degree below $2$: quotient $x^2-2$, remainder $2$.',
+    repairStep: 'Start with $x^4\\div x^2=x^2$, subtract $x^2(x^2+2x-1)$, and continue until the remainder has degree below $2$.',
     mistakeTags: ['coefficient error', 'sign error', 'incomplete reasoning'],
     fields: [
       { id: 'quotient', label: 'quotient', expectedAnswer: ['x^2-2', 'x^2 - 2'], displayPrefix: 'quotient =' },
@@ -1497,7 +1497,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'expression-text',
     acceptedAnswers: ['ln y = ln k + n ln x', 'correct'],
-    repairStep: 'Take logs of $y=kx^n$ to get $\\ln y=\\ln k+n\\ln x$.',
+    repairStep: 'Take logs of both sides first: $\\ln y=\\ln(kx^n)$, then split the product and move the power down.',
     mistakeTags: ['method choice', 'coefficient error', 'notation'],
     expectedOptionIds: ['power-law'],
     options: [
@@ -1534,7 +1534,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'interval',
     acceptedAnswers: ['1 < x < 6', '1<x<6'],
-    repairStep: 'Use both the domain $x>1$ and the comparison $x-1<5$.',
+    repairStep: 'Start with the domain $x-1>0$, then compare inputs because $\\ln x$ is increasing: $x-1<5$.',
     mistakeTags: ['domain/range issue', 'method choice'],
     expectedOptionIds: ['correct'],
     options: [
@@ -1572,7 +1572,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'multi-value',
     acceptedAnswers: ['pi/4, 5pi/4', '\\pi/4, 5\\pi/4'],
     orderInsensitive: true,
-    repairStep: 'Rewrite $\\cot x=1$ as $\\tan x=1$, then solve in quadrants I and III.',
+    repairStep: 'Start by rewriting $\\cot x=1$ as $\\tan x=1$, then use the reference angle $\\pi/4$ in quadrants I and III.',
     mistakeTags: ['wrong identity', 'domain/range issue'],
     expectedOptionIds: ['correct'],
     options: [
@@ -1610,7 +1610,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'multi-value',
     acceptedAnswers: ['5, 4/3', 'R=5, tan alpha=4/3'],
     orderInsensitive: false,
-    repairStep: 'Expand $R\\sin(x+\\alpha)$, then match $R\\cos\\alpha=3$ and $R\\sin\\alpha=4$.',
+    repairStep: 'Expand the chosen R-form before matching coefficients: $R\\cos\\alpha=3$ and $R\\sin\\alpha=4$.',
     mistakeTags: ['coefficient error', 'method choice'],
     fields: [
       { id: 'r', label: 'R', expectedAnswer: '5', displayPrefix: '$R=$' },
@@ -1644,7 +1644,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'expression-text',
     acceptedAnswers: ['2/(1+(2x-1)^2)', 'correct'],
-    repairStep: 'Use $d(\\tan^{-1}u)/dx=u\\prime/(1+u^2)$ with $u=2x-1$.',
+    repairStep: 'First identify $u=2x-1$ and $u\\prime=2$, then use $d(\\tan^{-1}u)/dx=u\\prime/(1+u^2)$.',
     mistakeTags: ['wrong identity', 'coefficient error'],
     expectedOptionIds: ['correct'],
     options: [
@@ -1681,7 +1681,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'exact-text',
     acceptedAnswers: ['int 1/(x^2+9) dx', 'correct'],
-    repairStep: 'Arctangent form needs $1/(x^2+a^2)$; reciprocal linear factors lead to logarithms or partial fractions.',
+    repairStep: 'First match the denominator to $x^2+a^2$ with constant numerator; reciprocal linear factors lead to logarithms or partial fractions.',
     mistakeTags: ['method choice', 'wrong identity'],
     expectedOptionIds: ['arctan'],
     options: [
@@ -1718,7 +1718,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     checkable: true,
     answerType: 'coordinate',
     acceptedAnswers: ['(5,2,2)'],
-    repairStep: 'Average corresponding coordinates: $((2+8)/2,(-1+5)/2,(3+1)/2)$.',
+    repairStep: 'First average matching coordinates: $((2+8)/2,(-1+5)/2,(3+1)/2)$.',
     mistakeTags: ['method choice', 'calculator'],
     expectedOptionIds: ['correct'],
     options: [
@@ -1756,7 +1756,7 @@ export const AUTHORED_SKILL_CHECK_ITEMS: SkillCheckItem[] = [
     answerType: 'multi-value',
     acceptedAnswers: ['2+i, -2-i', '-2-i, 2+i'],
     orderInsensitive: true,
-    repairStep: 'Check $(2+i)^2=3+4i$, then include the opposite root.',
+    repairStep: 'First square the candidate root using $i^2=-1$; after $(2+i)^2=3+4i$, include the opposite root.',
     mistakeTags: ['sign error', 'incomplete reasoning'],
     expectedOptionIds: ['correct'],
     options: [

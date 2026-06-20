@@ -839,12 +839,20 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
     </form>
     <section class="diagnostic-report-panel summary-card" data-p3-diagnostic-report hidden aria-labelledby="diagnostic-report-title">
       <div>
-        <p class="eyebrow">Diagnostic report object</p>
-        <h2 id="diagnostic-report-title">Readiness classification</h2>
+        <p class="eyebrow">Diagnostic feedback</p>
+        <h2 id="diagnostic-report-title">Your P3 starting point</h2>
       </div>
-      <pre class="diagnostic-report-json" data-diagnostic-report-json>{}</pre>
       <p class="diagnostic-recommendation" data-diagnostic-recommendation>Student should proceed via: P1_REPAIR_REQUIRED</p>
+      <div class="diagnostic-feedback-grid" data-diagnostic-feedback-summary></div>
+      <div class="diagnostic-feedback-section" data-diagnostic-section-feedback></div>
+      <div class="diagnostic-feedback-section" data-diagnostic-priority-feedback></div>
+      <div class="diagnostic-feedback-section" data-diagnostic-missed-feedback></div>
+      <div class="diagnostic-feedback-section diagnostic-confidence-panel" data-diagnostic-confidence-panel hidden></div>
       ${routeLink(pagePath, p1RepairLanePagePath(), 'Open P1 Repair Lane', 'button primary-button')}
+      <details class="diagnostic-technical-details">
+        <summary>Technical report</summary>
+        <pre class="diagnostic-report-json" data-diagnostic-report-json>{}</pre>
+      </details>
     </section>
   `;
   return renderPage({

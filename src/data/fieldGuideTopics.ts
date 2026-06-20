@@ -198,6 +198,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ x^2-x+3\\quad\\text{remainder }4 $$',
           takeaway: [
             'Keep every power in order; write $0x^2$ if the $x^2$ term is missing.',
+            'Common trap: subtracting the wrong signed row changes every later quotient term.',
             'A non-monic divisor still starts with leading term divided by leading term.',
             'Skill Practice separates long division from the remainder theorem so you know which method is being trained.',
           ],
@@ -239,6 +240,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ k=-5 $$',
           takeaway: [
             'The sign comes from making the divisor equal zero.',
+            'Common trap: using the wrong sign for the divisor root gives the remainder of a different divisor.',
             'A zero remainder is the factor theorem.',
             'Skill Practice then uses one or two conditions to find unknown coefficients and solve cubics by factors.',
           ],
@@ -450,6 +452,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           takeaway: [
             'Move coefficients into powers before combining.',
             'There is no law for splitting $\\log(a+b)$.',
+            'Common trap: do not combine sums inside a logarithm; log laws act on products, quotients, and powers.',
             'Skill Practice includes invalid-law spotting as well as valid simplification.',
           ],
           result: '$$ \\ln\\left(\\frac{5x^2}{x-1}\\right),\\quad x>1 $$',
@@ -532,6 +535,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ x=6 $$',
           takeaway: [
             'Keep all original log inputs positive.',
+            'Common trap: check the original log inputs before accepting candidates from a combined equation.',
             'Solving after combining logs may create invalid candidate roots.',
             'Skill Practice includes explicit invalid-root rejection guidance before exam image practice.',
           ],
@@ -699,6 +703,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ \\theta=\\frac{\\pi}{4},\\ \\frac{3\\pi}{4} $$',
           takeaway: [
             'The expanded identities come from dividing the base Pythagorean identity.',
+            'Common trap: match the visible squared terms before switching to a double-angle identity.',
             'Identity proofs should move from a known identity toward the required form.',
             'Skill Practice includes identity proof and equation-solving uses of the expanded identities.',
           ],
@@ -823,6 +828,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ 13\\sin(x+\\alpha),\\quad \\tan\\alpha=\\frac{12}{5} $$',
           takeaway: [
             'Expand the target form before matching.',
+            'Common trap: match coefficients before solving for the angle; $R\\cos\\alpha$ and $R\\sin\\alpha$ depend on the chosen form.',
             'R is the hypotenuse from the two coefficients.',
             'Skill Practice uses R-form transformations for combining sine and cosine, ranges, and simple solving.',
           ],
@@ -906,6 +912,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ |1-i|=\\sqrt2,\\quad \\arg(1-i)=-\\frac{\\pi}{4} $$',
           takeaway: [
             'Draw the quadrant first.',
+            'Common trap: choose the quadrant before trusting a reference angle from the calculator.',
             'Use Pythagoras for modulus.',
             'Argument must match the quadrant.',
           ],
@@ -946,6 +953,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: 'Circle centre $(-1,1)$, radius $2$.',
           takeaway: [
             'Convert the expression into a point first.',
+            'Common trap: read $z-a$ as distance from $a$, not from the sign-flipped point.',
             'A fixed distance from a point is a circle.',
             'State centre and radius clearly.',
           ],
@@ -1786,6 +1794,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ \\overrightarrow{CD}=\\begin{pmatrix}6\\\\-2\\end{pmatrix},\\quad \\overrightarrow{DC}=\\begin{pmatrix}-6\\\\2\\end{pmatrix} $$',
           takeaway: [
             'Scalars have magnitude only; vectors also have direction.',
+            'Common trap: reversing final and initial gives the opposite vector, so check the arrow direction before using it.',
             'Negative components mean movement in the negative coordinate direction.',
             'Skill Practice: convert notation and form displacement vectors before using line methods.',
           ],
@@ -1909,6 +1918,7 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
           tryResult: '$$ \\mathbf r=\\begin{pmatrix}0\\\\1\\\\3\\end{pmatrix}+\\lambda\\begin{pmatrix}2\\\\4\\\\-2\\end{pmatrix} $$',
           takeaway: [
             'Do not use a position vector as the direction unless it is actually a displacement.',
+            'Common trap: use a direction vector, not a second position vector, after the parameter.',
             'A point lies on the line only if one parameter value works in every component.',
             'Skill Practice: form lines and test points using the same parameter throughout one line.',
           ],

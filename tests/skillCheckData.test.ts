@@ -30,6 +30,49 @@ function expectAccepted(itemId: string, submittedAnswer: string | string[]) {
   });
 }
 
+const repairStepExpectations = [
+  {
+    itemId: 'sc-alg-modulus-graph-interval-002',
+    expectedFragment: 'Use the two intersection points as interval boundaries',
+  },
+  {
+    itemId: 'sc-alg-polynomial-division-quartic-002',
+    expectedFragment: 'Start with $x^4\\div x^2=x^2$',
+  },
+  {
+    itemId: 'sc-log-inequalities-domain-002',
+    expectedFragment: 'Start with the domain $x-1>0$',
+  },
+  {
+    itemId: 'sc-log-power-law-linearisation-002',
+    expectedFragment: 'Take logs of both sides first',
+  },
+  {
+    itemId: 'sc-trig-reciprocal-graphs-equations-002',
+    expectedFragment: 'Start by rewriting $\\cot x=1$ as $\\tan x=1$',
+  },
+  {
+    itemId: 'sc-trig-r-form-002',
+    expectedFragment: 'Expand the chosen R-form before matching coefficients',
+  },
+  {
+    itemId: 'sc-diff-arctan-derivative-002',
+    expectedFragment: 'First identify $u=2x-1$',
+  },
+  {
+    itemId: 'sc-int-arctan-distinguish-002',
+    expectedFragment: 'First match the denominator to $x^2+a^2$',
+  },
+  {
+    itemId: 'sc-complex-square-roots-exact-002',
+    expectedFragment: 'First square the candidate root using $i^2=-1$',
+  },
+  {
+    itemId: 'sc-vectors-foundation-midpoint-proof-002',
+    expectedFragment: 'First average matching coordinates',
+  },
+] as const;
+
 describe('P3 Skill Check machine-checkable data', () => {
   it('keeps all current authored Skill Check records contract-valid', () => {
     const failures = AUTHORED_SKILL_CHECK_ITEMS.flatMap((item) => (
@@ -37,6 +80,14 @@ describe('P3 Skill Check machine-checkable data', () => {
     ));
 
     expect(failures).toEqual([]);
+  });
+
+  it('keeps selected repair steps focused on the first recovery move', () => {
+    for (const expectation of repairStepExpectations) {
+      const item = requireItem(expectation.itemId);
+
+      expect(item.repairStep, expectation.itemId).toContain(expectation.expectedFragment);
+    }
   });
 
   it('requires machine-check fields on checkable items', () => {
