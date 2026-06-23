@@ -1404,7 +1404,7 @@
         if (title) title.textContent = 'Check Review status';
         if (copy) copy.textContent = 'All unit Learn and Checked Practice requirements are complete in this browser. Mixed review is still local practice guidance, not a grade.';
         if (link) {
-          link.textContent = 'Open Review';
+          link.textContent = 'Review Mistakes';
           link.setAttribute('href', reviewHref);
         }
         return;
@@ -2477,10 +2477,10 @@
     if (recommendation) recommendation.textContent = P3_DIAGNOSTIC_PATH_COPY[report.recommended_path] || ('Student should proceed via: ' + report.recommended_path);
     if (nextLink) {
       if (report.recommended_path === 'P1_REPAIR_REQUIRED') {
-        nextLink.textContent = 'Open Repair Lane';
+        nextLink.textContent = 'Continue';
         nextLink.setAttribute('href', '../repair-lane/');
       } else {
-        nextLink.textContent = 'Open P3 Units';
+        nextLink.textContent = 'Continue';
         nextLink.setAttribute('href', '../topics/');
       }
     }
@@ -3168,7 +3168,7 @@
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
       if (submitButton) {
-        submitButton.textContent = 'Check again';
+        submitButton.textContent = 'Check Answer';
         submitButton.className = 'button secondary-button';
       }
       return;
@@ -3178,9 +3178,9 @@
       if (nextButton) nextButton.hidden = false;
       return;
     }
-    setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try again or open the repair step.', 'incorrect');
+    setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try Again or open the repair step.', 'incorrect');
     if (submitButton) {
-      submitButton.textContent = 'Try again';
+      submitButton.textContent = 'Try Again';
       submitButton.className = 'button primary-button';
     }
     if (mistakePanel) mistakePanel.hidden = false;
@@ -3225,7 +3225,7 @@
         : 'Correct. Saved as supported practice, not strong checked evidence.', clean ? 'correct' : 'repaired');
       form.classList.add('is-passed');
       if (submitButton) {
-        submitButton.textContent = 'Check again';
+        submitButton.textContent = 'Check Answer';
         submitButton.className = 'button secondary-button';
       }
       if (isPrimary && requiresSimilar) {
@@ -3242,7 +3242,7 @@
     if (mistakePanel) mistakePanel.hidden = false;
     updateTargetedPrompt(form);
     if (submitButton) {
-      submitButton.textContent = 'Try again';
+      submitButton.textContent = 'Try Again';
       submitButton.className = 'button primary-button';
     }
     window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
@@ -3480,12 +3480,12 @@
       var previous = document.createElement('button');
       previous.className = 'button secondary-button';
       previous.type = 'button';
-      previous.textContent = 'Previous question';
+      previous.textContent = 'Previous Question';
 
       var next = document.createElement('button');
       next.className = 'button primary-button';
       next.type = 'button';
-      next.textContent = 'Next question';
+      next.textContent = 'Next Question';
 
       controls.append(previous, label, next);
       stack.before(controls);
@@ -3738,7 +3738,7 @@
         } else {
           next.disabled = false;
           next.className = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'button secondary-button' : 'button primary-button';
-          next.textContent = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'Skip to next question' : 'Next question';
+          next.textContent = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'Skip to Next Question' : 'Next Question';
         }
         if (!skillCheckGroups.length && isLastCardInChunk) {
           next.disabled = true;
@@ -3757,7 +3757,7 @@
               var groupIndex = activeSkillGroupIndex();
               button.textContent = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1 ? 'Next subtopic' : finalLabel;
             } else {
-              button.textContent = 'Next question';
+              button.textContent = 'Next Question';
             }
             button.hidden = !activeSkillPassed || (!skillCheckGroups.length && isLastCardInChunk);
           });
@@ -3861,7 +3861,7 @@
       var previous = document.createElement('button');
       previous.className = 'button secondary-button';
       previous.type = 'button';
-      previous.textContent = 'Previous question';
+      previous.textContent = 'Previous Question';
 
       var label = document.createElement('span');
       label.className = 'practice-count';
@@ -3870,7 +3870,7 @@
       var next = document.createElement('button');
       next.className = 'button primary-button';
       next.type = 'button';
-      next.textContent = 'Next question';
+      next.textContent = 'Next Question';
 
       controls.append(previous, label, next);
       grid.before(controls);
@@ -4054,7 +4054,7 @@
           panel.hidden = !isActive;
         });
         if (previous) previous.disabled = bounded === 0;
-        if (next) next.textContent = bounded === tabs.length - 1 ? 'Go to Checked Practice' : 'Next subtopic';
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Checked Practice' : 'Next subtopic';
         if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
         if (updateHash) {
           var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';
@@ -4194,7 +4194,7 @@
         if (button) button.disabled = !isEnabled;
         if (status) {
           status.className = 'homepage-demo-status is-' + (state === 'locked' ? 'waiting' : state);
-          status.textContent = state === 'locked' ? 'Locked' : state === 'active' ? 'Ready' : state === 'correct' ? 'Correct' : 'Try again';
+          status.textContent = state === 'locked' ? 'Locked' : state === 'active' ? 'Ready' : state === 'correct' ? 'Correct' : 'Try Again';
         }
       }
 

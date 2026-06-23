@@ -79,7 +79,7 @@ function diagnosticPanel(): HTMLElement {
     <div data-diagnostic-priority-feedback></div>
     <div data-diagnostic-missed-feedback></div>
     <div data-diagnostic-confidence-panel hidden></div>
-    <a class="button" href="../repair-lane/">Open P1 Repair Lane</a>
+    <a class="button" href="../repair-lane/">Continue</a>
     <pre data-diagnostic-report-json>{}</pre>
   `;
   document.body.appendChild(panel);
@@ -130,6 +130,6 @@ describe('P3 diagnostic student-facing feedback', () => {
     expect(evaluation.report.total_score).toBe(100);
     expect(evaluation.longestMissedQuestionStreak).toBe(0);
     expect(panel.querySelector('[data-diagnostic-confidence-panel]')?.hasAttribute('hidden')).toBe(true);
-    expect(panel.querySelector('a.button')?.textContent).toBe('Open P3 Units');
+    expect(panel.querySelector('a.button')?.textContent).toBe('Continue');
   });
 });

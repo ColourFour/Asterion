@@ -1141,22 +1141,22 @@ try {
   assert(revealedComplexState.skillCount === 0, 'Revealed Complex Numbers answer must not mirror into strong Skill Check evidence.');
 
   for (const [oldPath, label, expectedTitle, expectedButton] of [
-    [oldAlgebraFieldGuidePagePath, 'Algebra Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldAlgebraSkillCheckPagePath, 'Algebra Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldLogExpFieldGuidePagePath, 'Log/Exp Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldLogExpSkillCheckPagePath, 'Log/Exp Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldTrigFieldGuidePagePath, 'Trigonometry Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldTrigSkillCheckPagePath, 'Trigonometry Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldDiffFieldGuidePagePath, 'Differentiation Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldDiffSkillCheckPagePath, 'Differentiation Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldIntegrationFieldGuidePagePath, 'Integration Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldIntegrationSkillCheckPagePath, 'Integration Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldIterationFieldGuidePagePath, 'Numerical Solution Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldIterationSkillCheckPagePath, 'Numerical Solution Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldDeFieldGuidePagePath, 'Differential Equations Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldDeSkillCheckPagePath, 'Differential Equations Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    [oldComplexFieldGuidePagePath, 'Complex Numbers Learn bridge', 'This topic now starts in Learn', 'Start Learn'],
-    [oldComplexSkillCheckPagePath, 'Complex Numbers Checked Practice bridge', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    [oldAlgebraFieldGuidePagePath, 'Algebra Learn bridge', 'Algebra — Learn', 'Learn'],
+    [oldAlgebraSkillCheckPagePath, 'Algebra Checked Practice bridge', 'Algebra — Checked Practice', 'Continue'],
+    [oldLogExpFieldGuidePagePath, 'Log/Exp Learn bridge', 'Logarithmic and Exponential Functions — Learn', 'Learn'],
+    [oldLogExpSkillCheckPagePath, 'Log/Exp Checked Practice bridge', 'Logarithmic and Exponential Functions — Checked Practice', 'Continue'],
+    [oldTrigFieldGuidePagePath, 'Trigonometry Learn bridge', 'Trigonometry — Learn', 'Learn'],
+    [oldTrigSkillCheckPagePath, 'Trigonometry Checked Practice bridge', 'Trigonometry — Checked Practice', 'Continue'],
+    [oldDiffFieldGuidePagePath, 'Differentiation Learn bridge', 'Differentiation — Learn', 'Learn'],
+    [oldDiffSkillCheckPagePath, 'Differentiation Checked Practice bridge', 'Differentiation — Checked Practice', 'Continue'],
+    [oldIntegrationFieldGuidePagePath, 'Integration Learn bridge', 'Integration — Learn', 'Learn'],
+    [oldIntegrationSkillCheckPagePath, 'Integration Checked Practice bridge', 'Integration — Checked Practice', 'Continue'],
+    [oldIterationFieldGuidePagePath, 'Numerical Solution Learn bridge', 'Numerical Solution of Equations — Learn', 'Learn'],
+    [oldIterationSkillCheckPagePath, 'Numerical Solution Checked Practice bridge', 'Numerical Solution of Equations — Checked Practice', 'Continue'],
+    [oldDeFieldGuidePagePath, 'Differential Equations Learn bridge', 'Differential Equations — Learn', 'Learn'],
+    [oldDeSkillCheckPagePath, 'Differential Equations Checked Practice bridge', 'Differential Equations — Checked Practice', 'Continue'],
+    [oldComplexFieldGuidePagePath, 'Complex Numbers Learn bridge', 'Complex Numbers — Learn', 'Learn'],
+    [oldComplexSkillCheckPagePath, 'Complex Numbers Checked Practice bridge', 'Complex Numbers — Checked Practice', 'Continue'],
   ]) {
     await waitForStaticEnhancement(page, oldPath);
     const oldRouteShape = await page.evaluate(([title, buttonLabel]) => ({

@@ -286,8 +286,8 @@ describe('P3 topic-pack exam-training refresh', () => {
     for (const id of importedIds) {
       const topicSlug = importedTopicPackRecords[id];
       const article = renderedArticleHtml(topicSlug, id);
-      expect(article, id).toContain('Need a first step?');
-      expect(article, id).toContain('Show mark scheme image');
+      expect(article, id).toContain('Hint');
+      expect(article, id).toContain('Reveal Answer');
       expect(article, id).toContain('Self-marked exam work is useful practice evidence');
 
       for (const term of internalTerms) {

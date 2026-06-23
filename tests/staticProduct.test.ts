@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
 import { COURSES, P3_COURSE_ID, coursePath, getCourseBySlug } from '../src/data/courses';
 import { P3_REGION_DEFINITIONS } from '../src/lib/p3SkillContract';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS } from '../src/lib/staticStudyRoutes';
@@ -16,6 +17,18 @@ const officialP3Topics = [
   'Differential Equations',
   'Complex Numbers',
 ];
+
+function normalizeRoute(pagePath: string, href: string): string {
+  const url = new URL(href, `https://asterion.test/${pagePath}`);
+  let pathname = url.pathname.replace(/^\//, '');
+  if (pathname.endsWith('/index.html')) pathname = pathname.slice(0, -'index.html'.length);
+  if (pathname.endsWith('/')) pathname = pathname.slice(0, -1);
+  return `${pathname || 'index'}${url.hash}`;
+}
+
+function visibleText(element: Element): string {
+  return (element.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
 
 describe('static P3 product contract', () => {
   it('makes P3 the only ready course path', () => {
@@ -86,7 +99,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('renderP3DashboardPage(data, course)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
-    expect(generatorSource).toContain('Start Learn');
+    expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('homepage-course-panel');
 
     if (existsSync(generatedHomePath)) {
@@ -102,15 +115,15 @@ describe('static P3 product contract', () => {
 
     if (existsSync(generatedP3Path)) {
       const generatedP3 = readFileSync(generatedP3Path, 'utf8');
-      expect(generatedP3).toContain('P3: Pure Mathematics 3');
+      expect(generatedP3).toContain('Pure Mathematics 3');
       expect(generatedP3).toContain('Take the diagnostic');
       expect(generatedP3).toContain('Start Unit 1: Algebra');
-      expect(generatedP3).toContain('Open full unit path');
+      expect(generatedP3).toContain('Topic Overview');
       expect(generatedP3).toContain('path-unit-grid');
       expect(generatedP3).toContain('data-progress-field-guide');
       expect(generatedP3).toContain('data-progress-skill');
       expect(generatedP3).toContain('data-progress-exam');
-      expect(generatedP3).toContain('Check review status');
+      expect(generatedP3).toContain('Review Mistakes');
       expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedP3).not.toContain('course-topic-button-grid');
     }
@@ -118,7 +131,7 @@ describe('static P3 product contract', () => {
     if (existsSync(generatedP3TopicsPath)) {
       const generatedP3Topics = readFileSync(generatedP3TopicsPath, 'utf8');
       expect(generatedP3Topics).toContain('CAIE 9709 Paper 3');
-      expect(generatedP3Topics).toContain('Start P3 with Algebra.');
+      expect(generatedP3Topics).toContain('P3 Topic Overview');
       expect(generatedP3Topics).toContain('path-unit-grid');
       expect(generatedP3Topics.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
     }
@@ -137,7 +150,7 @@ describe('static P3 product contract', () => {
     const generatedReviewPath = 'docs/p3/review/index.html';
     if (existsSync(generatedReviewPath)) {
       const generatedReview = readFileSync(generatedReviewPath, 'utf8');
-      expect(generatedReview).toContain('P3 Exam Review');
+      expect(generatedReview).toContain('Review Mistakes');
       expect(generatedReview).toContain('data-p3-exam-review-gate');
       expect(generatedReview).toContain('Mixed Paper 3 questions');
       expect(generatedReview).toContain('Locked until the path is complete');
@@ -180,9 +193,9 @@ describe('static P3 product contract', () => {
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
-    expect(generatorSource).toContain('Start Learn');
-    expect(generatorSource).toContain('Continue to Learn');
-    expect(generatorSource).toContain('Check review status');
+    expect(generatorSource).toContain('Check Answer');
+    expect(generatorSource).toContain('Hint');
+    expect(generatorSource).toContain('Review Mistakes');
   });
 
   it('keeps local agent-loop run artifacts out of git status noise', () => {
@@ -208,6 +221,66 @@ describe('static P3 product contract', () => {
       const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
 
       expect(duplicateIds, generatedPath).toEqual([]);
+    }
+  });
+
+  it('keeps generated P3 headings and prominent route controls consistent', () => {
+    const generatedPages = [
+      'docs/index.html',
+      'docs/p3/index.html',
+      'docs/p3/topics/index.html',
+      'docs/p3/need-to-know/index.html',
+      'docs/p3/review/index.html',
+      ...STUDY_TOPICS.flatMap((topic) => [
+        `docs/p3/topics/${topic.slug}/learn/index.html`,
+        `docs/p3/topics/${topic.slug}/field-guide/index.html`,
+        `docs/p3/topics/${topic.slug}/skill-check/index.html`,
+        `docs/p3/topics/${topic.slug}/exam-training/index.html`,
+      ]),
+    ];
+
+    for (const generatedPath of generatedPages) {
+      if (!existsSync(generatedPath)) continue;
+      const pagePath = generatedPath.replace(/^docs\//, '');
+      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
+      const prominentLinks = Array.from(document.querySelectorAll([
+        '.hero-actions a[href]',
+        '.home-hero-actions a[href]',
+        '.p3-dashboard-action-grid a[href]',
+        '.section-heading a.button[href]',
+        '.path-unit-card[href]',
+        '.path-unit-progress a[href]',
+        '.course-card[href]',
+        '.next-step-card a[href]',
+        '.learn-mode-hero-actions a[href]',
+      ].join(',')));
+      const routes = prominentLinks
+        .map((link) => ({
+          label: visibleText(link),
+          route: normalizeRoute(pagePath, link.getAttribute('href') ?? ''),
+        }))
+        .filter((link) => link.route && !link.route.includes('#'));
+      const duplicates = routes.filter((link, index) => routes.findIndex((candidate) => candidate.route === link.route) !== index);
+
+      expect(duplicates, generatedPath).toEqual([]);
+    }
+
+    if (existsSync('docs/p3/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/index.html', 'utf8')).window.document;
+      expect(visibleText(document.querySelector('h1') as Element)).toBe('Pure Mathematics 3');
+    }
+
+    for (const topic of STUDY_TOPICS) {
+      const learnPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
+      const examPath = `docs/p3/topics/${topic.slug}/exam-training/index.html`;
+      if (existsSync(learnPath)) {
+        const document = new JSDOM(readFileSync(learnPath, 'utf8')).window.document;
+        expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Learn`);
+      }
+      if (existsSync(examPath)) {
+        const document = new JSDOM(readFileSync(examPath, 'utf8')).window.document;
+        expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Exam Training`);
+      }
     }
   });
 });

@@ -1,0 +1,57 @@
+route,page_type,topic,primary_element_count,dominant_action,clear_next_step,done_state_clear,cognitive_load_rating,notes
+/,home,,11,Start P3,false,true,OVERWHELMING,Above 7 primary elements; counted 11. Next action is not singular from visible calls to action. Dashboard-like rather than narrow-path.
+/about,about,,7,Start P3,true,true,MODERATE,Dashboard-like rather than narrow-path.
+/p1,course-status,,3,P1: Pure Mathematics 1,false,true,LOW,Next action is not singular from visible calls to action.
+/p3,p3-home,,14,UNSURE Take the diagnostic Fixed local check for P1 fluency and early P3 readiness.,false,true,OVERWHELMING,Above 7 primary elements; counted 14. Next action is not singular from visible calls to action. Dashboard-like rather than narrow-path. 15 visible action controls compete for attention.
+/m1,course-status,,3,M1: Mechanics 1,false,true,LOW,Next action is not singular from visible calls to action.
+/s1,course-status,,3,S1: Probability & Statistics 1,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/diagnostic,diagnostic,,11,Complete diagnostic questions and submit classification,true,true,HIGH,Above 7 primary elements; counted 11. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/repair-lane,repair-lane,,11,Complete foundation repair modules,false,true,OVERWHELMING,Above 7 primary elements; counted 11. Next action is not singular from visible calls to action. Dashboard-like rather than narrow-path.
+/p3/topics,p3-topic-path,,12,Take P3 diagnostic,false,true,OVERWHELMING,Above 7 primary elements; counted 12. Next action is not singular from visible calls to action. Dashboard-like rather than narrow-path. 13 visible action controls compete for attention.
+/p3/need-to-know,need-to-know,,52,Back to P3 topics,false,true,OVERWHELMING,Above 7 primary elements; counted 52. Next action is not singular from visible calls to action. Dashboard-like rather than narrow-path. 114 visible action controls compete for attention.
+/p3/review,review,,4,Continue incomplete units before mixed review,false,true,LOW,Next action is not singular from visible calls to action. 14 visible action controls compete for attention.
+/p3/topics/algebra/learn,learn,algebra,7,Answer the current Learn prompt,true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/algebra/field-guide,field-guide,algebra,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/algebra/skill-check,skill-check,algebra,4,Continue to Learn,true,true,LOW,
+/p3/topics/algebra/exam-training,exam-training,algebra,6,"Attempt current exam question, then self-mark",true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/algebra/worksheet,worksheet,algebra,27,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 27. Dashboard-like rather than narrow-path.
+/p3/topics/logarithmic-and-exponential-functions/learn,learn,logarithmic-and-exponential-functions,7,Answer the current Learn prompt,true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/logarithmic-and-exponential-functions/field-guide,field-guide,logarithmic-and-exponential-functions,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/logarithmic-and-exponential-functions/skill-check,skill-check,logarithmic-and-exponential-functions,4,Continue to Learn,true,true,LOW,
+/p3/topics/logarithmic-and-exponential-functions/exam-training,exam-training,logarithmic-and-exponential-functions,7,"Attempt current exam question, then self-mark",true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/logarithmic-and-exponential-functions/worksheet,worksheet,logarithmic-and-exponential-functions,23,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 23. Dashboard-like rather than narrow-path.
+/p3/topics/trigonometry/learn,learn,trigonometry,9,Answer the current Learn prompt,true,true,HIGH,Above 7 primary elements; counted 9. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/trigonometry/field-guide,field-guide,trigonometry,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/trigonometry/skill-check,skill-check,trigonometry,4,Continue to Learn,true,true,LOW,
+/p3/topics/trigonometry/exam-training,exam-training,trigonometry,8,"Attempt current exam question, then self-mark",true,true,HIGH,Above 7 primary elements; counted 8. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/trigonometry/worksheet,worksheet,trigonometry,20,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 20. Dashboard-like rather than narrow-path.
+/p3/topics/differentiation/learn,learn,differentiation,8,Answer the current Learn prompt,true,true,HIGH,Above 7 primary elements; counted 8. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/differentiation/field-guide,field-guide,differentiation,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/differentiation/skill-check,skill-check,differentiation,4,Continue to Learn,true,true,LOW,
+/p3/topics/differentiation/exam-training,exam-training,differentiation,7,"Attempt current exam question, then self-mark",true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/differentiation/worksheet,worksheet,differentiation,25,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 25. Dashboard-like rather than narrow-path.
+/p3/topics/integration/learn,learn,integration,7,Answer the current Learn prompt,true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/integration/field-guide,field-guide,integration,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/integration/skill-check,skill-check,integration,4,Continue to Learn,true,true,LOW,
+/p3/topics/integration/exam-training,exam-training,integration,6,"Attempt current exam question, then self-mark",true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/integration/worksheet,worksheet,integration,28,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 28. Dashboard-like rather than narrow-path.
+/p3/topics/numerical-solution-of-equations/learn,learn,numerical-solution-of-equations,7,Answer the current Learn prompt,true,true,MODERATE,11 visible action controls compete for attention.
+/p3/topics/numerical-solution-of-equations/field-guide,field-guide,numerical-solution-of-equations,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/numerical-solution-of-equations/skill-check,skill-check,numerical-solution-of-equations,4,Continue to Learn,true,true,LOW,
+/p3/topics/numerical-solution-of-equations/exam-training,exam-training,numerical-solution-of-equations,10,"Attempt current exam question, then self-mark",true,true,HIGH,Above 7 primary elements; counted 10. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/numerical-solution-of-equations/worksheet,worksheet,numerical-solution-of-equations,15,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 15. Dashboard-like rather than narrow-path.
+/p3/topics/vectors/learn,learn,vectors,8,Answer the current Learn prompt,true,true,HIGH,Above 7 primary elements; counted 8. Dashboard-like rather than narrow-path. 9 visible action controls compete for attention.
+/p3/topics/vectors/field-guide,field-guide,vectors,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/vectors/skill-check,skill-check,vectors,4,Continue to Learn,true,true,LOW,
+/p3/topics/vectors/exam-training,exam-training,vectors,8,"Attempt current exam question, then self-mark",true,true,HIGH,Above 7 primary elements; counted 8. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/vectors/worksheet,worksheet,vectors,28,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 28. Dashboard-like rather than narrow-path.
+/p3/topics/differential-equations/learn,learn,differential-equations,6,Answer the current Learn prompt,true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/differential-equations/field-guide,field-guide,differential-equations,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/differential-equations/skill-check,skill-check,differential-equations,4,Continue to Learn,true,true,LOW,
+/p3/topics/differential-equations/exam-training,exam-training,differential-equations,10,"Attempt current exam question, then self-mark",true,true,HIGH,Above 7 primary elements; counted 10. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/differential-equations/worksheet,worksheet,differential-equations,15,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 15. Dashboard-like rather than narrow-path.
+/p3/topics/complex-numbers/learn,learn,complex-numbers,9,Answer the current Learn prompt,true,true,HIGH,Above 7 primary elements; counted 9. Dashboard-like rather than narrow-path. 8 visible action controls compete for attention.
+/p3/topics/complex-numbers/field-guide,field-guide,complex-numbers,4,Start Learn,false,true,LOW,Next action is not singular from visible calls to action.
+/p3/topics/complex-numbers/skill-check,skill-check,complex-numbers,4,Continue to Learn,true,true,LOW,
+/p3/topics/complex-numbers/exam-training,exam-training,complex-numbers,7,"Attempt current exam question, then self-mark",true,true,MODERATE,8 visible action controls compete for attention.
+/p3/topics/complex-numbers/worksheet,worksheet,complex-numbers,17,Print / Save PDF,true,true,OVERWHELMING,Above 7 primary elements; counted 17. Dashboard-like rather than narrow-path.

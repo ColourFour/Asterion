@@ -607,8 +607,8 @@ for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/(?:field-
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
   const isFieldGuideBridge = page.includes('/field-guide/');
-  const expectedTitle = isFieldGuideBridge ? 'This topic now starts in Learn' : 'Checked Practice now happens inside Learn';
-  const expectedButton = isFieldGuideBridge ? 'Start Learn' : 'Continue to Learn';
+  const expectedTitle = isFieldGuideBridge ? '— Learn' : '— Checked Practice';
+  const expectedButton = isFieldGuideBridge ? 'Learn' : 'Continue';
   if (!text.includes(expectedTitle) || !text.includes(expectedButton) || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
     console.error(`${page} must be a clean Learn bridge.`);
     process.exit(1);

@@ -143,7 +143,7 @@ async function assertLearnVisualBasics(browser) {
           fail(`${pagePath} has cramped option targets at ${viewport.width}x${viewport.height}.`);
         }
         if (result.firstActionRequired && (!result.activeProblemVisible || !result.answerControlVisible || !result.checkButtonVisible)) {
-          fail(`${pagePath} must show the active problem, first answer control, and Check answer at 1280x720.`);
+          fail(`${pagePath} must show the active problem, first answer control, and Check Answer at 1280x720.`);
         }
       }
     } finally {
@@ -195,7 +195,7 @@ try {
     const supportResult = await page.evaluate(() => ({
       hasSupportOnly: document.body.innerText.includes('Support only'),
       topicCards: document.querySelectorAll('.course-topic-button').length,
-      hasP3Link: Array.from(document.querySelectorAll('a')).some((link) => /Go to P3/.test(link.textContent || '')),
+      hasP3Link: Array.from(document.querySelectorAll('a')).some((link) => /Back to P3/.test(link.textContent || '')),
     }));
     if (!supportResult.hasSupportOnly || supportResult.topicCards !== 0 || !supportResult.hasP3Link) {
       fail(`${coursePage} must be a demoted support-only page with no topic route cards.`);
@@ -208,7 +208,7 @@ try {
       const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasDashboard: text.includes('P3: Pure Mathematics 3') && text.includes('Take the diagnostic') && text.includes('Open full unit path'),
+        hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Take the diagnostic') && text.includes('Topic Overview'),
         hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
           && Boolean(document.querySelector('[data-progress-skill]'))
           && Boolean(document.querySelector('[data-progress-exam]')),
@@ -227,7 +227,7 @@ try {
   const p3TopicsResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('Start P3 with Algebra.'),
+      hasPathHero: text.includes('CAIE 9709 Paper 3') && text.includes('P3 Topic Overview'),
       hasSequence: text.includes('Units') && text.includes('Unit 1') && text.includes('Unit 9'),
       hasFlow: ['Learn', 'Checked Practice', 'Exam Training', 'Review'].every((label) => text.includes(label)),
       pathCards: document.querySelectorAll('.path-unit-card').length,
@@ -361,7 +361,7 @@ try {
     fail('P3 Differentiation Learn Mode must render the authored checked lesson sequence.');
   }
   if (diffLearnResult.visibleSteps !== 1 || !diffLearnResult.activeProblemInFirstViewport || !diffLearnResult.answerControlInFirstViewport || !diffLearnResult.checkButtonInFirstViewport) {
-    fail('P3 Differentiation Learn Mode must show the active problem, first answer control, and Check answer in the first viewport.');
+    fail('P3 Differentiation Learn Mode must show the active problem, first answer control, and Check Answer in the first viewport.');
   }
   if (diffLearnResult.radioInputs < 2) {
     fail('P3 Differentiation Learn Mode must render real radio controls for option prompts.');
@@ -405,7 +405,7 @@ try {
     fail('P3 Integration Learn Mode must render the authored checked lesson sequence.');
   }
   if (integrationLearnResult.visibleSteps !== 1 || !integrationLearnResult.activeProblemInFirstViewport || !integrationLearnResult.answerControlInFirstViewport || !integrationLearnResult.checkButtonInFirstViewport) {
-    fail('P3 Integration Learn Mode must show the active problem, first answer control, and Check answer in the first viewport.');
+    fail('P3 Integration Learn Mode must show the active problem, first answer control, and Check Answer in the first viewport.');
   }
   if (integrationLearnResult.radioInputs < 2) {
     fail('P3 Integration Learn Mode must render real radio controls for option prompts.');
@@ -449,7 +449,7 @@ try {
     fail('P3 Numerical Solution of Equations Learn Mode must render the authored checked lesson sequence.');
   }
   if (iterationLearnResult.visibleSteps !== 1 || !iterationLearnResult.activeProblemInFirstViewport || !iterationLearnResult.answerControlInFirstViewport || !iterationLearnResult.checkButtonInFirstViewport) {
-    fail('P3 Numerical Solution of Equations Learn Mode must show the active problem, first answer control, and Check answer in the first viewport.');
+    fail('P3 Numerical Solution of Equations Learn Mode must show the active problem, first answer control, and Check Answer in the first viewport.');
   }
   if (iterationLearnResult.radioInputs < 2) {
     fail('P3 Numerical Solution of Equations Learn Mode must render real radio controls for option prompts.');
@@ -493,7 +493,7 @@ try {
     fail('P3 Differential Equations Learn Mode must render the authored checked lesson sequence.');
   }
   if (deLearnResult.visibleSteps !== 1 || !deLearnResult.activeProblemInFirstViewport || !deLearnResult.answerControlInFirstViewport || !deLearnResult.checkButtonInFirstViewport) {
-    fail('P3 Differential Equations Learn Mode must show the active problem, first answer control, and Check answer in the first viewport.');
+    fail('P3 Differential Equations Learn Mode must show the active problem, first answer control, and Check Answer in the first viewport.');
   }
   if (deLearnResult.radioInputs < 2) {
     fail('P3 Differential Equations Learn Mode must render real radio controls for option prompts.');
@@ -537,7 +537,7 @@ try {
     fail('P3 Complex Numbers Learn Mode must render the authored checked lesson sequence.');
   }
   if (complexLearnResult.visibleSteps !== 1 || !complexLearnResult.activeProblemInFirstViewport || !complexLearnResult.answerControlInFirstViewport || !complexLearnResult.checkButtonInFirstViewport) {
-    fail('P3 Complex Numbers Learn Mode must show the active problem, first answer control, and Check answer in the first viewport.');
+    fail('P3 Complex Numbers Learn Mode must show the active problem, first answer control, and Check Answer in the first viewport.');
   }
   if (complexLearnResult.radioInputs < 2) {
     fail('P3 Complex Numbers Learn Mode must render real radio controls for option prompts.');
@@ -552,20 +552,20 @@ try {
   await assertLearnVisualBasics(browser);
 
   for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
-    ['p3/topics/algebra/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/algebra/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/differentiation/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/differentiation/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/integration/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/integration/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/numerical-solution-of-equations/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/numerical-solution-of-equations/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/differential-equations/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/differential-equations/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
-    ['p3/topics/complex-numbers/field-guide/index.html', 'This topic now starts in Learn', 'Start Learn'],
-    ['p3/topics/complex-numbers/skill-check/index.html', 'Checked Practice now happens inside Learn', 'Continue to Learn'],
+    ['p3/topics/algebra/field-guide/index.html', 'Algebra — Learn', 'Learn'],
+    ['p3/topics/algebra/skill-check/index.html', 'Algebra — Checked Practice', 'Continue'],
+    ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'Logarithmic and Exponential Functions — Learn', 'Learn'],
+    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Logarithmic and Exponential Functions — Checked Practice', 'Continue'],
+    ['p3/topics/differentiation/field-guide/index.html', 'Differentiation — Learn', 'Learn'],
+    ['p3/topics/differentiation/skill-check/index.html', 'Differentiation — Checked Practice', 'Continue'],
+    ['p3/topics/integration/field-guide/index.html', 'Integration — Learn', 'Learn'],
+    ['p3/topics/integration/skill-check/index.html', 'Integration — Checked Practice', 'Continue'],
+    ['p3/topics/numerical-solution-of-equations/field-guide/index.html', 'Numerical Solution of Equations — Learn', 'Learn'],
+    ['p3/topics/numerical-solution-of-equations/skill-check/index.html', 'Numerical Solution of Equations — Checked Practice', 'Continue'],
+    ['p3/topics/differential-equations/field-guide/index.html', 'Differential Equations — Learn', 'Learn'],
+    ['p3/topics/differential-equations/skill-check/index.html', 'Differential Equations — Checked Practice', 'Continue'],
+    ['p3/topics/complex-numbers/field-guide/index.html', 'Complex Numbers — Learn', 'Learn'],
+    ['p3/topics/complex-numbers/skill-check/index.html', 'Complex Numbers — Checked Practice', 'Continue'],
   ]) {
     await waitForStaticEnhancement(page, oldAlgebraPath);
     const oldAlgebraRouteResult = await page.evaluate(([title, expectedButtonLabel]) => {
@@ -590,7 +590,7 @@ try {
     hasMixedQuestions: document.querySelectorAll('.exam-question-card').length > 0,
   }));
   if (!reviewGateResult.hasGate || !reviewGateResult.lockedVisible || !reviewGateResult.openHidden || reviewGateResult.topicRows < 9 || !reviewGateResult.hasMixedQuestions) {
-    fail('P3 Exam Review must render mixed questions behind a local completion gate.');
+    fail('Review Mistakes must render mixed questions behind a local completion gate.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/algebra/exam-training/index.html');
