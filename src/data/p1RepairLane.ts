@@ -1,7 +1,7 @@
 import type { SkillCheckAnswerType } from '../skill-checks/answerChecker';
 
-export const P1_REPAIR_LOCK_MESSAGE = 'P3 access locked: complete foundation repair modules to continue.' as const;
-export const P1_REPAIR_REQUIRED_STATE_MESSAGE = 'Foundation repair required before P3 exam training unlocks.' as const;
+export const P1_REPAIR_LOCK_MESSAGE = 'P3 readiness recommendation: complete foundation repair modules before continuing.' as const;
+export const P1_REPAIR_REQUIRED_STATE_MESSAGE = 'Foundation repair is recommended before P3 Exam Training.' as const;
 
 export const P1_REPAIR_SKILL_TAGS = [
   'ALGEBRA_MANIPULATION',
@@ -406,4 +406,3 @@ export const P1_REPAIR_MODULES: P1RepairModuleDefinition[] = [
     },
   },
 ];
-

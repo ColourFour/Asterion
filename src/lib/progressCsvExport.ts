@@ -21,7 +21,7 @@ export const LOCAL_PROGRESS_CSV_HEADERS = [
   'deterministic_pass_fail',
   'self_marked_score',
   'evidence_label',
-  'mastery_eligibility_label',
+  'evidence_status_label',
   'suspicion_flags',
   'knowledge_skill_id',
   'knowledge_state_score',
@@ -71,10 +71,10 @@ function scoreSummary(attempt: Attempt): string {
   return typeof attempt.marksEarned === 'number' ? String(attempt.marksEarned) : '';
 }
 
-function examMasteryLabel(attempt: Attempt): string {
-  if (attempt.masteryEligible === true) return 'skill_check_gate_required_before_mastery_display';
-  if (attempt.masteryGate === 'skill_check_passed') return 'skill_check_passed_exam_supports_confidence';
-  return 'not_mastery_evidence_by_itself';
+function examEvidenceStatusLabel(attempt: Attempt): string {
+  if (attempt.masteryEligible === true) return 'needs_checked_evidence_before_display';
+  if (attempt.masteryGate === 'skill_check_passed') return 'checked_practice_passed_self_marked_exam_practice';
+  return 'self_marked_exam_practice_only';
 }
 
 function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimestamp: string): LocalProgressCsvRow {
@@ -89,7 +89,7 @@ function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimesta
     answer_result_summary: attempt.submittedAnswer,
     deterministic_pass_fail: passed ? 'pass' : 'fail',
     evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
-    mastery_eligibility_label: passed ? 'mastery_gate_passed_for_this_check' : 'not_passed',
+    evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed',
     suspicion_flags: '',
   };
 }
@@ -115,7 +115,7 @@ function rowForReviewCandidate(attempt: SkillCheckAttemptRecord, exportTimestamp
     answer_result_summary: state,
     deterministic_pass_fail: 'not_available',
     evidence_label: 'Review candidate from local checked practice attempt',
-    mastery_eligibility_label: 'not_mastery_evidence',
+    evidence_status_label: 'needs_checked_evidence',
     suspicion_flags: tags.join('|'),
   };
 }
@@ -132,7 +132,7 @@ function rowForExamAttempt(attempt: Attempt, exportTimestamp: string): LocalProg
     deterministic_pass_fail: 'not_available',
     self_marked_score: scoreSummary(attempt),
     evidence_label: attempt.evidenceLabel ?? (attempt.selfMarked ? 'Self-marked attempt' : 'Exam practice evidence'),
-    mastery_eligibility_label: examMasteryLabel(attempt),
+    evidence_status_label: examEvidenceStatusLabel(attempt),
     suspicion_flags: (attempt.suspicionFlags ?? []).join('|'),
   };
 }
@@ -149,7 +149,7 @@ function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestam
     answer_result_summary: attempt.submittedAnswer ?? attempt.prompt ?? '',
     deterministic_pass_fail: typeof attempt.isCorrect === 'boolean' ? (attempt.isCorrect ? 'pass' : 'fail') : 'not_available',
     evidence_label: 'Local learning activity',
-    mastery_eligibility_label: attempt.strongEvidence ? 'clean_checked_learning_attempt' : 'not_mastery_evidence',
+    evidence_status_label: attempt.strongEvidence ? 'checked_learning_activity' : 'content_activity_only',
     suspicion_flags: (attempt.mistakeTags ?? []).join('|'),
   };
 }
@@ -165,7 +165,7 @@ function rowForKnowledgeStateUpdate(update: KnowledgeSkillStateUpdate, exportTim
     answer_result_summary: `${update.previousScore}->${update.newScore}`,
     deterministic_pass_fail: update.outcome,
     evidence_label: 'Error-to-knowledge-state transformer',
-    mastery_eligibility_label: 'not_mastery_evidence',
+    evidence_status_label: 'state_update_metadata',
     knowledge_skill_id: update.skillNodeId,
     knowledge_state_score: String(update.newScore),
     knowledge_state_category: update.newCategory,
@@ -185,7 +185,7 @@ function rowForKnowledgeError(error: KnowledgeErrorObject, exportTimestamp: stri
     attempt_timestamp: error.timestamp,
     answer_result_summary: error.markPointLabel ?? error.markPointId ?? error.errorType,
     evidence_label: 'Skill-linked missed mark evidence',
-    mastery_eligibility_label: 'not_mastery_evidence',
+    evidence_status_label: 'missed_mark_evidence',
     knowledge_skill_id: error.primarySkillNodeId,
     knowledge_error_type: error.errorType,
     knowledge_error_severity: error.severity,
@@ -210,7 +210,7 @@ function rowForKnowledgeIntervention(
     attempt_timestamp: intervention.createdAt,
     answer_result_summary: intervention.rationale,
     evidence_label: 'State-change-driven intervention',
-    mastery_eligibility_label: 'not_mastery_evidence',
+    evidence_status_label: 'intervention_metadata',
     knowledge_skill_id: intervention.skillNodeId,
     knowledge_state_score: String(intervention.stateChange.newScore),
     knowledge_state_category: intervention.stateChange.category,

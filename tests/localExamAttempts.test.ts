@@ -246,11 +246,11 @@ describe('local exam self-marked attempts', () => {
       evidenceLabel: 'Self-marked attempt',
       masteryGate: 'skill_check_required',
       mastered: false,
-      masteryLabel: 'Checked Practice required for mastery',
+      masteryLabel: 'Needs checked evidence',
     });
   });
 
-  it('keeps Checked Practice pass as the mastery gate while exam work only supports confidence', () => {
+  it('keeps Checked Practice pass as the gate while exam work is labelled separately', () => {
     const summary = summarizeExamEvidence({
       attempt: attempt(),
       skillCheckPassed: true,
@@ -259,7 +259,7 @@ describe('local exam self-marked attempts', () => {
     expect(summary).toMatchObject({
       masteryGate: 'skill_check_passed',
       mastered: true,
-      masteryLabel: 'Checked Practice passed; exam practice supports confidence',
+      masteryLabel: 'Checked practice passed; self-marked exam practice recorded',
     });
   });
 

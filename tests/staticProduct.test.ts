@@ -18,6 +18,21 @@ const officialP3Topics = [
   'Complex Numbers',
 ];
 
+const MAX_PRIMARY_LEARNING_AREA_ELEMENTS = 7;
+
+const KNOWN_OVERLOADED_STUDENT_PAGE_TYPES = [
+  {
+    label: 'need-to-know',
+    routePattern: /^p3\/need-to-know\/index\.html$/,
+    selector: '.contract-skill-card',
+  },
+  {
+    label: 'worksheet',
+    routePattern: /^p3\/topics\/[^/]+\/worksheet\/index\.html$/,
+    selector: '.worksheet-question',
+  },
+];
+
 function normalizeRoute(pagePath: string, href: string): string {
   const url = new URL(href, `https://asterion.test/${pagePath}`);
   let pathname = url.pathname.replace(/^\//, '');
@@ -30,13 +45,25 @@ function visibleText(element: Element): string {
   return (element.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
+function primaryLearningAreaCount(document: Document): number {
+  return document.querySelectorAll(
+    [
+      'main > section:not(.page-hero)',
+      ':not(.learn-mode-hero)',
+      ':not(.worksheet-hero)',
+      ':not(.p3-dashboard-hero)',
+      ':not(.p3-path-hero)',
+    ].join(''),
+  ).length;
+}
+
 describe('static P3 product contract', () => {
   it('makes P3 the only ready course path', () => {
     expect(COURSES.map((course) => course.id)).toEqual(['p1', 'p3', 'm1', 's1']);
     expect(COURSES.map(coursePath)).toEqual(['/p1', '/p3', '/m1', '/s1']);
 
     expect(getCourseBySlug(P3_COURSE_ID)?.status).toBe('ready');
-    expect(getCourseBySlug(P3_COURSE_ID)?.statusLabel).toBe('Ready');
+    expect(getCourseBySlug(P3_COURSE_ID)?.statusLabel).toBe('Content available');
 
     for (const slug of ['p1', 'm1', 's1'] as const) {
       const course = getCourseBySlug(slug);
@@ -116,15 +143,18 @@ describe('static P3 product contract', () => {
     if (existsSync(generatedP3Path)) {
       const generatedP3 = readFileSync(generatedP3Path, 'utf8');
       expect(generatedP3).toContain('Pure Mathematics 3');
-      expect(generatedP3).toContain('Take the diagnostic');
+      expect(generatedP3).toContain('Unsure? Take diagnostic');
       expect(generatedP3).toContain('Start Unit 1: Algebra');
-      expect(generatedP3).toContain('Topic Overview');
+      expect(generatedP3).toContain('All topic routes');
+      expect(generatedP3).toContain('data-p3-next-step-panel');
       expect(generatedP3).toContain('path-unit-grid');
       expect(generatedP3).toContain('data-progress-field-guide');
       expect(generatedP3).toContain('data-progress-skill');
       expect(generatedP3).toContain('data-progress-exam');
       expect(generatedP3).toContain('Review Mistakes');
       expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
+      expect(generatedP3.match(/data-path-unit-primary-action/g)?.length).toBe(9);
+      expect(generatedP3.match(/class="path-unit-direct-routes"/g)?.length).toBe(9);
       expect(generatedP3).not.toContain('course-topic-button-grid');
     }
 
@@ -134,6 +164,8 @@ describe('static P3 product contract', () => {
       expect(generatedP3Topics).toContain('P3 Topic Overview');
       expect(generatedP3Topics).toContain('path-unit-grid');
       expect(generatedP3Topics.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
+      expect(generatedP3Topics.match(/data-path-unit-primary-action/g)?.length).toBe(9);
+      expect(generatedP3Topics).toContain('Direct routes');
     }
   });
 
@@ -144,7 +176,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('p3ExamReviewRequirements');
     expect(generatorSource).toContain('data-required-topics');
     expect(staticClientSource).toContain('updateExamReviewGate');
-    expect(staticClientSource).toContain('All P3 units are complete in this browser. Mixed exam review is open.');
+    expect(staticClientSource).toContain('All P3 units have checked evidence in this browser. Mixed exam review is open.');
     expect(staticClientSource).toContain('Finish lesson sequence');
 
     const generatedReviewPath = 'docs/p3/review/index.html';
@@ -224,6 +256,34 @@ describe('static P3 product contract', () => {
     }
   });
 
+  it('keeps student-facing primary learning areas below the cognitive-load guardrail unless explicitly classified', () => {
+    const generatedStudentPages = REQUIRED_STATIC_STUDY_PAGE_PATHS
+      .filter((pagePath) => pagePath.startsWith('p3/'))
+      .filter((pagePath) => pagePath !== 'p3/content-qa/index.html');
+
+    for (const pagePath of generatedStudentPages) {
+      const generatedPath = `docs/${pagePath}`;
+      if (!existsSync(generatedPath)) continue;
+
+      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
+      const overloadedPageType = KNOWN_OVERLOADED_STUDENT_PAGE_TYPES.find((pageType) => pageType.routePattern.test(pagePath));
+
+      if (overloadedPageType) {
+        const overloadedElements = document.querySelectorAll(overloadedPageType.selector);
+        expect(
+          overloadedElements.length,
+          `${generatedPath} is classified as ${overloadedPageType.label}; keep it out of the primary learning flow or split it before promoting.`,
+        ).toBeGreaterThan(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
+        continue;
+      }
+
+      expect(
+        primaryLearningAreaCount(document),
+        `${generatedPath} exposes too many primary learning areas; split the page or classify the overload intentionally.`,
+      ).toBeLessThanOrEqual(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
+    }
+  });
+
   it('keeps generated P3 headings and prominent route controls consistent', () => {
     const generatedPages = [
       'docs/index.html',
@@ -246,9 +306,9 @@ describe('static P3 product contract', () => {
       const prominentLinks = Array.from(document.querySelectorAll([
         '.hero-actions a[href]',
         '.home-hero-actions a[href]',
-        '.p3-dashboard-action-grid a[href]',
+        '.p3-dashboard-secondary-links a[href]',
         '.section-heading a.button[href]',
-        '.path-unit-card[href]',
+        '.path-unit-primary-action[href]',
         '.path-unit-progress a[href]',
         '.course-card[href]',
         '.next-step-card a[href]',

@@ -732,8 +732,152 @@ main > * {
 }
 
 .contract-resource-missing {
-  color: var(--danger);
-  background: rgba(255, 232, 224, 0.58);
+  color: var(--muted-strong);
+  background: var(--surface-muted);
+}
+
+.need-to-know-checklist {
+  display: grid;
+  gap: 10px;
+}
+
+.need-to-know-heading {
+  margin-bottom: 2px;
+}
+
+.contract-topic-band,
+.contract-official-topic-details,
+.contract-skill-detail {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.contract-topic-band > summary,
+.contract-official-topic-details > summary,
+.contract-skill-detail > summary {
+  cursor: pointer;
+  list-style-position: outside;
+}
+
+.contract-topic-band > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, auto);
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.contract-topic-band > summary strong,
+.contract-topic-band > summary small,
+.contract-official-topic-details > summary span,
+.contract-official-topic-details > summary small {
+  display: block;
+}
+
+.contract-topic-band > summary strong {
+  color: var(--ink-warm);
+  font-size: 1.08rem;
+  line-height: 1.2;
+}
+
+.contract-topic-band > summary small,
+.contract-official-topic-details > summary small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.contract-topic-band[open] > summary,
+.contract-official-topic-details[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-band-detail {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+.contract-band-detail > .question-instruction {
+  margin: 0;
+}
+
+.contract-availability-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.contract-availability-summary div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 87, 217, 0.15);
+  border-radius: 6px;
+  background: var(--surface-muted);
+}
+
+.contract-availability-summary dt,
+.contract-availability-summary dd {
+  margin: 0;
+}
+
+.contract-availability-summary dt {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.contract-availability-summary dd {
+  color: var(--ink-warm);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.contract-official-topic-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  color: var(--ink-warm);
+  font-weight: 900;
+}
+
+.contract-official-topic-details .contract-skill-grid {
+  padding: 14px;
+}
+
+.contract-skill-detail {
+  padding: 0;
+}
+
+.contract-skill-detail > summary {
+  padding: 9px 11px;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.contract-skill-detail[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-skill-detail > .contract-checklist,
+.contract-skill-detail > .contract-trigger-section {
+  margin: 12px;
+}
+
+.contract-availability-label {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .contract-qa-summary {
@@ -2718,70 +2862,39 @@ body.p3-path-page main {
 
 .p3-dashboard-action-panel {
   display: grid;
-  align-content: stretch;
-  gap: 10px;
+  align-content: center;
+  gap: 12px;
   min-width: 0;
 }
 
-.p3-dashboard-action-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+.p3-dashboard-page .p3-next-step-panel {
+  min-height: 230px;
+  padding: clamp(18px, 3vw, 28px);
+  border-color: rgba(18, 50, 71, 0.24);
+  box-shadow: 0 18px 40px rgba(17, 24, 39, 0.09);
 }
 
-.p3-dashboard-action-card {
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  min-width: 0;
-  min-height: 178px;
-  padding: 16px;
-  border: 1px solid var(--path-line);
-  border-radius: 8px;
-  color: var(--path-ink);
-  background: #ffffff;
-  text-decoration: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+.p3-dashboard-page .p3-next-step-panel h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.15rem);
 }
 
-.p3-dashboard-action-card:hover,
-.p3-dashboard-action-card:focus-visible {
-  border-color: var(--path-blue);
-  box-shadow: 0 16px 30px rgba(18, 50, 71, 0.11);
-  transform: translateY(-2px);
+.p3-dashboard-page .p3-next-step-panel p:not(.eyebrow) {
+  max-width: 560px;
+  font-size: 1rem;
+  line-height: 1.45;
 }
 
-.p3-dashboard-action-card span {
-  width: fit-content;
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: var(--path-blue);
-  background: #eef5ff;
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+.p3-dashboard-page .p3-next-step-panel .button {
+  min-width: 190px;
+  min-height: 52px;
 }
 
-.p3-dashboard-action-card strong {
-  color: var(--path-ink);
-  font-size: 1.05rem;
-  line-height: 1.2;
-}
-
-.p3-dashboard-action-card p {
-  margin: 0;
-  color: var(--path-muted);
-  font-size: 0.92rem;
-}
-
-.p3-dashboard-action-card.is-primary {
-  border-color: rgba(47, 107, 79, 0.32);
-  background: #f5fbf7;
-}
-
-.p3-dashboard-action-card.is-primary span {
-  color: var(--path-green);
-  background: #e2f2e8;
+.p3-dashboard-secondary-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding-inline: 2px;
+  font-size: 0.94rem;
 }
 
 .p3-dashboard-next-step {
@@ -2994,12 +3107,11 @@ body.p3-path-page main {
   grid-template-columns: 1fr;
   min-height: 190px;
   color: inherit;
-  text-decoration: none;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .path-unit-tile:hover,
-.path-unit-tile:focus-visible {
+.path-unit-tile:focus-within {
   border-color: var(--path-blue);
   box-shadow: 0 16px 30px rgba(18, 50, 71, 0.11);
   transform: translateY(-2px);
@@ -3049,53 +3161,37 @@ body.p3-path-page main {
   text-align: center;
 }
 
-.path-unit-progress-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+.path-unit-compact-progress {
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.path-unit-progress-strip li {
-  min-width: 0;
+.path-unit-progress-metadata {
+  display: none;
 }
 
-.path-unit-progress-strip span {
-  display: block;
-  min-height: 34px;
-  padding: 7px 8px;
-  overflow: hidden;
-  border: 1px solid var(--path-line);
-  border-radius: 6px;
-  color: var(--path-muted);
-  background: #f8fafc;
-  font-size: 0.78rem;
-  font-weight: 800;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.path-unit-progress-strip .is-complete {
-  border-color: rgba(47, 107, 79, 0.28);
-  color: var(--path-green);
-  background: #f0f8f3;
-}
-
-.path-unit-progress-strip .has-evidence {
-  border-color: rgba(18, 50, 71, 0.22);
-  color: var(--path-blue);
-  background: #eef5ff;
-}
-
-.path-unit-card-action {
-  align-self: end;
+.path-unit-primary-action {
   justify-self: start;
-  color: var(--path-green);
-  font-size: 0.86rem;
-  font-weight: 900;
+  min-width: min(100%, 190px);
+}
+
+.path-unit-direct-routes {
+  align-self: end;
+  color: var(--path-muted);
+  font-size: 0.88rem;
+}
+
+.path-unit-direct-routes summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--path-muted);
+  font-weight: 850;
+}
+
+.path-unit-direct-routes nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 8px;
 }
 
 .unit-step-list {
@@ -5548,8 +5644,13 @@ body.skill-check-page .exam-question-section {
   margin-top: 4px;
 }
 
+.worksheet-page main {
+  width: min(780px, calc(100% - 32px));
+}
+
 .worksheet-hero,
 .worksheet-instructions,
+.worksheet-question-group,
 .worksheet-question {
   padding: 20px;
   border: 1px solid var(--border);
@@ -5587,22 +5688,67 @@ body.skill-check-page .exam-question-section {
 }
 
 .worksheet-instructions,
+.worksheet-flow,
 .worksheet-question-list {
   margin-top: 18px;
 }
 
+.worksheet-flow {
+  display: grid;
+  gap: 12px;
+}
+
+.worksheet-question-group {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.worksheet-question-group[hidden] {
+  display: none;
+}
+
+.worksheet-group-header {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(82, 97, 122, 0.18);
+}
+
+.worksheet-group-header h2,
+.worksheet-group-header p {
+  margin: 0;
+}
+
 .worksheet-question-list {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .worksheet-question {
   break-inside: avoid;
+  background: #fbfdff;
 }
 
 .worksheet-question h3 {
   margin-top: 0;
   font-size: 1.08rem;
+}
+
+.worksheet-controls {
+  position: sticky;
+  top: 78px;
+  z-index: 5;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(12, 33, 69, 0.14);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-sm);
+}
+
+.worksheet-group-switcher {
+  margin-top: 18px;
 }
 
 .worksheet-option-list {
@@ -5705,7 +5851,6 @@ body.skill-check-page .exam-question-section {
 		  .course-entry-grid,
   .exam-mode-grid,
   .exam-question-grid,
-  .p3-dashboard-action-grid,
   .contract-skill-grid,
   .study-path,
   .home-metrics {
@@ -5742,6 +5887,10 @@ body.skill-check-page .exam-question-section {
 
   .contract-skill-card-header {
     flex-direction: column;
+  }
+
+  .contract-topic-band > summary {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -5807,6 +5956,16 @@ body.skill-check-page .exam-question-section {
   body.learn-mode-page main {
     gap: 10px;
     margin-bottom: 28px;
+  }
+
+  .contract-availability-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contract-topic-band > summary,
+  .contract-band-detail,
+  .contract-official-topic-details .contract-skill-grid {
+    padding: 12px;
   }
 
   .brand-mark {
@@ -6144,6 +6303,8 @@ body.skill-check-page .exam-question-section {
   .site-nav,
   .hero-actions,
   .worksheet-actions,
+  .worksheet-controls,
+  .worksheet-group-switcher,
   .practice-controls,
   .practice-group-switcher,
   .button,
@@ -6164,6 +6325,7 @@ body.skill-check-page .exam-question-section {
 
   .worksheet-hero,
   .worksheet-instructions,
+  .worksheet-question-group,
   .worksheet-question {
     border: 0;
     padding: 0;
@@ -6174,6 +6336,10 @@ body.skill-check-page .exam-question-section {
     padding-top: 12mm;
     border-top: 1px solid #000000;
     page-break-inside: avoid;
+  }
+
+  .worksheet-question-group[hidden] {
+    display: grid !important;
   }
 
   .worksheet-working-space {
@@ -6300,8 +6466,8 @@ body.skill-check-page .exam-question-section {
     padding: 14px;
   }
 
-  .path-unit-progress-strip {
-    grid-template-columns: 1fr;
+  .path-unit-primary-action {
+    width: 100%;
   }
 
   .p3-next-step-panel {

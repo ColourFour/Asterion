@@ -141,7 +141,7 @@ describe('P3 progression completion evaluation', () => {
 
     expect(evaluation.complete).toBe(true);
     expect(evaluation.path_status).toBe('COMPLETE');
-    expect(evaluation.ui_descriptor).toBe('Path Complete - Ready for Final Mock Certification');
+    expect(evaluation.ui_descriptor).toBe('Checked path evidence recorded');
     expect(evaluation.unmet).toEqual([]);
   });
 

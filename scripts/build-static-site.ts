@@ -84,7 +84,7 @@ interface P3SkillContractPageRow {
   examLadder: P3ExamLadder;
   skillCheckCheckability: P3SkillCheckabilitySummary;
   mappedExamQuestionCount?: number;
-  statusLabel: 'Ready' | 'Needs Learn' | 'Needs Checked Practice' | 'Needs Exam Mapping' | 'Draft';
+  statusLabel: 'Content available' | 'Learn content planned' | 'Checked practice planned' | 'Exam training planned' | 'Draft content';
 }
 
 interface P3SkillCheckabilitySummary {
@@ -180,18 +180,18 @@ const visibleCopyReplacements: Array<[RegExp, string]> = [
   [/course-contract review/gi, 'syllabus check'],
   [/course contract/gi, 'course plan'],
   [/contract/gi, 'plan'],
-  [/mastery or readiness evidence/gi, 'exam readiness'],
+  [/mastery or readiness evidence/gi, 'checked evidence'],
   [/mastery, readiness, marks, teacher evidence, final assessment evidence/gi, 'saved marks'],
-  [/mastery evidence/gi, 'exam practice'],
-  [/readiness evidence/gi, 'exam practice'],
+  [/mastery evidence/gi, 'checked evidence'],
+  [/readiness evidence/gi, 'checked evidence'],
   [/assessment evidence/gi, 'exam practice'],
   [/exam evidence/gi, 'exam practice'],
   [/teacher evidence/gi, 'teacher feedback'],
   [/final assessment/gi, 'exam'],
-  [/does not count as mastery/gi, 'is for practice'],
-  [/do not count as mastery/gi, 'are for practice'],
-  [/not mastery/gi, 'practice'],
-  [/mastery/gi, 'progress'],
+  [/does not count as mastery/gi, 'is self-marked practice'],
+  [/do not count as mastery/gi, 'are self-marked practice'],
+  [/not mastery/gi, 'self-marked practice'],
+  [/mastery/gi, 'checked evidence'],
   [/audit/gi, 'check'],
   [/\brecords movement\b/gi, 'describes movement'],
   [/\brecords\b/gi, 'items'],
@@ -448,11 +448,11 @@ function p3SkillContractStatusLabel(
   skill: P3SkillContractEntry,
   availability: P3SkillContractAvailability,
 ): P3SkillContractPageRow['statusLabel'] {
-  if (!availability.fieldGuide) return 'Needs Learn';
-  if (!availability.skillCheck) return 'Needs Checked Practice';
-  if (!availability.examTraining) return 'Needs Exam Mapping';
-  if (skill.readiness === 'ready') return 'Ready';
-  return 'Draft';
+  if (!availability.fieldGuide) return 'Learn content planned';
+  if (!availability.skillCheck) return 'Checked practice planned';
+  if (!availability.examTraining) return 'Exam training planned';
+  if (skill.readiness === 'ready') return 'Content available';
+  return 'Draft content';
 }
 
 function emptySkillCheckabilitySummary(): P3SkillCheckabilitySummary {
@@ -722,7 +722,7 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
   const learnStepTotal = Math.max(1, learnSteps.length);
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   return `
-    <a class="path-unit-card path-unit-tile" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}" aria-label="Start Unit ${index + 1}: ${escapeAttr(topic.name)}">
+    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header>
@@ -733,13 +733,27 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
           ${renderMathText(`$${topic.headerFormula}$`)}
         </div>
       </div>
-      <ul class="path-unit-progress-strip" aria-label="${escapeAttr(topic.name)} local progress">
-        <li><span data-progress-field-guide="${escapeAttr(region.id)}" data-total="${learnStepTotal}" data-label="Learn">Learn: 0/${learnStepTotal}</span></li>
-        <li><span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span></li>
-        <li><span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span></li>
-      </ul>
-      <span class="path-unit-card-action">Start</span>
-    </a>
+      <p class="compact-progress path-unit-compact-progress" data-progress-summary="${escapeAttr(region.id)}" data-field-total="${learnStepTotal}">
+        No saved progress yet
+      </p>
+      <div class="path-unit-progress-metadata" aria-hidden="true">
+        <span data-progress-field-guide="${escapeAttr(region.id)}" data-total="${learnStepTotal}" data-label="Learn">Learn: 0/${learnStepTotal}</span>
+        <span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span>
+        <span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span>
+      </div>
+      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit-primary-action>
+        Start Learn
+      </a>
+      <details class="path-unit-direct-routes">
+        <summary>Direct routes</summary>
+        <nav aria-label="${escapeAttr(topic.name)} direct routes">
+          ${routeLink(fromPagePath, learnPagePath(topic), 'Learn', 'text-link')}
+          ${routeLink(fromPagePath, skillCheckPagePath(topic), 'Checked Practice', 'text-link')}
+          ${routeLink(fromPagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'text-link')}
+          ${routeLink(fromPagePath, worksheetPagePath(topic), 'Worksheet', 'text-link')}
+        </nav>
+      </details>
+    </article>
   `;
 }
 
@@ -802,7 +816,7 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
   const body = `
     ${renderHero(
       'P3 Diagnostic Gate',
-      `A fixed ${P3_DIAGNOSTIC_DURATION_TARGET_MINUTES} minute readiness paper for P1 algebra fluency, early P3 transition skills, and light mixed problem solving.`,
+      `A fixed ${P3_DIAGNOSTIC_DURATION_TARGET_MINUTES} minute starting-point check for P1 algebra fluency, early P3 transition skills, and light mixed problem solving.`,
       'P(x), \\quad \\log_a x, \\quad \\frac{dy}{dx}, \\quad \\int f(x)\\,dx',
       '<a class="button primary-button" href="#diagnostic-paper">Start diagnostic</a>',
       'CAIE 9709 Paper 3',
@@ -858,7 +872,7 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
   return renderPage({
     pagePath,
     title: 'P3 Diagnostic Gate',
-    description: 'Fixed Paper 3 diagnostic assessment and readiness classifier for CAIE 9709 P3.',
+    description: 'Fixed Paper 3 diagnostic assessment and starting-point classifier for CAIE 9709 P3.',
     active: 'p3-diagnostic',
     body,
     bodyClass: 'diagnostic-page',
@@ -910,7 +924,7 @@ function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): 
         </section>
         <section class="repair-question-block repair-mini-check">
           <h3>Mini-Check</h3>
-          <p>One exam-style check. A first attempt matters for the final unlock condition. One retry is allowed for module completion.</p>
+          <p>One exam-style check. A first attempt matters for the final readiness target. One retry is allowed for module completion.</p>
           ${renderP1RepairQuestionInput(module.mini_check, 'mini')}
         </section>
         <div class="repair-module-actions">
@@ -934,17 +948,17 @@ function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
     )}
     <section class="repair-lock-panel summary-card" aria-labelledby="repair-lock-title" data-p1-repair-status-panel>
       <div>
-        <p class="eyebrow">Locked state</p>
+        <p class="eyebrow">Recommended route</p>
         <h2 id="repair-lock-title">${escapeHtml(P1_REPAIR_LOCK_MESSAGE)}</h2>
         <p>${escapeHtml(P1_REPAIR_REQUIRED_STATE_MESSAGE)}</p>
       </div>
-      <p class="repair-unlock-status" data-p1-repair-unlock-status>0/${P1_REPAIR_MODULES.length} modules complete. P3 remains locked.</p>
+      <p class="repair-unlock-status" data-p1-repair-unlock-status>0/${P1_REPAIR_MODULES.length} modules complete. Repair route recommended before P3 Exam Training.</p>
     </section>
     <section class="summary-card repair-rule-panel" aria-labelledby="repair-rule-title">
       <div>
-        <p class="eyebrow">Unlock logic function</p>
+        <p class="eyebrow">Readiness rule</p>
         <h2 id="repair-rule-title">All modules complete, plus 3 first-attempt mini-checks.</h2>
-        <p>The pure function checks every module for fast-question accuracy at or above 70%, a mini-check pass within the first attempt or one retry, and at least 3 of 5 mini-checks correct on the first attempt.</p>
+        <p>The static progress check looks for fast-question accuracy at or above 70% in every module, a mini-check pass within the first attempt or one retry, and at least 3 of 5 mini-checks correct on the first attempt.</p>
       </div>
     </section>
     <section class="repair-module-list" id="repair-modules" aria-label="P1 Repair Lane modules">
@@ -961,7 +975,7 @@ function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
   return renderPage({
     pagePath,
     title: 'P1 Repair Lane',
-    description: 'Standalone P1 prerequisite recovery lane for CAIE 9709 students locked from P3 Exam Training by the diagnostic gate.',
+    description: 'Standalone P1 prerequisite recovery lane for CAIE 9709 students who need foundation repair before P3 Exam Training.',
     active: 'p1-repair',
     body,
     bodyClass: 'repair-lane-page',
@@ -1006,7 +1020,7 @@ function renderP3LearningPathPage(
       <div class="section-heading">
         <div>
           <h2 id="p3-unit-sequence-title">Units</h2>
-          <p>Pick any unit, or follow them in order from Algebra to Complex Numbers.</p>
+          <p>Each unit shows one recommended action. Open direct routes only when you need a specific page.</p>
         </div>
       </div>
       <div class="path-unit-grid">
@@ -1049,79 +1063,26 @@ function renderP3DashboardPage(
       <div class="p3-dashboard-copy">
         <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
         <h1>${escapeHtml(course.displayName)}</h1>
-        <p>Use the diagnostic if you are unsure, start Algebra if you are ready, or jump to a unit for revision. Local progress is practice evidence only.</p>
+        <p>Start with the next useful study action. Asterion uses local browser progress to decide whether you should begin learning, continue your current unit, or review saved mistakes.</p>
       </div>
       <div class="p3-dashboard-action-panel">
-        <div class="p3-dashboard-action-grid" aria-label="P3 starting options">
-          <a class="p3-dashboard-action-card" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">
-            <span>Unsure</span>
-            <strong>Take the diagnostic</strong>
-            <p>Fixed local check for P1 fluency and early P3 readiness.</p>
-          </a>
-          <div class="p3-dashboard-action-card is-primary">
-            <span>Ready</span>
-            <strong>Start Unit 1: Algebra</strong>
-            <p>Begin the Learn, Checked Practice, Exam Training flow.</p>
-          </div>
-          <div class="p3-dashboard-action-card">
-            <span>Revising</span>
-            <strong>Review Mistakes</strong>
-            <p>View the local requirements for mixed Paper 3 review.</p>
-          </div>
-        </div>
-        <section class="p3-dashboard-next-step" aria-labelledby="p3-next-step-title">
-          <div>
-            <p class="eyebrow">Choose by evidence</p>
-            <h2 id="p3-next-step-title">What should I do next?</h2>
-          </div>
-          <ul>
-            <li><strong>Unsure on foundations:</strong> take the diagnostic.</li>
-            <li><strong>Learn incomplete:</strong> continue that unit's Learn path.</li>
-            <li><strong>Learn complete, Checked incomplete:</strong> redo the checked similar questions until the method is reproducible.</li>
-            <li><strong>Checked complete:</strong> use Exam Training as weaker self-marked practice evidence.</li>
-          </ul>
-          <p>The diagnostic and saved progress are local guidance, not a grade. Start Algebra directly if your P1 algebra is already fluent.</p>
-        </section>
+        ${renderP3NextStepPanel(pagePath)}
+        <nav class="p3-dashboard-secondary-links" aria-label="Other P3 routes">
+          ${routeLink(pagePath, p3DiagnosticPagePath(), 'Unsure? Take diagnostic', 'text-link')}
+          ${routeLink(pagePath, p3ReviewPagePath(), 'Review mistakes', 'text-link')}
+          ${routeLink(pagePath, p3TopicsIndexPagePath(), 'All topic routes', 'text-link')}
+        </nav>
       </div>
-    </section>
-    <section class="path-principle-strip" aria-label="How the P3 path works">
-      <article>
-        <strong>1. Learn</strong>
-        <span>Try a small question before the explanation appears.</span>
-      </article>
-      <article>
-        <strong>2. Checked Practice</strong>
-        <span>Clean similar-question passes are the strongest local signal.</span>
-      </article>
-      <article>
-        <strong>3. Exam Training</strong>
-        <span>Self-mark real Paper 3 questions as weaker practice evidence.</span>
-      </article>
     </section>
     <section class="p3-unit-sequence" aria-labelledby="p3-dashboard-units-title">
       <div class="section-heading">
         <div>
-          <h2 id="p3-dashboard-units-title">Units and local evidence</h2>
-          <p>Each card opens Learn first. The labels update from this browser only.</p>
+          <h2 id="p3-dashboard-units-title">All units</h2>
+          <p>Direct access stays here when you need a specific route. For a normal session, use the next action above.</p>
         </div>
-        ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Topic Overview', 'button secondary-button')}
       </div>
       <div class="path-unit-grid">
         ${contexts.map((context, index) => renderP3PathUnitCard(pagePath, context, index)).join('')}
-      </div>
-      <div class="path-unit-list path-review-list">
-        <article class="path-unit-card path-exam-review-card">
-          <div class="path-unit-number">Final</div>
-          <div class="path-unit-main">
-            <header>
-              <h2>Review</h2>
-              <p>Mixed review is a local practice gate. Use it to see which unit requirements are still missing.</p>
-            </header>
-          </div>
-          <div class="path-unit-progress">
-            ${routeLink(pagePath, p3ReviewPagePath(), 'Review Mistakes', 'button secondary-button')}
-          </div>
-        </article>
       </div>
     </section>
   `;
@@ -1354,8 +1315,8 @@ function renderExamPanicVisual(): string {
 const homepageLearningSteps = [
   ['Try the problem', 'You attempt first. Your attempt is the center.'],
   ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
-  ['Learn the method', 'Explanation appears only when you are ready for it.'],
-  ['Complete Checked Practice', 'Deterministic checks prove the small skill before you proceed.'],
+  ['Learn the method', 'Explanation appears after your first attempt.'],
+  ['Complete Checked Practice', 'Deterministic checks record small-skill evidence before you proceed.'],
   ['Train on real exam questions', 'Compare with the mark-scheme image and self-mark honestly.'],
   ['Review and repair', 'Mistakes are expected, repaired, and tracked.'],
 ] as const;
@@ -1372,7 +1333,7 @@ const homepageLearningIcons = [
 const homepageTrustCards = [
   ['Try first, then learn.', 'The page asks for work before revealing the explanation.'],
   ['Mistakes are repaired.', 'Wrong attempts get targeted feedback and another try.'],
-  ['Self-marking is labelled honestly.', 'Exam practice is useful, but self-marked work is not treated as mastery.'],
+  ['Self-marking is labelled honestly.', 'Exam practice is useful, but self-marked work is labelled separately from checked evidence.'],
   ['P3 is the trusted path.', 'P1, M1, and S1 stay locked until their course content is checked.'],
 ] as const;
 
@@ -1465,7 +1426,7 @@ function renderHomepageLearningLoop(): string {
     <section class="homepage-section homepage-learning-loop" id="learning-loop" aria-labelledby="learning-loop-title">
       <div class="homepage-section-heading">
         <h2 id="learning-loop-title">The Asterion Learning Loop</h2>
-        <p>A repeatable system that builds exam-ready mathematical behavior.</p>
+        <p>A repeatable system that builds exam-facing mathematical behavior.</p>
       </div>
       <ol class="learning-loop-list">
         ${homepageLearningSteps.map(([title, text], index) => `
@@ -1499,7 +1460,7 @@ function renderHomepageTrustContract(): string {
       </div>
       <div class="homepage-evidence-banner">
         <div>
-          <strong>Asterion does not treat self-marked exam practice as progress.</strong>
+          <strong>Asterion labels self-marked exam practice separately.</strong>
           <p>Self-marked questions are useful, but weaker evidence. We label it honestly.</p>
         </div>
         <ul aria-label="Progress evidence labels">
@@ -1521,7 +1482,7 @@ function renderHomepageCoursePanel(pagePath: string): string {
       <div class="homepage-course-panel-heading">
         <span class="homepage-primary-label">Course selector</span>
         <h2 id="course-panel-title">Choose your course</h2>
-        <p>P3 is ready. P1, M1, and S1 show status pages only until their course plans are checked.</p>
+        <p>P3 content is available. P1, M1, and S1 show status pages only until their course plans are checked.</p>
       </div>
       <a class="course-card course-card-featured" href="${hrefToPage(pagePath, coursePagePath(p3Course))}" aria-label="Start ${escapeAttr(p3Course.shortName)}: ${escapeAttr(p3Course.displayName)}">
         <div class="course-card-header-row">
@@ -1576,7 +1537,7 @@ function renderAboutPage(): string {
   const body = `
     <section class="about-hero">
       <p class="eyebrow">About Asterion</p>
-      <h1>Asterion teaches the behavior behind exam-ready mathematics.</h1>
+      <h1>Asterion teaches the behavior behind exam-facing mathematics.</h1>
       <p>Students attempt first, compare their route, repair the gap, and then train on real CAIE questions. The system is deliberately evidence-first.</p>
       <div class="hero-actions">
         <a class="button primary-button" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Start P3</a>
@@ -1608,7 +1569,7 @@ function renderCourseSelectorPage(): string {
         </div>
         <p class="eyebrow">CAIE 9709 Study Hub</p>
         <h1>Choose the course before the study path.</h1>
-        <p>Asterion keeps the ready Paper 3 route separate from courses that still need a syllabus check.</p>
+        <p>Asterion keeps the available Paper 3 route separate from courses that still need a syllabus check.</p>
         <div class="home-hero-actions">
           <a class="button secondary-button" href="${hrefToPage(pagePath, aboutPagePath())}">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
         </div>
@@ -1712,21 +1673,78 @@ function contractTopicAnchor(topic: P3OfficialTopic): string {
   return `need-to-know-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 }
 
+interface P3NeedToKnowChecklistBand {
+  id: string;
+  title: string;
+  topics: P3OfficialTopic[];
+}
+
+const P3_NEED_TO_KNOW_CHECKLIST_BANDS: P3NeedToKnowChecklistBand[] = [
+  {
+    id: 'algebra-functions',
+    title: 'Algebra, functions, and trigonometry',
+    topics: ['Algebra', 'Logarithmic and Exponential Functions', 'Trigonometry'],
+  },
+  {
+    id: 'calculus',
+    title: 'Differentiation and integration',
+    topics: ['Differentiation', 'Integration'],
+  },
+  {
+    id: 'numerical-methods',
+    title: 'Numerical methods',
+    topics: ['Numerical Solution of Equations'],
+  },
+  {
+    id: 'vectors-complex',
+    title: 'Vectors and complex numbers',
+    topics: ['Vectors', 'Complex Numbers'],
+  },
+  {
+    id: 'differential-equations',
+    title: 'Differential equations',
+    topics: ['Differential Equations'],
+  },
+];
+
 function renderContractAvailabilityLinks(pagePath: string, row: P3SkillContractPageRow): string {
   const { topic, availability } = row;
   const links = [
     availability.fieldGuide
       ? contractRouteLink(pagePath, learnPagePath(topic), 'Learn', 'field-guide')
-      : '<span class="contract-resource-missing">Needs Learn</span>',
+      : '<span class="contract-resource-missing">Learn content planned</span>',
     availability.skillCheck
       ? contractRouteLink(pagePath, learnPagePath(topic), 'Checked Practice', 'skill-check')
-      : '<span class="contract-resource-missing">Needs Checked Practice</span>',
+      : '<span class="contract-resource-missing">Checked practice planned</span>',
     availability.examTraining
       ? contractRouteLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'exam-training')
-      : '<span class="contract-resource-missing">Needs Exam Mapping</span>',
+      : '<span class="contract-resource-missing">Exam training planned</span>',
   ];
 
   return `<div class="contract-resource-list">${links.join('')}</div>`;
+}
+
+function availabilityCount(rows: P3SkillContractPageRow[], key: keyof P3SkillContractAvailability): number {
+  return rows.filter((row) => row.availability[key]).length;
+}
+
+function renderAvailabilitySummary(rows: P3SkillContractPageRow[]): string {
+  return `
+    <dl class="contract-availability-summary" aria-label="Content availability">
+      <div>
+        <dt>Learn</dt>
+        <dd>${availabilityCount(rows, 'fieldGuide')}/${rows.length}</dd>
+      </div>
+      <div>
+        <dt>Checked Practice</dt>
+        <dd>${availabilityCount(rows, 'skillCheck')}/${rows.length}</dd>
+      </div>
+      <div>
+        <dt>Exam Training</dt>
+        <dd>${availabilityCount(rows, 'examTraining')}/${rows.length}</dd>
+      </div>
+    </dl>
+  `;
 }
 
 function renderExamTriggerList(skill: P3SkillContractEntry): string {
@@ -1743,47 +1761,75 @@ function renderExamTriggerList(skill: P3SkillContractEntry): string {
 function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPagePath()): string {
   const groups = p3SkillContractRowsByTopic(data);
   const totalSkills = P3_SKILL_CONTRACT.length;
+  const groupsByTopic = new Map(groups.map((group) => [group.topic, group]));
   const body = `
     ${renderHero(
       'P3 Need to Know',
-      'A checklist for the official Paper 3 skills currently tracked by Asterion.',
+      'A low-load checklist for the official Paper 3 skills currently tracked by Asterion.',
       '\\frac{dy}{dx}, \\quad \\int f(x)\\,dx, \\quad z=x+iy',
       `${routeLink(pagePath, p3TopicsIndexPagePath(), 'Back to P3', 'button secondary-button')}`,
     )}
-    <section class="section-heading">
-      <div>
-        <h2>Skill checklist</h2>
-        <p>${totalSkills} skills grouped by official P3 topic.</p>
+    <section class="need-to-know-checklist" aria-labelledby="need-to-know-checklist-title">
+      <div class="section-heading need-to-know-heading">
+        <div>
+          <h2 id="need-to-know-checklist-title">Checklist</h2>
+          <p>${totalSkills} skills are grouped into ${P3_NEED_TO_KNOW_CHECKLIST_BANDS.length} topic bands. Open a band only when you want the skill details.</p>
+        </div>
       </div>
+      ${P3_NEED_TO_KNOW_CHECKLIST_BANDS.map((band) => {
+        const bandGroups = band.topics
+          .map((topic) => groupsByTopic.get(topic))
+          .filter((group): group is { topic: P3OfficialTopic; rows: P3SkillContractPageRow[] } => Boolean(group));
+        const bandRows = bandGroups.flatMap((group) => group.rows);
+        return `
+          <details class="contract-topic-band" id="need-to-know-band-${escapeRawAttr(band.id)}">
+            <summary>
+              <span>
+                <strong>${escapeRawHtml(band.title)}</strong>
+                <small>${bandRows.length} tracked skill${bandRows.length === 1 ? '' : 's'}</small>
+              </span>
+              ${renderAvailabilitySummary(bandRows)}
+            </summary>
+            <div class="contract-band-detail">
+              <p class="question-instruction">Availability shows which Asterion content exists for this skill. Progress decisions stay inside Learn, Checked Practice, and Exam Training, not this list.</p>
+              ${bandGroups.map((group) => `
+                <section class="contract-topic-section" aria-labelledby="${escapeRawAttr(contractTopicAnchor(group.topic))}">
+                  <details class="contract-official-topic-details">
+                    <summary>
+                      <span>${escapeRawHtml(group.topic)}</span>
+                      <small>${group.rows.length} skill${group.rows.length === 1 ? '' : 's'}</small>
+                    </summary>
+                    <div class="contract-skill-grid">
+                      ${group.rows.map((row) => `
+                        <article class="contract-skill-card" data-skill-id="${escapeRawAttr(row.skill.id)}">
+                          <header class="contract-skill-card-header">
+                            <div>
+                              <p class="eyebrow">${escapeRawHtml(row.skill.officialTopic)}</p>
+                              <h3>${escapeRawHtml(row.skill.title)}</h3>
+                            </div>
+                          </header>
+                          <details class="contract-skill-detail">
+                            <summary>Skill details</summary>
+                            <ul class="contract-checklist">
+                              ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
+                            </ul>
+                            ${renderExamTriggerList(row.skill)}
+                          </details>
+                          <div>
+                            <p class="contract-availability-label">Content availability</p>
+                            ${renderContractAvailabilityLinks(pagePath, row)}
+                          </div>
+                        </article>
+                      `).join('')}
+                    </div>
+                  </details>
+                </section>
+              `).join('')}
+            </div>
+          </details>
+        `;
+      }).join('')}
     </section>
-    ${groups.map((group) => `
-      <section class="contract-topic-section" aria-labelledby="${escapeRawAttr(contractTopicAnchor(group.topic))}">
-        <div class="section-heading contract-topic-heading">
-          <div>
-            <h2 id="${escapeRawAttr(contractTopicAnchor(group.topic))}">${escapeRawHtml(group.topic)}</h2>
-            <p>${group.rows.length} tracked skills</p>
-          </div>
-        </div>
-        <div class="contract-skill-grid">
-          ${group.rows.map((row) => `
-            <article class="contract-skill-card" data-skill-id="${escapeRawAttr(row.skill.id)}">
-              <header class="contract-skill-card-header">
-                <div>
-                  <p class="eyebrow">${escapeRawHtml(row.skill.officialTopic)}</p>
-                  <h3>${escapeRawHtml(row.skill.title)}</h3>
-                </div>
-                <span class="contract-status contract-status-${escapeRawAttr(statusClassName(row.statusLabel))}">${escapeRawHtml(row.statusLabel)}</span>
-              </header>
-              <ul class="contract-checklist">
-                ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
-              </ul>
-              ${renderExamTriggerList(row.skill)}
-              ${renderContractAvailabilityLinks(pagePath, row)}
-            </article>
-          `).join('')}
-        </div>
-      </section>
-    `).join('')}
   `;
   return renderPage({
     pagePath,
@@ -1805,7 +1851,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
   const body = `
     ${renderHero(
       'Review Mistakes',
-      'Use mixed Paper 3 questions after the full unit path is complete. Learn and Checked Practice are the readiness gate; exam questions are for review and timing.',
+      'Use mixed Paper 3 questions after the full unit path has checked evidence. Learn and Checked Practice are the checked-evidence gate; exam questions are for review and timing.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
       `${routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}`,
       'Final review',
@@ -1832,7 +1878,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
           <div class="section-heading">
             <div>
               <h2>Mixed Paper 3 questions</h2>
-              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are practice evidence, not automatic mastery.</p>
+              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are self-marked exam practice, not checked evidence.</p>
             </div>
           </div>
           <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam review question">
@@ -1949,7 +1995,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
               <th>Standard ladder</th>
               <th>Hard ladder</th>
               <th>Mixed mapped questions</th>
-              <th>Readiness</th>
+              <th>Evidence status</th>
               <th>Notes / review flags</th>
             </tr>
           </thead>
@@ -2626,6 +2672,21 @@ function renderWorksheetItem(item: SkillCheckItem, index: number): string {
   `;
 }
 
+function renderWorksheetGroup(group: SkillChecklistTopicGroup, groupIndex: number, questionStartIndex: number): string {
+  return `
+    <section class="worksheet-question-group" id="worksheet-group-${escapeAttr(group.topic.id)}" data-worksheet-group>
+      <header class="worksheet-group-header">
+        <p class="eyebrow">Group ${groupIndex + 1}</p>
+        <h2>${escapeHtml(group.topic.title)}</h2>
+        <p>${escapeHtml(group.topic.purpose)}</p>
+      </header>
+      <div class="worksheet-question-list">
+        ${group.authoredItems.length ? group.authoredItems.map((item, itemIndex) => renderWorksheetItem(item, questionStartIndex + itemIndex)).join('') : '<p class="empty-state">No printable Checked Practice items are available for this group yet.</p>'}
+      </div>
+    </section>
+  `;
+}
+
 function renderCheckableSkillCheckForm(
   item: SkillCheckItem,
   group: SkillChecklistTopicGroup,
@@ -2916,7 +2977,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
           <h3>${escapeHtml(displayTopic)}</h3>
           ${displaySubtopic ? `<p>${escapeHtml(displaySubtopic)}</p>` : ''}
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence. It does not award mastery by itself.</p>
+          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
           ${options.reviewNote ? `<p class="question-instruction">${escapeHtml(options.reviewNote)}</p>` : ''}
         </div>
         <span class="marks-pill">${totalMarks} mark${totalMarks === 1 ? '' : 's'}</span>
@@ -2942,7 +3003,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
       ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Exam practice evidence. Needs Checked Practice pass before mastery can be shown.</span>
+          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
         </div>
         ${usesCoarseSelfMarking ? '<p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>' : ''}
         <div class="exam-part-list">
@@ -3015,6 +3076,12 @@ function renderWorksheetPage(
 ): string {
   const { topic, groups } = context;
   const items = groups.flatMap((group) => group.authoredItems);
+  let questionStartIndex = 0;
+  const worksheetGroups = groups.map((group, groupIndex) => {
+    const rendered = renderWorksheetGroup(group, groupIndex, questionStartIndex);
+    questionStartIndex += group.authoredItems.length;
+    return rendered;
+  }).join('');
   const body = `
     <section class="worksheet-hero">
       <p class="eyebrow">Printable worksheet</p>
@@ -3030,10 +3097,10 @@ function renderWorksheetPage(
     </section>
     <section class="worksheet-instructions">
       <h2>Questions</h2>
-      <p>Show working clearly. Use the interactive Checked Practice page for deterministic checking after this worksheet.</p>
+      <p>Show working clearly. Move through one group at a time, then use the interactive Checked Practice page for deterministic checking after this worksheet.</p>
     </section>
-    <section class="worksheet-question-list">
-      ${items.length ? items.map(renderWorksheetItem).join('') : '<p class="empty-state">No printable Checked Practice items are available for this topic yet.</p>'}
+    <section class="worksheet-flow" data-worksheet-flow data-flow-label="${escapeAttr(`${topic.shortName} worksheet group`)}">
+      ${items.length ? worksheetGroups : '<p class="empty-state">No printable Checked Practice items are available for this topic yet.</p>'}
     </section>
   `;
   return renderPage({
@@ -3056,7 +3123,7 @@ function renderTopicExamTrainingPage(
   const body = `
     ${renderHero(
       `${topic.name} — Exam Training`,
-      'Try one Paper 3 question at a time. Self-mark honestly and use Checked Practice evidence for mastery.',
+      'Try one Paper 3 question at a time. Self-mark honestly and keep Checked Practice evidence separate.',
       topic.headerFormula,
       `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start</a>' : ''}
       ${routeLink(pagePath, learnPagePath(topic), 'Learn', 'button secondary-button')}
@@ -3067,7 +3134,7 @@ function renderTopicExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Exam questions</h2>
-          <p>Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence. It does not award mastery by itself.</p>
+          <p>Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
         </div>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="${escapeAttr(topic.name)} exam question">
@@ -3122,7 +3189,7 @@ function renderExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Mixed Paper 3 questions</h2>
-          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked Skill Check evidence. It does not award mastery by itself.</p>
+          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked practice evidence.</p>
         </div>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam question">
@@ -3135,7 +3202,7 @@ function renderExamTrainingPage(
       <div>
         <p class="eyebrow">Local progress</p>
         <h2>Saved attempts</h2>
-        <p>Use the totals as practice evidence, not a grade or mastery decision.</p>
+        <p>Use the totals as practice evidence, not a grade or checked-evidence decision.</p>
       </div>
       <div class="exam-stats">
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>

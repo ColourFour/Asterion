@@ -30,7 +30,7 @@
     'deterministic_pass_fail',
     'self_marked_score',
     'evidence_label',
-    'mastery_eligibility_label',
+    'evidence_status_label',
     'suspicion_flags',
     'knowledge_skill_id',
     'knowledge_state_score',
@@ -937,7 +937,7 @@
       answer_result_summary: attempt.submittedAnswer || '',
       deterministic_pass_fail: passed ? 'pass' : 'fail',
       evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
-      mastery_eligibility_label: passed ? 'mastery_gate_passed_for_this_check' : 'not_passed'
+      evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed'
     });
   }
 
@@ -957,7 +957,7 @@
       answer_result_summary: state,
       deterministic_pass_fail: 'not_available',
       evidence_label: 'Review candidate from local checked practice attempt',
-      mastery_eligibility_label: 'not_mastery_evidence',
+      evidence_status_label: 'needs_checked_evidence',
       suspicion_flags: tags.join('|')
     });
   }
@@ -966,9 +966,9 @@
     var score = typeof attempt.marksAvailable === 'number' && attempt.marksAvailable > 0
       ? attempt.marksEarned + '/' + attempt.marksAvailable
       : typeof attempt.marksEarned === 'number' ? String(attempt.marksEarned) : '';
-    var masteryLabel = attempt.masteryGate === 'skill_check_passed'
-      ? 'skill_check_passed_exam_supports_confidence'
-      : 'not_mastery_evidence_by_itself';
+    var evidenceStatusLabel = attempt.masteryGate === 'skill_check_passed'
+      ? 'checked_practice_passed_self_marked_exam_practice'
+      : 'self_marked_exam_practice_only';
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topicDisplayName || '',
       route_page_type: 'exam-training',
@@ -979,7 +979,7 @@
       deterministic_pass_fail: 'not_available',
       self_marked_score: score,
       evidence_label: attempt.evidenceLabel || (attempt.selfMarked ? 'Self-marked attempt' : 'Exam practice evidence'),
-      mastery_eligibility_label: masteryLabel,
+      evidence_status_label: evidenceStatusLabel,
       suspicion_flags: safeArray(attempt.suspicionFlags).join('|')
     });
   }
@@ -995,7 +995,7 @@
       answer_result_summary: attempt.submittedAnswer || attempt.prompt || '',
       deterministic_pass_fail: typeof attempt.isCorrect === 'boolean' ? (attempt.isCorrect ? 'pass' : 'fail') : 'not_available',
       evidence_label: 'Local learning activity',
-      mastery_eligibility_label: attempt.strongEvidence ? 'clean_checked_learning_attempt' : 'not_mastery_evidence',
+      evidence_status_label: attempt.strongEvidence ? 'checked_learning_activity' : 'content_activity_only',
       suspicion_flags: safeArray(attempt.mistakeTags).join('|')
     });
   }
@@ -1010,7 +1010,7 @@
       answer_result_summary: String(update.previousScore) + '->' + String(update.newScore),
       deterministic_pass_fail: update.outcome || '',
       evidence_label: 'Error-to-knowledge-state transformer',
-      mastery_eligibility_label: 'not_mastery_evidence',
+      evidence_status_label: 'state_update_metadata',
       knowledge_skill_id: update.skillNodeId || '',
       knowledge_state_score: String(update.newScore ?? ''),
       knowledge_state_category: update.newCategory || '',
@@ -1029,7 +1029,7 @@
       attempt_timestamp: error.timestamp || '',
       answer_result_summary: error.markPointLabel || error.markPointId || error.errorType || '',
       evidence_label: 'Skill-linked missed mark evidence',
-      mastery_eligibility_label: 'not_mastery_evidence',
+      evidence_status_label: 'missed_mark_evidence',
       knowledge_skill_id: error.primarySkillNodeId || '',
       knowledge_error_type: error.errorType || '',
       knowledge_error_severity: error.severity || '',
@@ -1051,7 +1051,7 @@
       attempt_timestamp: intervention.createdAt || '',
       answer_result_summary: intervention.rationale || '',
       evidence_label: 'State-change-driven intervention',
-      mastery_eligibility_label: 'not_mastery_evidence',
+      evidence_status_label: 'intervention_metadata',
       knowledge_skill_id: intervention.skillNodeId || '',
       knowledge_state_score: String(intervention.stateChange?.newScore ?? ''),
       knowledge_state_category: intervention.stateChange?.category || '',
@@ -1298,8 +1298,8 @@
       if (openPanel) openPanel.hidden = !isOpen;
       if (statusText) {
         statusText.textContent = isOpen
-          ? 'All P3 units are complete in this browser. Mixed exam review is open.'
-          : completed + '/' + requirements.length + ' units complete. Finish the remaining Learn steps and checked questions first.';
+          ? 'All P3 units have checked evidence in this browser. Mixed exam review is open.'
+          : completed + '/' + requirements.length + ' units have checked evidence. Finish the remaining Learn steps and checked questions first.';
       }
       if (list) {
         list.innerHTML = statuses.map(function (status) {
@@ -1311,7 +1311,7 @@
             + '<div><strong>' + escapeText(requirement.name) + '</strong>'
             + '<span>Learn ' + status.guideCount + '/' + status.fieldGuideTotal
             + '; checked questions ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
-            + (status.complete ? '<span class="unit-state">Done</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
+            + (status.complete ? '<span class="unit-state">Checked evidence</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
         }).join('');
       }
@@ -1358,20 +1358,23 @@
       return {
         title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Learn',
         copy: 'Learn progress in this browser: ' + status.guideCount + '/' + status.fieldTotal + ' steps. Work through the next attempt-first step.',
-        href: status.learnHref
+        href: status.learnHref,
+        label: status.started ? 'Continue Learn' : 'Start Learn'
       };
     }
     if (!status.checkedComplete) {
       return {
         title: 'Finish ' + status.name + ' Checked Practice',
-        copy: 'Learn is complete here. Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '; use the checked similar questions before exam work.',
-        href: status.learnHref
+        copy: 'Learn steps are recorded here. Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '; use the checked similar questions before exam work.',
+        href: status.learnHref,
+        label: 'Continue Checked Practice'
       };
     }
     return {
       title: 'Try ' + status.name + ' Exam Training',
-      copy: 'Learn and Checked Practice are complete in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
-      href: status.examHref
+      copy: 'Learn and Checked Practice evidence is recorded in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
+      href: status.examHref,
+      label: status.examCount > 0 ? 'Continue Exam Training' : 'Start Exam Training'
     };
   }
 
@@ -1390,9 +1393,16 @@
     var action = selected ? actionForUnitStatus(selected) : null;
 
     statuses.forEach(function (status) {
+      var cardAction = actionForUnitStatus(status);
+      var cardLink = status.card.querySelector('[data-path-unit-primary-action]');
       status.card.classList.toggle('is-current-local-step', Boolean(selected && status.card === selected.card));
       status.card.classList.toggle('is-complete', status.reviewReady);
       status.card.classList.toggle('has-exam-evidence', status.examCount > 0);
+      if (cardLink && cardAction) {
+        cardLink.textContent = cardAction.label;
+        cardLink.setAttribute('href', cardAction.href);
+        cardLink.setAttribute('aria-label', cardAction.title);
+      }
     });
 
     panels.forEach(function (panel) {
@@ -1401,8 +1411,8 @@
       var link = panel.querySelector('[data-p3-next-step-link]');
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
-        if (title) title.textContent = 'Check Review status';
-        if (copy) copy.textContent = 'All unit Learn and Checked Practice requirements are complete in this browser. Mixed review is still local practice guidance, not a grade.';
+        if (title) title.textContent = 'Check review evidence';
+        if (copy) copy.textContent = 'All unit Learn and Checked Practice evidence is recorded in this browser. Mixed review is still local practice guidance, not a grade.';
         if (link) {
           link.textContent = 'Review Mistakes';
           link.setAttribute('href', reviewHref);
@@ -1413,7 +1423,7 @@
       if (title) title.textContent = action.title;
       if (copy) copy.textContent = action.copy;
       if (link) {
-        link.textContent = 'Continue';
+        link.textContent = action.label || 'Continue current topic';
         link.setAttribute('href', action.href);
       }
     });
@@ -2104,7 +2114,7 @@
       { area: 'Vectors', prompt: 'Find the magnitude of (3, 4).', answer: '5', why: 'Use sqrt(3^2 + 4^2).' }
     ]
   };
-  var P1_REPAIR_LOCK_MESSAGE = 'P3 access locked: complete foundation repair modules to continue.';
+  var P1_REPAIR_LOCK_MESSAGE = 'P3 readiness recommendation: complete foundation repair modules before continuing.';
   var P1_REPAIR_SKILL_TAGS = [
     'ALGEBRA_MANIPULATION',
     'EQUATION_SOLVING',
@@ -2348,16 +2358,16 @@
   }
 
   function diagnosticReadinessLabel(level) {
-    if (level === 'FOUNDATION_RISK') return 'Foundation risk';
-    if (level === 'HIGH_FLUENCY') return 'High fluency';
-    return 'Standard entry';
+    if (level === 'FOUNDATION_RISK') return 'Needs foundation evidence';
+    if (level === 'HIGH_FLUENCY') return 'Strong starting evidence';
+    return 'Standard starting evidence';
   }
 
   function renderDiagnosticSummary(panel, report, evaluation) {
     var summary = panel?.querySelector('[data-diagnostic-feedback-summary]');
     replaceChildrenWith(summary, [
       diagnosticStat('Score', evaluation.marksEarned + '/' + evaluation.marksAvailable + ' marks'),
-      diagnosticStat('Readiness', diagnosticReadinessLabel(report.readiness_level)),
+      diagnosticStat('Evidence label', diagnosticReadinessLabel(report.readiness_level)),
       diagnosticStat('Route', diagnosticPathLabel(report.recommended_path))
     ]);
   }
@@ -2628,9 +2638,9 @@
       var result = card.querySelector('[data-p1-repair-module-result]');
       if (result) {
         if (!triggered) {
-          result.textContent = 'Locked until the diagnostic gate recommends P1_REPAIR_REQUIRED.';
+          result.textContent = 'Available after the diagnostic recommends P1_REPAIR_REQUIRED.';
         } else if (complete) {
-          result.textContent = 'COMPLETE. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check passed.';
+          result.textContent = 'CHECKED EVIDENCE. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check passed.';
         } else if (state) {
           result.textContent = 'IN_PROGRESS. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check not yet passed within the allowed attempts.';
         } else {
@@ -2645,9 +2655,9 @@
         return;
       }
       node.textContent = unlock.p3_access_unlocked
-        ? 'All repair conditions met. Full P3 access can reopen.'
+        ? 'Repair target met. Continue with the full P3 path.'
         : unlock.completed_module_count + '/' + unlock.required_module_count + ' modules complete; '
-          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. P3 remains locked.';
+          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. Repair route still recommended before P3 Exam Training.';
     });
   }
 
@@ -3440,8 +3450,8 @@
     saveProgress(progress);
     if (status) {
       var gateText = attempt.masteryGate === 'skill_check_passed'
-        ? 'Checked Practice gate passed; exam work supports confidence only.'
-        : 'Checked Practice required for mastery.';
+        ? 'Checked Practice passed; self-marked exam practice recorded.'
+        : 'Needs checked evidence before exam practice can support this route.';
       status.textContent = attempt.trustLabel + '. Self-marked attempt saved. ' + gateText;
       status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
     }
@@ -4017,6 +4027,126 @@
     });
   }
 
+  function setupWorksheetFlow() {
+    document.querySelectorAll('[data-worksheet-flow]').forEach(function (flow) {
+      var groups = Array.from(flow.querySelectorAll('[data-worksheet-group]')).filter(function (group) {
+        return group instanceof HTMLElement;
+      });
+      if (groups.length <= 1 || flow.previousElementSibling?.classList.contains('worksheet-controls')) return;
+
+      var labelText = flow.getAttribute('data-flow-label') || 'Worksheet group';
+      var index = 0;
+      var switcher = document.createElement('details');
+      switcher.className = 'practice-group-switcher worksheet-group-switcher';
+      var summary = document.createElement('summary');
+      summary.className = 'practice-group-summary';
+      var currentGroup = document.createElement('span');
+      currentGroup.className = 'practice-current-skill';
+      currentGroup.textContent = 'Current group';
+      var changeGroup = document.createElement('span');
+      changeGroup.className = 'practice-change-skill';
+      changeGroup.textContent = 'Change group';
+      summary.append(currentGroup, changeGroup);
+
+      var nav = document.createElement('nav');
+      nav.className = 'practice-group-nav';
+      nav.setAttribute('aria-label', labelText + ' groups');
+      groups.forEach(function (group, groupIndex) {
+        var link = document.createElement('a');
+        var heading = group.querySelector('h2');
+        link.className = 'button secondary-button';
+        link.href = group.id ? '#' + encodeURIComponent(group.id) : '#';
+        link.textContent = heading?.textContent?.trim() || 'Group ' + (groupIndex + 1);
+        nav.append(link);
+      });
+      switcher.append(summary, nav);
+
+      var controls = document.createElement('div');
+      controls.className = 'practice-controls worksheet-controls';
+      controls.setAttribute('aria-label', labelText + ' navigation');
+
+      var previous = document.createElement('button');
+      previous.className = 'button secondary-button';
+      previous.type = 'button';
+      previous.textContent = 'Previous group';
+
+      var label = document.createElement('span');
+      label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
+
+      var next = document.createElement('button');
+      next.className = 'button primary-button';
+      next.type = 'button';
+      next.textContent = 'Next group';
+
+      controls.append(previous, label, next);
+      flow.before(switcher);
+      flow.before(controls);
+      flow.classList.add('is-single-worksheet-group');
+
+      function groupIndexFromHash() {
+        var hash = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : '';
+        if (!hash) return -1;
+        return groups.findIndex(function (group) {
+          return group.id === hash;
+        });
+      }
+
+      function setIndex(nextIndex, updateHash) {
+        index = Math.max(0, Math.min(groups.length - 1, nextIndex));
+        render();
+        if (updateHash && groups[index]?.id) {
+          window.history.replaceState(null, '', '#' + groups[index].id);
+        }
+      }
+
+      function render() {
+        groups.forEach(function (group, groupIndex) {
+          group.hidden = groupIndex !== index;
+        });
+        label.textContent = 'Group ' + (index + 1) + ' of ' + groups.length;
+        previous.disabled = index === 0;
+        next.disabled = index === groups.length - 1;
+        currentGroup.textContent = groups[index]?.querySelector('h2')?.textContent?.trim() || 'Group ' + (index + 1);
+        Array.from(nav.querySelectorAll('a[href^="#"]')).forEach(function (link, linkIndex) {
+          if (linkIndex === index) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        });
+      }
+
+      nav.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element)) return;
+        var link = target.closest('a[href^="#"]');
+        if (!(link instanceof HTMLAnchorElement)) return;
+        var targetId = decodeURIComponent((link.getAttribute('href') || '').replace(/^#/, ''));
+        var targetIndex = groups.findIndex(function (group) {
+          return group.id === targetId;
+        });
+        if (targetIndex < 0) return;
+        event.preventDefault();
+        switcher.open = false;
+        setIndex(targetIndex, true);
+      });
+
+      previous.addEventListener('click', function () {
+        setIndex(index - 1, true);
+      });
+
+      next.addEventListener('click', function () {
+        setIndex(index + 1, true);
+      });
+
+      window.addEventListener('hashchange', function () {
+        var hashIndex = groupIndexFromHash();
+        if (hashIndex >= 0) setIndex(hashIndex, false);
+      });
+
+      var initialIndex = groupIndexFromHash();
+      setIndex(initialIndex >= 0 ? initialIndex : 0, false);
+    });
+  }
+
   function setupGuidedStudy() {
     document.querySelectorAll('[data-guided-study]').forEach(function (study) {
       var tabs = Array.from(study.querySelectorAll('[data-phase-tab]'));
@@ -4194,7 +4324,7 @@
         if (button) button.disabled = !isEnabled;
         if (status) {
           status.className = 'homepage-demo-status is-' + (state === 'locked' ? 'waiting' : state);
-          status.textContent = state === 'locked' ? 'Locked' : state === 'active' ? 'Ready' : state === 'correct' ? 'Correct' : 'Try Again';
+          status.textContent = state === 'locked' ? 'Locked' : state === 'active' ? 'Active' : state === 'correct' ? 'Correct' : 'Try Again';
         }
       }
 
@@ -4255,6 +4385,7 @@
     setupOneCardFlow();
     setupExamQuestionFlow();
     setupLearnModeFlow();
+    setupWorksheetFlow();
     setupExamSelfMarking();
     setupGuidedStudy();
     updateProgressText();

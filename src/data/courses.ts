@@ -55,7 +55,7 @@ export const COURSES: CourseMetadata[] = [
     examComponentLabel: 'Paper 3 / Pure Mathematics 3',
     paperFamilies: ['p3'],
     status: 'ready',
-    statusLabel: 'Ready',
+    statusLabel: 'Content available',
     coverageSummary: 'P3 is the primary static product path. Topic pages use reviewed P3 routing and image-first exam practice.',
     topics: [
       { id: 'p3-algebra', title: 'Algebra', note: 'Learn Mode and Exam Training available.' },

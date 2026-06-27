@@ -208,14 +208,15 @@ try {
       const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Take the diagnostic') && text.includes('Topic Overview'),
+        hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Unsure? Take diagnostic') && text.includes('All topic routes'),
+        hasNextStepPanel: Boolean(document.querySelector('[data-p3-next-step-panel]')),
         hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
           && Boolean(document.querySelector('[data-progress-skill]'))
           && Boolean(document.querySelector('[data-progress-exam]')),
         hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
       };
     });
-    if (!courseResult.hasDashboard || !courseResult.hasProgressLabels || courseResult.pathCards < 10) {
+    if (!courseResult.hasDashboard || !courseResult.hasNextStepPanel || !courseResult.hasProgressLabels || courseResult.pathCards < 9) {
       fail(`${coursePage} must render the P3 dashboard with unit evidence cards.`);
     }
     if (courseResult.hasCourseGrid) {

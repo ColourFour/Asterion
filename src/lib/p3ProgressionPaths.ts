@@ -7,7 +7,7 @@ export type P3PathAssignmentMode = 'forced' | 'choice' | 'recommended';
 export type P3PathUiDescriptor =
   | 'Minimum Survival Path In Progress'
   | 'A/A* Path In Progress'
-  | 'Path Complete - Ready for Final Mock Certification';
+  | 'Checked path evidence recorded';
 
 export type P3PathRequirementCode =
   | 'learn_path_incomplete'
@@ -80,14 +80,14 @@ export const P3_PROGRESSION_REQUIRED_UNIT_IDS: P3RegionId[] = [...P3_ALLOWED_REG
 export const P3_PROGRESS_UI_DESCRIPTORS = {
   minimumInProgress: 'Minimum Survival Path In Progress',
   aStarInProgress: 'A/A* Path In Progress',
-  complete: 'Path Complete - Ready for Final Mock Certification',
+  complete: 'Checked path evidence recorded',
 } as const;
 
 export const P3_PROGRESSION_PATHS: Record<P3ProgressionPathId, P3ProgressionPathDefinition> = {
   MINIMUM_SURVIVAL: {
     id: 'MINIMUM_SURVIVAL',
     label: 'Minimum Survival Path',
-    purpose: 'Compliance and baseline functional exam readiness with minimal but sufficient exposure.',
+    purpose: 'Baseline coverage with minimal but sufficient checked and self-marked evidence.',
     requiredActions: [
       'Complete Learn steps for every P3 unit.',
       'Complete all checked practice questions per unit.',

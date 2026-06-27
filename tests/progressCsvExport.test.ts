@@ -154,7 +154,7 @@ describe('local progress CSV export', () => {
         item_id: '33autumn23_q03',
         self_marked_score: '5/5',
         evidence_label: 'Self-marked attempt',
-        mastery_eligibility_label: 'not_mastery_evidence_by_itself',
+        evidence_status_label: 'self_marked_exam_practice_only',
         suspicion_flags: 'full_marks_without_mark_points|answer_revealed_before_marking',
       }),
       expect.objectContaining({

@@ -368,9 +368,21 @@ if (!contractLinks.length) {
   console.error('P3 Need to Know page has no generated Learn, Checked Practice, or Exam Training links.');
   process.exit(1);
 }
-for (const requiredLabel of ['Ready', 'Needs Learn', 'Needs Checked Practice', 'Draft']) {
-  if (!visibleBodyText(needToKnowHtml).includes(requiredLabel)) {
-    console.error(`P3 Need to Know page does not keep the "${requiredLabel}" status visible.`);
+const needToKnowText = visibleBodyText(needToKnowHtml);
+const topicBandCount = (needToKnowHtml.match(/class="contract-topic-band"/g) ?? []).length;
+if (topicBandCount === 0 || topicBandCount > 7) {
+  console.error(`P3 Need to Know page must render 1-7 main checklist topic bands; saw ${topicBandCount}.`);
+  process.exit(1);
+}
+for (const forbiddenLabel of ['Needs Learn', 'Needs Checked Practice', 'Needs Exam Mapping']) {
+  if (needToKnowText.includes(forbiddenLabel)) {
+    console.error(`P3 Need to Know page must separate content availability from readiness language; found "${forbiddenLabel}".`);
+    process.exit(1);
+  }
+}
+for (const requiredLabel of ['Learn content planned', 'Checked practice planned', 'Content availability']) {
+  if (!needToKnowText.includes(requiredLabel)) {
+    console.error(`P3 Need to Know page does not show neutral availability wording: ${requiredLabel}`);
     process.exit(1);
   }
 }
