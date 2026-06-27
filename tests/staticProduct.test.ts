@@ -128,16 +128,38 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('data-flow-final-href');
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('homepage-course-panel');
+    expect(generatorSource).toContain('What should I do?');
+    expect(generatorSource).toContain('View Exam Questions');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      expect(generatedHome).toContain('Choose the course before the study path.');
+      expect(generatedHome).toContain('Asterion');
+      expect(generatedHome).toContain('CAIE 9709 Mathematics practice system.');
       expect(generatedHome).toContain('homepage-course-panel');
-      expect(generatedHome).toContain('Start P3');
-      expect(generatedHome).toContain('Available later');
+      expect(generatedHome).toContain('Pure Mathematics 1');
+      expect(generatedHome).toContain('Pure Mathematics 3');
+      expect(generatedHome).toContain('Mechanics 1');
+      expect(generatedHome).toContain('Statistics 1');
+      expect(generatedHome).toContain('Ready');
+      expect(generatedHome).toContain('In progress');
+      expect(generatedHome).toContain('Open P3');
+      expect(generatedHome).toContain('Open P1');
+      expect(generatedHome).toContain('Open M1');
+      expect(generatedHome).toContain('Open S1');
+      expect(generatedHome).toContain('What should I do?');
+      expect(generatedHome).toContain('Start Repair');
+      expect(generatedHome).toContain('View Exam Questions');
+      expect(generatedHome).toContain('P3 topics');
       expect(generatedHome.match(/class="course-card/g)?.length).toBeGreaterThanOrEqual(4);
       expect(generatedHome).not.toContain('Start P3 with Algebra.');
       expect(generatedHome).not.toContain('path-unit-grid');
+      expect(generatedHome).not.toContain('Trust Signals');
+      expect(generatedHome).not.toContain('The Asterion Learning Loop');
+      expect(generatedHome).not.toContain('AI-powered');
+      expect(generatedHome).not.toContain('personalized learning revolution');
+      expect(generatedHome).not.toContain('trusted by');
+      expect(generatedHome).not.toContain('parents');
+      expect(generatedHome).not.toContain('investors');
     }
 
     if (existsSync(generatedP3Path)) {
@@ -241,18 +263,71 @@ describe('static P3 product contract', () => {
     expect(gitignore).not.toContain('reports/');
   });
 
-  it('does not duplicate the same Field Guide visual on a generated Learn page', () => {
+  it('does not duplicate the same Field Guide visual inside a generated Learn step', () => {
+    for (const topic of STUDY_TOPICS) {
+      const generatedPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
+      if (!existsSync(generatedPath)) continue;
+      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
+
+      for (const step of Array.from(document.querySelectorAll('[data-learn-step-card]'))) {
+        const visualTopicIds = Array.from(
+          step.querySelectorAll('[data-field-guide-visual]'),
+          (element) => element.getAttribute('data-field-guide-visual') ?? '',
+        );
+        const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
+
+        expect(duplicateIds, `${generatedPath} ${step.getAttribute('data-learn-step-id') ?? ''}`).toEqual([]);
+      }
+    }
+  });
+
+  it('does not render generic supplemental visual appendices on generated Learn pages', () => {
     for (const topic of STUDY_TOPICS) {
       const generatedPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
       if (!existsSync(generatedPath)) continue;
       const generatedSource = readFileSync(generatedPath, 'utf8');
-      const visualTopicIds = Array.from(
-        generatedSource.matchAll(/data-field-guide-visual="([^"]+)"/g),
-        (match) => match[1],
-      );
-      const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
 
-      expect(duplicateIds, generatedPath).toEqual([]);
+      expect(generatedSource, generatedPath).not.toContain('Extra diagram for this unit');
+      expect(generatedSource, generatedPath).not.toContain('supplemental-visual-section');
+    }
+  });
+
+  it('renders Vectors Learn visuals only inside relevant step cards', () => {
+    const generatedPath = 'docs/p3/topics/vectors/learn/index.html';
+    if (!existsSync(generatedPath)) return;
+    const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
+    const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
+    const lineIntersectionStep = document.querySelector('[data-learn-step-id="learn-vectors-line-intersection"]');
+    const footStep = document.querySelector('[data-learn-step-id="learn-vectors-foot-of-perpendicular"]');
+
+    expect(notationStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).toBeNull();
+    expect(notationStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).toBeNull();
+    expect(lineIntersectionStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).not.toBeNull();
+    expect(footStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).not.toBeNull();
+  });
+
+  it('renders key Learn visual teaching labels in generated HTML metadata', () => {
+    const expectedLabelsByRoute = new Map<string, string[]>([
+      ['p3/topics/complex-numbers/learn/index.html', ['|z|', 'arg z', '2π/n']],
+      ['p3/topics/vectors/learn/index.html', ['PQ · d = 0']],
+      ['p3/topics/integration/learn/index.html', ['F(b) - F(a)']],
+    ]);
+
+    for (const [pagePath, expectedLabels] of expectedLabelsByRoute) {
+      const generatedPath = `docs/${pagePath}`;
+      if (!existsSync(generatedPath)) continue;
+      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
+      const visualText = Array.from(document.querySelectorAll('[data-field-guide-visual]'))
+        .map((element) => [
+          element.getAttribute('data-visual-title') ?? '',
+          element.getAttribute('data-instructional-labels') ?? '',
+          visibleText(element),
+        ].join(' '))
+        .join(' ');
+
+      for (const expectedLabel of expectedLabels) {
+        expect(visualText, pagePath).toContain(expectedLabel);
+      }
     }
   });
 

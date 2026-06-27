@@ -23,10 +23,12 @@ export interface FieldGuideTopicExample {
 }
 
 export interface FieldGuideVisual {
+  title: string;
   assetPath: string;
   alt: string;
   caption: string;
   testedConcept: string;
+  instructionalLabels?: string[];
 }
 
 export interface ProblemFirstLesson {
@@ -2431,114 +2433,142 @@ export const FIELD_GUIDE_TOPICS_BY_REGION: Record<string, FieldGuideTopic[]> = {
 export const FIELD_GUIDE_VISUALS_BY_TOPIC_ID: Record<string, FieldGuideVisual[]> = {
   algebra_modulus_graph_equations: [
     {
+      title: 'Modulus equation vs inequality',
       assetPath: 'assets/p3/visuals/algebra/algebra_modulus_graph_equations.png',
-      alt: 'Graphs of y equals absolute value of x plus 2 and y equals absolute value of 3x with solution intervals shaded on a number line.',
-      caption: 'Notice how the two intersections split the graph and number line into the intervals used for the modulus inequality.',
-      testedConcept: 'This supports modulus equations and inequalities where graph position decides the solution interval.',
+      alt: 'Graph of y equals absolute value of x minus a with y equals b, two intersections, and the inside inequality interval shaded.',
+      caption: 'Equation points sit at the intersections; the less-than inequality is the interval between them.',
+      testedConcept: 'Key move: split |x-a|=b into two cases, then use the graph to choose inside or outside intervals.',
+      instructionalLabels: ['y = |x-a|', 'y = b', '|x-a| = b', '|x-a| < b', 'inside interval'],
     },
   ],
   log_graph_inverse: [
     {
+      title: 'Inverse graphs swap coordinates',
       assetPath: 'assets/p3/visuals/logarithmic-and-exponential-functions/log_graph_inverse.png',
-      alt: 'Exponential and logarithmic inverse graphs reflected in the line y equals x.',
-      caption: 'Notice that inverse points swap coordinates across the line y=x.',
-      testedConcept: 'This supports graph and coordinate questions about exponential and logarithmic inverse functions.',
+      alt: 'Graphs of y equals e to the x and y equals natural log x reflected in y equals x with points (0,1) and (1,0).',
+      caption: 'Inverse points swap coordinates across y=x; ln x only exists for x greater than zero.',
+      testedConcept: 'Key move: use the mirror line and remember the domain cue before reading logarithmic graph points.',
+      instructionalLabels: ['y = e^x', 'y = ln x', 'y=x', '(0,1)', '(1,0)', 'x > 0'],
     },
   ],
   trig_reciprocal_functions: [
     {
+      title: 'Reciprocal trig blows up at zeros',
       assetPath: 'assets/p3/visuals/trigonometry/trig_reciprocal_functions.png',
-      alt: 'Graph of sec x with cosine reference curve and vertical asymptotes where cosine is zero.',
-      caption: 'Notice that reciprocal trig asymptotes occur where the denominator trig function is zero.',
-      testedConcept: 'This supports reciprocal trig graph and equation questions involving sec, cosec, and cot.',
+      alt: 'Sine graph with cosecant reciprocal branches and vertical asymptotes where sine equals zero.',
+      caption: 'The reciprocal graph heads to asymptotes where the base trig graph is zero.',
+      testedConcept: 'Watch out: reciprocal trig is not inverse angle notation; cosec x is 1 over sin x.',
+      instructionalLabels: ['y = sin x', 'y = cosec x', 'sin x = 0', 'vertical asymptotes', 'reciprocal ≠ inverse angle'],
     },
   ],
   trig_double_angle_formulae: [
     {
+      title: 'Choose the matching double-angle form',
       assetPath: 'assets/p3/visuals/trigonometry/trig_double_angle_interval_solutions.png',
-      alt: 'Unit circle and sine graph showing interval solutions for sine x equals one half.',
-      caption: 'Notice that interval solving keeps only the angles inside the requested range.',
-      testedConcept: 'This supports trig equation questions where double-angle or quadratic work must still be filtered by interval.',
+      alt: 'Formula map for sin 2x and equivalent cos 2x forms with a mini example turning cos 2x into a quadratic in sin x.',
+      caption: 'Pick the double-angle form that leaves the equation in one trig function.',
+      testedConcept: 'Key move: change cos 2x into the version that creates a solvable quadratic when the equation demands it.',
+      instructionalLabels: ['sin 2x', 'cos 2x', '1 - 2 sin²x', '2 cos²x - 1', 'quadratic in sin x'],
     },
   ],
   trig_r_form_transformations: [
     {
+      title: 'R-form as amplitude plus phase shift',
       assetPath: 'assets/p3/visuals/trigonometry/trig_r_form_transformations.png',
-      alt: 'Shifted sine curve for R-form transformation with amplitude and coefficient triangle labelled.',
-      caption: 'Notice that R-form turns a sum of sine and cosine into one shifted curve with amplitude R.',
-      testedConcept: 'This supports R sin(x plus alpha) and R cos(x plus alpha) transformation questions.',
+      alt: 'R-form graph and coefficient triangle showing R equals square root of a squared plus b squared and angle alpha.',
+      caption: 'The coefficient triangle gives amplitude R and phase shift alpha.',
+      testedConcept: 'Key move: use R for maximum and minimum values after rewriting a cos x plus b sin x.',
+      instructionalLabels: ['a cos x + b sin x', 'R cos(x-α)', 'R = √(a²+b²)', 'tan α = b/a', 'maximum'],
     },
   ],
   p3_diff_stationary_tangent_normal: [
     {
+      title: 'Derivative value becomes line geometry',
       assetPath: 'assets/p3/visuals/differentiation/p3_diff_stationary_tangent_normal.png',
-      alt: 'Curve with tangent, normal, and stationary point gradients labelled.',
-      caption: 'Notice that tangent, normal, and stationary-point conditions are all gradient statements on the curve.',
-      testedConcept: 'This supports differentiation questions asking for tangents, normals, or stationary points.',
+      alt: 'Curve with tangent gradient dy by dx, perpendicular normal, and horizontal stationary tangent labelled.',
+      caption: 'Tangent, normal, and stationary point questions all start from the derivative value.',
+      testedConcept: 'Key move: the normal gradient is negative reciprocal when the tangent gradient is non-zero.',
+      instructionalLabels: ['dy/dx', 'tangent gradient', 'normal gradient = -1/m', 'stationary: dy/dx = 0'],
     },
   ],
   derivatives_parametric: [
     {
+      title: 'Parametric gradient compares rates',
       assetPath: 'assets/p3/visuals/differentiation/derivatives_parametric.png',
       alt: 'Parametric curve with dx by dt, dy by dt, tangent direction, and normal line.',
       caption: 'Notice that dy/dx compares the vertical and horizontal rates at the same parameter value.',
       testedConcept: 'This supports parametric differentiation questions involving tangent or normal gradients.',
+      instructionalLabels: ['dy/dx', 'dy/dt', 'dx/dt', 'tangent direction'],
     },
   ],
   integrals_definite_area_bridge: [
     {
+      title: 'Bounds decide the definite-integral area',
       assetPath: 'assets/p3/visuals/integration/integrals_definite_area_bridge.png',
-      alt: 'Area under a curve between bounds and a smaller inset showing area between two curves.',
-      caption: 'Notice that the bounds and shading decide whether the definite integral represents the required positive area.',
-      testedConcept: 'This supports definite integral and area-between-curves questions.',
+      alt: 'Shaded signed area under a curve from x equals a to x equals b with F(b) minus F(a), plus an inset for top minus bottom.',
+      caption: 'For one curve use F(b)-F(a); for two curves use top minus bottom.',
+      testedConcept: 'Watch out: signed integral and requested area can differ if the graph crosses the axis.',
+      instructionalLabels: ['∫ₐᵇ f(x) dx', 'F(b) - F(a)', 'signed area', 'top - bottom'],
     },
   ],
   iteration_graph_root_proof: [
     {
+      title: 'Bracketing is evidence; iteration is a process',
       assetPath: 'assets/p3/visuals/numerical-solution-of-equations/iteration_graph_root_proof.png',
-      alt: 'Two graphs crossing inside a bracket with sign-change markers.',
-      caption: 'Notice that the root is the intersection inside the bracket, not just a rearranged equation.',
-      testedConcept: 'This supports numerical root-location questions using graph intersections or sign changes.',
+      alt: 'Graph crossing the x-axis inside a bracket with f(a) less than zero, f(b) greater than zero, and an iteration arrow.',
+      caption: 'A sign-change bracket proves a root only with continuity; iteration is the separate update process.',
+      testedConcept: 'Key move: distinguish bracketing evidence from the iteration rule x_n to x_{n+1}.',
+      instructionalLabels: ['f(a) < 0', 'f(b) > 0', 'continuity', 'xₙ → xₙ₊₁', 'root in [a,b]'],
     },
   ],
   vectors_intersect_parallel_skew: [
     {
+      title: 'Classify vector lines by checks',
       assetPath: 'assets/p3/visuals/vectors/vectors_intersect_parallel_skew.png',
-      alt: 'Three panels comparing intersecting, parallel, and skew vector lines.',
-      caption: 'Notice that skew lines are not parallel but still have no common point.',
-      testedConcept: 'This supports vector line classification questions using direction and component consistency checks.',
+      alt: 'Three panels for intersecting, parallel, and skew vector lines with direction-vector and simultaneous-parameter checks.',
+      caption: 'Compare direction vectors first, then test whether the parameters give a common point.',
+      testedConcept: 'Key move: skew means not parallel and no simultaneous parameter solution.',
+      instructionalLabels: ['compare directions', 'd₂ = k d₁', 'solve λ, μ', 'common point', 'skew'],
     },
   ],
   vectors_point_to_line_distance: [
     {
+      title: 'Point-to-line distance uses a perpendicular foot',
       assetPath: 'assets/p3/visuals/vectors/vectors_point_to_line_distance.png',
-      alt: 'Point-to-line distance diagram with projection, foot of perpendicular, and direction vector.',
-      caption: 'Notice that the foot point is found where the joining vector is perpendicular to the line direction.',
-      testedConcept: 'This supports point-to-line distance, projection, and reflection-in-line vector questions.',
+      alt: 'Point P, line r equals a plus lambda d, foot Q, vector PQ, distance magnitude, and perpendicular dot-product condition.',
+      caption: 'Choose the foot Q on the line so that PQ is perpendicular to the direction vector d.',
+      testedConcept: 'Key move: solve PQ · d = 0 for lambda, then the distance is |PQ|.',
+      instructionalLabels: ['r = a + λd', 'Q = a + λd', 'PQ · d = 0', '|PQ|', 'distance'],
     },
   ],
   'modulus-argument': [
     {
+      title: 'Argand form is distance plus direction',
       assetPath: 'assets/p3/visuals/complex-numbers/modulus_argument.png',
-      alt: 'Argand diagram showing z equals x plus iy, modulus, argument angle, and component triangle.',
-      caption: 'Notice that modulus is distance from the origin and argument is the directed angle from the positive real axis.',
-      testedConcept: 'This supports complex-number conversion between Cartesian and modulus-argument form.',
+      alt: 'Argand plane showing z equals x plus iy, modulus as distance, argument as angle, and quadrant warning.',
+      caption: 'Modulus is distance from the origin; argument is the directed angle from the positive real axis.',
+      testedConcept: 'Watch out: tan inverse of y over x needs a quadrant check before giving arg z.',
+      instructionalLabels: ['|z|', 'arg z', 'z = x + iy', '√(x²+y²)', 'quadrant'],
     },
   ],
   roots: [
     {
+      title: 'Roots are equally spaced rotations',
       assetPath: 'assets/p3/visuals/complex-numbers/roots.png',
-      alt: 'Argand diagram showing complex roots equally spaced around a circle.',
-      caption: 'Notice that complex roots have equal angular spacing on the same modulus circle.',
-      testedConcept: 'This supports de Moivre and complex-root questions where all roots must be listed.',
+      alt: 'Argand diagram of complex roots equally spaced on a circle with angle step two pi over n and rotation arrows.',
+      caption: 'Each root has the same radius; the next root is found by adding the angle step 2π/n.',
+      testedConcept: 'Key move: list all branches using arguments (theta plus 2k pi) over n.',
+      instructionalLabels: ['2π/n', 'same radius', 'rotate', '(θ + 2kπ)/n', 'all roots'],
     },
   ],
   locus: [
     {
+      title: 'Locus statements become Argand geometry',
       assetPath: 'assets/p3/visuals/complex-numbers/locus.png',
-      alt: 'Argand locus diagram with circle, half-plane, perpendicular bisector, and shaded valid region.',
-      caption: 'Notice how each algebraic locus condition becomes a boundary or shaded region on the Argand plane.',
-      testedConcept: 'This supports complex loci involving modulus, argument, half-plane, and equal-distance conditions.',
+      alt: 'Three Argand mini-panels showing modulus circle, argument ray with excluded endpoint, and equal-distance perpendicular bisector.',
+      caption: 'Translate each condition first: fixed distance is a circle, fixed argument is a ray, equal distances give a bisector.',
+      testedConcept: 'Key move: shade only when an inequality asks for a region.',
+      instructionalLabels: ['|z-a| = r', 'arg(z-a)=θ', '|z-a| = |z-b|', 'perpendicular bisector', 'endpoint excluded'],
     },
   ],
 };
@@ -2624,10 +2654,14 @@ export function validateFieldGuideVisuals(
     }
     for (const [visualIndex, visual] of visuals.entries()) {
       const label = `${topicId} visual ${visualIndex + 1}`;
+      if (!visual.title.trim()) errors.push(`${label} missing title`);
       if (!visual.assetPath.trim()) errors.push(`${label} missing assetPath`);
       if (!visual.alt.trim()) errors.push(`${label} missing alt`);
       if (!visual.caption.trim()) errors.push(`${label} missing caption`);
       if (!visual.testedConcept.trim()) errors.push(`${label} missing testedConcept`);
+      if (visual.instructionalLabels?.some((instructionalLabel) => !instructionalLabel.trim())) {
+        errors.push(`${label} has an empty instructional label`);
+      }
       if (visual.assetPath.trim() && options.assetExists && !options.assetExists(visual.assetPath)) {
         errors.push(`${label} missing asset: ${visual.assetPath}`);
       }

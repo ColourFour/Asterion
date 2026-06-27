@@ -1713,9 +1713,9 @@ body.home-page main {
 }
 
 .course-picker-hero {
-  grid-template-columns: minmax(0, 0.86fr) minmax(420px, 0.94fr);
+  grid-template-columns: minmax(240px, 0.36fr) minmax(0, 1fr);
   align-items: stretch;
-  min-height: 690px;
+  min-height: 0;
 }
 
 .homepage-hero::before {
@@ -2459,7 +2459,7 @@ body.home-page main {
 }
 
 body.home-page .course-card {
-  min-height: 196px;
+  min-height: 190px;
   gap: 10px;
   padding: 16px;
   border-color: #cfd9e8;
@@ -2520,7 +2520,7 @@ body.home-page .course-card-header-row {
 
 body.home-page .course-card h2 {
   color: var(--home-ink);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 body.home-page .course-card-lede,
@@ -2590,6 +2590,127 @@ body.home-page .homepage-recommended-start p {
   color: var(--home-blue);
   font-weight: 900;
   content: "✓ ";
+}
+
+body.home-page .homepage-hero {
+  align-items: start;
+  padding-block: clamp(26px, 4vw, 46px);
+  background: #f7fbff;
+}
+
+body.home-page .homepage-hero::before,
+body.home-page .homepage-hero::after,
+body.home-page .homepage-math-visual {
+  display: none;
+}
+
+body.home-page .homepage-hero .hero-copy {
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  padding: 8px 0;
+}
+
+body.home-page .homepage-hero h1 {
+  font-size: clamp(2.15rem, 4vw, 3.2rem);
+}
+
+body.home-page .homepage-course-panel {
+  padding: clamp(14px, 2vw, 20px);
+  box-shadow: 0 14px 34px rgba(8, 20, 44, 0.08);
+}
+
+body.home-page .home-course-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.homepage-entry-card {
+  align-content: start;
+}
+
+.homepage-entry-card .course-status-pill {
+  order: -1;
+}
+
+.homepage-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  margin-top: auto;
+}
+
+.homepage-card-links .button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.homepage-card-links .text-link {
+  font-size: 0.86rem;
+}
+
+.homepage-choice-guide,
+.homepage-direct-links {
+  background: #ffffff;
+}
+
+.homepage-choice-grid,
+.homepage-link-columns {
+  display: grid;
+  gap: 14px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.homepage-choice-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.homepage-link-columns {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.homepage-choice-grid article,
+.homepage-link-columns article {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  padding: 16px;
+  border: 1px solid #d8e1ec;
+  border-radius: 7px;
+  background: #fbfcff;
+}
+
+.homepage-choice-grid h3,
+.homepage-link-columns h3,
+.homepage-choice-grid p,
+.homepage-link-columns ul {
+  margin: 0;
+}
+
+.homepage-choice-grid h3,
+.homepage-link-columns h3 {
+  color: var(--home-ink);
+  font-size: 1rem;
+}
+
+.homepage-choice-grid p {
+  color: #314059;
+  font-size: 0.95rem;
+}
+
+.homepage-link-columns ul {
+  display: grid;
+  gap: 7px;
+  padding: 0;
+  list-style: none;
+}
+
+.homepage-maintainer-links {
+  opacity: 0.82;
 }
 
 body.home-page .course-launch-cta {
@@ -4233,31 +4354,23 @@ body.p3-path-page main {
   line-height: 1.45;
 }
 
+.field-guide-visual figcaption strong {
+  font-size: 1rem;
+}
+
 .field-guide-visual figcaption small {
   color: var(--muted-strong);
   font-size: 0.92rem;
 }
 
-.supplemental-visual-section {
-  display: grid;
-  gap: 16px;
-  width: min(980px, calc(100% - 32px));
-  margin: 0 auto 28px;
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: #ffffff;
-  box-shadow: var(--shadow-sm);
-}
-
-.supplemental-visual-topic {
+.learn-step-visuals {
   display: grid;
   gap: 10px;
+  margin: 14px 0;
 }
 
-.supplemental-visual-topic h3,
-.supplemental-visual-topic p {
-  margin: 0;
+.learn-step-visuals .field-guide-visual-list {
+  margin-bottom: 0;
 }
 
 .visual-template-grid {
@@ -6373,6 +6486,9 @@ body.skill-check-page .exam-question-section {
   .learning-loop-list,
   .trust-card-grid,
   .home-course-row,
+  body.home-page .home-course-row,
+  .homepage-choice-grid,
+  .homepage-link-columns,
   .home-feature-strip,
   .homepage-audience-band {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6443,6 +6559,9 @@ body.skill-check-page .exam-question-section {
   .path-unit-grid,
   .course-support-grid,
   .home-course-row,
+  body.home-page .home-course-row,
+  .homepage-choice-grid,
+  .homepage-link-columns,
   .home-feature-strip,
   .homepage-audience-band {
     grid-template-columns: 1fr;

@@ -1475,45 +1475,51 @@ function renderHomepageTrustContract(): string {
 }
 
 function renderHomepageCoursePanel(pagePath: string): string {
-  const p3Course = COURSES.find((course) => course.id === P3_COURSE_ID) ?? COURSES[1];
-  const supportCourses = COURSES.filter((course) => course.id !== P3_COURSE_ID);
+  const courseCards = COURSES.map((course) => {
+    const description = {
+      p1: 'AS foundation, algebra, functions, calculus, trigonometry.',
+      p3: 'A2 pure mathematics practice and exam preparation.',
+      m1: 'Forces, motion, energy, momentum.',
+      s1: 'Probability, distributions, and data.',
+    }[course.id];
+    const label = course.id === P3_COURSE_ID ? 'Ready' : 'In progress';
+    const title = course.id === 's1' ? 'Statistics 1' : course.displayName;
+    const modeLinks = course.id === P3_COURSE_ID
+      ? [
+        { label: 'Open P3', path: coursePagePath(course) },
+        { label: 'Learn', path: learnPagePath(STUDY_TOPICS[0]) },
+        { label: 'Checked Practice', path: skillCheckPagePath(STUDY_TOPICS[0]) },
+        { label: 'Exam Questions', path: topicExamTrainingPagePath(STUDY_TOPICS[0]) },
+      ]
+      : [
+        { label: `Open ${course.shortName}`, path: coursePagePath(course) },
+      ];
+    return `
+      <article class="course-card homepage-entry-card course-status-${escapeAttr(course.status)}" aria-labelledby="home-course-${escapeAttr(course.id)}">
+        <div class="course-card-header-row">
+          <span class="course-code-badge" aria-hidden="true">${escapeHtml(course.shortName)}</span>
+          <div>
+            <h2 id="home-course-${escapeAttr(course.id)}">${escapeHtml(title)}</h2>
+            <p class="course-card-lede">${escapeHtml(description)}</p>
+          </div>
+        </div>
+        <span class="course-status-pill">${escapeHtml(label)}</span>
+        <div class="homepage-card-links" aria-label="${escapeAttr(title)} work modes">
+          ${modeLinks.map((link, index) => `
+            <a class="${index === 0 ? 'button primary-button' : 'text-link'}" href="${hrefToPage(pagePath, link.path)}">${escapeHtml(link.label)}</a>
+          `).join('')}
+        </div>
+      </article>
+    `;
+  }).join('');
+
   return `
     <section class="homepage-course-panel" aria-labelledby="course-panel-title">
       <div class="homepage-course-panel-heading">
-        <span class="homepage-primary-label">Course selector</span>
-        <h2 id="course-panel-title">Choose your course</h2>
-        <p>P3 content is available. P1, M1, and S1 show status pages only until their course plans are checked.</p>
+        <h2 id="course-panel-title">Choose a paper</h2>
+        <p>P3 is the main working course. The other papers are visible with conservative status until their course pages are expanded.</p>
       </div>
-      <a class="course-card course-card-featured" href="${hrefToPage(pagePath, coursePagePath(p3Course))}" aria-label="Start ${escapeAttr(p3Course.shortName)}: ${escapeAttr(p3Course.displayName)}">
-        <div class="course-card-header-row">
-          <span class="course-code-badge" aria-hidden="true">${escapeHtml(p3Course.shortName)}</span>
-          <div>
-            <h2>${escapeHtml(p3Course.displayName)}</h2>
-            <p class="course-card-lede">${escapeHtml(p3Course.shortDescription)}</p>
-          </div>
-        </div>
-        <ul class="home-p3-checklist">
-          <li>Learn, Checked Practice, and Exam Training are available.</li>
-          <li>Question and mark-scheme images stay the source of truth.</li>
-        </ul>
-        <span class="course-launch-cta course-launch-cta-primary">Start P3</span>
-      </a>
-      <div class="course-support-grid">
-        ${supportCourses.map((course) => `
-          <a class="course-card course-card-support" href="${hrefToPage(pagePath, coursePagePath(course))}" aria-label="View ${escapeAttr(course.shortName)} status: ${escapeAttr(course.displayName)}">
-            <span class="course-status-pill">${escapeHtml(course.statusLabel)}</span>
-            <div class="course-card-header-row">
-              <span class="course-code-badge" aria-hidden="true">${escapeHtml(course.shortName)}</span>
-              <div>
-                <h2>${escapeHtml(course.displayName)}</h2>
-                <p class="course-card-lede">${escapeHtml(course.shortDescription)}</p>
-              </div>
-            </div>
-            <p class="course-card-status-copy">${escapeHtml(course.coverageSummary)}</p>
-            <span class="course-launch-cta course-launch-cta-secondary">View status</span>
-          </a>
-        `).join('')}
-      </div>
+      <div class="home-course-row">${courseCards}</div>
     </section>
   `;
 }
@@ -1562,34 +1568,78 @@ function renderCourseSelectorPage(): string {
   const body = `
     <section class="homepage-hero course-picker-hero">
       <div class="hero-copy">
-        <div class="homepage-math-visual" aria-hidden="true">
-          <span class="math-fragment fragment-one">x² - 1 = (x + 1)(x - 1)</span>
-          <span class="math-fragment fragment-two">A(x + 1) + B(x - 1) = 1</span>
-          <span class="math-fragment fragment-three">✓ check the step</span>
-        </div>
-        <p class="eyebrow">CAIE 9709 Study Hub</p>
-        <h1>Choose the course before the study path.</h1>
-        <p>Asterion keeps the available Paper 3 route separate from courses that still need a syllabus check.</p>
-        <div class="home-hero-actions">
-          <a class="button secondary-button" href="${hrefToPage(pagePath, aboutPagePath())}">See how Asterion teaches <span aria-hidden="true">&#8594;</span></a>
-        </div>
-        <ul class="home-hero-proof">
-          <li><strong>Built for</strong><span>CAIE 9709</span></li>
-          <li><strong>Image-first</strong><span>exam practice</span></li>
-          <li><strong>Honest</strong><span>evidence labels</span></li>
-          <li><strong>Static</strong><span>GitHub Pages</span></li>
-        </ul>
+        <p class="eyebrow">CAIE 9709 Mathematics</p>
+        <h1>Asterion</h1>
+        <p>CAIE 9709 Mathematics practice system.</p>
+        <p>Pick a paper, choose what you need, and start working.</p>
       </div>
       ${renderHomepageCoursePanel(pagePath)}
     </section>
-    ${renderHomepageLearningLoop()}
-    ${renderHomepageTrustContract()}
-    ${renderHomepageContactBar()}
+    <section class="homepage-section homepage-choice-guide" aria-labelledby="choice-guide-title">
+      <div class="homepage-section-heading">
+        <h2 id="choice-guide-title">What should I do?</h2>
+      </div>
+      <div class="homepage-choice-grid">
+        <article>
+          <h3>Starting a topic</h3>
+          <p>Use Learn.</p>
+          <a class="text-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Open Learn</a>
+        </article>
+        <article>
+          <h3>Think you know it</h3>
+          <p>Use Checked Practice.</p>
+          <a class="text-link" href="${hrefToPage(pagePath, skillCheckPagePath(STUDY_TOPICS[0]))}">Open Checked Practice</a>
+        </article>
+        <article>
+          <h3>Preparing for a test</h3>
+          <p>Use Exam Questions.</p>
+          <a class="text-link" href="${hrefToPage(pagePath, topicExamTrainingPagePath(STUDY_TOPICS[0]))}">View Exam Questions</a>
+        </article>
+        <article>
+          <h3>Lost or behind</h3>
+          <p>Start with Repair.</p>
+          <a class="text-link" href="${hrefToPage(pagePath, p1RepairLanePagePath())}">Start Repair</a>
+        </article>
+      </div>
+    </section>
+    <section class="homepage-section homepage-direct-links" aria-labelledby="direct-links-title">
+      <div class="homepage-section-heading">
+        <h2 id="direct-links-title">Direct links</h2>
+      </div>
+      <div class="homepage-link-columns">
+        <article>
+          <h3>Student work</h3>
+          <ul>
+            <li><a class="text-link" href="${hrefToPage(pagePath, p3TopicsIndexPagePath())}">P3 topics</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[0]))}">P1 course page</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[2]))}">Mechanics course page</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[3]))}">Statistics course page</a></li>
+          </ul>
+        </article>
+        <article>
+          <h3>P3 tools</h3>
+          <ul>
+            <li><a class="text-link" href="${hrefToPage(pagePath, p3NeedToKnowPagePath())}">Need-to-know checklist</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, p1RepairLanePagePath())}">Repair lane</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, p3ReviewPagePath())}">Review mistakes</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, topicExamTrainingPagePath(STUDY_TOPICS[0]))}">Exam questions</a></li>
+          </ul>
+        </article>
+        <article class="homepage-maintainer-links">
+          <h3>Maintainer</h3>
+          <ul>
+            <li><a class="text-link" href="${hrefToPage(pagePath, p3ContentQaPagePath())}">P3 content QA</a></li>
+            <li><a class="text-link" href="${hrefToPage(pagePath, aboutPagePath())}">About</a></li>
+            <li><a class="text-link" href="mailto:${escapeAttr(homepageContactEmail)}?subject=Asterion%20contact">Contact</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
   `;
   return renderPage({
     pagePath,
-    title: 'CAIE 9709 Study Hub',
-    description: 'Static CAIE 9709 study hub course selector.',
+    title: 'Asterion',
+    description: 'CAIE 9709 Mathematics practice system course entrance.',
     active: 'courses',
     body,
     bodyClass: 'home-page',
@@ -2146,10 +2196,12 @@ function renderFieldGuideVisuals(topic: FieldGuideTopic, pagePath: string): stri
         if (!publicAssetExists(visual.assetPath)) {
           throw new Error(`Missing Field Guide visual asset for ${topic.id}: ${visual.assetPath}`);
         }
+        const instructionalLabels = visual.instructionalLabels?.join(' | ') ?? '';
         return `
-          <figure class="field-guide-visual" data-field-guide-visual="${escapeAttr(topic.id)}">
+          <figure class="field-guide-visual" data-field-guide-visual="${escapeAttr(topic.id)}" data-visual-title="${escapeAttr(visual.title)}" data-instructional-labels="${escapeAttr(instructionalLabels)}">
             <img loading="lazy" src="${hrefToPublicAsset(pagePath, visual.assetPath)}" alt="${escapeAttr(visual.alt)}" />
             <figcaption>
+              <strong>${renderMathText(visual.title)}</strong>
               <span>${renderMathText(visual.caption)}</span>
               <small>${renderMathText(visual.testedConcept)}</small>
             </figcaption>
@@ -2494,7 +2546,22 @@ function renderLearnCheckForm(
   `;
 }
 
-function renderLearnStepCard(step: LearnStep, index: number, total: number, pagePath: string): string {
+function renderContextualLearnVisuals(step: LearnStep, fieldGuideTopics: FieldGuideTopic[], pagePath: string): string {
+  const visualTopicIds = step.visualTopicIds ?? [];
+  if (!visualTopicIds.length) return '';
+  const topicById = new Map(fieldGuideTopics.map((topic) => [topic.id, topic]));
+  const visualTopics = visualTopicIds.map((topicId) => topicById.get(topicId)).filter((topic): topic is FieldGuideTopic => Boolean(topic));
+  if (!visualTopics.length) return '';
+
+  return `
+    <section class="learn-step-visuals" aria-label="${escapeAttr(step.title)} diagram">
+      <p class="eyebrow">Diagram</p>
+      ${visualTopics.map((topic) => renderFieldGuideVisuals(topic, pagePath)).join('')}
+    </section>
+  `;
+}
+
+function renderLearnStepCard(step: LearnStep, index: number, total: number, pagePath: string, fieldGuideTopics: FieldGuideTopic[]): string {
   return `
     <article class="learn-step-card" data-learn-step-card data-learn-step-id="${escapeAttr(step.id)}" data-field-guide-topic="${escapeAttr(step.fieldGuideTopic.id)}" data-learn-requires-similar="${step.similarCheck ? 'true' : 'false'}" data-region-id="${escapeAttr(step.primaryCheck?.regionId ?? '')}">
       <header class="topic-section-header">
@@ -2502,6 +2569,7 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
           <p class="eyebrow">Step ${index + 1} of ${total}</p>
           <h2>${escapeHtml(step.title)}</h2>
           <p class="prompt">${renderMathText(step.stem)}</p>
+          ${renderContextualLearnVisuals(step, fieldGuideTopics, pagePath)}
           <p class="question-instruction">${renderMathText(step.prompt)}</p>
         </div>
         <span class="learn-step-state" data-learn-step-state>Not completed</span>
@@ -2525,26 +2593,6 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
         </button>
       </footer>
     </article>
-  `;
-}
-
-function renderSupplementalLearnVisuals(context: TopicContext, pagePath: string): string {
-  const supplementalTopics = context.fieldGuideTopics.filter((topic) => topic.visuals?.length);
-  if (!supplementalTopics.length) return '';
-  return `
-    <section class="supplemental-visual-section" aria-labelledby="supplemental-visual-title">
-      <div class="section-heading">
-        <p class="eyebrow">Visual anchor</p>
-        <h2 id="supplemental-visual-title">Extra diagram for this unit</h2>
-      </div>
-      ${supplementalTopics.map((topic) => `
-        <article class="supplemental-visual-topic" data-field-guide-topic="${escapeAttr(topic.id)}">
-          <h3>${escapeHtml(topic.title)}</h3>
-          <p>${escapeHtml(cleanVisibleCopy(topic.purpose))}</p>
-          ${renderFieldGuideVisuals(topic, pagePath)}
-        </article>
-      `).join('')}
-    </section>
   `;
 }
 
@@ -2582,9 +2630,8 @@ function renderLearnPage(
       </div>
     </details>
     <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="${escapeAttr(hrefToPage(pagePath, finalPath))}" data-flow-final-label="${escapeAttr(finalLabel)}">
-      ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath)).join('') : '<p class="empty-state">No Learn steps are available for this topic yet.</p>'}
+      ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath, context.fieldGuideTopics)).join('') : '<p class="empty-state">No Learn steps are available for this topic yet.</p>'}
     </section>
-    ${renderSupplementalLearnVisuals(context, pagePath)}
     <section class="next-step-card">
       <h2>After this lesson</h2>
       <p>Module 1 of 2: Learn. Complete Step ${Math.max(1, learnSteps.length)} of ${Math.max(1, learnSteps.length)}, including the checked similar questions, then move to Module 2 of 2: Exam Training.</p>

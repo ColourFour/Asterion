@@ -10,10 +10,13 @@ const tmpRoot = path.join(repoRoot, '.tmp/p3-visuals');
 const W = 960;
 const H = 540;
 const blue = '#1f5fbf';
-const blue2 = '#6ea8fe';
+const blue2 = '#60a5fa';
 const ink = '#172033';
 const grey = '#64748b';
 const pale = '#dbeafe';
+const green = '#15803d';
+const amber = '#b45309';
+const red = '#b91c1c';
 
 function esc(value) {
   return String(value)
@@ -29,16 +32,27 @@ function svg(parts) {
   <rect width="${W}" height="${H}" fill="#ffffff"/>
   <style>
     text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; fill: ${ink}; font-size: 22px; }
+    .title { font-size: 30px; font-weight: 700; }
+    .label { font-size: 21px; font-weight: 650; }
     .small { font-size: 18px; }
     .tiny { font-size: 16px; }
-    .axis { stroke: ${ink}; stroke-width: 2.5; }
+    .axis { stroke: ${ink}; stroke-width: 2.4; }
     .grid { stroke: #e5e7eb; stroke-width: 1.2; }
-    .blue { stroke: ${blue}; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .blue-thin { stroke: ${blue}; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .blue { stroke: ${blue}; stroke-width: 4.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .blue-thin { stroke: ${blue}; stroke-width: 2.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .grey { stroke: ${grey}; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .dash { stroke-dasharray: 10 10; }
-    .shade { fill: ${pale}; opacity: 0.72; }
+    .green { stroke: ${green}; stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .amber { stroke: ${amber}; stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .red { stroke: ${red}; stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .dash { stroke-dasharray: 10 9; }
+    .shade { fill: ${pale}; opacity: 0.74; }
+    .green-shade { fill: #dcfce7; opacity: 0.86; }
+    .amber-shade { fill: #fef3c7; opacity: 0.86; }
     .dot { fill: ${blue}; stroke: #fff; stroke-width: 3; }
+    .green-dot { fill: ${green}; stroke: #fff; stroke-width: 3; }
+    .red-dot { fill: ${red}; stroke: #fff; stroke-width: 3; }
+    .panel { fill: #f8fafc; stroke: #d1d5db; stroke-width: 1.6; rx: 14; }
+    .note { fill: #fff7ed; stroke: #fed7aa; stroke-width: 1.5; rx: 12; }
   </style>
   ${parts.join('\n')}
 </svg>`;
@@ -52,20 +66,28 @@ function line(x1, y1, x2, y2, cls = 'axis') {
   return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${cls}"/>`;
 }
 
+function rect(x, y, width, height, cls = 'panel') {
+  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" class="${cls}"/>`;
+}
+
+function circle(x, y, r, cls = 'dot') {
+  return `<circle cx="${x}" cy="${y}" r="${r}" class="${cls}"/>`;
+}
+
 function arrow(x1, y1, x2, y2, color = blue, width = 3) {
-  const id = `arrow-${Math.round(x1)}-${Math.round(y1)}-${Math.round(x2)}-${Math.round(y2)}`.replace(/-/g, 'm');
+  const id = `arrow-${Math.round(x1)}-${Math.round(y1)}-${Math.round(x2)}-${Math.round(y2)}-${Math.round(width)}`.replace(/-/g, 'm');
   return `
     <defs><marker id="${id}" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="${color}"/></marker></defs>
     <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" marker-end="url(#${id})"/>
   `;
 }
 
-function axes(x0 = 100, y0 = 440, x1 = 860, y1 = 70) {
+function axes(x0 = 100, y0 = 440, x1 = 860, y1 = 70, xLabel = 'x', yLabel = 'y') {
   return [
     line(x0, y0, x1, y0),
     line(x0, y0, x0, y1),
-    text(x1 - 15, y0 + 34, 'x', 'small'),
-    text(x0 - 34, y1 + 10, 'y', 'small'),
+    text(x1 - 16, y0 + 34, xLabel, 'small'),
+    text(x0 - 36, y1 + 12, yLabel, 'small'),
   ];
 }
 
@@ -88,143 +110,165 @@ const diagrams = [
   {
     file: 'algebra/algebra_modulus_graph_equations.png',
     draw() {
-      const ox = 380, oy = 305, sx = 95, sy = 40;
+      const ox = 440, oy = 395, sx = 120, sy = 50;
       const px = (x) => ox + x * sx;
       const py = (y) => oy - y * sy;
+      const a = 1;
+      const b = 2;
+      const left = a - b;
+      const right = a + b;
       return svg([
-        ...axes(80, oy, 840, 70),
-        poly(graphPoints((x) => Math.abs(x + 2), -3.1, 2.5, sx, sy, ox, oy), 'blue'),
-        `<path d="${pathD(graphPoints((x) => Math.abs(3 * x), -1.5, 1.8, sx, sy, ox, oy))}" stroke="${grey}" stroke-width="4" fill="none"/>`,
-        line(px(-0.5), oy, px(-0.5), py(1.5), 'grey dash'),
-        line(px(1), oy, px(1), py(3), 'grey dash'),
-        `<circle cx="${px(-0.5)}" cy="${py(1.5)}" r="8" class="dot"/>`,
-        `<circle cx="${px(1)}" cy="${py(3)}" r="8" class="dot"/>`,
-        text(px(-0.8), oy + 32, 'x=-1/2', 'tiny'),
-        text(px(0.8), oy + 32, 'x=1', 'tiny'),
-        text(585, 115, 'y=|3x|', 'small'),
-        text(135, 130, 'y=|x+2|', 'small'),
-        line(180, 470, 780, 470),
-        line(340, 458, 340, 482),
-        line(520, 458, 520, 482),
-        line(190, 470, 330, 470, 'blue'),
-        line(530, 470, 770, 470, 'blue'),
-        text(310, 508, '-1/2', 'tiny'),
-        text(510, 508, '1', 'tiny'),
-        text(300, 440, 'solution: x<-1/2 or x>1', 'small'),
+        text(44, 48, 'Modulus equation vs inequality', 'title'),
+        ...axes(80, oy, 705, 105),
+        `<path d="${pathD(graphPoints((x) => Math.abs(x - a), -2.5, 4.3, sx, sy, ox, oy, 160))}" class="blue"/>`,
+        line(px(-2.5), py(b), px(4.3), py(b), 'green'),
+        `<path d="M${px(left)} ${py(b)} L${px(left)} ${oy} L${px(right)} ${oy} L${px(right)} ${py(b)} Z" class="green-shade"/>`,
+        line(px(left), oy, px(left), py(b), 'grey dash'),
+        line(px(right), oy, px(right), py(b), 'grey dash'),
+        circle(px(left), py(b), 8),
+        circle(px(right), py(b), 8),
+        circle(px(a), py(0), 8, 'green-dot'),
+        text(px(a) - 36, oy + 32, 'x=a', 'small'),
+        text(px(left) - 42, oy + 32, 'a-b', 'small'),
+        text(px(right) - 32, oy + 32, 'a+b', 'small'),
+        text(px(a) + 10, py(0) - 12, 'vertex (a,0)', 'small'),
+        text(560, 150, 'y = |x-a|', 'label'),
+        text(560, py(b) - 12, 'y = b', 'label'),
+        rect(725, 112, 195, 260, 'note'),
+        text(745, 150, 'Key move', 'label'),
+        text(745, 188, '|x-a| = b', 'small'),
+        text(745, 216, 'two points', 'small'),
+        text(745, 262, '|x-a| < b', 'small'),
+        text(745, 290, 'inside interval', 'small'),
+        line(748, 326, 895, 326, 'green'),
+        text(760, 358, 'shade between', 'small'),
       ]);
     },
   },
   {
     file: 'logarithmic-and-exponential-functions/log_graph_inverse.png',
     draw() {
-      const ox = 220, oy = 410, sx = 110, sy = 70;
+      const ox = 260, oy = 430, sx = 105, sy = 72;
       const xp = (x) => ox + x * sx;
       const yp = (y) => oy - y * sy;
       return svg([
-        ...axes(90, oy, 850, 70),
-        `<path d="${pathD(graphPoints((x) => 2 ** x, -1.2, 2.25, sx, sy, ox, oy, 120))}" stroke="${blue}" stroke-width="4" fill="none"/>`,
-        `<path d="${pathD(graphPoints((x) => Math.log2(x), 0.12, 4.2, sx, sy, ox, oy, 160))}" stroke="${grey}" stroke-width="4" fill="none"/>`,
-        line(120, 510, 830, -200, 'grey dash'),
-        line(ox, 470, ox, 80, 'grey dash'),
-        ...[[0, 1], [1, 0], [1, 2], [2, 1]].map(([x, y]) => `<circle cx="${xp(x)}" cy="${yp(y)}" r="7" class="dot"/>`),
-        text(540, 120, 'y=2^x', 'small'),
-        text(590, 360, 'y=log₂x', 'small'),
-        text(690, 185, 'y=x', 'small'),
-        text(440, 70, 'inverse reflection: (a,b) → (b,a)', 'small'),
+        text(44, 48, 'Inverse graphs swap coordinates', 'title'),
+        ...axes(90, oy, 850, 80),
+        `<path d="${pathD(graphPoints((x) => Math.E ** x, -1.45, 1.95, sx, sy, ox, oy, 150))}" class="blue"/>`,
+        `<path d="${pathD(graphPoints((x) => Math.log(x), 0.16, 4.35, sx, sy, ox, oy, 170))}" class="green"/>`,
+        line(120, 530, 835, -185, 'grey dash'),
+        line(ox, 470, ox, 85, 'amber dash'),
+        circle(xp(0), yp(1), 8),
+        circle(xp(1), yp(0), 8, 'green-dot'),
+        line(xp(0), yp(1), xp(1), yp(0), 'grey dash'),
+        text(xp(0) - 62, yp(1) - 12, '(0,1)', 'small'),
+        text(xp(1) + 8, yp(0) + 28, '(1,0)', 'small'),
+        text(540, 105, 'y = e^x', 'label'),
+        text(650, 375, 'y = ln x', 'label'),
+        text(710, 175, 'mirror: y=x', 'small'),
+        rect(560, 220, 300, 118, 'note'),
+        text(582, 255, 'Watch domain', 'label'),
+        text(582, 288, 'ln x only for x > 0', 'small'),
+        text(582, 318, 'range: all real values', 'small'),
       ]);
     },
   },
   {
     file: 'trigonometry/trig_reciprocal_functions.png',
     draw() {
-      const ox = 110, oy = 270, sx = 110, sy = 72;
-      const xEnd = ox + Math.PI * 2 * sx;
-      const cosPts = graphPoints(Math.cos, 0, Math.PI * 2, sx, sy, ox, oy, 180);
-      const secPath = (a, b) => pathD(graphPoints((x) => 1 / Math.cos(x), a, b, sx, sy, ox, oy, 80).filter(([, y]) => y > 40 && y < 500));
+      const ox = 115, oy = 280, sx = 112, sy = 72;
+      const sinPts = graphPoints(Math.sin, 0, Math.PI * 2, sx, sy, ox, oy, 220);
+      const cosecPath = (a, b) => pathD(graphPoints((x) => 1 / Math.sin(x), a, b, sx, sy, ox, oy, 110).filter(([, y]) => y > 75 && y < 485));
       return svg([
-        ...axes(70, oy, 850, 60),
-        `<path d="${pathD(cosPts)}" stroke="#94a3b8" stroke-width="3" fill="none"/>`,
-        `<path d="${secPath(0, Math.PI / 2 - 0.18)}" class="blue"/>`,
-        `<path d="${secPath(Math.PI / 2 + 0.18, 3 * Math.PI / 2 - 0.18)}" class="blue"/>`,
-        `<path d="${secPath(3 * Math.PI / 2 + 0.18, 2 * Math.PI)}" class="blue"/>`,
-        line(ox + Math.PI / 2 * sx, 65, ox + Math.PI / 2 * sx, 475, 'grey dash'),
-        line(ox + 3 * Math.PI / 2 * sx, 65, ox + 3 * Math.PI / 2 * sx, 475, 'grey dash'),
-        ...['0', 'π/2', 'π', '3π/2', '2π'].map((label, i) => text(ox + i * Math.PI / 2 * sx - 15, oy + 34, label, 'tiny')),
-        text(575, 105, 'y=sec x = 1/cos x', 'small'),
-        text(545, 385, 'y=cos x', 'small'),
-        text(300, 520, 'asymptotes where cos x=0', 'small'),
+        text(44, 48, 'Reciprocal trig blows up at zeros', 'title'),
+        ...axes(70, oy, 890, 72),
+        `<path d="${pathD(sinPts)}" stroke="#94a3b8" stroke-width="3.2" fill="none"/>`,
+        `<path d="${cosecPath(0.18, Math.PI - 0.18)}" class="blue"/>`,
+        `<path d="${cosecPath(Math.PI + 0.18, 2 * Math.PI - 0.18)}" class="blue"/>`,
+        ...[0, Math.PI, 2 * Math.PI].map((x) => line(ox + x * sx, 76, ox + x * sx, 482, 'red dash')),
+        ...['0', 'π', '2π'].map((label, i) => text(ox + i * Math.PI * sx - 12, oy + 35, label, 'tiny')),
+        text(325, 130, 'y = cosec x = 1/sin x', 'label'),
+        text(590, 335, 'base: y = sin x', 'small'),
+        text(225, 494, 'vertical asymptotes where sin x = 0', 'small'),
+        rect(635, 118, 262, 118, 'note'),
+        text(657, 154, 'Watch out', 'label'),
+        text(657, 188, 'reciprocal ≠ inverse angle', 'small'),
+        text(657, 216, 'cosec x ≠ sin⁻¹x', 'small'),
       ]);
     },
   },
   {
     file: 'trigonometry/trig_double_angle_interval_solutions.png',
     draw() {
-      const cx = 230, cy = 250, r = 125;
-      const ox = 500, oy = 330, sx = 55, sy = 135;
-      const graph = graphPoints(Math.sin, 0, Math.PI * 2, sx, sy, ox, oy, 180);
-      const p1 = [cx + r * Math.cos(Math.PI / 6), cy - r * Math.sin(Math.PI / 6)];
-      const p2 = [cx + r * Math.cos(5 * Math.PI / 6), cy - r * Math.sin(5 * Math.PI / 6)];
       return svg([
-        `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#94a3b8" stroke-width="3"/>`,
-        line(cx - 160, cy, cx + 160, cy),
-        line(cx, cy + 160, cx, cy - 160),
-        arrow(cx, cy, p1[0], p1[1]),
-        arrow(cx, cy, p2[0], p2[1]),
-        `<circle cx="${p1[0]}" cy="${p1[1]}" r="7" class="dot"/>`,
-        `<circle cx="${p2[0]}" cy="${p2[1]}" r="7" class="dot"/>`,
-        text(p1[0] + 10, p1[1] - 12, 'π/6', 'small'),
-        text(p2[0] - 70, p2[1] - 12, '5π/6', 'small'),
-        ...axes(465, oy, 890, 90),
-        `<path d="${pathD(graph)}" class="blue"/>`,
-        line(ox, oy - 0.5 * sy, ox + Math.PI * 2 * sx, oy - 0.5 * sy, 'grey dash'),
-        `<circle cx="${ox + Math.PI / 6 * sx}" cy="${oy - 0.5 * sy}" r="7" class="dot"/>`,
-        `<circle cx="${ox + 5 * Math.PI / 6 * sx}" cy="${oy - 0.5 * sy}" r="7" class="dot"/>`,
-        text(520, 110, 'y=sin x', 'small'),
-        text(775, 255, 'y=1/2', 'small'),
-        text(545, 485, '0≤x<2π: keep interval solutions', 'small'),
+        text(44, 48, 'Choose the double-angle form that matches', 'title'),
+        rect(52, 92, 385, 312),
+        text(82, 132, 'Formula map', 'label'),
+        text(82, 178, 'sin 2x = 2 sin x cos x', 'small'),
+        text(82, 226, 'cos 2x = cos²x - sin²x', 'small'),
+        text(82, 274, 'cos 2x = 2 cos²x - 1', 'small'),
+        text(82, 322, 'cos 2x = 1 - 2 sin²x', 'small'),
+        text(82, 372, 'Pick the version already using', 'tiny'),
+        text(82, 396, 'the trig function in the equation.', 'tiny'),
+        rect(482, 92, 418, 312),
+        text(512, 132, 'Mini example', 'label'),
+        text(512, 178, 'cos 2x = 3 sin x', 'small'),
+        arrow(650, 188, 650, 232, blue, 3),
+        text(512, 264, '1 - 2 sin²x = 3 sin x', 'small'),
+        text(512, 312, '2 sin²x + 3 sin x - 1 = 0', 'small'),
+        text(512, 360, 'Now solve a quadratic in sin x', 'small'),
+        rect(238, 426, 505, 70, 'note'),
+        text(265, 469, 'Key move: change cos 2x into the form that creates one variable.', 'small'),
       ]);
     },
   },
   {
     file: 'trigonometry/trig_r_form_transformations.png',
     draw() {
-      const ox = 110, oy = 285, sx = 90, sy = 30;
-      const ref = graphPoints(Math.sin, 0, Math.PI * 2, sx, sy * 2, ox, oy, 180);
-      const shifted = graphPoints((x) => 5 * Math.sin(x + 0.93), 0, Math.PI * 2, sx, sy, ox, oy, 180);
+      const ox = 92, oy = 284, sx = 86, sy = 24;
+      const shifted = graphPoints((x) => 5 * Math.cos(x - 0.93), 0, Math.PI * 2, sx, sy, ox, oy, 180);
       return svg([
-        ...axes(70, oy, 700, 70),
-        `<path d="${pathD(ref)}" stroke="#94a3b8" stroke-width="3" fill="none"/>`,
+        text(44, 48, 'R-form: amplitude plus phase shift', 'title'),
+        ...axes(62, oy, 632, 92),
         `<path d="${pathD(shifted)}" class="blue"/>`,
-        line(170, oy, 170, oy - 150, 'blue-thin'),
-        text(180, oy - 80, 'R=5', 'small'),
-        line(194, 440, 274, 440, 'grey dash'),
-        text(205, 470, 'α', 'small'),
-        text(245, 95, '3 sin x + 4 cos x = 5 sin(x+α)', 'small'),
-        text(280, 140, 'tan α = 4/3', 'small'),
-        `<polygon points="755,370 855,370 755,250" fill="none" stroke="${ink}" stroke-width="3"/>`,
-        text(805, 398, '3', 'small'),
-        text(720, 315, '4', 'small'),
-        text(815, 300, '5', 'small'),
-        text(720, 230, 'coefficient triangle', 'small'),
+        line(132, oy, 132, oy - 120, 'blue-thin'),
+        text(146, oy - 68, 'max = R', 'small'),
+        line(208, 448, 290, 448, 'grey dash'),
+        text(232, 474, 'α shift', 'small'),
+        text(238, 118, 'a cos x + b sin x = R cos(x-α)', 'small'),
+        rect(680, 106, 232, 248),
+        text(706, 146, 'Coefficient triangle', 'label'),
+        `<polygon points="725,298 850,298 725,178" fill="none" stroke="${ink}" stroke-width="3"/>`,
+        text(780, 328, 'a', 'small'),
+        text(692, 242, 'b', 'small'),
+        text(795, 238, 'R', 'small'),
+        text(742, 276, 'α', 'small'),
+        text(706, 388, 'R = √(a²+b²)', 'small'),
+        text(706, 424, 'tan α = b/a', 'small'),
+        rect(300, 410, 312, 68, 'note'),
+        text(322, 452, 'Use R for max/min values.', 'small'),
       ]);
     },
   },
   {
     file: 'differentiation/p3_diff_stationary_tangent_normal.png',
     draw() {
-      const curve = [[80, 390], [160, 320], [260, 250], [370, 260], [480, 330], [610, 300], [760, 180], [870, 155]];
       return svg([
-        ...axes(75, 430, 870, 70),
-        `<path d="M80 390 C170 295, 245 245, 350 255 C450 265, 495 365, 610 300 C720 235, 760 165, 870 155" class="blue"/>`,
-        `<circle cx="610" cy="300" r="8" class="dot"/>`,
-        line(505, 350, 720, 250, 'blue-thin'),
-        line(565, 205, 655, 395, 'grey'),
-        text(630, 286, 'P(a,f(a))', 'small'),
-        text(710, 250, "tangent gradient f'(a)", 'small'),
-        text(660, 405, "normal gradient -1/f'(a)", 'small'),
-        `<circle cx="345" cy="255" r="8" class="dot"/>`,
-        line(260, 255, 430, 255, 'grey'),
-        text(255, 225, "stationary point: f'(x)=0", 'small'),
+        text(44, 48, 'Derivative value becomes line geometry', 'title'),
+        ...axes(78, 430, 872, 78),
+        `<path d="M88 388 C175 286, 268 248, 358 258 C456 270, 500 366, 612 300 C718 238, 764 166, 874 156" class="blue"/>`,
+        circle(612, 300, 8),
+        line(508, 350, 725, 247, 'blue-thin'),
+        line(568, 205, 656, 395, 'grey'),
+        text(632, 290, 'P', 'label'),
+        text(706, 242, "tangent gradient = dy/dx", 'small'),
+        text(646, 406, 'normal is perpendicular', 'small'),
+        circle(348, 257, 8, 'green-dot'),
+        line(264, 257, 432, 257, 'green'),
+        text(238, 224, "stationary: dy/dx = 0", 'small'),
+        rect(548, 95, 330, 96, 'note'),
+        text(570, 130, 'Key move', 'label'),
+        text(570, 164, 'normal gradient = -1/m, if tangent m ≠ 0', 'small'),
       ]);
     },
   },
@@ -232,9 +276,10 @@ const diagrams = [
     file: 'differentiation/derivatives_parametric.png',
     draw() {
       return svg([
+        text(44, 48, 'Parametric gradient compares rates', 'title'),
         ...axes(80, 430, 860, 70),
         `<path d="M120 390 C230 210, 380 150, 520 240 C655 325, 730 270, 830 120" class="blue"/>`,
-        `<circle cx="520" cy="240" r="8" class="dot"/>`,
+        circle(520, 240, 8),
         line(430, 184, 610, 296, 'blue-thin'),
         line(480, 303, 560, 175, 'grey'),
         arrow(520, 240, 600, 240, grey, 3),
@@ -251,45 +296,58 @@ const diagrams = [
   {
     file: 'integration/integrals_definite_area_bridge.png',
     draw() {
-      const ox = 110, oy = 410, sx = 100, sy = 55;
-      const fn = (x) => 0.22 * (x - 3) ** 2 + 1.3;
-      const pts = graphPoints(fn, 0, 5.5, sx, sy, ox, oy, 160);
-      const area = graphPoints(fn, 1, 4.4, sx, sy, ox, oy, 120);
-      const top = pathD(area);
+      const ox = 105, oy = 400, sx = 95, sy = 52;
+      const fn = (x) => 0.18 * (x - 3) ** 2 + 1.35;
+      const pts = graphPoints(fn, 0, 5.55, sx, sy, ox, oy, 170);
+      const area = graphPoints(fn, 1, 4.35, sx, sy, ox, oy, 120);
       return svg([
-        ...axes(75, oy, 700, 95),
-        `<path d="${top} L ${ox + 4.4 * sx} ${oy} L ${ox + 1 * sx} ${oy} Z" class="shade"/>`,
+        text(44, 48, 'Definite integral: bounds decide the area', 'title'),
+        ...axes(74, oy, 665, 96),
+        `<path d="${pathD(area)} L ${ox + 4.35 * sx} ${oy} L ${ox + 1 * sx} ${oy} Z" class="shade"/>`,
         `<path d="${pathD(pts)}" class="blue"/>`,
         line(ox + 1 * sx, oy, ox + 1 * sx, oy - fn(1) * sy, 'grey'),
-        line(ox + 4.4 * sx, oy, ox + 4.4 * sx, oy - fn(4.4) * sy, 'grey'),
-        text(ox + 88, oy + 35, 'x=a', 'small'),
-        text(ox + 420, oy + 35, 'x=b', 'small'),
-        text(290, 190, '∫ₐᵇ f(x) dx = positive area', 'small'),
-        `<rect x="700" y="115" width="190" height="170" fill="#fff" stroke="#d1d5db"/>`,
-        `<path d="M720 255 C760 175, 820 165, 875 130" stroke="${blue}" stroke-width="3" fill="none"/>`,
-        `<path d="M720 245 C760 235, 815 225, 875 205" stroke="${grey}" stroke-width="3" fill="none"/>`,
-        `<path d="M742 225 C775 190, 830 178, 865 150 L865 205 C825 220, 775 232, 742 240 Z" class="shade"/>`,
-        text(704, 315, 'area between curves', 'tiny'),
+        line(ox + 4.35 * sx, oy, ox + 4.35 * sx, oy - fn(4.35) * sy, 'grey'),
+        text(ox + 88, oy + 34, 'x=a', 'small'),
+        text(ox + 402, oy + 34, 'x=b', 'small'),
+        text(232, 168, '∫ₐᵇ f(x) dx = F(b) - F(a)', 'label'),
+        text(280, 202, 'signed area under f(x)', 'small'),
+        rect(690, 112, 224, 212),
+        `<path d="M712 285 C750 190, 820 170, 890 130" stroke="${blue}" stroke-width="3.4" fill="none"/>`,
+        `<path d="M712 275 C755 254, 825 238, 890 218" stroke="${green}" stroke-width="3.4" fill="none"/>`,
+        `<path d="M735 246 C770 204, 835 185, 878 148 L878 218 C826 235, 772 248, 735 266 Z" class="green-shade"/>`,
+        text(707, 356, 'between curves:', 'small'),
+        text(707, 386, 'top - bottom', 'label'),
+        rect(198, 456, 486, 54, 'note'),
+        text(220, 491, 'Watch sign: exam "area" may need positive pieces.', 'small'),
       ]);
     },
   },
   {
     file: 'numerical-solution-of-equations/iteration_graph_root_proof.png',
     draw() {
-      const ox = 120, oy = 410, sx = 150, sy = 110;
-      const f = (x) => x ** 3 + 2 * x;
+      const ox = 120, oy = 390, sx = 120, sy = 44;
+      const f = (x) => (x - 1.45) * (x + 0.25) * 0.48;
       return svg([
-        ...axes(80, oy, 850, 80),
-        `<path d="${pathD(graphPoints(f, -0.1, 2.2, sx, sy, ox, oy, 150))}" class="blue"/>`,
-        line(ox - 5, oy - sy, 850, oy - sy, 'grey'),
-        line(ox + 0.35 * sx, 80, ox + 0.35 * sx, oy, 'grey dash'),
-        line(ox + 0.55 * sx, 80, ox + 0.55 * sx, oy, 'grey dash'),
-        `<rect x="${ox + 0.35 * sx}" y="80" width="${0.2 * sx}" height="${oy - 80}" class="shade"/>`,
-        `<circle cx="${ox + 0.453 * sx}" cy="${oy - sy}" r="8" class="dot"/>`,
-        text(520, 155, 'graph intersection = root', 'small'),
-        text(575, oy - sy - 10, 'y=1', 'small'),
-        text(460, 300, 'y=x³+2x', 'small'),
-        text(290, 485, 'bracket [a,b]: f(a)<0, f(b)>0', 'small'),
+        text(44, 48, 'Bracketing is evidence; iteration is a process', 'title'),
+        ...axes(78, oy, 850, 92),
+        `<path d="${pathD(graphPoints(f, -0.55, 4.25, sx, sy, ox, oy, 180))}" class="blue"/>`,
+        line(ox + 1.1 * sx, 94, ox + 1.1 * sx, oy, 'grey dash'),
+        line(ox + 1.8 * sx, 94, ox + 1.8 * sx, oy, 'grey dash'),
+        `<rect x="${ox + 1.1 * sx}" y="94" width="${0.7 * sx}" height="${oy - 94}" class="shade"/>`,
+        circle(ox + 1.45 * sx, oy, 8),
+        text(ox + 1.1 * sx - 10, oy + 34, 'a', 'small'),
+        text(ox + 1.8 * sx - 10, oy + 34, 'b', 'small'),
+        text(258, 126, 'f(a) < 0', 'small'),
+        text(398, 126, 'f(b) > 0', 'small'),
+        text(160, 510, 'sign change + continuity ⇒ root in [a,b]', 'small'),
+        arrow(665, 260, 748, 206, green, 4),
+        arrow(748, 206, 790, 178, green, 4),
+        text(648, 302, 'iteration:', 'small'),
+        text(648, 330, 'xₙ → xₙ₊₁', 'label'),
+        rect(590, 376, 320, 104, 'note'),
+        text(632, 416, 'Watch out', 'label'),
+        text(632, 448, 'bracketing proof is not', 'small'),
+        text(632, 472, 'the iteration itself', 'small'),
       ]);
     },
   },
@@ -297,20 +355,31 @@ const diagrams = [
     file: 'vectors/vectors_intersect_parallel_skew.png',
     draw() {
       return svg([
-        text(100, 75, 'intersecting', 'small'),
-        line(80, 210, 270, 90, 'blue'),
-        line(90, 95, 260, 215, 'grey'),
-        `<circle cx="176" cy="149" r="7" class="dot"/>`,
-        text(190, 148, 'P', 'small'),
-        text(410, 75, 'parallel', 'small'),
-        arrow(385, 115, 585, 170),
-        arrow(370, 210, 570, 265),
-        text(420, 305, 'd₂ = k d₁', 'small'),
-        text(715, 75, 'skew', 'small'),
-        line(680, 135, 865, 185, 'blue'),
-        line(710, 285, 855, 220, 'grey'),
-        line(735, 140, 735, 275, 'grey dash'),
-        text(675, 330, 'not parallel and no common point', 'small'),
+        text(44, 48, 'Classify vector lines by checks, not by looks', 'title'),
+        rect(42, 88, 270, 315),
+        text(72, 128, 'Intersecting', 'label'),
+        line(76, 258, 260, 142, 'blue'),
+        line(82, 145, 260, 272, 'grey'),
+        circle(172, 198, 8),
+        text(186, 190, 'common point', 'small'),
+        text(186, 218, 'P', 'small'),
+        text(70, 344, 'solve λ, μ', 'small'),
+        text(70, 374, 'same point works', 'small'),
+        rect(345, 88, 270, 315),
+        text(375, 128, 'Parallel', 'label'),
+        arrow(380, 170, 570, 220),
+        arrow(380, 258, 570, 308),
+        text(390, 354, 'd₂ = k d₁', 'small'),
+        text(390, 382, 'then check if distinct', 'small'),
+        rect(648, 88, 270, 315),
+        text(678, 128, 'Skew', 'label'),
+        line(680, 176, 870, 226, 'blue'),
+        line(700, 326, 875, 252, 'grey'),
+        line(734, 184, 734, 316, 'grey dash'),
+        text(675, 354, 'not parallel', 'small'),
+        text(675, 382, 'no λ, μ gives same point', 'small'),
+        rect(230, 430, 500, 62, 'note'),
+        text(258, 470, 'Decision order: compare directions, then test simultaneous parameters.', 'small'),
       ]);
     },
   },
@@ -318,91 +387,117 @@ const diagrams = [
     file: 'vectors/vectors_point_to_line_distance.png',
     draw() {
       return svg([
-        line(130, 360, 820, 165, 'blue'),
-        arrow(465, 265, 590, 230),
-        `<circle cx="455" cy="268" r="7" class="dot"/>`,
-        `<circle cx="455" cy="120" r="8" class="dot"/>`,
-        line(455, 120, 455, 268, 'grey'),
-        `<path d="M455 250 L475 245 L480 264" stroke="${ink}" stroke-width="2.2" fill="none"/>`,
-        line(250, 320, 455, 268, 'grey dash'),
-        arrow(250, 320, 455, 268, grey, 3),
-        text(740, 165, 'line l: r=a+λd', 'small'),
-        text(590, 224, 'd', 'small'),
-        text(468, 118, 'P', 'small'),
-        text(468, 272, 'Q foot of perpendicular', 'small'),
-        text(318, 192, 'distance = |PQ|', 'small'),
-        text(255, 350, 'projection onto line', 'small'),
-        text(430, 505, 'PQ ⟂ d', 'small'),
+        text(44, 48, 'Point-to-line distance: find the perpendicular foot', 'title'),
+        line(110, 384, 830, 178, 'blue'),
+        arrow(470, 282, 612, 242, blue, 4),
+        circle(470, 282, 8),
+        circle(470, 132, 9, 'green-dot'),
+        line(470, 132, 470, 282, 'grey'),
+        `<path d="M470 262 L492 256 L498 276" stroke="${ink}" stroke-width="2.3" fill="none"/>`,
+        text(482, 128, 'P', 'label'),
+        text(484, 290, 'Q = a + λd', 'small'),
+        text(622, 238, 'direction d', 'small'),
+        text(690, 178, 'line r = a + λd', 'label'),
+        arrow(208, 356, 470, 282, grey, 3),
+        text(165, 384, 'choose λ', 'small'),
+        text(310, 202, 'PQ', 'label'),
+        text(290, 232, 'distance = |PQ|', 'small'),
+        rect(616, 328, 270, 116, 'note'),
+        text(640, 366, 'Key equation', 'label'),
+        text(640, 404, 'PQ · d = 0', 'label'),
+        text(640, 432, 'perpendicular fixes λ', 'small'),
       ]);
     },
   },
   {
     file: 'complex-numbers/modulus_argument.png',
     draw() {
-      const ox = 470, oy = 310;
-      const p = [330, 175];
+      const ox = 470, oy = 325;
+      const p = [330, 174];
       return svg([
-        line(120, oy, 840, oy),
-        line(ox, 470, ox, 70),
-        text(825, oy + 35, 'Re z', 'small'),
-        text(ox - 55, 80, 'Im z', 'small'),
-        arrow(ox, oy, p[0], p[1]),
+        text(44, 48, 'Argand form: distance plus direction', 'title'),
+        line(120, oy, 842, oy),
+        line(ox, 470, ox, 86),
+        text(822, oy + 35, 'Re z', 'small'),
+        text(ox - 58, 96, 'Im z', 'small'),
+        arrow(ox, oy, p[0], p[1], blue, 4),
         line(p[0], p[1], p[0], oy, 'grey dash'),
         line(p[0], oy, ox, oy, 'grey dash'),
-        `<circle cx="${p[0]}" cy="${p[1]}" r="8" class="dot"/>`,
-        `<path d="M545 310 A75 75 0 0 0 418 253" class="blue-thin"/>`,
-        text(p[0] - 45, p[1] - 15, 'z=x+iy', 'small'),
-        text(380, 230, 'r=|z|', 'small'),
-        text(505, 260, 'θ=arg z', 'small'),
-        text(345, 345, 'x', 'small'),
-        text(300, 250, 'y', 'small'),
-        text(540, 105, 'quadrant decides argument', 'small'),
+        circle(p[0], p[1], 9),
+        `<path d="M545 325 A75 75 0 0 0 420 270" class="green"/>`,
+        text(p[0] - 58, p[1] - 16, 'z = x + iy', 'label'),
+        text(380, 242, '|z| = √(x²+y²)', 'small'),
+        text(506, 275, 'arg z = θ', 'label'),
+        text(345, 358, 'x', 'small'),
+        text(294, 258, 'y', 'small'),
+        rect(600, 118, 286, 106, 'note'),
+        text(624, 154, 'Watch quadrant', 'label'),
+        text(624, 188, 'tan⁻¹(y/x) needs sign check', 'small'),
       ]);
     },
   },
   {
     file: 'complex-numbers/locus.png',
     draw() {
-      const ox = 150, oy = 420, sx = 90, sy = 70;
-      const xp = (x) => ox + x * sx;
-      const yp = (y) => oy - y * sy;
       return svg([
-        line(75, oy, 875, oy),
-        line(ox, 485, ox, 70),
-        text(820, oy + 34, 'Re z', 'small'),
-        text(ox - 58, 82, 'Im z', 'small'),
-        `<rect x="75" y="70" width="${xp(3) - 75}" height="415" class="shade"/>`,
-        line(xp(3), 70, xp(3), 485, 'blue-thin'),
-        `<circle cx="${xp(4)}" cy="${yp(3)}" r="${2 * sx}" fill="none" stroke="${blue}" stroke-width="4"/>`,
-        line(xp(0.5), yp(-1.5), xp(5.6), yp(2.1), 'grey'),
-        text(xp(3) + 10, 100, 'Re z ≤ 3', 'small'),
-        text(xp(4.8), yp(5.2), '|z-(4+3i)|≤2', 'small'),
-        text(xp(1.1), yp(-1.2), 'perpendicular bisector', 'small'),
-        text(380, 505, 'shaded valid region', 'small'),
+        text(44, 48, 'Match complex locus statements to geometry', 'title'),
+        rect(42, 90, 270, 315),
+        text(68, 130, '|z-a| = r', 'label'),
+        line(72, 292, 280, 292),
+        line(176, 372, 176, 152),
+        circle(176, 262, 78, 'blue-thin'),
+        circle(176, 262, 7, 'green-dot'),
+        text(188, 266, 'a', 'small'),
+        text(218, 220, 'radius r', 'small'),
+        text(68, 374, 'circle centre a', 'small'),
+        rect(345, 90, 270, 315),
+        text(371, 130, 'arg(z-a)=θ', 'label'),
+        line(378, 292, 586, 292),
+        line(482, 372, 482, 152),
+        circle(482, 292, 7, 'red-dot'),
+        arrow(482, 292, 582, 210, blue, 4),
+        `<path d="M532 292 A50 50 0 0 0 520 252" class="green"/>`,
+        text(512, 274, 'θ', 'small'),
+        text(371, 362, 'ray from a;', 'small'),
+        text(371, 390, 'endpoint excluded', 'small'),
+        rect(648, 90, 270, 315),
+        text(674, 130, '|z-a| = |z-b|', 'label'),
+        line(680, 292, 886, 292),
+        line(783, 372, 783, 152),
+        circle(730, 292, 7),
+        circle(840, 292, 7),
+        text(718, 322, 'a', 'small'),
+        text(832, 322, 'b', 'small'),
+        line(785, 168, 785, 354, 'green'),
+        text(674, 374, 'perpendicular bisector', 'small'),
+        rect(188, 430, 584, 62, 'note'),
+        text(216, 470, 'Shade only when the condition asks for a region, such as ≤ or ≥.', 'small'),
       ]);
     },
   },
   {
     file: 'complex-numbers/roots.png',
     draw() {
-      const cx = 480, cy = 275, r = 160;
-      const angles = [-35, 85, 205].map((d) => d * Math.PI / 180);
+      const cx = 480, cy = 280, r = 155;
+      const angles = [-20, 100, 220].map((d) => d * Math.PI / 180);
       return svg([
+        text(44, 48, 'Complex roots split the full turn equally', 'title'),
         line(150, cy, 820, cy),
-        line(cx, 470, cx, 65),
+        line(cx, 470, cx, 78),
         text(790, cy + 34, 'Re z', 'small'),
-        text(cx - 55, 80, 'Im z', 'small'),
+        text(cx - 58, 90, 'Im z', 'small'),
         `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#bfdbfe" stroke-width="5"/>`,
         ...angles.map((a, i) => {
           const x = cx + r * Math.cos(a), y = cy - r * Math.sin(a);
-          return `${arrow(cx, cy, x, y, blue, 3)}<circle cx="${x}" cy="${y}" r="8" class="dot"/>${text(x + 8, y - 8, `z${i}`, 'small')}`;
+          return `${arrow(cx, cy, x, y, blue, 3)}${circle(x, y, 8)}${text(x + 9, y - 9, i === 0 ? 'root 1' : `root ${i + 1}`, 'small')}`;
         }),
-        `<path d="M545 275 A65 65 0 0 0 507 216" class="blue-thin"/>`,
-        `<path d="M507 216 A65 65 0 0 0 421 243" class="blue-thin"/>`,
-        text(585, 120, 'roots equally spaced', 'small'),
-        text(600, 160, 'add 2π/n each time', 'small'),
-        text(165, 500, 'zₖ = r^(1/n) cis((θ+2kπ)/n)', 'small'),
-        text(585, 330, 'radius r^(1/n)', 'small'),
+        `<path d="M555 280 A75 75 0 0 0 506 210" class="green"/>`,
+        `<path d="M506 210 A75 75 0 0 0 409 245" class="green"/>`,
+        text(574, 132, 'angle step = 2π/n', 'label'),
+        text(586, 174, 'rotate to the next root', 'small'),
+        text(580, 350, 'same radius', 'small'),
+        rect(168, 438, 625, 56, 'note'),
+        text(194, 474, 'For zⁿ = r cis θ: arguments are (θ + 2kπ)/n.', 'small'),
       ]);
     },
   },

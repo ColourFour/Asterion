@@ -41,6 +41,46 @@ export interface LearnStep {
   similarCheck?: SkillCheckItem;
   primaryMirrorsSkillEvidence?: boolean;
   similarMirrorsSkillEvidence?: boolean;
+  visualTopicIds?: string[];
+}
+
+export const LEARN_VISUAL_TOPIC_IDS_BY_STEP_ID: Record<string, string[]> = {
+  'learn-alg-absolute-value-graph': ['algebra_modulus_graph_equations'],
+  'learn-alg-absolute-value-equations': ['algebra_modulus_graph_equations'],
+  'learn-alg-absolute-value-inequalities': ['algebra_modulus_graph_equations'],
+  'learn-alg-absolute-value-graph-intervals': ['algebra_modulus_graph_equations'],
+  'learn-log-natural-e-inverse': ['log_graph_inverse'],
+  'learn-trig-reciprocal-graphs': ['trig_reciprocal_functions'],
+  'learn-trig-reciprocal-identities-equations': ['trig_reciprocal_functions'],
+  'learn-trig-identity-full-solve': ['trig_double_angle_formulae'],
+  'learn-trig-basic-equation-interval': ['trig_double_angle_formulae'],
+  'learn-trig-r-form-transform': ['trig_r_form_transformations'],
+  'learn-diff-tangent-gradient': ['p3_diff_stationary_tangent_normal'],
+  'learn-diff-normal-gradient': ['p3_diff_stationary_tangent_normal'],
+  'learn-diff-stationary-condition': ['p3_diff_stationary_tangent_normal'],
+  'learn-diff-classify-stationary': ['p3_diff_stationary_tangent_normal'],
+  'learn-int-definite-upper-minus-lower': ['integrals_definite_area_bridge'],
+  'learn-int-area-between-curves': ['integrals_definite_area_bridge'],
+  'learn-iteration-sign-change-bracket': ['iteration_graph_root_proof'],
+  'learn-iteration-graph-link': ['iteration_graph_root_proof'],
+  'learn-complex-modulus': ['modulus-argument'],
+  'learn-complex-argument-quadrant': ['modulus-argument'],
+  'learn-complex-cartesian-to-modarg': ['modulus-argument'],
+  'learn-complex-modarg-to-cartesian': ['modulus-argument'],
+  'learn-complex-roots-arguments': ['roots'],
+  'learn-complex-modulus-locus': ['locus'],
+  'learn-complex-argument-locus': ['locus'],
+  'learn-vectors-line-intersection': ['vectors_intersect_parallel_skew'],
+  'learn-vectors-skew-check': ['vectors_intersect_parallel_skew'],
+  'learn-vectors-foot-of-perpendicular': ['vectors_point_to_line_distance'],
+  'learn-vectors-reflection-in-line': ['vectors_point_to_line_distance'],
+};
+
+function withContextualVisuals(steps: LearnStep[]): LearnStep[] {
+  return steps.map((step) => ({
+    ...step,
+    visualTopicIds: LEARN_VISUAL_TOPIC_IDS_BY_STEP_ID[step.id],
+  }));
 }
 
 function learnInputType(inputType: SkillCheckInputType | undefined): LearnStepInputType {
@@ -104,17 +144,17 @@ function fallbackLearnCheck(regionId: string | undefined, fieldGuideTopic: Field
 
 export function getLearnStepsForRegion(regionId: string | undefined): LearnStep[] {
   const fieldGuideTopics = getFieldGuideTopicsForRegion(regionId);
-  if (regionId === 'algebra') return getAuthoredAlgebraLearnSteps(fieldGuideTopics);
-  if (regionId === 'logarithmic-and-exponential-functions') return getAuthoredLogExpLearnSteps(fieldGuideTopics);
-  if (regionId === 'trigonometry') return getAuthoredTrigonometryLearnSteps(fieldGuideTopics);
-  if (regionId === 'differentiation') return getAuthoredDifferentiationLearnSteps(fieldGuideTopics);
-  if (regionId === 'integration') return getAuthoredIntegrationLearnSteps(fieldGuideTopics);
-  if (regionId === 'numerical-solution-of-equations') return getAuthoredIterationLearnSteps(fieldGuideTopics);
-  if (regionId === 'differential-equations') return getAuthoredDifferentialEquationsLearnSteps(fieldGuideTopics);
-  if (regionId === 'complex-numbers') return getAuthoredComplexNumbersLearnSteps(fieldGuideTopics);
-  if (regionId === 'vectors') return getAuthoredVectorsLearnSteps(fieldGuideTopics);
+  if (regionId === 'algebra') return withContextualVisuals(getAuthoredAlgebraLearnSteps(fieldGuideTopics));
+  if (regionId === 'logarithmic-and-exponential-functions') return withContextualVisuals(getAuthoredLogExpLearnSteps(fieldGuideTopics));
+  if (regionId === 'trigonometry') return withContextualVisuals(getAuthoredTrigonometryLearnSteps(fieldGuideTopics));
+  if (regionId === 'differentiation') return withContextualVisuals(getAuthoredDifferentiationLearnSteps(fieldGuideTopics));
+  if (regionId === 'integration') return withContextualVisuals(getAuthoredIntegrationLearnSteps(fieldGuideTopics));
+  if (regionId === 'numerical-solution-of-equations') return withContextualVisuals(getAuthoredIterationLearnSteps(fieldGuideTopics));
+  if (regionId === 'differential-equations') return withContextualVisuals(getAuthoredDifferentialEquationsLearnSteps(fieldGuideTopics));
+  if (regionId === 'complex-numbers') return withContextualVisuals(getAuthoredComplexNumbersLearnSteps(fieldGuideTopics));
+  if (regionId === 'vectors') return withContextualVisuals(getAuthoredVectorsLearnSteps(fieldGuideTopics));
 
-  return fieldGuideTopics.map((fieldGuideTopic): LearnStep => {
+  return withContextualVisuals(fieldGuideTopics.map((fieldGuideTopic): LearnStep => {
     const example = fieldGuideTopic.examples[0];
     const lesson = example?.lesson;
     const checkableItems = getSkillCheckItemsForFieldGuideTopic(fieldGuideTopic.id)
@@ -141,7 +181,7 @@ export function getLearnStepsForRegion(regionId: string | undefined): LearnStep[
       primaryMirrorsSkillEvidence: true,
       similarMirrorsSkillEvidence: true,
     };
-  });
+  }));
 }
 
 export function validateLearnSteps(regionIds: string[]): string[] {

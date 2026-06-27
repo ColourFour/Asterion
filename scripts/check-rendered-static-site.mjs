@@ -168,19 +168,22 @@ try {
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasCourseHero: text.includes('Choose the course before the study path.'),
+      hasCourseHero: text.includes('Asterion') && text.includes('CAIE 9709 Mathematics practice system.'),
       hasCoursePanel: Boolean(document.querySelector('.homepage-course-panel')),
       courseCards: document.querySelectorAll('.homepage-course-panel .course-card').length,
-      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Start P3/.test(link.textContent || '')),
-      hasSupportStatus: text.includes('Available later'),
+      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Open P3/.test(link.textContent || '')),
+      hasSupportStatus: text.includes('In progress'),
+      hasChoiceGuide: text.includes('What should I do?') && text.includes('Start Repair') && text.includes('View Exam Questions'),
       hasPathGrid: Boolean(document.querySelector('.path-unit-grid')),
       hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the')
         || text.includes('Teacher ready')
         || text.includes('get reviewed')
-        || text.includes('Needs teacher check'),
+        || text.includes('Needs teacher check')
+        || text.includes('Trust Signals')
+        || text.includes('The Asterion Learning Loop'),
     };
   });
-  if (!homepageResult.hasCourseHero || !homepageResult.hasCoursePanel || !homepageResult.hasP3Start || !homepageResult.hasSupportStatus) {
+  if (!homepageResult.hasCourseHero || !homepageResult.hasCoursePanel || !homepageResult.hasP3Start || !homepageResult.hasSupportStatus || !homepageResult.hasChoiceGuide) {
     fail('Root page must render the CAIE 9709 course selector.');
   }
   if (homepageResult.courseCards < 4) {

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { getLearnStepsForRegion, validateLearnSteps } from '../src/data/learnModeLessons';
+import {
+  LEARN_VISUAL_TOPIC_IDS_BY_STEP_ID,
+  getLearnStepsForRegion,
+  validateLearnSteps,
+} from '../src/data/learnModeLessons';
+import { FIELD_GUIDE_VISUALS_BY_TOPIC_ID } from '../src/data/fieldGuideTopics';
 import { STUDY_TOPICS } from '../src/lib/topicStudy';
 import { skillCheckAnswerSpecForItem } from '../src/data/skillCheckItems';
 import { checkSkillCheckAnswer } from '../src/skill-checks/answerChecker';
@@ -18,6 +23,40 @@ describe('P3 Learn Mode lessons', () => {
       expect(steps.every((step) => step.explanation.trim().length > 0), topic.regionId).toBe(true);
       expect(steps.every((step) => step.examTransfer.trim().length > 0), topic.regionId).toBe(true);
       expect(steps.every((step) => step.primaryCheck?.checkable === true), topic.regionId).toBe(true);
+    }
+  });
+
+  it('keeps every Learn-mapped visual titled, captioned, and instructionally labelled', () => {
+    const mappedVisualIds = new Set(Object.values(LEARN_VISUAL_TOPIC_IDS_BY_STEP_ID).flat());
+
+    for (const visualId of mappedVisualIds) {
+      const visuals = FIELD_GUIDE_VISUALS_BY_TOPIC_ID[visualId];
+      expect(visuals?.length, visualId).toBeGreaterThan(0);
+      for (const visual of visuals) {
+        expect(visual.title.trim(), visualId).not.toEqual('');
+        expect(visual.caption.trim(), visualId).not.toEqual('');
+        expect(visual.testedConcept.trim(), visualId).not.toEqual('');
+        expect(visual.instructionalLabels?.filter((label) => label.trim()).length, visualId).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('keeps required mathematical labels on key Learn-mapped visuals', () => {
+    const expectedLabelsByVisualId = new Map<string, string[]>([
+      ['modulus-argument', ['|z|', 'arg z']],
+      ['vectors_point_to_line_distance', ['PQ · d = 0']],
+      ['integrals_definite_area_bridge', ['F(b) - F(a)']],
+      ['roots', ['2π/n']],
+    ]);
+
+    for (const [visualId, expectedLabels] of expectedLabelsByVisualId) {
+      const visualText = (FIELD_GUIDE_VISUALS_BY_TOPIC_ID[visualId] ?? [])
+        .flatMap((visual) => [visual.title, visual.caption, visual.testedConcept, ...(visual.instructionalLabels ?? [])])
+        .join(' ');
+
+      for (const expectedLabel of expectedLabels) {
+        expect(visualText, visualId).toContain(expectedLabel);
+      }
     }
   });
 
@@ -575,6 +614,18 @@ describe('P3 Learn Mode lessons', () => {
       'learn-vectors-reflection-in-line',
       'learn-vectors-angle-between-lines',
     ]);
+  });
+
+  it('maps Vectors visuals only to relevant line-geometry Learn steps', () => {
+    const vectorSteps = getLearnStepsForRegion('vectors');
+    const visualIdsByStep = new Map(vectorSteps.map((step) => [step.id, step.visualTopicIds ?? []]));
+
+    expect(visualIdsByStep.get('learn-vectors-2d-3d-notation')).not.toContain('vectors_intersect_parallel_skew');
+    expect(visualIdsByStep.get('learn-vectors-2d-3d-notation')).not.toContain('vectors_point_to_line_distance');
+    expect(visualIdsByStep.get('learn-vectors-line-intersection')).toContain('vectors_intersect_parallel_skew');
+    expect(visualIdsByStep.get('learn-vectors-skew-check')).toContain('vectors_intersect_parallel_skew');
+    expect(visualIdsByStep.get('learn-vectors-foot-of-perpendicular')).toContain('vectors_point_to_line_distance');
+    expect(visualIdsByStep.get('learn-vectors-reflection-in-line')).toContain('vectors_point_to_line_distance');
   });
 
   it('gives every Vectors Learn step the required authored learning move parts', () => {

@@ -103,6 +103,7 @@ describe('atomic P3 Field Guide sections', () => {
     const errors = validateFieldGuideVisuals({
       missing_visual_topic: [
         {
+          title: 'Missing visual title.',
           assetPath: 'assets/p3/visuals/missing/not-there.png',
           alt: 'Missing visual test.',
           caption: 'Missing visual test caption.',
