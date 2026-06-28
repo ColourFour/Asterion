@@ -113,7 +113,7 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
   });
 
-  it('uses the root page as the course selector and keeps P3 as the direct learning path', () => {
+  it('uses the root page as the focused P3 starfield landing page', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const generatedHomePath = 'docs/index.html';
     const generatedP3Path = 'docs/p3/index.html';
@@ -127,32 +127,40 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
     expect(generatorSource).toContain('Check Answer');
-    expect(generatorSource).toContain('homepage-course-panel');
-    expect(generatorSource).toContain('What should I do?');
-    expect(generatorSource).toContain('View Exam Questions');
+    expect(generatorSource).toContain('home-p3-landing');
+    expect(generatorSource).toContain('Master CAIE 9709');
+    expect(generatorSource).toContain('Start with Learn');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      expect(generatedHome).toContain('Asterion');
-      expect(generatedHome).toContain('CAIE 9709 Mathematics practice system.');
-      expect(generatedHome).toContain('homepage-course-panel');
-      expect(generatedHome).toContain('Pure Mathematics 1');
+      const homeDocument = new JSDOM(generatedHome).window.document;
+
+      expect(generatedHome).toContain('home-p3-landing');
+      expect(generatedHome).toContain('home-starfield');
+      expect(generatedHome).toContain('Master CAIE 9709');
       expect(generatedHome).toContain('Pure Mathematics 3');
-      expect(generatedHome).toContain('Mechanics 1');
-      expect(generatedHome).toContain('Statistics 1');
-      expect(generatedHome).toContain('Ready');
-      expect(generatedHome).toContain('In progress');
-      expect(generatedHome).toContain('Open P3');
-      expect(generatedHome).toContain('Open P1');
-      expect(generatedHome).toContain('Open M1');
-      expect(generatedHome).toContain('Open S1');
-      expect(generatedHome).toContain('What should I do?');
-      expect(generatedHome).toContain('Start Repair');
-      expect(generatedHome).toContain('View Exam Questions');
-      expect(generatedHome).toContain('P3 topics');
-      expect(generatedHome.match(/class="course-card/g)?.length).toBeGreaterThanOrEqual(4);
+      expect(generatedHome).toContain('Learn what matters. Practice with purpose.');
+      expect(generatedHome).toContain('Prepare for the exam with confidence.');
+      expect(generatedHome).toContain('Start with Learn');
+      expect(generatedHome).toContain('Diagnostic: Where to focus');
+      expect(generatedHome).toContain('Build understanding');
+      expect(generatedHome).toContain('Check your skills');
+      expect(generatedHome).toContain('Exam questions');
+      expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
+      expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
+      for (const topicLabel of ['Algebra', 'Log/Exp', 'Complex', 'Trigonometry', 'Vectors', 'Differentiation', 'Integration', 'Diff Eq', 'Iteration']) {
+        expect(generatedHome).toContain(topicLabel);
+      }
+      expect(homeDocument.querySelector('a.home-p3-primary-cta')?.getAttribute('href')).toContain('p3/topics/algebra/learn/');
+      expect(homeDocument.querySelector('.home-p3-diagnostic-link')?.getAttribute('href')).toBe('p3/diagnostic/');
       expect(generatedHome).not.toContain('Start P3 with Algebra.');
       expect(generatedHome).not.toContain('path-unit-grid');
+      expect(generatedHome).not.toContain('homepage-course-panel');
+      expect(generatedHome).not.toContain('Choose a paper');
+      expect(generatedHome).not.toContain('Pure Mathematics 1');
+      expect(generatedHome).not.toContain('What should I do?');
+      expect(generatedHome).not.toContain('Direct links');
+      expect(generatedHome).not.toContain('P3 content QA');
       expect(generatedHome).not.toContain('Trust Signals');
       expect(generatedHome).not.toContain('The Asterion Learning Loop');
       expect(generatedHome).not.toContain('AI-powered');

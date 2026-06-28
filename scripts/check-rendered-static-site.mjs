@@ -168,29 +168,34 @@ try {
   const homepageResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
     return {
-      hasCourseHero: text.includes('Asterion') && text.includes('CAIE 9709 Mathematics practice system.'),
-      hasCoursePanel: Boolean(document.querySelector('.homepage-course-panel')),
-      courseCards: document.querySelectorAll('.homepage-course-panel .course-card').length,
-      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Open P3/.test(link.textContent || '')),
-      hasSupportStatus: text.includes('In progress'),
-      hasChoiceGuide: text.includes('What should I do?') && text.includes('Start Repair') && text.includes('View Exam Questions'),
+      hasHero: text.includes('Master CAIE 9709') && text.includes('Pure Mathematics 3'),
+      hasStarfield: Boolean(document.querySelector('.home-starfield')),
+      actionCards: document.querySelectorAll('.home-p3-action-card').length,
+      topicTiles: document.querySelectorAll('.home-p3-topic-tile').length,
+      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Start with Learn/.test(link.textContent || '')),
+      hasDiagnostic: Array.from(document.querySelectorAll('a')).some((link) => /Diagnostic: Where to focus/.test(link.textContent || '')),
       hasPathGrid: Boolean(document.querySelector('.path-unit-grid')),
       hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the')
         || text.includes('Teacher ready')
         || text.includes('get reviewed')
         || text.includes('Needs teacher check')
         || text.includes('Trust Signals')
-        || text.includes('The Asterion Learning Loop'),
+        || text.includes('The Asterion Learning Loop')
+        || text.includes('What should I do?')
+        || text.includes('Choose a paper'),
     };
   });
-  if (!homepageResult.hasCourseHero || !homepageResult.hasCoursePanel || !homepageResult.hasP3Start || !homepageResult.hasSupportStatus || !homepageResult.hasChoiceGuide) {
-    fail('Root page must render the CAIE 9709 course selector.');
+  if (!homepageResult.hasHero || !homepageResult.hasStarfield || !homepageResult.hasP3Start || !homepageResult.hasDiagnostic) {
+    fail('Root page must render the P3 starfield landing page.');
   }
-  if (homepageResult.courseCards < 4) {
-    fail(`Root course selector must show P1, P3, M1, and S1 cards; saw ${homepageResult.courseCards}.`);
+  if (homepageResult.actionCards !== 3) {
+    fail(`Root P3 landing page must show 3 action cards; saw ${homepageResult.actionCards}.`);
+  }
+  if (homepageResult.topicTiles !== 9) {
+    fail(`Root P3 landing page must show 9 topic tiles; saw ${homepageResult.topicTiles}.`);
   }
   if (homepageResult.hasPathGrid || homepageResult.hasOldHeroCopy) {
-    fail('Root page must not retain the old direct-P3 or teacher-facing shell.');
+    fail('Root page must not retain the old course-selector, direct-P3 path grid, or teacher-facing shell.');
   }
 
   for (const coursePage of ['p1/index.html', 'm1/index.html', 's1/index.html']) {

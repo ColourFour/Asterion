@@ -594,7 +594,7 @@ function primaryNav(pagePath: string, active: RenderPageOptions['active']): stri
     { key: 'p1-repair', label: 'Repair', path: p1RepairLanePagePath() },
     { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Review Mistakes', path: p3ReviewPagePath() },
-  ];
+  ].filter((item) => pagePath !== 'index.html' || item.key !== 'courses');
   const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
 
   return `
@@ -1526,6 +1526,73 @@ function renderHomepageCoursePanel(pagePath: string): string {
 
 const homepageContactEmail = 'brooker@rdfzcygj.cn';
 
+const homepageActionCards = [
+  {
+    title: 'Learn',
+    subtitle: 'Build understanding',
+    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M5 8c4.5 0 7.5 1 11 4v15c-3.5-3-6.5-4-11-4V8Z"/><path d="M27 8c-4.5 0-7.5 1-11 4v15c3.5-3 6.5-4 11-4V8Z"/></svg>',
+    path: learnPagePath(STUDY_TOPICS[0]),
+  },
+  {
+    title: 'Practice',
+    subtitle: 'Check your skills',
+    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="m7 25 3-1 15-15-2-2L8 22l-1 3Z"/><path d="m20 6 6 6"/><path d="M5 27h20"/></svg>',
+    path: skillCheckPagePath(STUDY_TOPICS[0]),
+  },
+  {
+    title: 'Apply',
+    subtitle: 'Exam questions',
+    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="7"/><circle cx="16" cy="16" r="3"/></svg>',
+    path: topicExamTrainingPagePath(STUDY_TOPICS[0]),
+  },
+] as const;
+
+const homepageTopicStrip = [
+  { label: 'Algebra', slug: 'algebra', symbol: 'x' },
+  { label: 'Log/Exp', slug: 'logarithmic-and-exponential-functions', symbol: 'ln' },
+  { label: 'Complex', slug: 'complex-numbers', symbol: 'i' },
+  { label: 'Trigonometry', slug: 'trigonometry', symbol: 'sin' },
+  { label: 'Vectors', slug: 'vectors', symbol: 'v' },
+  { label: 'Differentiation', slug: 'differentiation', symbol: 'dy' },
+  { label: 'Integration', slug: 'integration', symbol: '∫' },
+  { label: 'Diff Eq', slug: 'differential-equations', symbol: 'y′' },
+  { label: 'Iteration', slug: 'numerical-solution-of-equations', symbol: '↻' },
+] as const;
+
+function renderHomepageActionCards(pagePath: string): string {
+  return `
+    <div class="home-p3-action-grid" aria-label="Main P3 actions">
+      ${homepageActionCards.map((card) => `
+        <a class="home-p3-action-card" href="${hrefToPage(pagePath, card.path)}">
+          <span class="home-p3-action-icon">${card.icon}</span>
+          <span>
+            <strong>${escapeHtml(card.title)}</strong>
+            <small>${escapeHtml(card.subtitle)}</small>
+          </span>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderHomepageTopicStrip(pagePath: string): string {
+  const topicsBySlug = new Map(STUDY_TOPICS.map((topic) => [topic.slug, topic]));
+  return `
+    <nav class="home-p3-topic-strip" aria-label="P3 topic links">
+      ${homepageTopicStrip.map((item) => {
+        const topic = topicsBySlug.get(item.slug);
+        const targetPath = topic ? learnPagePath(topic) : p3TopicsIndexPagePath();
+        return `
+          <a class="home-p3-topic-tile" href="${hrefToPage(pagePath, targetPath)}">
+            <span class="home-p3-topic-symbol" aria-hidden="true">${escapeHtml(item.symbol)}</span>
+            <span>${escapeHtml(item.label)}</span>
+          </a>
+        `;
+      }).join('')}
+    </nav>
+  `;
+}
+
 function renderHomepageContactBar(): string {
   return `
     <section class="homepage-contact-bar" id="contact" aria-label="Contact Asterion">
@@ -1566,80 +1633,38 @@ function renderAboutPage(): string {
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
   const body = `
-    <section class="homepage-hero course-picker-hero">
-      <div class="hero-copy">
-        <p class="eyebrow">CAIE 9709 Mathematics</p>
-        <h1>Asterion</h1>
-        <p>CAIE 9709 Mathematics practice system.</p>
-        <p>Pick a paper, choose what you need, and start working.</p>
+    <section class="home-p3-landing" aria-labelledby="home-p3-title">
+      <div class="home-starfield" aria-hidden="true">
+        <span class="home-star-layer home-star-layer-one"></span>
+        <span class="home-star-layer home-star-layer-two"></span>
+        <svg class="home-constellation home-constellation-left" viewBox="0 0 260 260" focusable="false">
+          <path d="M34 64 86 92 126 52 182 108 224 86" />
+          <path d="M86 92 76 154 118 208 176 178" />
+          <circle cx="34" cy="64" r="3" /><circle cx="86" cy="92" r="3" /><circle cx="126" cy="52" r="3" /><circle cx="182" cy="108" r="3" /><circle cx="224" cy="86" r="3" /><circle cx="76" cy="154" r="3" /><circle cx="118" cy="208" r="3" /><circle cx="176" cy="178" r="3" />
+        </svg>
+        <svg class="home-constellation home-constellation-right" viewBox="0 0 260 260" focusable="false">
+          <path d="M44 74 94 46 150 92 208 84" />
+          <path d="M150 92 138 154 190 210 226 166" />
+          <circle cx="44" cy="74" r="3" /><circle cx="94" cy="46" r="3" /><circle cx="150" cy="92" r="3" /><circle cx="208" cy="84" r="3" /><circle cx="138" cy="154" r="3" /><circle cx="190" cy="210" r="3" /><circle cx="226" cy="166" r="3" />
+        </svg>
       </div>
-      ${renderHomepageCoursePanel(pagePath)}
-    </section>
-    <section class="homepage-section homepage-choice-guide" aria-labelledby="choice-guide-title">
-      <div class="homepage-section-heading">
-        <h2 id="choice-guide-title">What should I do?</h2>
+      <div class="home-p3-hero">
+        <p class="home-p3-eyebrow">Master CAIE 9709</p>
+        <h1 id="home-p3-title">Pure Mathematics 3</h1>
+        <p class="home-p3-subtitle">Learn what matters. Practice with purpose.<br />Prepare for the exam with confidence.</p>
+        ${renderHomepageActionCards(pagePath)}
+        <div class="home-p3-cta-group">
+          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Start with Learn</a>
+          <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Diagnostic: Where to focus</a>
+        </div>
       </div>
-      <div class="homepage-choice-grid">
-        <article>
-          <h3>Starting a topic</h3>
-          <p>Use Learn.</p>
-          <a class="text-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Open Learn</a>
-        </article>
-        <article>
-          <h3>Think you know it</h3>
-          <p>Use Checked Practice.</p>
-          <a class="text-link" href="${hrefToPage(pagePath, skillCheckPagePath(STUDY_TOPICS[0]))}">Open Checked Practice</a>
-        </article>
-        <article>
-          <h3>Preparing for a test</h3>
-          <p>Use Exam Questions.</p>
-          <a class="text-link" href="${hrefToPage(pagePath, topicExamTrainingPagePath(STUDY_TOPICS[0]))}">View Exam Questions</a>
-        </article>
-        <article>
-          <h3>Lost or behind</h3>
-          <p>Start with Repair.</p>
-          <a class="text-link" href="${hrefToPage(pagePath, p1RepairLanePagePath())}">Start Repair</a>
-        </article>
-      </div>
-    </section>
-    <section class="homepage-section homepage-direct-links" aria-labelledby="direct-links-title">
-      <div class="homepage-section-heading">
-        <h2 id="direct-links-title">Direct links</h2>
-      </div>
-      <div class="homepage-link-columns">
-        <article>
-          <h3>Student work</h3>
-          <ul>
-            <li><a class="text-link" href="${hrefToPage(pagePath, p3TopicsIndexPagePath())}">P3 topics</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[0]))}">P1 course page</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[2]))}">Mechanics course page</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, coursePagePath(COURSES[3]))}">Statistics course page</a></li>
-          </ul>
-        </article>
-        <article>
-          <h3>P3 tools</h3>
-          <ul>
-            <li><a class="text-link" href="${hrefToPage(pagePath, p3NeedToKnowPagePath())}">Need-to-know checklist</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, p1RepairLanePagePath())}">Repair lane</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, p3ReviewPagePath())}">Review mistakes</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, topicExamTrainingPagePath(STUDY_TOPICS[0]))}">Exam questions</a></li>
-          </ul>
-        </article>
-        <article class="homepage-maintainer-links">
-          <h3>Maintainer</h3>
-          <ul>
-            <li><a class="text-link" href="${hrefToPage(pagePath, p3ContentQaPagePath())}">P3 content QA</a></li>
-            <li><a class="text-link" href="${hrefToPage(pagePath, aboutPagePath())}">About</a></li>
-            <li><a class="text-link" href="mailto:${escapeAttr(homepageContactEmail)}?subject=Asterion%20contact">Contact</a></li>
-          </ul>
-        </article>
-      </div>
+      ${renderHomepageTopicStrip(pagePath)}
     </section>
   `;
   return renderPage({
     pagePath,
-    title: 'Asterion',
-    description: 'CAIE 9709 Mathematics practice system course entrance.',
+    title: 'Pure Mathematics 3',
+    description: 'Asterion Pure Mathematics 3 practice landing page for CAIE 9709.',
     active: 'courses',
     body,
     bodyClass: 'home-page',
