@@ -2547,15 +2547,12 @@ function renderLearnCheckForm(
   const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
     ? item.expectedOptionIds
     : spec.acceptedAnswers;
-  const mistakeTags = Array.from(new Set([
-    ...(item.mistakeTags ?? []),
-    ...SKILL_CHECK_MISTAKE_TAGS,
-  ]));
   const isPrimary = variant === 'primary';
   const savesSkillEvidence = isPrimary
     ? step.primaryMirrorsSkillEvidence !== false
     : step.similarMirrorsSkillEvidence !== false;
   const explanationText = isPrimary ? step.explanation : item.workedRoute.join(' ');
+  const similarTargetId = `${step.id}-similar`;
   return `
     <form
       class="skill-check-form learn-check-form"
@@ -2580,6 +2577,7 @@ function renderLearnCheckForm(
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        ${isPrimary && step.similarCheck ? `<button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="${escapeAttr(similarTargetId)}" hidden>Try a similar question</button>` : ''}
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2592,18 +2590,6 @@ function renderLearnCheckForm(
         ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>' : ''}
         ${!isPrimary ? '<p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>' : ''}
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-          ${mistakeTags.map((tag) => `
-            <label>
-              <input type="checkbox" name="mistakeTags" value="${escapeAttr(tag)}" />
-              <span>${escapeHtml(tag)}</span>
-            </label>
-          `).join('')}
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
@@ -2644,7 +2630,7 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
       </header>
       ${renderLearnCheckForm(step.primaryCheck, step, pagePath, 'primary')}
       ${step.similarCheck ? `
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="${escapeAttr(`${step.id}-similar`)}" data-learn-similar-panel hidden>
           <p class="eyebrow">${escapeHtml(step.nextStepLabel ?? 'Similar checked question')}</p>
           <h3>${renderMathText(step.similarCheck.prompt)}</h3>
           ${renderLearnCheckForm(step.similarCheck, step, pagePath, 'similar')}

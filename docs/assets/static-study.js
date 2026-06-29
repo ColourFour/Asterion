@@ -3408,10 +3408,10 @@
     }
 
     var submitButton = form.querySelector('button[type="submit"]');
-    var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
     var hint = form.querySelector('[data-learn-hint]');
     var afterAttempt = form.querySelector('[data-learn-after-attempt]');
     var answerReveal = form.querySelector('[data-learn-answer-reveal]');
+    var similarCta = form.querySelector('[data-try-learn-similar]');
     var stepCard = form.closest('[data-learn-step-card]');
     var variant = form.getAttribute('data-learn-variant') || 'primary';
     var isPrimary = variant === 'primary';
@@ -3420,9 +3420,13 @@
     var transfer = stepCard?.querySelector('[data-learn-exam-transfer]');
 
     if (afterAttempt) afterAttempt.hidden = false;
-    if (answerReveal) answerReveal.hidden = false;
+    if (answerReveal) {
+      answerReveal.hidden = false;
+      answerReveal.classList.toggle('is-highlighted', !checkResult.isCorrect);
+    }
     if (isPrimary && similar) similar.hidden = false;
     if (transfer && (!requiresSimilar || !isPrimary)) transfer.hidden = false;
+    if (similarCta && isPrimary && similar) similarCta.hidden = false;
 
     if (checkResult.isCorrect) {
       var clean = cleanLearnAttemptCanSaveSkill(form, checkResult);
@@ -3442,17 +3446,31 @@
       return;
     }
 
-    setSkillFeedback(form, 'Not yet. The hint is now available, and this attempt has been saved as practice.', 'incorrect');
+    setSkillFeedback(form, 'Not yet. Review the explanation, reveal the answer if needed, then try a similar question.', 'incorrect');
     form.setAttribute('data-used-hint', 'true');
     if (hint) hint.hidden = false;
-    if (mistakePanel) mistakePanel.hidden = false;
-    updateTargetedPrompt(form);
     if (submitButton) {
       submitButton.textContent = 'Try Again';
       submitButton.className = 'button primary-button';
     }
+    if (similarCta instanceof HTMLElement && isPrimary && similar) similarCta.focus({ preventScroll: true });
     window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
     updateLearnModeFlowState();
+  }
+
+  function openLearnSimilarPanel(button) {
+    var card = button.closest('[data-learn-step-card]');
+    if (!(card instanceof HTMLElement)) return;
+    var targetId = button.getAttribute('data-try-learn-similar') || '';
+    var panel = targetId ? card.querySelector('#' + CSS.escape(targetId)) : null;
+    if (!(panel instanceof HTMLElement)) panel = card.querySelector('[data-learn-similar-panel]');
+    if (!(panel instanceof HTMLElement)) return;
+    panel.hidden = false;
+    var input = panel.querySelector('input, textarea, select, button');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (input instanceof HTMLElement) {
+      window.setTimeout(function () { input.focus(); }, 180);
+    }
   }
 
   function examPartScores(form) {
@@ -4754,6 +4772,12 @@
           var learnHint = learnForm.querySelector('[data-learn-hint]');
           if (learnHint) learnHint.hidden = false;
         }
+      }
+
+      var tryLearnSimilarButton = target.closest('[data-try-learn-similar]');
+      if (tryLearnSimilarButton instanceof HTMLElement) {
+        openLearnSimilarPanel(tryLearnSimilarButton);
+        return;
       }
 
       var copyExportButton = target.closest('[data-copy-export-csv]');

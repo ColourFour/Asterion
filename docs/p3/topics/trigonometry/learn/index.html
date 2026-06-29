@@ -141,6 +141,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-identity-form-choice-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -153,63 +154,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -223,7 +167,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-identity-form-choice-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Which identity should be used first to rewrite <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mi>sec</mi><mo>‚Å°</mo></mrow><mn>2</mn></msup><mi>x</mi><mo>‚àí</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sec^2x-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mop"><span class="mop">sec</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">‚àí</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>?</h3>
 
@@ -285,6 +229,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -297,63 +242,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -420,6 +308,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-pythagorean-rewrite-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -432,63 +321,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>cos^2x</div>
@@ -498,7 +330,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-pythagorean-rewrite-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Rewrite <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mi>sec</mi><mo>‚Å°</mo></mrow><mn>2</mn></msup><mi>x</mi><mo>‚àí</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sec^2x-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mop"><span class="mop">sec</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">‚àí</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>.</h3>
 
@@ -530,6 +362,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -542,63 +375,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>tan^2x</div>
@@ -679,6 +455,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-reciprocal-graphs-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -691,63 +468,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/2, 3pi/2</div>
@@ -757,7 +477,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-reciprocal-graphs-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Where does <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi mathvariant="normal">cosec</mi><mo>‚Å°</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">y=\operatorname{cosec}x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mop"><span class="mord mathrm">cosec</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span></span></span></span></span> have vertical asymptotes on <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0&lt;x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>?</h3>
 
@@ -789,6 +509,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -801,63 +522,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi</div>
@@ -938,6 +602,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-reciprocal-identities-equations-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -950,63 +615,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/4, 5pi/4</div>
@@ -1016,7 +624,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-reciprocal-identities-equations-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Use an identity to rewrite <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mi mathvariant="normal">cosec</mi><mo>‚Å°</mo></mrow><mn>2</mn></msup><mi>x</mi><mo>‚àí</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\operatorname{cosec}^2x-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mop"><span class="mop"><span class="mord mathrm">cosec</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">‚àí</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span>.</h3>
 
@@ -1048,6 +656,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1060,63 +669,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>cot^2x</div>
@@ -1209,6 +761,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-double-angle-choice-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1221,63 +774,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -1291,7 +787,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-double-angle-choice-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Choose the cosine-only form of <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>cos</mi><mo>‚Å°</mo><mn>2</mn><mi>x</mi></mrow><annotation encoding="application/x-tex">\cos2x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span></span></span></span></span>.</h3>
 
@@ -1353,6 +849,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1365,63 +862,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -1488,6 +928,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-double-angle-simplify-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1500,63 +941,6 @@
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>sinx</div>
@@ -1566,7 +950,7 @@
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-double-angle-simplify-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Simplify <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>1</mn><mo>‚àí</mo><mi>cos</mi><mo>‚Å°</mo><mn>2</mn><mi>x</mi></mrow><mrow><mn>2</mn><mi>sin</mi><mo>‚Å°</mo><mi>x</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1-\cos2x}{2\sin x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mop mtight"><span class="mtight">s</span><span class="mtight">i</span><span class="mtight">n</span></span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mathnormal mtight">x</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">‚àí</span><span class="mop mtight"><span class="mtight">c</span><span class="mtight">o</span><span class="mtight">s</span></span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mtight">2</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">‚Äã</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>, with <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>sin</mi><mo>‚Å°</mo><mi>x</mi><mo mathvariant="normal">‚â†</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sin x\ne0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="inner"><span class="mord"><span class="mrel">ÓÄ†</span></span></span><span class="fix"></span></span></span></span></span><span class="mspace nobreak"></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span>.</h3>
 
@@ -1598,6 +982,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1610,63 +995,6 @@
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>sinx</div>
@@ -1747,6 +1075,7 @@
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-identity-full-solve-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1770,63 +1099,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/4, 3pi/4, 5pi/4, 7pi/4</div>
@@ -1847,7 +1119,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-identity-full-solve-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>cos</mi><mo>‚Å°</mo><mn>2</mn><mi>x</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1+\cos2x=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -1879,6 +1151,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -1902,63 +1175,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/4, 3pi/4, 5pi/4, 7pi/4</div>
@@ -2050,6 +1266,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-basic-equation-interval-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2062,63 +1279,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/6, 5pi/6</div>
@@ -2128,7 +1288,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-basic-equation-interval-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>cos</mi><mo>‚Å°</mo><mi>x</mi><mo>=</mo><mo>‚àí</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">\cos x=-\frac12</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord">‚àí</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">‚Äã</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -2160,6 +1320,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2172,63 +1333,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>2pi/3, 4pi/3</div>
@@ -2291,6 +1395,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-transformed-equation-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2325,63 +1430,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/4, 3pi/4, 5pi/4, 7pi/4</div>
@@ -2402,7 +1450,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-transformed-equation-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>‚àí</mo><mn>2</mn><msup><mrow><mi>sin</mi><mo>‚Å°</mo></mrow><mn>2</mn></msup><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">1-2\sin^2x=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">‚àí</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8719em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop">sin</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8719em;"><span style="top:-3.1208em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -2434,6 +1482,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2457,63 +1506,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/4, 3pi/4, 5pi/4, 7pi/4</div>
@@ -2617,6 +1609,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-division-trap-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2629,63 +1622,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -2699,7 +1635,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-division-trap-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>sin</mi><mo>‚Å°</mo><mi>x</mi><mo stretchy="false">(</mo><mn>2</mn><mi>cos</mi><mo>‚Å°</mo><mi>x</mi><mo>‚àí</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sin x(2\cos x-1)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord">2</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">‚àí</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -2731,6 +1667,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2743,63 +1680,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>0, pi, pi/3, 5pi/3</div>
@@ -2892,6 +1772,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-quadratic-reject-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -2904,63 +1785,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>
@@ -2974,7 +1798,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-quadratic-reject-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Now solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><msup><mrow><mi>cos</mi><mo>‚Å°</mo></mrow><mn>2</mn></msup><mi>x</mi><mo>+</mo><mn>5</mn><mi>cos</mi><mo>‚Å°</mo><mi>x</mi><mo>+</mo><mn>2</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">2\cos^2x+5\cos x+2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop">cos</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -3006,6 +1830,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3018,63 +1843,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>2pi/3, 4pi/3</div>
@@ -3137,6 +1905,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-repeated-angle-pattern-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3149,63 +1918,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>0, pi/2, pi, 3pi/2</div>
@@ -3215,7 +1927,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-repeated-angle-pattern-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>cos</mi><mo>‚Å°</mo><mo stretchy="false">(</mo><mn>2</mn><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\cos(2x)=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">cos</span><span class="mopen">(</span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -3247,6 +1959,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3259,63 +1972,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>0, pi</div>
@@ -3396,6 +2052,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-r-form-transform-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3408,63 +2065,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>5</div>
@@ -3485,7 +2085,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-r-form-transform-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>For <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>sin</mi><mo>‚Å°</mo><mi>x</mi><mo>+</mo><mn>4</mn><mi>cos</mi><mo>‚Å°</mo><mi>x</mi><mo>=</mo><mn>5</mn><mi>sin</mi><mo>‚Å°</mo><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mi>Œ±</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">3\sin x+4\cos x=5\sin(x+\alpha)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7512em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">sin</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">Œ±</span><span class="mclose">)</span></span></span></span></span> with acute <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Œ±</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">Œ±</span></span></span></span></span>, find <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>tan</mi><mo>‚Å°</mo><mi>Œ±</mi></mrow><annotation encoding="application/x-tex">\tan\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mop">tan</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">Œ±</span></span></span></span></span>.</h3>
 
@@ -3517,6 +2117,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3529,63 +2130,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>4/3</div>
@@ -3648,6 +2192,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        <button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="learn-trig-mixed-exam-transfer-similar" hidden>Try a similar question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3660,63 +2205,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
         <p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>
 
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>0, pi/6, 5pi/6, pi</div>
@@ -3726,7 +2214,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
     </form>
 
 
-        <section class="learn-similar-panel" data-learn-similar-panel hidden>
+        <section class="learn-similar-panel" id="learn-trig-mixed-exam-transfer-similar" data-learn-similar-panel hidden>
           <p class="eyebrow">Try a similar checked question</p>
           <h3>Solve <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>cos</mi><mo>‚Å°</mo><mn>2</mn><mi>x</mi><mo>=</mo><mi>cos</mi><mo>‚Å°</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">1+\cos2x=\cos x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span></span></span></span></span> for <span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>‚â§</mo><mi>x</mi><mo>&lt;</mo><mn>2</mn><mi>œÄ</mi></mrow><annotation encoding="application/x-tex">0\le x&lt;2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">‚â§</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">œÄ</span></span></span></span></span>.</h3>
 
@@ -3758,6 +2246,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
       <div class="skill-check-hint-panel" data-learn-hint hidden>
@@ -3770,63 +2259,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">‚Ä
 
         <p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>
       </div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="wrong identity" />
-              <span>wrong identity</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="method choice" />
-              <span>method choice</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="incomplete reasoning" />
-              <span>incomplete reasoning</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="notation" />
-              <span>notation</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="algebra slip" />
-              <span>algebra slip</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="domain/range issue" />
-              <span>domain/range issue</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="calculator" />
-              <span>calculator</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="sign error" />
-              <span>sign error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="coefficient error" />
-              <span>coefficient error</span>
-            </label>
-
-            <label>
-              <input type="checkbox" name="mistakeTags" value="forgot constant" />
-              <span>forgot constant</span>
-            </label>
-
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>pi/3, pi/2, 3pi/2, 5pi/3</div>

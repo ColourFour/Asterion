@@ -465,6 +465,7 @@ for (const page of p3LearnPages) {
     'data-show-learn-hint',
     'data-learn-after-attempt',
     'data-learn-similar-panel',
+    'data-try-learn-similar',
     'Exam transfer',
   ];
 

@@ -187,7 +187,10 @@ try {
     hintVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-hint]')?.hidden,
     afterAttemptVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.hidden,
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
+    answerRevealHighlighted: document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.classList.contains('is-highlighted') === true,
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
+    similarCtaVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-try-learn-similar]')?.hidden,
+    learnMistakePanelMissing: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-mistake-tag-panel]'),
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     nextStillLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
   }));
@@ -197,7 +200,10 @@ try {
   assert(algebraWrongState.hintVisible, 'Wrong Learn attempt must reveal the hint.');
   assert(algebraWrongState.afterAttemptVisible, 'Wrong Learn attempt must reveal explanation/principle support.');
   assert(algebraWrongState.answerRevealVisible, 'Answer reveal must become available after a submitted attempt.');
+  assert(algebraWrongState.answerRevealHighlighted, 'Wrong Learn attempt must highlight the answer reveal control.');
   assert(algebraWrongState.similarVisible, 'Similar checked question must appear after the primary action is checked.');
+  assert(algebraWrongState.similarCtaVisible, 'Wrong Learn attempt must show a Try a similar question button.');
+  assert(algebraWrongState.learnMistakePanelMissing, 'Learn Mode must not ask students to choose what went wrong after a miss.');
   assert(algebraWrongState.transferHidden, 'Exam transfer must stay hidden until the similar checked question is attempted.');
   assert(algebraWrongState.nextStillLocked, 'Wrong primary attempt must not complete the step.');
 

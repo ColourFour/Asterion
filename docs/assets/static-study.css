@@ -5583,6 +5583,21 @@ body.learn-mode-page .learn-exam-transfer {
   background: #f8fbff;
 }
 
+.learn-similar-cta[hidden] {
+  display: none;
+}
+
+.learn-check-form [data-learn-answer-reveal].is-highlighted {
+  border-color: #d99f22;
+  background: #fff7e3;
+  box-shadow: 0 0 0 3px rgba(217, 159, 34, 0.18);
+}
+
+.learn-check-form [data-learn-answer-reveal].is-highlighted > summary {
+  color: #6f4300;
+  font-weight: 950;
+}
+
 .learn-step-footer {
   display: flex;
   flex-wrap: wrap;
