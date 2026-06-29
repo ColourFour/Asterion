@@ -397,6 +397,14 @@ function routeLink(fromPagePath: string, targetPagePath: string, label: string, 
   return `<a${className ? ` class="${className}"` : ''} href="${hrefToPage(fromPagePath, targetPagePath)}">${escapeHtml(label)}</a>`;
 }
 
+function p3ReviewExportHref(fromPagePath: string): string {
+  return `${hrefToPage(fromPagePath, p3ReviewPagePath())}#export-progress`;
+}
+
+function p3ReviewExportLink(fromPagePath: string, label = 'Export Progress', className?: string): string {
+  return `<a${className ? ` class="${className}"` : ''} href="${p3ReviewExportHref(fromPagePath)}">${escapeHtml(label)}</a>`;
+}
+
 function topicForOfficialTopic(officialTopic: P3OfficialTopic): StudyTopic {
   const topic = STUDY_TOPICS.find((candidate) => candidate.name === officialTopic);
   if (!topic) throw new Error(`Missing P3 study topic for contract topic ${officialTopic}`);
@@ -593,7 +601,7 @@ function primaryNav(pagePath: string, active: RenderPageOptions['active']): stri
     { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
     { key: 'p1-repair', label: 'Repair', path: p1RepairLanePagePath() },
     { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
-    { key: 'p3-exam-training', label: 'Review Mistakes', path: p3ReviewPagePath() },
+    { key: 'p3-exam-training', label: 'Export Progress', path: p3ReviewPagePath() },
   ].filter((item) => pagePath !== 'index.html' || item.key !== 'courses');
   const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
 
@@ -759,7 +767,7 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
 
 function renderP3NextStepPanel(pagePath: string): string {
   return `
-    <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(hrefToPage(pagePath, p3ReviewPagePath()))}" aria-labelledby="p3-next-step-panel-title">
+    <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(p3ReviewExportHref(pagePath))}" aria-labelledby="p3-next-step-panel-title">
       <div>
         <p class="eyebrow">Continue</p>
         <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start Unit 1: Algebra</h2>
@@ -813,6 +821,7 @@ function renderDiagnosticQuestion(question: P3DiagnosticQuestion, index: number)
 function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
   const questionCount = P3_DIAGNOSTIC_QUESTIONS.length;
   const markCount = P3_DIAGNOSTIC_QUESTIONS.reduce((sum, question) => sum + question.markPoints.length, 0);
+  const firstSectionId = P3_DIAGNOSTIC_QUESTIONS[0]?.sectionId ?? '';
   const body = `
     ${renderHero(
       'P3 Diagnostic Gate',
@@ -828,7 +837,18 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
         <p>No hints, no teaching, no adaptive branching, and no mark-scheme explanations are shown during the paper.</p>
       </div>
     </section>
-    <form class="diagnostic-paper" id="diagnostic-paper" data-p3-diagnostic-form data-total-marks="${markCount}">
+    <form class="diagnostic-paper" id="diagnostic-paper" data-p3-diagnostic-form data-total-marks="${markCount}" data-current-section="${escapeAttr(firstSectionId)}">
+      <section class="diagnostic-progress-panel summary-card" aria-labelledby="diagnostic-progress-title">
+        <div>
+          <p class="eyebrow" data-diagnostic-current-section>Section A</p>
+          <h2 id="diagnostic-progress-title" data-diagnostic-progress-title>Question 1 of ${questionCount}</h2>
+          <p data-diagnostic-progress-message>Answer this question to unlock the next one.</p>
+        </div>
+        <div class="diagnostic-progress-controls" aria-label="Diagnostic question navigation">
+          <button class="button secondary-button" type="button" data-diagnostic-previous>Previous</button>
+          <button class="button primary-button" type="button" data-diagnostic-next>Next question</button>
+        </div>
+      </section>
       ${P3_DIAGNOSTIC_SECTIONS.map((section) => {
         const questions = P3_DIAGNOSTIC_QUESTIONS.filter((question) => question.sectionId === section.id);
         return `
@@ -845,7 +865,7 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
           </section>
         `;
       }).join('')}
-      <section class="next-step-card diagnostic-submit-panel">
+      <section class="next-step-card diagnostic-submit-panel" data-diagnostic-submit-panel hidden>
         <h2>Submit for classification</h2>
         <p>The report is generated from deterministic mark points only.</p>
         <button class="button primary-button" type="submit">Submit diagnostic</button>
@@ -1036,7 +1056,7 @@ function renderP3LearningPathPage(
             </header>
           </div>
           <div class="path-unit-progress">
-            ${routeLink(pagePath, p3ReviewPagePath(), 'Review Mistakes', 'button secondary-button')}
+            ${p3ReviewExportLink(pagePath, 'Export Progress', 'button secondary-button')}
           </div>
         </article>
       </div>
@@ -1069,7 +1089,7 @@ function renderP3DashboardPage(
         ${renderP3NextStepPanel(pagePath)}
         <nav class="p3-dashboard-secondary-links" aria-label="Other P3 routes">
           ${routeLink(pagePath, p3DiagnosticPagePath(), 'Unsure? Take diagnostic', 'text-link')}
-          ${routeLink(pagePath, p3ReviewPagePath(), 'Review mistakes', 'text-link')}
+          ${p3ReviewExportLink(pagePath, 'Export progress', 'text-link')}
           ${routeLink(pagePath, p3TopicsIndexPagePath(), 'All topic routes', 'text-link')}
         </nav>
       </div>
@@ -1697,10 +1717,10 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
         </div>
       </section>
       <section class="summary-card" aria-labelledby="p3-review-title">
-        <p class="eyebrow">Review</p>
-        <h2 id="p3-review-title">Review mistakes from this browser.</h2>
-        <p>Asterion groups recent wrong, repaired, and revealed checked attempts by mistake tag.</p>
-        ${routeLink(pagePath, p3ReviewPagePath(), 'Review Mistakes', 'button secondary-button')}
+        <p class="eyebrow">Export</p>
+        <h2 id="p3-review-title">Send progress from this browser.</h2>
+        <p>Export local progress by email, then use the same page to review mistakes.</p>
+        ${p3ReviewExportLink(pagePath, 'Export Progress', 'button secondary-button')}
       </section>
     `
     : `
@@ -1925,12 +1945,44 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
   const repairRoutes = p3SkillRepairRoutes(contexts, pagePath);
   const body = `
     ${renderHero(
-      'Review Mistakes',
-      'Use mixed Paper 3 questions after the full unit path has checked evidence. Learn and Checked Practice are the checked-evidence gate; exam questions are for review and timing.',
+      'Export Progress',
+      'Send your local Asterion progress to your teacher, then use mixed Paper 3 questions and mistake repair for review.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
       `${routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}`,
-      'Final review',
+      'Summer homework',
     )}
+    <section class="support-panel" id="export-progress" data-export-panel aria-labelledby="export-progress-title">
+      <div>
+        <p class="eyebrow">Email export</p>
+        <h2 id="export-progress-title">Send local progress CSV</h2>
+        <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
+      </div>
+      <form class="export-progress-form" data-export-local-progress-form>
+        <label class="single-answer-field">
+          <span>Student name</span>
+          <input name="studentName" type="text" autocomplete="name" required />
+        </label>
+        <label class="single-answer-field">
+          <span>Class/group</span>
+          <input name="classGroup" type="text" autocomplete="organization" required />
+        </label>
+        <label class="single-answer-field">
+          <span>Teacher email</span>
+          <input name="teacherEmail" type="email" autocomplete="email" required />
+        </label>
+        <label class="single-answer-field">
+          <span>Reporting period</span>
+          <input name="reportingPeriod" type="text" />
+        </label>
+        <button class="button primary-button" type="submit">Open Email</button>
+      </form>
+      <div class="export-csv-fallback" data-export-fallback hidden>
+        <p class="save-status">The CSV is too large for a reliable prefilled email body. Copy this CSV and paste it into the email message.</p>
+        <textarea class="export-csv-output" data-export-csv-output readonly rows="8" aria-label="Generated progress CSV"></textarea>
+        <button class="button secondary-button" type="button" data-copy-export-csv>Copy CSV</button>
+      </div>
+      <p class="save-status" data-export-status role="status"></p>
+    </section>
     <section class="exam-review-gate" data-p3-exam-review-gate data-required-topics="${escapeAttr(JSON.stringify(requirements))}">
       <div class="exam-review-locked" data-exam-review-locked>
         <div>
@@ -1974,17 +2026,8 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
         <span data-topic-tried-count data-paper-family="p3">0 topic areas tried</span>
       </div>
     </section>
-    <section class="support-panel" data-export-panel>
-      <div>
-        <p class="eyebrow">Export</p>
-        <h2>Export local progress CSV</h2>
-        <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
-      </div>
-      <button class="button secondary-button" type="button" data-export-local-progress>Export local progress CSV</button>
-      <p class="save-status" data-export-status role="status"></p>
-    </section>
     <details class="jump-details" data-mistake-review-details>
-      <summary>Spaced repair for saved Checked Practice mistakes</summary>
+      <summary>Review mistakes from saved Checked Practice</summary>
       <section class="summary-card review-empty-state" data-review-empty>
         <h2>No due spaced repairs yet.</h2>
         <p>Repair groups appear when a tagged Checked Practice mistake reaches its delayed retrieval window. One immediate correction does not close the loop.</p>
@@ -2003,8 +2046,8 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
   `;
   return renderPage({
     pagePath,
-    title: 'Review Mistakes',
-    description: 'Final mixed Paper 3 review after the sequential P3 unit path.',
+    title: 'Export Progress',
+    description: 'Email local P3 progress and review saved mistakes after the sequential P3 unit path.',
     active: 'p3-exam-training',
     body,
     bodyClass: 'exam-training-page',
@@ -2630,7 +2673,8 @@ function renderLearnPage(
   const previousTopic = previousStudyTopic(topic);
   const nextTopic = nextStudyTopic(topic);
   const finalPath = nextTopic ? learnPagePath(nextTopic) : p3ReviewPagePath();
-  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Review Mistakes';
+  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Export Progress';
+  const finalHref = nextTopic ? hrefToPage(pagePath, finalPath) : p3ReviewExportHref(pagePath);
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const body = `
     <section class="learn-mode-hero">
@@ -2654,7 +2698,7 @@ function renderLearnPage(
         ${progressList(region.id, Math.max(1, learnSteps.length), requiredSkillCheckIds)}
       </div>
     </details>
-    <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="${escapeAttr(hrefToPage(pagePath, finalPath))}" data-flow-final-label="${escapeAttr(finalLabel)}">
+    <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
       ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath, context.fieldGuideTopics)).join('') : '<p class="empty-state">No Learn steps are available for this topic yet.</p>'}
     </section>
     <section class="next-step-card">
@@ -3105,7 +3149,8 @@ function renderPracticePage(
   const index = topicIndex(topic);
   const nextTopic = nextStudyTopic(topic);
   const finalPath = nextTopic ? fieldGuidePagePath(nextTopic) : p3ReviewPagePath();
-  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Review Mistakes';
+  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Export Progress';
+  const finalHref = nextTopic ? hrefToPage(pagePath, finalPath) : p3ReviewExportHref(pagePath);
   const body = `
     ${renderHero(
       `Unit ${index + 1}: ${topic.name} Checked Practice`,
@@ -3124,7 +3169,7 @@ function renderPracticePage(
         ${routeLink(pagePath, fieldGuidePath, 'Learn', 'button secondary-button')}
       </div>
     </details>
-    <section class="practice-stack" data-one-card-flow data-flow-label="Checked Practice" data-default-card-limit="3" data-flow-final-href="${escapeAttr(hrefToPage(pagePath, finalPath))}" data-flow-final-label="${escapeAttr(finalLabel)}">
+    <section class="practice-stack" data-one-card-flow data-flow-label="Checked Practice" data-default-card-limit="3" data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
       ${groups.map((group) => renderSkillPracticeGroup(group, pagePath, fieldGuidePath)).join('')}
     </section>
     <section class="next-step-card">

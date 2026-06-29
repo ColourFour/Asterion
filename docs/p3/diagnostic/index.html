@@ -35,7 +35,7 @@
 
         <a href="../topics/">Units</a>
 
-        <a href="../review/">Review Mistakes</a>
+        <a href="../review/">Export Progress</a>
 
     </nav>
 
@@ -60,7 +60,18 @@
         <p>No hints, no teaching, no adaptive branching, and no mark-scheme explanations are shown during the paper.</p>
       </div>
     </section>
-    <form class="diagnostic-paper" id="diagnostic-paper" data-p3-diagnostic-form data-total-marks="29">
+    <form class="diagnostic-paper" id="diagnostic-paper" data-p3-diagnostic-form data-total-marks="29" data-current-section="algebra_foundation">
+      <section class="diagnostic-progress-panel summary-card" aria-labelledby="diagnostic-progress-title">
+        <div>
+          <p class="eyebrow" data-diagnostic-current-section>Section A</p>
+          <h2 id="diagnostic-progress-title" data-diagnostic-progress-title>Question 1 of 20</h2>
+          <p data-diagnostic-progress-message>Answer this question to unlock the next one.</p>
+        </div>
+        <div class="diagnostic-progress-controls" aria-label="Diagnostic question navigation">
+          <button class="button secondary-button" type="button" data-diagnostic-previous>Previous</button>
+          <button class="button primary-button" type="button" data-diagnostic-next>Next question</button>
+        </div>
+      </section>
 
           <section class="diagnostic-section" data-diagnostic-section="algebra_foundation">
             <div class="section-heading">
@@ -921,7 +932,7 @@
             </div>
           </section>
 
-      <section class="next-step-card diagnostic-submit-panel">
+      <section class="next-step-card diagnostic-submit-panel" data-diagnostic-submit-panel hidden>
         <h2>Submit for classification</h2>
         <p>The report is generated from deterministic mark points only.</p>
         <button class="button primary-button" type="submit">Submit diagnostic</button>

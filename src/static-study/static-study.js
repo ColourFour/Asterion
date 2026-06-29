@@ -1,6 +1,7 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
   var PROFILE_ID = 'local-static-student';
+  var MAILTO_PROGRESS_EXPORT_MAX_LENGTH = 1800;
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
   var REDO_COMPLETION_WEIGHT = 1.5;
   var DAY_MS = 24 * 60 * 60 * 1000;
@@ -20,6 +21,11 @@
     'numerical_methods'
   ];
   var CSV_HEADERS = [
+    'submission_id',
+    'student_name',
+    'class_group',
+    'reporting_period',
+    'submission_timestamp',
     'export_timestamp',
     'topic',
     'route_page_type',
@@ -70,6 +76,7 @@
       attempts: [],
       learningActivityAttempts: [],
       skillCheckAttempts: [],
+      exportProfile: {},
       diagnosticReports: [],
       p1RepairLaneModules: [],
       topicProfiles: {},
@@ -879,6 +886,7 @@
         attempts: safeArray(parsed.attempts),
         learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
         skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
+        exportProfile: parsed.exportProfile && typeof parsed.exportProfile === 'object' ? parsed.exportProfile : {},
         diagnosticReports: safeArray(parsed.diagnosticReports),
         p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules),
         topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
@@ -924,6 +932,77 @@
       row[header] = header === 'export_timestamp' ? exportTimestamp : '';
       return row;
     }, {});
+  }
+
+  function cleanExportValue(value) {
+    return value === undefined || value === null ? '' : String(value).trim();
+  }
+
+  function normalizeExportMetadata(metadata, fallbackTimestamp) {
+    var normalized = metadata && typeof metadata === 'object' ? metadata : {};
+    return {
+      submissionId: cleanExportValue(normalized.submissionId),
+      studentName: cleanExportValue(normalized.studentName),
+      classGroup: cleanExportValue(normalized.classGroup),
+      teacherEmail: cleanExportValue(normalized.teacherEmail),
+      reportingPeriod: cleanExportValue(normalized.reportingPeriod),
+      submissionTimestamp: cleanExportValue(normalized.submissionTimestamp) || fallbackTimestamp
+    };
+  }
+
+  function csvRowWithExportMetadata(row, metadata) {
+    return Object.assign(row, {
+      submission_id: metadata.submissionId,
+      student_name: metadata.studentName,
+      class_group: metadata.classGroup,
+      reporting_period: metadata.reportingPeriod,
+      submission_timestamp: metadata.submissionTimestamp
+    });
+  }
+
+  function localProgressSubmissionSummary(progress) {
+    var skillAttempts = normalizeSkillCheckAttempts(progress.skillCheckAttempts);
+    var reviewCandidates = skillAttempts.filter(function (attempt) {
+      return Boolean(reviewCsvRow(attempt, ''));
+    }).length;
+    var examAttempts = safeArray(progress.attempts);
+    return {
+      checkedPracticeAttempts: skillAttempts.length,
+      checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
+      reviewCandidates: reviewCandidates,
+      selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt.selfMarked === true; }).length,
+      learningActivityAttempts: safeArray(progress.learningActivityAttempts).length,
+      knowledgeStateUpdates: safeArray(progress.knowledge_state_updates).length,
+      knowledgeErrors: safeArray(progress.knowledge_errors).length,
+      knowledgeInterventions: safeArray(progress.knowledge_interventions).length
+    };
+  }
+
+  function localProgressSummaryText(summary) {
+    return [
+      'checked_practice_attempts=' + summary.checkedPracticeAttempts,
+      'checked_practice_passes=' + summary.checkedPracticePasses,
+      'review_candidates=' + summary.reviewCandidates,
+      'self_marked_exam_attempts=' + summary.selfMarkedExamAttempts,
+      'learning_activity_attempts=' + summary.learningActivityAttempts,
+      'knowledge_state_updates=' + summary.knowledgeStateUpdates,
+      'knowledge_errors=' + summary.knowledgeErrors,
+      'knowledge_interventions=' + summary.knowledgeInterventions
+    ].join('; ');
+  }
+
+  function submissionSummaryCsvRow(progress, exportTimestamp, metadata) {
+    return csvRowWithExportMetadata(Object.assign(blankCsvRow(exportTimestamp), {
+      topic: 'All P3 local progress',
+      route_page_type: 'export',
+      activity_type: 'Submission Summary',
+      item_id: metadata.submissionId,
+      attempt_timestamp: metadata.submissionTimestamp,
+      answer_result_summary: localProgressSummaryText(localProgressSubmissionSummary(progress)),
+      deterministic_pass_fail: 'not_available',
+      evidence_label: 'Student-submitted local progress export',
+      evidence_status_label: 'export_metadata_only'
+    }), metadata);
   }
 
   function skillCheckCsvRow(attempt, exportTimestamp) {
@@ -1063,7 +1142,8 @@
     });
   }
 
-  function buildLocalProgressCsv(progress, exportTimestamp) {
+  function buildLocalProgressCsv(progress, exportTimestamp, metadata) {
+    var exportMetadata = normalizeExportMetadata(metadata, exportTimestamp);
     var skillRows = normalizeSkillCheckAttempts(progress.skillCheckAttempts).flatMap(function (attempt) {
       return [skillCheckCsvRow(attempt, exportTimestamp), reviewCsvRow(attempt, exportTimestamp)].filter(Boolean);
     });
@@ -1082,8 +1162,13 @@
     var knowledgeInterventionRows = safeArray(progress.knowledge_interventions).map(function (intervention) {
       return knowledgeInterventionCsvRow(intervention, progress.knowledge_schedules, exportTimestamp);
     });
-    return [CSV_HEADERS.join(',')]
+    var rows = [submissionSummaryCsvRow(progress, exportTimestamp, exportMetadata)]
       .concat(skillRows, examRows, learningRows, knowledgeStateRows, knowledgeErrorRows, knowledgeInterventionRows)
+      .map(function (row) {
+        return csvRowWithExportMetadata(row, exportMetadata);
+      });
+    return [CSV_HEADERS.join(',')]
+      .concat(rows)
       .map(function (row) {
       return typeof row === 'string' ? row : csvRow(row);
     }).join('\n');
@@ -1101,17 +1186,127 @@
     URL.revokeObjectURL(url);
   }
 
-  function exportLocalProgressCsv(button) {
+  function defaultReportingPeriod(date) {
+    var current = date ? new Date(date) : new Date();
+    var day = current.getDay();
+    var offset = day === 0 ? -6 : 1 - day;
+    var monday = new Date(current);
+    monday.setDate(current.getDate() + offset);
+    return 'Week of ' + monday.toISOString().slice(0, 10);
+  }
+
+  function localProgressEmailBody(metadata, summary, csv, includeCsv) {
+    var lines = [
+      'Asterion local progress export',
+      '',
+      'Student: ' + metadata.studentName,
+      'Class/group: ' + metadata.classGroup,
+      'Reporting period: ' + metadata.reportingPeriod,
+      'Submission timestamp: ' + metadata.submissionTimestamp,
+      'Submission ID: ' + metadata.submissionId,
+      '',
+      'Summary:',
+      localProgressSummaryText(summary),
+      '',
+      'Notes:',
+      'This export is generated from progress saved in this browser only.',
+      'Checked Practice rows are deterministic local checks. Exam Training rows are self-marked practice, not checked evidence.'
+    ];
+    if (includeCsv) {
+      lines = lines.concat([
+        '',
+        'CSV:',
+        csv
+      ]);
+    } else {
+      lines = lines.concat([
+        '',
+      'The CSV is too large for a reliable prefilled email body. Please paste the CSV copied from the Asterion page below this message.'
+      ]);
+    }
+    return lines.join('\n');
+  }
+
+  function progressMailtoHref(metadata, summary, csv) {
+    var subject = 'Asterion progress - ' + metadata.studentName + ' - ' + metadata.reportingPeriod;
+    var bodyWithCsv = localProgressEmailBody(metadata, summary, csv, true);
+    var hrefWithCsv = 'mailto:' + encodeURIComponent(metadata.teacherEmail)
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(bodyWithCsv);
+    if (hrefWithCsv.length <= MAILTO_PROGRESS_EXPORT_MAX_LENGTH) return { href: hrefWithCsv, includesCsv: true };
+    var bodyWithoutCsv = localProgressEmailBody(metadata, summary, csv, false);
+    return {
+      href: 'mailto:' + encodeURIComponent(metadata.teacherEmail)
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(bodyWithoutCsv),
+      includesCsv: false
+    };
+  }
+
+  function setExportStatus(panel, message) {
+    var status = panel?.querySelector('[data-export-status]');
+    if (status) status.textContent = message;
+  }
+
+  function showExportCsvFallback(panel, csv, shouldShow) {
+    var fallback = panel?.querySelector('[data-export-fallback]');
+    var csvOutput = panel?.querySelector('[data-export-csv-output]');
+    if (fallback instanceof HTMLElement) fallback.hidden = !shouldShow;
+    if (csvOutput instanceof HTMLTextAreaElement) csvOutput.value = shouldShow ? csv : '';
+  }
+
+  function exportLocalProgressEmail(form) {
     var progress = loadProgress();
     var timestamp = new Date().toISOString();
-    var csv = buildLocalProgressCsv(progress, timestamp);
-    var compactDate = timestamp.replace(/[:.]/g, '-');
-    downloadTextFile('asterion-local-progress-' + compactDate + '.csv', csv, 'text/csv;charset=utf-8');
-    var status = button.closest('[data-export-panel]')?.querySelector('[data-export-status]');
-    if (status) {
-      var rowCount = Math.max(0, csv.split('\n').length - 1);
-      status.textContent = 'CSV export prepared from this browser: ' + rowCount + ' row' + (rowCount === 1 ? '' : 's') + '.';
-    }
+    var data = new FormData(form);
+    var metadata = normalizeExportMetadata({
+      submissionId: createId('progress_export'),
+      studentName: data.get('studentName'),
+      classGroup: data.get('classGroup'),
+      teacherEmail: data.get('teacherEmail'),
+      reportingPeriod: data.get('reportingPeriod') || defaultReportingPeriod(timestamp),
+      submissionTimestamp: timestamp
+    }, timestamp);
+    progress.exportProfile = {
+      studentName: metadata.studentName,
+      classGroup: metadata.classGroup,
+      teacherEmail: metadata.teacherEmail,
+      reportingPeriod: metadata.reportingPeriod,
+      lastSubmissionId: metadata.submissionId,
+      lastSubmissionTimestamp: metadata.submissionTimestamp
+    };
+    saveProgress(progress);
+    var csv = buildLocalProgressCsv(progress, timestamp, metadata);
+    var summary = localProgressSubmissionSummary(progress);
+    var mailto = progressMailtoHref(metadata, summary, csv);
+    var panel = form.closest('[data-export-panel]');
+    var rowCount = Math.max(0, csv.split('\n').length - 1);
+    showExportCsvFallback(panel, csv, !mailto.includesCsv);
+    setExportStatus(
+      panel,
+      mailto.includesCsv
+        ? 'Email message prepared with ' + rowCount + ' CSV row' + (rowCount === 1 ? '' : 's') + ' in the message body.'
+        : 'Email message prepared. The CSV is too large for a reliable email body, so copy the CSV shown below into the email.'
+    );
+    window.location.href = mailto.href;
+  }
+
+  function setupProgressExportForms() {
+    document.querySelectorAll('[data-export-local-progress-form]').forEach(function (form) {
+      if (!(form instanceof HTMLFormElement)) return;
+      var progress = loadProgress();
+      var profile = progress.exportProfile && typeof progress.exportProfile === 'object' ? progress.exportProfile : {};
+      var studentName = form.elements.namedItem('studentName');
+      var classGroup = form.elements.namedItem('classGroup');
+      var teacherEmail = form.elements.namedItem('teacherEmail');
+      var reportingPeriod = form.elements.namedItem('reportingPeriod');
+      if (studentName instanceof HTMLInputElement && !studentName.value) studentName.value = profile.studentName || '';
+      if (classGroup instanceof HTMLInputElement && !classGroup.value) classGroup.value = profile.classGroup || '';
+      if (teacherEmail instanceof HTMLInputElement && !teacherEmail.value) teacherEmail.value = profile.teacherEmail || '';
+      if (reportingPeriod instanceof HTMLInputElement && !reportingPeriod.value) {
+        reportingPeriod.value = profile.reportingPeriod || defaultReportingPeriod();
+      }
+    });
   }
 
   function completionsFor(progress, regionId) {
@@ -1411,10 +1606,10 @@
       var link = panel.querySelector('[data-p3-next-step-link]');
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
-        if (title) title.textContent = 'Check review evidence';
-        if (copy) copy.textContent = 'All unit Learn and Checked Practice evidence is recorded in this browser. Mixed review is still local practice guidance, not a grade.';
+        if (title) title.textContent = 'Export progress';
+        if (copy) copy.textContent = 'All unit Learn and Checked Practice evidence is recorded in this browser. Send your CSV to your teacher, then use mixed review as local practice guidance.';
         if (link) {
-          link.textContent = 'Review Mistakes';
+          link.textContent = 'Export Progress';
           link.setAttribute('href', reviewHref);
         }
         return;
@@ -2776,6 +2971,7 @@
     buildP3DiagnosticReport: buildP3DiagnosticReport,
     collectP3DiagnosticEvaluation: collectP3DiagnosticEvaluation,
     renderP3DiagnosticFeedback: renderP3DiagnosticFeedback,
+    setupP3DiagnosticFlow: setupP3DiagnosticFlow,
     p1RepairUnlockStatus: p1RepairUnlockStatus
   };
 
@@ -3473,6 +3669,7 @@
   function setupPracticeStacks() {
     document.querySelectorAll('.practice-card-stack').forEach(function (stack) {
       if (stack.closest('[data-one-card-flow]')) return;
+      if (stack.closest('[data-p3-diagnostic-form]')) return;
       var cards = Array.from(stack.children).filter(function (child) {
         return child instanceof HTMLElement && child.classList.contains('practice-card');
       });
@@ -3521,6 +3718,132 @@
       });
 
       render();
+    });
+  }
+
+  function diagnosticQuestionIsComplete(card) {
+    var inputs = Array.from(card.querySelectorAll('[data-diagnostic-mark-point]')).filter(function (input) {
+      return input instanceof HTMLInputElement;
+    });
+    return inputs.length > 0 && inputs.every(function (input) {
+      return input.value.trim().length > 0;
+    });
+  }
+
+  function setupP3DiagnosticFlow() {
+    document.querySelectorAll('[data-p3-diagnostic-form]').forEach(function (form) {
+      if (!(form instanceof HTMLFormElement) || form.getAttribute('data-diagnostic-flow-ready') === 'true') return;
+      var cards = Array.from(form.querySelectorAll('[data-diagnostic-question]')).filter(function (card) {
+        return card instanceof HTMLElement;
+      });
+      if (!cards.length) return;
+
+      form.setAttribute('data-diagnostic-flow-ready', 'true');
+      var sections = Array.from(form.querySelectorAll('[data-diagnostic-section]')).filter(function (section) {
+        return section instanceof HTMLElement;
+      });
+      var previous = form.querySelector('[data-diagnostic-previous]');
+      var next = form.querySelector('[data-diagnostic-next]');
+      var submitPanel = form.querySelector('[data-diagnostic-submit-panel]');
+      var progressTitle = form.querySelector('[data-diagnostic-progress-title]');
+      var progressMessage = form.querySelector('[data-diagnostic-progress-message]');
+      var currentSection = form.querySelector('[data-diagnostic-current-section]');
+      var index = 0;
+
+      function setIndex(nextIndex, shouldFocus) {
+        index = Math.max(0, Math.min(cards.length - 1, nextIndex));
+        render(shouldFocus);
+      }
+
+      function activeCard() {
+        return cards[index];
+      }
+
+      function activeSectionId() {
+        return activeCard()?.closest('[data-diagnostic-section]')?.getAttribute('data-diagnostic-section') || '';
+      }
+
+      function activeQuestionCode() {
+        return questionCodeFromCard(activeCard());
+      }
+
+      function updateSubmitState(isCurrentComplete) {
+        var allComplete = cards.every(diagnosticQuestionIsComplete);
+        if (submitPanel instanceof HTMLElement) submitPanel.hidden = !(index === cards.length - 1 && isCurrentComplete && allComplete);
+        var submitButton = submitPanel?.querySelector('button[type="submit"]');
+        if (submitButton instanceof HTMLButtonElement) submitButton.disabled = !allComplete;
+        return allComplete;
+      }
+
+      function render(shouldFocus) {
+        var currentCard = activeCard();
+        var currentSectionId = activeSectionId();
+        var isCurrentComplete = currentCard ? diagnosticQuestionIsComplete(currentCard) : false;
+        var allComplete = updateSubmitState(isCurrentComplete);
+
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+          card.setAttribute('data-diagnostic-active', cardIndex === index ? 'true' : 'false');
+        });
+        sections.forEach(function (section) {
+          section.hidden = section.getAttribute('data-diagnostic-section') !== currentSectionId;
+        });
+        form.setAttribute('data-current-section', currentSectionId);
+
+        if (progressTitle) progressTitle.textContent = 'Question ' + (index + 1) + ' of ' + cards.length;
+        if (currentSection) currentSection.textContent = activeQuestionCode() || 'Diagnostic question';
+        if (progressMessage) {
+          progressMessage.textContent = isCurrentComplete
+            ? (index === cards.length - 1 ? (allComplete ? 'All questions are complete. Submit when ready.' : 'Finish any earlier unanswered question before submitting.') : 'This question is complete. Continue to the next one.')
+            : 'Answer this question to unlock the next one.';
+        }
+        if (previous instanceof HTMLButtonElement) previous.disabled = index === 0;
+        if (next instanceof HTMLButtonElement) {
+          next.disabled = !isCurrentComplete || index === cards.length - 1;
+          next.textContent = index === cards.length - 1 ? 'Ready to submit' : 'Next question';
+        }
+        if (shouldFocus && currentCard) {
+          if (typeof currentCard.scrollIntoView === 'function') {
+            currentCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          var firstInput = currentCard.querySelector('[data-diagnostic-mark-point]');
+          if (firstInput instanceof HTMLInputElement) firstInput.focus({ preventScroll: true });
+        }
+      }
+
+      cards.forEach(function (card) {
+        card.querySelectorAll('[data-diagnostic-mark-point]').forEach(function (input) {
+          input.addEventListener('input', function () {
+            render(false);
+          });
+        });
+      });
+
+      if (previous instanceof HTMLButtonElement) {
+        previous.addEventListener('click', function () {
+          setIndex(index - 1, true);
+        });
+      }
+      if (next instanceof HTMLButtonElement) {
+        next.addEventListener('click', function () {
+          if (!diagnosticQuestionIsComplete(activeCard())) {
+            render(false);
+            return;
+          }
+          setIndex(index + 1, true);
+        });
+      }
+
+      form.addEventListener('submit', function (event) {
+        var firstIncompleteIndex = cards.findIndex(function (card) {
+          return !diagnosticQuestionIsComplete(card);
+        });
+        if (firstIncompleteIndex === -1) return;
+        event.preventDefault();
+        setIndex(firstIncompleteIndex, true);
+      });
+
+      render(false);
     });
   }
 
@@ -4381,6 +4704,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
     setupHomepageDemo();
+    setupProgressExportForms();
+    setupP3DiagnosticFlow();
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();
@@ -4431,9 +4756,24 @@
         }
       }
 
-      var exportButton = target.closest('[data-export-local-progress]');
-      if (exportButton) {
-        exportLocalProgressCsv(exportButton);
+      var copyExportButton = target.closest('[data-copy-export-csv]');
+      if (copyExportButton) {
+        var panel = copyExportButton.closest('[data-export-panel]');
+        var csvOutput = panel?.querySelector('[data-export-csv-output]');
+        if (csvOutput instanceof HTMLTextAreaElement) {
+          csvOutput.select();
+          if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(csvOutput.value).then(function () {
+              setExportStatus(panel, 'CSV copied. Paste it into the email message before sending.');
+            }).catch(function () {
+              document.execCommand('copy');
+              setExportStatus(panel, 'CSV selected. Copy it, then paste it into the email message before sending.');
+            });
+          } else {
+            document.execCommand('copy');
+            setExportStatus(panel, 'CSV selected. Copy it, then paste it into the email message before sending.');
+          }
+        }
         return;
       }
     });
@@ -4457,8 +4797,14 @@
         return;
       }
       if (form.matches('[data-p3-diagnostic-form]')) {
+        if (event.defaultPrevented) return;
         event.preventDefault();
         submitP3Diagnostic(form);
+        return;
+      }
+      if (form.matches('[data-export-local-progress-form]')) {
+        event.preventDefault();
+        exportLocalProgressEmail(form);
         return;
       }
       if (form.matches('[data-p1-repair-module-form]')) {

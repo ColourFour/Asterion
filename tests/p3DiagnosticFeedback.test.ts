@@ -21,6 +21,7 @@ interface StaticSkillCheckTestHooks {
   buildP3DiagnosticReport: (form: HTMLFormElement) => StaticDiagnosticEvaluation['report'];
   collectP3DiagnosticEvaluation: (form: HTMLFormElement) => StaticDiagnosticEvaluation;
   renderP3DiagnosticFeedback: (panel: HTMLElement, evaluation: StaticDiagnosticEvaluation) => void;
+  setupP3DiagnosticFlow: () => void;
 }
 
 function hooks(): StaticSkillCheckTestHooks {
@@ -86,6 +87,45 @@ function diagnosticPanel(): HTMLElement {
   return panel;
 }
 
+function diagnosticFlowForm(): HTMLFormElement {
+  const form = document.createElement('form');
+  form.setAttribute('data-p3-diagnostic-form', '');
+  form.innerHTML = `
+    <section data-diagnostic-section="algebra_foundation"></section>
+    <section data-diagnostic-section="p3_transition"></section>
+    <section data-diagnostic-section="problem_solving"></section>
+    <section data-diagnostic-submit-panel hidden>
+      <button type="submit">Submit diagnostic</button>
+    </section>
+    <button type="button" data-diagnostic-previous>Previous</button>
+    <button type="button" data-diagnostic-next>Next question</button>
+    <p data-diagnostic-current-section></p>
+    <h2 data-diagnostic-progress-title></h2>
+    <p data-diagnostic-progress-message></p>
+  `;
+
+  for (const question of P3_DIAGNOSTIC_QUESTIONS) {
+    const card = document.createElement('article');
+    card.className = 'practice-card diagnostic-question-card';
+    card.setAttribute('data-diagnostic-question', question.id);
+    card.innerHTML = `
+      <p class="eyebrow">${question.sectionLabel}1 · ${question.answerFormat}</p>
+      <h3>${question.title}</h3>
+    `;
+    for (const markPoint of question.markPoints) {
+      const input = document.createElement('input');
+      input.setAttribute('data-diagnostic-mark-point', '');
+      input.setAttribute('data-question-id', question.id);
+      input.setAttribute('data-mark-point-id', markPoint.id);
+      card.appendChild(input);
+    }
+    form.querySelector(`[data-diagnostic-section="${question.sectionId}"]`)?.appendChild(card);
+  }
+
+  document.body.appendChild(form);
+  return form;
+}
+
 describe('P3 diagnostic student-facing feedback', () => {
   beforeAll(() => {
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
@@ -131,5 +171,41 @@ describe('P3 diagnostic student-facing feedback', () => {
     expect(evaluation.longestMissedQuestionStreak).toBe(0);
     expect(panel.querySelector('[data-diagnostic-confidence-panel]')?.hasAttribute('hidden')).toBe(true);
     expect(panel.querySelector('a.button')?.textContent).toBe('Continue');
+  });
+
+  it('shows only one diagnostic question and unlocks sections in authored order as answers are completed', () => {
+    const form = diagnosticFlowForm();
+    hooks().setupP3DiagnosticFlow();
+
+    const visibleQuestionIds = () => Array.from(form.querySelectorAll<HTMLElement>('[data-diagnostic-question]'))
+      .filter((card) => !card.hidden)
+      .map((card) => card.getAttribute('data-diagnostic-question'));
+    const visibleSections = () => Array.from(form.querySelectorAll<HTMLElement>('[data-diagnostic-section]'))
+      .filter((section) => !section.hidden)
+      .map((section) => section.getAttribute('data-diagnostic-section'));
+    const next = form.querySelector<HTMLButtonElement>('[data-diagnostic-next]');
+
+    expect(visibleQuestionIds()).toEqual(['p3diag-a01']);
+    expect(visibleSections()).toEqual(['algebra_foundation']);
+    expect(next?.disabled).toBe(true);
+
+    form.querySelector<HTMLInputElement>('[data-question-id="p3diag-a01"]')!.value = 'attempt';
+    form.querySelector<HTMLInputElement>('[data-question-id="p3diag-a01"]')!.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(next?.disabled).toBe(false);
+
+    next?.click();
+    expect(visibleQuestionIds()).toEqual(['p3diag-a02']);
+    expect(visibleSections()).toEqual(['algebra_foundation']);
+
+    for (const question of P3_DIAGNOSTIC_QUESTIONS.filter((item) => item.sectionId === 'algebra_foundation').slice(1)) {
+      for (const input of Array.from(form.querySelectorAll<HTMLInputElement>(`[data-question-id="${question.id}"]`))) {
+        input.value = 'attempt';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      next?.click();
+    }
+
+    expect(visibleQuestionIds()).toEqual(['p3diag-b01']);
+    expect(visibleSections()).toEqual(['p3_transition']);
   });
 });

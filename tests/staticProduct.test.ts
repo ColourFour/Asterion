@@ -181,7 +181,8 @@ describe('static P3 product contract', () => {
       expect(generatedP3).toContain('data-progress-field-guide');
       expect(generatedP3).toContain('data-progress-skill');
       expect(generatedP3).toContain('data-progress-exam');
-      expect(generatedP3).toContain('Review Mistakes');
+      expect(generatedP3).toContain('Export Progress');
+      expect(generatedP3).toContain('review/#export-progress');
       expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedP3.match(/data-path-unit-primary-action/g)?.length).toBe(9);
       expect(generatedP3.match(/class="path-unit-direct-routes"/g)?.length).toBe(9);
@@ -212,7 +213,8 @@ describe('static P3 product contract', () => {
     const generatedReviewPath = 'docs/p3/review/index.html';
     if (existsSync(generatedReviewPath)) {
       const generatedReview = readFileSync(generatedReviewPath, 'utf8');
-      expect(generatedReview).toContain('Review Mistakes');
+      expect(generatedReview).toContain('Export Progress');
+      expect(generatedReview).toContain('Review mistakes from saved Checked Practice');
       expect(generatedReview).toContain('data-p3-exam-review-gate');
       expect(generatedReview).toContain('Mixed Paper 3 questions');
       expect(generatedReview).toContain('Locked until the path is complete');
@@ -243,8 +245,12 @@ describe('static P3 product contract', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
-    expect(generatorSource).toContain('Export local progress CSV');
-    expect(staticClientSource).toContain('data-export-local-progress');
+    expect(generatorSource).toContain('Export Progress');
+    expect(generatorSource).toContain('Send local progress CSV');
+    expect(generatorSource).toContain('data-export-local-progress-form');
+    expect(staticClientSource).toContain('data-export-local-progress-form');
+    expect(staticClientSource).toContain('mailto:');
+    expect(staticClientSource).toContain('data-copy-export-csv');
     expect(generatorSource).toContain('Print / Save PDF');
 
     const algebraWorksheetPath = 'docs/p3/topics/algebra/worksheet/index.html';
@@ -257,7 +263,7 @@ describe('static P3 product contract', () => {
 
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('Hint');
-    expect(generatorSource).toContain('Review Mistakes');
+    expect(generatorSource).toContain('Review mistakes from saved Checked Practice');
   });
 
   it('keeps local agent-loop run artifacts out of git status noise', () => {

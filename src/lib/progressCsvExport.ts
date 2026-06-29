@@ -11,6 +11,11 @@ import type {
 import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
 
 export const LOCAL_PROGRESS_CSV_HEADERS = [
+  'submission_id',
+  'student_name',
+  'class_group',
+  'reporting_period',
+  'submission_timestamp',
   'export_timestamp',
   'topic',
   'route_page_type',
@@ -42,6 +47,25 @@ export const LOCAL_PROGRESS_CSV_HEADERS = [
 export type LocalProgressCsvHeader = typeof LOCAL_PROGRESS_CSV_HEADERS[number];
 export type LocalProgressCsvRow = Record<LocalProgressCsvHeader, string>;
 
+export interface LocalProgressExportMetadata {
+  submissionId?: string;
+  studentName?: string;
+  classGroup?: string;
+  reportingPeriod?: string;
+  submissionTimestamp?: string;
+}
+
+export interface LocalProgressSubmissionSummary {
+  checkedPracticeAttempts: number;
+  checkedPracticePasses: number;
+  reviewCandidates: number;
+  selfMarkedExamAttempts: number;
+  learningActivityAttempts: number;
+  knowledgeStateUpdates: number;
+  knowledgeErrors: number;
+  knowledgeInterventions: number;
+}
+
 function cleanCell(value: unknown): string {
   if (value === undefined || value === null || value === '') return '';
   if (Array.isArray(value)) return value.filter(Boolean).join('|');
@@ -62,6 +86,82 @@ function blankRow(exportTimestamp: string): LocalProgressCsvRow {
     header,
     header === 'export_timestamp' ? exportTimestamp : '',
   ])) as LocalProgressCsvRow;
+}
+
+function normalizeExportMetadata(
+  metadataOrTimestamp: LocalProgressExportMetadata | string | undefined,
+  fallbackTimestamp: string,
+): Required<LocalProgressExportMetadata> {
+  const metadata = typeof metadataOrTimestamp === 'object' && metadataOrTimestamp !== null
+    ? metadataOrTimestamp
+    : {};
+  return {
+    submissionId: cleanCell(metadata.submissionId),
+    studentName: cleanCell(metadata.studentName),
+    classGroup: cleanCell(metadata.classGroup),
+    reportingPeriod: cleanCell(metadata.reportingPeriod),
+    submissionTimestamp: cleanCell(metadata.submissionTimestamp) || fallbackTimestamp,
+  };
+}
+
+function rowWithExportMetadata(row: LocalProgressCsvRow, metadata: Required<LocalProgressExportMetadata>): LocalProgressCsvRow {
+  return {
+    ...row,
+    submission_id: metadata.submissionId,
+    student_name: metadata.studentName,
+    class_group: metadata.classGroup,
+    reporting_period: metadata.reportingPeriod,
+    submission_timestamp: metadata.submissionTimestamp,
+  };
+}
+
+function summaryText(summary: LocalProgressSubmissionSummary): string {
+  return [
+    `checked_practice_attempts=${summary.checkedPracticeAttempts}`,
+    `checked_practice_passes=${summary.checkedPracticePasses}`,
+    `review_candidates=${summary.reviewCandidates}`,
+    `self_marked_exam_attempts=${summary.selfMarkedExamAttempts}`,
+    `learning_activity_attempts=${summary.learningActivityAttempts}`,
+    `knowledge_state_updates=${summary.knowledgeStateUpdates}`,
+    `knowledge_errors=${summary.knowledgeErrors}`,
+    `knowledge_interventions=${summary.knowledgeInterventions}`,
+  ].join('; ');
+}
+
+export function localProgressSubmissionSummary(progress: Partial<StoredProgress>): LocalProgressSubmissionSummary {
+  const skillAttempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
+  const reviewCandidates = skillAttempts.filter((attempt) => rowForReviewCandidate(attempt, '')).length;
+  const examAttempts = Array.isArray(progress.attempts) ? progress.attempts : [];
+  return {
+    checkedPracticeAttempts: skillAttempts.length,
+    checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
+    reviewCandidates,
+    selfMarkedExamAttempts: examAttempts.filter((attempt) => attempt.selfMarked === true).length,
+    learningActivityAttempts: Array.isArray(progress.learningActivityAttempts) ? progress.learningActivityAttempts.length : 0,
+    knowledgeStateUpdates: Array.isArray(progress.knowledge_state_updates) ? progress.knowledge_state_updates.length : 0,
+    knowledgeErrors: Array.isArray(progress.knowledge_errors) ? progress.knowledge_errors.length : 0,
+    knowledgeInterventions: Array.isArray(progress.knowledge_interventions) ? progress.knowledge_interventions.length : 0,
+  };
+}
+
+function rowForSubmissionSummary(
+  progress: Partial<StoredProgress>,
+  exportTimestamp: string,
+  metadata: Required<LocalProgressExportMetadata>,
+): LocalProgressCsvRow {
+  const summary = localProgressSubmissionSummary(progress);
+  return rowWithExportMetadata({
+    ...blankRow(exportTimestamp),
+    topic: 'All P3 local progress',
+    route_page_type: 'export',
+    activity_type: 'Submission Summary',
+    item_id: metadata.submissionId,
+    attempt_timestamp: metadata.submissionTimestamp,
+    answer_result_summary: summaryText(summary),
+    deterministic_pass_fail: 'not_available',
+    evidence_label: 'Student-submitted local progress export',
+    evidence_status_label: 'export_metadata_only',
+  }, metadata);
 }
 
 function scoreSummary(attempt: Attempt): string {
@@ -224,8 +324,12 @@ function rowForKnowledgeIntervention(
 
 export function localProgressCsvRows(
   progress: Partial<StoredProgress>,
-  exportTimestamp = new Date().toISOString(),
+  exportMetadataOrTimestamp: LocalProgressExportMetadata | string = new Date().toISOString(),
 ): LocalProgressCsvRow[] {
+  const exportTimestamp = typeof exportMetadataOrTimestamp === 'string'
+    ? exportMetadataOrTimestamp
+    : (exportMetadataOrTimestamp.submissionTimestamp ?? new Date().toISOString());
+  const exportMetadata = normalizeExportMetadata(exportMetadataOrTimestamp, exportTimestamp);
   const skillRows = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts)
     .flatMap((attempt) => [
       rowForSkillCheckAttempt(attempt, exportTimestamp),
@@ -251,21 +355,22 @@ export function localProgressCsvRows(
     ))
     : [];
   return [
+    rowForSubmissionSummary(progress, exportTimestamp, exportMetadata),
     ...skillRows,
     ...examRows,
     ...learningRows,
     ...knowledgeStateRows,
     ...knowledgeErrorRows,
     ...knowledgeInterventionRows,
-  ];
+  ].map((row) => rowWithExportMetadata(row, exportMetadata));
 }
 
 export function buildLocalProgressCsv(
   progress: Partial<StoredProgress>,
-  exportTimestamp = new Date().toISOString(),
+  exportMetadataOrTimestamp: LocalProgressExportMetadata | string = new Date().toISOString(),
 ): string {
   return [
     LOCAL_PROGRESS_CSV_HEADERS.join(','),
-    ...localProgressCsvRows(progress, exportTimestamp).map(csvLine),
+    ...localProgressCsvRows(progress, exportMetadataOrTimestamp).map(csvLine),
   ].join('\n');
 }

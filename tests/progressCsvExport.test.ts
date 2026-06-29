@@ -4,6 +4,7 @@ import {
   csvEscapeCell,
   LOCAL_PROGRESS_CSV_HEADERS,
   localProgressCsvRows,
+  localProgressSubmissionSummary,
 } from '../src/lib/progressCsvExport';
 import type { Attempt, SkillCheckAttemptRecord, StoredProgress } from '../src/types';
 
@@ -132,15 +133,33 @@ describe('local progress CSV export', () => {
       }],
     };
 
-    const rows = localProgressCsvRows(progress, '2026-06-12T03:00:00.000Z');
+    const metadata = {
+      submissionId: 'progress_export_1',
+      studentName: 'Ada Lovelace',
+      classGroup: 'Summer P3',
+      reportingPeriod: 'Week of 2026-06-08',
+      submissionTimestamp: '2026-06-12T03:00:00.000Z',
+    };
+    const rows = localProgressCsvRows(progress, metadata);
 
     expect(rows).toEqual([
+      expect.objectContaining({
+        activity_type: 'Submission Summary',
+        route_page_type: 'export',
+        submission_id: 'progress_export_1',
+        student_name: 'Ada Lovelace',
+        class_group: 'Summer P3',
+        reporting_period: 'Week of 2026-06-08',
+        answer_result_summary: 'checked_practice_attempts=1; checked_practice_passes=0; review_candidates=1; self_marked_exam_attempts=1; learning_activity_attempts=0; knowledge_state_updates=1; knowledge_errors=1; knowledge_interventions=1',
+        evidence_status_label: 'export_metadata_only',
+      }),
       expect.objectContaining({
         activity_type: 'Checked Practice',
         route_page_type: 'skill-check',
         item_id: 'sc-alg-001',
         deterministic_pass_fail: 'fail',
         answer_result_summary: 'bad, answer',
+        student_name: 'Ada Lovelace',
       }),
       expect.objectContaining({
         activity_type: 'Review',
@@ -176,8 +195,28 @@ describe('local progress CSV export', () => {
       }),
     ]);
 
-    const csv = buildLocalProgressCsv(progress, '2026-06-12T03:00:00.000Z');
+    const summary = localProgressSubmissionSummary(progress);
+    expect(summary).toEqual({
+      checkedPracticeAttempts: 1,
+      checkedPracticePasses: 0,
+      reviewCandidates: 1,
+      selfMarkedExamAttempts: 1,
+      learningActivityAttempts: 0,
+      knowledgeStateUpdates: 1,
+      knowledgeErrors: 1,
+      knowledgeInterventions: 1,
+    });
+
+    const csv = buildLocalProgressCsv(progress, metadata);
     expect(csv.split('\n')[0]).toBe(LOCAL_PROGRESS_CSV_HEADERS.join(','));
+    expect(LOCAL_PROGRESS_CSV_HEADERS.slice(0, 5)).toEqual([
+      'submission_id',
+      'student_name',
+      'class_group',
+      'reporting_period',
+      'submission_timestamp',
+    ]);
+    expect(csv).toContain('progress_export_1,Ada Lovelace,Summer P3,Week of 2026-06-08,2026-06-12T03:00:00.000Z');
     expect(csv).toContain('"bad, answer"');
     expect(csv).toContain('micro_reteach');
   });

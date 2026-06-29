@@ -737,6 +737,7 @@ export interface StoredProgress {
   attempts: Attempt[];
   learningActivityAttempts: LearningActivityAttempt[];
   skillCheckAttempts?: SkillCheckAttemptRecord[];
+  exportProfile?: ProgressExportProfile;
   regionLearning?: Record<string, RegionLearningRecord>;
   error_log?: P3ErrorLogEntry[];
   topic_performance?: Record<string, P3TopicPerformanceStats>;
@@ -750,4 +751,13 @@ export interface StoredProgress {
   knowledge_errors?: KnowledgeErrorObject[];
   knowledge_interventions?: KnowledgeInterventionPlan[];
   knowledge_schedules?: KnowledgeSchedulingInstruction[];
+}
+
+export interface ProgressExportProfile {
+  studentName?: string;
+  classGroup?: string;
+  teacherEmail?: string;
+  reportingPeriod?: string;
+  lastSubmissionId?: string;
+  lastSubmissionTimestamp?: string;
 }
