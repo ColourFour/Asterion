@@ -1721,6 +1721,7 @@ body.home-page main {
   opacity: 0.58;
   background-repeat: repeat;
   transform-origin: center;
+  will-change: opacity, transform, filter, background-position;
 }
 
 .home-star-layer-one {
@@ -1729,7 +1730,7 @@ body.home-page main {
     radial-gradient(circle, rgba(95, 173, 255, 0.72) 0 1px, transparent 1.8px);
   background-position: 4px 18px, 68px 42px;
   background-size: 128px 128px, 196px 196px;
-  animation: homeTwinkle 6.5s ease-in-out infinite alternate;
+  animation: homeStarDrift 22s ease-in-out infinite alternate;
 }
 
 .home-star-layer-two {
@@ -1739,7 +1740,57 @@ body.home-page main {
     radial-gradient(circle, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.5px);
   background-position: 42px 12px, 102px 76px;
   background-size: 172px 172px, 238px 238px;
-  animation: homeTwinkleSoft 8s ease-in-out infinite alternate;
+  animation: homeStarDriftSoft 28s ease-in-out infinite alternate;
+}
+
+.home-star-layer::before,
+.home-star-layer::after {
+  content: "";
+  position: absolute;
+  inset: -2%;
+  background-repeat: repeat;
+  pointer-events: none;
+  will-change: opacity, transform, filter, background-position;
+}
+
+.home-star-layer-one::before {
+  opacity: 0.46;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.98) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(156, 211, 255, 0.82) 0 1px, transparent 1.6px);
+  background-position: 24px 38px, 112px 84px;
+  background-size: 214px 214px, 302px 302px;
+  animation: homeStarTwinkle 4.6s ease-in-out infinite alternate;
+}
+
+.home-star-layer-one::after {
+  opacity: 0.28;
+  background-image:
+    radial-gradient(circle, rgba(255, 249, 222, 0.92) 0 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(115, 190, 255, 0.8) 0 1px, transparent 1.7px);
+  background-position: 78px 20px, 18px 118px;
+  background-size: 266px 266px, 354px 354px;
+  animation: homeStarTwinkleSlow 7.2s ease-in-out infinite alternate;
+}
+
+.home-star-layer-two::before {
+  opacity: 0.42;
+  background-image:
+    radial-gradient(circle, rgba(230, 245, 255, 0.96) 0 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.78) 0 1px, transparent 1.5px);
+  background-position: 54px 64px, 138px 32px;
+  background-size: 238px 238px, 328px 328px;
+  animation: homeStarTwinkleSoft 5.8s ease-in-out infinite alternate-reverse;
+}
+
+.home-star-layer-two::after {
+  opacity: 0.24;
+  background-image:
+    radial-gradient(circle, rgba(137, 202, 255, 0.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.6px);
+  background-position: 18px 92px, 166px 104px;
+  background-size: 286px 286px, 402px 402px;
+  animation: homeStarTwinkleSharp 3.9s ease-in-out infinite alternate;
 }
 
 .home-constellation {
@@ -1983,27 +2034,111 @@ body.home-page main {
   line-height: 1;
 }
 
-@keyframes homeTwinkle {
+@keyframes homeStarDrift {
   from {
-    opacity: 0.34;
-    transform: scale(1);
+    opacity: 0.46;
+    background-position: 4px 18px, 68px 42px;
+    transform: translate3d(-1px, 0, 0) scale(1);
   }
 
   to {
-    opacity: 0.82;
-    transform: scale(1.012);
+    opacity: 0.62;
+    background-position: 10px 15px, 62px 47px;
+    transform: translate3d(1px, -2px, 0) scale(1.004);
   }
 }
 
-@keyframes homeTwinkleSoft {
+@keyframes homeStarDriftSoft {
   from {
-    opacity: 0.22;
-    transform: scale(1.01);
+    opacity: 0.28;
+    background-position: 42px 12px, 102px 76px;
+    transform: translate3d(0, 1px, 0) scale(1.002);
   }
 
   to {
-    opacity: 0.64;
-    transform: scale(1);
+    opacity: 0.44;
+    background-position: 36px 18px, 109px 72px;
+    transform: translate3d(-2px, -1px, 0) scale(1);
+  }
+}
+
+@keyframes homeStarTwinkle {
+  0% {
+    opacity: 0.22;
+    filter: brightness(0.78);
+    transform: translate3d(0, 0, 0);
+  }
+
+  48% {
+    opacity: 0.72;
+    filter: brightness(1.35);
+    transform: translate3d(1px, -1px, 0);
+  }
+
+  100% {
+    opacity: 0.38;
+    filter: brightness(0.92);
+    transform: translate3d(-1px, 1px, 0);
+  }
+}
+
+@keyframes homeStarTwinkleSlow {
+  0% {
+    opacity: 0.16;
+    filter: brightness(0.72);
+    background-position: 78px 20px, 18px 118px;
+    transform: translate3d(0, 1px, 0);
+  }
+
+  56% {
+    opacity: 0.58;
+    filter: brightness(1.28);
+  }
+
+  100% {
+    opacity: 0.3;
+    filter: brightness(0.9);
+    background-position: 82px 16px, 14px 122px;
+    transform: translate3d(1px, -1px, 0);
+  }
+}
+
+@keyframes homeStarTwinkleSoft {
+  0% {
+    opacity: 0.18;
+    filter: brightness(0.76);
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  42% {
+    opacity: 0.54;
+    filter: brightness(1.22);
+  }
+
+  100% {
+    opacity: 0.34;
+    filter: brightness(0.94);
+    transform: translate3d(1px, 1px, 0);
+  }
+}
+
+@keyframes homeStarTwinkleSharp {
+  0% {
+    opacity: 0.12;
+    filter: brightness(0.68);
+    transform: translate3d(0, 0, 0);
+  }
+
+  34% {
+    opacity: 0.68;
+    filter: brightness(1.45);
+    transform: translate3d(1px, -1px, 0);
+  }
+
+  100% {
+    opacity: 0.2;
+    filter: brightness(0.86);
+    transform: translate3d(-1px, 1px, 0);
   }
 }
 
