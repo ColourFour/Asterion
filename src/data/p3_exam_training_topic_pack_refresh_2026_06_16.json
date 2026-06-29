@@ -455,7 +455,41 @@
           "detected_mark_values": [
             4
           ],
-          "review_status": "ready"
+          "review_status": "ready",
+          "reviewed_mark_points": [
+            {
+              "id": "31summer23_q03_whole_mp01",
+              "mark_code": "B1",
+              "label": "State unsimplified term in x^3, or its coefficient, in the expansion of (1+4x)^(1/2).",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "31summer23_q03_whole_mp02",
+              "mark_code": "B1",
+              "label": "State unsimplified term in x^2, or its coefficient, in the expansion of (1+4x)^(1/2).",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "31summer23_q03_whole_mp03",
+              "mark_code": "M1",
+              "label": "Multiply by (3+x) and combine terms in x^3, or their coefficients.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "31summer23_q03_whole_mp04",
+              "mark_code": "A1",
+              "label": "Obtain answer 10, or accept 10x^3.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            }
+          ]
         }
       ],
       "usage_roles": {
@@ -1348,7 +1382,49 @@
           "detected_mark_values": [
             5
           ],
-          "review_status": "ready"
+          "review_status": "ready",
+          "reviewed_mark_points": [
+            {
+              "id": "32autumn23_q03_whole_mp01",
+              "mark_code": "M1",
+              "label": "Substitute x = 1/2 and equate the result to zero, or use equivalent division remainder work.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32autumn23_q03_whole_mp02",
+              "mark_code": "A1",
+              "label": "Obtain a correct evaluated equation, e.g. 1/4 + a/4 - 11/2 + b = 0 or a + 4b = 21.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32autumn23_q03_whole_mp03",
+              "mark_code": "M1",
+              "label": "Substitute x = -1 and equate the result to 12, or use equivalent division remainder work.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32autumn23_q03_whole_mp04",
+              "mark_code": "A1",
+              "label": "Obtain a correct evaluated equation, e.g. -2 + a + 11 + b = 12 or a + b = 3.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32autumn23_q03_whole_mp05",
+              "mark_code": "A1",
+              "label": "Obtain a = -3 and b = 6.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            }
+          ]
         }
       ],
       "usage_roles": {
@@ -1745,7 +1821,49 @@
           "detected_mark_values": [
             5
           ],
-          "review_status": "ready"
+          "review_status": "ready",
+          "reviewed_mark_points": [
+            {
+              "id": "32spring23_q03_whole_mp01",
+              "mark_code": "M1",
+              "label": "Commence division and reach partial quotient 2x^2 + (a +/- 2)x.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring23_q03_whole_mp02",
+              "mark_code": "A1",
+              "label": "Obtain correct quotient 2x^2 + (a + 2)x + a.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring23_q03_whole_mp03",
+              "mark_code": "M1",
+              "label": "Set their linear remainder equal to part of 3x + 2 and solve for a or for b.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring23_q03_whole_mp04",
+              "mark_code": "A1",
+              "label": "Obtain answer a = -3.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring23_q03_whole_mp05",
+              "mark_code": "A1",
+              "label": "Obtain answer b = 5.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            }
+          ]
         }
       ],
       "usage_roles": {
@@ -2265,7 +2383,33 @@
           "detected_mark_values": [
             3
           ],
-          "review_status": "ready"
+          "review_status": "ready",
+          "reviewed_mark_points": [
+            {
+              "id": "32spring24_q01_whole_mp01",
+              "mark_code": "M1",
+              "label": "Commence division and reach partial quotient of the form x^2 +/- 3x, or equivalent coefficient comparison.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring24_q01_whole_mp02",
+              "mark_code": "A1",
+              "label": "Obtain quotient x^2 - 3x + 4.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            },
+            {
+              "id": "32spring24_q01_whole_mp03",
+              "mark_code": "A1",
+              "label": "Obtain remainder 3x + 7.",
+              "source": "reviewed_mark_scheme_image",
+              "review_status": "reviewed",
+              "confidence": 1
+            }
+          ]
         }
       ],
       "usage_roles": {

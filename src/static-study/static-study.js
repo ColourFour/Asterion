@@ -2309,7 +2309,7 @@
       { area: 'Vectors', prompt: 'Find the magnitude of (3, 4).', answer: '5', why: 'Use sqrt(3^2 + 4^2).' }
     ]
   };
-  var P1_REPAIR_LOCK_MESSAGE = 'P3 readiness recommendation: complete foundation repair modules before continuing.';
+  var P1_REPAIR_LOCK_MESSAGE = 'P3 readiness recommendation: complete foundation review modules before continuing.';
   var P1_REPAIR_SKILL_TAGS = [
     'ALGEBRA_MANIPULATION',
     'EQUATION_SOLVING',
@@ -2547,7 +2547,7 @@
   }
 
   function diagnosticPathLabel(path) {
-    if (path === 'P1_REPAIR_REQUIRED') return 'Foundation repair';
+    if (path === 'P1_REPAIR_REQUIRED') return 'Foundation review';
     if (path === 'ACCELERATED_P3_PATH') return 'Accelerated P3';
     return 'Full P3 path';
   }
@@ -2850,9 +2850,9 @@
         return;
       }
       node.textContent = unlock.p3_access_unlocked
-        ? 'Repair target met. Continue with the full P3 path.'
+        ? 'P1 review target met. Continue with the full P3 path.'
         : unlock.completed_module_count + '/' + unlock.required_module_count + ' modules complete; '
-          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. Repair route still recommended before P3 Exam Training.';
+          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. P1 review still recommended before P3 Exam Training.';
     });
   }
 

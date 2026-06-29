@@ -1,4 +1,5 @@
 import type { DeepSeekMetadata, NormalizedQuestion, PaperFamily, QuestionBankDiagnostics, QuestionContentSource, QuestionContentSourceKind, QuestionEligibility, QuestionMarkPoint, QuestionPartMark, QuestionPartRouteMapping, QuestionRouteEvidence, QuestionTextQuality, QuestionTopicDistribution, QuestionTopicRouting } from '../types';
+import { reviewedExamTrainingMarkPointsForSubpart } from '../data/examTrainingReviewedMarkPoints';
 import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
@@ -261,6 +262,41 @@ function markPointIdPrefix(label: string, sourceRecord: LooseRecord | undefined)
     ?? normalizedPartKey(label)
     ?? 'part'
   ).replace(/[^a-z0-9_-]+/gi, '_');
+}
+
+function reviewedMarkPointsForSubpart(
+  label: string,
+  sourceRecord: LooseRecord | undefined,
+  marksAvailable: number,
+): QuestionMarkPoint[] | undefined {
+  if (!sourceRecord || marksAvailable <= 0) return undefined;
+  const rawPoints = [
+    sourceRecord.reviewed_mark_points,
+    sourceRecord.reviewedMarkPoints,
+    sourceRecord.mark_points,
+    sourceRecord.markPoints,
+  ].find(Array.isArray)
+    ?? reviewedExamTrainingMarkPointsForSubpart(pickString(sourceRecord, ['subpart_id', 'subpartId', 'part_id', 'partId', 'id']));
+  if (!Array.isArray(rawPoints) || rawPoints.length !== marksAvailable) return undefined;
+
+  const prefix = markPointIdPrefix(label, sourceRecord);
+  const points = rawPoints.map((point, index): QuestionMarkPoint | undefined => {
+    const record = asRecord(point);
+    const markCode = pickString(record, ['mark_code', 'markCode']);
+    const pointLabel = cleanMarkPointText(pickString(record, ['label', 'student_action', 'studentAction', 'answer_target']) ?? '');
+    if (!markCode || pointLabel.length < 4 || pointLabel.length > 240) return undefined;
+    return {
+      id: pickString(record, ['id']) ?? `${prefix}_mp${String(index + 1).padStart(2, '0')}`,
+      markCode,
+      label: pointLabel,
+      source: 'mark_scheme_text',
+      confidence: pickNumber(record, ['confidence']),
+      reviewStatus: pickString(record, ['review_status', 'reviewStatus']) ?? 'reviewed',
+    };
+  });
+
+  if (points.some((point) => !point)) return undefined;
+  return points as QuestionMarkPoint[];
 }
 
 function markPointsFromSchemeText(
@@ -860,7 +896,8 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number, routing?: Q
     }
 
     const markSchemeText = markSchemeTextForSubpart(sourceRecord);
-    const markPoints = markPointsFromSchemeText(label, sourceRecord, marksAvailable);
+    const markPoints = reviewedMarkPointsForSubpart(label, sourceRecord, marksAvailable)
+      ?? markPointsFromSchemeText(label, sourceRecord, marksAvailable);
     if (!markPoints?.length) return undefined;
 
     return [{
@@ -884,7 +921,8 @@ function questionPartMarks(record: LooseRecord, totalMarks?: number, routing?: Q
   return labels.map((label, index) => {
     const sourceRecord = findSubpartRecord(label, sourceSubpartRecords);
     const markSchemeText = markSchemeTextForSubpart(sourceRecord);
-    const markPoints = markPointsFromSchemeText(label, sourceRecord, wholePositiveMarks[index]);
+    const markPoints = reviewedMarkPointsForSubpart(label, sourceRecord, wholePositiveMarks[index])
+      ?? markPointsFromSchemeText(label, sourceRecord, wholePositiveMarks[index]);
     return {
       ...metadataForPart(label, sourceRecord, findPartRouteMapping(label, partMappings)),
       label: partLabel(label),
