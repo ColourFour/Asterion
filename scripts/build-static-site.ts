@@ -2577,6 +2577,7 @@ function renderLearnCheckForm(
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
+        ${isPrimary ? '<button class="button primary-button learn-retry-cta" type="button" data-retry-learn-primary hidden>Try this question again</button>' : ''}
         ${isPrimary && step.similarCheck ? `<button class="button primary-button learn-similar-cta" type="button" data-try-learn-similar="${escapeAttr(similarTargetId)}" hidden>Try a similar question</button>` : ''}
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>

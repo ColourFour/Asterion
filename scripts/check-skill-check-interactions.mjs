@@ -189,7 +189,9 @@ try {
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
     answerRevealHighlighted: document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.classList.contains('is-highlighted') === true,
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
+    retryCtaVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-retry-learn-primary]')?.hidden,
     similarCtaVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-try-learn-similar]')?.hidden,
+    retryCtaFocused: document.activeElement === document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-retry-learn-primary]'),
     learnMistakePanelMissing: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-mistake-tag-panel]'),
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     nextStillLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
@@ -202,10 +204,25 @@ try {
   assert(algebraWrongState.answerRevealVisible, 'Answer reveal must become available after a submitted attempt.');
   assert(algebraWrongState.answerRevealHighlighted, 'Wrong Learn attempt must highlight the answer reveal control.');
   assert(algebraWrongState.similarVisible, 'Similar checked question must appear after the primary action is checked.');
+  assert(algebraWrongState.retryCtaVisible, 'Wrong Learn attempt must show a retry button for the first checked setup.');
   assert(algebraWrongState.similarCtaVisible, 'Wrong Learn attempt must show a Try a similar question button.');
+  assert(algebraWrongState.retryCtaFocused, 'Wrong Learn attempt must focus the retry-first action before the similar action.');
   assert(algebraWrongState.learnMistakePanelMissing, 'Learn Mode must not ask students to choose what went wrong after a miss.');
   assert(algebraWrongState.transferHidden, 'Exam transfer must stay hidden until the similar checked question is attempted.');
   assert(algebraWrongState.nextStillLocked, 'Wrong primary attempt must not complete the step.');
+
+  await algebraPrimary.locator('[data-retry-learn-primary]').click();
+  const algebraRetryState = await page.evaluate(() => {
+    const input = document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [name="submittedAnswer"]');
+    return {
+      answerCleared: input instanceof HTMLInputElement && input.value === '',
+      inputFocused: document.activeElement === input,
+      explanationStillVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.hidden,
+    };
+  });
+  assert(algebraRetryState.answerCleared, 'Retrying the first Learn setup must clear the previous wrong answer.');
+  assert(algebraRetryState.inputFocused, 'Retrying the first Learn setup must focus the original answer input.');
+  assert(algebraRetryState.explanationStillVisible, 'Retrying the first Learn setup must keep the explanation available.');
 
   await submitAnswer(algebraPrimary, '2');
   await submitAnswer(algebraSimilar, '-3');

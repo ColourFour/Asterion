@@ -5583,6 +5583,7 @@ body.learn-mode-page .learn-exam-transfer {
   background: #f8fbff;
 }
 
+.learn-retry-cta[hidden],
 .learn-similar-cta[hidden] {
   display: none;
 }

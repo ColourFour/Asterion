@@ -3411,6 +3411,7 @@
     var hint = form.querySelector('[data-learn-hint]');
     var afterAttempt = form.querySelector('[data-learn-after-attempt]');
     var answerReveal = form.querySelector('[data-learn-answer-reveal]');
+    var retryCta = form.querySelector('[data-retry-learn-primary]');
     var similarCta = form.querySelector('[data-try-learn-similar]');
     var stepCard = form.closest('[data-learn-step-card]');
     var variant = form.getAttribute('data-learn-variant') || 'primary';
@@ -3426,6 +3427,7 @@
     }
     if (isPrimary && similar) similar.hidden = false;
     if (transfer && (!requiresSimilar || !isPrimary)) transfer.hidden = false;
+    if (retryCta && isPrimary) retryCta.hidden = false;
     if (similarCta && isPrimary && similar) similarCta.hidden = false;
 
     if (checkResult.isCorrect) {
@@ -3438,6 +3440,7 @@
         submitButton.textContent = 'Check Answer';
         submitButton.className = 'button secondary-button';
       }
+      if (retryCta) retryCta.hidden = true;
       if (isPrimary && requiresSimilar) {
         setSkillFeedback(form, 'Correct. Primary step checked; complete the similar question before this lesson step is finished.', 'correct');
       }
@@ -3446,16 +3449,36 @@
       return;
     }
 
-    setSkillFeedback(form, 'Not yet. Review the explanation, reveal the answer if needed, then try a similar question.', 'incorrect');
+    setSkillFeedback(form, 'Not yet. Review the explanation, then try this first setup again before moving on.', 'incorrect');
     form.setAttribute('data-used-hint', 'true');
     if (hint) hint.hidden = false;
     if (submitButton) {
       submitButton.textContent = 'Try Again';
       submitButton.className = 'button primary-button';
     }
-    if (similarCta instanceof HTMLElement && isPrimary && similar) similarCta.focus({ preventScroll: true });
+    if (retryCta instanceof HTMLElement && isPrimary) retryCta.focus({ preventScroll: true });
     window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
     updateLearnModeFlowState();
+  }
+
+  function retryLearnPrimaryQuestion(button) {
+    var form = button.closest('[data-check-learn-answer]');
+    if (!(form instanceof HTMLFormElement)) return;
+    Array.from(form.elements).forEach(function (field) {
+      if (field instanceof HTMLInputElement && field.name === 'submittedAnswer') {
+        if (field.type === 'checkbox' || field.type === 'radio') field.checked = false;
+        else field.value = '';
+      }
+      if (field instanceof HTMLTextAreaElement && field.name === 'submittedAnswer') field.value = '';
+    });
+    var input = form.querySelector('[name="submittedAnswer"]');
+    var submit = form.querySelector('button[type="submit"]');
+    setSkillFeedback(form, 'Try the first checked setup again. The explanation can stay open while you retry.', 'incorrect');
+    if (submit instanceof HTMLButtonElement) {
+      submit.textContent = 'Check Answer';
+      submit.className = 'button primary-button';
+    }
+    if (input instanceof HTMLElement) input.focus();
   }
 
   function openLearnSimilarPanel(button) {
@@ -4777,6 +4800,12 @@
       var tryLearnSimilarButton = target.closest('[data-try-learn-similar]');
       if (tryLearnSimilarButton instanceof HTMLElement) {
         openLearnSimilarPanel(tryLearnSimilarButton);
+        return;
+      }
+
+      var retryLearnPrimaryButton = target.closest('[data-retry-learn-primary]');
+      if (retryLearnPrimaryButton instanceof HTMLElement) {
+        retryLearnPrimaryQuestion(retryLearnPrimaryButton);
         return;
       }
 
