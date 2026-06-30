@@ -266,6 +266,46 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Review mistakes from saved Checked Practice');
   });
 
+  it('keeps P1 Review standalone with one module visible and mini-checks revealed after fast checks', () => {
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(generatorSource).toContain("{ key: 'courses', label: 'Home'");
+    expect(generatorSource).toContain("{ key: 'p1-repair', label: 'P1 Review'");
+    expect(generatorSource).toContain("{ key: 'p3-topics', label: 'P3 Units'");
+    expect(generatorSource).toContain("{ key: 'p3-exam-training', label: 'Export Progress'");
+    expect(generatorSource).toContain('data-p1-repair-module-tab');
+    expect(generatorSource).toContain('data-p1-repair-mini-check-panel hidden');
+    expect(generatorSource).toContain('Submit Fast Check');
+    expect(generatorSource).toContain('Submit Mini-Check');
+    expect(generatorSource).toContain('data-p1-repair-next');
+    expect(generatorSource).not.toContain('Readiness rule');
+    expect(generatorSource).not.toContain('Recommended route');
+
+    expect(staticClientSource).toContain('setupP1RepairLaneFlow');
+    expect(staticClientSource).toContain('p1RepairHasFastSubmission');
+    expect(staticClientSource).toContain("element.disabled = false");
+    expect(staticClientSource).not.toContain('Available after the diagnostic recommends P1_REPAIR_REQUIRED.');
+
+    const generatedP1ReviewPath = 'docs/p3/repair-lane/index.html';
+    if (existsSync(generatedP1ReviewPath)) {
+      const generatedP1Review = readFileSync(generatedP1ReviewPath, 'utf8');
+      const document = new JSDOM(generatedP1Review).window.document;
+      const navLabels = Array.from(document.querySelectorAll('.site-nav a')).map(visibleText);
+
+      expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Export Progress']);
+      expect(document.querySelectorAll('[data-p1-repair-module-tab]')).toHaveLength(5);
+      expect(document.querySelectorAll('[data-p1-repair-module]')).toHaveLength(5);
+      expect(document.querySelectorAll('[data-p1-repair-module][hidden]')).toHaveLength(4);
+      expect(document.querySelectorAll('[data-p1-repair-mini-check-panel][hidden]')).toHaveLength(5);
+      expect(generatedP1Review).toContain('Submit Fast Check');
+      expect(generatedP1Review).toContain('Submit Mini-Check');
+      expect(generatedP1Review).toContain('Next module');
+      expect(generatedP1Review).not.toContain('Readiness rule');
+      expect(generatedP1Review).not.toContain('Recommended route');
+    }
+  });
+
   it('keeps local agent-loop run artifacts out of git status noise', () => {
     const gitignore = readFileSync('.gitignore', 'utf8').split(/\r?\n/);
 

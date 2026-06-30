@@ -297,6 +297,8 @@ describe('P3 topic-pack exam-training refresh', () => {
       const hasTickableMarkPoints = article.includes('data-has-mark-points="true"');
       if (hasTickableMarkPoints) {
         expect(article, id).toContain('Tick mark points you can justify from the mark scheme image');
+        expect(article, id).toContain('Self-grade suggestions');
+        expect(article, id).toContain('Only tick a mark point when your written work shows that exact evidence.');
         expect(article, id).toContain('These ticks are support only. The mark-scheme image is the source of truth.');
       } else {
         expect(article, id).toContain('data-coarse-self-marking="true"');

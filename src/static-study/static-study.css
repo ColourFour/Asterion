@@ -5852,6 +5852,33 @@ body.learn-mode-page .learn-exam-transfer {
   font-weight: 900;
 }
 
+.repair-module-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.repair-module-tab {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted-strong);
+  background: #ffffff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.repair-module-tab:hover,
+.repair-module-tab:focus-visible,
+.repair-module-tab[aria-current="true"] {
+  border-color: rgba(0, 87, 217, 0.5);
+  color: #ffffff;
+  background: var(--accent-dark);
+}
+
 .repair-module-list {
   display: grid;
   gap: 18px;
@@ -5882,15 +5909,25 @@ body.learn-mode-page .learn-exam-transfer {
   gap: 10px;
 }
 
+.repair-refresh ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.repair-refresh li {
+  padding: 14px;
+  border: 1px solid rgba(0, 87, 217, 0.2);
+  border-radius: var(--radius);
+  background: #f2f7ff;
+}
+
 .repair-refresh h3,
 .repair-question-block h3 {
   margin: 0;
   font-size: 1rem;
-}
-
-.repair-refresh ol {
-  margin: 0;
-  padding-left: 22px;
 }
 
 .repair-question-grid {
@@ -6088,6 +6125,29 @@ body.skill-check-page .exam-question-section {
   grid-template-columns: auto 1fr;
   gap: 8px;
   align-items: start;
+}
+
+.self-grade-suggestions {
+  display: grid;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(61, 86, 109, 0.14);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.self-grade-suggestions strong {
+  font-size: 0.94rem;
+}
+
+.self-grade-suggestions ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.91rem;
+  font-weight: 750;
 }
 
 .self-marking-guidance {
@@ -6554,6 +6614,8 @@ body.skill-check-page .exam-question-section {
   .diagnostic-mark-grid,
   .diagnostic-feedback-grid,
   .diagnostic-progress-panel,
+  .repair-module-nav,
+  .repair-refresh ol,
   .repair-question-grid {
     grid-template-columns: minmax(0, 1fr);
   }

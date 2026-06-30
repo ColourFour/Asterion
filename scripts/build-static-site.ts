@@ -6,9 +6,7 @@ import katex from 'katex';
 import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
 import { examQuestionSupportPrompt } from '../src/data/examQuestionSupport';
 import {
-  P1_REPAIR_LOCK_MESSAGE,
   P1_REPAIR_MODULES,
-  P1_REPAIR_REQUIRED_STATE_MESSAGE,
   type P1RepairModuleDefinition,
   type P1RepairQuestion,
 } from '../src/data/p1RepairLane';
@@ -595,13 +593,11 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   const items = [
-    { key: 'courses', label: 'Courses', path: 'index.html' },
-    { key: 'p3', label: 'P3', path: p3CoursePagePath() },
-    { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
+    { key: 'courses', label: 'Home', path: 'index.html' },
     { key: 'p1-repair', label: 'P1 Review', path: p1RepairLanePagePath() },
-    { key: 'p3-topics', label: 'Units', path: p3TopicsIndexPagePath() },
+    { key: 'p3-topics', label: 'P3 Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Export Progress', path: p3ReviewPagePath() },
-  ].filter((item) => pagePath !== 'index.html' || item.key !== 'courses');
+  ];
   const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
 
   return `
@@ -922,7 +918,7 @@ function renderP1RepairQuestionInput(question: P1RepairQuestion, phase: 'fast' |
 
 function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): string {
   return `
-    <article class="repair-module-card" data-p1-repair-module="${escapeAttr(module.module_id)}">
+    <article class="repair-module-card" data-p1-repair-module="${escapeAttr(module.module_id)}" data-p1-repair-module-index="${index}"${index === 0 ? '' : ' hidden'}>
       <header>
         <p class="eyebrow">Module ${index + 1} · ${escapeHtml(module.skill_tag)}</p>
         <h2>${escapeHtml(module.title)}</h2>
@@ -940,15 +936,21 @@ function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): 
           <div class="repair-question-grid">
             ${module.fast_questions.map((question) => renderP1RepairQuestionInput(question, 'fast')).join('')}
           </div>
+          <div class="repair-module-actions">
+            <button class="button primary-button" type="submit" name="repairPhase" value="fast">Submit Fast Check</button>
+            <p class="repair-module-result" data-p1-repair-module-result>Fast check not submitted.</p>
+          </div>
         </section>
-        <section class="repair-question-block repair-mini-check">
+        <section class="repair-question-block repair-mini-check" data-p1-repair-mini-check-panel hidden>
           <h3>Mini-Check</h3>
-          <p>One exam-style check. A first attempt matters for the final readiness target. One retry is allowed for module completion.</p>
+          <p>One exam-style check. One retry is allowed for module completion.</p>
           ${renderP1RepairQuestionInput(module.mini_check, 'mini')}
+          <div class="repair-module-actions">
+            <button class="button primary-button" type="submit" name="repairPhase" value="mini">Submit Mini-Check</button>
+          </div>
         </section>
         <div class="repair-module-actions">
-          <button class="button primary-button" type="submit">Check module</button>
-          <p class="repair-module-result" data-p1-repair-module-result>Not complete.</p>
+          <button class="button secondary-button" type="button" data-p1-repair-next>Next module</button>
         </div>
       </form>
     </article>
@@ -964,21 +966,9 @@ function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
       '<a class="button primary-button" href="#repair-modules">Start review</a>',
       'CAIE 9709 foundation review',
     )}
-    <section class="repair-lock-panel summary-card" aria-labelledby="repair-lock-title" data-p1-repair-status-panel>
-      <div>
-        <p class="eyebrow">Recommended route</p>
-        <h2 id="repair-lock-title">${escapeHtml(P1_REPAIR_LOCK_MESSAGE)}</h2>
-        <p>${escapeHtml(P1_REPAIR_REQUIRED_STATE_MESSAGE)}</p>
-      </div>
-      <p class="repair-unlock-status" data-p1-repair-unlock-status>0/${P1_REPAIR_MODULES.length} modules complete. P1 review recommended before P3 Exam Training.</p>
-    </section>
-    <section class="summary-card repair-rule-panel" aria-labelledby="repair-rule-title">
-      <div>
-        <p class="eyebrow">Readiness rule</p>
-        <h2 id="repair-rule-title">All modules complete, plus 3 first-attempt mini-checks.</h2>
-        <p>The static progress check looks for fast-question accuracy at or above 70% in every module, a mini-check pass within the first attempt or one retry, and at least 3 of 5 mini-checks correct on the first attempt.</p>
-      </div>
-    </section>
+    <nav class="repair-module-nav" aria-label="P1 Review modules" data-p1-repair-module-nav>
+      ${P1_REPAIR_MODULES.map((module, index) => `<button class="repair-module-tab" type="button" data-p1-repair-module-tab="${escapeAttr(module.module_id)}"${index === 0 ? ' aria-current="true"' : ''}>Module ${index + 1}</button>`).join('')}
+    </nav>
     <section class="repair-module-list" id="repair-modules" aria-label="P1 Review modules">
       ${P1_REPAIR_MODULES.map((module, index) => renderP1RepairModule(module, index)).join('')}
     </section>
@@ -3007,6 +2997,7 @@ function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): str
   return `
     <fieldset class="mark-point-list">
       <legend>Tick mark points you can justify from the mark scheme image</legend>
+      ${renderSelfGradeSuggestions(markPoints)}
       ${markPoints.map((point) => `
         <label>
           <input type="checkbox" data-mark-point data-part-index="${partIndex}" value="${escapeRawAttr(point.id)}" />
@@ -3014,6 +3005,51 @@ function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): str
         </label>
       `).join('')}
     </fieldset>
+  `;
+}
+
+function normalizedMarkCode(point: QuestionMarkPoint): string {
+  return (point.markCode ?? '').replace(/^\*/, '').trim().toUpperCase();
+}
+
+function selfGradeSuggestionItems(markPoints: QuestionMarkPoint[]): string[] {
+  const codes = markPoints.map(normalizedMarkCode).filter(Boolean);
+  const hasMethod = codes.some((code) => /^D?M\d/.test(code) || /^M\d/.test(code));
+  const hasDependentMethod = codes.some((code) => /^DM\d/.test(code));
+  const hasAccuracy = codes.some((code) => /^A\d/.test(code));
+  const hasIndependent = codes.some((code) => /^B\d/.test(code) || /^SCB\d/.test(code));
+  const hasFollowThrough = codes.some((code) => code.includes('FT'));
+  const items = ['Only tick a mark point when your written work shows that exact evidence.'];
+
+  if (hasIndependent) {
+    items.push('B marks: tick for an independent result, statement, diagram feature, or observation that is actually present.');
+  }
+  if (hasMethod) {
+    items.push('M marks: tick for a valid method step even if a later arithmetic or simplification error changes the final answer.');
+  }
+  if (hasDependentMethod) {
+    items.push('DM marks: tick only when the earlier required method is also shown.');
+  }
+  if (hasAccuracy) {
+    items.push('A marks: tick for an accurate result supported by the required working, not for an unsupported guess.');
+  }
+  if (hasFollowThrough) {
+    items.push('FT marks: follow through from your earlier value where the scheme allows it, but still check the mark-scheme image.');
+  }
+
+  items.push('Your self-awarded marks should normally match the number of justified ticks; if unsure, be conservative.');
+  return items;
+}
+
+function renderSelfGradeSuggestions(markPoints: QuestionMarkPoint[]): string {
+  const items = selfGradeSuggestionItems(markPoints);
+  return `
+      <div class="self-grade-suggestions" data-self-grade-suggestions>
+        <strong>Self-grade suggestions</strong>
+        <ul>
+          ${items.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
+        </ul>
+      </div>
   `;
 }
 

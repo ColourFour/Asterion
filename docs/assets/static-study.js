@@ -2778,6 +2778,12 @@
     });
   }
 
+  function p1RepairHasFastSubmission(state) {
+    return safeArray(state && state.attempt_history).some(function (attempt) {
+      return attempt && attempt.phase === 'FAST_QUESTION';
+    });
+  }
+
   function p1RepairMiniFirstAttemptCorrect(state) {
     return safeArray(state && state.attempt_history).some(function (attempt) {
       return attempt && attempt.phase === 'MINI_CHECK' && attempt.attempt_number === 1 && attempt.is_correct === true;
@@ -2816,44 +2822,85 @@
   }
 
   function updateP1RepairLaneStatus(progress) {
-    var triggered = p1RepairIsTriggered(progress);
     var unlock = p1RepairUnlockStatus(progress);
     document.querySelectorAll('[data-p1-repair-module]').forEach(function (card) {
       var moduleId = card.getAttribute('data-p1-repair-module') || '';
       var state = p1RepairStateFor(progress, moduleId);
       var complete = p1RepairModuleComplete(state);
+      var fastSubmitted = p1RepairHasFastSubmission(state);
       card.classList.toggle('is-complete', complete);
-      card.classList.toggle('is-locked', !triggered);
       var form = card.querySelector('[data-p1-repair-module-form]');
       if (form instanceof HTMLFormElement) {
         Array.from(form.elements).forEach(function (element) {
-          if ('disabled' in element) element.disabled = !triggered;
+          if ('disabled' in element) element.disabled = false;
         });
       }
+      var miniCheckPanel = card.querySelector('[data-p1-repair-mini-check-panel]');
+      if (miniCheckPanel) miniCheckPanel.hidden = !fastSubmitted;
       var result = card.querySelector('[data-p1-repair-module-result]');
       if (result) {
-        if (!triggered) {
-          result.textContent = 'Available after the diagnostic recommends P1_REPAIR_REQUIRED.';
-        } else if (complete) {
+        if (complete) {
           result.textContent = 'CHECKED EVIDENCE. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check passed.';
         } else if (state) {
-          result.textContent = 'IN_PROGRESS. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check not yet passed within the allowed attempts.';
+          result.textContent = fastSubmitted
+            ? 'IN_PROGRESS. Fast accuracy ' + Number(state.fast_question_accuracy || 0) + '%. Mini-check not yet passed within the allowed attempts.'
+            : 'Fast check not submitted.';
         } else {
-          result.textContent = 'IN_PROGRESS. No saved attempt yet.';
+          result.textContent = 'Fast check not submitted.';
         }
       }
     });
 
     document.querySelectorAll('[data-p1-repair-unlock-status]').forEach(function (node) {
-      if (!triggered) {
-        node.textContent = 'Diagnostic gate has not assigned P1_REPAIR_REQUIRED in this browser.';
-        return;
-      }
       node.textContent = unlock.p3_access_unlocked
-        ? 'P1 review target met. Continue with the full P3 path.'
+        ? 'P1 review complete.'
         : unlock.completed_module_count + '/' + unlock.required_module_count + ' modules complete; '
-          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks. P1 review still recommended before P3 Exam Training.';
+          + unlock.first_attempt_mini_check_correct_count + '/3 first-attempt mini-checks.';
     });
+  }
+
+  function setActiveP1RepairModule(moduleId, updateHash) {
+    var cards = Array.from(document.querySelectorAll('[data-p1-repair-module]'));
+    if (!cards.length) return;
+    var selected = cards.find(function (card) {
+      return card.getAttribute('data-p1-repair-module') === moduleId;
+    }) || cards[0];
+    var selectedId = selected.getAttribute('data-p1-repair-module') || '';
+    cards.forEach(function (card) {
+      var isSelected = card === selected;
+      card.hidden = !isSelected;
+    });
+    document.querySelectorAll('[data-p1-repair-module-tab]').forEach(function (tab) {
+      var isSelected = tab.getAttribute('data-p1-repair-module-tab') === selectedId;
+      if (isSelected) {
+        tab.setAttribute('aria-current', 'true');
+      } else {
+        tab.removeAttribute('aria-current');
+      }
+    });
+    if (updateHash && selectedId) {
+      var nextHash = '#' + selectedId;
+      if (window.location.hash !== nextHash) {
+        history.replaceState(null, '', nextHash);
+      }
+    }
+  }
+
+  function nextP1RepairModuleId(currentId) {
+    var cards = Array.from(document.querySelectorAll('[data-p1-repair-module]'));
+    if (!cards.length) return '';
+    var currentIndex = cards.findIndex(function (card) {
+      return card.getAttribute('data-p1-repair-module') === currentId;
+    });
+    var nextIndex = currentIndex >= 0 ? (currentIndex + 1) % cards.length : 0;
+    return cards[nextIndex].getAttribute('data-p1-repair-module') || '';
+  }
+
+  function setupP1RepairLaneFlow() {
+    var cards = Array.from(document.querySelectorAll('[data-p1-repair-module]'));
+    if (!cards.length) return;
+    var hashId = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+    setActiveP1RepairModule(hashId || cards[0].getAttribute('data-p1-repair-module') || '', false);
   }
 
   function applyP1RepairP3Locks(progress) {
@@ -2908,32 +2955,40 @@
     feedback.classList.toggle('is-incorrect', !result.isCorrect);
   }
 
-  function submitP1RepairModule(form) {
+  function submitP1RepairModule(form, submitter) {
     var moduleId = form.getAttribute('data-module-id') || '';
     var progress = loadProgress();
     var existing = p1RepairStateFor(progress, moduleId) || {};
     var previousHistory = safeArray(existing.attempt_history);
     var newHistory = [];
+    var activeElement = document.activeElement;
+    var submitPhase = submitter instanceof HTMLElement && submitter.getAttribute('value') === 'mini'
+      ? 'mini'
+      : activeElement instanceof HTMLElement && activeElement.closest('[data-p1-repair-mini-check-panel]') ? 'mini' : 'fast';
     var fastInputs = Array.from(form.querySelectorAll('[data-p1-repair-fast-question]')).filter(function (input) {
       return input instanceof HTMLInputElement;
     });
     var correctFast = 0;
-    fastInputs.forEach(function (input) {
-      var result = checkSubmittedSkillAnswer(p1RepairSpecFromInput(input), input.value);
-      if (result.isCorrect) correctFast += 1;
-      showP1RepairFeedback(input, result);
-      newHistory.push({
-        question_id: input.getAttribute('data-question-id') || input.name || '',
-        phase: 'FAST_QUESTION',
-        is_correct: result.isCorrect,
-        attempted_at: new Date().toISOString(),
-        attempt_number: p1RepairAttemptNumber(previousHistory, input.getAttribute('data-question-id') || input.name || '', 'FAST_QUESTION')
+    var fastAccuracy = Number(existing.fast_question_accuracy || 0);
+    if (submitPhase === 'fast') {
+      fastInputs.forEach(function (input) {
+        var result = checkSubmittedSkillAnswer(p1RepairSpecFromInput(input), input.value);
+        if (result.isCorrect) correctFast += 1;
+        showP1RepairFeedback(input, result);
+        newHistory.push({
+          question_id: input.getAttribute('data-question-id') || input.name || '',
+          phase: 'FAST_QUESTION',
+          is_correct: result.isCorrect,
+          attempted_at: new Date().toISOString(),
+          attempt_number: p1RepairAttemptNumber(previousHistory, input.getAttribute('data-question-id') || input.name || '', 'FAST_QUESTION')
+        });
       });
-    });
+      fastAccuracy = percentScore(correctFast, fastInputs.length);
+    }
 
     var miniInput = form.querySelector('[data-p1-repair-mini-check]');
     var miniPassed = existing.mini_check_passed === true;
-    if (miniInput instanceof HTMLInputElement) {
+    if (submitPhase === 'mini' && miniInput instanceof HTMLInputElement) {
       var miniQuestionId = miniInput.getAttribute('data-question-id') || miniInput.name || '';
       var miniResult = checkSubmittedSkillAnswer(p1RepairSpecFromInput(miniInput), miniInput.value);
       var miniAttemptNumber = p1RepairAttemptNumber(previousHistory, miniQuestionId, 'MINI_CHECK');
@@ -2948,7 +3003,6 @@
       miniPassed = miniPassed || (miniResult.isCorrect && miniAttemptNumber <= 2);
     }
 
-    var fastAccuracy = percentScore(correctFast, fastInputs.length);
     var fullHistory = previousHistory.concat(newHistory);
     var nextState = {
       module_id: moduleId,
@@ -2963,6 +3017,10 @@
       .concat(nextState);
     saveProgress(progress);
     updateProgressText();
+    if (submitPhase === 'fast') {
+      var miniPanel = form.querySelector('[data-p1-repair-mini-check-panel]');
+      if (miniPanel) miniPanel.hidden = false;
+    }
   }
 
   // Parity tests use this hook to compare the student-facing static checker with the TypeScript checker.
@@ -4754,6 +4812,7 @@
     setupWorksheetFlow();
     setupExamSelfMarking();
     setupGuidedStudy();
+    setupP1RepairLaneFlow();
     updateProgressText();
     renderReviewPage();
 
@@ -4829,6 +4888,21 @@
         }
         return;
       }
+
+      var p1ModuleTab = target.closest('[data-p1-repair-module-tab]');
+      if (p1ModuleTab) {
+        setActiveP1RepairModule(p1ModuleTab.getAttribute('data-p1-repair-module-tab') || '', true);
+        return;
+      }
+
+      var p1NextButton = target.closest('[data-p1-repair-next]');
+      if (p1NextButton) {
+        var currentCard = p1NextButton.closest('[data-p1-repair-module]');
+        var currentId = currentCard ? currentCard.getAttribute('data-p1-repair-module') || '' : '';
+        setActiveP1RepairModule(nextP1RepairModuleId(currentId), true);
+        document.getElementById('repair-modules')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
     });
 
     document.addEventListener('submit', function (event) {
@@ -4862,7 +4936,7 @@
       }
       if (form.matches('[data-p1-repair-module-form]')) {
         event.preventDefault();
-        submitP1RepairModule(form);
+        submitP1RepairModule(form, event.submitter);
       }
     });
 

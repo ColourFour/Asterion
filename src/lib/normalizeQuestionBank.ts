@@ -270,13 +270,15 @@ function reviewedMarkPointsForSubpart(
   marksAvailable: number,
 ): QuestionMarkPoint[] | undefined {
   if (!sourceRecord || marksAvailable <= 0) return undefined;
-  const rawPoints = [
+  const reviewedRawPoints = [
     sourceRecord.reviewed_mark_points,
     sourceRecord.reviewedMarkPoints,
-    sourceRecord.mark_points,
-    sourceRecord.markPoints,
   ].find(Array.isArray)
     ?? reviewedExamTrainingMarkPointsForSubpart(pickString(sourceRecord, ['subpart_id', 'subpartId', 'part_id', 'partId', 'id']));
+  const rawPoints = reviewedRawPoints ?? [
+    sourceRecord.mark_points,
+    sourceRecord.markPoints,
+  ].find(Array.isArray);
   if (!Array.isArray(rawPoints) || rawPoints.length !== marksAvailable) return undefined;
 
   const prefix = markPointIdPrefix(label, sourceRecord);
